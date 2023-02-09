@@ -109,6 +109,11 @@ public static class OutgoingGumpPackets
 
         var layoutWriter = new SpanWriter(_layoutBuffer);
 
+        if (gump.UseWebRender)
+        {
+            layoutWriter.Write(Gump.WebRender);
+        }
+
         if (!gump.Draggable)
         {
             layoutWriter.Write(Gump.NoMove);

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
 using Server.Network;
 using Server.Text;
 using Server.Utilities;
@@ -10,6 +12,7 @@ public partial class Gump
 {
     private static Serial _nextSerial = (Serial)1;
 
+    public static readonly byte[] WebRender = StringToBuffer("{ webrender }");
     public static readonly byte[] NoMove = StringToBuffer("{ nomove }");
     public static readonly byte[] NoClose = StringToBuffer("{ noclose }");
     public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
@@ -53,6 +56,8 @@ public partial class Gump
 
     public bool Closable { get; set; } = true;
 
+    public bool UseWebRender { get; set; } = false;
+
     public static int GetTypeID(Type type) => type?.FullName?.GetHashCode(StringComparison.Ordinal) ?? -1;
 
     public void AddPage(int page)
@@ -68,6 +73,22 @@ public partial class Gump
     public void AddBackground(int x, int y, int width, int height, int gumpID)
     {
         Add(new GumpBackground(x, y, width, height, gumpID));
+    }
+
+    public void SendData(Mobile m, string responseMethod, object value)
+    {
+        Entries.Clear();
+
+        var jtext = JsonSerializer.Serialize(value, new JsonSerializerOptions() { WriteIndented = true });
+        Add(new GumpBodyUpdate(responseMethod,
+            Convert.ToBase64String(Encoding.UTF8.GetBytes(jtext))));
+
+        m.SendGump(this);
+    }
+
+    public void AddBody(string body)
+    {
+        Add(new GumpBody(Convert.ToBase64String(Encoding.UTF8.GetBytes(body))));
     }
 
     public void AddButton(
