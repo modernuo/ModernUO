@@ -30,6 +30,9 @@ using Server.Items;
 using Server.Logging;
 using Server.Menus;
 
+// This was added so UOContent project could access the _authId internal. Maybe we should make it public?
+[assembly: InternalsVisibleToAttribute("UOContent")]
+
 namespace Server.Network;
 
 public delegate void NetStateCreatedCallback(NetState ns);

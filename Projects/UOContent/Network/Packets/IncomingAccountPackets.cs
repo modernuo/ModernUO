@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using CV = Server.ClientVersion;
 
 namespace Server.Network;
