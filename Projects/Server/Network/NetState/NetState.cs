@@ -30,9 +30,6 @@ using Server.Items;
 using Server.Logging;
 using Server.Menus;
 
-// This was added so UOContent project could access the _authId internal. Maybe we should make it public?
-[assembly: InternalsVisibleToAttribute("UOContent")]
-
 namespace Server.Network;
 
 public delegate void NetStateCreatedCallback(NetState ns);
@@ -70,8 +67,8 @@ public partial class NetState : IComparable<NetState>
     private readonly long[] _packetCounts = new long[0x100];
     private string _disconnectReason = string.Empty;
 
-    internal int _authId;
-    internal int _seed;
+    public int authId;
+    public int seed;
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     internal GCHandle _handle;
@@ -614,15 +611,15 @@ public partial class NetState : IComparable<NetState>
                                 }
                                 else if (length >= 4)
                                 {
-                                    int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
+                                    int newSeed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
 
-                                    if (seed == 0)
+                                    if (newSeed == 0)
                                     {
                                         HandleError(0, 0);
                                         return;
                                     }
 
-                                    _seed = seed;
+                                    seed = newSeed;
                                     packetLength = 4;
 
                                     _parserState = ParserState.AwaitingNextPacket;

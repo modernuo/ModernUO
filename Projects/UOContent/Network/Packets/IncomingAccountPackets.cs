@@ -365,7 +365,7 @@ public static class IncomingAccountPackets
             state.Disconnect("Unable to find auth id.");
         }
 
-        if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed)
+        if (state.authId != 0 && authID != state.authId || state.authId == 0 && authID != state.seed)
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Invalid auth id in game login packet.");
@@ -413,19 +413,19 @@ public static class IncomingAccountPackets
         {
             var si = info[index];
 
-            state._authId = GenerateAuthID(state);
+            state.authId = GenerateAuthID(state);
 
             state.SentFirstPacket = false;
-            state.SendPlayServerAck(si, state._authId);
+            state.SendPlayServerAck(si, state.authId);
         }
     }
 
     public static void LoginServerSeed(NetState state, CircularBufferReader reader, int packetLength)
     {
-        state._seed = reader.ReadInt32();
+        state.seed = reader.ReadInt32();
         state.Seeded = true;
 
-        if (state._seed == 0)
+        if (state.seed == 0)
         {
             state.LogInfo("Invalid client detected, disconnecting");
             state.Disconnect("Duplicate seed sent.");
