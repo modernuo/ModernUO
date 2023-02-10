@@ -48,7 +48,7 @@ public partial class NetState : IComparable<NetState>
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
 
-    private static GCHandle[] _polledStates = new GCHandle[2048];
+    private static readonly GCHandle[] _polledStates = new GCHandle[2048];
     private static readonly IPollGroup _pollGroup = PollGroup.Create();
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _flushedPartials = new(256);
@@ -67,8 +67,6 @@ public partial class NetState : IComparable<NetState>
     private readonly long[] _packetCounts = new long[0x100];
     private string _disconnectReason = string.Empty;
 
-    public int authId;
-    public int seed;
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     internal GCHandle _handle;
@@ -165,6 +163,10 @@ public partial class NetState : IComparable<NetState>
             }
         }
     }
+
+    public int AuthId { get; set; }
+
+    public int Seed { get; set; }
 
     public DateTime ConnectedOn { get; }
 
@@ -619,7 +621,7 @@ public partial class NetState : IComparable<NetState>
                                         return;
                                     }
 
-                                    seed = newSeed;
+                                    Seed = newSeed;
                                     packetLength = 4;
 
                                     _parserState = ParserState.AwaitingNextPacket;
