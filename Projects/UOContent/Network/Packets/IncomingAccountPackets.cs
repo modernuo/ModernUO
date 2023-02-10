@@ -22,9 +22,9 @@ namespace Server.Network;
 
 public static class IncomingAccountPackets
 {
-    private const int m_AuthIDWindowSize = 128;
-    private static readonly Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
-        new(m_AuthIDWindowSize);
+    private const int _authIDWindowSize = 128;
+    private static readonly Dictionary<int, AuthIDPersistence> _authIDWindow =
+        new(_authIDWindowSize);
 
     internal struct AuthIDPersistence
     {
@@ -311,12 +311,12 @@ public static class IncomingAccountPackets
 
     private static int GenerateAuthID(this NetState state)
     {
-        if (m_AuthIDWindow.Count == m_AuthIDWindowSize)
+        if (_authIDWindow.Count == _authIDWindowSize)
         {
             var oldestID = 0;
             var oldest = DateTime.MaxValue;
 
-            foreach (var (key, authId) in m_AuthIDWindow)
+            foreach (var (key, authId) in _authIDWindow)
             {
                 if (authId.Age < oldest)
                 {
@@ -325,7 +325,7 @@ public static class IncomingAccountPackets
                 }
             }
 
-            m_AuthIDWindow.Remove(oldestID);
+            _authIDWindow.Remove(oldestID);
         }
 
         int authID;
@@ -338,9 +338,9 @@ public static class IncomingAccountPackets
             {
                 authID |= 1 << 31;
             }
-        } while (m_AuthIDWindow.ContainsKey(authID));
+        } while (_authIDWindow.ContainsKey(authID));
 
-        m_AuthIDWindow[authID] = new AuthIDPersistence(state.Version);
+        _authIDWindow[authID] = new AuthIDPersistence(state.Version);
 
         return authID;
     }
@@ -357,22 +357,22 @@ public static class IncomingAccountPackets
 
         state.SentFirstPacket = true;
 
-        var authID = reader.ReadInt32();
+        var authId = reader.ReadInt32();
 
-        if (!m_AuthIDWindow.TryGetValue(authID, out var ap))
+        if (!_authIDWindow.TryGetValue(authId, out var ap))
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Unable to find auth id.");
         }
 
-        if (state._authId != 0 && authID != state._authId || state._authId == 0 && authID != state._seed)
+        if (state.AuthId != 0 && authId != state.AuthId || state.AuthId == 0 && authId != state.Seed)
         {
             state.LogInfo("Invalid client detected, disconnecting...");
             state.Disconnect("Invalid auth id in game login packet.");
             return;
         }
 
-        m_AuthIDWindow.Remove(authID);
+        _authIDWindow.Remove(authId);
         state.Version = ap.Version;
 
         var username = reader.ReadAscii(30);
@@ -413,19 +413,19 @@ public static class IncomingAccountPackets
         {
             var si = info[index];
 
-            state._authId = GenerateAuthID(state);
+            state.AuthId = GenerateAuthID(state);
 
             state.SentFirstPacket = false;
-            state.SendPlayServerAck(si, state._authId);
+            state.SendPlayServerAck(si, state.AuthId);
         }
     }
 
     public static void LoginServerSeed(NetState state, CircularBufferReader reader, int packetLength)
     {
-        state._seed = reader.ReadInt32();
+        state.Seed = reader.ReadInt32();
         state.Seeded = true;
 
-        if (state._seed == 0)
+        if (state.Seed == 0)
         {
             state.LogInfo("Invalid client detected, disconnecting");
             state.Disconnect("Duplicate seed sent.");
