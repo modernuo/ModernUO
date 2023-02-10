@@ -92,8 +92,8 @@ public static class IncomingItemPackets
 
             if (item is BaseMulti multi && multi.AllowsRelativeDrop)
             {
-                loc.m_X += multi.X;
-                loc.m_Y += multi.Y;
+                loc.X += multi.X;
+                loc.Y += multi.Y;
                 from.Drop(loc);
             }
             else

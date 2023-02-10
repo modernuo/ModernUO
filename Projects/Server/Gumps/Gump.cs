@@ -15,7 +15,19 @@ public partial class Gump
     public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
     public static readonly byte[] NoResize = StringToBuffer("{ noresize }");
 
-    internal int m_TextEntries, m_Switches;
+    private int m_Switches, m_TextEntries;
+
+    public int Switches
+    {
+        get => m_Switches;
+        set => m_Switches = value;
+    }
+
+    public int TextEntries
+    {
+        get => m_TextEntries;
+        set => m_TextEntries = value;
+    }
 
     public Gump(int x, int y)
     {
