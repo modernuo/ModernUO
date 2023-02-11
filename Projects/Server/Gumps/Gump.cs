@@ -15,18 +15,18 @@ public partial class Gump
     public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
     public static readonly byte[] NoResize = StringToBuffer("{ noresize }");
 
-    private int m_Switches, m_TextEntries;
+    private int _switches, _textEntries;
 
     public int Switches
     {
-        get => m_Switches;
-        set => m_Switches = value;
+        get => _switches;
+        set => _switches = value;
     }
 
     public int TextEntries
     {
-        get => m_TextEntries;
-        set => m_TextEntries = value;
+        get => _textEntries;
+        set => _textEntries = value;
     }
 
     public Gump(int x, int y)
@@ -262,7 +262,7 @@ public partial class Gump
     public void SendTo(NetState state)
     {
         state.AddGump(this);
-        state.SendDisplayGump(this, out m_Switches, out m_TextEntries);
+        state.SendDisplayGump(this, out _switches, out _textEntries);
     }
 
     public static byte[] StringToBuffer(string str) => str.GetBytesAscii();
