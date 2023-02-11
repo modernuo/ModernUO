@@ -384,7 +384,7 @@ public static class IncomingPlayerPackets
 
             var switchCount = reader.ReadInt32();
 
-            if (switchCount < 0 || switchCount > gump.m_Switches)
+            if (switchCount < 0 || switchCount > gump.Switches)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
                 var exception = new InvalidGumpResponseException($"Bad switch count {switchCount}");
@@ -405,7 +405,7 @@ public static class IncomingPlayerPackets
 
             var textCount = reader.ReadInt32();
 
-            if (textCount < 0 || textCount > gump.m_TextEntries)
+            if (textCount < 0 || textCount > gump.TextEntries)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
                 var exception = new InvalidGumpResponseException($"Bad text entry count {textCount}");
