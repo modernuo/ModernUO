@@ -208,6 +208,15 @@ public ref struct ValueStringBuilder
         }
     }
 
+    // Compiler generated
+    public void Append(
+        [InterpolatedStringHandlerArgument("")]
+        ref AppendInterpolatedStringHandler handler)
+    {
+        // Reassign since the string builder stored on the interpolated handler is by-value
+        this = handler._stringBuilder;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Append(string? s)
     {
