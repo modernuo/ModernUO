@@ -213,7 +213,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
     private string ToStringImpl()
     {
-        using var builder = new ValueStringBuilder(stackalloc char[32]);
+        using var builder = ValueStringBuilder.Create();
 
         if (Major > 5 || Minor > 0 || Revision > 6)
         {

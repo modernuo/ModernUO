@@ -83,7 +83,7 @@ namespace Server.Misc
 
         private static void EventSink_ClientVersionReceived(NetState state, ClientVersion version)
         {
-            using var message = ValueStringBuilder.Create();
+            var sb = ValueStringBuilder.Create();
 
             if (!_enable || state.Mobile?.AccessLevel != AccessLevel.Player)
             {
@@ -100,47 +100,47 @@ namespace Server.Misc
 
             if (MinRequired != null && version < MinRequired)
             {
-                message.Append($"This server doesn't support clients older than {MinRequired}.");
+                sb.Append($"This server doesn't support clients older than {MinRequired}.");
                 shouldKick = strictRequirement;
             }
             else if (MaxRequired != null && version > MaxRequired)
             {
-                message.Append($"This server doesn't support clients newer than {MaxRequired}.");
+                sb.Append($"This server doesn't support clients newer than {MaxRequired}.");
                 shouldKick = strictRequirement;
             }
             else if (!AllowRegular || !AllowUOTD)
             {
                 if (!AllowRegular && version.Type == ClientType.Regular)
                 {
-                    message.Append("This server does not allow regular clients to connect.");
+                    sb.Append("This server does not allow regular clients to connect.");
                     shouldKick = true;
                 }
                 else if (!AllowUOTD && state.IsUOTDClient)
                 {
-                    message.Append("This server does not allow UO:TD clients to connect.");
+                    sb.Append("This server does not allow UO:TD clients to connect.");
                     shouldKick = true;
                 }
 
-                if (message.Length > 0)
+                if (sb.Length > 0)
                 {
                     if (AllowRegular && AllowUOTD)
                     {
-                        message.Append(" You can use regular or UO:TD clients.");
+                        sb.Append(" You can use regular or UO:TD clients.");
                     }
                     else if (AllowRegular)
                     {
-                        message.Append(" You can use regular clients.");
+                        sb.Append(" You can use regular clients.");
                     }
                     else if (AllowUOTD)
                     {
-                        message.Append(" You can use UO:TD clients.");
+                        sb.Append(" You can use UO:TD clients.");
                     }
                 }
             }
 
-            if (message.Length > 0)
+            if (sb.Length > 0)
             {
-                state.Mobile.SendMessage(0x22, message.ToString());
+                state.Mobile.SendMessage(0x22, sb.ToString());
             }
 
             if (shouldKick)
@@ -150,7 +150,7 @@ namespace Server.Misc
                 return;
             }
 
-            if (message.Length > 0)
+            if (sb.Length > 0)
             {
                 switch (_invalidClientResponse)
                 {
@@ -170,6 +170,8 @@ namespace Server.Misc
                         }
                 }
             }
+
+            sb.Dispose();
         }
 
         private static void OnKick(NetState ns)

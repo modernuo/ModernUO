@@ -71,7 +71,7 @@ namespace Server.SkillHandlers
 
                         if (c.Looters.Count > 0)
                         {
-                            using var sb = new ValueStringBuilder(stackalloc char[128]);
+                            var sb = ValueStringBuilder.Create(128);
                             int i = 0;
                             foreach (var looter in c.Looters)
                             {
@@ -93,6 +93,7 @@ namespace Server.SkillHandlers
 
                             // This body has been disturbed by ~1_PLAYER_NAMES~
                             from.SendLocalizedMessage(1042752, sb.ToString());
+                            sb.Dispose();
                         }
                         else
                         {
