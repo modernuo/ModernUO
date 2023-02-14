@@ -71,7 +71,7 @@ namespace Server.SkillHandlers
 
                         if (c.Looters.Count > 0)
                         {
-                            var sb = new ValueStringBuilder(stackalloc char[128]);
+                            var sb = ValueStringBuilder.Create(128);
                             int i = 0;
                             foreach (var looter in c.Looters)
                             {

@@ -939,7 +939,7 @@ public partial class ConditionTeleporter : Teleporter
     {
         base.GetProperties(list);
 
-        using var props = new ValueStringBuilder(stackalloc char[128]);
+        using var props = ValueStringBuilder.Create(128);
 
         if (GetFlag(ConditionFlag.DenyMounted))
         {
