@@ -115,7 +115,7 @@ namespace Server.Gumps
             {
                 case 1: // Current location
                     {
-                        toSet = new Point2D(m_Mobile.Location.X, m_Mobile.Location.Y);
+                        toSet = new Point2D(m_Mobile.Location);
                         shouldSet = true;
                         shouldSend = true;
 
@@ -198,7 +198,7 @@ namespace Server.Gumps
                 {
                     try
                     {
-                        var p = new Point2D(point3D.X, point3D.Y);
+                        var p = new Point2D(point3D);
                         CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, p.ToString());
                         m_Property.SetValue(m_Object, p, null);
                         m_PropertiesGump.OnValueChanged(m_Object, m_Property);

@@ -41,14 +41,25 @@ public struct Point2D
         set => m_Y = value;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point2D(IPoint2D p) : this(p.X, p.Y)
+    {
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point2D(Point3D p) : this(p.X, p.Y)
+    {
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point2D(Point2D p) : this(p.X, p.Y)
+    {
+    }
+
     public Point2D(int x, int y)
     {
         m_X = x;
         m_Y = y;
-    }
-
-    public Point2D(Point2D p) : this(p.X, p.Y)
-    {
     }
 
     public bool Equals(Point2D other) => m_X == other.m_X && m_Y == other.m_Y;

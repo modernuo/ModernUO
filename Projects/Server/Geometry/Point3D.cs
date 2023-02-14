@@ -54,10 +54,12 @@ public struct Point3D
     {
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Point3D(Point3D p) : this(p.X, p.Y, p.Z)
     {
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Point3D(Point2D p, int z) : this(p.X, p.Y, z)
     {
     }
