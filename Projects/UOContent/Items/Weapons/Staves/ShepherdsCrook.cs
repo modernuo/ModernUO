@@ -125,35 +125,32 @@ namespace Server.Items
 
                 protected override void OnTarget(Mobile from, object targ)
                 {
-                    if (targ is IPoint2D p)
+                    if (targ is not IPoint2D p)
                     {
-                        var min = m_Creature.MinTameSkill - 30;
-                        var max = m_Creature.MinTameSkill + 30 + Utility.Random(10);
+                        return;
+                    }
 
-                        if (max <= from.Skills.Herding.Value)
-                        {
-                            m_Creature.PrivateOverheadMessage(
-                                MessageType.Regular,
-                                0x3B2,
-                                502471, // That wasn't even challenging.
-                                from.NetState
-                            );
-                        }
+                    var min = m_Creature.MinTameSkill - 30;
+                    var max = m_Creature.MinTameSkill + 30 + Utility.Random(10);
 
-                        if (from.CheckTargetSkill(SkillName.Herding, m_Creature, min, max))
-                        {
-                            if (p != from)
-                            {
-                                p = new Point2D(p.X, p.Y);
-                            }
+                    if (max <= from.Skills.Herding.Value)
+                    {
+                        m_Creature.PrivateOverheadMessage(
+                            MessageType.Regular,
+                            0x3B2,
+                            502471, // That wasn't even challenging.
+                            from.NetState
+                        );
+                    }
 
-                            m_Creature.TargetLocation = p;
-                            from.SendLocalizedMessage(502479); // The animal walks where it was instructed to.
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(502472); // You don't seem to be able to persuade that to move.
-                        }
+                    if (from.CheckTargetSkill(SkillName.Herding, m_Creature, min, max))
+                    {
+                        m_Creature.TargetLocation = targ != from ? new Point2D(p) : p;
+                        from.SendLocalizedMessage(502479); // The animal walks where it was instructed to.
+                    }
+                    else
+                    {
+                        from.SendLocalizedMessage(502472); // You don't seem to be able to persuade that to move.
                     }
                 }
             }

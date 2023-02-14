@@ -336,8 +336,8 @@ public class Region : IComparable<Region>
         {
             var rect = Area[i];
 
-            var start = Map.Bound(new Point2D(rect.Start.X, rect.Start.Y));
-            var end = Map.Bound(new Point2D(rect.End.X, rect.End.Y));
+            var start = Map.Bound(new Point2D(rect.Start));
+            var end = Map.Bound(new Point2D(rect.End));
 
             var startSector = Map.GetSector(start);
             var endSector = Map.GetSector(end);

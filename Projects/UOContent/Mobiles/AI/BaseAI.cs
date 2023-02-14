@@ -1352,7 +1352,7 @@ public abstract class BaseAI
 
         var distance = m_Mobile.GetDistanceToSqrt(target);
 
-        if (!(distance is < 1 or > 15))
+        if (distance is not (< 1 or > 15))
         {
             DoMove(m_Mobile.GetDirectionTo(target));
             return true;
