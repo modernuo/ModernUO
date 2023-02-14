@@ -213,30 +213,27 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
     private string ToStringImpl()
     {
-        var sb = new ValueStringBuilder(stackalloc char[32]);
+        using var builder = ValueStringBuilder.Create();
 
         if (Major > 5 || Minor > 0 || Revision > 6)
         {
-            ValueStringBuilder.Append(ref sb, $"{Major}.{Minor}.{Revision}.{Patch}");
+            builder.Append($"{Major}.{Minor}.{Revision}.{Patch}");
         }
         else if (Patch > 0)
         {
-            ValueStringBuilder.Append(ref sb, $"{Major}.{Minor}.{Revision}{(char)('a' + (Patch - 1))}");
+            builder.Append($"{Major}.{Minor}.{Revision}{(char)('a' + (Patch - 1))}");
         }
         else
         {
-            ValueStringBuilder.Append(ref sb, $"{Major}.{Minor}.{Revision}");
+            builder.Append($"{Major}.{Minor}.{Revision}");
         }
 
         if (Type == ClientType.UOTD)
         {
-            sb.Append(" uotd");
+            builder.Append(" uotd");
         }
 
-        var str = sb.ToString();
-        sb.Dispose();
-
-        return str;
+        return builder.ToString();
     }
 
     public override string ToString() => SourceString;

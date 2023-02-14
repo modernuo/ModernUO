@@ -50,7 +50,7 @@ public class LocalizationEntry
 
     private static void ParseText(string text, out string[] textSlices, out string stringFormatter)
     {
-        var sb = new ValueStringBuilder(stackalloc char[256]);
+        var sb = ValueStringBuilder.Create(256);
         using var queue = PooledRefQueue<string>.Create();
 
         bool hasMatch = false;
@@ -67,7 +67,7 @@ public class LocalizationEntry
 
             queue.Enqueue(null);
             hasMatch = true;
-            ValueStringBuilder.Append(ref sb, $"{{{int.Parse(match.Groups[1].Value) - 1}}}");
+            sb.Append($"{{{int.Parse(match.Groups[1].Value) - 1}}}");
             prevIndex = match.Index + match.Length;
         }
 

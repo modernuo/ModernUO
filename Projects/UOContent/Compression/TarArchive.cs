@@ -103,11 +103,11 @@ namespace Server.Compression
                 var relativePath = Path.GetRelativePath(relativeTo, path);
                 if (i++ > 0)
                 {
-                    ValueStringBuilder.Append(ref sb, $" \"{relativePath}\"");
+                    sb.Append($" \"{relativePath}\"");
                 }
                 else
                 {
-                    ValueStringBuilder.Append(ref sb, $"\"{relativePath}\"");
+                    sb.Append($"\"{relativePath}\"");
                 }
             }
             var pathsToCompress = sb.ToString();

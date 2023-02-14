@@ -39,7 +39,7 @@ public class ValueStringBuilderTests
     public void TestAppendInterpolation(object value)
     {
         var sb = ValueStringBuilder.Create();
-        ValueStringBuilder.Append(ref sb, $"Hi, this is {value}.");
+        sb.Append( $"Hi, this is {value}.");
         sb.Append(" I am a string.");
 
         Assert.Equal($"Hi, this is {value}. I am a string.", sb.ToString());

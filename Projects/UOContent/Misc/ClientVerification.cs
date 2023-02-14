@@ -100,12 +100,12 @@ namespace Server.Misc
 
             if (MinRequired != null && version < MinRequired)
             {
-                ValueStringBuilder.Append(ref sb, $"This server doesn't support clients older than {MinRequired}.");
+                sb.Append($"This server doesn't support clients older than {MinRequired}.");
                 shouldKick = strictRequirement;
             }
             else if (MaxRequired != null && version > MaxRequired)
             {
-                ValueStringBuilder.Append(ref sb, $"This server doesn't support clients newer than {MaxRequired}.");
+                sb.Append($"This server doesn't support clients newer than {MaxRequired}.");
                 shouldKick = strictRequirement;
             }
             else if (!AllowRegular || !AllowUOTD)

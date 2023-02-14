@@ -77,11 +77,11 @@ namespace Server.SkillHandlers
                             {
                                 if (i == c.Looters.Count - 1)
                                 {
-                                    ValueStringBuilder.Append(ref sb, $", and {looter.Name}");
+                                    sb.Append($", and {looter.Name}");
                                 }
                                 else if (i > 0)
                                 {
-                                    ValueStringBuilder.Append(ref sb, $", {looter.Name}");
+                                    sb.Append($", {looter.Name}");
                                 }
                                 else
                                 {
