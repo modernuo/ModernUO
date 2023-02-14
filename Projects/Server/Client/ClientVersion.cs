@@ -221,11 +221,11 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
         }
         else if (Patch > 0)
         {
-            ValueStringBuilder.Append(ref sb,$"{Major}.{Minor}.{Revision}{(char)('a' + (Patch - 1))}");
+            ValueStringBuilder.Append(ref sb, $"{Major}.{Minor}.{Revision}{(char)('a' + (Patch - 1))}");
         }
         else
         {
-            ValueStringBuilder.Append(ref sb,$"{Major}.{Minor}.{Revision}");
+            ValueStringBuilder.Append(ref sb, $"{Major}.{Minor}.{Revision}");
         }
 
         if (Type == ClientType.UOTD)
