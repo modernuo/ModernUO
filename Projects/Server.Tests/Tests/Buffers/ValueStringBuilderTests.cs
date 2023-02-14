@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using Server.Buffers;
 using Xunit;
 
@@ -30,5 +32,20 @@ namespace Server.Tests.Buffers
 
             Assert.Equal(value.ToString(), sb.ToString());
         }
+
+        [Theory]
+        [InlineData("Kamron")]
+        [InlineData("")]
+        [InlineData(5)]
+        [InlineData(-30.6)]
+        public void TestAppendInterpolation(object value)
+        {
+            var sb = new ValueStringBuilder(stackalloc char[64]);
+            ValueStringBuilder.Append(ref sb, $"Hi, this is {value}");
+
+            Assert.Equal($"Hi, this is {value}", sb.ToString());
+            sb.Dispose();
+        }
     }
+
 }

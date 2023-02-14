@@ -209,12 +209,13 @@ public ref struct ValueStringBuilder
     }
 
     // Compiler generated
-    public void Append(
-        [InterpolatedStringHandlerArgument("")]
+    public static void Append(
+        scoped ref ValueStringBuilder builder,
+        [InterpolatedStringHandlerArgument("builder")]
         ref AppendInterpolatedStringHandler handler)
     {
         // Reassign since the string builder stored on the interpolated handler is by-value
-        this = handler._stringBuilder;
+        builder = handler._stringBuilder;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -477,7 +478,7 @@ public ref struct ValueStringBuilder
         /// <param name="formattedCount">The number of interpolation expressions in the interpolated string.</param>
         /// <param name="stringBuilder">The associated StringBuilder to which to append.</param>
         /// <remarks>This is intended to be called only by compiler-generated code. Arguments are not validated as they'd otherwise be for members intended to be used directly.</remarks>
-        public AppendInterpolatedStringHandler(int literalLength, int formattedCount, ValueStringBuilder stringBuilder)
+        public AppendInterpolatedStringHandler(int literalLength, int formattedCount, scoped ref ValueStringBuilder stringBuilder)
         {
             _stringBuilder = stringBuilder;
         }

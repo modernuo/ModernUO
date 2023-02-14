@@ -71,17 +71,17 @@ namespace Server.SkillHandlers
 
                         if (c.Looters.Count > 0)
                         {
-                            using var sb = new ValueStringBuilder(stackalloc char[128]);
+                            var sb = new ValueStringBuilder(stackalloc char[128]);
                             int i = 0;
                             foreach (var looter in c.Looters)
                             {
                                 if (i == c.Looters.Count - 1)
                                 {
-                                    sb.Append($", and {looter.Name}");
+                                    ValueStringBuilder.Append(ref sb, $", and {looter.Name}");
                                 }
                                 else if (i > 0)
                                 {
-                                    sb.Append($", {looter.Name}");
+                                    ValueStringBuilder.Append(ref sb, $", {looter.Name}");
                                 }
                                 else
                                 {
@@ -93,6 +93,7 @@ namespace Server.SkillHandlers
 
                             // This body has been disturbed by ~1_PLAYER_NAMES~
                             from.SendLocalizedMessage(1042752, sb.ToString());
+                            sb.Dispose();
                         }
                         else
                         {
