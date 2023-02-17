@@ -187,11 +187,14 @@ namespace Server
                 return null;
             }
 
-            if (IsNumeric(type))
+            if (value.StartsWithOrdinal("0x") && IsNumeric(type))
             {
                 try
                 {
-                    constructed = Convert.ChangeType(Convert.ToUInt64(value), type);
+                    if (ulong.TryParse(value.AsSpan(2), NumberStyles.HexNumber, null, out var num))
+                    {
+                        constructed = Convert.ChangeType(num, type);
+                    }
                     return null;
                 }
                 catch
