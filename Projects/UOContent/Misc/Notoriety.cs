@@ -70,15 +70,17 @@ namespace Server.Misc
                 return true;
             }
 
+            var bcFrom = from as BaseCreature;
+            var bcTarg = target as BaseCreature;
             var pmFrom = from as PlayerMobile;
             var pmTarg = target as PlayerMobile;
 
-            if (pmFrom == null && from is BaseCreature bcFrom && bcFrom.Summoned)
+            if (pmFrom == null && bcFrom?.Summoned == true)
             {
                 pmFrom = bcFrom.SummonMaster as PlayerMobile;
             }
 
-            if (pmTarg == null && target is BaseCreature bcTarg && bcTarg.Summoned)
+            if (pmTarg == null && bcTarg?.Summoned == true)
             {
                 pmTarg = bcTarg.SummonMaster as PlayerMobile;
             }
@@ -131,12 +133,9 @@ namespace Server.Misc
 
             var targetFaction = Faction.Find(target, true);
 
-            if ((!Core.ML || map == Faction.Facet) && targetFaction != null)
+            if ((!Core.ML || map == Faction.Facet) && targetFaction != null && Faction.Find(from, true) != targetFaction)
             {
-                if (Faction.Find(from, true) != targetFaction)
-                {
-                    return false;
-                }
+                return false;
             }
 
             if ((map?.Rules & MapRules.BeneficialRestrictions) == 0)
@@ -149,12 +148,12 @@ namespace Server.Misc
                 return true; // NPCs have no restrictions
             }
 
-            if (target is BaseCreature creature && !creature.Controlled)
+            if (bcTarg?.Controlled == false)
             {
                 return false; // Players cannot heal uncontrolled mobiles
             }
 
-            if (pmFrom?.Young == true || pmTarg?.Young == true)
+            if (pmFrom?.Young == true && pmTarg?.Young != true)
             {
                 return false; // Young players cannot perform beneficial actions towards older players
             }
