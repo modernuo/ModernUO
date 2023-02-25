@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "type": "Server.Items.BasePotion",
+  "properties": [
+    {
+      "name": "PotionEffect",
+      "type": "Server.Items.PotionEffect",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
