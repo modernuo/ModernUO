@@ -1,0 +1,66 @@
+{
+  "version": 4,
+  "type": "Server.Items.Runebook",
+  "properties": [
+    {
+      "name": "Quality",
+      "type": "Server.Items.BookQuality",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Crafter",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Entries",
+      "type": "System.Collections.Generic.List\u003CServer.Items.RunebookEntry\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Items.RunebookEntry",
+        "SerializationMethodSignatureMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "Description",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "CurCharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxCharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "DefaultIndex",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "type": "Server.Items.RunebookEntry",
+  "properties": [
+    {
+      "name": "House",
+      "type": "Server.Multis.BaseHouse",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Location",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "Map",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    },
+    {
+      "name": "Description",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
