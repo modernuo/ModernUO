@@ -70,7 +70,7 @@ namespace Server.Spells.Fifth
                 return;
             }
 
-            if (DisguiseTimers.IsDisguised(Caster))
+            if (DisguisePersistence.IsDisguised(Caster))
             {
                 Caster.SendLocalizedMessage(1061631); // You can't do that while disguised.
                 return;
@@ -86,7 +86,7 @@ namespace Server.Spells.Fifth
             {
                 if (Caster.BeginAction<IncognitoSpell>())
                 {
-                    DisguiseTimers.StopTimer(Caster);
+                    DisguisePersistence.StopTimer(Caster);
 
                     Caster.HueMod = Caster.Race.RandomSkinHue();
                     Caster.NameMod = Caster.Female ? NameList.RandomName("female") : NameList.RandomName("male");
