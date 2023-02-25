@@ -24,15 +24,12 @@ We greatly appreciate the support! Use one of the following platforms below:
 #### Venmo
 [<img alt="Venmo | Sabresite" data-canonical-src="https://user-images.githubusercontent.com/3953314/104967817-2759d880-5999-11eb-92ec-c4193da79570.png" src="https://user-images.githubusercontent.com/3953314/104967817-2759d880-5999-11eb-92ec-c4193da79570.png" width=256px />](https://muo.gg/venmo)
 
-#### Bitcoin (37QmRWTCjVoNWycMpo1t5JnYVDmJTGSJ9W)
-<img alt="Bitcoin" src="https://cdn.discordapp.com/attachments/751318817765982318/917180331147288606/December5-022645PM.png" width=256px />
+#### Chia
+xch1vzk93t538m4xukg955v3ltjtgz6rapev3evnmnxdzf4hjj5y7cuq7tkf6z
+
+#### Bitcoin
+37QmRWTCjVoNWycMpo1t5JnYVDmJTGSJ9W
 
 
-#### Ethereum (0x7A9D76F497d4Ee150Ada0ea0455fF3f6e8F3b6b8)
-<img alt="Ethereum" src="https://cdn.discordapp.com/attachments/751318817765982318/917180724828864572/December5-022757PM.png" width=256px />
-
-#### Decentraland MANA (0xE425CF5aD90d193c4EF1eE6c5aFA8150834ABb1d)
-<img alt="Decrentraland" src="https://cdn.discordapp.com/attachments/751318817765982318/917180004385820682/December5-022431PM.png" width=256px />
-
-#### Solana (AhVtRy9YXMBRf5snTRg6ybvMbGnzSryNx65BJxzg7fqa)
-<img alt="Solana" src="https://cdn.discordapp.com/attachments/751318817765982318/917181165838938162/December5-023004PM.png" width=256px />
+#### Ethereum
+0x7A9D76F497d4Ee150Ada0ea0455fF3f6e8F3b6b8
