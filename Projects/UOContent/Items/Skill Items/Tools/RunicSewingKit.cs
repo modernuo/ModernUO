@@ -1,89 +1,65 @@
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class RunicSewingKit : BaseRunicTool
 {
-    public class RunicSewingKit : BaseRunicTool
+    [Constructible]
+    public RunicSewingKit(CraftResource resource) : base(resource, 0xF9D)
     {
-        [Constructible]
-        public RunicSewingKit(CraftResource resource) : base(resource, 0xF9D)
+        Weight = 2.0;
+        Hue = CraftResources.GetHue(resource);
+    }
+
+    [Constructible]
+    public RunicSewingKit(CraftResource resource, int uses) : base(resource, uses, 0xF9D)
+    {
+        Weight = 2.0;
+        Hue = CraftResources.GetHue(resource);
+    }
+
+    public override CraftSystem CraftSystem => DefTailoring.CraftSystem;
+
+    public override void AddNameProperty(IPropertyList list)
+    {
+        if (CraftResources.IsStandard(Resource))
         {
-            Weight = 2.0;
-            Hue = CraftResources.GetHue(resource);
+            list.Add(1061119, " "); // ~1_LEATHER_TYPE~ runic sewing kit
+            return;
         }
 
-        [Constructible]
-        public RunicSewingKit(CraftResource resource, int uses) : base(resource, uses, 0xF9D)
+        var num = CraftResources.GetLocalizationNumber(Resource);
+
+        if (num > 0)
         {
-            Weight = 2.0;
-            Hue = CraftResources.GetHue(resource);
+            // ~1_LEATHER_TYPE~ runic sewing kit
+            list.AddLocalized(1061119, num);
+        }
+        else
+        {
+            // ~1_LEATHER_TYPE~ runic sewing kit
+            list.Add(1061119, CraftResources.GetName(Resource));
+        }
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        if (CraftResources.IsStandard(Resource))
+        {
+            LabelTo(from, 1061119, " "); // ~1_LEATHER_TYPE~ runic sewing kit
+            return;
         }
 
-        public RunicSewingKit(Serial serial) : base(serial)
+        var num = CraftResources.GetLocalizationNumber(Resource);
+        if (num > 0)
         {
+            LabelTo(from, 1061119, $"#{num}"); // ~1_LEATHER_TYPE~ runic sewing kit
         }
-
-        public override CraftSystem CraftSystem => DefTailoring.CraftSystem;
-
-        public override void AddNameProperty(IPropertyList list)
+        else
         {
-            if (CraftResources.IsStandard(Resource))
-            {
-                list.Add(1061119, " "); // ~1_LEATHER_TYPE~ runic sewing kit
-                return;
-            }
-
-            var num = CraftResources.GetLocalizationNumber(Resource);
-
-            if (num > 0)
-            {
-                // ~1_LEATHER_TYPE~ runic sewing kit
-                list.Add(1061119, $"#{num}");
-            }
-            else
-            {
-                // ~1_LEATHER_TYPE~ runic sewing kit
-                list.Add(1061119, CraftResources.GetName(Resource));
-            }
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            var v = " ";
-
-            if (!CraftResources.IsStandard(Resource))
-            {
-                var num = CraftResources.GetLocalizationNumber(Resource);
-
-                if (num > 0)
-                {
-                    v = $"#{num}";
-                }
-                else
-                {
-                    v = CraftResources.GetName(Resource);
-                }
-            }
-
-            LabelTo(from, 1061119, v); // ~1_LEATHER_TYPE~ runic sewing kit
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (ItemID is 0x13E4 or 0x13E3)
-            {
-                ItemID = 0xF9D;
-            }
+            LabelTo(from, 1061119, CraftResources.GetName(Resource)); // ~1_LEATHER_TYPE~ runic sewing kit
         }
     }
 }
