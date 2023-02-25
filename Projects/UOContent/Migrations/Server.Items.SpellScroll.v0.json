@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.SpellScroll",
+  "properties": [
+    {
+      "name": "SpellID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
