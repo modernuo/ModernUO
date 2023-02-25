@@ -26,7 +26,7 @@ public static class DisguisePersistence
 
     private static void Serialize(IGenericWriter writer)
     {
-        writer.Write(Timers.Count);
+        writer.WriteEncodedInt(Timers.Count);
         foreach (var (m, timer) in Timers)
         {
             writer.Write(m);
