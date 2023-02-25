@@ -28,6 +28,7 @@ jobs:
         owner: ModernUO
         repo: ModernUO
         excludes: prerelease, draft
+        token: ${{ secrets.WORKFLOW_TOKEN }}
     - name: Create fake tag for diffing
       run: |
         git config --global user.name "Fake Tag Action"
