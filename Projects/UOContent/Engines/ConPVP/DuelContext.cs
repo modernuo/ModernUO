@@ -1854,11 +1854,7 @@ namespace Server.Engines.ConPVP
 
             TransformationSpellHelper.RemoveContext(mob, true);
             AnimalForm.RemoveContext(mob, true);
-
-            if (DisguiseTimers.IsDisguised(mob))
-            {
-                DisguiseTimers.StopTimer(mob);
-            }
+            DisguisePersistence.StopTimer(mob);
 
             if (!mob.CanBeginAction<PolymorphSpell>())
             {

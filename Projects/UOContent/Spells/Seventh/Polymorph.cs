@@ -49,7 +49,7 @@ namespace Server.Spells.Seventh
                 return false;
             }
 
-            if (DisguiseTimers.IsDisguised(caster))
+            if (DisguisePersistence.IsDisguised(caster))
             {
                 caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
                 return false;
@@ -122,7 +122,7 @@ namespace Server.Spells.Seventh
                 return;
             }
 
-            if (DisguiseTimers.IsDisguised(caster))
+            if (DisguisePersistence.IsDisguised(caster))
             {
                 caster.SendLocalizedMessage(502167); // You cannot polymorph while disguised.
                 return;

@@ -89,7 +89,7 @@ namespace Server.Spells.Ninjitsu
                 return false;
             }
 
-            if (DisguiseTimers.IsDisguised(Caster))
+            if (DisguisePersistence.IsDisguised(Caster))
             {
                 Caster.SendLocalizedMessage(1061631); // You can't do that while disguised.
                 return false;
