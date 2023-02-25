@@ -1,6 +1,4 @@
 using System;
-using System.Xml;
-using Server;
 using Server.Logging;
 using Server.Regions;
 using Server.Mobiles;

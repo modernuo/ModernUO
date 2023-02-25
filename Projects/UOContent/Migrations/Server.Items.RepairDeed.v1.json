@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "type": "Server.Items.RepairDeed",
+  "properties": [
+    {
+      "name": "Skill",
+      "type": "Server.Items.RepairDeed.RepairSkillType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "SkillLevel",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Crafter",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

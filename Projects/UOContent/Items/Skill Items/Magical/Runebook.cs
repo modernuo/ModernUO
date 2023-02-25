@@ -122,7 +122,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
         base.Deserialize(reader);
 
         _quality = (BookQuality)reader.ReadByte();
-        _crafter = reader.ReadEntity<Mobile>()?.RawName;
+        Timer.DelayCall(crafter => _crafter = crafter?.RawName, reader.ReadEntity<Mobile>());
         _level = (SecureLevel)reader.ReadInt();
 
         var count = reader.ReadInt();

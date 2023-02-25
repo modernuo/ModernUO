@@ -831,7 +831,7 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
     {
         _quality = (BookQuality)reader.ReadByte();
         _engravedText = reader.ReadString();
-        _crafter = reader.ReadEntity<Mobile>()?.RawName;
+        Timer.DelayCall((item, crafter) => item._crafter = crafter?.RawName, this, reader.ReadEntity<Mobile>());
         _slayer = (SlayerName)reader.ReadInt();
         _slayer2 = (SlayerName)reader.ReadInt();
 

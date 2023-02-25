@@ -1,5 +1,3 @@
-using Server.Network;
-
 namespace Server.Ethics
 {
     public abstract class Power

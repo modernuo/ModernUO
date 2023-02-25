@@ -2,7 +2,6 @@ using System;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
 using Server.Multis;
-using Server.Network;
 
 namespace Server.Items
 {

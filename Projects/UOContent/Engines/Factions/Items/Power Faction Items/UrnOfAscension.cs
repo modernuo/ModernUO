@@ -1,7 +1,6 @@
 using Server.Factions;
 using Server.Gumps;
 using Server.Multis;
-using Server.Network;
 
 namespace Server
 {

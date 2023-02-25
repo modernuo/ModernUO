@@ -227,7 +227,7 @@ public partial class TrophyAddon : Item, IAddon
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        _hunter = reader.ReadEntity<Mobile>()?.RawName;
+        Timer.DelayCall((item, crafter) => item._hunter = crafter?.RawName, this, reader.ReadEntity<Mobile>());
         _animalWeight = reader.ReadInt();
         _westId = reader.ReadInt();
         _northId = reader.ReadInt();
@@ -355,7 +355,7 @@ public partial class TrophyDeed : Item
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        _hunter = reader.ReadEntity<Mobile>()?.RawName;
+        Timer.DelayCall((item, crafter) => item._hunter = crafter?.RawName, this, reader.ReadEntity<Mobile>());
         _animalWeight = reader.ReadInt();
         _westId = reader.ReadInt();
         _northId = reader.ReadInt();

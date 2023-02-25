@@ -1,6 +1,5 @@
 using System;
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.Ethics.Hero
 {

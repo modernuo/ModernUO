@@ -1,5 +1,3 @@
-using Server.Network;
-
 namespace Server.Items
 {
     public class RewardCake : Item

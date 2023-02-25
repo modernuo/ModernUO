@@ -1,6 +1,5 @@
 using System;
 using ModernUO.Serialization;
-using Server.Network;
 using Server.Spells;
 
 namespace Server.Items;

@@ -4,7 +4,6 @@ using System.Text;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.Engines.ConPVP

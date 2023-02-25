@@ -1,5 +1,4 @@
 using Server.Factions;
-using Server.Network;
 
 namespace Server
 {

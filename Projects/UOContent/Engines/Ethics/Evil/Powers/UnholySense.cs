@@ -1,6 +1,5 @@
 using System;
 using Server.Buffers;
-using Server.Network;
 
 namespace Server.Ethics.Evil
 {

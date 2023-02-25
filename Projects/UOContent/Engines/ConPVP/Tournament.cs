@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Server.Factions;
 using Server.Items;
-using Server.Network;
 using Server.Regions;
 
 namespace Server.Engines.ConPVP

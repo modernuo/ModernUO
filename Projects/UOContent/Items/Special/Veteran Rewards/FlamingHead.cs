@@ -1,7 +1,6 @@
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
 using Server.Multis;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.Items

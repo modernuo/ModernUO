@@ -1,5 +1,4 @@
 using Server.Engines.CannedEvil;
-using Server.Network;
 using Server.Regions;
 using Server.Targeting;
 

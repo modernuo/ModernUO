@@ -6,7 +6,6 @@ using Server.Factions;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
 using Server.Regions;
 using Server.Spells;
 using Server.Spells.Bushido;
