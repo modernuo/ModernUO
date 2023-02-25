@@ -1,54 +1,36 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class MasonryBook : Item
 {
-    public class MasonryBook : Item
+    [Constructible]
+    public MasonryBook() : base(0xFBE) => Weight = 1.0;
+
+    public override int LabelNumber => 1153527; // Making valuables with Stonecrafting
+
+    public override void OnDoubleClick(Mobile from)
     {
-        [Constructible]
-        public MasonryBook() : base(0xFBE) => Weight = 1.0;
-
-        public MasonryBook(Serial serial) : base(serial)
+        if (!IsChildOf(from.Backpack))
         {
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
         }
-
-        public override string DefaultName => "Making Valuables With Stonecrafting";
-
-        public override void Serialize(IGenericWriter writer)
+        else if (from is not PlayerMobile pm || from.Skills.Carpentry.Base < 100.0)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
+            from.SendLocalizedMessage(1080043); // Only a Grandmaster Carpenter can learn from this book.
         }
-
-        public override void Deserialize(IGenericReader reader)
+        else if (pm.Masonry)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            from.SendLocalizedMessage(1080066); // You have already learned this information.
         }
-
-        public override void OnDoubleClick(Mobile from)
+        else
         {
-            if (!IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-            }
-            else if (from is not PlayerMobile pm || from.Skills.Carpentry.Base < 100.0)
-            {
-                from.SendMessage("Only a Grandmaster Carpenter can learn from this book.");
-            }
-            else if (pm.Masonry)
-            {
-                from.SendMessage("You have already learned this information.");
-            }
-            else
-            {
-                pm.Masonry = true;
-                from.SendMessage(
-                    "You have learned to make items from stone. You will need miners to gather stones for you to make these items."
-                );
-                Delete();
-            }
+            pm.Masonry = true;
+            // You have learned to make items from stone. You will need miners to gather stones for you to make these items.
+            from.SendLocalizedMessage(1080044);
+            Delete();
         }
     }
 }
