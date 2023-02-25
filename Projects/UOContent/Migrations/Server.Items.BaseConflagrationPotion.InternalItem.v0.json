@@ -1,0 +1,35 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseConflagrationPotion.InternalItem",
+  "properties": [
+    {
+      "name": "From",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "End",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MinDamage",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxDamage",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
