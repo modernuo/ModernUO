@@ -443,7 +443,7 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
 
         if ((flags & 0x10) != 0)
         {
-            _crafter = reader.ReadEntity<Mobile>()?.RawName;
+            Timer.DelayCall((item, crafter) => item._crafter = crafter?.RawName, this, reader.ReadEntity<Mobile>());
         }
 
         if ((flags & 0x20) != 0)

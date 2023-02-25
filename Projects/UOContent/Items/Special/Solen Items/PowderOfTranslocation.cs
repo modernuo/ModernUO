@@ -1,4 +1,3 @@
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.Items

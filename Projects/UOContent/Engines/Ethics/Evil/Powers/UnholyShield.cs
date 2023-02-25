@@ -1,5 +1,3 @@
-using Server.Network;
-
 namespace Server.Ethics.Evil
 {
     public sealed class UnholyShield : Power

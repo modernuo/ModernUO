@@ -2,7 +2,6 @@ using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Multis;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.Mobiles

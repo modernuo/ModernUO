@@ -4,7 +4,6 @@ using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Engines.Harvest;
-using Server.Network;
 
 namespace Server.Items
 {

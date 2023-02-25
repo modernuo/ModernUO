@@ -1,6 +1,4 @@
-﻿using Server.Network;
-
-namespace Server.Mobiles;
+﻿namespace Server.Mobiles;
 
 public class ColossalBlow : StunAttack
 {

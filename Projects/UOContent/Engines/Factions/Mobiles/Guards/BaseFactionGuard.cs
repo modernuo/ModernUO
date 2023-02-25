@@ -2,7 +2,6 @@ using System;
 using Server.Factions.AI;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.Factions
 {

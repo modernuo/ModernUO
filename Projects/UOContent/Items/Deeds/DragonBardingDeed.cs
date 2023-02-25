@@ -124,8 +124,7 @@ public partial class DragonBardingDeed : Item, ICraftable
     private void Deserialize(IGenericReader reader, int version)
     {
         _exceptional = reader.ReadBool();
-        var crafter = reader.ReadEntity<Mobile>();
-        Timer.StartTimer(() => _craftedBy = crafter?.RawName);
+        Timer.DelayCall((item, crafter) => item._craftedBy = crafter?.RawName, this, reader.ReadEntity<Mobile>());
 
         if (version < 1)
         {

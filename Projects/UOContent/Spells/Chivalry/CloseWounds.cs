@@ -2,7 +2,6 @@ using System;
 using Server.Engines.ConPVP;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.Spells.Chivalry

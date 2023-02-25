@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Server.Items;
 using Server.Multis.Boats;
-using Server.Network;
 
 namespace Server.Multis
 {

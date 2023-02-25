@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
-using Server.Network;
 
 namespace Server.Items
 {

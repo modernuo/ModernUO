@@ -1,6 +1,5 @@
 using System;
 using Server.Multis;
-using Server.Network;
 using Server.Spells.Sixth;
 using Server.Targeting;
 

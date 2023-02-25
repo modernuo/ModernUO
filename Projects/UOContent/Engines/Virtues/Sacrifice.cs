@@ -2,7 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using Server.Gumps;
 using Server.Mobiles;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server

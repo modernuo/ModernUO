@@ -1,5 +1,3 @@
-using Server.Network;
-
 namespace Server.Engines.ConPVP
 {
     public class TournamentBracketItem : Item
