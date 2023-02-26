@@ -1,22 +1,10 @@
-﻿namespace Server.Items
+﻿namespace Server.Items;
+
+public enum DawnsMusicRarity
 {
-    public enum DawnsMusicRarity
-    {
-        Common,
-        Uncommon,
-        Rare
-    }
-
-    public class DawnsMusicInfo
-    {
-        public DawnsMusicInfo(int name, DawnsMusicRarity rarity)
-        {
-            Name = name;
-            Rarity = rarity;
-        }
-
-        public int Name { get; }
-
-        public DawnsMusicRarity Rarity { get; }
-    }
+    Common,
+    Uncommon,
+    Rare
 }
+
+public record DawnsMusicInfo(int Name, DawnsMusicRarity Rarity);

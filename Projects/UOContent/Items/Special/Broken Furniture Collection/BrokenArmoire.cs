@@ -1,86 +1,36 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[Flippable(0xC12, 0xC13)]
+[SerializationGenerator(0)]
+public partial class BrokenArmoireComponent : AddonComponent
 {
-    [Flippable(0xC12, 0xC13)]
-    public class BrokenArmoireComponent : AddonComponent
+    public BrokenArmoireComponent() : base(0xC12)
     {
-        public BrokenArmoireComponent() : base(0xC12)
-        {
-        }
-
-        public BrokenArmoireComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1076262; // Broken Armoire
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BrokenArmoireAddon : BaseAddon
+    public override int LabelNumber => 1076262; // Broken Armoire
+}
+
+[SerializationGenerator(0)]
+public partial class BrokenArmoireAddon : BaseAddon
+{
+    [Constructible]
+    public BrokenArmoireAddon()
     {
-        [Constructible]
-        public BrokenArmoireAddon()
-        {
-            AddComponent(new BrokenArmoireComponent(), 0, 0, 0);
-        }
-
-        public BrokenArmoireAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new BrokenArmoireDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        AddComponent(new BrokenArmoireComponent(), 0, 0, 0);
     }
 
-    public class BrokenArmoireDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public BrokenArmoireDeed() => LootType = LootType.Blessed;
+    public override BaseAddonDeed Deed => new BrokenArmoireDeed();
+}
 
-        public BrokenArmoireDeed(Serial serial) : base(serial)
-        {
-        }
+[SerializationGenerator(0)]
+public partial class BrokenArmoireDeed : BaseAddonDeed
+{
+    [Constructible]
+    public BrokenArmoireDeed() => LootType = LootType.Blessed;
 
-        public override BaseAddon Addon => new BrokenArmoireAddon();
-        public override int LabelNumber => 1076262; // Broken Armoire
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
+    public override BaseAddon Addon => new BrokenArmoireAddon();
+    public override int LabelNumber => 1076262; // Broken Armoire
 }

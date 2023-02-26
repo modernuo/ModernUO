@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "type": "Server.Items.DawnsMusicBox",
+  "properties": [
+    {
+      "name": "Tracks",
+      "type": "System.Collections.Generic.List\u003CServer.MusicName\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.MusicName",
+        "EnumMigrationRule"
+      ]
+    },
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "ItemID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
