@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "type": "Server.Items.FountainOfLife",
+  "properties": [
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Timer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -1,86 +1,36 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[Flippable(0xC17, 0xC18)]
+[SerializationGenerator(0)]
+public partial class BrokenCoveredChairComponent : AddonComponent
 {
-    [Flippable(0xC17, 0xC18)]
-    public class BrokenCoveredChairComponent : AddonComponent
+    public BrokenCoveredChairComponent() : base(0xC17)
     {
-        public BrokenCoveredChairComponent() : base(0xC17)
-        {
-        }
-
-        public BrokenCoveredChairComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1076257; // Broken Covered Chair
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class BrokenCoveredChairAddon : BaseAddon
+    public override int LabelNumber => 1076257; // Broken Covered Chair
+}
+
+[SerializationGenerator(0)]
+public partial class BrokenCoveredChairAddon : BaseAddon
+{
+    [Constructible]
+    public BrokenCoveredChairAddon()
     {
-        [Constructible]
-        public BrokenCoveredChairAddon()
-        {
-            AddComponent(new BrokenCoveredChairComponent(), 0, 0, 0);
-        }
-
-        public BrokenCoveredChairAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new BrokenCoveredChairDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        AddComponent(new BrokenCoveredChairComponent(), 0, 0, 0);
     }
 
-    public class BrokenCoveredChairDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public BrokenCoveredChairDeed() => LootType = LootType.Blessed;
+    public override BaseAddonDeed Deed => new BrokenCoveredChairDeed();
+}
 
-        public BrokenCoveredChairDeed(Serial serial) : base(serial)
-        {
-        }
+[SerializationGenerator(0)]
+public partial class BrokenCoveredChairDeed : BaseAddonDeed
+{
+    [Constructible]
+    public BrokenCoveredChairDeed() => LootType = LootType.Blessed;
 
-        public override BaseAddon Addon => new BrokenCoveredChairAddon();
-        public override int LabelNumber => 1076257; // Broken Covered Chair
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
+    public override BaseAddon Addon => new BrokenCoveredChairAddon();
+    public override int LabelNumber => 1076257; // Broken Covered Chair
 }

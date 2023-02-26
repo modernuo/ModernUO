@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "type": "Server.Items.DawnsMusicGear",
+  "properties": [
+    {
+      "name": "Music",
+      "type": "Server.MusicName",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

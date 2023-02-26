@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.FountainOfLifeDeed",
+  "properties": [
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

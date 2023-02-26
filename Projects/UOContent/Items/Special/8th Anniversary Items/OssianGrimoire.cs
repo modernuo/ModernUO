@@ -1,41 +1,20 @@
-﻿namespace Server.Items
+﻿using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class OssianGrimoire : NecromancerSpellbook
 {
-    public class OssianGrimoire : NecromancerSpellbook
+    [Constructible]
+    public OssianGrimoire()
     {
-        [Constructible]
-        public OssianGrimoire()
-        {
-            LootType = LootType.Blessed;
+        LootType = LootType.Blessed;
 
-            SkillBonuses.SetValues(0, SkillName.Necromancy, 10.0);
-            Attributes.RegenMana = 1;
-            Attributes.CastSpeed = 1;
-            Attributes.IncreasedKarmaLoss = 5;
-        }
-
-        public OssianGrimoire(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1078148; // Ossian Grimoire
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            if (version == 0)
-            {
-                Attributes.IncreasedKarmaLoss = 5;
-            }
-        }
+        SkillBonuses.SetValues(0, SkillName.Necromancy, 10.0);
+        Attributes.RegenMana = 1;
+        Attributes.CastSpeed = 1;
+        Attributes.IncreasedKarmaLoss = 5;
     }
+
+    public override int LabelNumber => 1078148; // Ossian Grimoire
 }

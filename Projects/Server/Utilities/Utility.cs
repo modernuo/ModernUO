@@ -1036,6 +1036,27 @@ public static class Utility
         return sampleList;
     }
 
+    public static void RandomSample<T>(this T[] source, int count, List<T> dest)
+    {
+        if (count <= 0)
+        {
+            return;
+        }
+
+        var length = source.Length;
+        Span<bool> list = stackalloc bool[length];
+
+        var i = 0;
+        do
+        {
+            var rand = Random(length);
+            if (!(list[rand] && (list[rand] = true)))
+            {
+                dest.Add(source[rand]);
+            }
+        } while (++i < count);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomList<T>(params T[] list) => list.RandomElement();
 
