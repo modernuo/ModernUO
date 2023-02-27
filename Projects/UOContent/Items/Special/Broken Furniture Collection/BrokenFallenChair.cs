@@ -13,7 +13,8 @@ public partial class BrokenFallenChairComponent : AddonComponent
     public override int LabelNumber => 1076264; // Broken Fallen Chair
 }
 
-public class BrokenFallenChairAddon : BaseAddon
+[SerializationGenerator(0)]
+public partial class BrokenFallenChairAddon : BaseAddon
 {
     [Constructible]
     public BrokenFallenChairAddon()
