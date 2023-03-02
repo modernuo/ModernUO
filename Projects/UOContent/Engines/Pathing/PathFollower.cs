@@ -102,14 +102,14 @@ namespace Server
 
             if (!(Enabled && m_Path.Success))
             {
-                d = m_From.GetDirectionTo(goal, run);
+                d = m_From.GetDirectionTo(goal);
                 m_From.SetDirection(d);
                 Move(d);
 
                 return Check(m_From.Location, goal, range);
             }
 
-            d = m_From.GetDirectionTo(m_Next, run);
+            d = m_From.GetDirectionTo(m_Next);
             m_From.SetDirection(d);
             var res = Move(d);
 
@@ -123,16 +123,16 @@ namespace Server
                 m_Path = null;
                 CheckPath();
 
-                if (!m_Path.Success)
+                if (!m_Path!.Success)
                 {
-                    d = m_From.GetDirectionTo(goal, run);
+                    d = m_From.GetDirectionTo(goal);
                     m_From.SetDirection(d);
                     Move(d);
 
                     return Check(m_From.Location, goal, range);
                 }
 
-                d = m_From.GetDirectionTo(m_Next, run);
+                d = m_From.GetDirectionTo(m_Next);
                 m_From.SetDirection(d);
 
                 if (Move(d) == MoveResult.Blocked)
