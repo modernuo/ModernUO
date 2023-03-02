@@ -2414,7 +2414,7 @@ public abstract class BaseAI
                 return true;
             }
         }
-        else if (!DoMove(m_Mobile.GetDirectionTo(m, run), true))
+        else if (!DoMove(m_Mobile.GetDirectionTo(m), true))
         {
             m_Path = new PathFollower(m_Mobile, m) { Mover = DoMoveImpl };
 
