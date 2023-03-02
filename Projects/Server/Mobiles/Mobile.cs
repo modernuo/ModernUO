@@ -8881,9 +8881,13 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         return ret | (run ? Direction.Running : 0);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Direction GetDirectionTo(Point2D p, bool run = false) => GetDirectionTo(p.m_X, p.m_Y, run);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Direction GetDirectionTo(Point3D p, bool run = false) => GetDirectionTo(p.m_X, p.m_Y, run);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Direction GetDirectionTo(IPoint2D p, bool run = false) =>
         p == null ? Direction.North | (run ? Direction.Running : 0) : GetDirectionTo(p.X, p.Y, run);
 

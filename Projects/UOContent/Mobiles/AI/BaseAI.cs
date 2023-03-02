@@ -2041,14 +2041,16 @@ public abstract class BaseAI
 
     public double TransformMoveDelay(double thinkingSpeed)
     {
+        var isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
+
         // Monster is passive
-        if (m_Mobile is { Controlled: false, Summoned: false } && Math.Abs(thinkingSpeed - m_Mobile.PassiveSpeed) < 0.0001)
+        if (!isControlled && Math.Abs(thinkingSpeed - m_Mobile.PassiveSpeed) < 0.0001)
         {
-            thinkingSpeed *= 3;
+            thinkingSpeed *= 3; // Monster passive is 3x slower than thinking
         }
-        else // Movement speed is twice as slow as "thinking"
+        else if (!isControlled || m_Mobile.ControlOrder != OrderType.Follow || m_Mobile.ControlTarget != m_Mobile.ControlMaster)
         {
-            thinkingSpeed *= 2;
+            thinkingSpeed *= 2; // Monster active speed is 2x slower than thinking
         }
 
         if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
@@ -2414,7 +2416,7 @@ public abstract class BaseAI
                 return true;
             }
         }
-        else if (!DoMove(m_Mobile.GetDirectionTo(m, run), true))
+        else if (!DoMove(m_Mobile.GetDirectionTo(m), true))
         {
             m_Path = new PathFollower(m_Mobile, m) { Mover = DoMoveImpl };
 
