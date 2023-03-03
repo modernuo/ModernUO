@@ -1,8 +1,11 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
-public class GreaterCurePotion : BaseCurePotion
+[SerializationGenerator(0, false)]
+public partial class GreaterCurePotion : BaseCurePotion
 {
-    private static readonly CureLevelInfo[] m_OldLevelInfo =
+    private static readonly CureLevelInfo[] _oldLevelInfo =
     {
         new(Poison.Lesser, 1.00),  // 100% chance to cure lesser poison
         new(Poison.Regular, 1.00), // 100% chance to cure regular poison
@@ -11,7 +14,7 @@ public class GreaterCurePotion : BaseCurePotion
         new(Poison.Lethal, 0.25)   //  25% chance to cure lethal poison
     };
 
-    private static readonly CureLevelInfo[] m_AosLevelInfo =
+    private static readonly CureLevelInfo[] _aosLevelInfo =
     {
         new(Poison.Lesser, 1.00),
         new(Poison.Regular, 1.00),
@@ -25,23 +28,5 @@ public class GreaterCurePotion : BaseCurePotion
     {
     }
 
-    public GreaterCurePotion(Serial serial) : base(serial)
-    {
-    }
-
-    public override CureLevelInfo[] LevelInfo => Core.AOS ? m_AosLevelInfo : m_OldLevelInfo;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
+    public override CureLevelInfo[] LevelInfo => Core.AOS ? _aosLevelInfo : _oldLevelInfo;
 }
