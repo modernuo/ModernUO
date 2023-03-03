@@ -86,7 +86,7 @@ public partial class Gump
         unchecked
         {
             // To use the original .NET Framework deterministic hash code (with really bad performance)
-            // Change the next line to use HashUtility.GetNetFrameworkHashCode
+            // change the next line to use HashUtility.GetNetFrameworkHashCode
             return (int)HashUtility.ComputeHash32(type?.FullName);
         }
     }
