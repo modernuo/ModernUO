@@ -81,7 +81,15 @@ public partial class Gump
 
     public bool Closable { get; set; } = true;
 
-    public static int GetTypeID(Type type) => type?.FullName?.GetHashCode(StringComparison.Ordinal) ?? -1;
+    public static int GetTypeID(Type type)
+    {
+        unchecked
+        {
+            // To use the original .NET Framework deterministic hash code (with really bad performance)
+            // change the next line to use HashUtility.GetNetFrameworkHashCode
+            return (int)HashUtility.ComputeHash32(type?.FullName);
+        }
+    }
 
     public void AddPage(int page)
     {
