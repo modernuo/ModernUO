@@ -10,10 +10,6 @@ public abstract partial class BasePoisonPotion : BasePotion
     {
     }
 
-    public BasePoisonPotion(Serial serial) : base(serial)
-    {
-    }
-
     public abstract Poison Poison { get; }
 
     public abstract double MinPoisoningSkill { get; }

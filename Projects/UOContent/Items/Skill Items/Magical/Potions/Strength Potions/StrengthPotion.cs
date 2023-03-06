@@ -11,10 +11,6 @@ public partial class StrengthPotion : BaseStrengthPotion
     {
     }
 
-    public StrengthPotion(Serial serial) : base(serial)
-    {
-    }
-
     public override int StrOffset => 10;
     public override TimeSpan Duration => TimeSpan.FromMinutes(2.0);
 }

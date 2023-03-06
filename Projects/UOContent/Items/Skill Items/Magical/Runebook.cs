@@ -119,8 +119,6 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        base.Deserialize(reader);
-
         _quality = (BookQuality)reader.ReadByte();
         Timer.DelayCall(crafter => _crafter = crafter?.RawName, reader.ReadEntity<Mobile>());
         _level = (SecureLevel)reader.ReadInt();
