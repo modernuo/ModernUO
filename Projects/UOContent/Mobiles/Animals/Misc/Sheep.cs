@@ -43,8 +43,9 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a sheep corpse";
 
-        [CommandProperty(AccessLevel.GameMaster)]
+        [DeltaDateTime]
         [SerializableProperty(0)]
+        [CommandProperty(AccessLevel.GameMaster)]
         public DateTime NextWoolTime
         {
             get => _nextWoolTime;

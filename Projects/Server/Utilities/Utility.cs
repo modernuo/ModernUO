@@ -949,14 +949,18 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, 18);
 
-    // 4d6+8 would be: Utility.Dice( 4, 6, 8 )
-    public static int Dice(uint amount, uint sides, int bonus)
+    public static int Dice(int amount, int sides, int bonus)
     {
+        if (amount <= 0 || sides <= 0)
+        {
+            return 0;
+        }
+
         var total = 0;
 
         for (var i = 0; i < amount; ++i)
         {
-            total += (int)RandomSources.Source.Next(1, sides);
+            total += RandomSources.Source.Next(1, sides);
         }
 
         return total + bonus;
