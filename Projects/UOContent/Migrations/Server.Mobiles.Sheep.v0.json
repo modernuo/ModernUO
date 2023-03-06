@@ -7,7 +7,7 @@
       "type": "System.DateTime",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
-        ""
+        "DeltaTime"
       ]
     }
   ]
