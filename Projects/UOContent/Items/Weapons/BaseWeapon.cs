@@ -2106,7 +2106,7 @@ namespace Server.Items
             }
         }
 
-        public virtual double GetAosDamage(Mobile attacker, int bonus, uint dice, uint sides)
+        public virtual double GetAosDamage(Mobile attacker, int bonus, int dice, int sides)
         {
             var damage = Utility.Dice(dice, sides, bonus) * 100;
 
