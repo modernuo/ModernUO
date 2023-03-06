@@ -2106,7 +2106,7 @@ namespace Server.Items
             }
         }
 
-        public virtual double GetAosDamage(Mobile attacker, int bonus, int dice, int sides)
+        public virtual double GetAosDamage(Mobile attacker, int bonus, uint dice, uint sides)
         {
             var damage = Utility.Dice(dice, sides, bonus) * 100;
 
@@ -3187,119 +3187,6 @@ namespace Server.Items
         }
 
         public override void OnSingleClick(Mobile from)
-        {
-            if (Core.Expansion >= Expansion.UOTD)
-            {
-                // Publish 11 to 16
-                OnSingleClickPreAOS(from);
-            }
-            else
-            {
-                OnSingleClickT2A(from);
-            }
-        }
-
-        private void OnSingleClickT2A(Mobile from)
-        {
-            var lang = from.Language;
-
-            var qualityLevel = Quality;
-            var qualityText = qualityLevel != WeaponQuality.Regular
-                ? Localization.GetText(1018303 + (int)qualityLevel, lang)?.ToLowerInvariant()
-                : null;
-
-            int oreType = m_Resource is >= CraftResource.DullCopper and <= CraftResource.Valorite
-                ? 1053110 - (int)CraftResource.Valorite
-                : 0;
-
-            var resourceText = oreType > 0 ? Localization.GetText(oreType, lang)?.ToLowerInvariant() : null;
-
-            var name = Name;
-            string prefix = null;
-            string suffix = null;
-
-            var isMagicItem = m_DurabilityLevel > WeaponDurabilityLevel.Regular ||
-                              m_AccuracyLevel > WeaponAccuracyLevel.Regular ||
-                              m_DamageLevel > WeaponDamageLevel.Regular;
-
-            if (!isMagicItem)
-            {
-                if (qualityText != null || resourceText != null)
-                {
-                    prefix = $"{qualityText}{(string.IsNullOrEmpty(qualityText) ? "" : " ")}{resourceText}{(
-                        string.IsNullOrEmpty(resourceText) ? "" : " ")}";
-                }
-            }
-            else if (!m_Identified)
-            {
-                prefix = Localization.GetText(1038000, lang)?.ToLowerInvariant();
-            }
-            else if (name == null)
-            {
-                var durabilityText = Localization.GetText(1038000 + (int)m_DurabilityLevel, lang)?.ToLowerInvariant();
-                var accuracyText = Localization.GetText(1038010 + (int)m_AccuracyLevel, lang)?.ToLowerInvariant();
-                suffix = Localization.GetText(1038015 + (int)m_DamageLevel)?.ToLowerInvariant();
-
-                if (durabilityText != null || accuracyText != null || qualityText != null || resourceText != null)
-                {
-                    prefix = $"{durabilityText}{(string.IsNullOrEmpty(durabilityText) ? "" : " ")}{accuracyText}{(
-                        string.IsNullOrEmpty(accuracyText) ? "" : " ")}{qualityText}{(
-                        string.IsNullOrEmpty(qualityText) ? "" : " ")}{resourceText}{(
-                        string.IsNullOrEmpty(resourceText) ? "" : " ")}";
-                }
-            }
-
-            if (prefix != null && suffix != null)
-            {
-                LabelTo(
-                    from,
-                    1151756, // ~1_PREFIX~ ~2_ITEM~ of ~3_SUFFIX~
-                    $"{prefix}\t#{LabelNumber}\t{suffix}"
-                );
-                return;
-            }
-
-            if (prefix != null)
-            {
-                if (name == null)
-                {
-                    LabelTo(
-                        from,
-                        1151757, // ~1_PREFIX~ ~2_ITEM~
-                        $"{prefix}\t#{LabelNumber}"
-                    );
-                }
-                else
-                {
-                    LabelTo(
-                        from,
-                        1151757, // ~1_PREFIX~ ~2_ITEM~
-                        $"{prefix}\t{name}"
-                    );
-                }
-                return;
-            }
-
-            if (suffix != null)
-            {
-                LabelTo(
-                    from,
-                    1151758, // ~1_ITEM~ of ~2_SUFFIX~
-                    $"#{LabelNumber}\t{suffix}"
-                );
-                return;
-            }
-
-            if (name == null)
-            {
-                LabelTo(from, LabelNumber);
-                return;
-            }
-
-            LabelTo(from, name);
-        }
-
-        private void OnSingleClickPreAOS(Mobile from)
         {
             var attrs = new List<EquipInfoAttribute>();
 
