@@ -773,32 +773,17 @@ namespace Server.Items
         }
 
         /// <summary>
-        ///     Returns a <see cref="CraftResourceType" /> value indiciating the type of '<paramref name="resource" />'.
+        ///     Returns a <see cref="CraftResourceType" /> value indicating the type of '<paramref name="resource" />'.
         /// </summary>
-        public static CraftResourceType GetType(CraftResource resource)
-        {
-            if (resource >= CraftResource.Iron && resource <= CraftResource.Valorite)
+        public static CraftResourceType GetType(CraftResource resource) =>
+            resource switch
             {
-                return CraftResourceType.Metal;
-            }
-
-            if (resource >= CraftResource.RegularLeather && resource <= CraftResource.BarbedLeather)
-            {
-                return CraftResourceType.Leather;
-            }
-
-            if (resource >= CraftResource.RedScales && resource <= CraftResource.BlueScales)
-            {
-                return CraftResourceType.Scales;
-            }
-
-            if (resource >= CraftResource.RegularWood && resource <= CraftResource.Frostwood)
-            {
-                return CraftResourceType.Wood;
-            }
-
-            return CraftResourceType.None;
-        }
+                >= CraftResource.Iron and <= CraftResource.Valorite                => CraftResourceType.Metal,
+                >= CraftResource.RegularLeather and <= CraftResource.BarbedLeather => CraftResourceType.Leather,
+                >= CraftResource.RedScales and <= CraftResource.BlueScales         => CraftResourceType.Scales,
+                >= CraftResource.RegularWood and <= CraftResource.Frostwood        => CraftResourceType.Wood,
+                _                                                                  => CraftResourceType.None
+            };
 
         /// <summary>
         ///     Returns the first <see cref="CraftResource" /> in the series of resources for which '<paramref name="resource" />'
@@ -850,6 +835,15 @@ namespace Server.Items
 
             return info?.Hue ?? 0;
         }
+
+        /// <summary>
+        ///     Returns the <see cref="CraftResourceInfo" /> of a random '<paramref name="resource" />' -or- null if an invalid
+        ///     resource was specified.
+        /// </summary>
+        public static CraftResourceInfo GetRandomResource(CraftResource startResource, CraftResource endResource) =>
+            GetInfo(
+                (CraftResource)Utility.RandomMinMax((int)startResource, (int)endResource)
+            );
 
         /// <summary>
         ///     Returns the <see cref="CraftResourceInfo.Name" /> property of '<paramref name="resource" />' -or- an empty string if the
