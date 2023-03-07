@@ -1,116 +1,70 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class BoneCouchComponent : AddonComponent
 {
-    public class BoneCouchComponent : AddonComponent
+    public BoneCouchComponent(int itemID) : base(itemID)
     {
-        public BoneCouchComponent(int itemID) : base(itemID)
-        {
-        }
-
-        public BoneCouchComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1074477; // Bone couch
-
-        public override bool OnMoveOver(Mobile m)
-        {
-            var allow = base.OnMoveOver(m);
-
-            if (allow && m.Alive && m.Player && (m.AccessLevel == AccessLevel.Player || !m.Hidden))
-            {
-                Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x547, 0x54A));
-            }
-
-            return allow;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    [FlippableAddon(Direction.South, Direction.East)]
-    public class BoneCouchAddon : BaseAddon
+    public override int LabelNumber => 1074477; // Bone couch
+
+    public override bool OnMoveOver(Mobile m)
     {
-        [Constructible]
-        public BoneCouchAddon()
-        {
-            Direction = Direction.South;
+        var allow = base.OnMoveOver(m);
 
-            AddComponent(new BoneCouchComponent(0x2A5A), 0, 0, 0);
-            AddComponent(new BoneCouchComponent(0x2A5B), -1, 0, 0);
+        if (allow && m.Alive && m.Player && (m.AccessLevel == AccessLevel.Player || !m.Hidden))
+        {
+            Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x547, 0x54A));
         }
 
-        public BoneCouchAddon(Serial serial) : base(serial)
+        return allow;
+    }
+}
+
+[FlippableAddon(Direction.South, Direction.East)]
+[SerializationGenerator(0)]
+public partial class BoneCouchAddon : BaseAddon
+{
+    [Constructible]
+    public BoneCouchAddon()
+    {
+        Direction = Direction.South;
+
+        AddComponent(new BoneCouchComponent(0x2A5A), 0, 0, 0);
+        AddComponent(new BoneCouchComponent(0x2A5B), -1, 0, 0);
+    }
+
+    public override BaseAddonDeed Deed => new BoneCouchDeed();
+
+    public virtual void Flip(Mobile from, Direction direction)
+    {
+        switch (direction)
         {
-        }
-
-        public override BaseAddonDeed Deed => new BoneCouchDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-
-        public virtual void Flip(Mobile from, Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.East:
+            case Direction.East:
+                {
                     AddComponent(new BoneCouchComponent(0x2A80), 0, 0, 0);
                     AddComponent(new BoneCouchComponent(0x2A7F), 0, 1, 0);
                     break;
-                case Direction.South:
+                }
+            case Direction.South:
+                {
                     AddComponent(new BoneCouchComponent(0x2A5A), 0, 0, 0);
                     AddComponent(new BoneCouchComponent(0x2A5B), -1, 0, 0);
                     break;
-            }
+                }
         }
     }
+}
 
-    public class BoneCouchDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public BoneCouchDeed() => LootType = LootType.Blessed;
+[SerializationGenerator(0)]
+public partial class BoneCouchDeed : BaseAddonDeed
+{
+    [Constructible]
+    public BoneCouchDeed() => LootType = LootType.Blessed;
 
-        public BoneCouchDeed(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddon Addon => new BoneCouchAddon();
-        public override int LabelNumber => 1074477; // Bone couch
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
+    public override BaseAddon Addon => new BoneCouchAddon();
+    public override int LabelNumber => 1074477; // Bone couch
 }
