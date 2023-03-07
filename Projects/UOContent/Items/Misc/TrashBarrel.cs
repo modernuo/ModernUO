@@ -7,7 +7,7 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class TrashBarrel : Container, IChoppable
 {
-    private Timer m_Timer;
+    private Timer _timer;
 
     [Constructible]
     public TrashBarrel() : base(0xE77)
@@ -34,13 +34,13 @@ public partial class TrashBarrel : Container, IChoppable
         }
     }
 
-    [AfterDeserialization]
+    [AfterDeserialization(false)]
     private void AfterDeserialization()
     {
         if (Items.Count > 0)
         {
-            m_Timer = new EmptyTimer(this);
-            m_Timer.Start();
+            _timer = new EmptyTimer(this);
+            _timer.Start();
         }
     }
 
@@ -54,16 +54,16 @@ public partial class TrashBarrel : Container, IChoppable
         {
             SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
 
-            if (m_Timer != null)
+            if (_timer != null)
             {
-                m_Timer.Stop();
+                _timer.Stop();
             }
             else
             {
-                m_Timer = new EmptyTimer(this);
+                _timer = new EmptyTimer(this);
             }
 
-            m_Timer.Start();
+            _timer.Start();
         }
     }
 
@@ -108,8 +108,8 @@ public partial class TrashBarrel : Container, IChoppable
             }
         }
 
-        m_Timer?.Stop();
-        m_Timer = null;
+        _timer?.Stop();
+        _timer = null;
     }
 
     private class EmptyTimer : Timer
