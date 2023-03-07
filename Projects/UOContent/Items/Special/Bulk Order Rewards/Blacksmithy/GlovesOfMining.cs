@@ -1,242 +1,171 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+[Flippable(0x13c6, 0x13ce)]
+public partial class LeatherGlovesOfMining : BaseGlovesOfMining
 {
-    [Flippable(0x13c6, 0x13ce)]
-    public class LeatherGlovesOfMining : BaseGlovesOfMining
+    [Constructible]
+    public LeatherGlovesOfMining(int bonus) : base(bonus, 0x13C6) => Weight = 1;
+
+    public override int BasePhysicalResistance => 2;
+    public override int BaseFireResistance => 4;
+    public override int BaseColdResistance => 3;
+    public override int BasePoisonResistance => 3;
+    public override int BaseEnergyResistance => 3;
+
+    public override int InitMinHits => 30;
+    public override int InitMaxHits => 40;
+
+    public override int AosStrReq => 20;
+    public override int OldStrReq => 10;
+
+    public override int ArmorBase => 13;
+
+    public override ArmorMaterialType MaterialType => ArmorMaterialType.Leather;
+    public override CraftResource DefaultResource => CraftResource.RegularLeather;
+
+    public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
+
+    public override int LabelNumber => 1045122; // leather blacksmith gloves of mining
+}
+
+[SerializationGenerator(0, false)]
+[Flippable(0x13d5, 0x13dd)]
+public partial class StuddedGlovesOfMining : BaseGlovesOfMining
+{
+    [Constructible]
+    public StuddedGlovesOfMining(int bonus) : base(bonus, 0x13D5) => Weight = 2;
+
+    public override int BasePhysicalResistance => 2;
+    public override int BaseFireResistance => 4;
+    public override int BaseColdResistance => 3;
+    public override int BasePoisonResistance => 3;
+    public override int BaseEnergyResistance => 4;
+
+    public override int InitMinHits => 35;
+    public override int InitMaxHits => 45;
+
+    public override int AosStrReq => 25;
+    public override int OldStrReq => 25;
+
+    public override int ArmorBase => 16;
+
+    public override ArmorMaterialType MaterialType => ArmorMaterialType.Studded;
+    public override CraftResource DefaultResource => CraftResource.RegularLeather;
+
+    public override int LabelNumber => 1045123; // studded leather blacksmith gloves of mining
+}
+
+[SerializationGenerator(0, false)]
+[Flippable(0x13eb, 0x13f2)]
+public partial class RingmailGlovesOfMining : BaseGlovesOfMining
+{
+    [Constructible]
+    public RingmailGlovesOfMining(int bonus) : base(bonus, 0x13EB) => Weight = 1;
+
+    public override int BasePhysicalResistance => 3;
+    public override int BaseFireResistance => 3;
+    public override int BaseColdResistance => 1;
+    public override int BasePoisonResistance => 5;
+    public override int BaseEnergyResistance => 3;
+
+    public override int InitMinHits => 40;
+    public override int InitMaxHits => 50;
+
+    public override int AosStrReq => 40;
+    public override int OldStrReq => 20;
+
+    public override int OldDexBonus => -1;
+
+    public override int ArmorBase => 22;
+
+    public override ArmorMaterialType MaterialType => ArmorMaterialType.Ringmail;
+
+    public override int LabelNumber => 1045124; // ringmail blacksmith gloves of mining
+}
+
+[SerializationGenerator(0, false)]
+public abstract partial class BaseGlovesOfMining : BaseArmor
+{
+    private SkillMod _skillMod;
+
+    public BaseGlovesOfMining(int bonus, int itemID) : base(itemID)
     {
-        [Constructible]
-        public LeatherGlovesOfMining(int bonus) : base(bonus, 0x13C6) => Weight = 1;
+        _bonus = bonus;
 
-        public LeatherGlovesOfMining(Serial serial) : base(serial)
+        // TODO: Color weighted by rarity?
+        Hue = CraftResources.GetRandomResource(CraftResource.DullCopper, CraftResource.Valorite)?.Hue ?? 0;
+    }
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Bonus
+    {
+        get => _bonus;
+        set
         {
-        }
+            _bonus = value;
+            InvalidateProperties();
+            this.MarkDirty();
 
-        public override int BasePhysicalResistance => 2;
-        public override int BaseFireResistance => 4;
-        public override int BaseColdResistance => 3;
-        public override int BasePoisonResistance => 3;
-        public override int BaseEnergyResistance => 3;
+            if (_bonus == 0)
+            {
+                _skillMod?.Remove();
 
-        public override int InitMinHits => 30;
-        public override int InitMaxHits => 40;
-
-        public override int AosStrReq => 20;
-        public override int OldStrReq => 10;
-
-        public override int ArmorBase => 13;
-
-        public override ArmorMaterialType MaterialType => ArmorMaterialType.Leather;
-        public override CraftResource DefaultResource => CraftResource.RegularLeather;
-
-        public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
-
-        public override int LabelNumber => 1045122; // leather blacksmith gloves of mining
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
+                _skillMod = null;
+            }
+            else if (_skillMod == null && Parent is Mobile mobile)
+            {
+                _skillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, _bonus);
+                mobile.AddSkillMod(_skillMod);
+            }
+            else if (_skillMod != null)
+            {
+                _skillMod.Value = _bonus;
+            }
         }
     }
 
-    [Flippable(0x13d5, 0x13dd)]
-    public class StuddedGlovesOfMining : BaseGlovesOfMining
+    public override void OnAdded(IEntity parent)
     {
-        [Constructible]
-        public StuddedGlovesOfMining(int bonus) : base(bonus, 0x13D5) => Weight = 2;
+        base.OnAdded(parent);
 
-        public StuddedGlovesOfMining(Serial serial) : base(serial)
+        if (_bonus != 0 && parent is Mobile mobile)
         {
-        }
+            _skillMod?.Remove();
 
-        public override int BasePhysicalResistance => 2;
-        public override int BaseFireResistance => 4;
-        public override int BaseColdResistance => 3;
-        public override int BasePoisonResistance => 3;
-        public override int BaseEnergyResistance => 4;
-
-        public override int InitMinHits => 35;
-        public override int InitMaxHits => 45;
-
-        public override int AosStrReq => 25;
-        public override int OldStrReq => 25;
-
-        public override int ArmorBase => 16;
-
-        public override ArmorMaterialType MaterialType => ArmorMaterialType.Studded;
-        public override CraftResource DefaultResource => CraftResource.RegularLeather;
-
-        public override int LabelNumber => 1045123; // studded leather blacksmith gloves of mining
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
+            _skillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, _bonus);
+            mobile.AddSkillMod(_skillMod);
         }
     }
 
-    [Flippable(0x13eb, 0x13f2)]
-    public class RingmailGlovesOfMining : BaseGlovesOfMining
+    public override void OnRemoved(IEntity parent)
     {
-        [Constructible]
-        public RingmailGlovesOfMining(int bonus) : base(bonus, 0x13EB) => Weight = 1;
+        base.OnRemoved(parent);
 
-        public RingmailGlovesOfMining(Serial serial) : base(serial)
+        _skillMod?.Remove();
+        _skillMod = null;
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (_bonus != 0)
         {
-        }
-
-        public override int BasePhysicalResistance => 3;
-        public override int BaseFireResistance => 3;
-        public override int BaseColdResistance => 1;
-        public override int BasePoisonResistance => 5;
-        public override int BaseEnergyResistance => 3;
-
-        public override int InitMinHits => 40;
-        public override int InitMaxHits => 50;
-
-        public override int AosStrReq => 40;
-        public override int OldStrReq => 20;
-
-        public override int OldDexBonus => -1;
-
-        public override int ArmorBase => 22;
-
-        public override ArmorMaterialType MaterialType => ArmorMaterialType.Ringmail;
-
-        public override int LabelNumber => 1045124; // ringmail blacksmith gloves of mining
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
+            list.Add(1062005, _bonus); // mining bonus +~1_val~
         }
     }
 
-    public abstract class BaseGlovesOfMining : BaseArmor
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        private int m_Bonus;
-        private SkillMod m_SkillMod;
-
-        public BaseGlovesOfMining(int bonus, int itemID) : base(itemID)
+        if (_bonus != 0 && Parent is Mobile mobile)
         {
-            m_Bonus = bonus;
-
-            Hue = CraftResources.GetHue(
-                (CraftResource)Utility.RandomMinMax((int)CraftResource.DullCopper, (int)CraftResource.Valorite)
-            );
-        }
-
-        public BaseGlovesOfMining(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Bonus
-        {
-            get => m_Bonus;
-            set
-            {
-                m_Bonus = value;
-                InvalidateProperties();
-
-                if (m_Bonus == 0)
-                {
-                    m_SkillMod?.Remove();
-
-                    m_SkillMod = null;
-                }
-                else if (m_SkillMod == null && Parent is Mobile mobile)
-                {
-                    m_SkillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, m_Bonus);
-                    mobile.AddSkillMod(m_SkillMod);
-                }
-                else if (m_SkillMod != null)
-                {
-                    m_SkillMod.Value = m_Bonus;
-                }
-            }
-        }
-
-        public override void OnAdded(IEntity parent)
-        {
-            base.OnAdded(parent);
-
-            if (m_Bonus != 0 && parent is Mobile mobile)
-            {
-                m_SkillMod?.Remove();
-
-                m_SkillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, m_Bonus);
-                mobile.AddSkillMod(m_SkillMod);
-            }
-        }
-
-        public override void OnRemoved(IEntity parent)
-        {
-            base.OnRemoved(parent);
-
-            m_SkillMod?.Remove();
-
-            m_SkillMod = null;
-        }
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            if (m_Bonus != 0)
-            {
-                list.Add(1062005, m_Bonus); // mining bonus +~1_val~
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Bonus);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Bonus = reader.ReadInt();
-                        break;
-                    }
-            }
-
-            if (m_Bonus != 0 && Parent is Mobile mobile)
-            {
-                m_SkillMod?.Remove();
-
-                m_SkillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, m_Bonus);
-                mobile.AddSkillMod(m_SkillMod);
-            }
+            _skillMod = new DefaultSkillMod(SkillName.Mining, "MiningGloves", true, _bonus);
+            mobile.AddSkillMod(_skillMod);
         }
     }
 }
