@@ -773,7 +773,7 @@ namespace Server.Items
         }
 
         /// <summary>
-        ///     Returns a <see cref="CraftResourceType" /> value indiciating the type of '<paramref name="resource" />'.
+        ///     Returns a <see cref="CraftResourceType" /> value indicating the type of '<paramref name="resource" />'.
         /// </summary>
         public static CraftResourceType GetType(CraftResource resource) =>
             resource switch
