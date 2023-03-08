@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.SnowGlobeTwo",
+  "properties": [
+    {
+      "name": "Place",
+      "type": "Server.Items.SnowGlobeTypeTwo",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

@@ -111,7 +111,8 @@ public partial class GuillotineAddon : BaseAddon
     }
 }
 
-public class GuillotineDeed : BaseAddonDeed
+[SerializationGenerator(0)]
+public partial class GuillotineDeed : BaseAddonDeed
 {
     [Constructible]
     public GuillotineDeed() => LootType = LootType.Blessed;
