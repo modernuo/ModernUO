@@ -1,66 +1,33 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class RedPlainRugAddon : BaseAddon
 {
-    public class RedPlainRugAddon : BaseAddon
+    [Constructible]
+    public RedPlainRugAddon()
     {
-        [Constructible]
-        public RedPlainRugAddon()
-        {
-            AddComponent(new LocalizedAddonComponent(0xAC9, 1076588), 1, 1, 0);
-            AddComponent(new LocalizedAddonComponent(0xACA, 1076588), -1, -1, 0);
-            AddComponent(new LocalizedAddonComponent(0xACB, 1076588), -1, 1, 0);
-            AddComponent(new LocalizedAddonComponent(0xACC, 1076588), 1, -1, 0);
-            AddComponent(new LocalizedAddonComponent(0xACD, 1076588), -1, 0, 0);
-            AddComponent(new LocalizedAddonComponent(0xACE, 1076588), 0, -1, 0);
-            AddComponent(new LocalizedAddonComponent(0xACF, 1076588), 1, 0, 0);
-            AddComponent(new LocalizedAddonComponent(0xAD0, 1076588), 0, 1, 0);
-            AddComponent(new LocalizedAddonComponent(0xAC6, 1076588), 0, 0, 0);
-        }
-
-        public RedPlainRugAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new RedPlainRugDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        AddComponent(new LocalizedAddonComponent(0xAC9, 1076588), 1, 1, 0);
+        AddComponent(new LocalizedAddonComponent(0xACA, 1076588), -1, -1, 0);
+        AddComponent(new LocalizedAddonComponent(0xACB, 1076588), -1, 1, 0);
+        AddComponent(new LocalizedAddonComponent(0xACC, 1076588), 1, -1, 0);
+        AddComponent(new LocalizedAddonComponent(0xACD, 1076588), -1, 0, 0);
+        AddComponent(new LocalizedAddonComponent(0xACE, 1076588), 0, -1, 0);
+        AddComponent(new LocalizedAddonComponent(0xACF, 1076588), 1, 0, 0);
+        AddComponent(new LocalizedAddonComponent(0xAD0, 1076588), 0, 1, 0);
+        AddComponent(new LocalizedAddonComponent(0xAC6, 1076588), 0, 0, 0);
     }
 
-    public class RedPlainRugDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public RedPlainRugDeed() => LootType = LootType.Blessed;
+    public override BaseAddonDeed Deed => new RedPlainRugDeed();
+}
 
-        public RedPlainRugDeed(Serial serial) : base(serial)
-        {
-        }
+[SerializationGenerator(0)]
+public partial class RedPlainRugDeed : BaseAddonDeed
+{
+    [Constructible]
+    public RedPlainRugDeed() => LootType = LootType.Blessed;
 
-        public override BaseAddon Addon => new RedPlainRugAddon();
-        public override int LabelNumber => 1076588; // Red plain rug
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
+    public override BaseAddon Addon => new RedPlainRugAddon();
+    public override int LabelNumber => 1076588; // Red plain rug
 }
