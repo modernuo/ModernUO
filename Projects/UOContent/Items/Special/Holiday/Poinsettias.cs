@@ -1,58 +1,25 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class RedPoinsettia : Item
 {
-    public class RedPoinsettia : Item
+    [Constructible]
+    public RedPoinsettia() : base(0x2330)
     {
-        [Constructible]
-        public RedPoinsettia() : base(0x2330)
-        {
-            Weight = 1.0;
-            LootType = LootType.Blessed;
-        }
-
-        public RedPoinsettia(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        LootType = LootType.Blessed;
     }
+}
 
-    public class WhitePoinsettia : Item
+[SerializationGenerator(0, false)]
+public partial class WhitePoinsettia : Item
+{
+    [Constructible]
+    public WhitePoinsettia() : base(0x2331)
     {
-        [Constructible]
-        public WhitePoinsettia() : base(0x2331)
-        {
-            Weight = 1.0;
-            LootType = LootType.Blessed;
-        }
-
-        public WhitePoinsettia(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        LootType = LootType.Blessed;
     }
 }
