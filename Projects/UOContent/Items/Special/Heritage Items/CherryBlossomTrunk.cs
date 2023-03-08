@@ -1,58 +1,25 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class CherryBlossomTrunkAddon : BaseAddon
 {
-    public class CherryBlossomTrunkAddon : BaseAddon
+    [Constructible]
+    public CherryBlossomTrunkAddon()
     {
-        [Constructible]
-        public CherryBlossomTrunkAddon()
-        {
-            AddComponent(new LocalizedAddonComponent(0x26EE, 1076784), 0, 0, 0);
-        }
-
-        public CherryBlossomTrunkAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new CherryBlossomTrunkDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        AddComponent(new LocalizedAddonComponent(0x26EE, 1076784), 0, 0, 0);
     }
 
-    public class CherryBlossomTrunkDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public CherryBlossomTrunkDeed() => LootType = LootType.Blessed;
+    public override BaseAddonDeed Deed => new CherryBlossomTrunkDeed();
+}
 
-        public CherryBlossomTrunkDeed(Serial serial) : base(serial)
-        {
-        }
+[SerializationGenerator(0)]
+public partial class CherryBlossomTrunkDeed : BaseAddonDeed
+{
+    [Constructible]
+    public CherryBlossomTrunkDeed() => LootType = LootType.Blessed;
 
-        public override BaseAddon Addon => new CherryBlossomTrunkAddon();
-        public override int LabelNumber => 1076784; // Cherry Blossom Trunk
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
+    public override BaseAddon Addon => new CherryBlossomTrunkAddon();
+    public override int LabelNumber => 1076784; // Cherry Blossom Trunk
 }

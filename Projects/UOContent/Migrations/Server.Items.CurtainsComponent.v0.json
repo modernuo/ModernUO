@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.CurtainsComponent",
+  "properties": [
+    {
+      "name": "ClosedId",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
