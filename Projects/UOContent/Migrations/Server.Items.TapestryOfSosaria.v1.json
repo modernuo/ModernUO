@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.TapestryOfSosaria",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
