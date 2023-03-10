@@ -164,7 +164,7 @@ public static class TcpServer
 
                     var ticks = Core.TickCount;
 
-                    if (_nextMaximumSocketsReachedMessage <= ticks)
+                    if (ticks - _nextMaximumSocketsReachedMessage > 0)
                     {
                         if (socket.RemoteEndPoint is IPEndPoint ipep)
                         {
