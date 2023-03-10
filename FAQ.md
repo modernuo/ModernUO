@@ -22,3 +22,9 @@ Scripts are now compiled separately (UOContent project) and moved to the `Distri
 
 ## Why can't I run ModernUO on a 32-bit operating system?
 ModernUO is optimized for modern hardware. We cannot support 32-bit systems, sorry.
+
+## I get an InvalidTimeZoneException or TimeZoneNotFoundException error, how can I fix it?
+1. Make sure you are on a version of Windows that is supported by ModernUO.
+2. Update Windows completely, usually the latest cumulative update will be enough.
+3. Use this registry: [TimeZones-Windows-11-22H2.zip](https://github.com/modernuo/ModernUO/files/10939937/TimeZones-Windows-11-22H2.zip)
+
