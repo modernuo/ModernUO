@@ -240,8 +240,7 @@ namespace Server.Engines.Help
                     m.SendMessage("A new page has been placed in the queue.");
                 }
 
-                if (m?.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify &&
-                    Core.TickCount - m.LastMoveTime < 600000)
+                if (m?.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify && Core.TickCount - m.LastMoveTime < 600000)
                 {
                     isStaffOnline = true;
                 }

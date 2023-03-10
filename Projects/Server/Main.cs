@@ -120,6 +120,8 @@ public static class Core
 
     public static Thread Thread { get; private set; }
 
+    private static long _firstTick;
+
     [ThreadStatic]
     private static long _tickCount;
 
@@ -163,6 +165,8 @@ public static class Core
             return now == DateTime.MinValue ? DateTime.UtcNow : now;
         }
     }
+
+    public static long Uptime => Thread.CurrentThread != Thread ? 0 : TickCount - _firstTick;
 
     private static long _cycleIndex = 1;
     private static float[] _cyclesPerSecond = new float[128];
@@ -515,6 +519,7 @@ public static class Core
 
         TcpServer.Start();
         EventSink.InvokeServerStarted();
+        _firstTick = TickCount;
         RunEventLoop();
     }
 

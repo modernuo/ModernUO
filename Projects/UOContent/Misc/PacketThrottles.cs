@@ -141,7 +141,7 @@ namespace Server.Network
                 return true;
             }
 
-            if (Core.TickCount < ns.GetPacketTime(packetID) + Delays[packetID])
+            if (Core.TickCount - ns.GetPacketTime(packetID) + Delays[packetID] > 0)
             {
                 drop = true;
                 return false;
