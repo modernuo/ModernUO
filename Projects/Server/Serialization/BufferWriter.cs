@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
@@ -123,20 +124,15 @@ public class BufferWriter : IGenericWriter
 
     public void Write(ReadOnlySpan<byte> bytes)
     {
-        var remaining = bytes.Length;
-        var idx = 0;
+        var length = bytes.Length;
 
-        while (remaining > 0)
+        while (_buffer.Length - _index < length)
         {
-            FlushIfNeeded(remaining);
-
-            var count = Math.Min((int)(_buffer.Length - Index), remaining);
-            bytes.Slice(idx, count).CopyTo(_buffer.AsSpan((int)Index, count));
-
-            idx += count;
-            Index += count;
-            remaining -= count;
+            Flush();
         }
+
+        bytes.CopyTo(_buffer.AsSpan((int)_index));
+        Index += length;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -200,14 +196,8 @@ public class BufferWriter : IGenericWriter
     {
         FlushIfNeeded(8);
 
-        _buffer[Index++] = (byte)value;
-        _buffer[Index++] = (byte)(value >> 8);
-        _buffer[Index++] = (byte)(value >> 16);
-        _buffer[Index++] = (byte)(value >> 24);
-        _buffer[Index++] = (byte)(value >> 32);
-        _buffer[Index++] = (byte)(value >> 40);
-        _buffer[Index++] = (byte)(value >> 48);
-        _buffer[Index++] = (byte)(value >> 56);
+        BinaryPrimitives.WriteInt64LittleEndian(_buffer.AsSpan((int)_index), value);
+        Index += 8;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -215,14 +205,8 @@ public class BufferWriter : IGenericWriter
     {
         FlushIfNeeded(8);
 
-        _buffer[Index++] = (byte)value;
-        _buffer[Index++] = (byte)(value >> 8);
-        _buffer[Index++] = (byte)(value >> 16);
-        _buffer[Index++] = (byte)(value >> 24);
-        _buffer[Index++] = (byte)(value >> 32);
-        _buffer[Index++] = (byte)(value >> 40);
-        _buffer[Index++] = (byte)(value >> 48);
-        _buffer[Index++] = (byte)(value >> 56);
+        BinaryPrimitives.WriteUInt64LittleEndian(_buffer.AsSpan((int)_index), value);
+        Index += 8;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -230,10 +214,8 @@ public class BufferWriter : IGenericWriter
     {
         FlushIfNeeded(4);
 
-        _buffer[Index++] = (byte)value;
-        _buffer[Index++] = (byte)(value >> 8);
-        _buffer[Index++] = (byte)(value >> 16);
-        _buffer[Index++] = (byte)(value >> 24);
+        BinaryPrimitives.WriteInt32LittleEndian(_buffer.AsSpan((int)_index), value);
+        Index += 4;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -241,10 +223,8 @@ public class BufferWriter : IGenericWriter
     {
         FlushIfNeeded(4);
 
-        _buffer[Index++] = (byte)value;
-        _buffer[Index++] = (byte)(value >> 8);
-        _buffer[Index++] = (byte)(value >> 16);
-        _buffer[Index++] = (byte)(value >> 24);
+        BinaryPrimitives.WriteUInt32LittleEndian(_buffer.AsSpan((int)_index), value);
+        Index += 4;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -252,8 +232,8 @@ public class BufferWriter : IGenericWriter
     {
         FlushIfNeeded(2);
 
-        _buffer[Index++] = (byte)value;
-        _buffer[Index++] = (byte)(value >> 8);
+        BinaryPrimitives.WriteInt16LittleEndian(_buffer.AsSpan((int)_index), value);
+        Index += 2;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -261,20 +241,16 @@ public class BufferWriter : IGenericWriter
     {
         FlushIfNeeded(2);
 
-        _buffer[Index++] = (byte)value;
-        _buffer[Index++] = (byte)(value >> 8);
+        BinaryPrimitives.WriteUInt16LittleEndian(_buffer.AsSpan((int)_index), value);
+        Index += 2;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void Write(double value)
+    public void Write(double value)
     {
         FlushIfNeeded(8);
 
-        fixed (byte* pBuffer = _buffer)
-        {
-            *(double*)(pBuffer + Index) = value;
-        }
-
+        BinaryPrimitives.WriteDoubleLittleEndian(_buffer.AsSpan((int)_index), value);
         Index += 8;
     }
 
@@ -283,12 +259,8 @@ public class BufferWriter : IGenericWriter
     {
         FlushIfNeeded(4);
 
-        fixed (byte* pBuffer = _buffer)
-        {
-            *(float*)(pBuffer + Index) = value;
-        }
-
-        Index += 4;
+        BinaryPrimitives.WriteSingleLittleEndian(_buffer.AsSpan((int)_index), value);
+        Index += 8;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -333,30 +305,17 @@ public class BufferWriter : IGenericWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void InternalWriteString(string value)
     {
-        var remaining = _encoding.GetByteCount(value);
+        var length = _encoding.GetByteCount(value);
 
-        ((IGenericWriter)this).WriteEncodedInt(remaining);
+        ((IGenericWriter)this).WriteEncodedInt(length);
 
-        if (remaining == 0)
+        while (_buffer.Length - _index < length)
         {
-            return;
+            Flush();
         }
 
-        // It is much faster to encode to stack buffer, then copy to the real buffer
-        Span<byte> span = stackalloc byte[Math.Min(BufferSize, 256)];
-        var maxChars = span.Length / _encoding.GetMaxByteCount(1);
-        var charsLeft = value.Length;
-        var current = 0;
-
-        while (charsLeft > 0)
-        {
-            var charCount = Math.Min(charsLeft, maxChars);
-            var bytesWritten = _encoding.GetBytes(value.AsSpan(current, charCount), span);
-            remaining -= bytesWritten;
-            charsLeft -= charCount;
-            current += charCount;
-
-            Write(span[..bytesWritten]);
-        }
+        // We use bytes written in case it is smaller than length due to 3rd party overrides.
+        // We don't loop since that may not get us the result we want in this edge case.
+        Index += _encoding.GetBytes(value, _buffer.AsSpan((int)_index));
     }
 }
