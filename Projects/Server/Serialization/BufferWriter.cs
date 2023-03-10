@@ -314,8 +314,7 @@ public class BufferWriter : IGenericWriter
             Flush();
         }
 
-        // We use bytes written in case it is smaller than length due to 3rd party overrides.
-        // We don't loop since that may not get us the result we want in this edge case.
-        Index += _encoding.GetBytes(value, _buffer.AsSpan((int)_index));
+        // We don't use spans here since that incurs extra allocations for safety.
+        Index += _encoding.GetBytes(value, 0, value.Length, _buffer, (int)_index);
     }
 }
