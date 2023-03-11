@@ -1,0 +1,73 @@
+{
+  "version": 4,
+  "type": "Server.Items.HouseRaffleStone",
+  "properties": [
+    {
+      "name": "CurrentState",
+      "type": "Server.Items.HouseRaffleState",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "ExpireAction",
+      "type": "Server.Items.HouseRaffleExpireAction",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Deed",
+      "type": "Server.Items.HouseRaffleDeed",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "PlotBounds",
+      "type": "Server.Rectangle2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Rect2D"
+      ]
+    },
+    {
+      "name": "PlotFacet",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    },
+    {
+      "name": "Winner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "TicketPrice",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Started",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Duration",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "Entries",
+      "type": "System.Collections.Generic.List\u003CServer.Items.RaffleEntry\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Items.RaffleEntry",
+        "RawSerializableMigrationRule",
+        ""
+      ]
+    }
+  ]
+}

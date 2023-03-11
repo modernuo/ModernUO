@@ -1,0 +1,32 @@
+{
+  "version": 0,
+  "type": "Server.Items.HouseRaffleDeed",
+  "properties": [
+    {
+      "name": "Stone",
+      "type": "Server.Items.HouseRaffleStone",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "PlotLocation",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "PlotFacet",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    },
+    {
+      "name": "AwardedTo",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

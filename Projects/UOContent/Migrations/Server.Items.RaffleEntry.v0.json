@@ -1,0 +1,24 @@
+{
+  "version": 0,
+  "type": "Server.Items.RaffleEntry",
+  "properties": [
+    {
+      "name": "From",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Address",
+      "type": "System.Net.IPAddress",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "Date",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
