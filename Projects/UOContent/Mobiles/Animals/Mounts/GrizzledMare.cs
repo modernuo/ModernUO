@@ -11,4 +11,6 @@ public partial class GrizzledMare : HellSteed
     public GrizzledMare()
     {
     }
+
+    public override bool DeleteOnRelease => true;
 }
