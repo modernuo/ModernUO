@@ -1,0 +1,31 @@
+{
+  "version": 0,
+  "type": "Server.Items.PlagueBeastOrgan",
+  "properties": [
+    {
+      "name": "Components",
+      "type": "System.Collections.Generic.List\u003CServer.Items.PlagueBeastComponent\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Items.PlagueBeastComponent",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "BrainHue",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Opened",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

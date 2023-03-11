@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.PlagueBeastComponent",
+  "properties": [
+    {
+      "name": "Organ",
+      "type": "Server.Items.PlagueBeastOrgan",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

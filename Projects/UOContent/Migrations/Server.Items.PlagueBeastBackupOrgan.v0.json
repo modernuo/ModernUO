@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.PlagueBeastBackupOrgan",
+  "properties": [
+    {
+      "name": "Gland",
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

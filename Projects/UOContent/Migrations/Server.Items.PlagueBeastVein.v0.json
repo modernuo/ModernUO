@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.PlagueBeastVein",
+  "properties": [
+    {
+      "name": "Cut",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
