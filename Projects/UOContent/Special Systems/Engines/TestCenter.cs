@@ -223,7 +223,7 @@ namespace Server.Misc
 
             // The new AOS bankboxes don't have powerscrolls, they are automatically 'applied':
 
-            for (var i = 0; i < PowerScroll.Skills.Count; ++i)
+            for (var i = 0; i < PowerScroll.Skills.Length; ++i)
             {
                 m.Skills[PowerScroll.Skills[i]].Cap = 120.0;
             }
@@ -658,7 +658,7 @@ namespace Server.Misc
         {
             var bag = new Bag();
 
-            for (var i = 0; i < PowerScroll.Skills.Count; ++i)
+            for (var i = 0; i < PowerScroll.Skills.Length; ++i)
             {
                 bag.DropItem(new PowerScroll(PowerScroll.Skills[i], 120.0));
             }

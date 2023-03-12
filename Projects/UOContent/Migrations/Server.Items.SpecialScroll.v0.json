@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Items.SpecialScroll",
+  "properties": [
+    {
+      "name": "Skill",
+      "type": "Server.SkillName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Value",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
