@@ -295,7 +295,7 @@ namespace Server.Accounting
 
         public Serial Serial { get; set; }
 
-        [AfterDeserialization]
+        [AfterDeserialization(false)]
         private void AfterDeserialization()
         {
             if (_comments?.Count == 0)

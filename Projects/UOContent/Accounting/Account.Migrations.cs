@@ -97,8 +97,6 @@ namespace Server.Accounting
             {
                 _email = reader.ReadString();
             }
-
-            Timer.StartTimer(AfterDeserialization);
         }
     }
 }

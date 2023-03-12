@@ -128,8 +128,6 @@ namespace Server.Engines.BulkOrders
             AmountMax = reader.ReadInt();
             RequireExceptional = reader.ReadBool();
             Material = (BulkMaterialType)reader.ReadInt();
-
-            Timer.StartTimer(AfterDeserialization);
         }
     }
 }
