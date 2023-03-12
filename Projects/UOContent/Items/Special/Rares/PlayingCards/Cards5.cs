@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DecoCards5 : Item
 {
-    public class DecoCards5 : Item
+    [Constructible]
+    public DecoCards5() : base(0xE18)
     {
-        [Constructible]
-        public DecoCards5() : base(0xE18)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public DecoCards5(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 }
