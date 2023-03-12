@@ -1,28 +1,12 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class MinotaurHedge : Item
 {
-    public class MinotaurHedge : Item
-    {
-        [Constructible]
-        public MinotaurHedge() : base(Utility.Random(3215, 4)) => Weight = 1.0;
+    [Constructible]
+    public MinotaurHedge() : base(Utility.Random(3215, 4)) => Weight = 1.0;
 
-        public MinotaurHedge(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "minotaur hedge";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
+    public override string DefaultName => "minotaur hedge";
 }
