@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseWaterContainer",
+  "properties": [
+    {
+      "name": "Quantity",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

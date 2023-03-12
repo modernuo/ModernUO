@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DecoHay2 : Item
 {
-    public class DecoHay2 : Item
+    [Constructible]
+    public DecoHay2() : base(0xF34)
     {
-        [Constructible]
-        public DecoHay2() : base(0xF34)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public DecoHay2(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 }

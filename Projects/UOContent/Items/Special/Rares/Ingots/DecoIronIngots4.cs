@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DecoIronIngots4 : Item
 {
-    public class DecoIronIngots4 : Item
+    [Constructible]
+    public DecoIronIngots4() : base(0x1BF1)
     {
-        [Constructible]
-        public DecoIronIngots4() : base(0x1BF1)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public DecoIronIngots4(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 }

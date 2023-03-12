@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DecoGinsengRoot : Item
 {
-    public class DecoGinsengRoot : Item
+    [Constructible]
+    public DecoGinsengRoot() : base(0x18EB)
     {
-        [Constructible]
-        public DecoGinsengRoot() : base(0x18EB)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public DecoGinsengRoot(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 }

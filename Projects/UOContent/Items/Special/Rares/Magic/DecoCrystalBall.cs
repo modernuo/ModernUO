@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DecoCrystalBall : Item
 {
-    public class DecoCrystalBall : Item
+    [Constructible]
+    public DecoCrystalBall() : base(0xE2E)
     {
-        [Constructible]
-        public DecoCrystalBall() : base(0xE2E)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public DecoCrystalBall(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 }

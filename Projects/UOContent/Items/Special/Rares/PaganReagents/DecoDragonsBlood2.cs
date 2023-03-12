@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DecoDragonsBlood2 : Item
 {
-    public class DecoDragonsBlood2 : Item
+    [Constructible]
+    public DecoDragonsBlood2() : base(0xF82)
     {
-        [Constructible]
-        public DecoDragonsBlood2() : base(0xF82)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public DecoDragonsBlood2(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 }
