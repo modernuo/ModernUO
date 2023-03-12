@@ -127,10 +127,8 @@ namespace Server.Items
 
             if (!IsEmpty)
             {
-                list.Add(
-                    1070721, // Skill stored: ~1_skillname~ ~2_skillamount~
-                    $"{AosSkillBonuses.GetLabel(Skill):#}\t{SkillValue:F1}"
-                );
+                // Skill stored: ~1_skillname~ ~2_skillamount~
+                list.Add(1070721, $"{AosSkillBonuses.GetLabel(Skill):#}\t{SkillValue:F1}");
             }
 
             if (LastUserName != null)
