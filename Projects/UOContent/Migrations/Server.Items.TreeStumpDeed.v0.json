@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.TreeStumpDeed",
+  "properties": [
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Logs",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
