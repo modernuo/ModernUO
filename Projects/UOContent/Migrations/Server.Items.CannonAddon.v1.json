@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "type": "Server.Items.CannonAddon",
+  "properties": [
+    {
+      "name": "CannonDirection",
+      "type": "Server.Engines.Quests.Haven.CannonDirection",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -3,55 +3,37 @@
  * Adding it with no params or false will create an empty box.
  */
 
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class RedVelvetGiftBox : BaseContainer
 {
-    public class RedVelvetGiftBox : BaseContainer
+    [Constructible]
+    public RedVelvetGiftBox(bool fill = false) : base(0xE7A)
     {
-        [Constructible]
-        public RedVelvetGiftBox(bool fill = false)
-            : base(0xE7A)
-        {
-            Hue = 0x20;
+        Hue = 0x20;
 
-            if (fill)
+        if (fill)
+        {
+            for (var i = 0; i < 5; i++)
             {
-                for (var i = 0; i < 5; i++)
-                {
-                    AddToBox(new ValentinesCardSouth(), new Point3D(60 + i * 10, 47, 0));
-                    AddToBox(new ValentinesCardEast(), new Point3D(20 + i * 10, 72, 0));
-                }
-
-                AddToBox(new Bacon(), new Point3D(90, 85, 0));
-                AddToBox(new RoseInAVase(), new Point3D(130, 55, 0));
+                AddToBox(new ValentinesCardSouth(), new Point3D(60 + i * 10, 47, 0));
+                AddToBox(new ValentinesCardEast(), new Point3D(20 + i * 10, 72, 0));
             }
+
+            AddToBox(new Bacon(), new Point3D(90, 85, 0));
+            AddToBox(new RoseInAVase(), new Point3D(130, 55, 0));
         }
+    }
 
-        public RedVelvetGiftBox(Serial serial)
-            : base(serial)
-        {
-        }
+    public override int DefaultGumpID => 0x3f;
+    public override int LabelNumber => 1077596; // A Red Velvet Box
 
-        public override int DefaultGumpID => 0x3f;
-        public override int LabelNumber => 1077596; // A Red Velvet Box
-
-        public virtual void AddToBox(Item item, Point3D loc)
-        {
-            DropItem(item);
-            item.Location = loc;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public void AddToBox(Item item, Point3D loc)
+    {
+        DropItem(item);
+        item.Location = loc;
     }
 }

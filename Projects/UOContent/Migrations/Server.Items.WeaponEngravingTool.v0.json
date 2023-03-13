@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.WeaponEngravingTool",
+  "properties": [
+    {
+      "name": "UsesRemaining",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

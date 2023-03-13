@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.WallBanner",
+  "properties": [
+    {
+      "name": "East",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

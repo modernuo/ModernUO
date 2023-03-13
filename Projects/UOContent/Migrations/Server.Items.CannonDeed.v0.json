@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.CannonDeed",
+  "properties": [
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
