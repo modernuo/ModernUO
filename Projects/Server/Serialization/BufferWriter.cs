@@ -255,12 +255,12 @@ public class BufferWriter : IGenericWriter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void Write(float value)
+    public void Write(float value)
     {
         FlushIfNeeded(4);
 
         BinaryPrimitives.WriteSingleLittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 8;
+        Index += 4;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
