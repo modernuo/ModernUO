@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Collections;
 using Server.Engines.Craft;
+using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Mobiles;
@@ -1723,7 +1724,7 @@ namespace Server.Items
 
             if (attacker is PlayerMobile pmAttacker && !(Core.ML && defender is PlayerMobile))
             {
-                if (pmAttacker.HonorActive && pmAttacker.InRange(defender, 1))
+                if (pmAttacker.GetVirtues()?.HonorActive == true && pmAttacker.InRange(defender, 1))
                 {
                     percentageBonus += 25;
                 }

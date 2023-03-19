@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.Virtues;
 using Server.Items;
 using Server.Spells;
 
@@ -283,32 +284,31 @@ namespace Server.Mobiles
                 m.SendLocalizedMessage(1049524); // You have received a scroll of power!
                 m.AddToBackpack(new StatCapScroll(225 + level));
 
-                if (m is PlayerMobile pm)
+                if (m is not PlayerMobile pm)
                 {
-                    for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
-                    {
-                        var prot = pm.JusticeProtectors[j];
+                    continue;
+                }
 
-                        if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal ||
-                            !JusticeVirtue.CheckMapRegion(pm, prot))
-                        {
-                            continue;
-                        }
+                var prot = JusticeVirtue.GetProtector(pm);
 
-                        var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
-                        {
-                            VirtueLevel.Seeker   => 60,
-                            VirtueLevel.Follower => 80,
-                            VirtueLevel.Knight   => 100,
-                            _                    => 0
-                        };
+                if (prot == null || prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal ||
+                    !JusticeVirtue.CheckMapRegion(pm, prot))
+                {
+                    continue;
+                }
 
-                        if (chance > Utility.Random(100))
-                        {
-                            prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
-                            prot.AddToBackpack(new StatCapScroll(225 + level));
-                        }
-                    }
+                var chance = VirtueSystem.GetLevel(prot, VirtueName.Justice) switch
+                {
+                    VirtueLevel.Seeker   => 60,
+                    VirtueLevel.Follower => 80,
+                    VirtueLevel.Knight   => 100,
+                    _                    => 0
+                };
+
+                if (chance > 0 && chance > Utility.Random(100))
+                {
+                    prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
+                    prot.AddToBackpack(new StatCapScroll(225 + level));
                 }
             }
         }

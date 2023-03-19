@@ -8,6 +8,7 @@ using Server.Engines.MLQuests;
 using Server.Engines.Quests.Doom;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Spawners;
+using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Items;
@@ -1309,7 +1310,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (m is PlayerMobile mobile && mobile.HonorActive)
+            if ((m as PlayerMobile)?.GetVirtues()?.HonorActive == true)
             {
                 return false;
             }
