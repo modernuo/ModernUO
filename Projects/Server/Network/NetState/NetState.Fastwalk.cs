@@ -39,16 +39,20 @@ public partial class NetState
 
         var now = Core.TickCount;
 
+        var lastIndex = -1;
+
         // Expire old steps
         while (_expiredIndex != _stepIndex)
         {
             var step = _steps[_expiredIndex];
 
             // Is the step ahead of us, or the next step rolled over and we didn't yet
-            if (step - now > 0)
+            if (step - now > 0 || lastIndex > -1 && _steps[lastIndex] > step)
             {
                 break;
             }
+
+            lastIndex = _expiredIndex++;
 
             if (_expiredIndex == stepsLength)
             {
