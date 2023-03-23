@@ -49,7 +49,7 @@ namespace Server.Engines.Harvest
             0x3F82, 0x3F8F,
             0x3F91, 0x3FCF,
 
-            // 0x453B, 0x454F, // This was in RunUO, but land tiles don't go higher than 0x3FFF
+            0x453B, 0x454F,
         };
 
         private static readonly int[] m_SandTiles =
