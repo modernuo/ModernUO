@@ -187,24 +187,26 @@ namespace Server.Engines.Harvest
         {
             if (RangedTiles)
             {
-                var contains = false;
-
-                for (var i = 0; !contains && i < Tiles.Length; i += 2)
+                for (var i = 0; i < Tiles.Length; i += 2)
                 {
-                    contains = tileID >= Tiles[i] && tileID <= Tiles[i + 1];
+                    if (tileID >= Tiles[i] && tileID <= Tiles[i + 1])
+                    {
+                        return true;
+                    }
                 }
 
-                return contains;
+                return false;
             }
 
-            var dist = -1;
-
-            for (var i = 0; dist < 0 && i < Tiles.Length; ++i)
+            for (var i = 0; i < Tiles.Length; ++i)
             {
-                dist = Tiles[i] - tileID;
+                if (Tiles[i] == tileID)
+                {
+                    return true;
+                }
             }
 
-            return dist == 0;
+            return false;
         }
     }
 }
