@@ -43,7 +43,7 @@ namespace Server.Engines.Harvest
             1861, 1884,
             1981, 2004,
             2028, 2033,
-            2100, 2015,
+            2100, 2105,
 
             0x3F39, 0x3F74,
             0x3F82, 0x3F8F,
@@ -52,29 +52,29 @@ namespace Server.Engines.Harvest
             0x453B, 0x454F,
         };
 
-        private static readonly int[] m_SandTiles =
+        private static readonly int[] _sandTiles =
         {
-            22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-            32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
-            42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
-            52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
-            62, 68, 69, 70, 71, 72, 73, 74, 75,
+            22, 62,
+            68, 75,
 
-            286, 287, 288, 289, 290, 291, 292, 293, 294, 295,
-            296, 297, 298, 299, 300, 301, 402, 424, 425, 426,
-            427, 441, 442, 443, 444, 445, 446, 447, 448, 449,
-            450, 451, 452, 453, 454, 455, 456, 457, 458, 459,
-            460, 461, 462, 463, 464, 465, 642, 643, 644, 645,
-            650, 651, 652, 653, 654, 655, 656, 657, 821, 822,
-            823, 824, 825, 826, 827, 828, 833, 834, 835, 836,
-            845, 846, 847, 848, 849, 850, 851, 852, 857, 858,
-            859, 860, 951, 952, 953, 954, 955, 956, 957, 958,
-            967, 968, 969, 970,
+            286, 301,
+            402, 402,
+            424, 427,
+            441, 465,
+            642, 645,
+            650, 657,
+            821, 828,
+            833, 836,
+            845, 852,
+            857, 860,
+            951, 958,
+            967, 970,
 
-            1447, 1448, 1449, 1450, 1451, 1452, 1453, 1454, 1455,
-            1456, 1457, 1458, 1611, 1612, 1613, 1614, 1615, 1616,
-            1617, 1618, 1623, 1624, 1625, 1626, 1635, 1636, 1637,
-            1638, 1639, 1640, 1641, 1642, 1647, 1648, 1649, 1650
+            1447, 1458,
+            1611, 1618,
+            1623, 1626,
+            1635, 1642,
+            1647, 1650
         };
 
         private Mining()
@@ -89,6 +89,7 @@ namespace Server.Engines.Harvest
                 MaxRespawn = TimeSpan.FromMinutes(20.0),
                 Skill = SkillName.Mining,
                 Tiles = _mountainCaveTiles,
+                RangedTiles = true,
                 MaxRange = 2,
                 ConsumedPerHarvest = 1,
                 ConsumedPerFeluccaHarvest = 2,
@@ -225,7 +226,8 @@ namespace Server.Engines.Harvest
                 MinRespawn = TimeSpan.FromMinutes(10.0),
                 MaxRespawn = TimeSpan.FromMinutes(20.0),
                 Skill = SkillName.Mining,
-                Tiles = m_SandTiles,
+                Tiles = _sandTiles,
+                RangedTiles = true,
                 MaxRange = 2,
                 ConsumedPerHarvest = 1,
                 ConsumedPerFeluccaHarvest = 1,
