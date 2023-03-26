@@ -98,19 +98,11 @@ namespace Server
                 {
                     if (m_Mobile.CurePoison(m_Mobile))
                     {
-                        m_Mobile.LocalOverheadMessage(
-                            MessageType.Emote,
-                            0x3F,
-                            true,
-                            "* You feel yourself resisting the effects of the poison *"
-                        );
+                        // * You feel yourself resisting the effects of the poison *
+                        m_Mobile.LocalOverheadMessage(MessageType.Emote, 0x3F, 1114441);
 
-                        m_Mobile.NonlocalOverheadMessage(
-                            MessageType.Emote,
-                            0x3F,
-                            true,
-                            $"* {m_Mobile.Name} seems resistant to the poison *"
-                        );
+                        // * ~1_NAME~ seems resistant to the poison *
+                        m_Mobile.NonlocalOverheadMessage(MessageType.Emote, 0x3F, 1114442, m_Mobile.Name);
 
                         Stop();
                         return;

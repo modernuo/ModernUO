@@ -206,8 +206,12 @@ public partial class ControlPanel : AddonComponent
         );
 
         to.BoltEffect(0);
-        to.LocalOverheadMessage(MessageType.Regular, 0xC9, true, "* Your body convulses from electric shock *");
-        to.NonlocalOverheadMessage(MessageType.Regular, 0xC9, true, $"* {to.Name} spasms from electric shock *");
+
+        // * Your body convulses from electric shock *
+        to.LocalOverheadMessage(MessageType.Regular, 0xC9, 1114443);
+
+        // * ~1_NAME~ spasms from electric shock *
+        to.NonlocalOverheadMessage(MessageType.Regular, 0xC9, 1114444, to.Name);
 
         AOS.Damage(to, to, 60, 0, 0, 0, 0, 100);
 
@@ -514,13 +518,11 @@ public partial class ControlPanel : AddonComponent
 
             m_To.PlaySound(0x28);
 
-            m_To.LocalOverheadMessage(MessageType.Regular, 0xC9, true, "* Your body convulses from electric shock *");
-            m_To.NonlocalOverheadMessage(
-                MessageType.Regular,
-                0xC9,
-                true,
-                $"* {m_To.Name} spasms from electric shock *"
-            );
+            // * Your body convulses from electric shock *
+            m_To.LocalOverheadMessage(MessageType.Regular, 0xC9, 1114443);
+
+            // * ~1_NAME~ spasms from electric shock *
+            m_To.NonlocalOverheadMessage(MessageType.Regular, 0xC9, 1114444, m_To.Name);
 
             AOS.Damage(m_To, m_To, 20, 0, 0, 0, 0, 100);
 

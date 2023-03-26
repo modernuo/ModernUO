@@ -244,12 +244,14 @@ public class Container : Item
 
     public virtual void SendFullItemsMessage(Mobile to, Item item)
     {
-        to.SendMessage("That container cannot hold more items.");
+        // That container cannot hold more items.
+        to.SendLocalizedMessage(1080017);
     }
 
     public virtual void SendFullWeightMessage(Mobile to, Item item)
     {
-        to.SendMessage("That container cannot hold more weight.");
+        // That container cannot hold more weight.
+        to.SendLocalizedMessage(1080016);
     }
 
     public virtual void SendCantStoreMessage(Mobile to, Item item)

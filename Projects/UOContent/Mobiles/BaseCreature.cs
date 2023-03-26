@@ -1460,12 +1460,8 @@ namespace Server.Mobiles
 
             if (SubdueBeforeTame && !Controlled && oldHits > HitsMax / 10 && Hits <= HitsMax / 10)
             {
-                PublicOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    false,
-                    "* The creature has been beaten into subjugation! *"
-                );
+                // * The creature has been beaten into subjugation! *
+                PublicOverheadMessage(MessageType.Regular, 0x3B2, 1080057);
             }
         }
 
@@ -1794,7 +1790,7 @@ namespace Server.Mobiles
                             }
                     }
 
-                    from.SendMessage("You cut away some scales, but they remain on the corpse.");
+                    from.SendLocalizedMessage(1079284); // You cut away some scales, but they remain on the corpse.
                 }
 
                 corpse.Carved = true;

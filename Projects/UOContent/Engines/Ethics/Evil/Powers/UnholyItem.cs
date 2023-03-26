@@ -40,7 +40,7 @@ namespace Server.Ethics.Evil
 
             if ((item.SavedFlags & 0x300) != 0)
             {
-                from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "That has already beem imbued.");
+                from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "That has already been imbued.");
                 return;
             }
 

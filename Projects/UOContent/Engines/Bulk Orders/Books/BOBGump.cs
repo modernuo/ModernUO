@@ -727,7 +727,8 @@ namespace Server.Engines.BulkOrders
                         entry.Price = price;
                     }
 
-                    from.SendMessage("Deed prices set.");
+                    // Deed price set.
+                    from.SendLocalizedMessage(1062384);
 
                     if (from is PlayerMobile mobile)
                     {

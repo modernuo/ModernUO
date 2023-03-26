@@ -588,9 +588,10 @@ namespace Server.Mobiles
             }
 
             new VorpalBunny.BunnyHole().MoveToWorld(Location, Map);
-
             Frozen = true;
-            Say("* The bunny begins to dig a tunnel back to its underground lair *");
+
+            // * The bunny begins to dig a tunnel back to its underground lair *
+            Say(1114450);
             PlaySound(0x247);
 
             Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
