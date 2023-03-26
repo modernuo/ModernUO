@@ -72,10 +72,12 @@ namespace Server.Mobiles
                 return;
             }
 
+            // TODO: Add splashing in the water - cliloc 1114451
             new BunnyHole().MoveToWorld(Location, Map);
-
             Frozen = true;
-            Say("* The bunny begins to dig a tunnel back to its underground lair *");
+
+            // * The bunny begins to dig a tunnel back to its underground lair *
+            Say(1114450);
             PlaySound(0x247);
 
             Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);

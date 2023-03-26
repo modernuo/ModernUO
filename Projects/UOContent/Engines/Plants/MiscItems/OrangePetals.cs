@@ -115,12 +115,8 @@ namespace Server.Items
             {
                 if (!m_Mobile.Deleted)
                 {
-                    m_Mobile.LocalOverheadMessage(
-                        MessageType.Regular,
-                        0x3F,
-                        true,
-                        "* You feel the effects of your poison resistance wearing off *"
-                    );
+                    // * You feel the effects of your poison resistance wearing off *
+                    m_Mobile.LocalOverheadMessage(MessageType.Regular, 0x3F, 1053091);
                 }
 
                 RemoveContext(m_Mobile);

@@ -572,7 +572,7 @@ public partial class TreasureMap : MapItem
             }
             else if (!HasDiggingTool(from))
             {
-                from.SendMessage("You must have a digging tool to dig for treasure.");
+                from.SendLocalizedMessage(1114416); // You must have a digging tool to dig for treasure.
             }
             else if (from.Map != map)
             {
@@ -900,7 +900,7 @@ public partial class TreasureMap : MapItem
             }
             else
             {
-                from.SendMessage("You must have a digging tool to dig for treasure.");
+                from.SendLocalizedMessage(1114416); // You must have a digging tool to dig for treasure.
             }
         }
     }

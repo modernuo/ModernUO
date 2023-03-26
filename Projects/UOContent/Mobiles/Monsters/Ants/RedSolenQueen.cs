@@ -90,12 +90,15 @@ namespace Server.Mobiles
                 {
                     if (Hits < 50)
                     {
-                        PublicOverheadMessage(MessageType.Regular, 0x3B2, true, "* The solen's acid sac is burst open! *");
+                        // The solen's acid sac is burst open!
+                        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1080038);
                         BurstSac = true;
                     }
                 }
                 else if (from != null && from != this && InRange(from, 1))
                 {
+                    // * The solen's damaged acid sac squirts acid! *
+                    PublicOverheadMessage(MessageType.Regular, 0x3B2, 1080060);
                     SpillAcid(from, 1);
                 }
             }
