@@ -1,5 +1,6 @@
 using Server.Mobiles;
 using System;
+using Server.Spells.Ninjitsu;
 
 namespace Server.Items;
 
@@ -27,7 +28,7 @@ public class InfusedThrow : WeaponAbility
 
         IMount mount = defender.Mount;
 
-        if ((defender.Mounted || defender.Flying || Spells.Ninjitsu.AnimalForm.UnderTransformation(defender)) &&
+        if ((defender.Mounted || defender.Flying || AnimalForm.UnderTransformation(defender)) &&
             !attacker.Mounted && !attacker.Flying && defender is not ChaosDragoon && defender is not ChaosDragoonElite)
         {
             defender.PlaySound(0x140);
