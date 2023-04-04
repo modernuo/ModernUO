@@ -43,8 +43,6 @@ namespace Server.Misc
 
         private static bool CheckTransform(Mobile m, Type type) => TransformationSpellHelper.UnderTransformation(m, type);
 
-        private static bool CheckAnimal(Mobile m, Type type) => AnimalForm.UnderTransformation(m, type);
-
         private static TimeSpan Mobile_HitsRegenRate(Mobile from)
         {
             var points = AosAttributes.GetValue(from, AosAttribute.RegenHits);
@@ -81,7 +79,7 @@ namespace Server.Misc
                 points += 20;
             }
 
-            if (CheckAnimal(from, typeof(Dog)) || CheckAnimal(from, typeof(Cat)))
+            if (AnimalForm.UnderTransformation(from, typeof(Dog)) || AnimalForm.UnderTransformation(from, typeof(Cat)))
             {
                 points += from.Skills.Ninjitsu.Fixed / 30;
             }
@@ -112,7 +110,7 @@ namespace Server.Misc
                 cappedPoints += 15;
             }
 
-            if (CheckAnimal(from, typeof(Kirin)))
+            if (AnimalForm.UnderTransformation(from, typeof(Kirin)))
             {
                 cappedPoints += 20;
             }
