@@ -1089,8 +1089,6 @@ namespace Server.Items
         public virtual double GetDefendSkillValue(Mobile attacker, Mobile defender) =>
             defender.Skills[GetUsedSkill(defender, true)].Value;
 
-        private static bool CheckAnimal(Mobile m, Type type) => AnimalForm.UnderTransformation(m, type);
-
         public virtual bool CheckHit(Mobile attacker, Mobile defender)
         {
             var atkWeapon = attacker.Weapon as BaseWeapon;
@@ -1124,7 +1122,8 @@ namespace Server.Items
                     bonus += 10; // attacker gets 10% bonus when they're under divine fury
                 }
 
-                if (CheckAnimal(attacker, typeof(GreyWolf)) || CheckAnimal(attacker, typeof(BakeKitsune)))
+                if (AnimalForm.UnderTransformation(attacker, typeof(GreyWolf)) ||
+                    AnimalForm.UnderTransformation(attacker, typeof(BakeKitsune)))
                 {
                     bonus += 20; // attacker gets 20% bonus when under Wolf or Bake Kitsune form
                 }
@@ -2029,7 +2028,8 @@ namespace Server.Items
 
                     var maChance =
                         (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitMagicArrow) * propertyBonus);
-                    var harmChance = (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitHarm) * propertyBonus);
+                    var harmChance =
+                        (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitHarm) * propertyBonus);
                     var fireballChance =
                         (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireball) * propertyBonus);
                     var lightningChance =
@@ -2128,7 +2128,7 @@ namespace Server.Items
                 // SDI bonus
                 damageBonus += AosAttributes.GetValue(attacker, AosAttribute.SpellDamage);
 
-                if (PsychicAttack.Registry.TryGetValue(attacker,out var timer))
+                if (PsychicAttack.Registry.TryGetValue(attacker, out var timer))
                 {
                     damageBonus -= timer.SpellDamageMalus;
                 }
@@ -3452,6 +3452,7 @@ namespace Server.Items
                     queue.Enqueue(m);
                 }
             }
+
             eable.Free();
 
             if (queue.Count == 0)
