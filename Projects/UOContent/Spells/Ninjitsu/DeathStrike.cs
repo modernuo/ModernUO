@@ -85,6 +85,14 @@ namespace Server.Spells.Ninjitsu
             }
         }
 
+        public static void RemoveEffect(Mobile m)
+        {
+            if (_table.Remove(m, out var timer))
+            {
+                timer.Stop();
+            }
+        }
+
         private class DeathStrikeTimer : Timer
         {
             private Mobile _attacker;
@@ -163,7 +171,7 @@ namespace Server.Spells.Ninjitsu
                     );
                 }
 
-                Stop();
+                RemoveEffect(_target);
             }
         }
     }
