@@ -25,8 +25,6 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         new(0, 0, 0)
     };
 
-    private BaseDoor m_Link;
-
     private Timer _timer;
 
     [SerializableField(0)]
@@ -56,6 +54,10 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
     [SerializableField(7)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Point3D _offset;
+
+    [SerializableField(8)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private BaseDoor _link;
 
     public BaseDoor(int closedID, int openedID, int openedSound, int closedSound, Point3D offset) : base(closedID)
     {
@@ -108,21 +110,6 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
                 this.MarkDirty();
             }
         }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public BaseDoor Link
-    {
-        get
-        {
-            if (m_Link?.Deleted == true)
-            {
-                m_Link = null;
-            }
-
-            return m_Link;
-        }
-        set => m_Link = value;
     }
 
     public virtual bool UseChainedFunctionality => false;

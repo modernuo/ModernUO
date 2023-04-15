@@ -65,6 +65,11 @@
       "ruleArguments": [
         "Point3D"
       ]
+    },
+    {
+      "name": "Link",
+      "type": "Server.Items.BaseDoor",
+      "rule": "SerializableInterfaceMigrationRule"
     }
   ]
 }
