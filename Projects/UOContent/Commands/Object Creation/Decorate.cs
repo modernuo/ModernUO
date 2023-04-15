@@ -414,7 +414,7 @@ namespace Server.Commands
                         item = m_Type.CreateInstance<Item>();
                     }
                 }
-                else if (m_Type.IsSubclassOf(typeofBaseDoor))
+                else if (m_Type.IsSubclassOf(typeofBaseDoor) && m_Params.Length > 0)
                 {
                     var facing = DoorFacing.WestCW;
 
@@ -1059,7 +1059,7 @@ namespace Server.Commands
                     if (bd.Open)
                     {
                         p = new Point3D(bd.X - bd.Offset.X, bd.Y - bd.Offset.Y, bd.Z - bd.Offset.Z);
-                        bdItemID = bd.ClosedID;
+                        bdItemID = bd.ClosedId;
                     }
                     else
                     {

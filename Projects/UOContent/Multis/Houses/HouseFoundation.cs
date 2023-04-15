@@ -561,7 +561,7 @@ namespace Server.Multis
                 }
                 else if (fixture is BaseHouseDoor door)
                 {
-                    if (door.Link != null)
+                    if (door.Link?.Deleted == false)
                     {
                         continue;
                     }
@@ -572,70 +572,94 @@ namespace Server.Multis
                     switch (door.Facing)
                     {
                         default:
-                            linkFacing = DoorFacing.EastCCW;
-                            xOffset = 1;
-                            yOffset = 0;
-                            break;
+                            {
+                                linkFacing = DoorFacing.EastCCW;
+                                xOffset = 1;
+                                yOffset = 0;
+                                break;
+                            }
                         case DoorFacing.EastCCW:
-                            linkFacing = DoorFacing.WestCW;
-                            xOffset = -1;
-                            yOffset = 0;
-                            break;
+                            {
+                                linkFacing = DoorFacing.WestCW;
+                                xOffset = -1;
+                                yOffset = 0;
+                                break;
+                            }
                         case DoorFacing.WestCCW:
-                            linkFacing = DoorFacing.EastCW;
-                            xOffset = 1;
-                            yOffset = 0;
-                            break;
+                            {
+                                linkFacing = DoorFacing.EastCW;
+                                xOffset = 1;
+                                yOffset = 0;
+                                break;
+                            }
                         case DoorFacing.EastCW:
-                            linkFacing = DoorFacing.WestCCW;
-                            xOffset = -1;
-                            yOffset = 0;
-                            break;
+                            {
+                                linkFacing = DoorFacing.WestCCW;
+                                xOffset = -1;
+                                yOffset = 0;
+                                break;
+                            }
                         case DoorFacing.SouthCW:
-                            linkFacing = DoorFacing.NorthCCW;
-                            xOffset = 0;
-                            yOffset = -1;
-                            break;
+                            {
+                                linkFacing = DoorFacing.NorthCCW;
+                                xOffset = 0;
+                                yOffset = -1;
+                                break;
+                            }
                         case DoorFacing.NorthCCW:
-                            linkFacing = DoorFacing.SouthCW;
-                            xOffset = 0;
-                            yOffset = 1;
-                            break;
+                            {
+                                linkFacing = DoorFacing.SouthCW;
+                                xOffset = 0;
+                                yOffset = 1;
+                                break;
+                            }
                         case DoorFacing.SouthCCW:
-                            linkFacing = DoorFacing.NorthCW;
-                            xOffset = 0;
-                            yOffset = -1;
-                            break;
+                            {
+                                linkFacing = DoorFacing.NorthCW;
+                                xOffset = 0;
+                                yOffset = -1;
+                                break;
+                            }
                         case DoorFacing.NorthCW:
-                            linkFacing = DoorFacing.SouthCCW;
-                            xOffset = 0;
-                            yOffset = 1;
-                            break;
+                            {
+                                linkFacing = DoorFacing.SouthCCW;
+                                xOffset = 0;
+                                yOffset = 1;
+                                break;
+                            }
                         case DoorFacing.SouthSW:
-                            linkFacing = DoorFacing.SouthSE;
-                            xOffset = 1;
-                            yOffset = 0;
-                            break;
+                            {
+                                linkFacing = DoorFacing.SouthSE;
+                                xOffset = 1;
+                                yOffset = 0;
+                                break;
+                            }
                         case DoorFacing.SouthSE:
-                            linkFacing = DoorFacing.SouthSW;
-                            xOffset = -1;
-                            yOffset = 0;
-                            break;
+                            {
+                                linkFacing = DoorFacing.SouthSW;
+                                xOffset = -1;
+                                yOffset = 0;
+                                break;
+                            }
                         case DoorFacing.WestSN:
-                            linkFacing = DoorFacing.WestSS;
-                            xOffset = 0;
-                            yOffset = 1;
-                            break;
+                            {
+                                linkFacing = DoorFacing.WestSS;
+                                xOffset = 0;
+                                yOffset = 1;
+                                break;
+                            }
                         case DoorFacing.WestSS:
-                            linkFacing = DoorFacing.WestSN;
-                            xOffset = 0;
-                            yOffset = -1;
-                            break;
+                            {
+                                linkFacing = DoorFacing.WestSN;
+                                xOffset = 0;
+                                yOffset = -1;
+                                break;
+                            }
                     }
 
                     for (var j = i + 1; j < Fixtures.Count; ++j)
                     {
-                        if (Fixtures[j] is BaseHouseDoor check && check.Link == null && check.Facing == linkFacing &&
+                        if (Fixtures[j] is BaseHouseDoor check && check.Link?.Deleted == false && check.Facing == linkFacing &&
                             check.X - door.X == xOffset && check.Y - door.Y == yOffset && check.Z == door.Z)
                         {
                             check.Link = door;
@@ -663,61 +687,79 @@ namespace Server.Multis
             switch (type)
             {
                 default:
-                    corner = 0x0014;
-                    east = 0x0015;
-                    south = 0x0016;
-                    post = 0x0017;
-                    break;
+                    {
+                        corner = 0x0014;
+                        east = 0x0015;
+                        south = 0x0016;
+                        post = 0x0017;
+                        break;
+                    }
                 case FoundationType.LightWood:
-                    corner = 0x00BD;
-                    east = 0x00BE;
-                    south = 0x00BF;
-                    post = 0x00C0;
-                    break;
+                    {
+                        corner = 0x00BD;
+                        east = 0x00BE;
+                        south = 0x00BF;
+                        post = 0x00C0;
+                        break;
+                    }
                 case FoundationType.Dungeon:
-                    corner = 0x02FD;
-                    east = 0x02FF;
-                    south = 0x02FE;
-                    post = 0x0300;
-                    break;
+                    {
+                        corner = 0x02FD;
+                        east = 0x02FF;
+                        south = 0x02FE;
+                        post = 0x0300;
+                        break;
+                    }
                 case FoundationType.Brick:
-                    corner = 0x0041;
-                    east = 0x0043;
-                    south = 0x0042;
-                    post = 0x0044;
-                    break;
+                    {
+                        corner = 0x0041;
+                        east = 0x0043;
+                        south = 0x0042;
+                        post = 0x0044;
+                        break;
+                    }
                 case FoundationType.Stone:
-                    corner = 0x0065;
-                    east = 0x0064;
-                    south = 0x0063;
-                    post = 0x0066;
-                    break;
+                    {
+                        corner = 0x0065;
+                        east = 0x0064;
+                        south = 0x0063;
+                        post = 0x0066;
+                        break;
+                    }
 
                 case FoundationType.ElvenGrey:
-                    corner = 0x2DF7;
-                    east = 0x2DF9;
-                    south = 0x2DFA;
-                    post = 0x2DF8;
-                    break;
+                    {
+                        corner = 0x2DF7;
+                        east = 0x2DF9;
+                        south = 0x2DFA;
+                        post = 0x2DF8;
+                        break;
+                    }
                 case FoundationType.ElvenNatural:
-                    corner = 0x2DFB;
-                    east = 0x2DFD;
-                    south = 0x2DFE;
-                    post = 0x2DFC;
-                    break;
+                    {
+                        corner = 0x2DFB;
+                        east = 0x2DFD;
+                        south = 0x2DFE;
+                        post = 0x2DFC;
+                        break;
+                    }
 
                 case FoundationType.Crystal:
-                    corner = 0x3672;
-                    east = 0x3671;
-                    south = 0x3670;
-                    post = 0x3673;
-                    break;
+                    {
+                        corner = 0x3672;
+                        east = 0x3671;
+                        south = 0x3670;
+                        post = 0x3673;
+                        break;
+                    }
                 case FoundationType.Shadow:
-                    corner = 0x3676;
-                    east = 0x3675;
-                    south = 0x3674;
-                    post = 0x3677;
-                    break;
+                    {
+                        corner = 0x3676;
+                        east = 0x3675;
+                        south = 0x3674;
+                        post = 0x3677;
+                        break;
+                    }
             }
         }
 

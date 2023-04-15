@@ -121,7 +121,7 @@ namespace Server.Engines.Doom
                     Door.Open = false;
                 }
 
-                if (Door.Link != null)
+                if (Door.Link?.Deleted == false)
                 {
                     Door.Link.Hue = hue;
                     Door.Link.Locked = lockDoors;
