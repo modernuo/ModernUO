@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
-public class SecretStoneDoor1 : BaseDoor
+[SerializationGenerator(0, false)]
+public partial class SecretStoneDoor1 : BaseDoor
 {
     [Constructible]
     public SecretStoneDoor1(DoorFacing facing) : base(
@@ -12,27 +15,10 @@ public class SecretStoneDoor1 : BaseDoor
     )
     {
     }
-
-    public SecretStoneDoor1(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }
 
-public class SecretDungeonDoor : BaseDoor
+[SerializationGenerator(0, false)]
+public partial class SecretDungeonDoor : BaseDoor
 {
     [Constructible]
     public SecretDungeonDoor(DoorFacing facing) : base(
@@ -44,27 +30,10 @@ public class SecretDungeonDoor : BaseDoor
     )
     {
     }
-
-    public SecretDungeonDoor(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }
 
-public class SecretStoneDoor2 : BaseDoor
+[SerializationGenerator(0, false)]
+public partial class SecretStoneDoor2 : BaseDoor
 {
     [Constructible]
     public SecretStoneDoor2(DoorFacing facing) : base(
@@ -76,27 +45,10 @@ public class SecretStoneDoor2 : BaseDoor
     )
     {
     }
-
-    public SecretStoneDoor2(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }
 
-public class SecretWoodenDoor : BaseDoor
+[SerializationGenerator(0, false)]
+public partial class SecretWoodenDoor : BaseDoor
 {
     [Constructible]
     public SecretWoodenDoor(DoorFacing facing) : base(
@@ -108,27 +60,10 @@ public class SecretWoodenDoor : BaseDoor
     )
     {
     }
-
-    public SecretWoodenDoor(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }
 
-public class SecretLightWoodDoor : BaseDoor
+[SerializationGenerator(0, false)]
+public partial class SecretLightWoodDoor : BaseDoor
 {
     [Constructible]
     public SecretLightWoodDoor(DoorFacing facing) : base(
@@ -140,27 +75,10 @@ public class SecretLightWoodDoor : BaseDoor
     )
     {
     }
-
-    public SecretLightWoodDoor(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }
 
-public class SecretStoneDoor3 : BaseDoor
+[SerializationGenerator(0, false)]
+public partial class SecretStoneDoor3 : BaseDoor
 {
     [Constructible]
     public SecretStoneDoor3(DoorFacing facing) : base(
@@ -171,23 +89,5 @@ public class SecretStoneDoor3 : BaseDoor
         GetOffset(facing)
     )
     {
-    }
-
-    public SecretStoneDoor3(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }
