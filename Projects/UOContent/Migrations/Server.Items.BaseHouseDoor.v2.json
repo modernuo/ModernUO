@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "type": "Server.Items.BaseHouseDoor",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Facing",
+      "type": "Server.Items.DoorFacing",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
