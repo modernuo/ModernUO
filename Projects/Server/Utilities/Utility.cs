@@ -1736,4 +1736,8 @@ public static class Utility
             TypeCode.UInt64 => 64,
             _               => 64
         };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNullOrWhiteSpace(this ReadOnlySpan<char> span) =>
+        span == default || span.IsEmpty || span.IsWhiteSpace();
 }
