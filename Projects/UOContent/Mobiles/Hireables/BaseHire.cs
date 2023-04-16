@@ -98,7 +98,7 @@ public partial class BaseHire : BaseCreature
 
         if (owner.Deleted)
         {
-            Say(1005653); // Hmmm.  I seem to have lost my master.
+            Say(1005653); // Hmmm. I seem to have lost my master.
             SetControlMaster(null);
             return null;
         }
@@ -126,18 +126,17 @@ public partial class BaseHire : BaseCreature
         return false;
     }
 
-    public int PerDayCost()
-    {
-        var pay = (int)Skills[SkillName.Anatomy].Value + (int)Skills[SkillName.Tactics].Value;
-        pay += (int)Skills[SkillName.Macing].Value + (int)Skills[SkillName.Swords].Value;
-        pay += (int)Skills[SkillName.Fencing].Value + (int)Skills[SkillName.Archery].Value;
-        pay += (int)Skills[SkillName.MagicResist].Value + (int)Skills[SkillName.Healing].Value;
-        pay += (int)Skills[SkillName.Magery].Value + (int)Skills[SkillName.Parry].Value;
-        pay /= 35;
-        pay += 1;
-
-        return pay;
-    }
+    public int PerDayCost() =>
+        (int)(Skills[SkillName.Anatomy].Value +
+              Skills[SkillName.Tactics].Value +
+              Skills[SkillName.Macing].Value +
+              Skills[SkillName.Swords].Value +
+              Skills[SkillName.Fencing].Value +
+              Skills[SkillName.Archery].Value +
+              Skills[SkillName.MagicResist].Value +
+              Skills[SkillName.Healing].Value +
+              Skills[SkillName.Magery].Value +
+              Skills[SkillName.Parry].Value) / 35 + 1;
 
     private bool OnHireDragDrop(Mobile from, Item item)
     {
@@ -255,30 +254,32 @@ public partial class BaseHire : BaseCreature
             using var queue = PooledRefQueue<Mobile>.Create();
             foreach (var hire in _hires)
             {
-                if (hire.NextPay <= Core.Now)
+                if (hire.NextPay > Core.Now)
                 {
-                    queue.Enqueue(hire);
+                    continue;
                 }
-            }
 
-            while (queue.Count > 0)
-            {
-                var hire = (BaseHire)queue.Dequeue();
                 hire.NextPay = Core.Now + GetInterval();
 
                 int pay = hire.Pay;
 
                 if (hire.HoldGold <= pay)
                 {
-                    hire.GetOwner();
-
-                    hire.Say(503235); // I regret nothing!
-                    hire.Delete();
+                    queue.Enqueue(hire);
                 }
                 else
                 {
                     hire.HoldGold -= pay;
                 }
+            }
+
+            while (queue.Count > 0)
+            {
+                var hire = (BaseHire)queue.Dequeue();
+
+                hire.GetOwner(); // Sets owner to null
+                hire.Say(503235); // I regret nothing!
+                hire.Delete();
             }
         }
 
