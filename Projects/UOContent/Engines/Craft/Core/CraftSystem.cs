@@ -247,11 +247,6 @@ namespace Server.Engines.Craft
             CraftItems[index].RequiredExpansion = expansion;
         }
 
-        public void AddRes(int index, Type type, TextDefinition name, int amount)
-        {
-            AddRes(index, type, name, amount, "");
-        }
-
         public void AddRes(int index, Type type, TextDefinition name, int amount, TextDefinition message)
         {
             CraftItems[index].AddRes(type, name, amount, message);

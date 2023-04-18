@@ -215,7 +215,7 @@ public class DefInscription : CraftSystem
 
         for (var i = 1; i < regs.Length; ++i)
         {
-            AddRes(index, regs[i], 1, 501627);
+            AddRes(index, regs[i], null, 1, 501627);
         }
 
         AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
@@ -238,7 +238,7 @@ public class DefInscription : CraftSystem
 
         for (var i = 1; i < regs.Length; ++i)
         {
-            AddRes(index, regs[i], 1, 501627);
+            AddRes(index, regs[i], null, 1, 501627);
         }
 
         AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
