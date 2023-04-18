@@ -264,10 +264,6 @@ namespace Server.Engines.Craft
             return itemId;
         }
 
-        public void AddRes(Type type, int amount, TextDefinition message) => AddRes(type, null, amount, message);
-
-        public void AddRes(Type type, TextDefinition name, int amount) => AddRes(type, name, amount, "");
-
         public void AddRes(Type type, TextDefinition name, int amount, TextDefinition message)
         {
             var craftRes = new CraftRes(type, name, amount, message);
