@@ -58,7 +58,7 @@ namespace Server.Items
         }
 
         [AfterDeserialization(false)]
-        public virtual void Cleanup()
+        public void Cleanup()
         {
             var items = Items;
             var queue = PooledRefQueue<Item>.Create();
@@ -81,14 +81,14 @@ namespace Server.Items
                     queue.Enqueue(msg);
                 }
             }
-            
+
             while (queue.Count > 0)
             {
                 var msg = (BulletinMessage)queue.Dequeue();
                 RecurseDelete(msg, ref queue);
                 msg.Delete();
             }
-            
+
             queue.Dispose();
         }
 
