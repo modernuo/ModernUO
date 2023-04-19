@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Toolkit.HighPerformance;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
@@ -414,7 +415,7 @@ namespace Server.Commands
                         item = m_Type.CreateInstance<Item>();
                     }
                 }
-                else if (m_Type.IsSubclassOf(typeofBaseDoor))
+                else if (m_Type.IsSubclassOf(typeofBaseDoor) && m_Params.Length > 0)
                 {
                     var facing = DoorFacing.WestCW;
 
@@ -1059,7 +1060,7 @@ namespace Server.Commands
                     if (bd.Open)
                     {
                         p = new Point3D(bd.X - bd.Offset.X, bd.Y - bd.Offset.Y, bd.Z - bd.Offset.Z);
-                        bdItemID = bd.ClosedID;
+                        bdItemID = bd.ClosedId;
                     }
                     else
                     {
@@ -1272,51 +1273,59 @@ namespace Server.Commands
 
             var indexOf = line.IndexOfOrdinal(' ');
 
-            list.m_Type = AssemblyHandler.FindTypeByName(line[..indexOf++]);
+            list.m_Type = AssemblyHandler.FindTypeByName(indexOf > -1 ? line[..indexOf] : line);
+            indexOf++;
 
             if (list.m_Type == null)
             {
                 throw new ArgumentException($"Type not found for header: '{line}'");
             }
 
-            line = line[indexOf..];
-            indexOf = line.IndexOfOrdinal('(');
-            if (indexOf >= 0)
+            var span = line.AsSpan(indexOf, line.Length - indexOf);
+
+            var argsStart = span.IndexOfOrdinal('(');
+
+            if (argsStart > -1)
             {
-                list.m_ItemID = Utility.ToInt32(line.AsSpan()[..(indexOf - 1)]);
-
-                var parms = line[++indexOf..^(line.EndsWithOrdinal(")") ? 1 : 0)];
-
-                list.m_Params = parms.Split(';');
-
-                for (var i = 0; i < list.m_Params.Length; ++i)
+                var parms = span[(argsStart + 1)..^(line.EndsWithOrdinal(")") ? 1 : 0)];
+                if (parms.Length == 0)
                 {
-                    list.m_Params[i] = list.m_Params[i].Trim();
+                    list.m_Params = Array.Empty<string>();
+                }
+                else
+                {
+                    list.m_Params = new string[parms.Count(';') + 1];
+
+                    indexOf = 0;
+                    foreach (var part in parms.Tokenize(';'))
+                    {
+                        list.m_Params[indexOf++] = part.Trim().ToString();
+                    }
                 }
             }
             else
             {
-                list.m_ItemID = Utility.ToInt32(line);
                 list.m_Params = m_EmptyParams;
             }
 
+            list.m_ItemID = Utility.ToInt32(argsStart > -1 ? span[..argsStart] : span);
             list.m_Entries = new List<DecorationEntry>();
 
             while ((line = ip.ReadLine()) != null)
             {
-                line = line.Trim();
+                span = line.AsSpan().Trim();
 
-                if (line.Length == 0)
+                if (span.Length == 0)
                 {
                     break;
                 }
 
-                if (line.StartsWithOrdinal("#"))
+                if (span.StartsWithOrdinal("#"))
                 {
                     continue;
                 }
 
-                list.m_Entries.Add(new DecorationEntry(line));
+                list.m_Entries.Add(new DecorationEntry(span));
             }
 
             return list;
@@ -1325,21 +1334,21 @@ namespace Server.Commands
 
     public class DecorationEntry
     {
-        public DecorationEntry(string line)
+        public DecorationEntry(ReadOnlySpan<char> line)
         {
             Pop(out var x, ref line);
             Pop(out var y, ref line);
             Pop(out var z, ref line);
 
             Location = new Point3D(Utility.ToInt32(x), Utility.ToInt32(y), Utility.ToInt32(z));
-            Extra = line;
+            Extra = line.ToString();
         }
 
         public Point3D Location { get; }
 
         public string Extra { get; }
 
-        public static void Pop(out string v, ref string line)
+        public static void Pop(out ReadOnlySpan<char> v, ref ReadOnlySpan<char> line)
         {
             var space = line.IndexOfOrdinal(' ');
 
@@ -1351,7 +1360,7 @@ namespace Server.Commands
             else
             {
                 v = line;
-                line = "";
+                line = default;
             }
         }
     }

@@ -1,0 +1,75 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseDoor",
+  "properties": [
+    {
+      "name": "KeyValue",
+      "type": "uint",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Open",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Locked",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "OpenedId",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ClosedId",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "OpenedSound",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ClosedSound",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Offset",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "Link",
+      "type": "Server.Items.BaseDoor",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

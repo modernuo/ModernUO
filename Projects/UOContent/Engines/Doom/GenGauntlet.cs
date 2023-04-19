@@ -58,7 +58,7 @@ namespace Server.Engines.Doom
             healerDoor.Locked = true;
             healerDoor.KeyValue = Key.RandomValue();
 
-            if (healerDoor.Link != null)
+            if (healerDoor.Link?.Deleted == false)
             {
                 healerDoor.Link.Locked = true;
                 healerDoor.Link.KeyValue = Key.RandomValue();
