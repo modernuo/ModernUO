@@ -38,21 +38,26 @@ namespace Server.Items
         }
 
         [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
         private Mobile _poster;
 
         [SerializableField(1)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
         private string _subject;
 
         [SerializableField(2)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
         private DateTime _time;
 
         [SerializableField(3)]
         private DateTime _lastPostTime;
 
         [SerializableField(4)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
         private BulletinMessage _thread;
 
         [SerializableField(5)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
         private string _postedName;
 
         [SerializableField(6)]

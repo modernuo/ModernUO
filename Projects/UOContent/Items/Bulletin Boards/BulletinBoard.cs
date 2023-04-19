@@ -58,9 +58,10 @@ namespace Server.Items
         }
 
         [AfterDeserialization(false)]
-        public virtual void Cleanup()
+        public void Cleanup()
         {
             var items = Items;
+            var queue = PooledRefQueue<Item>.Create();
 
             for (var i = items.Count - 1; i >= 0; --i)
             {
@@ -74,29 +75,28 @@ namespace Server.Items
                     continue;
                 }
 
+                // Top level thread expired
                 if (msg.Thread == null && BulletinBoardSystem.CheckDeletionTime(msg.LastPostTime))
                 {
-                    msg.Delete();
-                    var queue = PooledRefQueue<Item>.Create();
-                    var thread = msg;
-
-                    do
-                    {
-                        BFSDelete(thread, ref queue);
-                        if (queue.Count > 0)
-                        {
-                            thread = (BulletinMessage)queue.Dequeue();
-                        }
-                    } while (thread != null);
-                    queue.Dispose();
+                    queue.Enqueue(msg);
                 }
             }
+
+            while (queue.Count > 0)
+            {
+                var msg = (BulletinMessage)queue.Dequeue();
+                RecurseDelete(msg, ref queue);
+                msg.Delete();
+            }
+
+            queue.Dispose();
         }
 
-        private void BFSDelete(BulletinMessage msg, ref PooledRefQueue<Item> queue)
+        private void RecurseDelete(BulletinMessage msg, ref PooledRefQueue<Item> queue)
         {
             var items = Items;
 
+            // All messages and sub-threads are also in the same bulletin board container
             for (var i = items.Count - 1; i >= 0; --i)
             {
                 if (i >= items.Count)
@@ -111,7 +111,6 @@ namespace Server.Items
 
                 if (check.Thread == msg)
                 {
-                    check.Delete();
                     queue.Enqueue(check);
                 }
             }
