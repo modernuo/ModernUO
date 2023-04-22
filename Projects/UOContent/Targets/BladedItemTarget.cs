@@ -74,11 +74,11 @@ namespace Server.Targets
                 HarvestSystem system = Lumberjacking.System;
                 var def = system.GetDefinition();
 
-                if (!system.GetHarvestDetails(from, m_Item, targeted, out var tileID, out var map, out var loc))
+                if (!system.GetHarvestDetails(from, m_Item, targeted, out var tileID, out var map, out var loc, out var isLand))
                 {
                     from.SendLocalizedMessage(500494); // You can't use a bladed item on that!
                 }
-                else if (!def.Validate(tileID))
+                else if (!def.Validate(tileID, isLand))
                 {
                     from.SendLocalizedMessage(500494); // You can't use a bladed item on that!
                 }
