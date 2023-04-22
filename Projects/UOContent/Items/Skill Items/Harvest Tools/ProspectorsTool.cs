@@ -63,13 +63,13 @@ public partial class ProspectorsTool : BaseBashing, IUsesRemaining
 
         HarvestSystem system = Mining.System;
 
-        if (!system.GetHarvestDetails(from, this, toProspect, out var tileID, out var map, out var loc))
+        if (!system.GetHarvestDetails(from, this, toProspect, out var tileID, out var map, out var loc, out var isLand))
         {
             from.SendLocalizedMessage(1049048); // You cannot use your prospector tool on that.
             return;
         }
 
-        var def = system.GetDefinition(tileID);
+        var def = system.GetDefinition(tileID, isLand);
 
         if (def == null || def.Veins.Length <= 1)
         {

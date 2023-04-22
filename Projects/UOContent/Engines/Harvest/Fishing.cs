@@ -10,9 +10,9 @@ namespace Server.Engines.Harvest
 {
     public class Fishing : HarvestSystem
     {
-        private static Fishing m_System;
+        private static Fishing _system;
 
-        private static readonly MutateEntry[] m_MutateTable =
+        private static readonly MutateEntry[] _mutateTable =
         {
             new(80.0, 80.0, 4080.0, true, typeof(SpecialFishingNet)),
             new(80.0, 80.0, 4080.0, true, typeof(BigFish)),
@@ -32,14 +32,18 @@ namespace Server.Engines.Harvest
             new(0.0, 200.0, -200.0, false, new Type[] { null })
         };
 
-        private static readonly int[] m_WaterTiles =
+        private static readonly int[] _waterLandTiles =
         {
             0x00A8, 0x00AB,
-            0x0136, 0x0137,
-            0x5797, 0x579C,
-            0x746E, 0x7485,
-            0x7490, 0x74AB,
-            0x74B5, 0x75D5
+            0x0136, 0x0137
+        };
+
+        private static readonly int[] waterStaticTiles =
+        {
+            0x1797, 0x179C,
+            0x346E, 0x3485,
+            0x3490, 0x34AB,
+            0x34B5, 0x35D5
         };
 
         private Fishing()
@@ -53,7 +57,8 @@ namespace Server.Engines.Harvest
                 MinRespawn = TimeSpan.FromMinutes(10.0),
                 MaxRespawn = TimeSpan.FromMinutes(20.0),
                 Skill = SkillName.Fishing,
-                Tiles = m_WaterTiles,
+                LandTiles = _waterLandTiles,
+                StaticTiles = waterStaticTiles,
                 RangedTiles = true,
                 MaxRange = 4,
                 ConsumedPerHarvest = 1,
@@ -96,7 +101,7 @@ namespace Server.Engines.Harvest
             Definitions = new[] { fish };
         }
 
-        public static Fishing System => m_System ?? (m_System = new Fishing());
+        public static Fishing System => _system ?? (_system = new Fishing());
 
         public override void OnConcurrentHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
         {
@@ -145,9 +150,9 @@ namespace Server.Engines.Harvest
             var skillBase = from.Skills.Fishing.Base;
             var skillValue = from.Skills.Fishing.Value;
 
-            for (var i = 0; i < m_MutateTable.Length; ++i)
+            for (var i = 0; i < _mutateTable.Length; ++i)
             {
-                var entry = m_MutateTable[i];
+                var entry = _mutateTable[i];
 
                 if (!deepWater && entry.m_DeepWater)
                 {
@@ -479,7 +484,7 @@ namespace Server.Engines.Harvest
         {
             base.OnHarvestStarted(from, tool, def, toHarvest);
 
-            if (GetHarvestDetails(from, tool, toHarvest, out _, out var map, out var loc))
+            if (GetHarvestDetails(from, tool, toHarvest, out _, out var map, out var loc, out _))
             {
                 Timer.StartTimer(
                     TimeSpan.FromSeconds(1.5),
