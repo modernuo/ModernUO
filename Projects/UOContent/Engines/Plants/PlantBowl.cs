@@ -5,7 +5,7 @@ namespace Server.Engines.Plants
 {
     public class PlantBowl : Item
     {
-        private static readonly int[] m_DirtPatchTiles =
+        private static readonly int[] _dirtPatchLandTiles =
         {
             0x9, 0x15,
             0x71, 0x7C,
@@ -46,6 +46,13 @@ namespace Server.Engines.Plants
             0x72C9, 0x72CA
         };
 
+        private static readonly int[] _dirtPatchStaticTiles =
+        {
+            0x1B27, 0x1B3E,
+            0x31F4, 0x31FB,
+            0x32C9, 0x32CA
+        };
+
         [Constructible]
         public PlantBowl() : base(0x15FD) => Weight = 1.0;
 
@@ -84,18 +91,22 @@ namespace Server.Engines.Plants
         public static bool IsDirtPatch(object obj)
         {
             int tileID;
+            int[] tiles;
 
             if (obj is Static staticObj && !staticObj.Movable)
             {
-                tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
+                tileID = staticObj.ItemID;
+                tiles = _dirtPatchStaticTiles;
             }
             else if (obj is StaticTarget staticTarget)
             {
-                tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
+                tileID = staticTarget.ItemID;
+                tiles = _dirtPatchStaticTiles;
             }
             else if (obj is LandTarget landTarget)
             {
                 tileID = landTarget.TileID;
+                tiles = _dirtPatchLandTiles;
             }
             else
             {
@@ -104,9 +115,9 @@ namespace Server.Engines.Plants
 
             var contains = false;
 
-            for (var i = 0; !contains && i < m_DirtPatchTiles.Length; i += 2)
+            for (var i = 0; !contains && i < tiles.Length; i += 2)
             {
-                contains = tileID >= m_DirtPatchTiles[i] && tileID <= m_DirtPatchTiles[i + 1];
+                contains = tileID >= tiles[i] && tileID <= tiles[i + 1];
             }
 
             return contains;
