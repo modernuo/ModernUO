@@ -8,9 +8,9 @@ namespace Server.Engines.Harvest
 {
     public class Mining : HarvestSystem
     {
-        private static Mining m_System;
+        private static Mining _system;
 
-        private static readonly int[] m_Offsets =
+        private static readonly int[] _offsets =
         {
             -1, -1,
             -1, 0,
@@ -47,9 +47,12 @@ namespace Server.Engines.Harvest
 
             0x3F39, 0x3F74,
             0x3F82, 0x3F8F,
-            0x3F91, 0x3FCF,
+            0x3F91, 0x3FCF
+        };
 
-            0x453B, 0x454F,
+        private static readonly int[] _mountainCaveStaticTiles =
+        {
+            0x053B, 0x054F,
         };
 
         private static readonly int[] _sandTiles =
@@ -88,7 +91,8 @@ namespace Server.Engines.Harvest
                 MinRespawn = TimeSpan.FromMinutes(10.0),
                 MaxRespawn = TimeSpan.FromMinutes(20.0),
                 Skill = SkillName.Mining,
-                Tiles = _mountainCaveTiles,
+                LandTiles = _mountainCaveTiles,
+                StaticTiles = _mountainCaveStaticTiles,
                 RangedTiles = true,
                 MaxRange = 2,
                 ConsumedPerHarvest = 1,
@@ -226,7 +230,8 @@ namespace Server.Engines.Harvest
                 MinRespawn = TimeSpan.FromMinutes(10.0),
                 MaxRespawn = TimeSpan.FromMinutes(20.0),
                 Skill = SkillName.Mining,
-                Tiles = _sandTiles,
+                LandTiles = _sandTiles,
+                StaticTiles = Array.Empty<int>(),
                 RangedTiles = true,
                 MaxRange = 2,
                 ConsumedPerHarvest = 1,
@@ -261,7 +266,7 @@ namespace Server.Engines.Harvest
             Definitions = new[] { OreAndStone, Sand };
         }
 
-        public static Mining System => m_System ?? (m_System = new Mining());
+        public static Mining System => _system ?? (_system = new Mining());
 
         public HarvestDefinition OreAndStone { get; }
 
@@ -395,10 +400,10 @@ namespace Server.Engines.Harvest
                     {
                         var offset = Utility.Random(8) * 2;
 
-                        for (var i = 0; i < m_Offsets.Length; i += 2)
+                        for (var i = 0; i < _offsets.Length; i += 2)
                         {
-                            var x = from.X + m_Offsets[(offset + i) % m_Offsets.Length];
-                            var y = from.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
+                            var x = from.X + _offsets[(offset + i) % _offsets.Length];
+                            var y = from.Y + _offsets[(offset + i + 1) % _offsets.Length];
 
                             if (map.CanSpawnMobile(x, y, from.Z))
                             {
