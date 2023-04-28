@@ -6959,7 +6959,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     {
         var flags = 0x0;
 
-        if (m_Paralyzed || m_Frozen)
+        if (m_Paralyzed || m_Frozen || m_Spell?.BlocksMovement == true)
         {
             flags |= 0x01;
         }

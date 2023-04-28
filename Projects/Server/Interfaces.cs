@@ -33,6 +33,7 @@ public interface IHued
 
 public interface ISpell
 {
+    bool BlocksMovement { get; }
     bool IsCasting { get; }
     void OnCasterHurt();
     void OnCasterKilled();
