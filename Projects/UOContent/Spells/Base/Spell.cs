@@ -64,7 +64,7 @@ namespace Server.Spells
 
         public virtual bool BlockedByHorrificBeast => true;
         public virtual bool BlockedByAnimalForm => true;
-        public virtual bool BlocksMovement => true;
+        public virtual bool BlocksMovement => IsCasting;
 
         public virtual bool CheckNextSpellTime => Scroll is not BaseWand;
 
@@ -145,6 +145,8 @@ namespace Server.Spells
             {
                 Caster.Spell = null;
             }
+
+            Caster.Delta(MobileDelta.Flags); // Remove paralyze
         }
 
         public void StartDelayedDamageContext(Mobile m, Timer t)
@@ -420,6 +422,8 @@ namespace Server.Spells
             {
                 DoHurtFizzle();
             }
+
+            Caster.Delta(MobileDelta.Flags); // Remove paralyze
         }
 
         public virtual void DoHurtFizzle()
@@ -553,6 +557,8 @@ namespace Server.Spells
                         {
                             WeaponAbility.ClearCurrentAbility(Caster);
                         }
+
+                        Caster.Delta(MobileDelta.Flags); // Start paralyze
 
                         _castTimer = new CastTimer(this, castDelay);
                         // m_CastTimer.Start();
@@ -885,21 +891,23 @@ namespace Server.Spells
 
             protected override void OnTick()
             {
-                if (m_Spell.State != SpellState.Casting || m_Spell.Caster.Spell != m_Spell)
+                var caster = m_Spell.Caster;
+
+                if (m_Spell.State != SpellState.Casting || caster.Spell != m_Spell)
                 {
                     Stop();
                     return;
                 }
 
-                if (!m_Spell.Caster.Mounted && m_Spell.Info.Action >= 0)
+                if (!caster.Mounted && m_Spell.Info.Action >= 0)
                 {
-                    if (m_Spell.Caster.Body.IsHuman)
+                    if (caster.Body.IsHuman)
                     {
-                        m_Spell.Caster.Animate(m_Spell.Info.Action, 7, 1, true, false, 0);
+                        caster.Animate(m_Spell.Info.Action, 7, 1, true, false, 0);
                     }
-                    else if (m_Spell.Caster.Player && m_Spell.Caster.Body.IsMonster)
+                    else if (caster.Player && caster.Body.IsMonster)
                     {
-                        m_Spell.Caster.Animate(12, 7, 1, true, false, 0);
+                        caster.Animate(12, 7, 1, true, false, 0);
                     }
                 }
 
@@ -921,27 +929,31 @@ namespace Server.Spells
 
             protected override void OnTick()
             {
-                if (m_Spell?.Caster == null)
+                var caster = m_Spell?.Caster;
+
+                if (caster == null)
                 {
                     return;
                 }
 
-                if (m_Spell.State == SpellState.Casting && m_Spell.Caster.Spell == m_Spell)
+                if (m_Spell.State == SpellState.Casting && caster.Spell == m_Spell)
                 {
                     m_Spell.State = SpellState.Sequencing;
                     m_Spell._castTimer = null;
-                    m_Spell.Caster.OnSpellCast(m_Spell);
-                    m_Spell.Caster.Region?.OnSpellCast(m_Spell.Caster, m_Spell);
-                    m_Spell.Caster.NextSpellTime =
+                    caster.OnSpellCast(m_Spell);
+                    caster.Region?.OnSpellCast(caster, m_Spell);
+                    caster.NextSpellTime =
                         Core.TickCount + (int)m_Spell.GetCastRecovery().TotalMilliseconds; // Spell.NextSpellDelay;
 
-                    var originalTarget = m_Spell.Caster.Target;
+                    caster.Delta(MobileDelta.Flags); // Update paralyze
+
+                    var originalTarget = caster.Target;
 
                     m_Spell.OnCast();
 
-                    if (m_Spell.Caster.Player && m_Spell.Caster.Target != originalTarget)
+                    if (caster.Player && caster.Target != originalTarget)
                     {
-                        m_Spell.Caster.Target?.BeginTimeout(m_Spell.Caster, 30000); // 30 seconds
+                        caster.Target?.BeginTimeout(caster, 30000); // 30 seconds
                     }
 
                     m_Spell._castTimer = null;
