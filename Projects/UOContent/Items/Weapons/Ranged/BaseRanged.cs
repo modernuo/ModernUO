@@ -54,7 +54,8 @@ namespace Server.Items
 
                     if (canSwing)
                     {
-                        canSwing = attacker.Spell is not Spell sp || !sp.IsCasting || !sp.BlocksMovement;
+                        // On OSI you can swing + hold a cast at the same time
+                        canSwing = attacker.Spell is not Spell { IsCasting: true, BlocksMovement: true };
                     }
                 }
 

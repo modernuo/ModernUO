@@ -230,6 +230,13 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         " (Order)"
     };
 
+    private static bool _disableCastParalyze = true;
+
+    public static void Configure()
+    {
+        _disableCastParalyze = ServerConfiguration.GetSetting("spellCasting.disableCastParalyze", true);
+    }
+
     private List<object> _actions;
     private AccessLevel m_AccessLevel;
 
@@ -6959,7 +6966,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     {
         var flags = 0x0;
 
-        if (m_Paralyzed || m_Frozen)
+        if (m_Paralyzed || m_Frozen || _disableCastParalyze && m_Spell?.BlocksMovement == true)
         {
             flags |= 0x01;
         }
