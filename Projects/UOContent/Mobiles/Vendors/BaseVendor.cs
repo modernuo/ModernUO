@@ -30,7 +30,8 @@ namespace Server.Mobiles
         private readonly List<IBuyItemInfo> _buyInfo = new();
         private readonly List<IShopSellInfo> _sellInfo = new();
 
-        private static bool EnableVendorBuyOPL;
+        private static bool _enableVendorBuyOPL;
+        private static bool _vendorInvulnerable;
 
         public static void Configure()
         {
@@ -38,7 +39,9 @@ namespace Server.Mobiles
             // CUO is not compatible with this turned off
             // Also items may require a string description for their name to show up properly.
             // See SBAnimalTrainer for an example
-            EnableVendorBuyOPL = ServerConfiguration.GetSetting("opl.enableForVendorBuy", true);
+            _enableVendorBuyOPL = ServerConfiguration.GetSetting("opl.enableForVendorBuy", true);
+
+            _vendorInvulnerable = ServerConfiguration.GetSetting("vendor.isInvulnerable", false);
         }
 
         public static void Initialize()
@@ -90,7 +93,7 @@ namespace Server.Mobiles
 
         public virtual NpcGuild NpcGuild => NpcGuild.None;
 
-        public override bool IsInvulnerable => true;
+        public override bool IsInvulnerable => Core.LBR || _vendorInvulnerable;
 
         public virtual DateTime NextTrickOrTreat { get; set; }
 
@@ -875,7 +878,7 @@ namespace Server.Mobiles
             var list = new List<BuyItemState>(buyInfo.Length);
             var cont = BuyPack;
 
-            using var opls = PooledRefQueue<ObjectPropertyList>.Create(EnableVendorBuyOPL ? buyInfo.Length : 0);
+            using var opls = PooledRefQueue<ObjectPropertyList>.Create(_enableVendorBuyOPL ? buyInfo.Length : 0);
 
             for (var idx = 0; idx < buyInfo.Length; idx++)
             {
