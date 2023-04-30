@@ -192,8 +192,9 @@ public class Region : IComparable<Region>
 
     public Map Map { get; }
 
+    [JsonInclude]
     [JsonConverter(typeof(RegionByNameConverter))]
-    public Region Parent { get; set; }
+    public Region Parent { get; private set; }
 
     public List<Region> Children { get; } = new();
 
