@@ -141,8 +141,6 @@ namespace Server.Mobiles
             new(268, 624, 15)
         };
 
-        private readonly Dictionary<Skill, Dictionary<object, CountAndTimeStamp>> m_AntiMacroTable;
-
         private Dictionary<int, bool> m_AcquiredRecipes;
 
         private List<Mobile> m_AllFollowers;
@@ -206,7 +204,6 @@ namespace Server.Mobiles
 
             VisibilityList = new List<Mobile>();
             PermaFlags = new List<Mobile>();
-            m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
             RecentlyReported = new List<Mobile>();
 
             BOBFilter = new BOBFilter();
@@ -224,7 +221,6 @@ namespace Server.Mobiles
         public PlayerMobile(Serial s) : base(s)
         {
             VisibilityList = new List<Mobile>();
-            m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -2872,36 +2868,6 @@ namespace Server.Mobiles
             return base.IsHarmfulCriminal(target);
         }
 
-        public bool AntiMacroCheck(Skill skill, object obj)
-        {
-            if (obj == null || m_AntiMacroTable == null || AccessLevel != AccessLevel.Player)
-            {
-                return true;
-            }
-
-            if (!m_AntiMacroTable.TryGetValue(skill, out var tbl))
-            {
-                m_AntiMacroTable[skill] = tbl = new Dictionary<object, CountAndTimeStamp>();
-            }
-
-            if (tbl.TryGetValue(obj, out var count))
-            {
-                if (count.TimeStamp + SkillCheck.AntiMacro.Expire <= Core.Now)
-                {
-                    count.Count = 1;
-                    return true;
-                }
-
-                ++count.Count;
-                return count.Count <= SkillCheck.AntiMacro.Allowance;
-            }
-
-            tbl[obj] = count = new CountAndTimeStamp();
-            count.Count = 1;
-
-            return true;
-        }
-
         private void RevertHair()
         {
             SetHairMods(-1, -1);
@@ -3220,27 +3186,6 @@ namespace Server.Mobiles
 
         public override void Serialize(IGenericWriter writer)
         {
-            var toRemove = new List<object>();
-
-            // cleanup our anti-macro table
-            foreach (var t in m_AntiMacroTable.Values)
-            {
-                toRemove.Clear();
-
-                foreach (var (k, v) in t)
-                {
-                    if (v.TimeStamp + SkillCheck.AntiMacro.Expire <= Core.Now)
-                    {
-                        toRemove.Add(k);
-                    }
-                }
-
-                foreach (var key in toRemove)
-                {
-                    t.Remove(key);
-                }
-            }
-
             base.Serialize(writer);
 
             writer.Write(29); // version
@@ -4585,23 +4530,6 @@ namespace Server.Mobiles
             if (m_BuffTable.Count <= 0)
             {
                 m_BuffTable = null;
-            }
-        }
-
-        private class CountAndTimeStamp
-        {
-            private int m_Count;
-
-            public DateTime TimeStamp { get; private set; }
-
-            public int Count
-            {
-                get => m_Count;
-                set
-                {
-                    m_Count = value;
-                    TimeStamp = Core.Now;
-                }
             }
         }
 
