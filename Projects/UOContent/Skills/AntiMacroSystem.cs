@@ -12,8 +12,8 @@ namespace Server.Skills;
 
 public static class AntiMacroSystem
 {
-// *** NOTE ***: Modifying these values will not change an already created antimacro.json file!
-    private static readonly bool[] _skillThatUseAntiMacro =
+    // *** NOTE ***: Modifying these values will not change an already created antimacro.json file!
+    private static readonly bool[] _antiMacroSkillDefaults =
     {
         false, // Alchemy = 0,
         true,  // Anatomy = 1,
@@ -97,7 +97,7 @@ public static class AntiMacroSystem
                 Allowance = 3,
                 LocationSize = 5,
                 Expire = TimeSpan.FromMinutes(5.0),
-                SkillsThatUseAntiMacro = new BitArray(_skillThatUseAntiMacro)
+                SkillsThatUseAntiMacro = new BitArray(_antiMacroSkillDefaults)
             };
 
             JsonConfig.Serialize(Path.Join(Core.BaseDirectory, _antiMacroPath), Settings);
