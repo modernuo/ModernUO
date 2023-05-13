@@ -8,7 +8,7 @@ using Server.Collections;
 using Server.Json;
 using Server.Mobiles;
 
-namespace Server.Skills;
+namespace Server.Misc;
 
 public static class AntiMacroSystem
 {
