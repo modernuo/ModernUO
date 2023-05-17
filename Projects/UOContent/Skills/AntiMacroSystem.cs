@@ -194,7 +194,7 @@ public static class AntiMacroSystem
 
     public static bool AntiMacroCheck(PlayerMobile pm, Skill skill, object obj)
     {
-        if (Settings.Enabled || obj == null || pm.AccessLevel != AccessLevel.Player || !UseAntiMacro(skill.Info.SkillID))
+        if (!Settings.Enabled || obj == null || pm.AccessLevel != AccessLevel.Player || !UseAntiMacro(skill.Info.SkillID))
         {
             return true;
         }
