@@ -15,7 +15,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 10/11/2016/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows&logoColor=0078D6&labelColor=222222)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+[![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows&logoColor=0078D6&labelColor=222222)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 10.15+](https://img.shields.io/badge/-ventura-222222?logo=apple&logoColor=white&labelColor=222222)
 [![Debian 10+](https://img.shields.io/badge/-bullseye-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
 [![Ubuntu 16+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
@@ -30,11 +30,11 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![Arch](https://img.shields.io/badge/-Arch-1793D1?logo=archlinux&logoColor=1793D1&labelColor=222222)](https://archlinux.org/download/)
 
 #### Running the server
-[![.NET](https://img.shields.io/badge/-7.0.3-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+[![.NET](https://img.shields.io/badge/-7.0.4-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%207.0.201%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+[![.NET](https://img.shields.io/badge/-%207.0.202%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 #### Supported IDEs
 
@@ -57,8 +57,8 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 ## Building/Publishing
 - Run `./publish.cmd [release|debug (default: release)] [os] [arch (default: x64)]`
   - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md)
-    - `win` - Windows 10/11/2016/2019/2022
-    - `osx` - MacOS 10.15/11/12/13 (Catalina, Big Sur, Monterey, Ventura)
+    - `win` - Windows 10/11/2019/2022
+    - `osx` - MacOS 11/12/13 (Big Sur, Monterey, Ventura)
     - `linux` - Linux
   - `arch`
     - `x64` - Intel 64-bit
@@ -83,7 +83,7 @@ apt-get install -y libicu-dev libz-dev zstd libargon2-dev tzdata
 
 ## Running the Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
-- Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory on the server
+- Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory on the
 
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)
