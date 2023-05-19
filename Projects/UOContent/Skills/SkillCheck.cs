@@ -1,9 +1,5 @@
 using System;
-using System.IO;
-using System.Text.Json.Serialization;
-using Server.Collections;
 using Server.Factions;
-using Server.Json;
 using Server.Mobiles;
 
 namespace Server.Misc;
@@ -21,97 +17,8 @@ public static class SkillCheck
     // Publish 16 changed max stats from 100 to 125
     private static int StatMax = Core.LBR ? 125 : 100;
 
-    // *** NOTE ***: Modifying these values will not change an already created antimacro.json file!
-    private static readonly bool[] _skillThatUseAntiMacro =
-    {
-        false, // Alchemy = 0,
-        true,  // Anatomy = 1,
-        true,  // AnimalLore = 2,
-        true,  // ItemID = 3,
-        true,  // ArmsLore = 4,
-        false, // Parry = 5,
-        true,  // Begging = 6,
-        false, // Blacksmith = 7,
-        false, // Fletching = 8,
-        true,  // Peacemaking = 9,
-        true,  // Camping = 10,
-        false, // Carpentry = 11,
-        false, // Cartography = 12,
-        false, // Cooking = 13,
-        true,  // DetectHidden = 14,
-        true,  // Discordance = 15,
-        true,  // EvalInt = 16,
-        true,  // Healing = 17,
-        true,  // Fishing = 18,
-        true,  // Forensics = 19,
-        true,  // Herding = 20,
-        true,  // Hiding = 21,
-        true,  // Provocation = 22,
-        false, // Inscribe = 23,
-        true,  // Lockpicking = 24,
-        true,  // Magery = 25,
-        true,  // MagicResist = 26,
-        false, // Tactics = 27,
-        true,  // Snooping = 28,
-        true,  // Musicianship = 29,
-        true,  // Poisoning = 30,
-        false, // Archery = 31,
-        true,  // SpiritSpeak = 32,
-        true,  // Stealing = 33,
-        false, // Tailoring = 34,
-        true,  // AnimalTaming = 35,
-        true,  // TasteID = 36,
-        false, // Tinkering = 37,
-        true,  // Tracking = 38,
-        true,  // Veterinary = 39,
-        false, // Swords = 40,
-        false, // Macing = 41,
-        false, // Fencing = 42,
-        false, // Wrestling = 43,
-        true,  // Lumberjacking = 44,
-        true,  // Mining = 45,
-        true,  // Meditation = 46,
-        true,  // Stealth = 47,
-        true,  // RemoveTrap = 48,
-        true,  // Necromancy = 49,
-        false, // Focus = 50,
-        true,  // Chivalry = 51
-        true,  // Bushido = 52
-        true,  // Ninjitsu = 53
-        true,  // Spellweaving
-        true,  // Mysticism = 55
-        true,  // Imbuing = 56
-        false, // Throwing = 57
-    };
-
     private static readonly TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
     private static readonly TimeSpan m_PetStatGainDelay = TimeSpan.FromMinutes(5.0);
-
-    private const string _antiMacroPath = "Configuration/antimacro.json";
-    public static AntiMacroSettings AntiMacro { get; private set; }
-
-    public static void Configure()
-    {
-        var path = Path.Combine(Core.BaseDirectory, _antiMacroPath);
-
-        if (File.Exists(path))
-        {
-            AntiMacro = JsonConfig.Deserialize<AntiMacroSettings>(path);
-        }
-        else
-        {
-            AntiMacro = new AntiMacroSettings
-            {
-                Enabled = false,
-                Allowance = 3,
-                LocationSize = 5,
-                Expire = TimeSpan.FromMinutes(5.0),
-                SkillsThatUseAntiMacro = new BitArray(_skillThatUseAntiMacro)
-            };
-
-            JsonConfig.Serialize(Path.Join(Core.BaseDirectory, _antiMacroPath), AntiMacro);
-        }
-    }
 
     public static void Initialize()
     {
@@ -145,7 +52,7 @@ public static class SkillCheck
 
         var chance = (value - minSkill) / (maxSkill - minSkill);
 
-        var size = AntiMacro.LocationSize;
+        var size = AntiMacroSystem.Settings.LocationSize;
         var loc = new Point2D(from.Location.X / size, from.Location.Y / size);
         return CheckSkill(from, skill, loc, chance);
     }
@@ -169,7 +76,7 @@ public static class SkillCheck
             return true; // No challenge
         }
 
-        var size = AntiMacro.LocationSize;
+        var size = AntiMacroSystem.Settings.LocationSize;
         var loc = new Point2D(from.Location.X / size, from.Location.Y / size);
         return CheckSkill(from, skill, loc, chance);
     }
@@ -279,12 +186,7 @@ public static class SkillCheck
             return false;
         }
 
-        if (AntiMacro.Enabled && from is PlayerMobile mobile && AntiMacro.UseAntiMacro(skill.Info.SkillID))
-        {
-            return mobile.AntiMacroCheck(skill, obj);
-        }
-
-        return true;
+        return from is not PlayerMobile mobile || AntiMacroSystem.AntiMacroCheck(mobile, skill, obj);
     }
 
     public static void Gain(Mobile from, Skill skill)
@@ -517,25 +419,5 @@ public static class SkillCheck
         var atrophy = from.RawStatTotal / (double)from.StatCap >= Utility.RandomDouble();
 
         IncreaseStat(from, stat, atrophy);
-    }
-
-    public record AntiMacroSettings
-    {
-        // How many times may we use the same location/target for gain
-        public int Allowance { get; init; }
-
-        // The size of each location, make this smaller so players dont have to move as far
-        public int LocationSize { get; init; }
-
-        public bool Enabled { get; init; }
-
-        // How long do we remember targets/locations?
-        public TimeSpan Expire { get; init; }
-
-        [JsonConverter(typeof(BitArrayEnumIndexConverter<SkillName>))]
-        public BitArray SkillsThatUseAntiMacro { get; init; }
-
-        public bool UseAntiMacro(int skillId) =>
-            skillId < SkillsThatUseAntiMacro.Length && SkillsThatUseAntiMacro[skillId];
     }
 }
