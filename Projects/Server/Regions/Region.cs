@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
+using Server.Json;
 using Server.Logging;
 using Server.Network;
 using Server.Targeting;
@@ -136,6 +139,7 @@ public class Region : IComparable<Region>
     {
     }
 
+    [JsonConstructor] // Don't include parent, since it is special
     public Region(string name, Map map, int priority, params Rectangle3D[] area) : this(name, map, null, area) =>
         Priority = priority;
 
@@ -173,10 +177,10 @@ public class Region : IComparable<Region>
     }
 
     // Used during deserialization only
-    public Expansion MinExpansion { get; set; }
+    public Expansion MinExpansion { get; set; } = Expansion.None;
 
     // Used during deserialization only
-    public Expansion MaxExpansion { get; set; }
+    public Expansion MaxExpansion { get; set; } = Expansion.EJ;
 
     public static List<Region> Regions { get; } = new();
 
@@ -188,7 +192,9 @@ public class Region : IComparable<Region>
 
     public Map Map { get; }
 
-    public Region Parent { get; }
+    [JsonInclude]
+    [JsonConverter(typeof(RegionByNameConverter))]
+    public Region Parent { get; private set; }
 
     public List<Region> Children { get; } = new();
 

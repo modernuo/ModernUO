@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Server.Mobiles;
 using Server.Utilities;
 
@@ -12,6 +13,7 @@ public class GuardedRegion : BaseRegion
 
     private readonly Dictionary<Mobile, GuardTimer> m_GuardCandidates = new();
 
+    [JsonConstructor] // Don't include parent, since it is special
     public GuardedRegion(string name, Map map, int priority, params Rectangle3D[] area) :
         base(name, map, priority, area) => GuardType = DefaultGuardType;
 

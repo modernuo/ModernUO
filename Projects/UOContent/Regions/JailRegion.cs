@@ -1,9 +1,15 @@
+using System.Text.Json.Serialization;
 using Server.Spells;
 
 namespace Server.Regions;
 
 public class JailRegion : BaseRegion
 {
+    [JsonConstructor] // Don't include parent, since it is special
+    public JailRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
+    {
+    }
+
     public JailRegion(string name, Map map, Region parent, params Rectangle3D[] area)
         : base(name, map, parent, area)
     {

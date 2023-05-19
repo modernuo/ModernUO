@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Server.Spells;
 using Server.Spells.Sixth;
 
@@ -5,6 +6,11 @@ namespace Server.Regions;
 
 public class GreenAcresRegion : BaseRegion
 {
+    [JsonConstructor] // Don't include parent, since it is special
+    public GreenAcresRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
+    {
+    }
+
     public GreenAcresRegion(string name, Map map, Region parent, params Rectangle3D[] area) : base(name, map, parent, area)
     {
     }

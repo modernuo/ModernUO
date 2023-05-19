@@ -1,9 +1,15 @@
+using System.Text.Json.Serialization;
 using Server;
 using Server.Regions;
 using Server.Spells;
 
 public class NoTravelSpellsAllowedRegion : DungeonRegion
 {
+    [JsonConstructor] // Don't include parent, since it is special
+    public NoTravelSpellsAllowedRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
+    {
+    }
+
     public NoTravelSpellsAllowedRegion(string name, Map map, Region parent, params Rectangle3D[] area)
         : base(name, map, parent, area)
     {
