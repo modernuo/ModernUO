@@ -134,7 +134,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 1492, "y1": 1602, "z1": 0, "x2": 1500, "y2": 1621, "z2": 128},
@@ -155,7 +155,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Wheatfield in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1120, "y1": 1776, "x2": 1152, "y2": 1808}],
@@ -164,7 +164,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Wheatfield in Britain 2",
     "Priority": 50,
     "Area": [{"x1": 1184, "y1": 1808, "x2": 1216, "y2": 1840}],
@@ -173,7 +173,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Wheatfield in Britain 3",
     "Priority": 50,
     "Area": [{"x1": 1216, "y1": 1872, "x2": 1248, "y2": 1904}],
@@ -182,7 +182,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Carrot Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1208, "y1": 1712, "x2": 1224, "y2": 1736}],
@@ -191,7 +191,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "An Onion Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1224, "y1": 1712, "x2": 1240, "y2": 1736}],
@@ -200,7 +200,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Cabbage Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1176, "y1": 1672, "x2": 1192, "y2": 1695}],
@@ -209,7 +209,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Turnip Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1192, "y1": 1672, "x2": 1208, "y2": 1696}],
@@ -218,7 +218,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Wheatfield in Britain 4",
     "Priority": 50,
     "Area": [{"x1": 1104, "y1": 1608, "x2": 1136, "y2": 1640}],
@@ -227,7 +227,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Wheatfield in Britain 5",
     "Priority": 50,
     "Area": [{"x1": 1136, "y1": 1560, "x2": 1168, "y2": 1592}],
@@ -236,7 +236,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Turnip Field in Britain 2",
     "Priority": 50,
     "Area": [{"x1": 1208, "y1": 1592, "x2": 1224, "y2": 1616}],
@@ -245,7 +245,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
     "Name": "A Carrot Field in Britain 2",
     "Priority": 50,
     "Area": [{"x1": 1224, "y1": 1592, "x2": 1240, "y2": 1616}],
@@ -275,7 +275,7 @@
   {
     "$type": "TownRegion",
     "Map": "Felucca",
-    "Parent": "Jhelom Islands",
+    "Parent": { "Name": "Jhelom Islands", "Map": "Felucca" },
     "Name": "Jhelom",
     "Priority": 50,
     "Area": [
@@ -289,7 +289,7 @@
     "$type": "NoHousingRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Jhelom",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 1352, "y1": 3800, "z1": -20, "x2": 1368, "y2": 3832, "z2": 128},
@@ -317,7 +317,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Minoc",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 2457, "y1": 397, "x2": 2497, "y2": 405},
@@ -347,7 +347,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Ocllo",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 3664, "y1": 2608, "x2": 3680, "y2": 2624},
@@ -375,7 +375,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Trinsic",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 1834, "y1": 2728, "x2": 1856, "y2": 2744},
@@ -404,7 +404,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Vesper",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 2952, "y1": 864, "x2": 2968, "y2": 896},
@@ -435,7 +435,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
     "Priority": 50,
     "Area": [{"x1": 600, "y1": 808, "z1": 0, "x2": 624, "y2": 832, "z2": 39}]
   },
@@ -443,7 +443,7 @@
     "$type": "TownRegion",
     "RuneName": "A Field of Sheep in Yew",
     "Map": "Felucca",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
     "Name": "A Field of Sheep in Yew 1",
     "Priority": 50,
     "Area": [{"x1": 664, "y1": 928, "x2": 686, "y2": 950}],
@@ -453,7 +453,7 @@
     "$type": "TownRegion",
     "RuneName": "A Field of Sheep in Yew",
     "Map": "Felucca",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
     "Name": "A Field of Sheep in Yew 2",
     "Priority": 50,
     "Area": [{"x1": 664, "y1": 1168, "x2": 686, "y2": 1190}],
@@ -463,7 +463,7 @@
     "$type": "TownRegion",
     "RuneName": "A Farm in Yew",
     "Map": "Felucca",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
     "Name": "A Farm in Yew",
     "Priority": 50,
     "Area": [{"x1": 560, "y1": 1088, "x2": 582, "y2": 1110}],
@@ -473,7 +473,7 @@
     "$type": "TownRegion",
     "RuneName": "A Wheatfield in Yew",
     "Map": "Felucca",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
     "Name": "A Wheatfield in Yew 1",
     "Priority": 50,
     "Area": [{"x1": 560, "y1": 1232, "x2": 576, "y2": 1248}],
@@ -483,7 +483,7 @@
     "$type": "TownRegion",
     "RuneName": "A Wheatfield in Yew",
     "Map": "Felucca",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
     "Name": "A Wheatfield in Yew 2",
     "Priority": 50,
     "Area": [{"x1": 368, "y1": 1176, "x2": 382, "y2": 1208}],
@@ -514,7 +514,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Wind",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 5159, "y1": 15, "x2": 5184, "y2": 24},
@@ -541,7 +541,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Serpent's Hold",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 2960, "y1": 3400, "z1": 0, "x2": 2976, "y2": 3416, "z2": 128},
@@ -562,7 +562,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Skara Brae",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 600, "y1": 2232, "x2": 616, "y2": 2256},
@@ -587,7 +587,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Nujel'm",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 3736, "y1": 1184, "z1": 0, "x2": 3752, "y2": 1207, "z2": 128},
@@ -643,7 +643,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Moonglow",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 4384, "y1": 1152, "z1": 0, "x2": 4392, "y2": 1176, "z2": 128},
@@ -673,7 +673,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Magincia",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 3680, "y1": 2152, "x2": 3704, "y2": 2160},
@@ -696,7 +696,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Buccaneer's Den",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
     "Priority": 50,
     "Area": [
       {"x1": 2712, "y1": 2080, "x2": 2728, "y2": 2096},
@@ -1031,7 +1031,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Delucia",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
     "Priority": 50,
     "Area": [{"x1": 5194, "y1": 4053, "x2": 5204, "y2": 4073}]
   },
@@ -1050,7 +1050,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
-    "Parent": "Papua",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
     "Priority": 50,
     "Area": [{"x1": 5757, "y1": 3150, "x2": 5781, "y2": 3174}]
   },
@@ -1304,7 +1304,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 1492, "y1": 1602, "z1": 0, "x2": 1500, "y2": 1621, "z2": 128},
@@ -1325,7 +1325,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Wheatfield in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1120, "y1": 1776, "x2": 1152, "y2": 1808}],
@@ -1334,7 +1334,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Wheatfield in Britain 2",
     "Priority": 50,
     "Area": [{"x1": 1184, "y1": 1808, "x2": 1216, "y2": 1840}],
@@ -1343,7 +1343,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Wheatfield in Britain 3",
     "Priority": 50,
     "Area": [{"x1": 1216, "y1": 1872, "x2": 1248, "y2": 1904}],
@@ -1352,7 +1352,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Carrot Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1208, "y1": 1712, "x2": 1224, "y2": 1736}],
@@ -1361,7 +1361,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "An Onion Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1224, "y1": 1712, "x2": 1240, "y2": 1736}],
@@ -1370,7 +1370,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Cabbage Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1176, "y1": 1672, "x2": 1192, "y2": 1695}],
@@ -1379,7 +1379,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Turnip Field in Britain 1",
     "Priority": 50,
     "Area": [{"x1": 1192, "y1": 1672, "x2": 1208, "y2": 1696}],
@@ -1388,7 +1388,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Wheatfield in Britain 4",
     "Priority": 50,
     "Area": [{"x1": 1104, "y1": 1608, "x2": 1136, "y2": 1640}],
@@ -1397,7 +1397,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Wheatfield in Britain 5",
     "Priority": 50,
     "Area": [{"x1": 1136, "y1": 1560, "x2": 1168, "y2": 1592}],
@@ -1406,7 +1406,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Turnip Field in Britain 2",
     "Priority": 50,
     "Area": [{"x1": 1208, "y1": 1592, "x2": 1224, "y2": 1616}],
@@ -1415,7 +1415,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Britain",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
     "Name": "A Carrot Field in Britain 2",
     "Priority": 50,
     "Area": [{"x1": 1224, "y1": 1592, "x2": 1240, "y2": 1616}],
@@ -1445,7 +1445,7 @@
   {
     "$type": "TownRegion",
     "Map": "Trammel",
-    "Parent": "Jhelom Islands",
+    "Parent": { "Name": "Jhelom Islands", "Map": "Trammel" },
     "Name": "Jhelom",
     "Priority": 50,
     "Area": [
@@ -1459,7 +1459,7 @@
     "$type": "NoHousingRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Jhelom",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 1352, "y1": 3800, "z1": -20, "x2": 1368, "y2": 3832, "z2": 128},
@@ -1487,7 +1487,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Minoc",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 2457, "y1": 397, "x2": 2497, "y2": 405},
@@ -1506,7 +1506,7 @@
   {
     "$type": "GuardedRegion",
     "Map": "Trammel",
-    "Parent": "Haven Island",
+    "Parent": { "Name": "Haven Island", "Map": "Trammel" },
     "Name": "New Haven Moongate",
     "Priority": 50,
     "Area": [{"x1": 3446, "y1": 2674, "x2": 3456, "y2": 2684}]
@@ -1516,7 +1516,7 @@
     "RuneName": "New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "Haven Island",
+    "Parent": { "Name": "Haven Island", "Map": "Trammel" },
     "Name": "New Haven",
     "Priority": 50,
     "Area": [{"x1": 3416, "y1": 2480, "x2": 3545, "y2": 2648}],
@@ -1528,7 +1528,7 @@
     "RuneName": "The Little Shop of Alchemy in New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Alchemist",
     "Priority": 50,
     "Area": [{"x1": 3457, "y1": 2563, "x2": 3466, "y2": 2572}]
@@ -1538,7 +1538,7 @@
     "RuneName": "the Bardic Guild in New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Bard",
     "Priority": 50,
     "Area": [
@@ -1552,7 +1552,7 @@
     "RuneName": "the Warrior Guild Hall in New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "Warrior's Guild Hall",
     "Priority": 50,
     "Area": [
@@ -1564,7 +1564,7 @@
     "$type": "NoHousingRegion",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "Warrior's Guild Hall",
+    "Parent": { "Name": "Warrior's Guild Hall", "Map": "Trammel" },
     "Name": "the New Haven Warrior",
     "Priority": 50,
     "Area": [
@@ -1576,7 +1576,7 @@
     "$type": "NoHousingRegion",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "Warrior's Guild Hall",
+    "Parent": { "Name": "Warrior's Guild Hall", "Map": "Trammel" },
     "Name": "the New Haven Bowyer",
     "Priority": 50,
     "Area": [{"x1": 3529, "y1": 2531, "x2": 3541, "y2": 2550}]
@@ -1586,7 +1586,7 @@
     "RuneName": "A Stitch In Time in New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Tailor",
     "Priority": 50,
     "Area": [
@@ -1599,7 +1599,7 @@
     "RuneName": "Carpenters of New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Carpenter",
     "Priority": 50,
     "Area": [
@@ -1612,7 +1612,7 @@
     "RuneName": "Mapmakers of New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Mapmaker",
     "Priority": 50,
     "Area": [{"x1": 3490, "y1": 2588, "x2": 3497, "y2": 2595}]
@@ -1622,7 +1622,7 @@
     "RuneName": "New Haven Magery School",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Mage",
     "Priority": 50,
     "Area": [{"x1": 3464, "y1": 2488, "x2": 3491, "y2": 2504}]
@@ -1633,7 +1633,7 @@
     "NoLogoutDelay": true,
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Inn",
     "Priority": 50,
     "Area": [
@@ -1646,7 +1646,7 @@
     "RuneName": "the docks in New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Docks",
     "Priority": 50,
     "Area": [
@@ -1660,7 +1660,7 @@
     "RuneName": "the First Bank of New Haven",
     "MinExpansion": "ML",
     "Map": "Trammel",
-    "Parent": "New Haven",
+    "Parent": { "Name": "New Haven", "Map": "Trammel" },
     "Name": "the New Haven Bank",
     "Priority": 50,
     "Area": [{"x1": 3479, "y1": 2565, "x2": 3492, "y2": 2580}]
@@ -1670,7 +1670,7 @@
     "RuneName": "Haven City",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven Island",
+    "Parent": { "Name": "Haven Island", "Map": "Trammel" },
     "Name": "Haven",
     "Priority": 50,
     "Area": [
@@ -1687,7 +1687,7 @@
     "RuneName": "the Woodsman in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Woodsman in Haven",
     "Priority": 50,
     "Area": [
@@ -1700,7 +1700,7 @@
     "RuneName": "the Prime Cut Butcher Shop in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Prime Cut Butcher Shop in Haven",
     "Priority": 50,
     "Area": [{"x1": 3704, "y1": 2648, "x2": 3720, "y2": 2656}]
@@ -1710,7 +1710,7 @@
     "RuneName": "a farm in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Priority": 50,
     "Area": [{"x1": 3728, "y1": 2632, "x2": 3736, "y2": 2640}]
   },
@@ -1719,7 +1719,7 @@
     "RuneName": "a farm in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Priority": 50,
     "Area": [{"x1": 3704, "y1": 2584, "x2": 3712, "y2": 2592}]
   },
@@ -1728,7 +1728,7 @@
     "RuneName": "a farm in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Priority": 50,
     "Area": [{"x1": 3736, "y1": 2561, "x2": 3744, "y2": 2568}]
   },
@@ -1737,7 +1737,7 @@
     "RuneName": "Mapmakers of Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "Mapmakers of Haven",
     "Priority": 50,
     "Area": [{"x1": 3624, "y1": 2632, "x2": 3640, "y2": 2640}]
@@ -1747,7 +1747,7 @@
     "RuneName": "The Haven Blacksmith",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "The Haven Blacksmith",
     "Priority": 50,
     "Area": [{"x1": 3641, "y1": 2613, "x2": 3646, "y2": 2624}]
@@ -1757,7 +1757,7 @@
     "RuneName": "the Second Bank of Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Second Bank of Haven",
     "Priority": 50,
     "Area": [
@@ -1770,7 +1770,7 @@
     "RuneName": "Uzeraan's Mansion",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "Uzeraan's Mansion",
     "Priority": 50,
     "Area": [
@@ -1784,7 +1784,7 @@
     "$type": "NoHousingRegion",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Uzeraan's Mansion",
+    "Parent": { "Name": "Uzeraan's Mansion", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 3592, "y1": 2595, "x2": 3612, "y2": 2599},
@@ -1797,7 +1797,7 @@
     "RuneName": "Last Chance Provisioners in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "Last Chance Provisioners in Haven",
     "Priority": 50,
     "Area": [
@@ -1810,7 +1810,7 @@
     "RuneName": "the Healers of Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Healers of Haven",
     "Priority": 50,
     "Area": [
@@ -1826,7 +1826,7 @@
     "RuneName": "The Little Shop of Magic in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "The Little Shop of Magic in Haven",
     "Priority": 50,
     "Area": [
@@ -1840,7 +1840,7 @@
     "RuneName": "The Shakin' Bakery in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "The Shakin' Bakery in Haven",
     "Priority": 50,
     "Area": [
@@ -1854,7 +1854,7 @@
     "RuneName": "the Bardic Guild in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Bardic Guild in Haven",
     "Priority": 50,
     "Area": [
@@ -1867,7 +1867,7 @@
     "RuneName": "Carpenters of Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "Carpenters of Haven",
     "Priority": 50,
     "Area": [
@@ -1880,7 +1880,7 @@
     "RuneName": "Haven Clockworks and Tinker Shop",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "Haven Clockworks and Tinker Shop",
     "Priority": 50,
     "Area": [
@@ -1893,7 +1893,7 @@
     "RuneName": "The Haven Thieves' Guild",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "The Haven Thieves' Guild",
     "Priority": 50,
     "Area": [
@@ -1906,7 +1906,7 @@
     "RuneName": "A Stitch in Time in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "A Stitch in Time in Haven",
     "Priority": 50,
     "Area": [
@@ -1919,7 +1919,7 @@
     "RuneName": "the Haven Public Library",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Haven Public Library",
     "Priority": 50,
     "Area": [
@@ -1933,7 +1933,7 @@
     "NoLogoutDelay": true,
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "The Gentle Rest Inn in New Haven",
     "Priority": 50,
     "Area": [
@@ -1947,7 +1947,7 @@
     "NoLogoutDelay": true,
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "The Albatross Bar and Grill in Haven",
     "Priority": 50,
     "Area": [
@@ -1961,7 +1961,7 @@
     "RuneName": "the Proving Grounds in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Proving Grounds in Haven",
     "Priority": 50,
     "Area": [
@@ -1974,7 +1974,7 @@
     "RuneName": "the Bullseye Marksmen in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Bullseye Marksmen in Haven",
     "Priority": 50,
     "Area": [{"x1": 3742, "y1": 2575, "x2": 3750, "y2": 2586}]
@@ -1984,7 +1984,7 @@
     "RuneName": "the docks in Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the docks in Haven",
     "Priority": 50,
     "Area": [
@@ -1998,7 +1998,7 @@
     "RuneName": "the Mystic Mines of Haven",
     "MaxExpansion": "SE",
     "Map": "Trammel",
-    "Parent": "Haven",
+    "Parent": { "Name": "Haven", "Map": "Trammel" },
     "Name": "the Mystic Mines of Haven",
     "Priority": 50,
     "Area": [{"x1": 3752, "y1": 2698, "x2": 3757, "y2": 2707}]
@@ -2023,7 +2023,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Trinsic",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 1834, "y1": 2728, "x2": 1856, "y2": 2744},
@@ -2052,7 +2052,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Vesper",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 2952, "y1": 864, "x2": 2968, "y2": 896},
@@ -2083,7 +2083,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
     "Priority": 50,
     "Area": [{"x1": 600, "y1": 808, "z1": 0, "x2": 624, "y2": 832, "z2": 39}]
   },
@@ -2091,7 +2091,7 @@
     "$type": "TownRegion",
     "RuneName": "A Field of Sheep in Yew",
     "Map": "Trammel",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
     "Name": "A Field of Sheep in Yew 1",
     "Priority": 50,
     "Area": [{"x1": 664, "y1": 928, "x2": 686, "y2": 950}],
@@ -2101,7 +2101,7 @@
     "$type": "TownRegion",
     "RuneName": "A Field of Sheep in Yew",
     "Map": "Trammel",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
     "Name": "A Field of Sheep in Yew 2",
     "Priority": 50,
     "Area": [{"x1": 664, "y1": 1168, "x2": 686, "y2": 1190}],
@@ -2111,7 +2111,7 @@
     "$type": "TownRegion",
     "RuneName": "A Farm in Yew",
     "Map": "Trammel",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
     "Name": "A Farm in Yew",
     "Priority": 50,
     "Area": [{"x1": 560, "y1": 1088, "x2": 582, "y2": 1110}],
@@ -2121,7 +2121,7 @@
     "$type": "TownRegion",
     "RuneName": "A Wheatfield in Yew",
     "Map": "Trammel",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
     "Name": "A Wheatfield in Yew 1",
     "Priority": 50,
     "Area": [{"x1": 560, "y1": 1232, "x2": 576, "y2": 1248}],
@@ -2131,7 +2131,7 @@
     "$type": "TownRegion",
     "RuneName": "A Wheatfield in Yew",
     "Map": "Trammel",
-    "Parent": "Yew",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
     "Name": "A Wheatfield in Yew 2",
     "Priority": 50,
     "Area": [{"x1": 368, "y1": 1176, "x2": 382, "y2": 1208}],
@@ -2162,7 +2162,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Wind",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 5159, "y1": 15, "x2": 5184, "y2": 24},
@@ -2189,7 +2189,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Serpent's Hold",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 2960, "y1": 3400, "z1": 0, "x2": 2976, "y2": 3416, "z2": 128},
@@ -2210,7 +2210,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Skara Brae",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 600, "y1": 2232, "x2": 616, "y2": 2256},
@@ -2235,7 +2235,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Nujel'm",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 3736, "y1": 1184, "z1": 0, "x2": 3752, "y2": 1207, "z2": 128},
@@ -2291,7 +2291,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Moonglow",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
     "Name": "The Scholar's Inn",
     "Priority": 50,
     "Area": [
@@ -2322,7 +2322,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Magincia",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 3680, "y1": 2152, "x2": 3704, "y2": 2160},
@@ -2345,7 +2345,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Buccaneer's Den",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
     "Priority": 50,
     "Area": [
       {"x1": 2712, "y1": 2080, "x2": 2728, "y2": 2096},
@@ -2670,7 +2670,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Delucia",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
     "Priority": 50,
     "Area": [{"x1": 5194, "y1": 4053, "x2": 5204, "y2": 4073}]
   },
@@ -2689,7 +2689,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
-    "Parent": "Papua",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
     "Priority": 50,
     "Area": [{"x1": 5757, "y1": 3150, "x2": 5781, "y2": 3174}]
   },
@@ -2927,7 +2927,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Ilshenar",
-    "Parent": "Gargoyle City",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
     "Priority": 50,
     "Area": [{"x1": 827, "y1": 694, "x2": 853, "y2": 727}]
   },
@@ -3089,7 +3089,7 @@
     "$type": "BaseRegion",
     "NoLogoutDelay": true,
     "Map": "Ilshenar",
-    "Parent": "Twin Oaks",
+    "Parent": { "Name": "Twin Oaks", "Map": "Ilshenar" },
     "Priority": 48,
     "Area": [{"x1": 1546, "y1": 1037, "x2": 1567, "y2": 1057}]
   },
@@ -3209,7 +3209,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Ilshenar",
-    "Parent": "Mistas",
+    "Parent": { "Name": "Mistas", "Map": "Ilshenar" },
     "Priority": 48,
     "Area": [{"x1": 752, "y1": 1131, "x2": 768, "y2": 1152}]
   },
@@ -3369,7 +3369,7 @@
     "$type": "BaseRegion",
     "NoLogoutDelay": true,
     "Map": "Ilshenar",
-    "Parent": "Gypsy Camp 2",
+    "Parent": { "Name": "Gypsy Camp 2", "Map": "Ilshenar" },
     "Priority": 48,
     "Area": [{"x1": 1617, "y1": 546, "x2": 1629, "y2": 554}]
   },
@@ -3462,7 +3462,7 @@
     "$type": "BaseRegion",
     "NoLogoutDelay": true,
     "Map": "Ilshenar",
-    "Parent": "Vinculum Inn",
+    "Parent": { "Name": "Vinculum Inn", "Map": "Ilshenar" },
     "Priority": 50,
     "Area": [{"x1": 658, "y1": 654, "x2": 671, "y2": 678}]
   },
@@ -3507,7 +3507,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Malas",
-    "Parent": "Luna",
+    "Parent": { "Name": "Luna", "Map": "Malas" },
     "Priority": 50,
     "Area": [{"x1": 986, "y1": 509, "x2": 1004, "y2": 530}]
   },
@@ -3527,7 +3527,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Malas",
-    "Parent": "Umbra",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
     "Priority": 50,
     "Area": [{"x1": 2031, "y1": 1311, "x2": 2046, "y2": 1325}]
   },
@@ -3680,7 +3680,7 @@
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Tokuno",
-    "Parent": "Zento",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
     "Priority": 50,
     "Area": [{"x1": 674, "y1": 1203, "x2": 699, "y2": 1219}]
   },

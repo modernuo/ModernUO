@@ -1,7 +1,14 @@
-﻿namespace Server.Regions;
+﻿using System.Text.Json.Serialization;
+
+namespace Server.Regions;
 
 public class BattleRegion : DungeonRegion
 {
+    [JsonConstructor] // Don't include parent, since it is special
+    public BattleRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
+    {
+    }
+
     public BattleRegion(string name, Map map, Region parent, params Rectangle3D[] area) : base(name, map, parent, area)
     {
     }

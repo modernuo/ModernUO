@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Spells;
@@ -15,6 +16,7 @@ public class BaseRegion : Region
     {
     }
 
+    [JsonConstructor] // Don't include parent, since it is special
     public BaseRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
     {
     }
