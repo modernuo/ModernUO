@@ -249,4 +249,8 @@ public partial class Meraktus : BaseChampion
 
         eable.Free();
     }
+
+    private void MigrateFrom(V0Content content)
+    {
+    }
 }
