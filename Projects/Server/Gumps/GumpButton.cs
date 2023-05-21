@@ -54,7 +54,7 @@ public class GumpButton : GumpEntry
 
     public int Param { get; set; }
 
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, scoped ref int entries, scoped ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
         writer.WriteAscii($"{{ button {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} }}");
     }
