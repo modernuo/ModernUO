@@ -7,13 +7,12 @@
       "type": "System.Collections.Generic.List\u003CServer.Items.AddonContainerComponent\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
-        "",
         "Server.Items.AddonContainerComponent",
         "SerializableInterfaceMigrationRule"
       ]
     },
     {
-      "name": "RawResource",
+      "name": "Resource",
       "type": "Server.Items.CraftResource",
       "rule": "EnumMigrationRule"
     }

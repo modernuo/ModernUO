@@ -1,10 +1,14 @@
+using ModernUO.Serialization;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class BlackSolenWarrior : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class BlackSolenWarrior : BaseCreature
     {
+        [SerializableField(0, setter: "private")]
+        private bool _burstSac;
+
         [Constructible]
         public BlackSolenWarrior() : base(AIType.AI_Melee)
         {
@@ -48,12 +52,7 @@ namespace Server.Mobiles
             }
         }
 
-        public BlackSolenWarrior(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a solen warrior corpse";
-        public bool BurstSac { get; private set; }
 
         public override string DefaultName => "a black solen warrior";
 
@@ -93,12 +92,15 @@ namespace Server.Mobiles
                 {
                     if (Hits < 50)
                     {
-                        PublicOverheadMessage(MessageType.Regular, 0x3B2, true, "* The solen's acid sac is burst open! *");
+                        // The solen's acid sac is burst open!
+                        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1080038);
                         BurstSac = true;
                     }
                 }
                 else if (from != null && from != this && InRange(from, 1))
                 {
+                    // * The solen's damaged acid sac squirts acid! *
+                    PublicOverheadMessage(MessageType.Regular, 0x3B2, 1080060);
                     SpillAcid(from, 1);
                 }
             }
@@ -111,28 +113,6 @@ namespace Server.Mobiles
             SpillAcid(4);
 
             return base.OnBeforeDeath();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(1);
-            writer.Write(BurstSac);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        BurstSac = reader.ReadBool();
-                        break;
-                    }
-            }
         }
     }
 }

@@ -85,7 +85,7 @@ namespace Server.Commands
             }
             else
             {
-                from.SendMessage("{0} not found!", cfg);
+                from.SendMessage($"{cfg} not found!");
             }
         }
 

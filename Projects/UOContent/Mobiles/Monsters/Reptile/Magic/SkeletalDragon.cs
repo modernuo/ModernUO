@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class SkeletalDragon : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SkeletalDragon : BaseCreature
     {
         [Constructible]
         public SkeletalDragon() : base(AIType.AI_Mage)
@@ -39,18 +42,10 @@ namespace Server.Mobiles
             VirtualArmor = 80;
         }
 
-        public SkeletalDragon(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a skeletal dragon corpse";
         public override string DefaultName => "a skeletal dragon";
 
         public override bool ReacquireOnMovement => true;
-        public override bool HasBreath => true; // fire breath enabled
-        public override int BreathFireDamage => 0;
-        public override int BreathColdDamage => 100;
-        public override int BreathEffectHue => 0x480;
 
         public override double BonusPetDamageScalar => Core.SE ? 3.0 : 1.0;
         // TODO: Undead summoning?
@@ -62,22 +57,13 @@ namespace Server.Mobiles
         public override int Hides => 20;
         public override HideType HideType => HideType.Barbed;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.ColdBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich, 4);
             AddLoot(LootPack.Gems, 5);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

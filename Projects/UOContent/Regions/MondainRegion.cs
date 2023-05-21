@@ -1,24 +1,21 @@
-using System.Text.Json;
-using Server.Json;
-using Server.Spells.Sixth;
+using System.Text.Json.Serialization;
 
-namespace Server.Regions
+namespace Server.Regions;
+
+public class MondainRegion : NoTravelSpellsAllowedRegion
 {
-    public class MondainRegion : NoTravelSpellsAllowedRegion
+    [JsonConstructor] // Don't include parent, since it is special
+    public MondainRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
     {
-        public MondainRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-        {
-        }
+    }
 
-        public override bool OnBeginSpellCast(Mobile m, ISpell s)
-        {
-            if (m.Player && s is MarkSpell)
-            {
-                m.SendLocalizedMessage(501802); // Thy spell doth not appear to work...
-                return false;
-            }
+    public MondainRegion(string name, Map map, Region parent, params Rectangle3D[] area)
+        : base(name, map, parent, area)
+    {
+    }
 
-            return base.OnBeginSpellCast(m, s);
-        }
+    public MondainRegion(string name, Map map, Region parent, int priority, params Rectangle3D[] area)
+        : base(name, map, parent, priority, area)
+    {
     }
 }

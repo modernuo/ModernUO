@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class Provisioner : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Provisioner : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -11,10 +13,6 @@ namespace Server.Mobiles
         {
             SetSkill(SkillName.Camping, 45.0, 68.0);
             SetSkill(SkillName.Tactics, 45.0, 68.0);
-        }
-
-        public Provisioner(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -27,20 +25,6 @@ namespace Server.Mobiles
             {
                 m_SBInfos.Add(new SBSEHats());
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

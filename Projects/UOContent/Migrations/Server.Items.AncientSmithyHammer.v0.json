@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.AncientSmithyHammer",
+  "properties": [
+    {
+      "name": "Bonus",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

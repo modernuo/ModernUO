@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: UOGateway.cs                                                    *
  *                                                                       *
@@ -36,7 +36,7 @@ namespace Server.Network
         public static void QueryCompactShardStats(NetState state, CircularBufferReader reader, int packetLength)
         {
             state.SendCompactShardStats(
-                (uint)(Core.TickCount / 1000),
+                (uint)(Core.Uptime / 1000),
                 TcpServer.Instances.Count - 1, // Shame if you modify this!
                 World.Items.Count,
                 World.Mobiles.Count,
@@ -49,7 +49,7 @@ namespace Server.Network
             const long ticksInHour = 1000 * 60 * 60;
             state.SendExtendedShardStats(
                 ServerList.ServerName,
-                (int)(Core.TickCount / ticksInHour),
+                (int)(Core.Uptime / ticksInHour),
                 TcpServer.Instances.Count - 1, // Shame if you modify this!
                 World.Items.Count,
                 World.Mobiles.Count,

@@ -106,7 +106,7 @@ namespace Server.Factions
         private const int ManaReserve = 30;
         private readonly BaseFactionGuard m_Guard;
 
-        private BandageContext m_Bandage;
+        private BandageContext _bandage;
         private DateTime m_BandageStart;
 
         private SpellCombo m_Combo;
@@ -123,21 +123,21 @@ namespace Server.Factions
         {
             get
             {
-                if (m_Bandage != null && m_Bandage.Timer == null)
+                if (_bandage != null && !_bandage.Running)
                 {
-                    m_Bandage = null;
+                    _bandage = null;
                 }
 
-                if (m_Bandage == null)
+                if (_bandage == null)
                 {
                     return TimeSpan.MaxValue;
                 }
 
-                var ts = m_BandageStart + m_Bandage.Timer.Delay - Core.Now;
+                var ts = m_BandageStart + _bandage.Delay - Core.Now;
 
                 if (ts < TimeSpan.FromSeconds(-1.0))
                 {
-                    m_Bandage = null;
+                    _bandage = null;
                     return TimeSpan.MaxValue;
                 }
 
@@ -174,16 +174,15 @@ namespace Server.Factions
 
         public bool StartBandage()
         {
-            m_Bandage = null;
+            _bandage = null;
 
-            if (m_Guard.Backpack?.FindItemByType<Bandage>() == null)
+            if (m_Guard.Backpack?.FindItemByType<Bandage>() != null)
             {
-                return false;
+                _bandage = BandageContext.BeginHeal(m_Guard, m_Guard);
+                m_BandageStart = Core.Now;
             }
 
-            m_Bandage = BandageContext.BeginHeal(m_Guard, m_Guard);
-            m_BandageStart = Core.Now;
-            return m_Bandage != null;
+            return _bandage != null;
         }
 
         public bool UseItemByType(Type type)

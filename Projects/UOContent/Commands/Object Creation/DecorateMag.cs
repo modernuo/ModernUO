@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Toolkit.HighPerformance;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
@@ -34,7 +35,7 @@ namespace Server.Commands
             Generate("Data/Decoration/RuinedMaginciaTram", Map.Trammel);
             Generate("Data/Decoration/RuinedMaginciaFel", Map.Felucca);
 
-            m_Mobile.SendMessage("World generating complete. {0} items were generated.", m_Count);
+            m_Mobile.SendMessage($"World generating complete. {m_Count} items were generated.");
         }
 
         public static void Generate(string folder, params Map[] maps)
@@ -257,8 +258,8 @@ namespace Server.Commands
 
                     var hi = new HintItem(m_ItemID, range, messageNumber, hintNumber);
 
-                    hi.WarningString = messageString;
-                    hi.HintString = hintString;
+                    hi.WarningMessage = messageString;
+                    hi.HintMessage = hintString;
                     hi.ResetDelay = resetDelay;
 
                     item = hi;
@@ -312,7 +313,7 @@ namespace Server.Commands
 
                     var wi = new WarningItem(m_ItemID, range, messageNumber);
 
-                    wi.WarningString = messageString;
+                    wi.WarningMessage = messageString;
                     wi.ResetDelay = resetDelay;
 
                     item = wi;
@@ -410,7 +411,7 @@ namespace Server.Commands
                         item = m_Type.CreateInstance<Item>();
                     }
                 }
-                else if (m_Type.IsSubclassOf(typeofBaseDoor))
+                else if (m_Type.IsSubclassOf(typeofBaseDoor) && m_Params.Length > 0)
                 {
                     var facing = DoorFacing.WestCW;
 
@@ -492,6 +493,9 @@ namespace Server.Commands
                         break;
                     }
                 }
+
+                // Make light never run out of fuel.
+                light.Duration = TimeSpan.Zero;
 
                 if (!unlit)
                 {
@@ -680,7 +684,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MessageString = m_Params[i][++indexOf..];
+                            st.Message = m_Params[i][++indexOf..];
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("MessageNumber"))
@@ -689,7 +693,7 @@ namespace Server.Commands
 
                         if (indexOf >= 0)
                         {
-                            st.MessageNumber = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
+                            st.Message = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
                     else if (m_Params[i].StartsWithOrdinal("PointDest"))
@@ -1052,7 +1056,7 @@ namespace Server.Commands
                     if (bd.Open)
                     {
                         p = new Point3D(bd.X - bd.Offset.X, bd.Y - bd.Offset.Y, bd.Z - bd.Offset.Z);
-                        bdItemID = bd.ClosedID;
+                        bdItemID = bd.ClosedId;
                     }
                     else
                     {
@@ -1255,51 +1259,60 @@ namespace Server.Commands
 
             var indexOf = line.IndexOfOrdinal(' ');
 
-            list.m_Type = AssemblyHandler.FindTypeByName(line[..indexOf++]);
+            list.m_Type = AssemblyHandler.FindTypeByName(indexOf > -1 ? line[..indexOf] : line);
+            indexOf++;
 
             if (list.m_Type == null)
             {
                 throw new ArgumentException($"Type not found for header: '{line}'");
             }
 
-            line = line[indexOf..];
-            indexOf = line.IndexOfOrdinal('(');
-            if (indexOf >= 0)
+            var span = line.AsSpan(indexOf, line.Length - indexOf);
+
+            var argsStart = span.IndexOfOrdinal('(');
+
+            if (argsStart > -1)
             {
-                list.m_ItemID = Utility.ToInt32(line.AsSpan()[..(indexOf - 1)]);
-
-                var parms = line[++indexOf..^(line.EndsWithOrdinal(")") ? 1 : 0)];
-
-                list.m_Params = parms.Split(';');
-
-                for (var i = 0; i < list.m_Params.Length; ++i)
+                var parms = span[(argsStart + 1)..^(line.EndsWithOrdinal(")") ? 1 : 0)];
+                if (parms.Length == 0)
                 {
-                    list.m_Params[i] = list.m_Params[i].Trim();
+                    list.m_Params = Array.Empty<string>();
+                }
+                else
+                {
+                    list.m_Params = new string[parms.Count(';') + 1];
+
+                    indexOf = 0;
+                    foreach (var part in parms.Tokenize(';'))
+                    {
+                        list.m_Params[indexOf++] = part.Trim().ToString();
+                    }
                 }
             }
             else
             {
-                list.m_ItemID = Utility.ToInt32(line);
                 list.m_Params = m_EmptyParams;
             }
+
+            list.m_ItemID = Utility.ToInt32(argsStart > -1 ? span[..argsStart] : span);
 
             list.m_Entries = new List<DecorationEntryMag>();
 
             while ((line = ip.ReadLine()) != null)
             {
-                line = line.Trim();
+                span = line.AsSpan().Trim();
 
-                if (line.Length == 0)
+                if (span.Length == 0)
                 {
                     break;
                 }
 
-                if (line.StartsWithOrdinal("#"))
+                if (span.StartsWithOrdinal("#"))
                 {
                     continue;
                 }
 
-                list.m_Entries.Add(new DecorationEntryMag(line));
+                list.m_Entries.Add(new DecorationEntryMag(span));
             }
 
             return list;
@@ -1308,21 +1321,21 @@ namespace Server.Commands
 
     public class DecorationEntryMag
     {
-        public DecorationEntryMag(string line)
+        public DecorationEntryMag(ReadOnlySpan<char> line)
         {
             Pop(out var x, ref line);
             Pop(out var y, ref line);
             Pop(out var z, ref line);
 
             Location = new Point3D(Utility.ToInt32(x), Utility.ToInt32(y), Utility.ToInt32(z));
-            Extra = line;
+            Extra = line.ToString();
         }
 
         public Point3D Location { get; }
 
         public string Extra { get; }
 
-        public void Pop(out string v, ref string line)
+        public void Pop(out ReadOnlySpan<char> v, ref ReadOnlySpan<char> line)
         {
             var space = line.IndexOfOrdinal(' ');
 

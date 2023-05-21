@@ -47,7 +47,7 @@ namespace Server.Gumps
                 }
                 else
                 {
-                    m_Mobile.SendMessage("That cannot be assigned to a property of type : {0}", m_Type.Name);
+                    m_Mobile.SendMessage($"That cannot be assigned to a property of type : {m_Type.Name}");
                 }
             }
             catch

@@ -72,7 +72,7 @@ namespace Server.Network
                 return;
             }
 
-            e.Mobile.SendMessage("Packet 0x{0:X} throttle is currently {1}ms.", packetID, Delays[packetID]);
+            e.Mobile.SendMessage($"Packet 0x{packetID:X} throttle is currently {Delays[packetID]}ms.");
         }
 
         [Usage("SetThrottle <packetID> <timeInMilliseconds>")]
@@ -141,7 +141,7 @@ namespace Server.Network
                 return true;
             }
 
-            if (Core.TickCount < ns.GetPacketTime(packetID) + Delays[packetID])
+            if (Core.TickCount - ns.GetPacketTime(packetID) < Delays[packetID])
             {
                 drop = true;
                 return false;

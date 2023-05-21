@@ -1,12 +1,15 @@
-using System;
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class FireSteed : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class FireSteed : BaseMount
     {
+        public override string DefaultName => "a fire steed";
+
         [Constructible]
-        public FireSteed(string name = "a fire steed") : base(name, 0xBE, 0x3E9E, AIType.AI_Melee)
+        public FireSteed() : base(0xBE, 0x3E9E, AIType.AI_Melee)
         {
             BaseSoundID = 0xA8;
 
@@ -37,54 +40,20 @@ namespace Server.Mobiles
             Tamable = true;
             ControlSlots = 2;
             MinTameSkill = 106.0;
-        }
 
-        public FireSteed(Serial serial) : base(serial)
-        {
-        }
-
-        public override string CorpseName => "a fire steed corpse";
-
-        public override bool HasBreath => true; // fire breath enabled
-        public override FoodType FavoriteFood => FoodType.Meat;
-        public override PackInstinct PackInstinct => PackInstinct.Daemon | PackInstinct.Equine;
-
-        public override void GenerateLoot()
-        {
             PackItem(new SulfurousAsh(Utility.RandomMinMax(151, 300)));
             PackItem(new Ruby(Utility.RandomMinMax(16, 30)));
         }
 
-        public override void Serialize(IGenericWriter writer)
+        public override string CorpseName => "a fire steed corpse";
+        public override FoodType FavoriteFood => FoodType.Meat;
+        public override PackInstinct PackInstinct => PackInstinct.Daemon | PackInstinct.Equine;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
+        public override void GenerateLoot()
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (BaseSoundID <= 0)
-            {
-                BaseSoundID = 0xA8;
-            }
-
-            if (version < 1)
-            {
-                for (var i = 0; i < Skills.Length; ++i)
-                {
-                    Skills[i].Cap = Math.Max(100.0, Skills[i].Cap * 0.9);
-
-                    if (Skills[i].Base > Skills[i].Cap)
-                    {
-                        Skills[i].Base = Skills[i].Cap;
-                    }
-                }
-            }
         }
     }
 }

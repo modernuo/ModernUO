@@ -773,32 +773,17 @@ namespace Server.Items
         }
 
         /// <summary>
-        ///     Returns a <see cref="CraftResourceType" /> value indiciating the type of '<paramref name="resource" />'.
+        ///     Returns a <see cref="CraftResourceType" /> value indicating the type of '<paramref name="resource" />'.
         /// </summary>
-        public static CraftResourceType GetType(CraftResource resource)
-        {
-            if (resource >= CraftResource.Iron && resource <= CraftResource.Valorite)
+        public static CraftResourceType GetType(CraftResource resource) =>
+            resource switch
             {
-                return CraftResourceType.Metal;
-            }
-
-            if (resource >= CraftResource.RegularLeather && resource <= CraftResource.BarbedLeather)
-            {
-                return CraftResourceType.Leather;
-            }
-
-            if (resource >= CraftResource.RedScales && resource <= CraftResource.BlueScales)
-            {
-                return CraftResourceType.Scales;
-            }
-
-            if (resource >= CraftResource.RegularWood && resource <= CraftResource.Frostwood)
-            {
-                return CraftResourceType.Wood;
-            }
-
-            return CraftResourceType.None;
-        }
+                >= CraftResource.Iron and <= CraftResource.Valorite                => CraftResourceType.Metal,
+                >= CraftResource.RegularLeather and <= CraftResource.BarbedLeather => CraftResourceType.Leather,
+                >= CraftResource.RedScales and <= CraftResource.BlueScales         => CraftResourceType.Scales,
+                >= CraftResource.RegularWood and <= CraftResource.Frostwood        => CraftResourceType.Wood,
+                _                                                                  => CraftResourceType.None
+            };
 
         /// <summary>
         ///     Returns the first <see cref="CraftResource" /> in the series of resources for which '<paramref name="resource" />'
@@ -852,6 +837,15 @@ namespace Server.Items
         }
 
         /// <summary>
+        ///     Returns the <see cref="CraftResourceInfo" /> of a random '<paramref name="resource" />' -or- null if an invalid
+        ///     resource was specified.
+        /// </summary>
+        public static CraftResourceInfo GetRandomResource(CraftResource startResource, CraftResource endResource) =>
+            GetInfo(
+                (CraftResource)Utility.RandomMinMax((int)startResource, (int)endResource)
+            );
+
+        /// <summary>
         ///     Returns the <see cref="CraftResourceInfo.Name" /> property of '<paramref name="resource" />' -or- an empty string if the
         ///     resource specified was invalid.
         /// </summary>
@@ -861,98 +855,5 @@ namespace Server.Items
 
             return info == null ? string.Empty : info.Name;
         }
-
-        /// <summary>
-        ///     Returns the <see cref="CraftResource" /> value which represents '<paramref name="info" />' -or- CraftResource.None if
-        ///     unable to convert.
-        /// </summary>
-        public static CraftResource GetFromOreInfo(OreInfo info)
-        {
-            if (info.Name.ContainsOrdinal("Spined"))
-            {
-                return CraftResource.SpinedLeather;
-            }
-
-            if (info.Name.ContainsOrdinal("Horned"))
-            {
-                return CraftResource.HornedLeather;
-            }
-
-            if (info.Name.ContainsOrdinal("Barbed"))
-            {
-                return CraftResource.BarbedLeather;
-            }
-
-            if (info.Name.ContainsOrdinal("Leather"))
-            {
-                return CraftResource.RegularLeather;
-            }
-
-            return info.Level switch
-            {
-                0 => CraftResource.Iron,
-                1 => CraftResource.DullCopper,
-                2 => CraftResource.ShadowIron,
-                3 => CraftResource.Copper,
-                4 => CraftResource.Bronze,
-                5 => CraftResource.Gold,
-                6 => CraftResource.Agapite,
-                7 => CraftResource.Verite,
-                8 => CraftResource.Valorite,
-                _ => CraftResource.None
-            };
-        }
-
-        /// <summary>
-        ///     Returns the <see cref="CraftResource" /> value which represents '<paramref name="info" />', using '
-        ///     <paramref name="material" />' to help resolve leather OreInfo instances.
-        /// </summary>
-        public static CraftResource GetFromOreInfo(OreInfo info, ArmorMaterialType material)
-        {
-            if (material != ArmorMaterialType.Studded && material != ArmorMaterialType.Leather &&
-                material != ArmorMaterialType.Spined && material != ArmorMaterialType.Horned &&
-                material != ArmorMaterialType.Barbed)
-            {
-                return GetFromOreInfo(info);
-            }
-
-            return info.Level switch
-            {
-                0 => CraftResource.RegularLeather,
-                1 => CraftResource.SpinedLeather,
-                2 => CraftResource.HornedLeather,
-                3 => CraftResource.BarbedLeather,
-                _ => CraftResource.None
-            };
-
-        }
-    }
-
-    // NOTE: This class is only for compatibility with very old RunUO versions.
-    // No changes to it should be required for custom resources.
-    public class OreInfo
-    {
-        public static readonly OreInfo Iron = new(0, 0x000, "Iron");
-        public static readonly OreInfo DullCopper = new(1, 0x973, "Dull Copper");
-        public static readonly OreInfo ShadowIron = new(2, 0x966, "Shadow Iron");
-        public static readonly OreInfo Copper = new(3, 0x96D, "Copper");
-        public static readonly OreInfo Bronze = new(4, 0x972, "Bronze");
-        public static readonly OreInfo Gold = new(5, 0x8A5, "Gold");
-        public static readonly OreInfo Agapite = new(6, 0x979, "Agapite");
-        public static readonly OreInfo Verite = new(7, 0x89F, "Verite");
-        public static readonly OreInfo Valorite = new(8, 0x8AB, "Valorite");
-
-        public OreInfo(int level, int hue, string name)
-        {
-            Level = level;
-            Hue = hue;
-            Name = name;
-        }
-
-        public int Level { get; }
-
-        public int Hue { get; }
-
-        public string Name { get; }
     }
 }

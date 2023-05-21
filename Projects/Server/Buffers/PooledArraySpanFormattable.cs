@@ -18,6 +18,12 @@ using System;
 
 namespace Server.Buffers;
 
+/// <summary>
+/// Wrapper for STArray backed strings and char buffers that will be used in InterpolatedStringHandlers.
+/// The wrapper prevents intermediate strings from being created unnecessarily.
+/// Note: TryFormat can only be called once. Using the PooledArraySpanFormattable after calling TryFormat will throw.
+/// To use the span multiple times, use the Chars property directly instead.
+/// </summary>
 public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
 {
     private char[] _arrayToReturnToPool;
@@ -42,6 +48,7 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
         STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
         _arrayToReturnToPool = null;
 
+        // We don't dispose so we can call ToString() multiple times with idempotence.
         return _value;
     }
 
@@ -58,6 +65,9 @@ public struct PooledArraySpanFormattable : ISpanFormattable, IDisposable
 
         _arrayToReturnToPool.AsSpan(0, _pos).CopyTo(destination);
         charsWritten = _pos;
+
+        // Interpolated string handlers do not dispose, but we need to return the chars to the array.
+        Dispose();
         return true;
     }
 

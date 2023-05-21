@@ -44,7 +44,7 @@ namespace Server
             if (e.Length >= 1)
             {
                 LevelOverride = e.GetInt32(0);
-                e.Mobile.SendMessage("Global light level override has been changed to {0}.", m_LevelOverride);
+                e.Mobile.SendMessage($"Global light level override has been changed to {m_LevelOverride}.");
             }
             else
             {

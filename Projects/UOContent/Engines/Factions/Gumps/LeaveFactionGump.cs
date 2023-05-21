@@ -65,8 +65,7 @@ namespace Server.Factions
                                 else
                                 {
                                     m_From.SendMessage(
-                                        "You will be removed from the faction in {0} days.",
-                                        Faction.LeavePeriod.TotalDays
+                                        $"You will be removed from the faction in {Faction.LeavePeriod.TotalDays} days."
                                     );
                                 }
                             }
@@ -97,8 +96,7 @@ namespace Server.Factions
                                     else
                                     {
                                         mob.SendMessage(
-                                            "Your guild will quit the faction in {0} days.",
-                                            Faction.LeavePeriod.TotalDays
+                                            $"Your guild will quit the faction in {Faction.LeavePeriod.TotalDays} days."
                                         );
                                     }
                                 }

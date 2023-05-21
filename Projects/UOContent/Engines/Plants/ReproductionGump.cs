@@ -195,10 +195,8 @@ namespace Server.Engines.Plants
                         }
                         else if (!m_Plant.PlantSystem.PollenProducing)
                         {
-                            m_Plant.LabelTo(
-                                from,
-                                1053051
-                            ); // You cannot gather pollen from a plant in this stage of development!
+                            // You cannot gather pollen from a plant in this stage of development!
+                            m_Plant.LabelTo(from, 1053051);
                         }
                         else if (m_Plant.PlantSystem.Health < PlantHealth.Healthy)
                         {
@@ -248,10 +246,8 @@ namespace Server.Engines.Plants
                             else
                             {
                                 resource.Delete();
-                                m_Plant.LabelTo(
-                                    from,
-                                    1053058
-                                ); // You attempt to gather as many resources as you can hold, but your backpack is full.
+                                // You attempt to gather as many resources as you can hold, but your backpack is full.
+                                m_Plant.LabelTo(from, 1053058);
                             }
                         }
 
@@ -283,10 +279,8 @@ namespace Server.Engines.Plants
                             else
                             {
                                 seed.Delete();
-                                m_Plant.LabelTo(
-                                    from,
-                                    1053062
-                                ); // You attempt to gather as many seeds as you can hold, but your backpack is full.
+                                // You attempt to gather as many seeds as you can hold, but your backpack is full.
+                                m_Plant.LabelTo(from, 1053062);
                             }
                         }
 

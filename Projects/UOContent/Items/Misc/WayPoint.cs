@@ -1,155 +1,116 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x1f14, 0x1f15, 0x1f16, 0x1f17)]
+[SerializationGenerator(0, false)]
+public partial class WayPoint : Item
 {
-    [Flippable(0x1f14, 0x1f15, 0x1f16, 0x1f17)]
-    public class WayPoint : Item
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private WayPoint _nextPoint;
+
+    [Constructible]
+    public WayPoint(WayPoint prev = null) : base(0x1f14)
     {
-        private WayPoint m_Next;
+        Hue = 0x498;
+        Visible = false;
+        // this.Movable = false;
 
-        [Constructible]
-        public WayPoint(WayPoint prev = null) : base(0x1f14)
+        if (prev != null)
         {
-            Hue = 0x498;
-            Visible = false;
-            // this.Movable = false;
-
-            if (prev != null)
-            {
-                prev.NextPoint = this;
-            }
-        }
-
-        public WayPoint(Serial serial) : base(serial)
-        {
-        }
-
-        public override string DefaultName => "AI Way Point";
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public WayPoint NextPoint
-        {
-            get => m_Next;
-            set
-            {
-                if (m_Next != this)
-                {
-                    m_Next = value;
-                }
-            }
-        }
-
-        public static void Initialize()
-        {
-            CommandSystem.Register("WayPointSeq", AccessLevel.GameMaster, WayPointSeq_OnCommand);
-        }
-
-        public static void WayPointSeq_OnCommand(CommandEventArgs arg)
-        {
-            arg.Mobile.SendMessage("Target the position of the first way point.");
-            arg.Mobile.Target = new WayPointSeqTarget(null);
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (from.AccessLevel >= AccessLevel.GameMaster)
-            {
-                from.SendMessage("Target the next way point in the sequence.");
-
-                from.Target = new NextPointTarget(this);
-            }
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            base.OnSingleClick(from);
-
-            if (m_Next == null)
-            {
-                LabelTo(from, "(Unlinked)");
-            }
-            else
-            {
-                LabelTo(from, "(Linked: {0})", m_Next.Location);
-            }
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Next = reader.ReadEntity<WayPoint>();
-                        break;
-                    }
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(m_Next);
+            prev.NextPoint = this;
         }
     }
 
-    public class NextPointTarget : Target
+    public override string DefaultName => "AI Way Point";
+
+    public static void Initialize()
     {
-        private readonly WayPoint m_Point;
+        CommandSystem.Register("WayPointSeq", AccessLevel.GameMaster, WayPointSeq_OnCommand);
+    }
 
-        public NextPointTarget(WayPoint pt) : base(-1, false, TargetFlags.None) => m_Point = pt;
+    public static void WayPointSeq_OnCommand(CommandEventArgs arg)
+    {
+        arg.Mobile.SendMessage("Target the position of the first way point.");
+        arg.Mobile.Target = new WayPointSeqTarget(null);
+    }
 
-        protected override void OnTarget(Mobile from, object target)
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (from.AccessLevel >= AccessLevel.GameMaster)
         {
-            if (target is WayPoint point && m_Point != null)
-            {
-                m_Point.NextPoint = point;
-            }
-            else
-            {
-                from.SendMessage("Target a way point.");
-            }
+            from.SendMessage("Target the next way point in the sequence.");
+
+            from.Target = new NextPointTarget(this);
         }
     }
 
-    public class WayPointSeqTarget : Target
+    public override void OnSingleClick(Mobile from)
     {
-        private readonly WayPoint m_Last;
+        base.OnSingleClick(from);
 
-        public WayPointSeqTarget(WayPoint last) : base(-1, true, TargetFlags.None) => m_Last = last;
-
-        protected override void OnTarget(Mobile from, object targeted)
+        if (_nextPoint == null)
         {
-            if (targeted is WayPoint wayPoint)
-            {
-                if (m_Last != null)
-                {
-                    m_Last.NextPoint = wayPoint;
-                }
-            }
-            else if (targeted is IPoint3D d)
-            {
-                var p = new Point3D(d);
+            LabelTo(from, "(Unlinked)");
+        }
+        else
+        {
+            LabelTo(from, $"(Linked: {_nextPoint.Location})");
+        }
+    }
+}
 
-                var point = new WayPoint(m_Last);
-                point.MoveToWorld(p, from.Map);
+public class NextPointTarget : Target
+{
+    private WayPoint _point;
 
-                from.Target = new WayPointSeqTarget(point);
-                from.SendMessage(
-                    "Target the position of the next way point in the sequence, or target a way point link the newest way point to."
-                );
-            }
-            else
+    public NextPointTarget(WayPoint pt) : base(-1, false, TargetFlags.None) => _point = pt;
+
+    protected override void OnTarget(Mobile from, object target)
+    {
+        if (target is WayPoint point && _point != null)
+        {
+            _point.NextPoint = point;
+        }
+        else
+        {
+            from.SendMessage("Target a way point.");
+        }
+    }
+}
+
+public class WayPointSeqTarget : Target
+{
+    private WayPoint _last;
+
+    public WayPointSeqTarget(WayPoint last) : base(-1, true, TargetFlags.None) => _last = last;
+
+    protected override void OnTarget(Mobile from, object targeted)
+    {
+        if (targeted is WayPoint wayPoint)
+        {
+            if (_last != null)
             {
-                from.SendMessage("Target a position, or another way point.");
+                _last.NextPoint = wayPoint;
             }
+        }
+        else if (targeted is IPoint3D d)
+        {
+            var p = new Point3D(d);
+
+            var point = new WayPoint(_last);
+            point.MoveToWorld(p, from.Map);
+
+            from.Target = new WayPointSeqTarget(point);
+            from.SendMessage(
+                "Target the position of the next way point in the sequence, or target a way point link the newest way point to."
+            );
+        }
+        else
+        {
+            from.SendMessage("Target a position, or another way point.");
         }
     }
 }

@@ -1,138 +1,94 @@
 using System;
-using Server.Network;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x2A65, 0x2A67)]
+[SerializationGenerator(0)]
+public partial class UnsettlingPortraitComponent : AddonComponent
 {
-    [Flippable(0x2A65, 0x2A67)]
-    public class UnsettlingPortraitComponent : AddonComponent
+    private Timer _timer;
+
+    public UnsettlingPortraitComponent() : base(0x2A65)
     {
-        private TimerExecutionToken _timerToken;
+        StartTimer();
+    }
 
-        public UnsettlingPortraitComponent() : base(0x2A65)
+    public override int LabelNumber => 1074480; // Unsettling portrait
+
+    private void StartTimer()
+    {
+        _timer = Timer.DelayCall(
+            TimeSpan.FromMinutes(3),
+            TimeSpan.FromMinutes(3),
+            ChangeDirection
+        );
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (Utility.InRange(Location, from.Location, 2))
         {
-            Timer.StartTimer(
-                TimeSpan.FromMinutes(3),
-                TimeSpan.FromMinutes(3),
-                ChangeDirection,
-                out _timerToken
-            );
+            Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x567, 0x568));
         }
-
-        public UnsettlingPortraitComponent(Serial serial) : base(serial)
+        else
         {
-        }
-
-        public override int LabelNumber => 1074480; // Unsettling portrait
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (Utility.InRange(Location, from.Location, 2))
-            {
-                Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x567, 0x568));
-            }
-            else
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-        }
-
-        public override void OnAfterDelete()
-        {
-            base.OnAfterDelete();
-
-            _timerToken.Cancel();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), ChangeDirection, out _timerToken);
-        }
-
-        private void ChangeDirection()
-        {
-            if (ItemID == 0x2A65)
-            {
-                ItemID += 1;
-            }
-            else if (ItemID == 0x2A66)
-            {
-                ItemID -= 1;
-            }
-            else if (ItemID == 0x2A67)
-            {
-                ItemID += 1;
-            }
-            else if (ItemID == 0x2A68)
-            {
-                ItemID -= 1;
-            }
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
     }
 
-    public class UnsettlingPortraitAddon : BaseAddon
+    public override void OnAfterDelete()
     {
-        [Constructible]
-        public UnsettlingPortraitAddon()
-        {
-            AddComponent(new UnsettlingPortraitComponent(), 0, 0, 0);
-        }
+        base.OnAfterDelete();
 
-        public UnsettlingPortraitAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new UnsettlingPortraitDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        _timer?.Stop();
     }
 
-    public class UnsettlingPortraitDeed : BaseAddonDeed
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        [Constructible]
-        public UnsettlingPortraitDeed() => LootType = LootType.Blessed;
+        StartTimer();
+    }
 
-        public UnsettlingPortraitDeed(Serial serial) : base(serial)
+    private void ChangeDirection()
+    {
+        if (ItemID == 0x2A65)
         {
+            ItemID += 1;
         }
-
-        public override BaseAddon Addon => new UnsettlingPortraitAddon();
-        public override int LabelNumber => 1074480; // Unsettling portrait
-
-        public override void Serialize(IGenericWriter writer)
+        else if (ItemID == 0x2A66)
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
+            ItemID -= 1;
         }
-
-        public override void Deserialize(IGenericReader reader)
+        else if (ItemID == 0x2A67)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            ItemID += 1;
+        }
+        else if (ItemID == 0x2A68)
+        {
+            ItemID -= 1;
         }
     }
+}
+
+[SerializationGenerator(0)]
+public partial class UnsettlingPortraitAddon : BaseAddon
+{
+    [Constructible]
+    public UnsettlingPortraitAddon()
+    {
+        AddComponent(new UnsettlingPortraitComponent(), 0, 0, 0);
+    }
+
+    public override BaseAddonDeed Deed => new UnsettlingPortraitDeed();
+}
+
+[SerializationGenerator(0)]
+public partial class UnsettlingPortraitDeed : BaseAddonDeed
+{
+    [Constructible]
+    public UnsettlingPortraitDeed() => LootType = LootType.Blessed;
+
+    public override BaseAddon Addon => new UnsettlingPortraitAddon();
+    public override int LabelNumber => 1074480; // Unsettling portrait
 }

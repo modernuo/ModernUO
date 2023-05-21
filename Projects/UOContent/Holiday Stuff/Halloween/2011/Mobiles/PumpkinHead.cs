@@ -94,7 +94,7 @@ namespace Server.Mobiles
         }
 
         public override Item NewHarmfulItem() =>
-            new PoolOfAcid(TimeSpan.FromSeconds(10), 25, 30)
+            new Acid(TimeSpan.FromSeconds(10), 25, 30)
             {
                 Name = "gooey nasty pumpkin hummus",
                 Hue = 144

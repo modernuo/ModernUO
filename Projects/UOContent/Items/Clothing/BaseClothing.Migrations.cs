@@ -4,15 +4,14 @@ public partial class BaseClothing
 {
     private void MigrateFrom(V6Content content)
     {
-        _rawResource = content.RawResource ?? DefaultResource;
+        _resource = content.RawResource ?? DefaultResource;
         _attributes = content.Attributes ?? AttributesDefaultValue();
         _clothingAttributes = content.ClothingAttributes ?? ClothingAttributesDefaultValue();
         _skillBonuses = content.SkillBonuses ?? SkillBonusesDefaultValue();
         _resistances = content.Resistances ?? ResistancesDefaultValue();
         _maxHitPoints = content.MaxHitPoints ?? 0;
         _playerConstructed = content.PlayerConstructed;
-        var crafter = content.Crafter;
-        Timer.StartTimer(() => _crafter = crafter?.RawName);
+        Timer.DelayCall((item, crafter) => item._crafter = crafter?.RawName, this, content.Crafter);
         _quality = content.Quality ?? ClothingQuality.Regular;
         _strReq = content.StrRequirement ?? -1;
     }
@@ -24,11 +23,11 @@ public partial class BaseClothing
 
         if (GetSaveFlag(flags, OldSaveFlag.Resource))
         {
-            _rawResource = (CraftResource)reader.ReadEncodedInt();
+            _resource = (CraftResource)reader.ReadEncodedInt();
         }
         else
         {
-            _rawResource = DefaultResource;
+            _resource = DefaultResource;
         }
 
         Attributes = new AosAttributes(this);
@@ -71,8 +70,7 @@ public partial class BaseClothing
 
         if (GetSaveFlag(flags, OldSaveFlag.Crafter))
         {
-            var crafter = reader.ReadEntity<Mobile>();
-            Timer.StartTimer(() => _crafter = crafter?.RawName);
+            Timer.DelayCall((item, crafter) => item._crafter = crafter?.RawName, this, reader.ReadEntity<Mobile>());
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.Quality))

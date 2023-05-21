@@ -355,7 +355,7 @@ namespace Server.Engines.ConPVP
 
                 if (m_Region != null)
                 {
-                    m_Region.Disabled = !m_IsGuarded;
+                    m_Region.GuardsDisabled = !m_IsGuarded;
                 }
             }
         }

@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 
 namespace Server.Mobiles
 {
-    public class Titan : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Titan : BaseCreature
     {
         [Constructible]
         public Titan() : base(AIType.AI_Mage)
@@ -43,10 +45,6 @@ namespace Server.Mobiles
             }
         }
 
-        public Titan(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a titans corpse";
         public override string DefaultName => "a titan";
 
@@ -59,18 +57,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.FilthyRich);
             AddLoot(LootPack.Average);
             AddLoot(LootPack.MedScrolls);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

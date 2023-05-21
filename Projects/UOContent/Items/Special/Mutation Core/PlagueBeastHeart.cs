@@ -1,78 +1,65 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class PlagueBeastHeart : PlagueBeastInnard
 {
-    public class PlagueBeastHeart : PlagueBeastInnard
+    private Timer _timer;
+
+    public PlagueBeastHeart() : base(0x1363, 0x21)
     {
-        private Timer m_Timer;
+        _timer = new InternalTimer(this);
+        _timer.Start();
+    }
 
-        public PlagueBeastHeart() : base(0x1363, 0x21)
+    public override void OnAfterDelete()
+    {
+        if (_timer?.Running == true)
         {
-            m_Timer = new InternalTimer(this);
-            m_Timer.Start();
+            _timer.Stop();
         }
+    }
 
-        public PlagueBeastHeart(Serial serial) : base(serial)
-        {
-        }
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        _timer = new InternalTimer(this);
+        _timer.Start();
+    }
 
-        public override void OnAfterDelete()
+    private class InternalTimer : Timer
+    {
+        private readonly PlagueBeastHeart _heart;
+        private bool _delay;
+
+        public InternalTimer(PlagueBeastHeart heart) : base(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5)) =>
+            _heart = heart;
+
+        protected override void OnTick()
         {
-            if (m_Timer?.Running == true)
+            if (_heart?.Deleted != false || _heart.Owner?.Alive != true)
             {
-                m_Timer.Stop();
+                Stop();
+                return;
             }
-        }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_Timer = new InternalTimer(this);
-            m_Timer.Start();
-        }
-
-        private class InternalTimer : Timer
-        {
-            private readonly PlagueBeastHeart m_Heart;
-            private bool m_Delay;
-
-            public InternalTimer(PlagueBeastHeart heart) : base(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5)) =>
-                m_Heart = heart;
-
-            protected override void OnTick()
+            if (_heart.ItemID == 0x1363)
             {
-                if (m_Heart?.Deleted != false || m_Heart.Owner?.Alive != true)
+                if (_delay)
                 {
-                    Stop();
-                    return;
+                    _heart.ItemID = 0x1367;
+                    _heart.Owner.PlaySound(0x11F);
                 }
 
-                if (m_Heart.ItemID == 0x1363)
-                {
-                    if (m_Delay)
-                    {
-                        m_Heart.ItemID = 0x1367;
-                        m_Heart.Owner.PlaySound(0x11F);
-                    }
-
-                    m_Delay = !m_Delay;
-                }
-                else
-                {
-                    m_Heart.ItemID = 0x1363;
-                    m_Heart.Owner.PlaySound(0x120);
-                    m_Delay = false;
-                }
+                _delay = !_delay;
+            }
+            else
+            {
+                _heart.ItemID = 0x1363;
+                _heart.Owner.PlaySound(0x120);
+                _delay = false;
             }
         }
     }

@@ -223,7 +223,7 @@ namespace Server.Misc
 
             // The new AOS bankboxes don't have powerscrolls, they are automatically 'applied':
 
-            for (var i = 0; i < PowerScroll.Skills.Count; ++i)
+            for (var i = 0; i < PowerScroll.Skills.Length; ++i)
             {
                 m.Skills[PowerScroll.Skills[i]].Cap = 120.0;
             }
@@ -658,7 +658,7 @@ namespace Server.Misc
         {
             var bag = new Bag();
 
-            for (var i = 0; i < PowerScroll.Skills.Count; ++i)
+            for (var i = 0; i < PowerScroll.Skills.Length; ++i)
             {
                 bag.DropItem(new PowerScroll(PowerScroll.Skills[i], 120.0));
             }
@@ -757,7 +757,7 @@ namespace Server.Misc
                         }
                     case 3: // Command list
                         {
-                            sender.Mobile.SendAsciiMessage(0x482, "The command prefix is \"{0}\"", CommandSystem.Prefix);
+                            sender.Mobile.SendAsciiMessage(0x482, $"The command prefix is \"{CommandSystem.Prefix}\"");
                             CommandHandlers.Help_OnCommand(new CommandEventArgs(sender.Mobile, "help", "", Array.Empty<string>()));
 
                             break;

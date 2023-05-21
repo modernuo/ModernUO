@@ -1,142 +1,125 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class ClockworkAssembly : Item
 {
-    public class ClockworkAssembly : Item
+    [Constructible]
+    public ClockworkAssembly() : base(0x1EA8)
     {
-        [Constructible]
-        public ClockworkAssembly() : base(0x1EA8)
+        Weight = 5.0;
+        Hue = 1102;
+    }
+
+    public override string DefaultName => "clockwork assembly";
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!IsChildOf(from.Backpack))
         {
-            Weight = 5.0;
-            Hue = 1102;
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            return;
         }
 
-        public ClockworkAssembly(Serial serial) : base(serial)
+        var tinkerSkill = from.Skills.Tinkering.Value;
+
+        if (tinkerSkill < 60.0)
         {
+            from.SendMessage("You must have at least 60.0 skill in tinkering to construct a golem.");
+            return;
         }
 
-        public override string DefaultName => "clockwork assembly";
-
-        public override void OnDoubleClick(Mobile from)
+        if (from.Followers + 4 > from.FollowersMax)
         {
-            if (!IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-                return;
-            }
+            from.SendLocalizedMessage(1049607); // You have too many followers to control that creature.
+            return;
+        }
 
-            var tinkerSkill = from.Skills.Tinkering.Value;
+        double scalar;
 
-            if (tinkerSkill < 60.0)
-            {
-                from.SendMessage("You must have at least 60.0 skill in tinkering to construct a golem.");
-                return;
-            }
+        if (tinkerSkill >= 100.0)
+        {
+            scalar = 1.0;
+        }
+        else if (tinkerSkill >= 90.0)
+        {
+            scalar = 0.9;
+        }
+        else if (tinkerSkill >= 80.0)
+        {
+            scalar = 0.8;
+        }
+        else if (tinkerSkill >= 70.0)
+        {
+            scalar = 0.7;
+        }
+        else
+        {
+            scalar = 0.6;
+        }
 
-            if (from.Followers + 4 > from.FollowersMax)
-            {
-                from.SendLocalizedMessage(1049607); // You have too many followers to control that creature.
-                return;
-            }
+        var pack = from.Backpack;
 
-            double scalar;
+        if (pack == null)
+        {
+            return;
+        }
 
-            if (tinkerSkill >= 100.0)
+        var res = pack.ConsumeTotal(
+            new[]
             {
-                scalar = 1.0;
-            }
-            else if (tinkerSkill >= 90.0)
+                typeof(PowerCrystal),
+                typeof(IronIngot),
+                typeof(BronzeIngot),
+                typeof(Gears)
+            },
+            new[]
             {
-                scalar = 0.9;
+                1,
+                50,
+                50,
+                5
             }
-            else if (tinkerSkill >= 80.0)
-            {
-                scalar = 0.8;
-            }
-            else if (tinkerSkill >= 70.0)
-            {
-                scalar = 0.7;
-            }
-            else
-            {
-                scalar = 0.6;
-            }
+        );
 
-            var pack = from.Backpack;
-
-            if (pack == null)
-            {
-                return;
-            }
-
-            var res = pack.ConsumeTotal(
-                new[]
+        switch (res)
+        {
+            case 0:
                 {
-                    typeof(PowerCrystal),
-                    typeof(IronIngot),
-                    typeof(BronzeIngot),
-                    typeof(Gears)
-                },
-                new[]
-                {
-                    1,
-                    50,
-                    50,
-                    5
+                    from.SendMessage("You must have a power crystal to construct the golem.");
+                    break;
                 }
-            );
+            case 1:
+                {
+                    from.SendMessage("You must have 50 iron ingots to construct the golem.");
+                    break;
+                }
+            case 2:
+                {
+                    from.SendMessage("You must have 50 bronze ingots to construct the golem.");
+                    break;
+                }
+            case 3:
+                {
+                    from.SendMessage("You must have 5 gears to construct the golem.");
+                    break;
+                }
+            default:
+                {
+                    var g = new Golem(true, scalar);
 
-            switch (res)
-            {
-                case 0:
+                    if (g.SetControlMaster(from))
                     {
-                        from.SendMessage("You must have a power crystal to construct the golem.");
-                        break;
+                        Delete();
+
+                        g.MoveToWorld(from.Location, from.Map);
+                        from.PlaySound(0x241);
                     }
-                case 1:
-                    {
-                        from.SendMessage("You must have 50 iron ingots to construct the golem.");
-                        break;
-                    }
-                case 2:
-                    {
-                        from.SendMessage("You must have 50 bronze ingots to construct the golem.");
-                        break;
-                    }
-                case 3:
-                    {
-                        from.SendMessage("You must have 5 gears to construct the golem.");
-                        break;
-                    }
-                default:
-                    {
-                        var g = new Golem(true, scalar);
 
-                        if (g.SetControlMaster(from))
-                        {
-                            Delete();
-
-                            g.MoveToWorld(from.Location, from.Map);
-                            from.PlaySound(0x241);
-                        }
-
-                        break;
-                    }
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+                    break;
+                }
         }
     }
 }

@@ -10,11 +10,11 @@ namespace Server.Items
         private Timer m_Timer;
 
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _minSkill;
 
         [SerializableField(1)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _maxSkill;
 
         public PickpocketDip(int itemID) : base(itemID)
@@ -127,6 +127,8 @@ namespace Server.Items
         {
             AddComponent(new PickpocketDip(0x1EC3), 0, 0, 0);
         }
+
+        public override BaseAddonDeed Deed => new PickpocketDipEastDeed();
     }
 
     [SerializationGenerator(0, false)]

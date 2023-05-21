@@ -4,9 +4,9 @@ namespace Server.Mobiles
 {
     public class HolySteed : BaseMount
     {
+        public override string DefaultName => "a silver steed";
         [Constructible]
-        public HolySteed()
-            : base("a silver steed", 0x75, 0x3EA8, AIType.AI_Melee, FightMode.Aggressor)
+        public HolySteed() : base(0x75, 0x3EA8, AIType.AI_Melee, FightMode.Aggressor)
         {
             SetStr(496, 525);
             SetDex(86, 105);
@@ -39,32 +39,26 @@ namespace Server.Mobiles
             ControlSlots = 1;
         }
 
-        public HolySteed(Serial serial)
-            : base(serial)
+        public HolySteed(Serial serial) : base(serial)
         {
         }
 
         public override string CorpseName => "a holy corpse";
         public override bool IsDispellable => false;
         public override bool IsBondable => false;
-
-        public override bool HasBreath => true;
-        public override bool CanBreath => true;
-
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override string ApplyNameSuffix(string suffix)
         {
             if (suffix.Length == 0)
             {
-                suffix = Ethic.Hero.Definition.Adjunct.String;
-            }
-            else
-            {
-                suffix = $"{suffix} {Ethic.Hero.Definition.Adjunct.String}";
+                return base.ApplyNameSuffix(Ethic.Hero.Definition.Adjunct.String);
             }
 
-            return base.ApplyNameSuffix(suffix);
+            return base.ApplyNameSuffix($"{suffix} {Ethic.Hero.Definition.Adjunct.String}");
         }
 
         public override void OnDoubleClick(Mobile from)

@@ -1,9 +1,20 @@
+using ModernUO.Serialization;
 using System;
 
 namespace Server.Mobiles
 {
-    public class Cow : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Cow : BaseCreature
     {
+
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(0)]
+        public DateTime _milkedOn;
+
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(1)]
+        public int _milk;
+
         [Constructible]
         public Cow() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
@@ -44,18 +55,7 @@ namespace Server.Mobiles
             }
         }
 
-        public Cow(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a cow corpse";
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime MilkedOn { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Milk { get; set; }
-
         public override string DefaultName => "a cow";
 
         public override int Meat => 8;
@@ -118,29 +118,6 @@ namespace Server.Mobiles
             }
 
             return false;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-
-            writer.Write(MilkedOn);
-            writer.Write(Milk);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (version > 0)
-            {
-                MilkedOn = reader.ReadDateTime();
-                Milk = reader.ReadInt();
-            }
         }
     }
 }

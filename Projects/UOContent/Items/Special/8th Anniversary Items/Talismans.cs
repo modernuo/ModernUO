@@ -1,196 +1,112 @@
 ﻿using System;
+using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Spells.Ninjitsu;
 
-namespace Server.Items
+namespace Server.Items;
+
+public enum TalismanForm
 {
-    public enum TalismanForm
+    Ferret = 1031672,
+    Squirrel = 1031671,
+    CuSidhe = 1031670,
+    Reptalon = 1075202
+}
+
+[SerializationGenerator(0)]
+public partial class BaseFormTalisman : Item
+{
+    public BaseFormTalisman() : base(0x2F59)
     {
-        Ferret = 1031672,
-        Squirrel = 1031671,
-        CuSidhe = 1031670,
-        Reptalon = 1075202
+        LootType = LootType.Blessed;
+        Layer = Layer.Talisman;
+        Weight = 1.0;
     }
 
-    public class BaseFormTalisman : Item
+    public virtual TalismanForm Form => TalismanForm.Squirrel;
+
+    public override void AddNameProperty(IPropertyList list)
     {
-        public BaseFormTalisman() : base(0x2F59)
+        list.Add(1075200, $"{(int)Form:#}");
+    }
+
+    public override void OnRemoved(IEntity parent)
+    {
+        base.OnRemoved(parent);
+
+        if (parent is Mobile m)
         {
-            LootType = LootType.Blessed;
-            Layer = Layer.Talisman;
-            Weight = 1.0;
-        }
-
-        public BaseFormTalisman(Serial serial) : base(serial)
-        {
-        }
-
-        public virtual TalismanForm Form => TalismanForm.Squirrel;
-
-        public override void AddNameProperty(IPropertyList list)
-        {
-            list.Add(1075200, $"{(int)Form:#}");
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-
-        public override void OnRemoved(IEntity parent)
-        {
-            base.OnRemoved(parent);
-
-            if (parent is Mobile m)
-            {
-                AnimalForm.RemoveContext(m, true);
-            }
-        }
-
-        public static bool EntryEnabled(Mobile m, Type type)
-        {
-            if (type == typeof(Squirrel))
-            {
-                return m.Talisman is SquirrelFormTalisman;
-            }
-
-            if (type == typeof(Ferret))
-            {
-                return m.Talisman is FerretFormTalisman;
-            }
-
-            if (type == typeof(CuSidhe))
-            {
-                return m.Talisman is CuSidheFormTalisman;
-            }
-
-            if (type == typeof(Reptalon))
-            {
-                return m.Talisman is ReptalonFormTalisman;
-            }
-
-            return true;
+            AnimalForm.RemoveContext(m, true);
         }
     }
 
-    public class FerretFormTalisman : BaseFormTalisman
+    public static bool EntryEnabled(Mobile m, Type type)
     {
-        [Constructible]
-        public FerretFormTalisman()
+        if (type == typeof(Squirrel))
         {
+            return m.Talisman is SquirrelFormTalisman;
         }
 
-        public FerretFormTalisman(Serial serial) : base(serial)
+        if (type == typeof(Ferret))
         {
+            return m.Talisman is FerretFormTalisman;
         }
 
-        public override TalismanForm Form => TalismanForm.Ferret;
-
-        public override void Serialize(IGenericWriter writer)
+        if (type == typeof(CuSidhe))
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
+            return m.Talisman is CuSidheFormTalisman;
         }
 
-        public override void Deserialize(IGenericReader reader)
+        if (type == typeof(Reptalon))
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            return m.Talisman is ReptalonFormTalisman;
         }
+
+        return true;
+    }
+}
+
+[SerializationGenerator(0)]
+public partial class FerretFormTalisman : BaseFormTalisman
+{
+    [Constructible]
+    public FerretFormTalisman()
+    {
     }
 
-    public class SquirrelFormTalisman : BaseFormTalisman
+    public override TalismanForm Form => TalismanForm.Ferret;
+}
+
+[SerializationGenerator(0)]
+public partial class SquirrelFormTalisman : BaseFormTalisman
+{
+    [Constructible]
+    public SquirrelFormTalisman()
     {
-        [Constructible]
-        public SquirrelFormTalisman()
-        {
-        }
-
-        public SquirrelFormTalisman(Serial serial) : base(serial)
-        {
-        }
-
-        public override TalismanForm Form => TalismanForm.Squirrel;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class CuSidheFormTalisman : BaseFormTalisman
+    public override TalismanForm Form => TalismanForm.Squirrel;
+}
+
+[SerializationGenerator(0)]
+public partial class CuSidheFormTalisman : BaseFormTalisman
+{
+    [Constructible]
+    public CuSidheFormTalisman()
     {
-        [Constructible]
-        public CuSidheFormTalisman()
-        {
-        }
-
-        public CuSidheFormTalisman(Serial serial) : base(serial)
-        {
-        }
-
-        public override TalismanForm Form => TalismanForm.CuSidhe;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class ReptalonFormTalisman : BaseFormTalisman
+    public override TalismanForm Form => TalismanForm.CuSidhe;
+
+}
+
+[SerializationGenerator(0)]
+public partial class ReptalonFormTalisman : BaseFormTalisman
+{
+    [Constructible]
+    public ReptalonFormTalisman()
     {
-        [Constructible]
-        public ReptalonFormTalisman()
-        {
-        }
-
-        public ReptalonFormTalisman(Serial serial) : base(serial)
-        {
-        }
-
-        public override TalismanForm Form => TalismanForm.Reptalon;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
+
+    public override TalismanForm Form => TalismanForm.Reptalon;
 }

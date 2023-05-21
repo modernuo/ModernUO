@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: Gump.cs                                                         *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using Server.Network;
@@ -15,7 +30,20 @@ public partial class Gump
     public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
     public static readonly byte[] NoResize = StringToBuffer("{ noresize }");
 
-    internal int m_TextEntries, m_Switches;
+    private int _switches;
+    private int _textEntries;
+
+    public int Switches
+    {
+        get => _switches;
+        set => _switches = value;
+    }
+
+    public int TextEntries
+    {
+        get => _textEntries;
+        set => _textEntries = value;
+    }
 
     public Gump(int x, int y)
     {
@@ -53,7 +81,15 @@ public partial class Gump
 
     public bool Closable { get; set; } = true;
 
-    public static int GetTypeID(Type type) => type?.FullName?.GetHashCode(StringComparison.Ordinal) ?? -1;
+    public static int GetTypeID(Type type)
+    {
+        unchecked
+        {
+            // To use the original .NET Framework deterministic hash code (with really bad performance)
+            // change the next line to use HashUtility.GetNetFrameworkHashCode
+            return (int)HashUtility.ComputeHash32(type?.FullName);
+        }
+    }
 
     public void AddPage(int page)
     {
@@ -250,7 +286,7 @@ public partial class Gump
     public void SendTo(NetState state)
     {
         state.AddGump(this);
-        state.SendDisplayGump(this, out m_Switches, out m_TextEntries);
+        state.SendDisplayGump(this, out _switches, out _textEntries);
     }
 
     public static byte[] StringToBuffer(string str) => str.GetBytesAscii();

@@ -46,7 +46,7 @@ namespace Server.Spells.Necromancy
                 Caster.PlaySound(0x387);
                 Caster.FixedParticles(0x3779, 1, 15, 9905, 32, 2, EffectLayer.Head);
                 Caster.FixedParticles(0x37B9, 1, 14, 9502, 32, 5, (EffectLayer)255);
-                new SoundEffectTimer(Caster).Start();
+                Timer.StartTimer(TimeSpan.FromSeconds(0.75), () => Caster.PlaySound(0xFA));
 
                 var duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 3.4 + 1.0);
 
@@ -64,33 +64,15 @@ namespace Server.Spells.Necromancy
 
         private class ExpireTimer : Timer
         {
-            private readonly BaseWeapon m_Weapon;
+            private BaseWeapon _weapon;
 
-            public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay)
-            {
-                m_Weapon = weapon;
-            }
+            public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay) => _weapon = weapon;
 
             protected override void OnTick()
             {
-                m_Weapon.Cursed = false;
-                Effects.PlaySound(m_Weapon.GetWorldLocation(), m_Weapon.Map, 0xFA);
-                _table.Remove(m_Weapon);
-            }
-        }
-
-        private class SoundEffectTimer : Timer
-        {
-            private readonly Mobile m_Mobile;
-
-            public SoundEffectTimer(Mobile m) : base(TimeSpan.FromSeconds(0.75))
-            {
-                m_Mobile = m;
-            }
-
-            protected override void OnTick()
-            {
-                m_Mobile.PlaySound(0xFA);
+                _weapon.Cursed = false;
+                Effects.PlaySound(_weapon.GetWorldLocation(), _weapon.Map, 0xFA);
+                _table.Remove(_weapon);
             }
         }
     }

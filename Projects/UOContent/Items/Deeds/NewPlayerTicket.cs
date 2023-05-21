@@ -9,7 +9,7 @@ namespace Server.Items;
 public partial class NewPlayerTicket : Item
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.Owner)]")]
+    [SerializedCommandProperty(AccessLevel.Owner)]
     private Mobile _owner;
 
     [Constructible]

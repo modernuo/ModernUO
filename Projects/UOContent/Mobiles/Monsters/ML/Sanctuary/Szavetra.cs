@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Szavetra : Succubus
+    [SerializationGenerator(0, false)]
+    public partial class Szavetra : Succubus
     {
         [Constructible]
         public Szavetra()
@@ -33,26 +36,7 @@ namespace Server.Mobiles
             Karma = -24000;
         }
 
-        public Szavetra(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Szavetra corpse";
         public override string DefaultName => "Szavetra";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.PlagueBeastMutationCore",
+  "properties": [
+    {
+      "name": "Cut",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

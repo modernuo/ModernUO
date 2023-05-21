@@ -1,3 +1,5 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias(
@@ -6,7 +8,8 @@ namespace Server.Mobiles
         "Server.Mobiles.GrayHorse",
         "Server.Mobiles.TanHorse"
     )]
-    public class Horse : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class Horse : BaseMount
     {
         private static readonly int[] m_IDs =
         {
@@ -16,8 +19,10 @@ namespace Server.Mobiles
             0xCC, 0x3EA2
         };
 
+        public override string DefaultName => "a horse";
+
         [Constructible]
-        public Horse(string name = "a horse") : base(name, 0xE2, 0x3EA0, AIType.AI_Animal, FightMode.Aggressor)
+        public Horse() : base(0xE2, 0x3EA0, AIType.AI_Animal, FightMode.Aggressor)
         {
             var random = Utility.Random(4);
 
@@ -50,28 +55,10 @@ namespace Server.Mobiles
             MinTameSkill = 29.1;
         }
 
-        public Horse(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a horse corpse";
 
         public override int Meat => 3;
         public override int Hides => 10;
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

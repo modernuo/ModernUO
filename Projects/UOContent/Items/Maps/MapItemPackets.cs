@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MapItemPackets.cs                                               *
  *                                                                       *
@@ -43,23 +43,35 @@ namespace Server.Network
             switch (command)
             {
                 case 1:
-                    map.OnAddPin(from, x, y);
-                    break;
+                    {
+                        map.OnAddPin(from, x, y);
+                        break;
+                    }
                 case 2:
-                    map.OnInsertPin(from, number, x, y);
-                    break;
+                    {
+                        map.OnInsertPin(from, number, x, y);
+                        break;
+                    }
                 case 3:
-                    map.OnChangePin(from, number, x, y);
-                    break;
+                    {
+                        map.OnChangePin(from, number, x, y);
+                        break;
+                    }
                 case 4:
-                    map.OnRemovePin(from, number);
-                    break;
+                    {
+                        map.OnRemovePin(from, number);
+                        break;
+                    }
                 case 5:
-                    map.OnClearPins(from);
-                    break;
+                    {
+                        map.OnClearPins(from);
+                        break;
+                    }
                 case 6:
-                    map.OnToggleEditable(from);
-                    break;
+                    {
+                        map.OnToggleEditable(from);
+                        break;
+                    }
             }
         }
 

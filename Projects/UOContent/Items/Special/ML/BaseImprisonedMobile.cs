@@ -1,49 +1,32 @@
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Mobiles;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public abstract partial class BaseImprisonedMobile : Item
 {
-    public abstract class BaseImprisonedMobile : Item
+    [Constructible]
+    public BaseImprisonedMobile(int itemID) : base(itemID)
     {
-        [Constructible]
-        public BaseImprisonedMobile(int itemID) : base(itemID)
+    }
+
+    public abstract BaseCreature Summon { get; }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (IsChildOf(from.Backpack))
         {
+            from.SendGump(new ConfirmBreakCrystalGump(this));
         }
-
-        public BaseImprisonedMobile(Serial serial) : base(serial)
+        else
         {
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
         }
+    }
 
-        public abstract BaseCreature Summon { get; }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (IsChildOf(from.Backpack))
-            {
-                from.SendGump(new ConfirmBreakCrystalGump(this));
-            }
-            else
-            {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        public virtual void Release(Mobile from, BaseCreature summon)
-        {
-        }
+    public virtual void Release(Mobile from, BaseCreature summon)
+    {
     }
 }

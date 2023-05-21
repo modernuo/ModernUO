@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point3D.cs                                                      *
  *                                                                       *
@@ -16,153 +16,263 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Server
+namespace Server;
+
+public struct Point3D
+    : IPoint3D, IComparable<Point3D>, IComparable<IPoint3D>, IEquatable<object>, IEquatable<Point3D>,
+        IEquatable<IPoint3D>, ISpanFormattable, ISpanParsable<Point3D>
 {
-    [Parsable]
-    public struct Point3D
-        : IPoint3D, IComparable<Point3D>, IComparable<IPoint3D>, IEquatable<object>, IEquatable<Point3D>,
-            IEquatable<IPoint3D>
+    internal int m_X;
+    internal int m_Y;
+    internal int m_Z;
+
+    public static readonly Point3D Zero = new(0, 0, 0);
+
+    [CommandProperty(AccessLevel.Counselor)]
+    public int X
     {
-        internal int m_X;
-        internal int m_Y;
-        internal int m_Z;
+        get => m_X;
+        set => m_X = value;
+    }
 
-        public static readonly Point3D Zero = new(0, 0, 0);
+    [CommandProperty(AccessLevel.Counselor)]
+    public int Y
+    {
+        get => m_Y;
+        set => m_Y = value;
+    }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int X
+    [CommandProperty(AccessLevel.Counselor)]
+    public int Z
+    {
+        get => m_Z;
+        set => m_Z = value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point3D(IPoint3D p) : this(p.X, p.Y, p.Z)
+    {
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point3D(Point3D p) : this(p.X, p.Y, p.Z)
+    {
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point3D(Point2D p, int z) : this(p.X, p.Y, z)
+    {
+    }
+
+    public Point3D(int x, int y, int z)
+    {
+        m_X = x;
+        m_Y = y;
+        m_Z = z;
+    }
+
+    public bool Equals(Point3D other) => m_X == other.m_X && m_Y == other.m_Y && m_Z == other.m_Z;
+
+    public bool Equals(IPoint3D other) =>
+        m_X == other?.X && m_Y == other.Y && m_Z == other.Z;
+
+    public override bool Equals(object obj) => obj is Point3D other && Equals(other);
+
+    public override int GetHashCode() => HashCode.Combine(m_X, m_Y, m_Z);
+
+    public static bool operator ==(Point3D l, Point3D r) => l.m_X == r.m_X && l.m_Y == r.m_Y && l.m_Z == r.m_Z;
+
+    public static bool operator ==(Point3D l, IPoint3D r) =>
+        !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
+
+    public static bool operator !=(Point3D l, Point3D r) => l.m_X != r.m_X || l.m_Y != r.m_Y || l.m_Z != r.m_Z;
+
+    public static bool operator !=(Point3D l, IPoint3D r) =>
+        !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
+
+    public static bool operator >(Point3D l, Point3D r) => l.m_X > r.m_X && l.m_Y > r.m_Y && l.m_Z > r.m_Z;
+
+    public static bool operator >(Point3D l, IPoint3D r) =>
+        !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y && l.m_Z > r.Z;
+
+    public static bool operator <(Point3D l, Point3D r) => l.m_X < r.m_X && l.m_Y < r.m_Y && l.m_Z > r.m_Z;
+
+    public static bool operator <(Point3D l, IPoint3D r) =>
+        !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y && l.m_Z > r.Z;
+
+    public static bool operator >=(Point3D l, Point3D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y && l.m_Z > r.m_Z;
+
+    public static bool operator >=(Point3D l, IPoint3D r) =>
+        !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y && l.m_Z > r.Z;
+
+    public static bool operator <=(Point3D l, Point3D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y && l.m_Z > r.m_Z;
+
+    public static bool operator <=(Point3D l, IPoint3D r) =>
+        !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y && l.m_Z > r.Z;
+
+    public int CompareTo(Point3D other)
+    {
+        var xComparison = m_X.CompareTo(other.m_X);
+        if (xComparison != 0)
         {
-            get => m_X;
-            set => m_X = value;
+            return xComparison;
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int Y
+        var yComparison = m_Y.CompareTo(other.m_Y);
+        if (yComparison != 0)
         {
-            get => m_Y;
-            set => m_Y = value;
+            return yComparison;
         }
 
-        [CommandProperty(AccessLevel.Counselor)]
-        public int Z
+        return m_Z.CompareTo(other.m_Z);
+    }
+
+    public int CompareTo(IPoint3D other)
+    {
+        var xComparison = m_X.CompareTo(other.X);
+        if (xComparison != 0)
         {
-            get => m_Z;
-            set => m_Z = value;
+            return xComparison;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Point3D(IPoint3D p) : this(p.X, p.Y, p.Z)
+        var yComparison = m_Y.CompareTo(other.Y);
+        if (yComparison != 0)
         {
+            return yComparison;
         }
 
-        public Point3D(Point3D p) : this(p.X, p.Y, p.Z)
+        return m_Z.CompareTo(other.Z);
+    }
+
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
+        => destination.TryWrite(provider, $"({m_X}, {m_Y}, {m_Z})", out charsWritten);
+
+    public override string ToString()
+    {
+        // Maximum number of characters that are needed to represent this:
+        // 6 characters for (, , )
+        // Up to 11 characters to represent each integer
+        const int maxLength = 6 + 11 * 3;
+        Span<char> span = stackalloc char[maxLength];
+        TryFormat(span, out var charsWritten, null, null);
+        return span[..charsWritten].ToString();
+    }
+
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point3D Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Point3D Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Point3D result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Point3D Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
         {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public Point3D(Point2D p, int z) : this(p.X, p.Y, z)
+        var firstComma = s.IndexOfOrdinal(',');
+        if (firstComma == -1)
         {
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public Point3D(int x, int y, int z)
+        var first = s.Slice(1, firstComma - 1).Trim();
+
+        if (!Utility.ToInt32(first, out var x))
         {
-            m_X = x;
-            m_Y = y;
-            m_Z = z;
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public override string ToString() => $"({m_X}, {m_Y}, {m_Z})";
+        var offset = firstComma + 1;
 
-        public bool Equals(Point3D other) => m_X == other.m_X && m_Y == other.m_Y && m_Z == other.m_Z;
-
-        public bool Equals(IPoint3D other) =>
-            m_X == other?.X && m_Y == other.Y && m_Z == other.Z;
-
-        public override bool Equals(object obj) => obj is Point3D other && Equals(other);
-
-        public override int GetHashCode() => HashCode.Combine(m_X, m_Y, m_Z);
-
-        public static Point3D Parse(string value)
+        var secondComma = s[offset..].IndexOfOrdinal(',');
+        if (secondComma == -1)
         {
-            var start = value.IndexOfOrdinal('(');
-            var end = value.IndexOf(',', start + 1);
-
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var x);
-
-            start = end;
-            end = value.IndexOf(',', start + 1);
-
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var y);
-
-            start = end;
-            end = value.IndexOf(')', start + 1);
-
-            Utility.ToInt32(value.AsSpan(start + 1, end - (start + 1)).Trim(), out var z);
-
-            return new Point3D(x, y, z);
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public static bool operator ==(Point3D l, Point3D r) => l.m_X == r.m_X && l.m_Y == r.m_Y && l.m_Z == r.m_Z;
+        var second = s.Slice(firstComma + 1, secondComma).Trim();
 
-        public static bool operator ==(Point3D l, IPoint3D r) =>
-            !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
-
-        public static bool operator !=(Point3D l, Point3D r) => l.m_X != r.m_X || l.m_Y != r.m_Y || l.m_Z != r.m_Z;
-
-        public static bool operator !=(Point3D l, IPoint3D r) =>
-            !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
-
-        public static bool operator >(Point3D l, Point3D r) => l.m_X > r.m_X && l.m_Y > r.m_Y && l.m_Z > r.m_Z;
-
-        public static bool operator >(Point3D l, IPoint3D r) =>
-            !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y && l.m_Z > r.Z;
-
-        public static bool operator <(Point3D l, Point3D r) => l.m_X < r.m_X && l.m_Y < r.m_Y && l.m_Z > r.m_Z;
-
-        public static bool operator <(Point3D l, IPoint3D r) =>
-            !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y && l.m_Z > r.Z;
-
-        public static bool operator >=(Point3D l, Point3D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y && l.m_Z > r.m_Z;
-
-        public static bool operator >=(Point3D l, IPoint3D r) =>
-            !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y && l.m_Z > r.Z;
-
-        public static bool operator <=(Point3D l, Point3D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y && l.m_Z > r.m_Z;
-
-        public static bool operator <=(Point3D l, IPoint3D r) =>
-            !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y && l.m_Z > r.Z;
-
-        public int CompareTo(Point3D other)
+        if (!Utility.ToInt32(second, out var y))
         {
-            var xComparison = m_X.CompareTo(other.m_X);
-            if (xComparison != 0)
-            {
-                return xComparison;
-            }
-
-            var yComparison = m_Y.CompareTo(other.m_Y);
-            if (yComparison != 0)
-            {
-                return yComparison;
-            }
-
-            return m_Z.CompareTo(other.m_Z);
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
 
-        public int CompareTo(IPoint3D other)
+        offset += secondComma + 1;
+
+        var third = s.Slice(offset, s.Length - offset - 1).Trim();
+        if (!Utility.ToInt32(third, out var z))
         {
-            var xComparison = m_X.CompareTo(other.X);
-            if (xComparison != 0)
-            {
-                return xComparison;
-            }
-
-            var yComparison = m_Y.CompareTo(other.Y);
-            if (yComparison != 0)
-            {
-                return yComparison;
-            }
-
-            return m_Z.CompareTo(other.Z);
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
         }
+
+        return new Point3D(x, y, z);
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Point3D result)
+    {
+        s = s.Trim();
+
+        if (!s.StartsWithOrdinal('(') || !s.EndsWithOrdinal(')'))
+        {
+            result = default;
+            return false;
+        }
+
+        var firstComma = s.IndexOfOrdinal(',');
+        if (firstComma == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        var first = s.Slice(1, firstComma - 1).Trim();
+        if (!Utility.ToInt32(first, out var x))
+        {
+            result = default;
+            return false;
+        }
+
+        var offset = firstComma + 1;
+
+        var secondComma = s[offset..].IndexOfOrdinal(',');
+        if (secondComma == -1)
+        {
+            result = default;
+            return false;
+        }
+
+        var second = s.Slice(firstComma + 1, secondComma).Trim();
+        if (!Utility.ToInt32(second, out var y))
+        {
+            result = default;
+            return false;
+        }
+
+        offset += secondComma + 1;
+
+        var third = s.Slice(offset, s.Length - offset - 1).Trim();
+        if (!Utility.ToInt32(third, out var z))
+        {
+            result = default;
+            return false;
+        }
+
+        result = new Point3D(x, y, z);
+        return true;
     }
 }

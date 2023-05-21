@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+using ModernUO.Serialization;
 
 namespace Server.Mobiles
 {
-    public class SirPatrick : SkeletalKnight
+    [SerializationGenerator(0, false)]
+    public partial class SirPatrick : SkeletalKnight
     {
         [Constructible]
         public SirPatrick()
@@ -37,11 +38,6 @@ namespace Server.Mobiles
             Karma = -18000;
         }
 
-        public SirPatrick(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Sir Patrick corpse";
         public override string DefaultName => "Sir Patrick";
 
@@ -50,10 +46,10 @@ namespace Server.Mobiles
         public override void OnDeath( Container c )
         {
           base.OnDeath( c );
-    
+
           if (Utility.RandomDouble() < 0.15)
             c.DropItem( new DisintegratingThesisNotes() );
-    
+
           if (Utility.RandomDouble() < 0.05)
             c.DropItem( new AssassinChest() );
         }
@@ -61,81 +57,26 @@ namespace Server.Mobiles
 
         public override bool GivesMLMinorArtifact => true;
 
+        private static MonsterAbility[] _abilities = { new SirPatrickDrainLife() };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        private class SirPatrickDrainLife : DrainLifeAreaAttack
         {
-            base.OnGaveMeleeAttack(defender);
+            public override int MinDamage => 14;
+            public override int MaxDamage => 30;
 
-            if (Utility.RandomDouble() < 0.1)
+            protected override void DoEffectTarget(BaseCreature source, Mobile defender)
             {
-                DrainLife();
+                defender.FixedParticles(0x374A, 10, 15, 5013, 0x455, 0, EffectLayer.Waist);
+                defender.PlaySound(0x1EA);
+
+                DrainLife(source, defender);
             }
-        }
-
-        public override void OnGotMeleeAttack(Mobile attacker)
-        {
-            base.OnGotMeleeAttack(attacker);
-
-            if (Utility.RandomDouble() < 0.1)
-            {
-                DrainLife();
-            }
-        }
-
-        public virtual void DrainLife()
-        {
-            var list = new List<Mobile>();
-
-            foreach (var m in GetMobilesInRange(2))
-            {
-                if (m == this || !CanBeHarmful(m, false) || Core.AOS && !InLOS(m))
-                {
-                    continue;
-                }
-
-                if (m is BaseCreature bc)
-                {
-                    if (bc.Controlled || bc.Summoned || bc.Team != Team)
-                    {
-                        list.Add(bc);
-                    }
-                }
-                else if (m.Player)
-                {
-                    list.Add(m);
-                }
-            }
-
-            foreach (var m in list)
-            {
-                DoHarmful(m);
-
-                m.FixedParticles(0x374A, 10, 15, 5013, 0x455, 0, EffectLayer.Waist);
-                m.PlaySound(0x1EA);
-
-                var drain = Utility.RandomMinMax(14, 30);
-
-                Hits += drain;
-                m.Damage(drain, this);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

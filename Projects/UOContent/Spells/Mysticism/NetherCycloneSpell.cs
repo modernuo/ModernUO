@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Server.Collections;
 
 namespace Server.Spells.Mysticism
 {
@@ -16,19 +15,17 @@ namespace Server.Spells.Mysticism
             Reagent.Bloodmoss
         );
 
-        public NetherCycloneSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public NetherCycloneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.5);
-
-        public override double RequiredSkill => 83.0;
-        public override int RequiredMana => 50;
+        public override SpellCircle Circle => SpellCircle.Eighth;
 
         public void Target(IPoint3D p)
         {
-            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            var loc = (p as Item)?.GetWorldLocation() ?? new Point3D(p);
+
+            if (SpellHelper.CheckTown(loc, Caster) && CheckSequence())
             {
                 /* Summons a gale of lethal winds that strikes all Targets within a radius around
                  * the Target's Location, dealing chaos damage. In addition to inflicting damage,
@@ -40,20 +37,12 @@ namespace Server.Spells.Mysticism
 
                 SpellHelper.Turn(Caster, p);
 
-                if (p is Item item)
-                {
-                    p = item.GetWorldLocation();
-                }
-
-                var targets = new List<Mobile>();
-
                 var map = Caster.Map;
-
-                var pvp = false;
 
                 if (map != null)
                 {
-                    var loc = new Point3D(p);
+                    using var pool = PooledRefQueue<Mobile>.Create();
+                    var pvp = false;
 
                     PlayEffect(loc, Caster.Map);
 
@@ -71,7 +60,7 @@ namespace Server.Spells.Mysticism
                                 continue;
                             }
 
-                            targets.Add(m);
+                            pool.Enqueue(m);
 
                             if (m.Player)
                             {
@@ -79,20 +68,21 @@ namespace Server.Spells.Mysticism
                             }
                         }
                     }
-                }
 
-                var damage = GetNewAosDamage(51, 1, 5, pvp);
-                var reduction = (GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 1200.0;
+                    var damage = GetNewAosDamage(51, 1, 5, pvp);
+                    var reduction = (GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 1200.0;
 
-                foreach (var m in targets)
-                {
-                    Caster.DoHarmful(m);
-                    SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
+                    while (pool.Count > 0)
+                    {
+                        var m = pool.Dequeue();
+                        Caster.DoHarmful(m);
+                        SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
 
-                    var resistedReduction = reduction - m.Skills.MagicResist.Value / 800.0;
+                        var resistedReduction = reduction - m.Skills.MagicResist.Value / 800.0;
 
-                    m.Stam -= (int)(m.StamMax * resistedReduction);
-                    m.Mana -= (int)(m.ManaMax * resistedReduction);
+                        m.Stam -= (int)(m.StamMax * resistedReduction);
+                        m.Mana -= (int)(m.ManaMax * resistedReduction);
+                    }
                 }
             }
 

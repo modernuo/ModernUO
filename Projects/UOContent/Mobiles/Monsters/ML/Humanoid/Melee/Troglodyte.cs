@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Troglodyte : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Troglodyte : BaseCreature
     {
         [Constructible]
         public Troglodyte() : base(AIType.AI_Melee) // NEED TO CHECK
@@ -41,13 +43,8 @@ namespace Server.Mobiles
             PackItem(new Ribs());
         }
 
-        public Troglodyte(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a troglodyte corpse";
         public override string DefaultName => "a troglodyte";
-
         public override bool CanHeal => true;
 
         public override void GenerateLoot()
@@ -63,18 +60,6 @@ namespace Server.Mobiles
             {
                 c.DropItem(new PrimitiveFetish());
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

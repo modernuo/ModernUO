@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Whitewolf")]
-    public class WhiteWolf : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class WhiteWolf : BaseCreature
     {
         [Constructible]
         public WhiteWolf() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -40,10 +43,6 @@ namespace Server.Mobiles
             MinTameSkill = 65.1;
         }
 
-        public WhiteWolf(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a white wolf corpse";
         public override string DefaultName => "a white wolf";
 
@@ -51,19 +50,5 @@ namespace Server.Mobiles
         public override int Hides => 6;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

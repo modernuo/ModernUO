@@ -1,28 +1,12 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class ManaDrainScroll : SpellScroll
 {
-    public class ManaDrainScroll : SpellScroll
+    [Constructible]
+    public ManaDrainScroll(int amount = 1) : base(30, 0x1F4B, amount)
     {
-        [Constructible]
-        public ManaDrainScroll(int amount = 1) : base(30, 0x1F4B, amount)
-        {
-        }
-
-        public ManaDrainScroll(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

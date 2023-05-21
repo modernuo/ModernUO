@@ -1,212 +1,125 @@
 using System;
-using Server.Network;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public abstract partial class BaseFruitTreeAddon : BaseAddon
 {
-    public abstract class BaseFruitTreeAddon : BaseAddon
+    public BaseFruitTreeAddon()
     {
-        private int m_Fruits;
+        Timer.StartTimer(TimeSpan.FromMinutes(5), Respawn);
+    }
 
-        public BaseFruitTreeAddon()
+    public abstract override BaseAddonDeed Deed { get; }
+    public abstract Item Fruit { get; }
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Fruits
+    {
+        get => _fruits;
+        set => _fruits = Math.Max(value, 0);
+    }
+
+    public override void OnComponentUsed(AddonComponent c, Mobile from)
+    {
+        if (from.InRange(c.Location, 2))
         {
-            Timer.StartTimer(TimeSpan.FromMinutes(5), Respawn);
-        }
-
-        public BaseFruitTreeAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public abstract override BaseAddonDeed Deed { get; }
-        public abstract Item Fruit { get; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Fruits
-        {
-            get => m_Fruits;
-            set => m_Fruits = Math.Max(value, 0);
-        }
-
-        public override void OnComponentUsed(AddonComponent c, Mobile from)
-        {
-            if (from.InRange(c.Location, 2))
+            if (_fruits > 0)
             {
-                if (m_Fruits > 0)
+                var fruit = Fruit;
+
+                if (fruit == null)
                 {
-                    var fruit = Fruit;
+                    return;
+                }
 
-                    if (fruit == null)
-                    {
-                        return;
-                    }
-
-                    if (!from.PlaceInBackpack(fruit))
-                    {
-                        fruit.Delete();
-                        from.SendLocalizedMessage(501015); // There is no room in your backpack for the fruit.
-                    }
-                    else
-                    {
-                        if (--m_Fruits == 0)
-                        {
-                            Timer.StartTimer(TimeSpan.FromMinutes(30), Respawn);
-                        }
-
-                        from.SendLocalizedMessage(501016); // You pick some fruit and put it in your backpack.
-                    }
+                if (!from.PlaceInBackpack(fruit))
+                {
+                    fruit.Delete();
+                    from.SendLocalizedMessage(501015); // There is no room in your backpack for the fruit.
                 }
                 else
                 {
-                    from.SendLocalizedMessage(501017); // There is no more fruit on this tree
+                    if (--Fruits == 0)
+                    {
+                        Timer.StartTimer(TimeSpan.FromMinutes(30), Respawn);
+                    }
+
+                    from.SendLocalizedMessage(501016); // You pick some fruit and put it in your backpack.
                 }
             }
             else
             {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                from.SendLocalizedMessage(501017); // There is no more fruit on this tree
             }
         }
-
-        private void Respawn()
+        else
         {
-            m_Fruits = Utility.RandomMinMax(1, 4);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_Fruits);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_Fruits = reader.ReadInt();
-
-            if (m_Fruits == 0)
-            {
-                Respawn();
-            }
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
     }
 
-    public class AppleTreeAddon : BaseFruitTreeAddon
+    private void Respawn()
     {
-        [Constructible]
-        public AppleTreeAddon()
-        {
-            AddComponent(new LocalizedAddonComponent(0xD98, 1076269), 0, 0, 0);
-            AddComponent(new LocalizedAddonComponent(0x3124, 1076269), 0, 0, 0);
-        }
-
-        public AppleTreeAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new AppleTreeDeed();
-        public override Item Fruit => new Apple();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        _fruits = Utility.RandomMinMax(1, 4);
     }
 
-    public class AppleTreeDeed : BaseAddonDeed
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        [Constructible]
-        public AppleTreeDeed() => LootType = LootType.Blessed;
-
-        public AppleTreeDeed(Serial serial) : base(serial)
+        if (_fruits == 0)
         {
-        }
-
-        public override BaseAddon Addon => new AppleTreeAddon();
-        public override int LabelNumber => 1076269; // Apple Tree
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            Respawn();
         }
     }
+}
 
-    public class PeachTreeAddon : BaseFruitTreeAddon
+[SerializationGenerator(0)]
+public partial class AppleTreeAddon : BaseFruitTreeAddon
+{
+    [Constructible]
+    public AppleTreeAddon()
     {
-        [Constructible]
-        public PeachTreeAddon()
-        {
-            AddComponent(new LocalizedAddonComponent(0xD9C, 1076270), 0, 0, 0);
-            AddComponent(new LocalizedAddonComponent(0x3123, 1076270), 0, 0, 0);
-        }
-
-        public PeachTreeAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new PeachTreeDeed();
-        public override Item Fruit => new Peach();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        AddComponent(new LocalizedAddonComponent(0xD98, 1076269), 0, 0, 0);
+        AddComponent(new LocalizedAddonComponent(0x3124, 1076269), 0, 0, 0);
     }
 
-    public class PeachTreeDeed : BaseAddonDeed
+    public override BaseAddonDeed Deed => new AppleTreeDeed();
+    public override Item Fruit => new Apple();
+}
+
+[SerializationGenerator(0)]
+public partial class AppleTreeDeed : BaseAddonDeed
+{
+    [Constructible]
+    public AppleTreeDeed() => LootType = LootType.Blessed;
+
+    public override BaseAddon Addon => new AppleTreeAddon();
+    public override int LabelNumber => 1076269; // Apple Tree
+}
+
+[SerializationGenerator(0)]
+public partial class PeachTreeAddon : BaseFruitTreeAddon
+{
+    [Constructible]
+    public PeachTreeAddon()
     {
-        [Constructible]
-        public PeachTreeDeed() => LootType = LootType.Blessed;
-
-        public PeachTreeDeed(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddon Addon => new PeachTreeAddon();
-        public override int LabelNumber => 1076270; // Peach Tree
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        AddComponent(new LocalizedAddonComponent(0xD9C, 1076270), 0, 0, 0);
+        AddComponent(new LocalizedAddonComponent(0x3123, 1076270), 0, 0, 0);
     }
+
+    public override BaseAddonDeed Deed => new PeachTreeDeed();
+    public override Item Fruit => new Peach();
+}
+
+[SerializationGenerator(0)]
+public partial class PeachTreeDeed : BaseAddonDeed
+{
+    [Constructible]
+    public PeachTreeDeed() => LootType = LootType.Blessed;
+
+    public override BaseAddon Addon => new PeachTreeAddon();
+    public override int LabelNumber => 1076270; // Peach Tree
 }

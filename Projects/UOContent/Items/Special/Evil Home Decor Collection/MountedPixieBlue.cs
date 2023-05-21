@@ -1,99 +1,47 @@
-using Server.Network;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x2A75, 0x2A76)]
+[SerializationGenerator(0)]
+public partial class MountedPixieBlueComponent : AddonComponent
 {
-    [Flippable(0x2A75, 0x2A76)]
-    public class MountedPixieBlueComponent : AddonComponent
+    public MountedPixieBlueComponent() : base(0x2A75)
     {
-        public MountedPixieBlueComponent() : base(0x2A75)
-        {
-        }
-
-        public MountedPixieBlueComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1074482; // Mounted pixie
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (Utility.InRange(Location, from.Location, 2))
-            {
-                Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x55C, 0x55E));
-            }
-            else
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    public class MountedPixieBlueAddon : BaseAddon
+    public override int LabelNumber => 1074482; // Mounted pixie
+
+    public override void OnDoubleClick(Mobile from)
     {
-        public MountedPixieBlueAddon()
+        if (Utility.InRange(Location, from.Location, 2))
         {
-            AddComponent(new MountedPixieBlueComponent(), 0, 0, 0);
+            Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x55C, 0x55E));
         }
-
-        public MountedPixieBlueAddon(Serial serial) : base(serial)
+        else
         {
-        }
-
-        public override BaseAddonDeed Deed => new MountedPixieBlueDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
     }
+}
 
-    public class MountedPixieBlueDeed : BaseAddonDeed
+[SerializationGenerator(0)]
+public partial class MountedPixieBlueAddon : BaseAddon
+{
+    public MountedPixieBlueAddon()
     {
-        [Constructible]
-        public MountedPixieBlueDeed() => LootType = LootType.Blessed;
-
-        public MountedPixieBlueDeed(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddon Addon => new MountedPixieBlueAddon();
-        public override int LabelNumber => 1074482; // Mounted pixie
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        AddComponent(new MountedPixieBlueComponent(), 0, 0, 0);
     }
+
+    public override BaseAddonDeed Deed => new MountedPixieBlueDeed();
+}
+
+[SerializationGenerator(0)]
+public partial class MountedPixieBlueDeed : BaseAddonDeed
+{
+    [Constructible]
+    public MountedPixieBlueDeed() => LootType = LootType.Blessed;
+
+    public override BaseAddon Addon => new MountedPixieBlueAddon();
+    public override int LabelNumber => 1074482; // Mounted pixie
 }

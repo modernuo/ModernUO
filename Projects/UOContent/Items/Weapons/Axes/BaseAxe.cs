@@ -4,7 +4,6 @@ using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Engines.Harvest;
-using Server.Network;
 
 namespace Server.Items
 {
@@ -18,12 +17,12 @@ namespace Server.Items
     {
         [SerializableField(0)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _showUsesRemaining;
 
         [SerializableField(1)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _usesRemaining;
 
         public BaseAxe(int itemID) : base(itemID) => _usesRemaining = 150;

@@ -1,28 +1,12 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class LightningScroll : SpellScroll
 {
-    public class LightningScroll : SpellScroll
+    [Constructible]
+    public LightningScroll(int amount = 1) : base(29, 0x1F4A, amount)
     {
-        [Constructible]
-        public LightningScroll(int amount = 1) : base(29, 0x1F4A, amount)
-        {
-        }
-
-        public LightningScroll(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

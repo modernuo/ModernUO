@@ -130,20 +130,4 @@ public class FlagsConverter<T> : JsonConverter<T> where T : struct, Enum
             TypeCode.UInt64 => (ulong)value,
             _               => throw new InvalidOperationException()
         };
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong GetUnderlyingTypeLength(TypeCode typeCode) =>
-        typeCode switch
-        {
-            TypeCode.Byte   => 8,
-            TypeCode.SByte  => 8,
-            TypeCode.Int16  => 16,
-            TypeCode.UInt16 => 16,
-            TypeCode.Char   => 16,
-            TypeCode.Int32  => 32,
-            TypeCode.UInt32 => 32,
-            TypeCode.Int64  => 64,
-            TypeCode.UInt64 => 64,
-            _               => 64
-        };
 }

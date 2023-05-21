@@ -317,7 +317,7 @@ namespace Server.Engines.ConPVP
                         SendHome();
 
                         from.LocalOverheadMessage(MessageType.Regular, 0x59, false, "You returned the cookies!");
-                        m_TeamInfo.Game.Alert("The {1} cookies have been returned by {0}.", from.Name, ourTeam.Name);
+                        m_TeamInfo.Game.Alert($"The {from.Name} cookies have been returned by {ourTeam.Name}.");
                     }
                 }
                 else if (!from.PlaceInBackpack(this))
@@ -329,12 +329,7 @@ namespace Server.Engines.ConPVP
                     from.RevealingAction();
 
                     from.LocalOverheadMessage(MessageType.Regular, 0x59, false, "You stole the cookies!");
-                    m_TeamInfo.Game.Alert(
-                        "The {1} cookies have been stolen by {0} ({2}).",
-                        from.Name,
-                        ourTeam.Name,
-                        useTeam.Name
-                    );
+                    m_TeamInfo.Game.Alert($"The {ourTeam.Name} cookies have been stolen by {from.Name} ({useTeam.Name}).");
 
                     BeginCountdown(120);
                 }
@@ -393,12 +388,14 @@ namespace Server.Engines.ConPVP
                 case 2:
                 case 1:
                     {
-                        owner?.SendMessage(
-                            0x26,
-                            "You have {0} {1} to capture the cookies!",
-                            m_ReturnCount,
-                            m_ReturnCount == 1 ? "second" : "seconds"
-                        );
+                        if (m_ReturnCount == 1)
+                        {
+                            owner?.SendMessage(0x26, $"You have {m_ReturnCount} second to capture the cookies!");
+                        }
+                        else
+                        {
+                            owner?.SendMessage(0x26, $"You have {m_ReturnCount} seconds to capture the cookies!");
+                        }
 
                         break;
                     }
@@ -413,7 +410,7 @@ namespace Server.Engines.ConPVP
 
                         SendHome();
 
-                        m_TeamInfo?.Game?.Alert("The {0} cookies have been returned.", m_TeamInfo.Name);
+                        m_TeamInfo?.Game?.Alert($"The {m_TeamInfo.Name} cookies have been returned.");
 
                         return;
                     }
@@ -442,7 +439,7 @@ namespace Server.Engines.ConPVP
                 if (obj == useTeam.Flag)
                 {
                     from.LocalOverheadMessage(MessageType.Regular, 0x59, false, "You captured the cookies!");
-                    m_TeamInfo.Game.Alert("{0} captured the {1} cookies!", from.Name, ourTeam.Name);
+                    m_TeamInfo.Game.Alert($"{from.Name} captured the {ourTeam.Name} cookies!");
 
                     SendHome();
 
@@ -934,11 +931,6 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public void Alert(string format, params object[] args)
-        {
-            Alert(string.Format(format, args));
-        }
-
         public CTFTeamInfo GetTeamInfo(Mobile mob)
         {
             var teamID = GetTeamID(mob);
@@ -1280,16 +1272,13 @@ namespace Server.Engines.ConPVP
                         }
 
                         mob.SendMessage(
-                            "You have been awarded a {0} trophy and {1:N0}gp for your participation in this tournament.",
-                            rank.ToString().ToLower(),
-                            cash
+                            $"You have been awarded a {rank.ToString().ToLower()} trophy and {cash:N0}gp for your participation in this tournament."
                         );
                     }
                     else
                     {
                         mob.SendMessage(
-                            "You have been awarded a {0} trophy for your participation in this tournament.",
-                            rank.ToString().ToLower()
+                            $"You have been awarded a {rank.ToString().ToLower()} trophy for your participation in this tournament."
                         );
                     }
                 }

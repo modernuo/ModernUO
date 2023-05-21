@@ -1,42 +1,26 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class HolySword : Longsword
 {
-    public class HolySword : Longsword
+    [Constructible]
+    public HolySword()
     {
-        [Constructible]
-        public HolySword()
-        {
-            Hue = 0x482;
-            LootType = LootType.Blessed;
+        Hue = 0x482;
+        LootType = LootType.Blessed;
 
-            Slayer = SlayerName.Silver;
+        Slayer = SlayerName.Silver;
 
-            Attributes.WeaponDamage = 40;
-            WeaponAttributes.SelfRepair = 10;
-            WeaponAttributes.LowerStatReq = 100;
-            WeaponAttributes.UseBestSkill = 1;
-        }
-
-        public HolySword(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1062921; // The Holy Sword
-
-        public override int InitMinHits => 255;
-        public override int InitMaxHits => 255;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        Attributes.WeaponDamage = 40;
+        WeaponAttributes.SelfRepair = 10;
+        WeaponAttributes.LowerStatReq = 100;
+        WeaponAttributes.UseBestSkill = 1;
     }
+
+    public override int LabelNumber => 1062921; // The Holy Sword
+
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 }

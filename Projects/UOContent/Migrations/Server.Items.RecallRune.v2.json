@@ -1,0 +1,43 @@
+{
+  "version": 2,
+  "type": "Server.Items.RecallRune",
+  "properties": [
+    {
+      "name": "House",
+      "type": "Server.Multis.BaseHouse",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Description",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Marked",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Target",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "TargetMap",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "version": 4,
+  "type": "Server.Items.BaseInstrument",
+  "properties": [
+    {
+      "name": "ReplenishesCharges",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastReplenished",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Crafter",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Quality",
+      "type": "Server.Items.InstrumentQuality",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Slayer",
+      "type": "Server.Items.SlayerName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Slayer2",
+      "type": "Server.Items.SlayerName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "UsesRemaining",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SuccessSound",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "FailureSound",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

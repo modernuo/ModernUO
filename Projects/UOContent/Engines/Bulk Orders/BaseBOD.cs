@@ -24,17 +24,17 @@ namespace Server.Engines.BulkOrders
 
         [SerializableField(0)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _amountMax;
 
         [SerializableField(1)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _requireExceptional;
 
         [SerializableField(2)]
         [InvalidateProperties]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private BulkMaterialType _material;
 
         public static BulkMaterialType GetRandomMaterial(BulkMaterialType start, double[] chances)
@@ -128,8 +128,6 @@ namespace Server.Engines.BulkOrders
             AmountMax = reader.ReadInt();
             RequireExceptional = reader.ReadBool();
             Material = (BulkMaterialType)reader.ReadInt();
-
-            Timer.StartTimer(AfterDeserialization);
         }
     }
 }

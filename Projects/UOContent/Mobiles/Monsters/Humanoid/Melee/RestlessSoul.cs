@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Engines.Quests.Haven;
 
 namespace Server.Mobiles
 {
-    public class RestlessSoul : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RestlessSoul : BaseCreature
     {
         [Constructible]
         public RestlessSoul() : base(AIType.AI_Melee)
@@ -37,10 +39,6 @@ namespace Server.Mobiles
             Karma = -500;
 
             VirtualArmor = 6;
-        }
-
-        public RestlessSoul(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a ghostly corpse";
@@ -79,8 +77,8 @@ namespace Server.Mobiles
 
         public override bool IsEnemy(Mobile m)
         {
-            if (m is PlayerMobile player && Map == Map.Trammel && X >= 5199 && X <= 5271 && Y >= 1812 && Y <= 1865
-            ) // Schmendrick's cave
+            // Schmendrick's cave
+            if (m is PlayerMobile player && Map == Map.Trammel && X is >= 5199 and <= 5271 && Y is >= 1812 and <= 1865)
             {
                 var qs = player.Quest;
 
@@ -91,18 +89,6 @@ namespace Server.Mobiles
             }
 
             return base.IsEnemy(m);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

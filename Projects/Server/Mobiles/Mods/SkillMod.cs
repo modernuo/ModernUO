@@ -21,23 +21,18 @@ namespace Server;
 [SerializationGenerator(0)]
 public abstract partial class SkillMod : MobileMod
 {
-    private bool _obeyCap;
-    private bool _relative;
-    private SkillName _skill;
-    private double _value;
-
     public SkillMod(Mobile owner) : base(owner)
     {
     }
 
-    public SkillMod(SkillName skill, bool relative, double value, Mobile owner = null) : base(owner)
+    public SkillMod(SkillName skill, string name, bool relative, double value, Mobile owner = null) : base(owner, name)
     {
         _skill = skill;
         _relative = relative;
         _value = value;
     }
 
-    [SerializableField(0)]
+    [SerializableProperty(0)]
     public bool ObeyCap
     {
         get => _obeyCap;
@@ -51,7 +46,7 @@ public abstract partial class SkillMod : MobileMod
         }
     }
 
-    [SerializableField(1)]
+    [SerializableProperty(1)]
     public SkillName Skill
     {
         get => _skill;
@@ -71,7 +66,7 @@ public abstract partial class SkillMod : MobileMod
         }
     }
 
-    [SerializableField(2)]
+    [SerializableProperty(2)]
     public bool Relative
     {
         get => _relative;
@@ -88,24 +83,13 @@ public abstract partial class SkillMod : MobileMod
         }
     }
 
-    [SerializableField(3)]
     public bool Absolute
     {
-        get => !_relative;
-        set
-        {
-            if (_relative == value)
-            {
-                _relative = !value;
-
-                var sk = Owner?.Skills[_skill];
-                sk?.Update();
-                MarkDirty();
-            }
-        }
+        get => !Relative;
+        set => Relative = !value;
     }
 
-    [SerializableField(4)]
+    [SerializableProperty(3)]
     public double Value
     {
         get => _value;

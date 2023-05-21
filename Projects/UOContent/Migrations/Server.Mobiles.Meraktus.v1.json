@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "type": "Server.Mobiles.Meraktus",
+  "properties": [
+    {
+      "name": "Followers",
+      "type": "Server.Mobile[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

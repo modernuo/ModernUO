@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Revenant : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Revenant : BaseCreature
     {
         private readonly DateTime m_ExpireTime;
         private readonly Mobile m_Target;
@@ -55,10 +57,6 @@ namespace Server.Mobiles
             AddItem(new Halberd { Hue = 1, Movable = false });
         }
 
-        public Revenant(Serial serial) : base(serial)
-        {
-        }
-
         public override Mobile ConstantFocus => m_Target;
         public override bool NoHouseRestrictions => true;
 
@@ -72,6 +70,8 @@ namespace Server.Mobiles
         public override bool BleedImmune => true;
         public override bool BardImmune => true;
         public override Poison PoisonImmune => Poison.Lethal;
+
+        public override bool IgnoreMobiles => true;
 
         public override void DisplayPaperdollTo(Mobile to)
         {
@@ -173,19 +173,9 @@ namespace Server.Mobiles
             return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization(false)]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             Delete();
         }
     }

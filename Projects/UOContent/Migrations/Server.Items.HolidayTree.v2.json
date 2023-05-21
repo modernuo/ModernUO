@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "type": "Server.Items.HolidayTree",
+  "properties": [
+    {
+      "name": "Placer",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

@@ -17,17 +17,16 @@ namespace Server.Engines.MLQuests
 
     public class MLQuest
     {
-        public static readonly TextDefinition
-            CompletionNoticeDefault =
-                new(1072273); // You've completed a quest!  Don't forget to collect your reward.
+        // You've completed a quest!  Don't forget to collect your reward.
+        public static TextDefinition CompletionNoticeDefault = 1072273;
 
-        public static readonly TextDefinition CompletionNoticeShort = new(1046258); // Your quest is complete.
+        public static TextDefinition CompletionNoticeShort = 1046258; // Your quest is complete.
 
-        public static readonly TextDefinition
-            CompletionNoticeShortReturn = new(1073775); // Your quest is complete. Return for your reward.
+        // Your quest is complete. Return for your reward.
+        public static TextDefinition CompletionNoticeShortReturn = 1073775;
 
-        public static readonly TextDefinition
-            CompletionNoticeCraft = new(1073967); // You obtained what you seek, now receive your reward.
+        // You obtained what you seek, now receive your reward.
+        public static TextDefinition CompletionNoticeCraft = 1073967;
 
         public MLQuest()
         {
@@ -153,11 +152,9 @@ namespace Server.Engines.MLQuests
                         {
                             if (message)
                             {
-                                MLQuestSystem.Tell(
-                                    quester,
-                                    pm,
-                                    1075575
-                                ); // I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?
+                                // I'm sorry, but I don't have anything else for you right now.
+                                // Could you check back with me in a few minutes?
+                                MLQuestSystem.Tell(quester, pm, 1075575);
                             }
 
                             return false;

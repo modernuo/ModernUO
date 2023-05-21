@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class RaiJu : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RaiJu : BaseCreature
     {
         private static readonly HashSet<Mobile> m_Table = new();
 
@@ -42,10 +44,6 @@ namespace Server.Mobiles
             Karma = -8000;
         }
 
-        public RaiJu(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a rai-ju corpse";
         public override string DefaultName => "a Rai-Ju";
         public override bool BleedImmune => true;
@@ -56,11 +54,11 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems, 2);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() >= 0.1 || m_Table.Contains(defender))
+            if (Utility.RandomDouble() < 0.9 || m_Table.Contains(defender))
             {
                 return;
             }
@@ -84,20 +82,6 @@ namespace Server.Mobiles
             var timer = new ExpireTimer(defender, TimeSpan.FromSeconds(4.0));
             timer.Start();
             m_Table.Add(defender);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         private class ExpireTimer : Timer

@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 
@@ -17,12 +17,16 @@ namespace Server.Spells.Necromancy
             Reagent.PigIron
         );
 
-        public WitherSpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public WitherSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
+        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(Core.Expansion switch
+        {
+            >= Expansion.SA => 1.25,
+            >= Expansion.ML => 1.5,
+            _ => 1.0
+        });
 
         public override double RequiredSkill => 60.0;
 
@@ -42,34 +46,45 @@ namespace Server.Spells.Necromancy
 
                 if (map != null)
                 {
-                    var targets = new List<Mobile>();
+                    using var pool = PooledRefQueue<Mobile>.Create();
 
                     var cbc = Caster as BaseCreature;
-                    var isMonster = cbc?.Controlled == false && !cbc.Summoned;
+                    var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
-                    foreach (var m in Caster.GetMobilesInRange(Core.ML ? 4 : 5))
+                    var eable = Caster.GetMobilesInRange(Core.ML ? 4 : 5);
+                    foreach (var targ in eable)
                     {
-                        if (Caster != m && Caster.InLOS(m) && (isMonster || SpellHelper.ValidIndirectTarget(Caster, m)) &&
-                            Caster.CanBeHarmful(m, false))
+                        if (targ == Caster
+                            || !Caster.InLOS(targ)
+                            || !isMonster && !SpellHelper.ValidIndirectTarget(Caster, targ)
+                            || !Caster.CanBeHarmful(targ, false))
                         {
-                            if (isMonster)
+                            continue;
+                        }
+
+                        if (isMonster && targ.Player)
+                        {
+                            continue;
+                        }
+
+                        // Animate dead casting poison strike shouldn't hit: familiars or player or pets
+                        if (targ is BaseCreature bc)
+                        {
+                            if (bc.IsAnimatedDead)
                             {
-                                if (m is BaseCreature bc)
-                                {
-                                    if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
-                                    {
-                                        continue;
-                                    }
-                                }
-                                else if (!m.Player)
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
 
-                            targets.Add(m);
+                            if (isMonster && (bc.Controlled || bc.Summoned || bc.Team == cbc.Team || bc.IsNecroFamiliar))
+                            {
+                                continue;
+                            }
                         }
+
+                        pool.Enqueue(targ);
                     }
+
+                    eable.Free();
 
                     Effects.PlaySound(Caster.Location, map, 0x1FB);
                     Effects.PlaySound(Caster.Location, map, 0x10B);
@@ -84,9 +99,9 @@ namespace Server.Spells.Necromancy
                         0
                     );
 
-                    for (var i = 0; i < targets.Count; ++i)
+                    while (pool.Count > 0)
                     {
-                        var m = targets[i];
+                        var m = pool.Dequeue();
 
                         Caster.DoHarmful(m);
                         m.FixedParticles(0x374A, 1, 15, 9502, 97, 3, (EffectLayer)255);

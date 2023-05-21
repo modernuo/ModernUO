@@ -1,102 +1,85 @@
+using ModernUO.Serialization;
 using Server.Engines.ConPVP;
 using Server.Spells;
 using Server.Spells.Necromancy;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class CureLevelInfo
 {
-    public class CureLevelInfo
+    public CureLevelInfo(Poison poison, double chance)
     {
-        public CureLevelInfo(Poison poison, double chance)
-        {
-            Poison = poison;
-            Chance = chance;
-        }
-
-        public Poison Poison { get; }
-
-        public double Chance { get; }
+        Poison = poison;
+        Chance = chance;
     }
 
-    public abstract class BaseCurePotion : BasePotion
+    public Poison Poison { get; }
+
+    public double Chance { get; }
+}
+
+[SerializationGenerator(0, false)]
+public abstract partial class BaseCurePotion : BasePotion
+{
+    public BaseCurePotion(PotionEffect effect) : base(0xF07, effect)
     {
-        public BaseCurePotion(PotionEffect effect) : base(0xF07, effect)
+    }
+
+    public abstract CureLevelInfo[] LevelInfo { get; }
+
+    public void DoCure(Mobile from)
+    {
+        var cure = false;
+
+        var info = LevelInfo;
+
+        for (var i = 0; i < info.Length; ++i)
         {
-        }
+            var li = info[i];
 
-        public BaseCurePotion(Serial serial) : base(serial)
-        {
-        }
-
-        public abstract CureLevelInfo[] LevelInfo { get; }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        public void DoCure(Mobile from)
-        {
-            var cure = false;
-
-            var info = LevelInfo;
-
-            for (var i = 0; i < info.Length; ++i)
+            if (li.Poison == from.Poison && Scale(from, li.Chance) > Utility.RandomDouble())
             {
-                var li = info[i];
-
-                if (li.Poison == from.Poison && Scale(from, li.Chance) > Utility.RandomDouble())
-                {
-                    cure = true;
-                    break;
-                }
-            }
-
-            if (cure && from.CurePoison(from))
-            {
-                from.SendLocalizedMessage(500231); // You feel cured of poison!
-
-                from.FixedEffect(0x373A, 10, 15);
-                from.PlaySound(0x1E0);
-            }
-            else if (!cure)
-            {
-                from.SendLocalizedMessage(500232); // That potion was not strong enough to cure your ailment!
+                cure = true;
+                break;
             }
         }
 
-        public override void Drink(Mobile from)
+        if (cure && from.CurePoison(from))
         {
-            if (TransformationSpellHelper.UnderTransformation(from, typeof(VampiricEmbraceSpell)))
-            {
-                from.SendLocalizedMessage(1061652); // The garlic in the potion would surely kill you.
-            }
-            else if (from.Poisoned)
-            {
-                DoCure(from);
+            from.SendLocalizedMessage(500231); // You feel cured of poison!
 
-                PlayDrinkEffect(from);
+            from.FixedEffect(0x373A, 10, 15);
+            from.PlaySound(0x1E0);
+        }
+        else if (!cure)
+        {
+            from.SendLocalizedMessage(500232); // That potion was not strong enough to cure your ailment!
+        }
+    }
 
-                from.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
-                from.PlaySound(0x1E0);
+    public override void Drink(Mobile from)
+    {
+        if (TransformationSpellHelper.UnderTransformation(from, typeof(VampiricEmbraceSpell)))
+        {
+            from.SendLocalizedMessage(1061652); // The garlic in the potion would surely kill you.
+        }
+        else if (from.Poisoned)
+        {
+            DoCure(from);
 
-                if (!DuelContext.IsFreeConsume(from))
-                {
-                    Consume();
-                }
-            }
-            else
+            PlayDrinkEffect(from);
+
+            from.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
+            from.PlaySound(0x1E0);
+
+            if (!DuelContext.IsFreeConsume(from))
             {
-                from.SendLocalizedMessage(1042000); // You are not poisoned.
+                Consume();
             }
+        }
+        else
+        {
+            from.SendLocalizedMessage(1042000); // You are not poisoned.
         }
     }
 }

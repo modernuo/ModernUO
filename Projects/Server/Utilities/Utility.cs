@@ -80,6 +80,7 @@ public static class Utility
         SkillName.Bushido,
         SkillName.Ninjitsu,
         SkillName.Spellweaving,
+        // TODO: Update RandomSkill once these are implemented!
         // SkillName.Mysticism,
         // SkillName.Imbuing,
         SkillName.Throwing
@@ -119,8 +120,10 @@ public static class Utility
         sb.Append(value);
     }
 
-    public static string Intern(string str) => str?.Length > 0 ? string.Intern(str) : str;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Intern(this string str) => str?.Length > 0 ? string.Intern(str) : str;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Intern(ref string str)
     {
         str = Intern(str);
@@ -566,12 +569,11 @@ public static class Utility
             return str;
         }
 
-        using var sb = new ValueStringBuilder(str, stackalloc char[Math.Min(128, str.Length)]);
-        ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
-        ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
-        sb.ReplaceAny(invalid, replacement, 0, sb.Length);
+        var chars = str.ToPooledArray();
+        var span = chars.AsSpan(0, str.Length);
+        FixHtml(span);
 
-        return sb.ToString();
+        return span.ToString();
     }
 
     public static void FixHtml(Span<char> chars)
@@ -585,6 +587,20 @@ public static class Utility
         ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
 
         chars.ReplaceAny(invalid, replacement);
+    }
+
+    public static PooledArraySpanFormattable FixHtmlFormattable(string str)
+    {
+        var chars = str.ToPooledArray();
+        var span = chars.AsSpan(0, str.Length);
+        var formattable = new PooledArraySpanFormattable(chars, str.Length);
+
+        if (!string.IsNullOrEmpty(str))
+        {
+            FixHtml(span);
+        }
+
+        return formattable;
     }
 
     public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);
@@ -624,8 +640,20 @@ public static class Utility
     public static object GetArrayCap(Array array, int index, object emptyValue = null) =>
         array.Length > 0 ? array.GetValue(Math.Clamp(index, 0, array.Length - 1)) : emptyValue;
 
-    public static SkillName RandomSkill() =>
-        _allSkills[Random(_allSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
+    public static SkillName RandomSkill()
+    {
+        // TODO: Add 2 to each entry for Mysticism and Imbuing, once they are uncommented on _allSkills.
+        var offset = Core.Expansion switch
+        {
+            >= Expansion.SA => 0,
+            Expansion.ML    => 1,
+            Expansion.SE    => 2,
+            Expansion.AOS   => 4,
+            _               => 7
+        };
+
+        return _allSkills[Random(_allSkills.Length - offset)];
+    }
 
     public static SkillName RandomCombatSkill() => m_CombatSkills.RandomElement();
 
@@ -779,10 +807,9 @@ public static class Utility
     }
 
     public static bool ToBoolean(string value) =>
-        bool.TryParse(value, out var b) && b ||
-        value.InsensitiveEquals("enabled") ||
-        value.InsensitiveEquals("on") ||
-        !value.InsensitiveEquals("disabled") && !value.InsensitiveEquals("off");
+        bool.TryParse(value, out var b)
+            ? b
+            : value.InsensitiveEquals("enabled") || value.InsensitiveEquals("on");
 
     public static double ToDouble(string value)
     {
@@ -922,14 +949,18 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, 18);
 
-    // 4d6+8 would be: Utility.Dice( 4, 6, 8 )
-    public static int Dice(uint amount, uint sides, int bonus)
+    public static int Dice(int amount, int sides, int bonus)
     {
+        if (amount <= 0 || sides <= 0)
+        {
+            return 0;
+        }
+
         var total = 0;
 
         for (var i = 0; i < amount; ++i)
         {
-            total += (int)RandomSources.Source.Next(1, sides);
+            total += RandomSources.Source.Next(1, sides);
         }
 
         return total + bonus;
@@ -1009,11 +1040,128 @@ public static class Utility
         return sampleList;
     }
 
+    public static void RandomSample<T>(this T[] source, int count, List<T> dest)
+    {
+        if (count <= 0)
+        {
+            return;
+        }
+
+        var length = source.Length;
+        Span<bool> list = stackalloc bool[length];
+
+        var i = 0;
+        do
+        {
+            var rand = Random(length);
+            if (!(list[rand] && (list[rand] = true)))
+            {
+                dest.Add(source[rand]);
+            }
+        } while (++i < count);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomList<T>(params T[] list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomElement<T>(this IList<T> list) => list.RandomElement(default);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WeightedValue<T> RandomWeightedElement<T>(this IList<WeightedValue<T>> weightedValues)
+    {
+        var totalWeight = 0;
+        for (var i = 0; i < weightedValues.Count; i++)
+        {
+            totalWeight += weightedValues[i].Weight;
+        }
+
+        return RandomWeightedElement(weightedValues, totalWeight);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WeightedValue<T> RandomWeightedElement<T>(this ReadOnlySpan<WeightedValue<T>> weightedValues, int totalWeight)
+    {
+        var random = Random(totalWeight);
+
+        for (var i = 0; i < weightedValues.Length; i++)
+        {
+            var weightedValue = weightedValues[i];
+            random -= weightedValue.Weight;
+
+            if (random <= 0)
+            {
+                return weightedValue;
+            }
+        }
+
+        return default;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WeightedValue<T> RandomWeightedElement<T>(this ReadOnlySpan<WeightedValue<T>> weightedValues)
+    {
+        var totalWeight = 0;
+        for (var i = 0; i < weightedValues.Length; i++)
+        {
+            totalWeight += weightedValues[i].Weight;
+        }
+
+        return RandomWeightedElement(weightedValues, totalWeight);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WeightedValue<T> RandomWeightedElement<T>(this IList<WeightedValue<T>> weightedValues, int totalWeight)
+    {
+        var random = Random(totalWeight);
+
+        for (var i = 0; i < weightedValues.Count; i++)
+        {
+            var weightedValue = weightedValues[i];
+            random -= weightedValue.Weight;
+
+            if (random <= 0)
+            {
+                return weightedValue;
+            }
+        }
+
+        return default;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WeightedValue<T> RandomWeightedElement<T>(this PooledRefList<WeightedValue<T>> weightedValues)
+    {
+        var totalWeight = 0;
+        for (var i = 0; i < weightedValues.Count; i++)
+        {
+            totalWeight += weightedValues[i].Weight;
+        }
+
+        return RandomWeightedElement(weightedValues, totalWeight);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static WeightedValue<T> RandomWeightedElement<T>(
+        this PooledRefList<WeightedValue<T>> weightedValues,
+        int totalWeight
+    )
+    {
+        var random = Random(totalWeight);
+
+        for (var i = 0; i < weightedValues.Count; i++)
+        {
+            var weightedValue = weightedValues[i];
+            random -= weightedValue.Weight;
+
+            if (random <= 0)
+            {
+                return weightedValue;
+            }
+        }
+
+        return default;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T TakeRandomElement<T>(this IList<T> list)
@@ -1035,6 +1183,9 @@ public static class Utility
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool RandomBool() => RandomSources.Source.NextBool();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TimeSpan RandomMinMax(TimeSpan min, TimeSpan max) => new(RandomMinMax(min.Ticks, max.Ticks));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double RandomMinMax(double min, double max)
@@ -1329,74 +1480,66 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<T>(ref List<T> list, T value)
     {
-        if (list != null)
+        if (list?.Remove(value) != true)
         {
-            var removed = list.Remove(value);
-
-            if (list.Count == 0)
-            {
-                list = null;
-            }
-
-            return removed;
+            return false;
         }
 
-        return false;
+        if (list.Count == 0)
+        {
+            list = null;
+        }
+
+        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<T>(ref HashSet<T> set, T value)
     {
-        if (set != null)
+        if (set?.Remove(value) != true)
         {
-            var removed = set.Remove(value);
-
-            if (set.Count == 0)
-            {
-                set = null;
-            }
-
-            return removed;
+            return false;
         }
 
-        return false;
+        if (set.Count == 0)
+        {
+            set = null;
+        }
+
+        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<K, V>(ref Dictionary<K, V> dict, K key)
     {
-        if (dict != null)
+        if (dict?.Remove(key) != true)
         {
-            var removed = dict.Remove(key);
-
-            if (dict.Count == 0)
-            {
-                dict = null;
-            }
-
-            return removed;
+            return false;
         }
 
-        return false;
+        if (dict.Count == 0)
+        {
+            dict = null;
+        }
+
+        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Remove<K, V>(ref Dictionary<K, V> dict, K key, out V value)
     {
-        if (dict != null)
+        if (dict?.Remove(key, out value) != true)
         {
-            var removed = dict.Remove(key, out value);
-
-            if (dict.Count == 0)
-            {
-                dict = null;
-            }
-
-            return removed;
+            value = default;
+            return false;
         }
 
-        value = default;
-        return false;
+        if (dict.Count == 0)
+        {
+            dict = null;
+        }
+
+        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1514,4 +1657,87 @@ public static class Utility
 
         return combined;
     }
+
+    public static Point3D GetValidLocation(Map map, Point3D center, int range, int retries = 10)
+    {
+        if (map == null)
+        {
+            return center;
+        }
+
+        var loc = new Point3D(center.Z, center.Y, center.Z);
+
+        for (var i = 0; i < retries; i++)
+        {
+            loc.X = center.X + (Random(range * 2 + 1) - range);
+            loc.Y = center.Y + (Random(range * 2 + 1) - range);
+            loc.Z = center.Z;
+
+            if (map.CanSpawnMobile(loc))
+            {
+                return loc;
+            }
+
+            loc.Z = map.GetAverageZ(loc.X, loc.Y);
+
+            if (map.CanSpawnMobile(loc))
+            {
+                return loc;
+            }
+        }
+
+        return center;
+    }
+
+    public static Point3D GetValidLocationInLOS(Map map, Mobile from, int range, int retries = 10)
+    {
+        if (map == null)
+        {
+            return from.Location;
+        }
+
+        var center = from.Location;
+        var loc = center;
+
+        for (var i = 0; i < retries; i++)
+        {
+            loc.X = center.X + (Random(range * 2 + 1) - range);
+            loc.Y = center.Y + (Random(range * 2 + 1) - range);
+            loc.Z = center.Z;
+
+            if (map.CanSpawnMobile(loc) && map.LineOfSight(from, loc))
+            {
+                return loc;
+            }
+
+            loc.Z = map.GetAverageZ(loc.X, loc.Y);
+
+            if (map.CanSpawnMobile(loc) && map.LineOfSight(from, loc))
+            {
+                return loc;
+            }
+        }
+
+        return center;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetUnderlyingNumericBitLength(this TypeCode typeCode) =>
+        typeCode switch
+        {
+            TypeCode.Byte   => 8,
+            TypeCode.SByte  => 8,
+            TypeCode.Int16  => 16,
+            TypeCode.UInt16 => 16,
+            TypeCode.Char   => 16,
+            TypeCode.Int32  => 32,
+            TypeCode.UInt32 => 32,
+            TypeCode.Int64  => 64,
+            TypeCode.UInt64 => 64,
+            _               => 64
+        };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNullOrWhiteSpace(this ReadOnlySpan<char> span) =>
+        span == default || span.IsEmpty || span.IsWhiteSpace();
 }

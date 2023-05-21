@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TimeZoneHandler.cs                                              *
  *                                                                       *
@@ -14,67 +14,24 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Runtime.CompilerServices;
-using Server.Json;
 
-namespace Server
+namespace Server;
+
+public static class TimeZoneHandler
 {
-    /**
-     * TimeZoneHandler provides a cross platform compatible way to handle system timezones.
-     *
-     * By default the system timezone is used.
-     * To manually configure the local timezone add the following setting to modernuo.json:
-     * "system.localTimeZone": "Pacific Standard Time"
-     * All valid timezones can be found in the Distribution/Data/timezones.json file.
-     *
-     * Notes for timezones.json:
-     * By default, Windows will use the values in the "timezone" property.
-     * By default, Unix/MacOS will use the values in the "region" property.
-     * system.localTimeZone can be either timezone or a region.
-     *
-     * Example:
-     * "system.localTimeZone": "Europe/Lisbon"
-     */
-    public static class TimeZoneHandler
+    public static TimeZoneInfo SystemTimeZone { get; private set; }
+
+    public static void Configure()
     {
-        private static readonly Dictionary<string, TimeZoneInfo> _timeZoneById = new();
-        public static TimeZoneInfo SystemTimeZone { get; private set; }
-
-        static TimeZoneHandler()
-        {
-            var timezones = JsonConfig.Deserialize<TimeZoneWithRegions[]>(Path.Combine(Core.BaseDirectory, "Data/timezones.json"));
-            foreach (var tz in timezones)
-            {
-                // Get the timezone if we are on Windows
-                var tzInfo = Core.IsWindows ? TimeZoneInfo.FindSystemTimeZoneById(tz.TimeZone) : null;
-
-                foreach (var region in tz.Regions)
-                {
-                    // Get the timezone by region if we are on linux
-                    tzInfo ??= TimeZoneInfo.FindSystemTimeZoneById(region);
-                    _timeZoneById[region] = tzInfo;
-                }
-
-                _timeZoneById[tz.TimeZone] = tzInfo;
-            }
-        }
-
-        public static void Configure()
-        {
-            var tzId = ServerConfiguration.GetSetting("system.localTimeZone", TimeZoneInfo.Local.Id);
-            SystemTimeZone = FindTimeZoneById(tzId);
-        }
-
-        /**
-         * Cross platform version of TimeZoneInfo.FindSystemTimeZoneById
-         */
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TimeZoneInfo FindTimeZoneById(string id) => _timeZoneById[id];
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DateTime ToSystemLocalTime(this DateTime date) =>
-            TimeZoneInfo.ConvertTimeFromUtc(date, SystemTimeZone);
+        var tzId = ServerConfiguration.GetSetting("system.localTimeZone", TimeZoneInfo.Local.Id);
+        SystemTimeZone = FindTimeZoneById(tzId);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TimeZoneInfo FindTimeZoneById(string id) => TimeZoneInfo.FindSystemTimeZoneById(id);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static DateTime ToSystemLocalTime(this DateTime date) =>
+        TimeZoneInfo.ConvertTimeFromUtc(date, SystemTimeZone);
 }

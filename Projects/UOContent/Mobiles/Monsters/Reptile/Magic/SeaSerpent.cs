@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Seaserpant")]
-    public class SeaSerpent : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SeaSerpent : BaseCreature
     {
         [Constructible]
         public SeaSerpent() : base(AIType.AI_Mage)
@@ -54,14 +56,8 @@ namespace Server.Mobiles
             // PackItem( new SpecialFishingNet() );
         }
 
-        public SeaSerpent(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a sea serpents corpse";
         public override string DefaultName => "a sea serpent";
-
-        public override bool HasBreath => true;
         public override int TreasureMapLevel => 2;
 
         public override int Hides => 10;
@@ -69,21 +65,12 @@ namespace Server.Mobiles
         public override int Scales => 8;
         public override ScaleType ScaleType => ScaleType.Blue;
 
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

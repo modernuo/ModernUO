@@ -84,9 +84,10 @@ namespace Server.Engines.Craft
                 return EnhanceResult.BadResource;
             }
 
-            int resHue = 0, maxAmount = 0;
+            int resHue = 0;
+            int maxAmount = 0;
 
-            if (!craftItem.ConsumeRes(
+            var consumeRes = craftItem.ConsumeRes(
                 from,
                 resType,
                 craftSystem,
@@ -94,20 +95,19 @@ namespace Server.Engines.Craft
                 ref maxAmount,
                 ConsumeType.None,
                 ref resMessage
-            ))
+            );
+
+            if (!consumeRes)
             {
                 return EnhanceResult.NoResources;
             }
 
             if (craftSystem is DefBlacksmithy)
             {
-                if (from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer)
+                var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+                if (hammer != null && --hammer.UsesRemaining < 1)
                 {
-                    hammer.UsesRemaining--;
-                    if (hammer.UsesRemaining < 1)
-                    {
-                        hammer.Delete();
-                    }
+                    hammer.Delete();
                 }
             }
 

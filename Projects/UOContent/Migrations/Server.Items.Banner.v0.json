@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.Banner",
+  "properties": [
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

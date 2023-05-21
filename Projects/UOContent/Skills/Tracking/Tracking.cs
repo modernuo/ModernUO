@@ -79,7 +79,7 @@ namespace Server.SkillHandlers
             {
                 m_Tracker = tracker;
                 m_Target = target;
-                m_Location = new Point2D(target.X, target.Y);
+                m_Location = new Point2D(target);
                 m_Map = target.Map;
             }
         }

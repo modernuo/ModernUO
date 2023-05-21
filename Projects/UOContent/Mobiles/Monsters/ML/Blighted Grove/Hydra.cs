@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Hydra : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Hydra : BaseCreature
     {
         [Constructible]
         public Hydra() : base(AIType.AI_Melee)
@@ -38,18 +40,14 @@ namespace Server.Mobiles
             // TODO: Fame/Karma
         }
 
-        public Hydra(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a hydra corpse";
         public override string DefaultName => "a hydra";
-
-        public override bool HasBreath => true;
         public override int Hides => 40;
         public override int Meat => 19;
         public override int TreasureMapLevel => 5;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
@@ -70,20 +68,6 @@ namespace Server.Mobiles
             if (Utility.RandomDouble() < 0.05)
               c.DropItem( new ThorvaldsMedallion() );
             */
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

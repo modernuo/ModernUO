@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Bower")]
-    public class Bowyer : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Bowyer : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -13,10 +15,6 @@ namespace Server.Mobiles
         {
             SetSkill(SkillName.Fletching, 80.0, 100.0);
             SetSkill(SkillName.Archery, 80.0, 100.0);
-        }
-
-        public Bowyer(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -42,20 +40,6 @@ namespace Server.Mobiles
             {
                 m_SBInfos.Add(new SBSEBowyer());
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

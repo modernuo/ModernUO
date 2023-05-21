@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "type": "Server.Items.BroadcastCrystal",
+  "properties": [
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Receivers",
+      "type": "System.Collections.Generic.List\u003CServer.Items.ReceiverCrystal\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Items.ReceiverCrystal",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

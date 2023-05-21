@@ -28,13 +28,13 @@ public partial class TimedSkillMod : SkillMod
     {
     }
 
-    public TimedSkillMod(SkillName skill, bool relative, double value, TimeSpan delay)
-        : this(skill, relative, value, Core.Now + delay)
+    public TimedSkillMod(SkillName skill, string name, bool relative, double value, TimeSpan delay)
+        : this(skill, name, relative, value, Core.Now + delay)
     {
     }
 
-    public TimedSkillMod(SkillName skill, bool relative, double value, DateTime expire)
-        : base(skill, relative, value) => _expire = expire;
+    public TimedSkillMod(SkillName skill, string name, bool relative, double value, DateTime expire)
+        : base(skill, name, relative, value) => _expire = expire;
 
     public override bool CheckCondition() => Core.Now < _expire;
 }

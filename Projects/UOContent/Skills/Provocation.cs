@@ -63,9 +63,9 @@ namespace Server.SkillHandlers
                     {
                         from.RevealingAction();
                         m_Instrument.PlayInstrumentWell(from);
-                        from.SendLocalizedMessage(
-                            1008085
-                        ); // You play your music and your target becomes angered.  Whom do you wish them to attack?
+
+                        // You play your music and your target becomes angered.  Whom do you wish them to attack?
+                        from.SendLocalizedMessage(1008085);
                         from.Target = new InternalSecondTarget(from, m_Instrument, creature);
                     }
                 }
@@ -99,9 +99,8 @@ namespace Server.SkillHandlers
                 {
                     if (!m_Instrument.IsChildOf(from.Backpack))
                     {
-                        from.SendLocalizedMessage(
-                            1062488
-                        ); // The instrument you are trying to play is no longer in your backpack!
+                        // The instrument you are trying to play is no longer in your backpack!
+                        from.SendLocalizedMessage(1062488);
                     }
                     else if (m_Creature.Unprovokable)
                     {
@@ -111,21 +110,18 @@ namespace Server.SkillHandlers
                     {
                         from.SendLocalizedMessage(1049446); // You have no chance of provoking those creatures.
                     }
-                    else if (m_Creature.Map != creature.Map || !m_Creature.InRange(
-                        creature,
-                        BaseInstrument.GetBardRange(from, SkillName.Provocation)
-                    ))
+                    else if (m_Creature.Map != creature.Map ||
+                             !m_Creature.InRange(creature, BaseInstrument.GetBardRange(from, SkillName.Provocation)))
                     {
-                        from.SendLocalizedMessage(
-                            1049450
-                        ); // The creatures you are trying to provoke are too far away from each other for your music to have an effect.
+                        // The creatures you are trying to provoke are too far away from each other for your music to have an effect.
+                        from.SendLocalizedMessage(1049450);
                     }
                     else if (m_Creature != creature)
                     {
                         from.NextSkillTime = Core.TickCount + 10000;
 
-                        var diff = (m_Instrument.GetDifficultyFor(m_Creature) + m_Instrument.GetDifficultyFor(creature)) *
-                            0.5 - 5.0;
+                        var diff =
+                            (m_Instrument.GetDifficultyFor(m_Creature) + m_Instrument.GetDifficultyFor(creature)) * 0.5 - 5.0;
                         var music = from.Skills.Musicianship.Value;
 
                         if (music > 100.0)

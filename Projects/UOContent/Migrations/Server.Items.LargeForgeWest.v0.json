@@ -1,0 +1,16 @@
+{
+  "version": 0,
+  "type": "Server.Items.LargeForgeWest",
+  "properties": [
+    {
+      "name": "Item",
+      "type": "Server.Items.LargeForgeWest.InternalItem",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Item2",
+      "type": "Server.Items.LargeForgeWest.InternalItem2",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

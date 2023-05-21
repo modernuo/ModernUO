@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.BaseFruitTreeAddon",
+  "properties": [
+    {
+      "name": "Fruits",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

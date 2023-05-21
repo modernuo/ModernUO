@@ -23,5 +23,14 @@ public partial class MobileMod
     [DirtyTrackingEntity]
     public Mobile Owner { get; set; }
 
+    [SerializableField(0)]
+    private string _name;
+
     public MobileMod(Mobile owner) => Owner = owner;
+
+    public MobileMod(Mobile owner, string name)
+    {
+        Owner = owner;
+        Name = name;
+    }
 }

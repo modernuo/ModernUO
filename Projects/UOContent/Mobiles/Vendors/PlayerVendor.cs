@@ -219,7 +219,7 @@ namespace Server.Mobiles
 
                     if (!string.IsNullOrEmpty(vi.Description))
                     {
-                        item.LabelTo(from, "Description: {0}", vi.Description);
+                        item.LabelTo(from, $"Description: {vi.Description}");
                     }
                 }
             }
@@ -1079,7 +1079,7 @@ namespace Server.Mobiles
         {
             if (HoldGold > 0)
             {
-                SayTo(to, "How much of the {0} that I'm holding would you like?", HoldGold.ToString());
+                SayTo(to, $"How much of the {HoldGold} that I'm holding would you like?");
                 to.SendMessage("Enter the amount of gold you wish to withdraw (ESC = CANCEL):");
 
                 to.Prompt = new CollectGoldPrompt(this);
@@ -1099,7 +1099,7 @@ namespace Server.Mobiles
 
             if (amount > HoldGold)
             {
-                SayTo(to, "I'm sorry, but I'm only holding {0} gold for you.", HoldGold.ToString());
+                SayTo(to, $"I'm sorry, but I'm only holding {HoldGold} gold for you.");
                 return 0;
             }
 

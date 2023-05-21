@@ -50,37 +50,38 @@ public class LocalizationEntry
 
     private static void ParseText(string text, out string[] textSlices, out string stringFormatter)
     {
+        var sb = ValueStringBuilder.Create(256);
+        using var queue = PooledRefQueue<string>.Create();
+
         bool hasMatch = false;
         var prevIndex = 0;
-        var builder = new ValueStringBuilder(stackalloc char[256]);
-        using var queue = PooledRefQueue<string>.Create();
         foreach (Match match in _textRegex.Matches(text))
         {
             if (prevIndex < match.Index)
             {
                 var substr = text[prevIndex..match.Index];
-                builder.Append(substr);
+                sb.Append(substr);
 
                 queue.Enqueue(substr);
             }
 
             queue.Enqueue(null);
             hasMatch = true;
-            builder.Append($"{{{int.Parse(match.Groups[1].Value) - 1}}}");
+            sb.Append($"{{{int.Parse(match.Groups[1].Value) - 1}}}");
             prevIndex = match.Index + match.Length;
         }
 
         if (prevIndex < text.Length - 1)
         {
             var substr = prevIndex == 0 ? text : text[prevIndex..];
-            builder.Append(substr);
+            sb.Append(substr);
             queue.Enqueue(substr);
         }
 
         textSlices = queue.ToArray();
-        stringFormatter = hasMatch ? builder.ToString() : null;
+        stringFormatter = hasMatch ? sb.ToString() : null;
 
-        builder.Dispose();
+        sb.Dispose();
     }
 
     /// <summary>

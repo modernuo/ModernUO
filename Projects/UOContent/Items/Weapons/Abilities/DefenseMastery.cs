@@ -36,7 +36,7 @@ namespace Server.Items
                 EndDefense(info);
             }
 
-            var mod = new ResistanceMod(ResistanceType.Physical, 50 + modifier);
+            var mod = new ResistanceMod(ResistanceType.Physical, "PhysicalResistDefenseMastery", 50 + modifier);
             attacker.AddResistanceMod(mod);
 
             info = new DefenseMasteryInfo(attacker, 80 - modifier, mod);

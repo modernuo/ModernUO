@@ -1,14 +1,11 @@
-using System;
+using ModernUO.Serialization;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Betrayer : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Betrayer : BaseCreature
     {
-        private DateTime m_NextAbilityTime;
-        private bool m_Stunning;
-
         [Constructible]
         public Betrayer() : base(AIType.AI_Mage)
         {
@@ -50,13 +47,6 @@ namespace Server.Mobiles
             {
                 PackItem(new BlackthornWelcomeBook());
             }
-
-            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
-        }
-
-        public Betrayer(Serial serial)
-            : base(serial)
-        {
         }
 
         public override string CorpseName => "a betrayer corpse";
@@ -106,83 +96,13 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems, 1);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        private static MonsterAbility[] _abilities =
         {
-            base.OnGaveMeleeAttack(defender);
-
-            if (!m_Stunning && Utility.RandomDouble() < 0.3)
-            {
-                m_Stunning = true;
-
-                defender.Animate(21, 6, 1, true, false, 0);
-                PlaySound(0xEE);
-                defender.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    false,
-                    "You have been stunned by a colossal blow!"
-                );
-
-                if (Weapon is BaseWeapon weapon)
-                {
-                    weapon.OnHit(this, defender);
-                }
-
-                if (defender.Alive)
-                {
-                    defender.Frozen = true;
-                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => Recover_Callback(defender));
-                }
-            }
-        }
-
-        private void Recover_Callback(Mobile defender)
-        {
-            defender.Frozen = false;
-            defender.Combatant = null;
-            defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You recover your senses.");
-            m_Stunning = false;
-        }
-
-        public override void OnActionCombat()
-        {
-            var combatant = Combatant;
-
-            if (Core.Now < m_NextAbilityTime || combatant?.Deleted != false || combatant.Map != Map ||
-                !InRange(combatant, 3) || !CanBeHarmful(combatant) || !InLOS(combatant))
-            {
-                return;
-            }
-
-            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 30));
-
-            if (Utility.RandomBool())
-            {
-                FixedParticles(0x376A, 9, 32, 0x2539, EffectLayer.LeftHand);
-                PlaySound(0x1DE);
-
-                foreach (var m in GetMobilesInRange(2))
-                {
-                    if (m != this && IsEnemy(m))
-                    {
-                        m.ApplyPoison(this, Poison.Deadly);
-                    }
-                }
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+            new MonsterAbilityGroup(
+                (1, MonsterAbilities.ColossalBlow),
+                (1, MonsterAbilities.PoisonGasAreaAttack)
+            )
+        };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
     }
 }

@@ -14,8 +14,7 @@ namespace Server.Spells.Spellweaving
             false
         );
 
-        public NatureFurySpell(Mobile caster, Item scroll = null)
-            : base(caster, scroll, _info)
+        public NatureFurySpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
@@ -79,22 +78,21 @@ namespace Server.Spells.Spellweaving
 
         private class InternalTimer : Timer
         {
-            private readonly NatureFury m_NatureFury;
+            private readonly NatureFury _natureFury;
 
-            public InternalTimer(NatureFury nf)
-                : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0)) =>
-                m_NatureFury = nf;
+            public InternalTimer(NatureFury nf) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0)) =>
+                _natureFury = nf;
 
             protected override void OnTick()
             {
-                if (m_NatureFury.Deleted || !m_NatureFury.Alive || m_NatureFury.DamageMin > 20)
+                if (_natureFury.Deleted || !_natureFury.Alive || _natureFury.DamageMin > 20)
                 {
                     Stop();
                 }
                 else
                 {
-                    ++m_NatureFury.DamageMin;
-                    ++m_NatureFury.DamageMax;
+                    ++_natureFury.DamageMin;
+                    ++_natureFury.DamageMax;
                 }
             }
         }

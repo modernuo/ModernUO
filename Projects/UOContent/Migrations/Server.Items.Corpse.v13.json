@@ -1,0 +1,113 @@
+{
+  "version": 13,
+  "type": "Server.Items.Corpse",
+  "properties": [
+    {
+      "name": "RestoreEquip",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Flags",
+      "type": "Server.Items.CorpseFlag",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "TimeOfDeath",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "RestoreTable",
+      "type": "System.Collections.Generic.Dictionary\u003CServer.Item, Server.Point3D\u003E",
+      "rule": "DictionaryMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule",
+        "0",
+        "Server.Point3D",
+        "PrimitiveUOTypeMigrationRule",
+        "1",
+        "Point3D"
+      ]
+    },
+    {
+      "name": "DecayTimer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        "@TimerDrift"
+      ]
+    },
+    {
+      "name": "Looters",
+      "type": "System.Collections.Generic.HashSet\u003CServer.Mobile\u003E",
+      "rule": "HashSetMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Killer",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Aggressors",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "CorpseName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "AccessLevel",
+      "type": "Server.AccessLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Guild",
+      "type": "Server.Guilds.Guild",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Kills",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "EquipItems",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

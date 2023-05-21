@@ -140,7 +140,7 @@ namespace Server.Commands.Generic
                     "Parse",
                     BindingFlags.Public | BindingFlags.Static,
                     null,
-                    new[] { typeof(string), typeof(NumberStyles) },
+                    Types.ParseStringNumericParamTypes,
                     null
                 );
 
@@ -163,12 +163,12 @@ namespace Server.Commands.Generic
                         "Parse",
                         BindingFlags.Public | BindingFlags.Static,
                         null,
-                        new[] { typeof(string) },
+                        Types.ParseStringParamTypes,
                         null
                     );
 
                     parseMethod = parseGeneral;
-                    parseArgs = new object[] { toParse };
+                    parseArgs = new object[] { toParse, null };
                 }
 
                 if (parseMethod != null)
@@ -183,16 +183,21 @@ namespace Server.Commands.Generic
                             FieldAttributes.Private | FieldAttributes.InitOnly
                         );
 
-                        // parseMethod.Invoke(null,
-                        //              parseArgs.Length == 2 ? new object[] {toParse, (int) parseArgs[1]} : new object[] {toParse});
-
                         il.Emit(OpCodes.Ldarg_0);
 
                         il.Emit(OpCodes.Ldstr, toParse);
 
                         if (parseArgs.Length == 2) // dirty evil hack :-(
                         {
-                            il.Emit(OpCodes.Ldc_I4, (int)parseArgs[1]);
+                            if (parseArgs[1]?.GetType() == typeof(NumberStyles))
+                            {
+                                il.Emit(OpCodes.Ldc_I4, (int)parseArgs[1]);
+                            }
+                            else
+                            {
+                                // IFormatProvider for `IParsable<T>.Parse()` method.
+                                il.Emit(OpCodes.Ldnull);
+                            }
                         }
 
                         il.Emit(OpCodes.Call, parseMethod);
@@ -322,7 +327,9 @@ namespace Server.Commands.Generic
                     }
 
                 default:
-                    throw new InvalidOperationException("Invalid string comparison operator.");
+                    {
+                        throw new InvalidOperationException("Invalid string comparison operator.");
+                    }
             }
 
             if (m_Operator is StringOperator.Equal or StringOperator.NotEqual)
@@ -437,34 +444,48 @@ namespace Server.Commands.Generic
                 switch (m_Operator)
                 {
                     case ComparisonOperator.Equal:
-                        emitter.Compare(OpCodes.Ceq);
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Ceq);
+                            break;
+                        }
 
                     case ComparisonOperator.NotEqual:
-                        emitter.Compare(OpCodes.Ceq);
-                        inverse = true;
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Ceq);
+                            inverse = true;
+                            break;
+                        }
 
                     case ComparisonOperator.Greater:
-                        emitter.Compare(OpCodes.Cgt);
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Cgt);
+                            break;
+                        }
 
                     case ComparisonOperator.GreaterEqual:
-                        emitter.Compare(OpCodes.Clt);
-                        inverse = true;
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Clt);
+                            inverse = true;
+                            break;
+                        }
 
                     case ComparisonOperator.Lesser:
-                        emitter.Compare(OpCodes.Clt);
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Clt);
+                            break;
+                        }
 
                     case ComparisonOperator.LesserEqual:
-                        emitter.Compare(OpCodes.Cgt);
-                        inverse = true;
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Cgt);
+                            inverse = true;
+                            break;
+                        }
 
                     default:
-                        throw new InvalidOperationException("Invalid comparison operator.");
+                        {
+                            throw new InvalidOperationException("Invalid comparison operator.");
+                        }
                 }
             }
             else
@@ -477,22 +498,30 @@ namespace Server.Commands.Generic
                 switch (m_Operator)
                 {
                     case ComparisonOperator.Equal:
-                        emitter.Compare(OpCodes.Ceq);
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Ceq);
+                            break;
+                        }
 
                     case ComparisonOperator.NotEqual:
-                        emitter.Compare(OpCodes.Ceq);
-                        inverse = true;
-                        break;
+                        {
+                            emitter.Compare(OpCodes.Ceq);
+                            inverse = true;
+                            break;
+                        }
 
                     case ComparisonOperator.Greater:
                     case ComparisonOperator.GreaterEqual:
                     case ComparisonOperator.Lesser:
                     case ComparisonOperator.LesserEqual:
-                        throw new InvalidOperationException("Property does not support relational comparisons.");
+                        {
+                            throw new InvalidOperationException("Property does not support relational comparisons.");
+                        }
 
                     default:
-                        throw new InvalidOperationException("Invalid operator.");
+                        {
+                            throw new InvalidOperationException("Invalid operator.");
+                        }
                 }
             }
 

@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.GargoyleStonecrafter")]
-    public class StoneCrafter : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class StoneCrafter : BaseVendor
     {
         private readonly List<SBInfo> m_SBInfos = new();
 
@@ -11,10 +13,6 @@ namespace Server.Mobiles
         public StoneCrafter() : base("the stone crafter")
         {
             SetSkill(SkillName.Carpentry, 85.0, 100.0);
-        }
-
-        public StoneCrafter(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -27,25 +25,6 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBStavesWeapon());
             m_SBInfos.Add(new SBCarpenter());
             m_SBInfos.Add(new SBWoodenShields());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (Title == "the stonecrafter")
-            {
-                Title = "the stone crafter";
-            }
         }
     }
 }

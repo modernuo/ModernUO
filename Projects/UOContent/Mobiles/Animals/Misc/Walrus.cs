@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Walrus : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Walrus : BaseCreature
     {
         [Constructible]
         public Walrus() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -39,29 +42,11 @@ namespace Server.Mobiles
             MinTameSkill = 35.1;
         }
 
-        public Walrus(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a walrus corpse";
         public override string DefaultName => "a walrus";
 
         public override int Meat => 1;
         public override int Hides => 12;
         public override FoodType FavoriteFood => FoodType.Fish;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

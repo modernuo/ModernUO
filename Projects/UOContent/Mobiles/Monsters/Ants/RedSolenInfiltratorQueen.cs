@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class RedSolenInfiltratorQueen : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RedSolenInfiltratorQueen : BaseCreature
     {
         [Constructible]
         public RedSolenInfiltratorQueen() : base(AIType.AI_Melee)
@@ -38,11 +40,7 @@ namespace Server.Mobiles
 
             SolenHelper.PackPicnicBasket(this);
 
-            PackItem(new ZoogiFungus(Utility.RandomDouble() > 0.05 ? 4 : 16));
-        }
-
-        public RedSolenInfiltratorQueen(Serial serial) : base(serial)
-        {
+            PackItem(new ZoogiFungus(Utility.RandomDouble() < 0.95 ? 4 : 16));
         }
 
         public override string CorpseName => "a solen infiltrator corpse";
@@ -78,18 +76,6 @@ namespace Server.Mobiles
             SolenHelper.OnRedDamage(from);
 
             base.OnDamage(amount, from, willKill);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

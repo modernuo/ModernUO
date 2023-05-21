@@ -1,0 +1,30 @@
+{
+  "version": 0,
+  "type": "Server.Items.Shuriken",
+  "properties": [
+    {
+      "name": "UsesRemaining",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Poison",
+      "type": "Server.Poison",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Poison"
+      ]
+    },
+    {
+      "name": "PoisonCharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

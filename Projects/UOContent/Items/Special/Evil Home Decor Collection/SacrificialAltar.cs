@@ -1,166 +1,150 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[FlippableAddon(Direction.South, Direction.East)]
+[SerializationGenerator(0)]
+public partial class SacrificialAltarAddon : BaseAddonContainer
 {
-    [FlippableAddon(Direction.South, Direction.East)]
-    public class SacrificialAltarAddon : BaseAddonContainer
+    private Timer _timer;
+
+    [Constructible]
+    public SacrificialAltarAddon() : base(0x2A9B)
     {
-        private TimerExecutionToken _timerToken;
+        Direction = Direction.South;
 
-        [Constructible]
-        public SacrificialAltarAddon() : base(0x2A9B)
+        AddComponent(new LocalizedContainerComponent(0x2A9A, 1074818), 1, 0, 0);
+    }
+
+    public override BaseAddonContainerDeed Deed => new SacrificialAltarDeed();
+    public override int LabelNumber => 1074818; // Sacrificial Altar
+    public override int DefaultMaxWeight => 0;
+    public override int DefaultGumpID => 0x107;
+    public override int DefaultDropSound => 0x42;
+
+    private void InvalidateContents(Mobile from)
+    {
+        if (TotalItems >= 50)
         {
-            Direction = Direction.South;
-
-            AddComponent(new LocalizedContainerComponent(0x2A9A, 1074818), 1, 0, 0);
+            SendLocalizedMessageTo(from, 501478); // The trash is full!  Emptying!
+            Empty();
         }
-
-        public SacrificialAltarAddon(Serial serial) : base(serial)
+        else
         {
-        }
+            SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
 
-        public override BaseAddonContainerDeed Deed => new SacrificialAltarDeed();
-        public override int LabelNumber => 1074818; // Sacrificial Altar
-        public override int DefaultMaxWeight => 0;
-        public override int DefaultGumpID => 0x107;
-        public override int DefaultDropSound => 0x42;
-
-        private void StartTimer()
-        {
-            _timerToken.Cancel();
-            Timer.StartTimer(TimeSpan.FromMinutes(3), Empty, out _timerToken);
-        }
-
-        public override bool OnDragDrop(Mobile from, Item dropped)
-        {
-            if (!base.OnDragDrop(from, dropped))
+            if (_timer != null)
             {
-                return false;
-            }
-
-            if (TotalItems >= 50)
-            {
-                SendLocalizedMessageTo(from, 501478); // The trash is full!  Emptying!
-                Empty();
+                _timer.Stop();
             }
             else
             {
-                SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
-
-                StartTimer();
+                _timer = new EmptyTimer(this);
             }
 
+            _timer.Start();
+        }
+    }
+
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+        if (base.OnDragDrop(from, dropped))
+        {
+            InvalidateContents(from);
             return true;
         }
 
-        public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+        return false;
+    }
+
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+        if (base.OnDragDropInto(from, item, p))
         {
-            if (!base.OnDragDropInto(from, item, p))
-            {
-                return false;
-            }
-
-            if (TotalItems >= 50)
-            {
-                SendLocalizedMessageTo(from, 501478); // The trash is full!  Emptying!
-                Empty();
-            }
-            else
-            {
-                SendLocalizedMessageTo(from, 1010442); // The item will be deleted in three minutes
-
-                StartTimer();
-            }
-
+            InvalidateContents(from);
             return true;
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        return false;
+    }
 
-            writer.WriteEncodedInt(0); // version
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        // AfterDeserialization is not synchronous (false) since Items is not filled when we deserialize.
+        if (Items.Count > 0)
+        {
+            _timer = new EmptyTimer(this);
+            _timer.Start();
         }
+    }
 
-        public override void Deserialize(IGenericReader reader)
+    public virtual void Flip(Mobile from, Direction direction)
+    {
+        switch (direction)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            if (Items.Count > 0)
-            {
-                StartTimer();
-            }
-        }
-
-        public virtual void Flip(Mobile from, Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.East:
+            case Direction.East:
+                {
                     ItemID = 0x2A9C;
                     AddComponent(new LocalizedContainerComponent(0x2A9D, 1074818), 0, -1, 0);
                     break;
-                case Direction.South:
+                }
+            case Direction.South:
+                {
                     ItemID = 0x2A9B;
                     AddComponent(new LocalizedContainerComponent(0x2A9A, 1074818), 1, 0, 0);
                     break;
-            }
-        }
-
-        public virtual void Empty()
-        {
-            if (Items.Count > 0)
-            {
-                var location = Location;
-                location.Z += 10;
-
-                Effects.SendLocationEffect(location, Map, 0x3709, 10, 10, 0x356);
-                Effects.PlaySound(location, Map, 0x32E);
-
-                if (Items.Count > 0)
-                {
-                    for (var i = Items.Count - 1; i >= 0; --i)
-                    {
-                        if (i >= Items.Count)
-                        {
-                            continue;
-                        }
-
-                        Items[i].Delete();
-                    }
                 }
-            }
-
-            _timerToken.Cancel();
         }
     }
 
-    public class SacrificialAltarDeed : BaseAddonContainerDeed
+    public virtual void Empty()
     {
-        [Constructible]
-        public SacrificialAltarDeed() => LootType = LootType.Blessed;
+        var items = Items;
 
-        public SacrificialAltarDeed(Serial serial) : base(serial)
+        if (items.Count > 0)
         {
+            var location = Location;
+            location.Z += 10;
+
+            Effects.SendLocationEffect(location, Map, 0x3709, 10, 10, 0x356);
+            Effects.PlaySound(location, Map, 0x32E);
+
+            for (var i = items.Count - 1; i >= 0; --i)
+            {
+                if (i >= items.Count)
+                {
+                    continue;
+                }
+
+                items[i].Delete();
+            }
         }
 
-        public override BaseAddonContainer Addon => new SacrificialAltarAddon();
-        public override int LabelNumber => 1074818; // Sacrificial Altar
+        _timer?.Stop();
+        _timer = null;
+    }
 
-        public override void Serialize(IGenericWriter writer)
+    private class EmptyTimer : Timer
+    {
+        private SacrificialAltarAddon _altar;
+
+        public EmptyTimer(SacrificialAltarAddon altar) : base(TimeSpan.FromMinutes(3.0)) => _altar = altar;
+
+        protected override void OnTick()
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            _altar.Empty();
         }
     }
+}
+
+[SerializationGenerator(0)]
+public partial class SacrificialAltarDeed : BaseAddonContainerDeed
+{
+    [Constructible]
+    public SacrificialAltarDeed() => LootType = LootType.Blessed;
+
+    public override BaseAddonContainer Addon => new SacrificialAltarAddon();
+    public override int LabelNumber => 1074818; // Sacrificial Altar
 }

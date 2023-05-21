@@ -19,7 +19,7 @@ namespace Server.Commands
             var remove = new List<Item>();
             var count = 0;
 
-            e.Mobile.SendMessage("Exporting all static items to \"{0}\"...", ExportFile);
+            e.Mobile.SendMessage($"Exporting all static items to \"{ExportFile}\"...");
             e.Mobile.SendMessage("This will delete all static items in the world.  Please make a backup.");
 
             foreach (var item in World.Items.Values)
@@ -60,7 +60,7 @@ namespace Server.Commands
                 item.Delete();
             }
 
-            e.Mobile.SendMessage("Export complete.  Exported {0} statics.", count);
+            e.Mobile.SendMessage($"Export complete.  Exported {count} statics.");
         }
     }
 }

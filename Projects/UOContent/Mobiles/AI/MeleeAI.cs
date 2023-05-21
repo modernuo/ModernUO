@@ -46,7 +46,6 @@ public class MeleeAI : BaseAI
             }
 
             Action = ActionType.Guard;
-
             return true;
         }
 
@@ -74,7 +73,6 @@ public class MeleeAI : BaseAI
                 }
 
                 Action = ActionType.Guard;
-
                 return true;
             }
         }
@@ -90,7 +88,6 @@ public class MeleeAI : BaseAI
 
                 m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;
-
                 return true;
             }
 
@@ -102,7 +99,6 @@ public class MeleeAI : BaseAI
                 }
 
                 Action = ActionType.Guard;
-
                 return true;
             }
 
@@ -127,7 +123,16 @@ public class MeleeAI : BaseAI
                     }
 
                     Action = ActionType.Flee;
+                    return true;
                 }
+            }
+        }
+
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay("I used my abilities!");
             }
         }
 

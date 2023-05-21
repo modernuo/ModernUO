@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point3DConverter.cs                                             *
  *                                                                       *
@@ -96,6 +96,7 @@ public class Point3DConverter : JsonConverter<Point3D>
     public override Point3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
         reader.TokenType switch
         {
+            JsonTokenType.String      => Point3D.Parse(reader.GetString(), null),
             JsonTokenType.StartArray  => DeserializeArray(ref reader),
             JsonTokenType.StartObject => DeserializeObj(ref reader),
             _                         => throw new JsonException("Invalid Json for Point3D")
@@ -103,10 +104,13 @@ public class Point3DConverter : JsonConverter<Point3D>
 
     public override void Write(Utf8JsonWriter writer, Point3D value, JsonSerializerOptions options)
     {
-        writer.WriteStartArray();
+        writer.WriteStartObject();
+        writer.WritePropertyName("x");
         writer.WriteNumberValue(value.X);
+        writer.WritePropertyName("y");
         writer.WriteNumberValue(value.Y);
+        writer.WritePropertyName("z");
         writer.WriteNumberValue(value.Z);
-        writer.WriteEndArray();
+        writer.WriteEndObject();
     }
 }

@@ -1,131 +1,90 @@
 using System;
-using Server.Network;
+using ModernUO.Serialization;
 using Server.Spells;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class IronMaidenAddon : BaseAddon
 {
-    public class IronMaidenAddon : BaseAddon
+    public IronMaidenAddon()
     {
-        public IronMaidenAddon()
-        {
-            AddComponent(new LocalizedAddonComponent(0x1249, 1076288), 0, 0, 0);
-        }
+        AddComponent(new LocalizedAddonComponent(0x1249, 1076288), 0, 0, 0);
+    }
 
-        public IronMaidenAddon(Serial serial) : base(serial)
-        {
-        }
+    public override BaseAddonDeed Deed => new IronMaidenDeed();
 
-        public override BaseAddonDeed Deed => new IronMaidenDeed();
-
-        public override void OnComponentUsed(AddonComponent c, Mobile from)
+    public override void OnComponentUsed(AddonComponent c, Mobile from)
+    {
+        if (from.InRange(GetWorldLocation(), 2) && from.InLOS(GetWorldLocation()))
         {
-            if (from.InRange(GetWorldLocation(), 2) && from.InLOS(GetWorldLocation()))
+            if (Utility.RandomBool())
             {
-                if (Utility.RandomBool())
-                {
-                    from.Location = Location;
-                    c.ItemID = 0x124A;
+                from.Location = Location;
+                c.ItemID = 0x124A;
 
-                    Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3, () => Activate(c, from));
-                }
-                else
-                {
-                    from.LocalOverheadMessage(
-                        MessageType.Regular,
-                        0,
-                        501777 // Hmm... you suspect that if you used this again, it might hurt.
-                    );
-                }
+                Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3, () => Activate(c, from));
             }
             else
             {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                // Hmm... you suspect that if you used this again, it might hurt.
+                from.LocalOverheadMessage(MessageType.Regular, 0, 501777);
             }
         }
-
-        public override void Serialize(IGenericWriter writer)
+        else
         {
-            base.Serialize(writer);
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+        }
+    }
 
-            writer.WriteEncodedInt(0); // version
+    public virtual void Activate(AddonComponent c, Mobile from)
+    {
+        c.ItemID += 1;
+
+        if (c.ItemID < 0x124D)
+        {
+            return;
         }
 
-        public override void Deserialize(IGenericReader reader)
+        // blood
+        var amount = Utility.RandomMinMax(3, 7);
+
+        for (var i = 0; i < amount; i++)
         {
-            base.Deserialize(reader);
+            var x = c.X + Utility.RandomMinMax(-1, 1);
+            var y = c.Y + Utility.RandomMinMax(-1, 1);
+            var z = c.Z;
 
-            var version = reader.ReadEncodedInt();
-        }
-
-        public virtual void Activate(AddonComponent c, Mobile from)
-        {
-            c.ItemID += 1;
-
-            if (c.ItemID < 0x124D)
+            if (!c.Map.CanFit(x, y, z, 1, false, false))
             {
-                return;
-            }
-
-            // blood
-            var amount = Utility.RandomMinMax(3, 7);
-
-            for (var i = 0; i < amount; i++)
-            {
-                var x = c.X + Utility.RandomMinMax(-1, 1);
-                var y = c.Y + Utility.RandomMinMax(-1, 1);
-                var z = c.Z;
+                z = c.Map.GetAverageZ(x, y);
 
                 if (!c.Map.CanFit(x, y, z, 1, false, false))
                 {
-                    z = c.Map.GetAverageZ(x, y);
-
-                    if (!c.Map.CanFit(x, y, z, 1, false, false))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
-
-                var blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
-                blood.MoveToWorld(new Point3D(x, y, z), c.Map);
             }
 
-            from.PlaySound(from.Female ? Utility.RandomMinMax(0x150, 0x153) : Utility.RandomMinMax(0x15A, 0x15D));
-
-            from.LocalOverheadMessage(
-                MessageType.Regular,
-                0,
-                501777
-            ); // Hmm... you suspect that if you used this again, it might hurt.
-            SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
-
-            Timer.StartTimer(TimeSpan.FromSeconds(1), () => c.ItemID = 0x1249);
+            var blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
+            blood.MoveToWorld(new Point3D(x, y, z), c.Map);
         }
+
+        from.PlaySound(from.Female ? Utility.RandomMinMax(0x150, 0x153) : Utility.RandomMinMax(0x15A, 0x15D));
+
+        // Hmm... you suspect that if you used this again, it might hurt.
+        from.LocalOverheadMessage(MessageType.Regular, 0, 501777);
+        SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
+
+        Timer.StartTimer(TimeSpan.FromSeconds(1), () => c.ItemID = 0x1249);
     }
+}
 
-    public class IronMaidenDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public IronMaidenDeed() => LootType = LootType.Blessed;
+[SerializationGenerator(0)]
+public partial class IronMaidenDeed : BaseAddonDeed
+{
+    [Constructible]
+    public IronMaidenDeed() => LootType = LootType.Blessed;
 
-        public IronMaidenDeed(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddon Addon => new IronMaidenAddon();
-        public override int LabelNumber => 1076288; // Iron Maiden
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
+    public override BaseAddon Addon => new IronMaidenAddon();
+    public override int LabelNumber => 1076288; // Iron Maiden
 }

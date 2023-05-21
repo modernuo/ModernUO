@@ -7,7 +7,6 @@
       "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
-        "",
         "Server.Mobile",
         "SerializableInterfaceMigrationRule"
       ]

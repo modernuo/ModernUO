@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GenerateSpawnersCommand.cs                                      *
  *                                                                       *
@@ -84,8 +84,8 @@ namespace Server.Engines.Spawners
             for (var i = 0; i < files.Count; i++)
             {
                 var file = files[i];
-                from.SendMessage("GenerateSpawners: Generating spawners from {0}...", file.Name);
-                logger.Information($"{from} is generating spawners from {file.FullName}");
+                from.SendMessage($"GenerateSpawners: Generating spawners from {file.Name}...");
+                logger.Information("{User} is generating spawners from {File}", from, file.FullName);
 
                 NetState.FlushAll();
 
@@ -99,8 +99,7 @@ namespace Server.Engines.Spawners
                 catch (JsonException)
                 {
                     from.SendMessage(
-                        "GenerateSpawners: Exception parsing {0}, file may not be in the correct format.",
-                        file.FullName
+                        $"GenerateSpawners: Exception parsing {file.FullName}, file may not be in the correct format."
                     );
                 }
             }
@@ -213,7 +212,7 @@ namespace Server.Engines.Spawners
             }
 
 #if DEBUG
-            logger.Error($"{message}\n{ex}");
+            logger.Error(ex, message);
 #endif
         }
     }

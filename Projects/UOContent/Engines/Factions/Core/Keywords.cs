@@ -1,5 +1,4 @@
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.Factions
 {
@@ -124,11 +123,8 @@ namespace Server.Factions
 
                                 if (remaining.TotalDays >= 1)
                                 {
-                                    from.SendLocalizedMessage(
-                                        1042743,
-                                        remaining.TotalDays
-                                            .ToString("N0")
-                                    ); // Your term of service will come to an end in ~1_DAYS~ days.
+                                    // Your term of service will come to an end in ~1_DAYS~ days.
+                                    from.SendLocalizedMessage(1042743, remaining.TotalDays.ToString("N0"));
                                 }
                                 else if (remaining.TotalHours >= 1)
                                 {

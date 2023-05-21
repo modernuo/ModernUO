@@ -99,7 +99,7 @@ namespace Server.Saves
             var backupPath = Path.Combine(AutomaticBackupPath, Utility.GetTimeStamp());
             PathUtility.MoveDirectory(args.OldSavePath, backupPath);
 
-            logger.Information($"Created backup at {backupPath}");
+            logger.Information("Created backup at {Path}", backupPath);
 
             Archive?.Invoke();
         }
@@ -132,7 +132,7 @@ namespace Server.Saves
                 return false;
             }
 
-            logger.Information($"Restoring latest world save from archive {fileName}");
+            logger.Information("Restoring latest world save from archive {File}", fileName);
 
             var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
             var successful = fileName.EndsWithOrdinal(".tar.zst")
@@ -141,7 +141,7 @@ namespace Server.Saves
 
             if (!successful)
             {
-                logger.Information($"Failed to extract {fi.Name}");
+                logger.Information("Failed to extract {File}", fi.Name);
                 return false;
             }
 
@@ -149,7 +149,7 @@ namespace Server.Saves
             {
                 Directory.Delete(savePath, true);
                 var dirInfo = new DirectoryInfo(folder);
-                logger.Information($"Restoring backup {dirInfo.Name}");
+                logger.Information("Restoring backup {Directory}", dirInfo.Name);
                 PathUtility.MoveDirectory(folder, savePath);
                 break;
             }
@@ -188,7 +188,7 @@ namespace Server.Saves
 
                 if (date < threshold)
                 {
-                    logger.Information($"Pruning old backup {folder}");
+                    logger.Information("Pruning old backup {Directory}", folder);
                     Directory.Delete(folder, true);
                 }
             }
@@ -213,12 +213,12 @@ namespace Server.Saves
                 }
 
                 var fi = new FileInfo(archive);
-                logger.Information($"Pruning {periodLowerStr} archive {fi.Name}");
+                logger.Information("Pruning {Period} archive {File}", periodLowerStr, fi.Name);
                 File.Delete(archive);
             }
         }
 
-        public static void AutoArchiveLocally()
+        public static async void AutoArchiveLocally()
         {
             var date = Core.Now;
 
@@ -232,22 +232,22 @@ namespace Server.Saves
                 return;
             }
 
-            ThreadPool.UnsafeQueueUserWorkItem(
-                _ =>
+            ThreadPool.QueueUserWorkItem(
+                now =>
                 {
-                    if (date >= _nextHourlyArchive)
+                    if (now >= _nextHourlyArchive)
                     {
                         Rollup(ArchivePeriod.Hourly);
                         _nextHourlyArchive = _nextHourlyArchive.AddHours(1);
                     }
 
-                    if (date >= _nextDailyArchive)
+                    if (now >= _nextDailyArchive)
                     {
                         Rollup(ArchivePeriod.Daily);
                         _nextDailyArchive = _nextDailyArchive.AddDays(1);
                     }
 
-                    if (date >= _nextMonthlyArchive)
+                    if (now >= _nextMonthlyArchive)
                     {
                         Rollup(ArchivePeriod.Monthly);
                         _nextMonthlyArchive = _nextMonthlyArchive.AddMonths(1);
@@ -256,7 +256,8 @@ namespace Server.Saves
                     Prune?.Invoke();
                     _isArchiving = 0;
                 },
-                null
+                date,
+                false
             );
         }
 
@@ -330,7 +331,12 @@ namespace Server.Saves
                 if (archiveCreated)
                 {
                     var elapsed = stopWatch.Elapsed.TotalSeconds;
-                    logger.Information($"Created {archivePeriodStrLower} archive at {archiveFilePath} ({elapsed:F2} seconds)");
+                    logger.Information(
+                        "Created {Period} archive at {Path} ({Elapsed:F2} seconds)",
+                        archivePeriodStrLower,
+                        archiveFilePath,
+                        elapsed
+                    );
 
                     var i = minimum;
                     foreach (var backup in backups)
@@ -415,7 +421,12 @@ namespace Server.Saves
                 var i = 0;
                 foreach (var part in value.Tokenize('-'))
                 {
-                    parts[i++] = int.Parse(part);
+                    if (!int.TryParse(part, out var partValue))
+                    {
+                        break;
+                    }
+
+                    parts[i++] = partValue;
                 }
 
                 if (i == 0)

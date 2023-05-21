@@ -7,7 +7,7 @@ namespace Server.Items;
 public partial class Candelabra : BaseLight, IShipwreckedItem
 {
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _isShipwreckedItem;
 
     [Constructible]

@@ -191,8 +191,8 @@ namespace Server.Spells
                     Register(684, typeof(StoneFormSpell));
                     // Register(685, typeof(SpellTriggerSpell));
                     // Register(686, typeof(MassSleepSpell));
-                    // Register(687, typeof(CleansingWindsSpell));
-                    // Register(688, typeof(BombardSpell));
+                    Register(687, typeof(CleansingWindsSpell));
+                    Register(688, typeof(BombardSpell));
                     Register(689, typeof(SpellPlagueSpell));
                     Register(690, typeof(HailStormSpell));
                     Register(691, typeof(NetherCycloneSpell));

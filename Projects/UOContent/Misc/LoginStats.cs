@@ -17,15 +17,8 @@ namespace Server.Misc
             var mobileCount = World.Mobiles.Count;
 
             m.SendMessage(
-                "Welcome, {0}! There {1} currently {2} user{3} online, with {4} item{5} and {6} mobile{7} in the world.",
-                m.Name,
-                userCount == 1 ? "is" : "are",
-                userCount,
-                userCount == 1 ? "" : "s",
-                itemCount,
-                itemCount == 1 ? "" : "s",
-                mobileCount,
-                mobileCount == 1 ? "" : "s"
+                $"Welcome, {m.Name}! There {(userCount == 1 ? "is" : "are")} currently {userCount} user{(userCount == 1 ? "" : "s")} " +
+                $"online, with {itemCount} item{(itemCount == 1 ? "" : "s")} and {mobileCount} mobile{(mobileCount == 1 ? "" : "s")} in the world."
             );
         }
     }

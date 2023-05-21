@@ -1,38 +1,22 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class MinotaurArtifact : Item
 {
-    public class MinotaurArtifact : Item
+    [Constructible]
+    public MinotaurArtifact() : base(Utility.RandomList(0xB46, 0xB48, 0x9ED))
     {
-        [Constructible]
-        public MinotaurArtifact() : base(Utility.RandomList(0xB46, 0xB48, 0x9ED))
+        if (ItemID == 0x9ED)
         {
-            if (ItemID == 0x9ED)
-            {
-                Weight = 30;
-            }
-
-            LootType = LootType.Blessed;
-            Hue = 0x100;
+            Weight = 30;
         }
 
-        public MinotaurArtifact(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1074826; // Minotaur Artifact
-        public override double DefaultWeight => 5.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        LootType = LootType.Blessed;
+        Hue = 0x100;
     }
+
+    public override int LabelNumber => 1074826; // Minotaur Artifact
+    public override double DefaultWeight => 5.0;
 }

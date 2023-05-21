@@ -92,7 +92,7 @@ namespace Server.Items
 
             if (Owner != null)
             {
-                LabelTo(from, "{0} -- {1}", Title, Owner.RawName);
+                LabelTo(from, $"{Title} -- {Owner.RawName}");
             }
             else if (Title != null)
             {

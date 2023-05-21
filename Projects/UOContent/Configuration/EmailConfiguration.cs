@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: EmailConfiguration.cs                                           *
  *                                                                       *
@@ -51,17 +51,17 @@ namespace Server.Configurations
 
                 if (settings == null)
                 {
-                    logger.Error($"Failed reading email configuration from {m_RelPath}");
+                    logger.Error("Failed reading email configuration from {Path}", m_RelPath);
                     throw new JsonException($"Failed to deserialize {path}.");
                 }
 
-                logger.Information($"Email configuration read from {m_RelPath}");
+                logger.Information("Email configuration read from {Path}", m_RelPath);
             }
             else
             {
                 settings = new Settings();
                 JsonConfig.Serialize(path, settings);
-                logger.Information($"Email configuration saved to {m_RelPath}.");
+                logger.Information("Email configuration saved to {}.", m_RelPath);
             }
 
             EmailEnabled = settings.enabled;

@@ -117,11 +117,7 @@ namespace Server.Items
         {
             base.GetProperties(list);
 
-            if (m_Label > 0)
-            {
-                TextDefinition.AddTo(list, m_Label);
-            }
-
+            m_Label.AddTo(list);
             list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
         }
 

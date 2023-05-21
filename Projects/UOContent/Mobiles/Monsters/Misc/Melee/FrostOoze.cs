@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class FrostOoze : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class FrostOoze : BaseCreature
     {
         [Constructible]
         public FrostOoze() : base(AIType.AI_Melee)
@@ -33,28 +36,12 @@ namespace Server.Mobiles
             VirtualArmor = 38;
         }
 
-        public FrostOoze(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a frost ooze corpse";
         public override string DefaultName => "a frost ooze";
 
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Gems, Utility.RandomMinMax(1, 2));
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

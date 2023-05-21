@@ -53,7 +53,9 @@ namespace Server.Misc
             if (MinRequired != null || MaxRequired != null)
             {
                 logger.Information(
-                    $"Restricting client version to {GetVersionExpression()}. Action to be taken: {_invalidClientResponse}"
+                    "Restricting client version to {ClientVersion}. Action to be taken: {Action}",
+                    GetVersionExpression(),
+                    _invalidClientResponse
                 );
             }
         }
@@ -81,7 +83,7 @@ namespace Server.Misc
 
         private static void EventSink_ClientVersionReceived(NetState state, ClientVersion version)
         {
-            using var message = ValueStringBuilder.Create();
+            var sb = ValueStringBuilder.Create();
 
             if (!_enable || state.Mobile?.AccessLevel != AccessLevel.Player)
             {
@@ -98,57 +100,57 @@ namespace Server.Misc
 
             if (MinRequired != null && version < MinRequired)
             {
-                message.Append($"This server doesn't support clients older than {MinRequired}.");
+                sb.Append($"This server doesn't support clients older than {MinRequired}.");
                 shouldKick = strictRequirement;
             }
             else if (MaxRequired != null && version > MaxRequired)
             {
-                message.Append($"This server doesn't support clients newer than {MaxRequired}.");
+                sb.Append($"This server doesn't support clients newer than {MaxRequired}.");
                 shouldKick = strictRequirement;
             }
             else if (!AllowRegular || !AllowUOTD)
             {
                 if (!AllowRegular && version.Type == ClientType.Regular)
                 {
-                    message.Append("This server does not allow regular clients to connect.");
+                    sb.Append("This server does not allow regular clients to connect.");
                     shouldKick = true;
                 }
                 else if (!AllowUOTD && state.IsUOTDClient)
                 {
-                    message.Append("This server does not allow UO:TD clients to connect.");
+                    sb.Append("This server does not allow UO:TD clients to connect.");
                     shouldKick = true;
                 }
 
-                if (message.Length > 0)
+                if (sb.Length > 0)
                 {
                     if (AllowRegular && AllowUOTD)
                     {
-                        message.Append(" You can use regular or UO:TD clients.");
+                        sb.Append(" You can use regular or UO:TD clients.");
                     }
                     else if (AllowRegular)
                     {
-                        message.Append(" You can use regular clients.");
+                        sb.Append(" You can use regular clients.");
                     }
                     else if (AllowUOTD)
                     {
-                        message.Append(" You can use UO:TD clients.");
+                        sb.Append(" You can use UO:TD clients.");
                     }
                 }
             }
 
-            if (message.Length > 0)
+            if (sb.Length > 0)
             {
-                state.Mobile.SendMessage(0x22, message.ToString());
+                state.Mobile.SendMessage(0x22, sb.ToString());
             }
 
             if (shouldKick)
             {
-                state.Mobile.SendMessage(0x22, "You will be disconnected in {0} seconds.", KickDelay.TotalSeconds);
+                state.Mobile.SendMessage(0x22, $"You will be disconnected in {KickDelay.TotalSeconds} seconds.");
                 Timer.StartTimer(KickDelay, () => OnKick(state));
                 return;
             }
 
-            if (message.Length > 0)
+            if (sb.Length > 0)
             {
                 switch (_invalidClientResponse)
                 {
@@ -168,6 +170,8 @@ namespace Server.Misc
                         }
                 }
             }
+
+            sb.Dispose();
         }
 
         private static void OnKick(NetState ns)
@@ -187,9 +191,7 @@ namespace Server.Misc
             if (_invalidClientResponse == InvalidClientResponse.LenientKick)
             {
                 from.SendMessage(
-                    "Invalid clients will be kicked after {0} days of character age and {1} hours of play time",
-                    _ageLeniency,
-                    _gameTimeLeniency
+                    $"Invalid clients will be kicked after {_ageLeniency} days of character age and {_gameTimeLeniency} hours of play time"
                 );
             }
 

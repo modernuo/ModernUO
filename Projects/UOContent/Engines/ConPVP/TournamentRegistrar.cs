@@ -1,7 +1,6 @@
 using System;
 using Server.Factions;
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.Engines.ConPVP
 {

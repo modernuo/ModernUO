@@ -540,7 +540,7 @@ namespace Server.Tests.Network
 
                 var layer = (byte)item.Layer;
 
-                if (!item.Deleted && beholder.CanSee(item) && m_DupedLayers[layer] != m_Version)
+                if (!item.Deleted && beholder.CanSee(item) && m_DupedLayers![layer] != m_Version)
                 {
                     m_DupedLayers[layer] = m_Version;
 
@@ -572,7 +572,7 @@ namespace Server.Tests.Network
 
             if (beheld.HairItemID > 0)
             {
-                if (m_DupedLayers[(int)Layer.Hair] != m_Version)
+                if (m_DupedLayers![(int)Layer.Hair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.Hair] = m_Version;
                     hue = beheld.HairHue;
@@ -603,7 +603,7 @@ namespace Server.Tests.Network
 
             if (beheld.FacialHairItemID > 0)
             {
-                if (m_DupedLayers[(int)Layer.FacialHair] != m_Version)
+                if (m_DupedLayers![(int)Layer.FacialHair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.FacialHair] = m_Version;
                     hue = beheld.FacialHairHue;

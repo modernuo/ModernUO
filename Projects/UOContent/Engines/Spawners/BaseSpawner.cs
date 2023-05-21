@@ -98,7 +98,7 @@ public abstract class BaseSpawner : Item, ISpawner
 
         foreach (var entry in entries)
         {
-            AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false);
+            AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false, entry.Properties, entry.Parameters);
         }
     }
 
@@ -314,21 +314,34 @@ public abstract class BaseSpawner : Item, ISpawner
     {
         if (newItem is BaseSpawner newSpawner)
         {
+            newSpawner._guid = Guid.NewGuid();
+            newSpawner.Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
+            newSpawner.Entries = new List<SpawnerEntry>();
+
             for (var i = 0; i < Entries.Count; i++)
             {
                 newSpawner.AddEntry(
                     Entries[i].SpawnedName,
                     Entries[i].SpawnedProbability,
                     Entries[i].SpawnedMaxCount,
-                    false
+                    false,
+                    Entries[i].Properties,
+                    Entries[i].Parameters
                 );
             }
         }
     }
 
-    public SpawnerEntry AddEntry(string creaturename, int probability = 100, int amount = 1, bool dotimer = true)
+    public SpawnerEntry AddEntry(
+        string creaturename,
+        int probability = 100,
+        int amount = 1,
+        bool dotimer = true,
+        string properties = null,
+        string parameters = null
+    )
     {
-        var entry = new SpawnerEntry(creaturename, probability, amount);
+        var entry = new SpawnerEntry(creaturename, probability, amount, properties, parameters);
         Entries.Add(entry);
         if (dotimer)
         {

@@ -43,7 +43,7 @@ namespace Server.Gumps
             {
                 if (BaseGuild.FindByName(text) != null)
                 {
-                    m_Mobile.SendMessage("{0} conflicts with the name of an existing guild.", text);
+                    m_Mobile.SendMessage($"{text} conflicts with the name of an existing guild.");
                 }
                 else
                 {

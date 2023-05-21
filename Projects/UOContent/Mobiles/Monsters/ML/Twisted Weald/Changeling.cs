@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using Server.Items;
 using Server.Spells;
 
 namespace Server.Mobiles
 {
-    public class Changeling : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Changeling : BaseCreature
     {
         private static readonly int[] m_FireNorth =
         {
@@ -21,8 +23,6 @@ namespace Server.Mobiles
         };
 
         private DateTime m_LastMorph;
-
-        private Mobile m_MorphedInto;
         private DateTime m_NextFireRing;
 
         [Constructible]
@@ -68,22 +68,18 @@ namespace Server.Mobiles
             PackArcaneScroll(0, 1);
         }
 
-        public Changeling(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a changeling corpse";
         public override string DefaultName => "a changeling";
         public virtual int DefaultHue => 0;
 
         public override bool ShowFameTitle => false;
-        public override bool InitialInnocent => m_MorphedInto != null;
+        public override bool InitialInnocent => _morphedInto != null;
 
         [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(0)]
         public Mobile MorphedInto
         {
-            get => m_MorphedInto;
+            get => _morphedInto;
             set
             {
                 if (value == this)
@@ -91,7 +87,7 @@ namespace Server.Mobiles
                     value = null;
                 }
 
-                if (m_MorphedInto != value)
+                if (_morphedInto != value)
                 {
                     Revert();
 
@@ -101,8 +97,9 @@ namespace Server.Mobiles
                         m_LastMorph = Core.Now;
                     }
 
-                    m_MorphedInto = value;
+                    _morphedInto = value;
                     Delta(MobileDelta.Noto);
+                    this.MarkDirty();
                 }
             }
         }
@@ -134,7 +131,7 @@ namespace Server.Mobiles
                     m_NextFireRing = Core.Now + TimeSpan.FromMinutes(2);
                 }
 
-                if (Combatant.Player && m_MorphedInto != Combatant && Utility.RandomDouble() < 0.05)
+                if (Combatant.Player && _morphedInto != Combatant && Utility.RandomDouble() < 0.05)
                 {
                     MorphedInto = Combatant;
                 }
@@ -145,7 +142,7 @@ namespace Server.Mobiles
         {
             var idle = base.CheckIdle();
 
-            if (idle && m_MorphedInto != null && Core.Now - m_LastMorph > TimeSpan.FromSeconds(30))
+            if (idle && _morphedInto != null && Core.Now - m_LastMorph > TimeSpan.FromSeconds(30))
             {
                 MorphedInto = null;
             }
@@ -260,21 +257,10 @@ namespace Server.Mobiles
         {
         }
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialize()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-            writer.Write(m_MorphedInto != null);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (reader.ReadBool())
+            if (_morphedInto != null)
             {
                 ValidationQueue<Changeling>.Add(this);
             }
@@ -285,7 +271,8 @@ namespace Server.Mobiles
             Revert();
         }
 
-        private class ClonedItem : Item
+        [SerializationGenerator(0, false)]
+        public partial class ClonedItem : Item
         {
             public ClonedItem(Item item)
                 : base(item.ItemID)
@@ -295,25 +282,6 @@ namespace Server.Mobiles
                 Hue = item.Hue;
                 Layer = item.Layer;
                 Movable = false;
-            }
-
-            public ClonedItem(Serial serial)
-                : base(serial)
-            {
-            }
-
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
             }
         }
     }

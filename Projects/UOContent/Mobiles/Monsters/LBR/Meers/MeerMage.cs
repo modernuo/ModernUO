@@ -1,11 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class MeerMage : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class MeerMage : BaseCreature
     {
         private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
 
@@ -45,10 +46,6 @@ namespace Server.Mobiles
             VirtualArmor = 16;
 
             m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
-        }
-
-        public MeerMage(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a meer's corpse";
@@ -129,13 +126,13 @@ namespace Server.Mobiles
                             rabid.MoveToWorld(loc, combatant.Map);
                         }
 
-                        Say(
-                            1071932
-                        ); // Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
+                        // Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
+                        Say(1071932);
                     }
                     else if (combatant.Player)
                     {
-                        Say(true, "I call a plague of insects to sting your flesh!");
+                        // I call a plague of insects to sting your flesh!
+                        Say(1071931);
 
                         var count = 0;
                         Timer.StartTimer(
@@ -161,12 +158,8 @@ namespace Server.Mobiles
             {
                 if (message)
                 {
-                    m.PublicOverheadMessage(
-                        MessageType.Emote,
-                        m.SpeechHue,
-                        true,
-                        "* The open flame begins to scatter the swarm of insects *"
-                    );
+                    // * The open flame begins to scatter the swarm of insects! *
+                    m.PublicOverheadMessage(MessageType.Emote, m.SpeechHue, 1071925);
                 }
 
                 timer.Cancel();
@@ -181,7 +174,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (m.FindItemOnLayer(Layer.TwoHanded) is Torch { Burning: true })
+            if (m.FindItemOnLayer<Torch>(Layer.TwoHanded)?.Burning == true)
             {
                 StopEffect(m, true);
                 return;
@@ -189,18 +182,11 @@ namespace Server.Mobiles
 
             if (count % 4 == 0)
             {
-                m.LocalOverheadMessage(
-                    MessageType.Emote,
-                    m.SpeechHue,
-                    true,
-                    "* The swarm of insects bites and stings your flesh! *"
-                );
-                m.NonlocalOverheadMessage(
-                    MessageType.Emote,
-                    m.SpeechHue,
-                    true,
-                    $"* {m.Name} is stung by a swarm of insects *"
-                );
+                // * The swarm of insects bites and stings your flesh! *
+                m.LocalOverheadMessage(MessageType.Emote, m.SpeechHue, 1071905);
+
+                // * ~1_VAL~ is stung by a swarm of insects *
+                m.NonlocalOverheadMessage(MessageType.Emote, m.SpeechHue, 1071924);
             }
 
             m.FixedParticles(0x91C, 10, 180, 9539, EffectLayer.Waist);
@@ -213,18 +199,6 @@ namespace Server.Mobiles
             {
                 StopEffect(m, false);
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

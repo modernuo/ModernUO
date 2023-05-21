@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class RevenantLion : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class RevenantLion : BaseCreature
     {
         [Constructible]
         public RevenantLion() : base(AIType.AI_Mage)
@@ -53,10 +55,6 @@ namespace Server.Mobiles
             );
         }
 
-        public RevenantLion(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a revenant lion corpse";
         public override string DefaultName => "a Revenant Lion";
 
@@ -82,18 +80,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls, 2);
 
             // TODO: Bone Pile
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

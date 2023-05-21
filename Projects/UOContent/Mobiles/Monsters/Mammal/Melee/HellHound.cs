@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class HellHound : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class HellHound : BaseCreature
     {
         [Constructible]
         public HellHound() : base(AIType.AI_Melee)
@@ -38,34 +40,19 @@ namespace Server.Mobiles
             PackItem(new SulfurousAsh(5));
         }
 
-        public HellHound(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a hell hound corpse";
         public override string DefaultName => "a hell hound";
-
-        public override bool HasBreath => true; // fire breath enabled
         public override int Meat => 1;
         public override FoodType FavoriteFood => FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Canine;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Average);
             AddLoot(LootPack.Meager);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

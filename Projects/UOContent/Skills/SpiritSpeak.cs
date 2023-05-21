@@ -1,6 +1,5 @@
 using System;
 using Server.Items;
-using Server.Network;
 using Server.Spells;
 
 namespace Server.SkillHandlers
@@ -113,15 +112,8 @@ namespace Server.SkillHandlers
                 base.OnDisturb(type, message);
             }
 
-            public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
-            {
-                if (type is DisturbType.EquipRequest or DisturbType.UseRequest)
-                {
-                    return false;
-                }
-
-                return true;
-            }
+            public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable) =>
+                type != DisturbType.EquipRequest && type != DisturbType.UseRequest;
 
             public override void SayMantra()
             {
@@ -168,7 +160,9 @@ namespace Server.SkillHandlers
                 {
                     Caster.CheckSkill(SkillName.SpiritSpeak, 0.0, 120.0);
 
-                    if (Utility.RandomDouble() > Caster.Skills.SpiritSpeak.Value / 100.0)
+                    var skill = Caster.Skills.SpiritSpeak.Value;
+
+                    if (skill < 100.0 && Utility.RandomDouble() >= skill / 100.0)
                     {
                         Caster.SendLocalizedMessage(502443); // You fail your attempt at contacting the netherworld.
                     }

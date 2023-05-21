@@ -1,201 +1,130 @@
-﻿using Server.Mobiles;
+﻿using ModernUO.Serialization;
+using Server.Mobiles;
 using Server.Targeting;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class ValentinesCard : Item
 {
-    public class ValentinesCard : Item
+    private const string Unsigned = "___";
+
+    [SerializableField(0, getter: "private", setter: "private")]
+    private int _labelNumber;
+
+    [InvalidateProperties]
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _from;
+
+    [InvalidateProperties]
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _to;
+
+    [Constructible]
+    public ValentinesCard(int itemid) : base(itemid)
     {
-        private static readonly string Unsigned = "___";
-        private string m_From;
+        LootType = LootType.Blessed;
+        Hue = Utility.RandomDouble() < .001 ? 0x47E : 0xE8;
+        _labelNumber = Utility.Random(1077589, 5);
+    }
 
-        private int m_LabelNumber;
-        private string m_To;
+    public override string DefaultName => "a Valentine's card";
 
-        [Constructible]
-        public ValentinesCard(int itemid)
-            : base(itemid)
+    /*
+     * Five possible messages:
+     * To my one true love, ~1_target_player~. Signed: ~2_player~	1077589
+     * You’ve pwnd my heart, ~1_target_player~. Signed: ~2_player~	1077590
+     * Happy Valentine’s Day, ~1_target_player~. Signed: ~2_player~	1077591
+     * Blackrock has driven me crazy... for ~1_target_player~! Signed: ~2_player~	1077592
+     * You light my Candle of Love, ~1_target_player~! Signed: ~2_player~	1077593
+     *
+     */
+
+    public override void AddNameProperty(IPropertyList list)
+    {
+        list.Add(_labelNumber, $"{_to ?? Unsigned}\t{_from ?? Unsigned}");
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        base.OnSingleClick(from);
+
+        LabelTo(from, _labelNumber, $"{_to ?? Unsigned}\t{_from ?? Unsigned}");
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (_to == null)
         {
-            LootType = LootType.Blessed;
-            Hue = Utility.RandomDouble() < .001 ? 0x47E : 0xE8;
-            m_LabelNumber = Utility.Random(1077589, 5);
-        }
-
-        public ValentinesCard(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override string DefaultName => "a Valentine's card";
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual string From
-        {
-            get => m_From;
-            set => m_From = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual string To
-        {
-            get => m_To;
-            set => m_To = value;
-        }
-
-        /*
-         * Five possible messages to be signed:
-         *
-         * To my one true love, ~1_target_player~. Signed: ~2_player~	1077589
-         * You’ve pwnd my heart, ~1_target_player~. Signed: ~2_player~	1077590
-         * Happy Valentine’s Day, ~1_target_player~. Signed: ~2_player~	1077591
-         * Blackrock has driven me crazy... for ~1_target_player~! Signed: ~2_player~	1077592
-         * You light my Candle of Love, ~1_target_player~! Signed: ~2_player~	1077593
-         *
-         */
-
-        public override void AddNameProperty(IPropertyList list)
-        {
-            list.Add(m_LabelNumber, $"{m_To ?? Unsigned}\t{m_From ?? Unsigned}");
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            base.OnSingleClick(from);
-
-            LabelTo(
-                from,
-                m_LabelNumber,
-                $"{m_To ?? Unsigned}\t{m_From ?? Unsigned}"
-            );
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (m_To == null)
+            if (IsChildOf(from))
             {
-                if (IsChildOf(from))
-                {
-                    from.BeginTarget(10, false, TargetFlags.None, OnTarget);
+                from.BeginTarget(10, false, TargetFlags.None, OnTarget);
 
-                    from.SendLocalizedMessage(1077497); // To whom do you wish to give this card?
-                }
-                else
-                {
-                    from.SendLocalizedMessage(1080063); // This must be in your backpack to use it.
-                }
+                from.SendLocalizedMessage(1077497); // To whom do you wish to give this card?
             }
-        }
-
-        public virtual void OnTarget(Mobile from, object targeted)
-        {
-            if (!Deleted)
+            else
             {
-                if (targeted is Mobile to)
-                {
-                    if (to is PlayerMobile)
-                    {
-                        if (to != from)
-                        {
-                            m_From = from.Name;
-                            m_To = to.Name;
-                            from.SendLocalizedMessage(
-                                1077498
-                            ); // You fill out the card. Hopefully the other person actually likes you...
-                            InvalidateProperties();
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(1077495); // You can't give yourself a card, silly!
-                        }
-                    }
-                    else
-                    {
-                        from.SendLocalizedMessage(1077496); // You can't possibly be THAT lonely!
-                    }
-                }
-                else
-                {
-                    from.SendLocalizedMessage(1077488); // That's not another player!
-                }
+                from.SendLocalizedMessage(1080063); // This must be in your backpack to use it.
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-            writer.Write(m_LabelNumber);
-            writer.Write(m_From);
-            writer.Write(m_To);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-            m_LabelNumber = reader.ReadInt();
-            m_From = reader.ReadString();
-            m_To = reader.ReadString();
-
-            Utility.Intern(ref m_From);
-            Utility.Intern(ref m_To);
         }
     }
 
-    public class ValentinesCardSouth : ValentinesCard
+    public virtual void OnTarget(Mobile from, object targeted)
     {
-        [Constructible]
-        public ValentinesCardSouth()
-            : base(0x0EBD)
+        if (Deleted)
         {
+            return;
         }
 
-        public ValentinesCardSouth(Serial serial)
-            : base(serial)
+        if (targeted is not Mobile to)
         {
+            from.SendLocalizedMessage(1077488); // That's not another player!
+            return;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        if (to is not PlayerMobile)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
+            from.SendLocalizedMessage(1077496); // You can't possibly be THAT lonely!
+            return;
         }
 
-        public override void Deserialize(IGenericReader reader)
+        if (to == from)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            from.SendLocalizedMessage(1077495); // You can't give yourself a card, silly!
+            return;
         }
+
+        From = from.Name;
+        To = to.Name;
+
+        // You fill out the card. Hopefully the other person actually likes you...
+        from.SendLocalizedMessage(1077498);
     }
 
-    public class ValentinesCardEast : ValentinesCard
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        [Constructible]
-        public ValentinesCardEast()
-            : base(0x0EBE)
-        {
-        }
+        Utility.Intern(ref _from);
+        Utility.Intern(ref _to);
+    }
+}
 
-        public ValentinesCardEast(Serial serial)
-            : base(serial)
-        {
-        }
+[SerializationGenerator(0, false)]
+public partial class ValentinesCardSouth : ValentinesCard
+{
+    [Constructible]
+    public ValentinesCardSouth() : base(0x0EBD)
+    {
+    }
+}
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+[SerializationGenerator(0, false)]
+public partial class ValentinesCardEast : ValentinesCard
+{
+    [Constructible]
+    public ValentinesCardEast() : base(0x0EBE)
+    {
     }
 }

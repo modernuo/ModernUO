@@ -1,12 +1,13 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class RedDeath : SkeletalMount
+    [SerializationGenerator(0, false)]
+    public partial class RedDeath : SkeletalMount
     {
         [Constructible]
-        public RedDeath()
-            : base("Red Death")
+        public RedDeath() : base()
         {
             IsParagon = true;
 
@@ -52,18 +53,15 @@ namespace Server.Mobiles
             }
         }
 
-        public RedDeath(Serial serial)
-            : base(serial)
-        {
-        }
+        public override string DefaultName => "Red Death";
 
         public override string CorpseName => "a Red Death corpse";
 
         public override bool GivesMLMinorArtifact => true;
         public override bool AlwaysMurderer => true;
-        public override bool HasBreath => true;
-        public override int BreathChaosDamage => 100;
-        public override int BreathFireDamage => 0;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.ChaosBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()
         {
@@ -77,20 +75,6 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             c.DropItem(new ResolvesBridle());
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }

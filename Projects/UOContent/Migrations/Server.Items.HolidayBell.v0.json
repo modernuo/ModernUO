@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.HolidayBell",
+  "properties": [
+    {
+      "name": "Maker",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "TextDefinition"
+      ]
+    },
+    {
+      "name": "SoundID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

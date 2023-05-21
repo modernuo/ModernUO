@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.Snowman",
+  "properties": [
+    {
+      "name": "Title",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

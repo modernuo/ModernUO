@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "type": "Server.Items.RoseOfTrinsic",
+  "properties": [
+    {
+      "name": "Petals",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "NextSpawnTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

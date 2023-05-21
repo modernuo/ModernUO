@@ -1,196 +1,141 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class BedOfNailsComponent : AddonComponent
 {
-    public class BedOfNailsComponent : AddonComponent
+    public BedOfNailsComponent(int itemID) : base(itemID)
     {
-        public BedOfNailsComponent(int itemID)
-            : base(itemID)
-        {
-        }
-
-        public BedOfNailsComponent(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1074801; // Bed of Nails
-
-        public override bool OnMoveOver(Mobile m)
-        {
-            var allow = base.OnMoveOver(m);
-
-            if (allow && Addon is BedOfNailsAddon addon)
-            {
-                addon.OnMoveOver(m);
-            }
-
-            return allow;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
-    [FlippableAddon(Direction.South, Direction.East)]
-    public class BedOfNailsAddon : BaseAddon
+    public override int LabelNumber => 1074801; // Bed of Nails
+
+    public override bool OnMoveOver(Mobile m)
     {
-        private InternalTimer m_Timer;
+        var allow = base.OnMoveOver(m);
 
-        [Constructible]
-        public BedOfNailsAddon()
+        if (allow && Addon is BedOfNailsAddon addon)
         {
-            Direction = Direction.South;
-
-            AddComponent(new BedOfNailsComponent(0x2A81), 0, 0, 0);
-            AddComponent(new BedOfNailsComponent(0x2A82), 0, -1, 0);
+            addon.OnMoveOver(m);
         }
 
-        public BedOfNailsAddon(Serial serial)
-            : base(serial)
-        {
-        }
+        return allow;
+    }
+}
 
-        public override BaseAddonDeed Deed => new BedOfNailsDeed();
+[FlippableAddon(Direction.South, Direction.East)]
+[SerializationGenerator(0)]
+public partial class BedOfNailsAddon : BaseAddon
+{
+    private InternalTimer _timer;
 
-        public override bool OnMoveOver(Mobile m)
+    [Constructible]
+    public BedOfNailsAddon()
+    {
+        Direction = Direction.South;
+
+        AddComponent(new BedOfNailsComponent(0x2A81), 0, 0, 0);
+        AddComponent(new BedOfNailsComponent(0x2A82), 0, -1, 0);
+    }
+
+    public override BaseAddonDeed Deed => new BedOfNailsDeed();
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (m.Alive && (m.AccessLevel == AccessLevel.Player || !m.Hidden))
         {
-            if (m.Alive && (m.AccessLevel == AccessLevel.Player || !m.Hidden))
+            if (m.Player)
             {
-                if (m.Player)
-                {
-                    if (m.Female)
-                    {
-                        Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x53B, 0x53D));
-                    }
-                    else
-                    {
-                        Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x53E, 0x540));
-                    }
-                }
-
-                if (m_Timer?.Running != true)
-                {
-                    (m_Timer = new InternalTimer(m)).Start();
-                }
+                Effects.PlaySound(
+                    Location,
+                    Map,
+                    m.Female ? Utility.RandomMinMax(0x53B, 0x53D) : Utility.RandomMinMax(0x53E, 0x540)
+                );
             }
 
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-
-        public virtual void Flip(Mobile from, Direction direction)
-        {
-            switch (direction)
+            if (_timer?.Running != true)
             {
-                case Direction.East:
+                (_timer = new InternalTimer(m)).Start();
+            }
+        }
+
+        return true;
+    }
+
+    public virtual void Flip(Mobile from, Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.East:
+                {
                     AddComponent(new BedOfNailsComponent(0x2A89), 0, 0, 0);
                     AddComponent(new BedOfNailsComponent(0x2A8A), -1, 0, 0);
                     break;
-                case Direction.South:
+                }
+            case Direction.South:
+                {
                     AddComponent(new BedOfNailsComponent(0x2A81), 0, 0, 0);
                     AddComponent(new BedOfNailsComponent(0x2A82), 0, -1, 0);
                     break;
-            }
+                }
+        }
+    }
+
+    private class InternalTimer : Timer
+    {
+        private readonly Mobile _mobile;
+        private Point3D _location;
+
+        public InternalTimer(Mobile m) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1), 5)
+        {
+            _mobile = m;
+            _location = Point3D.Zero;
         }
 
-        private class InternalTimer : Timer
+        protected override void OnTick()
         {
-            private readonly Mobile m_Mobile;
-            private Point3D m_Location;
-
-            public InternalTimer(Mobile m)
-                : base(TimeSpan.Zero, TimeSpan.FromSeconds(1), 5)
+            if (_mobile?.Map == null || _mobile.Deleted || !_mobile.Alive || _mobile.Map == Map.Internal)
             {
-                m_Mobile = m;
-                m_Location = Point3D.Zero;
+                Stop();
             }
-
-            protected override void OnTick()
+            else if (_location != _mobile.Location)
             {
-                if (m_Mobile?.Map == null || m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Map == Map.Internal)
-                {
-                    Stop();
-                }
-                else if (m_Location != m_Mobile.Location)
-                {
-                    var amount = Utility.RandomMinMax(0, 7);
+                var amount = Utility.RandomMinMax(0, 7);
 
-                    for (var i = 0; i < amount; i++)
+                for (var i = 0; i < amount; i++)
+                {
+                    var x = _mobile.X + Utility.RandomMinMax(-1, 1);
+                    var y = _mobile.Y + Utility.RandomMinMax(-1, 1);
+                    var z = _mobile.Z;
+
+                    if (!_mobile.Map.CanFit(x, y, z, 1, false, false))
                     {
-                        var x = m_Mobile.X + Utility.RandomMinMax(-1, 1);
-                        var y = m_Mobile.Y + Utility.RandomMinMax(-1, 1);
-                        var z = m_Mobile.Z;
+                        z = _mobile.Map.GetAverageZ(x, y);
 
-                        if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
+                        if (!_mobile.Map.CanFit(x, y, z, 1, false, false))
                         {
-                            z = m_Mobile.Map.GetAverageZ(x, y);
-
-                            if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
-                            {
-                                continue;
-                            }
+                            continue;
                         }
-
-                        var blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
-                        blood.MoveToWorld(new Point3D(x, y, z), m_Mobile.Map);
                     }
 
-                    m_Location = m_Mobile.Location;
+                    var blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
+                    blood.MoveToWorld(new Point3D(x, y, z), _mobile.Map);
                 }
+
+                _location = _mobile.Location;
             }
         }
     }
+}
 
-    public class BedOfNailsDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public BedOfNailsDeed() => LootType = LootType.Blessed;
+[SerializationGenerator(0)]
+public partial class BedOfNailsDeed : BaseAddonDeed
+{
+    [Constructible]
+    public BedOfNailsDeed() => LootType = LootType.Blessed;
 
-        public BedOfNailsDeed(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override BaseAddon Addon => new BedOfNailsAddon();
-        public override int LabelNumber => 1074801; // Bed of Nails
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
-    }
+    public override BaseAddon Addon => new BedOfNailsAddon();
+    public override int LabelNumber => 1074801; // Bed of Nails
 }

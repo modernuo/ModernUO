@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using Server.Engines.CannedEvil;
 
 namespace Server.Mobiles
@@ -7,8 +7,8 @@ namespace Server.Mobiles
     [PropertyObject]
     public class ChampionTitleInfo
     {
-        public const int LossAmount = 90;
-        public static TimeSpan LossDelay = TimeSpan.FromDays(1.0);
+        private const int LossAmount = 90;
+        private static TimeSpan LossDelay = TimeSpan.FromDays(1.0);
 
         private TitleInfo[] m_Values;
 
@@ -27,6 +27,12 @@ namespace Server.Mobiles
                         Harrower = reader.ReadEncodedInt();
 
                         var length = reader.ReadEncodedInt();
+
+                        if (length == 0)
+                        {
+                            break;
+                        }
+
                         m_Values = new TitleInfo[length];
 
                         for (var i = 0; i < length; i++)
@@ -109,88 +115,95 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int Harrower { get; set; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetValue(ChampionSpawnType type) => GetValue((int)type);
-
-        public void SetValue(ChampionSpawnType type, int value)
-        {
-            SetValue((int)type, value);
-        }
-
-        public void Award(ChampionSpawnType type, int value)
-        {
-            Award((int)type, value);
-        }
 
         public int GetValue(int index)
         {
-            if (m_Values == null || index < 0 || index >= m_Values.Length)
+            if (index < 0 || index >= m_Values?.Length)
             {
                 return 0;
             }
 
-            m_Values[index] ??= new TitleInfo();
-
-            return m_Values[index].Value;
+            return m_Values?[index]?.Value ?? 0;
         }
 
         public DateTime GetLastDecay(int index)
         {
-            if (m_Values == null || index < 0 || index >= m_Values.Length)
+            if (index < 0 || index >= m_Values?.Length)
             {
                 return DateTime.MinValue;
             }
 
-            m_Values[index] ??= new TitleInfo();
-
-            return m_Values[index].LastDecay;
+            return m_Values?[index]?.LastDecay ?? DateTime.MinValue;
         }
 
-        public void SetValue(int index, int value)
+        public void SetValue(ChampionSpawnType type, int value)
         {
-            m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-            if (index < 0 || index >= m_Values.Length)
+            var index = (int)type;
+            if (index < 0 || index >= ChampionSpawnInfo.Table.Length)
             {
                 return;
             }
 
-            m_Values[index] ??= new TitleInfo();
+            m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
+            var title = m_Values[index];
+            if (title == null)
+            {
+                if (value > 0)
+                {
+                    m_Values[index] = new TitleInfo(value, Core.Now);
+                }
+                return;
+            }
 
-            m_Values[index].Value = Math.Max(value, 0);
+            title.Value = Math.Max(value, 0);
+            title.LastDecay = title.Value == 0 ? DateTime.MinValue : Core.Now;
         }
 
-        public void Award(int index, int value)
+        public void Award(ChampionSpawnType type, int value)
         {
-            m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-            if (index < 0 || index >= m_Values.Length || value <= 0)
+            var index = (int)type;
+            if (value <= 0 || index < 0 || index >= ChampionSpawnInfo.Table.Length)
             {
                 return;
             }
 
-            m_Values[index] ??= new TitleInfo();
+            m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
+            var title = m_Values[index];
+            if (title == null)
+            {
+                m_Values[index] = new TitleInfo(value, Core.Now);
+                return;
+            }
 
-            m_Values[index].Value += value;
+            title.Value += value;
+            if (title.LastDecay == DateTime.MinValue)
+            {
+                title.LastDecay = Core.Now;
+            }
         }
 
         public void Atrophy(int index, int value)
         {
-            m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
-            if (index < 0 || index >= m_Values.Length || value <= 0)
+            if (value <= 0 || index < 0 || index >= ChampionSpawnInfo.Table.Length)
             {
                 return;
             }
 
-            m_Values[index] ??= new TitleInfo();
-
-            var before = m_Values[index].Value;
-
-            m_Values[index].Value -= Math.Min(value, m_Values[index].Value);
-
-            if (before != m_Values[index].Value)
+            var title = m_Values?[index];
+            if (title == null)
             {
-                m_Values[index].LastDecay = Core.Now;
+                return;
+            }
+
+            var before = title.Value;
+
+            title.Value -= Math.Min(value, title.Value);
+
+            if (before != title.Value)
+            {
+                title.LastDecay = Core.Now;
             }
         }
 
@@ -202,38 +215,57 @@ namespace Server.Mobiles
 
             writer.WriteEncodedInt(titles.Harrower);
 
-            var length = titles.m_Values.Length;
+            var length = titles.m_Values?.Length ?? 0;
             writer.WriteEncodedInt(length);
 
             for (var i = 0; i < length; i++)
             {
-                titles.m_Values[i] ??= new TitleInfo();
+                titles.m_Values![i] ??= new TitleInfo();
 
                 TitleInfo.Serialize(writer, titles.m_Values[i]);
             }
         }
 
+        public static bool ShouldAtrophy(PlayerMobile pm)
+        {
+            var t = pm.ChampionTitles;
+            if (t?.m_Values == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < t.m_Values.Length; i++)
+            {
+                var decay = t.GetLastDecay(i);
+                if (decay > DateTime.MinValue && decay + LossDelay < Core.Now)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static void CheckAtrophy(PlayerMobile pm)
         {
             var t = pm.ChampionTitles;
-            if (t == null)
+            if (t?.m_Values == null)
             {
                 return;
             }
 
-            t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-
             for (var i = 0; i < t.m_Values.Length; i++)
             {
-                if (t.GetLastDecay(i) + LossDelay < Core.Now)
+                var decay = t.GetLastDecay(i);
+                if (decay > DateTime.MinValue && decay + LossDelay < Core.Now)
                 {
                     t.Atrophy(i, LossAmount);
                 }
             }
         }
 
-        public static void
-            AwardHarrowerTitle(PlayerMobile pm) // Called when killing a harrower.  Will give a minimum of 1 point.
+        // Called when killing a harrower. Will give a minimum of 1 point.
+        public static void AwardHarrowerTitle(PlayerMobile pm)
         {
             var t = pm.ChampionTitles;
             if (t == null)
@@ -241,9 +273,25 @@ namespace Server.Mobiles
                 return;
             }
 
+            if (t.m_Values == null)
+            {
+                if (t.Harrower == 0)
+                {
+                    t.Harrower = 1;
+                }
+                return;
+            }
+
             t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
 
-            var count = 1 + t.m_Values.Count(t1 => t1.Value > 900);
+            var count = 1;
+            for (var i = 0; i < t.m_Values.Length; i++)
+            {
+                if (t.m_Values[i].Value > 900)
+                {
+                    count++;
+                }
+            }
 
             t.Harrower = Math.Max(count, t.Harrower); // Harrower titles never decay.
         }
@@ -252,6 +300,12 @@ namespace Server.Mobiles
         {
             public TitleInfo()
             {
+            }
+
+            public TitleInfo(int value, DateTime lastDecay)
+            {
+                Value = value;
+                LastDecay = lastDecay;
             }
 
             public TitleInfo(IGenericReader reader)

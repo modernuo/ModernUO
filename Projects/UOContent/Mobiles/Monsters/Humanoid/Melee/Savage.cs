@@ -1,9 +1,11 @@
 using System;
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Savage : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Savage : BaseCreature
     {
         [Constructible]
         public Savage() : base(AIType.AI_Melee)
@@ -52,7 +54,7 @@ namespace Server.Mobiles
             AddItem(new BoneArms());
             AddItem(new BoneLegs());
 
-            if (Utility.RandomDouble() < 0.5)
+            if (Utility.RandomBool())
             {
                 AddItem(new SavageMask());
             }
@@ -60,10 +62,6 @@ namespace Server.Mobiles
             {
                 AddItem(new OrcishKinMask());
             }
-        }
-
-        public Savage(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a savage corpse";
@@ -115,18 +113,6 @@ namespace Server.Mobiles
             {
                 damage *= 3;
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

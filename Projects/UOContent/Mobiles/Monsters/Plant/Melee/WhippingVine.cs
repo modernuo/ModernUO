@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class WhippingVine : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class WhippingVine : BaseCreature
     {
         [Constructible]
         public WhippingVine() : base(AIType.AI_Melee)
@@ -40,7 +42,7 @@ namespace Server.Mobiles
             PackReg(3);
             PackItem(new FertileDirt(Utility.RandomMinMax(1, 10)));
 
-            if (Utility.RandomDouble() <= 0.2)
+            if (Utility.RandomDouble() < 0.2)
             {
                 PackItem(new ExecutionersCap());
             }
@@ -48,26 +50,10 @@ namespace Server.Mobiles
             PackItem(new Vines());
         }
 
-        public WhippingVine(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a whipping vine corpse";
         public override string DefaultName => "a whipping vine";
 
         public override bool BardImmune => !Core.AOS;
         public override Poison PoisonImmune => Poison.Lethal;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

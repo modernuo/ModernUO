@@ -16,11 +16,10 @@ public partial class BaseArmor
         _identified = content.Identified;
         _maxHitPoints = content.MaxHitPoints ?? 0;
         _hitPoints = content.HitPoints ?? 0;
-        var crafter = content.Crafter;
-        Timer.StartTimer(() => _crafter = crafter?.RawName);
+        Timer.DelayCall((item, crafter) => item._crafter = crafter?.RawName, this, content.Crafter);
         _quality = content.Quality ?? ArmorQuality.Regular;
         _durability = content.Durability ?? ArmorDurabilityLevel.Regular;
-        _rawResource = content.RawResource ?? DefaultResource;
+        _resource = content.RawResource ?? DefaultResource;
         _armorBase = content.BaseArmorRating ?? -1;
         _strBonus = content.StrBonus ?? -1;
         _dexBonus = content.DexBonus ?? -1;
@@ -91,8 +90,7 @@ public partial class BaseArmor
 
         if (GetSaveFlag(flags, OldSaveFlag.Crafter))
         {
-            var crafter = reader.ReadEntity<Mobile>();
-            Timer.StartTimer(() => _crafter = crafter?.RawName);
+            Timer.DelayCall((item, crafter) => item._crafter = crafter?.RawName, this, reader.ReadEntity<Mobile>());
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.Quality))
@@ -107,12 +105,12 @@ public partial class BaseArmor
 
         if (GetSaveFlag(flags, OldSaveFlag.Protection))
         {
-            _protection = (ArmorProtectionLevel)reader.ReadEncodedInt();
+            _protectionLevel = (ArmorProtectionLevel)reader.ReadEncodedInt();
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.Resource))
         {
-            _rawResource = (CraftResource)reader.ReadEncodedInt();
+            _resource = (CraftResource)reader.ReadEncodedInt();
         }
 
         if (GetSaveFlag(flags, OldSaveFlag.BaseArmor))

@@ -116,8 +116,13 @@ namespace Server.Engines.Craft
 
         private int m_ResHue;
         private CraftSystem m_System;
+        private int _itemId;
 
-        public CraftItem(Type type, TextDefinition groupName, TextDefinition name)
+        public CraftItem(Type type, TextDefinition groupName, TextDefinition name) : this(type, groupName, name, -1)
+        {
+        }
+
+        public CraftItem(Type type, TextDefinition groupName, TextDefinition name, int itemId)
         {
             Resources = new List<CraftRes>();
             Skills = new List<CraftSkill>();
@@ -131,6 +136,7 @@ namespace Server.Engines.Craft
             NameNumber = name;
 
             RequiredBeverage = BeverageType.Water;
+            _itemId = itemId;
         }
 
         public bool ForceNonExceptional { get; set; }
@@ -168,6 +174,8 @@ namespace Server.Engines.Craft
         public string NameString { get; }
 
         public int NameNumber { get; }
+
+        public int ItemId => _itemId == -1 ? _itemId = ItemIDOf(ItemType) : _itemId;
 
         public List<CraftRes> Resources { get; }
 
@@ -255,10 +263,6 @@ namespace Server.Engines.Craft
 
             return itemId;
         }
-
-        public void AddRes(Type type, int amount, TextDefinition message) => AddRes(type, null, amount, message);
-
-        public void AddRes(Type type, TextDefinition name, int amount) => AddRes(type, name, amount, "");
 
         public void AddRes(Type type, TextDefinition name, int amount, TextDefinition message)
         {
@@ -813,8 +817,7 @@ namespace Server.Engines.Craft
 
         public bool CheckSkills(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality, out bool allRequiredSkills
-        ) =>
-            CheckSkills(from, typeRes, craftSystem, ref quality, out allRequiredSkills, true);
+        ) => CheckSkills(from, typeRes, craftSystem, ref quality, out allRequiredSkills, true);
 
         public bool CheckSkills(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,
@@ -873,17 +876,13 @@ namespace Server.Engines.Craft
                 return 0;
             }
 
-            double chance = craftSystem.GetChanceAtMin(this) + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) *
-                (1.0 - craftSystem.GetChanceAtMin(this));
+            var minChance = craftSystem.GetChanceAtMin(this);
 
-            if (allRequiredSkills && from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill)
+            double chance = minChance + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) * (1.0 - minChance);
+
+            if (from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill)
             {
                 chance += talisman.SuccessBonus / 100.0;
-            }
-
-            if (allRequiredSkills && valMainSkill >= maxMainSkill)
-            {
-                chance = 1.0;
             }
 
             return chance;
@@ -914,7 +913,7 @@ namespace Server.Engines.Craft
 
             var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
 
-            if (!allRequiredSkills || !(chance >= 0.0))
+            if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
                 from.SendGump(
@@ -1013,20 +1012,22 @@ namespace Server.Engines.Craft
                 return;
             }
 
-            int checkResHue = 0, checkMaxAmount = 0;
+            var checkResHue = 0;
+            var checkMaxAmount = 0;
             TextDefinition checkMessage = null;
 
+            var consumeRes = ConsumeRes(
+                from,
+                typeRes,
+                craftSystem,
+                ref checkResHue,
+                ref checkMaxAmount,
+                ConsumeType.None,
+                ref checkMessage
+            );
+
             // Not enough resource to craft it
-            if (!(ConsumeRes(
-                      from,
-                      typeRes,
-                      craftSystem,
-                      ref checkResHue,
-                      ref checkMaxAmount,
-                      ConsumeType.None,
-                      ref checkMessage
-                  )
-                  && ConsumeAttributes(from, ref checkMessage, false)))
+            if (!(consumeRes && ConsumeAttributes(from, ref checkMessage, false)))
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
@@ -1055,9 +1056,18 @@ namespace Server.Engines.Craft
 
             if (CheckSkills(from, typeRes, craftSystem, ref ignored, out var allRequiredSkills))
             {
+                consumeRes = ConsumeRes(
+                    from,
+                    typeRes,
+                    craftSystem,
+                    ref resHue,
+                    ref maxAmount,
+                    ConsumeType.All,
+                    ref message
+                );
+
                 // Not enough resource to craft it
-                if (!(ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.All, ref message)
-                      && ConsumeAttributes(from, ref message, true)))
+                if (!(consumeRes && ConsumeAttributes(from, ref message, true)))
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
                     {
@@ -1080,13 +1090,16 @@ namespace Server.Engines.Craft
 
                 tool.UsesRemaining--;
 
-                if (craftSystem is DefBlacksmithy &&
-                    from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer && hammer != tool)
+                if (craftSystem is DefBlacksmithy)
                 {
-                    hammer.UsesRemaining--;
-                    if (hammer.UsesRemaining < 1)
+                    var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+                    if (hammer != null && hammer != tool)
                     {
-                        hammer.Delete();
+                        hammer.UsesRemaining--;
+                        if (hammer.UsesRemaining < 1)
+                        {
+                            hammer.Delete();
+                        }
                     }
                 }
 
@@ -1144,9 +1157,7 @@ namespace Server.Engines.Craft
                     {
                         CommandLogging.WriteLine(
                             from,
-                            "Crafting {0} with craft system {1}",
-                            CommandLogging.Format(item),
-                            craftSystem.GetType().Name
+                            $"Crafting {CommandLogging.Format(item)} with craft system {craftSystem.GetType().Name}"
                         );
                     }
 

@@ -41,8 +41,7 @@ namespace Server.Engines.MLQuests.Rewards
 
         private readonly Type m_Type;
 
-        public ItemReward(TextDefinition name = null, Type type = null, int amount = 1)
-            : base(name)
+        public ItemReward(TextDefinition name = null, Type type = null, int amount = 1) : base(name)
         {
             m_Type = type;
             m_Amount = amount;

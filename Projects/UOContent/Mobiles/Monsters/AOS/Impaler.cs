@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class Impaler : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Impaler : BaseCreature
     {
         [Constructible]
         public Impaler() : base(AIType.AI_Melee)
@@ -40,10 +42,6 @@ namespace Server.Mobiles
             VirtualArmor = 49;
         }
 
-        public Impaler(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an impaler corpse";
 
         public override bool IgnoreYoungProtection => Core.ML;
@@ -53,7 +51,7 @@ namespace Server.Mobiles
         public override bool Unprovokable => Core.SE;
         public override bool AreaPeaceImmune => Core.SE;
         public override Poison PoisonImmune => Poison.Lethal;
-        public override Poison HitPoison => Utility.RandomDouble() <= 0.8 ? Poison.Greater : Poison.Deadly;
+        public override Poison HitPoison => Utility.RandomDouble() < 0.8 ? Poison.Greater : Poison.Deadly;
 
         public override int TreasureMapLevel => 1;
 
@@ -72,23 +70,6 @@ namespace Server.Mobiles
             if (!Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance(this))
             {
                 DemonKnight.DistributeArtifact(this);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 1200)
-            {
-                BaseSoundID = 0x2A7;
             }
         }
     }

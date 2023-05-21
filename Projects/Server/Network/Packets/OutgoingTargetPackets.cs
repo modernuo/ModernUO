@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingTargetPackets.cs                                        *
  *                                                                       *
@@ -48,7 +48,10 @@ public static class OutgoingTargetPackets
     public static void SendCancelTarget(this NetState ns) =>
         ns?.Send(stackalloc byte[]
         {
-            0x6C, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0
+            0x6C, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x3, 0x0, 0x0, 0x0,
+            0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0, 0x0, 0x0
         });
 
     public static void SendTargetReq(this NetState ns, Target t)

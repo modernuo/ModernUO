@@ -86,12 +86,7 @@ namespace Server.Commands
 
                 CommandLogging.WriteLine(
                     from,
-                    "{0} {1} duping {2} (inBag={3}; amount={4})",
-                    from.AccessLevel,
-                    CommandLogging.Format(from),
-                    CommandLogging.Format(targ),
-                    m_InBag,
-                    m_Amount
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} duping {CommandLogging.Format(targ)} (inBag={m_InBag}; amount={m_Amount})"
                 );
 
                 var copy = (Item)targ;
@@ -123,7 +118,7 @@ namespace Server.Commands
 
                     try
                     {
-                        from.SendMessage("Duping {0}...", m_Amount);
+                        from.SendMessage($"Duping {m_Amount}...");
                         for (var i = 0; i < m_Amount; i++)
                         {
                             if (c.Invoke(args) is Item newItem)
@@ -146,11 +141,7 @@ namespace Server.Commands
 
                                 CommandLogging.WriteLine(
                                     from,
-                                    "{0} {1} duped {2} creating {3}",
-                                    from.AccessLevel,
-                                    CommandLogging.Format(from),
-                                    CommandLogging.Format(targ),
-                                    CommandLogging.Format(newItem)
+                                    $"{from.AccessLevel} {CommandLogging.Format(from)} duped {CommandLogging.Format(targ)} creating {CommandLogging.Format(newItem)}"
                                 );
                             }
                         }

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "type": "Server.Items.SkillTeleporter",
+  "properties": [
+    {
+      "name": "Skill",
+      "type": "Server.SkillName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Required",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Message",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "@CanBeNull",
+        "TextDefinition"
+      ]
+    }
+  ]
+}

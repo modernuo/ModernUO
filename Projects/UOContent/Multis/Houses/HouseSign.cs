@@ -103,7 +103,7 @@ namespace Server.Multis
                     _                   => "in danger of collapsing"
                 };
 
-                LabelTo(from, "This house is {0}.", message);
+                LabelTo(from, $"This house is {message}.");
             }
 
             base.OnSingleClick(from);
@@ -163,7 +163,7 @@ namespace Server.Multis
             if (m.AccessLevel < AccessLevel.GameMaster && Owner.Owner == null &&
                 Owner.DecayLevel != DecayLevel.DemolitionPending)
             {
-                var canClaim = Owner?.CoOwners.Count > 0 && Owner.IsCoOwner(m) || Owner.IsFriend(m);
+                var canClaim = Owner.IsCoOwner(m) || Owner.IsFriend(m);
 
                 if (canClaim && !BaseHouse.HasAccountHouse(m))
                 {

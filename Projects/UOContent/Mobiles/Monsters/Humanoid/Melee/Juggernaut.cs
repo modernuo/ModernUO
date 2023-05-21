@@ -1,13 +1,11 @@
-using System;
+using ModernUO.Serialization;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Juggernaut : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Juggernaut : BaseCreature
     {
-        private bool m_Stunning;
-
         [Constructible]
         public Juggernaut() : base(AIType.AI_Melee)
         {
@@ -52,10 +50,6 @@ namespace Server.Mobiles
             }
         }
 
-        public Juggernaut(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a juggernaut corpse";
 
         public override string DefaultName => "a blackthorn juggernaut";
@@ -66,6 +60,9 @@ namespace Server.Mobiles
         public override Poison PoisonImmune => Poison.Lethal;
         public override int Meat => 1;
         public override int TreasureMapLevel => 5;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.ColossalBlow };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void OnDeath(Container c)
         {
@@ -102,57 +99,5 @@ namespace Server.Mobiles
         public override int GetAttackSound() => 0x23B;
 
         public override int GetHurtSound() => 0x140;
-
-        public override void OnGaveMeleeAttack(Mobile defender)
-        {
-            base.OnGaveMeleeAttack(defender);
-
-            if (!m_Stunning && Utility.RandomDouble() < 0.3)
-            {
-                m_Stunning = true;
-
-                defender.Animate(21, 6, 1, true, false, 0);
-                PlaySound(0xEE);
-                defender.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    false,
-                    "You have been stunned by a colossal blow!"
-                );
-
-                if (Weapon is BaseWeapon weapon)
-                {
-                    weapon.OnHit(this, defender);
-                }
-
-                if (defender.Alive)
-                {
-                    defender.Frozen = true;
-                    Timer.StartTimer(TimeSpan.FromSeconds(5.0), () => Recover_Callback(defender));
-                }
-            }
-        }
-
-        private void Recover_Callback(Mobile defender)
-        {
-            defender.Frozen = false;
-            defender.Combatant = null;
-            defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You recover your senses.");
-            m_Stunning = false;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

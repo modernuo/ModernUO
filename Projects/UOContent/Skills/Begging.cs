@@ -1,7 +1,6 @@
 using System;
 using Server.Items;
 using Server.Misc;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.SkillHandlers
@@ -68,8 +67,8 @@ namespace Server.SkillHandlers
                             number = 500402; // You are too far away to beg from her.
                         }
                     }
-                    else if (!Core.ML && from.Mounted
-                    ) // If we're on a mount, who would give us money? TODO: guessed it's removed since ML
+                    // If we're on a mount, who would give us money? TODO: guessed it's removed since ML
+                    else if (!Core.ML && from.Mounted)
                     {
                         number = 500404; // They seem unwilling to give you any money.
                     }
@@ -120,11 +119,8 @@ namespace Server.SkillHandlers
                     }
                     else if (m_From.Karma < 0 && badKarmaChance > Utility.RandomDouble())
                     {
-                        m_Target.PublicOverheadMessage(
-                            MessageType.Regular,
-                            m_Target.SpeechHue,
-                            500406
-                        ); // Thou dost not look trustworthy... no gold for thee today!
+                        // Thou dost not look trustworthy... no gold for thee today!
+                        m_Target.PublicOverheadMessage(MessageType.Regular, m_Target.SpeechHue, 500406);
                     }
                     else if (m_From.CheckTargetSkill(SkillName.Begging, m_Target, 0.0, 100.0))
                     {
@@ -151,11 +147,8 @@ namespace Server.SkillHandlers
 
                             if (consumed > 0)
                             {
-                                m_Target.PublicOverheadMessage(
-                                    MessageType.Regular,
-                                    m_Target.SpeechHue,
-                                    500405
-                                ); // I feel sorry for thee...
+                                // I feel sorry for thee...
+                                m_Target.PublicOverheadMessage(MessageType.Regular, m_Target.SpeechHue, 500405);
 
                                 var gold = new Gold(consumed);
 
@@ -176,20 +169,14 @@ namespace Server.SkillHandlers
                             }
                             else
                             {
-                                m_Target.PublicOverheadMessage(
-                                    MessageType.Regular,
-                                    m_Target.SpeechHue,
-                                    500407
-                                ); // I have not enough money to give thee any!
+                                // I have not enough money to give thee any!
+                                m_Target.PublicOverheadMessage(MessageType.Regular, m_Target.SpeechHue, 500407);
                             }
                         }
                         else
                         {
-                            m_Target.PublicOverheadMessage(
-                                MessageType.Regular,
-                                m_Target.SpeechHue,
-                                500407
-                            ); // I have not enough money to give thee any!
+                            // I have not enough money to give thee any!
+                            m_Target.PublicOverheadMessage(MessageType.Regular, m_Target.SpeechHue, 500407);
                         }
                     }
                     else

@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Alligator : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Alligator : BaseCreature
     {
         [Constructible]
         public Alligator() : base(AIType.AI_Melee)
@@ -38,10 +41,6 @@ namespace Server.Mobiles
             MinTameSkill = 47.1;
         }
 
-        public Alligator(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an alligator corpse";
         public override string DefaultName => "an alligator";
 
@@ -49,24 +48,5 @@ namespace Server.Mobiles
         public override int Hides => 12;
         public override HideType HideType => HideType.Spined;
         public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            if (BaseSoundID == 0x5A)
-            {
-                BaseSoundID = 660;
-            }
-        }
     }
 }

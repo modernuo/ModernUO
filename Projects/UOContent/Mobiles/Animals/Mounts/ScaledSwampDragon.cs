@@ -1,9 +1,14 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class ScaledSwampDragon : BaseMount
+    [SerializationGenerator(0, false)]
+    public partial class ScaledSwampDragon : BaseMount
     {
+        public override string DefaultName => "a swamp dragon";
+
         [Constructible]
-        public ScaledSwampDragon(string name = "a swamp dragon") : base(name, 0x31F, 0x3EBE, AIType.AI_Melee, FightMode.Aggressor)
+        public ScaledSwampDragon() : base(0x31F, 0x3EBE, AIType.AI_Melee, FightMode.Aggressor)
         {
             SetStr(201, 300);
             SetDex(66, 85);
@@ -35,10 +40,6 @@ namespace Server.Mobiles
             MinTameSkill = 93.9;
         }
 
-        public ScaledSwampDragon(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a swamp dragon corpse";
 
         public override bool AutoDispel => !Controlled;
@@ -47,19 +48,5 @@ namespace Server.Mobiles
         public override bool OverrideBondingReqs() => true;
 
         public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

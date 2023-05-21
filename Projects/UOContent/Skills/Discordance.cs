@@ -95,63 +95,24 @@ namespace Server.SkillHandlers
             public readonly Mobile m_Creature;
             public readonly int m_Effect;
             public readonly Mobile m_From;
-            public readonly List<object> m_Mods;
             public bool m_Ending;
             public DateTime m_EndTime;
             public TimerExecutionToken _timerToken;
 
-            public DiscordanceInfo(Mobile from, Mobile creature, int effect, List<object> mods)
+            public DiscordanceInfo(Mobile from, Mobile creature, int effect)
             {
                 m_From = from;
                 m_Creature = creature;
                 m_EndTime = Core.Now;
                 m_Ending = false;
                 m_Effect = effect;
-                m_Mods = mods;
-
-                Apply();
-            }
-
-            public void Apply()
-            {
-                for (var i = 0; i < m_Mods.Count; ++i)
-                {
-                    var mod = m_Mods[i];
-
-                    if (mod is ResistanceMod resistanceMod)
-                    {
-                        m_Creature.AddResistanceMod(resistanceMod);
-                    }
-                    else if (mod is StatMod statMod)
-                    {
-                        m_Creature.AddStatMod(statMod);
-                    }
-                    else if (mod is SkillMod skillMod)
-                    {
-                        m_Creature.AddSkillMod(skillMod);
-                    }
-                }
             }
 
             public void Clear()
             {
-                for (var i = 0; i < m_Mods.Count; ++i)
-                {
-                    var mod = m_Mods[i];
-
-                    if (mod is ResistanceMod resistanceMod)
-                    {
-                        m_Creature.RemoveResistanceMod(resistanceMod);
-                    }
-                    else if (mod is StatMod statMod)
-                    {
-                        m_Creature.RemoveStatMod(statMod.Name);
-                    }
-                    else if (mod is SkillMod skillMod)
-                    {
-                        m_Creature.RemoveSkillMod(skillMod);
-                    }
-                }
+                m_Creature.RemoveResistanceMod("Discordance");
+                m_Creature.RemoveStatMod("Discordance");
+                m_Creature.RemoveSkillMod("Discordance");
             }
         }
 
@@ -163,8 +124,7 @@ namespace Server.SkillHandlers
                 BaseInstrument.GetBardRange(from, SkillName.Discordance),
                 false,
                 TargetFlags.None
-            ) =>
-                m_Instrument = inst;
+            ) => m_Instrument = inst;
 
             protected override void OnTarget(Mobile from, object target)
             {
@@ -211,7 +171,6 @@ namespace Server.SkillHandlers
                             m_Instrument.PlayInstrumentWell(from);
                             m_Instrument.ConsumeUse(from);
 
-                            var mods = new List<object>();
                             int effect;
                             double scalar;
 
@@ -235,60 +194,53 @@ namespace Server.SkillHandlers
 
                                 scalar = effect * 0.01;
 
-                                mods.Add(new ResistanceMod(ResistanceType.Physical, effect));
-                                mods.Add(new ResistanceMod(ResistanceType.Fire, effect));
-                                mods.Add(new ResistanceMod(ResistanceType.Cold, effect));
-                                mods.Add(new ResistanceMod(ResistanceType.Poison, effect));
-                                mods.Add(new ResistanceMod(ResistanceType.Energy, effect));
-
-                                for (var i = 0; i < targ.Skills.Length; ++i)
-                                {
-                                    if (targ.Skills[i].Value > 0)
-                                    {
-                                        mods.Add(new DefaultSkillMod((SkillName)i, true, targ.Skills[i].Value * scalar));
-                                    }
-                                }
+                                targ.AddResistanceMod(new ResistanceMod(ResistanceType.Physical, "Discordance", effect));
+                                targ.AddResistanceMod(new ResistanceMod(ResistanceType.Fire, "Discordance", effect));
+                                targ.AddResistanceMod(new ResistanceMod(ResistanceType.Cold, "Discordance", effect));
+                                targ.AddResistanceMod(new ResistanceMod(ResistanceType.Poison, "Discordance", effect));
+                                targ.AddResistanceMod(new ResistanceMod(ResistanceType.Energy, "Discordance", effect));
                             }
                             else
                             {
                                 effect = (int)(from.Skills.Discordance.Value / -5.0);
                                 scalar = effect * 0.01;
 
-                                mods.Add(
+                                targ.AddStatMod(
                                     new StatMod(
                                         StatType.Str,
-                                        "DiscordanceStr",
+                                        "Discordance",
                                         (int)(targ.RawStr * scalar),
                                         TimeSpan.Zero
                                     )
                                 );
-                                mods.Add(
+                                targ.AddStatMod(
                                     new StatMod(
                                         StatType.Int,
-                                        "DiscordanceInt",
+                                        "Discordance",
                                         (int)(targ.RawInt * scalar),
                                         TimeSpan.Zero
                                     )
                                 );
-                                mods.Add(
+                                targ.AddStatMod(
                                     new StatMod(
                                         StatType.Dex,
-                                        "DiscordanceDex",
+                                        "Discordance",
                                         (int)(targ.RawDex * scalar),
                                         TimeSpan.Zero
                                     )
                                 );
+                            }
 
-                                for (var i = 0; i < targ.Skills.Length; ++i)
+                            for (var i = 0; i < targ.Skills.Length; ++i)
+                            {
+                                var skill = targ.Skills[i];
+                                if (skill.Value > 0)
                                 {
-                                    if (targ.Skills[i].Value > 0)
-                                    {
-                                        mods.Add(new DefaultSkillMod((SkillName)i, true, targ.Skills[i].Value * scalar));
-                                    }
+                                    targ.AddSkillMod(new DefaultSkillMod(skill.SkillName, "Discordance", true, skill.Value * scalar));
                                 }
                             }
 
-                            var info = new DiscordanceInfo(from, targ, effect.Abs(), mods);
+                            var info = new DiscordanceInfo(from, targ, effect.Abs());
                             Timer.StartTimer(
                                 TimeSpan.Zero,
                                 TimeSpan.FromSeconds(1.25),

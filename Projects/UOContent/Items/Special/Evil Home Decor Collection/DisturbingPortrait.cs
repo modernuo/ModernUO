@@ -1,125 +1,75 @@
 using System;
-using Server.Network;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[Flippable(0x2A5D, 0x2A61)]
+[SerializationGenerator(0)]
+public partial class DisturbingPortraitComponent : AddonComponent
 {
-    [Flippable(0x2A5D, 0x2A61)]
-    public class DisturbingPortraitComponent : AddonComponent
+    private Timer _timer;
+
+    public DisturbingPortraitComponent() : base(0x2A5D)
     {
-        private TimerExecutionToken _timerToken;
+        StartTimer();
+    }
 
-        public DisturbingPortraitComponent() : base(0x2A5D)
+    public override int LabelNumber => 1074479; // Disturbing portrait
+
+    private void StartTimer()
+    {
+        _timer = Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change);
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (Utility.InRange(Location, from.Location, 2))
         {
-            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
+            Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x567, 0x568));
         }
-
-        public DisturbingPortraitComponent(Serial serial) : base(serial)
+        else
         {
-        }
-
-        public override int LabelNumber => 1074479; // Disturbing portrait
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (Utility.InRange(Location, from.Location, 2))
-            {
-                Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x567, 0x568));
-            }
-            else
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-        }
-
-        public override void OnAfterDelete()
-        {
-            base.OnAfterDelete();
-
-            _timerToken.Cancel();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            Timer.StartTimer(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change, out _timerToken);
-        }
-
-        private void Change()
-        {
-            if (ItemID < 0x2A61)
-            {
-                ItemID = Utility.RandomMinMax(0x2A5D, 0x2A60);
-            }
-            else
-            {
-                ItemID = Utility.RandomMinMax(0x2A61, 0x2A64);
-            }
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
     }
 
-    public class DisturbingPortraitAddon : BaseAddon
+    public override void OnAfterDelete()
     {
-        [Constructible]
-        public DisturbingPortraitAddon()
-        {
-            AddComponent(new DisturbingPortraitComponent(), 0, 0, 0);
-        }
+        base.OnAfterDelete();
 
-        public DisturbingPortraitAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new DisturbingPortraitDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        _timer?.Stop();
     }
 
-    public class DisturbingPortraitDeed : BaseAddonDeed
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        [Constructible]
-        public DisturbingPortraitDeed() => LootType = LootType.Blessed;
-
-        public DisturbingPortraitDeed(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddon Addon => new DisturbingPortraitAddon();
-        public override int LabelNumber => 1074479; // Disturbing portrait
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
+        StartTimer();
     }
+
+    private void Change()
+    {
+        ItemID = ItemID < 0x2A61 ? Utility.RandomMinMax(0x2A5D, 0x2A60) : Utility.RandomMinMax(0x2A61, 0x2A64);
+    }
+}
+
+[SerializationGenerator(0)]
+public partial class DisturbingPortraitAddon : BaseAddon
+{
+    [Constructible]
+    public DisturbingPortraitAddon()
+    {
+        AddComponent(new DisturbingPortraitComponent(), 0, 0, 0);
+    }
+
+    public override BaseAddonDeed Deed => new DisturbingPortraitDeed();
+}
+
+[SerializationGenerator(0)]
+public partial class DisturbingPortraitDeed : BaseAddonDeed
+{
+    [Constructible]
+    public DisturbingPortraitDeed() => LootType = LootType.Blessed;
+
+    public override BaseAddon Addon => new DisturbingPortraitAddon();
+    public override int LabelNumber => 1074479; // Disturbing portrait
 }

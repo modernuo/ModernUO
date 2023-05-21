@@ -33,7 +33,7 @@ namespace Server.Items
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
         [SerializableField(0, setter: "private")]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster, canModify: true)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosWeaponAttributes _weaponAttributes;
 
         [SerializableFieldSaveFlag(0)]

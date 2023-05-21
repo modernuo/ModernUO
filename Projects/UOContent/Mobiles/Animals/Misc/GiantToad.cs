@@ -1,7 +1,10 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Gianttoad")]
-    public class GiantToad : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class GiantToad : BaseCreature
     {
         [Constructible]
         public GiantToad() : base(AIType.AI_Melee)
@@ -38,10 +41,6 @@ namespace Server.Mobiles
             MinTameSkill = 77.1;
         }
 
-        public GiantToad(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a giant toad corpse";
         public override string DefaultName => "a giant toad";
 
@@ -52,25 +51,6 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             AddLoot(LootPack.Poor);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-            if (version < 1)
-            {
-                AI = AIType.AI_Melee;
-                FightMode = FightMode.Closest;
-            }
         }
     }
 }

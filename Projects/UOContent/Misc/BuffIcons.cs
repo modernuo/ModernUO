@@ -9,8 +9,7 @@ namespace Server
     {
         private TimerExecutionToken _timerToken;
 
-        public BuffInfo(BuffIcon iconID, int titleCliloc)
-            : this(iconID, titleCliloc, titleCliloc + 1)
+        public BuffInfo(BuffIcon iconID, int titleCliloc) : this(iconID, titleCliloc, titleCliloc + 1)
         {
         }
 
@@ -26,7 +25,7 @@ namespace Server
         {
         }
 
-        // Only the timed one needs to Mobile to know when to automagically remove it.
+        // Only the timed one needs the Mobile to know when to automagically remove it.
         public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m)
             : this(iconID, titleCliloc, secondaryCliloc)
         {
@@ -71,23 +70,19 @@ namespace Server
         public BuffInfo(
             BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m,
             TextDefinition args
-        )
-            : this(iconID, titleCliloc, secondaryCliloc, length, m) =>
-            Args = args;
+        ) : this(iconID, titleCliloc, secondaryCliloc, length, m) => Args = args;
 
         public BuffInfo(
             BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args,
             bool retainThroughDeath
-        )
-            : this(iconID, titleCliloc, titleCliloc + 1, length, m, args, retainThroughDeath)
+        ) : this(iconID, titleCliloc, titleCliloc + 1, length, m, args, retainThroughDeath)
         {
         }
 
         public BuffInfo(
             BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m,
             TextDefinition args, bool retainThroughDeath
-        )
-            : this(iconID, titleCliloc, secondaryCliloc, length, m)
+        ) : this(iconID, titleCliloc, secondaryCliloc, length, m)
         {
             Args = args;
             RetainThroughDeath = retainThroughDeath;
@@ -104,8 +99,6 @@ namespace Server
         public TimeSpan TimeLength { get; }
 
         public long TimeStart { get; }
-
-        public TimerExecutionToken TimerToken => _timerToken;
 
         public bool RetainThroughDeath { get; }
 
@@ -139,6 +132,7 @@ namespace Server
 
         public static void RemoveBuff(Mobile m, BuffInfo b)
         {
+            b._timerToken.Cancel();
             (m as PlayerMobile)?.RemoveBuff(b);
         }
 

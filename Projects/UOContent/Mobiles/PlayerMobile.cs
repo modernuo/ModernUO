@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Engines.ConPVP;
@@ -140,8 +141,6 @@ namespace Server.Mobiles
             new(268, 624, 15)
         };
 
-        private readonly Dictionary<Skill, Dictionary<object, CountAndTimeStamp>> m_AntiMacroTable;
-
         private Dictionary<int, bool> m_AcquiredRecipes;
 
         private List<Mobile> m_AllFollowers;
@@ -164,9 +163,7 @@ namespace Server.Mobiles
 
         private int m_HairModID = -1, m_HairModHue;
 
-        public DateTime m_hontime;
-
-        private bool m_IgnoreMobiles; // IgnoreMobiles should be moved to Server.Mobiles
+        public DateTime _honorTime;
 
         private Mobile m_InsuranceAward;
         private int m_InsuranceBonus;
@@ -207,7 +204,6 @@ namespace Server.Mobiles
 
             VisibilityList = new List<Mobile>();
             PermaFlags = new List<Mobile>();
-            m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
             RecentlyReported = new List<Mobile>();
 
             BOBFilter = new BOBFilter();
@@ -225,14 +221,13 @@ namespace Server.Mobiles
         public PlayerMobile(Serial s) : base(s)
         {
             VisibilityList = new List<Mobile>();
-            m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime AnkhNextUse { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public TimeSpan DisguiseTimeLeft => DisguiseTimers.TimeRemaining(this);
+        public TimeSpan DisguiseTimeLeft => DisguisePersistence.TimeRemaining(this);
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime PeacedUntil { get; set; }
@@ -417,20 +412,6 @@ namespace Server.Mobiles
         {
             get;
             set;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool IgnoreMobiles // IgnoreMobiles should be moved to Server.Mobiles
-        {
-            get => m_IgnoreMobiles;
-            set
-            {
-                if (m_IgnoreMobiles != value)
-                {
-                    m_IgnoreMobiles = value;
-                    Delta(MobileDelta.Flags);
-                }
-            }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -951,18 +932,6 @@ namespace Server.Mobiles
             return true;
         }
 
-        public override int GetPacketFlags(bool stygianAbyss)
-        {
-            var flags = base.GetPacketFlags(stygianAbyss);
-
-            if (m_IgnoreMobiles)
-            {
-                flags |= 0x10;
-            }
-
-            return flags;
-        }
-
         public bool GetFlag(PlayerFlag flag) => (Flags & flag) != 0;
 
         public void SetFlag(PlayerFlag flag, bool value)
@@ -1118,7 +1087,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!_mountBlock.CheckBlock() || _mountBlock.Expiration < Core.Now + duration)
+            if (_mountBlock == null || !_mountBlock.CheckBlock() || _mountBlock.Expiration < Core.Now + duration)
             {
                 _mountBlock?.RemoveBlock(this);
                 _mountBlock = new MountBlock(duration, type, this);
@@ -1142,9 +1111,9 @@ namespace Server.Mobiles
 
             var max = base.GetMaxResistance(type);
 
-            if (type != ResistanceType.Physical && max > 60 && CurseSpell.UnderEffect(this))
+            if (type != ResistanceType.Physical && CurseSpell.UnderEffect(this))
             {
-                max = 60;
+                max -= 10;
             }
 
             if (Core.ML && Race == Race.Elf && type == ResistanceType.Energy)
@@ -1246,8 +1215,6 @@ namespace Server.Mobiles
 
         private static void OnLogin(Mobile from)
         {
-            CheckAtrophies(from);
-
             if (AccountHandler.LockdownLevel > AccessLevel.Player)
             {
                 string notice;
@@ -1285,6 +1252,7 @@ namespace Server.Mobiles
 
             if (from is PlayerMobile mobile)
             {
+                mobile.CheckAtrophies();
                 mobile.ClaimAutoStabledPets();
             }
         }
@@ -1555,7 +1523,7 @@ namespace Server.Mobiles
                 pm.LastOnline = Core.Now;
             }
 
-            DisguiseTimers.StartTimer(m);
+            DisguisePersistence.StartTimer(m);
 
             Timer.StartTimer(() => SpecialMove.ClearAllMoves(m));
         }
@@ -1603,7 +1571,7 @@ namespace Server.Mobiles
                 pm.LastOnline = Core.Now;
             }
 
-            DisguiseTimers.StopTimer(from);
+            DisguisePersistence.StopTimer(from);
         }
 
         public override void RevealingAction()
@@ -1671,11 +1639,11 @@ namespace Server.Mobiles
                 {
                     if (target.Title == null)
                     {
-                        SendMessage("{0} cannot be harmed.", target.Name);
+                        SendMessage($"{target.Name} cannot be harmed.");
                     }
                     else
                     {
-                        SendMessage("{0} {1} cannot be harmed.", target.Name, target.Title);
+                        SendMessage($"{target.Name} {target.Title} cannot be harmed.");
                     }
                 }
 
@@ -2336,7 +2304,7 @@ namespace Server.Mobiles
                  pm.DuelPlayer.Eliminated) || base.OnMoveOver(m);
 
         public override bool CheckShove(Mobile shoved) =>
-            m_IgnoreMobiles || TransformationSpellHelper.UnderTransformation(shoved, typeof(WraithFormSpell)) ||
+            IgnoreMobiles || shoved.IgnoreMobiles || TransformationSpellHelper.UnderTransformation(shoved, typeof(WraithFormSpell)) ||
             base.CheckShove(shoved);
 
         protected override void OnMapChange(Map oldMap)
@@ -2605,7 +2573,7 @@ namespace Server.Mobiles
 
             PolymorphSpell.StopTimer(this);
             IncognitoSpell.StopTimer(this);
-            DisguiseTimers.RemoveTimer(this);
+            DisguisePersistence.RemoveTimer(this);
 
             EndAction<PolymorphSpell>();
             EndAction<IncognitoSpell>();
@@ -2716,19 +2684,19 @@ namespace Server.Mobiles
 
             if (m_BuffTable != null)
             {
-                var list = new List<BuffInfo>();
+                using var queue = PooledRefQueue<BuffInfo>.Create();
 
                 foreach (var buff in m_BuffTable.Values)
                 {
                     if (!buff.RetainThroughDeath)
                     {
-                        list.Add(buff);
+                        queue.Enqueue(buff);
                     }
                 }
 
-                for (var i = 0; i < list.Count; i++)
+                while (queue.Count > 0)
                 {
-                    RemoveBuff(list[i]);
+                    RemoveBuff(queue.Dequeue());
                 }
             }
         }
@@ -2775,7 +2743,7 @@ namespace Server.Mobiles
                     {
                         // g.Alliance.AllianceTextMessage( hue, "[Alliance][{0}]: {1}", this.Name, text );
                         g.Alliance.AllianceChat(this, text);
-                        SendToStaffMessage(this, "[Alliance]: {0}", text);
+                        SendToStaffMessage(this, $"[Alliance]: {text}");
 
                         AllianceMessageHue = hue;
                     }
@@ -2789,7 +2757,7 @@ namespace Server.Mobiles
                     GuildMessageHue = hue;
 
                     g.GuildChat(this, text);
-                    SendToStaffMessage(this, "[Guild]: {0}", text);
+                    SendToStaffMessage(this, $"[Guild]: {text}");
                 }
             }
             else
@@ -2831,55 +2799,46 @@ namespace Server.Mobiles
             }
         }
 
-        private static void SendToStaffMessage(Mobile from, string format, params object[] args)
-        {
-            SendToStaffMessage(from, string.Format(format, args));
-        }
-
         public override void Damage(int amount, Mobile from = null, bool informMount = true)
         {
-            if (EvilOmenSpell.TryEndEffect(this))
+            var damageBonus = 1.0;
+
+            if (EvilOmenSpell.EndEffect(this) && !PainSpikeSpell.UnderEffect(this))
             {
-                amount = (int)(amount * 1.25);
+                damageBonus += 0.25;
             }
 
-            /* Per EA's UO Herald Pub48 (ML):
-             * ((resist spellsx10)/20 + 10=percentage of damage resisted)
-             */
+            var hasBloodOath = false;
 
-            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
+            if (from != null)
             {
-                amount = (int)(amount * 1.1);
-
-                if (amount > 35 && from is PlayerMobile) /* capped @ 35, seems no expansion */
+                if (Talisman is BaseTalisman talisman &&
+                    talisman.Protection?.Type?.IsInstanceOfType(from) == true)
                 {
-                    amount = 35;
+                    damageBonus -= talisman.Protection.Amount / 100.0;
                 }
 
-                if (Core.ML)
+                // Is the attacker attacking the blood oath caster?
+                if (BloodOathSpell.GetBloodOath(from) == this)
                 {
-                    from.Damage((int)(amount * (1 - (from.Skills.MagicResist.Value * .5 + 10) / 100)), this);
-                }
-                else
-                {
-                    from.Damage(amount, this);
+                    hasBloodOath = true;
+                    damageBonus += 0.2;
                 }
             }
 
-            if (from != null && Talisman is BaseTalisman talisman)
+            base.Damage((int)(amount * damageBonus), from, informMount);
+
+            // If the blood oath caster will die then damage is not reflected back to the attacker
+            if (hasBloodOath && Alive && !Deleted && !IsDeadBondedPet)
             {
-                if (talisman.Protection != null && talisman.Protection.Type != null)
-                {
-                    var type = talisman.Protection.Type;
+                // In some expansions resisting spells reduces reflect dmg from monster blood oath
+                var resistReflectedDamage = !from.Player && Core.ML && !Core.HS
+                    ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100
+                    : 0;
 
-                    if (type.IsInstanceOfType(from))
-                    {
-                        amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
-                    }
-                }
+                // Reflect damage to the attacker
+                from.Damage((int)(amount * (1.0 - resistReflectedDamage)), this);
             }
-
-            base.Damage(amount, from, informMount);
         }
 
         public override bool IsHarmfulCriminal(Mobile target)
@@ -2907,36 +2866,6 @@ namespace Server.Mobiles
             }
 
             return base.IsHarmfulCriminal(target);
-        }
-
-        public bool AntiMacroCheck(Skill skill, object obj)
-        {
-            if (obj == null || m_AntiMacroTable == null || AccessLevel != AccessLevel.Player)
-            {
-                return true;
-            }
-
-            if (!m_AntiMacroTable.TryGetValue(skill, out var tbl))
-            {
-                m_AntiMacroTable[skill] = tbl = new Dictionary<object, CountAndTimeStamp>();
-            }
-
-            if (tbl.TryGetValue(obj, out var count))
-            {
-                if (count.TimeStamp + SkillCheck.AntiMacroExpire <= Core.Now)
-                {
-                    count.Count = 1;
-                    return true;
-                }
-
-                ++count.Count;
-                return count.Count <= SkillCheck.Allowance;
-            }
-
-            tbl[obj] = count = new CountAndTimeStamp();
-            count.Count = 1;
-
-            return true;
         }
 
         private void RevertHair()
@@ -3232,7 +3161,7 @@ namespace Server.Mobiles
 
             if (AccessLevel > AccessLevel.Player)
             {
-                m_IgnoreMobiles = true;
+                IgnoreMobiles = true;
             }
 
             var list = Stabled;
@@ -3246,7 +3175,8 @@ namespace Server.Mobiles
                 }
             }
 
-            CheckAtrophies(this);
+            CheckKillDecay();
+            CheckAtrophies();
 
             if (Hidden) // Hiding is the only buff where it has an effect that's serialized.
             {
@@ -3256,31 +3186,6 @@ namespace Server.Mobiles
 
         public override void Serialize(IGenericWriter writer)
         {
-            var toRemove = new List<object>();
-
-            // cleanup our anti-macro table
-            foreach (var t in m_AntiMacroTable.Values)
-            {
-                toRemove.Clear();
-
-                foreach (var (k, v) in t)
-                {
-                    if (v.TimeStamp + SkillCheck.AntiMacroExpire <= Core.Now)
-                    {
-                        toRemove.Add(k);
-                    }
-                }
-
-                foreach (var key in toRemove)
-                {
-                    t.Remove(key);
-                }
-            }
-
-            CheckKillDecay();
-
-            CheckAtrophies(this);
-
             base.Serialize(writer);
 
             writer.Write(29); // version
@@ -3409,18 +3314,38 @@ namespace Server.Mobiles
             writer.Write(GameTime);
         }
 
-        public static void CheckAtrophies(Mobile m)
-        {
-            SacrificeVirtue.CheckAtrophy(m);
-            JusticeVirtue.CheckAtrophy(m);
-            CompassionVirtue.CheckAtrophy(m);
-            ValorVirtue.CheckAtrophy(m);
+        // Do we need to run an after serialize?
+        public override bool ShouldExecuteAfterSerialize => ShouldKillDecay() || ShouldAtrophy();
 
-            if (m is PlayerMobile mobile)
-            {
-                ChampionTitleInfo.CheckAtrophy(mobile);
-            }
+        public override void AfterSerialize()
+        {
+            base.AfterSerialize();
+
+            CheckKillDecay();
+            CheckAtrophies();
         }
+
+        public bool ShouldAtrophy()
+        {
+            var sacrifice = SacrificeVirtue.ShouldAtrophy(this);
+            var justice = JusticeVirtue.ShouldAtrophy(this);
+            var compassion = CompassionVirtue.ShouldAtrophy(this);
+            var valor = ValorVirtue.ShouldAtrophy(this);
+            var titles = ChampionTitleInfo.ShouldAtrophy(this);
+
+            return sacrifice || justice || compassion || valor || titles;
+        }
+
+        public void CheckAtrophies()
+        {
+            SacrificeVirtue.CheckAtrophy(this);
+            JusticeVirtue.CheckAtrophy(this);
+            CompassionVirtue.CheckAtrophy(this);
+            ValorVirtue.CheckAtrophy(this);
+            ChampionTitleInfo.CheckAtrophy(this);
+        }
+
+        public bool ShouldKillDecay() => m_ShortTermElapse < GameTime || m_LongTermElapse < GameTime;
 
         public void CheckKillDecay()
         {
@@ -3507,7 +3432,7 @@ namespace Server.Mobiles
 
             BaseHouse.HandleDeletion(this);
 
-            DisguiseTimers.RemoveTimer(this);
+            DisguisePersistence.RemoveTimer(this);
         }
 
         public override void GetProperties(IPropertyList list)
@@ -4132,7 +4057,7 @@ namespace Server.Mobiles
                 return ApplyPoisonResult.Immune;
             }
 
-            if (EvilOmenSpell.TryEndEffect(this))
+            if (EvilOmenSpell.EndEffect(this))
             {
                 poison = PoisonImpl.IncreaseLevel(poison);
             }
@@ -4431,10 +4356,10 @@ namespace Server.Mobiles
             Map map;
 
             var dungeon = Region.GetRegion<DungeonRegion>();
-            if (dungeon != null && dungeon.EntranceLocation != Point3D.Zero)
+            if (dungeon != null && dungeon.Entrance != Point3D.Zero)
             {
-                loc = dungeon.EntranceLocation;
-                map = dungeon.EntranceMap;
+                loc = dungeon.Entrance;
+                map = dungeon.Map;
             }
             else
             {
@@ -4592,12 +4517,10 @@ namespace Server.Mobiles
 
         public void RemoveBuff(BuffIcon b)
         {
-            if (m_BuffTable == null || !m_BuffTable.Remove(b, out var info))
+            if (m_BuffTable?.Remove(b) != true)
             {
                 return;
             }
-
-            info.TimerToken.Cancel();
 
             if (NetState?.BuffIcon == true)
             {
@@ -4607,23 +4530,6 @@ namespace Server.Mobiles
             if (m_BuffTable.Count <= 0)
             {
                 m_BuffTable = null;
-            }
-        }
-
-        private class CountAndTimeStamp
-        {
-            private int m_Count;
-
-            public DateTime TimeStamp { get; private set; }
-
-            public int Count
-            {
-                get => m_Count;
-                set
-                {
-                    m_Count = value;
-                    TimeStamp = Core.Now;
-                }
             }
         }
 

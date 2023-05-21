@@ -68,6 +68,14 @@ public class PredatorAI : BaseAI
             }
         }
 
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
+            }
+        }
+
         return true;
     }
 

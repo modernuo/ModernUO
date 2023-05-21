@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using Server.Spells;
 
 namespace Server.Mobiles
 {
-    public class MeerWarrior : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class MeerWarrior : BaseCreature
     {
         [Constructible]
         public MeerWarrior() : base(AIType.AI_Melee, FightMode.Evil)
@@ -34,10 +36,6 @@ namespace Server.Mobiles
 
             Fame = 2000;
             Karma = 5000;
-        }
-
-        public MeerWarrior(Serial serial) : base(serial)
-        {
         }
 
         public override string CorpseName => "a meer corpse";
@@ -77,17 +75,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x156;
 
         public override int GetDeathSound() => 0x15C;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
     }
 }

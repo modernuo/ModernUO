@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2021 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Serial.cs                                                       *
  *                                                                       *
@@ -18,7 +18,8 @@ using System.Runtime.CompilerServices;
 
 namespace Server;
 
-public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatable<Serial>, ISpanFormattable
+public readonly struct Serial : IComparable<Serial>, IComparable<uint>,
+    IEquatable<Serial>, ISpanFormattable, ISpanParsable<Serial>
 {
     public static readonly Serial MinusOne = new(0xFFFFFFFF);
     public static readonly Serial Zero = new(0);
@@ -30,13 +31,13 @@ public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatab
     public bool IsMobile
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value > 0 && Value < World.ItemOffset;
+        get => Value is > 0 and < World.ItemOffset;
     }
 
     public bool IsItem
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Value >= World.ItemOffset && Value < World.MaxItemSerial;
+        get => Value is >= World.ItemOffset and < World.MaxItemSerial;
     }
 
     public bool IsValid
@@ -118,36 +119,28 @@ public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatab
     public static Serial operator --(Serial l) => (Serial)(l.Value - 1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override string ToString() => $"0x{Value:X8}";
+    public override string ToString()
+    {
+        // Maximum number of characters that are needed to represent this:
+        // 2 characters for 0x
+        // Up to 8 characters to represent the value in hex
+        Span<char> span = stackalloc char[10];
+        TryFormat(span, out var charsWritten, null, null);
+        return span[..charsWritten].ToString();
+    }
 
-    public string ToString(string format, IFormatProvider formatProvider) => ToString();
+    public string ToString(string format, IFormatProvider formatProvider)
+    {
+        // format and formatProvider are not doing anything right now, so use the
+        // default ToString implementation.
+        return ToString();
+    }
 
     public bool TryFormat(
         Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider
-    )
-    {
-        if (format != null)
-        {
-            return Value.TryFormat(destination, out charsWritten, format, provider);
-        }
-
-        if (destination.Length < 10)
-        {
-            charsWritten = 0;
-            return false;
-        }
-
-        destination[0] = '0';
-        destination[1] = 'x';
-
-        var result = Value.TryFormat(destination[2..], out charsWritten, "X8", provider);
-        if (result)
-        {
-            charsWritten += 2;
-        }
-
-        return result;
-    }
+    ) => format != null
+        ? Value.TryFormat(destination, out charsWritten, format, provider)
+        : destination.TryWrite(provider, $"0x{Value:X8}", out charsWritten);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator uint(Serial a) => a.Value;
@@ -160,4 +153,28 @@ public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatab
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int ToInt32() => (int)Value;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Serial Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Serial Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Serial result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Serial Parse(ReadOnlySpan<char> s, IFormatProvider provider) => new(Utility.ToUInt32(s));
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Serial result)
+    {
+        if (Utility.ToUInt32(s, out var value))
+        {
+            result = new Serial(value);
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
 }

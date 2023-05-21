@@ -61,13 +61,7 @@ namespace Server.Commands
         {
             CommandLogging.WriteLine(
                 from,
-                "{0} {1} wiping from {2} to {3} in {5} ({4})",
-                from.AccessLevel,
-                CommandLogging.Format(from),
-                start,
-                end,
-                type,
-                map
+                $"{from.AccessLevel} {CommandLogging.Format(from)} wiping from {start} to {end} in {type} ({map})"
             );
 
             var mobiles = (type & WipeType.Mobiles) != 0;

@@ -1,163 +1,123 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
-using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class PlagueBeastInnard : Item, IScissorable, ICarvable
 {
-    public class PlagueBeastInnard : Item, IScissorable, ICarvable
+    public PlagueBeastInnard(int itemID, int hue) : base(itemID)
     {
-        public PlagueBeastInnard(int itemID, int hue) : base(itemID)
+        Hue = hue;
+        Movable = false;
+        Weight = 1.0;
+    }
+
+    public PlagueBeastLord Owner => RootParent as PlagueBeastLord;
+    public override string DefaultName => "plague beast innards";
+
+    public virtual void Carve(Mobile from, Item with)
+    {
+    }
+
+    public virtual bool Scissor(Mobile from, Scissors scissors) => false;
+
+    public virtual bool OnBandage(Mobile from) => false;
+
+    public override bool IsAccessibleTo(Mobile check)
+    {
+        if ((int)check.AccessLevel >= (int)AccessLevel.GameMaster)
         {
-            Hue = hue;
-            Movable = false;
-            Weight = 1.0;
+            return true;
         }
 
-        public PlagueBeastInnard(Serial serial) : base(serial)
+        var owner = Owner;
+
+        if (owner == null)
         {
-        }
-
-        public PlagueBeastLord Owner => RootParent as PlagueBeastLord;
-        public override string DefaultName => "plague beast innards";
-
-        public virtual void Carve(Mobile from, Item with)
-        {
-        }
-
-        public virtual bool Scissor(Mobile from, Scissors scissors) => false;
-
-        public virtual bool OnBandage(Mobile from) => false;
-
-        public override bool IsAccessibleTo(Mobile check)
-        {
-            if ((int)check.AccessLevel >= (int)AccessLevel.GameMaster)
-            {
-                return true;
-            }
-
-            var owner = Owner;
-
-            if (owner == null)
-            {
-                return false;
-            }
-
-            if (!owner.InRange(check, 2))
-            {
-                owner.PrivateOverheadMessage(MessageType.Label, 0x3B2, 500446, check.NetState); // That is too far away.
-            }
-            else if (owner.OpenedBy != null && owner.OpenedBy != check)                         // TODO check
-            {
-                owner.PrivateOverheadMessage(
-                    MessageType.Label,
-                    0x3B2,
-                    500365,
-                    check.NetState
-                ); // That is being used by someone else
-            }
-            else if (owner.Frozen)
-            {
-                return true;
-            }
-
             return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        if (!owner.InRange(check, 2))
         {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
+            owner.PrivateOverheadMessage(MessageType.Label, 0x3B2, 500446, check.NetState); // That is too far away.
+        }
+        else if (owner.OpenedBy != null && owner.OpenedBy != check) // TODO check
+        {
+            // That is being used by someone else
+            owner.PrivateOverheadMessage(MessageType.Label, 0x3B2, 500365, check.NetState);
+        }
+        else if (owner.Frozen)
+        {
+            return true;
         }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            var owner = Owner;
-
-            if (owner?.Alive != true)
-            {
-                Delete();
-            }
-        }
+        return false;
     }
 
-    public class PlagueBeastComponent : PlagueBeastInnard
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
     {
-        public PlagueBeastComponent(int itemID, int hue, bool movable = false) : base(itemID, hue) => Movable = movable;
+        var owner = Owner;
 
-        public PlagueBeastComponent(Serial serial) : base(serial)
+        if (owner?.Alive != true)
         {
+            Delete();
+        }
+    }
+}
+
+[SerializationGenerator(0)]
+public partial class PlagueBeastComponent : PlagueBeastInnard
+{
+    [SerializableField(0)]
+    private PlagueBeastOrgan _organ;
+
+    public PlagueBeastComponent(int itemID, int hue, bool movable = false) : base(itemID, hue) => Movable = movable;
+
+    public bool IsBrain => ItemID == 0x1CF0;
+
+    public bool IsGland => ItemID == 0x1CEF;
+
+    public bool IsReceptacle => ItemID == 0x9DF;
+
+    public override bool DropToItem(Mobile from, Item target, Point3D p) =>
+        target is PlagueBeastBackpack && base.DropToItem(from, target, p);
+
+    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) => false;
+
+    public override bool DropToMobile(Mobile from, Mobile target, Point3D p) => false;
+
+    public override bool DropToWorld(Mobile from, Point3D p) => false;
+
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+        if (_organ?.OnDropped(from, dropped, this) == true && dropped is PlagueBeastComponent component)
+        {
+            _organ.Add(_organ.Components, component);
         }
 
-        public PlagueBeastOrgan Organ { get; set; }
+        return true;
+    }
 
-        public bool IsBrain => ItemID == 0x1CF0;
-
-        public bool IsGland => ItemID == 0x1CEF;
-
-        public bool IsReceptacle => ItemID == 0x9DF;
-
-        public override bool DropToItem(Mobile from, Item target, Point3D p) =>
-            target is PlagueBeastBackpack && base.DropToItem(from, target, p);
-
-        public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) => false;
-
-        public override bool DropToMobile(Mobile from, Mobile target, Point3D p) => false;
-
-        public override bool DropToWorld(Mobile from, Point3D p) => false;
-
-        public override bool OnDragDrop(Mobile from, Item dropped)
+    public override bool OnDragLift(Mobile from)
+    {
+        if (IsAccessibleTo(from))
         {
-            if (Organ?.OnDropped(from, dropped, this) == true && dropped is PlagueBeastComponent component)
+            if (Organ?.OnLifted(from, this) == true)
             {
-                Organ.Components.Add(component);
+                // * You rip the organ out of the plague beast's flesh *
+                from.SendLocalizedMessage(IsGland ? 1071895 : 1071914, null);
+
+                _organ.Remove(_organ.Components, this);
+
+                Organ = null;
+                from.PlaySound(0x1CA);
             }
 
             return true;
         }
 
-        public override bool OnDragLift(Mobile from)
-        {
-            if (IsAccessibleTo(from))
-            {
-                if (Organ?.OnLifted(from, this) == true)
-                {
-                    from.SendLocalizedMessage(
-                        IsGland ? 1071895 : 1071914,
-                        null
-                    ); // * You rip the organ out of the plague beast's flesh *
-
-                    Organ.Remove(Organ.Components, this);
-
-                    Organ = null;
-                    from.PlaySound(0x1CA);
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(Organ);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            Organ = reader.ReadEntity<PlagueBeastOrgan>();
-        }
+        return false;
     }
 }

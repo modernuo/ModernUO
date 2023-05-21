@@ -1,5 +1,4 @@
 using Server.Items;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.Ethics.Hero

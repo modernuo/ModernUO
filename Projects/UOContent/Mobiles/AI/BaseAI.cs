@@ -993,18 +993,24 @@ public abstract class BaseAI
             {
                 m_Mobile.DebugSay("Praise the shepherd!");
             }
-        }
-        else
-        {
-            var c = m_Mobile.Combatant;
 
-            if (c?.Deleted != false || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
+            return true;
+        }
+
+        var c = m_Mobile.Combatant;
+
+        if (c?.Deleted != false || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
+        {
+            Action = ActionType.Wander;
+            return true;
+        }
+
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, c))
+        {
+            if (m_Mobile.Debug)
             {
-                Action = ActionType.Wander;
-            }
-            else
-            {
-                m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
+                m_Mobile.DebugSay($"I used my abilities on {c.Name}!");
             }
         }
 
@@ -1079,9 +1085,8 @@ public abstract class BaseAI
 
     public virtual bool DoActionBackoff() => true;
 
-    public virtual bool Obey()
-    {
-        return !m_Mobile.Deleted && m_Mobile.ControlOrder switch
+    public virtual bool Obey() =>
+        !m_Mobile.Deleted && m_Mobile.ControlOrder switch
         {
             OrderType.None     => DoOrderNone(),
             OrderType.Come     => DoOrderCome(),
@@ -1098,7 +1103,6 @@ public abstract class BaseAI
             OrderType.Transfer => DoOrderTransfer(),
             _                  => false
         };
-    }
 
     public virtual void OnCurrentOrderChanged()
     {
@@ -1348,7 +1352,7 @@ public abstract class BaseAI
 
         var distance = m_Mobile.GetDistanceToSqrt(target);
 
-        if (!(distance is < 1 or > 15))
+        if (distance is not (< 1 or > 15))
         {
             DoMove(m_Mobile.GetDirectionTo(target));
             return true;
@@ -2035,12 +2039,18 @@ public abstract class BaseAI
         }
     }
 
-    public double TransformMoveDelay(double delay)
+    public double TransformMoveDelay(double thinkingSpeed)
     {
+        var isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
+
         // Monster is passive
-        if (m_Mobile is { Controlled: false, Summoned: false } && Math.Abs(delay - m_Mobile.PassiveSpeed) < 0.0001)
+        if (!isControlled && Math.Abs(thinkingSpeed - m_Mobile.PassiveSpeed) < 0.0001)
         {
-            delay *= 3;
+            thinkingSpeed *= 3; // Monster passive is 3x slower than thinking
+        }
+        else if (!isControlled || m_Mobile.ControlOrder != OrderType.Follow || m_Mobile.ControlTarget != m_Mobile.ControlMaster)
+        {
+            thinkingSpeed *= 2; // Monster active speed is 2x slower than thinking
         }
 
         if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
@@ -2061,11 +2071,11 @@ public abstract class BaseAI
 
             if (offset < 1.0)
             {
-                delay += m_Mobile.PassiveSpeed * (1.0 - offset);
+                thinkingSpeed += m_Mobile.PassiveSpeed * (1.0 - offset);
             }
         }
 
-        return delay;
+        return thinkingSpeed;
     }
 
     public virtual bool CheckMove() => Core.TickCount - NextMove >= 0;
@@ -2250,7 +2260,7 @@ public abstract class BaseAI
 
         if (blocked)
         {
-            var offset = Utility.RandomDouble() >= 0.6 ? 1 : -1;
+            var offset = Utility.RandomDouble() < 0.4 ? 1 : -1;
 
             for (var i = 0; i < 2; ++i)
             {
@@ -2406,7 +2416,7 @@ public abstract class BaseAI
                 return true;
             }
         }
-        else if (!DoMove(m_Mobile.GetDirectionTo(m, run), true))
+        else if (!DoMove(m_Mobile.GetDirectionTo(m), true))
         {
             m_Path = new PathFollower(m_Mobile, m) { Mover = DoMoveImpl };
 
@@ -2590,6 +2600,8 @@ public abstract class BaseAI
 
         Mobile newFocusMob = null;
         var val = double.MinValue;
+        Mobile enemySummonMob = null;
+        var enemySummonVal = double.MinValue;
 
         var eable = map.GetMobilesInRange(m_Mobile.Location, iRange);
 
@@ -2633,7 +2645,8 @@ public abstract class BaseAI
             var bc = m as BaseCreature;
             var pm = m as PlayerMobile;
 
-            if (Core.AOS && bc?.Summoned == true && bc?.Controlled != true)
+            // Monster don't attack it's own summon or the summon of another monster
+            if (Core.AOS && bc != null && bc.Summoned && (bc.SummonMaster == m_Mobile || (!bc.SummonMaster.Player && IsHostile(bc.SummonMaster))))
             {
                 continue;
             }
@@ -2654,6 +2667,18 @@ public abstract class BaseAI
 
                 // Animated creatures cannot attack players directly.
                 if (pm != null && m_Mobile.IsAnimatedDead)
+                {
+                    continue;
+                }
+
+                // Animated creatures cannot attack other animated creatures
+                if (m_Mobile.IsAnimatedDead && bc?.IsAnimatedDead == true)
+                {
+                    continue;
+                }
+
+                // Animated creatures cannot attack pets of other players
+                if (m_Mobile.IsAnimatedDead && bc?.Controlled == true)
                 {
                     continue;
                 }
@@ -2720,28 +2745,34 @@ public abstract class BaseAI
             }
 
             var theirVal = m_Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
-
             if (theirVal > val && m_Mobile.InLOS(m))
             {
                 newFocusMob = m;
                 val = theirVal;
             }
+            // The summon is targeted when nothing else around. Otherwise this monster enters idle mode.
+            // Do a check for this edge case so players cannot abuse by casting EVs offscreen to kill an idle monster.
+            else if (Core.AOS && theirVal > enemySummonVal && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
+            {
+                enemySummonMob = m;
+                enemySummonVal = theirVal;
+            }
         }
 
         eable.Free();
 
-        m_Mobile.FocusMob = newFocusMob;
+        m_Mobile.FocusMob = newFocusMob ?? enemySummonMob;
         return m_Mobile.FocusMob != null;
     }
 
     private bool IsHostile(Mobile from)
     {
-        var count = Math.Max(m_Mobile.Aggressors.Count, m_Mobile.Aggressed.Count);
-
-        if (count <= 0 || m_Mobile.Combatant == from || from.Combatant == m_Mobile)
+        if (m_Mobile.Combatant == from || from.Combatant == m_Mobile)
         {
             return true;
         }
+
+        var count = Math.Max(m_Mobile.Aggressors.Count, m_Mobile.Aggressed.Count);
 
         for (var a = 0; a < count; ++a)
         {
@@ -3214,11 +3245,10 @@ public abstract class BaseAI
                 // Not exactly OSI style, approximation.
                 var delay = Math.Min(15000 / m_Owner.m_Mobile.Int, 60);
 
-                var min = delay * (9 / 10); // 13s at 1000 int, 33s at 400 int, 54s at <250 int
-                var max = delay * (10 / 9); // 16s at 1000 int, 41s at 400 int, 66s at <250 int
+                var min = delay * 900; // 13s at 1000 int, 33s at 400 int, 54s at <250 int
+                var max = delay * 1100; // 16s at 1000 int, 41s at 400 int, 66s at <250 int
 
-                m_Owner.m_NextDetectHidden = Core.TickCount +
-                                             (int)TimeSpan.FromSeconds(Utility.RandomMinMax(min, max)).TotalMilliseconds;
+                m_Owner.m_NextDetectHidden = Core.TickCount + Utility.RandomMinMax(min, max);
             }
         }
     }

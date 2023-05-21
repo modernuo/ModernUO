@@ -1,196 +1,157 @@
+using ModernUO.Serialization;
 using Server.Network;
 using Server.Targeting;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class PowderOfTemperament : Item, IUsesRemaining
 {
-    public class PowderOfTemperament : Item, IUsesRemaining
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _usesRemaining;
+
+    [Constructible]
+    public PowderOfTemperament(int charges = 10) : base(4102)
     {
-        private int m_UsesRemaining;
+        Weight = 1.0;
+        Hue = 2419;
+        UsesRemaining = charges;
+    }
 
-        [Constructible]
-        public PowderOfTemperament(int charges = 10) : base(4102)
+    public override int LabelNumber => 1049082; // powder of fortifying
+
+    bool IUsesRemaining.ShowUsesRemaining
+    {
+        get => true;
+        set { }
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        list.Add(1060584, _usesRemaining); // uses remaining: ~1_val~
+    }
+
+    public virtual void DisplayDurabilityTo(Mobile m)
+    {
+        LabelToAffix(m, 1017323, AffixType.Append, $": {_usesRemaining}"); // Durability
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        DisplayDurabilityTo(from);
+
+        base.OnSingleClick(from);
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (IsChildOf(from.Backpack))
         {
-            Weight = 1.0;
-            Hue = 2419;
-            UsesRemaining = charges;
+            from.Target = new InternalTarget(this);
         }
-
-        public PowderOfTemperament(Serial serial) : base(serial)
+        else
         {
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
         }
+    }
 
-        public override int LabelNumber => 1049082; // powder of fortifying
+    private class InternalTarget : Target
+    {
+        private readonly PowderOfTemperament _powder;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int UsesRemaining
+        public InternalTarget(PowderOfTemperament powder) : base(2, false, TargetFlags.None) => _powder = powder;
+
+        protected override void OnTarget(Mobile from, object targeted)
         {
-            get => m_UsesRemaining;
-            set
+            if (_powder?.Deleted != false || _powder.UsesRemaining <= 0)
             {
-                m_UsesRemaining = value;
-                InvalidateProperties();
+                from.SendLocalizedMessage(1049086); // You have used up your powder of temperament.
+                return;
             }
-        }
 
-        bool IUsesRemaining.ShowUsesRemaining
-        {
-            get => true;
-            set { }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-            writer.Write(m_UsesRemaining);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            if (targeted is not (Item item and IDurability wearable))
             {
-                case 0:
-                    {
-                        m_UsesRemaining = reader.ReadInt();
-                        break;
-                    }
+                from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
+                return;
             }
-        }
 
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
-        }
-
-        public virtual void DisplayDurabilityTo(Mobile m)
-        {
-            LabelToAffix(m, 1017323, AffixType.Append, $": {m_UsesRemaining}"); // Durability
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            DisplayDurabilityTo(from);
-
-            base.OnSingleClick(from);
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (IsChildOf(from.Backpack))
+            if (!wearable.CanFortify)
             {
-                from.Target = new InternalTarget(this);
+                from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
+                return;
+            }
+
+            if (!item.IsChildOf(from.Backpack) && (!Core.ML || item.Parent != from) ||
+                !_powder.IsChildOf(from.Backpack))
+            {
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                return;
+            }
+
+            var origMaxHP = wearable.MaxHitPoints;
+            var origCurHP = wearable.HitPoints;
+
+            if (origMaxHP <= 0)
+            {
+                from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
+                return;
+            }
+
+            var initMaxHP = Core.AOS ? 255 : wearable.InitMaxHits;
+
+            wearable.UnscaleDurability();
+
+            if (wearable.MaxHitPoints >= initMaxHP)
+            {
+                from.SendLocalizedMessage(1049085); // The item cannot be improved any further.
+                wearable.ScaleDurability();
+                return;
+            }
+
+            var bonus = initMaxHP - wearable.MaxHitPoints;
+
+            if (bonus > 10)
+            {
+                bonus = 10;
+            }
+
+            wearable.MaxHitPoints += bonus;
+            wearable.HitPoints += bonus;
+
+            wearable.ScaleDurability();
+
+            if (wearable.MaxHitPoints > 255)
+            {
+                wearable.MaxHitPoints = 255;
+            }
+
+            if (wearable.HitPoints > 255)
+            {
+                wearable.HitPoints = 255;
+            }
+
+            if (wearable.MaxHitPoints > origMaxHP)
+            {
+                from.SendLocalizedMessage(1049084); // You successfully use the powder on the item.
+                from.PlaySound(0x247);
+
+                --_powder.UsesRemaining;
+
+                if (_powder.UsesRemaining <= 0)
+                {
+                    from.SendLocalizedMessage(1049086); // You have used up your powder of fortifying.
+                    _powder.Delete();
+                }
             }
             else
             {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-            }
-        }
-
-        private class InternalTarget : Target
-        {
-            private readonly PowderOfTemperament m_Powder;
-
-            public InternalTarget(PowderOfTemperament powder) : base(2, false, TargetFlags.None) => m_Powder = powder;
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                if (m_Powder?.Deleted != false || m_Powder.UsesRemaining <= 0)
-                {
-                    from.SendLocalizedMessage(1049086); // You have used up your powder of temperament.
-                    return;
-                }
-
-                if (targeted is Item item && item is IDurability wearable)
-                {
-                    if (!wearable.CanFortify)
-                    {
-                        from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
-                        return;
-                    }
-
-                    if ((item.IsChildOf(from.Backpack) || Core.ML && item.Parent == from) &&
-                        m_Powder.IsChildOf(from.Backpack))
-                    {
-                        var origMaxHP = wearable.MaxHitPoints;
-                        var origCurHP = wearable.HitPoints;
-
-                        if (origMaxHP > 0)
-                        {
-                            var initMaxHP = Core.AOS ? 255 : wearable.InitMaxHits;
-
-                            wearable.UnscaleDurability();
-
-                            if (wearable.MaxHitPoints < initMaxHP)
-                            {
-                                var bonus = initMaxHP - wearable.MaxHitPoints;
-
-                                if (bonus > 10)
-                                {
-                                    bonus = 10;
-                                }
-
-                                wearable.MaxHitPoints += bonus;
-                                wearable.HitPoints += bonus;
-
-                                wearable.ScaleDurability();
-
-                                if (wearable.MaxHitPoints > 255)
-                                {
-                                    wearable.MaxHitPoints = 255;
-                                }
-
-                                if (wearable.HitPoints > 255)
-                                {
-                                    wearable.HitPoints = 255;
-                                }
-
-                                if (wearable.MaxHitPoints > origMaxHP)
-                                {
-                                    from.SendLocalizedMessage(1049084); // You successfully use the powder on the item.
-                                    from.PlaySound(0x247);
-
-                                    --m_Powder.UsesRemaining;
-
-                                    if (m_Powder.UsesRemaining <= 0)
-                                    {
-                                        from.SendLocalizedMessage(1049086); // You have used up your powder of fortifying.
-                                        m_Powder.Delete();
-                                    }
-                                }
-                                else
-                                {
-                                    wearable.MaxHitPoints = origMaxHP;
-                                    wearable.HitPoints = origCurHP;
-                                    from.SendLocalizedMessage(1049085); // The item cannot be improved any further.
-                                }
-                            }
-                            else
-                            {
-                                from.SendLocalizedMessage(1049085); // The item cannot be improved any further.
-                                wearable.ScaleDurability();
-                            }
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
-                        }
-                    }
-                    else
-                    {
-                        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-                    }
-                }
-                else
-                {
-                    from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
-                }
+                wearable.MaxHitPoints = origMaxHP;
+                wearable.HitPoints = origCurHP;
+                from.SendLocalizedMessage(1049085); // The item cannot be improved any further.
             }
         }
     }

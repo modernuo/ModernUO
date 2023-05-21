@@ -20,7 +20,7 @@ namespace Server.Commands
             var found = false;
             foreach (var item in eable)
             {
-                if (item is MorphItem morphItem && morphItem.Z == z && morphItem.InactiveItemID == inactiveItemID && morphItem.ActiveItemID == activeItemID)
+                if (item is MorphItem morphItem && morphItem.Z == z && morphItem.InactiveItemId == inactiveItemID && morphItem.ActiveItemId == activeItemID)
                 {
                     found = true;
                     break;
@@ -100,10 +100,12 @@ namespace Server.Commands
                 return;
             }
 
-            var item = new EffectController();
-            item.SoundID = sound;
-            item.TriggerType = EffectTriggerType.InRange;
-            item.TriggerRange = range;
+            var item = new EffectController
+            {
+                SoundId = sound,
+                TriggerType = EffectTriggerType.InRange,
+                TriggerRange = range
+            };
 
             item.MoveToWorld(new Point3D(x, y, z), Map.Felucca);
             m_Count++;

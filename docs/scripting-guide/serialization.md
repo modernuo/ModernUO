@@ -42,115 +42,140 @@ title: Serialization
     ```cs
     public class ExampleItem : Item
     {
-      public string ExampleText { get; set; }
+        private string _exampleText;
 
-      [Constructible]
-      public ExampleItem() : base(0)
-      {
+        [CommandProperty(AccessLevel.GameMaster)]
+        public string ExampleText
+        {
+            get => _exampleText;
+            set
+            {
+                if (value != _exampleText)
+                {
+                    _exampleText = value;
+                    this.MarkDirty();
+                }
+            }
+        }
 
-      }
-      public ExampleItem(Serial serial) : base(serial)
-      {
-      }
+        [Constructible]
+        public ExampleItem(string text) : base(0)
+        {
+            Example = text;
+        }
 
-      public override void Serialize(IGenericWriter writer)
-      {
-          base.Serialize(writer);
+        public ExampleItem(Serial serial) : base(serial)
+        {
+        }
 
-          writer.WriteEncodedInt(0); //Version
-          writer.Write(ExampleText);
-      }
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      public override void Deserialize(IGenericReader reader)
-      {
-          base.Deserialize(reader);
+            writer.WriteEncodedInt(0); //Version
+            writer.Write(_exampleText);
+        }
 
-          var version = reader.ReadEncodedInt();
-          ExampleText = reader.ReadString();
-      }
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+
+            // version 0
+            _exampleText = reader.ReadString();
+        }
     }
     ```
 
     Same class serialized with codegen
     ```cs
-    [Serializable(0)]
+    [SerializationGenerator(0)]
     public partial class ExampleItem : Item
     {
-      [SerializableField(0)]
-      public string ExampleText { get; set; }
+        [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private string _exampleText;
 
-      [Constructible]
-      public ExampleItem() : base(0)
-      {
-
-      }
+        [Constructible]
+        public ExampleItem(string text) : base(0)
+        {
+            _exampleText = text;
+        }
     }
     ```
 
     ### Step by step
-    1. Add ```SerializableAttribute(versionNumber)``` to your class and make it ```partial```
+    1. Add ```SerializationGenerator(versionNumber)``` to your class and make the class ```partial```
         ```cs
-        [Serializable(0)]
+        [SerializationGenerator(0)]
         public partial class ExampleItem : Item
         ```
-    1. Delete constructors with ```Serial serial```, ```Serialize``` and ```Deserialize``` methods.
+    1. Delete the constructor with ```Serial serial```
+    1. Delete the ```Serialize``` and ```Deserialize``` methods.
     1. Add ```SerializableField(fieldOrder)``` attribute to all field you want to serialize.
       ```cs
       [SerializableField(0)]
-      public string ExampleText { get; set; }
+      private string _exampleText;
       ```
-    1. Build project "Run Schema Migrations". ModernUO will create migration files for you. In this case "Server.Items.ExampleItem.v0.json" and "Server.Items.ExampleItem.Serialization.cs"
-      These files contains all information and classes needed for MUO to serialize/deserialize your objects.
+    1. Run `publish.cmd`.
+
+    ModernUO will create migration files for you. In this case "Server.Items.ExampleItem.v0.json" and "Server.Items.ExampleItem.Serialization.cs".
+    These files contains all information and classes needed for ModernUO to serialize/deserialize your objects.
 
     ### Migrations
-    When new field is added to serialization, you need to increment versionNumber and make migration files. Here is little example.
+    When new field is added to the serialization, you need to increment `versionNumber` and run `publish.cmd` again to generate a migration file for the new version.
+    Here is little example.
 
     New class code will look like this:
     ```cs
-    [Serializable(1)]
+    [SerializationGenerator(1)]
     public partial class ExampleItem : Item
     {
-      [SerializableField(0)]
-      public string ExampleText { get; set; }
+        [SerializableField(0)]
+        private string _exampleText;
 
-      [SerializableField(1)]
-      public string AddedExampleTest { get; set; }
+        [SerializableField(1)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private string _addedExampleTest;
 
-      [Constructible]
-      public ExampleItem() : base(0)
-      {
-      }
+        [Constructible]
+        public ExampleItem(string text, string addedText) : base(0)
+        {
+          _exampleText = text;
+          _addedExampleTest = addedText;
+        }
     }
     ```
 
-    After building "Run Schema Migrations" project, MUO will generate V0Content in serialization class.
-
-    This Content contains all fields from V0.
-    Now create MigrateFrom for each version you make, in this case V0.
-
-    !!! Tip
-        When you have more versions, create standalone file for migrations only. For example "ExampleItem.Migrations.cs"
+    Your IDE (Visual Studio, Rider, or VSCode), will show errors and the ModernUO will not compile.
+    This happens because the code generator builds a migration from V0 to V1 and a new struct `V0Content` with all of the V0 fields is generated.
+    ModernUO is expecting the developer to create a migration from the old version to the new.
+    Now create a `MigrateFrom` method for each of the older versions, in this case V0, to the new version.
 
     ```cs
     private void MigrateFrom(V0Content content)
     {
-        ExampleText = content.ExampleText;
+        _exampleText = content.ExampleText;
     }
     ```
 
-    Your migration is now completed.
+    !!! Tip
+        Since the class is `partial`, you can create a standalone file for migrations to keep them organized. For example "ExampleItem.Migrations.cs"
+
+    Your migration is now complete.
 
     ### Migrating from pre-codegen
-    For migration from pre-codegen code, use method
+    To migrate from pre-codegen serialization, change the old Deserialize method to this:
     ```cs
     private void Deserialize(IGenericReader reader, int version)
     ```
 
-    this method is called when codegen doesnt have VXContent for deserialized object or version of Content is lower than deserialized.
-    In this method you can make old fashioned deserialization as before codegen.
+    This method will be automatically called when the serialization generator doesn't have a migration for for that older version.
+    In this method you can make old fashioned deserializations that are mostly compatible with RunUO.
 
-    ### After deserialization
-    For some code changes after world load, you can use AfterDeserializationAttribute.
+    ### After Deserialization
+    To execute code after the deserialization, add the `AfterDeserialization()` attribute to a method.
     ```cs
     [AfterDeserialization]
     private void AfterDeserialization()
@@ -159,5 +184,15 @@ title: Serialization
     }
     ```
 
-    ### Embedded serialization
-    Sometimes you need to serialize object inside object. For this you should use "EmbeddedSerializableAttribute". Nice example to understand it is ["AquariumState"](https://github.com/modernuo/ModernUO/blob/main/Projects/UOContent/Items/Aquarium/AquariumState.cs)
+    !!! Tip
+        By default, `AfterDeserialization` is executed synchronously right after the actual deserialization. Passing `false` to the attribute will make it execute after all deserializations.
+
+    ### Serializing Non-Entity Classes
+    Sometimes you might need to serialize a nested object that is not an `ISerializable`. The syntax is largely the same except you must also mark the *parent* object for dirty tracking by using the `DirtyTrackingEntity` attribute.
+    A good example of this is ["AquariumState"](https://github.com/modernuo/ModernUO/blob/main/Projects/UOContent/Items/Aquarium/AquariumState.cs).
+
+
+    !!! Note
+        Non-entity classes cannot be serialized by reference since that would require a reference Serial or ID. This means if the object is a serializable property on multiple objects, it will be serialized
+        multiple times and will effectively get duplicated on world load. Consider either making it an `ISerializable` type and building world load/save mechanisms, or do not serialize the nested object directly.
+        Instead opt for a global lookup, serialize with generic persistence, and then reattach to the objects using the `WorldLoad` event sink.

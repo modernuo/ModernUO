@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.Cow",
+  "properties": [
+    {
+      "name": "MilkedOn",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Milk",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

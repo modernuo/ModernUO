@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class WhiteWyrm : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class WhiteWyrm : BaseCreature
     {
         [Constructible]
         public WhiteWyrm() : base(AIType.AI_Mage)
@@ -41,10 +44,6 @@ namespace Server.Mobiles
             MinTameSkill = 96.3;
         }
 
-        public WhiteWyrm(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a white wyrm corpse";
         public override string DefaultName => "a white wyrm";
 
@@ -64,18 +63,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.FilthyRich, 2);
             AddLoot(LootPack.Average);
             AddLoot(LootPack.Gems, Utility.Random(1, 5));
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

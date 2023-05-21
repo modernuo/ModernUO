@@ -116,7 +116,7 @@ namespace Server.Engines.ConPVP
 
             m_Challenged.CloseGump<AcceptDuelGump>();
 
-            m_Challenger.SendMessage("{0} seems unresponsive.", m_Challenged.Name);
+            m_Challenger.SendMessage($"{m_Challenged.Name} seems unresponsive.");
             m_Challenged.SendMessage("You decline the challenge.");
         }
 
@@ -202,7 +202,7 @@ namespace Server.Engines.ConPVP
                         pm.SendMessage(0x22, "You have already been challenged in a duel.");
                     }
 
-                    m_Challenger.SendMessage("{0} cannot fight because they are already assigned to another duel.", pm.Name);
+                    m_Challenger.SendMessage($"{pm.Name} cannot fight because they are already assigned to another duel.");
                 }
                 else if (DuelContext.CheckCombat(pm))
                 {
@@ -211,8 +211,7 @@ namespace Server.Engines.ConPVP
                         "You have recently been in combat with another player and must wait before starting a duel."
                     );
                     m_Challenger.SendMessage(
-                        "{0} cannot fight because they have recently been in combat with another player.",
-                        pm.Name
+                        $"{pm.Name} cannot fight because they have recently been in combat with another player."
                     );
                 }
                 else if (TournamentController.IsActive)
@@ -244,8 +243,8 @@ namespace Server.Engines.ConPVP
 
                     if (added)
                     {
-                        m_Challenger.SendMessage("{0} has accepted the request.", m_Challenged.Name);
-                        m_Challenged.SendMessage("You have accepted the request from {0}.", m_Challenger.Name);
+                        m_Challenger.SendMessage($"{m_Challenged.Name} has accepted the request.");
+                        m_Challenged.SendMessage($"You have accepted the request from {m_Challenger.Name}.");
 
                         var ns = m_Challenger.NetState;
 
@@ -270,14 +269,17 @@ namespace Server.Engines.ConPVP
                     else
                     {
                         m_Challenger.SendMessage(
-                            "The participant list was full and so {0} could not join.",
-                            m_Challenged.Name
+                            $"The participant list was full and so {m_Challenged.Name} could not join."
                         );
-                        m_Challenged.SendMessage(
-                            "The participant list was full and so you could not join the fight {1} {0}.",
-                            m_Challenger.Name,
-                            m_Participant.Contains(m_Challenger) ? "with" : "against"
-                        );
+
+                        if (m_Participant.Contains(m_Challenger))
+                        {
+                            m_Challenged.SendMessage($"The participant list was full and so you could not join the fight with {m_Challenger.Name}.");
+                        }
+                        else
+                        {
+                            m_Challenged.SendMessage($"The participant list was full and so you could not join the fight against {m_Challenger.Name}.");
+                        }
                     }
                 }
             }
@@ -288,12 +290,16 @@ namespace Server.Engines.ConPVP
                     BeginIgnore(m_Challenged, m_Challenger);
                 }
 
-                m_Challenger.SendMessage("{0} does not wish to fight.", m_Challenged.Name);
-                m_Challenged.SendMessage(
-                    "You chose not to fight {1} {0}.",
-                    m_Challenger.Name,
-                    m_Participant.Contains(m_Challenger) ? "with" : "against"
-                );
+                m_Challenger.SendMessage($"{m_Challenged.Name} does not wish to fight.");
+
+                if (m_Participant.Contains(m_Challenger))
+                {
+                    m_Challenged.SendMessage($"You chose not to fight with {m_Challenger.Name}.");
+                }
+                else
+                {
+                    m_Challenged.SendMessage($"You chose not to fight against {m_Challenger.Name}.");
+                }
             }
         }
 

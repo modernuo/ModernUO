@@ -44,20 +44,15 @@ namespace Server.Spells.Ninjitsu
 
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
-                var args = $"{RequiredSkill:F1}\t{CastSkill.ToString()}\t ";
-                Caster.SendLocalizedMessage(
-                    1063013,
-                    args
-                ); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+                Caster.SendLocalizedMessage(1063013, $"{RequiredSkill:F1}\t{CastSkill}\t ");
                 return false;
             }
 
             if (Caster.Mana < mana)
             {
-                Caster.SendLocalizedMessage(
-                    1060174,
-                    mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                Caster.SendLocalizedMessage(1060174, mana.ToString());
                 return false;
             }
 
@@ -70,19 +65,15 @@ namespace Server.Spells.Ninjitsu
 
             if (Caster.Skills[CastSkill].Value < RequiredSkill)
             {
-                Caster.SendLocalizedMessage(
-                    1063352,
-                    RequiredSkill.ToString("F1")
-                ); // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
+                // You need ~1_SKILL_REQUIREMENT~ Ninjitsu skill to perform that attack!
+                Caster.SendLocalizedMessage(1063352, RequiredSkill.ToString("F1"));
                 return false;
             }
 
             if (Caster.Mana < mana)
             {
-                Caster.SendLocalizedMessage(
-                    1060174,
-                    mana.ToString()
-                ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+                Caster.SendLocalizedMessage(1060174, mana.ToString());
                 return false;
             }
 

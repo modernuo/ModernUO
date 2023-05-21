@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "type": "Server.Items.BallOfSummoning",
+  "properties": [
+    {
+      "name": "Recharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Pet",
+      "type": "Server.Mobiles.BaseCreature",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "PetName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

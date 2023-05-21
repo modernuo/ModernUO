@@ -38,7 +38,7 @@ public static class AssistantConfiguration
                 WarningMessage = _defaultWarningMessage
             };
 
-            Save(path);
+            Save();
         }
     }
 
@@ -62,10 +62,9 @@ public static class AssistantConfiguration
         Save();
     }
 
-    private static void Save(string path = null)
+    private static void Save()
     {
-        path ??= Path.Join(Core.BaseDirectory, _path);
-        JsonConfig.Serialize(path, Settings);
+        JsonConfig.Serialize(Path.Join(Core.BaseDirectory, _path), Settings);
     }
 }
 

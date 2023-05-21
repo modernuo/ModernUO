@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class IceFiend : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class IceFiend : BaseCreature
     {
         [Constructible]
         public IceFiend() : base(AIType.AI_Mage)
@@ -34,10 +37,6 @@ namespace Server.Mobiles
             VirtualArmor = 60;
         }
 
-        public IceFiend(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "an ice fiend corpse";
         public override string DefaultName => "an ice fiend";
 
@@ -50,18 +49,6 @@ namespace Server.Mobiles
             AddLoot(LootPack.FilthyRich);
             AddLoot(LootPack.Average);
             AddLoot(LootPack.MedScrolls, 2);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

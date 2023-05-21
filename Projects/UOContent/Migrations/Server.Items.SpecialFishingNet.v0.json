@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.SpecialFishingNet",
+  "properties": [
+    {
+      "name": "InUse",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

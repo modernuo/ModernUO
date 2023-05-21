@@ -183,7 +183,7 @@ namespace Server.Factions
                 type = "guard";
             }
 
-            from.SendMessage("Target the {0} you wish to dismiss.", type);
+            from.SendMessage($"Target the {type} you wish to dismiss.");
             from.BeginTarget(12, false, TargetFlags.None, EndOrderFiring);
         }
 
@@ -216,7 +216,7 @@ namespace Server.Factions
             }
             else
             {
-                from.SendMessage("That is not a {0}!", type);
+                from.SendMessage($"That is not a {type}!");
             }
         }
 
@@ -557,9 +557,7 @@ namespace Server.Factions
             {
                 town.Silver += e.GetInt32(0);
                 e.Mobile.SendMessage(
-                    "You have granted {0:N0} silver to the town. It now has {1:N0} silver.",
-                    e.GetInt32(0),
-                    town.Silver
+                    $"You have granted {e.GetInt32(0):N0} silver to the town. It now has {town.Silver:N0} silver."
                 );
             }
         }

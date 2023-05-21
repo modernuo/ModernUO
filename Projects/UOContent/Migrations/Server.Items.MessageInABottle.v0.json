@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Items.MessageInABottle",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "TargetMap",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    }
+  ]
+}

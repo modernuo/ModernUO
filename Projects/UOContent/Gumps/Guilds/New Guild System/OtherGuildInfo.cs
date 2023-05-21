@@ -86,7 +86,6 @@ namespace Server.Guilds
             else if (PendingWar)
             {
                 kills = Color($"{war.Kills}/{war.MaxKills}", 0x990000);
-                // time = Color( String.Format( "{0}:{1}", war.WarLength.Hours, ((TimeSpan)(war.WarLength - TimeSpan.FromHours( war.WarLength.Hours ))).Minutes ), 0xFF0000 );
                 time = Color($"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}", 0x990000);
 
                 otherWar = m_Other.FindPendingWar(guild);
@@ -127,7 +126,7 @@ namespace Server.Guilds
             }
             else if (ActiveWar)
             {
-                number = 1062965;                            // <div align=center>You are at war with this guild!</div>
+                number = 1062965; // <div align=center>You are at war with this guild!</div>
                 AddButtonAndBackground(20, 290, 8, 1062980); // Surrender
             }
             else if (alliance != null && alliance == otherAlliance) // alliance, Same Alliance
@@ -139,12 +138,10 @@ namespace Server.Guilds
                     if (alliance.Leader == guild)
                     {
                         AddButtonAndBackground(20, 260, 12, 1062984); // Remove Guild from Alliance
-                        AddButtonAndBackground(
-                            275,
-                            260,
-                            13,
-                            1063433
-                        ); // Promote to Alliance Leader	//Note: No 'confirmation' like the other leader guild promotion things
+
+                        //Note: No 'confirmation' like the other leader guild promotion things
+                        // Promote to Alliance Leader
+                        AddButtonAndBackground(275, 260, 13, 1063433);
                         // Remove guild from alliance	//Promote to Alliance Leader
                     }
 
@@ -221,14 +218,11 @@ namespace Server.Guilds
                             }
                             else if (alliance != null && alliance.Leader != guild)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063239,
-                                    $"{guild.Name}\t{alliance.Name}"
-                                ); // ~1_val~ is not the leader of the ~2_val~ alliance.
-                                pm.SendLocalizedMessage(
-                                    1070707,
-                                    alliance.Leader.Name
-                                ); // You need to negotiate via ~1_val~ instead.
+                                // ~1_val~ is not the leader of the ~2_val~ alliance.
+                                pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
+
+                                // You need to negotiate via ~1_val~ instead.
+                                pm.SendLocalizedMessage(1070707, alliance.Leader.Name);
                             }
                             else
                             {
@@ -239,22 +233,14 @@ namespace Server.Guilds
 
                                 if (alliance?.IsMember(guild) == true)
                                 {
-                                    alliance.AllianceMessage(
-                                        1070769,
-                                        otherAlliance != null
-                                            ? otherAlliance.Name
-                                            : otherGuild.Name
-                                    ); // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    alliance.AllianceMessage(1070769, otherAlliance?.Name ?? otherGuild.Name);
                                     alliance.InvalidateMemberProperties();
                                 }
                                 else
                                 {
-                                    guild.GuildMessage(
-                                        1070769,
-                                        otherAlliance != null
-                                            ? otherAlliance.Name
-                                            : otherGuild.Name
-                                    ); // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    guild.GuildMessage(1070769, otherAlliance?.Name ?? otherGuild.Name);
                                     guild.InvalidateMemberProperties();
                                 }
                                 // Technically  SHOULD say Your guild is now at war w/out any info, intentional diff.
@@ -265,22 +251,14 @@ namespace Server.Guilds
 
                                 if (otherAlliance != null && m_Other.Alliance.IsMember(m_Other))
                                 {
-                                    otherAlliance.AllianceMessage(
-                                        1070769,
-                                        alliance != null
-                                            ? alliance.Name
-                                            : guild.Name
-                                    ); // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    otherAlliance.AllianceMessage(1070769, alliance?.Name ?? guild.Name);
                                     otherAlliance.InvalidateMemberProperties();
                                 }
                                 else
                                 {
-                                    otherGuild.GuildMessage(
-                                        1070769,
-                                        alliance != null
-                                            ? alliance.Name
-                                            : guild.Name
-                                    ); // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    // Guild Message: Your guild is now at war with ~1_GUILDNAME~
+                                    otherGuild.GuildMessage(1070769, alliance?.Name ?? guild.Name);
                                     otherGuild.InvalidateMemberProperties();
                                 }
                             }
@@ -298,14 +276,11 @@ namespace Server.Guilds
                             }
                             else if (alliance != null && alliance.Leader != guild)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063239,
-                                    $"{guild.Name}\t{alliance.Name}"
-                                ); // ~1_val~ is not the leader of the ~2_val~ alliance.
-                                pm.SendLocalizedMessage(
-                                    1070707,
-                                    alliance.Leader.Name
-                                ); // You need to negotiate via ~1_val~ instead.
+                                // ~1_val~ is not the leader of the ~2_val~ alliance.
+                                pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
+
+                                // You need to negotiate via ~1_val~ instead.
+                                pm.SendLocalizedMessage(1070707, alliance.Leader.Name);
                             }
                             else
                             {
@@ -325,14 +300,11 @@ namespace Server.Guilds
                             }
                             else if (alliance != null && alliance.Leader != guild)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063239,
-                                    $"{guild.Name}\t{alliance.Name}"
-                                ); // ~1_val~ is not the leader of the ~2_val~ alliance.
-                                pm.SendLocalizedMessage(
-                                    1070707,
-                                    alliance.Leader.Name
-                                ); // You need to negotiate via ~1_val~ instead.
+                                // ~1_val~ is not the leader of the ~2_val~ alliance.
+                                pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
+
+                                // You need to negotiate via ~1_val~ instead.
+                                pm.SendLocalizedMessage(1070707, alliance.Leader.Name);
                             }
                             else
                             {
@@ -354,14 +326,11 @@ namespace Server.Guilds
                         }
                         else if (alliance != null && alliance.Leader != guild)
                         {
-                            pm.SendLocalizedMessage(
-                                1063239,
-                                $"{guild.Name}\t{alliance.Name}"
-                            ); // ~1_val~ is not the leader of the ~2_val~ alliance.
-                            pm.SendLocalizedMessage(
-                                1070707,
-                                alliance.Leader.Name
-                            ); // You need to negotiate via ~1_val~ instead.
+                            // ~1_val~ is not the leader of the ~2_val~ alliance.
+                            pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
+
+                            // You need to negotiate via ~1_val~ instead.
+                            pm.SendLocalizedMessage(1070707, alliance.Leader.Name);
                         }
                         else
                         {
@@ -369,22 +338,14 @@ namespace Server.Guilds
                             {
                                 if (alliance?.IsMember(guild) == true)
                                 {
-                                    alliance.AllianceMessage(
-                                        1070740,
-                                        otherAlliance != null
-                                            ? otherAlliance.Name
-                                            : otherGuild.Name
-                                    ); // You have lost the war with ~1_val~.
+                                    // You have lost the war with ~1_val~.
+                                    alliance.AllianceMessage(1070740, otherAlliance?.Name ?? otherGuild.Name);
                                     alliance.InvalidateMemberProperties();
                                 }
                                 else
                                 {
-                                    guild.GuildMessage(
-                                        1070740,
-                                        otherAlliance != null
-                                            ? otherAlliance.Name
-                                            : otherGuild.Name
-                                    ); // You have lost the war with ~1_val~.
+                                    // You have lost the war with ~1_val~.
+                                    guild.GuildMessage(1070740, otherAlliance?.Name ?? otherGuild.Name);
                                     guild.InvalidateMemberProperties();
                                 }
 
@@ -392,22 +353,14 @@ namespace Server.Guilds
 
                                 if (otherAlliance?.IsMember(otherGuild) == true)
                                 {
-                                    otherAlliance.AllianceMessage(
-                                        1070739,
-                                        guild.Alliance != null
-                                            ? guild.Alliance.Name
-                                            : guild.Name
-                                    ); // You have won the war against ~1_val~!
+                                    // You have won the war against ~1_val~!
+                                    otherAlliance.AllianceMessage(1070739, guild.Alliance?.Name ?? guild.Name);
                                     otherAlliance.InvalidateMemberProperties();
                                 }
                                 else
                                 {
-                                    otherGuild.GuildMessage(
-                                        1070739,
-                                        guild.Alliance != null
-                                            ? guild.Alliance.Name
-                                            : guild.Name
-                                    ); // You have won the war against ~1_val~!
+                                    // You have won the war against ~1_val~!
+                                    otherGuild.GuildMessage(1070739, guild.Alliance?.Name ?? guild.Name);
                                     otherGuild.InvalidateMemberProperties();
                                 }
 
@@ -427,25 +380,19 @@ namespace Server.Guilds
                             }
                             else if (alliance != null && alliance.Leader != guild)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063239,
-                                    $"{guild.Name}\t{alliance.Name}"
-                                ); // ~1_val~ is not the leader of the ~2_val~ alliance.
-                                pm.SendLocalizedMessage(
-                                    1070707,
-                                    alliance.Leader.Name
-                                ); // You need to negotiate via ~1_val~ instead.
+                                // ~1_val~ is not the leader of the ~2_val~ alliance.
+                                pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
+
+                                // You need to negotiate via ~1_val~ instead.
+                                pm.SendLocalizedMessage(1070707, alliance.Leader.Name);
                             }
                             else if (otherAlliance != null && otherAlliance.Leader != m_Other)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063239,
-                                    $"{m_Other.Name}\t{otherAlliance.Name}"
-                                ); // ~1_val~ is not the leader of the ~2_val~ alliance.
-                                pm.SendLocalizedMessage(
-                                    1070707,
-                                    otherAlliance.Leader.Name
-                                ); // You need to negotiate via ~1_val~ instead.
+                                // ~1_val~ is not the leader of the ~2_val~ alliance.
+                                pm.SendLocalizedMessage(1063239, $"{m_Other.Name}\t{otherAlliance.Name}");
+
+                                // You need to negotiate via ~1_val~ instead.
+                                pm.SendLocalizedMessage(1070707, otherAlliance.Leader.Name);
                             }
                             else
                             {
@@ -466,40 +413,31 @@ namespace Server.Guilds
                             }
                             else if (Faction.Find(guild.Leader) != Faction.Find(m_Other.Leader))
                             {
-                                pm.SendLocalizedMessage(
-                                    1070758
-                                ); // You cannot propose an alliance to a guild with a different faction allegiance.
+                                // You cannot propose an alliance to a guild with a different faction allegiance.
+                                pm.SendLocalizedMessage(1070758);
                             }
                             else if (otherAlliance != null)
                             {
                                 if (otherAlliance.IsPendingMember(m_Other))
                                 {
-                                    pm.SendLocalizedMessage(
-                                        1063416,
-                                        m_Other.Name
-                                    ); // ~1_val~ is currently considering another alliance proposal.
+                                    // ~1_val~ is currently considering another alliance proposal.
+                                    pm.SendLocalizedMessage(1063416, m_Other.Name);
                                 }
                                 else
                                 {
-                                    pm.SendLocalizedMessage(
-                                        1063426,
-                                        m_Other.Name
-                                    ); // ~1_val~ already belongs to an alliance.
+                                    // ~1_val~ already belongs to an alliance.
+                                    pm.SendLocalizedMessage(1063426, m_Other.Name);
                                 }
                             }
                             else if (m_Other.AcceptedWars.Count > 0 || m_Other.PendingWars.Count > 0)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063427,
-                                    m_Other.Name
-                                ); // ~1_val~ is currently involved in a guild war.
+                                // ~1_val~ is currently involved in a guild war.
+                                pm.SendLocalizedMessage(1063427, m_Other.Name);
                             }
                             else if (guild.AcceptedWars.Count > 0 || guild.PendingWars.Count > 0)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063427,
-                                    guild.Name
-                                ); // ~1_val~ is currently involved in a guild war.
+                                // ~1_val~ is currently involved in a guild war.
+                                pm.SendLocalizedMessage(1063427, guild.Name);
                             }
                             else
                             {
@@ -515,61 +453,46 @@ namespace Server.Guilds
                             }
                             else if (alliance.Leader != guild)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063239,
-                                    $"{guild.Name}\t{alliance.Name}"
-                                ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+                                // ~1_val~ is not the leader of the ~2_val~ alliance.
+                                pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
                             }
                             else if (otherAlliance != null)
                             {
                                 if (otherAlliance.IsPendingMember(m_Other))
                                 {
-                                    pm.SendLocalizedMessage(
-                                        1063416,
-                                        m_Other.Name
-                                    ); // ~1_val~ is currently considering another alliance proposal.
+                                    // ~1_val~ is currently considering another alliance proposal.
+                                    pm.SendLocalizedMessage(1063416, m_Other.Name);
                                 }
                                 else
                                 {
-                                    pm.SendLocalizedMessage(
-                                        1063426,
-                                        m_Other.Name
-                                    ); // ~1_val~ already belongs to an alliance.
+                                    // ~1_val~ already belongs to an alliance.
+                                    pm.SendLocalizedMessage(1063426, m_Other.Name);
                                 }
                             }
                             else if (alliance.IsPendingMember(guild))
                             {
-                                pm.SendLocalizedMessage(
-                                    1063416,
-                                    guild.Name
-                                ); // ~1_val~ is currently considering another alliance proposal.
+                                // ~1_val~ is currently considering another alliance proposal.
+                                pm.SendLocalizedMessage(1063416, guild.Name);
                             }
                             else if (m_Other.AcceptedWars.Count > 0 || m_Other.PendingWars.Count > 0)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063427,
-                                    m_Other.Name
-                                ); // ~1_val~ is currently involved in a guild war.
+                                // ~1_val~ is currently involved in a guild war.
+                                pm.SendLocalizedMessage(1063427, m_Other.Name);
                             }
                             else if (guild.AcceptedWars.Count > 0 || guild.PendingWars.Count > 0)
                             {
-                                pm.SendLocalizedMessage(
-                                    1063427,
-                                    guild.Name
-                                ); // ~1_val~ is currently involved in a guild war.
+                                // ~1_val~ is currently involved in a guild war.
+                                pm.SendLocalizedMessage(1063427, guild.Name);
                             }
                             else if (Faction.Find(guild.Leader) != Faction.Find(m_Other.Leader))
                             {
-                                pm.SendLocalizedMessage(
-                                    1070758
-                                ); // You cannot propose an alliance to a guild with a different faction allegiance.
+                                // You cannot propose an alliance to a guild with a different faction allegiance.
+                                pm.SendLocalizedMessage(1070758);
                             }
                             else
                             {
-                                pm.SendLocalizedMessage(
-                                    1070750,
-                                    m_Other.Name
-                                ); // An invitation to join your alliance has been sent to ~1_val~.
+                                // An invitation to join your alliance has been sent to ~1_val~.
+                                pm.SendLocalizedMessage(1070750, m_Other.Name);
 
                                 m_Other.GuildMessage(1070780, guild.Name); // ~1_val~ has proposed an alliance.
 
@@ -597,7 +520,7 @@ namespace Server.Guilds
                         }
                         else if (alliance?.IsMember(guild) == true)
                         {
-                            guild.Alliance = null; // Calls alliance.Removeguild
+                            guild.Alliance = null; // Calls alliance.RemoveGuild
                             // alliance.RemoveGuild( guild );
 
                             m_Other.InvalidateWarNotoriety();
@@ -615,10 +538,8 @@ namespace Server.Guilds
                         }
                         else if (alliance != null && alliance.Leader != guild)
                         {
-                            pm.SendLocalizedMessage(
-                                1063239,
-                                $"{guild.Name}\t{alliance.Name}"
-                            ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+                            // ~1_val~ is not the leader of the ~2_val~ alliance.
+                            pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
                         }
                         else if (alliance?.IsMember(guild) == true && alliance.IsMember(m_Other))
                         {
@@ -639,17 +560,13 @@ namespace Server.Guilds
                         }
                         else if (alliance != null && alliance.Leader != guild)
                         {
-                            pm.SendLocalizedMessage(
-                                1063239,
-                                $"{guild.Name}\t{alliance.Name}"
-                            ); // ~1_val~ is not the leader of the ~2_val~ alliance.
+                            // ~1_val~ is not the leader of the ~2_val~ alliance.
+                            pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
                         }
                         else if (alliance?.IsMember(guild) == true && alliance.IsMember(m_Other))
                         {
-                            pm.SendLocalizedMessage(
-                                1063434,
-                                $"{m_Other.Name}\t{alliance.Name}"
-                            ); // ~1_val~ is now the leader of ~2_val~.
+                            // ~1_val~ is now the leader of ~2_val~.
+                            pm.SendLocalizedMessage(1063434, $"{m_Other.Name}\t{alliance.Name}");
 
                             alliance.Leader = m_Other;
                         }
@@ -700,10 +617,8 @@ namespace Server.Guilds
                         {
                             pm.SendLocalizedMessage(1070752); // The proposal has been updated.
 
-                            otherAlliance
-                                .TurnToMember(
-                                    m_Other
-                                ); // No need to verify it's in the guild or already a member, the function does this
+                            // No need to verify it's in the guild or already a member, the function does this
+                            otherAlliance.TurnToMember(m_Other);
 
                             otherAlliance.TurnToMember(guild);
                         }
@@ -737,18 +652,15 @@ namespace Server.Guilds
             else if (Faction.Find(guild.Leader) != Faction.Find(m_Other.Leader))
             {
                 // Notes about this: OSI only cares/checks when proposing, you can change your faction all you want later.
-                pm.SendLocalizedMessage(
-                    1070758
-                ); // You cannot propose an alliance to a guild with a different faction allegiance.
+                // You cannot propose an alliance to a guild with a different faction allegiance.
+                pm.SendLocalizedMessage(1070758);
             }
             else if (otherAlliance != null)
             {
                 if (otherAlliance.IsPendingMember(m_Other))
                 {
-                    pm.SendLocalizedMessage(
-                        1063416,
-                        m_Other.Name
-                    ); // ~1_val~ is currently considering another alliance proposal.
+                    // ~1_val~ is currently considering another alliance proposal.
+                    pm.SendLocalizedMessage(1063416, m_Other.Name);
                 }
                 else
                 {
@@ -773,10 +685,8 @@ namespace Server.Guilds
                 }
                 else if (name.Length > Guild.NameLimit)
                 {
-                    pm.SendLocalizedMessage(
-                        1070887,
-                        Guild.NameLimit.ToString()
-                    ); // An alliance name cannot exceed ~1_val~ characters in length.
+                    // An alliance name cannot exceed ~1_val~ characters in length.
+                    pm.SendLocalizedMessage(1070887, Guild.NameLimit.ToString());
                 }
                 else if (AllianceInfo.Alliances.ContainsKey(name.ToLower()))
                 {
@@ -784,10 +694,8 @@ namespace Server.Guilds
                 }
                 else
                 {
-                    pm.SendLocalizedMessage(
-                        1070750,
-                        m_Other.Name
-                    ); // An invitation to join your alliance has been sent to ~1_val~.
+                    // An invitation to join your alliance has been sent to ~1_val~.
+                    pm.SendLocalizedMessage(1070750, m_Other.Name);
 
                     m_Other.GuildMessage(1070780, guild.Name); // ~1_val~ has proposed an alliance.
 

@@ -3,6 +3,7 @@
 /Distribution/ModernUO.*
 /Distribution/Assemblies
 /Distribution/bsdtar
+/Distribution/Configuration/antimacro.json
 /Distribution/Configuration/assistants.json
 /Distribution/Configuration/modernuo.json
 /Distribution/Configuration/email-settings.json

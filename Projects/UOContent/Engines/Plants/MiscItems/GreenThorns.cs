@@ -1,6 +1,5 @@
 using System;
 using Server.Mobiles;
-using Server.Network;
 using Server.Targeting;
 using Server.Utilities;
 
@@ -33,11 +32,8 @@ namespace Server.Items
 
             if (!from.CanBeginAction<GreenThorns>())
             {
-                from.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    1061908
-                ); // * You must wait a while before planting another thorn. *
+                // * You must wait a while before planting another thorn. *
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061908);
                 return;
             }
 
@@ -80,11 +76,8 @@ namespace Server.Items
 
                 if (!from.CanBeginAction<GreenThorns>())
                 {
-                    from.LocalOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1061908
-                    ); // * You must wait a while before planting another thorn. *
+                    // * You must wait a while before planting another thorn. *
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061908);
                     return;
                 }
 
@@ -101,11 +94,8 @@ namespace Server.Items
 
                 if (targeted is not LandTarget land)
                 {
-                    from.LocalOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        1061912
-                    ); // * You cannot plant a green thorn there! *
+                    // * You cannot plant a green thorn there! *
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061912);
                 }
                 else
                 {
@@ -113,27 +103,18 @@ namespace Server.Items
 
                     if (effect == null)
                     {
-                        from.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1061913
-                        ); // * You sense it would be useless to plant a green thorn there. *
+                        // * You sense it would be useless to plant a green thorn there. *
+                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061913);
                     }
                     else
                     {
                         m_Thorn.Consume();
 
-                        from.LocalOverheadMessage(
-                            MessageType.Emote,
-                            0x961,
-                            1061914
-                        ); // * You push the strange green thorn into the ground *
-                        from.NonlocalOverheadMessage(
-                            MessageType.Emote,
-                            0x961,
-                            1061915,
-                            from.Name
-                        ); // * ~1_PLAYER_NAME~ pushes a strange green thorn into the ground. *
+                        // * You push the strange green thorn into the ground *
+                        from.LocalOverheadMessage(MessageType.Emote, 0x961, 1061914);
+
+                        // * ~1_PLAYER_NAME~ pushes a strange green thorn into the ground. *
+                        from.NonlocalOverheadMessage(MessageType.Emote, 0x961, 1061915, from.Name);
 
                         from.BeginAction<GreenThorns>();
                         new EndActionTimer(from).Start();
@@ -435,12 +416,9 @@ namespace Server.Items
                 case 3:
                     {
                         var dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-                        dummy.PublicOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            true,
-                            "* The ground erupts with chaotic growth! *"
-                        );
+
+                        // * The ground erupts with chaotic growth! *
+                        dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114432);
 
                         Effects.PlaySound(Location, Map, 0x12D);
 
@@ -545,12 +523,8 @@ namespace Server.Items
                 default:
                     {
                         var dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-                        dummy.PublicOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            true,
-                            "* A magical bunny leaps out of its hole, disturbed by the thorn's effect! *"
-                        );
+                        // * A magical bunny leaps out of its hole, disturbed by the thorn's effect! *
+                        dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114428);
 
                         BaseCreature spawn = new VorpalBunny();
                         if (!SpawnCreature(spawn))
@@ -602,12 +576,9 @@ namespace Server.Items
                 default:
                     {
                         var dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-                        dummy.PublicOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            true,
-                            "* Strange green tendrils rise from the ground, whipping wildly! *"
-                        );
+
+                        // * Strange green tendrils rise from the ground, whipping wildly! *
+                        dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114429);
                         Effects.PlaySound(Location, Map, 0x2B0);
 
                         BaseCreature spawn = new WhippingVine();
@@ -660,12 +631,9 @@ namespace Server.Items
                 default:
                     {
                         var dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-                        dummy.PublicOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            true,
-                            "* Slithering ice serpents rise to the surface to investigate the disturbance! *"
-                        );
+
+                        // * Slithering ice serpents rise to the surface to investigate the disturbance! *
+                        dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114430);
 
                         BaseCreature spawn = new GiantIceWorm();
                         if (!SpawnCreature(spawn))
@@ -726,12 +694,9 @@ namespace Server.Items
                 default:
                     {
                         var dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-                        dummy.PublicOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            true,
-                            "* The sand collapses, revealing a dark hole. *"
-                        );
+
+                        // * The sand collapses, revealing a dark hole. *
+                        dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114431);
 
                         GreenThornsSHTeleporter.Create(Location, Map);
 

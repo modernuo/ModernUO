@@ -1,30 +1,14 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DecoRoseOfTrinsic3 : Item
 {
-    public class DecoRoseOfTrinsic3 : Item
+    [Constructible]
+    public DecoRoseOfTrinsic3() : base(0x234B)
     {
-        [Constructible]
-        public DecoRoseOfTrinsic3() : base(0x234B)
-        {
-            Movable = true;
-            Stackable = false;
-        }
-
-        public DecoRoseOfTrinsic3(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Movable = true;
+        Stackable = false;
     }
 }

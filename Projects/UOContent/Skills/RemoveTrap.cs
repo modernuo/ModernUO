@@ -1,7 +1,6 @@
 using System;
 using Server.Factions;
 using Server.Items;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server.SkillHandlers
@@ -26,7 +25,6 @@ namespace Server.SkillHandlers
             else
             {
                 m.Target = new InternalTarget();
-
                 m.SendLocalizedMessage(502368); // Which trap will you attempt to disarm?
             }
 
@@ -47,12 +45,15 @@ namespace Server.SkillHandlers
                 }
                 else if (targeted is TrappableContainer targ)
                 {
-                    from.Direction = from.GetDirectionTo(targ);
-
                     if (targ.TrapType == TrapType.None)
                     {
                         from.SendLocalizedMessage(502373); // That doesn't appear to be trapped
                         return;
+                    }
+
+                    if (targ.RootParent == from)
+                    {
+                        from.Direction = from.GetDirectionTo(targ);
                     }
 
                     from.PlaySound(0x241);
@@ -78,9 +79,8 @@ namespace Server.SkillHandlers
 
                     if (faction == null)
                     {
-                        from.SendLocalizedMessage(
-                            1010538
-                        ); // You may not disarm faction traps unless you are in an opposing faction
+                        // You may not disarm faction traps unless you are in an opposing faction
+                        from.SendLocalizedMessage(1010538);
                     }
                     else if (trap.Faction != null && faction == trap.Faction && !isOwner)
                     {
@@ -88,9 +88,8 @@ namespace Server.SkillHandlers
                     }
                     else if (!isOwner && kit == null)
                     {
-                        from.SendLocalizedMessage(
-                            1042530
-                        ); // You must have a trap removal kit at the base level of your pack to disarm a faction trap.
+                        // You must have a trap removal kit at the base level of your pack to disarm a faction trap.
+                        from.SendLocalizedMessage(1042530);
                     }
                     else
                     {
@@ -110,13 +109,8 @@ namespace Server.SkillHandlers
 
                                 if (silver > 0)
                                 {
-                                    from.SendLocalizedMessage(
-                                        1008113,
-                                        true,
-                                        silver.ToString(
-                                            "N0"
-                                        )
-                                    ); // You have been granted faction silver for removing the enemy trap :
+                                    // You have been granted faction silver for removing the enemy trap :
+                                    from.SendLocalizedMessage(1008113, true, silver.ToString("N0"));
                                 }
                             }
 

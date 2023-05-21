@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class ChaosDragoonElite : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class ChaosDragoonElite : BaseCreature
     {
         [Constructible]
         public ChaosDragoonElite() : base(AIType.AI_Mage)
@@ -40,9 +42,7 @@ namespace Server.Mobiles
             Fame = 8000;
             Karma = -8000;
 
-            CraftResource res;
-
-            res = Utility.Random(6) switch
+            var res = Utility.Random(6) switch
             {
                 0 => CraftResource.BlackScales,
                 1 => CraftResource.RedScales,
@@ -111,13 +111,14 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a chaos dragoon elite corpse";
         public override string DefaultName => "a chaos dragoon elite";
-
-        public override bool HasBreath => true;
         public override bool AutoDispel => true;
         public override bool BardImmune => !Core.AOS;
         public override bool CanRummageCorpses => true;
         public override bool AlwaysMurderer => true;
         public override bool ShowFameTitle => false;
+
+        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override int GetIdleSound() => 0x2CE;
 
@@ -156,18 +157,6 @@ namespace Server.Mobiles
             {
                 damage *= 3;
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

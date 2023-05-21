@@ -1,10 +1,12 @@
+using ModernUO.Serialization;
 using Server.Engines.Plants;
 using Server.Items;
 
 namespace Server.Mobiles
 {
     [TypeAlias("Server.Mobiles.Yamadon")]
-    public class Yamandon : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Yamandon : BaseCreature
     {
         [Constructible]
         public Yamandon() : base(AIType.AI_Melee)
@@ -46,10 +48,6 @@ namespace Server.Mobiles
             PackItem(new Eggs(2));
         }
 
-        public Yamandon(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a yamandon corpse";
         public override string DefaultName => "a yamandon";
 
@@ -68,16 +66,16 @@ namespace Server.Mobiles
             AddLoot(LootPack.Gems, 6);
         }
 
-        public override void OnDamagedBySpell(Mobile attacker)
+        public override void OnDamagedBySpell(Mobile attacker, int damage)
         {
-            base.OnDamagedBySpell(attacker);
+            base.OnDamagedBySpell(attacker, damage);
 
             DoCounter(attacker);
         }
 
-        public override void OnGotMeleeAttack(Mobile attacker)
+        public override void OnGotMeleeAttack(Mobile attacker, int damage)
         {
-            base.OnGotMeleeAttack(attacker);
+            base.OnGotMeleeAttack(attacker, damage);
 
             DoCounter(attacker);
         }
@@ -157,19 +155,5 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 1263;
 
         public override int GetIdleSound() => 1261;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

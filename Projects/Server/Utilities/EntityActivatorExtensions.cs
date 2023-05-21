@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: EntityActivatorExtensions.cs                                    *
  *                                                                       *
@@ -16,31 +16,30 @@
 using System;
 using System.Reflection;
 
-namespace Server.Utilities
+namespace Server.Utilities;
+
+public static class EntityActivatorExtensions
 {
-    public static class EntityActivatorExtensions
+    public static T CreateEntityInstance<T>(
+        this Type type,
+        params object[] args
+    ) where T : IEntity => type.CreateEntityInstance<T>(null, args);
+
+    public static T CreateEntityInstance<T>(
+        this Type type,
+        Predicate<ConstructorInfo> predicate,
+        object[] args = null
+    ) where T : IEntity
     {
-        public static T CreateEntityInstance<T>(
-            this Type type,
-            params object[] args
-        ) where T : IEntity => type.CreateEntityInstance<T>(null, args);
+        var entity = type.CreateInstance<IEntity>(predicate, args);
 
-        public static T CreateEntityInstance<T>(
-            this Type type,
-            Predicate<ConstructorInfo> predicate,
-            object[] args = null
-        ) where T : IEntity
+        if (entity is T t)
         {
-            var entity = type.CreateInstance<IEntity>(predicate, args);
-
-            if (entity is T t)
-            {
-                return t;
-            }
-
-            // Handles memory leaks by deleting the offending entity
-            entity?.Delete();
-            return default;
+            return t;
         }
+
+        // Handles memory leaks by deleting the offending entity
+        entity?.Delete();
+        return default;
     }
 }

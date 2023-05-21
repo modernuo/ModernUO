@@ -92,15 +92,7 @@ namespace Server.Engines.ConPVP
 
         public int CompareTo(TourneyParticipant p) => p.TotalLadderXP - TotalLadderXP;
 
-        public void AddLog(string text)
-        {
-            Log.Add(text);
-        }
-
-        public void AddLog(string format, params object[] args)
-        {
-            AddLog(string.Format(format, args));
-        }
+        public void AddLog(string text) => Log.Add(text);
 
         public void WonMatch(TourneyMatch match)
         {

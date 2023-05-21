@@ -1,135 +1,291 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Collections;
-using Server.Network;
 using Server.Spells;
 using Server.Targeting;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public abstract partial class BaseExplosionPotion : BasePotion
 {
-    public abstract class BaseExplosionPotion : BasePotion
+    private const int ExplosionRange = 2; // How long is the blast radius?
+
+    private const bool LeveledExplosion = false; // Should explosion potions explode other nearby potions?
+    private const bool InstantExplosion = false; // Should explosion potions explode on impact?
+    private const bool RelativeLocation = false; // Is the explosion target location relative for mobiles?
+
+    private Timer _timer;
+
+    public BaseExplosionPotion(PotionEffect effect) : base(0xF0D, effect)
     {
-        private const int ExplosionRange = 2; // How long is the blast radius?
+    }
 
-        private static readonly bool LeveledExplosion = false; // Should explosion potions explode other nearby potions?
-        private static readonly bool InstantExplosion = false; // Should explosion potions explode on impact?
-        private static readonly bool RelativeLocation = false; // Is the explosion target location relative for mobiles?
+    public abstract int MinDamage { get; }
+    public abstract int MaxDamage { get; }
 
-        private TimerExecutionToken _timerToken;
+    public override bool RequireFreeHand => false;
 
-        public BaseExplosionPotion(PotionEffect effect) : base(0xF0D, effect)
+    private HashSet<Mobile> _users;
+
+    public virtual IEntity FindParent(Mobile from)
+    {
+        if (HeldBy?.Holding == this)
         {
+            return HeldBy;
         }
 
-        public BaseExplosionPotion(Serial serial) : base(serial)
+        if (RootParent != null)
         {
+            return RootParent;
         }
 
-        public abstract int MinDamage { get; }
-        public abstract int MaxDamage { get; }
-
-        public override bool RequireFreeHand => false;
-
-        private HashSet<Mobile> _users;
-
-        public override void Serialize(IGenericWriter writer)
+        if (Map == Map.Internal)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
+            return from;
         }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        return this;
+    }
 
-            var version = reader.ReadInt();
+    public override void Drink(Mobile from)
+    {
+        if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell?.IsCasting == true))
+        {
+            from.SendLocalizedMessage(1062725); // You can not use a purple potion while paralyzed.
+            return;
         }
 
-        public virtual IEntity FindParent(Mobile from)
+        var targ = from.Target as ThrowTarget;
+        Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
+
+        if (targ?.Potion == this)
         {
-            if (HeldBy?.Holding == this)
+            return;
+        }
+
+        from.RevealingAction();
+
+        _users ??= new HashSet<Mobile>();
+        _users.Add(from);
+
+        from.Target = new ThrowTarget(this);
+
+        if (_timer?.Running != true)
+        {
+            from.SendLocalizedMessage(500236); // You should throw it now!
+
+            if (Core.ML)
             {
-                return HeldBy;
+                _timer = new DetonateTimer(this, from, TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.25), 5);
+            }
+            else
+            {
+                _timer = new DetonateTimer(this, from, TimeSpan.FromSeconds(0.75), TimeSpan.FromSeconds(1.0), 4);
             }
 
-            if (RootParent != null)
-            {
-                return RootParent;
-            }
+            _timer.Start();
+        }
+    }
 
-            if (Map == Map.Internal)
-            {
-                return from;
-            }
-
-            return this;
+    private void Reposition_OnTick(Mobile from, Point3D loc, Map map)
+    {
+        if (Deleted)
+        {
+            return;
         }
 
-        public override void Drink(Mobile from)
+        if (InstantExplosion || _timer?.Running != true)
         {
-            if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell?.IsCasting == true))
+            Explode(from, true, loc, map);
+        }
+        else
+        {
+            MoveToWorld(loc, map);
+        }
+    }
+
+    public void Explode(Mobile from, bool direct, Point3D loc, Map map)
+    {
+        if (Deleted)
+        {
+            return;
+        }
+
+        Consume();
+
+        if (_users != null)
+        {
+            foreach (var user in _users)
             {
-                from.SendLocalizedMessage(1062725); // You can not use a purple potion while paralyzed.
+                if ((user.Target as ThrowTarget)?.Potion == this)
+                {
+                    Target.Cancel(user);
+                }
+            }
+
+            _users.Clear();
+        }
+
+        if (map == null)
+        {
+            return;
+        }
+
+        Effects.PlaySound(loc, map, 0x307);
+        Effects.SendLocationEffect(loc, map, 0x36B0, 9);
+
+        var alchemyBonus = 0;
+        if (direct)
+        {
+            alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
+        }
+
+        var eable = map.GetObjectsInRange(loc, ExplosionRange);
+        using var queue = PooledRefQueue<IEntity>.Create();
+
+        var toDamage = 0;
+        foreach (var entity in eable)
+        {
+            if (entity == this)
+            {
+                continue;
+            }
+
+            if (entity is Mobile mobile)
+            {
+                if (from == null || SpellHelper.ValidIndirectTarget(from, mobile) && from.CanBeHarmful(mobile, false))
+                {
+                    ++toDamage;
+                    queue.Enqueue(entity);
+                }
+            }
+            else if (LeveledExplosion && entity is BaseExplosionPotion)
+            {
+                queue.Enqueue(entity);
+            }
+        }
+
+        eable.Free();
+
+        var min = Scale(from, MinDamage);
+        var max = Scale(from, MaxDamage);
+
+        while (queue.Count > 0)
+        {
+            var entity = queue.Dequeue();
+
+            if (entity is Mobile m)
+            {
+                from?.DoHarmful(m);
+
+                var damage = Utility.RandomMinMax(min, max) + alchemyBonus;
+
+                if (!Core.AOS && damage > 40)
+                {
+                    damage = 40;
+                }
+                else if (Core.AOS && toDamage > 2)
+                {
+                    damage /= toDamage - 1;
+                }
+
+                AOS.Damage(m, from, damage, 0, 100, 0, 0, 0);
+            }
+            else if (entity is BaseExplosionPotion pot)
+            {
+                pot.Explode(from, false, pot.GetWorldLocation(), pot.Map);
+            }
+        }
+    }
+
+    private class ThrowTarget : Target
+    {
+        public ThrowTarget(BaseExplosionPotion potion) : base(Core.ML ? 12 : 10, true, TargetFlags.None) => Potion = potion;
+
+        public BaseExplosionPotion Potion { get; }
+
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (Potion.Deleted || Potion.Map == Map.Internal)
+            {
                 return;
             }
 
-            var targ = from.Target as ThrowTarget;
-            Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
-
-            if (targ?.Potion == this)
+            if (targeted is not IPoint3D p)
             {
                 return;
             }
+
+            var map = from.Map;
+
+            if (map == null)
+            {
+                return;
+            }
+
+            SpellHelper.GetSurfaceTop(ref p);
+            var loc = new Point3D(p);
 
             from.RevealingAction();
 
-            _users ??= new HashSet<Mobile>();
-            _users.Add(from);
+            IEntity to = new Entity(Serial.Zero, loc, map);
 
-            from.Target = new ThrowTarget(this);
-
-            if (!_timerToken.Running)
+            if (p is Mobile m)
             {
-                from.SendLocalizedMessage(500236); // You should throw it now!
-
-                var timer = 3;
-
-                if (Core.ML)
+                if (!RelativeLocation) // explosion location = current mob location.
                 {
-                    // 3.6 seconds explosion delay
-                    Timer.StartTimer(
-                        TimeSpan.FromSeconds(1.0),
-                        TimeSpan.FromSeconds(1.25),
-                        5, // TODO: Should this be 4?
-                        () => Detonate_OnTick(from, timer--),
-                        out _timerToken
-                    );
+                    loc = m.Location;
                 }
                 else
                 {
-                    // 2.6 seconds explosion delay
-                    Timer.StartTimer(
-                        TimeSpan.FromSeconds(0.75),
-                        TimeSpan.FromSeconds(1.0),
-                        4,
-                        () => Detonate_OnTick(from, timer--),
-                        out _timerToken
-                    );
+                    to = m;
                 }
             }
+
+            Effects.SendMovingEffect(from, to, Potion.ItemID, 7, 0, false, false, Potion.Hue);
+
+            if (Potion.Amount > 1)
+            {
+                Mobile.LiftItemDupe(Potion, 1);
+            }
+
+            Potion.Internalize();
+
+            var delay = TimeSpan.FromSeconds(0.1 * from.GetDistanceToSqrt(loc));
+
+            // If the potion is about to explode, stop the timer so it doesn't explode on you, while it is mid-air
+            if (Potion._timer.RemainingCount <= 1 && Potion._timer.Next <= Core.Now + delay)
+            {
+                Potion._timer.Stop();
+            }
+
+            Timer.StartTimer(delay, () => Potion.Reposition_OnTick(from, loc, map));
+        }
+    }
+
+    private class DetonateTimer : Timer
+    {
+        private BaseExplosionPotion _potion;
+        private Mobile _from;
+
+        public DetonateTimer(BaseExplosionPotion potion, Mobile from, TimeSpan delay, TimeSpan interval, int count) : base(delay, interval, count)
+        {
+            _from = from;
+            _potion = potion;
         }
 
-        private void Detonate_OnTick(Mobile from, int timer)
+        protected override void OnTick()
         {
-            if (Deleted)
+            if (_potion.Deleted)
             {
                 return;
             }
 
-            var parent = FindParent(from);
+            var parent = _potion.FindParent(_from);
 
-            if (timer == 0)
+            if (RemainingCount == 0)
             {
                 Point3D loc;
                 Map map;
@@ -149,183 +305,18 @@ namespace Server.Items
                     return;
                 }
 
-                Explode(from, true, loc, map);
-                _timerToken.Cancel();
+                _potion.Explode(_from, true, loc, map);
             }
-            else
+            else if (RemainingCount <= 3)
             {
                 if (parent is Item item)
                 {
-                    item.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
+                    item.PublicOverheadMessage(MessageType.Regular, 0x22, false, RemainingCount.ToString());
                 }
                 else if (parent is Mobile mobile)
                 {
-                    mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
+                    mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, RemainingCount.ToString());
                 }
-            }
-        }
-
-        private void Reposition_OnTick(Mobile from, Point3D loc, Map map)
-        {
-            if (Deleted)
-            {
-                return;
-            }
-
-            if (InstantExplosion)
-            {
-                Explode(from, true, loc, map);
-            }
-            else
-            {
-                MoveToWorld(loc, map);
-            }
-        }
-
-        public void Explode(Mobile from, bool direct, Point3D loc, Map map)
-        {
-            if (Deleted)
-            {
-                return;
-            }
-
-            Consume();
-
-            foreach (var user in _users)
-            {
-                if (user.Target is ThrowTarget targ && targ.Potion == this)
-                {
-                    Target.Cancel(user);
-                }
-            }
-
-            _users.Clear();
-
-            if (map == null)
-            {
-                return;
-            }
-
-            Effects.PlaySound(loc, map, 0x307);
-            Effects.SendLocationEffect(loc, map, 0x36B0, 9);
-
-            var alchemyBonus = 0;
-            if (direct)
-            {
-                alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
-            }
-
-            var eable = map.GetObjectsInRange(loc, ExplosionRange);
-            using var queue = PooledRefQueue<IEntity>.Create();
-
-            var toDamage = 0;
-            foreach (var entity in eable)
-            {
-                if (entity == this)
-                {
-                    continue;
-                }
-
-                if (entity is Mobile mobile)
-                {
-                    if (from == null || SpellHelper.ValidIndirectTarget(from, mobile) && from.CanBeHarmful(mobile, false))
-                    {
-                        ++toDamage;
-                        queue.Enqueue(entity);
-                    }
-                }
-                else if (LeveledExplosion && entity is BaseExplosionPotion)
-                {
-                    queue.Enqueue(entity);
-                }
-            }
-
-            eable.Free();
-
-            var min = Scale(from, MinDamage);
-            var max = Scale(from, MaxDamage);
-
-            while (queue.Count > 0)
-            {
-                var entity = queue.Dequeue();
-
-                if (entity is Mobile m)
-                {
-                    from?.DoHarmful(m);
-
-                    var damage = Utility.RandomMinMax(min, max) + alchemyBonus;
-
-                    if (!Core.AOS && damage > 40)
-                    {
-                        damage = 40;
-                    }
-                    else if (Core.AOS && toDamage > 2)
-                    {
-                        damage /= toDamage - 1;
-                    }
-
-                    AOS.Damage(m, from, damage, 0, 100, 0, 0, 0);
-                }
-                else if (entity is BaseExplosionPotion pot)
-                {
-                    pot.Explode(from, false, pot.GetWorldLocation(), pot.Map);
-                }
-            }
-        }
-
-        private class ThrowTarget : Target
-        {
-            public ThrowTarget(BaseExplosionPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
-
-            public BaseExplosionPotion Potion { get; }
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                if (Potion.Deleted || Potion.Map == Map.Internal)
-                {
-                    return;
-                }
-
-                if (targeted is not IPoint3D p)
-                {
-                    return;
-                }
-
-                var map = from.Map;
-
-                if (map == null)
-                {
-                    return;
-                }
-
-                SpellHelper.GetSurfaceTop(ref p);
-                var loc = new Point3D(p);
-
-                from.RevealingAction();
-
-                IEntity to = new Entity(Serial.Zero, loc, map);
-
-                if (p is Mobile m)
-                {
-                    if (!RelativeLocation) // explosion location = current mob location.
-                    {
-                        loc = m.Location;
-                    }
-                    else
-                    {
-                        to = m;
-                    }
-                }
-
-                Effects.SendMovingEffect(from, to, Potion.ItemID, 7, 0, false, false, Potion.Hue);
-
-                if (Potion.Amount > 1)
-                {
-                    Mobile.LiftItemDupe(Potion, 1);
-                }
-
-                Potion.Internalize();
-                Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, loc, map));
             }
         }
     }

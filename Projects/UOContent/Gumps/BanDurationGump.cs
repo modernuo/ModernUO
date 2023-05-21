@@ -248,7 +248,7 @@ namespace Server.Gumps
                 }
                 else
                 {
-                    from.SendMessage("Ban Duration: {0}", duration);
+                    from.SendMessage($"Ban Duration: {duration}");
                 }
             }
             else

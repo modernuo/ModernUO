@@ -1,13 +1,21 @@
-using System.Text.Json;
-using Server.Json;
-using Server.Regions;
+using System.Text.Json.Serialization;
 
-namespace Server.Engines.NewMagincia
+namespace Server.Regions;
+
+public class NewMaginciaRegion : TownRegion
 {
-    public class NewMaginciaRegion : TownRegion
+    [JsonConstructor] // Don't include parent, since it is special
+    public NewMaginciaRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
     {
-        public NewMaginciaRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-        {
-        }
+    }
+
+    public NewMaginciaRegion(string name, Map map, Region parent, params Rectangle3D[] area)
+        : base(name, map, parent, area)
+    {
+    }
+
+    public NewMaginciaRegion(string name, Map map, Region parent, int priority, params Rectangle3D[] area)
+        : base(name, map, parent, priority, area)
+    {
     }
 }

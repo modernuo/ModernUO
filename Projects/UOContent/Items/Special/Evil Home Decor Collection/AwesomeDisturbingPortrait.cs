@@ -1,215 +1,127 @@
 using System;
-using Server.Network;
+using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+[Flippable(0x2A5D, 0x2A61)]
+public partial class AwesomeDisturbingPortraitComponent : AddonComponent
 {
-    [Flippable(0x2A5D, 0x2A61)]
-    public class AwesomeDisturbingPortraitComponent : AddonComponent
+    private InternalTimer _timer;
+
+    public AwesomeDisturbingPortraitComponent() : base(0x2A5D)
     {
-        private InternalTimer m_Timer;
+        _timer = new InternalTimer(this, TimeSpan.FromSeconds(1));
+        _timer.Start();
+    }
 
-        public AwesomeDisturbingPortraitComponent() : base(0x2A5D)
-        {
-            m_Timer = new InternalTimer(this, TimeSpan.FromSeconds(1));
-            m_Timer.Start();
-        }
+    public override int LabelNumber => 1074479; // Disturbing portrait
+    public bool FacingSouth => ItemID < 0x2A61;
 
-        public AwesomeDisturbingPortraitComponent(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1074479; // Disturbing portrait
-        public bool FacingSouth => ItemID < 0x2A61;
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (Utility.InRange(Location, from.Location, 2))
-            {
-                Clock.GetTime(Map, X, Y, out var hours, out int _);
-
-                if (hours is < 4 or > 20)
-                {
-                    Effects.PlaySound(Location, Map, 0x569);
-                }
-
-                UpdateImage();
-            }
-            else
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-        }
-
-        public override void OnAfterDelete()
-        {
-            base.OnAfterDelete();
-
-            if (m_Timer?.Running == true)
-            {
-                m_Timer.Stop();
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            m_Timer = new InternalTimer(this, TimeSpan.Zero);
-            m_Timer.Start();
-        }
-
-        private void UpdateImage()
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (Utility.InRange(Location, from.Location, 2))
         {
             Clock.GetTime(Map, X, Y, out var hours, out int _);
 
-            if (FacingSouth)
+            if (hours is < 4 or > 20)
             {
-                if (hours < 4)
-                {
-                    ItemID = 0x2A60;
-                }
-                else if (hours < 6)
-                {
-                    ItemID = 0x2A5F;
-                }
-                else if (hours < 8)
-                {
-                    ItemID = 0x2A5E;
-                }
-                else if (hours < 16)
-                {
-                    ItemID = 0x2A5D;
-                }
-                else if (hours < 18)
-                {
-                    ItemID = 0x2A5E;
-                }
-                else if (hours < 20)
-                {
-                    ItemID = 0x2A5F;
-                }
-                else
-                {
-                    ItemID = 0x2A60;
-                }
+                Effects.PlaySound(Location, Map, 0x569);
             }
-            else
-            {
-                if (hours < 4)
-                {
-                    ItemID = 0x2A64;
-                }
-                else if (hours < 6)
-                {
-                    ItemID = 0x2A63;
-                }
-                else if (hours < 8)
-                {
-                    ItemID = 0x2A62;
-                }
-                else if (hours < 16)
-                {
-                    ItemID = 0x2A61;
-                }
-                else if (hours < 18)
-                {
-                    ItemID = 0x2A62;
-                }
-                else if (hours < 20)
-                {
-                    ItemID = 0x2A63;
-                }
-                else
-                {
-                    ItemID = 0x2A64;
-                }
-            }
+
+            UpdateImage();
         }
-
-        private class InternalTimer : Timer
+        else
         {
-            private readonly AwesomeDisturbingPortraitComponent m_Component;
-
-            public InternalTimer(AwesomeDisturbingPortraitComponent c, TimeSpan delay) : base(
-                delay,
-                TimeSpan.FromMinutes(10)
-            )
-            {
-                m_Component = c;
-            }
-
-            protected override void OnTick()
-            {
-                if (m_Component?.Deleted == false)
-                {
-                    m_Component.UpdateImage();
-                }
-            }
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
     }
 
-    public class AwesomeDisturbingPortraitAddon : BaseAddon
+    public override void OnAfterDelete()
     {
-        [Constructible]
-        public AwesomeDisturbingPortraitAddon()
+        base.OnAfterDelete();
+
+        if (_timer?.Running == true)
         {
-            AddComponent(new AwesomeDisturbingPortraitComponent(), 0, 0, 0);
-        }
-
-        public AwesomeDisturbingPortraitAddon(Serial serial) : base(serial)
-        {
-        }
-
-        public override BaseAddonDeed Deed => new AwesomeDisturbingPortraitDeed();
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            _timer.Stop();
         }
     }
 
-    public class AwesomeDisturbingPortraitDeed : BaseAddonDeed
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        [Constructible]
-        public AwesomeDisturbingPortraitDeed() => LootType = LootType.Blessed;
+        // Randomize them so they aren't all going off at the same time.
+        _timer = new InternalTimer(this, TimeSpan.FromMilliseconds(8 * Utility.Random(256)));
+        _timer.Start();
+    }
 
-        public AwesomeDisturbingPortraitDeed(Serial serial) : base(serial)
+    private void UpdateImage()
+    {
+        Clock.GetTime(Map, X, Y, out var hours, out int _);
+
+        if (FacingSouth)
         {
+            ItemID = hours switch
+            {
+                < 4  => 0x2A60,
+                < 6  => 0x2A5F,
+                < 8  => 0x2A5E,
+                < 16 => 0x2A5D,
+                < 18 => 0x2A5E,
+                < 20 => 0x2A5F,
+                _    => 0x2A60
+            };
+
+            return;
         }
 
-        public override BaseAddon Addon => new AwesomeDisturbingPortraitAddon();
-        public override int LabelNumber => 1074479; // Disturbing portrait
-
-        public override void Serialize(IGenericWriter writer)
+        ItemID = hours switch
         {
-            base.Serialize(writer);
+            < 4  => 0x2A64,
+            < 6  => 0x2A63,
+            < 8  => 0x2A62,
+            < 16 => 0x2A61,
+            < 18 => 0x2A62,
+            < 20 => 0x2A63,
+            _    => 0x2A64
+        };
+    }
 
-            writer.WriteEncodedInt(0); // version
-        }
+    private class InternalTimer : Timer
+    {
+        private readonly AwesomeDisturbingPortraitComponent _component;
 
-        public override void Deserialize(IGenericReader reader)
+        public InternalTimer(AwesomeDisturbingPortraitComponent c, TimeSpan delay)
+            : base(delay, TimeSpan.FromMinutes(10)) => _component = c;
+
+        protected override void OnTick()
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
+            if (_component?.Deleted == false)
+            {
+                _component.UpdateImage();
+            }
         }
     }
+}
+
+[SerializationGenerator(0)]
+public partial class AwesomeDisturbingPortraitAddon : BaseAddon
+{
+    [Constructible]
+    public AwesomeDisturbingPortraitAddon()
+    {
+        AddComponent(new AwesomeDisturbingPortraitComponent(), 0, 0, 0);
+    }
+
+    public override BaseAddonDeed Deed => new AwesomeDisturbingPortraitDeed();
+}
+
+[SerializationGenerator(0)]
+public partial class AwesomeDisturbingPortraitDeed : BaseAddonDeed
+{
+    [Constructible]
+    public AwesomeDisturbingPortraitDeed() => LootType = LootType.Blessed;
+
+    public override BaseAddon Addon => new AwesomeDisturbingPortraitAddon();
+    public override int LabelNumber => 1074479; // Disturbing portrait
 }

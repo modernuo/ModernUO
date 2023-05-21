@@ -70,7 +70,7 @@ namespace Server.Spells.Fifth
                 return;
             }
 
-            if (DisguiseTimers.IsDisguised(Caster))
+            if (DisguisePersistence.IsDisguised(Caster))
             {
                 Caster.SendLocalizedMessage(1061631); // You can't do that while disguised.
                 return;
@@ -86,7 +86,7 @@ namespace Server.Spells.Fifth
             {
                 if (Caster.BeginAction<IncognitoSpell>())
                 {
-                    DisguiseTimers.StopTimer(Caster);
+                    DisguisePersistence.StopTimer(Caster);
 
                     Caster.HueMod = Caster.Race.RandomSkinHue();
                     Caster.NameMod = Caster.Female ? NameList.RandomName("female") : NameList.RandomName("male");
@@ -108,13 +108,12 @@ namespace Server.Spells.Fifth
 
                     StopTimer(Caster);
 
-                    var timeVal = Math.Min(6 * Caster.Skills.Magery.Fixed / 50 + 1, 144);
+                    var duration = TimeSpan.FromSeconds(Math.Min(6 * Caster.Skills.Magery.Value / 5.0, 144));
 
-                    var length = TimeSpan.FromSeconds(timeVal);
-                    Timer.StartTimer(length, () => EndIncognito(Caster), out var timerToken);
+                    Timer.StartTimer(duration, () => EndIncognito(Caster), out var timerToken);
                     _table[Caster] = timerToken;
 
-                    BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, length, Caster));
+                    BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, duration, Caster));
                 }
                 else
                 {

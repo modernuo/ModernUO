@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class Llama : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Llama : BaseCreature
     {
         [Constructible]
         public Llama() : base(AIType.AI_Animal, FightMode.Aggressor)
@@ -35,29 +38,11 @@ namespace Server.Mobiles
             MinTameSkill = 35.1;
         }
 
-        public Llama(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a llama corpse";
         public override string DefaultName => "a llama";
 
         public override int Meat => 1;
         public override int Hides => 12;
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

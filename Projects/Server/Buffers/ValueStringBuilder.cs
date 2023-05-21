@@ -187,6 +187,7 @@ public ref struct ValueStringBuilder
                 while (!((ISpanFormattable)value).TryFormat(destination, out charsWritten, format, default))
                 {
                     Grow(1);
+                    destination = _chars[_length..];
                 }
 
                 if ((uint)charsWritten > (uint)destination.Length)
@@ -206,6 +207,17 @@ public ref struct ValueStringBuilder
             Append(value.ToString());
         }
     }
+
+    // Compiler generated
+    public void Append(ref RawInterpolatedStringHandler handler) => Append(handler.Text);
+
+    // Compiler generated
+    public void Append(
+        IFormatProvider? formatProvider,
+        [InterpolatedStringHandlerArgument("formatProvider")]
+        ref RawInterpolatedStringHandler handler
+    ) => Append(handler.Text);
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Append(string? s)
@@ -448,166 +460,5 @@ public ref struct ValueStringBuilder
         }
 
         _length -= length;
-    }
-
-    /// <summary>Provides a handler used by the language compiler to append interpolated strings into <see cref="ValueStringBuilder"/> instances.</summary>
-    [InterpolatedStringHandler]
-    public ref struct AppendInterpolatedStringHandler
-    {
-        // Implementation note:
-        // As this type is only intended to be targeted by the compiler, public APIs eschew argument validation logic
-        // in a variety of places, e.g. allowing a null input when one isn't expected to produce a NullReferenceException rather
-        // than an ArgumentNullException.
-
-        /// <summary>The associated StringBuilder to which to append.</summary>
-        internal ValueStringBuilder _stringBuilder;
-
-        /// <summary>Creates a handler used to append an interpolated string into a <see cref="ValueStringBuilder"/>.</summary>
-        /// <param name="literalLength">The number of constant characters outside of interpolation expressions in the interpolated string.</param>
-        /// <param name="formattedCount">The number of interpolation expressions in the interpolated string.</param>
-        /// <param name="stringBuilder">The associated StringBuilder to which to append.</param>
-        /// <remarks>This is intended to be called only by compiler-generated code. Arguments are not validated as they'd otherwise be for members intended to be used directly.</remarks>
-        public AppendInterpolatedStringHandler(int literalLength, int formattedCount, ValueStringBuilder stringBuilder)
-        {
-            _stringBuilder = stringBuilder;
-        }
-
-        /// <summary>Writes the specified string to the handler.</summary>
-        /// <param name="value">The string to write.</param>
-        public void AppendLiteral(string value) => _stringBuilder.Append(value);
-
-        // Design note:
-        // This provides the same set of overloads and semantics as DefaultInterpolatedStringHandler.
-
-        /// <summary>Writes the specified value to the handler.</summary>
-        /// <param name="value">The value to write.</param>
-        public void AppendFormatted<T>(T value) => _stringBuilder.Append(value);
-
-        /// <summary>Writes the specified value to the handler.</summary>
-        /// <param name="value">The value to write.</param>
-        /// <param name="format">The format string.</param>
-        public void AppendFormatted<T>(T value, string? format) => _stringBuilder.Append(value, format);
-
-        /// <summary>Writes the specified value to the handler.</summary>
-        /// <param name="value">The value to write.</param>
-        /// <param name="alignment">Minimum number of characters that should be written for this value.  If the value is negative, it indicates left-aligned and the required minimum is the absolute value.</param>
-        public void AppendFormatted<T>(T value, int alignment) =>
-            AppendFormatted(value, alignment, format: null);
-
-        /// <summary>Writes the specified value to the handler.</summary>
-        /// <param name="value">The value to write.</param>
-        /// <param name="format">The format string.</param>
-        /// <param name="alignment">Minimum number of characters that should be written for this value.  If the value is negative, it indicates left-aligned and the required minimum is the absolute value.</param>
-        public void AppendFormatted<T>(T value, int alignment, string? format)
-        {
-            if (alignment == 0)
-            {
-                // This overload is used as a fallback from several disambiguation overloads, so special-case 0.
-                AppendFormatted(value, format);
-            }
-            else if (alignment < 0)
-            {
-                // Left aligned: format into the handler, then append any additional padding required.
-                int start = _stringBuilder.Length;
-                AppendFormatted(value, format);
-                int paddingRequired = -alignment - (_stringBuilder.Length - start);
-                if (paddingRequired > 0)
-                {
-                    _stringBuilder.Append(' ', paddingRequired);
-                }
-            }
-            else
-            {
-                var startingPos = _stringBuilder._length;
-                AppendFormatted(value, format);
-
-                InsertAlignment(startingPos, alignment);
-            }
-        }
-
-        /// <summary>Writes the specified character span to the handler.</summary>
-        /// <param name="value">The span to write.</param>
-        public void AppendFormatted(ReadOnlySpan<char> value) => _stringBuilder.Append(value);
-
-        /// <summary>Writes the specified string of chars to the handler.</summary>
-        /// <param name="value">The span to write.</param>
-        /// <param name="alignment">Minimum number of characters that should be written for this value.  If the value is negative, it indicates left-aligned and the required minimum is the absolute value.</param>
-        /// <param name="format">The format string.</param>
-        public void AppendFormatted(ReadOnlySpan<char> value, int alignment = 0, string? format = null)
-        {
-            if (alignment == 0)
-            {
-                _stringBuilder.Append(value);
-            }
-            else
-            {
-                bool leftAlign = false;
-                if (alignment < 0)
-                {
-                    leftAlign = true;
-                    alignment = -alignment;
-                }
-
-                int paddingRequired = alignment - value.Length;
-                if (paddingRequired <= 0)
-                {
-                    _stringBuilder.Append(value);
-                }
-                else if (leftAlign)
-                {
-                    _stringBuilder.Append(value);
-                    _stringBuilder.Append(' ', paddingRequired);
-                }
-                else
-                {
-                    _stringBuilder.Append(' ', paddingRequired);
-                    _stringBuilder.Append(value);
-                }
-            }
-        }
-
-        /// <summary>Writes the specified value to the handler.</summary>
-        /// <param name="value">The value to write.</param>
-        public void AppendFormatted(string? value) => _stringBuilder.Append(value);
-
-        /// <summary>Writes the specified value to the handler.</summary>
-        /// <param name="value">The value to write.</param>
-        /// <param name="alignment">Minimum number of characters that should be written for this value.  If the value is negative, it indicates left-aligned and the required minimum is the absolute value.</param>
-        /// <param name="format">The format string.</param>
-        public void AppendFormatted(string? value, int alignment = 0, string? format = null) =>
-            // Format is meaningless for strings and doesn't make sense for someone to specify.  We have the overload
-            // simply to disambiguate between ROS<char> and object, just in case someone does specify a format, as
-            // string is implicitly convertible to both. Just delegate to the T-based implementation.
-            AppendFormatted<string?>(value, alignment, format);
-
-        /// <summary>Writes the specified value to the handler.</summary>
-        /// <param name="value">The value to write.</param>
-        /// <param name="alignment">Minimum number of characters that should be written for this value.  If the value is negative, it indicates left-aligned and the required minimum is the absolute value.</param>
-        /// <param name="format">The format string.</param>
-        public void AppendFormatted(object? value, int alignment = 0, string? format = null) =>
-            // This overload is expected to be used rarely, only if either a) something strongly typed as object is
-            // formatted with both an alignment and a format, or b) the compiler is unable to target type to T. It
-            // exists purely to help make cases from (b) compile. Just delegate to the T-based implementation.
-            AppendFormatted<object?>(value, alignment, format);
-
-        private void InsertAlignment(int startingPos, int alignment)
-        {
-            var charsWritten = _stringBuilder._length - startingPos;
-
-            var paddingNeeded = alignment - charsWritten;
-            if (paddingNeeded > 0)
-            {
-                var chars = _stringBuilder._chars;
-                if (chars.Length - _stringBuilder._length < paddingNeeded)
-                {
-                    _stringBuilder.Grow(paddingNeeded);
-                }
-
-                chars.Slice(startingPos, charsWritten).CopyTo(chars[(startingPos + paddingNeeded)..]);
-                chars.Slice(startingPos, paddingNeeded).Fill(' ');
-
-                _stringBuilder._length += paddingNeeded;
-            }
-        }
     }
 }

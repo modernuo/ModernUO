@@ -1,0 +1,69 @@
+{
+  "version": 6,
+  "type": "Server.Items.Spellbook",
+  "properties": [
+    {
+      "name": "Quality",
+      "type": "Server.Items.BookQuality",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "EngravedText",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Crafter",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Slayer",
+      "type": "Server.Items.SlayerName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Slayer2",
+      "type": "Server.Items.SlayerName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Attributes",
+      "type": "Server.AosAttributes",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "SkillBonuses",
+      "type": "Server.AosSkillBonuses",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "Content",
+      "type": "ulong",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SpellCount",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -13,17 +13,17 @@ public partial class Guildstone : Item, IAddon, IChoppable
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildName;
 
     [InvalidateProperties]
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildAbbrev;
 
     [InvalidateProperties]
     [SerializableField(2, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Guild _guild;
 
     public Guildstone(Guild g) : this(g, g.Name, g.Abbreviation)
@@ -114,11 +114,11 @@ public partial class Guildstone : Item, IAddon, IChoppable
             }
 
             // list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
-            list.Add(1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
+            list.Add(1060802, $"{Utility.FixHtmlFormattable(name)} [{Utility.FixHtmlFormattable(abbr)}]");
         }
         else if (_guildName != null && _guildAbbrev != null)
         {
-            list.Add(1060802, $"{Utility.FixHtml(_guildName)} [{Utility.FixHtml(_guildAbbrev)}]");
+            list.Add(1060802, $"{Utility.FixHtmlFormattable(_guildName)} [{Utility.FixHtmlFormattable(_guildAbbrev)}]");
         }
     }
 
@@ -209,17 +209,17 @@ public partial class GuildstoneDeed : Item
 {
     [InvalidateProperties]
     [SerializableField(0)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildName;
 
     [InvalidateProperties]
     [SerializableField(1)]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _guildAbbrev;
 
     [InvalidateProperties]
     [SerializableField(2, setter: "private")]
-    [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Guild _guild;
 
     [Constructible]
@@ -254,11 +254,11 @@ public partial class GuildstoneDeed : Item
             }
 
             // list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
-            list.Add(1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
+            list.Add(1060802, $"{Utility.FixHtmlFormattable(name)} [{Utility.FixHtmlFormattable(abbr)}]");
         }
         else if (_guildName != null && _guildAbbrev != null)
         {
-            list.Add(1060802, $"{Utility.FixHtml(_guildName)} [{Utility.FixHtml(_guildAbbrev)}]");
+            list.Add(1060802, $"{Utility.FixHtmlFormattable(_guildName)} [{Utility.FixHtmlFormattable(_guildAbbrev)}]");
         }
     }
 

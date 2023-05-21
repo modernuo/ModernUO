@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class HeadlessOne : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class HeadlessOne : BaseCreature
     {
         [Constructible]
         public HeadlessOne() : base(AIType.AI_Melee)
@@ -31,10 +34,6 @@ namespace Server.Mobiles
             VirtualArmor = 18;
         }
 
-        public HeadlessOne(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a headless corpse";
         public override string DefaultName => "a headless one";
 
@@ -45,18 +44,6 @@ namespace Server.Mobiles
         {
             AddLoot(LootPack.Poor);
             // TODO: body parts
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
         }
     }
 }

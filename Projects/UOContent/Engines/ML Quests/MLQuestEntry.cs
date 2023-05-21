@@ -96,7 +96,7 @@ namespace Server.Engines.MLQuests
 
         public BaseObjectiveInstance[] Objectives { get; set; }
 
-        public bool SkipReportBack => TextDefinition.IsNullOrEmpty(Quest.CompletionMessage);
+        public bool SkipReportBack => Quest.CompletionMessage.IsNullOrEmpty();
 
         private void Register()
         {
@@ -166,7 +166,7 @@ namespace Server.Engines.MLQuests
                     obj.OnQuestCompleted();
                 }
 
-                TextDefinition.SendMessageTo(Player, Quest.CompletionNotice, 0x23);
+                Quest.CompletionNotice.SendMessageTo(Player, 0x23);
 
                 /*
                  * Advance to the ClaimReward=true stage if this quest has no
@@ -176,8 +176,8 @@ namespace Server.Engines.MLQuests
                  * For quests that require collections, this is done later when
                  * the player double clicks the quester.
                  */
-                if (!Removed && SkipReportBack && !Quest.RequiresCollection
-                ) // An OnQuestCompleted can potentially have removed this instance already
+                // An OnQuestCompleted can potentially have removed this instance already
+                if (!Removed && SkipReportBack && !Quest.RequiresCollection)
                 {
                     ContinueReportBack(false);
                 }
@@ -386,9 +386,8 @@ namespace Server.Engines.MLQuests
                         rewardItem.Delete();
                     }
 
-                    Player.SendLocalizedMessage(
-                        1078524
-                    ); // Your backpack is full. You cannot complete the quest and receive your reward.
+                    // Your backpack is full. You cannot complete the quest and receive your reward.
+                    Player.SendLocalizedMessage(1078524);
                     return;
                 }
 
@@ -398,10 +397,8 @@ namespace Server.Engines.MLQuests
 
                     if (rewardItem.Stackable)
                     {
-                        Player.SendLocalizedMessage(
-                            1115917,
-                            $"{rewardItem.Amount}\t{rewardName}"
-                        ); // You receive a reward: ~1_QUANTITY~ ~2_ITEM~
+                        // You receive a reward: ~1_QUANTITY~ ~2_ITEM~
+                        Player.SendLocalizedMessage(1115917, $"{rewardItem.Amount}\t{rewardName}");
                     }
                     else
                     {

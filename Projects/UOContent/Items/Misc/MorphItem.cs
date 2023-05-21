@@ -1,143 +1,103 @@
-namespace Server.Items
+using System;
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class MorphItem : Item
 {
-    public class MorphItem : Item
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _inactiveItemId;
+
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _activeItemId;
+
+    [Constructible]
+    public MorphItem(int inactiveItemID, int activeItemID, int range) : this(inactiveItemID, activeItemID, range, range)
     {
-        private int m_InsideRange;
-        private int m_OutsideRange;
+    }
 
-        [Constructible]
-        public MorphItem(int inactiveItemID, int activeItemID, int range) : this(inactiveItemID, activeItemID, range, range)
+    [Constructible]
+    public MorphItem(int inactiveItemID, int activeItemID, int inRange, int outRange) : base(inactiveItemID)
+    {
+        Movable = false;
+
+        _inactiveItemId = inactiveItemID;
+        _activeItemId = activeItemID;
+        _insideRange = inRange;
+        _outsideRange = outRange;
+    }
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int OutsideRange
+    {
+        get => _outsideRange;
+        set => _outsideRange = Math.Clamp(value, 0, 18);
+    }
+
+    [SerializableProperty(3)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int InsideRange
+    {
+        get => _insideRange;
+        set => _insideRange = Math.Clamp(value, 0, 18);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int CurrentRange => ItemID == _inactiveItemId ? _insideRange : _outsideRange;
+
+    public override bool HandlesOnMovement => true;
+
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+        if (Utility.InRange(m.Location, Location, CurrentRange) || Utility.InRange(oldLocation, Location, CurrentRange))
         {
+            Refresh();
         }
+    }
 
-        [Constructible]
-        public MorphItem(int inactiveItemID, int activeItemID, int inRange, int outRange) : base(inactiveItemID)
+    public override void OnMapChange()
+    {
+        if (!Deleted)
         {
-            Movable = false;
-
-            InactiveItemID = inactiveItemID;
-            ActiveItemID = activeItemID;
-            InsideRange = inRange;
-            OutsideRange = outRange;
+            Refresh();
         }
+    }
 
-        public MorphItem(Serial serial) : base(serial)
+    public override void OnLocationChange(Point3D oldLoc)
+    {
+        if (!Deleted)
         {
+            Refresh();
         }
+    }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int InactiveItemID { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ActiveItemID { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int InsideRange
+    public void Refresh()
+    {
+        var found = false;
+        var eable = GetMobilesInRange(CurrentRange);
+        foreach (var mob in eable)
         {
-            get => m_InsideRange;
-            set => m_InsideRange = value > 18 ? 18 :
-                value < 0 ? 0 : value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int OutsideRange
-        {
-            get => m_OutsideRange;
-            set => m_OutsideRange = value > 18 ? 18 :
-                value < 0 ? 0 : value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int CurrentRange => ItemID == InactiveItemID ? InsideRange : OutsideRange;
-
-        public override bool HandlesOnMovement => true;
-
-        public override void OnMovement(Mobile m, Point3D oldLocation)
-        {
-            if (Utility.InRange(m.Location, Location, CurrentRange) || Utility.InRange(oldLocation, Location, CurrentRange))
+            if (!mob.Hidden || mob.AccessLevel <= AccessLevel.Player)
             {
-                Refresh();
+                found = true;
+                break;
             }
         }
 
-        public override void OnMapChange()
-        {
-            if (!Deleted)
-            {
-                Refresh();
-            }
-        }
+        eable.Free();
 
-        public override void OnLocationChange(Point3D oldLoc)
-        {
-            if (!Deleted)
-            {
-                Refresh();
-            }
-        }
+        ItemID = found ? _activeItemId : _inactiveItemId;
 
-        public void Refresh()
-        {
-            var found = false;
-            var eable = GetMobilesInRange(CurrentRange);
-            foreach (var mob in eable)
-            {
-                if (!mob.Hidden || mob.AccessLevel <= AccessLevel.Player)
-                {
-                    found = true;
-                    break;
-                }
-            }
+        Visible = ItemID != 0x1;
+    }
 
-            eable.Free();
-
-            ItemID = found ? ActiveItemID : InactiveItemID;
-
-            Visible = ItemID != 0x1;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(m_OutsideRange);
-
-            writer.Write(InactiveItemID);
-            writer.Write(ActiveItemID);
-            writer.Write(m_InsideRange);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        m_OutsideRange = reader.ReadInt();
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        InactiveItemID = reader.ReadInt();
-                        ActiveItemID = reader.ReadInt();
-                        m_InsideRange = reader.ReadInt();
-
-                        if (version < 1)
-                        {
-                            m_OutsideRange = m_InsideRange;
-                        }
-
-                        break;
-                    }
-            }
-
-            Timer.StartTimer(Refresh);
-        }
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        Refresh();
     }
 }

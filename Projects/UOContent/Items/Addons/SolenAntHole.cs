@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Mobiles;
-using Server.Network;
 using Server.Spells;
 
 namespace Server.Items
@@ -22,12 +21,8 @@ namespace Server.Items
                 if (map == Map.Trammel || map == Map.Felucca)
                 {
                     from.MoveToWorld(new Point3D(5922, 2024, 0), map);
-                    PublicOverheadMessage(
-                        MessageType.Regular,
-                        0x3B2,
-                        true,
-                        $"* {from.Name} dives into the hole and disappears!*"
-                    );
+                    // * ~1_NAME~ dives into the mysterious hole! *
+                    PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114446, from.Name);
                 }
             }
             else

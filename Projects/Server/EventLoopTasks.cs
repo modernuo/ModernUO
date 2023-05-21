@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2021 - ModernUO Development Team                   *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: EventLoopTasks.cs                                               *
  *                                                                       *
@@ -17,59 +17,58 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Server
+namespace Server;
+
+public sealed class EventLoopContext : SynchronizationContext
 {
-    public sealed class EventLoopContext : SynchronizationContext
+    private readonly ConcurrentQueue<Action> _queue;
+    private readonly Thread _mainThread;
+
+    public EventLoopContext()
     {
-        private readonly ConcurrentQueue<Action> _queue;
-        private readonly Thread _mainThread;
+        _queue = new ConcurrentQueue<Action>();
+        _mainThread = Thread.CurrentThread;
+    }
 
-        public EventLoopContext()
+    public override SynchronizationContext CreateCopy() => new EventLoopContext();
+
+    public void Post(Action d) => _queue.Enqueue(d);
+
+    public override void Post(SendOrPostCallback d, object state) => _queue.Enqueue(() => d(state));
+
+    public override void Send(SendOrPostCallback d, object state)
+    {
+        if (Thread.CurrentThread == _mainThread)
         {
-            _queue = new ConcurrentQueue<Action>();
-            _mainThread = Thread.CurrentThread;
+            d(state);
+            return;
         }
 
-        public override SynchronizationContext CreateCopy() => new EventLoopContext();
+        AutoResetEvent evt = new AutoResetEvent(false);
 
-        public void Post(Action d) => _queue.Enqueue(d);
-
-        public override void Post(SendOrPostCallback d, object state) => _queue.Enqueue(() => d(state));
-
-        public override void Send(SendOrPostCallback d, object state)
+        _queue.Enqueue(() =>
         {
-            if (Thread.CurrentThread == _mainThread)
-            {
-                d(state);
-                return;
-            }
+            d(state);
+            evt.Set();
+        });
 
-            AutoResetEvent evt = new AutoResetEvent(false);
+        evt.WaitOne();
+    }
 
-            _queue.Enqueue(() =>
-            {
-                d(state);
-                evt.Set();
-            });
-
-            evt.WaitOne();
+    public void ExecuteTasks()
+    {
+        if (Thread.CurrentThread != _mainThread)
+        {
+            throw new Exception("Called EventLoop.ExecuteTasks on incorrect thread!");
         }
 
-        public void ExecuteTasks()
+        var count = _queue.Count;
+
+        for (int i = 0; i < count; i++)
         {
-            if (Thread.CurrentThread != _mainThread)
+            if (_queue.TryDequeue(out var a))
             {
-                throw new Exception("Called EventLoop.ExecuteTasks on incorrect thread!");
-            }
-
-            var count = _queue.Count;
-
-            for (int i = 0; i < count; i++)
-            {
-                if (_queue.TryDequeue(out var a))
-                {
-                    a();
-                }
+                a();
             }
         }
     }

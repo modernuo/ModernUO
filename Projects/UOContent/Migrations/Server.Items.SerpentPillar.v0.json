@@ -1,0 +1,30 @@
+{
+  "version": 0,
+  "type": "Server.Items.SerpentPillar",
+  "properties": [
+    {
+      "name": "Active",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Word",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Destination",
+      "type": "Server.Rectangle2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Rect2D"
+      ]
+    }
+  ]
+}

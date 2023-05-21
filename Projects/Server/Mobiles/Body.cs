@@ -30,8 +30,8 @@ public enum BodyType : byte
     Equipment
 }
 
-[Parsable]
-public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<int>, IComparable<int>, IComparable<Body>
+public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<int>,
+    IComparable<int>, IComparable<Body>, ISpanParsable<Body>
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Body));
 
@@ -148,5 +148,28 @@ public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<i
 
     public int CompareTo(int other) => BodyID.CompareTo(other);
 
-    public static Body Parse(string value) => Utility.ToInt32(value);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Body Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Body Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Body result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Body Parse(ReadOnlySpan<char> s, IFormatProvider provider) => Utility.ToInt32(s);
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Body result)
+    {
+        if (Utility.ToInt32(s, out var value))
+        {
+            result = value;
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
 }

@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "type": "Server.Items.BraceletOfBinding",
+  "properties": [
+    {
+      "name": "Recharges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Inscription",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Bound",
+      "type": "Server.Items.BraceletOfBinding",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

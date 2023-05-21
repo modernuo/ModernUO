@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Mobiles
 {
-    public class FetidEssence : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class FetidEssence : BaseCreature
     {
         [Constructible]
         public FetidEssence() : base(AIType.AI_Mage)
@@ -37,10 +40,6 @@ namespace Server.Mobiles
             Karma = -3700; // Guessed
         }
 
-        public FetidEssence(Serial serial) : base(serial)
-        {
-        }
-
         public override string CorpseName => "a fetid essence corpse";
         public override string DefaultName => "a fetid essence";
 
@@ -61,18 +60,6 @@ namespace Server.Mobiles
         public override int GetHurtSound() => 0x56c;
 
         public override int GetDeathSound() => 0x56e;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
 
         /*private class InternalTimer : Timer
         {

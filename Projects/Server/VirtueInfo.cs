@@ -1,148 +1,147 @@
-namespace Server
+namespace Server;
+
+[PropertyObject]
+public class VirtueInfo
 {
-    [PropertyObject]
-    public class VirtueInfo
+    public VirtueInfo()
     {
-        public VirtueInfo()
-        {
-        }
+    }
 
-        public VirtueInfo(IGenericReader reader)
-        {
-            int version = reader.ReadByte();
+    public VirtueInfo(IGenericReader reader)
+    {
+        int version = reader.ReadByte();
 
-            switch (version)
-            {
-                case 1: // Changed the values throughout the virtue system
-                case 0:
+        switch (version)
+        {
+            case 1: // Changed the values throughout the virtue system
+            case 0:
+                {
+                    int mask = reader.ReadByte();
+
+                    if (mask != 0)
                     {
-                        int mask = reader.ReadByte();
+                        Values = new int[8];
 
-                        if (mask != 0)
+                        for (var i = 0; i < 8; ++i)
                         {
-                            Values = new int[8];
-
-                            for (var i = 0; i < 8; ++i)
+                            if ((mask & (1 << i)) != 0)
                             {
-                                if ((mask & (1 << i)) != 0)
-                                {
-                                    Values[i] = reader.ReadInt();
-                                }
+                                Values[i] = reader.ReadInt();
                             }
                         }
-
-                        break;
                     }
-            }
 
-            if (version == 0)
-            {
-                Compassion *= 200;
-                Sacrifice *= 250; // Even though 40 (the max) only gives 10k, It's because it was formerly too easy
-
-                // No direct conversion factor for Justice, this is just an approximation
-                Justice *= 500;
-
-                // All the other virtues haven't been defined at 'version 0' point in time in the scripts.
-            }
-        }
-
-        public int[] Values { get; private set; }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Humility
-        {
-            get => GetValue(0);
-            set => SetValue(0, value);
-        }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Sacrifice
-        {
-            get => GetValue(1);
-            set => SetValue(1, value);
-        }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Compassion
-        {
-            get => GetValue(2);
-            set => SetValue(2, value);
-        }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Spirituality
-        {
-            get => GetValue(3);
-            set => SetValue(3, value);
-        }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Valor
-        {
-            get => GetValue(4);
-            set => SetValue(4, value);
-        }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Honor
-        {
-            get => GetValue(5);
-            set => SetValue(5, value);
-        }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Justice
-        {
-            get => GetValue(6);
-            set => SetValue(6, value);
-        }
-
-        [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-        public int Honesty
-        {
-            get => GetValue(7);
-            set => SetValue(7, value);
-        }
-
-        public int GetValue(int index) => Values?[index] ?? 0;
-
-        public void SetValue(int index, int value)
-        {
-            Values ??= new int[8];
-            Values[index] = value;
-        }
-
-        public override string ToString() => "...";
-
-        public static void Serialize(IGenericWriter writer, VirtueInfo info)
-        {
-            writer.Write((byte)1); // version
-
-            if (info.Values == null)
-            {
-                writer.Write((byte)0);
-            }
-            else
-            {
-                var mask = 0;
-
-                for (var i = 0; i < 8; ++i)
-                {
-                    if (info.Values[i] != 0)
-                    {
-                        mask |= 1 << i;
-                    }
+                    break;
                 }
+        }
 
-                writer.Write((byte)mask);
+        if (version == 0)
+        {
+            Compassion *= 200;
+            Sacrifice *= 250; // Even though 40 (the max) only gives 10k, It's because it was formerly too easy
 
-                for (var i = 0; i < 8; ++i)
+            // No direct conversion factor for Justice, this is just an approximation
+            Justice *= 500;
+
+            // All the other virtues haven't been defined at 'version 0' point in time in the scripts.
+        }
+    }
+
+    public int[] Values { get; private set; }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Humility
+    {
+        get => GetValue(0);
+        set => SetValue(0, value);
+    }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Sacrifice
+    {
+        get => GetValue(1);
+        set => SetValue(1, value);
+    }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Compassion
+    {
+        get => GetValue(2);
+        set => SetValue(2, value);
+    }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Spirituality
+    {
+        get => GetValue(3);
+        set => SetValue(3, value);
+    }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Valor
+    {
+        get => GetValue(4);
+        set => SetValue(4, value);
+    }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Honor
+    {
+        get => GetValue(5);
+        set => SetValue(5, value);
+    }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Justice
+    {
+        get => GetValue(6);
+        set => SetValue(6, value);
+    }
+
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Honesty
+    {
+        get => GetValue(7);
+        set => SetValue(7, value);
+    }
+
+    public int GetValue(int index) => Values?[index] ?? 0;
+
+    public void SetValue(int index, int value)
+    {
+        Values ??= new int[8];
+        Values[index] = value;
+    }
+
+    public override string ToString() => "...";
+
+    public static void Serialize(IGenericWriter writer, VirtueInfo info)
+    {
+        writer.Write((byte)1); // version
+
+        if (info.Values == null)
+        {
+            writer.Write((byte)0);
+        }
+        else
+        {
+            var mask = 0;
+
+            for (var i = 0; i < 8; ++i)
+            {
+                if (info.Values[i] != 0)
                 {
-                    if (info.Values[i] != 0)
-                    {
-                        writer.Write(info.Values[i]);
-                    }
+                    mask |= 1 << i;
+                }
+            }
+
+            writer.Write((byte)mask);
+
+            for (var i = 0; i < 8; ++i)
+            {
+                if (info.Values[i] != 0)
+                {
+                    writer.Write(info.Values[i]);
                 }
             }
         }

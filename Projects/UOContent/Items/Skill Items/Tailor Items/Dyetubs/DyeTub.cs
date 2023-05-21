@@ -16,14 +16,12 @@ namespace Server.Items
     public partial class DyeTub : Item, ISecurable
     {
         [SerializableField(0)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SecureLevel _level;
 
         [SerializableField(1, isVirtual: true)]
-        [SerializableFieldAttr("[CommandProperty(AccessLevel.GameMaster)]")]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _redyable;
-
-        private int _dyedHue;
 
         [Constructible]
         public DyeTub() : base(0xFAB)
@@ -44,7 +42,7 @@ namespace Server.Items
 
         public virtual bool AllowDyables => true;
 
-        [SerializableField(2)]
+        [SerializableProperty(2)]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DyedHue
         {

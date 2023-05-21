@@ -21,14 +21,6 @@
       "rule": "EnumMigrationRule"
     },
     {
-      "name": "Name",
-      "type": "string",
-      "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": [
-        ""
-      ]
-    },
-    {
       "name": "Offset",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",

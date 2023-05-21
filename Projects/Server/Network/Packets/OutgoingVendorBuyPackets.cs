@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingVendorBuyPackets.cs                                     *
  *                                                                       *
@@ -90,7 +90,7 @@ public static class OutgoingVendorBuyPackets
         var writer = new SpanWriter(stackalloc byte[length]);
         writer.Write((byte)0x74); // Packet ID
         writer.Write((ushort)length);
-        writer.Write((vendor.FindItemOnLayer(Layer.ShopBuy) as Container)?.Serial ?? Serial.MinusOne);
+        writer.Write(vendor.FindItemOnLayer<Container>(Layer.ShopBuy)?.Serial ?? Serial.MinusOne);
         writer.Write((byte)list.Count);
 
         for (var i = 0; i < list.Count; ++i)

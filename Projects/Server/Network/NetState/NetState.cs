@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2020 - ModernUO Development Team                       *
+ * Copyright 2019-2022 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: NetState.cs                                                     *
  *                                                                       *
@@ -48,7 +48,7 @@ public partial class NetState : IComparable<NetState>
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
 
-    private static GCHandle[] _polledStates = new GCHandle[2048];
+    private static readonly GCHandle[] _polledStates = new GCHandle[2048];
     private static readonly IPollGroup _pollGroup = PollGroup.Create();
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _flushedPartials = new(256);
@@ -67,8 +67,6 @@ public partial class NetState : IComparable<NetState>
     private readonly long[] _packetCounts = new long[0x100];
     private string _disconnectReason = string.Empty;
 
-    internal int _authId;
-    internal int _seed;
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     internal GCHandle _handle;
@@ -165,6 +163,10 @@ public partial class NetState : IComparable<NetState>
             }
         }
     }
+
+    public int AuthId { get; set; }
+
+    public int Seed { get; set; }
 
     public DateTime ConnectedOn { get; }
 
@@ -611,15 +613,15 @@ public partial class NetState : IComparable<NetState>
                                 }
                                 else if (length >= 4)
                                 {
-                                    int seed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
+                                    int newSeed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
 
-                                    if (seed == 0)
+                                    if (newSeed == 0)
                                     {
                                         HandleError(0, 0);
                                         return;
                                     }
 
-                                    _seed = seed;
+                                    Seed = newSeed;
                                     packetLength = 4;
 
                                     _parserState = ParserState.AwaitingNextPacket;
@@ -1091,6 +1093,12 @@ public partial class NetState : IComparable<NetState>
             }
 #endif
 
+        var m = Mobile;
+        if (m?.NetState == this)
+        {
+            m.NetState = null;
+        }
+
         TcpServer.Instances.Remove(this);
         try
         {
@@ -1104,13 +1112,7 @@ public partial class NetState : IComparable<NetState>
         Connection.Close();
         _handle.Free();
 
-        var m = Mobile;
         Mobile = null;
-
-        if (m?.NetState == this)
-        {
-            m.NetState = null;
-        }
 
         var a = Account;
 
@@ -1120,6 +1122,7 @@ public partial class NetState : IComparable<NetState>
         Account = null;
         ServerInfo = null;
         CityInfo = null;
+        Connection = null;
 
         var count = TcpServer.Instances.Count;
 

@@ -3,7 +3,7 @@
   "type": "Server.Items.MarkContainer",
   "properties": [
     {
-      "name": "RawAutoLock",
+      "name": "AutoLock",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [

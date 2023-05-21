@@ -38,7 +38,12 @@ namespace Server.Spells.Sixth
 
                 var itemID = eastToWest ? 0x3967 : 0x3979;
 
-                var duration = TimeSpan.FromSeconds(3.0 + Caster.Skills.Magery.Value / 3.0);
+                var duration = Core.Expansion switch
+                {
+                    Expansion.None  => TimeSpan.FromSeconds(20),
+                    < Expansion.LBR => TimeSpan.FromSeconds(15.0 + Caster.Skills.Magery.Value / 3.0),
+                    _               => TimeSpan.FromSeconds(3.0 + Caster.Skills.Magery.Value / 3.0)
+                };
 
                 for (var i = -2; i <= 2; ++i)
                 {
@@ -179,7 +184,7 @@ namespace Server.Spells.Sixth
                     }
                     else
                     {
-                        duration = 7.0 + m_Caster.Skills.Magery.Value * 0.2;
+                        duration = 7.0 + m_Caster.Skills.Magery.Value / 5;
                     }
 
                     m.Paralyze(TimeSpan.FromSeconds(duration));

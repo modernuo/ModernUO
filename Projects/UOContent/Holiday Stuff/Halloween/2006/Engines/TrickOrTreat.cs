@@ -185,7 +185,7 @@ namespace Server.Engines.Events
                         return;
                     }
 
-                    if (Utility.RandomDouble() > .10)
+                    if (Utility.RandomDouble() < 0.90)
                     {
                         begged.Say(
                             Utility.Random(3) switch
@@ -196,7 +196,7 @@ namespace Server.Engines.Events
                             }
                         );
 
-                        if (Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100)
+                        if (Utility.RandomDouble() < 0.01 && from.Skills.Begging.Value >= 100)
                         {
                             from.AddToBackpack(HolidaySettings.RandomGMBeggerItem);
 

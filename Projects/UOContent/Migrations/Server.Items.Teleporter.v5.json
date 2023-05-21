@@ -1,0 +1,40 @@
+{
+  "version": 5,
+  "type": "Server.Items.Teleporter",
+  "properties": [
+    {
+      "name": "Flags",
+      "type": "Server.Items.TeleporterFlags",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Delay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "SoundID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "PointDest",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "MapDest",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    }
+  ]
+}

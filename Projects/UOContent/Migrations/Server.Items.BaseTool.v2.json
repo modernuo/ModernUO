@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "type": "Server.Items.BaseTool",
+  "properties": [
+    {
+      "name": "Crafter",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Quality",
+      "type": "Server.Items.ToolQuality",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "UsesRemaining",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

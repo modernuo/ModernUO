@@ -242,8 +242,7 @@ namespace Server.Gumps
                     else if (!m_Type.IsInstanceOfType(toSet))
                     {
                         m_Mobile.SendMessage(
-                            "The object with that serial could not be assigned to a property of type : {0}",
-                            m_Type.Name
+                            $"The object with that serial could not be assigned to a property of type : {m_Type.Name}"
                         );
                     }
                     else

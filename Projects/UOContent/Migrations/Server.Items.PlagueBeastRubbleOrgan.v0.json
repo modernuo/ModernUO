@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.PlagueBeastRubbleOrgan",
+  "properties": [
+    {
+      "name": "Veins",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

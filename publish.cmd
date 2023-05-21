@@ -5,14 +5,14 @@ GOTO :CMDSCRIPT
 ::SHELLSCRIPT
 config=$1
 os=$2
+arch=${3:-x64}
 
-if [[ $os ]]; then
-  os="-r $os-x64"
+if [[ -n $os ]]; then
+  os="-r $os"
 elif [[ $(uname) = "Darwin" ]]; then
-  os="-r osx-x64"
-elif [[ -f /etc/os-release ]]; then
-  . /etc/os-release
-  os="-r $(tr '[:upper:]' '[:lower:]' <<< $ID).$VERSION_ID-x64"
+  os="-r osx"
+else
+  os="-r linux"
 fi
 
 if [[ $config ]]; then
@@ -34,8 +34,8 @@ dotnet clean --verbosity quiet
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
-dotnet publish ${config} ${os} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+echo dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 
 echo Generating serialization migration schema...
 dotnet tool run ModernUOSchemaGenerator -- ModernUO.sln
@@ -55,9 +55,15 @@ IF "%~1" == "" (
 )
 
 IF "%~2" == "" (
-  SET os=-r win-x64
+  SET os=-r win
 ) ELSE (
-  SET os=-r %~2-x64
+  SET os=-r %~2
+)
+
+IF "%~3" == "" (
+  SET arch=x64
+) ELSE (
+  SET arch=%~3
 )
 
 echo dotnet tool restore
@@ -68,8 +74,8 @@ dotnet clean --verbosity quiet
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
-dotnet publish %config% %os% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+echo dotnet publish %config% %os%-%arch% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
+dotnet publish %config% %os%-%arch% --no-restore --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
 
 echo Generating serialization migration schema...
 dotnet tool run ModernUOSchemaGenerator -- ModernUO.sln

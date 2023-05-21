@@ -112,11 +112,11 @@ namespace Server.Misc
                     DirectoryCopy(savePath, backupPath);
                 }
 
-                logger.Information("Backup done");
+                logger.Information("Backup {Status}", "done");
             }
             catch
             {
-                logger.Error("Backup failed");
+                logger.Error("Backup {Status}", "failed");
             }
         }
 

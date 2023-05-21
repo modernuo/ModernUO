@@ -230,7 +230,7 @@ namespace Server.Engines.MLQuests.Definitions
                     "rats",
                     new QuestArea(1074807, "Sanctuary")
                 )
-            ); // Sanctuary
+            );
 
             Rewards.Add(new DummyReward(1074872)); // The opportunity to learn the ways of the Arcanist.
         }
@@ -398,11 +398,8 @@ namespace Server.Engines.MLQuests.Definitions
         public override void GetRewards(MLQuestInstance instance)
         {
             instance.PlayerContext.SummonFey = true;
-            instance.Player.SendLocalizedMessage(
-                1074320,
-                "",
-                0x2A
-            ); // *giggle* Mean reapers got fixed!  Pixie friend now! *giggle* When mean thingies bother you, a brave pixie will help.
+            // *giggle* Mean reapers got fixed!  Pixie friend now! *giggle* When mean thingies bother you, a brave pixie will help.
+            instance.Player.SendLocalizedMessage(1074320, "", 0x2A);
 
             base.GetRewards(instance);
         }
@@ -423,11 +420,9 @@ namespace Server.Engines.MLQuests.Definitions
 
             Objectives.Add(new KillObjective(50, new[] { typeof(Imp) }, "imps"));
 
-            Rewards.Add(
-                new DummyReward(
-                    1074873
-                )
-            ); // The opportunity to prove yourself worthy of learning to Summon Fiends. (Sufficient spellweaving skill is required to cast the spell)
+            // The opportunity to prove yourself worthy of learning to Summon Fiends.
+            // (Sufficient spellweaving skill is required to cast the spell)
+            Rewards.Add(new DummyReward(107487));
         }
 
         public override Type NextQuest => typeof(CrackingTheWhipI);
@@ -479,11 +474,9 @@ namespace Server.Engines.MLQuests.Definitions
         public override void GetRewards(MLQuestInstance instance)
         {
             instance.PlayerContext.SummonFiend = true;
-            instance.Player.SendLocalizedMessage(
-                1074322,
-                "",
-                0x2A
-            ); // You've demonstrated your strength, got a means of control, and taught the imps to fear you.  You're ready now to summon them.
+            // You've demonstrated your strength, got a means of control, and taught the imps to fear you.
+            // You're ready now to summon them.
+            instance.Player.SendLocalizedMessage(1074322, "", 0x2A);
 
             base.GetRewards(instance);
         }

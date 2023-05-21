@@ -1,9 +1,11 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-    public class LadyJennifyr : SkeletalKnight
+    [SerializationGenerator(0, false)]
+    public partial class LadyJennifyr : SkeletalKnight
     {
         private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
@@ -40,11 +42,6 @@ namespace Server.Mobiles
             Karma = -18000;
         }
 
-        public LadyJennifyr(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override string CorpseName => "a Lady Jennifyr corpse";
         public override string DefaultName => "Lady Jennifyr";
 
@@ -69,45 +66,30 @@ namespace Server.Mobiles
             AddLoot(LootPack.UltraRich, 3);
         }
 
-        public override void OnGaveMeleeAttack(Mobile defender)
+        public override void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            base.OnGaveMeleeAttack(defender);
+            base.OnGaveMeleeAttack(defender, damage);
 
-            if (Utility.RandomDouble() >= 0.1)
+            if (Utility.RandomDouble() < 0.9)
             {
                 return;
             }
 
-            if (m_Table.TryGetValue(defender, out var timer))
+            if (m_Table.Remove(defender, out var timer))
             {
                 timer.DoExpire();
             }
 
             defender.FixedParticles(0x3709, 10, 30, 5052, EffectLayer.LeftFoot);
             defender.PlaySound(0x208);
-            defender.SendLocalizedMessage(
-                1070833
-            ); // The creature fans you with fire, reducing your resistance to fire attacks.
+            // The creature fans you with fire, reducing your resistance to fire attacks.
+            defender.SendLocalizedMessage(1070833);
 
-            var mod = new ResistanceMod(ResistanceType.Fire, -10);
+            var mod = new ResistanceMod(ResistanceType.Fire, "FireResistFanningFire", -10);
             defender.AddResistanceMod(mod);
 
             m_Table[defender] = timer = new ExpireTimer(defender, mod);
             timer.Start();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         private class ExpireTimer : Timer
@@ -127,13 +109,13 @@ namespace Server.Mobiles
                 m_Mobile.RemoveResistanceMod(m_Mod);
 
                 Stop();
-                m_Table.Remove(m_Mobile);
             }
 
             protected override void OnTick()
             {
                 m_Mobile.SendLocalizedMessage(1070834); // Your resistance to fire attacks has returned.
                 DoExpire();
+                m_Table.Remove(m_Mobile);
             }
         }
     }

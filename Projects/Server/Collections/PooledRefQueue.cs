@@ -316,7 +316,7 @@ public ref struct PooledRefQueue<T>
     }
 
     // Increments the index wrapping it if necessary.
-    private void MoveNext(ref int index)
+    private void MoveNext(scoped ref int index)
     {
         // It is tempting to use the remainder operator here but it is actually much slower
         // than a simple comparison and a rarely taken branch.

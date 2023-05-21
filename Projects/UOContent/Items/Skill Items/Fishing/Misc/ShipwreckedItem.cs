@@ -1,74 +1,58 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+public interface IShipwreckedItem
 {
-    public interface IShipwreckedItem
+    bool IsShipwreckedItem { get; set; }
+}
+
+[SerializationGenerator(0, false)]
+public partial class ShipwreckedItem : Item, IDyable, IShipwreckedItem
+{
+    public ShipwreckedItem(int itemID) : base(itemID)
     {
-        bool IsShipwreckedItem { get; set; }
+        var weight = ItemData.Weight;
+
+        if (weight >= 255)
+        {
+            weight = 1;
+        }
+
+        Weight = weight;
     }
 
-    public class ShipwreckedItem : Item, IDyable, IShipwreckedItem
+    public bool Dye(Mobile from, DyeTub sender)
     {
-        public ShipwreckedItem(int itemID) : base(itemID)
+        if (Deleted)
         {
-            var weight = ItemData.Weight;
-
-            if (weight >= 255)
-            {
-                weight = 1;
-            }
-
-            Weight = weight;
-        }
-
-        public ShipwreckedItem(Serial serial) : base(serial)
-        {
-        }
-
-        public bool Dye(Mobile from, DyeTub sender)
-        {
-            if (Deleted)
-            {
-                return false;
-            }
-
-            if (ItemID >= 0x13A4 && ItemID <= 0x13AE)
-            {
-                Hue = sender.DyedHue;
-                return true;
-            }
-
-            from.SendLocalizedMessage(sender.FailMessage);
             return false;
         }
 
-        bool IShipwreckedItem.IsShipwreckedItem
+        if (ItemID >= 0x13A4 && ItemID <= 0x13AE)
         {
-            get => true;
-            set { }
+            Hue = sender.DyedHue;
+            return true;
         }
 
-        public override void OnSingleClick(Mobile from)
-        {
-            LabelTo(from, 1050039, $"{LabelNumber:#}\t{1041645:#}");
-        }
+        from.SendLocalizedMessage(sender.FailMessage);
+        return false;
+    }
 
-        public override void AddNameProperties(IPropertyList list)
-        {
-            base.AddNameProperties(list);
-            list.Add(1041645); // recovered from a shipwreck
-        }
+    bool IShipwreckedItem.IsShipwreckedItem
+    {
+        get => true;
+        set { }
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override void OnSingleClick(Mobile from)
+    {
+        LabelTo(from, 1050039, $"{LabelNumber:#}\t{1041645:#}");
+    }
 
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public override void AddNameProperties(IPropertyList list)
+    {
+        base.AddNameProperties(list);
+        list.Add(1041645); // recovered from a shipwreck
     }
 }

@@ -1,11 +1,12 @@
+using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
 using Server.Items;
-using Server.Network;
 
 namespace Server.Mobiles
 {
-    public class Scribe : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class Scribe : BaseVendor
     {
         public static readonly TimeSpan ShushDelay = TimeSpan.FromMinutes(1);
         private readonly List<SBInfo> m_SBInfos = new();
@@ -17,10 +18,6 @@ namespace Server.Mobiles
         {
             SetSkill(SkillName.EvalInt, 60.0, 83.0);
             SetSkill(SkillName.Inscribe, 90.0, 100.0);
-        }
-
-        public Scribe(Serial serial) : base(serial)
-        {
         }
 
         protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -57,20 +54,6 @@ namespace Server.Mobiles
                 m_NextShush = Core.Now + ShushDelay;
                 e.Handled = true;
             }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
 }
