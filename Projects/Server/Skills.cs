@@ -431,7 +431,7 @@ public class SkillInfo
 
     public string ProfessionSkillName { get; set; }
 
-    public static SkillInfo[] Table { get; set; }
+    public static SkillInfo[] Table { get; set; } = Array.Empty<SkillInfo>();
 }
 
 [PropertyObject]
