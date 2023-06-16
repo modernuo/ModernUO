@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using Server.Misc;
 
@@ -15,6 +16,14 @@ namespace Server.Tests
 
             // Load Configurations
             ServerConfiguration.Load(true);
+
+            // Load UOContent.dll into the type resolver
+            ServerConfiguration.AssemblyDirectories.Add(Core.BaseDirectory);
+            var assembles = new [] { "UOContent.dll" };
+            AssemblyHandler.LoadAssemblies(assembles);
+
+            // Load Skills
+            SkillsInfo.Configure();
 
             // Configure / Initialize
             TestMapDefinitions.ConfigureTestMapDefinitions();
