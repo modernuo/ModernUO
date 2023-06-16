@@ -17,8 +17,6 @@ namespace Server
 
             if (Core.AOS)
             {
-                AOS.DisableStatInfluences();
-
                 if (ObjectPropertyList.Enabled)
                 {
                     // single click for everything is overridden to check object property list
