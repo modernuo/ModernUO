@@ -96,9 +96,9 @@ namespace Server.Spells.Sixth
                     _target.PlaySound(0x307);
 
                     SpellHelper.Damage(_spell, _target, damage, 0, 100, 0, 0, 0);
-
-                    _spell?.RemoveDelayedDamageContext(_attacker);
                 }
+
+                _spell?.RemoveDelayedDamageContext(_attacker);
             }
         }
     }
