@@ -68,7 +68,7 @@ namespace Server.Spells.Fourth
                     }
                     else
                     {
-                        m.Mana -= Utility.Random(1, m.Mana);
+                        m.Mana -= Utility.Random(1, Math.Max(m.Mana, 1));
                     }
 
                     m.FixedParticles(0x374A, 10, 15, 5032, EffectLayer.Head);
