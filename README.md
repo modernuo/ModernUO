@@ -17,11 +17,11 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 #### Supported Operating Systems
 [![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows&logoColor=0078D6&labelColor=222222)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 11+](https://img.shields.io/badge/-ventura-222222?logo=apple&logoColor=white&labelColor=222222)
-[![Debian 10+](https://img.shields.io/badge/-bullseye-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
+[![Debian 10+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
 [![Ubuntu 16+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
 <br />
-[![Alpine 3.18+](https://img.shields.io/badge/-3.17-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
-[![Fedora 343](https://img.shields.io/badge/-38-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
+[![Alpine 3.18+](https://img.shields.io/badge/-3.18-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
+[![Fedora 33+](https://img.shields.io/badge/-38-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
 [![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
 [![CentOS 7/8/9](https://img.shields.io/badge/-9-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
 [![openSUSE 15+](https://img.shields.io/badge/-15-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
