@@ -24,7 +24,7 @@ jobs:
     - name: Setup .NET 7
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.302
+        dotnet-version: 7.0.304
     - name: Build
       run: ./publish.cmd Release
     - name: Migration Changes
@@ -43,14 +43,17 @@ jobs:
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
+          - container: debian:bookworm
+            name: Debian 12
+            packageManager: apt
           - container: debian:bullseye
             name: Debian 11
             packageManager: apt
+          - container: fedora:38
+            name: Fedora 38
+            packageManager: dnf
           - container: fedora:37
             name: Fedora 37
-            packageManager: dnf
-          - container: fedora:36
-            name: Fedora 36
             packageManager: dnf
           - container: quay.io/centos/centos:stream8
             name: CentOS 8 Stream
