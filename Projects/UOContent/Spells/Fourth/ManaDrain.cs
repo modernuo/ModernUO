@@ -62,13 +62,9 @@ namespace Server.Spells.Fourth
                     {
                         m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
                     }
-                    else if (m.Mana >= 100)
-                    {
-                        m.Mana -= Utility.Random(1, 100);
-                    }
                     else
                     {
-                        m.Mana -= Utility.Random(1, Math.Max(m.Mana, 1));
+                        m.Mana -= Utility.Random(1, Math.Clamp(m.Mana, 1, 100));
                     }
 
                     m.FixedParticles(0x374A, 10, 15, 5032, EffectLayer.Head);
