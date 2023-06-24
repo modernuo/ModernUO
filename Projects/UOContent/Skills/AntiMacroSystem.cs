@@ -202,8 +202,8 @@ public static class AntiMacroSystem
         _antiMacroTable ??= new Dictionary<Mobile, PlayerAntiMacro>();
 
         // Hot path so use optimized code
-        ref PlayerAntiMacro antiMacro = ref CollectionsMarshal.GetValueRefOrNullRef(_antiMacroTable, pm);
-        if (Unsafe.IsNullRef(ref antiMacro))
+        ref PlayerAntiMacro antiMacro = ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTable, pm, out var exists);
+        if (!exists)
         {
             antiMacro = new PlayerAntiMacro();
         }
