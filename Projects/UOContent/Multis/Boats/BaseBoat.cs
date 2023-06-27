@@ -1941,9 +1941,9 @@ namespace Server.Multis
                         continue;
                     }
 
-                    if (current is Item item || item is EffectItem)
+                    if (current is Item item)
                     {
-                        if (item == _boat)
+                        if (item == _boat || item is EffectItem)
                         {
                             continue;
                         }
