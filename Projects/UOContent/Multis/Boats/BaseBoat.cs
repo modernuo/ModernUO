@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Server.Engines.Spawners;
 using Server.Items;
 using Server.Multis.Boats;
 
@@ -1812,10 +1813,8 @@ namespace Server.Multis
                     {
                         item.NoMoveHS = true;
 
-                        if (!(item is Server.Items.TillerMan or Server.Items.Hold or Plank))
-                        {
-                            item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
-                        }
+                        // Already filtered for Tiller/Hold/Plank/EffectItem
+                        item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
                     }
                     else if (e is Mobile m)
                     {
@@ -1936,32 +1935,26 @@ namespace Server.Multis
                 {
                     current = _enumerator.Current;
 
-                    if (!_includeBoat && current is Server.Items.TillerMan or Server.Items.Hold or Plank)
+                    // Skip the boat, effects, spawners, or parts of the boat
+                    if (current == _boat || current is EffectItem or BaseSpawner ||
+                        !_includeBoat && current is Server.Items.TillerMan or Server.Items.Hold or Plank)
                     {
                         continue;
                     }
 
                     if (current is Item item)
                     {
-                        if (item == _boat)
-                        {
-                            continue;
-                        }
-
                         // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
-                        if (_boat.Contains(item) && item.Visible && item.Z >= _boat.Z)
+                        if (_boat!.Contains(item) && item.Visible && item.Z >= _boat.Z)
                         {
                             _current = current;
                             return true;
                         }
                     }
-                    else if (current is Mobile m)
+                    else if (current is Mobile m && _boat!.Contains(m))
                     {
-                        if (_boat.Contains(m))
-                        {
-                            _current = current;
-                            return true;
-                        }
+                        _current = current;
+                        return true;
                     }
                 }
 
