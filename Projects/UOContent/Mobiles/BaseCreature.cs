@@ -2280,17 +2280,17 @@ namespace Server.Mobiles
             if (m_ControlMaster != null)
             {
                 m_ControlMaster.Followers += ControlSlots;
-                if (m_ControlMaster is PlayerMobile mobile)
+                if (m_ControlMaster is PlayerMobile pm)
                 {
-                    mobile.AddFollower(this);
+                    pm.AddFollower(this);
                 }
             }
             else if (m_SummonMaster != null)
             {
                 m_SummonMaster.Followers += ControlSlots;
-                if (m_SummonMaster is PlayerMobile mobile)
+                if (m_SummonMaster is PlayerMobile pm)
                 {
-                    mobile.AddFollower(this);
+                    pm.AddFollower(this);
                 }
             }
         }

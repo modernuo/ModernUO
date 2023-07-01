@@ -239,9 +239,7 @@ namespace Server.Spells.Necromancy
                 return;
             }
 
-            list.Remove(summoned);
-
-            if (list.Count == 0)
+            if (list.Remove(summoned) && list.Count == 0)
             {
                 _table.Remove(master);
             }
@@ -278,7 +276,9 @@ namespace Server.Spells.Necromancy
 
             if (list.Count > 3)
             {
-                Timer.StartTimer(list[0].Kill);
+                var toKill = list[0];
+                Unregister(master, toKill);
+                toKill.Kill();
             }
 
             Timer.DelayCall(
