@@ -161,7 +161,7 @@ namespace Server.Mobiles
             ControlOrder = OrderType.Follow;
             ControlTarget = caster;
 
-            var duration = TimeSpan.FromSeconds(30 + caster.Skills.Ninjitsu.Fixed / 40);
+            var duration = TimeSpan.FromSeconds(30.0 + caster.Skills.Ninjitsu.Value / 4.0);
 
             new UnsummonTimer(this, duration).Start();
             SummonEnd = Core.Now + duration;

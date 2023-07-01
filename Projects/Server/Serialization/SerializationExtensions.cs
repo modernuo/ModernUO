@@ -48,9 +48,17 @@ public static class SerializationExtensions
         return entity?.Created <= reader.LastSerialized ? entity : null;
     }
 
-    public static List<T> ReadEntityList<T>(this IGenericReader reader) where T : class, ISerializable
+    public static List<T> ReadEntityList<T>(
+        this IGenericReader reader,
+        bool nullIfEmpty = false
+    ) where T : class, ISerializable
     {
         var count = reader.ReadInt();
+
+        if (count == 0 && nullIfEmpty)
+        {
+            return null;
+        }
 
         var list = new List<T>(count);
 
@@ -66,9 +74,17 @@ public static class SerializationExtensions
         return list;
     }
 
-    public static HashSet<T> ReadEntitySet<T>(this IGenericReader reader) where T : class, ISerializable
+    public static HashSet<T> ReadEntitySet<T>(
+        this IGenericReader reader,
+        bool nullIfEmpty = false
+    ) where T : class, ISerializable
     {
         var count = reader.ReadInt();
+
+        if (count == 0 && nullIfEmpty)
+        {
+            return null;
+        }
 
         var set = new HashSet<T>(count);
 

@@ -281,7 +281,12 @@ namespace Server.Spells.Necromancy
                 Timer.StartTimer(list[0].Kill);
             }
 
-            Timer.StartTimer(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), () => Summoned_Damage(summoned));
+            Timer.DelayCall(
+                TimeSpan.FromMilliseconds(1650),
+                TimeSpan.FromMilliseconds(1650),
+                Summoned_Damage,
+                summoned
+            );
         }
 
         private static void Summoned_Damage(Mobile mob)

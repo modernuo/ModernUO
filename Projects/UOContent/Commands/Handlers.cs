@@ -287,37 +287,34 @@ namespace Server.Commands
             {
                 var pets = pm.AllFollowers;
 
-                if (pets.Count > 0)
+                if (!(pets?.Count > 0))
                 {
-                    CommandLogging.WriteLine(
-                        from,
-                        $"{from.AccessLevel} {CommandLogging.Format(from)} getting all followers of {CommandLogging.Format(pm)}"
-                    );
+                    from.SendMessage("There were no pets found for that player.");
+                    return;
+                }
 
-                    if (pets.Count == 1)
-                    {
-                        from.SendMessage($"That player has {pets.Count} pet.");
-                    }
-                    else
-                    {
-                        from.SendMessage($"That player has {pets.Count} pets.");
-                    }
+                CommandLogging.WriteLine(
+                    from,
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} getting all followers of {CommandLogging.Format(pm)}"
+                );
 
-                    for (var i = 0; i < pets.Count; ++i)
-                    {
-                        var pet = pets[i];
-
-                        if (pet is IMount mount)
-                        {
-                            mount.Rider = null; // make sure it's dismounted
-                        }
-
-                        pet.MoveToWorld(from.Location, from.Map);
-                    }
+                if (pets.Count == 1)
+                {
+                    from.SendMessage($"That player has {pets.Count} pet.");
                 }
                 else
                 {
-                    from.SendMessage("There were no pets found for that player.");
+                    from.SendMessage($"That player has {pets.Count} pets.");
+                }
+
+                foreach (var pet in pets)
+                {
+                    if (pet is IMount mount)
+                    {
+                        mount.Rider = null; // make sure it's dismounted
+                    }
+
+                    pet.MoveToWorld(from.Location, from.Map);
                 }
             }
             else if (obj is Mobile master && master.Player)

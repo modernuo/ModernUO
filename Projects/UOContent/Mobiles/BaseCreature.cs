@@ -2082,23 +2082,9 @@ namespace Server.Mobiles
                 OwnerAbandonTime = reader.ReadDateTime();
             }
 
-            if (version >= 11)
-            {
-                m_HasGeneratedLoot = reader.ReadBool();
-            }
-            else
-            {
-                m_HasGeneratedLoot = true;
-            }
+            m_HasGeneratedLoot = version < 11 || reader.ReadBool();
 
-            if (version >= 12)
-            {
-                m_Paragon = reader.ReadBool();
-            }
-            else
-            {
-                m_Paragon = false;
-            }
+            m_Paragon = version >= 12 && reader.ReadBool();
 
             if (version >= 13 && reader.ReadBool())
             {
@@ -2275,30 +2261,17 @@ namespace Server.Mobiles
         {
             if (m_ControlMaster != null)
             {
-                m_ControlMaster.Followers -= ControlSlots;
+                m_ControlMaster.Followers -= Math.Min(ControlSlots, m_ControlMaster.Followers);
                 if (m_ControlMaster is PlayerMobile mobile)
                 {
-                    mobile.AllFollowers.Remove(this);
-                    if (mobile.AutoStabled.Contains(this))
-                    {
-                        mobile.AutoStabled.Remove(this);
-                    }
+                    mobile.AllFollowers?.Remove(this);
+                    mobile.AutoStabled?.Remove(this);
                 }
             }
             else if (m_SummonMaster != null)
             {
-                m_SummonMaster.Followers -= ControlSlots;
-                (m_SummonMaster as PlayerMobile)?.AllFollowers.Remove(this);
-            }
-
-            if (m_ControlMaster?.Followers < 0)
-            {
-                m_ControlMaster.Followers = 0;
-            }
-
-            if (m_SummonMaster?.Followers < 0)
-            {
-                m_SummonMaster.Followers = 0;
+                m_SummonMaster.Followers -= Math.Min(ControlSlots, m_SummonMaster.Followers);
+                (m_SummonMaster as PlayerMobile)?.AllFollowers?.Remove(this);
             }
         }
 
@@ -2309,7 +2282,7 @@ namespace Server.Mobiles
                 m_ControlMaster.Followers += ControlSlots;
                 if (m_ControlMaster is PlayerMobile mobile)
                 {
-                    mobile.AllFollowers.Add(this);
+                    mobile.AddFollower(this);
                 }
             }
             else if (m_SummonMaster != null)
@@ -2317,7 +2290,7 @@ namespace Server.Mobiles
                 m_SummonMaster.Followers += ControlSlots;
                 if (m_SummonMaster is PlayerMobile mobile)
                 {
-                    mobile.AllFollowers.Add(this);
+                    mobile.AddFollower(this);
                 }
             }
         }
@@ -3440,6 +3413,8 @@ namespace Server.Mobiles
                 }
             }
 
+            RemoveFollowers();
+
             base.OnDeath(c);
 
             if (DeleteCorpseOnDeath)
@@ -3455,6 +3430,8 @@ namespace Server.Mobiles
 
             SummonMaster = null;
             ReceivedHonorContext?.Cancel();
+            UnsummonTimer.StopTimer(this);
+
             base.OnDelete();
             m?.InvalidateProperties();
         }
@@ -3834,11 +3811,10 @@ namespace Server.Mobiles
 
         public static void TeleportPets(Mobile master, Point3D loc, Map map, bool onlyBonded = false)
         {
-            if (master is PlayerMobile pm)
+            if (master is PlayerMobile { AllFollowers: not null } pm)
             {
-                for (var i = 0; i < pm.AllFollowers.Count; i++)
+                foreach (var m in pm.AllFollowers)
                 {
-                    var m = pm.AllFollowers[i];
                     if (m.Map == master.Map && master.InRange(m, 3) && m is BaseCreature
                             { Controlled: true, ControlOrder: OrderType.Guard or OrderType.Follow or OrderType.Come } pet &&
                         pet.ControlMaster == master && (!onlyBonded || pet.IsBonded))
