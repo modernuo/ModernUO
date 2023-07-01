@@ -2380,6 +2380,8 @@ namespace Server.Mobiles
                 MLQuestSystem.HandleDeletion(this);
             }
 
+            UnsummonTimer.StopTimer(this);
+
             base.OnAfterDelete();
         }
 
@@ -3430,7 +3432,6 @@ namespace Server.Mobiles
 
             SummonMaster = null;
             ReceivedHonorContext?.Cancel();
-            UnsummonTimer.StopTimer(this);
 
             base.OnDelete();
             m?.InvalidateProperties();
