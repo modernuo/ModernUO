@@ -255,6 +255,8 @@ public static class AccountHandler
                 acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 
                 m.Delete();
+
+                EventSink.InvokePlayerDeleted(m);
                 state.SendCharacterListUpdate(acct);
                 return;
             }

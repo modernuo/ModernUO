@@ -109,6 +109,9 @@ public static partial class EventSink
     public static event Action<NetState, int> DeleteRequest;
     public static void InvokeDeleteRequest(NetState state, int index) => DeleteRequest?.Invoke(state, index);
 
+    public static event Action<Mobile> PlayerDeleted;
+    public static void InvokePlayerDeleted(Mobile m) => PlayerDeleted?.Invoke(m);
+
     public static event Action ServerStarted;
     public static void InvokeServerStarted() => ServerStarted?.Invoke();
 

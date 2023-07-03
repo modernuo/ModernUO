@@ -10,6 +10,7 @@ using Server.Engines.Help;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.PartySystem;
+using Server.Engines.PlayerMurderSystem;
 using Server.Engines.Quests;
 using Server.Ethics;
 using Server.Factions;
@@ -175,7 +176,6 @@ namespace Server.Mobiles
         private DateTime m_LastYoungHeal = DateTime.MinValue;
 
         private DateTime m_LastYoungMessage = DateTime.MinValue;
-        private TimeSpan m_LongTermElapse;
 
         private MountBlock _mountBlock;
 
@@ -191,7 +191,6 @@ namespace Server.Mobiles
         private int m_NonAutoreinsuredItems;
 
         private DateTime m_SavagePaintExpiration;
-        private TimeSpan m_ShortTermElapse;
 
         private DateTime[] m_StuckMenuUses;
 
@@ -201,13 +200,10 @@ namespace Server.Mobiles
         {
             VisibilityList = new List<Mobile>();
             PermaFlags = new List<Mobile>();
-            RecentlyReported = new List<Mobile>();
 
             BOBFilter = new BOBFilter();
 
             m_GameTime = TimeSpan.Zero;
-            m_ShortTermElapse = TimeSpan.FromHours(8.0);
-            m_LongTermElapse = TimeSpan.FromHours(40.0);
 
             JusticeProtectors = new List<Mobile>();
             m_GuildRank = RankDefinition.Lowest;
@@ -729,6 +725,23 @@ namespace Server.Mobiles
 
         [CommandProperty(AccessLevel.GameMaster)]
         public ChampionTitleInfo ChampionTitles { get; private set; }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int ShortTermMurders
+        {
+            get => PlayerMurderSystem.GetOrCreateContext(this, out var context) ? context.ShortTermMurders : 0;
+            set => PlayerMurderSystem.ManuallySetShortTermMurders(this, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime ShortTermMurderExpiration => PlayerMurderSystem.GetOrCreateContext(this, out var context)
+            ? Core.Now + (context.ShortTermElapse - GameTime)
+            : DateTime.MinValue;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime LongTermMurderExpiration => PlayerMurderSystem.GetOrCreateContext(this, out var context)
+            ? Core.Now + (context.LongTermElapse - GameTime)
+            : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int KnownRecipes => m_AcquiredRecipes?.Count ?? 0;
@@ -2885,6 +2898,7 @@ namespace Server.Mobiles
 
             switch (version)
             {
+                case 31: // Removed Short/Long Term Elapse
                 case 30:
                     {
                         Stabled = reader.ReadEntitySet<Mobile>(true);
@@ -3132,8 +3146,14 @@ namespace Server.Mobiles
                     }
                 case 1:
                     {
-                        m_LongTermElapse = reader.ReadTimeSpan();
-                        m_ShortTermElapse = reader.ReadTimeSpan();
+                        if (version < 31)
+                        {
+                            var longTermElapse = reader.ReadTimeSpan();
+                            var shortTermElapse = reader.ReadTimeSpan();
+
+                            PlayerMurderSystem.MigrateContext(this, shortTermElapse, longTermElapse);
+                        }
+
                         m_GameTime = reader.ReadTimeSpan();
                         goto case 0;
                     }
@@ -3181,7 +3201,6 @@ namespace Server.Mobiles
                 }
             }
 
-            CheckKillDecay();
             CheckAtrophies();
 
             if (Hidden) // Hiding is the only buff where it has an effect that's serialized.
@@ -3194,7 +3213,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(30); // version
+            writer.Write(31); // version
 
             if (Stabled == null)
             {
@@ -3332,19 +3351,16 @@ namespace Server.Mobiles
 
             writer.Write((int)Flags);
 
-            writer.Write(m_LongTermElapse);
-            writer.Write(m_ShortTermElapse);
             writer.Write(GameTime);
         }
 
         // Do we need to run an after serialize?
-        public override bool ShouldExecuteAfterSerialize => ShouldKillDecay() || ShouldAtrophy();
+        public override bool ShouldExecuteAfterSerialize => ShouldAtrophy();
 
         public override void AfterSerialize()
         {
             base.AfterSerialize();
 
-            CheckKillDecay();
             CheckAtrophies();
         }
 
@@ -3366,35 +3382,6 @@ namespace Server.Mobiles
             CompassionVirtue.CheckAtrophy(this);
             ValorVirtue.CheckAtrophy(this);
             ChampionTitleInfo.CheckAtrophy(this);
-        }
-
-        public bool ShouldKillDecay() => m_ShortTermElapse < GameTime || m_LongTermElapse < GameTime;
-
-        public void CheckKillDecay()
-        {
-            if (m_ShortTermElapse < GameTime)
-            {
-                m_ShortTermElapse += TimeSpan.FromHours(8);
-                if (ShortTermMurders > 0)
-                {
-                    --ShortTermMurders;
-                }
-            }
-
-            if (m_LongTermElapse < GameTime)
-            {
-                m_LongTermElapse += TimeSpan.FromHours(40);
-                if (Kills > 0)
-                {
-                    --Kills;
-                }
-            }
-        }
-
-        public void ResetKillTime()
-        {
-            m_ShortTermElapse = GameTime + TimeSpan.FromHours(8);
-            m_LongTermElapse = GameTime + TimeSpan.FromHours(40);
         }
 
         public override bool CanSee(Mobile m)
