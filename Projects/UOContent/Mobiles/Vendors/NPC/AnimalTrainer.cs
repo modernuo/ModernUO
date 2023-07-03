@@ -322,7 +322,7 @@ namespace Server.Mobiles
                         queue.Enqueue(pet);
 
                         claimed = true;
-                        pm.AutoStabled.Remove(pet);
+                        pm.AutoStabled?.Remove(pet);
                     }
                     else
                     {
