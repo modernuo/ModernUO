@@ -363,6 +363,13 @@ namespace Server.Commands
         {
             try
             {
+                if (obj is Mobile target &&
+                    (target.AccessLevel > from.AccessLevel ||
+                     target.Account is {} acc && acc.AccessLevel > from.AccessLevel))
+                {
+                    return "You can not modify a higher privileged mobile.";
+                }
+
                 if (toSet is AccessLevel newLevel)
                 {
                     var reqLevel = newLevel switch
