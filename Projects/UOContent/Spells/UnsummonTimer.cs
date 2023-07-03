@@ -34,6 +34,7 @@ public class UnsummonTimer : Timer
 
     protected override void OnTick()
     {
+        // BaseCreature.OnAfterDelete will remove the creature from the timers table
         _creature?.Delete();
     }
 }
