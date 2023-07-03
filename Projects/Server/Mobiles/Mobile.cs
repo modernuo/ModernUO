@@ -180,7 +180,7 @@ public delegate int AOSStatusHandler(Mobile from, int index);
 /// <summary>
 ///     Base class representing players, npcs, and creatures.
 /// </summary>
-public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity
+public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity
 {
     // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
     private const int WarmodeCatchCount = 4;
@@ -425,8 +425,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             }
         }
     }
-
-    public List<Mobile> Stabled { get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public VirtueInfo Virtues { get; private set; }
@@ -2279,7 +2277,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(33); // version
+        writer.Write(34); // version
 
         writer.WriteDeltaTime(LastStrGain);
         writer.WriteDeltaTime(LastIntGain);
@@ -2317,8 +2315,15 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
         // writer.Write(CreationTime);
 
-        Stabled.Tidy();
-        writer.Write(Stabled);
+        // if (Stabled == null)
+        // {
+        //     writer.Write(0);
+        // }
+        // else
+        // {
+        //     Stabled.Tidy();
+        //     writer.Write(Stabled);
+        // }
 
         writer.Write(CantWalk);
 
@@ -2446,11 +2451,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             {
                 Items[i].OnParentDeleted(this);
             }
-        }
-
-        for (var i = 0; i < Stabled.Count; i++)
-        {
-            Stabled[i].Delete();
         }
 
         SendRemovePacket();
@@ -6074,6 +6074,11 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
         switch (version)
         {
+            case 34:
+                {
+                    // Moved Stabled to PlayerMobile
+                    goto case 33;
+                }
             case 33:
                 {
                     // Removed created
@@ -6148,7 +6153,11 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             case 22: // Just removed followers
             case 21:
                 {
-                    Stabled = reader.ReadEntityList<Mobile>();
+                    if (version < 34)
+                    {
+                        // Migrated to PlayerMobile
+                        AddToStabledMigration(this, reader.ReadEntitySet<Mobile>(true));
+                    }
 
                     goto case 20;
                 }
@@ -6285,11 +6294,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
                 }
             case 0:
                 {
-                    if (version < 21)
-                    {
-                        Stabled = new List<Mobile>();
-                    }
-
                     if (version < 18)
                     {
                         Virtues = new VirtueInfo();
@@ -7721,7 +7725,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         Aggressors = new List<AggressorInfo>();
         Aggressed = new List<AggressorInfo>();
         Virtues = new VirtueInfo();
-        Stabled = new List<Mobile>();
         DamageEntries = new List<DamageEntry>();
 
         NextSkillTime = Core.TickCount;

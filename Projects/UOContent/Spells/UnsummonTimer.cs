@@ -1,23 +1,40 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Server.Mobiles;
 
-namespace Server.Spells
+namespace Server.Spells;
+
+public class UnsummonTimer : Timer
 {
-    internal class UnsummonTimer : Timer
+    // Track timers since some of them are really long and might hold references to long dead/deleted mobs
+    private static readonly Dictionary<BaseCreature, UnsummonTimer> _timers = new();
+    private BaseCreature _creature;
+
+    public static void StopTimer(BaseCreature creature)
     {
-        private readonly BaseCreature m_Creature;
-
-        public UnsummonTimer(BaseCreature creature, TimeSpan delay) : base(delay)
+        if (_timers.Remove(creature, out var timer))
         {
-            m_Creature = creature;
+            timer.Stop();
+        }
+    }
+
+    public UnsummonTimer(BaseCreature creature, TimeSpan delay) : base(delay)
+    {
+        _creature = creature;
+
+        ref var timer = ref CollectionsMarshal.GetValueRefOrAddDefault(_timers, creature, out bool exists);
+        if (exists)
+        {
+            timer.Stop();
         }
 
-        protected override void OnTick()
-        {
-            if (!m_Creature.Deleted)
-            {
-                m_Creature.Delete();
-            }
-        }
+        timer = this;
+    }
+
+    protected override void OnTick()
+    {
+        // BaseCreature.OnAfterDelete will remove the creature from the timers table
+        _creature?.Delete();
     }
 }

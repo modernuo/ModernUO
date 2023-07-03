@@ -143,7 +143,7 @@ namespace Server.Mobiles
 
         private Dictionary<int, bool> m_AcquiredRecipes;
 
-        private List<Mobile> m_AllFollowers;
+        private HashSet<Mobile> _allFollowers;
         private int m_BeardModID = -1, m_BeardModHue;
 
         // TODO: Pool BuffInfo objects
@@ -181,7 +181,6 @@ namespace Server.Mobiles
 
         private DateTime m_NextJustAward;
 
-        private int m_NextMovementTime;
         private int m_NextProtectionCheck = 10;
         private DateTime m_NextSmithBulkOrder;
         private DateTime m_NextTailorBulkOrder;
@@ -200,8 +199,6 @@ namespace Server.Mobiles
 
         public PlayerMobile()
         {
-            AutoStabled = new List<Mobile>();
-
             VisibilityList = new List<Mobile>();
             PermaFlags = new List<Mobile>();
             RecentlyReported = new List<Mobile>();
@@ -384,11 +381,16 @@ namespace Server.Mobiles
 
         public List<Mobile> RecentlyReported { get; set; }
 
-        public List<Mobile> AutoStabled { get; private set; }
+        // WARNING - This can be null!!
+        public HashSet<Mobile> Stabled { get; private set; }
+
+        // WARNING - This can be null!!
+        public HashSet<Mobile> AutoStabled { get; private set; }
 
         public bool NinjaWepCooldown { get; set; }
 
-        public List<Mobile> AllFollowers => m_AllFollowers ??= new List<Mobile>();
+        // WARNING - This can be null!!
+        public HashSet<Mobile> AllFollowers => _allFollowers;
 
         public RankDefinition GuildRank
         {
@@ -961,6 +963,18 @@ namespace Server.Mobiles
             {
                 Timer.StartTimer(CheckPets);
             }
+
+            var stableMigrations = StableMigrations;
+            if (stableMigrations?.Count > 0)
+            {
+                foreach (var (player, stabled) in stableMigrations)
+                {
+                    if (player is PlayerMobile pm)
+                    {
+                        pm.Stabled = stabled;
+                    }
+                }
+            }
         }
 
         private static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
@@ -1062,8 +1076,8 @@ namespace Server.Mobiles
             foreach (var m in World.Mobiles.Values)
             {
                 if (m is PlayerMobile pm &&
-                    ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count ||
-                     pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1))
+                    ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers?.Count > pm.AutoStabled?.Count ||
+                     pm.Mounted && pm.AllFollowers?.Count > (pm.AutoStabled?.Count ?? 0) + 1))
                 {
                     pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
                 }
@@ -1723,7 +1737,7 @@ namespace Server.Mobiles
                 }
             }
 
-            var speed = ComputeMovementSpeed(d);
+            // var speed = ComputeMovementSpeed(d);
 
             if (!Alive)
             {
@@ -1731,17 +1745,8 @@ namespace Server.Mobiles
             }
 
             var res = base.Move(d);
-
             MovementImpl.IgnoreMovableImpassables = false;
-
-            if (!res)
-            {
-                return false;
-            }
-
-            m_NextMovementTime += speed;
-
-            return true;
+            return res;
         }
 
         public override bool CheckMovement(Direction d, out int newZ)
@@ -2880,6 +2885,11 @@ namespace Server.Mobiles
 
             switch (version)
             {
+                case 30:
+                    {
+                        Stabled = reader.ReadEntitySet<Mobile>(true);
+                        goto case 29;
+                    }
                 case 29:
                     {
                         if (reader.ReadBool())
@@ -2912,7 +2922,7 @@ namespace Server.Mobiles
                     }
                 case 26:
                     {
-                        AutoStabled = reader.ReadEntityList<Mobile>();
+                        AutoStabled = reader.ReadEntitySet<Mobile>(true);
 
                         goto case 25;
                     }
@@ -3129,11 +3139,6 @@ namespace Server.Mobiles
                     }
                 case 0:
                     {
-                        if (version < 26)
-                        {
-                            AutoStabled = new List<Mobile>();
-                        }
-
                         break;
                     }
             }
@@ -3164,14 +3169,15 @@ namespace Server.Mobiles
                 IgnoreMobiles = true;
             }
 
-            var list = Stabled;
-
-            for (var i = 0; i < list.Count; ++i)
+            if (Stabled != null)
             {
-                if (list[i] is BaseCreature bc)
+                foreach (var stabled in Stabled)
                 {
-                    bc.IsStabled = true;
-                    bc.StabledBy = this;
+                    if (stabled is BaseCreature bc)
+                    {
+                        bc.IsStabled = true;
+                        bc.StabledBy = this;
+                    }
                 }
             }
 
@@ -3188,7 +3194,17 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(29); // version
+            writer.Write(30); // version
+
+            if (Stabled == null)
+            {
+                writer.Write(0);
+            }
+            else
+            {
+                Stabled.Tidy();
+                writer.Write(Stabled);
+            }
 
             if (m_StuckMenuUses != null)
             {
@@ -3208,8 +3224,15 @@ namespace Server.Mobiles
 
             writer.Write(PeacedUntil);
             writer.Write(AnkhNextUse);
-            AutoStabled.Tidy();
-            writer.Write(AutoStabled);
+            if (AutoStabled == null)
+            {
+                writer.Write(0);
+            }
+            else
+            {
+                AutoStabled.Tidy();
+                writer.Write(AutoStabled);
+            }
 
             if (m_AcquiredRecipes == null)
             {
@@ -3480,11 +3503,11 @@ namespace Server.Mobiles
                 }
             }
 
-            if (Core.ML)
+            if (Core.ML && AllFollowers != null)
             {
-                for (var i = AllFollowers.Count - 1; i >= 0; i--)
+                foreach (var follower in AllFollowers)
                 {
-                    if (AllFollowers[i] is BaseCreature c && c.ControlOrder == OrderType.Guard)
+                    if (follower is BaseCreature { ControlOrder: OrderType.Guard })
                     {
                         list.Add(501129); // guarded
                         break;
@@ -3576,79 +3599,127 @@ namespace Server.Mobiles
             return true;
         }
 
+        public void AddFollower(Mobile m)
+        {
+            _allFollowers ??= new HashSet<Mobile>();
+            _allFollowers.Add(m);
+        }
+
+        public void AddStabled(Mobile m)
+        {
+            Stabled ??= new HashSet<Mobile>();
+            Stabled.Add(m);
+        }
+
+        public bool RemoveStabled(Mobile m)
+        {
+            if (Stabled?.Remove(m) == true)
+            {
+                if (Stabled.Count == 0)
+                {
+                    Stabled = null;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool RemoveFollower(Mobile m)
+        {
+            if (_allFollowers?.Remove(m) == true)
+            {
+                if (_allFollowers.Count == 0)
+                {
+                    _allFollowers = null;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         public void AutoStablePets()
         {
-            if (Core.SE && AllFollowers.Count > 0)
+            var allFollowers = _allFollowers;
+
+            if (!Core.SE || !(allFollowers?.Count > 0))
             {
-                for (var i = m_AllFollowers.Count - 1; i >= 0; --i)
+                return;
+            }
+
+            foreach (var follower in allFollowers)
+            {
+                if (follower is not BaseCreature pet || pet.ControlMaster == null)
                 {
-                    if (AllFollowers[i] is not BaseCreature pet || pet.ControlMaster == null)
-                    {
-                        continue;
-                    }
-
-                    if (pet.Summoned)
-                    {
-                        if (pet.Map != Map)
-                        {
-                            pet.PlaySound(pet.GetAngerSound());
-                            Timer.StartTimer(pet.Delete);
-                        }
-
-                        continue;
-                    }
-
-                    if ((pet as IMount)?.Rider != null)
-                    {
-                        continue;
-                    }
-
-                    if (pet is PackLlama or PackHorse or Beetle && pet.Backpack?.Items.Count > 0)
-                    {
-                        continue;
-                    }
-
-                    if (pet is BaseEscortable)
-                    {
-                        continue;
-                    }
-
-                    pet.ControlTarget = null;
-                    pet.ControlOrder = OrderType.Stay;
-                    pet.Internalize();
-
-                    pet.SetControlMaster(null);
-                    pet.SummonMaster = null;
-
-                    pet.IsStabled = true;
-                    pet.StabledBy = this;
-
-                    pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
-
-                    Stabled.Add(pet);
-                    AutoStabled.Add(pet);
+                    continue;
                 }
+
+                if (pet.Summoned)
+                {
+                    if (pet.Map != Map)
+                    {
+                        pet.PlaySound(pet.GetAngerSound());
+                        Timer.StartTimer(pet.Delete);
+                    }
+
+                    continue;
+                }
+
+                if ((pet as IMount)?.Rider != null)
+                {
+                    continue;
+                }
+
+                if (pet is PackLlama or PackHorse or Beetle && pet.Backpack?.Items.Count > 0)
+                {
+                    continue;
+                }
+
+                if (pet is BaseEscortable)
+                {
+                    continue;
+                }
+
+                pet.ControlTarget = null;
+                pet.ControlOrder = OrderType.Stay;
+                pet.Internalize();
+
+                pet.SetControlMaster(null);
+                pet.SummonMaster = null;
+
+                pet.IsStabled = true;
+                pet.StabledBy = this;
+
+                pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
+
+                Stabled ??= new HashSet<Mobile>();
+                Stabled.Add(pet);
+
+                AutoStabled ??= new HashSet<Mobile>();
+                AutoStabled.Add(pet);
             }
         }
 
         public void ClaimAutoStabledPets()
         {
-            if (!Core.SE || AutoStabled.Count <= 0)
+            if (!Core.SE || !(AutoStabled?.Count > 0))
             {
                 return;
             }
 
             if (!Alive)
             {
-                SendLocalizedMessage(
-                    1076251
-                ); // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.
+                // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.
+                SendLocalizedMessage(1076251);
                 return;
             }
 
-            for (var i = AutoStabled.Count - 1; i >= 0; --i)
+            foreach (var stabled in AutoStabled)
             {
-                if (AutoStabled[i] is not BaseCreature pet)
+                if (stabled is not BaseCreature pet)
                 {
                     continue;
                 }
@@ -3658,11 +3729,7 @@ namespace Server.Mobiles
                     pet.IsStabled = false;
                     pet.StabledBy = null;
 
-                    if (Stabled.Contains(pet))
-                    {
-                        Stabled.Remove(pet);
-                    }
-
+                    Stabled?.Remove(pet);
                     continue;
                 }
 
@@ -3685,21 +3752,16 @@ namespace Server.Mobiles
 
                     pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
 
-                    if (Stabled.Contains(pet))
-                    {
-                        Stabled.Remove(pet);
-                    }
+                    Stabled?.Remove(pet);
                 }
                 else
                 {
-                    SendLocalizedMessage(
-                        1049612,
-                        pet.Name
-                    ); // ~1_NAME~ remained in the stables because you have too many followers.
+                    // ~1_NAME~ remained in the stables because you have too many followers.
+                    SendLocalizedMessage(1049612, pet.Name);
                 }
             }
 
-            AutoStabled.Clear();
+            AutoStabled = null;
         }
 
         public void RecoverAmmo()
@@ -4144,6 +4206,16 @@ namespace Server.Mobiles
         {
             ReceivedHonorContext?.Cancel();
             SentHonorContext?.Cancel();
+
+            if (Stabled != null)
+            {
+                foreach (var stabled in Stabled)
+                {
+                    stabled.Delete();
+                }
+
+                Stabled = null;
+            }
         }
 
         public override int ComputeMovementSpeed(Direction dir, bool checkTurning = true)
