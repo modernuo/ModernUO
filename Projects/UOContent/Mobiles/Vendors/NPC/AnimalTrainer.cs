@@ -113,7 +113,7 @@ namespace Server.Mobiles
 
             var list = new List<BaseCreature>();
 
-            if (pm.Stabled != null)
+            if (pm.Stabled?.Count > 0)
             {
                 using var queue = PooledRefQueue<Mobile>.Create();
 
@@ -288,7 +288,7 @@ namespace Server.Mobiles
 
             var claimByName = petName != null;
 
-            if (pm.Stabled != null)
+            if (pm.Stabled?.Count > 0)
             {
                 using var queue = PooledRefQueue<Mobile>.Create();
 
