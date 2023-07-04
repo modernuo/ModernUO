@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading;
 using Server.Accounting;
 using Server.Buffers;
+using Server.Collections;
 using Server.Commands;
 using Server.Misc;
 using Server.Multis;
@@ -1579,30 +1580,41 @@ namespace Server.Gumps
 
                 for (var i = 0; i < theirAddresses.Length; ++i)
                 {
-                    table.TryAdd(theirAddresses[i], new List<Account> { acct });
+                    // if its an ip that is not in the list, add it
+                    if (!table.TryAdd(theirAddresses[i], new List<Account> { acct }))
+                    {
+                        // else, add the account to the existing ip
+                        table[theirAddresses[i]].Add(acct);
+                    }
                 }
             }
 
-            var tableEntries = table.ToList();
+            // Create a separate list to store items to be removed
+            using var itemsToRemove = PooledRefList<IPAddress>.Create();
 
-            for (var i = 0; i < tableEntries.Count; ++i)
+            // lets find all the entries that have only one account
+            foreach (var kvp in table)
             {
-                var kvp = tableEntries[i];
-                var list = kvp.Value;
-
                 if (kvp.Value.Count == 1)
                 {
-                    list.RemoveAt(i--);
-                }
-                else
-                {
-                    list.Sort(AccountComparer.Instance);
+                    // Add the item to the removal list
+                    itemsToRemove.Add(kvp.Key);
                 }
             }
 
+            // remove all entries that have only one account from the table
+            foreach (var ip in itemsToRemove)
+            {
+                table.Remove(ip);
+            }
+            itemsToRemove.Dispose();
+
+            // sort the table by the number of accounts per ip
+            var tableEntries = table.ToList();
             tableEntries.Sort(SharedAccountComparer.Instance);
 
-            return tableEntries;
+            // return the reversed list so that the highest number of accounts per ip is first
+            return Enumerable.Reverse(tableEntries).ToList();
         }
 
         private static List<Account> GetSharedAccounts(IPAddress ipAddress)
