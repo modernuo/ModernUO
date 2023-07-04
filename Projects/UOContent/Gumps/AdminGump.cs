@@ -83,7 +83,7 @@ namespace Server.Gumps
             m_PageType = pageType;
             m_ListPage = listPage;
             m_State = state;
-            m_List = list;
+            m_List = CleanUp(list, from);
 
             AddPage(0);
 
@@ -430,8 +430,7 @@ namespace Server.Gumps
                         {
                             var states = TcpServer.Instances.ToList();
                             states.Sort(NetStateComparer.Instance);
-
-                            m_List = states.ToList<object>();
+                            m_List = CleanUp(states.ToList<object>(), from);
                         }
 
                         AddClientHeader();
@@ -526,6 +525,14 @@ namespace Server.Gumps
 
                         AddLabel(20, y, LabelHue, "Account:");
                         AddLabel(200, y, a?.Banned == true ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
+
+                        if (m.AccessLevel > from.AccessLevel ||
+                            a != null && a.AccessLevel > from.AccessLevel)
+                        {
+                            AddLabel(20, y + 20, LabelHue, "You do not have permission to view this client's information.");
+                            break;
+                        }
+
                         AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14));
                         y += 20;
 
@@ -550,15 +557,7 @@ namespace Server.Gumps
                             var v = ns.Version;
 
                             AddLabel(20, y, LabelHue, "Version:");
-                            if (ns.Assistant != null)
-                            {
-                                AddLabel(200, y, LabelHue, $"{v.SourceString ?? "(null)"} ({ns.Assistant})");
-                            }
-                            else
-                            {
-                                AddLabel(200, y, LabelHue, v.SourceString ?? "(null)");
-                            }
-
+                            AddLabel(200, y, LabelHue, v == null ? "(null)" : v.ToString());
                             y += 20;
 
                             AddLabel(20, y, LabelHue, "Location:");
@@ -603,7 +602,7 @@ namespace Server.Gumps
                         {
                             sharedAccounts = GetAllSharedAccounts();
                             // TODO: Find a better way, don't use KVPs?
-                            m_List = sharedAccounts.ConvertAll(kvp => (object)kvp);
+                            m_List = CleanUp(sharedAccounts.ConvertAll(kvp => (object)kvp), from);
                         }
                         else
                         {
@@ -684,7 +683,20 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Accounts:
                     {
-                        m_List ??= new List<object>();
+                        if (m_List == null)
+                        {
+                            m_List = new List<object>();
+                            if (from.AccessLevel == AccessLevel.Owner)
+                            {
+                                foreach (var account in Accounts.GetAccounts())
+                                {
+                                    if (account.AccessLevel > AccessLevel.Player)
+                                    {
+                                        m_List.Add(account);
+                                    }
+                                }
+                            }
+                        }
 
                         var rads = state as List<Account>;
 
@@ -921,6 +933,9 @@ namespace Server.Gumps
 
                         AddLabel(20, 250, LabelHue, "Character Count:");
                         AddLabel(200, 250, LabelHue, charCount.ToString());
+
+                        AddLabel(250, 250, LabelHue, "Max Houses:");
+                        AddLabel(340, 250, LabelHue, a.MaxHouses.ToString());
 
                         AddLabel(20, 270, LabelHue, "Comment Count:");
                         AddLabel(200, 270, LabelHue, a.Comments.Count.ToString());
@@ -2650,13 +2665,12 @@ namespace Server.Gumps
                                         }
 
                                         var m = ns.Mobile;
-                                        var a = ns.Account as Account;
 
                                         if (m != null)
                                         {
                                             from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, null, m));
                                         }
-                                        else if (a != null)
+                                        else if (ns.Account is Account a)
                                         {
                                             from.SendGump(
                                                 new AdminGump(
@@ -3246,7 +3260,7 @@ namespace Server.Gumps
                                         new WarningGump(
                                             1060635,
                                             30720,
-                                            $"<center>Account of {a.Username}</center><br>You are about to <em><basefont color=red>permanently delete</basefont></em> the account. Likewise, all characters on the account will be deleted, including equipped, inventory, and banked items. Any houses tied to the account will be demolished.<br><br>Do you wish to continue?",
+                                            $"<center>Account of {a.Username}</center><br>You are about to <em><basefont color=red>permanently delete</basefont></em> the account. Likewise, all characters on the account will be deleted, including equipped, inventory, and banked items.<br><br>Do you wish to continue?",
                                             0xFFC000,
                                             420,
                                             280,
@@ -3502,9 +3516,8 @@ namespace Server.Gumps
                             case 35: // Unmark house owners
                                 {
                                     var list = m_List;
-                                    var rads = m_State as List<Account>;
 
-                                    if (list == null || rads == null)
+                                    if (list == null || m_State is not List<Account> rads)
                                     {
                                         break;
                                     }
@@ -3517,7 +3530,7 @@ namespace Server.Gumps
 
                                         for (var i = 0; i < acct.Length && !hasHouse; ++i)
                                         {
-                                            if (acct[i] != null && BaseHouse.HasHouse(acct[i]))
+                                            if (acct[i] != null && BaseHouse.HasHouses(acct[i]) > 0)
                                             {
                                                 hasHouse = true;
                                             }
@@ -4089,9 +4102,7 @@ namespace Server.Gumps
                         {
                             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
                             {
-                                var ip = m_List[index] as IPAddress;
-
-                                if (ip == null)
+                                if (m_List[index] is not IPAddress ip)
                                 {
                                     break;
                                 }
@@ -4164,6 +4175,30 @@ namespace Server.Gumps
                     online = true;
                 }
             }
+        }
+
+        private List<object> CleanUp(List<object> list, Mobile from)
+        {
+            if (list == null)
+            {
+                return null;
+            }
+
+            var cleanList = new List<object>();
+            foreach (var obj in list)
+            {
+                if (obj is Account acc && acc.AccessLevel > from.AccessLevel ||
+                    obj is Mobile mob && mob.AccessLevel > from.AccessLevel ||
+                    obj is NetState ns &&
+                    (ns.Mobile.AccessLevel > from.AccessLevel || ns.Account.AccessLevel > from.AccessLevel))
+                {
+                    continue;
+                }
+
+                cleanList.Add(obj);
+            }
+
+            return cleanList;
         }
 
         private class SharedAccountComparer : IComparer<KeyValuePair<IPAddress, List<Account>>>
