@@ -26,17 +26,6 @@ public class ReportMurdererGump : Gump
     public static void Initialize()
     {
         EventSink.PlayerDeath += OnPlayerDeath;
-        EventSink.PlayerDeleted += OnPlayerDeleted;
-    }
-
-    private static void OnPlayerDeleted(Mobile m)
-    {
-        if (_recentlyReported.Count == 0)
-        {
-            return;
-        }
-
-        _recentlyReported.RemoveWhere(report => report.Item1 == m || report.Item2 == m);
     }
 
     public static void OnPlayerDeath(Mobile m)
