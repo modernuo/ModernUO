@@ -806,6 +806,27 @@ public static class Utility
         return outputList;
     }
 
+    // ToArray returns an array containing the contents of the List.
+    // This requires copying the List, which is an O(n) operation.
+    public static List<R> ToList<T, R>(this PooledRefList<T> poolList) where T : R
+    {
+        var size = poolList._size;
+        var items = poolList._items;
+
+        var list = new List<R>(size);
+        if (size == 0)
+        {
+            return list;
+        }
+
+        for (var i = 0; i < items.Length; i++)
+        {
+            list.Add(items[i]);
+        }
+
+        return list;
+    }
+
     public static bool ToBoolean(string value) =>
         bool.TryParse(value, out var b)
             ? b
