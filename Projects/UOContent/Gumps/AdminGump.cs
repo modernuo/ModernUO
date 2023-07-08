@@ -1586,6 +1586,9 @@ namespace Server.Gumps
             {
                 if (kvp.Value.Count > 1)
                 {
+                    // Sort the accounts alphabetically
+                    kvp.Value.Sort(AccountComparer.Instance);
+
                     // Can't avoid boxing because `m_List` in AdminGump is expecting List<object>
                     list.Add(kvp);
                 }
