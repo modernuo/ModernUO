@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Accounting;
 using Server.Buffers;
@@ -598,18 +599,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Accounts_Shared:
                     {
-                        List<KeyValuePair<IPAddress, List<Account>>> sharedAccounts;
-
-                        if (m_List == null)
-                        {
-                            sharedAccounts = GetAllSharedAccounts();
-                            // TODO: Find a better way, don't use KVPs?
-                            m_List = sharedAccounts.ConvertAll(kvp => (object)kvp);
-                        }
-                        else
-                        {
-                            sharedAccounts = m_List.SafeConvertList<object, KeyValuePair<IPAddress, List<Account>>>();
-                        }
+                        m_List ??= GetAllSharedAccounts();
 
                         AddLabelCropped(12, 120, 60, 20, LabelHue, "Count");
                         AddLabelCropped(72, 120, 120, 20, LabelHue, "Address");
@@ -624,7 +614,7 @@ namespace Server.Gumps
                             AddImage(375, 122, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < sharedAccounts.Count)
+                        if ((listPage + 1) * 12 < m_List.Count)
                         {
                             AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -633,21 +623,16 @@ namespace Server.Gumps
                             AddImage(392, 122, 0x25E6);
                         }
 
-                        if (sharedAccounts.Count == 0)
+                        if (m_List.Count == 0)
                         {
                             AddLabel(12, 140, LabelHue, "There are no accounts to display.");
                         }
 
                         using var sb = ValueStringBuilder.Create();
 
-                        for (int i = 0, index = listPage * 12;
-                            i < 12 && index >= 0 && index < sharedAccounts.Count;
-                            ++i, ++index)
+                        for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            var kvp = sharedAccounts[index];
-
-                            var ipAddr = kvp.Key;
-                            var accts = kvp.Value;
+                            var (ipAddr, accts) = (KeyValuePair<IPAddress, List<Account>>)m_List[index];
 
                             var offset = 140 + i * 20;
 
@@ -1570,7 +1555,7 @@ namespace Server.Gumps
             AddButtonLabeled(200, 80, GetButtonID(6, 2), "Add (Target)");
         }
 
-        private static List<KeyValuePair<IPAddress, List<Account>>> GetAllSharedAccounts()
+        private static List<object> GetAllSharedAccounts()
         {
             var table = new Dictionary<IPAddress, List<Account>>();
 
@@ -1580,41 +1565,37 @@ namespace Server.Gumps
 
                 for (var i = 0; i < theirAddresses.Length; ++i)
                 {
-                    // if its an ip that is not in the list, add it
-                    if (!table.TryAdd(theirAddresses[i], new List<Account> { acct }))
+                    var theirAddress = theirAddresses[i];
+
+                    // This path is heavy for larger shards, so use optimized code
+                    ref var accts = ref CollectionsMarshal.GetValueRefOrAddDefault(table, theirAddress, out var acctExists);
+
+                    // If we don't have a list, create one
+                    if (!acctExists)
                     {
-                        // else, add the account to the existing ip
-                        table[theirAddresses[i]].Add(acct);
+                        accts = new List<Account>();
                     }
+
+                    accts.Add(acct);
                 }
             }
 
-            // Create a separate list to store items to be removed
-            using var itemsToRemove = PooledRefList<IPAddress>.Create();
+            var list = new List<object>();
 
-            // lets find all the entries that have only one account
+            // Lets find all the entries that have only one account
             foreach (var kvp in table)
             {
-                if (kvp.Value.Count == 1)
+                if (kvp.Value.Count > 1)
                 {
-                    // Add the item to the removal list
-                    itemsToRemove.Add(kvp.Key);
+                    // Can't avoid boxing because `m_List` in AdminGump is expecting List<object>
+                    list.Add(kvp);
                 }
             }
 
-            // remove all entries that have only one account from the table
-            foreach (var ip in itemsToRemove)
-            {
-                table.Remove(ip);
-            }
-            itemsToRemove.Dispose();
+            // Sort by highest accounts per IP first
+            list.Sort(SharedAccountDescendingComparer.Instance);
 
-            // sort the table by the number of accounts per ip
-            var tableEntries = table.ToList();
-            tableEntries.Sort(SharedAccountComparer.Instance);
-
-            // return the reversed list so that the highest number of accounts per ip is first
-            return Enumerable.Reverse(tableEntries).ToList();
+            return list;
         }
 
         private static List<Account> GetSharedAccounts(IPAddress ipAddress)
@@ -4178,12 +4159,24 @@ namespace Server.Gumps
             }
         }
 
-        private class SharedAccountComparer : IComparer<KeyValuePair<IPAddress, List<Account>>>
+        private class SharedAccountDescendingComparer : IComparer<object>
         {
-            public static readonly IComparer<KeyValuePair<IPAddress, List<Account>>> Instance = new SharedAccountComparer();
+            public static readonly IComparer<object> Instance = new SharedAccountDescendingComparer();
 
-            public int Compare(KeyValuePair<IPAddress, List<Account>> x, KeyValuePair<IPAddress, List<Account>> y) =>
-                x.Value.Count - y.Value.Count;
+            public int Compare(object x, object y)
+            {
+                if (x is not KeyValuePair<IPAddress, List<Account>> a)
+                {
+                    return -1;
+                }
+
+                if (y is not KeyValuePair<IPAddress, List<Account>> b)
+                {
+                    return 1;
+                }
+
+                return a.Value.Count - b.Value.Count;
+            }
         }
 
         private class AddCommentPrompt : Prompt
