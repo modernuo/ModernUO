@@ -106,6 +106,8 @@ public static class PlayerMurderSystem
 
     private static void Deserialize(IGenericReader reader)
     {
+        var version = reader.ReadEncodedInt();
+
         var count = reader.ReadEncodedInt();
         for (var i = 0; i < count; ++i)
         {
@@ -118,6 +120,8 @@ public static class PlayerMurderSystem
 
     private static void Serialize(IGenericWriter writer)
     {
+        writer.WriteEncodedInt(0); // version
+
         writer.WriteEncodedInt(_murderContexts.Count);
         foreach (var (m, context) in _murderContexts)
         {
