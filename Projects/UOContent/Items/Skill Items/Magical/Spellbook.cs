@@ -118,7 +118,8 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         Layer = Layer.OneHanded;
         LootType = LootType.Blessed;
 
-        _content = content;
+        // The setter is calculating the spell count
+        Content = content;
     }
 
     public override bool DisplayWeight => false;

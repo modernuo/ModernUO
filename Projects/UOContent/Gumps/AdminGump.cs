@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Accounting;
 using Server.Buffers;
+using Server.Collections;
 using Server.Commands;
 using Server.Misc;
 using Server.Multis;
@@ -597,18 +599,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Accounts_Shared:
                     {
-                        List<KeyValuePair<IPAddress, List<Account>>> sharedAccounts;
-
-                        if (m_List == null)
-                        {
-                            sharedAccounts = GetAllSharedAccounts();
-                            // TODO: Find a better way, don't use KVPs?
-                            m_List = sharedAccounts.ConvertAll(kvp => (object)kvp);
-                        }
-                        else
-                        {
-                            sharedAccounts = m_List.SafeConvertList<object, KeyValuePair<IPAddress, List<Account>>>();
-                        }
+                        m_List ??= GetAllSharedAccounts();
 
                         AddLabelCropped(12, 120, 60, 20, LabelHue, "Count");
                         AddLabelCropped(72, 120, 120, 20, LabelHue, "Address");
@@ -623,7 +614,7 @@ namespace Server.Gumps
                             AddImage(375, 122, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < sharedAccounts.Count)
+                        if ((listPage + 1) * 12 < m_List.Count)
                         {
                             AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -632,21 +623,16 @@ namespace Server.Gumps
                             AddImage(392, 122, 0x25E6);
                         }
 
-                        if (sharedAccounts.Count == 0)
+                        if (m_List.Count == 0)
                         {
                             AddLabel(12, 140, LabelHue, "There are no accounts to display.");
                         }
 
                         using var sb = ValueStringBuilder.Create();
 
-                        for (int i = 0, index = listPage * 12;
-                            i < 12 && index >= 0 && index < sharedAccounts.Count;
-                            ++i, ++index)
+                        for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            var kvp = sharedAccounts[index];
-
-                            var ipAddr = kvp.Key;
-                            var accts = kvp.Value;
+                            var (ipAddr, accts) = (KeyValuePair<IPAddress, List<Account>>)m_List[index];
 
                             var offset = 140 + i * 20;
 
@@ -977,17 +963,7 @@ namespace Server.Gumps
                             break;
                         }
 
-                        List<IPAddress> ipAddresses;
-
-                        if (m_List == null)
-                        {
-                            ipAddresses = a.LoginIPs.ToList();
-                            m_List = ipAddresses.ToList<object>();
-                        }
-                        else
-                        {
-                            ipAddresses = m_List.SafeConvertList<object, IPAddress>();
-                        }
+                        m_List ??= a.LoginIPs.ToList<object>();
 
                         AddHtml(10, 195, 400, 20, Color(Center("Client Addresses"), LabelColor32));
 
@@ -1018,7 +994,7 @@ namespace Server.Gumps
                             AddImage(184, 223, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 6 < ipAddresses.Count)
+                        if ((listPage + 1) * 6 < m_List.Count)
                         {
                             AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -1027,14 +1003,14 @@ namespace Server.Gumps
                             AddImage(201, 223, 0x25E6);
                         }
 
-                        if (ipAddresses.Count == 0)
+                        if (m_List.Count == 0)
                         {
                             AddHtml(18, 243, 200, 60, Color("This account has not yet been accessed.", LabelColor32));
                         }
 
-                        for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipAddresses.Count; ++i, ++index)
+                        for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            AddHtml(18, 243 + i * 22, 114, 20, Color(ipAddresses[index].ToString(), LabelColor32));
+                            AddHtml(18, 243 + i * 22, 114, 20, Color(m_List[index].ToString(), LabelColor32));
                             AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
                             AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
                             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
@@ -1049,17 +1025,7 @@ namespace Server.Gumps
                             break;
                         }
 
-                        List<string> ipRestrictions;
-
-                        if (m_List == null)
-                        {
-                            ipRestrictions = a.IpRestrictions.ToList();
-                            m_List = ipRestrictions.ToList<object>();
-                        }
-                        else
-                        {
-                            ipRestrictions = m_List.SafeConvertList<object, string>();
-                        }
+                        m_List ??= a.IpRestrictions.ToList<object>();
 
                         AddHtml(10, 195, 400, 20, Color(Center("Address Restrictions"), LabelColor32));
 
@@ -1092,7 +1058,7 @@ namespace Server.Gumps
                             AddImage(184, 223, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 6 < ipRestrictions.Count)
+                        if ((listPage + 1) * 6 < m_List.Count)
                         {
                             AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -1101,16 +1067,14 @@ namespace Server.Gumps
                             AddImage(201, 223, 0x25E6);
                         }
 
-                        if (ipRestrictions.Count == 0)
+                        if (m_List.Count == 0)
                         {
                             AddHtml(18, 243, 200, 60, Color("There are no addresses in this list.", LabelColor32));
                         }
 
-                        for (int i = 0, index = listPage * 6;
-                            i < 6 && index >= 0 && index < ipRestrictions.Count;
-                            ++i, ++index)
+                        for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            AddHtml(18, 243 + i * 22, 114, 20, Color(ipRestrictions[index], LabelColor32));
+                            AddHtml(18, 243 + i * 22, 114, 20, Color((string)m_List[index], LabelColor32));
                             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(8, index));
                         }
 
@@ -1246,17 +1210,7 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        HashSet<Firewall.IFirewallEntry> firewallEntries;
-
-                        if (m_List == null)
-                        {
-                            firewallEntries = Firewall.Set;
-                            m_List = firewallEntries.ToList<object>();
-                        }
-                        else
-                        {
-                            firewallEntries = m_List.SafeConvertSet<object, Firewall.IFirewallEntry>();
-                        }
+                        m_List ??= Firewall.Set.ToList<object>();
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
@@ -1269,7 +1223,7 @@ namespace Server.Gumps
                             AddImage(375, 122, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < firewallEntries.Count)
+                        if ((listPage + 1) * 12 < m_List.Count)
                         {
                             AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -1278,7 +1232,7 @@ namespace Server.Gumps
                             AddImage(392, 122, 0x25E6);
                         }
 
-                        if (firewallEntries.Count == 0)
+                        if (m_List.Count == 0)
                         {
                             AddLabel(12, 140, LabelHue, "The firewall list is empty.");
                         }
@@ -1286,7 +1240,7 @@ namespace Server.Gumps
                         {
                             var i = 0;
                             var index = listPage * 12;
-                            foreach (var firewallEntry in firewallEntries)
+                            foreach (var firewallEntry in m_List)
                             {
                                 if (i >= 12)
                                 {
@@ -1317,11 +1271,9 @@ namespace Server.Gumps
 
                         AddHtml(10, 175, 400, 20, Color(Center("Potentially Affected Accounts"), LabelColor32));
 
-                        List<Account> blockedAccts;
-
                         if (m_List == null)
                         {
-                            blockedAccts = new List<Account>();
+                            using var blockedEntriesList = PooledRefList<Account>.Create();
 
                             foreach (var ia in Accounts.GetAccounts())
                             {
@@ -1333,18 +1285,15 @@ namespace Server.Gumps
                                 {
                                     if (firewallEntry.IsBlocked(loginList[i]))
                                     {
-                                        blockedAccts.Add(acct);
+                                        blockedEntriesList.Add(acct);
                                         break;
                                     }
                                 }
                             }
 
-                            blockedAccts.Sort(AccountComparer.Instance);
-                            m_List = blockedAccts.ToList<object>();
-                        }
-                        else
-                        {
-                            blockedAccts = m_List.SafeConvertList<object, Account>();
+                            blockedEntriesList.Sort(AccountComparer.Instance);
+
+                            m_List = blockedEntriesList.ToList<Account, object>();
                         }
 
                         if (listPage > 0)
@@ -1356,7 +1305,7 @@ namespace Server.Gumps
                             AddImage(375, 177, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < blockedAccts.Count)
+                        if ((listPage + 1) * 12 < m_List.Count)
                         {
                             AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -1365,16 +1314,16 @@ namespace Server.Gumps
                             AddImage(392, 177, 0x25E6);
                         }
 
-                        if (blockedAccts.Count == 0)
+                        if (m_List.Count == 0)
                         {
                             AddLabelCropped(12, 200, 398, 20, LabelHue, "No accounts found.");
                         }
 
                         for (int i = 0, index = listPage * 9;
-                            i < 9 && index >= 0 && index < blockedAccts.Count;
-                            ++i, ++index)
+                             i < 9 && index >= 0 && index < m_List.Count;
+                             ++i, ++index)
                         {
-                            var a = blockedAccts[index];
+                            var a = (Account)m_List[index];
 
                             var offset = 200 + i * 20;
 
@@ -1569,7 +1518,7 @@ namespace Server.Gumps
             AddButtonLabeled(200, 80, GetButtonID(6, 2), "Add (Target)");
         }
 
-        private static List<KeyValuePair<IPAddress, List<Account>>> GetAllSharedAccounts()
+        private static List<object> GetAllSharedAccounts()
         {
             var table = new Dictionary<IPAddress, List<Account>>();
 
@@ -1579,30 +1528,40 @@ namespace Server.Gumps
 
                 for (var i = 0; i < theirAddresses.Length; ++i)
                 {
-                    table.TryAdd(theirAddresses[i], new List<Account> { acct });
+                    var theirAddress = theirAddresses[i];
+
+                    // This path is heavy for larger shards, so use optimized code
+                    ref var accts = ref CollectionsMarshal.GetValueRefOrAddDefault(table, theirAddress, out var acctExists);
+
+                    // If we don't have a list, create one
+                    if (!acctExists)
+                    {
+                        accts = new List<Account>();
+                    }
+
+                    accts.Add(acct);
                 }
             }
 
-            var tableEntries = table.ToList();
+            var list = new List<object>();
 
-            for (var i = 0; i < tableEntries.Count; ++i)
+            // Lets find all the entries that have only one account
+            foreach (var kvp in table)
             {
-                var kvp = tableEntries[i];
-                var list = kvp.Value;
+                if (kvp.Value.Count > 1)
+                {
+                    // Sort the accounts alphabetically
+                    kvp.Value.Sort(AccountComparer.Instance);
 
-                if (kvp.Value.Count == 1)
-                {
-                    list.RemoveAt(i--);
-                }
-                else
-                {
-                    list.Sort(AccountComparer.Instance);
+                    // Can't avoid boxing because `m_List` in AdminGump is expecting List<object>
+                    list.Add(kvp);
                 }
             }
 
-            tableEntries.Sort(SharedAccountComparer.Instance);
+            // Sort by highest accounts per IP first
+            list.Sort(SharedAccountDescendingComparer.Instance);
 
-            return tableEntries;
+            return list;
         }
 
         private static List<Account> GetSharedAccounts(IPAddress ipAddress)
@@ -1946,24 +1905,22 @@ namespace Server.Gumps
 
             if (m_PageType == AdminGumpPage.Accounts)
             {
-                var list = m_List.SafeConvertList<object, Account>();
-
-                if (list != null && m_State is List<Account> rads)
+                if (m_State is List<Account> rads)
                 {
-                    for (int i = 0, v = m_ListPage * 12; i < 12 && v < list.Count; ++i, ++v)
+                    for (int i = 0, v = m_ListPage * 12; i < 12 && v < m_List.Count; ++i, ++v)
                     {
-                        var obj = list[v];
+                        var acct = (Account)m_List[v];
 
                         if (info.IsSwitched(v))
                         {
-                            if (!rads.Contains(obj))
+                            if (!rads.Contains(acct))
                             {
-                                rads.Add(obj);
+                                rads.Add(acct);
                             }
                         }
-                        else if (rads.Contains(obj))
+                        else if (rads.Contains(acct))
                         {
-                            rads.Remove(obj);
+                            rads.Remove(acct);
                         }
                     }
                 }
@@ -4166,12 +4123,24 @@ namespace Server.Gumps
             }
         }
 
-        private class SharedAccountComparer : IComparer<KeyValuePair<IPAddress, List<Account>>>
+        private class SharedAccountDescendingComparer : IComparer<object>
         {
-            public static readonly IComparer<KeyValuePair<IPAddress, List<Account>>> Instance = new SharedAccountComparer();
+            public static readonly IComparer<object> Instance = new SharedAccountDescendingComparer();
 
-            public int Compare(KeyValuePair<IPAddress, List<Account>> x, KeyValuePair<IPAddress, List<Account>> y) =>
-                x.Value.Count - y.Value.Count;
+            public int Compare(object x, object y)
+            {
+                if (x is not KeyValuePair<IPAddress, List<Account>> a)
+                {
+                    return -1;
+                }
+
+                if (y is not KeyValuePair<IPAddress, List<Account>> b)
+                {
+                    return 1;
+                }
+
+                return a.Value.Count - b.Value.Count;
+            }
         }
 
         private class AddCommentPrompt : Prompt
