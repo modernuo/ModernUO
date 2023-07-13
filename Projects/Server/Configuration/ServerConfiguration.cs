@@ -271,12 +271,14 @@ public static class ServerConfiguration
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
-
+        
         if (m_Settings.SelectedMaps == null)
         {
             m_Settings.SelectedMaps = ServerConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value);
             updated = true;
         }
+
+        Core.SelectedMaps = m_Settings.SelectedMaps;
 
         if (updated)
         {

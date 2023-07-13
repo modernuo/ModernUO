@@ -12,12 +12,12 @@ namespace Server.Tests.Tests.Maps
             MapSelection mapSelection = new MapSelection();
 
             // Then
-            Assert.False(mapSelection.IsEnabled(MapSelectionFlags.Felucca));
-            Assert.False(mapSelection.IsEnabled(MapSelectionFlags.Trammel));
-            Assert.False(mapSelection.IsEnabled(MapSelectionFlags.Ilshenar));
-            Assert.False(mapSelection.IsEnabled(MapSelectionFlags.Malas));
-            Assert.False(mapSelection.IsEnabled(MapSelectionFlags.Tokuno));
-            Assert.False(mapSelection.IsEnabled(MapSelectionFlags.TerMur));
+            Assert.False(mapSelection.Includes(MapSelectionFlags.Felucca));
+            Assert.False(mapSelection.Includes(MapSelectionFlags.Trammel));
+            Assert.False(mapSelection.Includes(MapSelectionFlags.Ilshenar));
+            Assert.False(mapSelection.Includes(MapSelectionFlags.Malas));
+            Assert.False(mapSelection.Includes(MapSelectionFlags.Tokuno));
+            Assert.False(mapSelection.Includes(MapSelectionFlags.TerMur));
         }
 
         [Fact]
@@ -29,12 +29,12 @@ namespace Server.Tests.Tests.Maps
             mapSelection.EnableAll();
 
             // Then
-            Assert.True(mapSelection.IsEnabled(MapSelectionFlags.Felucca));
-            Assert.True(mapSelection.IsEnabled(MapSelectionFlags.Trammel));
-            Assert.True(mapSelection.IsEnabled(MapSelectionFlags.Ilshenar));
-            Assert.True(mapSelection.IsEnabled(MapSelectionFlags.Malas));
-            Assert.True(mapSelection.IsEnabled(MapSelectionFlags.Tokuno));
-            Assert.True(mapSelection.IsEnabled(MapSelectionFlags.TerMur));
+            Assert.True(mapSelection.Includes(MapSelectionFlags.Felucca));
+            Assert.True(mapSelection.Includes(MapSelectionFlags.Trammel));
+            Assert.True(mapSelection.Includes(MapSelectionFlags.Ilshenar));
+            Assert.True(mapSelection.Includes(MapSelectionFlags.Malas));
+            Assert.True(mapSelection.Includes(MapSelectionFlags.Tokuno));
+            Assert.True(mapSelection.Includes(MapSelectionFlags.TerMur));
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace Server.Tests.Tests.Maps
             mapSelection.Disable(MapSelectionFlags.Trammel);
 
             // Then
-            Assert.False(mapSelection.IsEnabled(MapSelectionFlags.Trammel));
+            Assert.False(mapSelection.Includes(MapSelectionFlags.Trammel));
         }
 
         [Fact]
@@ -59,7 +59,66 @@ namespace Server.Tests.Tests.Maps
             mapSelection.Enable(MapSelectionFlags.Trammel);
 
             // Then
-            Assert.True(mapSelection.IsEnabled(MapSelectionFlags.Trammel));
+            Assert.True(mapSelection.Includes(MapSelectionFlags.Trammel));
+        }
+
+        [Fact]
+        public void Format_an_empty_map_selection()
+        {
+            MapSelection mapSelection = new MapSelection();
+
+            // When, Then
+            Assert.Equal("None", mapSelection.ToCommaDelimitedString());
+        }
+
+
+        [Fact]
+        public void Format_felucca_only_map_selection()
+        {
+            MapSelection mapSelection = new MapSelection();
+            mapSelection.Enable(MapSelectionFlags.Felucca);
+
+            // When, Then
+            Assert.Equal("Felucca", mapSelection.ToCommaDelimitedString());
+        }
+
+        [Fact]
+        public void Format_felucca_and_trammel_map_selection()
+        {
+            MapSelection mapSelection = new MapSelection();
+            mapSelection.Enable(MapSelectionFlags.Felucca);
+            mapSelection.Enable(MapSelectionFlags.Trammel);
+
+            // When, Then
+            Assert.Equal("Felucca, Trammel", mapSelection.ToCommaDelimitedString());
+        }
+
+        [Fact]
+        public void Enable_all_maps_in_a_particular_expansion()
+        {
+            MapSelection mapSelection = new MapSelection();
+            Expansion expansion = Expansion.SE;
+
+            // When
+            mapSelection.EnableAllInExpansion(expansion);
+
+            // Then
+            Assert.Equal("Felucca, Trammel, Ilshenar, Malas, Tokuno", mapSelection.ToCommaDelimitedString());
+        }
+
+        [Fact]
+        public void Can_evaluate_enabled_maps_by_string()
+        {
+            MapSelection mapSelection = new MapSelection();
+            mapSelection.Enable(MapSelectionFlags.Felucca);
+
+            // When
+            bool feluccaIsEnabled = mapSelection.Includes("Felucca");
+            bool trammelIsEnabled = mapSelection.Includes("Trammel");
+
+            // Then
+            Assert.True(feluccaIsEnabled);
+            Assert.False(trammelIsEnabled);
         }
     }
 }

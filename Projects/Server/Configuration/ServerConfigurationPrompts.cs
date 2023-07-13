@@ -219,29 +219,33 @@ public static class ServerConfigurationPrompts
         } while (true);
         return ips;
     }
-
     
-
     internal static void OutputSelectedMaps(Expansion expansion, MapSelection selectedMaps)
     {
         var mapOptionsForExpansion = ExpansionMapSelectionFlags.FromExpansion(expansion);
 
-        Console.WriteLine("Selected Maps:");
-        for (int mapIndex=0;  mapIndex<mapOptionsForExpansion.Length; mapIndex++)
+        Console.WriteLine("Selected maps:");
+        int mapOptionsLength = mapOptionsForExpansion.Length;
+        for (int mapIndex=0;  mapIndex<mapOptionsLength; mapIndex++)
         {
             Console.WriteLine("{0}. {1} [{2}]",
-                mapIndex,
+                (mapIndex + 1),     // +1 so that it runs from 1 rather than 0
                 mapOptionsForExpansion[mapIndex].ToString(),
-                (selectedMaps.IsEnabled(mapOptionsForExpansion[mapIndex]) ? "*" : ""));
+                (selectedMaps.Includes(mapOptionsForExpansion[mapIndex]) ? "*" : ""));
         }
 
-        Console.WriteLine("Choose and press ENTER to toggle, or just ENTER to accept");
+        Console.WriteLine("Only these maps will be populated and moongates will only lead to them: ");
+        Utility.PushColor(ConsoleColor.Green);
+        Console.Write(selectedMaps.ToCommaDelimitedString());
+        Utility.PopColor();
+        Console.WriteLine();
+        Console.WriteLine("[1-{0} and enter to toggle, or enter to finish]", mapOptionsLength);
     }
 
     internal static void ToggleSelectedMaps(MapSelectionFlags[] expansionMaps, MapSelection mapSelection, int selectedNumber)
     {
         int index = selectedNumber - 1;
-        if (mapSelection.IsEnabled(expansionMaps[index]))
+        if (mapSelection.Includes(expansionMaps[index]))
         {
             mapSelection.Disable(expansionMaps[index]);
         }
@@ -256,15 +260,23 @@ public static class ServerConfigurationPrompts
     {
         MapSelectionFlags[] expansionMaps = ExpansionMapSelectionFlags.FromExpansion(expansion);
         MapSelection selectedMaps = new();
-        string lastInput = "";
+        selectedMaps.EnableAllInExpansion(expansion);
+        string lastInput;
         do
         {
             OutputSelectedMaps(expansion, selectedMaps);
             lastInput = Console.ReadLine().TrimEnd();
+            if (lastInput == "")
+                break;
+
             int selectedNumber;
             if (!int.TryParse(lastInput, out selectedNumber))
+            {
+                Console.WriteLine("You need to choose a number, or press ENTER on its own to accept");
                 continue;
-            if (selectedNumber < 0 || selectedNumber > expansionMaps.Length)
+            }
+
+            if (selectedNumber <= 0 || selectedNumber > expansionMaps.Length)
             {
                 Console.WriteLine("That number was not an option. Please try again...");
                 continue;
@@ -272,7 +284,6 @@ public static class ServerConfigurationPrompts
             ToggleSelectedMaps(expansionMaps, selectedMaps, selectedNumber);
         } while (lastInput != "");
 
-        Console.WriteLine("Only your selected maps will be populated and moongates will only lead to those maps");
         return selectedMaps;
     }
 }

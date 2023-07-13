@@ -197,7 +197,6 @@ public static class CharacterCreation
         }
 
         var city = GetStartLocation(args, young);
-
         newChar.MoveToWorld(city.Location, city.Map);
 
         logger.Information(
@@ -236,7 +235,8 @@ public static class CharacterCreation
         {
             case "necromancer":
                 {
-                    if ((flags & ClientFlags.Malas) != 0)
+                    if (((flags & ClientFlags.Malas) != 0) &&
+                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas))
                     {
                         return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
                     }
@@ -260,7 +260,8 @@ public static class CharacterCreation
                 }
             case "samurai":
                 {
-                    if ((flags & ClientFlags.Tokuno) != 0)
+                    if (((flags & ClientFlags.Tokuno) != 0) &&
+                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno))
                     {
                         return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
                     }

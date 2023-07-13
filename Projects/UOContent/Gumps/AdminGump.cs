@@ -2081,12 +2081,12 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        if (Core.ML)
+                                        if (Core.ML && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*.json");
                                         }
 
-                                        if (Core.SE)
+                                        if (Core.SE && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*.json");
                                         }
