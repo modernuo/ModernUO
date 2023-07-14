@@ -369,7 +369,7 @@ public class MoongateGump : Gump
         List<PMList> filteredBySelectedMaps = new List<PMList>();
         for (var i = 0; i < checkLists.Length; ++i)
         {
-            if (Core.SelectedMaps.Includes(checkLists[i].ToString()))
+            if (Core.SelectedMaps.Includes(checkLists[i].Map.ToString()))
                 filteredBySelectedMaps.Add(checkLists[i]);
         }
 
@@ -401,15 +401,15 @@ public class MoongateGump : Gump
 
         AddHtmlLocalized(5, 5, 200, 20, 1012011); // Pick your destination:
 
-        for (var i = 0; i < checkLists.Length; ++i)
+        for (var i = 0; i < filteredBySelectedMaps.Count; ++i)
         {
-            AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, checkLists[i]) + 1);
-            AddHtmlLocalized(30, 35 + i * 25, 150, 20, checkLists[i].Number);
+            AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, filteredBySelectedMaps[i]) + 1);
+            AddHtmlLocalized(30, 35 + i * 25, 150, 20, filteredBySelectedMaps[i].Number);
         }
 
         for (var i = 0; i < _lists.Length; ++i)
         {
-            RenderPage(i, Array.IndexOf(checkLists, _lists[i]));
+            RenderPage(i, filteredBySelectedMaps.FindIndex(x => x == _lists[i]));
         }
     }
 

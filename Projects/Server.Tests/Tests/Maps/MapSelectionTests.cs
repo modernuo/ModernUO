@@ -1,5 +1,6 @@
 using Xunit;
 using Server.Maps;
+using System.Collections.Generic;
 
 namespace Server.Tests.Tests.Maps
 {
@@ -9,7 +10,7 @@ namespace Server.Tests.Tests.Maps
         public void No_maps_enabled_on_construction()
         {
             // When
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
 
             // Then
             Assert.False(mapSelection.Includes(MapSelectionFlags.Felucca));
@@ -23,7 +24,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Enable_all_maps()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
 
             // When
             mapSelection.EnableAll();
@@ -40,7 +41,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Disable_individual_map()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
             mapSelection.EnableAll();
 
             // When
@@ -53,7 +54,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Enable_individual_map()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
 
             // When
             mapSelection.Enable(MapSelectionFlags.Trammel);
@@ -65,7 +66,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Format_an_empty_map_selection()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
 
             // When, Then
             Assert.Equal("None", mapSelection.ToCommaDelimitedString());
@@ -75,7 +76,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Format_felucca_only_map_selection()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
 
             // When, Then
@@ -85,7 +86,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Format_felucca_and_trammel_map_selection()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
             mapSelection.Enable(MapSelectionFlags.Trammel);
 
@@ -96,7 +97,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Enable_all_maps_in_a_particular_expansion()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
             Expansion expansion = Expansion.SE;
 
             // When
@@ -109,7 +110,7 @@ namespace Server.Tests.Tests.Maps
         [Fact]
         public void Can_evaluate_enabled_maps_by_string()
         {
-            MapSelection mapSelection = new MapSelection();
+            MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
 
             // When
@@ -119,6 +120,26 @@ namespace Server.Tests.Tests.Maps
             // Then
             Assert.True(feluccaIsEnabled);
             Assert.False(trammelIsEnabled);
+        }
+
+        [Fact]
+        public void Flags_accessible_as_a_list()
+        {
+            MapSelection mapSelection = new();
+            mapSelection.Enable(MapSelectionFlags.Felucca);
+            mapSelection.Enable(MapSelectionFlags.Ilshenar);
+            mapSelection.Enable(MapSelectionFlags.Tokuno);
+
+            // When
+            List<string> actual = mapSelection.ToList();
+
+            // Then
+            var expected = new List<string>
+            {
+                "Felucca", "Ilshenar", "Tokuno"
+            };
+
+            Assert.Equal(expected, actual);
         }
     }
 }

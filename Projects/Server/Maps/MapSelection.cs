@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.Maps
 {
     public class MapSelection
     {
-        public MapSelection()
+        public MapSelection() { }
+
+        public MapSelection(List<string> mapList)
         {
-            _selectedMaps = MapSelectionFlags.None;
+            foreach (MapSelectionFlags value in Enum.GetValues(typeof(MapSelectionFlags)))
+            {
+                if (mapList.Contains(value.ToString()))
+                {
+                    Enable(value);
+                }
+            }
         }
 
         public bool Includes(MapSelectionFlags mapFlags)
@@ -89,6 +94,22 @@ namespace Server.Maps
                 formatted = "None";
 
             return formatted;
+        }
+
+        public List<string> ToList()
+        {
+            List<string> mapList = new();
+            foreach (MapSelectionFlags value in Enum.GetValues(typeof(MapSelectionFlags)))
+            {
+                if (value == 0)
+                    continue;
+
+                if ((_selectedMaps & value) == value)
+                {
+                    mapList.Add(value.ToString());
+                }
+            }
+            return mapList;
         }
 
         private MapSelectionFlags _selectedMaps;

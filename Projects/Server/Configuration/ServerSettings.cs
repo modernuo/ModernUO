@@ -34,8 +34,8 @@ public class ServerSettings
     [JsonPropertyName("expansion")]
     public Expansion? Expansion { get; set; }
 
-    [JsonPropertyName("selectedMaps")]
-    public MapSelection? SelectedMaps { get; set; }
+    [JsonPropertyName("selectedMapsList")]
+    public List<string> SelectedMapsList { get; set; }
 
     [JsonPropertyName("settings")]
     public SortedDictionary<string, string> Settings { get; set; } = new();

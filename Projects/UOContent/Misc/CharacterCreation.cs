@@ -219,8 +219,6 @@ public static class CharacterCreation
     {
         var post6000Supported = !TileMatrix.Pre6000ClientSupport;
 
-        CityInfo oclloBankInFelucca = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Felucca);        
-
         if (Core.ML && post6000Supported && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
             return _newHavenInfo;
 
@@ -314,25 +312,39 @@ public static class CharacterCreation
                 }
         }
 
-        // Make a reasonable guess as to where to put them - it is still possible that this
-        // will need adjustment, depending on the maps selected for the server!
-
         if (post6000Supported && useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
         {
+            // New Haven is available in their map due to client version, so put
+            // them there...
+            //
+            // Note: if your server maps don't contain New Haven, this will place
+            // them in the wilderness of Ocllo. Restrict client versions if you
+            // want to avoid this kind of thing, or remove this block of code
             return _newHavenInfo;
         }
 
+        // New Haven is not available in their client, so place them in Ocllo
+        // instead (otherwise they will be dumped into the wildnerness)
+        CityInfo oclloBankInTrammel = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Trammel);
+        if (useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+        {
+            return oclloBankInTrammel;
+        }
+
+        CityInfo oclloBankInFelucca = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Felucca);
         if (useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Felucca))
         {
             return oclloBankInFelucca;
         }
 
+        // They're not using Haven, so use their city selection instead - adjusted according to
+        // available maps
         if ((args.City.Map == Map.Trammel) && !Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
-        {
-            // This happens if they don't choose a city...
-            if (args.City == _newHavenInfo)
-                return oclloBankInFelucca;
-        }
+            args.City.Map = Map.Felucca;
+
+        if ((args.City.Map == Map.Felucca) && !Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Felucca))
+            args.City.Map = Map.Trammel;
+        
         return args.City;
     }
 
