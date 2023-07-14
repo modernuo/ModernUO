@@ -219,13 +219,10 @@ public static class CharacterCreation
     {
         var post6000Supported = !TileMatrix.Pre6000ClientSupport;
 
-        var testHavenInFelucca = _newHavenInfo;
-        testHavenInFelucca.Map = Map.Felucca;
+        CityInfo oclloBankInFelucca = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Felucca);        
 
-        if (Core.ML && post6000Supported)
-        {
-            return testHavenInFelucca; // We don't get the client Version until AFTER Character creation
-        }
+        if (Core.ML && post6000Supported && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+            return _newHavenInfo;
 
         var useHaven = isYoung;
 
@@ -259,7 +256,9 @@ public static class CharacterCreation
                 }
             case "paladin":
                 {
-                    return testHavenInFelucca;
+                    if (Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel) && post6000Supported)
+                        return _newHavenInfo;
+                    break;
                 }
             case "samurai":
                 {
@@ -315,7 +314,24 @@ public static class CharacterCreation
                 }
         }
 
-        return post6000Supported && useHaven ? testHavenInFelucca : args.City;
+        // Make a reasonable guess as to where to put them - it is still possible that this
+        // will need adjustment, depending on the maps selected for the server!
+
+        if (post6000Supported && useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+        {
+            return _newHavenInfo;
+        }
+
+        if (useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Felucca))
+        {
+            return oclloBankInFelucca;
+        }
+
+        if ((args.City.Map == Map.Trammel) && !Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+        {
+            args.City.Map = Map.Felucca;
+        }
+        return args.City;
     }
 
     private static void SetStats(Mobile m, NetState state, StatNameValue[] stats, int prof)
