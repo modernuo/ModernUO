@@ -2082,22 +2082,19 @@ namespace Server.Gumps
                                     else
                                     {
                                         if (Core.ML && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas))
-                                        {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*.json");
-                                        }
 
                                         if (Core.SE && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno))
-                                        {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*.json");
-                                        }
 
-                                        if (Core.AOS)
-                                        {
+                                        if (Core.AOS && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Ilshenar))
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/ilshenar/*.json");
-                                        }
 
-                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*.json");
-                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*.json");
+                                        if (Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*.json");
+
+                                        if (Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Felucca))
+                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*.json");
                                     }
 
                                     notice = "Spawners have been generated.";
