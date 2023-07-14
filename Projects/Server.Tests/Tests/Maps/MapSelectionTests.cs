@@ -72,7 +72,6 @@ namespace Server.Tests.Tests.Maps
             Assert.Equal("None", mapSelection.ToCommaDelimitedString());
         }
 
-
         [Fact]
         public void Format_felucca_only_map_selection()
         {
