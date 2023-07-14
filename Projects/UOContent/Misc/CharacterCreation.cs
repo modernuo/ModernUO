@@ -331,8 +331,7 @@ public static class CharacterCreation
         {
             // This happens if they don't choose a city...
             if (args.City == _newHavenInfo)
-            {
-                return oclloBankInFelucca;=          }
+                return oclloBankInFelucca;
         }
         return args.City;
     }
