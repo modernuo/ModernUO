@@ -219,9 +219,12 @@ public static class CharacterCreation
     {
         var post6000Supported = !TileMatrix.Pre6000ClientSupport;
 
+        var testHavenInFelucca = _newHavenInfo;
+        testHavenInFelucca.Map = Map.Felucca;
+
         if (Core.ML && post6000Supported)
         {
-            return _newHavenInfo; // We don't get the client Version until AFTER Character creation
+            return testHavenInFelucca; // We don't get the client Version until AFTER Character creation
         }
 
         var useHaven = isYoung;
@@ -256,12 +259,17 @@ public static class CharacterCreation
                 }
             case "paladin":
                 {
-                    return _newHavenInfo;
+                    return testHavenInFelucca;
                 }
             case "samurai":
                 {
-                    if (((flags & ClientFlags.Tokuno) != 0) &&
-                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno))
+                    bool haotisAndTokunoAccessible = 
+                        ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
+                        ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
+                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas) &&
+                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno);
+
+                    if (haotisAndTokunoAccessible)
                     {
                         return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
                     }
@@ -281,7 +289,13 @@ public static class CharacterCreation
                 }
             case "ninja":
                 {
-                    if ((flags & ClientFlags.Tokuno) != 0)
+                    bool enimosAndTokunoAccessible =
+                        ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
+                        ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
+                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas) &&
+                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno);
+
+                    if (enimosAndTokunoAccessible)
                     {
                         return new CityInfo("Ninja DE", "Enimo's Residence", 414, 823, -1, Map.Malas);
                     }
@@ -301,7 +315,7 @@ public static class CharacterCreation
                 }
         }
 
-        return post6000Supported && useHaven ? _newHavenInfo : args.City;
+        return post6000Supported && useHaven ? testHavenInFelucca : args.City;
     }
 
     private static void SetStats(Mobile m, NetState state, StatNameValue[] stats, int prof)
