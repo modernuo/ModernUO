@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Items;
 using Server.Logging;
+using Server.Maps;
 using Server.Mobiles;
 using Server.Network;
 
@@ -219,7 +220,7 @@ public static class CharacterCreation
     {
         var post6000Supported = !TileMatrix.Pre6000ClientSupport;
 
-        if (Core.ML && post6000Supported && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+        if (Core.ML && post6000Supported && Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
             return _newHavenInfo;
 
         var useHaven = isYoung;
@@ -234,7 +235,7 @@ public static class CharacterCreation
             case "necromancer":
                 {
                     if (((flags & ClientFlags.Malas) != 0) &&
-                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas))
+                        Core.SelectedMaps.Includes(MapSelectionFlags.Malas))
                     {
                         return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
                     }
@@ -254,7 +255,7 @@ public static class CharacterCreation
                 }
             case "paladin":
                 {
-                    if (Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel) && post6000Supported)
+                    if (Core.SelectedMaps.Includes(MapSelectionFlags.Trammel) && post6000Supported)
                         return _newHavenInfo;
                     break;
                 }
@@ -263,8 +264,8 @@ public static class CharacterCreation
                     bool haotisAndTokunoAccessible = 
                         ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
                         ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
-                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas) &&
-                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno);
+                        Core.SelectedMaps.Includes(MapSelectionFlags.Malas) &&
+                        Core.SelectedMaps.Includes(MapSelectionFlags.Tokuno);
 
                     if (haotisAndTokunoAccessible)
                     {
@@ -289,8 +290,8 @@ public static class CharacterCreation
                     bool enimosAndTokunoAccessible =
                         ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
                         ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
-                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Malas) &&
-                        Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Tokuno);
+                        Core.SelectedMaps.Includes(MapSelectionFlags.Malas) &&
+                        Core.SelectedMaps.Includes(MapSelectionFlags.Tokuno);
 
                     if (enimosAndTokunoAccessible)
                     {
@@ -312,7 +313,7 @@ public static class CharacterCreation
                 }
         }
 
-        if (post6000Supported && useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+        if (post6000Supported && useHaven && Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
         {
             // New Haven is available in their map due to client version, so put
             // them there...
@@ -326,23 +327,23 @@ public static class CharacterCreation
         // New Haven is not available in their client, so place them in Ocllo
         // instead (otherwise they will be dumped into the wildnerness)
         CityInfo oclloBankInTrammel = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Trammel);
-        if (useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+        if (useHaven && Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
         {
             return oclloBankInTrammel;
         }
 
         CityInfo oclloBankInFelucca = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Felucca);
-        if (useHaven && Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Felucca))
+        if (useHaven && Core.SelectedMaps.Includes(MapSelectionFlags.Felucca))
         {
             return oclloBankInFelucca;
         }
 
         // They're not using Haven, so use their city selection instead - adjusted according to
         // available maps
-        if ((args.City.Map == Map.Trammel) && !Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
+        if ((args.City.Map == Map.Trammel) && !Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
             args.City.Map = Map.Felucca;
 
-        if ((args.City.Map == Map.Felucca) && !Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Felucca))
+        if ((args.City.Map == Map.Felucca) && !Core.SelectedMaps.Includes(MapSelectionFlags.Felucca))
             args.City.Map = Map.Trammel;
         
         return args.City;
