@@ -329,7 +329,10 @@ public static class CharacterCreation
 
         if ((args.City.Map == Map.Trammel) && !Core.SelectedMaps.Includes(Maps.MapSelectionFlags.Trammel))
         {
-            args.City.Map = Map.Felucca;
+            // This happens if they don't choose a city...
+            if (args.City == _newHavenInfo)
+            {
+                return oclloBankInFelucca;=          }
         }
         return args.City;
     }
