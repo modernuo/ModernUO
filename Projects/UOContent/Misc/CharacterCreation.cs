@@ -218,6 +218,7 @@ public static class CharacterCreation
 
     private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
     {
+        // We don't get the actual client version until after character creation
         var post6000Supported = !TileMatrix.Pre6000ClientSupport;
 
         if (Core.ML && post6000Supported && Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
@@ -315,17 +316,13 @@ public static class CharacterCreation
 
         if (post6000Supported && useHaven && Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
         {
-            // New Haven is available in their map due to client version, so put
-            // them there...
-            //
+            // New Haven is supported, so put them there...
             // Note: if your server maps don't contain New Haven, this will place
-            // them in the wilderness of Ocllo. Restrict client versions if you
-            // want to avoid this kind of thing, or remove this block of code
+            // them in the wilderness of Ocllo
             return _newHavenInfo;
         }
 
-        // New Haven is not available in their client, so place them in Ocllo
-        // instead (otherwise they will be dumped into the wildnerness)
+        // New Haven is not available, so place them in Ocllo instead, if they're aiming for Haven
         CityInfo oclloBankInTrammel = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Trammel);
         if (useHaven && Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
         {
@@ -338,8 +335,8 @@ public static class CharacterCreation
             return oclloBankInFelucca;
         }
 
-        // They're not using Haven, so use their city selection instead - adjusted according to
-        // available maps
+        // They're not trying to get to Haven, so use their city selection
+        // instead - adjusted according to available maps
         if ((args.City.Map == Map.Trammel) && !Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
             args.City.Map = Map.Felucca;
 
