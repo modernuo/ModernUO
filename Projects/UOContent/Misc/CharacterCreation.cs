@@ -222,7 +222,9 @@ public static class CharacterCreation
         var post6000Supported = !TileMatrix.Pre6000ClientSupport;
 
         if (Core.ML && post6000Supported && Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
+        {
             return _newHavenInfo;
+        }
 
         var useHaven = isYoung;
 
@@ -257,7 +259,10 @@ public static class CharacterCreation
             case "paladin":
                 {
                     if (Core.SelectedMaps.Includes(MapSelectionFlags.Trammel) && post6000Supported)
+                    {
                         return _newHavenInfo;
+                    }
+
                     break;
                 }
             case "samurai":
@@ -338,11 +343,15 @@ public static class CharacterCreation
         // They're not trying to get to Haven, so use their city selection
         // instead - adjusted according to available maps
         if ((args.City.Map == Map.Trammel) && !Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
+        {
             args.City.Map = Map.Felucca;
+        }
 
         if ((args.City.Map == Map.Felucca) && !Core.SelectedMaps.Includes(MapSelectionFlags.Felucca))
+        {
             args.City.Map = Map.Trammel;
-        
+        }
+
         return args.City;
     }
 

@@ -17,28 +17,27 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Server.Json
-{
-    public class TextDefinitionConverter : JsonConverter<TextDefinition>
-    {
-        public override TextDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-            reader.TokenType switch
-            {
-                JsonTokenType.String => TextDefinition.Of(reader.GetString()),
-                JsonTokenType.Number => TextDefinition.Of(reader.GetInt32()),
-                _                    => throw new JsonException("TextDefinition value must be an integer or string")
-            };
+namespace Server.Json;
 
-        public override void Write(Utf8JsonWriter writer, TextDefinition value, JsonSerializerOptions options)
+public class TextDefinitionConverter : JsonConverter<TextDefinition>
+{
+    public override TextDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.TokenType switch
         {
-            if (value.Number > 0)
-            {
-                writer.WriteNumberValue(value.Number);
-            }
-            else
-            {
-                writer.WriteStringValue(value.String);
-            }
+            JsonTokenType.String => TextDefinition.Of(reader.GetString()),
+            JsonTokenType.Number => TextDefinition.Of(reader.GetInt32()),
+            _                    => throw new JsonException("TextDefinition value must be an integer or string")
+        };
+
+    public override void Write(Utf8JsonWriter writer, TextDefinition value, JsonSerializerOptions options)
+    {
+        if (value.Number > 0)
+        {
+            writer.WriteNumberValue(value.Number);
+        }
+        else
+        {
+            writer.WriteStringValue(value.String);
         }
     }
 }

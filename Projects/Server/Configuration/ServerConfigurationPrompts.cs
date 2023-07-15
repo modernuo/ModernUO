@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using Server.Gumps;
 using Server.Maps;
 
 namespace Server;
@@ -91,7 +89,7 @@ public static class ServerConfigurationPrompts
         Console.WriteLine("Please choose an expansion by typing the number or short name:");
         var expansions = ExpansionInfo.Table;
 
-        for (int i = 0; i < expansions.Length; i++)
+        for (var i = 0; i < expansions.Length; i++)
         {
             var info = expansions[i];
             Console.WriteLine(" - {0,2}: {1} ({2})", i, ((Expansion)info.ID).ToString(), info.Name);
@@ -219,19 +217,19 @@ public static class ServerConfigurationPrompts
         } while (true);
         return ips;
     }
-    
+
     internal static void OutputSelectedMaps(Expansion expansion, MapSelection selectedMaps)
     {
         var mapOptionsForExpansion = ExpansionMapSelectionFlags.FromExpansion(expansion);
 
         Console.WriteLine("Selected maps:");
-        int mapOptionsLength = mapOptionsForExpansion.Length;
-        for (int mapIndex=0;  mapIndex<mapOptionsLength; mapIndex++)
+        var mapOptionsLength = mapOptionsForExpansion.Length;
+        for (var mapIndex=0;  mapIndex<mapOptionsLength; mapIndex++)
         {
             Console.WriteLine("{0}. {1} [{2}]",
-                (mapIndex + 1),     // +1 so that it runs from 1 rather than 0
+                mapIndex + 1,     // +1 so that it runs from 1 rather than 0
                 mapOptionsForExpansion[mapIndex].ToString(),
-                (selectedMaps.Includes(mapOptionsForExpansion[mapIndex]) ? "*" : ""));
+                selectedMaps.Includes(mapOptionsForExpansion[mapIndex]) ? "*" : "");
         }
 
         Console.WriteLine("Only these maps will be populated and moongates will only lead to them: ");
@@ -244,7 +242,8 @@ public static class ServerConfigurationPrompts
 
     internal static void ToggleSelectedMaps(MapSelectionFlags[] expansionMaps, MapSelection mapSelection, int selectedNumber)
     {
-        int index = selectedNumber - 1;
+        var index = selectedNumber - 1;
+
         if (mapSelection.Includes(expansionMaps[index]))
         {
             mapSelection.Disable(expansionMaps[index]);
@@ -253,24 +252,25 @@ public static class ServerConfigurationPrompts
         {
             mapSelection.Enable(expansionMaps[index]);
         }
-        return;
     }
 
     internal static MapSelection GetSelectedMaps(Expansion expansion)
     {
-        MapSelectionFlags[] expansionMaps = ExpansionMapSelectionFlags.FromExpansion(expansion);
-        MapSelection selectedMaps = new();
+        var expansionMaps = ExpansionMapSelectionFlags.FromExpansion(expansion);
+        var selectedMaps = new MapSelection();
         selectedMaps.EnableAllInExpansion(expansion);
         string lastInput;
         do
         {
             OutputSelectedMaps(expansion, selectedMaps);
-            lastInput = Console.ReadLine().TrimEnd();
-            if (lastInput == "")
-                break;
+            lastInput = Console.ReadLine()?.TrimEnd();
 
-            int selectedNumber;
-            if (!int.TryParse(lastInput, out selectedNumber))
+            if (string.IsNullOrWhiteSpace(lastInput))
+            {
+                break;
+            }
+
+            if (!int.TryParse(lastInput, out var selectedNumber))
             {
                 Console.WriteLine("You need to choose a number, or press ENTER on its own to accept");
                 continue;
@@ -281,6 +281,7 @@ public static class ServerConfigurationPrompts
                 Console.WriteLine("That number was not an option. Please try again...");
                 continue;
             }
+
             ToggleSelectedMaps(expansionMaps, selectedMaps, selectedNumber);
         } while (lastInput != "");
 
