@@ -35,14 +35,13 @@ namespace Server.Maps
                 if (value == 0)
                     continue;
 
-                if (value.ToString() == mapName)
-                {
-                    if ((_selectedMaps & value) == value)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
+                if (value.ToString() != mapName)
+                    continue;
+
+                if ((_selectedMaps & value) == value)
+                    return true;
+
+                return false;
             }
             return false;
         }
