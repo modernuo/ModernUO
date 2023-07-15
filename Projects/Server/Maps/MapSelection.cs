@@ -10,6 +10,11 @@ public class MapSelection
     {
     }
 
+    public MapSelection(MapSelectionFlags flags)
+    {
+        _selectedMaps = flags;
+    }
+
     public MapSelection(List<string> mapList)
     {
         foreach (MapSelectionFlags value in Enum.GetValues(typeof(MapSelectionFlags)))
@@ -122,6 +127,14 @@ public class MapSelection
             }
         }
         return mapList;
+    }
+
+    public MapSelectionFlags Flags
+    {
+        get
+        {
+            return _selectedMaps;
+        }
     }
 
     private MapSelectionFlags _selectedMaps;

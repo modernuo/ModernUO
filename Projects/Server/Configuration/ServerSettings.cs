@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Json;
+using Server.Maps;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json.Serialization;
@@ -33,8 +35,9 @@ public class ServerSettings
     [JsonPropertyName("expansion")]
     public Expansion? Expansion { get; set; }
 
-    [JsonPropertyName("selectedMapsList")]
-    public List<string> SelectedMapsList { get; set; }
+    [JsonPropertyName("availableMaps")]
+    [JsonConverter(typeof(BitArrayEnumIndexConverter<MapSelectionFlags>))]
+    public MapSelectionFlags? AvailableMaps { get; set; }
 
     [JsonPropertyName("settings")]
     public SortedDictionary<string, string> Settings { get; set; } = new();

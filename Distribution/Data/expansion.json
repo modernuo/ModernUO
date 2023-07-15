@@ -29,6 +29,10 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -93,6 +97,11 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -157,6 +166,11 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -221,6 +235,12 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -285,6 +305,12 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -349,6 +375,13 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true,
+      "Malas": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -413,6 +446,14 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true,
+      "Malas": true,
+      "Tokuno": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -477,6 +518,14 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true,
+      "Malas": true,
+      "Tokuno": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -541,6 +590,15 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true,
+      "Malas": true,
+      "Tokuno": true,
+      "TerMer": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -605,6 +663,15 @@
       "TOL": false,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true,
+      "Malas": true,
+      "Tokuno": true,
+      "TerMer": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -669,6 +736,15 @@
       "TOL": true,
       "EJ": false
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true,
+      "Malas": true,
+      "Tokuno": true,
+      "TerMer": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
@@ -733,6 +809,15 @@
       "TOL": true,
       "EJ": true
     },
+    "AvailableMaps": {
+      "Felucca": true,
+      "Trammel": true,
+      "Ilshenar": true,
+      "Malas": true,
+      "Tokuno": true,
+      "TerMer": true
+    },
+    "BaseMap": "Felucca",
     "CharacterListFlags": {
       "Unk1": false,
       "OverwriteConfigButton": false,
