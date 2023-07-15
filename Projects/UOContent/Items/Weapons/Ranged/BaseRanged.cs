@@ -94,10 +94,11 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
         {
-            if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
+            var ammo = Ammo;
+            if (ammo != null && attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
                 Utility.RandomDouble() < 0.4)
             {
-                defender.AddToBackpack(Ammo);
+                defender.AddToBackpack(ammo);
             }
 
             if (Core.ML && _velocity > 0)
@@ -154,7 +155,7 @@ namespace Server.Items
                 }
                 else
                 {
-                    Ammo.MoveToWorld(
+                    Ammo?.MoveToWorld(
                         new Point3D(
                             defender.X + Utility.RandomMinMax(-1, 1),
                             defender.Y + Utility.RandomMinMax(-1, 1),
