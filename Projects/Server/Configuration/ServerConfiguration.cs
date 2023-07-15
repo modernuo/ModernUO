@@ -19,6 +19,7 @@ using System.IO;
 using System.Net;
 using Server.Json;
 using Server.Logging;
+using Server.Maps;
 
 namespace Server;
 
@@ -271,6 +272,15 @@ public static class ServerConfiguration
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
+        
+        if (m_Settings.SelectedMapsList == null)
+        {
+            MapSelection selectedMaps = ServerConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value);
+            m_Settings.SelectedMapsList = selectedMaps.ToList();
+            updated = true;
+        }
+
+        Core.SelectedMaps = new MapSelection(m_Settings.SelectedMapsList);
 
         if (updated)
         {

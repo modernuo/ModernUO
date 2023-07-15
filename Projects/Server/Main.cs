@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using Server.Buffers;
 using Server.Json;
 using Server.Logging;
+using Server.Maps;
 using Server.Network;
 
 namespace Server;
@@ -229,6 +230,7 @@ public static class Core
     public static int ScriptMobiles => _mobileCount;
 
     public static Expansion Expansion { get; set; }
+    public static MapSelection SelectedMaps { get; set; }
 
     public static bool T2A => Expansion >= Expansion.T2A;
 

@@ -16,6 +16,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json.Serialization;
+using Server.Maps;
 
 namespace Server;
 
@@ -32,6 +33,9 @@ public class ServerSettings
 
     [JsonPropertyName("expansion")]
     public Expansion? Expansion { get; set; }
+
+    [JsonPropertyName("selectedMapsList")]
+    public List<string> SelectedMapsList { get; set; }
 
     [JsonPropertyName("settings")]
     public SortedDictionary<string, string> Settings { get; set; } = new();
