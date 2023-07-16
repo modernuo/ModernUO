@@ -375,8 +375,6 @@ namespace Server.Mobiles
 
         public PlayerState FactionPlayerState { get; set; }
 
-        public List<Mobile> RecentlyReported { get; set; }
-
         // WARNING - This can be null!!
         public HashSet<Mobile> Stabled { get; private set; }
 
@@ -3162,8 +3160,6 @@ namespace Server.Mobiles
                         break;
                     }
             }
-
-            RecentlyReported ??= new List<Mobile>();
 
             if (!CharacterCreation.VerifyProfession(Profession))
             {
