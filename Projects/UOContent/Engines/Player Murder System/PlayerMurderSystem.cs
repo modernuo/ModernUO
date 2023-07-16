@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Server.Collections;
 using Server.Logging;
 using Server.Mobiles;
@@ -64,23 +65,22 @@ public static class PlayerMurderSystem
             return;
         }
 
-        if (GetOrCreateContext(player, out var context))
-        {
-            // We make a big assumption that by the time this is called, the Mobile/PlayerMobile info is deserialized
-            if (Mobile.MurderMigrations?.TryGetValue(player, out var shortTermMurders) == true)
-            {
-                context.ShortTermMurders = shortTermMurders;
-            }
+        var context = player.GetOrCreateMurderContext();
 
-            context.ShortTermElapse = shortTerm;
-            context.LongTermElapse = longTerm;
-            UpdateMurderContext(context);
+        // We make a big assumption that by the time this is called, the Mobile/PlayerMobile info is deserialized
+        if (Mobile.MurderMigrations?.TryGetValue(player, out var shortTermMurders) == true)
+        {
+            context.ShortTermMurders = shortTermMurders;
         }
+
+        context.ShortTermElapse = shortTerm;
+        context.LongTermElapse = longTerm;
+        UpdateMurderContext(context);
     }
 
     private static void OnLogin(Mobile m)
     {
-        if (m is not PlayerMobile pm || !GetContext(pm, out var context))
+        if (m is not PlayerMobile pm || !GetMurderContext(pm, out var context))
         {
             return;
         }
@@ -130,37 +130,34 @@ public static class PlayerMurderSystem
         }
     }
 
-    public static bool GetContext(PlayerMobile player, out MurderContext context) =>
+    public static bool GetMurderContext(this PlayerMobile player, out MurderContext context) =>
         _murderContexts.TryGetValue(player, out context);
 
-    public static bool GetOrCreateContext(PlayerMobile player, out MurderContext context)
+    public static MurderContext GetOrCreateMurderContext(this PlayerMobile player)
     {
-        if (!_murderContexts.TryGetValue(player, out context))
+        ref var context = ref CollectionsMarshal.GetValueRefOrAddDefault(_murderContexts, player, out var exists);
+        if (!exists)
         {
-            context = _murderContexts[player] = new MurderContext(player);
+            context = new MurderContext(player);
         }
 
-        return true;
+        return context;
     }
 
     public static void ManuallySetShortTermMurders(PlayerMobile player, int shortTermMurders, bool resetKillTime = true)
     {
-        if (GetOrCreateContext(player, out var context))
-        {
-            context.ShortTermMurders = shortTermMurders;
-            UpdateMurderContext(context, resetKillTime);
-        }
+        var context = player.GetOrCreateMurderContext();
+        context.ShortTermMurders = shortTermMurders;
+        UpdateMurderContext(context, resetKillTime);
     }
 
     public static void OnPlayerMurder(PlayerMobile player, bool resetKillTime = false)
     {
-        if (GetOrCreateContext(player, out var context))
-        {
-            context.ShortTermMurders++;
-            player.Kills++;
+        var context = player.GetOrCreateMurderContext();
+        context.ShortTermMurders++;
+        player.Kills++;
 
-            UpdateMurderContext(context, resetKillTime);
-        }
+        UpdateMurderContext(context, resetKillTime);
     }
 
     private static void UpdateMurderContext(MurderContext context, bool resetKillTime = false)

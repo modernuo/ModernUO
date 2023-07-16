@@ -727,17 +727,17 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int ShortTermMurders
         {
-            get => PlayerMurderSystem.GetOrCreateContext(this, out var context) ? context.ShortTermMurders : 0;
+            get => this.GetMurderContext(out var context) ? context.ShortTermMurders : 0;
             set => PlayerMurderSystem.ManuallySetShortTermMurders(this, value);
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime ShortTermMurderExpiration => PlayerMurderSystem.GetOrCreateContext(this, out var context)
+        public DateTime ShortTermMurderExpiration => this.GetMurderContext(out var context)
             ? Core.Now + (context.ShortTermElapse - GameTime)
             : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime LongTermMurderExpiration => PlayerMurderSystem.GetOrCreateContext(this, out var context)
+        public DateTime LongTermMurderExpiration => this.GetMurderContext(out var context)
             ? Core.Now + (context.LongTermElapse - GameTime)
             : DateTime.MinValue;
 
