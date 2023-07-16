@@ -85,7 +85,9 @@ namespace Server.Gumps
             m_PageType = pageType;
             m_ListPage = listPage;
             m_State = state;
-            m_List = CleanUp(list, from);
+            m_List = list;
+
+            FilterAccess(m_List, from);
 
             AddPage(0);
 
@@ -433,7 +435,8 @@ namespace Server.Gumps
                             var states = TcpServer.Instances.ToList();
                             states.Sort(NetStateComparer.Instance);
 
-                            m_List = CleanUp(states.ToList<object>(), from);
+                            m_List = states.ToList<object>();
+                            FilterAccess(m_List, from);
                         }
 
                         AddClientHeader();
@@ -529,8 +532,7 @@ namespace Server.Gumps
                         AddLabel(20, y, LabelHue, "Account:");
                         AddLabel(200, y, a?.Banned == true ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
 
-                        if (m.AccessLevel > from.AccessLevel ||
-                            a != null && a.AccessLevel > from.AccessLevel)
+                        if (m.AccessLevel > from.AccessLevel || a?.AccessLevel > from.AccessLevel)
                         {
                             AddLabel(20, y + 20, LabelHue, "You do not have permission to view this client's information.");
                             break;
@@ -3776,7 +3778,8 @@ namespace Server.Gumps
                     }
                 case 7:
                     {
-                        if (m_State is not Mobile m)
+                        if (m_State is not Mobile m ||
+                            m.AccessLevel > from.AccessLevel || m.Account?.AccessLevel > from.AccessLevel)
                         {
                             break;
                         }
@@ -4131,31 +4134,28 @@ namespace Server.Gumps
             }
         }
 
-        private List<object> CleanUp(List<object> list, Mobile from)
+        private static void FilterAccess(List<object> list, Mobile from)
         {
-            if (list == null)
+            if (list == null || list.Count == 0)
             {
-                return null;
+                return;
             }
 
-            var cleanList = new List<object>();
-            foreach (var obj in list)
+            for (var i = list.Count - 1; i >= 0; i--)
             {
+                var obj = list[i];
+
                 if (obj is Account acc && acc.AccessLevel > from.AccessLevel ||
                     obj is Mobile mob && mob.AccessLevel > from.AccessLevel ||
                     obj is NetState ns &&
                     (ns.Mobile.AccessLevel > from.AccessLevel || ns.Account.AccessLevel > from.AccessLevel))
                 {
-                    continue;
+                    list.RemoveAt(i);
                 }
-
-                cleanList.Add(obj);
             }
-
-            return cleanList;
         }
 
-        private class SharedAccountComparer : IComparer<KeyValuePair<IPAddress, List<Account>>>
+        private class SharedAccountDescendingComparer : IComparer<object>
         {
             public static readonly IComparer<object> Instance = new SharedAccountDescendingComparer();
 
