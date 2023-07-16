@@ -363,11 +363,12 @@ namespace Server.Commands
         {
             try
             {
-                if (obj is Mobile target &&
-                    (target.AccessLevel > from.AccessLevel ||
-                     target.Account is {} acc && acc.AccessLevel > from.AccessLevel))
+                // Don't allow staff to be modified if they are under StaffAccess command
+                if (obj is Mobile mob &&
+                    (mob.AccessLevel > from.AccessLevel ||
+                     mob.Account?.AccessLevel > from.AccessLevel))
                 {
-                    return "You can not modify a higher privileged mobile.";
+                    return "You cannot modify a higher privileged mobile.";
                 }
 
                 if (toSet is AccessLevel newLevel)
