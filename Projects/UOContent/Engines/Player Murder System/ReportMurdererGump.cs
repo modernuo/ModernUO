@@ -11,6 +11,7 @@ namespace Server.Engines.PlayerMurderSystem;
 public class ReportMurdererGump : Gump
 {
     // Recently reported
+    private static TimeSpan _recentlyReportedDelay;
     private static readonly HashSet<(Mobile, Mobile)> _recentlyReported = new();
 
     private readonly List<Mobile> _killers;
@@ -25,6 +26,7 @@ public class ReportMurdererGump : Gump
 
     public static void Initialize()
     {
+        _recentlyReportedDelay = ServerConfiguration.GetOrUpdateSetting("murderSystem.recentlyReportedDelay", TimeSpan.FromMinutes(10));
         EventSink.PlayerDeath += OnPlayerDeath;
     }
 
@@ -147,7 +149,7 @@ public class ReportMurdererGump : Gump
                             if (_recentlyReported.Add((from, killer)))
                             {
                                 Timer.DelayCall(
-                                    TimeSpan.FromMinutes(10),
+                                    _recentlyReportedDelay,
                                     static (f, k) => _recentlyReported.Remove((f, k)),
                                     from,
                                     killer

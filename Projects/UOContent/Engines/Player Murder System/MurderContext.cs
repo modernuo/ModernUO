@@ -55,7 +55,7 @@ public partial class MurderContext
 
         if (ShortTermElapse < gameTime)
         {
-            ShortTermElapse += TimeSpan.FromHours(8);
+            ShortTermElapse += PlayerMurderSystem.ShortTermMurderDuration;
             if (ShortTermMurders > 0)
             {
                 --ShortTermMurders;
@@ -64,7 +64,7 @@ public partial class MurderContext
 
         if (LongTermElapse < gameTime)
         {
-            LongTermElapse += TimeSpan.FromHours(40);
+            LongTermElapse += PlayerMurderSystem.LongTermMurderDuration;
             if (_player.Kills > 0)
             {
                 --_player.Kills;
