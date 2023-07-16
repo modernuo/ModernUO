@@ -363,6 +363,14 @@ namespace Server.Commands
         {
             try
             {
+                // Don't allow staff to be modified if they are under StaffAccess command
+                if (obj is Mobile mob &&
+                    (mob.AccessLevel > from.AccessLevel ||
+                     mob.Account?.AccessLevel > from.AccessLevel))
+                {
+                    return "You cannot modify a higher privileged mobile.";
+                }
+
                 if (toSet is AccessLevel newLevel)
                 {
                     var reqLevel = newLevel switch
