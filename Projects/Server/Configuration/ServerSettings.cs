@@ -15,6 +15,7 @@
 
 using Server.Json;
 using Server.Maps;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json.Serialization;
@@ -37,7 +38,7 @@ public class ServerSettings
 
     [JsonPropertyName("availableMaps")]
     [JsonConverter(typeof(BitArrayEnumIndexConverter<MapSelectionFlags>))]
-    public MapSelectionFlags? AvailableMaps { get; set; }
+    public BitArray AvailableMaps { get; set; }
 
     [JsonPropertyName("settings")]
     public SortedDictionary<string, string> Settings { get; set; } = new();

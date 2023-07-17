@@ -140,5 +140,20 @@ namespace Server.Tests.Tests.Maps
 
             Assert.Equal(expected, actual);
         }
+
+        [Fact]
+        public void Flags_constructible_and_accessible_as_bitarray()
+        {
+            MapSelection mapSelection = new();
+            mapSelection.Enable(MapSelectionFlags.Felucca);
+            mapSelection.Enable(MapSelectionFlags.Ilshenar);
+
+            // When
+            var bitArray = mapSelection.ToBitArray();
+            MapSelection convertedBack = new MapSelection(bitArray);
+
+            // Then
+            Assert.Equal(expected: mapSelection.Flags, convertedBack.Flags);
+        }
     }
 }

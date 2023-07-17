@@ -190,7 +190,7 @@ public class ExpansionInfo
 
     static ExpansionInfo()
     {
-        var path = Path.Combine(Core.BaseDirectory, "Data/expansion.json");
+        var path = Path.Combine(Core.BaseDirectory, "Data/expansions.json");
         if (!File.Exists(path))
         {
             throw new FileNotFoundException($"Expansion file '{path}' could not be found.");
@@ -228,6 +228,17 @@ public class ExpansionInfo
                 );
             }
         }
+
+        // Now we have all the expansions' info deserialized, let's override
+        // based on Configuration/expansion.json, which should have been created
+        // on server startup
+        var configuredExpansionPath = Path.Combine(Core.BaseDirectory, "Configuration/expansion.json");
+        if (!File.Exists(path))
+        {
+            // It doesn't exist. Could be an older sever, so go ahead and create it
+            throw new FileNotFoundException($"Expansion file '{configuredExpansionPath}' could not be found.");
+        }
+
     }
 
     public ExpansionInfo(

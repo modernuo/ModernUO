@@ -2082,27 +2082,27 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        if (Core.ML && Core.SelectedMaps.Includes(MapSelectionFlags.Malas))
+                                        if (Core.ML && Core.AvailableMaps.Includes(MapSelectionFlags.Malas))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*.json");
                                         }
 
-                                        if (Core.SE && Core.SelectedMaps.Includes(MapSelectionFlags.Tokuno))
+                                        if (Core.SE && Core.AvailableMaps.Includes(MapSelectionFlags.Tokuno))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*.json");
                                         }
 
-                                        if (Core.AOS && Core.SelectedMaps.Includes(MapSelectionFlags.Ilshenar))
+                                        if (Core.AOS && Core.AvailableMaps.Includes(MapSelectionFlags.Ilshenar))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/ilshenar/*.json");
                                         }
 
-                                        if (Core.SelectedMaps.Includes(MapSelectionFlags.Trammel))
+                                        if (Core.AvailableMaps.Includes(MapSelectionFlags.Trammel))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*.json");
                                         }
 
-                                        if (Core.SelectedMaps.Includes(MapSelectionFlags.Felucca))
+                                        if (Core.AvailableMaps.Includes(MapSelectionFlags.Felucca))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*.json");
                                         }

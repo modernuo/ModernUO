@@ -1,12 +1,16 @@
+using System;
+using System.Collections;
+
 namespace Server.Maps;
 
+[Flags]
 public enum MapSelectionFlags
 {
-    None = 0,
-    Felucca = 1 << 0,
-    Trammel = 1 << 1,
-    Ilshenar = 1 << 2,
-    Malas = 1 << 3,
-    Tokuno = 1 << 4,
-    TerMur = 1 << 5
+    None = 0x00000000,
+    Felucca = 0x00000001,
+    Trammel = 0x00000002,
+    Ilshenar = 0x00000004,
+    Malas = 0x00000008,
+    Tokuno = 0x00000010,
+    TerMur = 0x00000020
 }

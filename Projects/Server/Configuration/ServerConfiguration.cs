@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -29,6 +30,7 @@ public static class ServerConfiguration
 
     private const string _relPath = "Configuration/modernuo.json";
     private static readonly string m_FilePath = Path.Join(Core.BaseDirectory, _relPath);
+
     private static ServerSettings m_Settings;
     private static bool m_Mocked;
 
@@ -268,19 +270,24 @@ public static class ServerConfiguration
         if (m_Settings.Expansion == null)
         {
             m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ServerConfigurationPrompts.GetExpansion();
+
+            // We've updated the selected expansion, so we now need to copy
+            // that json into a configuration file for the shard
+            JsonConfig.Serialize("Configuration/expansion.json", m_Settings.Expansion);
+
             updated = true;
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
 
-        if (m_Settings.AvailableMaps == null)
-        {
+        //if (m_Settings.AvailableMaps == null)
+        //{
             var selectedMaps = ServerConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value);
-            m_Settings.AvailableMaps = selectedMaps.Flags;
+            m_Settings.AvailableMaps = selectedMaps.ToBitArray();
             updated = true;
-        }
+        //}
 
-        Core.SelectedMaps = new MapSelection(m_Settings.AvailableMaps.Value);
+        Core.AvailableMaps = new MapSelection(m_Settings.AvailableMaps);
 
         if (updated)
         {

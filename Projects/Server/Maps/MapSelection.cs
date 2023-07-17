@@ -1,10 +1,17 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Server.Maps;
 
 public class MapSelection
 {
+
+    private MapSelectionFlags _selectedMaps;
+    private static readonly Array _mapSelectionValues = Enum.GetValues(typeof(MapSelectionFlags));
+
+    public MapSelectionFlags Flags => _selectedMaps;
 
     public MapSelection()
     {
@@ -15,9 +22,22 @@ public class MapSelection
         _selectedMaps = flags;
     }
 
+    public MapSelection(BitArray bitArray)
+    {
+        int index = 0;
+        foreach (MapSelectionFlags value in _mapSelectionValues)
+        {
+            if (bitArray[index] == true)
+            {
+                _selectedMaps |= value;
+            }
+            index++;
+        }
+    }
+
     public MapSelection(List<string> mapList)
     {
-        foreach (MapSelectionFlags value in Enum.GetValues(typeof(MapSelectionFlags)))
+        foreach (MapSelectionFlags value in _mapSelectionValues)
         {
             if (mapList.Contains(value.ToString()))
             {
@@ -38,7 +58,7 @@ public class MapSelection
 
     public bool Includes(string mapName)
     {
-        foreach (MapSelectionFlags value in Enum.GetValues(typeof(MapSelectionFlags)))
+        foreach (MapSelectionFlags value in _mapSelectionValues)
         {
             if (value == 0)
             {
@@ -88,7 +108,7 @@ public class MapSelection
     {
         string formatted = "";
 
-        foreach (MapSelectionFlags value in Enum.GetValues(typeof(MapSelectionFlags)))
+        foreach (MapSelectionFlags value in _mapSelectionValues)
         {
             if (value == 0)
             {
@@ -114,7 +134,7 @@ public class MapSelection
     {
         List<string> mapList = new();
 
-        foreach (MapSelectionFlags value in Enum.GetValues(typeof(MapSelectionFlags)))
+        foreach (MapSelectionFlags value in _mapSelectionValues)
         {
             if (value == 0)
             {
@@ -128,14 +148,29 @@ public class MapSelection
         }
         return mapList;
     }
-
-    public MapSelectionFlags Flags
+    public BitArray ToBitArray()
     {
-        get
+        bool[] enumAsBools = new bool[_mapSelectionValues.Length];
+        BitArray bitArray = new(enumAsBools);
+        int index = 0;
+        foreach (MapSelectionFlags value in _mapSelectionValues)
         {
-            return _selectedMaps;
-        }
-    }
+            if (value == 0)
+            {
+                index++;
+                continue;
+            }
 
-    private MapSelectionFlags _selectedMaps;
+            if ((_selectedMaps & value) == value)
+            {
+                bitArray[index] = true;
+            }
+            else
+            {
+                bitArray[index] = false;
+            }
+            index++;
+        }
+        return bitArray;
+    }
 }
