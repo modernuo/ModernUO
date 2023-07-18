@@ -1,6 +1,9 @@
 using Xunit;
 using Server.Maps;
 using System.Collections.Generic;
+using Server.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Server.Tests.Tests.Maps
 {
@@ -141,19 +144,27 @@ namespace Server.Tests.Tests.Maps
             Assert.Equal(expected, actual);
         }
 
+        [JsonConverter(typeof(FlagsConverter<MapSelectionFlags>))]
+        private MapSelectionFlags TestMapFlags { get; set; }
+
+        [JsonConverter(typeof(FlagsConverter<MapSelectionFlags>))]
+        private MapSelectionFlags DeserializedFlags { get; set; }
+
         [Fact]
-        public void Flags_constructible_and_accessible_as_bitarray()
+        public void Serialize_and_deserialize_map_selection_flags()
         {
             MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
-            mapSelection.Enable(MapSelectionFlags.Ilshenar);
+
+            mapSelection.Enable(MapSelectionFlags.Trammel);
+            TestMapFlags = mapSelection.Flags;
 
             // When
-            var bitArray = mapSelection.ToBitArray();
-            MapSelection convertedBack = new MapSelection(bitArray);
+            string serialized = JsonConfig.Serialize(TestMapFlags);
+            DeserializedFlags = JsonSerializer.Deserialize<MapSelectionFlags>(serialized, JsonConfig.GetOptions());
 
             // Then
-            Assert.Equal(expected: mapSelection.Flags, convertedBack.Flags);
+            Assert.Equal(TestMapFlags, DeserializedFlags);
         }
     }
 }

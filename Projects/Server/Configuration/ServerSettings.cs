@@ -37,8 +37,8 @@ public class ServerSettings
     public Expansion? Expansion { get; set; }
 
     [JsonPropertyName("availableMaps")]
-    [JsonConverter(typeof(BitArrayEnumIndexConverter<MapSelectionFlags>))]
-    public BitArray AvailableMaps { get; set; }
+    [JsonConverter(typeof(FlagsConverter<MapSelectionFlags>))]
+    public MapSelectionFlags? AvailableMapsFlags { get; set; }
 
     [JsonPropertyName("settings")]
     public SortedDictionary<string, string> Settings { get; set; } = new();

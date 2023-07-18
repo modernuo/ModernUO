@@ -148,6 +148,7 @@ public class MapSelection
         }
         return mapList;
     }
+
     public BitArray ToBitArray()
     {
         bool[] enumAsBools = new bool[_mapSelectionValues.Length];

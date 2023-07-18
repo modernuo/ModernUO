@@ -21,7 +21,7 @@ using System.Net;
 using Server.Json;
 using Server.Logging;
 using Server.Maps;
-
+using Server.Network;
 namespace Server;
 
 public static class ServerConfiguration
@@ -273,21 +273,20 @@ public static class ServerConfiguration
 
             // We've updated the selected expansion, so we now need to copy
             // that json into a configuration file for the shard
-            JsonConfig.Serialize("Configuration/expansion.json", m_Settings.Expansion);
-
+            ExpansionInfo expansionInfo = ExpansionInfo.GetInfo(m_Settings.Expansion.Value);
+            JsonConfig.Serialize("Configuration/expansion.json", expansionInfo);
             updated = true;
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
 
-        //if (m_Settings.AvailableMaps == null)
-        //{
-            var selectedMaps = ServerConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value);
-            m_Settings.AvailableMaps = selectedMaps.ToBitArray();
+        if (m_Settings.AvailableMapsFlags == null)
+        {
+            m_Settings.AvailableMapsFlags = ServerConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value).Flags;
             updated = true;
-        //}
+        }
 
-        Core.AvailableMaps = new MapSelection(m_Settings.AvailableMaps);
+        Core.AvailableMaps = new MapSelection(m_Settings.AvailableMapsFlags.Value);
 
         if (updated)
         {
