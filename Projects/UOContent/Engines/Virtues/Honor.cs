@@ -135,7 +135,7 @@ public static class HonorVirtue
         {
             if (reg?.IsDisabled() != true)
             {
-                // Allow honor on blue if Out of guardzone
+                // Allow honor on blue if not in a guarded region
             }
             else if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
             {

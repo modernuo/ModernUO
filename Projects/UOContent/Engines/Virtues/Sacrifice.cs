@@ -36,7 +36,7 @@ public static class SacrificeVirtue
     public static void CheckAtrophy(PlayerMobile pm)
     {
         var virtues = pm.GetVirtues();
-        if (virtues != null && CanAtrophy(virtues))
+        if (virtues?.Sacrifice > 0 && CanAtrophy(virtues))
         {
             if (VirtueSystem.Atrophy(pm, VirtueName.Sacrifice, LossAmount))
             {
@@ -88,8 +88,7 @@ public static class SacrificeVirtue
     public static bool CanGain(VirtueContext context) => Core.Now >= context.LastSacrificeGain + GainDelay;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CanAtrophy(VirtueContext context) =>
-        context.Sacrifice > 0 && context.LastSacrificeLoss + LossDelay < Core.Now;
+    public static bool CanAtrophy(VirtueContext context) => context.LastSacrificeLoss + LossDelay < Core.Now;
 
     public static void Sacrifice(PlayerMobile from, object targeted)
     {

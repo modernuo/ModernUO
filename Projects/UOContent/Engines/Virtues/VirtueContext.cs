@@ -89,13 +89,13 @@ public partial class VirtueContext
     private PlayerMobile _justiceProtection;
 
     [SerializableFieldSaveFlag(10)]
-    private bool ShouldSerializeJusticeProtection() => _justiceProtection != null && ShouldSerializeJusticeStatus();
+    private bool ShouldSerializeJusticeProtection() => _justiceProtection != null && _justiceStatus != JusticeProtectorStatus.None;
 
     [SerializableField(11)]
     private JusticeProtectorStatus _justiceStatus;
 
     [SerializableFieldSaveFlag(11)]
-    private bool ShouldSerializeJusticeStatus() => _justiceStatus != JusticeProtectorStatus.None;
+    private bool ShouldSerializeJusticeStatus() => _justiceProtection != null && _justiceStatus != JusticeProtectorStatus.None;
 
     [SerializableField(12, setter: "private")]
     private int[] _values;
@@ -186,11 +186,10 @@ public partial class VirtueContext
     public override string ToString() => "...";
 
     // Used to invalidate and delete the VirtueContext, usually during world load
-    public bool IsUnused() =>
-        !(ShouldSerializeLastSacrificeGain() || ShouldSerializeLastSacrificeLoss() ||
-          ShouldSerializeAvailableResurrects() || ShouldSerializeLastJusticeLoss() ||
-          ShouldSerializeJusticeStatus() || ShouldSerializeNextCompassionDay() ||
-          ShouldSerializeCompassionGains() || ShouldSerializeValorLoss() ||
-          ShouldSerializeLastHonorUse() || ShouldSerializeHonorActive() ||
-          ShouldSerializeValues());
+    public bool IsUsed() => ShouldSerializeLastSacrificeGain() || ShouldSerializeLastSacrificeLoss() ||
+                            ShouldSerializeAvailableResurrects() || ShouldSerializeLastJusticeLoss() ||
+                            ShouldSerializeJusticeStatus() || ShouldSerializeNextCompassionDay() ||
+                            ShouldSerializeCompassionGains() || ShouldSerializeValorLoss() ||
+                            ShouldSerializeLastHonorUse() || ShouldSerializeHonorActive() ||
+                            ShouldSerializeValues() || ShouldSerializeLastCompassionLoss();
 }

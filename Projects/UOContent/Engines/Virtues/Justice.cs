@@ -251,13 +251,12 @@ public class JusticeVirtue
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CanAtrophy(VirtueContext context) =>
-        context.Justice > 0 && context.LastJusticeLoss + LossDelay < Core.Now;
+    public static bool CanAtrophy(VirtueContext context) => context.LastJusticeLoss + LossDelay < Core.Now;
 
     public static void CheckAtrophy(PlayerMobile pm)
     {
         var virtues = pm.GetVirtues();
-        if (virtues != null && CanAtrophy(virtues))
+        if (virtues?.Justice > 0 && CanAtrophy(virtues))
         {
             if (VirtueSystem.Atrophy(pm, VirtueName.Justice, LossAmount))
             {

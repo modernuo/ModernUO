@@ -26,12 +26,12 @@ public static class ValorVirtue
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CanAtrophy(VirtueContext context) => context.Valor > 0 && context.LastValorLoss + LossDelay < Core.Now;
+    public static bool CanAtrophy(VirtueContext context) => context.LastValorLoss + LossDelay < Core.Now;
 
     public static void CheckAtrophy(PlayerMobile pm)
     {
         var virtues = pm.GetVirtues();
-        if (virtues != null && CanAtrophy(virtues))
+        if (virtues?.Valor > 0 && CanAtrophy(virtues))
         {
             if (VirtueSystem.Atrophy(pm, VirtueName.Valor, LossAmount))
             {

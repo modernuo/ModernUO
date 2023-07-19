@@ -93,7 +93,7 @@ public static class VirtueSystem
             var virtues = new VirtueContext();
             virtues.Deserialize(reader);
 
-            if (!virtues.IsUnused())
+            if (virtues.IsUsed())
             {
                 _playerVirtues.Add(player, virtues);
             }
@@ -365,7 +365,7 @@ public static class VirtueSystem
             {
                 CheckAtrophies(player);
 
-                if (virtues.IsUnused())
+                if (!virtues.IsUsed())
                 {
                     queue.Enqueue(player);
                 }
