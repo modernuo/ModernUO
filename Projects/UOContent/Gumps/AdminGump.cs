@@ -88,6 +88,8 @@ namespace Server.Gumps
             m_State = state;
             m_List = list;
 
+            FilterAccess(m_List, from);
+
             AddPage(0);
 
             AddBackground(0, 0, 420, 440, 5054);
@@ -435,6 +437,7 @@ namespace Server.Gumps
                             states.Sort(NetStateComparer.Instance);
 
                             m_List = states.ToList<object>();
+                            FilterAccess(m_List, from);
                         }
 
                         AddClientHeader();
@@ -529,6 +532,13 @@ namespace Server.Gumps
 
                         AddLabel(20, y, LabelHue, "Account:");
                         AddLabel(200, y, a?.Banned == true ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
+
+                        if (m.AccessLevel > from.AccessLevel || a?.AccessLevel > from.AccessLevel)
+                        {
+                            AddLabel(20, y + 20, LabelHue, "You do not have permission to view this client's information.");
+                            break;
+                        }
+
                         AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14));
                         y += 20;
 
@@ -3776,7 +3786,8 @@ namespace Server.Gumps
                     }
                 case 7:
                     {
-                        if (m_State is not Mobile m)
+                        if (m_State is not Mobile m ||
+                            m.AccessLevel > from.AccessLevel || m.Account?.AccessLevel > from.AccessLevel)
                         {
                             break;
                         }
@@ -4127,6 +4138,27 @@ namespace Server.Gumps
                 if (check.NetState != null)
                 {
                     online = true;
+                }
+            }
+        }
+
+        private static void FilterAccess(List<object> list, Mobile from)
+        {
+            if (list == null || list.Count == 0)
+            {
+                return;
+            }
+
+            for (var i = list.Count - 1; i >= 0; i--)
+            {
+                var obj = list[i];
+
+                if (obj is Account acc && acc.AccessLevel > from.AccessLevel ||
+                    obj is Mobile mob && mob.AccessLevel > from.AccessLevel ||
+                    obj is NetState ns &&
+                    (ns.Mobile.AccessLevel > from.AccessLevel || ns.Account.AccessLevel > from.AccessLevel))
+                {
+                    list.RemoveAt(i);
                 }
             }
         }

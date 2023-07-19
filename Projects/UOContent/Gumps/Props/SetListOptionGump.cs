@@ -1,5 +1,6 @@
 using System.Reflection;
 using Server.Commands;
+using Server.Commands.Generic;
 using Server.Network;
 
 using static Server.Gumps.PropsConfig;
@@ -164,6 +165,14 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
+            var from = sender.Mobile;
+
+            if (!BaseCommand.IsAccessible(from, m_Object))
+            {
+                from.SendMessage("You may no longer access their properties.");
+                return;
+            }
+
             var index = info.ButtonID - 1;
 
             if (index >= 0 && index < m_Values.Length)

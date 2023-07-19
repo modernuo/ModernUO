@@ -29,17 +29,17 @@ namespace Server.Misc
                         }
                     case 0x0032: // *i must consider my sins*
                         {
-                            if (!Core.SE)
+                            if (from is PlayerMobile player)
                             {
-                                from.SendMessage($"Short Term Murders : {from.ShortTermMurders}");
-                                from.SendMessage($"Long Term Murders : {from.Kills}");
-                            }
-                            else
-                            {
-                                from.SendMessage(
-                                    0x3B2,
-                                    $"Short Term Murders: {from.ShortTermMurders} Long Term Murders: {from.Kills}"
-                                );
+                                if (!Core.SE)
+                                {
+                                    from.SendMessage($"Short Term Murders : {player.ShortTermMurders}");
+                                    from.SendMessage($"Long Term Murders : {from.Kills}");
+                                }
+                                else
+                                {
+                                    from.SendLocalizedMessage(1114370, $"{player.ShortTermMurders}\t{from.Kills}");
+                                }
                             }
 
                             break;
