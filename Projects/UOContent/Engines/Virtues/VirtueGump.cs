@@ -28,7 +28,7 @@ public class VirtueGump : Gump
         _callbacks[gumpID] = callback;
     }
 
-    public static void EventSink_VirtueGumpRequest(PlayerMobile beholder, PlayerMobile beheld)
+    public static void RequestVirtueGump(PlayerMobile beholder, PlayerMobile beheld)
     {
         if (beholder == beheld && beholder.Kills >= 5)
         {
@@ -41,7 +41,7 @@ public class VirtueGump : Gump
         }
     }
 
-    public static void EventSink_VirtueItemRequest(PlayerMobile beholder, Mobile beheld, int gumpID)
+    public static void RequestVirtueItem(PlayerMobile beholder, Mobile beheld, int gumpID)
     {
         if (beholder != beheld)
         {
@@ -66,7 +66,7 @@ public class VirtueGump : Gump
         }
     }
 
-    public static void EventSink_VirtueMacroRequest(PlayerMobile beholder, int virtue)
+    public static void RequestVirtueMacro(PlayerMobile beholder, int virtue)
     {
         var virtueID = virtue switch
         {
@@ -76,7 +76,7 @@ public class VirtueGump : Gump
             _ => 0
         };
 
-        EventSink_VirtueItemRequest(beholder, beholder, virtueID);
+        RequestVirtueItem(beholder, beholder, virtueID);
     }
 
     private readonly PlayerMobile _beheld;

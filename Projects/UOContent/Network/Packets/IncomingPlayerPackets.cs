@@ -186,7 +186,7 @@ public static class IncomingPlayerPackets
                 {
                     var virtueID = Utility.ToInt32(command) - 1;
 
-                    VirtueGump.EventSink_VirtueMacroRequest((PlayerMobile)from, virtueID);
+                    VirtueGump.RequestVirtueMacro((PlayerMobile)from, virtueID);
 
                     break;
                 }
@@ -466,7 +466,7 @@ public static class IncomingPlayerPackets
 
                 if (beheld != null)
                 {
-                    VirtueGump.EventSink_VirtueGumpRequest((PlayerMobile)state.Mobile, beheld);
+                    VirtueGump.RequestVirtueGump((PlayerMobile)state.Mobile, beheld);
                 }
             }
             else
@@ -475,7 +475,7 @@ public static class IncomingPlayerPackets
 
                 if (beheld != null)
                 {
-                    VirtueGump.EventSink_VirtueItemRequest((PlayerMobile)state.Mobile, beheld, buttonID);
+                    VirtueGump.RequestVirtueItem((PlayerMobile)state.Mobile, beheld, buttonID);
                 }
             }
         }
