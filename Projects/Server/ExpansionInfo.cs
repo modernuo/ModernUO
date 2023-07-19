@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime;
 using System.Text.Json.Serialization;
 using Server.Json;
 
@@ -159,6 +160,9 @@ public enum HousingFlags
 public class ExpansionInfo
 {
     public static bool ForceOldAnimations { get; private set; }
+
+    private static List<ExpansionConfig> expansionConfigs;
+
     public static void Configure()
     {
         ForceOldAnimations = ServerConfiguration.GetSetting("expansion.forceOldAnimations", false);
@@ -188,6 +192,35 @@ public class ExpansionInfo
         return null;
     }
 
+    public static void WriteConfiguration(Expansion currentExpansion)
+    {
+        if (expansionConfigs == null)
+        {
+            Console.WriteLine("Failed to write expansion.json due to expansion configs not being loaded");
+            return;
+        }
+
+        ExpansionConfig? matched = null;
+
+        // Find the ExpansionConfig for the currently selected expansion and serialise it                
+        for (var i = 0; i < expansionConfigs.Count; i++)
+        {
+            var shortName = ((Expansion)i).ToString();
+            if (shortName == currentExpansion.ToString())
+            {
+                matched = expansionConfigs[i];
+                break;
+            }
+        }
+        if (matched == null)
+        {
+            Console.WriteLine("Failed to write expansion.json due to current expansion being unmatched");
+            return;
+        }
+
+        JsonConfig.Serialize("Configuration/expansion.json", matched);
+    }
+
     static ExpansionInfo()
     {
         var path = Path.Combine(Core.BaseDirectory, "Data/expansions.json");
@@ -196,13 +229,13 @@ public class ExpansionInfo
             throw new FileNotFoundException($"Expansion file '{path}' could not be found.");
         }
 
-        var expansions = JsonConfig.Deserialize<List<ExpansionConfig>>(path);
+        expansionConfigs = JsonConfig.Deserialize<List<ExpansionConfig>>(path);
 
-        Table = new ExpansionInfo[expansions.Count];
+        Table = new ExpansionInfo[expansionConfigs.Count];
 
-        for (var i = 0; i < expansions.Count; i++)
+        for (var i = 0; i < expansionConfigs.Count; i++)
         {
-            var expansion = expansions[i];
+            var expansion = expansionConfigs[i];
             if (expansion.ClientVersion != null)
             {
                 Table[i] = new ExpansionInfo(

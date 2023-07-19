@@ -273,8 +273,7 @@ public static class ServerConfiguration
 
             // We've updated the selected expansion, so we now need to copy
             // that json into a configuration file for the shard
-            ExpansionInfo expansionInfo = ExpansionInfo.GetInfo(m_Settings.Expansion.Value);
-            JsonConfig.Serialize("Configuration/expansion.json", expansionInfo);
+            ExpansionInfo.WriteConfiguration(m_Settings.Expansion.Value);
             updated = true;
         }
 
