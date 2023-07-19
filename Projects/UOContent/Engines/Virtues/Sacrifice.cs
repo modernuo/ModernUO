@@ -88,7 +88,8 @@ public static class SacrificeVirtue
     public static bool CanGain(VirtueContext context) => Core.Now >= context.LastSacrificeGain + GainDelay;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CanAtrophy(VirtueContext context) => context.LastSacrificeLoss + LossDelay < Core.Now;
+    public static bool CanAtrophy(VirtueContext context) =>
+        context.Sacrifice > 0 && context.LastSacrificeLoss + LossDelay < Core.Now;
 
     public static void Sacrifice(PlayerMobile from, object targeted)
     {

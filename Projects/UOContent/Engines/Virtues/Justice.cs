@@ -251,7 +251,8 @@ public class JusticeVirtue
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CanAtrophy(VirtueContext context) => context.LastJusticeLoss + LossDelay < Core.Now;
+    public static bool CanAtrophy(VirtueContext context) =>
+        context.Justice > 0 && context.LastJusticeLoss + LossDelay < Core.Now;
 
     public static void CheckAtrophy(PlayerMobile pm)
     {

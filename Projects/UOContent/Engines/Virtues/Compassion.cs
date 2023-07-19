@@ -20,7 +20,8 @@ public static class CompassionVirtue
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CanAtrophy(VirtueContext context) => context.LastCompassionLoss + LossDelay < Core.Now;
+    public static bool CanAtrophy(VirtueContext context) =>
+        context.Compassion > 0 && context.LastCompassionLoss + LossDelay < Core.Now;
 
     public static void CheckAtrophy(PlayerMobile pm)
     {

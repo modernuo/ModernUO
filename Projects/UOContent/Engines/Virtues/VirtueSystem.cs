@@ -346,7 +346,7 @@ public static class VirtueSystem
 
     private class VirtueTimer : Timer
     {
-        public VirtueTimer() : base(TimeSpan.FromMinutes(5.0), TimeSpan.FromMinutes(5.0))
+        public VirtueTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0))
         {
         }
 

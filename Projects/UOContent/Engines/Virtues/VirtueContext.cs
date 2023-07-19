@@ -10,7 +10,7 @@ public partial class VirtueContext
 {
     [DeltaDateTime]
     [SerializableField(0)]
-    [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     private DateTime _lastSacrificeGain;
 
     [SerializableFieldSaveFlag(0)]
@@ -18,7 +18,7 @@ public partial class VirtueContext
 
     [DeltaDateTime]
     [SerializableField(1)]
-    [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     private DateTime _lastSacrificeLoss;
 
     [SerializableFieldSaveFlag(1)]
@@ -33,7 +33,7 @@ public partial class VirtueContext
 
     [DeltaDateTime]
     [SerializableField(3)]
-    [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     private DateTime _lastJusticeLoss;
 
     [SerializableFieldSaveFlag(3)]
@@ -41,7 +41,7 @@ public partial class VirtueContext
 
     [DeltaDateTime]
     [SerializableField(4)]
-    [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     private DateTime _lastCompassionLoss;
 
     [SerializableFieldSaveFlag(4)]
@@ -64,7 +64,7 @@ public partial class VirtueContext
 
     [DeltaDateTime]
     [SerializableField(7)]
-    [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     private DateTime _lastValorLoss;
 
     [SerializableFieldSaveFlag(7)]
@@ -79,7 +79,7 @@ public partial class VirtueContext
     private bool ShouldSerializeLastHonorUse() => !HonorVirtue.CanUse(this);
 
     [SerializableField(9)]
-    [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     private bool _honorActive;
 
     [SerializableFieldSaveFlag(9)]
@@ -187,10 +187,10 @@ public partial class VirtueContext
 
     // Used to invalidate and delete the VirtueContext, usually during world load
     public bool IsUnused() =>
-        ShouldSerializeLastSacrificeGain() || ShouldSerializeLastSacrificeLoss() ||
-        ShouldSerializeAvailableResurrects() || ShouldSerializeLastJusticeLoss() ||
-        ShouldSerializeJusticeStatus() || ShouldSerializeNextCompassionDay() ||
-        ShouldSerializeCompassionGains() || ShouldSerializeValorLoss() ||
-        ShouldSerializeLastHonorUse() || ShouldSerializeHonorActive() ||
-        ShouldSerializeValues();
+        !(ShouldSerializeLastSacrificeGain() || ShouldSerializeLastSacrificeLoss() ||
+          ShouldSerializeAvailableResurrects() || ShouldSerializeLastJusticeLoss() ||
+          ShouldSerializeJusticeStatus() || ShouldSerializeNextCompassionDay() ||
+          ShouldSerializeCompassionGains() || ShouldSerializeValorLoss() ||
+          ShouldSerializeLastHonorUse() || ShouldSerializeHonorActive() ||
+          ShouldSerializeValues());
 }
