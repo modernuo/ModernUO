@@ -2,37 +2,37 @@ using System;
 using System.Runtime.CompilerServices;
 using Server.Mobiles;
 
-namespace Server
+namespace Server.Engines.Virtues;
+
+public static class CompassionVirtue
 {
-    public static class CompassionVirtue
+    private const int LossAmount = 500;
+    private static readonly TimeSpan LossDelay = TimeSpan.FromDays(7.0);
+
+    public static void Initialize()
     {
-        private const int LossAmount = 500;
-        private static readonly TimeSpan LossDelay = TimeSpan.FromDays(7.0);
+        VirtueGump.Register(105, OnVirtueUsed);
+    }
 
-        public static void Initialize()
+    public static void OnVirtueUsed(Mobile from)
+    {
+        from.SendLocalizedMessage(1053001); // This virtue is not activated through the virtue menu.
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CanAtrophy(VirtueContext context) => context.LastCompassionLoss + LossDelay < Core.Now;
+
+    public static void CheckAtrophy(PlayerMobile pm)
+    {
+        var virtues = pm.GetVirtues();
+        if (virtues?.Compassion > 0 && CanAtrophy(virtues))
         {
-            VirtueGump.Register(105, OnVirtueUsed);
-        }
-
-        public static void OnVirtueUsed(Mobile from)
-        {
-            from.SendLocalizedMessage(1053001); // This virtue is not activated through the virtue menu.
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ShouldAtrophy(PlayerMobile pm) => pm.LastCompassionLoss + LossDelay < Core.Now;
-
-        public static void CheckAtrophy(PlayerMobile pm)
-        {
-            if (ShouldAtrophy(pm))
+            if (VirtueSystem.Atrophy(pm, VirtueName.Compassion, LossAmount))
             {
-                if (VirtueHelper.Atrophy(pm, VirtueName.Compassion, LossAmount))
-                {
-                    pm.SendLocalizedMessage(1114420); // You have lost some Compassion.
-                }
-
-                pm.LastCompassionLoss = Core.Now;
+                pm.SendLocalizedMessage(1114420); // You have lost some Compassion.
             }
+
+            virtues.LastCompassionLoss = Core.Now;
         }
     }
 }

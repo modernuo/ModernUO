@@ -78,16 +78,6 @@ public static partial class EventSink
     public static event Action<Mobile> PlayerDeath;
     public static void InvokePlayerDeath(Mobile m) => PlayerDeath?.Invoke(m);
 
-    public static event Action<Mobile, Mobile> VirtueGumpRequest;
-
-    public static void InvokeVirtueGumpRequest(Mobile beholder, Mobile beheld) =>
-        VirtueGumpRequest?.Invoke(beholder, beheld);
-
-    public static event Action<Mobile, Mobile, int> VirtueItemRequest;
-
-    public static void InvokeVirtueItemRequest(Mobile beholder, Mobile beheld, int gumpID) =>
-        VirtueItemRequest?.Invoke(beholder, beheld, gumpID);
-
     public static event Action<Mobile, int> VirtueMacroRequest;
 
     public static void InvokeVirtueMacroRequest(Mobile mobile, int virtueID) =>
