@@ -19,6 +19,7 @@ using System.IO;
 using System.Runtime;
 using System.Text.Json.Serialization;
 using Server.Json;
+using Server.Maps;
 
 namespace Server;
 
@@ -192,7 +193,7 @@ public class ExpansionInfo
         return null;
     }
 
-    public static void WriteConfiguration(Expansion currentExpansion)
+    public static void SaveConfiguration(Expansion currentExpansion)
     {
         if (expansionConfigs == null)
         {
@@ -221,6 +222,36 @@ public class ExpansionInfo
         JsonConfig.Serialize("Configuration/expansion.json", matched);
     }
 
+    public static void LoadConfiguration(Expansion currentExpansion)
+    {
+        // As we are replacing an existing expansion configuration, we need to make sure
+        // that the default ones have been loaded
+        if (expansionConfigs == null)
+        {
+            Console.WriteLine("Failed to load expansion.json due to expansion configs not being loaded");
+            return;
+        }
+
+        var path = Path.Combine(Core.BaseDirectory, "Configuration/expansion.json");
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException($"Configured expansion file '{path}' could not be found.");
+        }
+
+        ExpansionConfig expansionConfig = JsonConfig.Deserialize<ExpansionConfig>(path);
+
+        int currentExpansionIndex = (int)currentExpansion;
+        Table[currentExpansionIndex] = new ExpansionInfo(
+            currentExpansionIndex,
+            expansionConfig.Name,
+            expansionConfig.ClientVersion,
+            expansionConfig.FeatureFlags,
+            expansionConfig.CharacterListFlags,
+            expansionConfig.HousingFlags,
+            expansionConfig.MobileStatusVersion,
+            expansionConfig.MapSelectionFlags);
+    }
+
     static ExpansionInfo()
     {
         var path = Path.Combine(Core.BaseDirectory, "Data/expansions.json");
@@ -245,7 +276,8 @@ public class ExpansionInfo
                     expansion.FeatureFlags,
                     expansion.CharacterListFlags,
                     expansion.HousingFlags,
-                    expansion.MobileStatusVersion
+                    expansion.MobileStatusVersion,
+                    expansion.MapSelectionFlags
                 );
             }
             else
@@ -257,21 +289,11 @@ public class ExpansionInfo
                     expansion.FeatureFlags,
                     expansion.CharacterListFlags,
                     expansion.HousingFlags,
-                    expansion.MobileStatusVersion
+                    expansion.MobileStatusVersion,
+                    expansion.MapSelectionFlags
                 );
             }
         }
-
-        // Now we have all the expansions' info deserialized, let's override
-        // based on Configuration/expansion.json, which should have been created
-        // on server startup
-        var configuredExpansionPath = Path.Combine(Core.BaseDirectory, "Configuration/expansion.json");
-        if (!File.Exists(path))
-        {
-            // It doesn't exist. Could be an older sever, so go ahead and create it
-            throw new FileNotFoundException($"Expansion file '{configuredExpansionPath}' could not be found.");
-        }
-
     }
 
     public ExpansionInfo(
@@ -281,8 +303,9 @@ public class ExpansionInfo
         FeatureFlags supportedFeatures,
         CharacterListFlags charListFlags,
         HousingFlags customHousingFlag,
-        int mobileStatusVersion
-    ) : this(id, name, supportedFeatures, charListFlags, customHousingFlag, mobileStatusVersion) =>
+        int mobileStatusVersion,
+        MapSelectionFlags mapSelectionFlags
+    ) : this(id, name, supportedFeatures, charListFlags, customHousingFlag, mobileStatusVersion, mapSelectionFlags) =>
         ClientFlags = clientFlags;
 
     public ExpansionInfo(
@@ -292,8 +315,9 @@ public class ExpansionInfo
         FeatureFlags supportedFeatures,
         CharacterListFlags charListFlags,
         HousingFlags customHousingFlag,
-        int mobileStatusVersion
-    ) : this(id, name, supportedFeatures, charListFlags, customHousingFlag, mobileStatusVersion) =>
+        int mobileStatusVersion,
+        MapSelectionFlags mapSelectionFlags
+    ) : this(id, name, supportedFeatures, charListFlags, customHousingFlag, mobileStatusVersion, mapSelectionFlags) =>
         RequiredClient = requiredClient;
 
     private ExpansionInfo(
@@ -302,7 +326,8 @@ public class ExpansionInfo
         FeatureFlags supportedFeatures,
         CharacterListFlags charListFlags,
         HousingFlags customHousingFlag,
-        int mobileStatusVersion
+        int mobileStatusVersion,
+        MapSelectionFlags mapSelectionFlags
     )
     {
         ID = id;
@@ -312,6 +337,7 @@ public class ExpansionInfo
         CharacterListFlags = charListFlags;
         CustomHousingFlag = customHousingFlag;
         MobileStatusVersion = mobileStatusVersion;
+        MapSelectionFlags = mapSelectionFlags;
     }
 
     public static ExpansionInfo CoreExpansion => GetInfo(Core.Expansion);
@@ -326,6 +352,7 @@ public class ExpansionInfo
     public ClientVersion RequiredClient { get; set; }
     public HousingFlags CustomHousingFlag { get; set; }
     public int MobileStatusVersion { get; set; }
+    public MapSelectionFlags MapSelectionFlags { get; set; }
 
     public static ExpansionInfo GetInfo(Expansion ex) => GetInfo((int)ex);
 
@@ -360,6 +387,9 @@ public record ExpansionConfig
 
     [JsonConverter(typeof(FlagsConverter<HousingFlags>))]
     public HousingFlags HousingFlags { get; init; }
+
+    [JsonConverter(typeof(FlagsConverter<MapSelectionFlags>))]
+    public MapSelectionFlags MapSelectionFlags { get; init; }
 
     public int MobileStatusVersion { get; set; }
 }

@@ -11,6 +11,8 @@ public class MapSelection
     private MapSelectionFlags _selectedMaps;
     private static readonly Array _mapSelectionValues = Enum.GetValues(typeof(MapSelectionFlags));
 
+    public static Array MapSelectionValues => _mapSelectionValues;
+
     public MapSelectionFlags Flags => _selectedMaps;
 
     public MapSelection()
@@ -95,12 +97,12 @@ public class MapSelection
 
     public void EnableAllInExpansion(Expansion expansion)
     {
-        MapSelectionFlags[] allMapsInExpansion =
+        List<MapSelectionFlags> allMapsInExpansion =
             ExpansionMapSelectionFlags.FromExpansion(expansion);
 
-        foreach(MapSelectionFlags flags in allMapsInExpansion)
+        foreach(MapSelectionFlags mapFlag in allMapsInExpansion)
         {
-            _selectedMaps |= flags;
+            _selectedMaps |= mapFlag;
         }
     }
 

@@ -269,19 +269,24 @@ public static class ServerConfiguration
 
         if (m_Settings.Expansion == null)
         {
-            m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ServerConfigurationPrompts.GetExpansion();
+            m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ExpansionConfigurationPrompts.GetExpansion();
 
             // We've updated the selected expansion, so we now need to copy
             // that json into a configuration file for the shard
-            ExpansionInfo.WriteConfiguration(m_Settings.Expansion.Value);
+            ExpansionInfo.SaveConfiguration(m_Settings.Expansion.Value);
             updated = true;
+        }
+        else
+        {
+            // We have a known, current expansion, so we can deserialize it from Configuration
+            ExpansionInfo.LoadConfiguration(m_Settings.Expansion.Value);
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
 
         if (m_Settings.AvailableMapsFlags == null)
         {
-            m_Settings.AvailableMapsFlags = ServerConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value).Flags;
+            m_Settings.AvailableMapsFlags = ExpansionConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value).Flags;
             updated = true;
         }
 
