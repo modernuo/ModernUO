@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 using Server.Collections;
@@ -202,8 +201,8 @@ public static class AntiMacroSystem
         _antiMacroTable ??= new Dictionary<Mobile, PlayerAntiMacro>();
 
         // Hot path so use optimized code
-        ref PlayerAntiMacro antiMacro = ref CollectionsMarshal.GetValueRefOrNullRef(_antiMacroTable, pm);
-        if (Unsafe.IsNullRef(ref antiMacro))
+        ref PlayerAntiMacro antiMacro = ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTable, pm, out var exists);
+        if (!exists)
         {
             antiMacro = new PlayerAntiMacro();
         }

@@ -16,7 +16,7 @@ namespace Server.Items
 
             for (var i = 0; i < Lines.Length; ++i)
             {
-                Lines[i] = Utility.Intern(reader.ReadString());
+                Lines[i] = reader.ReadString().Intern();
             }
         }
 

@@ -18,7 +18,7 @@ jobs:
     displayName: 'Install .NET 7'
     inputs:
       packageType: sdk
-      version: 7.0.302
+      version: 7.0.304
   - task: NuGetAuthenticate@1
   - script: ./publish.cmd Release
     displayName: 'Build'

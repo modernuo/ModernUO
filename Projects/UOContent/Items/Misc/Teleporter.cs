@@ -867,7 +867,7 @@ public partial class ConditionTeleporter : Teleporter
         }
 
         if (GetFlag(ConditionFlag.DenyFollowers) &&
-            (m.Followers != 0 || m is PlayerMobile mobile && mobile.AutoStabled.Count != 0))
+            (m.Followers != 0 || m is PlayerMobile mobile && mobile.AutoStabled?.Count != 0))
         {
             m.SendLocalizedMessage(1077250); // No pets permitted beyond this point.
             return false;

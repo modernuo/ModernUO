@@ -230,7 +230,8 @@ public partial class EffectController : Item
 
         if (Sequence != null)
         {
-            Timer.StartTimer(TriggerDelay, () => Sequence.DoEffect(trigger));
+            var sequence = Sequence;
+            Timer.StartTimer(TriggerDelay, () => sequence.DoEffect(trigger));
         }
 
         if (EffectType != ECEffectType.None)

@@ -180,7 +180,7 @@ public delegate int AOSStatusHandler(Mobile from, int index);
 /// <summary>
 ///     Base class representing players, npcs, and creatures.
 /// </summary>
-public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity
+public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity
 {
     // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
     private const int WarmodeCatchCount = 4;
@@ -281,7 +281,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
     private int m_Hunger;
 
     private bool m_InDeltaQueue;
-    private int m_Kills, m_ShortTermMurders;
+    private int m_Kills;
     private string m_Language;
     private int m_LightLevel;
     private Point3D m_Location;
@@ -425,11 +425,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             }
         }
     }
-
-    public List<Mobile> Stabled { get; private set; }
-
-    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public VirtueInfo Virtues { get; private set; }
 
     public object Party { get; set; }
 
@@ -1628,19 +1623,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         }
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int ShortTermMurders
-    {
-        get => m_ShortTermMurders;
-        set
-        {
-            if (m_ShortTermMurders != value)
-            {
-                m_ShortTermMurders = Math.Max(value, 0);
-            }
-        }
-    }
-
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public virtual bool Criminal
     {
@@ -2279,7 +2261,7 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(33); // version
+        writer.Write(36); // version
 
         writer.WriteDeltaTime(LastStrGain);
         writer.WriteDeltaTime(LastIntGain);
@@ -2315,23 +2297,13 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
         writer.Write(Corpse);
 
-        // writer.Write(CreationTime);
-
-        Stabled.Tidy();
-        writer.Write(Stabled);
-
         writer.Write(CantWalk);
 
-        VirtueInfo.Serialize(writer, Virtues);
+        // VirtueInfo.Serialize(writer, Virtues);
 
         writer.Write(Thirst);
         writer.Write(BAC);
 
-        writer.Write(m_ShortTermMurders);
-        // writer.Write( m_ShortTermElapse );
-        // writer.Write( m_LongTermElapse );
-
-        // writer.Write( m_Followers );
         writer.Write(m_FollowersMax);
 
         writer.Write(MagicDamageAbsorb);
@@ -2446,11 +2418,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             {
                 Items[i].OnParentDeleted(this);
             }
-        }
-
-        for (var i = 0; i < Stabled.Count; i++)
-        {
-            Stabled[i].Delete();
         }
 
         SendRemovePacket();
@@ -6074,16 +6041,11 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
 
         switch (version)
         {
-            case 33:
-                {
-                    // Removed created
-                    goto case 32;
-                }
-            case 32:
-                {
-                    // Removed StuckMenu
-                    goto case 31;
-                }
+            case 36: // Moved virtues to VirtueSystem
+            case 35: // Moved short term murders to PlayerMurderSystem
+            case 34: // Moved Stabled to PlayerMobile
+            case 33: // Removed created
+            case 32: // Removed StuckMenu
             case 31:
                 {
                     LastStrGain = reader.ReadDeltaTime();
@@ -6148,7 +6110,11 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             case 22: // Just removed followers
             case 21:
                 {
-                    Stabled = reader.ReadEntityList<Mobile>();
+                    if (version < 34)
+                    {
+                        // Migrated to PlayerMobile
+                        AddToStabledMigration(this, reader.ReadEntitySet<Mobile>(true));
+                    }
 
                     goto case 20;
                 }
@@ -6161,7 +6127,27 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
             case 19: // Just removed variables
             case 18:
                 {
-                    Virtues = new VirtueInfo(reader);
+                    if (version < 36)
+                    {
+                        reader.ReadByte(); // VirtueInfo version
+
+                        int mask = reader.ReadByte();
+
+                        if (mask != 0)
+                        {
+                            var virtueValues = new int[8];
+
+                            for (var i = 0; i < 8; ++i)
+                            {
+                                if ((mask & (1 << i)) != 0)
+                                {
+                                    virtueValues[i] = reader.ReadInt();
+                                }
+                            }
+
+                            AddToVirtueMigration(this, virtueValues);
+                        }
+                    }
 
                     goto case 17;
                 }
@@ -6174,7 +6160,11 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
                 }
             case 16:
                 {
-                    m_ShortTermMurders = reader.ReadInt();
+                    if (version < 35)
+                    {
+                        // Migrated to PlayerMurderSystem
+                        AddToMurderMigration(this, reader.ReadInt());
+                    }
 
                     if (version <= 24)
                     {
@@ -6285,16 +6275,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
                 }
             case 0:
                 {
-                    if (version < 21)
-                    {
-                        Stabled = new List<Mobile>();
-                    }
-
-                    if (version < 18)
-                    {
-                        Virtues = new VirtueInfo();
-                    }
-
                     if (version < 11)
                     {
                         m_DisplayGuildTitle = true;
@@ -7720,8 +7700,6 @@ public class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyLis
         AutoPageNotify = true;
         Aggressors = new List<AggressorInfo>();
         Aggressed = new List<AggressorInfo>();
-        Virtues = new VirtueInfo();
-        Stabled = new List<Mobile>();
         DamageEntries = new List<DamageEntry>();
 
         NextSkillTime = Core.TickCount;

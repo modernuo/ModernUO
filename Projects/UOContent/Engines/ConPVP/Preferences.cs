@@ -72,11 +72,7 @@ namespace Server.Engines.ConPVP
     {
         private readonly Dictionary<Mobile, PreferencesEntry> m_Table;
 
-        public Preferences()
-        {
-            m_Table = new Dictionary<Mobile, PreferencesEntry>();
-            Entries = new List<PreferencesEntry>();
-        }
+        public Preferences() => m_Table = new Dictionary<Mobile, PreferencesEntry>();
 
         public Preferences(IGenericReader reader)
         {
@@ -89,7 +85,6 @@ namespace Server.Engines.ConPVP
                         var count = reader.ReadEncodedInt();
 
                         m_Table = new Dictionary<Mobile, PreferencesEntry>(count);
-                        Entries = new List<PreferencesEntry>(count);
 
                         for (var i = 0; i < count; ++i)
                         {
@@ -98,7 +93,6 @@ namespace Server.Engines.ConPVP
                             if (entry.Mobile != null)
                             {
                                 m_Table[entry.Mobile] = entry;
-                                Entries.Add(entry);
                             }
                         }
 
@@ -107,16 +101,13 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public List<PreferencesEntry> Entries { get; }
-
         public static Preferences Instance { get; set; }
 
         public PreferencesEntry Find(Mobile mob)
         {
-            if (m_Table.TryGetValue(mob, out var entry))
+            if (!m_Table.TryGetValue(mob, out var entry))
             {
                 m_Table[mob] = entry = new PreferencesEntry(mob);
-                Entries.Add(entry);
             }
 
             return entry;
@@ -126,11 +117,12 @@ namespace Server.Engines.ConPVP
         {
             writer.WriteEncodedInt(0); // version;
 
-            writer.WriteEncodedInt(Entries.Count);
+            var count = m_Table.Values.Count;
+            writer.WriteEncodedInt(count);
 
-            for (var i = 0; i < Entries.Count; ++i)
+            foreach (var entry in m_Table.Values)
             {
-                Entries[i].Serialize(writer);
+                entry.Serialize(writer);
             }
         }
     }

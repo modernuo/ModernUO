@@ -78,16 +78,6 @@ public static partial class EventSink
     public static event Action<Mobile> PlayerDeath;
     public static void InvokePlayerDeath(Mobile m) => PlayerDeath?.Invoke(m);
 
-    public static event Action<Mobile, Mobile> VirtueGumpRequest;
-
-    public static void InvokeVirtueGumpRequest(Mobile beholder, Mobile beheld) =>
-        VirtueGumpRequest?.Invoke(beholder, beheld);
-
-    public static event Action<Mobile, Mobile, int> VirtueItemRequest;
-
-    public static void InvokeVirtueItemRequest(Mobile beholder, Mobile beheld, int gumpID) =>
-        VirtueItemRequest?.Invoke(beholder, beheld, gumpID);
-
     public static event Action<Mobile, int> VirtueMacroRequest;
 
     public static void InvokeVirtueMacroRequest(Mobile mobile, int virtueID) =>
@@ -108,6 +98,9 @@ public static partial class EventSink
 
     public static event Action<NetState, int> DeleteRequest;
     public static void InvokeDeleteRequest(NetState state, int index) => DeleteRequest?.Invoke(state, index);
+
+    public static event Action<Mobile> PlayerDeleted;
+    public static void InvokePlayerDeleted(Mobile m) => PlayerDeleted?.Invoke(m);
 
     public static event Action ServerStarted;
     public static void InvokeServerStarted() => ServerStarted?.Invoke();

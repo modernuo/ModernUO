@@ -15,6 +15,10 @@ namespace Server.SkillHandlers
         public static unsafe void Configure()
         {
             IncomingExtendedCommandPackets.RegisterExtended(0x07, true, &QuestArrow);
+        }
+
+        public static void Initialize()
+        {
             SkillInfo.Table[(int)SkillName.Tracking].Callback = OnUse;
         }
 

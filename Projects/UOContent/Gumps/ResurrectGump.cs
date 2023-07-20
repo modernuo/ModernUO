@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Engines.Virtues;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -95,23 +96,11 @@ namespace Server.Gumps
             AddRadio(30, 175, 9727, 9730, false, 0);
             AddHtmlLocalized(65, 178, 300, 25, 1060016, 0x7FFF); // I'd rather stay dead, you scoundrel!!!
 
-            AddHtmlLocalized(
-                30,
-                20,
-                360,
-                35,
-                1060017,
-                0x7FFF
-            ); // Wishing to rejoin the living, are you?  I can restore your body... for a price of course...
+            // Wishing to rejoin the living, are you?  I can restore your body... for a price of course...
+            AddHtmlLocalized(30, 20, 360, 35, 1060017, 0x7FFF);
 
-            AddHtmlLocalized(
-                30,
-                105,
-                345,
-                40,
-                1060018,
-                0x5B2D
-            ); // Do you accept the fee, which will be withdrawn from your bank?
+            // Do you accept the fee, which will be withdrawn from your bank?
+            AddHtmlLocalized(30, 105, 345, 40, 1060018, 0x5B2D);
 
             AddImage(65, 72, 5605);
 
@@ -156,20 +145,16 @@ namespace Server.Gumps
                 {
                     if (Banker.Withdraw(from, m_Price))
                     {
-                        from.SendLocalizedMessage(
-                            1060398,
-                            m_Price.ToString()
-                        ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-                        from.SendLocalizedMessage(
-                            1060022,
-                            Banker.GetBalance(from).ToString()
-                        ); // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
+                        // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                        from.SendLocalizedMessage(1060398, m_Price.ToString());
+
+                        // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
+                        from.SendLocalizedMessage(1060022, Banker.GetBalance(from).ToString());
                     }
                     else
                     {
-                        from.SendLocalizedMessage(
-                            1060020
-                        ); // Unfortunately, you do not have enough cash in your bank to cover the cost of the healing.
+                        // Unfortunately, you do not have enough cash in your bank to cover the cost of the healing.
+                        from.SendLocalizedMessage(1060020);
                         return;
                     }
                 }
@@ -187,7 +172,7 @@ namespace Server.Gumps
 
             if (m_Healer != null && from != m_Healer)
             {
-                var level = VirtueHelper.GetLevel(m_Healer, VirtueName.Compassion);
+                var level = VirtueSystem.GetLevel(m_Healer, VirtueName.Compassion);
 
                 from.Hits = level switch
                 {
@@ -198,12 +183,14 @@ namespace Server.Gumps
                 };
             }
 
-            if (m_FromSacrifice && from is PlayerMobile mobile)
-            {
-                mobile.AvailableResurrects -= 1;
+            var player = from as PlayerMobile;
 
-                var pack = mobile.Backpack;
-                var corpse = mobile.Corpse;
+            if (m_FromSacrifice && player != null)
+            {
+                player.Virtues.AvailableResurrects -= 1;
+
+                var pack = player.Backpack;
+                var corpse = player.Corpse;
 
                 if (pack != null && corpse != null)
                 {
@@ -228,9 +215,9 @@ namespace Server.Gumps
                 Titles.AwardFame(from, -amount, true);
             }
 
-            if (!Core.AOS && from.ShortTermMurders >= 5)
+            if (!Core.AOS && player?.ShortTermMurders >= 5)
             {
-                var loss = (100.0 - (4.0 + from.ShortTermMurders / 5.0)) / 100.0; // 5 to 15% loss
+                var loss = (100.0 - (4.0 + player.ShortTermMurders / 5.0)) / 100.0; // 5 to 15% loss
 
                 if (loss < 0.85)
                 {

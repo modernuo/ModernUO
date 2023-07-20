@@ -4,7 +4,6 @@ using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
-using Server.Network;
 using Server.Regions;
 using Server.Spells;
 using Server.Spells.Ninjitsu;
@@ -166,7 +165,7 @@ public partial class BallOfSummoning : Item, TranslocationItem
     {
         var pet = Pet;
 
-        if (Deleted || pet == null || RootParent != from)
+        if (Deleted || pet == null || RootParent != from || from is not PlayerMobile pm)
         {
             return;
         }
@@ -186,7 +185,7 @@ public partial class BallOfSummoning : Item, TranslocationItem
             // The Crystal Ball fills with a blue mist. Your pet is not responding to the summons.
             this.SendLocalizedMessageTo(from, 1054125, 0x5);
         }
-        else if ((!pet.Controlled || pet.ControlMaster != from) && !from.Stabled.Contains(pet))
+        else if ((!pet.Controlled || pet.ControlMaster != from) && pm.Stabled?.Contains(pet) != true)
         {
             // The Crystal Ball fills with a grey mist. You are not the owner of the pet you are attempting to summon.
             this.SendLocalizedMessageTo(from, 1054126, 0x8FD);
@@ -221,7 +220,7 @@ public partial class BallOfSummoning : Item, TranslocationItem
     {
         var pet = Pet;
 
-        if (pet == null)
+        if (pet == null || from is not PlayerMobile pm)
         {
             return;
         }
@@ -242,12 +241,8 @@ public partial class BallOfSummoning : Item, TranslocationItem
 
             pet.IsStabled = false;
             pet.StabledBy = null;
-            from.Stabled.Remove(pet);
-
-            if (from is PlayerMobile mobile)
-            {
-                mobile.AutoStabled.Remove(pet);
-            }
+            pm.RemoveStabled(pet);
+            pm.AutoStabled?.Remove(pet);
         }
 
         pet.MoveToWorld(from.Location, from.Map);

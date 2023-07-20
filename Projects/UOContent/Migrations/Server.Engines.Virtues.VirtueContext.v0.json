@@ -1,0 +1,119 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Virtues.VirtueContext",
+  "properties": [
+    {
+      "name": "LastSacrificeGain",
+      "type": "System.DateTime",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "LastSacrificeLoss",
+      "type": "System.DateTime",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "AvailableResurrects",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastJusticeLoss",
+      "type": "System.DateTime",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "LastCompassionLoss",
+      "type": "System.DateTime",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "NextCompassionDay",
+      "type": "System.DateTime",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "CompassionGains",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastValorLoss",
+      "type": "System.DateTime",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "LastHonorUse",
+      "type": "System.DateTime",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "HonorActive",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "JusticeProtection",
+      "type": "Server.Mobiles.PlayerMobile",
+      "usesSaveFlag": true,
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "JusticeStatus",
+      "type": "Server.Engines.Virtues.JusticeProtectorStatus",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Values",
+      "type": "int[]",
+      "usesSaveFlag": true,
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "int",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    }
+  ]
+}

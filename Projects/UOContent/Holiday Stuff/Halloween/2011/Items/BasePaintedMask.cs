@@ -24,7 +24,7 @@ namespace Server.Items.Holiday
         }
 
         public BasePaintedMask(string staffer, int itemid) : base(itemid + Utility.Random(2)) =>
-            _staffer = Utility.Intern(staffer);
+            _staffer = staffer.Intern();
 
         public override string DefaultName => _staffer != null ? $"{MaskName} hand painted by {_staffer}" : MaskName;
 

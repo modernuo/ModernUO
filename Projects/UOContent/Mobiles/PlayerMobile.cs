@@ -10,7 +10,9 @@ using Server.Engines.Help;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.PartySystem;
+using Server.Engines.PlayerMurderSystem;
 using Server.Engines.Quests;
+using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Guilds;
@@ -143,7 +145,7 @@ namespace Server.Mobiles
 
         private Dictionary<int, bool> m_AcquiredRecipes;
 
-        private List<Mobile> m_AllFollowers;
+        private HashSet<Mobile> _allFollowers;
         private int m_BeardModID = -1, m_BeardModHue;
 
         // TODO: Pool BuffInfo objects
@@ -175,13 +177,11 @@ namespace Server.Mobiles
         private DateTime m_LastYoungHeal = DateTime.MinValue;
 
         private DateTime m_LastYoungMessage = DateTime.MinValue;
-        private TimeSpan m_LongTermElapse;
 
         private MountBlock _mountBlock;
 
         private DateTime m_NextJustAward;
 
-        private int m_NextMovementTime;
         private int m_NextProtectionCheck = 10;
         private DateTime m_NextSmithBulkOrder;
         private DateTime m_NextTailorBulkOrder;
@@ -192,7 +192,6 @@ namespace Server.Mobiles
         private int m_NonAutoreinsuredItems;
 
         private DateTime m_SavagePaintExpiration;
-        private TimeSpan m_ShortTermElapse;
 
         private DateTime[] m_StuckMenuUses;
 
@@ -200,19 +199,12 @@ namespace Server.Mobiles
 
         public PlayerMobile()
         {
-            AutoStabled = new List<Mobile>();
-
             VisibilityList = new List<Mobile>();
             PermaFlags = new List<Mobile>();
-            RecentlyReported = new List<Mobile>();
 
             BOBFilter = new BOBFilter();
 
             m_GameTime = TimeSpan.Zero;
-            m_ShortTermElapse = TimeSpan.FromHours(8.0);
-            m_LongTermElapse = TimeSpan.FromHours(40.0);
-
-            JusticeProtectors = new List<Mobile>();
             m_GuildRank = RankDefinition.Lowest;
 
             ChampionTitles = new ChampionTitleInfo();
@@ -382,13 +374,16 @@ namespace Server.Mobiles
 
         public PlayerState FactionPlayerState { get; set; }
 
-        public List<Mobile> RecentlyReported { get; set; }
+        // WARNING - This can be null!!
+        public HashSet<Mobile> Stabled { get; private set; }
 
-        public List<Mobile> AutoStabled { get; private set; }
+        // WARNING - This can be null!!
+        public HashSet<Mobile> AutoStabled { get; private set; }
 
         public bool NinjaWepCooldown { get; set; }
 
-        public List<Mobile> AllFollowers => m_AllFollowers ??= new List<Mobile>();
+        // WARNING - This can be null!!
+        public HashSet<Mobile> AllFollowers => _allFollowers;
 
         public RankDefinition GuildRank
         {
@@ -676,33 +671,6 @@ namespace Server.Mobiles
 
         public bool WaitingForEnemy { get; set; }
 
-        public DateTime LastSacrificeGain { get; set; }
-
-        public DateTime LastSacrificeLoss { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int AvailableResurrects { get; set; }
-
-        public DateTime LastJusticeLoss { get; set; }
-
-        public List<Mobile> JusticeProtectors { get; set; }
-
-        public DateTime LastCompassionLoss { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime NextCompassionDay { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int CompassionGains { get; set; }
-
-        public DateTime LastValorLoss { get; set; }
-
-        public DateTime LastHonorLoss { get; set; }
-
-        public DateTime LastHonorUse { get; set; }
-
-        public bool HonorActive { get; set; }
-
         public HonorContext SentHonorContext { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -729,7 +697,27 @@ namespace Server.Mobiles
         public ChampionTitleInfo ChampionTitles { get; private set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        public int ShortTermMurders
+        {
+            get => this.GetMurderContext(out var context) ? context.ShortTermMurders : 0;
+            set => PlayerMurderSystem.ManuallySetShortTermMurders(this, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime ShortTermMurderExpiration => this.GetMurderContext(out var context)
+            ? Core.Now + (context.ShortTermElapse - GameTime)
+            : DateTime.MinValue;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime LongTermMurderExpiration => this.GetMurderContext(out var context)
+            ? Core.Now + (context.LongTermElapse - GameTime)
+            : DateTime.MinValue;
+
+        [CommandProperty(AccessLevel.GameMaster)]
         public int KnownRecipes => m_AcquiredRecipes?.Count ?? 0;
+
+        [CommandProperty(AccessLevel.Counselor, canModify: true)]
+        public VirtueContext Virtues => this.GetOrCreateVirtues();
 
         public HonorContext ReceivedHonorContext { get; set; }
 
@@ -961,6 +949,18 @@ namespace Server.Mobiles
             {
                 Timer.StartTimer(CheckPets);
             }
+
+            var stableMigrations = StableMigrations;
+            if (stableMigrations?.Count > 0)
+            {
+                foreach (var (player, stabled) in stableMigrations)
+                {
+                    if (player is PlayerMobile pm)
+                    {
+                        pm.Stabled = stabled;
+                    }
+                }
+            }
         }
 
         private static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
@@ -1062,8 +1062,8 @@ namespace Server.Mobiles
             foreach (var m in World.Mobiles.Values)
             {
                 if (m is PlayerMobile pm &&
-                    ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count ||
-                     pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1))
+                    ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers?.Count > pm.AutoStabled?.Count ||
+                     pm.Mounted && pm.AllFollowers?.Count > (pm.AutoStabled?.Count ?? 0) + 1))
                 {
                     pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
                 }
@@ -1723,7 +1723,7 @@ namespace Server.Mobiles
                 }
             }
 
-            var speed = ComputeMovementSpeed(d);
+            // var speed = ComputeMovementSpeed(d);
 
             if (!Alive)
             {
@@ -1731,17 +1731,8 @@ namespace Server.Mobiles
             }
 
             var res = base.Move(d);
-
             MovementImpl.IgnoreMovableImpassables = false;
-
-            if (!res)
-            {
-                return false;
-            }
-
-            m_NextMovementTime += speed;
-
-            return true;
+            return res;
         }
 
         public override bool CheckMovement(Direction d, out int newZ)
@@ -1908,7 +1899,7 @@ namespace Server.Mobiles
                     }
                 }
 
-                if (JusticeProtectors.Count > 0)
+                if (JusticeVirtue.IsProtected(this))
                 {
                     list.Add(new CallbackEntry(6157, CancelProtection));
                 }
@@ -1924,12 +1915,8 @@ namespace Server.Mobiles
 
                     if (ns?.ExtendedStatus == true)
                     {
-                        list.Add(
-                            new CallbackEntry(
-                                RefuseTrades ? 1154112 : 1154113,
-                                ToggleTrades
-                            )
-                        ); // Allow Trades / Refuse Trades
+                        // Allow Trades / Refuse Trades
+                        list.Add(new CallbackEntry(RefuseTrades ? 1154112 : 1154113, ToggleTrades));
                     }
                 }
             }
@@ -1974,23 +1961,16 @@ namespace Server.Mobiles
 
         private void CancelProtection()
         {
-            for (var i = 0; i < JusticeProtectors.Count; ++i)
+            if (JusticeVirtue.CancelProtection(this, out var prot))
             {
-                var prot = JusticeProtectors[i];
-
                 var args = $"{Name}\t{prot.Name}";
 
-                prot.SendLocalizedMessage(
-                    1049371,
-                    args
-                ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
-                SendLocalizedMessage(
-                    1049371,
-                    args
-                ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
-            }
+                // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
+                prot.SendLocalizedMessage(1049371, args);
 
-            JusticeProtectors.Clear();
+                // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
+                SendLocalizedMessage(1049371, args);
+            }
         }
 
         private void ToggleTrades()
@@ -2481,10 +2461,8 @@ namespace Server.Mobiles
                 if (Banker.Withdraw(this, cost))
                 {
                     item.PaidInsurance = true;
-                    SendLocalizedMessage(
-                        1060398,
-                        cost.ToString()
-                    ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                    // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                    SendLocalizedMessage(1060398, cost.ToString());
                 }
                 else
                 {
@@ -2500,9 +2478,9 @@ namespace Server.Mobiles
                 item.Insured = false;
             }
 
-            if (m_InsuranceAward != null && Banker.Deposit(m_InsuranceAward, 300) && m_InsuranceAward is PlayerMobile pm)
+            if (m_InsuranceAward is PlayerMobile insurancePm && Banker.Deposit(m_InsuranceAward, 300))
             {
-                pm.m_InsuranceBonus += 300;
+                insurancePm.m_InsuranceBonus += 300;
             }
 
             return true;
@@ -2612,7 +2590,7 @@ namespace Server.Mobiles
                     m = bc.GetMaster();
                 }
 
-                if (m != this && m is PlayerMobile)
+                if (m != this && m is PlayerMobile pm)
                 {
                     var gainedPath = false;
 
@@ -2622,7 +2600,7 @@ namespace Server.Mobiles
                     pointsToGain *= 5;
                     pointsToGain += (int)Math.Pow(Skills.Total / 250.0, 2);
 
-                    if (VirtueHelper.Award(m, VirtueName.Justice, pointsToGain, ref gainedPath))
+                    if (VirtueSystem.Award(pm, VirtueName.Justice, pointsToGain, ref gainedPath))
                     {
                         if (gainedPath)
                         {
@@ -2641,15 +2619,10 @@ namespace Server.Mobiles
                 }
             }
 
-            if (m_InsuranceAward is PlayerMobile pm)
+            if (m_InsuranceAward is PlayerMobile insurancePm && insurancePm.m_InsuranceBonus > 0)
             {
-                if (pm.m_InsuranceBonus > 0)
-                {
-                    pm.SendLocalizedMessage(
-                        1060397,
-                        pm.m_InsuranceBonus.ToString()
-                    ); // ~1_AMOUNT~ gold has been deposited into your bank box.
-                }
+                // ~1_AMOUNT~ gold has been deposited into your bank box.
+                insurancePm.SendLocalizedMessage(1060397, insurancePm.m_InsuranceBonus.ToString());
             }
 
             var killer = FindMostRecentDamager(true);
@@ -2878,8 +2851,17 @@ namespace Server.Mobiles
             base.Deserialize(reader);
             var version = reader.ReadInt();
 
+            VirtueContext virtues = version < 32 ? Virtues : null;
+
             switch (version)
             {
+                case 32: // Removes virtue properties
+                case 31: // Removed Short/Long Term Elapse
+                case 30:
+                    {
+                        Stabled = reader.ReadEntitySet<Mobile>(true);
+                        goto case 29;
+                    }
                 case 29:
                     {
                         if (reader.ReadBool())
@@ -2912,7 +2894,7 @@ namespace Server.Mobiles
                     }
                 case 26:
                     {
-                        AutoStabled = reader.ReadEntityList<Mobile>();
+                        AutoStabled = reader.ReadEntitySet<Mobile>(true);
 
                         goto case 25;
                     }
@@ -2938,7 +2920,10 @@ namespace Server.Mobiles
                     }
                 case 24:
                     {
-                        LastHonorLoss = reader.ReadDeltaTime();
+                        if (version < 32)
+                        {
+                            reader.ReadDeltaTime(); // LastHonorLoss - Not even used
+                        }
                         goto case 23;
                     }
                 case 23:
@@ -2948,7 +2933,11 @@ namespace Server.Mobiles
                     }
                 case 22:
                     {
-                        LastValorLoss = reader.ReadDateTime();
+                        if (version < 32)
+                        {
+                            virtues.LastValorLoss = reader.ReadDateTime();
+                        }
+
                         goto case 21;
                     }
                 case 21:
@@ -3022,16 +3011,21 @@ namespace Server.Mobiles
                     }
                 case 15:
                     {
-                        LastCompassionLoss = reader.ReadDeltaTime();
+                        if (version < 32)
+                        {
+                            virtues.LastCompassionLoss = reader.ReadDeltaTime();
+                        }
                         goto case 14;
                     }
                 case 14:
                     {
-                        CompassionGains = reader.ReadEncodedInt();
-
-                        if (CompassionGains > 0)
+                        if (version < 32)
                         {
-                            NextCompassionDay = reader.ReadDeltaTime();
+                            virtues.CompassionGains = reader.ReadEncodedInt();
+                            if (virtues.CompassionGains > 0)
+                            {
+                                virtues.NextCompassionDay = reader.ReadDeltaTime();
+                            }
                         }
 
                         goto case 13;
@@ -3104,15 +3098,31 @@ namespace Server.Mobiles
                     }
                 case 4:
                     {
-                        LastJusticeLoss = reader.ReadDeltaTime();
-                        JusticeProtectors = reader.ReadEntityList<Mobile>();
+                        if (version < 32)
+                        {
+                            virtues.LastJusticeLoss = reader.ReadDeltaTime();
+                            var protectors = reader.ReadEntityList<PlayerMobile>(); // Always a list of 0, or 1
+                            if (protectors.Count > 0)
+                            {
+                                var protector = protectors[0];
+                                if (protector != null)
+                                {
+                                    JusticeVirtue.AddProtection(protector, this);
+                                }
+                            }
+                        }
+
                         goto case 3;
                     }
                 case 3:
                     {
-                        LastSacrificeGain = reader.ReadDeltaTime();
-                        LastSacrificeLoss = reader.ReadDeltaTime();
-                        AvailableResurrects = reader.ReadInt();
+                        if (version < 32)
+                        {
+                            virtues.LastSacrificeGain = reader.ReadDeltaTime();
+                            virtues.LastSacrificeLoss = reader.ReadDeltaTime();
+                            virtues.AvailableResurrects = reader.ReadInt();
+                        }
+
                         goto case 2;
                     }
                 case 2:
@@ -3122,23 +3132,22 @@ namespace Server.Mobiles
                     }
                 case 1:
                     {
-                        m_LongTermElapse = reader.ReadTimeSpan();
-                        m_ShortTermElapse = reader.ReadTimeSpan();
+                        if (version < 31)
+                        {
+                            var longTermElapse = reader.ReadTimeSpan();
+                            var shortTermElapse = reader.ReadTimeSpan();
+
+                            PlayerMurderSystem.MigrateContext(this, shortTermElapse, longTermElapse);
+                        }
+
                         m_GameTime = reader.ReadTimeSpan();
                         goto case 0;
                     }
                 case 0:
                     {
-                        if (version < 26)
-                        {
-                            AutoStabled = new List<Mobile>();
-                        }
-
                         break;
                     }
             }
-
-            RecentlyReported ??= new List<Mobile>();
 
             if (!CharacterCreation.VerifyProfession(Profession))
             {
@@ -3146,7 +3155,6 @@ namespace Server.Mobiles
             }
 
             PermaFlags ??= new List<Mobile>();
-            JusticeProtectors ??= new List<Mobile>();
             BOBFilter ??= new BOBFilter();
 
             // Default to member if going from older version to new version (only time it should be null)
@@ -3164,18 +3172,18 @@ namespace Server.Mobiles
                 IgnoreMobiles = true;
             }
 
-            var list = Stabled;
-
-            for (var i = 0; i < list.Count; ++i)
+            if (Stabled != null)
             {
-                if (list[i] is BaseCreature bc)
+                foreach (var stabled in Stabled)
                 {
-                    bc.IsStabled = true;
-                    bc.StabledBy = this;
+                    if (stabled is BaseCreature bc)
+                    {
+                        bc.IsStabled = true;
+                        bc.StabledBy = this;
+                    }
                 }
             }
 
-            CheckKillDecay();
             CheckAtrophies();
 
             if (Hidden) // Hiding is the only buff where it has an effect that's serialized.
@@ -3188,7 +3196,17 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(29); // version
+            writer.Write(32); // version
+
+            if (Stabled == null)
+            {
+                writer.Write(0);
+            }
+            else
+            {
+                Stabled.Tidy();
+                writer.Write(Stabled);
+            }
 
             if (m_StuckMenuUses != null)
             {
@@ -3208,8 +3226,15 @@ namespace Server.Mobiles
 
             writer.Write(PeacedUntil);
             writer.Write(AnkhNextUse);
-            AutoStabled.Tidy();
-            writer.Write(AutoStabled);
+            if (AutoStabled == null)
+            {
+                writer.Write(0);
+            }
+            else
+            {
+                AutoStabled.Tidy();
+                writer.Write(AutoStabled);
+            }
 
             if (m_AcquiredRecipes == null)
             {
@@ -3226,11 +3251,8 @@ namespace Server.Mobiles
                 }
             }
 
-            writer.WriteDeltaTime(LastHonorLoss);
-
             ChampionTitleInfo.Serialize(writer, ChampionTitles);
 
-            writer.Write(LastValorLoss);
             writer.WriteEncodedInt(ToTItemsTurnedIn);
             writer.Write(ToTTotalMonsterFame); // This ain't going to be a small #.
 
@@ -3263,15 +3285,6 @@ namespace Server.Mobiles
 
             writer.WriteEncodedInt(Profession);
 
-            writer.WriteDeltaTime(LastCompassionLoss);
-
-            writer.WriteEncodedInt(CompassionGains);
-
-            if (CompassionGains > 0)
-            {
-                writer.WriteDeltaTime(NextCompassionDay);
-            }
-
             BOBFilter.Serialize(writer);
 
             var useMods = m_HairModID != -1 || m_BeardModID != -1;
@@ -3299,79 +3312,25 @@ namespace Server.Mobiles
 
             writer.Write(NextSmithBulkOrder);
 
-            writer.WriteDeltaTime(LastJusticeLoss);
-            JusticeProtectors.Tidy();
-            writer.Write(JusticeProtectors);
-
-            writer.WriteDeltaTime(LastSacrificeGain);
-            writer.WriteDeltaTime(LastSacrificeLoss);
-            writer.Write(AvailableResurrects);
-
             writer.Write((int)Flags);
 
-            writer.Write(m_LongTermElapse);
-            writer.Write(m_ShortTermElapse);
             writer.Write(GameTime);
         }
 
         // Do we need to run an after serialize?
-        public override bool ShouldExecuteAfterSerialize => ShouldKillDecay() || ShouldAtrophy();
+        public override bool ShouldExecuteAfterSerialize => ShouldAtrophy();
 
         public override void AfterSerialize()
         {
             base.AfterSerialize();
-
-            CheckKillDecay();
             CheckAtrophies();
         }
 
-        public bool ShouldAtrophy()
-        {
-            var sacrifice = SacrificeVirtue.ShouldAtrophy(this);
-            var justice = JusticeVirtue.ShouldAtrophy(this);
-            var compassion = CompassionVirtue.ShouldAtrophy(this);
-            var valor = ValorVirtue.ShouldAtrophy(this);
-            var titles = ChampionTitleInfo.ShouldAtrophy(this);
-
-            return sacrifice || justice || compassion || valor || titles;
-        }
+        public bool ShouldAtrophy() => ChampionTitleInfo.ShouldAtrophy(this);
 
         public void CheckAtrophies()
         {
-            SacrificeVirtue.CheckAtrophy(this);
-            JusticeVirtue.CheckAtrophy(this);
-            CompassionVirtue.CheckAtrophy(this);
-            ValorVirtue.CheckAtrophy(this);
             ChampionTitleInfo.CheckAtrophy(this);
-        }
-
-        public bool ShouldKillDecay() => m_ShortTermElapse < GameTime || m_LongTermElapse < GameTime;
-
-        public void CheckKillDecay()
-        {
-            if (m_ShortTermElapse < GameTime)
-            {
-                m_ShortTermElapse += TimeSpan.FromHours(8);
-                if (ShortTermMurders > 0)
-                {
-                    --ShortTermMurders;
-                }
-            }
-
-            if (m_LongTermElapse < GameTime)
-            {
-                m_LongTermElapse += TimeSpan.FromHours(40);
-                if (Kills > 0)
-                {
-                    --Kills;
-                }
-            }
-        }
-
-        public void ResetKillTime()
-        {
-            m_ShortTermElapse = GameTime + TimeSpan.FromHours(8);
-            m_LongTermElapse = GameTime + TimeSpan.FromHours(40);
         }
 
         public override bool CanSee(Mobile m)
@@ -3480,11 +3439,11 @@ namespace Server.Mobiles
                 }
             }
 
-            if (Core.ML)
+            if (Core.ML && AllFollowers != null)
             {
-                for (var i = AllFollowers.Count - 1; i >= 0; i--)
+                foreach (var follower in AllFollowers)
                 {
-                    if (AllFollowers[i] is BaseCreature c && c.ControlOrder == OrderType.Guard)
+                    if (follower is BaseCreature { ControlOrder: OrderType.Guard })
                     {
                         list.Add(501129); // guarded
                         break;
@@ -3576,79 +3535,127 @@ namespace Server.Mobiles
             return true;
         }
 
+        public void AddFollower(Mobile m)
+        {
+            _allFollowers ??= new HashSet<Mobile>();
+            _allFollowers.Add(m);
+        }
+
+        public void AddStabled(Mobile m)
+        {
+            Stabled ??= new HashSet<Mobile>();
+            Stabled.Add(m);
+        }
+
+        public bool RemoveStabled(Mobile m)
+        {
+            if (Stabled?.Remove(m) == true)
+            {
+                if (Stabled.Count == 0)
+                {
+                    Stabled = null;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool RemoveFollower(Mobile m)
+        {
+            if (_allFollowers?.Remove(m) == true)
+            {
+                if (_allFollowers.Count == 0)
+                {
+                    _allFollowers = null;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         public void AutoStablePets()
         {
-            if (Core.SE && AllFollowers.Count > 0)
+            var allFollowers = _allFollowers;
+
+            if (!Core.SE || !(allFollowers?.Count > 0))
             {
-                for (var i = m_AllFollowers.Count - 1; i >= 0; --i)
+                return;
+            }
+
+            foreach (var follower in allFollowers)
+            {
+                if (follower is not BaseCreature pet || pet.ControlMaster == null)
                 {
-                    if (AllFollowers[i] is not BaseCreature pet || pet.ControlMaster == null)
-                    {
-                        continue;
-                    }
-
-                    if (pet.Summoned)
-                    {
-                        if (pet.Map != Map)
-                        {
-                            pet.PlaySound(pet.GetAngerSound());
-                            Timer.StartTimer(pet.Delete);
-                        }
-
-                        continue;
-                    }
-
-                    if ((pet as IMount)?.Rider != null)
-                    {
-                        continue;
-                    }
-
-                    if (pet is PackLlama or PackHorse or Beetle && pet.Backpack?.Items.Count > 0)
-                    {
-                        continue;
-                    }
-
-                    if (pet is BaseEscortable)
-                    {
-                        continue;
-                    }
-
-                    pet.ControlTarget = null;
-                    pet.ControlOrder = OrderType.Stay;
-                    pet.Internalize();
-
-                    pet.SetControlMaster(null);
-                    pet.SummonMaster = null;
-
-                    pet.IsStabled = true;
-                    pet.StabledBy = this;
-
-                    pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
-
-                    Stabled.Add(pet);
-                    AutoStabled.Add(pet);
+                    continue;
                 }
+
+                if (pet.Summoned)
+                {
+                    if (pet.Map != Map)
+                    {
+                        pet.PlaySound(pet.GetAngerSound());
+                        Timer.StartTimer(pet.Delete);
+                    }
+
+                    continue;
+                }
+
+                if ((pet as IMount)?.Rider != null)
+                {
+                    continue;
+                }
+
+                if (pet is PackLlama or PackHorse or Beetle && pet.Backpack?.Items.Count > 0)
+                {
+                    continue;
+                }
+
+                if (pet is BaseEscortable)
+                {
+                    continue;
+                }
+
+                pet.ControlTarget = null;
+                pet.ControlOrder = OrderType.Stay;
+                pet.Internalize();
+
+                pet.SetControlMaster(null);
+                pet.SummonMaster = null;
+
+                pet.IsStabled = true;
+                pet.StabledBy = this;
+
+                pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
+
+                Stabled ??= new HashSet<Mobile>();
+                Stabled.Add(pet);
+
+                AutoStabled ??= new HashSet<Mobile>();
+                AutoStabled.Add(pet);
             }
         }
 
         public void ClaimAutoStabledPets()
         {
-            if (!Core.SE || AutoStabled.Count <= 0)
+            if (!Core.SE || !(AutoStabled?.Count > 0))
             {
                 return;
             }
 
             if (!Alive)
             {
-                SendLocalizedMessage(
-                    1076251
-                ); // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.
+                // Your pet was unable to join you while you are a ghost.  Please re-login once you have ressurected to claim your pets.
+                SendLocalizedMessage(1076251);
                 return;
             }
 
-            for (var i = AutoStabled.Count - 1; i >= 0; --i)
+            foreach (var stabled in AutoStabled)
             {
-                if (AutoStabled[i] is not BaseCreature pet)
+                if (stabled is not BaseCreature pet)
                 {
                     continue;
                 }
@@ -3658,11 +3665,7 @@ namespace Server.Mobiles
                     pet.IsStabled = false;
                     pet.StabledBy = null;
 
-                    if (Stabled.Contains(pet))
-                    {
-                        Stabled.Remove(pet);
-                    }
-
+                    Stabled?.Remove(pet);
                     continue;
                 }
 
@@ -3685,21 +3688,16 @@ namespace Server.Mobiles
 
                     pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
 
-                    if (Stabled.Contains(pet))
-                    {
-                        Stabled.Remove(pet);
-                    }
+                    Stabled?.Remove(pet);
                 }
                 else
                 {
-                    SendLocalizedMessage(
-                        1049612,
-                        pet.Name
-                    ); // ~1_NAME~ remained in the stables because you have too many followers.
+                    // ~1_NAME~ remained in the stables because you have too many followers.
+                    SendLocalizedMessage(1049612, pet.Name);
                 }
             }
 
-            AutoStabled.Clear();
+            AutoStabled = null;
         }
 
         public void RecoverAmmo()
@@ -4144,6 +4142,16 @@ namespace Server.Mobiles
         {
             ReceivedHonorContext?.Cancel();
             SentHonorContext?.Cancel();
+
+            if (Stabled != null)
+            {
+                foreach (var stabled in Stabled)
+                {
+                    stabled.Delete();
+                }
+
+                Stabled = null;
+            }
         }
 
         public override int ComputeMovementSpeed(Direction dir, bool checkTurning = true)

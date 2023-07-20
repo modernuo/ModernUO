@@ -62,7 +62,7 @@ namespace Server
         {
             for (var i = 0; i < List.Length; i++)
             {
-                List[i] = Utility.Intern(List[i].Trim());
+                List[i] = List[i].Trim().Intern();
             }
         }
     }
