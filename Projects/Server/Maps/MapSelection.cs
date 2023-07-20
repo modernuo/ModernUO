@@ -22,19 +22,6 @@ public class MapSelection
         _selectedMaps = flags;
     }
 
-    public MapSelection(BitArray bitArray)
-    {
-        int index = 0;
-        foreach (MapSelectionFlags value in _mapSelectionValues)
-        {
-            if (bitArray[index] == true)
-            {
-                _selectedMaps |= value;
-            }
-            index++;
-        }
-    }
-
     public MapSelection(List<string> mapList)
     {
         foreach (MapSelectionFlags value in _mapSelectionValues)
@@ -128,50 +115,5 @@ public class MapSelection
         }
 
         return formatted;
-    }
-
-    public List<string> ToList()
-    {
-        List<string> mapList = new();
-
-        foreach (MapSelectionFlags value in _mapSelectionValues)
-        {
-            if (value == 0)
-            {
-                continue;
-            }
-
-            if ((_selectedMaps & value) == value)
-            {
-                mapList.Add(value.ToString());
-            }
-        }
-        return mapList;
-    }
-
-    public BitArray ToBitArray()
-    {
-        bool[] enumAsBools = new bool[_mapSelectionValues.Length];
-        BitArray bitArray = new(enumAsBools);
-        int index = 0;
-        foreach (MapSelectionFlags value in _mapSelectionValues)
-        {
-            if (value == 0)
-            {
-                index++;
-                continue;
-            }
-
-            if ((_selectedMaps & value) == value)
-            {
-                bitArray[index] = true;
-            }
-            else
-            {
-                bitArray[index] = false;
-            }
-            index++;
-        }
-        return bitArray;
     }
 }

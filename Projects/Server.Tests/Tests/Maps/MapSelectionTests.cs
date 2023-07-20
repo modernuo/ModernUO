@@ -111,26 +111,6 @@ namespace Server.Tests.Tests.Maps
             Assert.False(trammelIsEnabled);
         }
 
-        [Fact]
-        public void Flags_accessible_as_a_list()
-        {
-            MapSelection mapSelection = new();
-            mapSelection.Enable(MapSelectionFlags.Felucca);
-            mapSelection.Enable(MapSelectionFlags.Ilshenar);
-            mapSelection.Enable(MapSelectionFlags.Tokuno);
-
-            // When
-            List<string> actual = mapSelection.ToList();
-
-            // Then
-            var expected = new List<string>
-            {
-                "Felucca", "Ilshenar", "Tokuno"
-            };
-
-            Assert.Equal(expected, actual);
-        }
-
         public class TestMapConfig
         {
             [JsonConverter(typeof(FlagsConverter<MapSelectionFlags>))]
