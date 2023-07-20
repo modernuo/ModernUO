@@ -177,8 +177,8 @@ public static class VirtueSystem
     public static int GetGainedLocalizedMessage(VirtueName virtue) =>
         virtue switch
         {
-            VirtueName.Sacrifice    => 1054160, // You have gained in Sacrifice.
-            VirtueName.Compassion   => 1053002, // You have gained in Compassion.
+            VirtueName.Sacrifice    => 1054160, // You have gained in sacrifice.
+            VirtueName.Compassion   => 1053002, // You have gained in compassion.
             VirtueName.Spirituality => 1155832, // You have gained in Spirituality.
             VirtueName.Valor        => 1054030, // You have gained in Valor!
             VirtueName.Honor        => 1063225, // You have gained in Honor.
@@ -191,7 +191,7 @@ public static class VirtueSystem
         virtue switch
         {
             VirtueName.Sacrifice    => 1052008, // You have gained a path in Sacrifice!
-            VirtueName.Spirituality => 1155833, // You have gained a path in Spirituality!
+            VirtueName.Spirituality => 1155833, // "You have gained a path in Spirituality!" (Why are there quotes?)
             VirtueName.Valor        => 1054032, // You have gained a path in Valor!
             VirtueName.Honor        => 1063226, // You have gained a path in Honor!
             VirtueName.Justice      => 1049367, // You have gained a path in Justice!
@@ -203,9 +203,13 @@ public static class VirtueSystem
         virtue switch
         {
             VirtueName.Compassion => 1053003, // You have achieved the highest path of compassion and can no longer gain any further.
+            VirtueName.Spirituality => 1155831, // You cannot gain more Spirituality.
             VirtueName.Valor => 1054031, // You have achieved the highest path in Valor and can no longer gain any further.
+            VirtueName.Honor => 1063228, // You cannot gain more Honor.
+            VirtueName.Justice => 1049534, // You cannot gain more Justice.
+            VirtueName.Humility => 1155808, // You cannot gain more Humility.
             VirtueName.Honesty => 1153771, // You have achieved the highest path in Honesty and can no longer gain any further.
-            _ => 0
+            _ => 1052050, // You have achieved the highest path in this virtue.
         };
 
     public static bool Award(PlayerMobile from, VirtueName virtue, int amount, ref bool gainedPath)
@@ -324,15 +328,7 @@ public static class VirtueSystem
         }
         else
         {
-            var highestPathMessage = GetHightestPathLocalizedMessage(virtue);
-            if (highestPathMessage != 0)
-            {
-                pm.SendLocalizedMessage(highestPathMessage);
-            }
-            else
-            {
-                pm.SendLocalizedMessage(1052050); // You have achieved the highest path in this Virtue.
-            }
+            pm.SendLocalizedMessage(GetHightestPathLocalizedMessage(virtue));
         }
     }
 
