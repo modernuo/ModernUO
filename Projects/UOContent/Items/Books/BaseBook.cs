@@ -141,7 +141,7 @@ namespace Server.Items
 
             if ((flags & OldSaveFlags.Title) != 0)
             {
-                _title = Utility.Intern(reader.ReadString());
+                _title = reader.ReadString().Intern();
             }
             else if (content != null)
             {

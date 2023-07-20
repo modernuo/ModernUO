@@ -222,7 +222,7 @@ namespace Server.Engines.Quests.Collector
             var version = reader.ReadInt();
 
             m_Quantity = reader.ReadEncodedInt();
-            m_StatueName = Utility.Intern(reader.ReadString());
+            m_StatueName = reader.ReadString().Intern();
         }
 
         private class DisassembleEntry : ContextMenuEntry

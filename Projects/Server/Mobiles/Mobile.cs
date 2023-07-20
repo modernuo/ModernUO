@@ -281,7 +281,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private int m_Hunger;
 
     private bool m_InDeltaQueue;
-    private int m_Kills, m_ShortTermMurders;
+    private int m_Kills;
     private string m_Language;
     private int m_LightLevel;
     private Point3D m_Location;
@@ -1626,19 +1626,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int ShortTermMurders
-    {
-        get => m_ShortTermMurders;
-        set
-        {
-            if (m_ShortTermMurders != value)
-            {
-                m_ShortTermMurders = Math.Max(value, 0);
-            }
-        }
-    }
-
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public virtual bool Criminal
     {
@@ -2277,7 +2264,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(34); // version
+        writer.Write(35); // version
 
         writer.WriteDeltaTime(LastStrGain);
         writer.WriteDeltaTime(LastIntGain);
@@ -2313,18 +2300,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         writer.Write(Corpse);
 
-        // writer.Write(CreationTime);
-
-        // if (Stabled == null)
-        // {
-        //     writer.Write(0);
-        // }
-        // else
-        // {
-        //     Stabled.Tidy();
-        //     writer.Write(Stabled);
-        // }
-
         writer.Write(CantWalk);
 
         VirtueInfo.Serialize(writer, Virtues);
@@ -2332,11 +2307,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         writer.Write(Thirst);
         writer.Write(BAC);
 
-        writer.Write(m_ShortTermMurders);
-        // writer.Write( m_ShortTermElapse );
-        // writer.Write( m_LongTermElapse );
-
-        // writer.Write( m_Followers );
         writer.Write(m_FollowersMax);
 
         writer.Write(MagicDamageAbsorb);
@@ -6074,21 +6044,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         switch (version)
         {
-            case 34:
-                {
-                    // Moved Stabled to PlayerMobile
-                    goto case 33;
-                }
-            case 33:
-                {
-                    // Removed created
-                    goto case 32;
-                }
-            case 32:
-                {
-                    // Removed StuckMenu
-                    goto case 31;
-                }
+            case 35: // Moved short term murders to PlayerMurderSystem
+            case 34: // Moved Stabled to PlayerMobile
+            case 33: // Removed created
+            case 32: // Removed StuckMenu
             case 31:
                 {
                     LastStrGain = reader.ReadDeltaTime();
@@ -6183,7 +6142,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             case 16:
                 {
-                    m_ShortTermMurders = reader.ReadInt();
+                    if (version < 35)
+                    {
+                        // Migrated to PlayerMurderSystem
+                        AddToMurderMigrations(this, reader.ReadInt());
+                    }
 
                     if (version <= 24)
                     {
