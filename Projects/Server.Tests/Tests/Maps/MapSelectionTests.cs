@@ -96,21 +96,6 @@ namespace Server.Tests.Tests.Maps
             Assert.Equal("Felucca, Trammel", mapSelection.ToCommaDelimitedString());
         }
 
-        /*
-        [Fact]
-        public void Enable_all_maps_in_a_particular_expansion()
-        {
-            MapSelection mapSelection = new();
-            Expansion expansion = Expansion.SE;
-
-            // When
-            mapSelection.EnableAllInExpansion(expansion);
-
-            // Then
-            Assert.Equal("Felucca, Trammel, Ilshenar, Malas, Tokuno", mapSelection.ToCommaDelimitedString());
-        }
-        */
-
         [Fact]
         public void Can_evaluate_enabled_maps_by_string()
         {

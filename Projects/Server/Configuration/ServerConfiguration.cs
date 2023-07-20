@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime;
 using Server.Json;
 using Server.Logging;
 using Server.Maps;
@@ -267,12 +268,16 @@ public static class ServerConfiguration
             m_Settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
         }
 
+        MapSelection availableMaps = null;
+
         if (m_Settings.Expansion == null)
         {
             m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ExpansionConfigurationPrompts.GetExpansion();
 
-            // We've updated the selected expansion, so we now need to copy
-            // that json into a configuration file for the shard
+            // We've updated the selected expansion, so choose the maps we want from it,
+            // then store and save our selection
+            availableMaps = ExpansionConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value);
+            ExpansionInfo.StoreMapSelection(availableMaps, m_Settings.Expansion.Value);
             ExpansionInfo.SaveConfiguration(m_Settings.Expansion.Value);
             updated = true;
         }
@@ -283,14 +288,7 @@ public static class ServerConfiguration
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
-
-        if (m_Settings.AvailableMapsFlags == null)
-        {
-            m_Settings.AvailableMapsFlags = ExpansionConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value).Flags;
-            updated = true;
-        }
-
-        Core.AvailableMaps = new MapSelection(m_Settings.AvailableMapsFlags.Value);
+        Core.AvailableMaps = new MapSelection(ExpansionInfo.Table[(int) m_Settings.Expansion.Value].MapSelectionFlags);
 
         if (updated)
         {

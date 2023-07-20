@@ -193,6 +193,13 @@ public class ExpansionInfo
         return null;
     }
 
+    public static void StoreMapSelection(MapSelection mapSelection, Expansion expansion)
+    {
+        int expansionIndex = (int)expansion;
+        Table[expansionIndex].MapSelectionFlags = mapSelection.Flags;
+        expansionConfigs[expansionIndex].MapSelectionFlags = mapSelection.Flags;
+    }
+
     public static void SaveConfiguration(Expansion currentExpansion)
     {
         if (expansionConfigs == null)
@@ -250,6 +257,8 @@ public class ExpansionInfo
             expansionConfig.HousingFlags,
             expansionConfig.MobileStatusVersion,
             expansionConfig.MapSelectionFlags);
+
+        expansionConfigs[currentExpansionIndex] = expansionConfig;
     }
 
     static ExpansionInfo()
@@ -389,7 +398,7 @@ public record ExpansionConfig
     public HousingFlags HousingFlags { get; init; }
 
     [JsonConverter(typeof(FlagsConverter<MapSelectionFlags>))]
-    public MapSelectionFlags MapSelectionFlags { get; init; }
+    public MapSelectionFlags MapSelectionFlags { get; set; }
 
     public int MobileStatusVersion { get; set; }
 }
