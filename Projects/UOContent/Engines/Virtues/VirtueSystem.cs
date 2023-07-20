@@ -346,7 +346,7 @@ public static class VirtueSystem
 
     private class VirtueTimer : Timer
     {
-        public VirtueTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0))
+        public VirtueTimer() : base(TimeSpan.FromMinutes(5.0), TimeSpan.FromMinutes(5.0))
         {
         }
 
@@ -359,8 +359,7 @@ public static class VirtueSystem
 
             using var queue = PooledRefQueue<Mobile>.Create();
 
-            // This is not particularly efficient. If it gets too slow, this should be changed to a link-list for each
-            // type of atrophy. That way the first one that isn't expired is the stopping point.
+            // This is not particularly efficient. If it gets too slow, then use a different architecture.
             foreach (var (player, virtues) in _playerVirtues)
             {
                 CheckAtrophies(player);
