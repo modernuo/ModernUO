@@ -6,7 +6,6 @@ namespace Server.Maps;
 
 public class MapSelection
 {
-
     private MapSelectionFlags _selectedMaps;
     private static readonly Array _mapSelectionValues = Enum.GetValues(typeof(MapSelectionFlags));
 
