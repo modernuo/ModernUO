@@ -32,7 +32,6 @@ public static class Persistence
         Action serializer,
         Action<string> snapshotWriter,
         Action<string, Dictionary<ulong, string>> deserializer,
-        Action afterSerialize = null,
         int priority = DefaultPriority
     )
     {
@@ -42,7 +41,6 @@ public static class Persistence
                 Name = name,
                 Priority = priority,
                 Serialize = serializer,
-                AfterSerialize = afterSerialize,
                 WriteSnapshot = snapshotWriter,
                 Deserialize = deserializer
             }
@@ -91,12 +89,6 @@ public static class Persistence
     public static void Serialize()
     {
         Parallel.ForEach(_registry, entry => entry.Serialize());
-
-        // Synchronously run the AfterSerialize on the main game thread
-        foreach (var entry in _registry)
-        {
-            entry.AfterSerialize?.Invoke();
-        }
     }
 
     public static void WriteSnapshot(string path, ConcurrentQueue<Type> types)
@@ -141,7 +133,6 @@ public static class Persistence
 
         // Serializes to memory buffers and run in parallel
         public Action Serialize { get; init; }
-        public Action AfterSerialize { get; init; }
         public Action<string> WriteSnapshot { get; init; }
         public Action<string, Dictionary<ulong, string>> Deserialize { get; init; }
     }

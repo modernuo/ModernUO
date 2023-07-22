@@ -1,0 +1,36 @@
+{
+  "version": 0,
+  "type": "Server.Engines.CannedEvil.ChampionSkullPlatform",
+  "properties": [
+    {
+      "name": "Power",
+      "type": "Server.Engines.CannedEvil.ChampionSkullBrazier",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Enlightenment",
+      "type": "Server.Engines.CannedEvil.ChampionSkullBrazier",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Venom",
+      "type": "Server.Engines.CannedEvil.ChampionSkullBrazier",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Pain",
+      "type": "Server.Engines.CannedEvil.ChampionSkullBrazier",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Greed",
+      "type": "Server.Engines.CannedEvil.ChampionSkullBrazier",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Death",
+      "type": "Server.Engines.CannedEvil.ChampionSkullBrazier",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

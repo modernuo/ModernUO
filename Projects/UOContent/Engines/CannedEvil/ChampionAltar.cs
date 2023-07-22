@@ -13,56 +13,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using ModernUO.Serialization;
 using Server.Items;
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+[SerializationGenerator(0, false)]
+public partial class ChampionAltar : PentagramAddon
 {
-    public class ChampionAltar : PentagramAddon
+    [SerializableField(0, setter: "private")]
+    private ChampionSpawn _spawn;
+
+    public ChampionAltar(ChampionSpawn spawn) => _spawn = spawn;
+
+    public override void OnAfterDelete()
     {
-        public ChampionSpawn Spawn { get; private set; }
+        base.OnAfterDelete();
+        Spawn?.Delete();
+    }
 
-        public ChampionAltar(ChampionSpawn spawn) => Spawn = spawn;
-
-        public override void OnAfterDelete()
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        if (Spawn == null)
         {
-            base.OnAfterDelete();
-
-            Spawn?.Delete();
-        }
-
-        public ChampionAltar(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Spawn);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        Spawn = reader.ReadEntity<ChampionSpawn>();
-
-                        if (Spawn == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
-                    }
-            }
+            Delete();
         }
     }
 }

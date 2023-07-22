@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "type": "Server.Items.StarRoomGate",
+  "properties": [
+    {
+      "name": "Decays",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "DecayTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    }
+  ]
+}

@@ -13,95 +13,70 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using ModernUO.Serialization;
 using Server.Items;
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+[SerializationGenerator(0, false)]
+public partial class ChampionPlatform : BaseAddon
 {
-    public class ChampionPlatform : BaseAddon
+    [SerializableField(0, setter: "private")]
+    private ChampionSpawn _spawn;
+
+    public ChampionPlatform(ChampionSpawn spawn)
     {
-        public ChampionSpawn Spawn { get; private set; }
+        _spawn = spawn;
 
-        public ChampionPlatform(ChampionSpawn spawn)
+        for (var x = -2; x <= 2; ++x)
         {
-            Spawn = spawn;
-
-            for (var x = -2; x <= 2; ++x)
+            for (var y = -2; y <= 2; ++y)
             {
-                for (var y = -2; y <= 2; ++y)
-                {
-                    AddComponent(0x750, x, y, -5);
-                }
+                AddComponent(0x750, x, y, -5);
             }
+        }
 
-            for (var x = -1; x <= 1; ++x)
+        for (var x = -1; x <= 1; ++x)
+        {
+            for (var y = -1; y <= 1; ++y)
             {
-                for (var y = -1; y <= 1; ++y)
-                {
-                    AddComponent(0x750, x, y, 0);
-                }
+                AddComponent(0x750, x, y, 0);
             }
-
-            for (var i = -1; i <= 1; ++i)
-            {
-                AddComponent(0x751, i, 2, 0);
-                AddComponent(0x752, 2, i, 0);
-
-                AddComponent(0x753, i, -2, 0);
-                AddComponent(0x754, -2, i, 0);
-            }
-
-            AddComponent(0x759, -2, -2, 0);
-            AddComponent(0x75A, 2, 2, 0);
-            AddComponent(0x75B, -2, 2, 0);
-            AddComponent(0x75C, 2, -2, 0);
         }
 
-        public void AddComponent(int id, int x, int y, int z)
+        for (var i = -1; i <= 1; ++i)
         {
-            AddonComponent ac = new AddonComponent(id) { Hue = 0x497 };
-            AddComponent(ac, x, y, z);
+            AddComponent(0x751, i, 2, 0);
+            AddComponent(0x752, 2, i, 0);
+
+            AddComponent(0x753, i, -2, 0);
+            AddComponent(0x754, -2, i, 0);
         }
 
-        public override void OnAfterDelete()
+        AddComponent(0x759, -2, -2, 0);
+        AddComponent(0x75A, 2, 2, 0);
+        AddComponent(0x75B, -2, 2, 0);
+        AddComponent(0x75C, 2, -2, 0);
+    }
+
+    public void AddComponent(int id, int x, int y, int z)
+    {
+        AddonComponent ac = new AddonComponent(id) { Hue = 0x497 };
+        AddComponent(ac, x, y, z);
+    }
+
+    public override void OnAfterDelete()
+    {
+        base.OnAfterDelete();
+        Spawn?.Delete();
+    }
+
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        if (Spawn == null)
         {
-            base.OnAfterDelete();
-
-            Spawn?.Delete();
-        }
-
-        public ChampionPlatform(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Spawn);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        Spawn = reader.ReadEntity<ChampionSpawn>();
-
-                        if (Spawn == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
-                    }
-            }
+            Delete();
         }
     }
 }
