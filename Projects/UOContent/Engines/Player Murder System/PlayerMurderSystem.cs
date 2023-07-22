@@ -157,7 +157,7 @@ public static class PlayerMurderSystem
         context.ShortTermMurders++;
         player.Kills++;
 
-        context.ResetKillTime(player.Kills);
+        context.ResetKillTime();
         UpdateMurderContext(context);
     }
 

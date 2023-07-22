@@ -24,7 +24,6 @@ public partial class MurderContext
         set => _shortTermMurders = Math.Max(value, 0);
     }
 
-    [DirtyTrackingEntity]
     public PlayerMobile _player;
 
     public PlayerMobile Player => _player;
@@ -34,7 +33,7 @@ public partial class MurderContext
 
     public MurderContext(PlayerMobile player) => _player = player;
 
-    public void ResetKillTime(int kills)
+    public void ResetKillTime()
     {
         var gameTime = _player.GameTime;
 
@@ -43,7 +42,7 @@ public partial class MurderContext
             ShortTermElapse = gameTime + PlayerMurderSystem.ShortTermMurderDuration;
         }
 
-        if (kills > 0)
+        if (_player.Kills > 0)
         {
             LongTermElapse = gameTime + PlayerMurderSystem.LongTermMurderDuration;
         }
