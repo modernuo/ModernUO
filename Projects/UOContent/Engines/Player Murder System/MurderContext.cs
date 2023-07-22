@@ -10,11 +10,11 @@ public partial class MurderContext
 {
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private TimeSpan _shortTermElapse = TimeSpan.MaxValue;
+    private TimeSpan _shortTermElapse;
 
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private TimeSpan _longTermElapse = TimeSpan.MaxValue;
+    private TimeSpan _longTermElapse;
 
     [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -53,22 +53,16 @@ public partial class MurderContext
     {
         var gameTime = _player.GameTime;
 
-        if (ShortTermElapse < gameTime)
+        if (ShortTermMurders > 0 && _shortTermElapse < gameTime)
         {
             ShortTermElapse += PlayerMurderSystem.ShortTermMurderDuration;
-            if (ShortTermMurders > 0)
-            {
-                --ShortTermMurders;
-            }
+            --ShortTermMurders;
         }
 
-        if (LongTermElapse < gameTime)
+        if (_player.Kills > 0 && _longTermElapse < gameTime)
         {
             LongTermElapse += PlayerMurderSystem.LongTermMurderDuration;
-            if (_player.Kills > 0)
-            {
-                --_player.Kills;
-            }
+            --_player.Kills;
         }
     }
 
