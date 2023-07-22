@@ -34,16 +34,16 @@ public partial class MurderContext
 
     public MurderContext(PlayerMobile player) => _player = player;
 
-    public void ResetKillTime(bool isShort = true, bool isLong = true)
+    public void ResetKillTime(int kills)
     {
         var gameTime = _player.GameTime;
 
-        if (isShort)
+        if (ShortTermMurders > 0)
         {
             ShortTermElapse = gameTime + PlayerMurderSystem.ShortTermMurderDuration;
         }
 
-        if (isLong)
+        if (kills > 0)
         {
             LongTermElapse = gameTime + PlayerMurderSystem.LongTermMurderDuration;
         }
