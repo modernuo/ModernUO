@@ -704,12 +704,12 @@ namespace Server.Mobiles
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime ShortTermMurderExpiration => this.GetMurderContext(out var context)
+        public DateTime ShortTermMurderExpiration => this.GetMurderContext(out var context) && context.ShortTermMurders > 0
             ? Core.Now + (context.ShortTermElapse - GameTime)
             : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime LongTermMurderExpiration => this.GetMurderContext(out var context)
+        public DateTime LongTermMurderExpiration => Kills > 0 && this.GetMurderContext(out var context)
             ? Core.Now + (context.LongTermElapse - GameTime)
             : DateTime.MinValue;
 

@@ -160,7 +160,7 @@ public class ReportMurdererGump : Gump
                         if (killer is PlayerMobile pk)
                         {
                             // Increment their short term murders, their kills, and reset the murder decay time
-                            PlayerMurderSystem.OnPlayerMurder(pk, true);
+                            PlayerMurderSystem.OnPlayerMurder(pk);
 
                             pk.SendLocalizedMessage(1049067); // You have been reported for murder!
 

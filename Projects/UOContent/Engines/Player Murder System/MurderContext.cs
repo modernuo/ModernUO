@@ -10,11 +10,11 @@ public partial class MurderContext
 {
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private TimeSpan _shortTermElapse = TimeSpan.MaxValue;
+    private TimeSpan _shortTermElapse;
 
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private TimeSpan _longTermElapse = TimeSpan.MaxValue;
+    private TimeSpan _longTermElapse;
 
     [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -24,7 +24,6 @@ public partial class MurderContext
         set => _shortTermMurders = Math.Max(value, 0);
     }
 
-    [DirtyTrackingEntity]
     public PlayerMobile _player;
 
     public PlayerMobile Player => _player;
@@ -34,16 +33,16 @@ public partial class MurderContext
 
     public MurderContext(PlayerMobile player) => _player = player;
 
-    public void ResetKillTime(bool isShort = true, bool isLong = true)
+    public void ResetKillTime()
     {
         var gameTime = _player.GameTime;
 
-        if (isShort)
+        if (ShortTermMurders > 0)
         {
             ShortTermElapse = gameTime + PlayerMurderSystem.ShortTermMurderDuration;
         }
 
-        if (isLong)
+        if (_player.Kills > 0)
         {
             LongTermElapse = gameTime + PlayerMurderSystem.LongTermMurderDuration;
         }
@@ -53,22 +52,16 @@ public partial class MurderContext
     {
         var gameTime = _player.GameTime;
 
-        if (ShortTermElapse < gameTime)
+        if (ShortTermMurders > 0 && _shortTermElapse < gameTime)
         {
             ShortTermElapse += PlayerMurderSystem.ShortTermMurderDuration;
-            if (ShortTermMurders > 0)
-            {
-                --ShortTermMurders;
-            }
+            --ShortTermMurders;
         }
 
-        if (LongTermElapse < gameTime)
+        if (_player.Kills > 0 && _longTermElapse < gameTime)
         {
             LongTermElapse += PlayerMurderSystem.LongTermMurderDuration;
-            if (_player.Kills > 0)
-            {
-                --_player.Kills;
-            }
+            --_player.Kills;
         }
     }
 
