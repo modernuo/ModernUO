@@ -401,7 +401,7 @@ public class SkillInfo
         DexGain = dexGain;
         IntGain = intGain;
         GainFactor = gainFactor;
-        ProfessionSkillName = professionSkillName ?? Name.Replace(" ", "");
+        ProfessionSkillName = professionSkillName ?? Name.RemoveOrdinal(" ");
         StatTotal = strScale + dexScale + intScale;
     }
 

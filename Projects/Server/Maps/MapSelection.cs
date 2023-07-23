@@ -6,25 +6,19 @@ namespace Server.Maps;
 
 public class MapSelection
 {
-    private MapSelectionFlags _selectedMaps;
-    private static readonly Array _mapSelectionValues = Enum.GetValues(typeof(MapSelectionFlags));
+    public static IEnumerable<MapSelectionFlags> MapSelectionValues { get; } = Enum.GetValues<MapSelectionFlags>();
 
-    public static Array MapSelectionValues => _mapSelectionValues;
-
-    public MapSelectionFlags Flags => _selectedMaps;
+    public MapSelectionFlags Flags { get; private set; }
 
     public MapSelection()
     {
     }
 
-    public MapSelection(MapSelectionFlags flags)
-    {
-        _selectedMaps = flags;
-    }
+    public MapSelection(MapSelectionFlags flags) => Flags = flags;
 
-    public MapSelection(List<string> mapList)
+    public MapSelection(ICollection<string> mapList)
     {
-        foreach (MapSelectionFlags value in _mapSelectionValues)
+        foreach (MapSelectionFlags value in MapSelectionValues)
         {
             if (mapList.Contains(value.ToString()))
             {
@@ -33,49 +27,38 @@ public class MapSelection
         }
     }
 
-    public bool Includes(MapSelectionFlags mapFlags)
-    {
-        if ((_selectedMaps & mapFlags) == mapFlags)
-        {
-            return true;
-        }
-
-        return false;
-    }
+    public bool Includes(MapSelectionFlags mapFlags) => (Flags & mapFlags) == mapFlags;
 
     public bool Includes(string mapName)
     {
-        foreach (MapSelectionFlags value in _mapSelectionValues)
+        foreach (MapSelectionFlags value in MapSelectionValues)
         {
             if (value == 0)
             {
                 continue;
             }
-
             if (value.ToString() != mapName)
             {
                 continue;
             }
-
-            return (_selectedMaps & value) == value;
+            return Includes(value);
         }
-
         return false;
     }
 
     public void Enable(MapSelectionFlags mapFlags)
     {
-        _selectedMaps |= mapFlags;
+        Flags |= mapFlags;
     }
 
     public void Disable(MapSelectionFlags mapFlags)
     {
-        _selectedMaps &= ~mapFlags;
+        Flags &= ~mapFlags;
     }
 
     public void EnableAll()
     {
-        _selectedMaps =
+        Flags =
             MapSelectionFlags.Felucca | MapSelectionFlags.Trammel | MapSelectionFlags.Ilshenar |
             MapSelectionFlags.Malas | MapSelectionFlags.Tokuno | MapSelectionFlags.TerMur;
     }
@@ -87,7 +70,7 @@ public class MapSelection
 
         foreach(MapSelectionFlags mapFlag in allMapsInExpansion)
         {
-            _selectedMaps |= mapFlag;
+            Flags |= mapFlag;
         }
     }
 
@@ -95,19 +78,19 @@ public class MapSelection
     {
         string formatted = "";
 
-        foreach (MapSelectionFlags value in _mapSelectionValues)
+        foreach (MapSelectionFlags value in MapSelectionValues)
         {
             if (value == 0)
             {
                 continue;
             }
 
-            if ((_selectedMaps & value) == value)
+            if ((Flags & value) == value)
             {
                 formatted += value + " ";
             }
         }
-        formatted = formatted.TrimEnd().Replace(" ", ", ");
+        formatted = formatted.TrimEnd().Replace(" ", ", ", StringComparison.Ordinal);
 
         if (formatted == "")
         {
