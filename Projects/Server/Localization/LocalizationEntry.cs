@@ -17,6 +17,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Server.Buffers;
+using Server.Text;
 using Server.Collections;
 
 namespace Server;

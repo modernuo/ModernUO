@@ -1,6 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
+using Server.Text;
 
 namespace Server.Maps;
 
@@ -78,20 +80,13 @@ public class MapSelection
     {
         using var builder = ValueStringBuilder.Create();
 
-        for (var i = 0; i < _mapSelectionValues.Length; i++)
+        for (var i = 0; i < MapSelectionValues.Count(); i++)
         {
-            var value = _mapSelectionValues[i];
+            var value = MapSelectionValues.ElementAt(i);
 
             if (value > 0 && Includes(value))
             {
-                  if (builder.Length > 0)
-                  {
-                      builder.Append($", {value}");
-                  }
-                  else
-                  {
-                      builder.Append($"{value}");
-                  }
+                builder.Append(builder.Length > 0 ? $", {value}" : $"{value}");
             }
         }
 

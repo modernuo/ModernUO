@@ -5,7 +5,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Accounting;
-using Server.Buffers;
 using Server.Collections;
 using Server.Commands;
 using Server.Maps;
@@ -13,6 +12,7 @@ using Server.Misc;
 using Server.Multis;
 using Server.Network;
 using Server.Prompts;
+using Server.Text;
 
 namespace Server.Gumps
 {

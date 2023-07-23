@@ -1,5 +1,5 @@
 using System;
-using Server.Buffers;
+using Server.Text;
 
 namespace Server.Ethics.Hero
 {

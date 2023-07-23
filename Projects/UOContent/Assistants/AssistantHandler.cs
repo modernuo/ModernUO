@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Assistants;
 
@@ -84,7 +85,7 @@ public static class AssistantHandler
 
         // Instead we are supporting razor community edition.
         var assistVersion = reader.ReadAscii();
-        state.Assistant = assistVersion.Contains(' ') ? assistVersion : $"RazorCE {assistVersion}";
+        state.Assistant = assistVersion.Contains(' ', StringComparison.Ordinal) ? assistVersion : $"RazorCE {assistVersion}";
     }
 
     private static void HandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)
