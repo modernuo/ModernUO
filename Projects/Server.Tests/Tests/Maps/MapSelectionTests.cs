@@ -25,7 +25,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Enable_all_maps()
+        public void TestEnableAllMaps()
         {
             MapSelection mapSelection = new();
 
@@ -42,7 +42,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Disable_individual_map()
+        public void TestDisableIndividualMap()
         {
             MapSelection mapSelection = new();
             mapSelection.EnableAll();
@@ -55,7 +55,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Enable_individual_map()
+        public void TestEnableIndividualMap()
         {
             MapSelection mapSelection = new();
 
@@ -67,7 +67,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Format_an_empty_map_selection()
+        public void TestFormatAnEmptyMapSelection()
         {
             MapSelection mapSelection = new();
 
@@ -76,7 +76,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Format_felucca_only_map_selection()
+        public void TestFormatFeluccaOnlyMapSelection()
         {
             MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
@@ -86,7 +86,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Format_felucca_and_trammel_map_selection()
+        public void TestFormatFeluccaAndTrammelMapSelection()
         {
             MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
@@ -97,7 +97,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Can_evaluate_enabled_maps_by_string()
+        public void TestCanEvaluateEnabledMapsByString()
         {
             MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
@@ -118,7 +118,7 @@ namespace Server.Tests.Tests.Maps
         }
 
         [Fact]
-        public void Serialize_and_deserialize_map_selection_flags()
+        public void TestSerializeAndDeserializeMapSelectionFlags()
         {
             MapSelection mapSelection = new();
             mapSelection.Enable(MapSelectionFlags.Felucca);
