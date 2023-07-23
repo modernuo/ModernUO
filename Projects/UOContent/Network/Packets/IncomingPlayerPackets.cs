@@ -16,8 +16,10 @@
 using System.Diagnostics;
 using Microsoft.Toolkit.HighPerformance;
 using Server.Diagnostics;
+using Server.Engines.Virtues;
 using Server.Exceptions;
 using Server.Gumps;
+using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -184,7 +186,7 @@ public static class IncomingPlayerPackets
                 {
                     var virtueID = Utility.ToInt32(command) - 1;
 
-                    EventSink.InvokeVirtueMacroRequest(from, virtueID);
+                    VirtueGump.RequestVirtueMacro((PlayerMobile)from, virtueID);
 
                     break;
                 }
@@ -460,11 +462,11 @@ public static class IncomingPlayerPackets
 
             if (buttonID == 1 && switchCount > 0)
             {
-                var beheld = World.FindMobile((Serial)reader.ReadUInt32());
+                var beheld = World.FindEntity<PlayerMobile>((Serial)reader.ReadUInt32());
 
                 if (beheld != null)
                 {
-                    EventSink.InvokeVirtueGumpRequest(state.Mobile, beheld);
+                    VirtueGump.RequestVirtueGump((PlayerMobile)state.Mobile, beheld);
                 }
             }
             else
@@ -473,7 +475,7 @@ public static class IncomingPlayerPackets
 
                 if (beheld != null)
                 {
-                    EventSink.InvokeVirtueItemRequest(state.Mobile, beheld, buttonID);
+                    VirtueGump.RequestVirtueItem((PlayerMobile)state.Mobile, beheld, buttonID);
                 }
             }
         }

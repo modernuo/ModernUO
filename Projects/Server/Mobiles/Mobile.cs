@@ -426,9 +426,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
-    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public VirtueInfo Virtues { get; private set; }
-
     public object Party { get; set; }
 
     public List<SkillMod> SkillMods => _skillMods;
@@ -2264,7 +2261,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(35); // version
+        writer.Write(36); // version
 
         writer.WriteDeltaTime(LastStrGain);
         writer.WriteDeltaTime(LastIntGain);
@@ -2302,7 +2299,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         writer.Write(CantWalk);
 
-        VirtueInfo.Serialize(writer, Virtues);
+        // VirtueInfo.Serialize(writer, Virtues);
 
         writer.Write(Thirst);
         writer.Write(BAC);
@@ -6044,6 +6041,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         switch (version)
         {
+            case 36: // Moved virtues to VirtueSystem
             case 35: // Moved short term murders to PlayerMurderSystem
             case 34: // Moved Stabled to PlayerMobile
             case 33: // Removed created
@@ -6129,7 +6127,27 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             case 19: // Just removed variables
             case 18:
                 {
-                    Virtues = new VirtueInfo(reader);
+                    if (version < 36)
+                    {
+                        reader.ReadByte(); // VirtueInfo version
+
+                        int mask = reader.ReadByte();
+
+                        if (mask != 0)
+                        {
+                            var virtueValues = new int[8];
+
+                            for (var i = 0; i < 8; ++i)
+                            {
+                                if ((mask & (1 << i)) != 0)
+                                {
+                                    virtueValues[i] = reader.ReadInt();
+                                }
+                            }
+
+                            AddToVirtueMigration(this, virtueValues);
+                        }
+                    }
 
                     goto case 17;
                 }
@@ -6145,7 +6163,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     if (version < 35)
                     {
                         // Migrated to PlayerMurderSystem
-                        AddToMurderMigrations(this, reader.ReadInt());
+                        AddToMurderMigration(this, reader.ReadInt());
                     }
 
                     if (version <= 24)
@@ -6257,11 +6275,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             case 0:
                 {
-                    if (version < 18)
-                    {
-                        Virtues = new VirtueInfo();
-                    }
-
                     if (version < 11)
                     {
                         m_DisplayGuildTitle = true;
@@ -7687,7 +7700,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         AutoPageNotify = true;
         Aggressors = new List<AggressorInfo>();
         Aggressed = new List<AggressorInfo>();
-        Virtues = new VirtueInfo();
         DamageEntries = new List<DamageEntry>();
 
         NextSkillTime = Core.TickCount;

@@ -4,6 +4,7 @@ using Server.ContextMenus;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
+using Server.Engines.Virtues;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
@@ -2697,7 +2698,7 @@ public abstract class BaseAI
             }
 
             // Ignore players with activated honor
-            if (pm?.HonorActive == true && m_Mobile.Combatant != m)
+            if (m_Mobile.Combatant != m && pm?.GetVirtues()?.HonorActive == true)
             {
                 continue;
             }
