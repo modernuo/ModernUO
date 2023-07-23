@@ -532,7 +532,7 @@ public static class Core
 #if DEBUG
             const bool idleCPU = true;
 #else
-                var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
+            var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
 #endif
 
             long last = TickCount;
