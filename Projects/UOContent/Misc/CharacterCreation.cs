@@ -221,7 +221,7 @@ public static class CharacterCreation
         // We don't get the actual client version until after character creation
         var post6000Supported = !TileMatrix.Pre6000ClientSupport;
 
-        if (Core.ML && post6000Supported && Core.AvailableMaps.Includes(MapSelectionFlags.Trammel))
+        if (Core.ML && post6000Supported && Map.AvailableMaps.Includes(MapSelectionFlags.Trammel))
         {
             return _newHavenInfo;
         }
@@ -238,7 +238,7 @@ public static class CharacterCreation
             case "necromancer":
                 {
                     if (((flags & ClientFlags.Malas) != 0) &&
-                        Core.AvailableMaps.Includes(MapSelectionFlags.Malas))
+                        Map.AvailableMaps.Includes(MapSelectionFlags.Malas))
                     {
                         return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
                     }
@@ -258,7 +258,7 @@ public static class CharacterCreation
                 }
             case "paladin":
                 {
-                    if (Core.AvailableMaps.Includes(MapSelectionFlags.Trammel) && post6000Supported)
+                    if (Map.AvailableMaps.Includes(MapSelectionFlags.Trammel) && post6000Supported)
                     {
                         return _newHavenInfo;
                     }
@@ -270,7 +270,7 @@ public static class CharacterCreation
                     bool haotisAndTokunoAccessible =
                         ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
                         ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
-                        Core.AvailableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
+                        Map.AvailableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
 
                     if (haotisAndTokunoAccessible)
                     {
@@ -295,7 +295,7 @@ public static class CharacterCreation
                     bool enimosAndTokunoAccessible =
                         ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
                         ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
-                        Core.AvailableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
+                        Map.AvailableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
 
                     if (enimosAndTokunoAccessible)
                     {
@@ -317,7 +317,7 @@ public static class CharacterCreation
                 }
         }
 
-        if (post6000Supported && useHaven && Core.AvailableMaps.Includes(MapSelectionFlags.Trammel))
+        if (post6000Supported && useHaven && Map.AvailableMaps.Includes(MapSelectionFlags.Trammel))
         {
             // New Haven is supported, so put them there...
             // Note: if your server maps don't contain New Haven, this will place
@@ -327,25 +327,25 @@ public static class CharacterCreation
 
         // New Haven is not available, so place them in Ocllo instead, if they're aiming for Haven
         CityInfo oclloBankInTrammel = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Trammel);
-        if (useHaven && Core.AvailableMaps.Includes(MapSelectionFlags.Trammel))
+        if (useHaven && Map.AvailableMaps.Includes(MapSelectionFlags.Trammel))
         {
             return oclloBankInTrammel;
         }
 
         CityInfo oclloBankInFelucca = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Felucca);
-        if (useHaven && Core.AvailableMaps.Includes(MapSelectionFlags.Felucca))
+        if (useHaven && Map.AvailableMaps.Includes(MapSelectionFlags.Felucca))
         {
             return oclloBankInFelucca;
         }
 
         // They're not trying to get to Haven, so use their city selection
         // instead - adjusted according to available maps
-        if ((args.City.Map == Map.Trammel) && !Core.AvailableMaps.Includes(MapSelectionFlags.Trammel))
+        if ((args.City.Map == Map.Trammel) && !Map.AvailableMaps.Includes(MapSelectionFlags.Trammel))
         {
             args.City.Map = Map.Felucca;
         }
 
-        if ((args.City.Map == Map.Felucca) && !Core.AvailableMaps.Includes(MapSelectionFlags.Felucca))
+        if ((args.City.Map == Map.Felucca) && !Map.AvailableMaps.Includes(MapSelectionFlags.Felucca))
         {
             args.City.Map = Map.Trammel;
         }

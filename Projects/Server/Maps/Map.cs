@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Server.Buffers;
 using Server.Items;
 using Server.Logging;
+using Server.Maps;
 using Server.Network;
 using Server.Targeting;
 
@@ -318,6 +319,7 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
     public const int SectorSize = 16;
     public const int SectorShift = 4;
     public const int SectorActiveRange = 2;
+    public static MapSelection AvailableMaps { get; set; }
 
     private static ILogger logger = LogFactory.GetLogger(typeof(Map));
 

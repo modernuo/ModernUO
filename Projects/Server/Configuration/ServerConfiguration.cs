@@ -285,7 +285,7 @@ public static class ServerConfiguration
         }
 
         Core.Expansion = m_Settings.Expansion.Value;
-        Core.AvailableMaps = new MapSelection(ExpansionInfo.Table[(int) m_Settings.Expansion.Value].MapSelectionFlags);
+        Map.AvailableMaps = new MapSelection(ExpansionInfo.Table[(int) m_Settings.Expansion.Value].MapSelectionFlags);
 
         if (updated)
         {

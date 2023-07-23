@@ -6,6 +6,7 @@ using Server.Text;
 
 namespace Server.Maps;
 
+
 public class MapSelection
 {
     public static IEnumerable<MapSelectionFlags> MapSelectionValues { get; } = Enum.GetValues<MapSelectionFlags>();
@@ -93,3 +94,4 @@ public class MapSelection
         return builder.Length == 0 ? "None" : builder.ToString();
     }
 }
+
