@@ -10,7 +10,7 @@ namespace Server.Tests.Tests.Maps
     public class MapSelectionTests
     {
         [Fact]
-        public void No_maps_enabled_on_construction()
+        public void TestNoMapsEnabledOnConstruction()
         {
             // When
             MapSelection mapSelection = new();
