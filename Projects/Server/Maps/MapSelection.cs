@@ -76,27 +76,25 @@ public class MapSelection
 
     public string ToCommaDelimitedString()
     {
-        string formatted = "";
+        using var builder = ValueStringBuilder.Create();
 
-        foreach (MapSelectionFlags value in MapSelectionValues)
+        for (var i = 0; i < _mapSelectionValues.Length; i++)
         {
-            if (value == 0)
-            {
-                continue;
-            }
+            var value = _mapSelectionValues[i];
 
-            if ((Flags & value) == value)
+            if (value > 0 && Includes(value))
             {
-                formatted += value + " ";
+                  if (builder.Length > 0)
+                  {
+                      builder.Append($", {value}");
+                  }
+                  else
+                  {
+                      builder.Append($"{value}");
+                  }
             }
         }
-        formatted = formatted.TrimEnd().Replace(" ", ", ", StringComparison.Ordinal);
 
-        if (formatted == "")
-        {
-            formatted = "None";
-        }
-
-        return formatted;
+        return builder.Length == 0 ? "None" : builder.ToString();
     }
 }
