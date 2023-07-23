@@ -107,27 +107,27 @@ public partial class PublicMoongate : Item
 
         var count = 0;
 
-        if (Core.AvailableMaps.Includes(MapSelectionFlags.Trammel))
+        if (Map.AvailableMaps.Includes(MapSelectionFlags.Trammel))
         {
             count += MoonGen(PMList.Trammel);
         }
 
-        if (Core.AvailableMaps.Includes(MapSelectionFlags.Felucca))
+        if (Map.AvailableMaps.Includes(MapSelectionFlags.Felucca))
         {
             count += MoonGen(PMList.Felucca);
         }
 
-        if (Core.AvailableMaps.Includes(MapSelectionFlags.Ilshenar))
+        if (Map.AvailableMaps.Includes(MapSelectionFlags.Ilshenar))
         {
             count += MoonGen(PMList.Ilshenar);
         }
 
-        if (Core.AvailableMaps.Includes(MapSelectionFlags.Malas))
+        if (Map.AvailableMaps.Includes(MapSelectionFlags.Malas))
         {
             count += MoonGen(PMList.Malas);
         }
 
-        if (Core.AvailableMaps.Includes(MapSelectionFlags.Tokuno))
+        if (Map.AvailableMaps.Includes(MapSelectionFlags.Tokuno))
         {
             count += MoonGen(PMList.Tokuno);
         }
@@ -379,7 +379,7 @@ public class MoongateGump : Gump
         List<PMList> filteredBySelectedMaps = new List<PMList>();
         for (var i = 0; i < checkLists.Length; ++i)
         {
-            if (Core.AvailableMaps.Includes(checkLists[i].Map.ToString()))
+            if (Map.AvailableMaps.Includes(checkLists[i].Map.ToString()))
             {
                 filteredBySelectedMaps.Add(checkLists[i]);
             }

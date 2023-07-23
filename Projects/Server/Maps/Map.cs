@@ -322,7 +322,6 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
     public static MapSelection AvailableMaps { get; set; }
 
     private static ILogger logger = LogFactory.GetLogger(typeof(Map));
-
     private readonly int m_FileIndex;
     private readonly Sector[][] m_Sectors;
     private readonly int m_SectorsHeight;
