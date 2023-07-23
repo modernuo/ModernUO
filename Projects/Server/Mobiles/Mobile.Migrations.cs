@@ -19,12 +19,24 @@ public partial class Mobile
     // Migrating murders to the murder system
     public static Dictionary<Mobile, int> MurderMigrations { get; private set; }
 
-    public static void AddToMurderMigrations(Mobile m, int shortTermMurders)
+    public static void AddToMurderMigration(Mobile m, int shortTermMurders)
     {
         if (shortTermMurders > 0)
         {
             MurderMigrations ??= new Dictionary<Mobile, int>();
             MurderMigrations[m] = shortTermMurders;
+        }
+    }
+
+    // Migrating VirtueInfo to VirtueSystem
+    public static Dictionary<Mobile, int[]> VirtueMigrations { get; private set; }
+
+    public static void AddToVirtueMigration(Mobile m, int[] values)
+    {
+        if (values != null)
+        {
+            VirtueMigrations ??= new Dictionary<Mobile, int[]>();
+            VirtueMigrations[m] = values;
         }
     }
 }

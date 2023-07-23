@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Engines.Virtues;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -171,7 +172,7 @@ namespace Server.Gumps
 
             if (m_Healer != null && from != m_Healer)
             {
-                var level = VirtueHelper.GetLevel(m_Healer, VirtueName.Compassion);
+                var level = VirtueSystem.GetLevel(m_Healer, VirtueName.Compassion);
 
                 from.Hits = level switch
                 {
@@ -186,7 +187,7 @@ namespace Server.Gumps
 
             if (m_FromSacrifice && player != null)
             {
-                player.AvailableResurrects -= 1;
+                player.Virtues.AvailableResurrects -= 1;
 
                 var pack = player.Backpack;
                 var corpse = player.Corpse;

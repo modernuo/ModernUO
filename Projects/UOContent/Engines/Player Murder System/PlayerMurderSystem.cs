@@ -144,42 +144,35 @@ public static class PlayerMurderSystem
         return context;
     }
 
-    public static void ManuallySetShortTermMurders(PlayerMobile player, int shortTermMurders, bool resetKillTime = true)
+    public static void ManuallySetShortTermMurders(PlayerMobile player, int shortTermMurders)
     {
         var context = player.GetOrCreateMurderContext();
         context.ShortTermMurders = shortTermMurders;
-        UpdateMurderContext(context, resetKillTime);
+        UpdateMurderContext(context);
     }
 
-    public static void OnPlayerMurder(PlayerMobile player, bool resetKillTime = false)
+    public static void OnPlayerMurder(PlayerMobile player)
     {
         var context = player.GetOrCreateMurderContext();
         context.ShortTermMurders++;
         player.Kills++;
 
-        UpdateMurderContext(context, resetKillTime);
+        context.ResetKillTime();
+        UpdateMurderContext(context);
     }
 
-    private static void UpdateMurderContext(MurderContext context, bool resetKillTime = false)
+    private static void UpdateMurderContext(MurderContext context)
     {
         var player = context.Player;
-        // Either we are resetting their decay time, or they got their first kill
-        context.ResetKillTime(
-            context.ShortTermMurders > 0 && (!resetKillTime || context.ShortTermElapse == TimeSpan.MaxValue),
-            player.Kills > 0 && (!resetKillTime || context.LongTermElapse == TimeSpan.MaxValue)
-        );
 
-        if (context.CheckStart())
-        {
-            if (player.NetState != null)
-            {
-                _contextTerms.Add(context);
-            }
-        }
-        else
+        if (!context.CheckStart())
         {
             _murderContexts.Remove(player);
             _contextTerms.Remove(context);
+        }
+        else if (player.NetState != null)
+        {
+            _contextTerms.Add(context);
         }
     }
 

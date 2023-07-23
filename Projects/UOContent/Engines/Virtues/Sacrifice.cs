@@ -4,82 +4,71 @@ using Server.Gumps;
 using Server.Mobiles;
 using Server.Targeting;
 
-namespace Server
+namespace Server.Engines.Virtues;
+
+public static class SacrificeVirtue
 {
-    public static class SacrificeVirtue
+    private const int LossAmount = 500;
+    public static readonly TimeSpan GainDelay = TimeSpan.FromDays(1.0);
+    public static readonly TimeSpan LossDelay = TimeSpan.FromDays(7.0);
+
+    public static void Initialize()
     {
-        private const int LossAmount = 500;
-        private static readonly TimeSpan GainDelay = TimeSpan.FromDays(1.0);
-        private static readonly TimeSpan LossDelay = TimeSpan.FromDays(7.0);
+        VirtueGump.Register(110, OnVirtueUsed);
+    }
 
-        public static void Initialize()
+    public static void OnVirtueUsed(PlayerMobile from)
+    {
+        if (from.Hidden)
         {
-            VirtueGump.Register(110, OnVirtueUsed);
+            from.SendLocalizedMessage(1052015); // You cannot do that while hidden.
+        }
+        else if (from.Alive)
+        {
+            from.Target = new InternalTarget();
+        }
+        else
+        {
+            Resurrect(from);
+        }
+    }
+
+    public static void CheckAtrophy(PlayerMobile pm)
+    {
+        var virtues = pm.GetVirtues();
+        if (virtues?.Sacrifice > 0 && CanAtrophy(virtues))
+        {
+            if (VirtueSystem.Atrophy(pm, VirtueName.Sacrifice, LossAmount))
+            {
+                pm.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
+            }
+
+            var level = VirtueSystem.GetLevel(pm, VirtueName.Sacrifice);
+
+            virtues.AvailableResurrects = (int)level;
+            virtues.LastSacrificeLoss = Core.Now;
+        }
+    }
+
+    public static void Resurrect(PlayerMobile from)
+    {
+        if (from.Alive)
+        {
+            return;
         }
 
-        public static void OnVirtueUsed(Mobile from)
+        if (from.Criminal)
         {
-            if (!from.Hidden)
-            {
-                if (from.Alive)
-                {
-                    from.Target = new InternalTarget();
-                }
-                else
-                {
-                    Resurrect(from);
-                }
-            }
-            else
-            {
-                from.SendLocalizedMessage(1052015); // You cannot do that while hidden.
-            }
+            from.SendLocalizedMessage(1052007); // You cannot use this ability while flagged as a criminal.
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ShouldAtrophy(PlayerMobile pm) => pm.LastSacrificeLoss + LossDelay < Core.Now;
-
-        public static void CheckAtrophy(PlayerMobile pm)
+        else if (!VirtueSystem.IsSeeker(from, VirtueName.Sacrifice))
         {
-            if (ShouldAtrophy(pm))
-            {
-                if (VirtueHelper.Atrophy(pm, VirtueName.Sacrifice, LossAmount))
-                {
-                    pm.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
-                }
-
-                var level = VirtueHelper.GetLevel(pm, VirtueName.Sacrifice);
-
-                pm.AvailableResurrects = (int)level;
-                pm.LastSacrificeLoss = Core.Now;
-            }
+            from.SendLocalizedMessage(1052004); // You cannot use this ability.
         }
-
-        public static void Resurrect(Mobile from)
+        else
         {
-            if (from.Alive)
-            {
-                return;
-            }
-
-            if (from is not PlayerMobile pm)
-            {
-                return;
-            }
-
-            if (from.Criminal)
-            {
-                from.SendLocalizedMessage(1052007); // You cannot use this ability while flagged as a criminal.
-            }
-            else if (!VirtueHelper.IsSeeker(from, VirtueName.Sacrifice))
-            {
-                from.SendLocalizedMessage(1052004); // You cannot use this ability.
-            }
-            else if (pm.AvailableResurrects <= 0)
-            {
-                from.SendLocalizedMessage(1052005); // You do not have any resurrections left.
-            }
-            else
+            var virtues = from.GetVirtues();
+            if (virtues?.AvailableResurrects > 0)
             {
                 /*
                  * We need to wait for them to accept the gump or they can just use
@@ -88,46 +77,55 @@ namespace Server
                 from.CloseGump<ResurrectGump>();
                 from.SendGump(new ResurrectGump(from, true));
             }
+            else
+            {
+                from.SendLocalizedMessage(1052005); // You do not have any resurrections left.
+            }
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CanGain(VirtueContext context) => Core.Now >= context.LastSacrificeGain + GainDelay;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CanAtrophy(VirtueContext context) => context.LastSacrificeLoss + LossDelay < Core.Now;
+
+    public static void Sacrifice(PlayerMobile from, object targeted)
+    {
+        if (!from.CheckAlive())
+        {
+            return;
         }
 
-        public static void Sacrifice(Mobile from, object targeted)
+        if (targeted is not Mobile targ)
         {
-            if (!from.CheckAlive())
-            {
-                return;
-            }
+            return;
+        }
 
-            if (from is not PlayerMobile pm)
-            {
-                return;
-            }
-
-            if (targeted is not Mobile targ)
-            {
-                return;
-            }
-
-            if (!ValidateCreature(targ))
-            {
-                from.SendLocalizedMessage(1052014); // You cannot sacrifice your fame for that creature.
-            }
-            else if (targ.Hits * 100 / Math.Max(targ.HitsMax, 1) < 90)
-            {
-                from.SendLocalizedMessage(1052013); // You cannot sacrifice for this monster because it is too damaged.
-            }
-            else if (from.Hidden)
-            {
-                from.SendLocalizedMessage(1052015); // You cannot do that while hidden.
-            }
-            else if (VirtueHelper.IsHighestPath(from, VirtueName.Sacrifice))
-            {
-                from.SendLocalizedMessage(1052068); // You have already attained the highest path in this virtue.
-            }
-            else if (from.Fame < 2500)
-            {
-                from.SendLocalizedMessage(1052017); // You do not have enough fame to sacrifice.
-            }
-            else if (Core.Now < pm.LastSacrificeGain + GainDelay)
+        if (!ValidateCreature(targ))
+        {
+            from.SendLocalizedMessage(1052014); // You cannot sacrifice your fame for that creature.
+        }
+        else if (targ.Hits * 100 / Math.Max(targ.HitsMax, 1) < 90)
+        {
+            from.SendLocalizedMessage(1052013); // You cannot sacrifice for this monster because it is too damaged.
+        }
+        else if (from.Hidden)
+        {
+            from.SendLocalizedMessage(1052015); // You cannot do that while hidden.
+        }
+        else if (VirtueSystem.IsHighestPath(from, VirtueName.Sacrifice))
+        {
+            from.SendLocalizedMessage(1052068); // You have already attained the highest path in this virtue.
+        }
+        else if (from.Fame < 2500)
+        {
+            from.SendLocalizedMessage(1052017); // You do not have enough fame to sacrifice.
+        }
+        else
+        {
+            var virtues = from.GetOrCreateVirtues();
+            if (!CanGain(virtues))
             {
                 from.SendLocalizedMessage(1052016); // You must wait approximately one day before sacrificing again.
             }
@@ -149,19 +147,19 @@ namespace Server
 
                 Timer.StartTimer(TimeSpan.FromSeconds(1.0), targ.Delete);
 
-                pm.LastSacrificeGain = Core.Now;
+                virtues.LastSacrificeGain = Core.Now;
 
                 var gainedPath = false;
 
-                if (VirtueHelper.Award(from, VirtueName.Sacrifice, toGain, ref gainedPath))
+                if (VirtueSystem.Award(from, VirtueName.Sacrifice, toGain, ref gainedPath))
                 {
                     if (gainedPath)
                     {
                         from.SendLocalizedMessage(1052008); // You have gained a path in Sacrifice!
 
-                        if (pm.AvailableResurrects < 3)
+                        if (virtues.AvailableResurrects < 3)
                         {
-                            ++pm.AvailableResurrects;
+                            ++virtues.AvailableResurrects;
                         }
                     }
                     else
@@ -173,20 +171,23 @@ namespace Server
                 from.SendLocalizedMessage(1052016); // You must wait approximately one day before sacrificing again.
             }
         }
+    }
 
-        public static bool ValidateCreature(Mobile m) =>
-            (m is not BaseCreature creature || !creature.Controlled && !creature.Summoned) &&
-            m is Lich or Succubus or Daemon or EvilMage or EnslavedGargoyle or GargoyleEnforcer;
+    public static bool ValidateCreature(Mobile m) =>
+        (m is not BaseCreature creature || !creature.Controlled && !creature.Summoned) &&
+        m is Lich or Succubus or Daemon or EvilMage or EnslavedGargoyle or GargoyleEnforcer;
 
-        private class InternalTarget : Target
+    private class InternalTarget : Target
+    {
+        public InternalTarget() : base(8, false, TargetFlags.None)
         {
-            public InternalTarget() : base(8, false, TargetFlags.None)
-            {
-            }
+        }
 
-            protected override void OnTarget(Mobile from, object targeted)
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (from is PlayerMobile pm)
             {
-                Sacrifice(from, targeted);
+                Sacrifice(pm, targeted);
             }
         }
     }

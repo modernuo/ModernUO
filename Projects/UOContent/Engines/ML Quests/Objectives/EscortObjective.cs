@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.Virtues;
 using Server.Gumps;
 using Server.Misc;
 using Server.Mobiles;
@@ -146,10 +147,10 @@ namespace Server.Engines.MLQuests.Objectives
                 }
                 else
                 {
-                    VirtueHelper.AwardVirtue(
+                    VirtueSystem.AwardVirtue(
                         pm,
                         VirtueName.Compassion,
-                        m_Escort is BaseEscortable escortable && escortable.IsPrisoner ? 400 : 200
+                        (m_Escort as BaseEscortable)?.IsPrisoner == true ? 400 : 200
                     );
                 }
 

@@ -4,7 +4,7 @@ using Server.Engines.CannedEvil;
 using Server.Mobiles;
 using Server.Targeting;
 
-namespace Server;
+namespace Server.Engines.Virtues;
 
 public static class ValorVirtue
 {
@@ -26,22 +26,23 @@ public static class ValorVirtue
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ShouldAtrophy(PlayerMobile pm) => pm.LastValorLoss + LossDelay < Core.Now;
+    public static bool CanAtrophy(VirtueContext context) => context.LastValorLoss + LossDelay < Core.Now;
 
     public static void CheckAtrophy(PlayerMobile pm)
     {
-        if (ShouldAtrophy(pm))
+        var virtues = pm.GetVirtues();
+        if (virtues?.Valor > 0 && CanAtrophy(virtues))
         {
-            if (VirtueHelper.Atrophy(pm, VirtueName.Valor, LossAmount))
+            if (VirtueSystem.Atrophy(pm, VirtueName.Valor, LossAmount))
             {
                 pm.SendLocalizedMessage(1054040); // You have lost some Valor.
             }
 
-            pm.LastValorLoss = Core.Now;
+            virtues.LastValorLoss = Core.Now;
         }
     }
 
-    public static void Valor(Mobile from, object targ)
+    public static void Valor(PlayerMobile from, object targ)
     {
         if (targ is not IdolOfTheChampion idol || idol.Deleted || idol.Spawn?.Deleted != false)
         {
@@ -89,9 +90,9 @@ public static class ValorVirtue
                     }
             }
 
-            if (from.Virtues.GetValue((int)VirtueName.Valor) >= needed)
+            if (from.GetVirtues()?.GetValue((int)VirtueName.Valor) >= needed)
             {
-                VirtueHelper.Atrophy(from, VirtueName.Valor, consumed);
+                VirtueSystem.Atrophy(from, VirtueName.Valor, consumed);
                 // Your challenge is heard by the Champion of this region! Beware its wrath!
                 from.SendLocalizedMessage(1054037);
                 idol.Spawn.HasBeenAdvanced = true;
@@ -103,9 +104,9 @@ public static class ValorVirtue
                 from.SendLocalizedMessage(1054039);
             }
         }
-        else if (VirtueHelper.GetLevel(from, VirtueName.Valor) == VirtueLevel.Knight)
+        else if (VirtueSystem.GetLevel(from, VirtueName.Valor) == VirtueLevel.Knight)
         {
-            VirtueHelper.Atrophy(from, VirtueName.Valor, 11000);
+            VirtueSystem.Atrophy(from, VirtueName.Valor, 11000);
             // Your challenge is heard by the Champion of this region! Beware its wrath!
             from.SendLocalizedMessage(1054037);
             idol.Spawn.Start();
@@ -128,7 +129,10 @@ public static class ValorVirtue
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            Valor(from, targeted);
+            if (from is PlayerMobile pm)
+            {
+                Valor(pm, targeted);
+            }
         }
     }
 }

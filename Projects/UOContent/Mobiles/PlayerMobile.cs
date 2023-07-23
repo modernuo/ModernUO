@@ -12,6 +12,7 @@ using Server.Engines.MLQuests.Gumps;
 using Server.Engines.PartySystem;
 using Server.Engines.PlayerMurderSystem;
 using Server.Engines.Quests;
+using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Guilds;
@@ -204,8 +205,6 @@ namespace Server.Mobiles
             BOBFilter = new BOBFilter();
 
             m_GameTime = TimeSpan.Zero;
-
-            JusticeProtectors = new List<Mobile>();
             m_GuildRank = RankDefinition.Lowest;
 
             ChampionTitles = new ChampionTitleInfo();
@@ -672,33 +671,6 @@ namespace Server.Mobiles
 
         public bool WaitingForEnemy { get; set; }
 
-        public DateTime LastSacrificeGain { get; set; }
-
-        public DateTime LastSacrificeLoss { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int AvailableResurrects { get; set; }
-
-        public DateTime LastJusticeLoss { get; set; }
-
-        public List<Mobile> JusticeProtectors { get; set; }
-
-        public DateTime LastCompassionLoss { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime NextCompassionDay { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int CompassionGains { get; set; }
-
-        public DateTime LastValorLoss { get; set; }
-
-        public DateTime LastHonorLoss { get; set; }
-
-        public DateTime LastHonorUse { get; set; }
-
-        public bool HonorActive { get; set; }
-
         public HonorContext SentHonorContext { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -732,17 +704,20 @@ namespace Server.Mobiles
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime ShortTermMurderExpiration => this.GetMurderContext(out var context)
+        public DateTime ShortTermMurderExpiration => this.GetMurderContext(out var context) && context.ShortTermMurders > 0
             ? Core.Now + (context.ShortTermElapse - GameTime)
             : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime LongTermMurderExpiration => this.GetMurderContext(out var context)
+        public DateTime LongTermMurderExpiration => Kills > 0 && this.GetMurderContext(out var context)
             ? Core.Now + (context.LongTermElapse - GameTime)
             : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int KnownRecipes => m_AcquiredRecipes?.Count ?? 0;
+
+        [CommandProperty(AccessLevel.Counselor, canModify: true)]
+        public VirtueContext Virtues => this.GetOrCreateVirtues();
 
         public HonorContext ReceivedHonorContext { get; set; }
 
@@ -1924,7 +1899,7 @@ namespace Server.Mobiles
                     }
                 }
 
-                if (JusticeProtectors.Count > 0)
+                if (JusticeVirtue.IsProtected(this))
                 {
                     list.Add(new CallbackEntry(6157, CancelProtection));
                 }
@@ -1940,12 +1915,8 @@ namespace Server.Mobiles
 
                     if (ns?.ExtendedStatus == true)
                     {
-                        list.Add(
-                            new CallbackEntry(
-                                RefuseTrades ? 1154112 : 1154113,
-                                ToggleTrades
-                            )
-                        ); // Allow Trades / Refuse Trades
+                        // Allow Trades / Refuse Trades
+                        list.Add(new CallbackEntry(RefuseTrades ? 1154112 : 1154113, ToggleTrades));
                     }
                 }
             }
@@ -1990,23 +1961,16 @@ namespace Server.Mobiles
 
         private void CancelProtection()
         {
-            for (var i = 0; i < JusticeProtectors.Count; ++i)
+            if (JusticeVirtue.CancelProtection(this, out var prot))
             {
-                var prot = JusticeProtectors[i];
-
                 var args = $"{Name}\t{prot.Name}";
 
-                prot.SendLocalizedMessage(
-                    1049371,
-                    args
-                ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
-                SendLocalizedMessage(
-                    1049371,
-                    args
-                ); // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
-            }
+                // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
+                prot.SendLocalizedMessage(1049371, args);
 
-            JusticeProtectors.Clear();
+                // The protective relationship between ~1_PLAYER1~ and ~2_PLAYER2~ has been ended.
+                SendLocalizedMessage(1049371, args);
+            }
         }
 
         private void ToggleTrades()
@@ -2497,10 +2461,8 @@ namespace Server.Mobiles
                 if (Banker.Withdraw(this, cost))
                 {
                     item.PaidInsurance = true;
-                    SendLocalizedMessage(
-                        1060398,
-                        cost.ToString()
-                    ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                    // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                    SendLocalizedMessage(1060398, cost.ToString());
                 }
                 else
                 {
@@ -2516,9 +2478,9 @@ namespace Server.Mobiles
                 item.Insured = false;
             }
 
-            if (m_InsuranceAward != null && Banker.Deposit(m_InsuranceAward, 300) && m_InsuranceAward is PlayerMobile pm)
+            if (m_InsuranceAward is PlayerMobile insurancePm && Banker.Deposit(m_InsuranceAward, 300))
             {
-                pm.m_InsuranceBonus += 300;
+                insurancePm.m_InsuranceBonus += 300;
             }
 
             return true;
@@ -2628,7 +2590,7 @@ namespace Server.Mobiles
                     m = bc.GetMaster();
                 }
 
-                if (m != this && m is PlayerMobile)
+                if (m != this && m is PlayerMobile pm)
                 {
                     var gainedPath = false;
 
@@ -2638,7 +2600,7 @@ namespace Server.Mobiles
                     pointsToGain *= 5;
                     pointsToGain += (int)Math.Pow(Skills.Total / 250.0, 2);
 
-                    if (VirtueHelper.Award(m, VirtueName.Justice, pointsToGain, ref gainedPath))
+                    if (VirtueSystem.Award(pm, VirtueName.Justice, pointsToGain, ref gainedPath))
                     {
                         if (gainedPath)
                         {
@@ -2657,15 +2619,10 @@ namespace Server.Mobiles
                 }
             }
 
-            if (m_InsuranceAward is PlayerMobile pm)
+            if (m_InsuranceAward is PlayerMobile insurancePm && insurancePm.m_InsuranceBonus > 0)
             {
-                if (pm.m_InsuranceBonus > 0)
-                {
-                    pm.SendLocalizedMessage(
-                        1060397,
-                        pm.m_InsuranceBonus.ToString()
-                    ); // ~1_AMOUNT~ gold has been deposited into your bank box.
-                }
+                // ~1_AMOUNT~ gold has been deposited into your bank box.
+                insurancePm.SendLocalizedMessage(1060397, insurancePm.m_InsuranceBonus.ToString());
             }
 
             var killer = FindMostRecentDamager(true);
@@ -2894,8 +2851,11 @@ namespace Server.Mobiles
             base.Deserialize(reader);
             var version = reader.ReadInt();
 
+            VirtueContext virtues = version < 32 ? Virtues : null;
+
             switch (version)
             {
+                case 32: // Removes virtue properties
                 case 31: // Removed Short/Long Term Elapse
                 case 30:
                     {
@@ -2960,7 +2920,10 @@ namespace Server.Mobiles
                     }
                 case 24:
                     {
-                        LastHonorLoss = reader.ReadDeltaTime();
+                        if (version < 32)
+                        {
+                            reader.ReadDeltaTime(); // LastHonorLoss - Not even used
+                        }
                         goto case 23;
                     }
                 case 23:
@@ -2970,7 +2933,11 @@ namespace Server.Mobiles
                     }
                 case 22:
                     {
-                        LastValorLoss = reader.ReadDateTime();
+                        if (version < 32)
+                        {
+                            virtues.LastValorLoss = reader.ReadDateTime();
+                        }
+
                         goto case 21;
                     }
                 case 21:
@@ -3044,16 +3011,21 @@ namespace Server.Mobiles
                     }
                 case 15:
                     {
-                        LastCompassionLoss = reader.ReadDeltaTime();
+                        if (version < 32)
+                        {
+                            virtues.LastCompassionLoss = reader.ReadDeltaTime();
+                        }
                         goto case 14;
                     }
                 case 14:
                     {
-                        CompassionGains = reader.ReadEncodedInt();
-
-                        if (CompassionGains > 0)
+                        if (version < 32)
                         {
-                            NextCompassionDay = reader.ReadDeltaTime();
+                            virtues.CompassionGains = reader.ReadEncodedInt();
+                            if (virtues.CompassionGains > 0)
+                            {
+                                virtues.NextCompassionDay = reader.ReadDeltaTime();
+                            }
                         }
 
                         goto case 13;
@@ -3126,15 +3098,31 @@ namespace Server.Mobiles
                     }
                 case 4:
                     {
-                        LastJusticeLoss = reader.ReadDeltaTime();
-                        JusticeProtectors = reader.ReadEntityList<Mobile>();
+                        if (version < 32)
+                        {
+                            virtues.LastJusticeLoss = reader.ReadDeltaTime();
+                            var protectors = reader.ReadEntityList<PlayerMobile>(); // Always a list of 0, or 1
+                            if (protectors.Count > 0)
+                            {
+                                var protector = protectors[0];
+                                if (protector != null)
+                                {
+                                    JusticeVirtue.AddProtection(protector, this);
+                                }
+                            }
+                        }
+
                         goto case 3;
                     }
                 case 3:
                     {
-                        LastSacrificeGain = reader.ReadDeltaTime();
-                        LastSacrificeLoss = reader.ReadDeltaTime();
-                        AvailableResurrects = reader.ReadInt();
+                        if (version < 32)
+                        {
+                            virtues.LastSacrificeGain = reader.ReadDeltaTime();
+                            virtues.LastSacrificeLoss = reader.ReadDeltaTime();
+                            virtues.AvailableResurrects = reader.ReadInt();
+                        }
+
                         goto case 2;
                     }
                 case 2:
@@ -3167,7 +3155,6 @@ namespace Server.Mobiles
             }
 
             PermaFlags ??= new List<Mobile>();
-            JusticeProtectors ??= new List<Mobile>();
             BOBFilter ??= new BOBFilter();
 
             // Default to member if going from older version to new version (only time it should be null)
@@ -3209,7 +3196,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(31); // version
+            writer.Write(32); // version
 
             if (Stabled == null)
             {
@@ -3264,11 +3251,8 @@ namespace Server.Mobiles
                 }
             }
 
-            writer.WriteDeltaTime(LastHonorLoss);
-
             ChampionTitleInfo.Serialize(writer, ChampionTitles);
 
-            writer.Write(LastValorLoss);
             writer.WriteEncodedInt(ToTItemsTurnedIn);
             writer.Write(ToTTotalMonsterFame); // This ain't going to be a small #.
 
@@ -3301,15 +3285,6 @@ namespace Server.Mobiles
 
             writer.WriteEncodedInt(Profession);
 
-            writer.WriteDeltaTime(LastCompassionLoss);
-
-            writer.WriteEncodedInt(CompassionGains);
-
-            if (CompassionGains > 0)
-            {
-                writer.WriteDeltaTime(NextCompassionDay);
-            }
-
             BOBFilter.Serialize(writer);
 
             var useMods = m_HairModID != -1 || m_BeardModID != -1;
@@ -3337,14 +3312,6 @@ namespace Server.Mobiles
 
             writer.Write(NextSmithBulkOrder);
 
-            writer.WriteDeltaTime(LastJusticeLoss);
-            JusticeProtectors.Tidy();
-            writer.Write(JusticeProtectors);
-
-            writer.WriteDeltaTime(LastSacrificeGain);
-            writer.WriteDeltaTime(LastSacrificeLoss);
-            writer.Write(AvailableResurrects);
-
             writer.Write((int)Flags);
 
             writer.Write(GameTime);
@@ -3356,27 +3323,13 @@ namespace Server.Mobiles
         public override void AfterSerialize()
         {
             base.AfterSerialize();
-
             CheckAtrophies();
         }
 
-        public bool ShouldAtrophy()
-        {
-            var sacrifice = SacrificeVirtue.ShouldAtrophy(this);
-            var justice = JusticeVirtue.ShouldAtrophy(this);
-            var compassion = CompassionVirtue.ShouldAtrophy(this);
-            var valor = ValorVirtue.ShouldAtrophy(this);
-            var titles = ChampionTitleInfo.ShouldAtrophy(this);
-
-            return sacrifice || justice || compassion || valor || titles;
-        }
+        public bool ShouldAtrophy() => ChampionTitleInfo.ShouldAtrophy(this);
 
         public void CheckAtrophies()
         {
-            SacrificeVirtue.CheckAtrophy(this);
-            JusticeVirtue.CheckAtrophy(this);
-            CompassionVirtue.CheckAtrophy(this);
-            ValorVirtue.CheckAtrophy(this);
             ChampionTitleInfo.CheckAtrophy(this);
         }
 

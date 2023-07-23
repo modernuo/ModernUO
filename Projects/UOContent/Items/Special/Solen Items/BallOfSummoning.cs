@@ -4,7 +4,6 @@ using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
-using Server.Network;
 using Server.Regions;
 using Server.Spells;
 using Server.Spells.Ninjitsu;

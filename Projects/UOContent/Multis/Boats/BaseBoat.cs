@@ -297,14 +297,6 @@ namespace Server.Multis
             }
         }
 
-        public override bool ShouldExecuteAfterSerialize => !m_Decaying && CheckDecay();
-
-        public override void AfterSerialize()
-        {
-            base.AfterSerialize();
-            CheckDecay();
-        }
-
         public override void Serialize(IGenericWriter writer)
         {
             base.Serialize(writer);
@@ -399,6 +391,8 @@ namespace Server.Multis
             }
 
             Boats.Add(this);
+
+            Timer.DelayCall(() => CheckDecay());
         }
 
         public void RemoveKeys(Mobile m)

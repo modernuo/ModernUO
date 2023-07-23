@@ -5,6 +5,7 @@ using Server.ContextMenus;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Definitions;
 using Server.Engines.MLQuests.Objectives;
+using Server.Engines.Virtues;
 using Server.Items;
 using Server.Misc;
 using Server.Regions;
@@ -515,19 +516,19 @@ namespace Server.Mobiles
 
                 if (escorter is PlayerMobile pm)
                 {
-                    if (pm.CompassionGains > 0 && Core.Now > pm.NextCompassionDay)
+                    var virtues = pm.GetOrCreateVirtues();
+                    if (virtues.CompassionGains > 0 && Core.Now > virtues.NextCompassionDay)
                     {
-                        pm.NextCompassionDay = DateTime.MinValue;
-                        pm.CompassionGains = 0;
+                        virtues.NextCompassionDay = DateTime.MinValue;
+                        virtues.CompassionGains = 0;
                     }
 
-                    if (pm.CompassionGains >= 5) // have already gained 5 times in one day, can gain no more
+                    if (virtues.CompassionGains >= 5) // have already gained 5 times in one day, can gain no more
                     {
-                        pm.SendLocalizedMessage(
-                            1053004
-                        ); // You must wait about a day before you can gain in compassion again.
+                        // You must wait about a day before you can gain in compassion again.
+                        pm.SendLocalizedMessage(1053004);
                     }
-                    else if (VirtueHelper.Award(pm, VirtueName.Compassion, IsPrisoner ? 400 : 200, ref gainedPath))
+                    else if (VirtueSystem.Award(pm, VirtueName.Compassion, IsPrisoner ? 400 : 200, ref gainedPath))
                     {
                         if (gainedPath)
                         {
@@ -538,22 +539,19 @@ namespace Server.Mobiles
                             pm.SendLocalizedMessage(1053002); // You have gained in compassion.
                         }
 
-                        pm.NextCompassionDay =
-                            Core.Now + TimeSpan.FromDays(1.0); // in one day CompassionGains gets reset to 0
-                        ++pm.CompassionGains;
+                        // in one day CompassionGains gets reset to 0
+                        virtues.NextCompassionDay = Core.Now + TimeSpan.FromDays(1.0);
 
-                        if (pm.CompassionGains >= 5)
+                        if (++virtues.CompassionGains >= 5)
                         {
-                            pm.SendLocalizedMessage(
-                                1053004
-                            ); // You must wait about a day before you can gain in compassion again.
+                            // You must wait about a day before you can gain in compassion again.
+                            pm.SendLocalizedMessage(1053004);
                         }
                     }
                     else
                     {
-                        pm.SendLocalizedMessage(
-                            1053003
-                        ); // You have achieved the highest path of compassion and can no longer gain any further.
+                        // You have achieved the highest path of compassion and can no longer gain any further.
+                        pm.SendLocalizedMessage(1053003);
                     }
                 }
 

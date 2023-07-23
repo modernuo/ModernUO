@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.Virtues;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
@@ -142,10 +143,7 @@ namespace Server
 
                 From?.DoHarmful(m_Mobile, true);
 
-                if (m_Mobile is IHonorTarget honorTarget)
-                {
-                    honorTarget.ReceivedHonorContext?.OnTargetPoisoned();
-                }
+                (m_Mobile as IHonorTarget)?.ReceivedHonorContext?.OnTargetPoisoned();
 
                 AOS.Damage(m_Mobile, From, damage, 0, 0, 0, 100, 0);
 
