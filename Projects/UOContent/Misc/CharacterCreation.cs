@@ -267,11 +267,10 @@ public static class CharacterCreation
                 }
             case "samurai":
                 {
-                    bool haotisAndTokunoAccessible = 
+                    bool haotisAndTokunoAccessible =
                         ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
                         ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
-                        Core.AvailableMaps.Includes(MapSelectionFlags.Malas) &&
-                        Core.AvailableMaps.Includes(MapSelectionFlags.Tokuno);
+                        Core.AvailableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
 
                     if (haotisAndTokunoAccessible)
                     {
@@ -296,8 +295,7 @@ public static class CharacterCreation
                     bool enimosAndTokunoAccessible =
                         ((flags & ClientFlags.Tokuno) == ClientFlags.Tokuno) &&
                         ((flags & ClientFlags.Malas) == ClientFlags.Malas) &&
-                        Core.AvailableMaps.Includes(MapSelectionFlags.Malas) &&
-                        Core.AvailableMaps.Includes(MapSelectionFlags.Tokuno);
+                        Core.AvailableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
 
                     if (enimosAndTokunoAccessible)
                     {
