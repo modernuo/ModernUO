@@ -15,7 +15,7 @@ namespace Server
                 return true;
             }
 
-            var lowerName = name?.ToLowerInvariant().Replace(" ", "");
+            var lowerName = name?.ToLowerInvariant().RemoveOrdinal(" ");
 
             if (!string.IsNullOrEmpty(lowerName))
             {
