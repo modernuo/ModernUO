@@ -84,7 +84,7 @@ public static class AssistantHandler
 
         // Instead we are supporting razor community edition.
         var assistVersion = reader.ReadAscii();
-        state.Assistant = assistVersion.Contains(' ') ? assistVersion : $"RazorCE {assistVersion}";
+        state.Assistant = assistVersion.ContainsOrdinal(' ') ? assistVersion : $"RazorCE {assistVersion}";
     }
 
     private static void HandshakeResponse(NetState state, CircularBufferReader reader, int packetLength)

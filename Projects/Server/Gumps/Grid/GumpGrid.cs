@@ -81,7 +81,7 @@ public class GumpGrid : Gump
             }
 
             //percent
-            var percent = sizes[i].Replace("*", "");
+            var percent = sizes[i].RemoveOrdinal("*");
             var size = sizes[i] != percent ? len / 100 * int.Parse(percent) : int.Parse(percent);
 
             list.Add(new Swap { Index = i, Size = size });
