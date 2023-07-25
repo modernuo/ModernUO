@@ -265,23 +265,27 @@ public static class ServerConfiguration
             m_Settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
         }
 
-        MapSelection availableMaps = null;
-
         if (m_Settings.Expansion == null)
         {
             m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ExpansionConfigurationPrompts.GetExpansion();
 
             // We've updated the selected expansion, so choose the maps we want from it,
             // then store and save our selection
-            availableMaps = ExpansionConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value);
+            var availableMaps = ExpansionConfigurationPrompts.GetSelectedMaps(m_Settings.Expansion.Value);
             ExpansionInfo.StoreMapSelection(availableMaps, m_Settings.Expansion.Value);
-            ExpansionInfo.SaveConfiguration(m_Settings.Expansion.Value);
             updated = true;
+        }
+
+        var pathToExpansion = Path.Combine(Core.BaseDirectory, "Configuration/expansion.json");
+        if (File.Exists(pathToExpansion))
+        {
+            // We have a known, current expansion, so we can deserialize it from Configuration
+            ExpansionInfo.LoadConfiguration(m_Settings.Expansion.Value, pathToExpansion);
         }
         else
         {
-            // We have a known, current expansion, so we can deserialize it from Configuration
-            ExpansionInfo.LoadConfiguration(m_Settings.Expansion.Value);
+            // Either the expansion.json file has never existed, or it's been deleted, so create it now
+            ExpansionInfo.SaveConfiguration(m_Settings.Expansion.Value, pathToExpansion);
         }
 
         Core.Expansion = m_Settings.Expansion.Value;

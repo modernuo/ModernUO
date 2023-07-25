@@ -199,7 +199,7 @@ public class ExpansionInfo
         expansionConfigs[expansionIndex].MapSelectionFlags = mapSelection.Flags;
     }
 
-    public static void SaveConfiguration(Expansion currentExpansion)
+    public static void SaveConfiguration(Expansion currentExpansion, string pathToExpansionFile)
     {
         if (expansionConfigs == null)
         {
@@ -209,7 +209,7 @@ public class ExpansionInfo
 
         ExpansionConfig? matched = null;
 
-        // Find the ExpansionConfig for the currently selected expansion and serialise it                
+        // Find the ExpansionConfig for the currently selected expansion and serialise it
         for (var i = 0; i < expansionConfigs.Count; i++)
         {
             var shortName = ((Expansion)i).ToString();
@@ -225,26 +225,12 @@ public class ExpansionInfo
             return;
         }
 
-        JsonConfig.Serialize("Configuration/expansion.json", matched);
+        JsonConfig.Serialize(pathToExpansionFile, matched);
     }
 
-    public static void LoadConfiguration(Expansion currentExpansion)
+    public static void LoadConfiguration(Expansion currentExpansion, string pathToExpansionFile)
     {
-        // As we are replacing an existing expansion configuration, we need to make sure
-        // that the default ones have been loaded
-        if (expansionConfigs == null)
-        {
-            Console.WriteLine("Failed to load expansion.json due to expansion configs not being loaded");
-            return;
-        }
-
-        var path = Path.Combine(Core.BaseDirectory, "Configuration/expansion.json");
-        if (!File.Exists(path))
-        {
-            throw new FileNotFoundException($"Configured expansion file '{path}' could not be found.");
-        }
-
-        ExpansionConfig expansionConfig = JsonConfig.Deserialize<ExpansionConfig>(path);
+        ExpansionConfig expansionConfig = JsonConfig.Deserialize<ExpansionConfig>(pathToExpansionFile);
 
         int currentExpansionIndex = (int)currentExpansion;
         Table[currentExpansionIndex] = new ExpansionInfo(
