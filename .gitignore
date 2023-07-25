@@ -26,6 +26,7 @@
 /Projects/*/bin
 /Projects/*/Generated
 
+*.swp
 *.log
 *.user
 /.idea

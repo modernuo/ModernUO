@@ -394,7 +394,7 @@ namespace Server.Saves
                 if (files)
                 {
                     var fileName = new FileInfo(item).Name;
-                    name = fileName[..fileName.IndexOf('.', StringComparison.Ordinal)];
+                    name = fileName[..fileName.IndexOfOrdinal('.')];
                 }
                 else
                 {
