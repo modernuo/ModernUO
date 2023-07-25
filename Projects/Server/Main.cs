@@ -513,6 +513,7 @@ public static class Core
         TileMatrixLoader.LoadTileMatrix();
 
         RegionJsonSerializer.LoadRegions();
+        DataStore.Load();
         World.Load();
 
         AssemblyHandler.Invoke("Initialize");
