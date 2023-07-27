@@ -528,7 +528,7 @@ namespace Server.Mobiles
             set => SetFlag(PlayerFlag.RefuseTrades, value);
         }
 
-        public Dictionary<Type, int> RecoverableAmmo { get; } = new();
+        public Dictionary<Type, int> RecoverableAmmo { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime AcceleratedStart { get; set; }
@@ -3702,7 +3702,7 @@ namespace Server.Mobiles
 
         public void RecoverAmmo()
         {
-            if (!Core.SE || !Alive)
+            if (!Core.SE || !Alive || RecoverableAmmo == null)
             {
                 return;
             }
