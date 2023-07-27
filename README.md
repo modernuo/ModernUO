@@ -62,7 +62,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `linux` - Linux
   - `arch`
     - `x64` - Intel 64-bit
-    - `arm64` - ARM 64-bit
+    - `arm64` - ARM 64-bit (Windows Arm64 not supported)
 
 ## Linux Prerequisites
 ### Fedora, CentOS, RHEL, etc

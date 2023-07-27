@@ -5,6 +5,7 @@
         <AssemblyName>UOContent</AssemblyName>
         <Product>ModernUO Content</Product>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <Configurations>Debug;Release;Analyze</Configurations>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
@@ -30,12 +31,12 @@
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
-        <PackageReference Include="MailKit" Version="3.4.3" />
+        <PackageReference Include="MailKit" Version="4.1.0" />
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="7.0.0" />
         <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
-        <PackageReference Include="Zlib.Bindings" Version="1.10.1" />
-        <PackageReference Include="Argon2.Bindings" Version="1.14.4" />
-        <PackageReference Include="Zstd.Binaries" Version="1.5.1" />
+        <PackageReference Include="Zlib.Bindings" Version="1.11.0" />
+        <PackageReference Include="Argon2.Bindings" Version="1.16.1" />
+        <PackageReference Include="Zstd.Binaries" Version="1.6.0" />
 
         <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.6.0" />
         <PackageReference Include="ModernUO.Serialization.Generator" Version="2.6.1" />

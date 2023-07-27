@@ -34,7 +34,7 @@ namespace Server.Tests.Accounting.Security
 
             if (passwordProtection == null)
             {
-                Assert.False(true, $"{protectionType.Name} is not an IPasswordProtection.");
+                Assert.Fail($"{protectionType.Name} is not an IPasswordProtection.");
             }
 
             var encryptedPassword = passwordProtection.EncryptPassword(plainPassword);
@@ -67,7 +67,7 @@ namespace Server.Tests.Accounting.Security
 
             if (passwordProtection == null)
             {
-                Assert.False(true, $"{protectionType.Name} is not an IPasswordProtection.");
+                Assert.Fail($"{protectionType.Name} is not an IPasswordProtection.");
             }
 
             var encryptedPassword = passwordProtection.EncryptPassword(plainPassword);
