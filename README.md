@@ -70,8 +70,6 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 dnf upgrade --refresh -y
 # CentOS does not come with EPEL enabled
 dnf install -y epel-release epel-next-release
-# Note: libargon2 is old.
-# Download/symlink from here: https://github.com/modernuo/Argon2.Bindings/tree/main/runtimes
 dnf install -y findutils libicu zlib-devel zstd libargon2-devel tzdata
 ```
 
