@@ -352,7 +352,7 @@ public partial class ChampionTitleContext
         for (var i = 0; i < ChampionSpawnInfo.Table.Length; i++)
         {
             ref var title = ref GetTitleValueRef(ChampionSpawnInfo.Table[i].Type);
-            if (Unsafe.IsNullRef(ref title))
+            if (Unsafe.IsNullRef(ref title) || title == null)
             {
                 continue;
             }

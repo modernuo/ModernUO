@@ -4,9 +4,7 @@ namespace Server.Engines.MLQuests
     {
         private static MLQuestPersistence m_Instance;
 
-        private MLQuestPersistence()
-            : base(1) =>
-            Movable = false;
+        private MLQuestPersistence() : base(1) => Movable = false;
 
         public MLQuestPersistence(Serial serial) : base(serial) => m_Instance = this;
 
