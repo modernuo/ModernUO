@@ -1207,12 +1207,6 @@ namespace Server.Guilds
             writer.Write(Website);
         }
 
-        public override bool ShouldExecuteAfterSerialize => false;
-
-        public override void AfterSerialize()
-        {
-        }
-
         public override void Delete()
         {
             World.RemoveGuild(this);

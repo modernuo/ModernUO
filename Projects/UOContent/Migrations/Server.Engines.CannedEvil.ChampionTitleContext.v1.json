@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "type": "Server.Engines.CannedEvil.ChampionTitleContext",
+  "properties": [
+    {
+      "name": "Harrower",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Abyss",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Arachnid",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ColdBlood",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ForestLord",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "VerminHorde",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "UnholyTerror",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SleepingDragon",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Corrupt",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Glade",
+      "type": "Server.Engines.CannedEvil.ChampionTitle",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

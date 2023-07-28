@@ -4,6 +4,7 @@ using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
+using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
 using Server.Engines.Craft;
 using Server.Engines.Help;
@@ -206,8 +207,6 @@ namespace Server.Mobiles
 
             m_GameTime = TimeSpan.Zero;
             m_GuildRank = RankDefinition.Lowest;
-
-            ChampionTitles = new ChampionTitleInfo();
         }
 
         public PlayerMobile(Serial s) : base(s)
@@ -693,8 +692,8 @@ namespace Server.Mobiles
             set => SetFlag(PlayerFlag.DisplayChampionTitle, value);
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ChampionTitleInfo ChampionTitles { get; private set; }
+        [CommandProperty(AccessLevel.GameMaster, canModify: true)]
+        public ChampionTitleContext ChampionTitles => this.GetOrCreateChampionTitleContext();
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int ShortTermMurders
@@ -1859,21 +1858,13 @@ namespace Server.Mobiles
                         {
                             if (AutoRenewInsurance)
                             {
-                                list.Add(
-                                    new CallbackEntry(
-                                        6202,
-                                        CancelRenewInventoryInsurance
-                                    )
-                                ); // Cancel Renewing Inventory Insurance
+                                // Cancel Renewing Inventory Insurance
+                                list.Add(new CallbackEntry(6202, CancelRenewInventoryInsurance));
                             }
                             else
                             {
-                                list.Add(
-                                    new CallbackEntry(
-                                        6200,
-                                        AutoRenewInventoryInsurance
-                                    )
-                                ); // Auto Renew Inventory Insurance
+                                // Auto Renew Inventory Insurance
+                                list.Add(new CallbackEntry(6200, AutoRenewInventoryInsurance));
                             }
                         }
                     }
@@ -2855,6 +2846,7 @@ namespace Server.Mobiles
 
             switch (version)
             {
+                case 33: // Removes champion title
                 case 32: // Removes virtue properties
                 case 31: // Removed Short/Long Term Elapse
                 case 30:
@@ -2928,7 +2920,11 @@ namespace Server.Mobiles
                     }
                 case 23:
                     {
-                        ChampionTitles = new ChampionTitleInfo(reader);
+                        if (version < 33)
+                        {
+                            ChampionTitles.Deserialize(reader);
+                        }
+
                         goto case 22;
                     }
                 case 22:
@@ -3165,8 +3161,6 @@ namespace Server.Mobiles
                 LastOnline = ((Account)Account).LastLogin;
             }
 
-            ChampionTitles ??= new ChampionTitleInfo();
-
             if (AccessLevel > AccessLevel.Player)
             {
                 IgnoreMobiles = true;
@@ -3184,8 +3178,6 @@ namespace Server.Mobiles
                 }
             }
 
-            CheckAtrophies();
-
             if (Hidden) // Hiding is the only buff where it has an effect that's serialized.
             {
                 AddBuff(new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
@@ -3196,7 +3188,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(32); // version
+            writer.Write(33); // version
 
             if (Stabled == null)
             {
@@ -3250,8 +3242,6 @@ namespace Server.Mobiles
                     writer.Write(kvp.Value);
                 }
             }
-
-            ChampionTitleInfo.Serialize(writer, ChampionTitles);
 
             writer.WriteEncodedInt(ToTItemsTurnedIn);
             writer.Write(ToTTotalMonsterFame); // This ain't going to be a small #.
@@ -3315,22 +3305,6 @@ namespace Server.Mobiles
             writer.Write((int)Flags);
 
             writer.Write(GameTime);
-        }
-
-        // Do we need to run an after serialize?
-        public override bool ShouldExecuteAfterSerialize => ShouldAtrophy();
-
-        public override void AfterSerialize()
-        {
-            base.AfterSerialize();
-            CheckAtrophies();
-        }
-
-        public bool ShouldAtrophy() => ChampionTitleInfo.ShouldAtrophy(this);
-
-        public void CheckAtrophies()
-        {
-            ChampionTitleInfo.CheckAtrophy(this);
         }
 
         public override bool CanSee(Mobile m)
@@ -3436,6 +3410,17 @@ namespace Server.Mobiles
                     {
                         list.Add(1060776, $"{pl.Rank.Title}\t{faction.Definition.PropName}"); // ~1_val~, ~2_val~
                     }
+                }
+            }
+
+            // TODO: Add the Titles Menu for later Eras:
+            // https://uo.com/wiki/ultima-online-wiki/player/skill-titles-order/
+            if (DisplayChampionTitle)
+            {
+                var titleLabel = this.GetChampionTitleLabel();
+                if (titleLabel > 0)
+                {
+                    list.Add(titleLabel);
                 }
             }
 
@@ -4457,6 +4442,7 @@ namespace Server.Mobiles
             }
 
             DisplayChampionTitle = !DisplayChampionTitle;
+            InvalidateProperties();
         }
 
         public virtual bool HasRecipe(Recipe r) => r != null && HasRecipe(r.ID);

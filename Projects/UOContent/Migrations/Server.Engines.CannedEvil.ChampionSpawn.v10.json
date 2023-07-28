@@ -1,0 +1,186 @@
+{
+  "version": 10,
+  "type": "Server.Engines.CannedEvil.ChampionSpawn",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ActivatedByProximity",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "NextProximityTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "MaxLevel",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ActivatedByValor",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "DamageEntries",
+      "type": "System.Collections.Generic.Dictionary\u003CServer.Mobile, int\u003E",
+      "rule": "DictionaryMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule",
+        "0",
+        "int",
+        "PrimitiveTypeMigrationRule",
+        "1",
+        ""
+      ]
+    },
+    {
+      "name": "ConfinedRoaming",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Idol",
+      "type": "Server.Engines.CannedEvil.IdolOfTheChampion",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "HasBeenAdvanced",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SpawnArea",
+      "type": "Server.Rectangle2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Rect2D"
+      ]
+    },
+    {
+      "name": "RandomizeType",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Kills",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Active",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Type",
+      "type": "Server.Engines.CannedEvil.ChampionSpawnType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Creatures",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "RedSkulls",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "WhiteSkulls",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Platform",
+      "type": "Server.Engines.CannedEvil.ChampionPlatform",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Altar",
+      "type": "Server.Engines.CannedEvil.ChampionAltar",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "ExpireDelay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "ExpireTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "Champion",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "RestartDelay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "RestartTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    }
+  ]
+}

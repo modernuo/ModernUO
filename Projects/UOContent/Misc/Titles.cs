@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Server.Buffers;
 using Server.Engines.CannedEvil;
 using Server.Mobiles;
 
@@ -12,12 +13,6 @@ namespace Server.Misc
 
         public const int MinKarma = -15000;
         public const int MaxKarma = 15000;
-
-        public static string[] HarrowerTitles =
-        {
-            "Spite", "Opponent", "Hunter", "Venom", "Executioner",
-            "Annihilator", "Champion", "Assailant", "Purifier", "Nullifier"
-        };
 
         private static readonly string[,] m_Levels =
         {
@@ -39,85 +34,85 @@ namespace Server.Misc
                 1249,
                 new[]
                 {
-                    new KarmaEntry(-10000, "The Outcast {0}"),
-                    new KarmaEntry(-5000, "The Despicable {0}"),
-                    new KarmaEntry(-2500, "The Scoundrel {0}"),
-                    new KarmaEntry(-1250, "The Unsavory {0}"),
-                    new KarmaEntry(-625, "The Rude {0}"),
-                    new KarmaEntry(624, "{0}"),
-                    new KarmaEntry(1249, "The Fair {0}"),
-                    new KarmaEntry(2499, "The Kind {0}"),
-                    new KarmaEntry(4999, "The Good {0}"),
-                    new KarmaEntry(9999, "The Honest {0}"),
-                    new KarmaEntry(10000, "The Trustworthy {0}")
+                    new KarmaEntry(-10000, "The Outcast "),
+                    new KarmaEntry(-5000, "The Despicable "),
+                    new KarmaEntry(-2500, "The Scoundrel "),
+                    new KarmaEntry(-1250, "The Unsavory "),
+                    new KarmaEntry(-625, "The Rude "),
+                    new KarmaEntry(624, ""),
+                    new KarmaEntry(1249, "The Fair "),
+                    new KarmaEntry(2499, "The Kind "),
+                    new KarmaEntry(4999, "The Good "),
+                    new KarmaEntry(9999, "The Honest "),
+                    new KarmaEntry(10000, "The Trustworthy ")
                 }
             ),
             new(
                 2499,
                 new[]
                 {
-                    new KarmaEntry(-10000, "The Wretched {0}"),
-                    new KarmaEntry(-5000, "The Dastardly {0}"),
-                    new KarmaEntry(-2500, "The Malicious {0}"),
-                    new KarmaEntry(-1250, "The Dishonorable {0}"),
-                    new KarmaEntry(-625, "The Disreputable {0}"),
-                    new KarmaEntry(624, "The Notable {0}"),
-                    new KarmaEntry(1249, "The Upstanding {0}"),
-                    new KarmaEntry(2499, "The Respectable {0}"),
-                    new KarmaEntry(4999, "The Honorable {0}"),
-                    new KarmaEntry(9999, "The Commendable {0}"),
-                    new KarmaEntry(10000, "The Estimable {0}")
+                    new KarmaEntry(-10000, "The Wretched "),
+                    new KarmaEntry(-5000, "The Dastardly "),
+                    new KarmaEntry(-2500, "The Malicious "),
+                    new KarmaEntry(-1250, "The Dishonorable "),
+                    new KarmaEntry(-625, "The Disreputable "),
+                    new KarmaEntry(624, "The Notable "),
+                    new KarmaEntry(1249, "The Upstanding "),
+                    new KarmaEntry(2499, "The Respectable "),
+                    new KarmaEntry(4999, "The Honorable "),
+                    new KarmaEntry(9999, "The Commendable "),
+                    new KarmaEntry(10000, "The Estimable ")
                 }
             ),
             new(
                 4999,
                 new[]
                 {
-                    new KarmaEntry(-10000, "The Nefarious {0}"),
-                    new KarmaEntry(-5000, "The Wicked {0}"),
-                    new KarmaEntry(-2500, "The Vile {0}"),
-                    new KarmaEntry(-1250, "The Ignoble {0}"),
-                    new KarmaEntry(-625, "The Notorious {0}"),
-                    new KarmaEntry(624, "The Prominent {0}"),
-                    new KarmaEntry(1249, "The Reputable {0}"),
-                    new KarmaEntry(2499, "The Proper {0}"),
-                    new KarmaEntry(4999, "The Admirable {0}"),
-                    new KarmaEntry(9999, "The Famed {0}"),
-                    new KarmaEntry(10000, "The Great {0}")
+                    new KarmaEntry(-10000, "The Nefarious "),
+                    new KarmaEntry(-5000, "The Wicked "),
+                    new KarmaEntry(-2500, "The Vile "),
+                    new KarmaEntry(-1250, "The Ignoble "),
+                    new KarmaEntry(-625, "The Notorious "),
+                    new KarmaEntry(624, "The Prominent "),
+                    new KarmaEntry(1249, "The Reputable "),
+                    new KarmaEntry(2499, "The Proper "),
+                    new KarmaEntry(4999, "The Admirable "),
+                    new KarmaEntry(9999, "The Famed "),
+                    new KarmaEntry(10000, "The Great ")
                 }
             ),
             new(
                 9999,
                 new[]
                 {
-                    new KarmaEntry(-10000, "The Dread {0}"),
-                    new KarmaEntry(-5000, "The Evil {0}"),
-                    new KarmaEntry(-2500, "The Villainous {0}"),
-                    new KarmaEntry(-1250, "The Sinister {0}"),
-                    new KarmaEntry(-625, "The Infamous {0}"),
-                    new KarmaEntry(624, "The Renowned {0}"),
-                    new KarmaEntry(1249, "The Distinguished {0}"),
-                    new KarmaEntry(2499, "The Eminent {0}"),
-                    new KarmaEntry(4999, "The Noble {0}"),
-                    new KarmaEntry(9999, "The Illustrious {0}"),
-                    new KarmaEntry(10000, "The Glorious {0}")
+                    new KarmaEntry(-10000, "The Dread "),
+                    new KarmaEntry(-5000, "The Evil "),
+                    new KarmaEntry(-2500, "The Villainous "),
+                    new KarmaEntry(-1250, "The Sinister "),
+                    new KarmaEntry(-625, "The Infamous "),
+                    new KarmaEntry(624, "The Renowned "),
+                    new KarmaEntry(1249, "The Distinguished "),
+                    new KarmaEntry(2499, "The Eminent "),
+                    new KarmaEntry(4999, "The Noble "),
+                    new KarmaEntry(9999, "The Illustrious "),
+                    new KarmaEntry(10000, "The Glorious ")
                 }
             ),
             new(
                 10000,
                 new[]
                 {
-                    new KarmaEntry(-10000, "The Dread {1} {0}"),
-                    new KarmaEntry(-5000, "The Evil {1} {0}"),
-                    new KarmaEntry(-2500, "The Dark {1} {0}"),
-                    new KarmaEntry(-1250, "The Sinister {1} {0}"),
-                    new KarmaEntry(-625, "The Dishonored {1} {0}"),
-                    new KarmaEntry(624, "{1} {0}"),
-                    new KarmaEntry(1249, "The Distinguished {1} {0}"),
-                    new KarmaEntry(2499, "The Eminent {1} {0}"),
-                    new KarmaEntry(4999, "The Noble {1} {0}"),
-                    new KarmaEntry(9999, "The Illustrious {1} {0}"),
-                    new KarmaEntry(10000, "The Glorious {1} {0}")
+                    new KarmaEntry(-10000, "The Dread "),
+                    new KarmaEntry(-5000, "The Evil "),
+                    new KarmaEntry(-2500, "The Dark "),
+                    new KarmaEntry(-1250, "The Sinister "),
+                    new KarmaEntry(-625, "The Dishonored "),
+                    new KarmaEntry(624, ""),
+                    new KarmaEntry(1249, "The Distinguished "),
+                    new KarmaEntry(2499, "The Eminent "),
+                    new KarmaEntry(4999, "The Noble "),
+                    new KarmaEntry(9999, "The Illustrious "),
+                    new KarmaEntry(10000, "The Glorious ")
                 }
             )
         };
@@ -274,7 +269,7 @@ namespace Server.Misc
 
         public static string ComputeTitle(Mobile beholder, Mobile beheld)
         {
-            var title = new StringBuilder();
+            using var title = ValueStringBuilder.Create();
 
             var fame = beheld.Fame;
             var karma = beheld.Karma;
@@ -297,7 +292,21 @@ namespace Server.Misc
 
                             if (karma <= ke.m_Karma || j == karmaEntries.Length - 1)
                             {
-                                title.AppendFormat(ke.m_Title, beheld.Name, beheld.Female ? "Lady" : "Lord");
+                                if (karma >= 10000)
+                                {
+                                    if (beheld.Female)
+                                    {
+                                        title.Append($"{ke.m_Title}Lady {beheld.Name}");
+                                    }
+                                    else
+                                    {
+                                        title.Append($"{ke.m_Title}Lord {beheld.Name}");
+                                    }
+                                }
+                                else
+                                {
+                                    title.Append($"{ke.m_Title}{beheld.Name}");
+                                }
                                 break;
                             }
                         }
@@ -313,40 +322,14 @@ namespace Server.Misc
 
             if (beheld is PlayerMobile mobile && mobile.DisplayChampionTitle)
             {
-                var info = mobile.ChampionTitles;
-
-                if (info.Harrower > 0)
+                var titleLabel = mobile.GetChampionTitleLabel();
+                if (titleLabel > 0)
                 {
-                    title.Append($": {HarrowerTitles[Math.Min(HarrowerTitles.Length, info.Harrower) - 1]} of Evil");
-                }
-                else
-                {
-                    int highestValue = 0, highestType = 0;
-                    for (var i = 0; i < ChampionSpawnInfo.Table.Length; i++)
-                    {
-                        var v = info.GetValue(i);
+                    // Should this be translated to the receivers language? Prefix titles aren't?
+                    title.Append($": {Localization.GetText(titleLabel)}");
 
-                        if (v > highestValue)
-                        {
-                            highestValue = v;
-                            highestType = i;
-                        }
-                    }
-
-                    var offset = highestValue switch
-                    {
-                        > 800 => 3,
-                        > 300 => highestValue / 300,
-                        _     => 0
-                    };
-
-                    if (offset > 0)
-                    {
-                        var champInfo = ChampionSpawnInfo.GetInfo((ChampionSpawnType)highestType);
-                        title.Append(
-                            $": {champInfo.LevelNames[Math.Min(offset, champInfo.LevelNames.Length) - 1]} of the {champInfo.Name}"
-                        );
-                    }
+                    // Do not display the skills title
+                    return title.ToString();
                 }
             }
 

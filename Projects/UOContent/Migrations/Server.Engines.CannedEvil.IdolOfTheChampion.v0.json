@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.CannedEvil.IdolOfTheChampion",
+  "properties": [
+    {
+      "name": "Spawn",
+      "type": "Server.Engines.CannedEvil.ChampionSpawn",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

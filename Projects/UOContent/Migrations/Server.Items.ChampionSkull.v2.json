@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "type": "Server.Items.ChampionSkull",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Engines.CannedEvil.ChampionSkullType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

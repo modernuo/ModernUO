@@ -126,8 +126,6 @@ public static class Core
     private static long _tickCount;
 
     // Don't access this from other threads than the game thread.
-    // Persistence accesses this via AfterSerialize or Serialize in other threads, but the value is set and won't change
-    // since the game loop is frozen at that moment.
     private static DateTime _now;
 
     // For Unix Stopwatch.Frequency is normalized to 1ns
