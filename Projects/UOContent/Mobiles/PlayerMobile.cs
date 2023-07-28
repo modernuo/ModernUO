@@ -1858,21 +1858,13 @@ namespace Server.Mobiles
                         {
                             if (AutoRenewInsurance)
                             {
-                                list.Add(
-                                    new CallbackEntry(
-                                        6202,
-                                        CancelRenewInventoryInsurance
-                                    )
-                                ); // Cancel Renewing Inventory Insurance
+                                // Cancel Renewing Inventory Insurance
+                                list.Add(new CallbackEntry(6202, CancelRenewInventoryInsurance));
                             }
                             else
                             {
-                                list.Add(
-                                    new CallbackEntry(
-                                        6200,
-                                        AutoRenewInventoryInsurance
-                                    )
-                                ); // Auto Renew Inventory Insurance
+                                // Auto Renew Inventory Insurance
+                                list.Add(new CallbackEntry(6200, AutoRenewInventoryInsurance));
                             }
                         }
                     }
@@ -3421,6 +3413,17 @@ namespace Server.Mobiles
                 }
             }
 
+            // TODO: Add the Titles Menu for later Eras:
+            // https://uo.com/wiki/ultima-online-wiki/player/skill-titles-order/
+            if (DisplayChampionTitle)
+            {
+                var titleLabel = this.GetChampionTitleLabel();
+                if (titleLabel > 0)
+                {
+                    list.Add(titleLabel);
+                }
+            }
+
             if (Core.ML && AllFollowers != null)
             {
                 foreach (var follower in AllFollowers)
@@ -4439,6 +4442,7 @@ namespace Server.Mobiles
             }
 
             DisplayChampionTitle = !DisplayChampionTitle;
+            InvalidateProperties();
         }
 
         public virtual bool HasRecipe(Recipe r) => r != null && HasRecipe(r.ID);

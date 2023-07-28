@@ -91,6 +91,55 @@ public static class ChampionTitleSystem
         context.Harrower = Math.Max(count, context.Harrower); // Harrower titles never decay.
     }
 
+    public static int GetChampionTitleLabel(this PlayerMobile player)
+    {
+        if (!player.GetChampionTitleContext(out var context))
+        {
+            return 0;
+        }
+
+        if (context.Harrower > 0)
+        {
+            return 1113082 + Math.Min(context.Harrower, 10);
+        }
+
+        var highestValue = 0;
+        var highestType = 0;
+
+        for (var i = 0; i < ChampionSpawnInfo.Table.Length; i++)
+        {
+            var t = context.GetTitle(ChampionSpawnInfo.Table[i].Type);
+            if (t == null)
+            {
+                continue;
+            }
+
+            var v = t.Value;
+
+            if (v > highestValue)
+            {
+                highestValue = v;
+                highestType = i;
+            }
+        }
+
+        var offset = highestValue switch
+        {
+            > 800 => 3,
+            > 300 => highestValue / 300,
+            _     => 0
+        };
+
+        if (offset > 0)
+        {
+            var champInfo = ChampionSpawnInfo.Table[highestType];
+            var championLevelName = champInfo.LevelNames[Math.Min(offset, champInfo.LevelNames.Length) - 1];
+            return championLevelName.Number;
+        }
+
+        return 0;
+    }
+
     private class ChampionTitleTimer : Timer
     {
         public ChampionTitleTimer() : base(TimeSpan.FromMinutes(5.0), TimeSpan.FromMinutes(5.0))

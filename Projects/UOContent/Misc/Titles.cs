@@ -322,51 +322,14 @@ namespace Server.Misc
 
             if (beheld is PlayerMobile mobile && mobile.DisplayChampionTitle)
             {
-                var context = mobile.ChampionTitles;
-
-                if (context.Harrower > 0)
+                var titleLabel = mobile.GetChampionTitleLabel();
+                if (titleLabel > 0)
                 {
-                    var harrowerTitle = Localization.GetText(1113082 + Math.Min(context.Harrower, 10), beholder.Language);
+                    // Should this be translated to the receivers language? Prefix titles aren't?
+                    title.Append($": {Localization.GetText(titleLabel)}");
 
-                    title.Append($": {harrowerTitle}");
-                }
-                else
-                {
-                    int highestValue = 0, highestType = 0;
-                    for (var i = 0; i < ChampionSpawnInfo.Table.Length; i++)
-                    {
-                        var t = context.GetTitle(ChampionSpawnInfo.Table[i].Type);
-                        if (t == null)
-                        {
-                            continue;
-                        }
-
-                        var v = t.Value;
-
-                        if (v > highestValue)
-                        {
-                            highestValue = v;
-                            highestType = i;
-                        }
-                    }
-
-                    var offset = highestValue switch
-                    {
-                        > 800 => 3,
-                        > 300 => highestValue / 300,
-                        _     => 0
-                    };
-
-                    if (offset > 0)
-                    {
-                        var champInfo = ChampionSpawnInfo.Table[highestType];
-                        var championLevelName = champInfo.LevelNames[Math.Min(offset, champInfo.LevelNames.Length) - 1];
-                        var champTitle = championLevelName.Number > 0
-                            ? Localization.GetText(championLevelName.Number, beholder.Language)
-                            : championLevelName.String;
-
-                        title.Append($": {champTitle}");
-                    }
+                    // Do not display the skills title
+                    return title.ToString();
                 }
             }
 
