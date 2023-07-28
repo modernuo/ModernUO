@@ -306,6 +306,8 @@ public partial class ChampionTitleContext
             if (value <= 0)
             {
                 title = null;
+
+                _player.InvalidateProperties();
                 return;
             }
         }
@@ -316,6 +318,7 @@ public partial class ChampionTitleContext
 
         title.Value = value;
         title.LastDecay = Core.Now;
+        _player.InvalidateProperties();
     }
 
     public void SetLastDecay(ChampionSpawnType type, DateTime value)
