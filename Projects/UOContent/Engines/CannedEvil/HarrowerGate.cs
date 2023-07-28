@@ -1,60 +1,32 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class HarrowerGate : Moongate
 {
-    public class HarrowerGate : Moongate
+    [SerializableField(0)]
+    private Mobile _harrower;
+
+    public HarrowerGate(Mobile harrower, Point3D loc, Map map, Point3D targLoc, Map targMap) : base(targLoc, targMap)
     {
-        private Mobile m_Harrower;
+        _harrower = harrower;
 
-        public HarrowerGate(Mobile harrower, Point3D loc, Map map, Point3D targLoc, Map targMap) : base(targLoc, targMap)
+        Dispellable = false;
+        ItemID = 0x1FD4;
+        Light = LightType.Circle300;
+
+        MoveToWorld(loc, map);
+    }
+
+    public override int LabelNumber => 1049498; // dark moongate
+
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        if (_harrower == null)
         {
-            m_Harrower = harrower;
-
-            Dispellable = false;
-            ItemID = 0x1FD4;
-            Light = LightType.Circle300;
-
-            MoveToWorld(loc, map);
-        }
-
-        public HarrowerGate(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1049498; // dark moongate
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Harrower);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Harrower = reader.ReadEntity<Mobile>();
-
-                        if (m_Harrower == null)
-                        {
-                            Delete();
-                        }
-
-                        break;
-                    }
-            }
-
-            if (Light != LightType.Circle300)
-            {
-                Light = LightType.Circle300;
-            }
+            Delete();
         }
     }
 }

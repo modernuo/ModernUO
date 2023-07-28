@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Network;
@@ -134,8 +135,12 @@ namespace Server.Items
                     {
                         var ammo = AmmoType;
 
-                        pm.RecoverableAmmo.TryGetValue(ammo, out var result);
-                        pm.RecoverableAmmo[ammo] = result + 1;
+                        if (ammo != null)
+                        {
+                            pm.RecoverableAmmo ??= new Dictionary<Type, int>();
+                            pm.RecoverableAmmo.TryGetValue(ammo, out var result);
+                            pm.RecoverableAmmo[ammo] = result + 1;
+                        }
 
                         if (!pm.Warmode)
                         {

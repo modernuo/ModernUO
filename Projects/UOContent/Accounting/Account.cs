@@ -333,12 +333,6 @@ namespace Server.Accounting
             }
         }
 
-        public bool ShouldExecuteAfterSerialize => false;
-
-        public void AfterSerialize()
-        {
-        }
-
         /// <summary>
         ///     Deletes the account, all characters of the account, and all houses of those characters
         /// </summary>

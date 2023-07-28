@@ -58,9 +58,9 @@ public static class ValorVirtue
         }
         else if (idol.Spawn.Active)
         {
-            if (idol.Spawn.Champion != null) // TODO: Message?
+            if (idol.Spawn.Champion != null)
             {
-                return;
+                from.SendLocalizedMessage(1112470); // You may not use Valor on this Champion Idol. The Champion has already spawned.
             }
 
             int needed, consumed;

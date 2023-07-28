@@ -5,7 +5,7 @@ GOTO :CMDSCRIPT
 ::SHELLSCRIPT
 config=$1
 os=$2
-arch=${3:-x64}
+arch=${3:-$(uname -m)}
 
 if [[ -n $os ]]; then
   os="-r $os"
@@ -20,6 +20,12 @@ if [[ $config ]]; then
   config="-c $config"
 else
   config="-c Release"
+fi
+
+if [[ $arch =~ ^[aarch|arm]* ]]; then
+  arch="arm64"
+else
+  arch="x64"
 fi
 
 if [[ $os == *'centos'* || $os == *'rhel'* ]]; then

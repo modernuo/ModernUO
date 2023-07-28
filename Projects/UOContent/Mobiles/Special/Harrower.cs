@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.CannedEvil;
 using Server.Engines.Virtues;
 using Server.Items;
 using Server.Spells;
@@ -325,7 +326,7 @@ namespace Server.Mobiles
 
                     if (ds.m_HasRight && ds.m_Mobile is PlayerMobile mobile)
                     {
-                        ChampionTitleInfo.AwardHarrowerTitle(mobile);
+                        ChampionTitleSystem.AwardHarrowerTitle(mobile);
                     }
                 }
 

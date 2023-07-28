@@ -112,10 +112,4 @@ public class Entity : IEntity
     public void Serialize(IGenericWriter writer)
     {
     }
-
-    public bool ShouldExecuteAfterSerialize => false;
-
-    public void AfterSerialize()
-    {
-    }
 }

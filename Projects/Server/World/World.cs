@@ -44,7 +44,6 @@ public static class World
     private static Dictionary<Serial, IEntity> _pendingAdd = new();
     private static Dictionary<Serial, IEntity> _pendingDelete = new();
     private static ConcurrentQueue<Item> _decayQueue = new();
-    private static ConcurrentQueue<ISerializable> _afterSerializeEntities = new();
 
     private static string _tempSavePath; // Path to the temporary folder for the save
     private static bool _enableSaveStats;
@@ -166,7 +165,7 @@ public static class World
         _enableSaveStats = ServerConfiguration.GetOrUpdateSetting("world.enableSaveStats", false);
 
         // Mobiles & Items
-        Persistence.Register("Mobiles & Items", SaveEntities, WriteEntities, LoadEntities, AfterSerialize, 1);
+        Persistence.Register("Mobiles & Items", SaveEntities, WriteEntities, LoadEntities, 1);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -186,9 +185,6 @@ public static class World
 
         _decayQueue.Enqueue(item);
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void EnqueueAfterSerialization(ISerializable entity) => _afterSerializeEntities.Enqueue(entity);
 
     public static void Broadcast(int hue, bool ascii, string text)
     {
@@ -518,14 +514,6 @@ public static class World
      **********************************************************************************************************************
      */
     public static ConcurrentQueue<Type> SerializedTypes { get; } = new();
-
-    private static void AfterSerialize()
-    {
-        while (_afterSerializeEntities.TryDequeue(out var entity))
-        {
-            entity.AfterSerialize();
-        }
-    }
 
     private static void SaveEntities()
     {

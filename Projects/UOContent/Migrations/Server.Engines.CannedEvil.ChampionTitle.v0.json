@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Engines.CannedEvil.ChampionTitle",
+  "properties": [
+    {
+      "name": "Value",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "LastDecay",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "type": "Server.Engines.CannedEvil.ChampionSkullBrazier",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Engines.CannedEvil.ChampionSkullType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Platform",
+      "type": "Server.Engines.CannedEvil.ChampionSkullPlatform",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Skull",
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

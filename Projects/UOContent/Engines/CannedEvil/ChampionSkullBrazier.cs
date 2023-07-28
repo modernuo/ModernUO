@@ -13,194 +13,156 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Targeting;
 using Server.Mobiles;
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+[SerializationGenerator(1, false)]
+public partial class ChampionSkullBrazier : AddonComponent
 {
-    public class ChampionSkullBrazier : AddonComponent
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private ChampionSkullType _type;
+
+    [InvalidateProperties]
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private ChampionSkullPlatform _platform;
+
+    [SerializableProperty(2)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Item Skull
     {
-        private ChampionSkullType m_Type;
-        private Item m_Skull;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ChampionSkullPlatform Platform { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ChampionSkullType Type
+        get => _skull;
+        set
         {
-            get => m_Type;
-            set
-            {
-                m_Type = value;
-                InvalidateProperties();
-            }
+            _skull = value;
+            this.MarkDirty();
+            _platform?.Validate();
+        }
+    }
+
+    public override int LabelNumber => 1049489 + (int)_type;
+
+    public ChampionSkullBrazier(ChampionSkullPlatform platform, ChampionSkullType type) : base(0x19BB)
+    {
+        Hue = 0x455;
+        Light = LightType.Circle300;
+
+        _platform = platform;
+        _type = type;
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        _platform?.Validate();
+        BeginSacrifice(from);
+    }
+
+    public void BeginSacrifice(Mobile from)
+    {
+        if (Deleted)
+        {
+            return;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Item Skull
+        if (_skull is { Deleted: true })
         {
-            get => m_Skull;
-            set
-            {
-                m_Skull = value;
-                Platform?.Validate();
-            }
+            Skull = null;
         }
 
-        public override int LabelNumber => 1049489 + (int)m_Type;
-
-        public ChampionSkullBrazier(ChampionSkullPlatform platform, ChampionSkullType type) : base(0x19BB)
+        if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
         {
-            Hue = 0x455;
-            Light = LightType.Circle300;
+            from.SendLocalizedMessage(500446); // That is too far away.
+        }
+        else if (!Harrower.CanSpawn)
+        {
+            from.SendMessage("The harrower has already been spawned.");
+        }
+        else if (_skull == null)
+        {
+            from.SendLocalizedMessage(1049485); // What would you like to sacrifice?
+            from.Target = new SacrificeTarget(this);
+        }
+        else
+        {
+            SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
+        }
+    }
 
-            Platform = platform;
-            m_Type = type;
+    public void EndSacrifice(Mobile from, ChampionSkull skull)
+    {
+        if (Deleted)
+        {
+            return;
         }
 
-        public ChampionSkullBrazier(Serial serial) : base(serial)
+        if (_skull is { Deleted: true })
         {
+            Skull = null;
         }
 
-        public override void OnDoubleClick(Mobile from)
+        if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
         {
-            Platform?.Validate();
-
-            BeginSacrifice(from);
+            from.SendLocalizedMessage(500446); // That is too far away.
         }
-
-        public void BeginSacrifice(Mobile from)
+        else if (!Harrower.CanSpawn)
         {
-            if (Deleted)
-            {
-                return;
-            }
-
-            if (m_Skull is { Deleted: true })
-            {
-                Skull = null;
-            }
-
-            if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
-            {
-                from.SendLocalizedMessage(500446); // That is too far away.
-            }
-            else if (!Harrower.CanSpawn)
-            {
-                from.SendMessage("The harrower has already been spawned.");
-            }
-            else if (m_Skull == null)
-            {
-                from.SendLocalizedMessage(1049485); // What would you like to sacrifice?
-                from.Target = new SacrificeTarget(this);
-            }
-            else
-            {
-                SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
-            }
+            from.SendMessage("The harrower has already been spawned.");
         }
-
-        public void EndSacrifice(Mobile from, ChampionSkull skull)
+        else if (skull == null)
         {
-            if (Deleted)
-            {
-                return;
-            }
-
-            if (m_Skull is { Deleted: true })
-            {
-                Skull = null;
-            }
-
-            if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
-            {
-                from.SendLocalizedMessage(500446); // That is too far away.
-            }
-            else if (!Harrower.CanSpawn)
-            {
-                from.SendMessage("The harrower has already been spawned.");
-            }
-            else if (skull == null)
-            {
-                SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
-            }
-            else if (m_Skull != null)
-            {
-                SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
-            }
-            else if (!skull.IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(1049486); // You can only sacrifice items that are in your backpack!
-            }
-            else if (skull.Type == Type)
-            {
-                skull.Movable = false;
-                skull.MoveToWorld(GetWorldTop(), Map);
-
-                Skull = skull;
-            }
-            else
-            {
-                SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
-            }
+            SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
         }
-
-        private class SacrificeTarget : Target
+        else if (_skull != null)
         {
-            private readonly ChampionSkullBrazier m_Brazier;
-
-            public SacrificeTarget(ChampionSkullBrazier brazier) : base(12, false, TargetFlags.None) =>
-                m_Brazier = brazier;
-
-            protected override void OnTarget(Mobile from, object targeted) =>
-                m_Brazier.EndSacrifice(from, targeted as ChampionSkull);
+            SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
         }
-
-        public override void Serialize(IGenericWriter writer)
+        else if (!skull.IsChildOf(from.Backpack))
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write((int)m_Type);
-            writer.Write(Platform);
-            writer.Write(m_Skull);
+            from.SendLocalizedMessage(1049486); // You can only sacrifice items that are in your backpack!
         }
-
-        public override void Deserialize(IGenericReader reader)
+        else if (skull.Type == Type)
         {
-            base.Deserialize(reader);
+            skull.Movable = false;
+            skull.MoveToWorld(GetWorldTop(), Map);
 
-            var version = reader.ReadInt();
+            Skull = skull;
+        }
+        else
+        {
+            SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
+        }
+    }
 
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Type = (ChampionSkullType)reader.ReadInt();
-                        Platform = reader.ReadEntity<ChampionSkullPlatform>();
-                        m_Skull = reader.ReadEntity<Item>();
+    private class SacrificeTarget : Target
+    {
+        private readonly ChampionSkullBrazier _brazier;
 
-                        if (Platform == null)
-                        {
-                            Delete();
-                        }
+        public SacrificeTarget(ChampionSkullBrazier brazier) : base(12, false, TargetFlags.None) =>
+            _brazier = brazier;
 
-                        break;
-                    }
-            }
+        protected override void OnTarget(Mobile from, object targeted) =>
+            _brazier.EndSacrifice(from, targeted as ChampionSkull);
+    }
 
-            if (Hue == 0x497)
-            {
-                Hue = 0x455;
-            }
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        _type = (ChampionSkullType)reader.ReadInt();
+        _platform = reader.ReadEntity<ChampionSkullPlatform>();
+        _skull = reader.ReadEntity<Item>();
+    }
 
-            if (Light != LightType.Circle300)
-            {
-                Light = LightType.Circle300;
-            }
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        if (_platform == null)
+        {
+            Delete();
         }
     }
 }

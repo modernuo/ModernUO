@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.HarrowerGate",
+  "properties": [
+    {
+      "name": "Harrower",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
