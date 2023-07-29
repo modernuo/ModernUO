@@ -12,17 +12,6 @@ public partial class HireMage : BaseHire
         SpeechHue = Utility.RandomDyedHue();
         Hue = Race.Human.RandomSkinHue();
         Title = "the mage";
-        if (Female = Utility.RandomBool())
-        {
-            Body = 0x191;
-            Name = NameList.RandomName("female");
-        }
-        else
-        {
-            Body = 0x190;
-            Name = NameList.RandomName("male");
-            EquipItem(new ShortPants(Utility.RandomNeutralHue()));
-        }
 
         HairItemID = Race.RandomHair(Female);
         HairHue = Race.RandomHairHue();
@@ -43,6 +32,18 @@ public partial class HireMage : BaseHire
 
         Fame = 100;
         Karma = 100;
+
+        if (Female = Utility.RandomBool())
+        {
+            Body = 0x191;
+            Name = NameList.RandomName("female");
+        }
+        else
+        {
+            Body = 0x190;
+            Name = NameList.RandomName("male");
+            EquipItem(new ShortPants(Utility.RandomNeutralHue()));
+        }
 
         EquipItem(new Shirt());
         EquipItem(new Robe(Utility.RandomNeutralHue()));

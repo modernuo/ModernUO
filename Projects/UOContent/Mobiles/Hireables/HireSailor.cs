@@ -12,18 +12,6 @@ public partial class HireSailor : BaseHire
         SpeechHue = Utility.RandomDyedHue();
         Hue = Race.Human.RandomSkinHue();
 
-        if (Female = Utility.RandomBool())
-        {
-            Body = 0x191;
-            Name = NameList.RandomName("female");
-            EquipItem(new ShortPants(Utility.RandomNeutralHue()));
-        }
-        else
-        {
-            Body = 0x190;
-            Name = NameList.RandomName("male");
-            EquipItem(new ShortPants(Utility.RandomNeutralHue()));
-        }
         Title = "the sailor";
         HairItemID = Race.RandomHair(Female);
         HairHue = Race.RandomHairHue();
@@ -45,8 +33,22 @@ public partial class HireSailor : BaseHire
         SetSkill(SkillName.Lockpicking, 65, 87);
         SetSkill(SkillName.Hiding, 65, 87);
         SetSkill(SkillName.Snooping, 65, 87);
+
         Fame = 100;
         Karma = 0;
+
+        if (Female = Utility.RandomBool())
+        {
+            Body = 0x191;
+            Name = NameList.RandomName("female");
+            EquipItem(new ShortPants(Utility.RandomNeutralHue()));
+        }
+        else
+        {
+            Body = 0x190;
+            Name = NameList.RandomName("male");
+            EquipItem(new ShortPants(Utility.RandomNeutralHue()));
+        }
 
         EquipItem(new Shoes(Utility.RandomNeutralHue()));
         EquipItem(new Cutlass());

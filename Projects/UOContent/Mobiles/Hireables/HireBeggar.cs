@@ -12,6 +12,25 @@ public partial class HireBeggar : BaseHire
         SpeechHue = Utility.RandomDyedHue();
         Hue = Race.Human.RandomSkinHue();
 
+        Title = "the beggar";
+        HairItemID = Race.RandomHair(Female);
+        HairHue = Race.RandomHairHue();
+        Race.RandomFacialHair(this);
+
+        SetStr(26, 26);
+        SetDex(21, 21);
+        SetInt(36, 36);
+
+        SetDamage(1, 1);
+
+        SetSkill(SkillName.Begging, 66, 97);
+        SetSkill(SkillName.Tactics, 5, 27);
+        SetSkill(SkillName.Wrestling, 5, 27);
+        SetSkill(SkillName.Magery, 2, 2);
+
+        Fame = 0;
+        Karma = 0;
+
         if (Female = Utility.RandomBool())
         {
             Body = 0x191;
@@ -37,25 +56,6 @@ public partial class HireBeggar : BaseHire
             Name = NameList.RandomName("male");
             EquipItem(new ShortPants(Utility.RandomNeutralHue()));
         }
-
-        Title = "the beggar";
-        HairItemID = Race.RandomHair(Female);
-        HairHue = Race.RandomHairHue();
-        Race.RandomFacialHair(this);
-
-        SetStr(26, 26);
-        SetDex(21, 21);
-        SetInt(36, 36);
-
-        SetDamage(1, 1);
-
-        SetSkill(SkillName.Begging, 66, 97);
-        SetSkill(SkillName.Tactics, 5, 27);
-        SetSkill(SkillName.Wrestling, 5, 27);
-        SetSkill(SkillName.Magery, 2, 2);
-
-        Fame = 0;
-        Karma = 0;
 
         EquipItem(new Sandals(Utility.RandomNeutralHue()));
 
