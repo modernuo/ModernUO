@@ -150,7 +150,8 @@ public class HouseRegion : BaseRegion
                 return false;
             }
 
-            if (bc?.Controlled == false && House.IsAosRules && !House.Public) // Untamed creatures cannot enter public houses
+            // Untamed creatures cannot enter private houses
+            if (House.IsAosRules && !House.Public && bc?.Controlled == false)
             {
                 return false;
             }
