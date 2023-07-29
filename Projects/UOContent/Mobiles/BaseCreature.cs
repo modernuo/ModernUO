@@ -2260,39 +2260,25 @@ namespace Server.Mobiles
 
         public void RemoveFollowers()
         {
-            if (m_ControlMaster != null)
+            var master = m_ControlMaster ?? m_SummonMaster;
+            if (master != null)
             {
-                m_ControlMaster.Followers -= Math.Min(ControlSlots, m_ControlMaster.Followers);
-                if (m_ControlMaster is PlayerMobile mobile)
+                master.Followers -= Math.Min(ControlSlots, master.Followers);
+                if (master is PlayerMobile pm)
                 {
-                    mobile.AllFollowers?.Remove(this);
-                    mobile.AutoStabled?.Remove(this);
+                    pm.RemoveFollower(this);
+                    pm.AutoStabled?.Remove(this);
                 }
-            }
-            else if (m_SummonMaster != null)
-            {
-                m_SummonMaster.Followers -= Math.Min(ControlSlots, m_SummonMaster.Followers);
-                (m_SummonMaster as PlayerMobile)?.AllFollowers?.Remove(this);
             }
         }
 
         public void AddFollowers()
         {
-            if (m_ControlMaster != null)
+            var master = m_ControlMaster ?? m_SummonMaster;
+            if (master != null)
             {
-                m_ControlMaster.Followers += ControlSlots;
-                if (m_ControlMaster is PlayerMobile pm)
-                {
-                    pm.AddFollower(this);
-                }
-            }
-            else if (m_SummonMaster != null)
-            {
-                m_SummonMaster.Followers += ControlSlots;
-                if (m_SummonMaster is PlayerMobile pm)
-                {
-                    pm.AddFollower(this);
-                }
+                master.Followers += ControlSlots;
+                (master as PlayerMobile)?.AddFollower(this);
             }
         }
 
@@ -3415,8 +3401,6 @@ namespace Server.Mobiles
                     Titles.AwardKarma(titles[i], karma[i], true);
                 }
             }
-
-            RemoveFollowers();
 
             base.OnDeath(c);
 
