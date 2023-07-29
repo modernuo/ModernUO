@@ -30,7 +30,12 @@
       "EJ": false
     },
     "MapSelectionFlags": {
-      "Felucca": true
+      "Felucca": true,
+      "Trammel": false,
+      "Ilshenar": false,
+      "Malas": false,
+      "Tokuno": false,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
@@ -98,7 +103,11 @@
     },
     "MapSelectionFlags": {
       "Felucca": true,
-      "Trammel": true
+      "Trammel": true,
+      "Ilshenar": false,
+      "Malas": false,
+      "Tokuno": false,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
@@ -166,7 +175,11 @@
     },
     "MapSelectionFlags": {
       "Felucca": true,
-      "Trammel": true
+      "Trammel": true,
+      "Ilshenar": false,
+      "Malas": false,
+      "Tokuno": false,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
@@ -235,7 +248,10 @@
     "MapSelectionFlags": {
       "Felucca": true,
       "Trammel": true,
-      "Ilshenar": true
+      "Ilshenar": true,
+      "Malas": false,
+      "Tokuno": false,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
@@ -304,7 +320,10 @@
     "MapSelectionFlags": {
       "Felucca": true,
       "Trammel": true,
-      "Ilshenar": true
+      "Ilshenar": true,
+      "Malas": false,
+      "Tokuno": false,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
@@ -374,7 +393,9 @@
       "Felucca": true,
       "Trammel": true,
       "Ilshenar": true,
-      "Malas": true
+      "Malas": true,
+      "Tokuno": false,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
@@ -445,7 +466,8 @@
       "Trammel": true,
       "Ilshenar": true,
       "Malas": true,
-      "Tokuno": true
+      "Tokuno": true,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
@@ -516,7 +538,8 @@
       "Trammel": true,
       "Ilshenar": true,
       "Malas": true,
-      "Tokuno": true
+      "Tokuno": true,
+      "TerMer": false
     },
     "CharacterListFlags": {
       "Unk1": false,
