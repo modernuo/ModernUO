@@ -144,18 +144,13 @@ public class HouseRegion : BaseRegion
 
         if (bc?.NoHouseRestrictions != true)
         {
-            if (bc?.Controlled == false) // Untamed creatures cannot enter public houses
-            {
-                return false;
-            }
-
             if (bc?.IsHouseSummonable == true &&
                 !(BaseCreature.Summoning || House.IsInside(oldLocation, 16)))
             {
                 return false;
             }
 
-            if (bc?.Controlled == false && House.IsAosRules && !House.Public)
+            if (bc?.Controlled == false && House.IsAosRules && !House.Public) // Untamed creatures cannot enter public houses
             {
                 return false;
             }
