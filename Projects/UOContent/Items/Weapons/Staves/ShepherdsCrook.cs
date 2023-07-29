@@ -81,7 +81,7 @@ namespace Server.Items
                 }
             }
 
-            private bool IsHerdable(BaseCreature bc)
+            private static bool IsHerdable(BaseCreature bc)
             {
                 if (bc.IsParagon)
                 {

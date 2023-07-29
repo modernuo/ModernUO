@@ -46,11 +46,6 @@ namespace Server.Engines.Spawners
                 {
                     e.Spawner = parent;
 
-                    if (e is BaseCreature creature)
-                    {
-                        creature.RemoveIfUntamed = true;
-                    }
-
                     Spawned.Add(e);
                     parent.Spawned.TryAdd(e, this);
                 }
