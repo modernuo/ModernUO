@@ -12,17 +12,6 @@ public partial class HireRangerArcher : BaseHire
         SpeechHue = Utility.RandomDyedHue();
         Hue = Race.Human.RandomSkinHue();
 
-        if (Female = Utility.RandomBool())
-        {
-            Body = 0x191;
-            Name = NameList.RandomName("female");
-        }
-        else
-        {
-            Body = 0x190;
-            Name = NameList.RandomName("male");
-        }
-
         Title = "the ranger";
         HairItemID = Race.RandomHair(Female);
         HairHue = Race.RandomHairHue();
@@ -44,6 +33,17 @@ public partial class HireRangerArcher : BaseHire
 
         Fame = 100;
         Karma = 125;
+
+        if (Female = Utility.RandomBool())
+        {
+            Body = 0x191;
+            Name = NameList.RandomName("female");
+        }
+        else
+        {
+            Body = 0x190;
+            Name = NameList.RandomName("male");
+        }
 
         EquipItem(new Shoes(Utility.RandomNeutralHue()));
         EquipItem(new Shirt());

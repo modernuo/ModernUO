@@ -12,6 +12,28 @@ public partial class HireBard : BaseHire
         SpeechHue = Utility.RandomDyedHue();
         Hue = Race.Human.RandomSkinHue();
 
+        Title = "the bard";
+        HairItemID = Race.RandomHair(Female);
+        HairHue = Race.RandomHairHue();
+        Race.RandomFacialHair(this);
+
+        SetStr(16, 16);
+        SetDex(26, 26);
+        SetInt(26, 26);
+
+        SetDamage(5, 10);
+
+        SetSkill(SkillName.Tactics, 35, 57);
+        SetSkill(SkillName.Magery, 22, 22);
+        SetSkill(SkillName.Swords, 45, 67);
+        SetSkill(SkillName.Archery, 36, 67);
+        SetSkill(SkillName.Parry, 45, 60);
+        SetSkill(SkillName.Musicianship, 66.0, 97.5);
+        SetSkill(SkillName.Peacemaking, 65.0, 87.5);
+
+        Fame = 100;
+        Karma = 100;
+
         if (Female = Utility.RandomBool())
         {
             Body = 0x191;
@@ -37,28 +59,6 @@ public partial class HireBard : BaseHire
             Name = NameList.RandomName("male");
             EquipItem(new ShortPants(Utility.RandomNeutralHue()));
         }
-
-        Title = "the bard";
-        HairItemID = Race.RandomHair(Female);
-        HairHue = Race.RandomHairHue();
-        Race.RandomFacialHair(this);
-
-        SetStr(16, 16);
-        SetDex(26, 26);
-        SetInt(26, 26);
-
-        SetDamage(5, 10);
-
-        SetSkill(SkillName.Tactics, 35, 57);
-        SetSkill(SkillName.Magery, 22, 22);
-        SetSkill(SkillName.Swords, 45, 67);
-        SetSkill(SkillName.Archery, 36, 67);
-        SetSkill(SkillName.Parry, 45, 60);
-        SetSkill(SkillName.Musicianship, 66.0, 97.5);
-        SetSkill(SkillName.Peacemaking, 65.0, 87.5);
-
-        Fame = 100;
-        Karma = 100;
 
         EquipItem(new Shoes(Utility.RandomNeutralHue()));
 
