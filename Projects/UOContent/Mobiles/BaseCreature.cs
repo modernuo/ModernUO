@@ -2260,39 +2260,21 @@ namespace Server.Mobiles
 
         public void RemoveFollowers()
         {
-            if (m_ControlMaster != null)
+            var master = m_ControlMaster ?? m_SummonMaster;
+            if (master != null)
             {
-                m_ControlMaster.Followers -= Math.Min(ControlSlots, m_ControlMaster.Followers);
-                if (m_ControlMaster is PlayerMobile mobile)
-                {
-                    mobile.AllFollowers?.Remove(this);
-                    mobile.AutoStabled?.Remove(this);
-                }
-            }
-            else if (m_SummonMaster != null)
-            {
-                m_SummonMaster.Followers -= Math.Min(ControlSlots, m_SummonMaster.Followers);
-                (m_SummonMaster as PlayerMobile)?.AllFollowers?.Remove(this);
+                master.Followers -= Math.Min(ControlSlots, master.Followers);
+                (master as PlayerMobile)?.RemoveFollower(this);
             }
         }
 
         public void AddFollowers()
         {
-            if (m_ControlMaster != null)
+            var master = m_ControlMaster ?? m_SummonMaster;
+            if (master != null)
             {
-                m_ControlMaster.Followers += ControlSlots;
-                if (m_ControlMaster is PlayerMobile pm)
-                {
-                    pm.AddFollower(this);
-                }
-            }
-            else if (m_SummonMaster != null)
-            {
-                m_SummonMaster.Followers += ControlSlots;
-                if (m_SummonMaster is PlayerMobile pm)
-                {
-                    pm.AddFollower(this);
-                }
+                master.Followers += ControlSlots;
+                (master as PlayerMobile)?.AddFollower(this);
             }
         }
 
@@ -3415,8 +3397,6 @@ namespace Server.Mobiles
                     Titles.AwardKarma(titles[i], karma[i], true);
                 }
             }
-
-            RemoveFollowers();
 
             base.OnDeath(c);
 
