@@ -12,17 +12,6 @@ public partial class HireFighter : BaseHire
         SpeechHue = Utility.RandomDyedHue();
         Hue = Race.Human.RandomSkinHue();
 
-        if (Female = Utility.RandomBool())
-        {
-            Body = 0x191;
-            Name = NameList.RandomName("female");
-        }
-        else
-        {
-            Body = 0x190;
-            Name = NameList.RandomName("male");
-        }
-
         Title = "the fighter";
         HairItemID = Race.RandomHair(Female);
         HairHue = Race.RandomHairHue();
@@ -45,6 +34,17 @@ public partial class HireFighter : BaseHire
         Fame = 100;
         Karma = 100;
 
+        if (Female = Utility.RandomBool())
+        {
+            Body = 0x191;
+            Name = NameList.RandomName("female");
+        }
+        else
+        {
+            Body = 0x190;
+            Name = NameList.RandomName("male");
+        }
+
         switch (Utility.Random(2))
         {
             case 0:
@@ -62,110 +62,44 @@ public partial class HireFighter : BaseHire
         EquipItem(new Shirt());
 
         // Pick a random sword
-        switch (Utility.Random(5))
+        BaseWeapon weapon = Utility.Random(5) switch
         {
-            case 0:
-                {
-                    EquipItem(new Longsword());
-                    break;
-                }
-            case 1:
-                {
-                    EquipItem(new Broadsword());
-                    break;
-                }
-            case 2:
-                {
-                    EquipItem(new VikingSword());
-                    break;
-                }
-            case 3:
-                {
-                    EquipItem(new BattleAxe());
-                    break;
-                }
-            case 4:
-                {
-                    EquipItem(new TwoHandedAxe());
-                    break;
-                }
-        }
+            1 => new Broadsword(),
+            2 => new VikingSword(),
+            3 => new BattleAxe(),
+            4 => new TwoHandedAxe(),
+            _ => new Longsword()
+        };
+
+        EquipItem(weapon);
 
         // Pick a random shield
         if (FindItemOnLayer(Layer.TwoHanded) == null)
         {
-            switch (Utility.Random(8))
+            BaseShield shield = Utility.Random(6) switch
             {
-                case 0:
-                    {
-                        EquipItem(new BronzeShield());
-                        break;
-                    }
-                case 1:
-                    {
-                        EquipItem(new HeaterShield());
-                        break;
-                    }
-                case 2:
-                    {
-                        EquipItem(new MetalKiteShield());
-                        break;
-                    }
-                case 3:
-                    {
-                        EquipItem(new MetalShield());
-                        break;
-                    }
-                case 4:
-                    {
-                        EquipItem(new WoodenKiteShield());
-                        break;
-                    }
-                case 5:
-                    {
-                        EquipItem(new WoodenShield());
-                        break;
-                    }
-                case 6:
-                    {
-                        EquipItem(new OrderShield());
-                        break;
-                    }
-                case 7:
-                    {
-                        EquipItem(new ChaosShield());
-                        break;
-                    }
-            }
+                1 => new HeaterShield(),
+                2 => new MetalKiteShield(),
+                3 => new MetalShield(),
+                4 => new WoodenKiteShield(),
+                5 => new WoodenShield(),
+                _ => new BronzeShield()
+            };
+
+            EquipItem(shield);
         }
 
-        switch (Utility.Random(5))
+        BaseArmor helm = Utility.Random(5) switch
         {
-            case 0:
-                {
-                    break;
-                }
-            case 1:
-                {
-                    EquipItem(new Bascinet());
-                    break;
-                }
-            case 2:
-                {
-                    EquipItem(new CloseHelm());
-                    break;
-                }
-            case 3:
-                {
-                    EquipItem(new NorseHelm());
-                    break;
-                }
-            case 4:
-                {
-                    EquipItem(new Helmet());
-                    break;
-                }
-        }
+            1 => new Bascinet(),
+            2 => new CloseHelm(),
+            3 => new NorseHelm(),
+            4 => new Helmet(),
+            _ => null
+        };
+
+        EquipItem(helm);
+
         // Pick some armour
         switch (Utility.Random(4))
         {

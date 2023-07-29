@@ -12,51 +12,12 @@ public partial class HirePaladin : BaseHire
         SpeechHue = Utility.RandomDyedHue();
         Hue = Race.Human.RandomSkinHue();
 
-        if (Female = Utility.RandomBool())
-        {
-            Body = 0x191;
-            Name = NameList.RandomName("female");
-        }
-        else
-        {
-            Body = 0x190;
-            Name = NameList.RandomName("male");
-        }
-
         Title = "the paladin";
         HairItemID = Race.RandomHair(Female);
         HairHue = Race.RandomHairHue();
         Race.RandomFacialHair(this);
 
-        switch (Utility.Random(5))
-        {
-            case 0:
-                {
-                    break;
-                }
-            case 1:
-                {
-                    EquipItem(new Bascinet());
-                    break;
-                }
-            case 2:
-                {
-                    EquipItem(new CloseHelm());
-                    break;
-                }
-            case 3:
-                {
-                    EquipItem(new NorseHelm());
-                    break;
-                }
-            case 4:
-                {
-                    EquipItem(new Helmet());
-                    break;
-                }
-        }
-
-        SetStr(86, 100);
+        SetStr(Core.AOS ? 100 : 86, 100);
         SetDex(81, 95);
         SetInt(61, 75);
 
@@ -73,6 +34,28 @@ public partial class HirePaladin : BaseHire
 
         Fame = 100;
         Karma = 250;
+
+        if (Female = Utility.RandomBool())
+        {
+            Body = 0x191;
+            Name = NameList.RandomName("female");
+        }
+        else
+        {
+            Body = 0x190;
+            Name = NameList.RandomName("male");
+        }
+
+        BaseArmor helm = Utility.Random(5) switch
+        {
+            1 => new Bascinet(),
+            2 => new CloseHelm(),
+            3 => new NorseHelm(),
+            4 => new Helmet(),
+            _ => null
+        };
+
+        EquipItem(helm);
 
         EquipItem(new Shoes(Utility.RandomNeutralHue()));
         EquipItem(new Shirt());
