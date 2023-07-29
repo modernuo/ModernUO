@@ -2264,7 +2264,11 @@ namespace Server.Mobiles
             if (master != null)
             {
                 master.Followers -= Math.Min(ControlSlots, master.Followers);
-                (master as PlayerMobile)?.RemoveFollower(this);
+                if (master is PlayerMobile pm)
+                {
+                    pm.RemoveFollower(this);
+                    pm.AutoStabled?.Remove(this);
+                }
             }
         }
 
