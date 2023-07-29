@@ -76,15 +76,13 @@ public partial class HireFighter : BaseHire
         // Pick a random shield
         if (FindItemOnLayer(Layer.TwoHanded) == null)
         {
-            BaseShield shield = Utility.Random(8) switch
+            BaseShield shield = Utility.Random(6) switch
             {
                 1 => new HeaterShield(),
                 2 => new MetalKiteShield(),
                 3 => new MetalShield(),
                 4 => new WoodenKiteShield(),
                 5 => new WoodenShield(),
-                6 => new OrderShield(),
-                7 => new ChaosShield(),
                 _ => new BronzeShield()
             };
 

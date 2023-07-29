@@ -17,7 +17,7 @@ public partial class HirePaladin : BaseHire
         HairHue = Race.RandomHairHue();
         Race.RandomFacialHair(this);
 
-        SetStr(86, 100);
+        SetStr(Core.AOS ? 100 : 86, 100);
         SetDex(81, 95);
         SetInt(61, 75);
 
