@@ -5,7 +5,6 @@ namespace Server.Maps;
 [Flags]
 public enum MapSelectionFlags
 {
-    None = 0x00000000,
     Felucca = 0x00000001,
     Trammel = 0x00000002,
     Ilshenar = 0x00000004,

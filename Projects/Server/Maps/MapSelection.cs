@@ -35,10 +35,7 @@ public static class MapSelection
 
         foreach (var flag in flags.GetEnumerable())
         {
-            if (flag != MapSelectionFlags.None)
-            {
-                builder.Append(builder.Length > 0 ? $", {flag}" : $"{flag}");
-            }
+            builder.Append(builder.Length > 0 ? $", {flag}" : $"{flag}");
         }
 
         return builder.Length == 0 ? "None" : builder.ToString();

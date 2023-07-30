@@ -60,11 +60,8 @@ public static class ExpansionConfigurationPrompts
         var i = 0;
         foreach (var flag in MapSelection.EnumFromExpansion(expansion))
         {
-            if (flag != MapSelectionFlags.None)
-            {
-                Console.WriteLine($"{i + 1}. {flag} [{(selectedMaps.Includes(flag) ? "*" : "")}]");
-                i++;
-            }
+            Console.WriteLine($"{i + 1}. {flag} [{(selectedMaps.Includes(flag) ? "*" : "")}]");
+            i++;
         }
 
         Console.WriteLine("Only these maps will be populated and moongates will only lead to them: ");
