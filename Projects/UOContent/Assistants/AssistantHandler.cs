@@ -3,7 +3,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
-using Server.Text;
 
 namespace Server.Assistants;
 

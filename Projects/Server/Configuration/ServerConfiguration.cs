@@ -19,7 +19,7 @@ using System.IO;
 using System.Net;
 using Server.Json;
 using Server.Logging;
-using Server.Maps;
+
 namespace Server;
 
 public static class ServerConfiguration
