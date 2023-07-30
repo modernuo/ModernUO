@@ -269,7 +269,7 @@ public static class ServerConfiguration
         if (!ExpansionInfo.LoadConfiguration(out var currentExpansion))
         {
             currentExpansion = (_settings.Data.TryGetValue("expansion", out var el)
-                ? el.ToObject<Expansion?>()
+                ? el.ToObject<Expansion?>(JsonConfig.DefaultOptions)
                 : null) ?? ExpansionConfigurationPrompts.GetExpansion();
 
             // We've updated the selected expansion, so choose the maps we want from it, then store and save our selection

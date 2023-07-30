@@ -104,7 +104,7 @@ public partial class NetState
     }
 
     public bool SupportsExpansion(ExpansionInfo info, bool checkCoreExpansion = true) =>
-        info != null && (!checkCoreExpansion || (int)Core.Expansion >= info.ID) && ExpansionInfo.ID >= info.ID;
+        info != null && (!checkCoreExpansion || (int)Core.Expansion >= info.Id) && ExpansionInfo.Id >= info.Id;
 
     public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion = true) =>
         SupportsExpansion(ExpansionInfo.GetInfo(ex), checkCoreExpansion);

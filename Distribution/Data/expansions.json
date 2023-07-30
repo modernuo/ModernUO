@@ -1,6 +1,6 @@
 [
   {
-    "ID": "0",
+    "Id": 0,
     "Name": "None",
     "RequiredClient": null,
     "ClientFlags": "None",
@@ -73,7 +73,7 @@
     "MobileStatusVersion": 3
   },
   {
-    "ID": "1",
+    "Id": 1,
     "Name": "The Second Age",
     "RequiredClient": null,
     "ClientFlags": "Felucca",
@@ -146,7 +146,7 @@
     "MobileStatusVersion": 3
   },
   {
-    "ID": "2",
+    "Id": 2,
     "Name": "Renaissance",
     "RequiredClient": null,
     "ClientFlags": "Trammel",
@@ -219,7 +219,7 @@
     "MobileStatusVersion": 3
   },
   {
-    "ID": "3",
+    "Id": 3,
     "Name": "Third Dawn",
     "RequiredClient": null,
     "ClientFlags": "Ilshenar",
@@ -292,7 +292,7 @@
     "MobileStatusVersion": 3
   },
   {
-    "ID": "4",
+    "Id": 4,
     "Name": "Blackthorn's Revenge",
     "RequiredClient": null,
     "ClientFlags": "Ilshenar",
@@ -365,7 +365,7 @@
     "MobileStatusVersion": 3
   },
   {
-    "ID": "5",
+    "Id": 5,
     "Name": "Age of Shadows",
     "RequiredClient": null,
     "ClientFlags": "Malas",
@@ -438,7 +438,7 @@
     "MobileStatusVersion": 6
   },
   {
-    "ID": "6",
+    "Id": 6,
     "Name": "Samurai Empire",
     "RequiredClient": null,
     "ClientFlags": "Tokuno",
@@ -511,7 +511,7 @@
     "MobileStatusVersion": 6
   },
   {
-    "ID": "7",
+    "Id": 7,
     "Name": "Mondain's Legacy",
     "RequiredClient": "5.0.0a",
     "ClientFlags": "None",
@@ -584,7 +584,7 @@
     "MobileStatusVersion": 6
   },
   {
-    "ID": "8",
+    "Id": 8,
     "Name": "Stygian Abyss",
     "RequiredClient": null,
     "ClientFlags": "TerMur",
@@ -657,7 +657,7 @@
     "MobileStatusVersion": 6
   },
   {
-    "ID": "9",
+    "Id": 9,
     "Name": "High Seas",
     "RequiredClient": "7.0.9.0",
     "ClientFlags": "None",
@@ -730,7 +730,7 @@
     "MobileStatusVersion": 6
   },
   {
-    "ID": "10",
+    "Id": 10,
     "Name": "Time of Legends",
     "RequiredClient": "7.0.45.65",
     "ClientFlags": "None",
@@ -803,7 +803,7 @@
     "MobileStatusVersion": 6
   },
   {
-    "ID": "11",
+    "Id": 11,
     "Name": "Endless Journey",
     "RequiredClient": "7.0.61.0",
     "ClientFlags": "None",

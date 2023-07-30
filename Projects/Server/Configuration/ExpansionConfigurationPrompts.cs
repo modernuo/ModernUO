@@ -14,10 +14,10 @@ public static class ExpansionConfigurationPrompts
         for (var i = 0; i < expansions.Length; i++)
         {
             var info = expansions[i];
-            Console.WriteLine(" - {0,2}: {1} ({2})", i, ((Expansion)info.ID).ToString(), info.Name);
+            Console.WriteLine(" - {0,2}: {1} ({2})", i, ((Expansion)info.Id).ToString(), info.Name);
         }
 
-        var maxExpansion = (Expansion)expansions[^1].ID;
+        var maxExpansion = (Expansion)expansions[^1].Id;
         var maxExpansionName = maxExpansion.ToString();
 
         do
@@ -60,8 +60,11 @@ public static class ExpansionConfigurationPrompts
         var i = 0;
         foreach (var flag in MapSelection.EnumFromExpansion(expansion))
         {
-            Console.WriteLine($"{i + 1}. {flag} [{(selectedMaps.Includes(flag) ? "*" : "")}]");
-            i++;
+            if (flag != MapSelectionFlags.None)
+            {
+                Console.WriteLine($"{i + 1}. {flag} [{(selectedMaps.Includes(flag) ? "*" : "")}]");
+                i++;
+            }
         }
 
         Console.WriteLine("Only these maps will be populated and moongates will only lead to them: ");
@@ -72,9 +75,10 @@ public static class ExpansionConfigurationPrompts
         Console.WriteLine($"[1-{i} and enter to toggle, or enter to finish]");
     }
 
-    internal static MapSelectionFlags GetSelectedMaps(Expansion expansion, MapSelectionFlags selectedMaps = MapSelectionFlags.None)
+    internal static MapSelectionFlags GetSelectedMaps(Expansion expansion)
     {
         var expansionMaps = ExpansionInfo.GetInfo(expansion).MapSelectionFlags;
+        var selectedMaps = expansionMaps;
 
         string lastInput;
         do
@@ -99,7 +103,7 @@ public static class ExpansionConfigurationPrompts
                 continue;
             }
 
-            var selectedFlag = (MapSelectionFlags)(1 << selectedNumber);
+            var selectedFlag = (MapSelectionFlags)(1 << (selectedNumber - 1));
 
             if (!expansionMaps.Includes(selectedFlag))
             {

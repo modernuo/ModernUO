@@ -214,7 +214,7 @@ public class ExpansionInfo
             return false;
         }
 
-        int currentExpansionIndex = expansionConfig.ID;
+        int currentExpansionIndex = expansionConfig.Id;
         Table[currentExpansionIndex] = expansionConfig;
         expansion = (Expansion)currentExpansionIndex;
         return true;
@@ -256,21 +256,21 @@ public class ExpansionInfo
         RequiredClient = requiredClient;
 
     [JsonConstructor]
-    private ExpansionInfo(
+    public ExpansionInfo(
         int id,
         string name,
         FeatureFlags supportedFeatures,
-        CharacterListFlags charListFlags,
+        CharacterListFlags characterListFlags,
         HousingFlags housingFlags,
         int mobileStatusVersion,
         MapSelectionFlags mapSelectionFlags
     )
     {
-        ID = id;
+        Id = id;
         Name = name;
 
         SupportedFeatures = supportedFeatures;
-        CharacterListFlags = charListFlags;
+        CharacterListFlags = characterListFlags;
         HousingFlags = housingFlags;
         MobileStatusVersion = mobileStatusVersion;
         MapSelectionFlags = mapSelectionFlags;
@@ -280,7 +280,7 @@ public class ExpansionInfo
 
     public static ExpansionInfo[] Table { get; }
 
-    public int ID { get; }
+    public int Id { get; }
     public string Name { get; set; }
     public ClientFlags ClientFlags { get; set; }
 
