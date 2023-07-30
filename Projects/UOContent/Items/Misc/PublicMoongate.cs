@@ -107,31 +107,11 @@ public partial class PublicMoongate : Item
 
         var count = 0;
 
-        var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-        if (availableMaps.Includes(MapSelectionFlags.Trammel))
-        {
-            count += MoonGen(PMList.Trammel);
-        }
-
-        if (availableMaps.Includes(MapSelectionFlags.Felucca))
-        {
-            count += MoonGen(PMList.Felucca);
-        }
-
-        if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
-        {
-            count += MoonGen(PMList.Ilshenar);
-        }
-
-        if (availableMaps.Includes(MapSelectionFlags.Malas))
-        {
-            count += MoonGen(PMList.Malas);
-        }
-
-        if (availableMaps.Includes(MapSelectionFlags.Tokuno))
-        {
-            count += MoonGen(PMList.Tokuno);
-        }
+        count += MoonGen(PMList.Trammel, MapSelectionFlags.Trammel);
+        count += MoonGen(PMList.Felucca, MapSelectionFlags.Felucca);
+        count += MoonGen(PMList.Ilshenar, MapSelectionFlags.Ilshenar);
+        count += MoonGen(PMList.Malas, MapSelectionFlags.Malas);
+        count += MoonGen(PMList.Tokuno, MapSelectionFlags.Tokuno);
 
         World.Broadcast(0x35, true, $"{count} moongates generated.");
     }
@@ -159,8 +139,13 @@ public partial class PublicMoongate : Item
         }
     }
 
-    private static int MoonGen(PMList list)
+    private static int MoonGen(PMList list, MapSelectionFlags flag)
     {
+        if (!ExpansionInfo.CoreExpansion.MapSelectionFlags.Includes(flag))
+        {
+            return 0;
+        }
+
         foreach (var entry in list.Entries)
         {
             Item item = new PublicMoongate();
