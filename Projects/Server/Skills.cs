@@ -860,7 +860,7 @@ public class Skills
 
             while ((uint)_index < (uint)localList.Length)
             {
-                _current = _skills[_index++];
+                _current = localList[_index++];
                 if (_current != null)
                 {
                     return true;

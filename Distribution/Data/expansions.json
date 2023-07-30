@@ -1,8 +1,9 @@
 [
   {
+    "ID": "0",
     "Name": "None",
-    "ClientVersion": null,
-    "ClientFlags": null,
+    "RequiredClient": null,
+    "ClientFlags": "None",
     "FeatureFlags": {
       "T2A": false,
       "UOR": false,
@@ -72,8 +73,9 @@
     "MobileStatusVersion": 3
   },
   {
+    "ID": "1",
     "Name": "The Second Age",
-    "ClientVersion": null,
+    "RequiredClient": null,
     "ClientFlags": "Felucca",
     "FeatureFlags": {
       "T2A": true,
@@ -144,8 +146,9 @@
     "MobileStatusVersion": 3
   },
   {
+    "ID": "2",
     "Name": "Renaissance",
-    "ClientVersion": null,
+    "RequiredClient": null,
     "ClientFlags": "Trammel",
     "FeatureFlags": {
       "T2A": true,
@@ -216,8 +219,9 @@
     "MobileStatusVersion": 3
   },
   {
+    "ID": "3",
     "Name": "Third Dawn",
-    "ClientVersion": null,
+    "RequiredClient": null,
     "ClientFlags": "Ilshenar",
     "FeatureFlags": {
       "T2A": true,
@@ -288,8 +292,9 @@
     "MobileStatusVersion": 3
   },
   {
+    "ID": "4",
     "Name": "Blackthorn's Revenge",
-    "ClientVersion": null,
+    "RequiredClient": null,
     "ClientFlags": "Ilshenar",
     "FeatureFlags": {
       "T2A": true,
@@ -360,8 +365,9 @@
     "MobileStatusVersion": 3
   },
   {
+    "ID": "5",
     "Name": "Age of Shadows",
-    "ClientVersion": null,
+    "RequiredClient": null,
     "ClientFlags": "Malas",
     "FeatureFlags": {
       "T2A": true,
@@ -432,8 +438,9 @@
     "MobileStatusVersion": 6
   },
   {
+    "ID": "6",
     "Name": "Samurai Empire",
-    "ClientVersion": null,
+    "RequiredClient": null,
     "ClientFlags": "Tokuno",
     "FeatureFlags": {
       "T2A": true,
@@ -504,9 +511,10 @@
     "MobileStatusVersion": 6
   },
   {
+    "ID": "7",
     "Name": "Mondain's Legacy",
-    "ClientVersion": "5.0.0a",
-    "ClientFlags": null,
+    "RequiredClient": "5.0.0a",
+    "ClientFlags": "None",
     "FeatureFlags": {
       "T2A": true,
       "UOR": true,
@@ -576,8 +584,9 @@
     "MobileStatusVersion": 6
   },
   {
+    "ID": "8",
     "Name": "Stygian Abyss",
-    "ClientVersion": null,
+    "RequiredClient": null,
     "ClientFlags": "TerMur",
     "FeatureFlags": {
       "T2A": true,
@@ -648,9 +657,10 @@
     "MobileStatusVersion": 6
   },
   {
+    "ID": "9",
     "Name": "High Seas",
-    "ClientVersion": "7.0.9.0",
-    "ClientFlags": null,
+    "RequiredClient": "7.0.9.0",
+    "ClientFlags": "None",
     "FeatureFlags": {
       "T2A": true,
       "UOR": true,
@@ -720,9 +730,10 @@
     "MobileStatusVersion": 6
   },
   {
+    "ID": "10",
     "Name": "Time of Legends",
-    "ClientVersion": "7.0.45.65",
-    "ClientFlags": null,
+    "RequiredClient": "7.0.45.65",
+    "ClientFlags": "None",
     "FeatureFlags": {
       "T2A": true,
       "UOR": true,
@@ -792,9 +803,10 @@
     "MobileStatusVersion": 6
   },
   {
+    "ID": "11",
     "Name": "Endless Journey",
-    "ClientVersion": "7.0.61.0",
-    "ClientFlags": null,
+    "RequiredClient": "7.0.61.0",
+    "ClientFlags": "None",
     "FeatureFlags": {
       "T2A": true,
       "UOR": true,

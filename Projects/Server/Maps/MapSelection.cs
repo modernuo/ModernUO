@@ -1,97 +1,105 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-
+using System.Runtime.CompilerServices;
 using Server.Text;
 
 namespace Server.Maps;
 
-
-public class MapSelection
+public static class MapSelection
 {
-    public static IEnumerable<MapSelectionFlags> MapSelectionValues { get; } = Enum.GetValues<MapSelectionFlags>();
+    public static MapSelectionFlags[] MapSelectionValues { get; } = Enum.GetValues<MapSelectionFlags>();
 
-    public MapSelectionFlags Flags { get; private set; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool Includes(this MapSelectionFlags flags, MapSelectionFlags flag) => (flags & flag) == flag;
 
-    public MapSelection()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Toggle(this ref MapSelectionFlags flags, MapSelectionFlags flag)
     {
+        flags ^= flag;
     }
 
-    public MapSelection(MapSelectionFlags flags) => Flags = flags;
-
-    public MapSelection(ICollection<string> mapList)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Enable(this ref MapSelectionFlags flags, MapSelectionFlags flag)
     {
-        foreach (MapSelectionFlags value in MapSelectionValues)
-        {
-            if (mapList.Contains(value.ToString()))
-            {
-                Enable(value);
-            }
-        }
+        flags |= flag;
     }
 
-    public bool Includes(MapSelectionFlags mapFlags) => (Flags & mapFlags) == mapFlags;
-
-    public bool Includes(string mapName)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Disable(this ref MapSelectionFlags flags, MapSelectionFlags flag)
     {
-        foreach (MapSelectionFlags value in MapSelectionValues)
-        {
-            if (value == 0)
-            {
-                continue;
-            }
-            if (value.ToString() != mapName)
-            {
-                continue;
-            }
-            return Includes(value);
-        }
-        return false;
+        flags &= ~flag;
     }
 
-    public void Enable(MapSelectionFlags mapFlags)
-    {
-        Flags |= mapFlags;
-    }
-
-    public void Disable(MapSelectionFlags mapFlags)
-    {
-        Flags &= ~mapFlags;
-    }
-
-    public void EnableAll()
-    {
-        Flags =
-            MapSelectionFlags.Felucca | MapSelectionFlags.Trammel | MapSelectionFlags.Ilshenar |
-            MapSelectionFlags.Malas | MapSelectionFlags.Tokuno | MapSelectionFlags.TerMur;
-    }
-
-    public void EnableAllInExpansion(Expansion expansion)
-    {
-        List<MapSelectionFlags> allMapsInExpansion =
-            ExpansionMapSelectionFlags.FromExpansion(expansion);
-
-        foreach(MapSelectionFlags mapFlag in allMapsInExpansion)
-        {
-            Flags |= mapFlag;
-        }
-    }
-
-    public string ToCommaDelimitedString()
+    public static string ToCommaDelimitedString(this MapSelectionFlags flags)
     {
         using var builder = ValueStringBuilder.Create();
 
-        for (var i = 0; i < MapSelectionValues.Count(); i++)
+        foreach (var flag in flags.GetEnumerable())
         {
-            var value = MapSelectionValues.ElementAt(i);
-
-            if (value > 0 && Includes(value))
+            if (flag != MapSelectionFlags.None)
             {
-                builder.Append(builder.Length > 0 ? $", {value}" : $"{value}");
+                builder.Append(builder.Length > 0 ? $", {flag}" : $"{flag}");
             }
         }
 
         return builder.Length == 0 ? "None" : builder.ToString();
+    }
+
+    public static MapSelectionFlags ToSelectionFlag(this Map map) => (MapSelectionFlags)(1 << (map.MapID - 1));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static MapSelectionEnumerable GetEnumerable(this MapSelectionFlags flags) => new(flags);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static MapSelectionEnumerable EnumFromExpansion(Expansion expansion) => ExpansionInfo.GetInfo(expansion).MapSelectionFlags.GetEnumerable();
+
+    public class MapSelectionEnumerable
+    {
+        private readonly MapSelectionFlags _flags;
+
+        public MapSelectionEnumerable(MapSelectionFlags flags) => _flags = flags;
+
+        public MapSelectionEnumerator GetEnumerator() => new(MapSelectionValues, _flags);
+    }
+
+    public ref struct MapSelectionEnumerator
+    {
+        private readonly MapSelectionFlags[] _allMaps;
+        private readonly MapSelectionFlags _mapSelections;
+        private int _index;
+        private MapSelectionFlags _current;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal MapSelectionEnumerator(MapSelectionFlags[] allMaps, MapSelectionFlags mapSelections)
+        {
+            _allMaps = allMaps;
+            _mapSelections = mapSelections;
+            _index = 0;
+            _current = default;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool MoveNext()
+        {
+            MapSelectionFlags[] localList = _allMaps;
+
+            while ((uint)_index < (uint)localList.Length)
+            {
+                _current = localList[_index++];
+
+                if ((_mapSelections & _current) == _current)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public MapSelectionFlags Current
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _current;
+        }
     }
 }
 

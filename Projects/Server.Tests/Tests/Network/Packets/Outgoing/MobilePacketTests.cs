@@ -243,11 +243,11 @@ namespace Server.Tests.Network
             int mobileStatusVersion
         )
         {
-            var expansionInfo = ExpansionInfo.GetInfo(Core.Expansion);
+            var expansionInfo = ExpansionInfo.CoreExpansion;
             var oldExpansion = Core.Expansion;
             var oldVersion = expansionInfo.MobileStatusVersion;
             Core.Expansion = expansion;
-            ExpansionInfo.GetInfo(Core.Expansion).MobileStatusVersion = mobileStatusVersion;
+            ExpansionInfo.CoreExpansion.MobileStatusVersion = mobileStatusVersion;
 
             var m = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
             m.DefaultMobileInit();

@@ -2092,27 +2092,28 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        if (Core.ML && Map.AvailableMaps.Includes(MapSelectionFlags.Malas))
+                                        var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+                                        if (Core.ML && availableMaps.Includes(MapSelectionFlags.Malas))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*.json");
                                         }
 
-                                        if (Core.SE && Map.AvailableMaps.Includes(MapSelectionFlags.Tokuno))
+                                        if (Core.SE && availableMaps.Includes(MapSelectionFlags.Tokuno))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*.json");
                                         }
 
-                                        if (Core.AOS && Map.AvailableMaps.Includes(MapSelectionFlags.Ilshenar))
+                                        if (Core.AOS && availableMaps.Includes(MapSelectionFlags.Ilshenar))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/ilshenar/*.json");
                                         }
 
-                                        if (Map.AvailableMaps.Includes(MapSelectionFlags.Trammel))
+                                        if (availableMaps.Includes(MapSelectionFlags.Trammel))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*.json");
                                         }
 
-                                        if (Map.AvailableMaps.Includes(MapSelectionFlags.Felucca))
+                                        if (availableMaps.Includes(MapSelectionFlags.Felucca))
                                         {
                                             InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*.json");
                                         }

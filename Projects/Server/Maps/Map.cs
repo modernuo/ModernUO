@@ -319,7 +319,6 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
     public const int SectorSize = 16;
     public const int SectorShift = 4;
     public const int SectorActiveRange = 2;
-    public static MapSelection AvailableMaps { get; set; }
 
     private static ILogger logger = LogFactory.GetLogger(typeof(Map));
     private readonly int m_FileIndex;

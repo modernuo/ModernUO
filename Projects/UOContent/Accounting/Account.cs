@@ -1192,7 +1192,7 @@ namespace Server.Accounting
 
                 while ((uint)_index < (uint)localList.Length)
                 {
-                    _current = _mobiles[_index++];
+                    _current = localList[_index++];
                     if (_current?.Deleted == false)
                     {
                         return true;
