@@ -26,7 +26,7 @@ public partial class DungeonChampionSpawn : ChampionSpawn
         CannedEvilTimer.AddSpawn(this);
     }
 
-    public DungeonChampionSpawn(Serial serial)
+    public DungeonChampionSpawn(Serial serial) : base(serial)
     {
         CannedEvilTimer.AddSpawn(this);
     }
