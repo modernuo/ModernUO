@@ -28,7 +28,7 @@ public partial class LLChampionSpawn : ChampionSpawn
         CannedEvilTimer.AddSpawn(this);
     }
 
-    public LLChampionSpawn(Serial serial)
+    public LLChampionSpawn(Serial serial) : base(serial)
     {
         CannedEvilTimer.AddSpawn(this);
     }
