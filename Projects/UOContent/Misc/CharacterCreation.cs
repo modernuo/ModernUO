@@ -325,17 +325,20 @@ public static class CharacterCreation
             return _newHavenInfo;
         }
 
-        // New Haven is not available, so place them in Ocllo instead, if they're aiming for Haven
-        CityInfo oclloBankInTrammel = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Trammel);
-        if (useHaven && availableMaps.Includes(MapSelectionFlags.Trammel))
+        if (useHaven)
         {
-            return oclloBankInTrammel;
-        }
+            // New Haven is not available, so place them in Ocllo instead, if they're aiming for Haven
+            CityInfo oclloBank = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Trammel);
+            if (availableMaps.Includes(MapSelectionFlags.Trammel))
+            {
+                return oclloBank;
+            }
 
-        CityInfo oclloBankInFelucca = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Felucca);
-        if (useHaven && availableMaps.Includes(MapSelectionFlags.Felucca))
-        {
-            return oclloBankInFelucca;
+            if (availableMaps.Includes(MapSelectionFlags.Felucca))
+            {
+                oclloBank.Map = Map.Felucca;
+                return oclloBank;
+            }
         }
 
         // They're not trying to get to Haven, so use their city selection
