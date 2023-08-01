@@ -52,7 +52,7 @@ public static class MapSelection
         return builder.Length == 0 ? "None" : builder.ToString();
     }
 
-    public static MapSelectionFlags ToSelectionFlag(this Map map) => (MapSelectionFlags)(1 << (map.MapID - 1));
+    public static MapSelectionFlags ToSelectionFlag(this Map map) => (MapSelectionFlags)(1 << map.MapID);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MapSelectionEnumerable GetEnumerable(this MapSelectionFlags flags) => new(flags);
