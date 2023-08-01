@@ -268,7 +268,7 @@ public static class ServerConfiguration
         // We have a known, current expansion, so we can deserialize it from Configuration
         if (!ExpansionInfo.LoadConfiguration(out var currentExpansion))
         {
-            currentExpansion = (_settings.Data.TryGetValue("expansion", out var el)
+            currentExpansion = (_settings.Data.Remove("expansion", out var el)
                 ? el.ToObject<Expansion?>(JsonConfig.DefaultOptions)
                 : null) ?? ExpansionConfigurationPrompts.GetExpansion();
 
