@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Server.Buffers;
+using Server.Text;
 
 namespace Server;
 

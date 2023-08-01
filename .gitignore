@@ -5,6 +5,7 @@
 /Distribution/bsdtar
 /Distribution/Configuration/antimacro.json
 /Distribution/Configuration/assistants.json
+/Distribution/Configuration/expansion.json
 /Distribution/Configuration/modernuo.json
 /Distribution/Configuration/email-settings.json
 /Distribution/Configuration/throttles.json
@@ -25,6 +26,7 @@
 /Projects/*/bin
 /Projects/*/Generated
 
+*.swp
 *.log
 *.user
 /.idea

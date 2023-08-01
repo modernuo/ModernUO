@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Factions;
 using Server.Gumps;
+using Server.Maps;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
@@ -105,11 +107,11 @@ public partial class PublicMoongate : Item
 
         var count = 0;
 
-        count += MoonGen(PMList.Trammel);
-        count += MoonGen(PMList.Felucca);
-        count += MoonGen(PMList.Ilshenar);
-        count += MoonGen(PMList.Malas);
-        count += MoonGen(PMList.Tokuno);
+        count += MoonGen(PMList.Trammel, MapSelectionFlags.Trammel);
+        count += MoonGen(PMList.Felucca, MapSelectionFlags.Felucca);
+        count += MoonGen(PMList.Ilshenar, MapSelectionFlags.Ilshenar);
+        count += MoonGen(PMList.Malas, MapSelectionFlags.Malas);
+        count += MoonGen(PMList.Tokuno, MapSelectionFlags.Tokuno);
 
         World.Broadcast(0x35, true, $"{count} moongates generated.");
     }
@@ -137,8 +139,13 @@ public partial class PublicMoongate : Item
         }
     }
 
-    private static int MoonGen(PMList list)
+    private static int MoonGen(PMList list, MapSelectionFlags flag)
     {
+        if (!ExpansionInfo.CoreExpansion.MapSelectionFlags.Includes(flag))
+        {
+            return 0;
+        }
+
         foreach (var entry in list.Entries)
         {
             Item item = new PublicMoongate();
@@ -355,11 +362,23 @@ public class MoongateGump : Gump
             };
         }
 
-        _lists = new PMList[checkLists.Length];
+        var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+        using var filteredBySelectedMaps = PooledRefList<PMList>.Create();
 
-        for (var i = 0; i < _lists.Length; ++i)
+        for (var i = 0; i < checkLists.Length; ++i)
         {
-            _lists[i] = checkLists[i];
+            var pmList = checkLists[i];
+            if (availableMaps.Includes(pmList.Map.ToSelectionFlag()))
+            {
+                filteredBySelectedMaps.Add(pmList);
+            }
+        }
+
+        int mapCount = filteredBySelectedMaps.Count;
+        _lists = new PMList[mapCount];
+        for (var i = 0; i < mapCount; i++)
+        {
+            _lists[i] = filteredBySelectedMaps[i];
         }
 
         for (var i = 0; i < _lists.Length; ++i)
@@ -383,15 +402,15 @@ public class MoongateGump : Gump
 
         AddHtmlLocalized(5, 5, 200, 20, 1012011); // Pick your destination:
 
-        for (var i = 0; i < checkLists.Length; ++i)
+        for (var i = 0; i < filteredBySelectedMaps.Count; ++i)
         {
-            AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, checkLists[i]) + 1);
-            AddHtmlLocalized(30, 35 + i * 25, 150, 20, checkLists[i].Number);
+            AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, filteredBySelectedMaps[i]) + 1);
+            AddHtmlLocalized(30, 35 + i * 25, 150, 20, filteredBySelectedMaps[i].Number);
         }
 
         for (var i = 0; i < _lists.Length; ++i)
         {
-            RenderPage(i, Array.IndexOf(checkLists, _lists[i]));
+            RenderPage(i, filteredBySelectedMaps.IndexOf(_lists[i]));
         }
     }
 

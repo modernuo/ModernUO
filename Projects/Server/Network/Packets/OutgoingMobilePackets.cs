@@ -463,7 +463,7 @@ public static class OutgoingMobilePackets
         else
         {
             var maxVersion = ExpansionInfo.CoreExpansion.MobileStatusVersion;
-            var nsExpansion = (Expansion)ns.ExpansionInfo.ID;
+            var nsExpansion = (Expansion)ns.ExpansionInfo.Id;
 
             if (maxVersion >= 6 && nsExpansion >= Expansion.HS && ns.ExtendedStatus)
             {

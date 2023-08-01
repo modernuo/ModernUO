@@ -133,7 +133,7 @@ namespace Server.Multis
             multiID > 0 && multiID < m_MultiTable.Length && CheckValidity(m_MultiTable[multiID]);
 
         public bool CheckValidity(int val) =>
-            val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0);
+            val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.HousingFlags & val) != 0);
 
         private int[] CreateTable(int length)
         {

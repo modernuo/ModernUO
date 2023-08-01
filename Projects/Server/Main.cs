@@ -25,10 +25,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Server.Buffers;
 using Server.Json;
 using Server.Logging;
 using Server.Network;
+using Server.Text;
 
 namespace Server;
 
@@ -227,7 +227,6 @@ public static class Core
     public static int ScriptMobiles => _mobileCount;
 
     public static Expansion Expansion { get; set; }
-
     public static bool T2A => Expansion >= Expansion.T2A;
 
     public static bool UOR => Expansion >= Expansion.UOR;

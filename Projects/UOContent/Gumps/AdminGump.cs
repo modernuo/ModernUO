@@ -5,13 +5,14 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Accounting;
-using Server.Buffers;
 using Server.Collections;
 using Server.Commands;
+using Server.Maps;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
 using Server.Prompts;
+using Server.Text;
 
 namespace Server.Gumps
 {
@@ -2085,29 +2086,37 @@ namespace Server.Gumps
                                 }
                             case 103:
                                 {
-                                    if (Core.SA)
+                                    var folder = Core.SA ? "post-uoml" : "uoml";
+
+                                    var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+                                    if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
                                     {
-                                        InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/*/*.json");
+                                        InvokeCommand($"GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
                                     }
-                                    else
+
+                                    if (availableMaps.Includes(MapSelectionFlags.Malas))
                                     {
-                                        if (Core.ML)
-                                        {
-                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/malas/*.json");
-                                        }
+                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
+                                    }
 
-                                        if (Core.SE)
-                                        {
-                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/tokuno/*.json");
-                                        }
+                                    if (availableMaps.Includes(MapSelectionFlags.Tokuno))
+                                    {
+                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
+                                    }
 
-                                        if (Core.AOS)
-                                        {
-                                            InvokeCommand("GenerateSpawners Data/Spawns/uoml/ilshenar/*.json");
-                                        }
+                                    if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
+                                    {
+                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
+                                    }
 
-                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/trammel/*.json");
-                                        InvokeCommand("GenerateSpawners Data/Spawns/uoml/felucca/*.json");
+                                    if (availableMaps.Includes(MapSelectionFlags.Trammel))
+                                    {
+                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
+                                    }
+
+                                    if (availableMaps.Includes(MapSelectionFlags.Felucca))
+                                    {
+                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
                                     }
 
                                     notice = "Spawners have been generated.";

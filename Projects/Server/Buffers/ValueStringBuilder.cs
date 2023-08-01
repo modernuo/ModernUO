@@ -7,7 +7,9 @@ using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Server.Buffers;
+using Server.Buffers;
+
+namespace Server.Text;
 
 public ref struct ValueStringBuilder
 {

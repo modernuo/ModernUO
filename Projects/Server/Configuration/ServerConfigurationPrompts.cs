@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Net;
 
@@ -80,53 +79,6 @@ public static class ServerConfigurationPrompts
             Console.Write(input);
             Utility.PopColor();
             Console.WriteLine(". Press y for yes or n for no.");
-        } while (true);
-    }
-
-    internal static Expansion GetExpansion()
-    {
-        Console.WriteLine("Please choose an expansion by typing the number or short name:");
-        var expansions = ExpansionInfo.Table;
-
-        for (int i = 0; i < expansions.Length; i++)
-        {
-            var info = expansions[i];
-            Console.WriteLine(" - {0,2}: {1} ({2})", i, ((Expansion)info.ID).ToString(), info.Name);
-        }
-
-        var maxExpansion = (Expansion)expansions[^1].ID;
-        var maxExpansionName = maxExpansion.ToString();
-
-        do
-        {
-            Console.Write("[enter for {0}]> ", maxExpansionName);
-            var input = Console.ReadLine();
-            Expansion expansion;
-
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                expansion = maxExpansion;
-            }
-            else if (int.TryParse(input, NumberStyles.Integer, null, out var number) &&
-                     number >= 0 && number < expansions.Length)
-            {
-                expansion = (Expansion)number;
-            }
-            else if (!Enum.TryParse(input, out expansion))
-            {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.Write(input);
-                Utility.PopColor();
-                Console.WriteLine(" is an invalid expansion option.");
-                continue;
-            }
-
-            Console.Write("Expansion set to ");
-            Utility.PushColor(ConsoleColor.Green);
-            Console.Write(ExpansionInfo.GetInfo(expansion).Name);
-            Utility.PopColor();
-            Console.WriteLine(".");
-            return expansion;
         } while (true);
     }
 
@@ -214,7 +166,6 @@ public static class ServerConfigurationPrompts
             Utility.PopColor();
             Console.WriteLine(".");
         } while (true);
-
         return ips;
     }
 }

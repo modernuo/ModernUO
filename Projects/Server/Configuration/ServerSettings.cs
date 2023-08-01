@@ -15,6 +15,7 @@
 
 using System.Collections.Generic;
 using System.Net;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Server;
@@ -30,9 +31,10 @@ public class ServerSettings
     [JsonPropertyName("listeners")]
     public List<IPEndPoint> Listeners { get; set; } = new();
 
-    [JsonPropertyName("expansion")]
-    public Expansion? Expansion { get; set; }
-
     [JsonPropertyName("settings")]
     public SortedDictionary<string, string> Settings { get; set; } = new();
+
+    // For backward compatibility
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> Data { get; set; } = new();
 }

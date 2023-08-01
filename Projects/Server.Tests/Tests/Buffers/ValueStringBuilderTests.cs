@@ -1,4 +1,4 @@
-using Server.Buffers;
+using Server.Text;
 using Xunit;
 
 namespace Server.Tests.Buffers;

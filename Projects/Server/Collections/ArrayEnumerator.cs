@@ -48,7 +48,7 @@ public struct ArrayEnumerator<T> : IEnumerator<T>
 
         if ((uint)_index < (uint)localList.Length)
         {
-            _current = _array[_index++];
+            _current = localList[_index++];
             return true;
         }
 

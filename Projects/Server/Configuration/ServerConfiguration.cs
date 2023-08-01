@@ -28,56 +28,57 @@ public static class ServerConfiguration
 
     private const string _relPath = "Configuration/modernuo.json";
     private static readonly string m_FilePath = Path.Join(Core.BaseDirectory, _relPath);
-    private static ServerSettings m_Settings;
+
+    private static ServerSettings _settings;
     private static bool m_Mocked;
 
-    public static List<string> AssemblyDirectories => m_Settings.AssemblyDirectories;
+    public static List<string> AssemblyDirectories => _settings.AssemblyDirectories;
 
-    public static HashSet<string> DataDirectories => m_Settings.DataDirectories;
+    public static HashSet<string> DataDirectories => _settings.DataDirectories;
 
-    public static List<IPEndPoint> Listeners => m_Settings.Listeners;
+    public static List<IPEndPoint> Listeners => _settings.Listeners;
 
     public static string ConfigurationFilePath => _relPath;
 
     public static ClientVersion GetSetting(string key, ClientVersion defaultValue) =>
-        m_Settings.Settings.TryGetValue(key, out var value) ? new ClientVersion(value) : defaultValue;
+        _settings.Settings.TryGetValue(key, out var value) ? new ClientVersion(value) : defaultValue;
 
     public static string GetSetting(string key, string defaultValue) =>
-        m_Settings.Settings.TryGetValue(key, out var value) ? value : defaultValue;
+        _settings.Settings.TryGetValue(key, out var value) ? value : defaultValue;
 
     public static int GetSetting(string key, int defaultValue)
     {
-        m_Settings.Settings.TryGetValue(key, out var strValue);
+        _settings.Settings.TryGetValue(key, out var strValue);
         return int.TryParse(strValue, out var value) ? value : defaultValue;
     }
 
     public static long GetSetting(string key, long defaultValue)
     {
-        m_Settings.Settings.TryGetValue(key, out var strValue);
+        _settings.Settings.TryGetValue(key, out var strValue);
         return long.TryParse(strValue, out var value) ? value : defaultValue;
     }
 
     public static bool GetSetting(string key, bool defaultValue)
     {
-        m_Settings.Settings.TryGetValue(key, out var strValue);
+        _settings.Settings.TryGetValue(key, out var strValue);
         return bool.TryParse(strValue, out var value) ? value : defaultValue;
     }
 
     public static T GetSetting<T>(string key, T defaultValue) where T : struct, Enum
     {
-        m_Settings.Settings.TryGetValue(key, out var strValue);
+        _settings.Settings.TryGetValue(key, out var strValue);
         return Enum.TryParse(strValue, out T value) ? value : defaultValue;
     }
 
     public static double GetSetting(string key, double defaultValue)
     {
-        m_Settings.Settings.TryGetValue(key, out var strValue);
+        _settings.Settings.TryGetValue(key, out var strValue);
         return double.TryParse(strValue, out var value) ? value : defaultValue;
     }
 
     public static T? GetSetting<T>(string key) where T : struct, Enum
     {
-        if (!m_Settings.Settings.TryGetValue(key, out var strValue))
+        if (!_settings.Settings.TryGetValue(key, out var strValue))
         {
             return null;
         }
@@ -87,7 +88,7 @@ public static class ServerConfiguration
 
     public static string GetOrUpdateSetting(string key, string defaultValue)
     {
-        if (m_Settings.Settings.TryGetValue(key, out var value))
+        if (_settings.Settings.TryGetValue(key, out var value))
         {
             return value;
         }
@@ -100,7 +101,7 @@ public static class ServerConfiguration
     {
         int value;
 
-        if (m_Settings.Settings.TryGetValue(key, out var strValue))
+        if (_settings.Settings.TryGetValue(key, out var strValue))
         {
             value = int.TryParse(strValue, out value) ? value : defaultValue;
         }
@@ -116,7 +117,7 @@ public static class ServerConfiguration
     {
         long value;
 
-        if (m_Settings.Settings.TryGetValue(key, out var strValue))
+        if (_settings.Settings.TryGetValue(key, out var strValue))
         {
             value = long.TryParse(strValue, out value) ? value : defaultValue;
         }
@@ -132,7 +133,7 @@ public static class ServerConfiguration
     {
         bool value;
 
-        if (m_Settings.Settings.TryGetValue(key, out var strValue))
+        if (_settings.Settings.TryGetValue(key, out var strValue))
         {
             value = bool.TryParse(strValue, out value) ? value : defaultValue;
         }
@@ -148,7 +149,7 @@ public static class ServerConfiguration
     {
         TimeSpan value;
 
-        if (m_Settings.Settings.TryGetValue(key, out var strValue))
+        if (_settings.Settings.TryGetValue(key, out var strValue))
         {
             value = TimeSpan.TryParse(strValue, out value) ? value : defaultValue;
         }
@@ -164,7 +165,7 @@ public static class ServerConfiguration
     {
         T value;
 
-        if (m_Settings.Settings.TryGetValue(key, out var strValue))
+        if (_settings.Settings.TryGetValue(key, out var strValue))
         {
             value = Enum.TryParse(strValue, out value) ? value : defaultValue;
         }
@@ -180,7 +181,7 @@ public static class ServerConfiguration
     {
         double value;
 
-        if (m_Settings.Settings.TryGetValue(key, out var strValue))
+        if (_settings.Settings.TryGetValue(key, out var strValue))
         {
             value = double.TryParse(strValue, out value) ? value : defaultValue;
         }
@@ -207,7 +208,7 @@ public static class ServerConfiguration
 
     public static void SetSetting(string key, string value)
     {
-        m_Settings.Settings[key] = value;
+        _settings.Settings[key] = value;
         Save();
     }
 
@@ -220,9 +221,9 @@ public static class ServerConfiguration
         if (File.Exists(m_FilePath))
         {
             logger.Information("Reading server configuration from {Path}...", _relPath);
-            m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
+            _settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
-            if (m_Settings == null)
+            if (_settings == null)
             {
                 logger.Error("Reading server configuration failed");
                 throw new FileNotFoundException($"Failed to deserialize {m_FilePath}.");
@@ -233,7 +234,7 @@ public static class ServerConfiguration
         else
         {
             updated = true;
-            m_Settings = new ServerSettings();
+            _settings = new ServerSettings();
         }
 
         if (mocked)
@@ -241,12 +242,12 @@ public static class ServerConfiguration
             return;
         }
 
-        if (m_Settings.DataDirectories.Count == 0)
+        if (_settings.DataDirectories.Count == 0)
         {
             updated = true;
             foreach (var directory in ServerConfigurationPrompts.GetDataDirectories())
             {
-                m_Settings.DataDirectories.Add(directory);
+                _settings.DataDirectories.Add(directory);
             }
         }
 
@@ -258,19 +259,27 @@ public static class ServerConfiguration
             DataDirectories.Add(cuoClientFiles);
         }
 
-        if (m_Settings.Listeners.Count == 0)
+        if (_settings.Listeners.Count == 0)
         {
             updated = true;
-            m_Settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
+            _settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
         }
 
-        if (m_Settings.Expansion == null)
+        // We have a known, current expansion, so we can deserialize it from Configuration
+        if (!ExpansionInfo.LoadConfiguration(out var currentExpansion))
         {
-            m_Settings.Expansion = GetSetting<Expansion>("currentExpansion") ?? ServerConfigurationPrompts.GetExpansion();
+            currentExpansion = (_settings.Data.Remove("expansion", out var el)
+                ? el.ToObject<Expansion?>(JsonConfig.DefaultOptions)
+                : null) ?? ExpansionConfigurationPrompts.GetExpansion();
+
+            // We've updated the selected expansion, so choose the maps we want from it, then store and save our selection
+            var selectedMaps = ExpansionConfigurationPrompts.GetSelectedMaps(currentExpansion);
+            ExpansionInfo.StoreMapSelection(selectedMaps, currentExpansion);
+
             updated = true;
         }
 
-        Core.Expansion = m_Settings.Expansion.Value;
+        Core.Expansion = currentExpansion;
 
         if (updated)
         {
@@ -278,6 +287,14 @@ public static class ServerConfiguration
             Console.Write("Server configuration saved to ");
             Utility.PushColor(ConsoleColor.Green);
             Console.WriteLine($"{_relPath}.");
+            Utility.PopColor();
+
+            // Either the expansion.json file has never existed, or it's been deleted, so create it now
+            ExpansionInfo.SaveConfiguration();
+
+            Console.Write("Expansion configuration saved to ");
+            Utility.PushColor(ConsoleColor.Green);
+            Console.WriteLine($"{ExpansionInfo.ExpansionConfigurationPath}.");
             Utility.PopColor();
         }
     }
@@ -289,6 +306,6 @@ public static class ServerConfiguration
             return;
         }
 
-        JsonConfig.Serialize(m_FilePath, m_Settings);
+        JsonConfig.Serialize(m_FilePath, _settings);
     }
 }

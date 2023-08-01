@@ -320,7 +320,6 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
     public const int SectorActiveRange = 2;
 
     private static ILogger logger = LogFactory.GetLogger(typeof(Map));
-
     private readonly int m_FileIndex;
     private readonly Sector[][] m_Sectors;
     private readonly int m_SectorsHeight;
