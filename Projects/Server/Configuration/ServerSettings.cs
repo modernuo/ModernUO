@@ -36,5 +36,5 @@ public class ServerSettings
 
     // For backward compatibility
     [JsonExtensionData]
-    public Dictionary<string, JsonElement> Data { get; set; }
+    public Dictionary<string, JsonElement> Data { get; set; } = new();
 }

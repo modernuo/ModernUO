@@ -276,8 +276,6 @@ public static class ServerConfiguration
             var selectedMaps = ExpansionConfigurationPrompts.GetSelectedMaps(currentExpansion);
             ExpansionInfo.StoreMapSelection(selectedMaps, currentExpansion);
 
-            // Either the expansion.json file has never existed, or it's been deleted, so create it now
-            ExpansionInfo.SaveConfiguration();
             updated = true;
         }
 
@@ -289,6 +287,14 @@ public static class ServerConfiguration
             Console.Write("Server configuration saved to ");
             Utility.PushColor(ConsoleColor.Green);
             Console.WriteLine($"{_relPath}.");
+            Utility.PopColor();
+
+            // Either the expansion.json file has never existed, or it's been deleted, so create it now
+            ExpansionInfo.SaveConfiguration();
+
+            Console.Write("Expansion configuration saved to ");
+            Utility.PushColor(ConsoleColor.Green);
+            Console.WriteLine($"{ExpansionInfo.ExpansionConfigurationPath}.");
             Utility.PopColor();
         }
     }

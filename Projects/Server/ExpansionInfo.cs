@@ -158,7 +158,7 @@ public enum HousingFlags
 
 public class ExpansionInfo
 {
-    private const string ExpansionConfigurationPath = "Configuration/expansion.json";
+    public const string ExpansionConfigurationPath = "Configuration/expansion.json";
 
     public static bool ForceOldAnimations { get; private set; }
 

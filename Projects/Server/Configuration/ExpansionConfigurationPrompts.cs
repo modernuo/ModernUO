@@ -64,10 +64,6 @@ public static class ExpansionConfigurationPrompts
             i++;
         }
 
-        Console.WriteLine("Only these maps will be populated and moongates will only lead to them: ");
-        Utility.PushColor(ConsoleColor.Green);
-        Console.Write(selectedMaps.ToCommaDelimitedString());
-        Utility.PopColor();
         Console.WriteLine();
         Console.WriteLine($"[1-{i} and enter to toggle, or enter to finish]");
     }
@@ -110,6 +106,12 @@ public static class ExpansionConfigurationPrompts
 
             selectedMaps.Toggle(selectedFlag);
         } while (lastInput != "");
+
+        Console.WriteLine("These maps will be populated and moongates will not lead to other maps: ");
+        Utility.PushColor(ConsoleColor.Green);
+        Console.WriteLine(selectedMaps.ToCommaDelimitedString());
+        Utility.PopColor();
+        Console.WriteLine($"To change the selected maps, modify {ExpansionInfo.ExpansionConfigurationPath}.");
 
         return selectedMaps;
     }
