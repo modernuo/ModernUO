@@ -335,7 +335,7 @@ public partial class ChampionSpawn : Item
             };
         }
 
-        Active = true;
+        _active = true;
         ReadyToActivate = false;
         HasBeenAdvanced = false;
         MaxLevel = 16 + Utility.Random(3);
