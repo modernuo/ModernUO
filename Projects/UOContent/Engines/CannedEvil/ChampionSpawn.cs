@@ -365,7 +365,7 @@ public partial class ChampionSpawn : Item
             return;
         }
 
-        Active = false;
+        _active = false;
         ActivatedByValor = false;
         HasBeenAdvanced = false;
         MaxLevel = 0;
