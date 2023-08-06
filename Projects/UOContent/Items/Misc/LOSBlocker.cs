@@ -28,13 +28,14 @@ public partial class LOSBlocker : Item
     public override void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
     {
         var mob = ns.Mobile;
-        if (AccessLevel.GameMaster >= mob?.AccessLevel)
+        if (mob?.AccessLevel >= AccessLevel.GameMaster)
+        {
+            SendGMItem(ns);
+        }
+        else
         {
             base.SendWorldPacketTo(ns, world);
-            return;
         }
-
-        SendGMItem(ns);
     }
 
     private void SendGMItem(NetState ns)
