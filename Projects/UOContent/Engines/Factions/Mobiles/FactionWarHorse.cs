@@ -49,6 +49,7 @@ namespace Server.Factions
         {
         }
 
+        public override int StepsMax => 6400;
         public override string CorpseName => "a war horse corpse";
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]

@@ -40,6 +40,7 @@ namespace Server.Mobiles
             MinTameSkill = 93.9;
         }
 
+        public override int StepsMax => 4480;
         public override string CorpseName => "a swamp dragon corpse";
 
         public override bool AutoDispel => !Controlled;

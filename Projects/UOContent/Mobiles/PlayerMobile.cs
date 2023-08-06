@@ -90,12 +90,12 @@ namespace Server.Mobiles
     public enum BlockMountType
     {
         None = -1,
-        Dazed = 1040024,
-        BolaRecovery = 1062910,
-        DismountRecovery = 1070859
+        Dazed = 1040024, // You are still too dazed from being knocked off your mount to ride!
+        BolaRecovery = 1062910, // You cannot mount while recovering from a bola throw.
+        DismountRecovery = 1070859 // You cannot mount while recovering from a dismount special maneuver.
     }
 
-    public class PlayerMobile : Mobile, IHonorTarget
+    public class PlayerMobile : Mobile, IHonorTarget, IHasSteps
     {
         private static bool m_NoRecursion;
 
@@ -213,6 +213,12 @@ namespace Server.Mobiles
         {
             VisibilityList = new List<Mobile>();
         }
+
+        public int StepsMax => 16;
+
+        public int StepsGainedPerIdleTime => 1;
+
+        public TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(1);
 
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime AnkhNextUse { get; set; }
@@ -398,8 +404,6 @@ namespace Server.Mobiles
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int Profession { get; set; }
-
-        public int StepsTaken { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsStealthing // IsStealthing should be moved to Server.Mobiles
