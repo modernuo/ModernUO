@@ -13,7 +13,7 @@ public delegate int CheckItemGroup(Item a, Item b);
 
 public delegate void ContainerSnoopHandler(Container cont, Mobile from);
 
-public class Container : Item
+public partial class Container : Item
 {
     private static readonly List<Item> m_FindItemsList = new();
 
