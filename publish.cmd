@@ -7,6 +7,8 @@ config=$1
 os=$2
 arch=${3:-$(uname -m)}
 
+echo "arch is $arch"
+
 if [[ -n $os ]]; then
   os="-r $os"
 elif [[ $(uname) = "Darwin" ]]; then
@@ -22,7 +24,7 @@ else
   config="-c Release"
 fi
 
-if [[ $arch =~ ^[aarch|arm]* ]]; then
+if [[ $arch == *'aarch'* || $arch == *'arm'* ]]; then
   arch="arm64"
 else
   arch="x64"
