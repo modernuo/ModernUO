@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Common.Filters;
 
-public readonly struct DummyFilter<T> : IFilter<T, T>
+public readonly struct IdentityFilter<T> : IFilter<T, T>
 {
     public T? Invoke(T instance)
     {

@@ -10,7 +10,7 @@ public partial class Container
 {
     private static readonly Queue<Container> containersForGetItem = new();
 
-    public AllItemsEnumerable<DummyFilter<Item>, Item> GetAllItems() => new(this);
+    public AllItemsEnumerable<IdentityFilter<Item>, Item> GetAllItems() => new(this);
 
     public AllItemsEnumerable<TFilter, TResult> GetAllItems<TFilter, TResult>(in TFilter filter = default)
         where TFilter : struct, IFilter<Item, TResult>
@@ -93,11 +93,23 @@ public partial class Container
 
         public PooledRefQueue<TResult> ToPooledRefQueue()
         {
-            PooledRefQueue<TResult> toRet = new();
+            PooledRefQueue<TResult> toRet = PooledRefQueue<TResult>.Create();
 
             foreach (TResult item in this)
             {
                 toRet.Enqueue(item);
+            }
+
+            return toRet;
+        }
+
+        public PooledRefList<TResult> ToPooledRefList()
+        {
+            PooledRefList<TResult> toRet = PooledRefList<TResult>.Create();
+
+            foreach (TResult item in this)
+            {
+                toRet.Add(item);
             }
 
             return toRet;
@@ -115,10 +127,10 @@ public partial class Container
             return toRet;
         }
 
-        public TestAllItemsEnumerator<TFilter, TResult> GetEnumerator() => new(container, in filter);
+        public AllItemsEnumerator<TFilter, TResult> GetEnumerator() => new(container, in filter);
     }
 
-    public ref struct TestAllItemsEnumerator<TFilter, TResult>
+    public ref struct AllItemsEnumerator<TFilter, TResult>
         where TFilter : IFilter<Item, TResult>
     {
         private readonly PooledRefQueue<Container> containers;
@@ -128,7 +140,7 @@ public partial class Container
 
         public TResult Current { get; private set; }
 
-        public TestAllItemsEnumerator(Container container, in TFilter filter)
+        public AllItemsEnumerator(Container container, in TFilter filter)
         {
             this.filter = filter;
 
