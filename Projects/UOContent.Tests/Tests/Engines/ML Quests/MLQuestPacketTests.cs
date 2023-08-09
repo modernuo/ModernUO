@@ -1,43 +1,86 @@
 using System;
-using Moq;
 using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
 
-namespace Server.Engines.MLQuests
+namespace Server.Engines.MLQuests;
+
+public class MLQuestPacketTests
 {
-    public class MLQuestPacketTests
+    private class MockedRace(
+            int raceID,
+            int raceIndex,
+            string name,
+            string pluralName,
+            int maleBody,
+            int femaleBody,
+            int maleGhostBody,
+            int femaleGhostBody,
+            Expansion requiredExpansion
+        )
+        : Race(raceID,
+            raceIndex,
+            name,
+            pluralName,
+            maleBody,
+            femaleBody,
+            maleGhostBody,
+            femaleGhostBody,
+            requiredExpansion
+        )
     {
-        [Theory]
-        [InlineData(true, 1)]
-        [InlineData(false, 2)]
-        public void TestRaceChanger(bool female, int raceId)
-        {
-            var raceMock = new Mock<Race>(
-                raceId, 0, "Test Race", "Test Races", 0x1, 0x2, 0x3, 0x4, Expansion.None
-            );
+        public override bool ValidateHair(bool female, int itemID) => throw new NotImplementedException();
 
-            var race = raceMock.Object;
+        public override int RandomHair(bool female) => throw new NotImplementedException();
 
-            var expected = new RaceChanger(female, race).Compile();
+        public override bool ValidateFacialHair(bool female, int itemID) => throw new NotImplementedException();
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendRaceChanger(female, race);
+        public override int RandomFacialHair(bool female) => throw new NotImplementedException();
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
-        }
+        public override int ClipSkinHue(int hue) => throw new NotImplementedException();
 
-        [Fact]
-        public void TestCloseRaceChanger()
-        {
-            var expected = new CloseRaceChanger().Compile();
+        public override int RandomSkinHue() => throw new NotImplementedException();
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendCloseRaceChanger();
+        public override int ClipHairHue(int hue) => throw new NotImplementedException();
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
-        }
+        public override int RandomHairHue() => throw new NotImplementedException();
+    }
+
+    [Theory]
+    [InlineData(true, 1)]
+    [InlineData(false, 2)]
+    public void TestRaceChanger(bool female, int raceId)
+    {
+        var race = new MockedRace(
+            raceId,
+            0,
+            "Test Race",
+            "Test Races",
+            0x1,
+            0x2,
+            0x3,
+            0x4,
+            Expansion.None
+        );
+
+        var expected = new RaceChanger(female, race).Compile();
+
+        var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendRaceChanger(female, race);
+
+        var result = ns.SendPipe.Reader.TryRead();
+        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+    }
+
+    [Fact]
+    public void TestCloseRaceChanger()
+    {
+        var expected = new CloseRaceChanger().Compile();
+
+        var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendCloseRaceChanger();
+
+        var result = ns.SendPipe.Reader.TryRead();
+        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
     }
 }
