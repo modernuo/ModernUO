@@ -130,8 +130,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
         for (var i = 0; i < count; ++i)
         {
             var entry = new RunebookEntry(this);
-            var entryVersion = reader.ReadEncodedInt();
-            entry.Deserialize(reader, entryVersion);
+            entry.Deserialize(reader);
             Entries.Add(entry);
         }
 
@@ -401,12 +400,12 @@ public partial class RunebookEntry(Runebook runebook, Point3D loc, Map map, stri
     [SerializableField(3)]
     private string _description = description;
 
+    [SerializableFieldSaveFlag(3)]
+    public bool ShouldSerializeDesc() => _house?.Deleted != false;
+
     public RunebookEntry(Runebook runebook) : this(runebook, new Point3D(), null, null)
     {
     }
-
-    [SerializableFieldSaveFlag(3)]
-    public bool ShouldSerializeDesc() => _house?.Deleted != false;
 
     public void Deserialize(IGenericReader reader, int version)
     {
