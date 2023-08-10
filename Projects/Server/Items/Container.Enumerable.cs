@@ -12,7 +12,7 @@ public partial class Container
 
     public AllItemsEnumerable<IdentityFilter<Item>, Item> GetAllItems() => new(this);
 
-    public AllItemsEnumerable<TFilter, TResult> GetAllItems<TFilter, TResult>(in TFilter filter = default)
+    public AllItemsEnumerable<TFilter, TResult> GetAllItems<TFilter, TResult>(TFilter filter = default)
         where TFilter : struct, IFilter<Item, TResult>
         => new(this, filter);
 
@@ -29,9 +29,9 @@ public partial class Container
         where TFilter : struct, IFilter<Item, TResult>
     {
         private readonly Container container;
-        private readonly ref TFilter filter;
+        private readonly TFilter filter;
 
-        public AllItemsEnumerable(Container container, scoped in TFilter filter = default)
+        public AllItemsEnumerable(Container container, TFilter filter = default)
         {
             this.container = container;
             this.filter = filter;
@@ -127,20 +127,20 @@ public partial class Container
             return toRet;
         }
 
-        public AllItemsEnumerator<TFilter, TResult> GetEnumerator() => new(container, in filter);
+        public AllItemsEnumerator<TFilter, TResult> GetEnumerator() => new(container, filter);
     }
 
     public ref struct AllItemsEnumerator<TFilter, TResult>
         where TFilter : IFilter<Item, TResult>
     {
         private readonly PooledRefQueue<Container> containers;
-        private readonly ref TFilter filter;
+        private readonly TFilter filter;
         private Span<Item> items;
         private int index;
 
         public TResult Current { get; private set; }
 
-        public AllItemsEnumerator(Container container, in TFilter filter)
+        public AllItemsEnumerator(Container container, TFilter filter)
         {
             this.filter = filter;
 
@@ -201,13 +201,13 @@ public partial class Container
     public ref struct TestItemsEnumerator<TFilter, TResult>
         where TFilter : IFilter<Item, TResult>
     {
-        private readonly ref TFilter filter;
+        private readonly TFilter filter;
         private readonly Span<Item> items;
         private int index;
 
         public TResult Current { get; private set; }
 
-        public TestItemsEnumerator(Container container, in TFilter filter)
+        public TestItemsEnumerator(Container container, TFilter filter)
         {
             this.filter = filter;
 
