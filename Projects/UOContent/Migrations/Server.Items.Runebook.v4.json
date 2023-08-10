@@ -27,7 +27,7 @@
       "ruleArguments": [
         "Server.Items.RunebookEntry",
         "RawSerializableMigrationRule",
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {

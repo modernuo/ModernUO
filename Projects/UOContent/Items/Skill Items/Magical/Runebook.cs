@@ -373,38 +373,47 @@ public partial class Runebook : Item, ISecurable, ICraftable
 }
 
 [SerializationGenerator(2)]
-public partial class RunebookEntry(Runebook runebook, Point3D loc, Map map, string description, BaseHouse house = null)
+public partial class RunebookEntry
 {
     [CanBeNull]
     [DirtyTrackingEntity]
-    private Runebook _runebook = runebook;
+    private Runebook _runebook;
 
     [SerializableField(0)]
-    private BaseHouse _house = house;
+    private BaseHouse _house;
 
     [SerializableFieldSaveFlag(0)]
     public bool ShouldSerializeHouse() => _house?.Deleted == false;
 
     [SerializableField(1)]
-    private Point3D _location = loc;
+    private Point3D _location;
 
     [SerializableFieldSaveFlag(1)]
     public bool ShouldSerializeLocation() => _house?.Deleted != false;
 
     [SerializableField(2)]
-    private Map _map = map;
+    private Map _map;
 
     [SerializableFieldSaveFlag(2)]
     public bool ShouldSerializeMap() => _house?.Deleted != false;
 
     [SerializableField(3)]
-    private string _description = description;
+    private string _description;
 
     [SerializableFieldSaveFlag(3)]
     public bool ShouldSerializeDesc() => _house?.Deleted != false;
 
     public RunebookEntry(Runebook runebook) : this(runebook, new Point3D(), null, null)
     {
+    }
+
+    public RunebookEntry(Runebook runebook, Point3D loc, Map map, string description, BaseHouse house = null)
+    {
+        _runebook = runebook;
+        _house = house;
+        _location = loc;
+        _map = map;
+        _description = description;
     }
 
     public void Deserialize(IGenericReader reader, int version)
