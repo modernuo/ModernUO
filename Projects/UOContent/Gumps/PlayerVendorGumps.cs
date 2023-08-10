@@ -789,10 +789,18 @@ namespace Server.Gumps
 
                 try
                 {
-                    var ctor = Type.GetConstructor(Array.Empty<Type>());
-                    if (ctor != null)
+                    var emptyCtor = Type.GetConstructor(Array.Empty<Type>());
+                    if (emptyCtor != null)
                     {
-                        i = ctor.Invoke(null) as Item;
+                        i = emptyCtor.Invoke(null) as Item;
+                        return i;
+                    }
+
+                    var singeIntCtor = Type.GetConstructor(new[] { typeof(int) });
+                    if (singeIntCtor != null)
+                    {
+                        i = singeIntCtor.Invoke(new object[] { 0 }) as Item;
+                        return i;
                     }
                 }
                 catch
