@@ -624,7 +624,7 @@ namespace Server.Factions
                     {
                         spell = new RecallSpell(
                             m_Guard,
-                            new RunebookEntry(m_Guard.Home, m_Guard.Map, "Guard's Home")
+                            new RunebookEntry(null, m_Guard.Home, m_Guard.Map, "Guard's Home")
                         );
                     }
                     else if (IsAllowed(GuardAI.Bless))
