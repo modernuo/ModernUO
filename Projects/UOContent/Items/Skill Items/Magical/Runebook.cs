@@ -416,7 +416,7 @@ public partial class RunebookEntry
         _description = description;
     }
 
-    public void Deserialize(IGenericReader reader, int version)
+    private void Deserialize(IGenericReader reader, int version)
     {
         switch (version)
         {
