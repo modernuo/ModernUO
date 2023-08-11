@@ -797,24 +797,27 @@ namespace Server.Gumps
                     {
                         var ctor = ctors[i];
 
+                        var isValid = true;
                         var paramList = ctor.GetParameters();
                         for (var j = 0; j < paramList.Length; j++)
                         {
-                            if (!paramList[j].HasDefaultValue)
+                            if (!(isValid = paramList[j].HasDefaultValue))
                             {
-                                return null;
+                                break;
                             }
                         }
 
-                        _ctor = ctor;
-                        _params = paramList.Length == 0 ? Array.Empty<object>() : new object[paramList.Length];
-
-                        for (var j = 0; j < _params.Length; j++)
+                        if (isValid)
                         {
-                            _params[j] = Type.Missing;
-                        }
+                            _ctor = ctor;
+                            _params = paramList.Length == 0 ? Array.Empty<object>() : new object[paramList.Length];
 
-                        break;
+                            for (var j = 0; j < _params.Length; j++)
+                            {
+                                _params[j] = Type.Missing;
+                            }
+                            break;
+                        }
                     }
 
                     // We don't have a good constructor
