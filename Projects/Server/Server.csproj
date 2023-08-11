@@ -38,7 +38,7 @@
         <PackageReference Include="Zlib.Bindings" Version="1.11.0" />
 
         <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.6.0" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.6.2" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.6.4" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
