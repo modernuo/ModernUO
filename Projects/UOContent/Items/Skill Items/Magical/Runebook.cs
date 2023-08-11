@@ -403,11 +403,13 @@ public partial class RunebookEntry
     [SerializableFieldSaveFlag(3)]
     public bool ShouldSerializeDesc() => _house?.Deleted != false;
 
-    public RunebookEntry(Runebook runebook) : this(runebook, new Point3D(), null, null)
-    {
-    }
-
-    public RunebookEntry(Runebook runebook, Point3D loc, Map map, string description, BaseHouse house = null)
+    public RunebookEntry(
+        Runebook runebook,
+        Point3D loc = new(),
+        Map map = null,
+        string description = null,
+        BaseHouse house = null
+    )
     {
         _runebook = runebook;
         _house = house;

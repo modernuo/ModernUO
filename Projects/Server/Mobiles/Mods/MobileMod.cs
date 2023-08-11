@@ -26,11 +26,9 @@ public partial class MobileMod
     [SerializableField(0)]
     private string _name;
 
-    public MobileMod(Mobile owner) => Owner = owner;
-
-    public MobileMod(Mobile owner, string name)
+    public MobileMod(Mobile owner, string name = null)
     {
         Owner = owner;
-        Name = name;
+        _name = name;
     }
 }
