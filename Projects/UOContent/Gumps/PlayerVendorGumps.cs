@@ -831,7 +831,7 @@ namespace Server.Gumps
                 }
                 catch
                 {
-                    // ignored
+                    return null;
                 }
             }
         }
