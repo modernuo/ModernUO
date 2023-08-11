@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Server.HuePickers;
 using Server.Items;
 using Server.Mobiles;
@@ -751,6 +752,9 @@ namespace Server.Gumps
 
         private class CustomItem
         {
+            private ConstructorInfo _ctor;
+            private object[] _params;
+
             public CustomItem(int itemID, int loc, bool longText = false) : this(null, itemID, loc, 0, longText)
             {
             }
@@ -780,35 +784,55 @@ namespace Server.Gumps
 
             public Item Create()
             {
-                if (Type == null)
+                var type = Type;
+                if (type == null)
                 {
                     return null;
                 }
 
-                Item i = null;
-
                 try
                 {
-                    var emptyCtor = Type.GetConstructor(Array.Empty<Type>());
-                    if (emptyCtor != null)
+
+                    if (_ctor == null)
                     {
-                        i = emptyCtor.Invoke(null) as Item;
-                        return i;
+                        var ctors = type.GetConstructors();
+
+                        for (var i = 0; i < ctors.Length; ++i)
+                        {
+                            var ctor = ctors[i];
+
+                            var paramList = ctor.GetParameters();
+                            for (var j = 0; j < paramList.Length; j++)
+                            {
+                                if (!paramList[j].HasDefaultValue)
+                                {
+                                    return null;
+                                }
+                            }
+
+                            _ctor = ctor;
+                            _params = paramList.Length == 0 ? Array.Empty<object>() : new object[paramList.Length];
+
+                            for (var j = 0; j < _params.Length; j++)
+                            {
+                                _params[j] = Type.Missing;
+                            }
+                            break;
+                        }
+
+                        // We don't have a good constructor
+                        if (_ctor == null)
+                        {
+                            return null;
+                        }
                     }
 
-                    var singeIntCtor = Type.GetConstructor(new[] { typeof(int) });
-                    if (singeIntCtor != null)
-                    {
-                        i = singeIntCtor.Invoke(new object[] { 0 }) as Item;
-                        return i;
-                    }
+                    return _ctor.Invoke(_params) as Item;
                 }
                 catch
                 {
                     // ignored
                 }
-
-                return i;
             }
         }
 
