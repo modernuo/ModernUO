@@ -799,12 +799,9 @@ namespace Server.Gumps
 
                         var isValid = true;
                         var paramList = ctor.GetParameters();
-                        for (var j = 0; j < paramList.Length; j++)
+                        for (var j = 0; isValid && j < paramList.Length; j++)
                         {
-                            if (!(isValid = paramList[j].HasDefaultValue))
-                            {
-                                break;
-                            }
+                            isValid = paramList[j].HasDefaultValue;
                         }
 
                         if (isValid)
