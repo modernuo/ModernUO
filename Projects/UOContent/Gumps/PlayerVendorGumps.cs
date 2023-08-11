@@ -4,6 +4,7 @@ using Server.HuePickers;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Gumps
 {
@@ -791,42 +792,17 @@ namespace Server.Gumps
 
                 if (_ctor == null)
                 {
-                    var ctors = Type.GetConstructors();
-
-                    for (var i = 0; i < ctors.Length; ++i)
+                    _ctor = Type.GetConstructor(out var paramCount);
+                    _params = paramCount == 0 ? null : new object[paramCount];
+                    if (_params != null)
                     {
-                        var ctor = ctors[i];
-
-                        var isValid = true;
-                        var paramList = ctor.GetParameters();
-                        for (var j = 0; isValid && j < paramList.Length; j++)
-                        {
-                            isValid = paramList[j].HasDefaultValue;
-                        }
-
-                        if (isValid)
-                        {
-                            _ctor = ctor;
-                            _params = paramList.Length == 0 ? Array.Empty<object>() : new object[paramList.Length];
-
-                            for (var j = 0; j < _params.Length; j++)
-                            {
-                                _params[j] = Type.Missing;
-                            }
-                            break;
-                        }
-                    }
-
-                    // We don't have a good constructor
-                    if (_ctor == null)
-                    {
-                        return null;
+                        Array.Fill(_params, Type.Missing);
                     }
                 }
 
                 try
                 {
-                    return _ctor.Invoke(_params) as Item;
+                    return _ctor?.Invoke(_params) as Item;
                 }
                 catch
                 {

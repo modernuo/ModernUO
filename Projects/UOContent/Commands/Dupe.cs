@@ -106,11 +106,10 @@ namespace Server.Commands
                     pack = from.Backpack;
                 }
 
-                var c = copy.GetType().GetConstructor();
+                var c = copy.GetType().GetConstructor(out var paramCount);
                 if (c != null)
                 {
-                    var paramList = c.GetParameters();
-                    var args = paramList.Length == 0 ? null : new object[paramList.Length];
+                    var args = paramCount == 0 ? null : new object[paramCount];
                     if (args != null)
                     {
                         Array.Fill(args, Type.Missing);
