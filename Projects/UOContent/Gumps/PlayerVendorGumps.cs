@@ -784,49 +784,48 @@ namespace Server.Gumps
 
             public Item Create()
             {
-                var type = Type;
-                if (type == null)
+                if (Type == null)
                 {
                     return null;
                 }
 
-                try
+                if (_ctor == null)
                 {
+                    var ctors = Type.GetConstructors();
 
-                    if (_ctor == null)
+                    for (var i = 0; i < ctors.Length; ++i)
                     {
-                        var ctors = type.GetConstructors();
+                        var ctor = ctors[i];
 
-                        for (var i = 0; i < ctors.Length; ++i)
+                        var paramList = ctor.GetParameters();
+                        for (var j = 0; j < paramList.Length; j++)
                         {
-                            var ctor = ctors[i];
-
-                            var paramList = ctor.GetParameters();
-                            for (var j = 0; j < paramList.Length; j++)
+                            if (!paramList[j].HasDefaultValue)
                             {
-                                if (!paramList[j].HasDefaultValue)
-                                {
-                                    return null;
-                                }
+                                return null;
                             }
-
-                            _ctor = ctor;
-                            _params = paramList.Length == 0 ? Array.Empty<object>() : new object[paramList.Length];
-
-                            for (var j = 0; j < _params.Length; j++)
-                            {
-                                _params[j] = Type.Missing;
-                            }
-                            break;
                         }
 
-                        // We don't have a good constructor
-                        if (_ctor == null)
+                        _ctor = ctor;
+                        _params = paramList.Length == 0 ? Array.Empty<object>() : new object[paramList.Length];
+
+                        for (var j = 0; j < _params.Length; j++)
                         {
-                            return null;
+                            _params[j] = Type.Missing;
                         }
+
+                        break;
                     }
 
+                    // We don't have a good constructor
+                    if (_ctor == null)
+                    {
+                        return null;
+                    }
+                }
+
+                try
+                {
                     return _ctor.Invoke(_params) as Item;
                 }
                 catch
