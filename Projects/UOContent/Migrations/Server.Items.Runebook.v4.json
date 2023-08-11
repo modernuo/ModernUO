@@ -26,8 +26,8 @@
       "rule": "ListMigrationRule",
       "ruleArguments": [
         "Server.Items.RunebookEntry",
-        "SerializationMethodSignatureMigrationRule",
-        ""
+        "RawSerializableMigrationRule",
+        "DeserializationRequiresParent"
       ]
     },
     {

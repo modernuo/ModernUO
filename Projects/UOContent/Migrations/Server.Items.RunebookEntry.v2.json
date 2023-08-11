@@ -5,11 +5,13 @@
     {
       "name": "House",
       "type": "Server.Multis.BaseHouse",
+      "usesSaveFlag": true,
       "rule": "SerializableInterfaceMigrationRule"
     },
     {
       "name": "Location",
       "type": "Server.Point3D",
+      "usesSaveFlag": true,
       "rule": "PrimitiveUOTypeMigrationRule",
       "ruleArguments": [
         "Point3D"
@@ -18,6 +20,7 @@
     {
       "name": "Map",
       "type": "Server.Map",
+      "usesSaveFlag": true,
       "rule": "PrimitiveUOTypeMigrationRule",
       "ruleArguments": [
         "Map"
@@ -26,6 +29,7 @@
     {
       "name": "Description",
       "type": "string",
+      "usesSaveFlag": true,
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
         ""
