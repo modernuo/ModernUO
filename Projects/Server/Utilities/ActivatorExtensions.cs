@@ -28,6 +28,13 @@ public static class ActivatorExtensions
 
     public static ConstructorInfo GetConstructor(
         this Type type,
+        out int paramCount,
+        Predicate<ConstructorInfo> predicate = null,
+        Type[] args = null
+    ) => type.GetConstructor(predicate, args, out paramCount);
+
+    public static ConstructorInfo GetConstructor(
+        this Type type,
         Predicate<ConstructorInfo> predicate,
         Type[] args,
         out int paramCount
