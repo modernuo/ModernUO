@@ -143,7 +143,7 @@ namespace Server.Engines.Craft
                 {
                     var items = from.Backpack.FindItemsByType(resourceType);
 
-                    for (var i = 0; i < items.Length; ++i)
+                    for (var i = 0; i < items.Count; ++i)
                     {
                         resourceCount += items[i].Amount;
                     }
@@ -187,7 +187,7 @@ namespace Server.Engines.Craft
                 {
                     var items = from.Backpack.FindItemsByType(resourceType);
 
-                    for (var i = 0; i < items.Length; ++i)
+                    for (var i = 0; i < items.Count; ++i)
                     {
                         resourceCount += items[i].Amount;
                     }
@@ -265,7 +265,7 @@ namespace Server.Engines.Craft
                 {
                     var items = from.Backpack.FindItemsByType(subResource.ItemType);
 
-                    for (var j = 0; j < items.Length; ++j)
+                    for (var j = 0; j < items.Count; ++j)
                     {
                         resourceCount += items[j].Amount;
                     }

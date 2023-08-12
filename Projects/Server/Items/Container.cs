@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using Server.Collections;
 using Server.Logging;
 using Server.Network;
@@ -418,10 +419,10 @@ public class Container : Item
     {
         return type switch
         {
-            TotalType.Gold   => m_TotalGold,
-            TotalType.Items  => m_TotalItems,
+            TotalType.Gold => m_TotalGold,
+            TotalType.Items => m_TotalItems,
             TotalType.Weight => m_TotalWeight,
-            _                => base.GetTotal(type)
+            _ => base.GetTotal(type)
         };
     }
 
@@ -816,7 +817,7 @@ public class Container : Item
             throw new ArgumentNullException(nameof(grouper));
         }
 
-        var typedItems = FindItemsByType(type, recurse);
+        var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(type, recurse));
 
         var groups = new List<List<Item>>();
         var idx = 0;
@@ -928,7 +929,7 @@ public class Container : Item
 
         for (var i = 0; i < types.Length; ++i)
         {
-            var typedItems = FindItemsByType(types[i], recurse);
+            var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(types[i], recurse));
 
             var groups = new List<List<Item>>();
             var idx = 0;
@@ -1044,7 +1045,7 @@ public class Container : Item
 
         for (var i = 0; i < types.Length; ++i)
         {
-            var typedItems = FindItemsByType(types[i], recurse);
+            var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(types[i], recurse));
 
             var groups = new List<List<Item>>();
             var idx = 0;
@@ -1147,14 +1148,14 @@ public class Container : Item
             throw new ArgumentException("length of types and amounts must match");
         }
 
-        var items = new Item[types.Length][];
+        var items = new List<Item>[types.Length];
         var totals = new int[types.Length];
 
         for (var i = 0; i < types.Length; ++i)
         {
             items[i] = FindItemsByType(types[i], recurse);
 
-            for (var j = 0; j < items[i].Length; ++j)
+            for (var j = 0; j < items[i].Count; ++j)
             {
                 totals[i] += items[i][j].Amount;
             }
@@ -1169,7 +1170,7 @@ public class Container : Item
         {
             var need = amounts[i];
 
-            for (var j = 0; j < items[i].Length; ++j)
+            for (var j = 0; j < items[i].Count; ++j)
             {
                 var item = items[i][j];
 
@@ -1202,14 +1203,14 @@ public class Container : Item
             throw new ArgumentException("length of types and amounts must match");
         }
 
-        var items = new Item[types.Length][];
+        var items = new List<Item>[types.Length];
         var totals = new int[types.Length];
 
         for (var i = 0; i < types.Length; ++i)
         {
             items[i] = FindItemsByType(types[i], recurse);
 
-            for (var j = 0; j < items[i].Length; ++j)
+            for (var j = 0; j < items[i].Count; ++j)
             {
                 totals[i] += items[i][j].Amount;
             }
@@ -1224,7 +1225,7 @@ public class Container : Item
         {
             var need = amounts[i];
 
-            for (var j = 0; j < items[i].Length; ++j)
+            for (var j = 0; j < items[i].Count; ++j)
             {
                 var item = items[i][j];
 
@@ -1252,7 +1253,7 @@ public class Container : Item
 
     public bool ConsumeTotal(Type type, int amount = 1, bool recurse = true, OnItemConsumed callback = null)
     {
-        var items = FindItemsByType(type, recurse);
+        var items = CollectionsMarshal.AsSpan(FindItemsByType(type, recurse));
 
         // First pass, compute total
         var total = 0;
@@ -1360,7 +1361,7 @@ public class Container : Item
 
         var best = 0;
 
-        var typedItems = FindItemsByType(type, recurse);
+        var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(type, recurse));
 
         var groups = new List<List<Item>>();
         var idx = 0;
@@ -1421,7 +1422,7 @@ public class Container : Item
 
         var best = 0;
 
-        var typedItems = FindItemsByType(types, recurse);
+        var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(types, recurse));
 
         var groups = new List<List<Item>>();
         var idx = 0;
@@ -1482,7 +1483,7 @@ public class Container : Item
 
         for (var i = 0; i < types.Length; ++i)
         {
-            var typedItems = FindItemsByType(types[i], recurse);
+            var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(types[i], recurse));
 
             var groups = new List<List<Item>>();
             var idx = 0;
@@ -1556,107 +1557,71 @@ public class Container : Item
         return total;
     }
 
-    public Item[] FindItemsByType(Type type, bool recurse = true)
+    public List<Item> FindItemsByType(Type type, bool recurse = true)
     {
-        if (m_FindItemsList.Count > 0)
+        using var queue = PooledRefQueue<Container>.Create(128);
+        queue.Enqueue(this);
+        var items = new List<Item>();
+        while (queue.Count > 0)
         {
-            m_FindItemsList.Clear();
-        }
-
-        RecurseFindItemsByType(this, type, recurse, m_FindItemsList);
-
-        return m_FindItemsList.ToArray();
-    }
-
-    private static void RecurseFindItemsByType(Item current, Type type, bool recurse, List<Item> list)
-    {
-        if (current == null || current.Items.Count == 0)
-        {
-            return;
-        }
-
-        var items = current.Items;
-
-        for (var i = 0; i < items.Count; ++i)
-        {
-            var item = items[i];
-
-            if (type.IsInstanceOfType(item))
+            var container = queue.Dequeue();
+            foreach (var item in container.Items)
             {
-                list.Add(item);
-            }
-
-            if (recurse && item is Container)
-            {
-                RecurseFindItemsByType(item, type, true, list);
-            }
-        }
-    }
-
-    public Item[] FindItemsByType(Type[] types, bool recurse = true)
-    {
-        if (m_FindItemsList.Count > 0)
-        {
-            m_FindItemsList.Clear();
-        }
-
-        RecurseFindItemsByType(this, types, recurse, m_FindItemsList);
-
-        return m_FindItemsList.ToArray();
-    }
-
-    private static void RecurseFindItemsByType(Item current, Type[] types, bool recurse, List<Item> list)
-    {
-        if (current == null || current.Items.Count == 0)
-        {
-            return;
-        }
-
-        var items = current.Items;
-
-        for (var i = 0; i < items.Count; ++i)
-        {
-            var item = items[i];
-
-            if (InTypeList(item, types))
-            {
-                list.Add(item);
-            }
-
-            if (recurse && item is Container)
-            {
-                RecurseFindItemsByType(item, types, true, list);
-            }
-        }
-    }
-
-    public Item FindItemByType(Type type, bool recurse = true) => RecurseFindItemByType(this, type, recurse);
-
-    private static Item RecurseFindItemByType(Item current, Type type, bool recurse)
-    {
-        if (current == null || current.Items.Count == 0)
-        {
-            return null;
-        }
-
-        var list = current.Items;
-
-        for (var i = 0; i < list.Count; ++i)
-        {
-            var item = list[i];
-
-            if (type.IsInstanceOfType(item))
-            {
-                return item;
-            }
-
-            if (recurse && item is Container)
-            {
-                var check = RecurseFindItemByType(item, type, true);
-
-                if (check != null)
+                if (type.IsInstanceOfType(item))
                 {
-                    return check;
+                    items.Add(item);
+                }
+                else if (recurse && item is Container itemContainer)
+                {
+                    queue.Enqueue(itemContainer);
+                }
+            }
+        }
+
+        return items;
+    }
+
+    public List<Item> FindItemsByType(Type[] types, bool recurse = true)
+    {
+        using var queue = PooledRefQueue<Container>.Create(128);
+        queue.Enqueue(this);
+        var items = new List<Item>();
+        while (queue.Count > 0)
+        {
+            var container = queue.Dequeue();
+            foreach (var item in container.Items)
+            {
+                if (InTypeList(item, types))
+                {
+                    items.Add(item);
+                }
+                else if (recurse && item is Container itemContainer)
+                {
+                    queue.Enqueue(itemContainer);
+                }
+            }
+        }
+
+        return items;
+    }
+
+    public Item FindItemByType(Type type, bool recurse = true)
+    {
+        using var queue = PooledRefQueue<Container>.Create(128);
+        queue.Enqueue(this);
+        while (queue.Count > 0)
+        {
+            var container = queue.Dequeue();
+            foreach (var item in container.Items)
+            {
+                if (type.IsInstanceOfType(item))
+                {
+                    return item;
+                }
+
+                if (recurse && item is Container itemContainer)
+                {
+                    queue.Enqueue(itemContainer);
                 }
             }
         }
@@ -1664,33 +1629,23 @@ public class Container : Item
         return null;
     }
 
-    public Item FindItemByType(Type[] types, bool recurse = true) => RecurseFindItemByType(this, types, recurse);
-
-    private static Item RecurseFindItemByType(Item current, Type[] types, bool recurse)
+    public Item FindItemByType(Type[] types, bool recurse = true)
     {
-        if (current == null || current.Items.Count == 0)
+        using var queue = PooledRefQueue<Container>.Create(128);
+        queue.Enqueue(this);
+        while (queue.Count > 0)
         {
-            return null;
-        }
-
-        var list = current.Items;
-
-        for (var i = 0; i < list.Count; ++i)
-        {
-            var item = list[i];
-
-            if (InTypeList(item, types))
+            var container = queue.Dequeue();
+            foreach (var item in container.Items)
             {
-                return item;
-            }
-
-            if (recurse && item is Container)
-            {
-                var check = RecurseFindItemByType(item, types, true);
-
-                if (check != null)
+                if (InTypeList(item, types))
                 {
-                    return check;
+                    return item;
+                }
+
+                if (recurse && item is Container itemContainer)
+                {
+                    queue.Enqueue(itemContainer);
                 }
             }
         }
