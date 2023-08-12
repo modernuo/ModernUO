@@ -1691,7 +1691,8 @@ public class Container : Item
                 {
                     items.Add(typedItem);
                 }
-                else if (recurse && item is Container itemContainer)
+
+                if (recurse && item is Container itemContainer)
                 {
                     queue.Enqueue(itemContainer);
                 }
