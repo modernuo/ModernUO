@@ -1369,9 +1369,10 @@ public class Container : Item
         while (idx < typedItems.Length)
         {
             var a = typedItems[idx++];
-            var group = new List<Item>();
-
-            group.Add(a);
+            var group = new List<Item>
+            {
+                a
+            };
 
             while (idx < typedItems.Length)
             {
@@ -1430,9 +1431,10 @@ public class Container : Item
         while (idx < typedItems.Length)
         {
             var a = typedItems[idx++];
-            var group = new List<Item>();
-
-            group.Add(a);
+            var group = new List<Item>
+            {
+                a
+            };
 
             while (idx < typedItems.Length)
             {
@@ -1571,7 +1573,8 @@ public class Container : Item
                 {
                     items.Add(item);
                 }
-                else if (recurse && item is Container itemContainer)
+
+                if (recurse && item is Container itemContainer)
                 {
                     queue.Enqueue(itemContainer);
                 }
@@ -1595,7 +1598,8 @@ public class Container : Item
                 {
                     items.Add(item);
                 }
-                else if (recurse && item is Container itemContainer)
+
+                if (recurse && item is Container itemContainer)
                 {
                     queue.Enqueue(itemContainer);
                 }
