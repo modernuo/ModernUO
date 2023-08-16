@@ -1395,6 +1395,7 @@ namespace Server.Multis
                 _moveTimer.Stop();
                 _moveTimer.Delay = delay;
                 _moveTimer.Interval = interval;
+                _moveTimer.Single = singleNum;
             }
             else
             {
@@ -1807,8 +1808,10 @@ namespace Server.Multis
                     {
                         item.NoMoveHS = true;
 
-                        // Already filtered for Tiller/Hold/Plank/EffectItem
-                        item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
+                        if (item is not (Server.Items.TillerMan or Server.Items.Hold or Plank))
+                        {
+                            item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
+                        }
                     }
                     else if (e is Mobile m)
                     {
