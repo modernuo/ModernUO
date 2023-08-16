@@ -1372,7 +1372,7 @@ namespace Server.Multis
             if (_moveTimer != null)
             {
                 // Do not allow them to travel faster simply by respamming the command
-                if (_moveTimer.Running && _moveTimer.Interval == interval && _moveTimer.Single == singleNum)
+                if (_moveTimer.Running && _moveTimer.Interval == interval && _moveTimer.Count == singleNum)
                 {
                     return false;
                 }
@@ -1393,9 +1393,17 @@ namespace Server.Multis
                 }
 
                 _moveTimer.Stop();
-                _moveTimer.Delay = delay;
-                _moveTimer.Interval = interval;
-                _moveTimer.Single = singleNum;
+
+                // We can reuse the timer if it's not a single count
+                if (_moveTimer.Count == 0 && singleNum == 0)
+                {
+                    _moveTimer.Delay = delay;
+                    _moveTimer.Interval = interval;
+                }
+                else
+                {
+                    _moveTimer = new MoveTimer(this, delay, interval, singleNum);
+                }
             }
             else
             {
@@ -2113,23 +2121,12 @@ namespace Server.Multis
             }
         }
 
-        private class MoveTimer : Timer
+        private class MoveTimer(BaseBoat boat, TimeSpan delay, TimeSpan interval, int single)
+            : Timer(delay, interval, single)
         {
-            public TimeSpan BoatMoveDelay;
-            public TimeSpan BoatMoveInterval;
-            public int Single;
-            private BaseBoat _boat;
-
-            public MoveTimer(BaseBoat boat, TimeSpan delay, TimeSpan interval, int single = 0) : base(delay, interval, single)
-            {
-                BoatMoveInterval = interval;
-                BoatMoveDelay = delay;
-                Single = single;
-                _boat = boat;
-            }
             protected override void OnTick()
             {
-                _boat?.StopBoat();
+                boat?.StopBoat();
             }
         }
 
