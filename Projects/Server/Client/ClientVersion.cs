@@ -85,7 +85,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
                 {
                     if (!char.IsWhiteSpace(fmt, br3))
                     {
-                        Patch = fmt[br3] - 'a' + 1;
+                        Patch = fmt[br3] - 'a';
                     }
                 }
                 else
