@@ -2121,7 +2121,7 @@ namespace Server.Multis
             }
         }
 
-        private class MoveTimer(BaseBoat boat, TimeSpan delay, TimeSpan interval, int single = 0)
+        private class MoveTimer(BaseBoat boat, TimeSpan delay, TimeSpan interval, int single)
             : Timer(delay, interval, single)
         {
             protected override void OnTick()
