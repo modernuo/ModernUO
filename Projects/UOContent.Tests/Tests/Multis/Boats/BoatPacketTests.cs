@@ -102,19 +102,33 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
         AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
     }
 
-    private class TestBoat(Serial serial, List<IEntity> list, List<IEntity> notContainedList) : BaseBoat(serial)
+    private class TestBoat : BaseBoat
     {
+        private readonly List<IEntity> _list;
+        private readonly List<IEntity> _notContainedList;
+
+        public TestBoat(Serial serial, List<IEntity> list, List<IEntity> notContainedList) : base(serial)
+        {
+            _list = list;
+            _notContainedList = notContainedList;
+        }
+
         public override MultiComponentList Components { get; } = new(new List<MultiTileEntry>());
 
-        public override bool Contains(int x, int y) => !notContainedList.Any(e => e.X == x && e.Y == y);
+        public override bool Contains(int x, int y) => !_notContainedList.Any(e => e.X == x && e.Y == y);
 
         public override MovingEntitiesEnumerable GetMovingEntities(bool includeBoat = false) =>
-            new(this, true, new Map.PooledEnumerable<IEntity>(list));
+            new(this, true, new Map.PooledEnumerable<IEntity>(_list));
     }
 
-    private class MockedMobile(Serial serial) : Mobile(serial)
+    private class MockedMobile : Mobile
     {
         public HashSet<IEntity> CanSeeEntities = new();
+
+        public MockedMobile(Serial serial) : base(serial)
+        {
+        }
+
         public override bool CanSee(Mobile m) => m == this;
 
         public override bool CanSee(Item i) => CanSeeEntities.Contains(i);
