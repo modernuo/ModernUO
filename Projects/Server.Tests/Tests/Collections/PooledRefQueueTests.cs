@@ -7,10 +7,16 @@ namespace Server.Tests;
 
 public sealed class PooledRefQueueTests : IDisposable
 {
-    private class MockedRandomSource(int queueCount, int mockedValue) : IRandomSource
+    private class MockedRandomSource : IRandomSource
     {
-        private int _queueCount = queueCount;
-        private int _mockedValue = mockedValue;
+        private int _queueCount;
+        private int _mockedValue;
+
+        public MockedRandomSource(int queueCount, int mockedValue)
+        {
+            _queueCount = queueCount;
+            _mockedValue = mockedValue;
+        }
 
         public int Next() => throw new NotImplementedException();
 

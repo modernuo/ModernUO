@@ -7,7 +7,9 @@ namespace Server.Engines.MLQuests;
 
 public class MLQuestPacketTests
 {
-    private class MockedRace(
+    private class MockedRace : Race
+    {
+        public MockedRace(
             int raceID,
             int raceIndex,
             string name,
@@ -17,8 +19,8 @@ public class MLQuestPacketTests
             int maleGhostBody,
             int femaleGhostBody,
             Expansion requiredExpansion
-        )
-        : Race(raceID,
+        ) : base(
+            raceID,
             raceIndex,
             name,
             pluralName,
@@ -28,7 +30,9 @@ public class MLQuestPacketTests
             femaleGhostBody,
             requiredExpansion
         )
-    {
+        {
+        }
+
         public override bool ValidateHair(bool female, int itemID) => throw new NotImplementedException();
 
         public override int RandomHair(bool female) => throw new NotImplementedException();
