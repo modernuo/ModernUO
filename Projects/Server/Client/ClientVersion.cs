@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2022 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ClientVersion.cs                                                *
  *                                                                       *
@@ -85,7 +85,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
                 {
                     if (!char.IsWhiteSpace(fmt, br3))
                     {
-                        Patch = fmt[br3] - 'a' + 1;
+                        Patch = fmt[br3] - 'a';
                     }
                 }
                 else

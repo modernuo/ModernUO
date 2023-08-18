@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2022 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: WorldLocationConverter.cs                                       *
  *                                                                       *

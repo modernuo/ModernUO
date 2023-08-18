@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2022 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: UOClient.cs                                                     *
  *                                                                       *
@@ -105,19 +105,17 @@ public static class UOClient
                 0x4E, 0x00, 0x46, 0x00, 0x4F, 0x00
             };
 
-            for (var i = 0; i < buffer.Length; i++)
+            var versionIndex = buffer.AsSpan().IndexOf(vsVersionInfo);
+            if (versionIndex > -1)
             {
-                if (vsVersionInfo.SequenceEqual(buffer.AsSpan(i, 30)))
-                {
-                    var offset = i + 42; // 30 + 12
+                var offset = versionIndex + 42; // 30 + 12
 
-                    var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset));
-                    var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 2));
-                    var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 4));
-                    var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 6));
+                var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset));
+                var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 2));
+                var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 4));
+                var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 6));
 
-                    return new ClientVersion(majorPart, minorPart, buildPart, privatePart);
-                }
+                return new ClientVersion(majorPart, minorPart, buildPart, privatePart);
             }
         }
 

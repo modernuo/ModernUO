@@ -1,8 +1,10 @@
 using System;
+using System.Reflection;
 using Server.HuePickers;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Gumps
 {
@@ -751,6 +753,9 @@ namespace Server.Gumps
 
         private class CustomItem
         {
+            private ConstructorInfo _ctor;
+            private object[] _params;
+
             public CustomItem(int itemID, int loc, bool longText = false) : this(null, itemID, loc, 0, longText)
             {
             }
@@ -785,22 +790,24 @@ namespace Server.Gumps
                     return null;
                 }
 
-                Item i = null;
+                if (_ctor == null)
+                {
+                    _ctor = Type.GetConstructor(out var paramCount);
+                    _params = paramCount == 0 ? null : new object[paramCount];
+                    if (_params != null)
+                    {
+                        Array.Fill(_params, Type.Missing);
+                    }
+                }
 
                 try
                 {
-                    var ctor = Type.GetConstructor(Array.Empty<Type>());
-                    if (ctor != null)
-                    {
-                        i = ctor.Invoke(null) as Item;
-                    }
+                    return _ctor?.Invoke(_params) as Item;
                 }
                 catch
                 {
-                    // ignored
+                    return null;
                 }
-
-                return i;
             }
         }
 

@@ -1,5 +1,4 @@
 using System;
-using Moq;
 using Server.Collections;
 using Server.Random;
 using Xunit;
@@ -8,22 +7,63 @@ namespace Server.Tests;
 
 public sealed class PooledRefQueueTests : IDisposable
 {
+    private class MockedRandomSource : IRandomSource
+    {
+        private int _queueCount;
+        private int _mockedValue;
+
+        public MockedRandomSource(int queueCount, int mockedValue)
+        {
+            _queueCount = queueCount;
+            _mockedValue = mockedValue;
+        }
+
+        public int Next() => throw new NotImplementedException();
+
+        public int Next(int maxValue) => _mockedValue;
+
+        public int Next(int minValue, int count) => throw new NotImplementedException();
+
+        public uint Next(uint maxValue) => throw new NotImplementedException();
+
+        public uint Next(uint minValue, uint count) => throw new NotImplementedException();
+
+        public long Next(long maxValue) => throw new NotImplementedException();
+
+        public long Next(long minValue, long count) => throw new NotImplementedException();
+
+        public double NextDouble() => throw new NotImplementedException();
+
+        public void NextBytes(Span<byte> buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int NextInt() => throw new NotImplementedException();
+
+        public uint NextUInt() => throw new NotImplementedException();
+
+        public ulong NextULong() => throw new NotImplementedException();
+
+        public bool NextBool() => throw new NotImplementedException();
+
+        public byte NextByte() => throw new NotImplementedException();
+
+        public float NextFloat() => throw new NotImplementedException();
+
+        public float NextFloatNonZero() => throw new NotImplementedException();
+
+        public double NextDoubleNonZero() => throw new NotImplementedException();
+
+        public double NextDoubleHighRes() => throw new NotImplementedException();
+    }
+
     public void Dispose() => RandomSources.SetRng(null);
 
     private static void PrepareRng(int queueCount, int rngValue)
     {
-        Mock<IRandomSource> mockRng = new Mock<IRandomSource>();
-        mockRng
-            .Setup(rng => rng.Next(It.IsAny<int>()))
-            .Returns(
-                (int size) =>
-                {
-                    Assert.Equal(queueCount, size);
-                    return rngValue;
-                }
-            );
-
-        RandomSources.SetRng(mockRng.Object);
+        var mockedRng = new MockedRandomSource(queueCount, rngValue);
+        RandomSources.SetRng(mockedRng);
     }
 
     [Fact]

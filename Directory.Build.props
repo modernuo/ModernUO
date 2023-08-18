@@ -3,9 +3,9 @@
     <PropertyGroup>
         <Authors>Kamron Batman</Authors>
         <Company>ModernUO</Company>
-        <Copyright>2019-2022</Copyright>
+        <Copyright>2019-2023</Copyright>
         <TargetFramework>net7.0</TargetFramework>
-        <LangVersion>preview</LangVersion>
+        <LangVersion>11</LangVersion>
         <PublicRelease>true</PublicRelease>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <NoWarn>NU1603</NoWarn>
@@ -63,7 +63,7 @@
         <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Serilog" Version="2.12.0" />
+        <PackageReference Include="Serilog" Version="3.0.1" />
         <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">

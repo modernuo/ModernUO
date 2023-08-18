@@ -418,10 +418,10 @@ public partial class Container : Item
     {
         return type switch
         {
-            TotalType.Gold   => m_TotalGold,
-            TotalType.Items  => m_TotalItems,
+            TotalType.Gold => m_TotalGold,
+            TotalType.Items => m_TotalItems,
             TotalType.Weight => m_TotalWeight,
-            _                => base.GetTotal(type)
+            _ => base.GetTotal(type)
         };
     }
 
@@ -1732,7 +1732,8 @@ public partial class Container : Item
                 {
                     items.Add(typedItem);
                 }
-                else if (recurse && item is Container itemContainer)
+
+                if (recurse && item is Container itemContainer)
                 {
                     queue.Enqueue(itemContainer);
                 }

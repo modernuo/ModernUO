@@ -129,7 +129,9 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
         for (var i = 0; i < count; ++i)
         {
-            Entries.Add(new RunebookEntry(reader));
+            var entry = new RunebookEntry(this);
+            entry.Deserialize(reader);
+            Entries.Add(entry);
         }
 
         _description = reader.ReadString();
@@ -285,7 +287,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
         {
             var entry = Entries[i];
 
-            book.Entries.Add(new RunebookEntry(entry.Location, entry.Map, entry.Description, entry.House));
+            book.Entries.Add(new RunebookEntry(this, entry.Location, entry.Map, entry.Description, entry.House));
         }
     }
 
@@ -326,7 +328,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
             if (rune.Marked && rune.TargetMap != null)
             {
-                Entries.Add(new RunebookEntry(rune.Target, rune.TargetMap, rune.Description, rune.House));
+                Entries.Add(new RunebookEntry(this, rune.Target, rune.TargetMap, rune.Description, rune.House));
 
                 rune.Delete();
 
@@ -370,60 +372,69 @@ public partial class Runebook : Item, ISecurable, ICraftable
     }
 }
 
-[ManualDirtyChecking]
-public class RunebookEntry
+[SerializationGenerator(2)]
+public partial class RunebookEntry
 {
-    public RunebookEntry(Point3D loc, Map map, string description, BaseHouse house = null)
+    [CanBeNull]
+    [DirtyTrackingEntity]
+    private Runebook _runebook;
+
+    [SerializableField(0)]
+    private BaseHouse _house;
+
+    [SerializableFieldSaveFlag(0)]
+    public bool ShouldSerializeHouse() => _house?.Deleted == false;
+
+    [SerializableField(1)]
+    private Point3D _location;
+
+    [SerializableFieldSaveFlag(1)]
+    public bool ShouldSerializeLocation() => _house?.Deleted != false;
+
+    [SerializableField(2)]
+    private Map _map;
+
+    [SerializableFieldSaveFlag(2)]
+    public bool ShouldSerializeMap() => _house?.Deleted != false;
+
+    [SerializableField(3)]
+    private string _description;
+
+    [SerializableFieldSaveFlag(3)]
+    public bool ShouldSerializeDesc() => _house?.Deleted != false;
+
+    public RunebookEntry(
+        Runebook runebook,
+        Point3D loc = new(),
+        Map map = null,
+        string description = null,
+        BaseHouse house = null
+    )
     {
-        Location = loc;
-        Map = map;
-        Description = description;
-        House = house;
+        _runebook = runebook;
+        _house = house;
+        _location = loc;
+        _map = map;
+        _description = description;
     }
 
-    public RunebookEntry(IGenericReader reader)
+    private void Deserialize(IGenericReader reader, int version)
     {
-        var version = reader.ReadByte();
         switch (version)
         {
             case 1:
                 {
-                    House = reader.ReadEntity<BaseHouse>();
+                    _house = reader.ReadEntity<BaseHouse>();
                     goto case 0;
                 }
             case 0:
                 {
-                    Location = reader.ReadPoint3D();
-                    Map = reader.ReadMap();
-                    Description = reader.ReadString();
+                    _location = reader.ReadPoint3D();
+                    _map = reader.ReadMap();
+                    _description = reader.ReadString();
 
                     break;
                 }
         }
     }
-
-    public void Serialize(IGenericWriter writer)
-    {
-        if (House?.Deleted == false)
-        {
-            writer.Write((byte)1); // version
-            writer.Write(House);
-        }
-        else
-        {
-            writer.Write((byte)0); // version
-        }
-
-        writer.Write(Location);
-        writer.Write(Map);
-        writer.Write(Description);
-    }
-
-    public BaseHouse House { get; }
-
-    public Point3D Location { get; }
-
-    public Map Map { get; }
-
-    public string Description { get; }
 }

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2022 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MobileMod.cs                                                    *
  *                                                                       *
@@ -26,11 +26,9 @@ public partial class MobileMod
     [SerializableField(0)]
     private string _name;
 
-    public MobileMod(Mobile owner) => Owner = owner;
-
-    public MobileMod(Mobile owner, string name)
+    public MobileMod(Mobile owner, string name = null)
     {
         Owner = owner;
-        Name = name;
+        _name = name;
     }
 }

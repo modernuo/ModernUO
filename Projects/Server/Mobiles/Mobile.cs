@@ -8436,6 +8436,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
+        mod.Owner = this;
+
         _statMods ??= new List<StatMod>();
         _statMods.Add(mod);
         Delta(MobileDelta.Stat | GetStatDelta(mod.Type));

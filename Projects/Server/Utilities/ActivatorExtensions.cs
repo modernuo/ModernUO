@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2022 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ActivatorExtensions.cs                                          *
  *                                                                       *
@@ -25,6 +25,13 @@ public static class ActivatorExtensions
         Predicate<ConstructorInfo> predicate = null,
         Type[] args = null
     ) => type.GetConstructor(predicate, args, out _);
+
+    public static ConstructorInfo GetConstructor(
+        this Type type,
+        out int paramCount,
+        Predicate<ConstructorInfo> predicate = null,
+        Type[] args = null
+    ) => type.GetConstructor(predicate, args, out paramCount);
 
     public static ConstructorInfo GetConstructor(
         this Type type,
