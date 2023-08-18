@@ -30,7 +30,7 @@ namespace Server.Multis.Boats
                 return;
             }
 
-            var minLength = 68; // 18 + 5 * 10
+            const int minLength = 68; // 18 + 5 * 10
             var writer = new SpanWriter(stackalloc byte[minLength], true);
             writer.Write((byte)0xF6); // Packet ID
             writer.Seek(2, SeekOrigin.Current);

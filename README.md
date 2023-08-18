@@ -30,22 +30,22 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![Arch](https://img.shields.io/badge/-Arch-1793D1?logo=archlinux&logoColor=1793D1&labelColor=222222)](https://archlinux.org/download/)
 
 #### Running the server
-[![.NET](https://img.shields.io/badge/-7.0.7-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+[![.NET](https://img.shields.io/badge/-7.0.10-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%207.0.304%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+[![.NET](https://img.shields.io/badge/-%207.0.400%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 #### Supported IDEs
 
-<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2022.3.1+"
-      alt="Jetbrains Rider 2022.3.1+"
+<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2023.2+"
+      alt="Jetbrains Rider 2023.2+"
       src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png"></a><img
       alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://code.visualstudio.com/download"><img height="64" title="VSCode"
       alt="VSCode"
       src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a><img alt="space" width="32"
-      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.4+"
-      alt="Visual Studio 2022 v17.4+"
+      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.7+"
+      alt="Visual Studio 2022 v17.7+"
       src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png"></a></p>
 
 ## Getting Started
