@@ -273,7 +273,7 @@ public partial class SalvageBag : Bag
 
         var items = FindItemsByType(_clothTypes);
 
-        for (var i = 0; i < items.Length; i++)
+        for (var i = 0; i < items.Count; i++)
         {
             from.AddToBackpack(items[i]);
         }

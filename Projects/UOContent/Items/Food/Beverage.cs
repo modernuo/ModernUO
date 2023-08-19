@@ -667,7 +667,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         // First pass, compute total
         var total = 0;
 
-        for (var i = 0; i < items.Length; ++i)
+        for (var i = 0; i < items.Count; ++i)
         {
             if (items[i] is BaseBeverage bev && bev.Content == content && !bev.IsEmpty)
             {
@@ -681,7 +681,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
 
             var need = quantity;
 
-            for (var i = 0; i < items.Length; ++i)
+            for (var i = 0; i < items.Count; ++i)
             {
                 if (items[i] is not BaseBeverage bev || bev.Content != content || bev.IsEmpty)
                 {
