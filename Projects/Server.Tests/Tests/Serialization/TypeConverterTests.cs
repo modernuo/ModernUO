@@ -1,32 +1,53 @@
 using System;
-using Xunit;
-
 using System.Buffers;
-using Server.Json;
 using System.Text.Json;
-using System.IO;
-using Microsoft.Toolkit.HighPerformance;
 using System.Text;
-using Server.Engines.Plants;
+using System.Diagnostics;
+
+using Server.Json;
+
+using Xunit;
 
 namespace Server.Tests;
 
 public class TypeConverterTests
 {
+    bool AssemblyAlreadyLoaded(string assemblyLocation)
+    {
+        // If Assemblies is null or doesn't contain the assembly we want to load...
+        if (AssemblyHandler.Assemblies == null)
+        {
+            return false;
+        }
+
+        foreach (var assembly in AssemblyHandler.Assemblies)
+        {
+            if (assembly.Location == assemblyLocation)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     [Fact]
     public void TestReadAfterWrite()
     {
         // Given
         Type itemType = typeof(Item);
-        Core.Assembly = itemType.Assembly;
-        ServerConfiguration.Load(true);
         string assemblyLocation = itemType.Assembly.Location;
-        AssemblyHandler.LoadAssemblies(new string[] { assemblyLocation });
+        JsonSerializerOptions options = new JsonSerializerOptions();
+
+        if (!AssemblyAlreadyLoaded(assemblyLocation))
+        {
+            AssemblyHandler.LoadAssemblies(new string[] { assemblyLocation });
+        }   
 
         TypeConverter converter = new TypeConverter();
         var bufferWriter = new ArrayBufferWriter<byte>();
         Utf8JsonWriter jsonWriter = new Utf8JsonWriter(bufferWriter);
-        converter.Write(jsonWriter, itemType, new JsonSerializerOptions());
+        converter.Write(jsonWriter, itemType, options);
 
         // When
         jsonWriter.Flush();
@@ -36,7 +57,7 @@ public class TypeConverterTests
         jsonReader.Read();
 
         // Then
-        Type readType = converter.Read(ref jsonReader, null, new JsonSerializerOptions());
+        Type readType = converter.Read(ref jsonReader, null, options);
         Assert.Equal(typeof(Item), readType);
     }
 }
