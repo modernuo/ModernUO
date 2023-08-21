@@ -35,7 +35,11 @@ public class TypeConverter : JsonConverter<Type>
         var type = AssemblyHandler.FindTypeByName(typeName);
         if (type == null)
         {
-            logger.Warning("Attempted to deserialize type {Type} which does not exist.", typeName);
+            type = AssemblyHandler.FindTypeByName(typeName, true);
+            if (type == null)
+            {
+                logger.Warning("Attempted to deserialize type {Type} which does not exist.", typeName);
+            }
         }
 
         return type;
