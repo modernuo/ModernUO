@@ -18,7 +18,7 @@ namespace Server.Tests
 
             // Load UOContent.dll into the type resolver
             ServerConfiguration.AssemblyDirectories.Add(Core.BaseDirectory);
-            var assembles = new [] { "UOContent.dll" };
+            var assembles = new [] { "ModernUO.dll", "UOContent.dll" };
             AssemblyHandler.LoadAssemblies(assembles);
 
             // Load Skills

@@ -1,8 +1,6 @@
 using System;
 using System.Buffers;
 using System.Text.Json;
-using System.Text;
-using System.Diagnostics;
 
 using Server.Json;
 
@@ -10,54 +8,30 @@ using Xunit;
 
 namespace Server.Tests;
 
-public class TypeConverterTests
+public class TypeConverterTests : IClassFixture<ServerFixture>
 {
-    bool AssemblyAlreadyLoaded(string assemblyLocation)
-    {
-        // If Assemblies is null or doesn't contain the assembly we want to load...
-        if (AssemblyHandler.Assemblies == null)
-        {
-            return false;
-        }
-
-        foreach (var assembly in AssemblyHandler.Assemblies)
-        {
-            if (assembly.Location == assemblyLocation)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     [Fact]
     public void TestReadAfterWrite()
     {
-        // Given
+        // Arrange
         Type itemType = typeof(Item);
-        string assemblyLocation = itemType.Assembly.Location;
-        JsonSerializerOptions options = new JsonSerializerOptions();
 
-        if (!AssemblyAlreadyLoaded(assemblyLocation))
-        {
-            AssemblyHandler.LoadAssemblies(new string[] { assemblyLocation });
-        }   
+        JsonSerializerOptions options = new JsonSerializerOptions();
 
         TypeConverter converter = new TypeConverter();
         var bufferWriter = new ArrayBufferWriter<byte>();
-        Utf8JsonWriter jsonWriter = new Utf8JsonWriter(bufferWriter);
+        using var jsonWriter = new Utf8JsonWriter(bufferWriter);
         converter.Write(jsonWriter, itemType, options);
 
-        // When
+        // Act
         jsonWriter.Flush();
         var jsonData = bufferWriter.WrittenSpan;
-        var writtenString = Encoding.UTF8.GetString(jsonData.ToArray());
+
         Utf8JsonReader jsonReader = new Utf8JsonReader(jsonData);
         jsonReader.Read();
 
-        // Then
-        Type readType = converter.Read(ref jsonReader, null, options);
+        // Assert
+        Type readType = converter.Read(ref jsonReader, typeof(Type), options);
         Assert.Equal(typeof(Item), readType);
     }
 }
