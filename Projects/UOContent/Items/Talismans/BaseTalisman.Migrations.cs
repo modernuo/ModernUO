@@ -97,14 +97,6 @@ public partial class BaseTalisman
         _blessed = GetOldSaveFlag(flags, OldSaveFlag.Blessed);
     }
 
-    private static void SetOldSaveFlag(ref OldSaveFlag flags, OldSaveFlag toSet, bool setIf)
-    {
-        if (setIf)
-        {
-            flags |= toSet;
-        }
-    }
-
     private static bool GetOldSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
 
     [Flags]
