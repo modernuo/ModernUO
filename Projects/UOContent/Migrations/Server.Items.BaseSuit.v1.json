@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.BaseSuit",
+  "properties": [
+    {
+      "name": "AccessLevel",
+      "type": "Server.AccessLevel",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

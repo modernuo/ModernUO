@@ -1,24 +1,11 @@
-using System;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
-using Server.Utilities;
 
 namespace Server.Commands;
 
 public static class StaffDress
 {
-    private static readonly Type[] _staffRobeTypes =
-    {
-        null,
-        typeof(CounselorRobe),
-        typeof(GMRobe),
-        typeof(SeerRobe),
-        typeof(AdminRobe),
-        typeof(AdminRobe),
-        typeof(AdminRobe)
-    };
-
     public static void Initialize()
     {
         CommandSystem.Register("ResetStaffDress", AccessLevel.Counselor, StaffDress_OnCommand);
@@ -75,6 +62,9 @@ public static class StaffDress
             }
         }
 
-        pm.AddItem(_staffRobeTypes[(int)pm.AccessLevel].CreateInstance<BaseSuit>());
+        if (pm.AccessLevel > AccessLevel.Player)
+        {
+            pm.AddItem(new StaffRobe(pm.AccessLevel));
+        }
     }
 }
