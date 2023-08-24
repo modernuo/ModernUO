@@ -1,62 +1,61 @@
-namespace Server.Items
+namespace Server.Items;
+
+public class RandomTalisman : BaseTalisman
 {
-    public class RandomTalisman : BaseTalisman
+    [Constructible]
+    public RandomTalisman() : base(GetRandomItemID())
     {
-        [Constructible]
-        public RandomTalisman() : base(GetRandomItemID())
+        Summoner = GetRandomSummoner();
+
+        if (Summoner.IsEmpty)
         {
-            Summoner = GetRandomSummoner();
+            Removal = GetRandomRemoval();
 
-            if (Summoner.IsEmpty)
+            if (Removal != TalismanRemoval.None)
             {
-                Removal = GetRandomRemoval();
+                MaxCharges = GetRandomCharges();
+                MaxChargeTime = 1200;
+            }
+        }
+        else
+        {
+            MaxCharges = Utility.RandomMinMax(10, 50);
 
-                if (Removal != TalismanRemoval.None)
-                {
-                    MaxCharges = GetRandomCharges();
-                    MaxChargeTime = 1200;
-                }
+            if (Summoner.IsItem)
+            {
+                MaxChargeTime = 60;
             }
             else
             {
-                MaxCharges = Utility.RandomMinMax(10, 50);
-
-                if (Summoner.IsItem)
-                {
-                    MaxChargeTime = 60;
-                }
-                else
-                {
-                    MaxChargeTime = 1800;
-                }
+                MaxChargeTime = 1800;
             }
-
-            Blessed = GetRandomBlessed();
-            Slayer = GetRandomSlayer();
-            Protection = GetRandomProtection();
-            Killer = GetRandomKiller();
-            Skill = GetRandomSkill();
-            ExceptionalBonus = GetRandomExceptional();
-            SuccessBonus = GetRandomSuccessful();
-            Charges = MaxCharges;
         }
 
-        public RandomTalisman(Serial serial) : base(serial)
-        {
-        }
+        Blessed = GetRandomBlessed();
+        Slayer = GetRandomSlayer();
+        Protection = GetRandomProtection();
+        Killer = GetRandomKiller();
+        Skill = GetRandomSkill();
+        ExceptionalBonus = GetRandomExceptional();
+        SuccessBonus = GetRandomSuccessful();
+        Charges = MaxCharges;
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public RandomTalisman(Serial serial) : base(serial)
+    {
+    }
 
-            writer.Write(0); // version
-        }
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        writer.Write(0); // version
+    }
 
-            var version = reader.ReadInt();
-        }
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
     }
 }
