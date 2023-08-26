@@ -2050,14 +2050,36 @@ public abstract class BaseAI
     {
         var isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
 
-        // Monster is passive
-        if (!isControlled && Math.Abs(thinkingSpeed - m_Mobile.PassiveSpeed) < 0.0001)
+        var movementSpeed = thinkingSpeed switch
         {
-            thinkingSpeed *= 3; // Monster passive is 3x slower than thinking
+            >= 0.8 => 1.5,
+            >= 0.6 => 1.2,
+            >= 0.5 => 1.05,
+            >= 0.4 => 0.9,
+            >= 0.3 => 0.6,
+            >= 0.25   => 0.45,
+            >= 0.2    => 0.3,
+            _      => thinkingSpeed
+        };
+
+        // Is Passive
+        if (Math.Abs(thinkingSpeed - m_Mobile.PassiveSpeed) < 0.0001)
+        {
+            movementSpeed += 0.2;
         }
-        else if (!isControlled || m_Mobile.ControlOrder != OrderType.Follow || m_Mobile.ControlTarget != m_Mobile.ControlMaster)
+
+        if (!isControlled)
         {
-            thinkingSpeed *= 2; // Monster active speed is 2x slower than thinking
+            movementSpeed += 0.1;
+        }
+        else if (!m_Mobile.Summoned)
+        {
+            if (m_Mobile.ControlOrder == OrderType.Follow && m_Mobile.ControlTarget == m_Mobile.ControlMaster)
+            {
+                movementSpeed *= 0.5;
+            }
+
+            movementSpeed -= 0.075;
         }
 
         if (!m_Mobile.IsDeadPet && (m_Mobile.ReduceSpeedWithDamage || m_Mobile.IsSubdued))
@@ -2076,13 +2098,10 @@ public abstract class BaseAI
 
             var offset = statsMax <= 0 ? 1.0 : Math.Max(0, stats) / (double)statsMax;
 
-            if (offset < 1.0)
-            {
-                thinkingSpeed += m_Mobile.PassiveSpeed * (1.0 - offset);
-            }
+            movementSpeed += (1.0 - offset) * 0.8;
         }
 
-        return thinkingSpeed;
+        return movementSpeed;
     }
 
     public virtual bool CheckMove() => Core.TickCount - NextMove >= 0;
