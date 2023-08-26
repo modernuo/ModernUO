@@ -1,13 +1,18 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Items;
 
 namespace Server.Mobiles;
 
-public class LordOaks : BaseChampion
+[SerializationGenerator(0, false)]
+public partial class LordOaks : BaseChampion
 {
-    private BaseCreature m_Queen;
-    private bool m_SpawnedQueen;
+    [SerializableField(0)]
+    private BaseCreature _queen;
+
+    [SerializableField(1)]
+    private bool _spawnedQueen;
 
     [Constructible]
     public LordOaks() : base(AIType.AI_Mage, FightMode.Evil)
@@ -43,10 +48,6 @@ public class LordOaks : BaseChampion
         Karma = 22500;
 
         VirtualArmor = 100;
-    }
-
-    public LordOaks(Serial serial) : base(serial)
-    {
     }
 
     public override ChampionSkullType SkullType => ChampionSkullType.Enlightenment;
@@ -109,20 +110,20 @@ public class LordOaks : BaseChampion
             return false;
         }
 
-        if (!m_SpawnedQueen)
+        if (!_spawnedQueen)
         {
             Say(1042153); // Come forth my queen!
 
-            m_Queen = new Silvani { Team = Team };
-            m_Queen.MoveToWorld(Location, Map);
+            _queen = new Silvani { Team = Team };
+            _queen.MoveToWorld(Location, Map);
 
-            m_SpawnedQueen = true;
+            _spawnedQueen = true;
             return true;
         }
 
-        if (m_Queen?.Deleted != false)
+        if (_queen?.Deleted != false)
         {
-            m_Queen = null;
+            _queen = null;
             return false;
         }
 
@@ -153,33 +154,5 @@ public class LordOaks : BaseChampion
         attacker.Damage(Utility.Random(20, 10), this);
         attacker.Stam -= Utility.Random(20, 10);
         attacker.Mana -= Utility.Random(20, 10);
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-
-        writer.Write(m_Queen);
-        writer.Write(m_SpawnedQueen);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        switch (version)
-        {
-            case 0:
-                {
-                    m_Queen = reader.ReadEntity<BaseCreature>();
-                    m_SpawnedQueen = reader.ReadBool();
-
-                    break;
-                }
-        }
     }
 }
