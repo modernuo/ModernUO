@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.LordOaks",
+  "properties": [
+    {
+      "name": "Queen",
+      "type": "Server.Mobiles.BaseCreature",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "SpawnedQueen",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

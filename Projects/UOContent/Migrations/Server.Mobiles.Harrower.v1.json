@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "type": "Server.Mobiles.Harrower",
+  "properties": [
+    {
+      "name": "TrueForm",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "GateItem",
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Tentacles",
+      "type": "System.Collections.Generic.List\u003CServer.Mobiles.HarrowerTentacles\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Mobiles.HarrowerTentacles",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

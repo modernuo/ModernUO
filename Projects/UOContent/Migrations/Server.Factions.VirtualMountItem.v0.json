@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Factions.VirtualMountItem",
+  "properties": [
+    {
+      "name": "Rider",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

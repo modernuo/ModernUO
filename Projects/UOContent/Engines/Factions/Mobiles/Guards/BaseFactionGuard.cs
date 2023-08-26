@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Factions.AI;
 using Server.Items;
 using Server.Mobiles;
@@ -485,45 +486,43 @@ namespace Server.Factions
         }
     }
 
-    public class VirtualMountItem : Item, IMountItem
+    [SerializationGenerator(0, false)]
+    public partial class VirtualMountItem : Item, IMountItem
     {
-        private readonly VirtualMount m_Mount;
+        private VirtualMount _mount;
+
+        [SerializableField(0)]
+        private Mobile _rider;
 
         public VirtualMountItem(Mobile mob) : base(0x3EA0)
         {
             Layer = Layer.Mount;
 
             Rider = mob;
-            m_Mount = new VirtualMount(this);
+            _mount = new VirtualMount(this);
         }
 
-        public VirtualMountItem(Serial serial) : base(serial) => m_Mount = new VirtualMount(this);
+        public IMount Mount => _mount;
 
-        public Mobile Rider { get; private set; }
-
-        public IMount Mount => m_Mount;
-
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Rider);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            Rider = reader.ReadEntity<Mobile>();
-
-            if (Rider == null)
+            if (_rider?.Deleted != false)
             {
                 Delete();
             }
+            else
+            {
+                _mount = new VirtualMount(this);
+            }
+        }
+
+        public override DeathMoveResult OnParentDeath(Mobile parent)
+        {
+            _mount = null;
+            Delete();
+
+            return DeathMoveResult.RemainEquipped;
         }
     }
 }
