@@ -1,35 +1,39 @@
 using System;
 using System.Reflection;
 
-namespace Server.Tests
+namespace Server.Tests;
+
+internal class ServerFixture : IDisposable
 {
-    internal class ServerFixture : IDisposable
+    // Global setup
+    static ServerFixture()
     {
-        // Global setup
-        static ServerFixture()
-        {
-            Core.Assembly = Assembly.GetExecutingAssembly();
-            Core.LoopContext = new EventLoopContext();
-            Core.Expansion = Expansion.EJ;
+        Core.Assembly = Assembly.GetExecutingAssembly(); // Server.Tests.dll
 
-            // Load Configurations
-            ServerConfiguration.Load(true);
+        // Load Configurations
+        ServerConfiguration.Load(true);
 
-            // Configure / Initialize
-            TestMapDefinitions.ConfigureTestMapDefinitions();
+        // Load an empty assembly list into the resolver
+        ServerConfiguration.AssemblyDirectories.Add(Core.BaseDirectory);
+        AssemblyHandler.LoadAssemblies(new[]{ "ModernUO.dll" });
 
-            // Configure the world
-            World.Configure();
+        Core.LoopContext = new EventLoopContext();
+        Core.Expansion = Expansion.EJ;
 
-            Timer.Init(0);
+        // Configure / Initialize
+        TestMapDefinitions.ConfigureTestMapDefinitions();
 
-            // Load the world
-            World.Load();
-        }
+        // Configure the world
+        World.Configure();
 
-        public void Dispose()
-        {
-            Timer.Init(0);
-        }
+        Timer.Init(0);
+
+        // Load the world
+        World.Load();
+    }
+
+    public void Dispose()
+    {
+        Timer.Init(0);
     }
 }

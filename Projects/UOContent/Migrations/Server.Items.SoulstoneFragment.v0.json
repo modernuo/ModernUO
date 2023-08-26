@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.SoulstoneFragment",
+  "properties": [
+    {
+      "name": "UsesRemaining",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    }
+  ]
+}

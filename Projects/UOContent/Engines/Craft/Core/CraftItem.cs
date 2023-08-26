@@ -454,14 +454,14 @@ namespace Server.Engines.Craft
             }
 
             // TODO: Optimize allocation
-            var items = new Item[types.Length][];
+            var items = new List<Item>[types.Length];
             var totals = new int[types.Length];
 
             for (var i = 0; i < types.Length; ++i)
             {
                 items[i] = cont.FindItemsByType(types[i]);
 
-                for (var j = 0; j < items[i].Length; ++j)
+                for (var j = 0; j < items[i].Count; ++j)
                 {
                     if (items[i][j] is not IHasQuantity hq)
                     {
@@ -483,7 +483,7 @@ namespace Server.Engines.Craft
             {
                 var need = amounts[i];
 
-                for (var j = 0; j < items[i].Length; ++j)
+                for (var j = 0; j < items[i].Count; ++j)
                 {
                     var item = items[i][j];
 
@@ -534,7 +534,7 @@ namespace Server.Engines.Craft
 
             var amount = 0;
 
-            for (var i = 0; i < items.Length; ++i)
+            for (var i = 0; i < items.Count; ++i)
             {
                 if (items[i] is not IHasQuantity hq)
                 {

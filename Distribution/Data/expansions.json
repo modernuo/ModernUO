@@ -4,7 +4,7 @@
     "Name": "None",
     "RequiredClient": null,
     "ClientFlags": "None",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": false,
       "UOR": false,
       "UOTD": false,
@@ -77,7 +77,7 @@
     "Name": "The Second Age",
     "RequiredClient": null,
     "ClientFlags": "Felucca",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": false,
       "UOTD": false,
@@ -150,7 +150,7 @@
     "Name": "Renaissance",
     "RequiredClient": null,
     "ClientFlags": "Trammel",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -223,7 +223,7 @@
     "Name": "Third Dawn",
     "RequiredClient": null,
     "ClientFlags": "Ilshenar",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": true,
@@ -296,7 +296,7 @@
     "Name": "Blackthorn's Revenge",
     "RequiredClient": null,
     "ClientFlags": "Ilshenar",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": true,
@@ -369,7 +369,7 @@
     "Name": "Age of Shadows",
     "RequiredClient": null,
     "ClientFlags": "Malas",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -442,7 +442,7 @@
     "Name": "Samurai Empire",
     "RequiredClient": null,
     "ClientFlags": "Tokuno",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -515,7 +515,7 @@
     "Name": "Mondain's Legacy",
     "RequiredClient": "5.0.0a",
     "ClientFlags": "None",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -588,7 +588,7 @@
     "Name": "Stygian Abyss",
     "RequiredClient": null,
     "ClientFlags": "TerMur",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -661,7 +661,7 @@
     "Name": "High Seas",
     "RequiredClient": "7.0.9.0",
     "ClientFlags": "None",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -734,7 +734,7 @@
     "Name": "Time of Legends",
     "RequiredClient": "7.0.45.65",
     "ClientFlags": "None",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,
@@ -807,7 +807,7 @@
     "Name": "Endless Journey",
     "RequiredClient": "7.0.61.0",
     "ClientFlags": "None",
-    "FeatureFlags": {
+    "SupportedFeatures": {
       "T2A": true,
       "UOR": true,
       "UOTD": false,

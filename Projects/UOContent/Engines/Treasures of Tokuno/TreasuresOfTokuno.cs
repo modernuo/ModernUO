@@ -351,7 +351,7 @@ namespace Server.Gumps
 
             var items = pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal);
 
-            for (var i = 0; i < items.Length; i++)
+            for (var i = 0; i < items.Count; i++)
             {
                 var item = items[i];
                 if (item is ChestOfHeirlooms heirlooms && (!heirlooms.Locked || heirlooms.TrapLevel != 10))

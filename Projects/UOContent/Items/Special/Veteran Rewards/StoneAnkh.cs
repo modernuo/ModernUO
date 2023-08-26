@@ -47,10 +47,6 @@ public partial class StoneAnkh : BaseAddon, IRewardItem
         }
     }
 
-    public StoneAnkh(Serial serial) : base(serial)
-    {
-    }
-
     public override BaseAddonDeed Deed =>
         new StoneAnkhDeed
         {

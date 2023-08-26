@@ -62,7 +62,7 @@ namespace Server.Mobiles
             return Math.Max(0, (int)Math.Min(int.MaxValue, balance));
         }
 
-        public static int GetBalance(Mobile m, out Item[] gold, out Item[] checks)
+        public static int GetBalance(Mobile m, out List<Item> gold, out List<Item> checks)
         {
             long balance = 0;
 
@@ -72,7 +72,7 @@ namespace Server.Mobiles
 
                 if (balance > int.MaxValue)
                 {
-                    gold = checks = Array.Empty<Item>();
+                    gold = checks = new List<Item>();
                     return int.MaxValue;
                 }
             }
@@ -94,7 +94,7 @@ namespace Server.Mobiles
             }
             else
             {
-                gold = checks = Array.Empty<Item>();
+                gold = checks = new List<Item>();
             }
 
             return Math.Max(0, (int)Math.Min(int.MaxValue, balance));
@@ -115,7 +115,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            for (var i = 0; amount > 0 && i < gold.Length; ++i)
+            for (var i = 0; amount > 0 && i < gold.Count; ++i)
             {
                 if (gold[i].Amount <= amount)
                 {
@@ -129,7 +129,7 @@ namespace Server.Mobiles
                 }
             }
 
-            for (var i = 0; amount > 0 && i < checks.Length; ++i)
+            for (var i = 0; amount > 0 && i < checks.Count; ++i)
             {
                 var check = (BankCheck)checks[i];
 

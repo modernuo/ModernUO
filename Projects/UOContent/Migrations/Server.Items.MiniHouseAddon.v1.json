@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.MiniHouseAddon",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Items.MiniHouseType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

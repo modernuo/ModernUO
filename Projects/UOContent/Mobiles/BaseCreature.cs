@@ -3515,11 +3515,21 @@ namespace Server.Mobiles
         }
 
         public static bool Summon(BaseCreature creature, Mobile caster, Point3D p, int sound, TimeSpan duration) =>
-            Summon(creature, true, caster, p, sound, duration);
+            Summon(creature, true, caster, p, sound, duration, null);
+
+        public static bool Summon(
+            BaseCreature creature, Mobile caster, Point3D p, int sound, TimeSpan duration,
+            Action onUnsummon
+        ) => Summon(creature, true, caster, p, sound, duration, onUnsummon);
 
         public static bool Summon(
             BaseCreature creature, bool controlled, Mobile caster, Point3D p, int sound,
             TimeSpan duration
+        ) => Summon(creature, controlled, caster, p, sound, duration, null);
+
+        public static bool Summon(
+            BaseCreature creature, bool controlled, Mobile caster, Point3D p, int sound,
+            TimeSpan duration, Action onUnsummon
         )
         {
             if (caster.Followers + creature.ControlSlots > caster.FollowersMax)
@@ -3556,7 +3566,7 @@ namespace Server.Mobiles
                 }
             }
 
-            new UnsummonTimer(creature, duration).Start();
+            new UnsummonTimer(creature, duration, onUnsummon).Start();
             creature.SummonEnd = Core.Now + duration;
 
             creature.MoveToWorld(p, caster.Map);

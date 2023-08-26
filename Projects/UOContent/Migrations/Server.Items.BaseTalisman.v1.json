@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "type": "Server.Items.BaseTalisman",
+  "properties": [
+    {
+      "name": "Attributes",
+      "type": "Server.AosAttributes",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "SkillBonuses",
+      "type": "Server.AosSkillBonuses",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "Protection",
+      "type": "Server.Items.TalismanAttribute",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Killer",
+      "type": "Server.Items.TalismanAttribute",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Summoner",
+      "type": "Server.Items.TalismanAttribute",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Removal",
+      "type": "Server.Items.TalismanRemoval",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Skill",
+      "type": "Server.SkillName",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "SuccessBonus",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "ExceptionalBonus",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "MaxCharges",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "Charges",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxChargeTime",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "ChargeTime",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "Blessed",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Slayer",
+      "type": "Server.Items.TalismanSlayerName",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

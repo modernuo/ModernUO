@@ -1,10 +1,12 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Items;
 
 namespace Server.Mobiles;
 
-public class Semidar : BaseChampion
+[SerializationGenerator(0, false)]
+public partial class Semidar : BaseChampion
 {
     [Constructible]
     public Semidar() : base(AIType.AI_Mage)
@@ -41,10 +43,6 @@ public class Semidar : BaseChampion
         Karma = -24000;
 
         VirtualArmor = 20;
-    }
-
-    public Semidar(Serial serial) : base(serial)
-    {
     }
 
     public override ChampionSkullType SkullType => ChampionSkullType.Pain;
@@ -87,18 +85,6 @@ public class Semidar : BaseChampion
 
     private static MonsterAbility[] _abilities = { new SemidarDrainLife() };
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-        writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-        var version = reader.ReadInt();
-    }
 
     private class SemidarDrainLife : DrainLifeAreaAttack
     {

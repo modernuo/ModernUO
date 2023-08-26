@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.Neira.VirtualMountItem",
+  "properties": [
+    {
+      "name": "Rider",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.GasTrap",
+  "properties": [
+    {
+      "name": "Poison",
+      "type": "Server.Poison",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Poison"
+      ]
+    }
+  ]
+}

@@ -1,87 +1,82 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(1, false)]
+public abstract partial class BaseSuit : Item
 {
-    public abstract class BaseSuit : Item
+    public BaseSuit(AccessLevel level, int hue, int itemID) : base(itemID)
     {
-        public BaseSuit(AccessLevel level, int hue, int itemID) : base(itemID)
-        {
-            Hue = hue;
-            Weight = 1.0;
-            Movable = false;
-            LootType = LootType.Newbied;
-            Layer = Layer.OuterTorso;
+        Hue = hue;
+        Weight = 1.0;
+        Movable = false;
+        LootType = LootType.Newbied;
+        Layer = Layer.OuterTorso;
 
-            AccessLevel = level;
+        _accessLevel = level;
+    }
+
+    [SerializableProperty(0)]
+    public AccessLevel AccessLevel
+    {
+        get => _accessLevel;
+        set
+        {
+            var oldAccessLevel = _accessLevel;
+            _accessLevel = value;
+            InvalidateProperties();
+            this.MarkDirty();
+
+            OnAccessLevelChanged(oldAccessLevel, _accessLevel);
+        }
+    }
+
+    public virtual void OnAccessLevelChanged(AccessLevel oldAccessLevel, AccessLevel accessLevel)
+    {
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        AccessLevel = (AccessLevel)reader.ReadInt();
+    }
+
+    public bool Validate()
+    {
+        if (RootParent is not Mobile mobile || mobile.AccessLevel >= AccessLevel)
+        {
+            return true;
         }
 
-        public BaseSuit(Serial serial) : base(serial)
+        Delete();
+        return false;
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        if (Validate())
         {
+            base.OnSingleClick(from);
         }
+    }
 
-        [CommandProperty(AccessLevel.Administrator)]
-        public AccessLevel AccessLevel { get; set; }
-
-        public override void Serialize(IGenericWriter writer)
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (Validate())
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write((int)AccessLevel);
+            base.OnDoubleClick(from);
         }
+    }
 
-        public override void Deserialize(IGenericReader reader)
+    public override bool VerifyMove(Mobile from) => from.AccessLevel >= AccessLevel;
+
+    public override bool OnEquip(Mobile from)
+    {
+        if (from.AccessLevel < AccessLevel)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        AccessLevel = (AccessLevel)reader.ReadInt();
-                        break;
-                    }
-            }
-        }
-
-        public bool Validate()
-        {
-            if (RootParent is not Mobile mobile || mobile.AccessLevel >= AccessLevel)
-            {
-                return true;
-            }
-
-            Delete();
+            from.SendMessage("You may not wear this.");
             return false;
         }
 
-        public override void OnSingleClick(Mobile from)
-        {
-            if (Validate())
-            {
-                base.OnSingleClick(from);
-            }
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (Validate())
-            {
-                base.OnDoubleClick(from);
-            }
-        }
-
-        public override bool VerifyMove(Mobile from) => from.AccessLevel >= AccessLevel;
-
-        public override bool OnEquip(Mobile from)
-        {
-            if (from.AccessLevel < AccessLevel)
-            {
-                from.SendMessage("You may not wear this.");
-            }
-
-            return from.AccessLevel >= AccessLevel;
-        }
+        return true;
     }
 }

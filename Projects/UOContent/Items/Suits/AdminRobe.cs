@@ -1,28 +1,12 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial  class AdminRobe : BaseSuit
 {
-    public class AdminRobe : BaseSuit
+    // [Constructible] // Deprecated, use StaffRobe
+    public AdminRobe() : base(AccessLevel.Administrator, 0x0, 0x204F) // Blank hue
     {
-        [Constructible]
-        public AdminRobe() : base(AccessLevel.Administrator, 0x0, 0x204F) // Blank hue
-        {
-        }
-
-        public AdminRobe(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

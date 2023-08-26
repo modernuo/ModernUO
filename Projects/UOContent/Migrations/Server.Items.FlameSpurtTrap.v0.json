@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.FlameSpurtTrap",
+  "properties": [
+    {
+      "name": "Spurt",
+      "type": "Server.Item",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

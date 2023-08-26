@@ -93,9 +93,13 @@ public partial class Banner : Item, IAddon, IDyable, IRewardItem
     }
 }
 
-public class BannerDeed : Item, IRewardItem
+[SerializationGenerator(0)]
+public partial class BannerDeed : Item, IRewardItem
 {
-    private bool m_IsRewardItem;
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _isRewardItem;
 
     [Constructible]
     public BannerDeed() : base(0x14F0)
@@ -104,28 +108,13 @@ public class BannerDeed : Item, IRewardItem
         Weight = 1.0;
     }
 
-    public BannerDeed(Serial serial) : base(serial)
-    {
-    }
-
     public override int LabelNumber => 1041007; // a banner deed
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem
-    {
-        get => m_IsRewardItem;
-        set
-        {
-            m_IsRewardItem = value;
-            InvalidateProperties();
-        }
-    }
 
     public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 
-        if (m_IsRewardItem)
+        if (_isRewardItem)
         {
             list.Add(1076218); // 2nd Year Veteran Reward
         }
@@ -133,7 +122,7 @@ public class BannerDeed : Item, IRewardItem
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+        if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         {
             return;
         }
@@ -158,34 +147,16 @@ public class BannerDeed : Item, IRewardItem
         }
     }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-
-        writer.Write(m_IsRewardItem);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-
-        m_IsRewardItem = reader.ReadBool();
-    }
-
     private class InternalGump : Gump
     {
         public const int Start = 0x15AE;
         public const int End = 0x15F4;
 
-        private readonly BannerDeed m_Banner;
+        private readonly BannerDeed _banner;
 
         public InternalGump(BannerDeed banner) : base(100, 200)
         {
-            m_Banner = banner;
+            _banner = banner;
 
             Closable = true;
             Disposable = true;
@@ -224,7 +195,7 @@ public class BannerDeed : Item, IRewardItem
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-            if (m_Banner?.Deleted != false)
+            if (_banner?.Deleted != false)
             {
                 return;
             }
@@ -237,93 +208,89 @@ public class BannerDeed : Item, IRewardItem
             }
 
             m.SendLocalizedMessage(1042037); // Where would you like to place this banner?
-            m.Target = new InternalTarget(m_Banner, info.ButtonID);
+            m.Target = new InternalTarget(_banner, info.ButtonID);
         }
     }
 
     private class InternalTarget : Target
     {
-        private readonly BannerDeed m_Banner;
-        private readonly int m_ItemID;
+        private readonly BannerDeed _banner;
+        private readonly int _itemID;
 
         public InternalTarget(BannerDeed banner, int itemID) : base(-1, true, TargetFlags.None)
         {
-            m_Banner = banner;
-            m_ItemID = itemID;
+            _banner = banner;
+            _itemID = itemID;
         }
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            if (m_Banner?.Deleted != false)
+            if (_banner?.Deleted != false)
             {
                 return;
             }
 
-            if (m_Banner.IsChildOf(from.Backpack))
+            if (!_banner.IsChildOf(from.Backpack))
             {
-                var house = BaseHouse.FindHouseAt(from);
+                from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+                return;
+            }
 
-                if (house?.IsOwner(from) == true)
-                {
-                    var p = targeted as IPoint3D;
-                    var map = from.Map;
+            var house = BaseHouse.FindHouseAt(from);
 
-                    if (p == null || map == null)
-                    {
-                        return;
-                    }
+            if (house?.IsOwner(from) != true)
+            {
+                from.SendLocalizedMessage(502092); // You must be in your house to do this.
+                return;
+            }
 
-                    var p3d = new Point3D(p);
-                    var id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
+            var p = targeted as IPoint3D;
+            var map = from.Map;
 
-                    if (map.CanFit(p3d, id.Height))
-                    {
-                        house = BaseHouse.FindHouseAt(p3d, map, id.Height);
+            if (p == null || map == null)
+            {
+                return;
+            }
 
-                        if (house?.IsOwner(from) == true)
-                        {
-                            var north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
-                            var west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
+            var p3d = new Point3D(p);
+            var id = TileData.ItemTable[_itemID & TileData.MaxItemValue];
 
-                            if (north && west)
-                            {
-                                from.CloseGump<FacingGump>();
-                                from.SendGump(new FacingGump(m_Banner, m_ItemID, p3d, house));
-                            }
-                            else if (north || west)
-                            {
-                                var banner = new Banner(m_ItemID + (west ? 0 : 1));
+            if (!map.CanFit(p3d, id.Height))
+            {
+                from.SendLocalizedMessage(500269); // You cannot build that there.
+                return;
+            }
 
-                                house.Addons.Add(banner);
+            house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-                                banner.IsRewardItem = m_Banner.IsRewardItem;
-                                banner.MoveToWorld(p3d, map);
+            if (house?.IsOwner(from) != true)
+            {
+                from.SendLocalizedMessage(1042036); // That location is not in your house.
+                return;
+            }
 
-                                m_Banner.Delete();
-                            }
-                            else
-                            {
-                                from.SendLocalizedMessage(1042039); // The banner must be placed next to a wall.
-                            }
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(1042036); // That location is not in your house.
-                        }
-                    }
-                    else
-                    {
-                        from.SendLocalizedMessage(500269); // You cannot build that there.
-                    }
-                }
-                else
-                {
-                    from.SendLocalizedMessage(502092); // You must be in your house to do this.
-                }
+            var north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
+            var west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
+
+            if (north && west)
+            {
+                from.CloseGump<FacingGump>();
+                from.SendGump(new FacingGump(_banner, _itemID, p3d, house));
+            }
+            else if (north || west)
+            {
+                var banner = new Banner(_itemID + (west ? 0 : 1));
+
+                house.Addons.Add(banner);
+
+                banner.IsRewardItem = _banner.IsRewardItem;
+                banner.MoveToWorld(p3d, map);
+
+                _banner.Delete();
             }
             else
             {
-                from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+                from.SendLocalizedMessage(1042039); // The banner must be placed next to a wall.
             }
         }
 

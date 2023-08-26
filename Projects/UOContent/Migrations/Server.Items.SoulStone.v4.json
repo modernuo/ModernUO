@@ -1,0 +1,56 @@
+{
+  "version": 4,
+  "type": "Server.Items.SoulStone",
+  "properties": [
+    {
+      "name": "LastUserName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "ActiveItemID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "InactiveItemID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Account",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Skill",
+      "type": "Server.SkillName",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "SkillValue",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

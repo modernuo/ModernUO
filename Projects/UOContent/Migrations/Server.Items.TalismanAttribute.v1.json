@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "type": "Server.Items.TalismanAttribute",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "System.Type",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "Name",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "TextDefinition"
+      ]
+    },
+    {
+      "name": "Amount",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
