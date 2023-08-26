@@ -257,18 +257,13 @@ namespace Server.Mobiles
         {
         }
 
-        [AfterDeserialization]
+        [AfterDeserialization(false)]
         private void AfterDeserialize()
         {
             if (_morphedInto != null)
             {
-                ValidationQueue<Changeling>.Add(this);
+                Revert();
             }
-        }
-
-        public void Validate()
-        {
-            Revert();
         }
 
         [SerializationGenerator(0, false)]

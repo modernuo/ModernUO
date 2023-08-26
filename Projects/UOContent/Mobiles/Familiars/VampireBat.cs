@@ -1,55 +1,39 @@
-namespace Server.Mobiles
+using ModernUO.Serialization;
+
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class VampireBatFamiliar : BaseFamiliar
 {
-    public class VampireBatFamiliar : BaseFamiliar
+    public VampireBatFamiliar()
     {
-        public VampireBatFamiliar()
-        {
-            Body = 317;
-            BaseSoundID = 0x270;
+        Body = 317;
+        BaseSoundID = 0x270;
 
-            SetStr(120);
-            SetDex(120);
-            SetInt(100);
+        SetStr(120);
+        SetDex(120);
+        SetInt(100);
 
-            SetHits(90);
-            SetStam(120);
-            SetMana(0);
+        SetHits(90);
+        SetStam(120);
+        SetMana(0);
 
-            SetDamage(5, 10);
+        SetDamage(5, 10);
 
-            SetDamageType(ResistanceType.Physical, 100);
+        SetDamageType(ResistanceType.Physical, 100);
 
-            SetResistance(ResistanceType.Physical, 10, 15);
-            SetResistance(ResistanceType.Fire, 10, 15);
-            SetResistance(ResistanceType.Cold, 10, 15);
-            SetResistance(ResistanceType.Poison, 10, 15);
-            SetResistance(ResistanceType.Energy, 10, 15);
+        SetResistance(ResistanceType.Physical, 10, 15);
+        SetResistance(ResistanceType.Fire, 10, 15);
+        SetResistance(ResistanceType.Cold, 10, 15);
+        SetResistance(ResistanceType.Poison, 10, 15);
+        SetResistance(ResistanceType.Energy, 10, 15);
 
-            SetSkill(SkillName.Wrestling, 95.1, 100.0);
-            SetSkill(SkillName.Tactics, 50.0);
+        SetSkill(SkillName.Wrestling, 95.1, 100.0);
+        SetSkill(SkillName.Tactics, 50.0);
 
-            ControlSlots = 1;
-        }
-
-        public VampireBatFamiliar(Serial serial) : base(serial)
-        {
-        }
-
-        public override string CorpseName => "a vampire bat corpse";
-        public override string DefaultName => "a vampire bat";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        ControlSlots = 1;
     }
+
+    public override string CorpseName => "a vampire bat corpse";
+    public override string DefaultName => "a vampire bat";
 }
