@@ -1,71 +1,44 @@
+using ModernUO.Serialization;
 using Server.Gumps;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class PricedHealer : BaseHealer
 {
-    public class PricedHealer : BaseHealer
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _price;
+
+    [Constructible]
+    public PricedHealer(int price = 5000)
     {
-        [Constructible]
-        public PricedHealer(int price = 5000)
+        Price = price;
+
+        if (!Core.AOS)
         {
-            Price = price;
-
-            if (!Core.AOS)
-            {
-                NameHue = 0x35;
-            }
-        }
-
-        public PricedHealer(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Price { get; set; }
-
-        public override bool IsInvulnerable => true;
-
-        public override bool HealsYoungPlayers => false;
-
-        public override void InitSBInfo()
-        {
-        }
-
-        public override void OfferResurrection(Mobile m)
-        {
-            Direction = GetDirectionTo(m);
-
-            m.PlaySound(0x214);
-            m.FixedEffect(0x376A, 10, 16);
-
-            m.CloseGump<ResurrectGump>();
-            m.SendGump(new ResurrectGump(m, this, Price));
-        }
-
-        public override bool CheckResurrect(Mobile m) => true;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Price);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        Price = reader.ReadInt();
-                        break;
-                    }
-            }
+            NameHue = 0x35;
         }
     }
+
+    public override bool IsInvulnerable => true;
+
+    public override bool HealsYoungPlayers => false;
+
+    public override void InitSBInfo()
+    {
+    }
+
+    public override void OfferResurrection(Mobile m)
+    {
+        Direction = GetDirectionTo(m);
+
+        m.PlaySound(0x214);
+        m.FixedEffect(0x376A, 10, 16);
+
+        m.CloseGump<ResurrectGump>();
+        m.SendGump(new ResurrectGump(m, this, Price));
+    }
+
+    public override bool CheckResurrect(Mobile m) => true;
 }
