@@ -1,0 +1,17 @@
+version: "3"
+services:
+
+  compile:
+    volumes: [".:/app:delegated"]
+    build: .
+    restart: always
+    entrypoint: ["/usr/bin/bash", "-i", "./publish.sh"]
+    profiles: ["build-compile"]
+
+  server:
+    volumes: [".:/app:delegated"]
+    build: .
+    restart: always
+    ports: ["2593:2593"]
+    entrypoint: ["/root/.dotnet/dotnet", "/app/Distribution/ModernUO.dll"]
+
