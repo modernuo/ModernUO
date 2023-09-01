@@ -157,7 +157,7 @@ namespace Server.Spells.Seventh
 
         [DispellableField]
         [SerializationGenerator(0)]
-        private class InternalItem : Moongate
+        private partial class InternalItem : Moongate
         {
             public InternalItem(Point3D target, Map map) : base(target, map)
             {
