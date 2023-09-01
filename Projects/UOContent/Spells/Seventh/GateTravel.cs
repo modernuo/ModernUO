@@ -205,6 +205,12 @@ namespace Server.Spells.Seventh
                 base.UseGate(m);
             }
 
+            [AfterDeserialization(false)]
+            private void AfterDeserialization()
+            {
+                Delete();
+            }
+
             private class InternalTimer : Timer
             {
                 private readonly Item m_Item;
