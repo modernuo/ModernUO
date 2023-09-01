@@ -17,6 +17,9 @@ namespace Server.Misc
      * "serverListing.address": null,
      * "serverListing.autoDetect": false
      *
+     * If you want to run MUO inside a container, you need to setup the private address so that CUO can connect, e.g.
+     * "serverListing.privateAddress": "127.0.0.1"
+     *
      * If you want players outside your LAN to be able to connect to your server and you are behind a router, you must also
      * forward TCP port 2593 to your private IP address. The procedure for doing this varies by manufacturer but generally
      * involves configuration of the router through your web browser.
@@ -34,6 +37,7 @@ namespace Server.Misc
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(ServerList));
 
         private static IPAddress _publicAddress;
+        public static string PrivateAddress { get; private set; }
         public static string Address { get; private set; }
         public static string ServerName { get; private set; }
 
@@ -41,6 +45,7 @@ namespace Server.Misc
 
         public static void Configure()
         {
+            PrivateAddress = ServerConfiguration.GetOrUpdateSetting("serverListing.privateAddress", null);
             Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", null);
             AutoDetect = ServerConfiguration.GetOrUpdateSetting("serverListing.autoDetect", true);
             ServerName = ServerConfiguration.GetOrUpdateSetting("serverListing.serverName", "ModernUO");
@@ -84,6 +89,10 @@ namespace Server.Misc
                     if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
                     {
                         localAddress = _publicAddress;
+                    }
+                    else if (PrivateAddress != null)
+                    {
+                        Resolve(PrivateAddress, out localAddress);
                     }
                 }
 

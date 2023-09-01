@@ -263,6 +263,7 @@ public static class ServerConfiguration
         {
             updated = true;
             _settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
+            _settings.Settings["serverListing.privateAddress"] = ServerConfigurationPrompts.GetPrivateAddress();
         }
 
         // We have a known, current expansion, so we can deserialize it from Configuration

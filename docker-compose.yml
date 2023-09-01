@@ -12,6 +12,12 @@ services:
     volumes: [".:/app:delegated"]
     build: .
     restart: always
-    ports: ["2593:2593"]
+    ports: ["2593:2593/udp", "2593:2593/tcp"]
     entrypoint: ["/root/.dotnet/dotnet", "/app/Distribution/ModernUO.dll"]
+    profiles: ["run-server"]
 
+  app:
+    volumes: [".:/app:delegated"]
+    build: .
+    restart: always
+    ports: ["2593:2593/udp", "2593:2593/tcp"]

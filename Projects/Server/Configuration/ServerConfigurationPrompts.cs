@@ -118,6 +118,49 @@ public static class ServerConfigurationPrompts
         return directories;
     }
 
+    internal static string GetPrivateAddress()
+    {
+        Console.WriteLine("If the server is running in a Docker container, specify the parent host IP:");
+        Console.WriteLine("- 127.0.0.1");
+        Console.WriteLine("- Or leave blank to skip");
+
+        string ipStr;
+
+        do
+        {
+            // IP:Port?
+            Console.Write("[{0}]> ", "enter to finish");
+            ipStr = Console.ReadLine();
+
+            IPEndPoint ip;
+            if (string.IsNullOrWhiteSpace(ipStr))
+            {
+                ipStr = null;
+                break;
+            }
+            else
+            {
+                if (!IPEndPoint.TryParse(ipStr, out ip))
+                {
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.Write(ipStr);
+                    Utility.PopColor();
+                    Console.WriteLine(" is not a valid IP or port.");
+                    continue;
+                }
+            }
+
+            Console.Write("Added ");
+            Utility.PushColor(ConsoleColor.Green);
+            Console.Write(ipStr);
+            Utility.PopColor();
+            Console.WriteLine(".");
+            break;
+        } while (true);
+
+        return ipStr;
+    }
+
     internal static List<IPEndPoint> GetListeners()
     {
         Console.WriteLine("Please enter the IP and ports to listen:");
