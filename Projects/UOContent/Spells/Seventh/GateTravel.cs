@@ -8,7 +8,7 @@ using Server.Multis;
 
 namespace Server.Spells.Seventh
 {
-    public class GateTravelSpell : MagerySpell, IRecallSpell
+    public partial class GateTravelSpell : MagerySpell, IRecallSpell
     {
         private static readonly SpellInfo _info = new(
             "Gate Travel",
