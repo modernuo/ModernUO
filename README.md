@@ -92,14 +92,14 @@ apt-get install -y libicu-dev libz-dev zstd libargon2-dev tzdata
 Once that's done, run the following command to make a build
 
 ```
-docker-compose run compile
+docker-compose run compile [debug]
 ```
 
 
 Finally, to start the server. If this is your first run, you'll need to specify the game assets path, which is `/app/uo-client`
 
 ```
-docker-compose run server
+docker-compose run --service-ports server
 ```
 
 
