@@ -1,12 +1,14 @@
 using System;
+using ModernUO.Serialization;
 using Server.Factions;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
+using Server.Multis;
 
 namespace Server.Spells.Seventh
 {
-    public class GateTravelSpell : MagerySpell, IRecallSpell
+    public partial class GateTravelSpell : MagerySpell, IRecallSpell
     {
         private static readonly SpellInfo _info = new(
             "Gate Travel",
@@ -89,6 +91,9 @@ namespace Server.Spells.Seventh
 
                 var secondGate = new InternalItem(Caster.Location, Caster.Map);
                 secondGate.MoveToWorld(loc, map);
+
+                firstGate.LinkedGate = secondGate;
+                secondGate.LinkedGate = firstGate;
             }
 
             FinishSequence();
@@ -151,7 +156,8 @@ namespace Server.Spells.Seventh
         }
 
         [DispellableField]
-        private class InternalItem : Moongate
+        [SerializationGenerator(0)]
+        private partial class InternalItem : Moongate
         {
             public InternalItem(Point3D target, Map map) : base(target, map)
             {
@@ -168,21 +174,40 @@ namespace Server.Spells.Seventh
                 t.Start();
             }
 
-            public InternalItem(Serial serial) : base(serial)
-            {
-            }
+            [CommandProperty(AccessLevel.GameMaster)]
+            public Moongate LinkedGate { get; set; }
 
             public override bool ShowFeluccaWarning => Core.AOS;
 
-            public override void Serialize(IGenericWriter writer)
+            public override void UseGate(Mobile m)
             {
-                base.Serialize(writer);
+                if (LinkedGate?.Deleted != false)
+                {
+                    m.SendMessage("The other gate no longer exists.");
+                    return;
+                }
+
+                var target = LinkedGate.Location;
+                var targetMap = LinkedGate.TargetMap;
+
+                // TODO: Add boat permissions
+                // BaseBoat boat = BaseBoat.FindBoatAt(target, targetMap);
+                //
+                // if (boat != null && !boat.HasAccess(m))
+                // {
+                //     m.SendLocalizedMessage(1116617); // You do not have permission to board this ship.
+                //     return;
+                // }
+
+                Target = target;
+                TargetMap = targetMap;
+
+                base.UseGate(m);
             }
 
-            public override void Deserialize(IGenericReader reader)
+            [AfterDeserialization(false)]
+            private void AfterDeserialization()
             {
-                base.Deserialize(reader);
-
                 Delete();
             }
 
