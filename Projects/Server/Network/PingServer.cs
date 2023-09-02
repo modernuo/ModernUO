@@ -29,7 +29,7 @@ public static class PingServer
     {
         Enabled = ServerConfiguration.GetOrUpdateSetting("pingServer.enabled", true);
         Port = ServerConfiguration.GetSetting("pingServer.port", 12000);
-        MaxConnections = ServerConfiguration.GetOrUpdateSetting("pingServer.maxConnections", 2048);
+        MaxConnections = ServerConfiguration.GetSetting("pingServer.maxConnections", 2048);
     }
 
     public static void Start()
