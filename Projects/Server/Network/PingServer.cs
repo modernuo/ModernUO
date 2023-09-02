@@ -75,7 +75,7 @@ public static class PingServer
 
     public static void Slice()
     {
-        if (!Enabled)
+        if (!Enabled || Core.Closing)
         {
             return;
         }
@@ -130,6 +130,11 @@ public static class PingServer
     {
         while (true)
         {
+            if (!Enabled || Core.Closing)
+            {
+                return;
+            }
+
             try
             {
                 var result = await listener.ReceiveAsync(Core.ClosingTokenSource.Token);
