@@ -34,6 +34,11 @@ public static class PingServer
 
     public static void Start()
     {
+        if (!Enabled)
+        {
+            return;
+        }
+
         HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
         List<UdpClient> listeners = new List<UdpClient>();
 
@@ -70,6 +75,11 @@ public static class PingServer
 
     public static void Slice()
     {
+        if (!Enabled)
+        {
+            return;
+        }
+
         int count = 0;
 
         while (++count <= MaxConnectionsPerLoop && _udpResponseQueue.TryDequeue(out var udpTuple))
