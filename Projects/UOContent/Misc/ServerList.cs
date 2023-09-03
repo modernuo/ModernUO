@@ -181,9 +181,9 @@ namespace Server.Misc
                     var ipAddress = hc.GetStringAsync(_ipifyUrl).Result;
                     return IPAddress.Parse(ipAddress);
                 }
-                catch (Exception e)
+                catch
                 {
-                    logger.Error(e, "Failed to get public IP address.");
+                    // ignored
                 }
             }
 
