@@ -30,7 +30,7 @@ public static class TcpServer
     private const int MaxConnectionsPerLoop = 250;
 
     // Sanity. 256 * 1024 * 4096 = ~1.3GB of ram
-    public static int MaxConnections { get; set; } = 4096;
+    public static int MaxConnections { get; set; }
 
     private const long _listenerErrorMessageDelay = 10000; // 10 seconds
     private static long _nextMaximumSocketsReachedMessage;
@@ -46,7 +46,7 @@ public static class TcpServer
 
     public static void Configure()
     {
-        MaxConnections = ServerConfiguration.GetOrUpdateSetting("tcpServer.maxConnections", MaxConnections);
+        MaxConnections = ServerConfiguration.GetOrUpdateSetting("tcpServer.maxConnections", 4096);
     }
 
     public static void Start()
@@ -72,7 +72,7 @@ public static class TcpServer
             }
 
             listeners.Add(listener);
-            listener.BeginAcceptingSockets();
+            BeginAcceptingSockets(listener);
         }
 
         foreach (var ipep in listeningAddresses)
@@ -149,7 +149,7 @@ public static class TcpServer
         }
     }
 
-    private static async void BeginAcceptingSockets(this Socket listener)
+    private static async void BeginAcceptingSockets(Socket listener)
     {
         while (true)
         {
