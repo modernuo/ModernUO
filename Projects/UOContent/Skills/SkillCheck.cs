@@ -50,14 +50,14 @@ public static class SkillCheck
 
     private static int IncreaseSkillOrCap(int currentSkillValue, int skillGainValue)
     {
-        int newValue = currentSkillValue + skillGainValue * SkillGainFactorMultiplier;
+        int newValue = currentSkillValue + skillGainValue * SkillGainValueMultiplier;
 
         return newValue >= SkillMax ? SkillMax : newValue;
     }
 
     private static int DecreaseSkillOrZero(int currentSkillValue, int skillLossValue)
     {
-        int newValue = currentSkillValue - skillLossValue * SkillGainFactorMultiplier;
+        int newValue = currentSkillValue - skillLossValue * SkillGainValueMultiplier;
 
         return newValue <= 0 ? 0 : newValue;
     }
@@ -252,7 +252,7 @@ public static class SkillCheck
                 toGain = Utility.Random(4) + 1;
             }
 
-            toGain *= SkillGainFactorMultiplier;
+            toGain *= SkillGainValueMultiplier;
 
             var skills = from.Skills;
 
