@@ -27,4 +27,4 @@ Everything is run from the _Distribution_ folder.
 
 
     !!! Tip
-        Game files are not directly distributed in ModernUO, find the latest version to download these at [client download](https://downloads.eamythic.com/uo/installers/UOClassicSetup_7_0_24_0.exe)
+        Game files are not directly distributed in ModernUO, find the latest version to download these at [client download](https://uo.com/Client-Download/)
