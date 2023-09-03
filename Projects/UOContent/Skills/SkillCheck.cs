@@ -14,11 +14,53 @@ public static class SkillCheck
         Int
     }
 
+    private static int SkillMax = 1000;
     // Publish 16 changed max stats from 100 to 125
     private static int StatMax = Core.LBR ? 125 : 100;
+    private static int SkillGainValueMultiplier = ServerConfiguration.GetOrUpdateSetting("skills.gainValueMultiplier", 1);
+    private static int StatGainValueMultiplier = ServerConfiguration.GetOrUpdateSetting("stats.gainValueMultiplier", 1);
+    private static int StatGainChanceMultiplier = ServerConfiguration.GetOrUpdateSetting("stats.gainChanceMultiplier", 1);
 
     private static readonly TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
     private static readonly TimeSpan m_PetStatGainDelay = TimeSpan.FromMinutes(5.0);
+
+    private static bool RollStatIncreaseChance(double skillGain)
+    {
+        return (skillGain / 33.3) * StatGainChanceMultiplier > Utility.RandomDouble();
+    }
+
+    private static bool SkillHasStatGain(double statGain)
+    {
+        return statGain > 0;
+    }
+
+    private static int IncreaseStatOrCap(int currentStatValue)
+    {
+        int newValue = currentStatValue + 1 * StatGainValueMultiplier;
+
+        return newValue >= StatMax ? StatMax : newValue;
+    }
+
+    private static int DecreaseStatOrZero(int currentStatValue)
+    {
+        int newValue = currentStatValue - 1 * StatGainValueMultiplier;
+
+        return newValue <= 0 ? 0 : newValue;
+    }
+
+    private static int IncreaseSkillOrCap(int currentSkillValue, int skillGainValue)
+    {
+        int newValue = currentSkillValue + skillGainValue * SkillGainFactorMultiplier;
+
+        return newValue >= SkillMax ? SkillMax : newValue;
+    }
+
+    private static int DecreaseSkillOrZero(int currentSkillValue, int skillLossValue)
+    {
+        int newValue = currentSkillValue - skillLossValue * SkillGainFactorMultiplier;
+
+        return newValue <= 0 ? 0 : newValue;
+    }
 
     public static void Initialize()
     {
@@ -210,6 +252,8 @@ public static class SkillCheck
                 toGain = Utility.Random(4) + 1;
             }
 
+            toGain *= SkillGainFactorMultiplier;
+
             var skills = from.Skills;
 
             if (from.Player && skills.Total / (double)skills.Cap >= Utility.RandomDouble())
@@ -220,21 +264,23 @@ public static class SkillCheck
 
                     if (toLower != skill && toLower.Lock == SkillLock.Down && toLower.BaseFixedPoint >= toGain)
                     {
-                        toLower.BaseFixedPoint -= toGain;
+                        toLower.BaseFixedPoint = DecreaseSkillOrZero(toLower.BaseFixedPoint, toGain);
                         break;
                     }
                 }
             }
 
-            if (from is PlayerMobile pm && skill.SkillName == pm.AcceleratedSkill &&
-                pm.AcceleratedStart > Core.Now)
+            if (from is PlayerMobile pm && skill.SkillName == pm.AcceleratedSkill && pm.AcceleratedStart > Core.Now)
             {
                 toGain *= Utility.RandomMinMax(2, 5);
             }
 
-            if (!from.Player || skills.Total + toGain <= skills.Cap)
+            int newSkillBaseFixedPoint = IncreaseSkillOrCap(skill.BaseFixedPoint, toGain);
+            int toGainDelta = skill.BaseFixedPoint - (newSkillBaseFixedPoint - toGain);
+
+            if (!from.Player || skills.Total + toGainDelta <= skills.Cap)
             {
-                skill.BaseFixedPoint += toGain;
+                skill.BaseFixedPoint = newSkillBaseFixedPoint;
             }
         }
 
@@ -242,15 +288,17 @@ public static class SkillCheck
         {
             var info = skill.Info;
 
-            if (from.StrLock == StatLockType.Up && info.StrGain / 33.3 > Utility.RandomDouble())
+            if (SkillHasStatGain(info.StrGain) && from.StrLock == StatLockType.Up && RollStatIncreaseChance(info.StrGain))
             {
                 GainStat(from, Stat.Str);
             }
-            else if (from.DexLock == StatLockType.Up && info.DexGain / 33.3 > Utility.RandomDouble())
+
+            if (SkillHasStatGain(info.DexGain) && from.DexLock == StatLockType.Up && RollStatIncreaseChance(info.DexGain))
             {
                 GainStat(from, Stat.Dex);
             }
-            else if (from.IntLock == StatLockType.Up && info.IntGain / 33.3 > Utility.RandomDouble())
+
+            if (SkillHasStatGain(info.IntGain) && from.IntLock == StatLockType.Up && RollStatIncreaseChance(info.IntGain))
             {
                 GainStat(from, Stat.Int);
             }
@@ -299,17 +347,17 @@ public static class SkillCheck
                     {
                         if (CanLower(from, Stat.Dex) && (from.RawDex < from.RawInt || !CanLower(from, Stat.Int)))
                         {
-                            --from.RawDex;
+                            from.RawDex = DecreaseStatOrZero(from.RawDex);
                         }
                         else if (CanLower(from, Stat.Int))
                         {
-                            --from.RawInt;
+                            from.RawInt = DecreaseStatOrZero(from.RawInt);
                         }
                     }
 
                     if (CanRaise(from, Stat.Str))
                     {
-                        ++from.RawStr;
+                        from.RawStr = IncreaseStatOrCap(from.RawStr);
                     }
 
                     break;
@@ -320,17 +368,17 @@ public static class SkillCheck
                     {
                         if (CanLower(from, Stat.Str) && (from.RawStr < from.RawInt || !CanLower(from, Stat.Int)))
                         {
-                            --from.RawStr;
+                            from.RawStr = DecreaseStatOrZero(from.RawStr);
                         }
                         else if (CanLower(from, Stat.Int))
                         {
-                            --from.RawInt;
+                            from.RawInt = DecreaseStatOrZero(from.RawInt);
                         }
                     }
 
                     if (CanRaise(from, Stat.Dex))
                     {
-                        ++from.RawDex;
+                        from.RawDex = IncreaseStatOrCap(from.RawDex);
                     }
 
                     break;
@@ -341,17 +389,17 @@ public static class SkillCheck
                     {
                         if (CanLower(from, Stat.Str) && (from.RawStr < from.RawDex || !CanLower(from, Stat.Dex)))
                         {
-                            --from.RawStr;
+                            from.RawStr = DecreaseStatOrZero(from.RawStr);
                         }
                         else if (CanLower(from, Stat.Dex))
                         {
-                            --from.RawDex;
+                            from.RawDex = DecreaseStatOrZero(from.RawDex);
                         }
                     }
 
                     if (CanRaise(from, Stat.Int))
                     {
-                        ++from.RawInt;
+                        from.RawInt = IncreaseStatOrCap(from.RawInt);
                     }
 
                     break;
