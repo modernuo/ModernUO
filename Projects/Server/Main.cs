@@ -515,6 +515,7 @@ public static class Core
         AssemblyHandler.Invoke("Initialize");
 
         TcpServer.Start();
+        PingServer.Start();
         EventSink.InvokeServerStarted();
         _firstTick = TickCount;
         RunEventLoop();
@@ -548,6 +549,7 @@ public static class Core
                 // Handle networking
                 TcpServer.Slice();
                 NetState.Slice();
+                PingServer.Slice();
 
                 // Execute captured post-await methods (like Timer.Pause)
                 LoopContext.ExecuteTasks();

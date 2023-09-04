@@ -4157,7 +4157,7 @@ namespace Server.Gumps
                 if (obj is Account acc && acc.AccessLevel > from.AccessLevel ||
                     obj is Mobile mob && mob.AccessLevel > from.AccessLevel ||
                     obj is NetState ns &&
-                    (ns.Mobile.AccessLevel > from.AccessLevel || ns.Account.AccessLevel > from.AccessLevel))
+                    (ns.Mobile?.AccessLevel > from.AccessLevel || ns.Account?.AccessLevel > from.AccessLevel))
                 {
                     list.RemoveAt(i);
                 }
