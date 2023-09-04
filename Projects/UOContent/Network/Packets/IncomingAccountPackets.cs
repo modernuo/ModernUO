@@ -22,6 +22,8 @@ namespace Server.Network;
 
 public static class IncomingAccountPackets
 {
+    private static bool _allowMultiCharacters;
+
     private const int _authIDWindowSize = 128;
     private static readonly Dictionary<int, AuthIDPersistence> _authIDWindow =
         new(_authIDWindowSize);
@@ -52,6 +54,8 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0xE1, 0, false, &ClientType);
         IncomingPackets.Register(0xEF, 21, false, &LoginServerSeed);
         IncomingPackets.Register(0xF8, 106, false, &CreateCharacter);
+
+        _allowMultiCharacters = ServerConfiguration.GetOrUpdateSetting("accountHandler.allowMultiCharacters", false);
     }
 
     public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
@@ -134,7 +138,7 @@ public static class IncomingAccountPackets
         {
             var check = a[i];
 
-            if (check != null && check.Map != Map.Internal)
+            if (!_allowMultiCharacters && check != null && check.Map != Map.Internal)
             {
                 state.LogInfo("Account in use");
                 state.SendPopupMessage(PMMessage.CharInWorld);
@@ -236,7 +240,7 @@ public static class IncomingAccountPackets
         {
             var check = a[i];
 
-            if (check != null && check.Map != Map.Internal && check != m)
+            if (!_allowMultiCharacters && check != null && check.Map != Map.Internal && check != m)
             {
                 state.LogInfo("Account in use");
                 state.SendPopupMessage(PMMessage.CharInWorld);
