@@ -1480,6 +1480,14 @@ namespace Server.Multis
                     // if (!landTile.Ignored && top > landZ && landTop > z)
                     // return false;
 
+
+                    // This appears to be required for older game data
+                    // An empty array of tiles != non-water
+                    if (tiles?.Length == 0)
+                    {
+                        continue;
+                    }
+
                     for (var i = 0; i < tiles.Length; ++i)
                     {
                         var tile = tiles[i];
