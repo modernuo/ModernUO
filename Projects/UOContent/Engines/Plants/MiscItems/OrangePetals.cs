@@ -42,10 +42,12 @@ public partial class OrangePetals : Item
     {
         if (UnderEffect(from))
         {
+            // * You already feel resilient! You decide to save the petal for later *
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061904);
             return;
         }
 
+        // * You eat the orange petal.  You feel more resilient! *
         from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061905);
         from.PlaySound(0x3B);
 
