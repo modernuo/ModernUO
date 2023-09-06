@@ -69,19 +69,19 @@ public partial class OrangePetals : Item
 
     private class OrangePetalsTimer : Timer
     {
-        private readonly Mobile m_Mobile;
+        private readonly Mobile _mobile;
 
-        public OrangePetalsTimer(Mobile from) : base(TimeSpan.FromMinutes(5.0)) => m_Mobile = from;
+        public OrangePetalsTimer(Mobile from) : base(TimeSpan.FromMinutes(5.0)) => _mobile = from;
 
         protected override void OnTick()
         {
-            if (!m_Mobile.Deleted)
+            if (!_mobile.Deleted)
             {
                 // * You feel the effects of your poison resistance wearing off *
-                m_Mobile.LocalOverheadMessage(MessageType.Regular, 0x3F, 1053091);
+                _mobile.LocalOverheadMessage(MessageType.Regular, 0x3F, 1053091);
             }
 
-            RemoveEffect(m_Mobile);
+            RemoveEffect(_mobile);
         }
     }
 }
