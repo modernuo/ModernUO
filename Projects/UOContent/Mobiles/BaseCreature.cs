@@ -1569,7 +1569,7 @@ namespace Server.Mobiles
 
             Confidence.StopRegenerating(this);
 
-            WeightOverloading.FatigueOnDamage(this, amount);
+            StaminaSystem.FatigueOnDamage(this, amount);
 
             var speechType = SpeechType;
 
