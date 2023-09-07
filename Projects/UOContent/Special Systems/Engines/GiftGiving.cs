@@ -74,7 +74,7 @@ namespace Server.Misc
 
         public virtual GiftResult GiveGift(Mobile mob, Item item)
         {
-            if (mob.PlaceInBackpack(item) && !WeightOverloading.IsOverloaded(mob))
+            if (mob.PlaceInBackpack(item) && !StaminaSystem.IsOverloaded(mob))
             {
                 return GiftResult.Backpack;
             }
