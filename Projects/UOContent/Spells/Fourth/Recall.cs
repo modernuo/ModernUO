@@ -72,7 +72,7 @@ namespace Server.Spells.Fourth
             {
                 Caster.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
             }
-            else if (WeightOverloading.IsOverloaded(Caster))
+            else if (StaminaSystem.IsOverloaded(Caster))
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
             }
@@ -153,7 +153,7 @@ namespace Server.Spells.Fourth
                 return false;
             }
 
-            if (WeightOverloading.IsOverloaded(Caster))
+            if (StaminaSystem.IsOverloaded(Caster))
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
                 return false;
