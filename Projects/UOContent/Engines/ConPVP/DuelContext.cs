@@ -1836,7 +1836,7 @@ namespace Server.Engines.ConPVP
             mob.RemoveStatMod("Holy Bless");
             mob.RemoveStatMod("Holy Curse");
 
-            OrangePetals.RemoveContext(mob);
+            OrangePetals.RemoveEffect(mob);
 
             mob.Paralyzed = false;
             mob.Hidden = false;

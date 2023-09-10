@@ -247,7 +247,7 @@ public partial class BraceletOfBinding : BaseBracelet, TranslocationItem
             return false;
         }
 
-        if (WeightOverloading.IsOverloaded(from))
+        if (StaminaSystem.IsOverloaded(from))
         {
             from.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
             return false;

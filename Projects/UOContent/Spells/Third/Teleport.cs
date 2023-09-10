@@ -39,7 +39,7 @@ namespace Server.Spells.Third
             {
                 Caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
             }
-            else if (WeightOverloading.IsOverloaded(Caster))
+            else if (StaminaSystem.IsOverloaded(Caster))
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
             }
@@ -121,7 +121,7 @@ namespace Server.Spells.Third
                 return false;
             }
 
-            if (WeightOverloading.IsOverloaded(Caster))
+            if (StaminaSystem.IsOverloaded(Caster))
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
                 return false;

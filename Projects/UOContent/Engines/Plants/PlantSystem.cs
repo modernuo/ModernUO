@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Misc;
 
 namespace Server.Engines.Plants
@@ -21,272 +22,324 @@ namespace Server.Engines.Plants
         DoubleGrown
     }
 
-    public class PlantSystem
+    [SerializationGenerator(3, false)]
+    public partial class PlantSystem
     {
         public static readonly TimeSpan CheckDelay = TimeSpan.FromHours(23.0);
 
-        private int m_AvailableResources;
-        private int m_AvailableSeeds;
-        private int m_CurePotion;
-        private int m_Disease;
-        private int m_Fungus;
-        private int m_HealPotion;
+        [DirtyTrackingEntity]
+        private PlantItem _plant;
 
-        private int m_Hits;
-        private int m_Infestation;
-        private int m_LeftResources;
-        private int m_LeftSeeds;
-        private int m_Poison;
-        private int m_PoisonPotion;
-        private PlantHue m_SeedHue;
+        [SerializableField(0)]
+        private bool _fertileDirt;
 
-        private PlantType m_SeedType;
-        private int m_StrengthPotion;
+        [SerializableFieldSaveFlag(0)]
+        private bool ShouldSerializeFertileDirt() => _fertileDirt;
 
-        private int m_Water;
+        [SerializableField(1)]
+        private DateTime _nextGrowth;
 
-        public PlantSystem(PlantItem plant, bool fertileDirt)
+        [SerializableField(2, setter: "private")]
+        private PlantGrowthIndicator _growthIndicator;
+
+        [SerializableFieldSaveFlag(2)]
+        private bool ShouldSerializeGrowthIndicator() => _growthIndicator != PlantGrowthIndicator.None;
+
+        [SerializableField(13)]
+        private bool _pollinated;
+
+        [SerializableFieldSaveFlag(13)]
+        private bool ShouldSerializePollinated() => _pollinated;
+
+        public PlantSystem(PlantItem plant)
         {
-            Plant = plant;
-            FertileDirt = fertileDirt;
+            _plant = plant;
 
-            NextGrowth = Core.Now + CheckDelay;
-            GrowthIndicator = PlantGrowthIndicator.None;
-            m_Hits = MaxHits;
-            m_LeftSeeds = 8;
-            m_LeftResources = 8;
+            _nextGrowth = Core.Now + CheckDelay;
+            _growthIndicator = PlantGrowthIndicator.None;
+            _hits = MaxHits;
+            _leftSeeds = 8;
+            _leftResources = 8;
         }
 
-        public PlantSystem(PlantItem plant, IGenericReader reader)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            Plant = plant;
-
-            var version = reader.ReadInt();
-
-            FertileDirt = reader.ReadBool();
-
-            if (version >= 1)
-            {
-                NextGrowth = reader.ReadDateTime();
-            }
-            else
-            {
-                NextGrowth = reader.ReadDeltaTime();
-            }
+            _fertileDirt = reader.ReadBool();
+            NextGrowth = reader.ReadDateTime();
 
             GrowthIndicator = (PlantGrowthIndicator)reader.ReadInt();
 
-            m_Water = reader.ReadInt();
+            _water = reader.ReadInt();
 
-            m_Hits = reader.ReadInt();
-            m_Infestation = reader.ReadInt();
-            m_Fungus = reader.ReadInt();
-            m_Poison = reader.ReadInt();
-            m_Disease = reader.ReadInt();
-            m_PoisonPotion = reader.ReadInt();
-            m_CurePotion = reader.ReadInt();
-            m_HealPotion = reader.ReadInt();
-            m_StrengthPotion = reader.ReadInt();
+            _hits = reader.ReadInt();
+            _infestation = reader.ReadInt();
+            _fungus = reader.ReadInt();
+            _poison = reader.ReadInt();
+            _disease = reader.ReadInt();
+            _poisonPotion = reader.ReadInt();
+            _curePotion = reader.ReadInt();
+            _healPotion = reader.ReadInt();
+            _strengthPotion = reader.ReadInt();
 
             Pollinated = reader.ReadBool();
-            m_SeedType = (PlantType)reader.ReadInt();
-            m_SeedHue = (PlantHue)reader.ReadInt();
-            m_AvailableSeeds = reader.ReadInt();
-            m_LeftSeeds = reader.ReadInt();
+            _seedType = (PlantType)reader.ReadInt();
+            _seedHue = (PlantHue)reader.ReadInt();
+            _availableSeeds = reader.ReadInt();
+            _leftSeeds = reader.ReadInt();
 
-            m_AvailableResources = reader.ReadInt();
-            m_LeftResources = reader.ReadInt();
-
-            if (version < 2 && PlantHueInfo.IsCrossable(m_SeedHue))
-            {
-                m_SeedHue |= PlantHue.Reproduces;
-            }
+            _availableResources = reader.ReadInt();
+            _leftResources = reader.ReadInt();
         }
 
-        public PlantItem Plant { get; }
+        public PlantItem Plant => _plant;
 
-        public bool FertileDirt { get; set; }
+        public bool IsFullWater => _water >= 4;
 
-        public DateTime NextGrowth { get; private set; }
-
-        public PlantGrowthIndicator GrowthIndicator { get; private set; }
-
-        public bool IsFullWater => m_Water >= 4;
-
+        [SerializableProperty(3)]
         public int Water
         {
-            get => m_Water;
+            get => _water;
             set
             {
-                m_Water = Math.Clamp(value, 0, 4);
+                _water = Math.Clamp(value, 0, 4);
                 Plant.InvalidateProperties();
+                MarkDirty();
             }
         }
 
+        [SerializableFieldSaveFlag(3)]
+        private bool ShouldSerializeWater() => _water != 0;
+
+        [SerializableProperty(4)]
         public int Hits
         {
-            get => m_Hits;
+            get => _hits;
             set
             {
-                if (m_Hits == value)
+                if (_hits == value)
                 {
                     return;
                 }
 
-                m_Hits = Math.Clamp(value, 0, MaxHits);
+                _hits = Math.Clamp(value, 0, MaxHits);
 
-                if (m_Hits == 0)
+                if (_hits == 0)
                 {
                     Plant.Die();
                 }
 
                 Plant.InvalidateProperties();
+                MarkDirty();
             }
         }
+
+        [SerializableFieldSaveFlag(4)]
+        private bool ShouldSerializeHits() => _hits != 0;
 
         public int MaxHits => 10 + (int)Plant.PlantStatus * 2;
 
         public PlantHealth Health
         {
-            get
+            get => (_hits * 100 / MaxHits) switch
             {
-                var perc = m_Hits * 100 / MaxHits;
+                < 33  => PlantHealth.Dying,
+                < 66  => PlantHealth.Wilted,
+                < 100 => PlantHealth.Healthy,
+                _     => PlantHealth.Vibrant
+            };
+        }
 
-                if (perc < 33)
-                {
-                    return PlantHealth.Dying;
-                }
-
-                if (perc < 66)
-                {
-                    return PlantHealth.Wilted;
-                }
-
-                return perc < 100 ? PlantHealth.Healthy : PlantHealth.Vibrant;
+        [SerializableProperty(5)]
+        public int Infestation
+        {
+            get => _infestation;
+            set
+            {
+                _infestation = Math.Clamp(value, 0, 2);
+                MarkDirty();
             }
         }
 
-        public int Infestation
-        {
-            get => m_Infestation;
-            set => m_Infestation = Math.Clamp(value, 0, 2);
-        }
+        [SerializableFieldSaveFlag(5)]
+        private bool ShouldSerializeInfestation() => _infestation != 0;
 
+        [SerializableProperty(6)]
         public int Fungus
         {
-            get => m_Fungus;
-            set => m_Fungus = Math.Clamp(value, 0, 2);
+            get => _fungus;
+            set
+            {
+                _fungus = Math.Clamp(value, 0, 2);
+                MarkDirty();
+            }
         }
 
+        [SerializableFieldSaveFlag(6)]
+        private bool ShouldSerializeFungus() => _fungus != 0;
+
+        [SerializableProperty(7)]
         public int Poison
         {
-            get => m_Poison;
-            set => m_Poison = Math.Clamp(value, 0, 2);
+            get => _poison;
+            set
+            {
+                _poison = Math.Clamp(value, 0, 2);
+                MarkDirty();
+            }
         }
 
+        [SerializableFieldSaveFlag(7)]
+        private bool ShouldSerializePoison() => _poison != 0;
+
+        [SerializableProperty(8)]
         public int Disease
         {
-            get => m_Disease;
-            set => m_Disease = Math.Clamp(value, 0, 2);
+            get => _disease;
+            set
+            {
+                _disease = Math.Clamp(value, 0, 2);
+                MarkDirty();
+            }
         }
 
-        public bool IsFullPoisonPotion => m_PoisonPotion >= 2;
+        [SerializableFieldSaveFlag(8)]
+        private bool ShouldSerializeDisease() => _disease != 0;
 
+        public bool IsFullPoisonPotion => _poisonPotion >= 2;
+
+        [SerializableProperty(9)]
         public int PoisonPotion
         {
-            get => m_PoisonPotion;
-            set => m_PoisonPotion = Math.Clamp(value, 0, 2);
+            get => _poisonPotion;
+            set
+            {
+                _poisonPotion = Math.Clamp(value, 0, 2);
+                MarkDirty();
+            }
         }
 
-        public bool IsFullCurePotion => m_CurePotion >= 2;
+        [SerializableFieldSaveFlag(9)]
+        private bool ShouldSerializePoisonPotion() => _poisonPotion != 0;
 
+        public bool IsFullCurePotion => _curePotion >= 2;
+
+        [SerializableProperty(10)]
         public int CurePotion
         {
-            get => m_CurePotion;
-            set => m_CurePotion = Math.Clamp(value, 0, 2);
+            get => _curePotion;
+            set
+            {
+                _curePotion = Math.Clamp(value, 0, 2);
+                MarkDirty();
+            }
         }
 
-        public bool IsFullHealPotion => m_HealPotion >= 2;
+        [SerializableFieldSaveFlag(10)]
+        private bool ShouldSerializeCurePotion() => _curePotion != 0;
 
+        public bool IsFullHealPotion => _healPotion >= 2;
+
+        [SerializableProperty(11)]
         public int HealPotion
         {
-            get => m_HealPotion;
-            set => m_HealPotion = Math.Clamp(value, 0, 2);
+            get => _healPotion;
+            set
+            {
+                _healPotion = Math.Clamp(value, 0, 2);
+                MarkDirty();
+            }
         }
 
-        public bool IsFullStrengthPotion => m_StrengthPotion >= 2;
+        [SerializableFieldSaveFlag(11)]
+        private bool ShouldSerializeHealPotion() => _healPotion != 0;
 
+        public bool IsFullStrengthPotion => _strengthPotion >= 2;
+
+        [SerializableProperty(12)]
         public int StrengthPotion
         {
-            get => m_StrengthPotion;
-            set => m_StrengthPotion = Math.Clamp(value, 0, 2);
+            get => _strengthPotion;
+            set
+            {
+                _strengthPotion = Math.Clamp(value, 0, 2);
+                MarkDirty();
+            }
         }
+
+        [SerializableFieldSaveFlag(12)]
+        private bool ShouldSerializeStrengthPotion() => _strengthPotion != 0;
 
         public bool HasMaladies => Infestation > 0 || Fungus > 0 || Poison > 0 || Disease > 0 || Water != 2;
 
         public bool PollenProducing => Plant.IsCrossable && Plant.PlantStatus >= PlantStatus.FullGrownPlant;
 
-        public bool Pollinated { get; set; }
-
+        [SerializableProperty(14)]
         public PlantType SeedType
         {
-            get => Pollinated ? m_SeedType : Plant.PlantType;
-            set => m_SeedType = value;
+            get => Pollinated ? _seedType : Plant.PlantType;
+            set
+            {
+                _seedType = value;
+                MarkDirty();
+            }
         }
 
+        [SerializableFieldSaveFlag(14)]
+        private bool ShouldSerializeSeedType() => _pollinated;
+
+        [SerializableProperty(15)]
         public PlantHue SeedHue
         {
-            get => Pollinated ? m_SeedHue : Plant.PlantHue;
-            set => m_SeedHue = value;
+            get => Pollinated ? _seedHue : Plant.PlantHue;
+            set
+            {
+                _seedHue = value;
+                MarkDirty();
+            }
         }
 
+        [SerializableFieldSaveFlag(15)]
+        private bool ShouldSerializeSeedHue() => _pollinated;
+
+        [SerializableProperty(16)]
         public int AvailableSeeds
         {
-            get => m_AvailableSeeds;
-            set
-            {
-                if (value >= 0)
-                {
-                    m_AvailableSeeds = value;
-                }
-            }
+            get => _availableSeeds;
+            set => _availableSeeds = Math.Max(value, 0);
         }
 
+        [SerializableFieldSaveFlag(16)]
+        private bool ShouldSerializeAvailableSeeds() => _availableSeeds != 0;
+
+        [SerializableProperty(17)]
         public int LeftSeeds
         {
-            get => m_LeftSeeds;
-            set
-            {
-                if (value >= 0)
-                {
-                    m_LeftSeeds = value;
-                }
-            }
+            get => _leftSeeds;
+            set => _leftSeeds = Math.Max(value, 0);
         }
 
+        [SerializableFieldSaveFlag(17)]
+        private bool ShouldSerializeLeftSeeds() => _leftSeeds != 0;
+
+        [SerializableProperty(18)]
         public int AvailableResources
         {
-            get => m_AvailableResources;
-            set
-            {
-                if (value >= 0)
-                {
-                    m_AvailableResources = value;
-                }
-            }
+            get => _availableResources;
+            set => _availableResources = Math.Max(value, 0);
         }
 
+        [SerializableFieldSaveFlag(18)]
+        private bool ShouldSerializeAvailableResources() => _availableResources != 0;
+
+        [SerializableProperty(19)]
         public int LeftResources
         {
-            get => m_LeftResources;
-            set
-            {
-                if (value >= 0)
-                {
-                    m_LeftResources = value;
-                }
-            }
+            get => _leftResources;
+            set => _leftResources = Math.Max(value, 0);
         }
+
+        [SerializableFieldSaveFlag(19)]
+        private bool ShouldSerializeLeftResources() => _leftResources != 0;
 
         public void Reset(bool potions)
         {
@@ -294,25 +347,25 @@ namespace Server.Engines.Plants
             GrowthIndicator = PlantGrowthIndicator.None;
 
             Hits = MaxHits;
-            m_Infestation = 0;
-            m_Fungus = 0;
-            m_Poison = 0;
-            m_Disease = 0;
+            Infestation = 0;
+            Fungus = 0;
+            Poison = 0;
+            Disease = 0;
 
             if (potions)
             {
-                m_PoisonPotion = 0;
-                m_CurePotion = 0;
-                m_HealPotion = 0;
-                m_StrengthPotion = 0;
+                PoisonPotion = 0;
+                CurePotion = 0;
+                HealPotion = 0;
+                StrengthPotion = 0;
             }
 
             Pollinated = false;
-            m_AvailableSeeds = 0;
-            m_LeftSeeds = 8;
+            AvailableSeeds = 0;
+            LeftSeeds = 8;
 
-            m_AvailableResources = 0;
-            m_LeftResources = 8;
+            AvailableResources = 0;
+            LeftResources = 8;
         }
 
         public int GetLocalizedDirtStatus() =>
@@ -633,37 +686,6 @@ namespace Server.Engines.Plants
             }
 
             StrengthPotion = 0;
-        }
-
-        public void Save(IGenericWriter writer)
-        {
-            writer.Write(2); // version
-
-            writer.Write(FertileDirt);
-
-            writer.Write(NextGrowth);
-            writer.Write((int)GrowthIndicator);
-
-            writer.Write(m_Water);
-
-            writer.Write(m_Hits);
-            writer.Write(m_Infestation);
-            writer.Write(m_Fungus);
-            writer.Write(m_Poison);
-            writer.Write(m_Disease);
-            writer.Write(m_PoisonPotion);
-            writer.Write(m_CurePotion);
-            writer.Write(m_HealPotion);
-            writer.Write(m_StrengthPotion);
-
-            writer.Write(Pollinated);
-            writer.Write((int)m_SeedType);
-            writer.Write((int)m_SeedHue);
-            writer.Write(m_AvailableSeeds);
-            writer.Write(m_LeftSeeds);
-
-            writer.Write(m_AvailableResources);
-            writer.Write(m_LeftResources);
         }
     }
 }

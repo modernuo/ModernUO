@@ -73,10 +73,10 @@ namespace Server.Spells.Necromancy
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, m, Convert.ToString((int)damage)));
 
                 // TODO: Find a better way to do this
-                WeightOverloading.DFA = DFAlgorithm.PainSpike;
+                StaminaSystem.DFA = DFAlgorithm.PainSpike;
                 m.Damage((int)damage, Caster);
                 SpellHelper.DoLeech((int)damage, Caster, m);
-                WeightOverloading.DFA = DFAlgorithm.Standard;
+                StaminaSystem.DFA = DFAlgorithm.Standard;
 
                 // SpellHelper.Damage( this, m, damage, 100, 0, 0, 0, 0, Misc.DFAlgorithm.PainSpike );
                 HarmfulSpell(m);
