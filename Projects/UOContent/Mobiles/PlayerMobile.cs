@@ -1613,7 +1613,7 @@ namespace Server.Mobiles
         {
             if (AccessLevel < AccessLevel.GameMaster && item.IsChildOf(Backpack))
             {
-                var maxWeight = WeightOverloading.GetMaxWeight(this);
+                var maxWeight = StaminaSystem.GetMaxWeight(this);
                 var curWeight = BodyWeight + TotalWeight;
 
                 if (curWeight > maxWeight)
@@ -2339,7 +2339,7 @@ namespace Server.Mobiles
 
             Confidence.StopRegenerating(this);
 
-            WeightOverloading.FatigueOnDamage(this, amount);
+            StaminaSystem.FatigueOnDamage(this, amount);
 
             ReceivedHonorContext?.OnTargetDamaged(from, amount);
             SentHonorContext?.OnSourceDamaged(from, amount);

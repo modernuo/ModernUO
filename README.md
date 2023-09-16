@@ -29,12 +29,16 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![Linux Mint 17+](https://img.shields.io/badge/-20-87CF3E?logo=linux%20mint&logoColor=87CF3E&labelColor=222222)](https://linuxmint.com/download.php)
 [![Arch](https://img.shields.io/badge/-Arch-1793D1?logo=archlinux&logoColor=1793D1&labelColor=222222)](https://archlinux.org/download/)
 
-#### Running the server
-[![.NET](https://img.shields.io/badge/-7.0.10-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+#### Required Frameworks
+##### All Operating Systems
+[![.NET](https://img.shields.io/badge/-7.0.11-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+
+##### Windows
+[![VC++ Redistributable 17](https://img.shields.io/badge/-Redist%2017-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%207.0.400%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+[![.NET](https://img.shields.io/badge/-%207.0.401%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 #### Supported IDEs
 

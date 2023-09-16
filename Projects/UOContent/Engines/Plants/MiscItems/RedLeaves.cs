@@ -1,94 +1,72 @@
+using ModernUO.Serialization;
 using Server.Targeting;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class RedLeaves : Item
 {
-    public class RedLeaves : Item
+    [Constructible]
+    public RedLeaves(int amount = 1) : base(0x1E85)
     {
-        [Constructible]
-        public RedLeaves(int amount = 1) : base(0x1E85)
+        Stackable = true;
+        Hue = 0x21;
+        Amount = amount;
+    }
+
+    public override int LabelNumber => 1053123; // red leaves
+
+    public override double DefaultWeight => 0.1;
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!IsChildOf(from.Backpack))
         {
-            Stackable = true;
-            Hue = 0x21;
-            Amount = amount;
+            from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
+            return;
         }
 
-        public RedLeaves(Serial serial) : base(serial)
+        from.Target = new InternalTarget(this);
+        from.SendLocalizedMessage(1061907); // Choose a book you wish to seal with the wax from the red leaf.
+    }
+
+    private class InternalTarget : Target
+    {
+        private readonly RedLeaves _redLeaves;
+
+        public InternalTarget(RedLeaves redLeaves) : base(3, false, TargetFlags.None) => _redLeaves = redLeaves;
+
+        protected override void OnTarget(Mobile from, object targeted)
         {
-        }
+            if (_redLeaves.Deleted)
+            {
+                return;
+            }
 
-        public override int LabelNumber => 1053123; // red leaves
-
-        public override double DefaultWeight => 0.1;
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (!IsChildOf(from.Backpack))
+            if (!_redLeaves.IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
                 return;
             }
 
-            from.Target = new InternalTarget(this);
-            from.SendLocalizedMessage(1061907); // Choose a book you wish to seal with the wax from the red leaf.
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        private class InternalTarget : Target
-        {
-            private readonly RedLeaves m_RedLeaves;
-
-            public InternalTarget(RedLeaves redLeaves) : base(3, false, TargetFlags.None) => m_RedLeaves = redLeaves;
-
-            protected override void OnTarget(Mobile from, object targeted)
+            if (targeted is not Item item || !item.IsChildOf(from.Backpack))
             {
-                if (m_RedLeaves.Deleted)
-                {
-                    return;
-                }
+                from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
+            }
+            else if (item is not BaseBook book)
+            {
+                item.LabelTo(from, 1061911); // You can only use red leaves to seal the ink into book pages!
+            }
+            else if (!book.Writable)
+            {
+                book.LabelTo(from, 1061909); // The ink in this book has already been sealed.
+            }
+            else
+            {
+                _redLeaves.Consume();
+                book.Writable = false;
 
-                if (!m_RedLeaves.IsChildOf(from.Backpack))
-                {
-                    from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
-                    return;
-                }
-
-                if (targeted is not Item item || !item.IsChildOf(from.Backpack))
-                {
-                    from.SendLocalizedMessage(1042664); // You must have the object in your backpack to use it.
-                }
-                else if (item is not BaseBook)
-                {
-                    item.LabelTo(from, 1061911); // You can only use red leaves to seal the ink into book pages!
-                }
-                else
-                {
-                    var book = (BaseBook)item;
-
-                    if (!book.Writable)
-                    {
-                        book.LabelTo(from, 1061909); // The ink in this book has already been sealed.
-                    }
-                    else
-                    {
-                        m_RedLeaves.Consume();
-                        book.Writable = false;
-
-                        book.LabelTo(from, 1061910); // You seal the ink to the page using wax from the red leaf.
-                    }
-                }
+                book.LabelTo(from, 1061910); // You seal the ink to the page using wax from the red leaf.
             }
         }
     }

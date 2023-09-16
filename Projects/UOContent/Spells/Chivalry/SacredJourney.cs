@@ -72,7 +72,7 @@ namespace Server.Spells.Chivalry
             {
                 Caster.SendLocalizedMessage(1061282); // You cannot use the Sacred Journey ability to flee from combat.
             }
-            else if (WeightOverloading.IsOverloaded(Caster))
+            else if (StaminaSystem.IsOverloaded(Caster))
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
             }
@@ -150,7 +150,7 @@ namespace Server.Spells.Chivalry
                 return false;
             }
 
-            if (WeightOverloading.IsOverloaded(Caster))
+            if (StaminaSystem.IsOverloaded(Caster))
             {
                 Caster.SendLocalizedMessage(502359, "", 0x22); // Thou art too encumbered to move.
                 return false;
