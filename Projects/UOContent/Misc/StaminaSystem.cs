@@ -21,8 +21,8 @@ public static class StaminaSystem
 
     private static TimeSpan ResetDuration = TimeSpan.FromHours(24);
 
-    private static Dictionary<IHasSteps, StepsTaken> _stepsTaken = new();
-    private static OrderedHashSet<IHasSteps> _resetHash = new();
+    private static readonly Dictionary<IHasSteps, StepsTaken> _stepsTaken = new();
+    private static readonly OrderedHashSet<IHasSteps> _resetHash = new();
 
     // TODO: This exploits single thread processing and is not thread safe!
     public static DFAlgorithm DFA { get; set; }
@@ -65,7 +65,7 @@ public static class StaminaSystem
         var version = reader.ReadEncodedInt();
 
         var count = reader.ReadEncodedInt();
-        _stepsTaken = new Dictionary<IHasSteps, StepsTaken>(count);
+        _stepsTaken.EnsureCapacity(count);
 
         var now = Core.Now;
 
