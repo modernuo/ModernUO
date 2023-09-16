@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Collections;
@@ -68,6 +67,8 @@ public static class StaminaSystem
         var count = reader.ReadEncodedInt();
         _stepsTaken = new Dictionary<IHasSteps, StepsTaken>(count);
 
+        var now = Core.Now;
+
         for (var i = 0; i < count; i++)
         {
             var m = reader.ReadEntity<ISerializable>() as IHasSteps;
@@ -84,6 +85,11 @@ public static class StaminaSystem
             if (stepsTaken.Steps > 0)
             {
                 _stepsTaken.Add(m, stepsTaken);
+
+                if (m is IMount && now < stepsTaken.IdleStartTime + ResetDuration)
+                {
+                    _resetHash.Add(m);
+                }
             }
         }
     }
