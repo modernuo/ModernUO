@@ -108,7 +108,7 @@ namespace Server.Misc
                 }
                 else
                 {
-                    logger.Warning("Could not auto-detect public IP address");
+                    logger.Error("Could not auto-detect public IP address. Users will not be able to connect!");
                 }
             }
         }
@@ -170,17 +170,25 @@ namespace Server.Misc
 
         private static IPAddress FindPublicAddress()
         {
-            try
+            const int count = 3;
+            for (var i = 0; i < count; i++)
             {
-                // This isn't called often so we don't need to optimize
-                using HttpClient hc = new HttpClient();
-                var ipAddress = hc.GetStringAsync(_ipifyUrl).Result;
-                return IPAddress.Parse(ipAddress);
+                try
+                {
+                    // This isn't called often so we don't need to optimize
+                    using HttpClient hc = new HttpClient();
+                    hc.Timeout = TimeSpan.FromSeconds(1); // Only wait 1 second
+                    var ipAddress = hc.GetStringAsync(_ipifyUrl).Result;
+                    return IPAddress.Parse(ipAddress);
+                }
+                catch
+                {
+                    // ignored
+                }
             }
-            catch
-            {
-                return null;
-            }
+
+            logger.Warning("Attempted to get a public IP address {Count} times from {RemoteIPService} and failed.", count, _ipifyUrl);
+            return null;
         }
     }
 }

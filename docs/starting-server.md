@@ -20,3 +20,11 @@ Everything is run from the _Distribution_ folder.
     cd Distribution
     dotnet run ModernUO.dll
     ```
+
+=== "Game Files"
+    !!! Note
+        Game files are required to initiate a server. Upon the initial launch, you will encounter a prompt asking for the location of your game files or ClassicUO installation. ClassicUO installations should be configured to reference game files directory within settings.json file.
+
+
+    !!! Tip
+        Game files are not directly distributed in ModernUO, find the latest version to download these at [client download](https://uo.com/Client-Download/)

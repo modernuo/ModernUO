@@ -1,0 +1,48 @@
+{
+  "version": 3,
+  "type": "Server.Engines.Plants.PlantItem",
+  "properties": [
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "PlantStatus",
+      "type": "Server.Engines.Plants.PlantStatus",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "PlantType",
+      "type": "Server.Engines.Plants.PlantType",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "PlantHue",
+      "type": "Server.Engines.Plants.PlantHue",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "ShowType",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "PlantSystem",
+      "type": "Server.Engines.Plants.PlantSystem",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    }
+  ]
+}

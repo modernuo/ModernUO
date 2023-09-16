@@ -1009,11 +1009,11 @@ namespace Server.Spells
 
                 bcTarget?.AlterSpellDamageFrom(from, ref dmg);
 
-                WeightOverloading.DFA = dfa;
+                StaminaSystem.DFA = dfa;
 
                 var damageGiven = AOS.Damage(target, from, dmg, phys, fire, cold, pois, nrgy, chaos);
 
-                WeightOverloading.DFA = DFAlgorithm.Standard;
+                StaminaSystem.DFA = DFAlgorithm.Standard;
 
                 bcFrom?.OnDamageSpell(target, damageGiven);
 
@@ -1143,11 +1143,11 @@ namespace Server.Spells
                     bcTarg?.AlterSpellDamageFrom(m_From, ref m_Damage);
                 }
 
-                WeightOverloading.DFA = m_DFA;
+                StaminaSystem.DFA = m_DFA;
 
                 var damageGiven = AOS.Damage(m_Target, m_From, m_Damage, m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy, m_Chaos);
 
-                WeightOverloading.DFA = DFAlgorithm.Standard;
+                StaminaSystem.DFA = DFAlgorithm.Standard;
 
                 bcFrom?.OnDamageSpell(m_Target, damageGiven);
 
