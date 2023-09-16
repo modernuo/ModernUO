@@ -101,7 +101,7 @@ namespace Server.Mobiles
                 }
 
                 Add(typeof(RecallRune), 13);
-                Add(typeof(Spellbook), 25);
+                Add(typeof(Spellbook), 9);
 
                 var types = Loot.RegularScrollTypes;
 
