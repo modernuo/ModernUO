@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(0)]
+[SerializationGenerator(0, false)]
 public partial class ChaosGuard : BaseShieldGuard
 {
     [Constructible]
