@@ -33,7 +33,7 @@ public static class StaminaSystem
     public static int BaseOverweightLoss { get; set; }
     public static double AdditionalLossWhenBelow { get; set; }
     public static bool EnableMountStamina { get; set; }
-    public static bool UseMountStaminaWhenOverweight { get; set; }
+    public static bool UseMountStaminaOnlyWhenOverloaded { get; set; }
 
     public static void Configure()
     {
@@ -43,7 +43,7 @@ public static class StaminaSystem
         BaseOverweightLoss = ServerConfiguration.GetOrUpdateSetting("stamina.baseOverweightLoss", 5);
         AdditionalLossWhenBelow = ServerConfiguration.GetOrUpdateSetting("stamina.additionalLossWhenBelow", 0.10);
         EnableMountStamina = ServerConfiguration.GetOrUpdateSetting("stamina.enableMountStamina", true);
-        UseMountStaminaWhenOverweight = ServerConfiguration.GetSetting("stamina.useStamina", Core.SA);
+        UseMountStaminaOnlyWhenOverloaded = ServerConfiguration.GetSetting("stamina.useMountStaminaOnlyWhenOverloaded", Core.SA);
 
         GenericPersistence.Register("StaminaSystem", Serialize, Deserialize);
     }
@@ -397,7 +397,7 @@ public static class StaminaSystem
         if (stepsTaken.Steps <= maxSteps)
         {
             // Pre-SA mounts would lose stamina while running even when they were not overweight
-            if (running && !UseMountStaminaWhenOverweight)
+            if (running && !UseMountStaminaOnlyWhenOverloaded)
             {
                 stamLoss++;
             }
