@@ -32,6 +32,7 @@ namespace Server.Mobiles
             Karma = 0;
         }
 
+        public override int StepsMax => 4480;
         public override string CorpseName => "an undead horse corpse";
         public override string DefaultName => "a skeletal steed";
 

@@ -13,6 +13,7 @@ namespace Server.Mobiles
             SetStats(this);
         }
 
+        public override int StepsMax => 5120;
         public override string CorpseName => "a hellsteed corpse";
         public override Poison PoisonImmune => Poison.Lethal;
 

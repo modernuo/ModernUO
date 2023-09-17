@@ -18,8 +18,6 @@ public static class PlayerMurderSystem
     // Only the players that are online
     private static readonly HashSet<MurderContext> _contextTerms = new(MurderContext.EqualityComparer.Default);
 
-    private static readonly Timer _murdererTimer = new MurdererTimer();
-
     private static TimeSpan _shortTermMurderDuration;
 
     private static TimeSpan _longTermMurderDuration;
@@ -41,8 +39,6 @@ public static class PlayerMurderSystem
         EventSink.Disconnected += OnDisconnected;
         EventSink.Login += OnLogin;
         EventSink.PlayerDeleted += OnPlayerDeleted;
-
-        _murdererTimer.Start();
     }
 
     private static void OnPlayerDeleted(Mobile m)
@@ -182,6 +178,11 @@ public static class PlayerMurderSystem
         {
         }
 
+        public static void Initialize()
+        {
+            new MurdererTimer().Start();
+        }
+
         protected override void OnTick()
         {
             if (_contextTerms.Count == 0)
@@ -207,6 +208,11 @@ public static class PlayerMurderSystem
                     _contextTerms.Remove(context);
                 }
             }
+        }
+
+        ~MurdererTimer()
+        {
+            PlayerMurderSystem.logger.Error($"{nameof(MurdererTimer)} is no longer running!");
         }
     }
 }

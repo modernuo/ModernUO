@@ -13,9 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server.Mobiles;
 
-public interface IMount
+public interface IMount : IHasSteps
 {
     Mobile Rider { get; set; }
     void OnRiderDamaged(int amount, Mobile from, bool willKill);

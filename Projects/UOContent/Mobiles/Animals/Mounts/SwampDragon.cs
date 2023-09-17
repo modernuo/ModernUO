@@ -110,6 +110,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int BardingMaxHP => _bardingExceptional ? 2500 : 1000;
 
+        public override int StepsMax => 4480;
         public override bool ReacquireOnMovement => true;
         public override bool AutoDispel => !Controlled;
         public override FoodType FavoriteFood => FoodType.Meat;

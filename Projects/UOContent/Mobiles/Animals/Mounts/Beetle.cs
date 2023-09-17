@@ -50,6 +50,7 @@ namespace Server.Mobiles
             AddItem(pack);
         }
 
+        public override int StepsMax => 4480;
         public override string CorpseName => "a giant beetle corpse";
         public virtual double BoostedSpeed => 0.1;
 

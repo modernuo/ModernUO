@@ -201,65 +201,6 @@ public partial class Neira : BaseChampion
         CheckSpeedBoost();
     }
 
-    private class VirtualMount : IMount
-    {
-        private readonly VirtualMountItem _item;
-
-        public VirtualMount(VirtualMountItem item) => _item = item;
-
-        Mobile IMount.Rider
-        {
-            get => _item.Rider;
-            set { }
-        }
-
-        public virtual void OnRiderDamaged(int amount, Mobile from, bool willKill)
-        {
-        }
-    }
-
-    [SerializationGenerator(0)]
-    private partial class VirtualMountItem : Item, IMountItem
-    {
-        private VirtualMount _mount;
-
-        [SerializableField(0, setter: "private")]
-        private Mobile _rider;
-
-        public VirtualMountItem(Mobile mob) : base(0x3EBB)
-        {
-            Layer = Layer.Mount;
-
-            Movable = false;
-
-            _rider = mob;
-            _mount = new VirtualMount(this);
-        }
-
-        public IMount Mount => _mount;
-
-        [AfterDeserialization(false)]
-        private void AfterDeserialization()
-        {
-            if (_rider?.Deleted != false)
-            {
-                Delete();
-            }
-            else
-            {
-                _mount = new VirtualMount(this);
-            }
-        }
-
-        public override DeathMoveResult OnParentDeath(Mobile parent)
-        {
-            _mount = null;
-            Delete();
-
-            return DeathMoveResult.RemainEquipped;
-        }
-    }
-
     private class DelayTimer : Timer
     {
         private readonly Mobile m_Mobile;

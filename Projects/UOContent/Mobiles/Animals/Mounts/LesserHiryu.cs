@@ -49,6 +49,7 @@ namespace Server.Mobiles
             }
         }
 
+        public override int StepsMax => 4480;
         public override string CorpseName => "a hiryu corpse";
         public override double WeaponAbilityChance => 0.07; /* 1 in 15 chance of using; 1 in 5 chance of success */
 

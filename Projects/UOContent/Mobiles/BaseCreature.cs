@@ -2369,6 +2369,8 @@ namespace Server.Mobiles
 
             UnsummonTimer.StopTimer(this);
 
+            StaminaSystem.RemoveEntry(this as IHasSteps);
+
             base.OnAfterDelete();
         }
 
@@ -4177,15 +4179,13 @@ namespace Server.Mobiles
         {
             if (!IsDeadPet && Controlled && (ControlMaster == from || IsPetFriend(from)))
             {
-                var f = dropped;
-
-                if (CheckFoodPreference(f))
+                if (CheckFoodPreference(dropped))
                 {
-                    var amount = f.Amount;
+                    var amount = dropped.Amount;
 
                     if (amount > 0)
                     {
-                        int stamGain = f switch
+                        int stamGain = dropped switch
                         {
                             Gold => amount - 50,
                             _    => amount * 15 - 50
@@ -4194,6 +4194,8 @@ namespace Server.Mobiles
                         if (stamGain > 0)
                         {
                             Stam += stamGain;
+                            // 64 food = 3,640 steps
+                            StaminaSystem.RegenSteps(this as IHasSteps, stamGain * 4);
                         }
 
                         if (Core.SE)

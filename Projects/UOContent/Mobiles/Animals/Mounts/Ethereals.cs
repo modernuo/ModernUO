@@ -1,21 +1,30 @@
 using ModernUO.Serialization;
 using System;
+using System.Runtime.CompilerServices;
 using Server.Engines.VeteranRewards;
 using Server.Multis;
 using Server.Spells;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(3, false)]
+    [SerializationGenerator(4, false)]
     public partial class EtherealMount : Item, IMount, IMountItem, IRewardItem
     {
         [SerializableField(0)]
         [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool _isDonationItem;
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SerializableFieldSaveFlag(0)]
+        public bool ShouldSerializeIsDonationItem() => _isDonationItem;
+
         [SerializableField(1)]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         public bool _isRewardItem;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SerializableFieldSaveFlag(1)]
+        public bool ShouldSerializeIsRewardItem() => _isRewardItem;
 
         [Constructible]
         public EtherealMount(int itemID, int mountID) : base(itemID)
@@ -114,6 +123,29 @@ namespace Server.Mobiles
                 }
             }
         }
+
+        [SerializableFieldSaveFlag(4)]
+        private bool ShouldSerializeRider() => _rider != null;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        [SerializableProperty(5)]
+        public int Steps
+        {
+            get => _steps;
+            set
+            {
+                _steps = Math.Clamp(value, 0, StepsMax);
+                this.MarkDirty();
+            }
+        }
+
+        [SerializableFieldSaveFlag(5)]
+        private bool ShouldSerializeSteps() => _steps != StepsMax;
+
+        public virtual int StepsMax => 3840; // Should be same as horse
+
+        public virtual int StepsGainedPerIdleTime => 1;
+        public virtual TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(10);
 
         public void OnRiderDamaged(int amount, Mobile from, bool willKill)
         {
@@ -215,10 +247,8 @@ namespace Server.Mobiles
             _mountedID = reader.ReadInt();
             _regularID = reader.ReadInt();
             _rider = reader.ReadEntity<Mobile>();
-            if (_mountedID == 0x3EA2)
-            {
-                _mountedID = 0x3EAA;
-            }
+
+            _steps = StepsMax;
         }
 
         [AfterDeserialization]
