@@ -1762,7 +1762,11 @@ public abstract class BaseAI
         }
 
         m_Mobile.BeginDeleteTimer();
-        m_Mobile.DropBackpack();
+
+        if (m_Mobile.CanDrop)
+        {
+            m_Mobile.DropBackpack();
+        }
 
         return true;
     }
