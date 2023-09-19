@@ -50,7 +50,7 @@ namespace Server.Engines.PartySystem
 
         public void OnStamChanged(Mobile m)
         {
-            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
             OutgoingMobilePackets.CreateMobileStam(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
@@ -67,7 +67,7 @@ namespace Server.Engines.PartySystem
 
         public void OnManaChanged(Mobile m)
         {
-            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
             OutgoingMobilePackets.CreateMobileMana(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
