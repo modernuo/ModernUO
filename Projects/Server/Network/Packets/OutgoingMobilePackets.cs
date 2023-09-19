@@ -436,7 +436,7 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[MobileStatusCompactLength];
+        Span<byte> buffer = stackalloc byte[MobileStatusCompactLength].InitializePacket();
         CreateMobileStatusCompact(buffer, m, canBeRenamed);
 
         ns.Send(buffer);
@@ -487,7 +487,7 @@ public static class OutgoingMobilePackets
             }
         }
 
-        Span<byte> buffer = stackalloc byte[length];
+        Span<byte> buffer = stackalloc byte[length].InitializePacket();
         CreateMobileStatus(buffer, beheld, version, beheld.CanBeRenamedBy(beholder));
         ns.Send(buffer);
     }
