@@ -8994,7 +8994,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)]
+            .InitializePacket();
 
         var eable = m_Map.GetClientsInRange(m_Location);
 

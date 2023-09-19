@@ -50,7 +50,7 @@ namespace Server.Engines.PartySystem
 
         public void OnStamChanged(Mobile m)
         {
-            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
             OutgoingMobilePackets.CreateMobileStam(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
@@ -67,7 +67,7 @@ namespace Server.Engines.PartySystem
 
         public void OnManaChanged(Mobile m)
         {
-            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength];
+            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
             OutgoingMobilePackets.CreateMobileMana(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
@@ -226,7 +226,8 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")];
+            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")]
+                .InitializePacket();
             var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
                 buffer,
                 Serial.MinusOne,
@@ -499,7 +500,8 @@ namespace Server.Engines.PartySystem
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
                 m_Mobile.NetState.SendPartyMemberList(p);
 
-                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")].InitializePacket();
+                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")]
+                    .InitializePacket();
                 Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
 
                 var ns = m_Mobile.NetState;
