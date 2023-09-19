@@ -42,6 +42,7 @@ namespace Server.Mobiles
             MinTameSkill = 29.1;
         }
 
+        public override int StepsMax => 2560;
         public override string CorpseName => "a llama corpse";
 
         public override int Meat => 1;

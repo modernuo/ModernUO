@@ -59,7 +59,7 @@ public static class Effects
 
     public static bool SendParticlesTo(NetState state) =>
         ParticleSupportType == ParticleSupportType.Full ||
-        ParticleSupportType == ParticleSupportType.Detect && state.IsUOTDClient;
+        ParticleSupportType == ParticleSupportType.Detect && (state.IsUOTDClient || state.IsEnhancedClient);
 
     public static void PlaySound(IEntity e, int soundID) => PlaySound(e.Location, e.Map, soundID);
 
@@ -379,7 +379,7 @@ public static class Effects
         int speed, int duration, bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
     )
     {
-        Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength];
+        Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
         OutgoingEffectPackets.CreateMovingHuedEffect(
             effect,
             from, to, itemID, fromLocation, toLocation, speed, duration, fixedDirection,

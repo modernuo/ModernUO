@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Server.Collections;
+using Server.Logging;
 using Server.Mobiles;
 
 namespace Server.Engines.Virtues;
@@ -29,9 +30,9 @@ public enum VirtueName
 
 public static class VirtueSystem
 {
-    private static readonly Dictionary<PlayerMobile, VirtueContext> _playerVirtues = new();
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(VirtueSystem));
 
-    private static readonly Timer _virtueTimer = new VirtueTimer();
+    private static readonly Dictionary<PlayerMobile, VirtueContext> _playerVirtues = new();
 
     private static void FixVirtue(Mobile m, int[] virtueValues)
     {
@@ -66,8 +67,6 @@ public static class VirtueSystem
                 FixVirtue(m, values);
             }
         }
-
-        _virtueTimer.Start();
     }
 
     private static void Serialize(IGenericWriter writer)
@@ -346,6 +345,11 @@ public static class VirtueSystem
         {
         }
 
+        public static void Initialize()
+        {
+            new VirtueTimer().Start();
+        }
+
         protected override void OnTick()
         {
             if (_playerVirtues.Count == 0)
@@ -370,6 +374,11 @@ public static class VirtueSystem
             {
                 _playerVirtues.Remove((PlayerMobile)queue.Dequeue());
             }
+        }
+
+        ~VirtueTimer()
+        {
+            VirtueSystem.logger.Error($"{nameof(VirtueTimer)} is no longer running!");
         }
     }
 }

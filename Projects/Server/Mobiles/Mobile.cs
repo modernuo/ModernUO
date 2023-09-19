@@ -4081,33 +4081,49 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         switch (d & Direction.Mask)
         {
             case Direction.North:
-                --y;
-                break;
+                {
+                    --y;
+                    break;
+                }
             case Direction.Right:
-                ++x;
-                --y;
-                break;
+                {
+                    ++x;
+                    --y;
+                    break;
+                }
             case Direction.East:
-                ++x;
-                break;
+                {
+                    ++x;
+                    break;
+                }
             case Direction.Down:
-                ++x;
-                ++y;
-                break;
+                {
+                    ++x;
+                    ++y;
+                    break;
+                }
             case Direction.South:
-                ++y;
-                break;
+                {
+                    ++y;
+                    break;
+                }
             case Direction.Left:
-                --x;
-                ++y;
-                break;
+                {
+                    --x;
+                    ++y;
+                    break;
+                }
             case Direction.West:
-                --x;
-                break;
+                {
+                    --x;
+                    break;
+                }
             case Direction.Up:
-                --x;
-                --y;
-                break;
+                {
+                    --x;
+                    --y;
+                    break;
+                }
         }
 
         newLocation.m_X = x;
@@ -5428,38 +5444,64 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         switch (type)
         {
             case MessageType.Regular:
-                SpeechHue = hue;
-                break;
+                {
+                    SpeechHue = hue;
+                    break;
+                }
             case MessageType.Emote:
-                EmoteHue = hue;
-                break;
+                {
+                    EmoteHue = hue;
+                    break;
+                }
             case MessageType.Whisper:
-                WhisperHue = hue;
-                range = 1;
-                break;
+                {
+                    WhisperHue = hue;
+                    range = 1;
+                    break;
+                }
             case MessageType.Yell:
-                YellHue = hue;
-                range = 18;
-                break;
+                {
+                    YellHue = hue;
+                    range = 18;
+                    break;
+                }
             case MessageType.System:
-                break;
+                {
+                    break;
+                }
             case MessageType.Label:
-                break;
+                {
+                    break;
+                }
             case MessageType.Focus:
-                break;
+                {
+                    break;
+                }
             case MessageType.Spell:
-                break;
+                {
+                    break;
+                }
             case MessageType.Guild:
-                break;
+                {
+                    break;
+                }
             case MessageType.Alliance:
-                break;
+                {
+                    break;
+                }
             case MessageType.Command:
-                break;
+                {
+                    break;
+                }
             case MessageType.Encoded:
-                break;
+                {
+                    break;
+                }
             default:
-                type = MessageType.Regular;
-                break;
+                {
+                    type = MessageType.Regular;
+                    break;
+                }
         }
 
         var regArgs = new SpeechEventArgs(this, text, type, hue, keywords);
@@ -8952,7 +8994,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)]
+            .InitializePacket();
 
         var eable = m_Map.GetClientsInRange(m_Location);
 

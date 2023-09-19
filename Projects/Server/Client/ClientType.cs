@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: IMount.cs                                                       *
+ * File: ClientType.cs                                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -15,15 +15,14 @@
 
 using System;
 
-namespace Server.Mobiles;
+namespace Server;
 
-public interface IMount : IHasSteps
+[Flags]
+public enum ClientType
 {
-    Mobile Rider { get; set; }
-    void OnRiderDamaged(int amount, Mobile from, bool willKill);
-}
-
-public interface IMountItem
-{
-    IMount Mount { get; }
+    None = 0x00,
+    Classic = 0x01,
+    UOTD = 0x02,
+    KR = 0x04,
+    SA = 0x08
 }

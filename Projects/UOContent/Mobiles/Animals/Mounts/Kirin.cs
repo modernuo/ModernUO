@@ -48,6 +48,7 @@ namespace Server.Mobiles
             MinTameSkill = 95.1;
         }
 
+        public override int StepsMax => 4480;
         public override string CorpseName => "a ki-rin corpse";
         public override bool AllowFemaleRider => false;
         public override bool AllowFemaleTamer => false;
@@ -75,12 +76,12 @@ namespace Server.Mobiles
                 return false;
             }
 
-            // Range and map checked here instead of other base fuction because of abiliites that don't need to check this
+            // Range and map checked here instead of other base function because of abilities that don't need to check this
             if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18))
             {
                 attacker.BoltEffect(0);
                 // 35~100 damage, unresistable, by the Ki-rin.
-                // Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.
+                // Don't inform mount about this damage, Still unsure whether or not it's flagged as the mount doing damage or the player.
                 // If changed to player, without the extra bool it'd be an infinite loop
                 attacker.Damage(Utility.RandomMinMax(35, 100), this, false);
 

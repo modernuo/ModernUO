@@ -41,7 +41,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)];
+        Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)].InitializePacket();
         var length = CreateMessageLocalized(
             buffer, serial, graphic, type, hue, font, number, name, args
         );

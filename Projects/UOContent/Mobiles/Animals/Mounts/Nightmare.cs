@@ -89,6 +89,7 @@ namespace Server.Mobiles
             PackItem(new SulfurousAsh(Utility.RandomMinMax(3, 5)));
         }
 
+        public override int StepsMax => 6400;
         public override string CorpseName => "a nightmare corpse";
         public override int Meat => 5;
         public override int Hides => 10;

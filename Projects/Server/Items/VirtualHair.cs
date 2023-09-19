@@ -17,7 +17,7 @@ public static class OutgoingVirtualHairPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[EquipUpdatePacketLength];
+        Span<byte> buffer = stackalloc byte[EquipUpdatePacketLength].InitializePacket();
         CreateHairEquipUpdatePacket(buffer, m, hairSerial, itemId, hue, layer);
         ns.Send(buffer);
     }
@@ -47,7 +47,7 @@ public static class OutgoingVirtualHairPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[RemovePacketLength];
+        Span<byte> buffer = stackalloc byte[RemovePacketLength].InitializePacket();
         CreateRemoveHairPacket(buffer, hairSerial);
         ns.Send(buffer);
     }
