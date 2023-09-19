@@ -242,7 +242,7 @@ namespace Server.Engines.Mahjong
 
             int number = reader.ReadByte();
 
-            if (number < 0 || number >= game.Tiles.Length)
+            if (number >= game.Tiles.Length)
             {
                 return;
             }

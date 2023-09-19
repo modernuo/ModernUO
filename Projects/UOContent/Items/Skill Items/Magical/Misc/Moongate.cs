@@ -99,7 +99,8 @@ public partial class Moongate : Item
         else if (m.Kills >= 5 && TargetMap != Map.Felucca ||
                  TargetMap == Map.Tokuno && (flags & ClientFlags.Tokuno) == 0 ||
                  TargetMap == Map.Malas && (flags & ClientFlags.Malas) == 0 ||
-                 TargetMap == Map.Ilshenar && (flags & ClientFlags.Ilshenar) == 0)
+                 TargetMap == Map.Ilshenar && (flags & ClientFlags.Ilshenar) == 0 ||
+                 TargetMap == Map.TerMur && (flags & ClientFlags.TerMur) == 0)
         {
             m.SendLocalizedMessage(1019004); // You are not allowed to travel there.
         }
