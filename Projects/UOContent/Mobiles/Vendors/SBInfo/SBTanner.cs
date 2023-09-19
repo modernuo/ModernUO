@@ -13,12 +13,12 @@ namespace Server.Mobiles
         {
             public InternalBuyInfo()
             {
-                Add(new GenericBuyInfo(typeof(LeatherGorget), 31, 20, 0x13C7, 0));
+                Add(new GenericBuyInfo(typeof(LeatherArms), 80, 20, 0x13CD, 0));
+                Add(new GenericBuyInfo(typeof(LeatherChest), 101, 20, 0x13CC, 0));
+                Add(new GenericBuyInfo(typeof(LeatherGloves), 60, 20, 0x13C6, 0));
+                Add(new GenericBuyInfo(typeof(LeatherGorget), 74, 20, 0x13C7, 0));
+                Add(new GenericBuyInfo(typeof(LeatherLegs), 80, 20, 0x13cb, 0));
                 Add(new GenericBuyInfo(typeof(LeatherCap), 10, 20, 0x1DB9, 0));
-                Add(new GenericBuyInfo(typeof(LeatherArms), 37, 20, 0x13CD, 0));
-                Add(new GenericBuyInfo(typeof(LeatherChest), 47, 20, 0x13CC, 0));
-                Add(new GenericBuyInfo(typeof(LeatherLegs), 36, 20, 0x13CB, 0));
-                Add(new GenericBuyInfo(typeof(LeatherGloves), 31, 20, 0x13C6, 0));
 
                 Add(new GenericBuyInfo(typeof(StuddedGorget), 50, 20, 0x13D6, 0));
                 Add(new GenericBuyInfo(typeof(StuddedArms), 57, 20, 0x13DC, 0));
@@ -28,13 +28,13 @@ namespace Server.Mobiles
 
                 Add(new GenericBuyInfo(typeof(FemaleStuddedChest), 62, 20, 0x1C02, 0));
                 Add(new GenericBuyInfo(typeof(FemalePlateChest), 207, 20, 0x1C04, 0));
-                Add(new GenericBuyInfo(typeof(FemaleLeatherChest), 36, 20, 0x1C06, 0));
-                Add(new GenericBuyInfo(typeof(LeatherShorts), 28, 20, 0x1C00, 0));
-                Add(new GenericBuyInfo(typeof(LeatherSkirt), 25, 20, 0x1C08, 0));
-                Add(new GenericBuyInfo(typeof(LeatherBustierArms), 25, 20, 0x1C0A, 0));
-                Add(new GenericBuyInfo(typeof(LeatherBustierArms), 30, 20, 0x1C0B, 0));
-                Add(new GenericBuyInfo(typeof(StuddedBustierArms), 50, 20, 0x1C0C, 0));
-                Add(new GenericBuyInfo(typeof(StuddedBustierArms), 47, 20, 0x1C0D, 0));
+                Add(new GenericBuyInfo(typeof(FemaleLeatherChest), 116, 20, 0x1C06, 0));
+                Add(new GenericBuyInfo(typeof(LeatherShorts), 86, 20, 0x1C00, 0));
+                Add(new GenericBuyInfo(typeof(LeatherSkirt), 87, 20, 0x1C08, 0));
+                Add(new GenericBuyInfo(typeof(LeatherBustierArms), 97, 20, 0x1C0A, 0));
+                Add(new GenericBuyInfo(typeof(LeatherBustierArms), 97, 20, 0x1C0B, 0));
+                Add(new GenericBuyInfo(typeof(StuddedBustierArms), 97, 20, 0x1C0C, 0));
+                Add(new GenericBuyInfo(typeof(StuddedBustierArms), 97, 20, 0x1C0D, 0));
 
                 Add(new GenericBuyInfo(typeof(Bag), 6, 20, 0xE76, 0));
                 Add(new GenericBuyInfo(typeof(Pouch), 6, 20, 0xE79, 0));
@@ -59,11 +59,11 @@ namespace Server.Mobiles
 
                 Add(typeof(SkinningKnife), 7);
 
-                Add(typeof(LeatherArms), 18);
-                Add(typeof(LeatherChest), 23);
-                Add(typeof(LeatherGloves), 15);
-                Add(typeof(LeatherGorget), 15);
-                Add(typeof(LeatherLegs), 18);
+                Add(typeof(LeatherArms), 40);
+                Add(typeof(LeatherChest), 52);
+                Add(typeof(LeatherGloves), 30);
+                Add(typeof(LeatherGorget), 37);
+                Add(typeof(LeatherLegs), 40);
                 Add(typeof(LeatherCap), 5);
 
                 Add(typeof(StuddedArms), 43);

@@ -43,6 +43,7 @@ namespace Server.Mobiles
         {
         }
 
+        public override int StepsMax => 6400;
         public override string CorpseName => "a holy corpse";
         public override bool IsDispellable => false;
         public override bool IsBondable => false;

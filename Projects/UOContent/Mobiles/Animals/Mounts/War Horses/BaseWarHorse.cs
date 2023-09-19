@@ -52,6 +52,7 @@ namespace Server.Mobiles
             MinTameSkill = 29.1;
         }
 
+        public override int StepsMax => 6400;
         public override string CorpseName => "a war horse corpse";
 
         public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;

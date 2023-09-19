@@ -23,7 +23,7 @@ namespace Server.Mobiles
             public InternalSellInfo()
             {
                 Add(typeof(Hides), 2);
-                Add(typeof(ThighBoots), 28);
+                Add(typeof(ThighBoots), 7);
             }
         }
     }
