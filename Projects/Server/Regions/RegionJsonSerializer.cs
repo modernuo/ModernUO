@@ -31,43 +31,50 @@ public static class RegionJsonSerializer
 
     private static JsonDerivedType[] _derivedTypes = { new(typeof(Region), nameof(Region)) };
 
+    public static IJsonTypeInfoResolver RegionJsonTypeInfoResolver => new DefaultJsonTypeInfoResolver()
+    {
+        Modifiers =
+        {
+            static typeInfo =>
+            {
+                if (typeInfo.Type != typeof(Region))
+                {
+                    return;
+                }
+
+                typeInfo.PolymorphismOptions = new JsonPolymorphismOptions();
+                for (var i = 0; i < _derivedTypes.Length; i++)
+                {
+                    typeInfo.PolymorphismOptions.DerivedTypes.Add(_derivedTypes[i]);
+                }
+            },
+            static typeInfo =>
+            {
+                if (!typeInfo.Type.IsAssignableTo(typeof(Region)))
+                {
+                    return;
+                }
+
+                typeInfo.OnDeserialized = o =>
+                {
+                    if (o is Region region && Core.Expansion >= region.MinExpansion && Core.Expansion <= region.MaxExpansion)
+                    {
+                        // Set the child level since it is not part of the JSON data, and our constructor skips setting parent.
+                        if (region.Parent != null)
+                        {
+                            region.ChildLevel = region.Parent.ChildLevel + 1;
+                        }
+                        region.Register();
+                    }
+                };
+            }
+        }
+    };
+
     private static JsonSerializerOptions _options = new(JsonConfig.DefaultOptions)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-        TypeInfoResolver = new DefaultJsonTypeInfoResolver
-        {
-            Modifiers =
-            {
-                static typeInfo =>
-                {
-                    if (typeInfo.Type != typeof(Region))
-                    {
-                        return;
-                    }
-
-                    typeInfo.PolymorphismOptions = new JsonPolymorphismOptions();
-                    for (var i = 0; i < _derivedTypes.Length; i++)
-                    {
-                        typeInfo.PolymorphismOptions.DerivedTypes.Add(_derivedTypes[i]);
-                    }
-                },
-                static typeInfo =>
-                {
-                    if (!typeInfo.Type.IsAssignableTo(typeof(Region)))
-                    {
-                        return;
-                    }
-
-                    typeInfo.OnDeserialized = o =>
-                    {
-                        if (o is Region region && Core.Expansion >= region.MinExpansion && Core.Expansion <= region.MaxExpansion)
-                        {
-                            region.Register();
-                        }
-                    };
-                }
-            }
-        }
+        TypeInfoResolver = RegionJsonTypeInfoResolver,
     };
 
     public static void Register<TRegion>() where TRegion : Region
