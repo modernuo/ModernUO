@@ -28,31 +28,8 @@ public partial class NetState
     public ClientVersion Version
     {
         get => _version;
-        set => ProtocolChanges = ProtocolChangesByVersion(_version = value);
+        set => ProtocolChanges = (_version = value)?.ProtocolChanges ?? ProtocolChanges.None;
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ProtocolChanges ProtocolChangesByVersion(ClientVersion version) =>
-        version switch
-        {
-            var v when v >= ClientVersion.Version70610  => ProtocolChanges.Version70610,
-            var v when v >= ClientVersion.Version70500  => ProtocolChanges.Version70500,
-            var v when v >= ClientVersion.Version704565 => ProtocolChanges.Version704565,
-            var v when v >= ClientVersion.Version70331  => ProtocolChanges.Version70331,
-            var v when v >= ClientVersion.Version70300  => ProtocolChanges.Version70300,
-            var v when v >= ClientVersion.Version70160  => ProtocolChanges.Version70160,
-            var v when v >= ClientVersion.Version70130  => ProtocolChanges.Version70130,
-            var v when v >= ClientVersion.Version7090   => ProtocolChanges.Version7090,
-            var v when v >= ClientVersion.Version7000   => ProtocolChanges.Version7000,
-            var v when v >= ClientVersion.Version60142  => ProtocolChanges.Version60142,
-            var v when v >= ClientVersion.Version6017   => ProtocolChanges.Version6017,
-            var v when v >= ClientVersion.Version6000   => ProtocolChanges.Version6000,
-            var v when v >= ClientVersion.Version502b   => ProtocolChanges.Version502b,
-            var v when v >= ClientVersion.Version500a   => ProtocolChanges.Version500a,
-            var v when v >= ClientVersion.Version407a   => ProtocolChanges.Version407a,
-            var v when v >= ClientVersion.Version400a   => ProtocolChanges.Version400a,
-            _                                           => ProtocolChanges.None
-        };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasProtocolChanges(ProtocolChanges changes) => (ProtocolChanges & changes) != 0;
@@ -72,10 +49,10 @@ public partial class NetState
     public bool NewMobileIncoming => HasProtocolChanges(ProtocolChanges.NewMobileIncoming);
     public bool NewSecureTrading => HasProtocolChanges(ProtocolChanges.NewSecureTrading);
 
-    public bool IsUOTDClient =>
-        (Flags & ClientFlags.UOTD) != 0 || _version?.Type == ClientType.UOTD;
-
+    public bool IsUOTDClient => HasFlag(ClientFlags.UOTD) || _version?.Type == ClientType.UOTD;
+    public bool IsKRClient => _version?.Type == ClientType.KR;
     public bool IsSAClient => _version?.Type == ClientType.SA;
+    public bool IsEnhancedClient => _version?.Type is ClientType.KR or ClientType.SA;
 
     private ExpansionInfo m_Expansion;
 
@@ -89,7 +66,14 @@ public partial class NetState
                 {
                     var info = ExpansionInfo.Table[i];
 
-                    if (info.RequiredClient != null && Version >= info.RequiredClient || (Flags & info.ClientFlags) != 0)
+                    // KR sends same client flags as EC
+                    if (IsKRClient && (info.ClientFlags & ClientFlags.TerMur) != 0)
+                    {
+                        continue;
+                    }
+
+                    if ((info.RequiredClient == null || !IsKRClient) &&
+                        Version >= info.RequiredClient || HasFlag(info.ClientFlags))
                     {
                         m_Expansion = info;
                         break;

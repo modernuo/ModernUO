@@ -47,7 +47,7 @@ public enum ClientFlags
     Malas = 0x00000008,
     Tokuno = 0x00000010,
     TerMur = 0x00000020,
-    Unk1 = 0x00000040,
+    KR = 0x00000040,
     Unk2 = 0x00000080,
     UOTD = 0x00000100
 }
@@ -108,7 +108,7 @@ public enum CharacterListFlags
     SixthCharacterSlot = 0x00000040,
     SE = 0x00000080,
     ML = 0x00000100,
-    Unk2 = 0x00000200,
+    KR = 0x00000200,
     UO3DClientType = 0x00000400,
     Unk3 = 0x00000800,
     SeventhCharacterSlot = 0x00001000,

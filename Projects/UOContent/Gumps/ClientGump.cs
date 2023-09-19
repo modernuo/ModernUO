@@ -44,7 +44,7 @@ namespace Server.Gumps
                 36 + line++ * 20,
                 200,
                 20,
-                Color(state.Version?.SourceString ?? "(null)", LabelColor32)
+                Color(state.Version?.ToString().DefaultIfNullOrEmpty("(null)"), LabelColor32)
             );
 
             AddHtml(14, 36 + line * 20, 200, 20, Color("Assistant:", LabelColor32));

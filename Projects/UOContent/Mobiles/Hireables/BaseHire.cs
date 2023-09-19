@@ -49,6 +49,9 @@ public partial class BaseHire : BaseCreature
     public override bool IsBondable => false;
     public override bool KeepsItemsOnDeath => true;
 
+    // Ensure we cannot drop if we are a hireable
+    public override bool CanDrop => false;
+
     [AfterDeserialization]
     private void AfterDeserialization()
     {

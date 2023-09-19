@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: IMount.cs                                                       *
+ * File: ClientVersionExtensions.cs                                      *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,17 +13,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
+using System.Runtime.CompilerServices;
 
-namespace Server.Mobiles;
+namespace Server;
 
-public interface IMount : IHasSteps
+public static class ClientVersionExtensions
 {
-    Mobile Rider { get; set; }
-    void OnRiderDamaged(int amount, Mobile from, bool willKill);
-}
-
-public interface IMountItem
-{
-    IMount Mount { get; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string TypeName(this ClientType type) =>
+        type switch
+        {
+            ClientType.UOTD => "UO:TD",
+            ClientType.KR   => "UO:KR",
+            ClientType.SA   => "UO:SA",
+            _               => "classic",
+        };
 }

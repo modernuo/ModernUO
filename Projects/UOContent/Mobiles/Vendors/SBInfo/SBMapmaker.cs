@@ -28,7 +28,7 @@ namespace Server.Mobiles
         {
             public InternalSellInfo()
             {
-                Add(typeof(BlankScroll), 6);
+                Add(typeof(BlankScroll), 3);
                 Add(typeof(MapmakersPen), 4);
                 Add(typeof(BlankMap), 2);
                 Add(typeof(CityMap), 3);
