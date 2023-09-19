@@ -125,6 +125,7 @@ public class Sector
                 if (regRect.Region == region)
                 {
                     m_RegionRects.RemoveAt(i);
+                    break;
                 }
             }
 
