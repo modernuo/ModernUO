@@ -358,16 +358,10 @@ namespace Server.Mobiles
             CheckAtDestination();
         }
 
-        protected override bool OnMove(Direction d)
+        protected override void OnMove(Direction d)
         {
-            if (!base.OnMove(d))
-            {
-                return false;
-            }
-
+            base.OnMove(d);
             CheckAtDestination();
-
-            return true;
         }
 
         // TODO: Pre-ML methods below, might be mergeable with the ML methods in EscortObjective

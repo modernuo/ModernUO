@@ -78,7 +78,7 @@ public class CallPriorityComparer : IComparer<MethodInfo>
         return 0;
     }
 
-    private int GetPriority(MethodInfo mi)
+    private static int GetPriority(MethodInfo mi)
     {
         var objs = mi.GetCustomAttributes(typeof(CallPriorityAttribute), true);
 
@@ -87,12 +87,7 @@ public class CallPriorityComparer : IComparer<MethodInfo>
             return 50;
         }
 
-        if (objs[0] is not CallPriorityAttribute attr)
-        {
-            return 50;
-        }
-
-        return attr.Priority;
+        return (objs[0] as CallPriorityAttribute)?.Priority ?? 50;
     }
 }
 

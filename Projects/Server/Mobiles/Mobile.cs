@@ -4018,29 +4018,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual bool CheckContextMenuDisplay(IEntity target) => true;
 
-    private bool InternalOnMove(Direction d)
-    {
-        if (!OnMove(d))
-        {
-            return false;
-        }
-
-        var e = MovementEventArgs.Create(this, d);
-
-        EventSink.InvokeMovement(e);
-
-        var ret = !e.Blocked;
-
-        e.Free();
-
-        return ret;
-    }
-
     /// <summary>
     ///     Overridable. Event invoked before the Mobile <see cref="Move">moves</see>.
     /// </summary>
     /// <returns>True if the move is allowed, false if not.</returns>
-    protected virtual bool OnMove(Direction d)
+    protected virtual void OnMove(Direction d)
     {
         if (m_Hidden && m_AccessLevel == AccessLevel.Player)
         {
@@ -4049,8 +4031,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 RevealingAction();
             }
         }
-
-        return true;
     }
 
     public virtual bool CheckMovement(Direction d, out int newZ) => Movement.Movement.CheckMovement(this, d, out newZ);
@@ -4227,28 +4207,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
 
-        if (!InternalOnMove(d))
-        {
-            return false;
-        }
-
-        if (
-            CalcMoves.EnableFastwalkPrevention &&
-            AccessLevel < CalcMoves.FastwalkExemptionLevel &&
-            m_NetState?.AddStep(d) == false
-        )
-        {
-            var fw = new FastWalkEventArgs(m_NetState);
-            EventSink.InvokeFastWalk(fw);
-
-            if (fw.Blocked)
-            {
-                return false;
-            }
-        }
-
-        LastMoveTime = Core.TickCount;
-
         return true;
     }
 
@@ -4259,28 +4217,51 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return false;
         }
 
+        var oldLocation = m_Location;
+        Point3D newLocation = oldLocation;
+
+        // Regardless of whether we move or not, we have to set the NextMove so we can pace the rejections
+        var speed = ComputeMovementSpeed(d);
+        var now = Core.TickCount;
+        m_NetState._nextMove = now + speed;
+        m_NetState._nextMoveRolledOver = m_NetState._nextMove < now;
+
+        var isTurning = (m_Direction & Direction.Mask) != (d & Direction.Mask);
+
+        // We are actually moving (not just a direction change)
+        if (!isTurning && !CanMove(d, oldLocation, ref newLocation))
+        {
+            return false;
+        }
+
+        OnMove(d);
+
+        var e = MovementEventArgs.Create(this, d);
+
+        EventSink.InvokeMovement(e);
+
+        var ret = !e.Blocked;
+
+        e.Free();
+
+        if (!ret)
+        {
+            return false;
+        }
+
+        if (!isTurning)
+        {
+            DisruptiveAction();
+        }
+
+        m_NetState?.SendMovementAck(m_NetState.Sequence, this);
+
         var box = FindBankNoCreate();
 
         if (box?.Opened == true)
         {
             box.Close();
         }
-
-        var oldLocation = m_Location;
-        Point3D newLocation = oldLocation;
-
-        if ((m_Direction & Direction.Mask) == (d & Direction.Mask))
-        {
-            // We are actually moving (not just a direction change)
-            if (!CanMove(d, oldLocation, ref newLocation))
-            {
-                return false;
-            }
-
-            DisruptiveAction();
-        }
-
-        m_NetState?.SendMovementAck(m_NetState.Sequence, this);
 
         SetLocation(newLocation, false);
         SetDirection(d);
@@ -4342,15 +4323,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
-            if (m_MoveList.Count > 0)
-            {
-                m_MoveList.Clear();
-            }
-
-            if (m_MoveClientList.Count > 0)
-            {
-                m_MoveClientList.Clear();
-            }
+            m_MoveList.Clear();
+            m_MoveClientList.Clear();
         }
 
         OnAfterMove(oldLocation);

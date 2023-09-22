@@ -60,43 +60,6 @@ public static class OutgoingMovementPackets
         ns.Send(writer.Span);
     }
 
-    public static void SendInitialFastwalkStack(this NetState ns, uint[] keys)
-    {
-        if (ns.CannotSendPackets())
-        {
-            return;
-        }
-
-        var writer = new SpanWriter(stackalloc byte[29]);
-        writer.Write((byte)0xBF); // Packet ID
-        writer.Write((ushort)29);
-        writer.Write((ushort)0x1); // Subpacket
-        writer.Write(keys[0]);
-        writer.Write(keys[1]);
-        writer.Write(keys[2]);
-        writer.Write(keys[3]);
-        writer.Write(keys[4]);
-        writer.Write(keys[5]);
-
-        ns.Send(writer.Span);
-    }
-
-    public static void SendFastwalkStackKey(this NetState ns, uint key = 0)
-    {
-        if (ns.CannotSendPackets())
-        {
-            return;
-        }
-
-        var writer = new SpanWriter(stackalloc byte[9]);
-        writer.Write((byte)0xBF); // Packet ID
-        writer.Write((ushort)9);
-        writer.Write((ushort)0x2); // Subpacket
-        writer.Write(key);
-
-        ns.Send(writer.Span);
-    }
-
     public static void SendTimeSyncResponse(this NetState ns)
     {
         if (ns.CannotSendPackets())

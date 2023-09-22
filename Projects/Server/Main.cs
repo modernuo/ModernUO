@@ -546,6 +546,8 @@ public static class Core
                 Item.ProcessDeltaQueue();
                 Timer.Slice(_tickCount);
 
+                SpeedHackPrevention.Slice();
+
                 // Handle networking
                 TcpServer.Slice();
                 NetState.Slice();

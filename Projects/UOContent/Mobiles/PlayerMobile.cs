@@ -3485,16 +3485,17 @@ namespace Server.Mobiles
             base.OnSingleClick(from);
         }
 
-        protected override bool OnMove(Direction d)
+        protected override void OnMove(Direction d)
         {
             if (!Core.SE)
             {
-                return base.OnMove(d);
+                base.OnMove(d);
+                return;
             }
 
             if (AccessLevel != AccessLevel.Player)
             {
-                return true;
+                return;
             }
 
             if (Hidden && DesignContext.Find(this) == null) // Hidden & NOT customizing a house
@@ -3520,8 +3521,6 @@ namespace Server.Mobiles
                     RevealingAction();
                 }
             }
-
-            return true;
         }
 
         public void AddFollower(Mobile m)
@@ -4147,7 +4146,7 @@ namespace Server.Mobiles
         {
             if (checkTurning && (dir & Direction.Mask) != (Direction & Direction.Mask))
             {
-                return CalcMoves.RunMountDelay; // We are NOT actually moving (just a direction change)
+                return CalcMoves.TurnDelay; // We are NOT actually moving (just a direction change)
             }
 
             var context = TransformationSpellHelper.GetContext(this);

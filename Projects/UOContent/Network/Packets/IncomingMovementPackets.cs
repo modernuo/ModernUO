@@ -88,24 +88,17 @@ public static class IncomingMovementPackets
         }
 
         var dir = (Direction)reader.ReadByte();
-        int seq = reader.ReadByte();
+        byte seq = reader.ReadByte();
         var key = reader.ReadUInt32();
 
-        if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
+        // If false, we are queued and cannot move immediately
+        if (!SpeedHackPrevention.ValidateSpeedHack(from, dir, seq))
         {
-            state.SendMovementRej(seq, from);
-            state.Sequence = 0;
+            return;
         }
-        else
-        {
-            ++seq;
 
-            if (seq == 256)
-            {
-                seq = 1;
-            }
-
-            state.Sequence = seq;
-        }
+        // We are not throttled, and we can move immediately
+        // state.NextMove is set in Mobile.Move() if we actually do move
+        state.TryMove(dir, seq);
     }
 }

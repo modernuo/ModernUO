@@ -72,6 +72,13 @@ public partial class NetState : IComparable<NetState>
     internal GCHandle _handle;
     private bool _packetLogging;
 
+    // Speed hack prevention
+    internal readonly (byte, Direction)[] _movementSequences = new (byte, Direction)[SpeedHackPrevention.MaxQueuedMovement];
+    internal byte _readMovementSeqIndex;
+    internal byte _writeMovementSeqIndex;
+    internal long _nextMove;
+    internal bool _nextMoveRolledOver;
+
     public GCHandle Handle => _handle;
 
     internal enum ParserState
@@ -225,6 +232,16 @@ public partial class NetState : IComparable<NetState>
     public string Assistant { get; set; }
 
     public int CompareTo(NetState other) => string.CompareOrdinal(_toString, other?._toString);
+
+    public void SetNextSequence(int seq)
+    {
+        if (++seq == 256)
+        {
+            seq = 1;
+        }
+
+        Sequence = seq;
+    }
 
     private void SetPacketTime(int packetID)
     {
