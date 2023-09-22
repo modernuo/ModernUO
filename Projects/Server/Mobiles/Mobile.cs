@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.ContextMenus;
@@ -4224,7 +4225,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         var speed = ComputeMovementSpeed(d);
         var now = Core.TickCount;
         m_NetState._nextMove = now + speed;
-        m_NetState._nextMoveRolledOver = m_NetState._nextMove < now;
+        if (m_NetState._nextMove < now)
+        {
+            m_NetState._nextMove = -m_NetState._nextMove; // Flip the sign so we can use that as a rollover check
+        }
 
         var isTurning = (m_Direction & Direction.Mask) != (d & Direction.Mask);
 

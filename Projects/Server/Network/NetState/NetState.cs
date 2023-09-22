@@ -77,7 +77,6 @@ public partial class NetState : IComparable<NetState>
     internal byte _readMovementSeqIndex;
     internal byte _writeMovementSeqIndex;
     internal long _nextMove;
-    internal bool _nextMoveRolledOver;
 
     public GCHandle Handle => _handle;
 

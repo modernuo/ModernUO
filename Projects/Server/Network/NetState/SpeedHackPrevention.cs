@@ -181,31 +181,21 @@ public static class SpeedHackPrevention
             }
 
             var a = x._nextMove;
-            var aRoll = x._nextMoveRolledOver;
+            var aRoll = a < 0;
             var b = y._nextMove;
-            var bRoll = x._nextMoveRolledOver;
+            var bRoll = b < 0;
 
-            if (a < b)
+            if (aRoll && !bRoll)
             {
-                // A = 10, B = 100, but A rolled over
-                // Result is 1
-
-                // A = 10, B = 100, but A and B rolled over
-                // Result is -1
-                return aRoll && !bRoll ? 1 : -1;
+                return b.CompareTo(-a); // Reverse the check, and flip a
             }
 
-            if (a > b)
+            if (bRoll && !aRoll)
             {
-                // A = 100, B = 10, but B rolled over
-                // Result is -1
-
-                // A = 100, B = 10, but A and B rolled over
-                // Result is 1
-                return bRoll && !aRoll ? -1 : 1;
+                return a.CompareTo(-b); // Reverse the check, and flip b
             }
 
-            return 0;
+            return a.CompareTo(b);
         }
     }
 }
