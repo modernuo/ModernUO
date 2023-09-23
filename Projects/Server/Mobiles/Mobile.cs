@@ -556,6 +556,15 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 SendLocalizedMessage(m_Paralyzed ? 502381 : 502382);
                 _paraTimerToken.Cancel();
             }
+
+            if (!value && m_NetState != null)
+            {
+                var now = Core.TickCount;
+                if (now - m_NetState._nextMovementTime > 0)
+                {
+                    m_NetState._nextMovementTime = now;
+                }
+            }
         }
     }
 
@@ -4265,6 +4274,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             DisruptiveAction();
         }
 
+        if (m_NetState != null)
+        {
+            m_NetState._nextMovementTime += ComputeMovementSpeed(d);
+        }
+
         m_NetState?.SendMovementAck(m_NetState.Sequence, this);
 
         SetLocation(newLocation, false);
@@ -4339,6 +4353,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         OnAfterMove(oldLocation);
+
         return true;
     }
 
@@ -4550,6 +4565,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     /// <param name="spell"></param>
     public virtual void OnSpellCast(ISpell spell)
     {
+        var now = Core.TickCount;
+        if (m_NetState != null && now - m_NetState._nextMovementTime > 0)
+        {
+            m_NetState._nextMovementTime = now;
+        }
     }
 
     /// <summary>

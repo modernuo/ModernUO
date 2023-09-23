@@ -23,6 +23,7 @@ public static class Movement
     public static int RunFootDelay { get; set; } = 200;
     public static int WalkMountDelay { get; set; } = 200;
     public static int RunMountDelay { get; set; } = 100;
+    public static int TurnDelay { get; set; }
 
     public static void Configure()
     {
