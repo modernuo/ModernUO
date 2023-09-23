@@ -16,11 +16,14 @@
 using System;
 using System.Collections.Generic;
 using Server.Collections;
+using Server.Logging;
 
 namespace Server.Network;
 
 public static class SpeedHackPrevention
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(SpeedHackPrevention));
+
     private static readonly SortedSet<NetState> _sortedMovement = new(new NextMoveComparer());
 
     private static bool _speedHackEnabled;
@@ -87,6 +90,7 @@ public static class SpeedHackPrevention
         // Queue movement
         if (ns._nextMove - now > 0)
         {
+            m.Say($"Movement queued {movementCount + 1}/{maxMovements}");
             ns._movementSequences[nextWriteIndex] = (seq, d);
             _sortedMovement.Add(ns);
             return false;
@@ -98,6 +102,13 @@ public static class SpeedHackPrevention
     internal static void Slice()
     {
         var now = Core.TickCount;
+
+        if (_sortedMovement.Count == 0)
+        {
+            return;
+        }
+
+        logger.Information("Slicing {Count} movements", _sortedMovement.Count);
 
         using var queue = PooledRefQueue<NetState>.Create(_sortedMovement.Count);
 
