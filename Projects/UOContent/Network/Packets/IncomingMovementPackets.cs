@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server.Network;
 
 public static class IncomingMovementPackets
@@ -78,6 +80,8 @@ public static class IncomingMovementPackets
         ns.SendTimeSyncResponse();
     }
 
+    private static long _last;
+
     public static void MovementReq(NetState state, CircularBufferReader reader, int packetLength)
     {
         var from = state.Mobile;
@@ -90,6 +94,10 @@ public static class IncomingMovementPackets
         var dir = (Direction)reader.ReadByte();
         byte seq = reader.ReadByte();
         var key = reader.ReadUInt32();
+
+        Console.WriteLine("Delta: {0}", Core.TickCount - _last);
+
+        _last = Core.TickCount;
 
         // If false, we are queued and cannot move immediately
         if (!SpeedHackPrevention.ValidateSpeedHack(from, dir, seq))

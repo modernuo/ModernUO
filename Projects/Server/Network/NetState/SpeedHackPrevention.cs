@@ -26,6 +26,7 @@ public static class SpeedHackPrevention
 
     private static readonly SortedSet<NetState> _sortedMovement = new(new NextMoveComparer());
 
+    private static bool _shouldCheck;
     private static bool _speedHackEnabled;
     private static int _maxQueuedMovement;
 
@@ -45,10 +46,13 @@ public static class SpeedHackPrevention
 
     private static void EventSink_Logout(Mobile m)
     {
-        _sortedMovement.Remove(m.NetState);
-        m.NetState.Sequence = 0;
-        m.NetState._readMovementSeqIndex = 0;
-        m.NetState._writeMovementSeqIndex = 0;
+        var ns = m.NetState;
+
+        ns.Sequence = 0;
+        ns._readMovementSeqIndex = 0;
+        ns._writeMovementSeqIndex = 0;
+
+        _sortedMovement.Remove(ns);
     }
 
     public static bool ValidateSpeedHack(Mobile m, Direction d, byte seq)
@@ -60,49 +64,58 @@ public static class SpeedHackPrevention
         }
 
         var ns = m.NetState;
-        var maxMovements = ns._movementSequences.Length;
-        var movementCount = ns._writeMovementSeqIndex - ns._readMovementSeqIndex;
-        if (movementCount < 0)
-        {
-            movementCount += maxMovements;
-        }
 
         // If we are queued, then we cannot go out of order!
-        if (m.AccessLevel > AccessLevel.Player && movementCount == 0)
+        if (m.AccessLevel > AccessLevel.Player)
         {
             return true;
         }
 
-        if (ns._writeMovementSeqIndex == ns._readMovementSeqIndex)
+        var maxMovements = ns._movementSequences.Length;
+        var currentWrite = ns._writeMovementSeqIndex + 1;
+        if (currentWrite >= maxMovements)
+        {
+            currentWrite = 0;
+        }
+
+        var movements = currentWrite - ns._readMovementSeqIndex;
+        if (movements < 0)
+        {
+            movements += maxMovements;
+        }
+
+        var now = Core.TickCount;
+
+        // We haven't moved, or at least recently
+        if (movements == 0 || ns._nextMove - now <= 25)
+        {
+            ns._nextMove = now;
+            return true;
+        }
+
+        ns._writeMovementSeqIndex = (byte)currentWrite;
+
+        if (currentWrite == ns._readMovementSeqIndex)
         {
             ns.Disconnect($"Queued movements exceeded {maxMovements} packets.");
             return false;
         }
 
-        var now = Core.TickCount;
-
-        // Queue movement
-        if (ns._nextMove - now > 0)
-        {
-            m.Say($"Movement queued {movementCount + 1}/{maxMovements}");
-            ns._movementSequences[++ns._writeMovementSeqIndex] = (seq, d);
-            _sortedMovement.Add(ns);
-            return false;
-        }
-
-        return true;
+        m.Say($"Movement queued {movements}/{maxMovements}");
+        ns._movementSequences[currentWrite] = (seq, d);
+        _sortedMovement.Add(ns);
+        _shouldCheck = true;
+        return false;
     }
 
     internal static void Slice()
     {
-        var now = Core.TickCount;
-
-        if (_sortedMovement.Count == 0)
+        if (!_shouldCheck || _sortedMovement.Count == 0)
         {
             return;
         }
 
-        logger.Information("Slicing {Count} movements", _sortedMovement.Count);
+        var now = Core.TickCount;
 
         using var queue = PooledRefQueue<NetState>.Create(_sortedMovement.Count);
 
@@ -111,7 +124,7 @@ public static class SpeedHackPrevention
             var from = ns.Mobile;
 
             // Staff have unlimited speed! Otherwise, we are done processing.
-            if (from.AccessLevel == AccessLevel.Player && ns._nextMove - now > 0)
+            if (from.AccessLevel == AccessLevel.Player && ns._nextMove - now > 25)
             {
                 break;
             }
@@ -127,16 +140,36 @@ public static class SpeedHackPrevention
             queue.Enqueue(ns);
         }
 
+        if (queue.Count == 0)
+        {
+            return;
+        }
+
+        _shouldCheck = false;
+
         while (queue.Count > 0)
         {
             var ns = queue.Dequeue();
             _sortedMovement.Remove(ns);
 
+            // They were rejected!
+            if (ns.Sequence == 0)
+            {
+                continue;
+            }
+
+            ns._readMovementSeqIndex++;
+            if (ns._readMovementSeqIndex > ns._movementSequences.Length)
+            {
+                ns._readMovementSeqIndex = 0;
+            }
+
             // Check if we are finished, then increment
-            if (ns._writeMovementSeqIndex != ns._readMovementSeqIndex++)
+            if (ns._writeMovementSeqIndex != ns._readMovementSeqIndex)
             {
                 // Adding now executes after calling TryMove(), which has the new NextMove time
                 _sortedMovement.Add(ns);
+                _shouldCheck = true;
             }
         }
     }
@@ -149,6 +182,8 @@ public static class SpeedHackPrevention
         {
             state.SendMovementRej(seq, from);
             state.Sequence = 0;
+            state._readMovementSeqIndex = 0;
+            state._writeMovementSeqIndex = 0;
         }
         else
         {

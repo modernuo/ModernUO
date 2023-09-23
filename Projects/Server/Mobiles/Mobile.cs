@@ -4225,9 +4225,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             // Regardless of whether we move or not, we have to set the NextMove so we can pace the rejections
             var speed = ComputeMovementSpeed(d);
-            var now = Core.TickCount;
-            m_NetState._nextMove = now + speed;
-            if (m_NetState._nextMove < now)
+            var oldMove = m_NetState._nextMove;
+            m_NetState._nextMove += speed;
+            if (m_NetState._nextMove < oldMove)
             {
                 m_NetState._nextMove = -m_NetState._nextMove; // Flip the sign so we can use that as a rollover check
             }
