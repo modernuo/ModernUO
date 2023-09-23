@@ -4232,21 +4232,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return false;
         }
 
-        if (
-            CalcMoves.EnableFastwalkPrevention &&
-            AccessLevel < CalcMoves.FastwalkExemptionLevel &&
-            m_NetState?.AddStep(d) == false
-        )
-        {
-            var fw = new FastWalkEventArgs(m_NetState);
-            EventSink.InvokeFastWalk(fw);
-
-            if (fw.Blocked)
-            {
-                return false;
-            }
-        }
-
         LastMoveTime = Core.TickCount;
 
         return true;
