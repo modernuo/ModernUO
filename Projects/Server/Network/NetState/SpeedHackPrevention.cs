@@ -91,7 +91,7 @@ public static class SpeedHackPrevention
         if (ns._nextMove - now > 0)
         {
             m.Say($"Movement queued {movementCount + 1}/{maxMovements}");
-            ns._movementSequences[nextWriteIndex] = (seq, d);
+            ns._movementSequences[++ns._writeMovementSeqIndex] = (seq, d);
             _sortedMovement.Add(ns);
             return false;
         }
