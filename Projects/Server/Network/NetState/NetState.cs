@@ -708,11 +708,11 @@ public partial class NetState : IComparable<NetState>
                     }
                 }
 
-                if (_parserState is ParserState.AwaitingNextPacket or ParserState.Throttled)
+                if (_parserState is ParserState.AwaitingNextPacket)
                 {
                     reader.Advance((uint)packetLength);
                 }
-                else if (_parserState is ParserState.AwaitingPartialPacket)
+                else if (_parserState is ParserState.AwaitingPartialPacket or ParserState.Throttled)
                 {
                     break;
                 }
