@@ -16,14 +16,11 @@
 using System;
 using System.Collections.Generic;
 using Server.Collections;
-using Server.Logging;
 
 namespace Server.Network;
 
 public static class SpeedHackPrevention
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(SpeedHackPrevention));
-
     private static readonly SortedSet<NetState> _sortedMovement = new(new NextMoveComparer());
 
     private static bool _shouldCheck;
@@ -39,7 +36,7 @@ public static class SpeedHackPrevention
     public static void Configure()
     {
         _speedHackEnabled = ServerConfiguration.GetOrUpdateSetting("netstate.speedhackEnabled", true);
-        MaxQueuedMovement = ServerConfiguration.GetOrUpdateSetting("netstate.maxQueuedMovement", 100);
+        MaxQueuedMovement = ServerConfiguration.GetOrUpdateSetting("netstate.maxQueuedMovement", 25);
 
         EventSink.Logout += EventSink_Logout;
     }
@@ -136,10 +133,6 @@ public static class SpeedHackPrevention
 
             // Read from the sequence circular array and increment
             var (seq, d) = ns._movementSequences[ns._readMovementSeqIndex];
-            if (ns._readMovementSeqIndex > ns._movementSequences.Length)
-            {
-                ns._readMovementSeqIndex = 0;
-            }
 
             ns.TryMove(d, seq);
             queue.Enqueue(ns);
