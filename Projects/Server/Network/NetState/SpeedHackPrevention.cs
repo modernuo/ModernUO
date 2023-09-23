@@ -85,11 +85,16 @@ public static class SpeedHackPrevention
         }
 
         var now = Core.TickCount;
+        var diff = ns._nextMove - now;
 
         // We haven't moved, or at least recently
-        if (movements == 0 || ns._nextMove - now <= 25)
+        if (movements == 0 || diff < 400)
         {
-            ns._nextMove = now;
+            if (diff < 0)
+            {
+                ns._nextMove = now;
+            }
+
             return true;
         }
 
