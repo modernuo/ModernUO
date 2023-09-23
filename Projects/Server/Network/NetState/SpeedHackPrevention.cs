@@ -73,13 +73,7 @@ public static class SpeedHackPrevention
             return true;
         }
 
-        var nextWriteIndex = ns._writeMovementSeqIndex + 1;
-        if (nextWriteIndex > maxMovements)
-        {
-            nextWriteIndex = 0;
-        }
-
-        if (nextWriteIndex == ns._readMovementSeqIndex)
+        if (ns._writeMovementSeqIndex == ns._readMovementSeqIndex)
         {
             ns.Disconnect($"Queued movements exceeded {maxMovements} packets.");
             return false;
@@ -116,12 +110,6 @@ public static class SpeedHackPrevention
         {
             var from = ns.Mobile;
 
-            if (from?.Deleted != false)
-            {
-                queue.Enqueue(ns);
-                continue;
-            }
-
             // Staff have unlimited speed! Otherwise, we are done processing.
             if (from.AccessLevel == AccessLevel.Player && ns._nextMove - now > 0)
             {
@@ -129,13 +117,14 @@ public static class SpeedHackPrevention
             }
 
             // Read from the sequence circular array and increment
-            var (seq, d) = ns._movementSequences[ns._readMovementSeqIndex++];
+            var (seq, d) = ns._movementSequences[ns._readMovementSeqIndex];
             if (ns._readMovementSeqIndex > ns._movementSequences.Length)
             {
                 ns._readMovementSeqIndex = 0;
             }
 
             ns.TryMove(d, seq);
+            queue.Enqueue(ns);
         }
 
         while (queue.Count > 0)
@@ -143,13 +132,8 @@ public static class SpeedHackPrevention
             var ns = queue.Dequeue();
             _sortedMovement.Remove(ns);
 
-            var movementCount = ns._writeMovementSeqIndex - ns._readMovementSeqIndex;
-            if (movementCount < 0)
-            {
-                movementCount += ns._movementSequences.Length;
-            }
-
-            if (movementCount > 0)
+            // Check if we are finished, then increment
+            if (ns._writeMovementSeqIndex != ns._readMovementSeqIndex++)
             {
                 // Adding now executes after calling TryMove(), which has the new NextMove time
                 _sortedMovement.Add(ns);
