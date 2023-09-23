@@ -802,7 +802,7 @@ public partial class NetState : IComparable<NetState>
         {
             if (!throttler(packetId, this, out bool drop))
             {
-                return drop ? ParserState.Throttled : ParserState.AwaitingNextPacket;
+                return drop ? ParserState.AwaitingNextPacket : ParserState.Throttled;
             }
 
             SetPacketTime(packetId);
