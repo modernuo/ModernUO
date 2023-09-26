@@ -53,6 +53,8 @@ public partial class NetState : IComparable<NetState>
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _flushedPartials = new(256);
     private static readonly Queue<NetState> _disposed = new(256);
+    private static readonly Queue<NetState> _throttled = new(256);
+    private static readonly Queue<NetState> _throttledPending = new(256);
 
     public static NetStateCreatedCallback CreatedCallback { get; set; }
 
@@ -562,14 +564,17 @@ public partial class NetState : IComparable<NetState>
         }
     }
 
-    public void HandleReceive()
+    public void HandleReceive(bool throttled = false)
     {
         if (!_running)
         {
             return;
         }
 
-        ReceiveData();
+        if (!throttled)
+        {
+            ReceiveData();
+        }
 
         var reader = RecvPipe.Reader;
 
@@ -712,7 +717,20 @@ public partial class NetState : IComparable<NetState>
                 {
                     reader.Advance((uint)packetLength);
                 }
-                else if (_parserState is ParserState.AwaitingPartialPacket or ParserState.Throttled)
+                else if (_parserState is ParserState.Throttled)
+                {
+                    if (!throttled)
+                    {
+                        _throttled.Enqueue(this);
+                    }
+                    else
+                    {
+                        _throttledPending.Enqueue(this);
+                    }
+
+                    break;
+                }
+                else if (_parserState is ParserState.AwaitingPartialPacket)
                 {
                     break;
                 }
@@ -937,6 +955,21 @@ public partial class NetState : IComparable<NetState>
 
     public static void Slice()
     {
+        while (_throttled.Count > 0)
+        {
+            var ns = _throttled.Dequeue();
+            if (ns.Running)
+            {
+                ns.HandleReceive(true);
+            }
+        }
+
+        // This is enqueued by HandleReceive if already throttled and still throttled
+        while (_throttledPending.Count > 0)
+        {
+            _throttled.Enqueue(_throttledPending.Dequeue());
+        }
+
         int count = _pollGroup.Poll(_polledStates);
 
         if (count > 0)
