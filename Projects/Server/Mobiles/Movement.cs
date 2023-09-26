@@ -19,18 +19,19 @@ public static class Movement
 {
     // Movement implementation algorithm
     public static IMovementImpl Impl { get; set; }
-    public static int WalkFootDelay { get; set; } = 400;
-    public static int RunFootDelay { get; set; } = 200;
-    public static int WalkMountDelay { get; set; } = 200;
-    public static int RunMountDelay { get; set; } = 100;
+    public static int WalkFootDelay { get; set; }
+    public static int RunFootDelay { get; set; }
+    public static int WalkMountDelay { get; set; }
+    public static int RunMountDelay { get; set; }
     public static int TurnDelay { get; set; }
 
     public static void Configure()
     {
-        WalkFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkFoot", WalkFootDelay);
-        RunFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runFoot", RunFootDelay);
-        WalkMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkMount", WalkMountDelay);
-        RunMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runMount", RunMountDelay);
+        TurnDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.turn", 0);
+        WalkFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkFoot", 400);
+        RunFootDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runFoot", 200);
+        WalkMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.walkMount", 200);
+        RunMountDelay = ServerConfiguration.GetOrUpdateSetting("movement.delay.runMount", 100);
     }
 
     public static bool CheckMovement(Mobile m, Direction d, out int newZ)
