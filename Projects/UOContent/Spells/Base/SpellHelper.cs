@@ -1130,32 +1130,20 @@ namespace Server.Spells
 
             protected override void OnTick()
             {
-                var bcFrom = m_From as BaseCreature;
-                var bcTarg = m_Target as BaseCreature;
-
-                if (m_Target != null)
-                {
-                    bcFrom?.AlterSpellDamageTo(m_Target, ref m_Damage);
-                }
-
-                if (m_From != null)
-                {
-                    bcTarg?.AlterSpellDamageFrom(m_From, ref m_Damage);
-                }
-
-                StaminaSystem.DFA = m_DFA;
-
-                var damageGiven = AOS.Damage(m_Target, m_From, m_Damage, m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy, m_Chaos);
-
-                StaminaSystem.DFA = DFAlgorithm.Standard;
-
-                bcFrom?.OnDamageSpell(m_Target, damageGiven);
-
-                if (m_From != null)
-                {
-                    bcTarg?.OnHarmfulSpell(m_From);
-                    bcTarg?.OnDamagedBySpell(m_From, damageGiven);
-                }
+                Damage(
+                    m_Spell,
+                    TimeSpan.Zero,
+                    m_Target,
+                    m_From,
+                    m_Damage,
+                    m_Phys,
+                    m_Fire,
+                    m_Cold,
+                    m_Pois,
+                    m_Nrgy,
+                    m_Chaos,
+                    m_DFA
+                );
 
                 m_Spell?.RemoveDelayedDamageContext(m_Target);
             }
