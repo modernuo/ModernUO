@@ -76,6 +76,10 @@ public partial class NetState : IComparable<NetState>
 
     public GCHandle Handle => _handle;
 
+    // Speed Hack Prevention
+    internal long _movementCredit;
+    internal long _nextMovementTime;
+
     internal enum ParserState
     {
         AwaitingNextPacket,

@@ -4147,7 +4147,7 @@ namespace Server.Mobiles
         {
             if (checkTurning && (dir & Direction.Mask) != (Direction & Direction.Mask))
             {
-                return CalcMoves.RunMountDelay; // We are NOT actually moving (just a direction change)
+                return CalcMoves.TurnDelay; // We are NOT actually moving (just a direction change)
             }
 
             var context = TransformationSpellHelper.GetContext(this);

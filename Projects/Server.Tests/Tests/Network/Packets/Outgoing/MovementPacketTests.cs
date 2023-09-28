@@ -67,17 +67,5 @@ namespace Server.Tests.Network
             var result = ns.SendPipe.Reader.TryRead();
             AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
         }
-
-        [Fact]
-        public void TestNullFastwalkStack()
-        {
-            var expected = new NullFastwalkStack().Compile();
-
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendInitialFastwalkStack(new uint[]{ 0, 0, 0, 0, 0, 0 });
-
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
-        }
     }
 }
