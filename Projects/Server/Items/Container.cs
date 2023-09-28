@@ -1565,7 +1565,7 @@ public partial class Container : Item
     public int GetAmount(Type type, bool recurse = true)
     {
         var total = 0;
-        foreach (var item in FindItemsByType<Item>(recurse))
+        foreach (var item in FindItemsByType(recurse))
         {
             if (type.IsInstanceOfType(item))
             {
@@ -1579,7 +1579,7 @@ public partial class Container : Item
     public int GetAmount(Type[] types, bool recurse = true)
     {
         var total = 0;
-        foreach (var item in FindItemsByType<Item>(recurse))
+        foreach (var item in FindItemsByType(recurse))
         {
             if (InTypeList(item, types))
             {
@@ -1593,11 +1593,11 @@ public partial class Container : Item
     public List<Item> FindItemsByType(Type type, bool recurse = true)
     {
         var items = new List<Item>();
-        foreach (var i in FindItemsByType<Item>(recurse))
+        foreach (var item in FindItemsByType(recurse))
         {
-            if (type.IsInstanceOfType(i))
+            if (type.IsInstanceOfType(item))
             {
-                items.Add(i);
+                items.Add(item);
             }
         }
 
@@ -1606,23 +1606,12 @@ public partial class Container : Item
 
     public List<Item> FindItemsByType(Type[] types, bool recurse = true)
     {
-        using var queue = PooledRefQueue<Container>.Create(128);
-        queue.Enqueue(this);
         var items = new List<Item>();
-        while (queue.Count > 0)
+        foreach (var item in FindItemsByType(recurse))
         {
-            var container = queue.Dequeue();
-            foreach (var item in container.Items)
+            if (InTypeList(item, types))
             {
-                if (InTypeList(item, types))
-                {
-                    items.Add(item);
-                }
-
-                if (recurse && item is Container itemContainer)
-                {
-                    queue.Enqueue(itemContainer);
-                }
+                items.Add(item);
             }
         }
 
@@ -1631,22 +1620,11 @@ public partial class Container : Item
 
     public Item FindItemByType(Type type, bool recurse = true)
     {
-        using var queue = PooledRefQueue<Container>.Create(128);
-        queue.Enqueue(this);
-        while (queue.Count > 0)
+        foreach (var item in FindItemsByType(recurse))
         {
-            var container = queue.Dequeue();
-            foreach (var item in container.Items)
+            if (type.IsInstanceOfType(item))
             {
-                if (type.IsInstanceOfType(item))
-                {
-                    return item;
-                }
-
-                if (recurse && item is Container itemContainer)
-                {
-                    queue.Enqueue(itemContainer);
-                }
+                return item;
             }
         }
 
@@ -1655,22 +1633,11 @@ public partial class Container : Item
 
     public Item FindItemByType(Type[] types, bool recurse = true)
     {
-        using var queue = PooledRefQueue<Container>.Create(128);
-        queue.Enqueue(this);
-        while (queue.Count > 0)
+        foreach (var item in FindItemsByType(recurse))
         {
-            var container = queue.Dequeue();
-            foreach (var item in container.Items)
+            if (InTypeList(item, types))
             {
-                if (InTypeList(item, types))
-                {
-                    return item;
-                }
-
-                if (recurse && item is Container itemContainer)
-                {
-                    queue.Enqueue(itemContainer);
-                }
+                return item;
             }
         }
 
@@ -1697,23 +1664,9 @@ public partial class Container : Item
     /// </returns>
     public T FindItemByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-        using var queue = PooledRefQueue<Container>.Create(128);
-        queue.Enqueue(this);
-        while (queue.Count > 0)
+        foreach (var item in FindItemsByType(recurse, predicate))
         {
-            var container = queue.Dequeue();
-            foreach (var item in container.Items)
-            {
-                if (item is T typedItem && predicate?.Invoke(typedItem) != false)
-                {
-                    return typedItem;
-                }
-
-                if (recurse && item is Container itemContainer)
-                {
-                    queue.Enqueue(itemContainer);
-                }
-            }
+            return item;
         }
 
         return null;
