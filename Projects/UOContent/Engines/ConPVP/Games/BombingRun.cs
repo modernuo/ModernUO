@@ -1737,23 +1737,20 @@ namespace Server.Engines.ConPVP
 
             var hadBomb = false;
 
-            corpse.FindItemsByType<BRBomb>(false)
-                .ForEach(
-                    bomb =>
-                    {
-                        hadBomb = true;
-                        bomb.DropTo(mob, killer);
-                    }
-                );
+            foreach (var bomb in corpse.EnumerateItemsByType<BRBomb>(false))
+            {
+                hadBomb = true;
+                bomb.DropTo(mob, killer);
+            }
 
-            mob.Backpack?.FindItemsByType<BRBomb>(false)
-                .ForEach(
-                    bomb =>
-                    {
-                        hadBomb = true;
-                        bomb.DropTo(mob, killer);
-                    }
-                );
+            if (mob.Backpack != null)
+            {
+                foreach (var bomb in mob.Backpack.EnumerateItemsByType<BRBomb>(false))
+                {
+                    hadBomb = true;
+                    bomb.DropTo(mob, killer);
+                }
+            }
 
             if (killer?.Player == true)
             {

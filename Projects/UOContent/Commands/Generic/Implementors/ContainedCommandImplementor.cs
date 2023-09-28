@@ -67,7 +67,7 @@ namespace Server.Commands.Generic
 
                 var list = new List<object>();
 
-                foreach (var item in cont.FindItemsByType<Item>())
+                foreach (var item in cont.FindItemsByType())
                 {
                     if (ext.IsValid(item))
                     {
