@@ -530,23 +530,20 @@ namespace Server.Engines.Craft
 
         public int GetQuantity(Container cont, Type[] types)
         {
-            var items = cont.FindItemsByType(types);
-
             var amount = 0;
-
-            for (var i = 0; i < items.Count; ++i)
+            foreach (var item in cont.FindItems())
             {
-                if (items[i] is not IHasQuantity hq)
+                if (!item.InTypeList(types))
                 {
-                    amount += items[i].Amount;
+                    continue;
                 }
-                else
-                {
-                    if ((hq as BaseBeverage)?.Content != RequiredBeverage)
-                    {
-                        continue;
-                    }
 
+                if (item is not IHasQuantity hq)
+                {
+                    amount += item.Amount;
+                }
+                else if ((hq as BaseBeverage)?.Content == RequiredBeverage)
+                {
                     amount += hq.Quantity;
                 }
             }

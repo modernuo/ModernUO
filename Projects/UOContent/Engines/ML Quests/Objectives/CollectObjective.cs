@@ -110,7 +110,7 @@ namespace Server.Engines.MLQuests.Objectives
             }
 
             var total = 0;
-            foreach (var item in pack.FindItemsByType(false))
+            foreach (var item in pack.FindItems(false))
             {
                 if (ClaimTypePredicate(item) && item.QuestItem && Objective.CheckItem(item))
                 {
@@ -135,7 +135,7 @@ namespace Server.Engines.MLQuests.Objectives
                 return;
             }
 
-            foreach (var item in pack.FindItemsByType(false))
+            foreach (var item in pack.FindItems(false))
             {
                 // does another quest still need this item? (OSI just unmarks everything)
                 if (ClaimTypePredicate(item) &&

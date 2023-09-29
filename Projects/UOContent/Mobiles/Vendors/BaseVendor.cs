@@ -1049,8 +1049,13 @@ namespace Server.Mobiles
 
             foreach (var ssi in info)
             {
-                foreach (var item in pack.FindItemsByType(ssi.Types))
+                foreach (var item in pack.FindItems())
                 {
+                    if (!item.InTypeList(ssi.Types))
+                    {
+                        continue;
+                    }
+
                     if (item is Container container && container.Items.Count != 0)
                     {
                         continue;

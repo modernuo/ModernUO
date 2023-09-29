@@ -225,32 +225,19 @@ namespace Server.Items
                 return true;
             }
 
-            return IsInTypeList(t, TreasuresOfTokuno.TokunoDyable)
-                   || IsInTypeList(t, TreasuresOfTokuno.LesserArtifactsTotal)
-                   || IsInTypeList(t, TreasuresOfTokuno.GreaterArtifacts)
-                   || IsInTypeList(t, DemonKnight.ArtifactRarity10)
-                   || IsInTypeList(t, DemonKnight.ArtifactRarity11)
-                   || IsInTypeList(t, MondainsLegacy.Artifacts)
-                   || IsInTypeList(t, StealableArtifacts.TypesOfEntries)
-                   || IsInTypeList(t, Paragon.Artifacts)
-                   || IsInTypeList(t, Leviathan.Artifacts)
-                   || IsInTypeList(t, TreasureMapChest.Artifacts)
-                   || IsInTypeList(t, m_Replicas)
-                   || IsInTypeList(t, m_DyableHeritageItems)
-                   || IsInTypeList(t, m_Glasses);
-        }
-
-        private static bool IsInTypeList(Type t, Type[] list)
-        {
-            for (var i = 0; i < list.Length; i++)
-            {
-                if (list[i].IsAssignableFrom(t))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return t.InTypeList(TreasuresOfTokuno.TokunoDyable)
+                   || t.InTypeList(TreasuresOfTokuno.LesserArtifactsTotal)
+                   || t.InTypeList(TreasuresOfTokuno.GreaterArtifacts)
+                   || t.InTypeList(DemonKnight.ArtifactRarity10)
+                   || t.InTypeList(DemonKnight.ArtifactRarity11)
+                   || t.InTypeList(MondainsLegacy.Artifacts)
+                   || t.InTypeList(StealableArtifacts.TypesOfEntries)
+                   || t.InTypeList(Paragon.Artifacts)
+                   || t.InTypeList(Leviathan.Artifacts)
+                   || t.InTypeList(TreasureMapChest.Artifacts)
+                   || t.InTypeList(m_Replicas)
+                   || t.InTypeList(m_DyableHeritageItems)
+                   || t.InTypeList(m_Glasses);
         }
 
         public override void Serialize(IGenericWriter writer)

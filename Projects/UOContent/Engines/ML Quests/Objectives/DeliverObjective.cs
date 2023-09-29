@@ -150,7 +150,7 @@ namespace Server.Engines.MLQuests.Objectives
             }
 
             var total = 0;
-            foreach (var item in pack.FindItemsByType(false))
+            foreach (var item in pack.FindItems(false))
             {
                 if (ClaimTypePredicate(item))
                 {
