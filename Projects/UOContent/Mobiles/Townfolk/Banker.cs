@@ -51,6 +51,11 @@ namespace Server.Mobiles
                     balance += gold.Amount;
                 }
 
+                if (balance >= int.MaxValue)
+                {
+                    return int.MaxValue;
+                }
+
                 foreach (var check in bank.FindItemsByType<BankCheck>())
                 {
                     balance += check.Worth;
@@ -69,7 +74,7 @@ namespace Server.Mobiles
             {
                 balance = m.Account.GetTotalGold();
 
-                if (balance > int.MaxValue)
+                if (balance >= int.MaxValue)
                 {
                     return int.MaxValue;
                 }
@@ -85,7 +90,7 @@ namespace Server.Mobiles
                     gold.Add(g);
                 }
 
-                if (balance > int.MaxValue)
+                if (balance >= int.MaxValue)
                 {
                     return int.MaxValue;
                 }
