@@ -921,7 +921,20 @@ namespace Server.Items
 
         public static FishBowl GetEmptyBowl(Mobile from)
         {
-            return from?.Backpack?.FindItemsByType<FishBowl>().Find(bowl => bowl.Empty);
+            if (from.Backpack == null)
+            {
+                return null;
+            }
+
+            foreach (var bowl in from.Backpack.FindItemsByType<FishBowl>())
+            {
+                if (bowl.Empty)
+                {
+                    return bowl;
+                }
+            }
+
+            return null;
         }
 
         public static bool Accepts(Item item)

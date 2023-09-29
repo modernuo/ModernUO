@@ -4,7 +4,6 @@ using Server.Factions;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Multis;
 
 namespace Server.Spells.Seventh
 {

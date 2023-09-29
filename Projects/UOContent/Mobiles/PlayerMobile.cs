@@ -2393,9 +2393,14 @@ namespace Server.Mobiles
 
             DropHolding();
 
+            // During AOS+, insured/blessed items are moved out of their child containers and put directly into the backpack.
+            // This fixes a "bug" where players put blessed items in nested bags and they were dropped on death
             if (Core.AOS && Backpack?.Deleted == false)
             {
-                Backpack.FindItemsByType<Item>(FindItems_Callback).ForEach(item => Backpack.AddItem(item));
+                foreach (var item in Backpack.EnumerateItemsByType<Item>(predicate: FindItems_Callback))
+                {
+                    Backpack.AddItem(item);
+                }
             }
 
             EquipSnapshot = new List<Item>(Items);
@@ -3910,13 +3915,13 @@ namespace Server.Mobiles
                 return;
             }
 
-            var items = new List<Item>();
+            using var queue = PooledRefQueue<Item>.Create(128);
 
             foreach (var item in Items)
             {
                 if (DisplayInItemInsuranceGump(item))
                 {
-                    items.Add(item);
+                    queue.Enqueue(item);
                 }
             }
 
@@ -3924,20 +3929,26 @@ namespace Server.Mobiles
 
             if (pack != null)
             {
-                items.AddRange(pack.FindItemsByType<Item>(DisplayInItemInsuranceGump));
+                foreach (var item in pack.FindItemsByType())
+                {
+                    if (DisplayInItemInsuranceGump(item))
+                    {
+                        queue.Enqueue(item);
+                    }
+                }
             }
 
             // TODO: Investigate item sorting
 
             CloseGump<ItemInsuranceMenuGump>();
 
-            if (items.Count == 0)
+            if (queue.Count == 0)
             {
                 SendLocalizedMessage(1114915, "", 0x35); // None of your current items meet the requirements for insurance.
             }
             else
             {
-                SendGump(new ItemInsuranceMenuGump(this, items.ToArray()));
+                SendGump(new ItemInsuranceMenuGump(this, queue.ToArray()));
             }
         }
 

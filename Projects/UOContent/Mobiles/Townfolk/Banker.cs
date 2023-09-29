@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Items;
@@ -47,32 +46,36 @@ namespace Server.Mobiles
 
             if (bank != null)
             {
-                var gold = bank.FindItemsByType<Gold>();
-                var checks = bank.FindItemsByType<BankCheck>();
+                foreach (var gold in bank.FindItemsByType<Gold>())
+                {
+                    balance += gold.Amount;
+                }
 
-                balance += gold.Aggregate(0L, (c, t) => c + t.Amount);
                 if (balance >= int.MaxValue)
                 {
                     return int.MaxValue;
                 }
 
-                balance += checks.Aggregate(0L, (c, t) => c + t.Worth);
+                foreach (var check in bank.FindItemsByType<BankCheck>())
+                {
+                    balance += check.Worth;
+                }
             }
 
-            return Math.Max(0, (int)Math.Min(int.MaxValue, balance));
+            return (int)Math.Clamp(balance, 0, int.MaxValue);
         }
 
         public static int GetBalance(Mobile m, out List<Item> gold, out List<Item> checks)
         {
             long balance = 0;
+            gold = checks = new List<Item>();
 
             if (AccountGold.Enabled && m.Account != null)
             {
                 balance = m.Account.GetTotalGold();
 
-                if (balance > int.MaxValue)
+                if (balance >= int.MaxValue)
                 {
-                    gold = checks = new List<Item>();
                     return int.MaxValue;
                 }
             }
@@ -81,23 +84,25 @@ namespace Server.Mobiles
 
             if (bank != null)
             {
-                gold = bank.FindItemsByType(typeof(Gold));
-                checks = bank.FindItemsByType(typeof(BankCheck));
+                foreach (var g in bank.FindItemsByType<Gold>())
+                {
+                    balance += g.Amount;
+                    gold.Add(g);
+                }
 
-                balance += gold.OfType<Gold>().Aggregate(0L, (c, t) => c + t.Amount);
                 if (balance >= int.MaxValue)
                 {
                     return int.MaxValue;
                 }
 
-                balance += checks.OfType<BankCheck>().Aggregate(0L, (c, t) => c + t.Worth);
-            }
-            else
-            {
-                gold = checks = new List<Item>();
+                foreach (var bc in bank.FindItemsByType<BankCheck>())
+                {
+                    balance += bc.Worth;
+                    checks.Add(bc);
+                }
             }
 
-            return Math.Max(0, (int)Math.Min(int.MaxValue, balance));
+            return (int)Math.Clamp(balance, 0, int.MaxValue);
         }
 
         public static bool Withdraw(Mobile from, int amount)

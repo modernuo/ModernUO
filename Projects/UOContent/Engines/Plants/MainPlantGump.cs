@@ -327,11 +327,16 @@ namespace Server.Engines.Plants
                     }
                 case 6: // Water
                     {
-                        var bev = from.Backpack.FindItemsByType<BaseBeverage>()
-                            .Find(
-                                beverage =>
-                                    beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water
-                            );
+                        BaseBeverage bev = null;
+
+                        foreach (var beverage in from.Backpack.FindItemsByType<BaseBeverage>())
+                        {
+                            if (beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water)
+                            {
+                                bev = beverage;
+                                break;
+                            }
+                        }
 
                         if (bev == null)
                         {

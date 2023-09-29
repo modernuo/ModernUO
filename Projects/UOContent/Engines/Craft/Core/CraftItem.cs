@@ -685,7 +685,14 @@ namespace Server.Engines.Craft
             if (NameNumber == 1041267)
             {
                 // Runebooks are a special case, they need a blank recall rune
-                consumeExtra = ourPack.FindItemsByType<RecallRune>().Find(rune => !rune.Marked);
+                foreach (var rune in ourPack.FindItemsByType<RecallRune>())
+                {
+                    if (!rune.Marked)
+                    {
+                        consumeExtra = rune;
+                        break;
+                    }
+                }
 
                 if (consumeExtra == null)
                 {
