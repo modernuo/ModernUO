@@ -4187,19 +4187,15 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    public virtual void Consume()
+    public virtual void Consume(int amount = 1)
     {
-        Consume(1);
-    }
-
-    public virtual void Consume(int amount)
-    {
-        Amount -= amount;
-
-        if (Amount <= 0)
+        if (Amount <= amount)
         {
             Delete();
+            return;
         }
+
+        Amount -= amount;
     }
 
     public virtual void ReplaceWith(Item newItem)

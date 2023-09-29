@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
@@ -453,23 +454,32 @@ namespace Server.Engines.Craft
                 throw new ArgumentOutOfRangeException(nameof(types));
             }
 
-            // TODO: Optimize allocation
             var items = new List<Item>[types.Length];
             var totals = new int[types.Length];
 
+            // First pass, make sure we have enough
             for (var i = 0; i < types.Length; ++i)
             {
-                items[i] = cont.FindItemsByType(types[i]);
+                var itemList = items[i] = new List<Item>();
+                var typeList = types[i];
 
-                for (var j = 0; j < items[i].Count; ++j)
+                // Since we are making our own list, we don't need to use EnumerateItems
+                foreach (var item in cont.FindItems())
                 {
-                    if (items[i][j] is not IHasQuantity hq)
+                    if (!item.InTypeList(typeList))
                     {
-                        totals[i] += items[i][j].Amount;
+                        continue;
+                    }
+
+                    if (item is not IHasQuantity hq)
+                    {
+                        totals[i] += item.Amount;
+                        itemList.Add(item);
                     }
                     else if (hq is not BaseBeverage beverage || beverage.Content == RequiredBeverage)
                     {
                         totals[i] += hq.Quantity;
+                        itemList.Add(item);
                     }
                 }
 
@@ -479,6 +489,7 @@ namespace Server.Engines.Craft
                 }
             }
 
+            // Second pass, consume
             for (var i = 0; i < types.Length; ++i)
             {
                 var need = amounts[i];
@@ -493,7 +504,7 @@ namespace Server.Engines.Craft
 
                         if (theirAmount < need)
                         {
-                            item.Delete();
+                            item.Consume(theirAmount);
                             need -= theirAmount;
                         }
                         else
@@ -504,11 +515,6 @@ namespace Server.Engines.Craft
                     }
                     else
                     {
-                        if (hq is BaseBeverage beverage && beverage.Content != RequiredBeverage)
-                        {
-                            continue;
-                        }
-
                         var theirAmount = hq.Quantity;
 
                         if (theirAmount < need)

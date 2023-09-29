@@ -1206,11 +1206,14 @@ public partial class Container : Item
 
         for (var i = 0; i < types.Length; ++i)
         {
-            items[i] = FindItemsByType(types[i], recurse);
-
-            for (var j = 0; j < items[i].Count; ++j)
+            var itemList = items[i] = new List<Item>();
+            foreach (var item in FindItems())
             {
-                totals[i] += items[i][j].Amount;
+                if (types[i].IsInstanceOfType(item))
+                {
+                    totals[i] += item.Amount;
+                    itemList.Add(item);
+                }
             }
 
             if (totals[i] < amounts[i])
