@@ -36,7 +36,7 @@ public partial class Container
     /// <example>
     /// <code>
     ///     var total = 0;
-    ///     foreach (var gold in cont.FindItemsByType<Gold>())
+    ///     foreach (var gold in cont.FindItemsByType&lt;Gold&gt;())
     ///     {
     ///         total += gold.Amount;
     ///     }
@@ -74,7 +74,7 @@ public partial class Container
     /// </remarks>
     /// <example>
     /// <code>
-    ///     foreach (var item in cont.EnumerateItemsByType<Item>())
+    ///     foreach (var item in cont.EnumerateItemsByType&lt;Item&gt;())
     ///     {
     ///         if (item.LootType is not LootType.Blessed)
     ///         {
