@@ -273,21 +273,6 @@ public partial class Container : Item
         return true;
     }
 
-    private static bool InTypeList(Item item, Type[] types)
-    {
-        var t = item.GetType();
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            if (types[i].IsAssignableFrom(t))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
     {
         if (setIf)
@@ -816,7 +801,7 @@ public partial class Container : Item
         }
 
         using var typedItems = PooledRefList<Item>.Create();
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
             if (type.IsInstanceOfType(item))
             {
@@ -936,7 +921,7 @@ public partial class Container : Item
         {
             var type = types[i];
             using var typedItems = PooledRefList<Item>.Create();
-            foreach (var item in FindItemsByType(recurse))
+            foreach (var item in FindItems(recurse))
             {
                 if (type.IsInstanceOfType(item))
                 {
@@ -1270,7 +1255,7 @@ public partial class Container : Item
         using var items = PooledRefQueue<Item>.Create();
 
         // First pass, compute total
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
             if (type.IsInstanceOfType(item))
             {
@@ -1380,7 +1365,7 @@ public partial class Container : Item
         var best = 0;
 
         using var typedItems = PooledRefList<Item>.Create();
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
             if (type.IsInstanceOfType(item))
             {
@@ -1565,7 +1550,7 @@ public partial class Container : Item
     public int GetAmount(Type type, bool recurse = true)
     {
         var total = 0;
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
             if (type.IsInstanceOfType(item))
             {
@@ -1579,9 +1564,9 @@ public partial class Container : Item
     public int GetAmount(Type[] types, bool recurse = true)
     {
         var total = 0;
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
-            if (InTypeList(item, types))
+            if (item.InTypeList(types))
             {
                 total += item.Amount;
             }
@@ -1593,7 +1578,7 @@ public partial class Container : Item
     public List<Item> FindItemsByType(Type type, bool recurse = true)
     {
         var items = new List<Item>();
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
             if (type.IsInstanceOfType(item))
             {
@@ -1607,9 +1592,9 @@ public partial class Container : Item
     public List<Item> FindItemsByType(Type[] types, bool recurse = true)
     {
         var items = new List<Item>();
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
-            if (InTypeList(item, types))
+            if (item.InTypeList(types))
             {
                 items.Add(item);
             }
@@ -1620,7 +1605,7 @@ public partial class Container : Item
 
     public Item FindItemByType(Type type, bool recurse = true)
     {
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
             if (type.IsInstanceOfType(item))
             {
@@ -1633,9 +1618,9 @@ public partial class Container : Item
 
     public Item FindItemByType(Type[] types, bool recurse = true)
     {
-        foreach (var item in FindItemsByType(recurse))
+        foreach (var item in FindItems(recurse))
         {
-            if (InTypeList(item, types))
+            if (item.InTypeList(types))
             {
                 return item;
             }

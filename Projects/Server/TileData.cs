@@ -342,7 +342,7 @@ public static class TileData
             bin.Read(buffer);
             var terminator = buffer.IndexOfTerminator(1);
             var name = Encoding.ASCII.GetString(buffer[..(terminator < 0 ? buffer.Length : terminator)]);
-            LandTable[i] = new LandData(Utility.Intern(name), flags);
+            LandTable[i] = new LandData(name.Intern(), flags);
         }
 
         for (var i = 0; i < itemLength; i++)
@@ -367,7 +367,7 @@ public static class TileData
             var terminator = buffer.IndexOfTerminator(1);
             var name = Encoding.ASCII.GetString(buffer[..(terminator < 0 ? buffer.Length : terminator)]);
             ItemTable[i] = new ItemData(
-                Utility.Intern(name),
+                name.Intern(),
                 flags,
                 weight,
                 quality,

@@ -3929,7 +3929,7 @@ namespace Server.Mobiles
 
             if (pack != null)
             {
-                foreach (var item in pack.FindItemsByType())
+                foreach (var item in pack.FindItems())
                 {
                     if (DisplayInItemInsuranceGump(item))
                     {

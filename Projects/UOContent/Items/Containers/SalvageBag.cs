@@ -202,7 +202,7 @@ public partial class SalvageBag : Bag
         var salvaged = 0;
         var notSalvaged = 0;
 
-        foreach (var item in FindItemsByType())
+        foreach (var item in EnumerateItems())
         {
             if (item?.Deleted != false)
             {
@@ -271,11 +271,12 @@ public partial class SalvageBag : Bag
         // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
         from.SendLocalizedMessage(1079974, $"{salvaged}\t{salvaged + notSalvaged}");
 
-        var items = FindItemsByType(_clothTypes);
-
-        for (var i = 0; i < items.Count; i++)
+        foreach (var item in EnumerateItems())
         {
-            from.AddToBackpack(items[i]);
+            if (item.InTypeList(_clothTypes))
+            {
+                from.AddToBackpack(item);
+            }
         }
     }
 

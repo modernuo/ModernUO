@@ -295,7 +295,7 @@ namespace Server.Mobiles
 
                         var buttons = ToTTurnInGump.FindRedeemableItems(pm);
 
-                        if (buttons.Count > 0 && !pm.HasGump<ToTTurnInGump>())
+                        if (buttons?.Count > 0 && !pm.HasGump<ToTTurnInGump>())
                         {
                             pm.SendGump(new ToTTurnInGump(this, buttons));
                         }
@@ -344,16 +344,17 @@ namespace Server.Gumps
             var pack = m.Backpack;
             if (pack == null)
             {
-                return new List<ImageTileButtonInfo>();
+                return null;
             }
 
             var buttons = new List<ImageTileButtonInfo>();
-
-            var items = pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal);
-
-            for (var i = 0; i < items.Count; i++)
+            foreach (var item in pack.FindItems())
             {
-                var item = items[i];
+                if (!item.InTypeList(TreasuresOfTokuno.LesserArtifactsTotal))
+                {
+                    continue;
+                }
+
                 if (item is ChestOfHeirlooms heirlooms && (!heirlooms.Locked || heirlooms.TrapLevel != 10))
                 {
                     continue;
@@ -407,7 +408,7 @@ namespace Server.Gumps
 
                 pm.CloseGump<ToTTurnInGump>(); // Sanity
 
-                if (buttons.Count > 0)
+                if (buttons?.Count > 0)
                 {
                     pm.SendGump(new ToTTurnInGump(m_Collector, buttons));
                 }

@@ -23,8 +23,8 @@ namespace Server.Items;
 public partial class Container
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FindItemsByTypeEnumerator<Item> FindItemsByType(bool recurse = true, Predicate<Item> predicate = null)
-        => FindItemsByType<Item>(recurse, predicate);
+    public FindItemsByTypeEnumerator<Item> FindItems(bool recurse = true, Predicate<Item> predicate = null)
+        => FindItemsByType(recurse, predicate);
 
     /// <summary>
     ///     Performs a breadth-first search through all the <see cref="Item" />s and
@@ -61,8 +61,8 @@ public partial class Container
         where T : Item => new(this, recurse, predicate);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public QueuedItemsEnumerator<Item> EnumerateItemsByType(bool recurse = true, Predicate<Item> predicate = null)
-        => EnumerateItemsByType<Item>(recurse, predicate);
+    public QueuedItemsEnumerator<Item> EnumerateItems(bool recurse = true, Predicate<Item> predicate = null)
+        => EnumerateItemsByType(recurse, predicate);
 
     /// <summary>
     ///     Safely enumerates items using a breadth-first search through all the <see cref="Item" />s and
@@ -102,8 +102,8 @@ public partial class Container
         where T : Item => new(QueueItemsByType(recurse, predicate));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefQueue<Item> QueueItemsByType(bool recurse = true, Predicate<Item> predicate = null) =>
-        QueueItemsByType<Item>(recurse, predicate);
+    public PooledRefQueue<Item> QueueItems(bool recurse = true, Predicate<Item> predicate = null) =>
+        QueueItemsByType(recurse, predicate);
 
     public PooledRefQueue<T> QueueItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
@@ -117,8 +117,8 @@ public partial class Container
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefList<Item> ListItemsByType(bool recurse = true, Predicate<Item> predicate = null) =>
-        ListItemsByType<Item>(recurse, predicate);
+    public PooledRefList<Item> ListItems(bool recurse = true, Predicate<Item> predicate = null) =>
+        ListItemsByType(recurse, predicate);
 
     public PooledRefList<T> ListItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
