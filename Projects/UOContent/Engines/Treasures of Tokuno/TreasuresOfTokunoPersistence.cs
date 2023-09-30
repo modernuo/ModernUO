@@ -4,7 +4,7 @@ namespace Server.Misc;
 
 [ManualDirtyChecking]
 [TypeAlias("Server.Misc.TreasuresOfTokunoPersistance")]
-[Obsolete("Deprecated in favor a configuration file. Only used for legacy deserialization")]
+[Obsolete("Deprecated in favor of a configuration file. Only used for legacy deserialization")]
 public class TreasuresOfTokunoPersistence : Item
 {
     public TreasuresOfTokunoPersistence() : base(1) => Movable = false;
