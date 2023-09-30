@@ -67,7 +67,7 @@ public partial class WarriorGuard : BaseGuard
         var weapon = new Halberd
         {
             Movable = false,
-            Crafter = this,
+            Crafter = Name,
             Quality = WeaponQuality.Exceptional
         };
 
