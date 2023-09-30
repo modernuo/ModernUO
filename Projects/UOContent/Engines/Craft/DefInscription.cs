@@ -196,7 +196,7 @@ public class DefInscription : CraftSystem
 
         AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
 
-        SetManaReq(index, _mana);
+        SetManaReq(index, _mana, 1042403);
     }
 
     private void AddNecroSpell(int spell, int mana, double minSkill, Type type, params Type[] regs)
@@ -219,7 +219,7 @@ public class DefInscription : CraftSystem
         }
 
         AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
-        SetManaReq(index, mana);
+        SetManaReq(index, mana, 1042403);
     }
 
     private void AddMysticismSpell(int spell, int mana, double minSkill, double maxSkill, Type type, params Type[] regs)
@@ -242,7 +242,7 @@ public class DefInscription : CraftSystem
         }
 
         AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
-        SetManaReq(index, mana);
+        SetManaReq(index, mana, 1042403);
     }
 
     public override void InitCraftList()

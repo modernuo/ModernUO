@@ -150,9 +150,15 @@ namespace Server.Engines.Craft
 
         public int Mana { get; set; }
 
+        public TextDefinition NeedManaLabel { get; set; }
+
         public int Hits { get; set; }
 
+        public TextDefinition NeedHitsLabel { get; set; }
+
         public int Stam { get; set; }
+
+        public TextDefinition NeedStamLabel { get; set; }
 
         public bool UseSubRes2 { get; set; }
 
@@ -281,19 +287,19 @@ namespace Server.Engines.Craft
         {
             if (Hits > 0 && from.Hits < Hits)
             {
-                message = "You lack the required hit points to make that.";
+                message = NeedHitsLabel;
                 return false;
             }
 
             if (Mana > 0 && from.Mana < Mana)
             {
-                message = "You lack the required mana to make that.";
+                message = NeedManaLabel;
                 return false;
             }
 
             if (Stam > 0 && from.Stam < Stam)
             {
-                message = "You lack the required stamina to make that.";
+                message = NeedStamLabel;
                 return false;
             }
 
