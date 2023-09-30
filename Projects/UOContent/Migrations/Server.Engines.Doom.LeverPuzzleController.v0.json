@@ -1,0 +1,38 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Doom.LeverPuzzleController",
+  "properties": [
+    {
+      "name": "Levers",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Statues",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Teles",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Box",
+      "type": "Server.Engines.Doom.LampRoomBox",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
