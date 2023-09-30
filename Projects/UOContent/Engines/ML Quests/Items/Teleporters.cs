@@ -1,218 +1,164 @@
 using System;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.MLQuests.Items
+namespace Server.Engines.MLQuests.Items;
+
+[SerializationGenerator(1, false)]
+public partial class MLQuestTeleporter : Teleporter
 {
-    public class MLQuestTeleporter : Teleporter
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Type _questType;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TextDefinition _message;
+
+    [Constructible]
+    public MLQuestTeleporter() : this(Point3D.Zero)
     {
-        private Type m_QuestType;
+    }
 
-        [Constructible]
-        public MLQuestTeleporter()
-            : this(Point3D.Zero)
+    [Constructible]
+    public MLQuestTeleporter(
+        Point3D pointDest, Map mapDest = null, Type questType = null, TextDefinition message = null
+    ) : base(pointDest, mapDest)
+    {
+        _questType = questType;
+        Message = message;
+    }
+
+    public override bool CanTeleport(Mobile m)
+    {
+        if (!base.CanTeleport(m))
         {
+            return false;
         }
 
-        [Constructible]
-        public MLQuestTeleporter(
-            Point3D pointDest, Map mapDest = null, Type questType = null, TextDefinition message = null
-        )
-            : base(pointDest, mapDest)
+        if (_questType == null)
         {
-            m_QuestType = questType;
-            Message = message;
+            return true;
         }
 
-        public MLQuestTeleporter(Serial serial)
-            : base(serial)
+        if (m is not PlayerMobile pm)
         {
+            return false;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Type QuestType
+        var context = MLQuestSystem.GetContext(pm);
+
+        if (context?.IsDoingQuest(_questType) == true || context?.HasDoneQuest(_questType) == true)
         {
-            get => m_QuestType;
-            set
-            {
-                m_QuestType = value;
-                InvalidateProperties();
-            }
+            return true;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TextDefinition Message { get; set; }
+        Message.SendMessageTo(m);
+        return false;
+    }
 
-        public override bool CanTeleport(Mobile m)
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (_questType != null)
         {
-            if (!base.CanTeleport(m))
-            {
-                return false;
-            }
+            list.Add($"Required quest: {_questType.Name}");
+        }
+    }
 
-            if (m_QuestType == null)
-            {
-                return true;
-            }
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        var typeName = reader.ReadString();
 
-            if (m is not PlayerMobile pm)
-            {
-                return false;
-            }
+        if (typeName != null)
+        {
+            _questType = AssemblyHandler.FindTypeByFullName(typeName);
+        }
 
-            var context = MLQuestSystem.GetContext(pm);
+        _message = reader.ReadTextDefinition();
+    }
+}
 
-            if (context?.IsDoingQuest(m_QuestType) == true || context?.HasDoneQuest(m_QuestType) == true)
-            {
-                return true;
-            }
+public interface ITicket
+{
+    void OnTicketUsed(Mobile from);
+}
 
+[SerializationGenerator(1, false)]
+public partial class TicketTeleporter : Teleporter
+{
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Type _ticketType;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TextDefinition _message;
+
+    [Constructible]
+    public TicketTeleporter() : this(Point3D.Zero)
+    {
+    }
+
+    [Constructible]
+    public TicketTeleporter(
+        Point3D pointDest, Map mapDest = null, Type ticketType = null, TextDefinition message = null
+    ) : base(pointDest, mapDest)
+    {
+        _ticketType = ticketType;
+        Message = message;
+    }
+
+    public override bool CanTeleport(Mobile m)
+    {
+        if (!base.CanTeleport(m))
+        {
+            return false;
+        }
+
+        if (_ticketType == null)
+        {
+            return true;
+        }
+
+        var pack = m.Backpack;
+        var ticket = pack?.FindItemByType(_ticketType, false) ??
+                     m.Items.Find(item => _ticketType.IsInstanceOfType(item));
+
+        if (ticket == null)
+        {
             Message.SendMessageTo(m);
             return false;
         }
 
-        public override void GetProperties(IPropertyList list)
+        (ticket as ITicket)?.OnTicketUsed(m);
+
+        return true;
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (_ticketType != null)
         {
-            base.GetProperties(list);
-
-            if (m_QuestType != null)
-            {
-                list.Add($"Required quest: {m_QuestType.Name}");
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_QuestType?.FullName);
-            writer.Write(Message);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            var typeName = reader.ReadString();
-
-            if (typeName != null)
-            {
-                m_QuestType = AssemblyHandler.FindTypeByFullName(typeName);
-            }
-
-            Message = reader.ReadTextDefinition();
+            list.Add($"Required ticket: {_ticketType.Name}");
         }
     }
 
-    public interface ITicket
+    private void Deserialize(IGenericReader reader, int version)
     {
-        void OnTicketUsed(Mobile from);
-    }
+        var typeName = reader.ReadString();
 
-    public class TicketTeleporter : Teleporter
-    {
-        private Type m_TicketType;
-
-        [Constructible]
-        public TicketTeleporter()
-            : this(Point3D.Zero)
+        if (typeName != null)
         {
+            _ticketType = AssemblyHandler.FindTypeByFullName(typeName);
         }
 
-        [Constructible]
-        public TicketTeleporter(
-            Point3D pointDest, Map mapDest = null, Type ticketType = null, TextDefinition message = null
-        )
-            : base(pointDest, mapDest)
-        {
-            m_TicketType = ticketType;
-            Message = message;
-        }
-
-        public TicketTeleporter(Serial serial)
-            : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Type TicketType
-        {
-            get => m_TicketType;
-            set
-            {
-                m_TicketType = value;
-                InvalidateProperties();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TextDefinition Message { get; set; }
-
-        public override bool CanTeleport(Mobile m)
-        {
-            if (!base.CanTeleport(m))
-            {
-                return false;
-            }
-
-            if (m_TicketType == null)
-            {
-                return true;
-            }
-
-            var pack = m.Backpack;
-            var ticket = pack?.FindItemByType(m_TicketType, false) ??
-                         m.Items.Find(item => m_TicketType.IsInstanceOfType(item));
-
-            if (ticket == null)
-            {
-                Message.SendMessageTo(m);
-                return false;
-            }
-
-            (ticket as ITicket)?.OnTicketUsed(m);
-
-            return true;
-        }
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            if (m_TicketType != null)
-            {
-                list.Add($"Required ticket: {m_TicketType.Name}");
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write( m_TicketType?.FullName);
-            writer.Write(Message);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            var typeName = reader.ReadString();
-
-            if (typeName != null)
-            {
-                m_TicketType = AssemblyHandler.FindTypeByFullName(typeName);
-            }
-
-            Message = reader.ReadTextDefinition();
-        }
+        _message = reader.ReadTextDefinition();
     }
 }
