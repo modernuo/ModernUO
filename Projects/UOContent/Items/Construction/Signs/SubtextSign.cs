@@ -1,71 +1,38 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class SubtextSign : Sign
 {
-    public class SubtextSign : Sign
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _subText;
+
+    [Constructible]
+    public SubtextSign(SignType type, SignFacing facing, string subtext) : base(type, facing) => _subText = subtext;
+
+    [Constructible]
+    public SubtextSign(int itemID, string subtext) : base(itemID) => _subText = subtext;
+
+    public override void OnSingleClick(Mobile from)
     {
-        private string m_Subtext;
+        base.OnSingleClick(from);
 
-        [Constructible]
-        public SubtextSign(SignType type, SignFacing facing, string subtext)
-            : base(type, facing) =>
-            m_Subtext = subtext;
-
-        [Constructible]
-        public SubtextSign(int itemID, string subtext)
-            : base(itemID) =>
-            m_Subtext = subtext;
-
-        public SubtextSign(Serial serial)
-            : base(serial)
+        if (!string.IsNullOrEmpty(_subText))
         {
+            LabelTo(from, _subText);
         }
+    }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string Subtext
+    public override void AddNameProperties(IPropertyList list)
+    {
+        base.AddNameProperties(list);
+
+        if (!string.IsNullOrEmpty(_subText))
         {
-            get => m_Subtext;
-            set
-            {
-                m_Subtext = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            base.OnSingleClick(from);
-
-            if (!string.IsNullOrEmpty(m_Subtext))
-            {
-                LabelTo(from, m_Subtext);
-            }
-        }
-
-        public override void AddNameProperties(IPropertyList list)
-        {
-            base.AddNameProperties(list);
-
-            if (!string.IsNullOrEmpty(m_Subtext))
-            {
-                list.Add(m_Subtext);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(m_Subtext);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Subtext = reader.ReadString();
+            list.Add(_subText);
         }
     }
 }

@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.SubtextSign",
+  "properties": [
+    {
+      "name": "SubText",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
