@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.CharacterStatuePlinth",
+  "properties": [
+    {
+      "name": "Statue",
+      "type": "Server.Mobiles.CharacterStatue",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
