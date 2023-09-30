@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.PigmentsOfTokuno",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Items.PigmentType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
