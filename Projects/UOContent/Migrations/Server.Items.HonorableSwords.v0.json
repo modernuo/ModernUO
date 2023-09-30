@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.HonorableSwords",
+  "properties": [
+    {
+      "name": "SwordsName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
