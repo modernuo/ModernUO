@@ -1,159 +1,122 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.MLQuests.Items
+namespace Server.Engines.MLQuests.Items;
+
+[SerializationGenerator(0, false)]
+public abstract partial class QuestGiverItem : Item, IQuestGiver
 {
-    public abstract class QuestGiverItem : Item, IQuestGiver
+    private List<MLQuest> m_MLQuests;
+
+    public QuestGiverItem(int itemId) : base(itemId)
     {
-        private List<MLQuest> m_MLQuests;
+    }
 
-        public QuestGiverItem(int itemId)
-            : base(itemId)
+    public bool CanGiveMLQuest => MLQuests.Count != 0;
+
+    public override bool Nontransferable => true;
+
+    public List<MLQuest> MLQuests => m_MLQuests ??
+                                     (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
+
+    public override void AddNameProperties(IPropertyList list)
+    {
+        base.AddNameProperties(list);
+
+        AddQuestItemProperty(list);
+
+        if (CanGiveMLQuest)
         {
-        }
-
-        public QuestGiverItem(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public bool CanGiveMLQuest => MLQuests.Count != 0;
-
-        public override bool Nontransferable => true;
-
-        public List<MLQuest> MLQuests => m_MLQuests ??
-                                         (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
-
-        public override void AddNameProperties(IPropertyList list)
-        {
-            base.AddNameProperties(list);
-
-            AddQuestItemProperty(list);
-
-            if (CanGiveMLQuest)
-            {
-                list.Add(1072269); // Quest Giver
-            }
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (!from.InRange(GetWorldLocation(), 2))
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-            else if (!IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(1042593); // That is not in your backpack.
-            }
-            else if (MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile)
-            {
-                MLQuestSystem.OnDoubleClick(this, mobile);
-            }
-        }
-
-        public override void OnAfterDelete()
-        {
-            base.OnAfterDelete();
-
-            if (MLQuestSystem.Enabled)
-            {
-                MLQuestSystem.HandleDeletion(this);
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            list.Add(1072269); // Quest Giver
         }
     }
 
-    public abstract class TransientQuestGiverItem : TransientItem, IQuestGiver
+    public override void OnDoubleClick(Mobile from)
     {
-        private List<MLQuest> m_MLQuests;
-
-        public TransientQuestGiverItem(int itemId, TimeSpan lifeSpan)
-            : base(itemId, lifeSpan)
+        if (!from.InRange(GetWorldLocation(), 2))
         {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
-
-        public TransientQuestGiverItem(Serial serial)
-            : base(serial)
+        else if (!IsChildOf(from.Backpack))
         {
+            from.SendLocalizedMessage(1042593); // That is not in your backpack.
         }
-
-        public bool CanGiveMLQuest => MLQuests.Count != 0;
-
-        public override bool Nontransferable => true;
-
-        public List<MLQuest> MLQuests => m_MLQuests ??
-                                         (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
-
-        public override void HandleInvalidTransfer(Mobile from)
+        else if (MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile)
         {
+            MLQuestSystem.OnDoubleClick(this, mobile);
         }
+    }
 
-        public override void AddNameProperties(IPropertyList list)
+    public override void OnAfterDelete()
+    {
+        base.OnAfterDelete();
+
+        if (MLQuestSystem.Enabled)
         {
-            base.AddNameProperties(list);
-
-            AddQuestItemProperty(list);
-
-            if (CanGiveMLQuest)
-            {
-                list.Add(1072269); // Quest Giver
-            }
+            MLQuestSystem.HandleDeletion(this);
         }
+    }
+}
 
-        public override void OnDoubleClick(Mobile from)
+[SerializationGenerator(0, false)]
+public abstract partial class TransientQuestGiverItem : TransientItem, IQuestGiver
+{
+    private List<MLQuest> m_MLQuests;
+
+    public TransientQuestGiverItem(int itemId, TimeSpan lifeSpan)
+        : base(itemId, lifeSpan)
+    {
+    }
+
+    public bool CanGiveMLQuest => MLQuests.Count != 0;
+
+    public override bool Nontransferable => true;
+
+    public List<MLQuest> MLQuests => m_MLQuests ??
+                                     (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
+
+    public override void HandleInvalidTransfer(Mobile from)
+    {
+    }
+
+    public override void AddNameProperties(IPropertyList list)
+    {
+        base.AddNameProperties(list);
+
+        AddQuestItemProperty(list);
+
+        if (CanGiveMLQuest)
         {
-            if (!from.InRange(GetWorldLocation(), 2))
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-            else if (!IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(1042593); // That is not in your backpack.
-            }
-            else if (MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile)
-            {
-                MLQuestSystem.OnDoubleClick(this, mobile);
-            }
+            list.Add(1072269); // Quest Giver
         }
+    }
 
-        public override void OnAfterDelete()
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!from.InRange(GetWorldLocation(), 2))
         {
-            base.OnAfterDelete();
-
-            if (MLQuestSystem.Enabled)
-            {
-                MLQuestSystem.HandleDeletion(this);
-            }
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
-
-        public override void Serialize(IGenericWriter writer)
+        else if (!IsChildOf(from.Backpack))
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
+            from.SendLocalizedMessage(1042593); // That is not in your backpack.
         }
-
-        public override void Deserialize(IGenericReader reader)
+        else if (MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile)
         {
-            base.Deserialize(reader);
+            MLQuestSystem.OnDoubleClick(this, mobile);
+        }
+    }
 
-            var version = reader.ReadInt();
+    public override void OnAfterDelete()
+    {
+        base.OnAfterDelete();
+
+        if (MLQuestSystem.Enabled)
+        {
+            MLQuestSystem.HandleDeletion(this);
         }
     }
 }
