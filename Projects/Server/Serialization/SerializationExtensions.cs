@@ -58,29 +58,38 @@ public static class SerializationExtensions
         }
         else
         {
-            var type = typeT;
-
-            while (true)
+            Type type = null;
+            foreach (var baseType in _searchTable.Keys)
             {
-                var baseType = type?.BaseType;
-
-                // Find the parent class with ISerializable registered. To do this we break on it's parent class (or object)
-                // that doesn't have ISerializable implemented.
-                if (baseType?.GetInterface("ISerializable") == null && type?.GetInterface("ISerializable") != null)
+                if (baseType.IsAssignableFrom(typeT))
                 {
+                    type = baseType;
                     break;
                 }
-
-                type = baseType;
             }
 
-            if (!_searchTable.TryGetValue(type, out finder))
+            if (type == null)
             {
+                type = typeT;
+                while (true)
+                {
+                    var baseType = type?.BaseType;
+
+                    // Find the parent class with ISerializable registered. To do this we break on it's parent class (or object)
+                    // that doesn't have ISerializable implemented.
+                    if (baseType?.GetInterface("ISerializable") == null && type?.GetInterface("ISerializable") != null)
+                    {
+                        break;
+                    }
+
+                    type = baseType;
+                }
+
                 throw new Exception($"No FindEntity registered for '{type.FullName}'.");
             }
 
-            _directFinderTable[typeT] = finder;
-
+            finder = _searchTable[type];
+            _directFinderTable[type] = finder;
             return finder(serial) as T;
         }
 
