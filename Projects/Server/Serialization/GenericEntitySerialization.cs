@@ -21,7 +21,7 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
     public static void Configure(string systemName)
     {
         _systemName = systemName;
-        typeof(T).RegisterFindEntity(FindEntity<T>);
+        typeof(T).RegisterFindEntity(Find);
         Persistence.Register(_systemName, Serialize, WriteSnapshot, Deserialize);
     }
 
@@ -163,6 +163,12 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
                 }
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T Find(Serial serial) => FindEntity<T>(serial, false);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T Find(Serial serial, bool returnDeleted) => FindEntity<T>(serial, returnDeleted);
 
     public static R FindEntity<R>(Serial serial) where R : class, T => FindEntity<R>(serial, false);
 
