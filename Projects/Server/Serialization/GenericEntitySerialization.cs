@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Logging;
@@ -19,22 +18,9 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
     private static readonly Dictionary<Serial, T> _pendingDelete = new();
     private static Dictionary<Serial, T> _entitiesBySerial = new();
 
-    static GenericEntitySerialization()
+    public static void Configure(string systemName)
     {
-        var classType = typeof(GenericEntitySerialization<T>);
-        var serializationSystemAttribute = classType.GetCustomAttribute<SerializationSystemAttribute>();
-        if (serializationSystemAttribute == null)
-        {
-            throw new Exception(
-                $"{classType.FullName} is missing the \"[SerializationSystem]\" attribute on its class declaration."
-            );
-        }
-
-        _systemName = serializationSystemAttribute.SystemName;
-    }
-
-    public static void Configure()
-    {
+        _systemName = systemName;
         typeof(T).RegisterFindEntity(FindEntity);
         Persistence.Register(_systemName, Serialize, WriteSnapshot, Deserialize);
     }

@@ -1,6 +1,9 @@
 namespace Server.Engines.BulkOrders;
 
-[SerializationSystem("BOBEntries")]
 public class BOBEntries : GenericEntitySerialization<IBOBEntry>
 {
+    public static void Configure()
+    {
+        Configure("BOBEntries");
+    }
 }
