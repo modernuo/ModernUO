@@ -39,18 +39,14 @@ public static class SerializationExtensions
         // Add to this list when creating new serializable types
         if (typeof(BaseGuild).IsAssignableFrom(typeT))
         {
-            entity = World.FindGuild(serial) as T;
             // If we check for `entity.Deleted` here during deserialization then all guilds are deleted because
             // Deleted -> Disbanded -> No leader, which is the case before deserialization.
             // TODO: Use a deleted flag instead, and actively check for disbanded guilds properly.
+            entity = World.FindGuild(serial) as T;
         }
         else if (typeof(Item).IsAssignableFrom(typeT) || typeof(Mobile).IsAssignableFrom(typeT))
         {
             entity = World.FindEntity<IEntity>(serial) as T;
-            if (entity?.Deleted == false)
-            {
-                return entity;
-            }
         }
         else if (_directFinderTable.TryGetValue(typeT, out var finder))
         {
@@ -93,6 +89,12 @@ public static class SerializationExtensions
             return finder(serial) as T;
         }
 
+        // If a missing object reference shares the same serial as an object created before/during world load
+        // then ReadEntity will return the wrong object.
+        // There is a multitude of ways to handle this. Here we use LastSerialized as a "version" against the object's Created date.
+        // New objects will have a Created date that is newer than any LastSerialized date.
+        // Note: This workaround will break if time travel is added against the wall clock.
+        // TODO: Come up with a simpler global versioning system.
         return entity?.Created <= reader.LastSerialized ? entity : null;
     }
 
