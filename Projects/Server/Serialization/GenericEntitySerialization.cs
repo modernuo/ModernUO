@@ -72,7 +72,7 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
             {
                 last++;
 
-                if (FindEntity(last) == null)
+                if (FindEntity<T>(last) == null)
                 {
                     return _lastEntitySerial = last;
                 }
@@ -164,9 +164,9 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
         }
     }
 
-    public static T FindEntity(Serial serial) => FindEntity(serial, false);
+    public static R FindEntity<R>(Serial serial) where R : class, T => FindEntity<R>(serial, false);
 
-    public static T FindEntity(Serial serial, bool returnDeleted)
+    public static R FindEntity<R>(Serial serial, bool returnDeleted) where R : class, T
     {
         switch (World.WorldState)
         {
@@ -177,7 +177,7 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
                 {
                     if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
                     {
-                        return entity;
+                        return entity as R;
                     }
 
                     if (!_pendingAdd.TryGetValue(serial, out entity) && !_entitiesBySerial.TryGetValue(serial, out entity))
@@ -185,12 +185,12 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
                         return null;
                     }
 
-                    return !entity.Deleted || returnDeleted ? entity : null;
+                    return !entity.Deleted || returnDeleted ? entity as R : null;
                 }
             case WorldState.Running:
                 {
                     return _entitiesBySerial.TryGetValue(serial, out var entity)
-                           && (!entity.Deleted || returnDeleted) ? entity : null;
+                           && (!entity.Deleted || returnDeleted) ? entity as R : null;
                 }
         }
     }
