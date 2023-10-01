@@ -1,58 +1,35 @@
 using System;
+using ModernUO.Serialization;
 
-namespace Server.Engines.BulkOrders
+namespace Server.Engines.BulkOrders;
+
+[SerializationGenerator(0)]
+public partial class BOBLargeSubEntry
 {
-    public class BOBLargeSubEntry
+    [SerializableField(0, setter: "private")]
+    private Type _itemType;
+
+    [EncodedInt]
+    [SerializableField(1, setter: "private")]
+    private int _amountCur;
+
+    [EncodedInt]
+    [SerializableField(2, setter: "private")]
+    private int _number;
+
+    [EncodedInt]
+    [SerializableField(3, setter: "private")]
+    private int _graphic;
+
+    public BOBLargeSubEntry()
     {
-        public BOBLargeSubEntry(LargeBulkEntry lbe)
-        {
-            ItemType = lbe.Details.Type;
-            AmountCur = lbe.Amount;
-            Number = lbe.Details.Number;
-            Graphic = lbe.Details.Graphic;
-        }
+    }
 
-        public BOBLargeSubEntry(IGenericReader reader)
-        {
-            var version = reader.ReadEncodedInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        var type = reader.ReadString();
-
-                        if (type != null)
-                        {
-                            ItemType = AssemblyHandler.FindTypeByFullName(type);
-                        }
-
-                        AmountCur = reader.ReadEncodedInt();
-                        Number = reader.ReadEncodedInt();
-                        Graphic = reader.ReadEncodedInt();
-
-                        break;
-                    }
-            }
-        }
-
-        public Type ItemType { get; }
-
-        public int AmountCur { get; }
-
-        public int Number { get; }
-
-        public int Graphic { get; }
-
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(ItemType?.FullName);
-
-            writer.WriteEncodedInt(AmountCur);
-            writer.WriteEncodedInt(Number);
-            writer.WriteEncodedInt(Graphic);
-        }
+    public BOBLargeSubEntry(LargeBulkEntry lbe)
+    {
+        _itemType = lbe.Details.Type;
+        _amountCur = lbe.Amount;
+        _number = lbe.Details.Number;
+        _graphic = lbe.Details.Graphic;
     }
 }

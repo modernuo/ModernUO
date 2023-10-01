@@ -19,6 +19,14 @@ using System.IO;
 
 namespace Server;
 
+[AttributeUsage(AttributeTargets.Class)]
+public class SerializationSystemAttribute : Attribute
+{
+    public string SystemName { get; }
+
+    public SerializationSystemAttribute(string systemName) => SystemName = systemName;
+}
+
 public static class GenericPersistence
 {
     public static void Register(

@@ -21,6 +21,14 @@ namespace Server;
 
 public static class SerializationExtensions
 {
+    private static readonly Dictionary<Type, Func<Serial, ISerializable>> _directFinderTable = new();
+    private static readonly Dictionary<Type, Func<Serial, ISerializable>> _searchTable = new();
+
+    public static void RegisterFindEntity(this Type type, Func<Serial, ISerializable> func)
+    {
+        _searchTable[type] = func;
+    }
+
     public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
     {
         Serial serial = reader.ReadSerial();
@@ -34,15 +42,46 @@ public static class SerializationExtensions
             entity = World.FindGuild(serial) as T;
             // If we check for `entity.Deleted` here during deserialization then all guilds are deleted because
             // Deleted -> Disbanded -> No leader, which is the case before deserialization.
-            // TODO: Use a deleted flag instead, and actively check for dibanded guilds properly.
+            // TODO: Use a deleted flag instead, and actively check for disbanded guilds properly.
         }
-        else
+        else if (typeof(Item).IsAssignableFrom(typeT) || typeof(Mobile).IsAssignableFrom(typeT))
         {
             entity = World.FindEntity<IEntity>(serial) as T;
             if (entity?.Deleted == false)
             {
                 return entity;
             }
+        }
+        else if (_directFinderTable.TryGetValue(typeT, out var finder))
+        {
+            return finder(serial) as T;
+        }
+        else
+        {
+            var type = typeT;
+
+            while (true)
+            {
+                var baseType = type?.BaseType;
+
+                // Find the parent class with ISerializable registered. To do this we break on it's parent class (or object)
+                // that doesn't have ISerializable implemented.
+                if (baseType?.GetInterface("ISerializable") == null && type?.GetInterface("ISerializable") != null)
+                {
+                    break;
+                }
+
+                type = baseType;
+            }
+
+            if (!_searchTable.TryGetValue(type, out finder))
+            {
+                throw new Exception($"No FindEntity registered for '{type.FullName}'.");
+            }
+
+            _directFinderTable[typeT] = finder;
+
+            return finder(serial) as T;
         }
 
         return entity?.Created <= reader.LastSerialized ? entity : null;
