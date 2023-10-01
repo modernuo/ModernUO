@@ -21,7 +21,7 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
     public static void Configure(string systemName)
     {
         _systemName = systemName;
-        typeof(T).RegisterFindEntity(FindEntity);
+        typeof(T).RegisterFindEntity(FindEntity<T>);
         Persistence.Register(_systemName, Serialize, WriteSnapshot, Deserialize);
     }
 
