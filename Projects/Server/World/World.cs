@@ -593,9 +593,10 @@ public static class World
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEntity FindEntity(Serial serial, bool returnDeleted = false) => FindEntity<IEntity>(serial, returnDeleted);
+    public static IEntity FindEntity(Serial serial, bool returnDeleted = false, bool returnPending = true) =>
+        FindEntity<IEntity>(serial, returnDeleted, returnPending);
 
-    public static T FindEntity<T>(Serial serial, bool returnDeleted = false) where T : class, IEntity
+    public static T FindEntity<T>(Serial serial, bool returnDeleted = false, bool returnPending = true) where T : class, IEntity
     {
         switch (WorldState)
         {
@@ -604,43 +605,41 @@ public static class World
             case WorldState.Saving:
             case WorldState.WritingSave:
                 {
-                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
+                    if (returnDeleted && returnPending && _pendingDelete.TryGetValue(serial, out var entity))
                     {
                         return entity as T;
                     }
 
-                    if (!_pendingAdd.TryGetValue(serial, out entity))
+                    if (!returnPending || !_pendingAdd.TryGetValue(serial, out entity))
                     {
                         if (serial.IsItem)
                         {
                             if (Items.TryGetValue(serial, out var item))
                             {
-                                entity = item;
+                                return item as T;
                             }
                         }
                         else // if (serial.IsMobile)
                         {
                             if (Mobiles.TryGetValue(serial, out var mob))
                             {
-                                entity = mob;
+                                return mob as T;
                             }
                         }
                     }
 
-                    return entity?.Deleted == false || returnDeleted ? entity as T : null;
+                    return null;
                 }
             case WorldState.Running:
                 {
                     if (serial.IsItem)
                     {
-                        Items.TryGetValue(serial, out var item);
-                        return item as T;
+                        return Items.TryGetValue(serial, out var item) ? item as T : null;
                     }
 
                     if (serial.IsMobile)
                     {
-                        Mobiles.TryGetValue(serial, out var mob);
-                        return mob as T;
+                        return Mobiles.TryGetValue(serial, out var mob) ? mob as T : null;
                     }
 
                     return default;

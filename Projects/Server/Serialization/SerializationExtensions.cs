@@ -21,10 +21,10 @@ namespace Server;
 
 public static class SerializationExtensions
 {
-    private static readonly Dictionary<Type, Func<Serial, ISerializable>> _directFinderTable = new();
-    private static readonly Dictionary<Type, Func<Serial, ISerializable>> _searchTable = new();
+    private static readonly Dictionary<Type, Func<Serial, bool, bool, ISerializable>> _directFinderTable = new();
+    private static readonly Dictionary<Type, Func<Serial, bool, bool, ISerializable>> _searchTable = new();
 
-    public static void RegisterFindEntity(this Type type, Func<Serial, ISerializable> func)
+    public static void RegisterFindEntity(this Type type, Func<Serial, bool, bool, ISerializable> func)
     {
         _searchTable[type] = func;
     }
@@ -42,60 +42,52 @@ public static class SerializationExtensions
             // If we check for `entity.Deleted` here during deserialization then all guilds are deleted because
             // Deleted -> Disbanded -> No leader, which is the case before deserialization.
             // TODO: Use a deleted flag instead, and actively check for disbanded guilds properly.
-            entity = World.FindGuild(serial) as T;
+            return World.FindGuild(serial) as T;
         }
-        else if (typeof(Item).IsAssignableFrom(typeT) || typeof(Mobile).IsAssignableFrom(typeT))
+
+        if (typeof(IEntity).IsAssignableFrom(typeT))
         {
-            entity = World.FindEntity<IEntity>(serial) as T;
+            return World.FindEntity<IEntity>(serial, returnPending: false) as T;
         }
-        else if (_directFinderTable.TryGetValue(typeT, out var finder))
+
+        if (_directFinderTable.TryGetValue(typeT, out var finder))
         {
-            return finder(serial) as T;
+            return finder(serial, false, false) as T;
         }
-        else
+
+        Type type = null;
+        foreach (var baseType in _searchTable.Keys)
         {
-            Type type = null;
-            foreach (var baseType in _searchTable.Keys)
+            if (baseType.IsAssignableFrom(typeT))
             {
-                if (baseType.IsAssignableFrom(typeT))
+                type = baseType;
+                break;
+            }
+        }
+
+        if (type == null)
+        {
+            type = typeT;
+            while (true)
+            {
+                var baseType = type?.BaseType;
+
+                // Find the parent class with ISerializable registered. To do this we break on it's parent class (or object)
+                // that doesn't have ISerializable implemented.
+                if (baseType?.GetInterface("ISerializable") == null && type?.GetInterface("ISerializable") != null)
                 {
-                    type = baseType;
                     break;
                 }
+
+                type = baseType;
             }
 
-            if (type == null)
-            {
-                type = typeT;
-                while (true)
-                {
-                    var baseType = type?.BaseType;
-
-                    // Find the parent class with ISerializable registered. To do this we break on it's parent class (or object)
-                    // that doesn't have ISerializable implemented.
-                    if (baseType?.GetInterface("ISerializable") == null && type?.GetInterface("ISerializable") != null)
-                    {
-                        break;
-                    }
-
-                    type = baseType;
-                }
-
-                throw new Exception($"No FindEntity registered for '{type.FullName}'.");
-            }
-
-            finder = _searchTable[type];
-            _directFinderTable[type] = finder;
-            return finder(serial) as T;
+            throw new Exception($"No FindEntity registered for '{type.FullName}'.");
         }
 
-        // If a missing object reference shares the same serial as an object created before/during world load
-        // then ReadEntity will return the wrong object.
-        // There is a multitude of ways to handle this. Here we use LastSerialized as a "version" against the object's Created date.
-        // New objects will have a Created date that is newer than any LastSerialized date.
-        // Note: This workaround will break if time travel is added against the wall clock.
-        // TODO: Come up with a simpler global versioning system.
-        return entity?.Created <= reader.LastSerialized ? entity : null;
+        finder = _searchTable[type];
+        _directFinderTable[type] = finder;
+        return finder(serial, false, false) as T;
     }
 
     public static List<T> ReadEntityList<T>(

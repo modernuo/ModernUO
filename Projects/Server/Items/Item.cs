@@ -760,9 +760,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
-
     long ISerializable.SavePosition { get; set; } = -1;
 
     BufferWriter ISerializable.SaveBuffer { get; set; }

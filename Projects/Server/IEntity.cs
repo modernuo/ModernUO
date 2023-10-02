@@ -45,8 +45,6 @@ public class Entity : IEntity
 
     DateTime ISerializable.Created { get; set; } = Core.Now;
 
-    DateTime ISerializable.LastSerialized { get; set; } = DateTime.MaxValue;
-
     long ISerializable.SavePosition { get; set; } = -1;
 
     BufferWriter ISerializable.SaveBuffer { get; set; }

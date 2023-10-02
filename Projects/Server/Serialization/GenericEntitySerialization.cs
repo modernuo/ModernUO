@@ -165,14 +165,17 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T Find(Serial serial) => FindEntity<T>(serial, false);
+    public static T Find(Serial serial) => FindEntity<T>(serial, false, false);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T Find(Serial serial, bool returnDeleted) => FindEntity<T>(serial, returnDeleted);
+    public static T Find(Serial serial, bool returnDeleted) => FindEntity<T>(serial, returnDeleted, false);
 
-    public static R FindEntity<R>(Serial serial) where R : class, T => FindEntity<R>(serial, false);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T Find(Serial serial, bool returnDeleted, bool returnPending) => FindEntity<T>(serial, returnDeleted, returnPending);
 
-    public static R FindEntity<R>(Serial serial, bool returnDeleted) where R : class, T
+    public static R FindEntity<R>(Serial serial) where R : class, T => FindEntity<R>(serial, false, false);
+
+    public static R FindEntity<R>(Serial serial, bool returnDeleted, bool returnPending) where R : class, T
     {
         switch (World.WorldState)
         {
@@ -181,22 +184,22 @@ public class GenericEntitySerialization<T> where T : class, ISerializable
             case WorldState.Saving:
             case WorldState.WritingSave:
                 {
-                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
+                    if (returnDeleted && returnPending && _pendingDelete.TryGetValue(serial, out var entity))
                     {
                         return entity as R;
                     }
 
-                    if (!_pendingAdd.TryGetValue(serial, out entity) && !_entitiesBySerial.TryGetValue(serial, out entity))
+                    if (returnPending && _pendingAdd.TryGetValue(serial, out entity) ||
+                        _entitiesBySerial.TryGetValue(serial, out entity))
                     {
-                        return null;
+                        return entity as R;
                     }
 
-                    return !entity.Deleted || returnDeleted ? entity as R : null;
+                    return null;
                 }
             case WorldState.Running:
                 {
-                    return _entitiesBySerial.TryGetValue(serial, out var entity)
-                           && (!entity.Deleted || returnDeleted) ? entity as R : null;
+                    return _entitiesBySerial.TryGetValue(serial, out var entity) ? entity as R : null;
                 }
         }
     }
