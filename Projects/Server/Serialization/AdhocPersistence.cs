@@ -51,7 +51,7 @@ public static class AdhocPersistence
 
     /**
      * Serializes to a memory buffer synchronously, then flushes to the path asynchronously.
-     * See WriteSnapshot for more info about how the snapshot.
+     * See WriteSnapshot for more info about how to snapshot.
      */
     public static void SerializeAndSnapshot(string filePath, Action<IGenericWriter> serializer, ConcurrentQueue<Type> types = null)
     {

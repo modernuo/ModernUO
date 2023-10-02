@@ -32,14 +32,14 @@ public abstract partial class BaseBOBEntry : IBOBEntry
 
     public BaseBOBEntry()
     {
-        Serial = BOBEntries.NewEntity;
-        BOBEntries.AddEntity(this);
+        Serial = BOBEntries.NewBOBEntry;
+        BOBEntries.Add(this);
     }
 
     public virtual void Delete()
     {
         Deleted = true;
-        BOBEntries.RemoveEntity(this);
+        BOBEntries.Remove(this);
     }
 
     public abstract Item Reconstruct();

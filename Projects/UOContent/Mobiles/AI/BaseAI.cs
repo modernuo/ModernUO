@@ -2702,7 +2702,7 @@ public abstract class BaseAI
             }
 
             // Ignore players with activated honor
-            if (m_Mobile.Combatant != m && pm?.GetVirtues()?.HonorActive == true)
+            if (m_Mobile.Combatant != m && VirtueSystem.GetVirtues(pm)?.HonorActive == true)
             {
                 continue;
             }

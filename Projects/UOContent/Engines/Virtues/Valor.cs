@@ -30,7 +30,7 @@ public static class ValorVirtue
 
     public static void CheckAtrophy(PlayerMobile pm)
     {
-        var virtues = pm.GetVirtues();
+        var virtues = VirtueSystem.GetVirtues(pm);
         if (virtues?.Valor > 0 && CanAtrophy(virtues))
         {
             if (VirtueSystem.Atrophy(pm, VirtueName.Valor, LossAmount))
@@ -90,7 +90,7 @@ public static class ValorVirtue
                     }
             }
 
-            if (from.GetVirtues()?.GetValue((int)VirtueName.Valor) >= needed)
+            if (VirtueSystem.GetVirtues(from)?.GetValue((int)VirtueName.Valor) >= needed)
             {
                 VirtueSystem.Atrophy(from, VirtueName.Valor, consumed);
                 // Your challenge is heard by the Champion of this region! Beware its wrath!

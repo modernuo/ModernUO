@@ -1288,7 +1288,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if ((m as PlayerMobile)?.GetVirtues()?.HonorActive == true)
+            if (VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true)
             {
                 return false;
             }

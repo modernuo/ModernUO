@@ -245,7 +245,7 @@ namespace Server.Engines.BulkOrders
                             {
                                 case 0:
                                     {
-                                        var largeEntry = new BOBLargeEntry(BOBEntries.NewEntity);
+                                        var largeEntry = new BOBLargeEntry(BOBEntries.NewBOBEntry);
                                         largeEntry.Deserialize(reader);
 
                                         Entries.Add(largeEntry);
@@ -253,7 +253,7 @@ namespace Server.Engines.BulkOrders
                                     }
                                 case 1:
                                     {
-                                        var smallEntry = new BOBSmallEntry(BOBEntries.NewEntity);
+                                        var smallEntry = new BOBSmallEntry(BOBEntries.NewBOBEntry);
                                         smallEntry.Deserialize(reader);
                                         Entries.Add(smallEntry);
                                         break;

@@ -81,7 +81,7 @@ public class VirtueStatusGump : Gump
             _beholder,
             virtue,
             GetVirtueDescription(virtue),
-            @$"https://uo.com/wiki/ultima-online-wiki/gameplay/the-virtues/#{virtue.GetLowerCaseName()}"
+            @$"https://uo.com/wiki/ultima-online-wiki/gameplay/the-virtues/#{VirtueSystem.GetLowerCaseName(virtue)}"
         ));
     }
 }

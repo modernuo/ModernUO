@@ -697,30 +697,32 @@ namespace Server.Mobiles
         }
 
         [CommandProperty(AccessLevel.GameMaster, canModify: true)]
-        public ChampionTitleContext ChampionTitles => this.GetOrCreateChampionTitleContext();
+        public ChampionTitleContext ChampionTitles => ChampionTitleSystem.GetOrCreateChampionTitleContext(this);
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int ShortTermMurders
         {
-            get => this.GetMurderContext(out var context) ? context.ShortTermMurders : 0;
+            get => PlayerMurderSystem.GetMurderContext(this, out var context) ? context.ShortTermMurders : 0;
             set => PlayerMurderSystem.ManuallySetShortTermMurders(this, value);
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime ShortTermMurderExpiration => this.GetMurderContext(out var context) && context.ShortTermMurders > 0
-            ? Core.Now + (context.ShortTermElapse - GameTime)
-            : DateTime.MinValue;
+        public DateTime ShortTermMurderExpiration
+            => PlayerMurderSystem.GetMurderContext(this, out var context) && context.ShortTermMurders > 0
+                ? Core.Now + (context.ShortTermElapse - GameTime)
+                : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime LongTermMurderExpiration => Kills > 0 && this.GetMurderContext(out var context)
-            ? Core.Now + (context.LongTermElapse - GameTime)
-            : DateTime.MinValue;
+        public DateTime LongTermMurderExpiration
+            => Kills > 0 && PlayerMurderSystem.GetMurderContext(this, out var context)
+                ? Core.Now + (context.LongTermElapse - GameTime)
+                : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int KnownRecipes => m_AcquiredRecipes?.Count ?? 0;
 
         [CommandProperty(AccessLevel.Counselor, canModify: true)]
-        public VirtueContext Virtues => this.GetOrCreateVirtues();
+        public VirtueContext Virtues => VirtueSystem.GetOrCreateVirtues(this);
 
         public HonorContext ReceivedHonorContext { get; set; }
 
@@ -1255,7 +1257,7 @@ namespace Server.Mobiles
 
             if (from is PlayerMobile mobile)
             {
-                mobile.CheckAtrophies();
+                VirtueSystem.CheckAtrophies(mobile);
                 mobile.ClaimAutoStabledPets();
             }
         }
@@ -3426,7 +3428,7 @@ namespace Server.Mobiles
             // https://uo.com/wiki/ultima-online-wiki/player/skill-titles-order/
             if (DisplayChampionTitle)
             {
-                var titleLabel = this.GetChampionTitleLabel();
+                var titleLabel = ChampionTitleSystem.GetChampionTitleLabel(this);
                 if (titleLabel > 0)
                 {
                     list.Add(titleLabel);

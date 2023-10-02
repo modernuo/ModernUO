@@ -643,7 +643,7 @@ public partial class BaseEscortable : BaseCreature
 
             if (escorter is PlayerMobile pm)
             {
-                var virtues = pm.GetOrCreateVirtues();
+                var virtues = VirtueSystem.GetOrCreateVirtues(pm);
                 if (virtues.CompassionGains > 0 && Core.Now > virtues.NextCompassionDay)
                 {
                     virtues.NextCompassionDay = DateTime.MinValue;
