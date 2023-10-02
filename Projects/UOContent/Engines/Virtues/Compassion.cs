@@ -24,7 +24,7 @@ public static class CompassionVirtue
 
     public static void CheckAtrophy(PlayerMobile pm)
     {
-        var virtues = pm.GetVirtues();
+        var virtues = VirtueSystem.GetVirtues(pm);
         if (virtues?.Compassion > 0 && CanAtrophy(virtues))
         {
             if (VirtueSystem.Atrophy(pm, VirtueName.Compassion, LossAmount))

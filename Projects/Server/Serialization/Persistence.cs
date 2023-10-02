@@ -21,37 +21,30 @@ using System.Threading.Tasks;
 
 namespace Server;
 
-public static class Persistence
+public abstract class Persistence
 {
-    public const int DefaultPriority = 100;
+    private static readonly SortedSet<Persistence> _registry = new(new PersistenceComparer());
 
-    private static readonly SortedSet<RegistryEntry> _registry = new(new RegistryEntryComparer());
+    public int Priority { get; }
 
-    public static void Register(
-        string name,
-        Action serializer,
-        Action<string> snapshotWriter,
-        Action<string, Dictionary<ulong, string>> deserializer,
-        int priority = DefaultPriority
-    )
+    public Persistence(int priority = 100)
     {
-        _registry.Add(
-            new RegistryEntry
-            {
-                Name = name,
-                Priority = priority,
-                Serialize = serializer,
-                WriteSnapshot = snapshotWriter,
-                Deserialize = deserializer
-            }
-        );
+        Priority = priority;
+        _registry.Add(this);
     }
 
-    public static void Unregister(string name) => _registry.RemoveWhere(entry => entry.Name == name);
+    public bool Register() => _registry.Add(this);
+
+    public void Unregister() => _registry.Remove(this);
 
     public static void Load(string path)
     {
         var typesDb = LoadTypes(path);
+
+        foreach (var entry in _registry)
+        {
+            (entry as IGenericEntityPersistence)?.DeserializeIndexes(path, typesDb);
+        }
 
         // This should probably not be parallel since Mobiles must be loaded before Items
         foreach (var entry in _registry)
@@ -86,9 +79,26 @@ public static class Persistence
         return db;
     }
 
-    public static void Serialize()
+    internal static void SerializeAll()
     {
-        Parallel.ForEach(_registry, entry => entry.Serialize());
+        // TODO: Hand off to a scheduler
+        Parallel.ForEach(_registry, p => p.Serialize());
+    }
+
+    internal static void PostSerializeAll()
+    {
+        foreach (var p in _registry)
+        {
+            p.PostSerialize();
+        }
+    }
+
+    internal static void PostDeserializeAll()
+    {
+        foreach (var p in _registry)
+        {
+            p.PostDeserialize();
+        }
     }
 
     public static void WriteSnapshot(string path, ConcurrentQueue<Type> types)
@@ -126,20 +136,24 @@ public static class Persistence
         }
     }
 
-    public record RegistryEntry
-    {
-        public string Name { get; init; }
-        public int Priority { get; init; }
+    // Serializes to memory buffers and run in parallel
+    public abstract void Serialize();
 
-        // Serializes to memory buffers and run in parallel
-        public Action Serialize { get; init; }
-        public Action<string> WriteSnapshot { get; init; }
-        public Action<string, Dictionary<ulong, string>> Deserialize { get; init; }
+    public abstract void WriteSnapshot(string savePath);
+
+    public abstract void Deserialize(string savePath, Dictionary<ulong, string> typesDb);
+
+    public virtual void PostSerialize()
+    {
     }
 
-    internal class RegistryEntryComparer : IComparer<RegistryEntry>
+    public virtual void PostDeserialize()
     {
-        public int Compare(RegistryEntry x, RegistryEntry y)
+    }
+
+    internal class PersistenceComparer : IComparer<Persistence>
+    {
+        public int Compare(Persistence x, Persistence y)
         {
             if (x == y)
             {
@@ -160,7 +174,7 @@ public static class Persistence
             var cmp = x.Priority.CompareTo(y.Priority);
 
             // Then alphabetically. We won't allow the same entry (by name) twice in the SortedSet
-            return cmp != 0 ? cmp : x.Name?.CompareOrdinal(y.Name) ?? -1;
+            return cmp != 0 ? cmp : x.GetHashCode().CompareTo(y.GetHashCode());
         }
     }
 

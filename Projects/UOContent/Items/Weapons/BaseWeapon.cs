@@ -1857,7 +1857,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
         if (attacker is PlayerMobile pmAttacker && !(Core.ML && defender is PlayerMobile))
         {
-            if (pmAttacker.GetVirtues()?.HonorActive == true && pmAttacker.InRange(defender, 1))
+            if (VirtueSystem.GetVirtues(pmAttacker)?.HonorActive == true && pmAttacker.InRange(defender, 1))
             {
                 percentageBonus += 25;
             }

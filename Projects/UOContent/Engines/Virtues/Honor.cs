@@ -39,7 +39,7 @@ public static class HonorVirtue
 
     private static void EmbraceHonor(PlayerMobile pm)
     {
-        var virtues = pm.GetVirtues();
+        var virtues = VirtueSystem.GetVirtues(pm);
 
         if (virtues?.HonorActive == true)
         {
@@ -73,7 +73,7 @@ public static class HonorVirtue
     public static void ActivateEmbrace(PlayerMobile pm)
     {
         var duration = GetHonorDuration(pm);
-        var virtues = pm.GetOrCreateVirtues();
+        var virtues = VirtueSystem.GetOrCreateVirtues(pm);
 
         int usedPoints = virtues.Honor switch
         {
@@ -92,7 +92,7 @@ public static class HonorVirtue
             (m) =>
             {
                 // We get the virtues again, in case it was deleted/dereferenced
-                var v = m.GetOrCreateVirtues();
+                var v = VirtueSystem.GetOrCreateVirtues(m);
                 v.HonorActive = false;
                 v.LastHonorUse = Core.Now;
                 m.SendLocalizedMessage(1063236); // You no longer embrace your honor

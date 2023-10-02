@@ -19,35 +19,33 @@ using System.IO;
 
 namespace Server;
 
-public static class GenericPersistence
+public abstract class GenericPersistence : Persistence
 {
-    public static void Register(
-        string name,
-        Action<IGenericWriter> serializer,
-        Action<IGenericReader> deserializer,
-        int priority = Persistence.DefaultPriority
-    )
+    private BufferWriter _saveBuffer;
+
+    public string Name { get; }
+
+    public GenericPersistence(string name, int priority) : base(priority) => Name = name;
+
+    public override void Serialize()
     {
-        BufferWriter saveBuffer = null;
+        _saveBuffer ??= new BufferWriter(true, World.SerializedTypes);
+        _saveBuffer.Seek(0, SeekOrigin.Begin);
 
-        void Serialize()
-        {
-            saveBuffer ??= new BufferWriter(true, World.SerializedTypes);
-            saveBuffer.Seek(0, SeekOrigin.Begin);
-
-            serializer(saveBuffer);
-        }
-
-        void WriteSnapshot(string savePath)
-        {
-            string binPath = Path.Combine(savePath, name, $"{name}.bin");
-            var buffer = saveBuffer!.Buffer.AsSpan(0, (int)saveBuffer.Position);
-            AdhocPersistence.WriteSnapshot(new FileInfo(binPath), buffer);
-        }
-
-        void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
-            AdhocPersistence.Deserialize(Path.Combine(savePath, name, $"{name}.bin"), deserializer);
-
-        Persistence.Register(name, Serialize, WriteSnapshot, Deserialize, priority);
+        Serialize(_saveBuffer);
     }
+
+    public abstract void Serialize(IGenericWriter writer);
+
+    public override void WriteSnapshot(string basePath)
+    {
+        string binPath = Path.Combine(basePath, Name, $"{Name}.bin");
+        var buffer = _saveBuffer!.Buffer.AsSpan(0, (int)_saveBuffer.Position);
+        AdhocPersistence.WriteSnapshot(new FileInfo(binPath), buffer);
+    }
+
+    public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
+        AdhocPersistence.Deserialize(Path.Combine(savePath, Name, $"{Name}.bin"), Deserialize);
+
+    public abstract void Deserialize(IGenericReader reader);
 }

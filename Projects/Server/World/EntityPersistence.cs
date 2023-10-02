@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace Server;
 
@@ -71,12 +69,6 @@ public static class EntityPersistence
             }
         }
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SaveEntities<T>(
-        IEnumerable<T> list,
-        Action<T> serializer
-    ) where T : class, ISerializable => Parallel.ForEach(list, serializer);
 
     public static Dictionary<I, T> LoadIndex<I, T>(
         string path,
@@ -176,6 +168,7 @@ public static class EntityPersistence
         }
 
         idxReader.Close();
+        entities.TrimExcess();
 
         return map;
     }
