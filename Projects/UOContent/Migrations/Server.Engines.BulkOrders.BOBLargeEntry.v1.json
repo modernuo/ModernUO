@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "type": "Server.Engines.BulkOrders.BOBLargeEntry",
+  "properties": [
+    {
+      "name": "Entries",
+      "type": "Server.Engines.BulkOrders.BOBLargeSubEntry[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Engines.BulkOrders.BOBLargeSubEntry",
+        "RawSerializableMigrationRule",
+        ""
+      ]
+    }
+  ]
+}

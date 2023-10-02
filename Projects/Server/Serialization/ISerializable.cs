@@ -24,8 +24,6 @@ public interface ISerializable
     // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
     DateTime Created { get; set; }
 
-    // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
-    DateTime LastSerialized { get; protected internal set; }
     long SavePosition { get; protected internal set; }
     BufferWriter SaveBuffer { get; protected internal set; }
 
@@ -61,7 +59,6 @@ public interface ISerializable
             return;
         }
 
-        LastSerialized = Core.Now;
         SaveBuffer.Seek(0, SeekOrigin.Begin);
         Serialize(SaveBuffer);
 

@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Guilds;
 using Server.Logging;
@@ -592,9 +593,10 @@ public static class World
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEntity FindEntity(Serial serial, bool returnDeleted = false) => FindEntity<IEntity>(serial, returnDeleted);
+    public static IEntity FindEntity(Serial serial, bool returnDeleted = false, bool returnPending = true) =>
+        FindEntity<IEntity>(serial, returnDeleted, returnPending);
 
-    public static T FindEntity<T>(Serial serial, bool returnDeleted = false) where T : class, IEntity
+    public static T FindEntity<T>(Serial serial, bool returnDeleted = false, bool returnPending = true) where T : class, IEntity
     {
         switch (WorldState)
         {
@@ -603,43 +605,41 @@ public static class World
             case WorldState.Saving:
             case WorldState.WritingSave:
                 {
-                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
+                    if (returnDeleted && returnPending && _pendingDelete.TryGetValue(serial, out var entity))
                     {
                         return entity as T;
                     }
 
-                    if (!_pendingAdd.TryGetValue(serial, out entity))
+                    if (!returnPending || !_pendingAdd.TryGetValue(serial, out entity))
                     {
                         if (serial.IsItem)
                         {
                             if (Items.TryGetValue(serial, out var item))
                             {
-                                entity = item;
+                                return item as T;
                             }
                         }
                         else // if (serial.IsMobile)
                         {
                             if (Mobiles.TryGetValue(serial, out var mob))
                             {
-                                entity = mob;
+                                return mob as T;
                             }
                         }
                     }
 
-                    return entity?.Deleted == false || returnDeleted ? entity as T : null;
+                    return null;
                 }
             case WorldState.Running:
                 {
                     if (serial.IsItem)
                     {
-                        Items.TryGetValue(serial, out var item);
-                        return item as T;
+                        return Items.TryGetValue(serial, out var item) ? item as T : null;
                     }
 
                     if (serial.IsMobile)
                     {
-                        Mobiles.TryGetValue(serial, out var mob);
-                        return mob as T;
+                        return Mobiles.TryGetValue(serial, out var mob) ? mob as T : null;
                     }
 
                     return default;
@@ -684,11 +684,10 @@ public static class World
                 {
                     if (entity.Serial.IsItem)
                     {
-                        if (!Items.TryAdd(entity.Serial, entity as Item))
+                        ref var item = ref CollectionsMarshal.GetValueRefOrAddDefault(Items, entity.Serial, out bool exists);
+                        if (exists)
                         {
-                            var existing = Items[entity.Serial];
-
-                            if (existing == entity)
+                            if (item == entity)
                             {
                                 logger.Error(
                                     $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
@@ -703,21 +702,24 @@ public static class World
                                     $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
                                     entity.GetType().FullName,
                                     entity.Serial,
-                                    existing.GetType().FullName,
-                                    existing.Serial,
+                                    item.GetType().FullName,
+                                    item.Serial,
                                     new StackTrace()
                                 );
                             }
+                        }
+                        else
+                        {
+                            item = entity as Item;
                         }
                     }
 
                     if (entity.Serial.IsMobile)
                     {
-                        if (!Mobiles.TryAdd(entity.Serial, entity as Mobile))
+                        ref var mob = ref CollectionsMarshal.GetValueRefOrAddDefault(Mobiles, entity.Serial, out bool exists);
+                        if (exists)
                         {
-                            var existing = Mobiles[entity.Serial];
-
-                            if (existing == entity)
+                            if (mob == entity)
                             {
                                 logger.Error(
                                     $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
@@ -732,11 +734,15 @@ public static class World
                                     $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
                                     entity.GetType().FullName,
                                     entity.Serial,
-                                    existing.GetType().FullName,
-                                    existing.Serial,
+                                    mob.GetType().FullName,
+                                    mob.Serial,
                                     new StackTrace()
                                 );
                             }
+                        }
+                        else
+                        {
+                            mob = entity as Mobile;
                         }
                     }
                     break;
@@ -744,18 +750,17 @@ public static class World
         }
     }
 
-    public static void AddGuild(BaseGuild guild)
+    public static void AddGuild(BaseGuild entity)
     {
-        if (!Guilds.TryAdd(guild.Serial, guild))
+        ref var guild = ref CollectionsMarshal.GetValueRefOrAddDefault(Guilds, entity.Serial, out bool exists);
+        if (exists)
         {
-            var existing = Guilds[guild.Serial];
-
-            if (existing == guild)
+            if (guild == entity)
             {
                 logger.Error(
                     $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
-                    guild.GetType().FullName,
-                    guild.Serial,
+                    entity.GetType().FullName,
+                    entity.Serial,
                     new StackTrace()
                 );
             }
@@ -763,13 +768,17 @@ public static class World
             {
                 logger.Error(
                     $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
+                    entity.GetType().FullName,
+                    entity.Serial,
                     guild.GetType().FullName,
                     guild.Serial,
-                    existing.GetType().FullName,
-                    existing.Serial,
                     new StackTrace()
                 );
             }
+        }
+        else
+        {
+            guild = entity;
         }
     }
 

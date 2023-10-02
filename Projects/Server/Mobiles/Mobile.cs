@@ -2258,9 +2258,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
-
     long ISerializable.SavePosition { get; set; } = -1;
 
     BufferWriter ISerializable.SaveBuffer { get; set; }

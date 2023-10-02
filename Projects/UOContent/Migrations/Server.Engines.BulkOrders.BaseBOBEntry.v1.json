@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "type": "Server.Engines.BulkOrders.BaseBOBEntry",
+  "properties": [
+    {
+      "name": "RequireExceptional",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "DeedType",
+      "type": "Server.Engines.BulkOrders.BODType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Material",
+      "type": "Server.Engines.BulkOrders.BulkMaterialType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "AmountMax",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Price",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

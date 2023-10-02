@@ -48,7 +48,7 @@ public static class EntityPersistence
         using var idx = new BinaryFileWriter(idxPath, false, types);
         using var bin = new BinaryFileWriter(binPath, true, types);
 
-        idx.Write(2); // Version
+        idx.Write(3); // Version
         idx.Write(entities.Count);
         foreach (var e in entities.Values)
         {
@@ -58,7 +58,6 @@ public static class EntityPersistence
             idx.Write(t);
             idx.Write(e.Serial);
             idx.Write(e.Created.Ticks);
-            idx.Write(e.LastSerialized.Ticks);
             idx.Write(start);
 
             e.SerializeTo(bin);
@@ -152,7 +151,10 @@ public static class EntityPersistence
 
             var serial = idxReader.ReadUInt32();
             var created = version == 0 ? now : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
-            var lastSerialized = version == 0 ? DateTime.MinValue : new DateTime(idxReader.ReadInt64(), DateTimeKind.Utc);
+            if (version is > 0 and < 3)
+            {
+                idxReader.ReadInt64(); // LastSerialized
+            }
             var pos = idxReader.ReadInt64();
             var length = idxReader.ReadInt32();
 
@@ -168,7 +170,6 @@ public static class EntityPersistence
             if (ctor.Invoke(ctorArgs) is T entity)
             {
                 entity.Created = created;
-                entity.LastSerialized = lastSerialized;
                 entities.Add(new EntitySpan<T>(entity, pos, length));
                 map[indexer] = entity;
             }
@@ -223,7 +224,7 @@ public static class EntityPersistence
             var buffer = GC.AllocateUninitializedArray<byte>(entry.Length);
             if (br == null)
             {
-                br = new BufferReader(buffer, t.LastSerialized, serializedTypes);
+                br = new BufferReader(buffer, serializedTypes);
             }
             else
             {
