@@ -132,11 +132,24 @@ public class PlayerMurderSystem : GenericPersistence
         }
     }
 
-    public static bool GetMurderContext(PlayerMobile player, out MurderContext context) =>
-        _murderContexts.TryGetValue(player, out context);
+    public static bool GetMurderContext(PlayerMobile player, out MurderContext context)
+    {
+        if (player != null && _murderContexts.TryGetValue(player, out context))
+        {
+            return true;
+        }
+
+        context = null;
+        return false;
+    }
 
     public static MurderContext GetOrCreateMurderContext(PlayerMobile player)
     {
+        if (player == null)
+        {
+            return null;
+        }
+
         ref var context = ref CollectionsMarshal.GetValueRefOrAddDefault(_murderContexts, player, out var exists);
         if (!exists)
         {
