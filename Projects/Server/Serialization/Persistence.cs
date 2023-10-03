@@ -81,8 +81,10 @@ public abstract class Persistence
 
     internal static void SerializeAll()
     {
-        // TODO: Hand off to a scheduler
-        Parallel.ForEach(_registry, p => p.Serialize());
+        foreach (var p in _registry)
+        {
+            p.Serialize();
+        }
     }
 
     internal static void PostSerializeAll()

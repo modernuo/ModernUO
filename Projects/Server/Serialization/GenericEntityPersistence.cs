@@ -20,7 +20,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Server.Logging;
 
 namespace Server;
@@ -55,13 +54,10 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
     public override void Serialize()
     {
-        // TODO: Hand off to a scheduler instead
-        Parallel.ForEach(EntitiesBySerial.Values, SerializeEntity);
-    }
-
-    protected virtual void SerializeEntity(T entity)
-    {
-        entity.Serialize(World.SerializedTypes);
+        foreach (var entity in EntitiesBySerial.Values)
+        {
+            World.PushToCache(entity);
+        }
     }
 
     public override void WriteSnapshot(string basePath)
@@ -160,6 +156,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                     _pendingAdd[entity.Serial] = entity;
                     break;
                 }
+            case WorldState.PendingSave:
             case WorldState.Running:
                 {
                     ref var entityEntry = ref CollectionsMarshal.GetValueRefOrAddDefault(EntitiesBySerial, entity.Serial, out bool exists);
@@ -216,6 +213,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                     _pendingDelete[entity.Serial] = entity;
                     break;
                 }
+            case WorldState.PendingSave:
             case WorldState.Running:
                 {
                     EntitiesBySerial.Remove(entity.Serial);
@@ -299,6 +297,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
                     return null;
                 }
+            case WorldState.PendingSave:
             case WorldState.Running:
                 {
                     return EntitiesBySerial.TryGetValue(serial, out var entity) ? entity as R : null;

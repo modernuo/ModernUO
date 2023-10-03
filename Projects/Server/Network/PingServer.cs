@@ -75,7 +75,7 @@ public static class PingServer
 
     public static void Slice()
     {
-        if (!Enabled || Core.Closing)
+        if (!Enabled)
         {
             return;
         }

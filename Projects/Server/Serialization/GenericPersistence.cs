@@ -14,25 +14,33 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Server;
 
-public abstract class GenericPersistence : Persistence
+public abstract class GenericPersistence : Persistence, IGenericSerializable
 {
-    private BufferWriter _saveBuffer;
-
     public string Name { get; }
 
     public GenericPersistence(string name, int priority) : base(priority) => Name = name;
 
     public override void Serialize()
     {
-        _saveBuffer ??= new BufferWriter(true, World.SerializedTypes);
-        _saveBuffer.Seek(0, SeekOrigin.Begin);
+        World.PushToCache(this);
+    }
 
-        Serialize(_saveBuffer);
+    public long SavePosition { get; set; }
+
+    public BufferWriter SaveBuffer { get; set; }
+
+    public void Serialize(ConcurrentQueue<Type> types)
+    {
+        SaveBuffer ??= new BufferWriter(true, types);
+
+        SaveBuffer.Seek(0, SeekOrigin.Begin);
+        Serialize(SaveBuffer);
     }
 
     public abstract void Serialize(IGenericWriter writer);
@@ -40,7 +48,7 @@ public abstract class GenericPersistence : Persistence
     public override void WriteSnapshot(string basePath)
     {
         string binPath = Path.Combine(basePath, Name, $"{Name}.bin");
-        var buffer = _saveBuffer!.Buffer.AsSpan(0, (int)_saveBuffer.Position);
+        var buffer = SaveBuffer!.Buffer.AsSpan(0, (int)SaveBuffer.Position);
         AdhocPersistence.WriteSnapshot(new FileInfo(binPath), buffer);
     }
 

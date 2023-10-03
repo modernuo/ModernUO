@@ -43,11 +43,11 @@ public class Entity : IEntity
 
     public Entity(Serial serial) => Serial = serial;
 
-    DateTime ISerializable.Created { get; set; } = Core.Now;
+    public DateTime Created { get; set; } = Core.Now;
 
-    long ISerializable.SavePosition { get; set; } = -1;
+    public long SavePosition { get; set; } = -1;
 
-    BufferWriter ISerializable.SaveBuffer { get; set; }
+    public BufferWriter SaveBuffer { get; set; }
 
     public int TypeRef => -1;
 
