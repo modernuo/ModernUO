@@ -19,7 +19,7 @@ using System.IO;
 
 namespace Server;
 
-public interface ISerializable
+public interface ISerializable : IGenericSerializable
 {
     // Should be serialized/deserialized with the index so it can be referenced by IGenericReader
     DateTime Created { get; set; }
@@ -48,7 +48,7 @@ public interface ISerializable
         }
     }
 
-    public void Serialize(ConcurrentQueue<Type> types)
+    void IGenericSerializable.Serialize(ConcurrentQueue<Type> types)
     {
         SaveBuffer ??= new BufferWriter(true, types);
 
