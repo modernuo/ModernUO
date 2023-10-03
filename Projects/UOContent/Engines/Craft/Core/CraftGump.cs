@@ -141,11 +141,12 @@ namespace Server.Engines.Craft
 
                 if (from.Backpack != null)
                 {
-                    var items = from.Backpack.FindItemsByType(resourceType);
-
-                    for (var i = 0; i < items.Count; ++i)
+                    foreach (var item in from.Backpack.FindItems())
                     {
-                        resourceCount += items[i].Amount;
+                        if (resourceType.IsInstanceOfType(item))
+                        {
+                            resourceCount += item.Amount;
+                        }
                     }
                 }
 
@@ -185,11 +186,12 @@ namespace Server.Engines.Craft
 
                 if (from.Backpack != null)
                 {
-                    var items = from.Backpack.FindItemsByType(resourceType);
-
-                    for (var i = 0; i < items.Count; ++i)
+                    foreach (var item in from.Backpack.FindItems())
                     {
-                        resourceCount += items[i].Amount;
+                        if (resourceType.IsInstanceOfType(item))
+                        {
+                            resourceCount += item.Amount;
+                        }
                     }
                 }
 
@@ -263,11 +265,13 @@ namespace Server.Engines.Craft
 
                 if (from.Backpack != null)
                 {
-                    var items = from.Backpack.FindItemsByType(subResource.ItemType);
-
-                    for (var j = 0; j < items.Count; ++j)
+                    var type = subResource.ItemType;
+                    foreach (var item in from.Backpack.FindItems())
                     {
-                        resourceCount += items[j].Amount;
+                        if (type.IsInstanceOfType(item))
+                        {
+                            resourceCount += item.Amount;
+                        }
                     }
                 }
 

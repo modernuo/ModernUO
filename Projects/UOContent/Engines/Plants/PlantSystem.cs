@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Items;
 using Server.Misc;
 
 namespace Server.Engines.Plants
@@ -402,28 +403,29 @@ namespace Server.Engines.Plants
 
         private static void EventSink_Login(Mobile from)
         {
-            from.Backpack?.FindItemsByType<PlantItem>()
-                .ForEach(
-                    plant =>
+            Container cont = from.Backpack;
+            if (cont != null)
+            {
+                foreach (var plant in cont.FindItemsByType<PlantItem>())
+                {
+                    if (plant.IsGrowable)
                     {
-                        if (plant.IsGrowable)
-                        {
-                            plant.PlantSystem.DoGrowthCheck();
-                        }
+                        plant.PlantSystem.DoGrowthCheck();
                     }
-                );
+                }
+            }
 
-            from.FindBankNoCreate()
-                ?.FindItemsByType<PlantItem>()
-                .ForEach(
-                    plant =>
+            cont = from.FindBankNoCreate();
+            if (cont != null)
+            {
+                foreach (var plant in cont.FindItemsByType<PlantItem>())
+                {
+                    if (plant.IsGrowable)
                     {
-                        if (plant.IsGrowable)
-                        {
-                            plant.PlantSystem.DoGrowthCheck();
-                        }
+                        plant.PlantSystem.DoGrowthCheck();
                     }
-                );
+                }
+            }
         }
 
         public static void GrowAll()

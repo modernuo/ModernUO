@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Logging;
@@ -150,8 +149,16 @@ namespace Server.Engines.MLQuests.Objectives
                 return 0;
             }
 
-            var items = pack.FindItemsByType(Objective.Delivery, false); // Note: subclasses are included
-            return items.Sum(item => item.Amount);
+            var total = 0;
+            foreach (var item in pack.FindItems(false))
+            {
+                if (ClaimTypePredicate(item))
+                {
+                    total += item.Amount;
+                }
+            }
+
+            return total;
         }
 
         public override bool OnBeforeClaimReward()
@@ -171,6 +178,9 @@ namespace Server.Engines.MLQuests.Objectives
             return true;
         }
 
+        // Note: subclasses are included
+        private bool ClaimTypePredicate(Item item) => Objective.Delivery.IsInstanceOfType(item);
+
         // TODO: This is VERY similar to CollectObjective.OnClaimReward
         public override void OnClaimReward()
         {
@@ -181,10 +191,9 @@ namespace Server.Engines.MLQuests.Objectives
                 return;
             }
 
-            var items = pack.FindItemsByType(Objective.Delivery, false);
             var left = Objective.Amount;
 
-            foreach (var item in items)
+            foreach (var item in pack.EnumerateItemsByType<Item>(false, ClaimTypePredicate))
             {
                 if (left == 0)
                 {

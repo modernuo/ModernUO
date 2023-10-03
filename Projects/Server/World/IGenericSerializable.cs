@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: FastwalkEvent.cs                                                *
+ * File: IWorldSerializable.cs                                           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,24 +14,11 @@
  *************************************************************************/
 
 using System;
-using System.Runtime.CompilerServices;
-using Server.Network;
+using System.Collections.Concurrent;
 
 namespace Server;
 
-public class FastWalkEventArgs
+public interface IGenericSerializable
 {
-    public FastWalkEventArgs(NetState state) => NetState = state;
-
-    public NetState NetState { get; }
-
-    public bool Blocked { get; set; } = true;
-}
-
-public static partial class EventSink
-{
-    public static event Action<FastWalkEventArgs> FastWalk;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void InvokeFastWalk(FastWalkEventArgs e) => FastWalk?.Invoke(e);
+    void Serialize(ConcurrentQueue<Type> types);
 }

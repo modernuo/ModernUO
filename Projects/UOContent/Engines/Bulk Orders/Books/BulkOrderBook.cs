@@ -244,11 +244,20 @@ namespace Server.Engines.BulkOrders
                             switch (v)
                             {
                                 case 0:
-                                    Entries.Add(new BOBLargeEntry(reader));
-                                    break;
+                                    {
+                                        var largeEntry = new BOBLargeEntry(BOBEntries.NewBOBEntry);
+                                        largeEntry.Deserialize(reader);
+
+                                        Entries.Add(largeEntry);
+                                        break;
+                                    }
                                 case 1:
-                                    Entries.Add(new BOBSmallEntry(reader));
-                                    break;
+                                    {
+                                        var smallEntry = new BOBSmallEntry(BOBEntries.NewBOBEntry);
+                                        smallEntry.Deserialize(reader);
+                                        Entries.Add(smallEntry);
+                                        break;
+                                    }
                             }
                         }
 

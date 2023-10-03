@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 using Server.Mobiles;
 
@@ -6,6 +7,30 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class ClockworkAssembly : Item
 {
+    private static Type[] _requiredParts =
+    {
+        typeof(PowerCrystal),
+        typeof(Gears),
+        typeof(BronzeIngot),
+        typeof(IronIngot),
+    };
+
+    private static int[] _requiredPartsClilocs =
+    {
+        1071945, // You need a power crystal to construct a golem.
+        1071946, // You need more gears to construct a golem.
+        1071947, // You need more bronze ingots to construct a golem.
+        1071948, // You need more iron ingots to construct a golem.
+    };
+
+    private static int[] _requiredAmounts =
+    {
+        1,  // Power Crystal
+        5,  // Gears
+        50, // Bronze Ingot
+        50, // Iron Ingot
+    };
+
     [Constructible]
     public ClockworkAssembly() : base(0x1EA8)
     {
@@ -13,13 +38,14 @@ public partial class ClockworkAssembly : Item
         Hue = 1102;
     }
 
-    public override string DefaultName => "clockwork assembly";
+    public override int LabelNumber => 1073426; // Clockwork Assembly
 
     public override void OnDoubleClick(Mobile from)
     {
         if (!IsChildOf(from.Backpack))
         {
-            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            // The clockwork assembly must be in your backpack to construct a golem.
+            from.SendLocalizedMessage(1071944);
             return;
         }
 
@@ -27,7 +53,7 @@ public partial class ClockworkAssembly : Item
 
         if (tinkerSkill < 60.0)
         {
-            from.SendMessage("You must have at least 60.0 skill in tinkering to construct a golem.");
+            from.SendLocalizedMessage(1071943); // You must be a Journeyman or higher Tinker to construct a golem.
             return;
         }
 
@@ -37,28 +63,14 @@ public partial class ClockworkAssembly : Item
             return;
         }
 
-        double scalar;
-
-        if (tinkerSkill >= 100.0)
+        double scalar = tinkerSkill switch
         {
-            scalar = 1.0;
-        }
-        else if (tinkerSkill >= 90.0)
-        {
-            scalar = 0.9;
-        }
-        else if (tinkerSkill >= 80.0)
-        {
-            scalar = 0.8;
-        }
-        else if (tinkerSkill >= 70.0)
-        {
-            scalar = 0.7;
-        }
-        else
-        {
-            scalar = 0.6;
-        }
+            >= 100.0 => 1.0,
+            >= 90.0  => 0.9,
+            >= 80.0  => 0.8,
+            >= 70.0  => 0.7,
+            _        => 0.6
+        };
 
         var pack = from.Backpack;
 
@@ -67,59 +79,22 @@ public partial class ClockworkAssembly : Item
             return;
         }
 
-        var res = pack.ConsumeTotal(
-            new[]
-            {
-                typeof(PowerCrystal),
-                typeof(IronIngot),
-                typeof(BronzeIngot),
-                typeof(Gears)
-            },
-            new[]
-            {
-                1,
-                50,
-                50,
-                5
-            }
-        );
+        var res = pack.ConsumeTotal(_requiredParts, _requiredAmounts);
 
-        switch (res)
+        if (res >= 0)
         {
-            case 0:
-                {
-                    from.SendMessage("You must have a power crystal to construct the golem.");
-                    break;
-                }
-            case 1:
-                {
-                    from.SendMessage("You must have 50 iron ingots to construct the golem.");
-                    break;
-                }
-            case 2:
-                {
-                    from.SendMessage("You must have 50 bronze ingots to construct the golem.");
-                    break;
-                }
-            case 3:
-                {
-                    from.SendMessage("You must have 5 gears to construct the golem.");
-                    break;
-                }
-            default:
-                {
-                    var g = new Golem(true, scalar);
+            from.SendLocalizedMessage(_requiredPartsClilocs[res]);
+            return;
+        }
 
-                    if (g.SetControlMaster(from))
-                    {
-                        Delete();
+        var g = new Golem(true, scalar);
 
-                        g.MoveToWorld(from.Location, from.Map);
-                        from.PlaySound(0x241);
-                    }
+        if (g.SetControlMaster(from))
+        {
+            Delete();
 
-                    break;
-                }
+            g.MoveToWorld(from.Location, from.Map);
+            from.PlaySound(0x241);
         }
     }
 }

@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.AncientUrn",
+  "properties": [
+    {
+      "name": "UrnName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

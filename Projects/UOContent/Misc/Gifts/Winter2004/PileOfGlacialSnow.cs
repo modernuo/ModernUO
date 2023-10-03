@@ -6,6 +6,8 @@ namespace Server.Items
 {
     public class PileOfGlacialSnow : Item
     {
+        private static Type[] _snowPileTypes = { typeof(SnowPile), typeof(PileOfGlacialSnow) };
+
         [Constructible]
         public PileOfGlacialSnow() : base(0x913)
         {
@@ -112,7 +114,7 @@ namespace Server.Items
                     {
                         from.SendMessage("You may not throw snow here.");
                     }
-                    else if (pack?.FindItemByType(new[] { typeof(SnowPile), typeof(PileOfGlacialSnow) }) != null)
+                    else if (pack?.FindItemByType(_snowPileTypes) != null)
                     {
                         if (from.BeginAction<SnowPile>())
                         {
@@ -134,16 +136,14 @@ namespace Server.Items
                     }
                     else
                     {
-                        from.SendLocalizedMessage(
-                            1005577
-                        ); // You can only throw a snowball at something that can throw one back.
+                        // You can only throw a snowball at something that can throw one back.
+                        from.SendLocalizedMessage(1005577);
                     }
                 }
                 else
                 {
-                    from.SendLocalizedMessage(
-                        1005577
-                    ); // You can only throw a snowball at something that can throw one back.
+                    // You can only throw a snowball at something that can throw one back.
+                    from.SendLocalizedMessage(1005577);
                 }
             }
         }

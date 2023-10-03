@@ -1,0 +1,60 @@
+{
+  "version": 2,
+  "type": "Server.Engines.Doom.GauntletSpawner",
+  "properties": [
+    {
+      "name": "RegionBounds",
+      "type": "Server.Rectangle2D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Rect2D"
+      ]
+    },
+    {
+      "name": "Traps",
+      "type": "System.Collections.Generic.List\u003CServer.Items.BaseTrap\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Items.BaseTrap",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Creatures",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "TypeName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Door",
+      "type": "Server.Items.BaseDoor",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Addon",
+      "type": "Server.Items.BaseAddon",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Sequence",
+      "type": "Server.Engines.Doom.GauntletSpawner",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "State",
+      "type": "Server.Engines.Doom.GauntletSpawnerState",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

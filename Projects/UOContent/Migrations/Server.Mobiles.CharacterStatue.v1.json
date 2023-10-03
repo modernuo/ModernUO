@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "type": "Server.Mobiles.CharacterStatue",
+  "properties": [
+    {
+      "name": "StatueType",
+      "type": "Server.Mobiles.StatueType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Pose",
+      "type": "Server.Mobiles.StatuePose",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Material",
+      "type": "Server.Mobiles.StatueMaterial",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "SculptedBy",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SculptedOn",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Plinth",
+      "type": "Server.Items.CharacterStatuePlinth",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

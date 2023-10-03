@@ -327,11 +327,16 @@ namespace Server.Engines.Plants
                     }
                 case 6: // Water
                     {
-                        var bev = from.Backpack.FindItemsByType<BaseBeverage>()
-                            .Find(
-                                beverage =>
-                                    beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water
-                            );
+                        BaseBeverage bev = null;
+
+                        foreach (var beverage in from.Backpack.FindItemsByType<BaseBeverage>())
+                        {
+                            if (beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water)
+                            {
+                                bev = beverage;
+                                break;
+                            }
+                        }
 
                         if (bev == null)
                         {
@@ -425,9 +430,7 @@ namespace Server.Engines.Plants
                 return null;
             }
 
-            var items = from.Backpack.FindItemsByType(new[] { typeof(BasePotion), typeof(PotionKeg) });
-
-            foreach (var item in items)
+            foreach (var item in from.Backpack.FindItems())
             {
                 if (item is BasePotion potion)
                 {
@@ -436,14 +439,9 @@ namespace Server.Engines.Plants
                         return potion;
                     }
                 }
-                else
+                else if (item is PotionKeg keg && keg.Held > 0 && Array.IndexOf(effects, keg.Type) >= 0)
                 {
-                    var keg = (PotionKeg)item;
-
-                    if (keg.Held > 0 && Array.IndexOf(effects, keg.Type) >= 0)
-                    {
-                        return keg;
-                    }
+                    return keg;
                 }
             }
 

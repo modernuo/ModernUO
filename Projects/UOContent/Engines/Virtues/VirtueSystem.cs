@@ -28,11 +28,22 @@ public enum VirtueName
     Honesty
 }
 
-public static class VirtueSystem
+public class VirtueSystem : GenericPersistence
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(VirtueSystem));
 
     private static readonly Dictionary<PlayerMobile, VirtueContext> _playerVirtues = new();
+
+    private static VirtueSystem _virtueSystemPersistence;
+
+    public static void Configure()
+    {
+        _virtueSystemPersistence = new VirtueSystem();
+    }
+
+    public VirtueSystem() : base("Virtues", 10)
+    {
+    }
 
     private static void FixVirtue(Mobile m, int[] virtueValues)
     {
@@ -52,11 +63,6 @@ public static class VirtueSystem
         }
     }
 
-    public static void Configure()
-    {
-        GenericPersistence.Register("Virtues", Serialize, Deserialize);
-    }
-
     public static void Initialize()
     {
         var migrations = Mobile.VirtueMigrations;
@@ -69,7 +75,7 @@ public static class VirtueSystem
         }
     }
 
-    private static void Serialize(IGenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
         writer.WriteEncodedInt(0); // version
 
@@ -81,7 +87,7 @@ public static class VirtueSystem
         }
     }
 
-    private static void Deserialize(IGenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
         reader.ReadEncodedInt(); // version
 
@@ -99,11 +105,16 @@ public static class VirtueSystem
         }
     }
 
-    public static VirtueContext GetVirtues(this PlayerMobile from) =>
-        _playerVirtues.TryGetValue(from, out var context) ? context : null;
+    public static VirtueContext GetVirtues(PlayerMobile from) =>
+        from != null && _playerVirtues.TryGetValue(from, out var context) ? context : null;
 
-    public static VirtueContext GetOrCreateVirtues(this PlayerMobile from)
+    public static VirtueContext GetOrCreateVirtues(PlayerMobile from)
     {
+        if (from == null)
+        {
+            return null;
+        }
+
         ref VirtueContext context = ref CollectionsMarshal.GetValueRefOrAddDefault(_playerVirtues, from, out bool exists);
         if (!exists)
         {
@@ -114,11 +125,11 @@ public static class VirtueSystem
     }
 
     public static bool IsHighestPath(PlayerMobile from, VirtueName virtue) =>
-        from.GetVirtues()?.GetValue((int)virtue) >= GetMaxAmount(virtue);
+        GetVirtues(from)?.GetValue((int)virtue) >= GetMaxAmount(virtue);
 
     public static VirtueLevel GetLevel(Mobile from, VirtueName virtue)
     {
-        var v = (from as PlayerMobile)?.GetVirtues()?.GetValue((int)virtue) ?? 0;
+        var v = GetVirtues(from as PlayerMobile)?.GetValue((int)virtue) ?? 0;
         int vl;
 
         if (v < 4000)
@@ -137,7 +148,7 @@ public static class VirtueSystem
         return (VirtueLevel)vl;
     }
 
-    public static string GetName(this VirtueName virtue) =>
+    public static string GetName(VirtueName virtue) =>
         virtue switch
         {
             VirtueName.Humility     => "Humility",
@@ -151,7 +162,7 @@ public static class VirtueSystem
             _                       => ""
         };
 
-    public static string GetLowerCaseName(this VirtueName virtue) =>
+    public static string GetLowerCaseName(VirtueName virtue) =>
         virtue switch
         {
             VirtueName.Humility     => "humility",
@@ -240,7 +251,7 @@ public static class VirtueSystem
 
     public static bool Atrophy(PlayerMobile from, VirtueName virtue, int amount = 1)
     {
-        var virtues = from.GetVirtues();
+        var virtues = GetVirtues(from);
         if (virtues == null)
         {
             return false;
@@ -268,7 +279,7 @@ public static class VirtueSystem
 
     public static void AwardVirtue(PlayerMobile pm, VirtueName virtue, int amount)
     {
-        var virtues = pm.GetOrCreateVirtues();
+        var virtues = GetOrCreateVirtues(pm);
         if (virtue == VirtueName.Compassion)
         {
             if (virtues.CompassionGains > 0 && Core.Now > virtues.NextCompassionDay)
@@ -285,7 +296,7 @@ public static class VirtueSystem
         }
 
         var gainedPath = false;
-        var virtueName = virtue.GetName();
+        var virtueName = GetName(virtue);
 
         if (Award(pm, virtue, amount, ref gainedPath))
         {
@@ -331,7 +342,7 @@ public static class VirtueSystem
         }
     }
 
-    public static void CheckAtrophies(this PlayerMobile pm)
+    public static void CheckAtrophies(PlayerMobile pm)
     {
         SacrificeVirtue.CheckAtrophy(pm);
         JusticeVirtue.CheckAtrophy(pm);

@@ -136,7 +136,7 @@ public abstract partial class BaseHealer : BaseVendor
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        // NOTE: This is to fix a previous RunUO serialiation issue with this class:
+        // NOTE: This is to fix a previous RunUO serialization issue with this class:
         // This would be a breaking change if there is a derived class that is version 2 or higher
         // If that is the case, change the SerializationGenerator to a version higher than that before merging this change
         reader.Seek(-4, SeekOrigin.Current);

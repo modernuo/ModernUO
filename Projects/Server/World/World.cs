@@ -18,7 +18,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Server.Guilds;
@@ -32,6 +31,7 @@ public enum WorldState
     Initial,
     Loading,
     Running,
+    PendingSave,
     Saving,
     WritingSave
 }
@@ -40,119 +40,35 @@ public static class World
 {
     private static ILogger logger = LogFactory.GetLogger(typeof(World));
 
-    private static ManualResetEvent m_DiskWriteHandle = new(true);
-    private static Dictionary<Serial, IEntity> _pendingAdd = new();
-    private static Dictionary<Serial, IEntity> _pendingDelete = new();
-    private static ConcurrentQueue<Item> _decayQueue = new();
+    private static readonly ItemPersistence _itemPersistence = new();
+    private static readonly MobilePersistence _mobilePersistence = new();
+    private static readonly GenericEntityPersistence<BaseGuild> _guildPersistence = new("Guilds", 3, 1, 0x7FFFFFFF);
+
+    private static int _threadId;
+    private static readonly SerializationThreadWorker[] _threadWorkers = new SerializationThreadWorker[Environment.ProcessorCount - 1];
+    private static readonly ManualResetEvent _diskWriteHandle = new(true);
+    private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
     private static string _tempSavePath; // Path to the temporary folder for the save
-    private static bool _enableSaveStats;
 
     public const bool DirtyTrackingEnabled = false;
     public const uint ItemOffset = 0x40000000;
     public const uint MaxItemSerial = 0x7FFFFFFF;
     public const uint MaxMobileSerial = ItemOffset - 1;
-    private const uint _maxItems = MaxItemSerial - ItemOffset + 1;
 
-    private static Serial _lastMobile = Serial.Zero;
-    private static Serial _lastItem = (Serial)ItemOffset;
-    private static Serial _lastGuild = Serial.Zero;
+    public static Serial NewMobile => _mobilePersistence.NewEntity;
+    public static Serial NewItem => _itemPersistence.NewEntity;
+    public static Serial NewGuild => _guildPersistence.NewEntity;
 
-    public static Serial NewMobile
-    {
-        get
-        {
-#if THREADGUARD
-            if (Thread.CurrentThread != Core.Thread)
-            {
-                logger.Error(
-                    "Attempted to get a new mobile serial from the wrong thread!\n{StackTrace}",
-                    new StackTrace()
-                );
-            }
-#endif
-            var last = _lastMobile;
-            var maxMobile = (Serial)MaxMobileSerial;
-
-            for (int i = 0; i < MaxMobileSerial; i++)
-            {
-                last++;
-
-                if (last > maxMobile)
-                {
-                    last = (Serial)1;
-                }
-
-                if (FindMobile(last, true) == null)
-                {
-                    return _lastMobile = last;
-                }
-            }
-
-            OutOfMemory("No serials left to allocate for mobiles");
-            return Serial.MinusOne;
-        }
-    }
-
-    public static Serial NewItem
-    {
-        get
-        {
-#if THREADGUARD
-            if (Thread.CurrentThread != Core.Thread)
-            {
-                logger.Error(
-                    "Attempted to get a new item serial from the wrong thread!\n{StackTrace}",
-                    new StackTrace()
-                );
-            }
-#endif
-            var last = _lastItem;
-
-            for (int i = 0; i < _maxItems; i++)
-            {
-                last++;
-
-                if (last > MaxItemSerial)
-                {
-                    last = (Serial)ItemOffset;
-                }
-
-                if (FindItem(last, true) == null)
-                {
-                    return _lastItem = last;
-                }
-            }
-
-            OutOfMemory("No serials left to allocate for items");
-            return Serial.MinusOne;
-        }
-    }
-
-    public static Serial NewGuild
-    {
-        get
-        {
-            while (FindGuild(_lastGuild += 1) != null)
-            {
-            }
-
-            return _lastGuild;
-        }
-    }
-
-    private static void OutOfMemory(string message) => throw new OutOfMemoryException(message);
+    public static Dictionary<Serial, Item> Items => _itemPersistence.EntitiesBySerial;
+    public static Dictionary<Serial, Mobile> Mobiles => _mobilePersistence.EntitiesBySerial;
+    public static Dictionary<Serial, BaseGuild> Guilds => _guildPersistence.EntitiesBySerial;
 
     public static string SavePath { get; private set; }
-
     public static WorldState WorldState { get; private set; }
     public static bool Saving => WorldState == WorldState.Saving;
     public static bool Running => WorldState is not WorldState.Loading and not WorldState.Initial;
     public static bool Loading => WorldState == WorldState.Loading;
-
-    public static Dictionary<Serial, Mobile> Mobiles { get; private set; }
-    public static Dictionary<Serial, Item> Items { get; private set; }
-    public static Dictionary<Serial, BaseGuild> Guilds { get; private set; }
 
     public static void Configure()
     {
@@ -161,17 +77,12 @@ public static class World
 
         var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
         SavePath = PathUtility.GetFullPath(savePath);
-
-        _enableSaveStats = ServerConfiguration.GetOrUpdateSetting("world.enableSaveStats", false);
-
-        // Mobiles & Items
-        Persistence.Register("Mobiles & Items", SaveEntities, WriteEntities, LoadEntities, 1);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WaitForWriteCompletion()
     {
-        m_DiskWriteHandle.WaitOne();
+        _diskWriteHandle.WaitOne();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -242,36 +153,6 @@ public static class World
         NetState.FlushAll();
     }
 
-    internal static void LoadEntities(string basePath, Dictionary<ulong, string> typesDb)
-    {
-        IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
-        IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
-        IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
-
-        Mobiles = EntityPersistence.LoadIndex(basePath, mobileIndexInfo, typesDb, out List<EntitySpan<Mobile>> mobiles);
-        Items = EntityPersistence.LoadIndex(basePath, itemIndexInfo, typesDb, out List<EntitySpan<Item>> items);
-        Guilds = EntityPersistence.LoadIndex(basePath, guildIndexInfo, typesDb, out List<EntitySpan<BaseGuild>> guilds);
-
-        if (Mobiles.Count > 0)
-        {
-            _lastMobile = Mobiles.Keys.Max();
-        }
-
-        if (Items.Count > 0)
-        {
-            _lastItem = Items.Keys.Max();
-        }
-
-        if (Guilds.Count > 0)
-        {
-            _lastGuild = Guilds.Keys.Max();
-        }
-
-        EntityPersistence.LoadData(basePath, mobileIndexInfo, typesDb, mobiles);
-        EntityPersistence.LoadData(basePath, itemIndexInfo, typesDb,  items);
-        EntityPersistence.LoadData(basePath, guildIndexInfo, typesDb, guilds);
-    }
-
     public static void Load()
     {
         if (WorldState != WorldState.Initial)
@@ -290,25 +171,7 @@ public static class World
         // Set the world to running before we process our queues
         WorldState = WorldState.Running;
 
-        ProcessSafetyQueues();
-
-        foreach (var item in Items.Values)
-        {
-            if (item.Parent == null)
-            {
-                item.UpdateTotals();
-            }
-
-            item.ClearProperties();
-        }
-
-        foreach (var m in Mobiles.Values)
-        {
-            m.UpdateRegion(); // Is this really needed?
-            m.UpdateTotals();
-
-            m.ClearProperties();
-        }
+        Persistence.PostDeserializeAll(); // Process safety queues
 
         watch.Stop();
 
@@ -318,47 +181,11 @@ public static class World
             Mobiles.Count,
             watch.Elapsed.TotalSeconds
         );
-    }
 
-    private static void ProcessSafetyQueues()
-    {
-        foreach (var entity in _pendingAdd.Values)
+        // Create the serialization threads.
+        for (var i = 0; i < _threadWorkers.Length; i++)
         {
-            AddEntity(entity);
-        }
-
-        _pendingAdd.Clear();
-
-        foreach (var entity in _pendingDelete.Values)
-        {
-            if (_pendingAdd.ContainsKey(entity.Serial))
-            {
-                logger.Warning("Entity {Entity} was both pending deletion and addition after save", entity);
-            }
-
-            RemoveEntity(entity);
-        }
-
-        _pendingDelete.Clear();
-    }
-
-    private static void AppendSafetyLog(string action, ISerializable entity)
-    {
-        var message =
-            $"Warning: Attempted to {{Action}} {{Entity}} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
-
-        logger.Information(message, action, entity);
-
-        try
-        {
-            using var op = new StreamWriter("world-save-errors.log", true);
-            op.WriteLine("{0}\t{1}", DateTime.UtcNow, message);
-            op.WriteLine(new StackTrace(2).ToString());
-            op.WriteLine();
-        }
-        catch
-        {
-            // ignored
+            _threadWorkers[i] = new SerializationThreadWorker();
         }
     }
 
@@ -366,56 +193,7 @@ public static class World
     {
         WorldState = WorldState.Running;
 
-        ProcessDecay();
-        ProcessSafetyQueues();
-    }
-
-    private static void TraceSave(params IEnumerable<KeyValuePair<string, int>>[] entityTypes)
-    {
-        try
-        {
-            int count = 0;
-
-            var timestamp = Utility.GetTimeStamp();
-            var saveStatsPath = Path.Combine(Core.BaseDirectory, $"Logs/Saves/Save-Stats-{timestamp}.log");
-            PathUtility.EnsureDirectory(saveStatsPath);
-
-            using var op = new StreamWriter(saveStatsPath, true);
-
-            for (var i = 0; i < entityTypes.Length; i++)
-            {
-                foreach (var (t, c) in entityTypes[i])
-                {
-                    op.WriteLine("{0}: {1}", t, c);
-                    count++;
-                }
-            }
-
-            op.WriteLine("- Total: {0}", count);
-
-            op.WriteLine();
-            op.WriteLine();
-        }
-        catch
-        {
-            // ignored
-        }
-    }
-
-    internal static void WriteEntities(string basePath)
-    {
-        IIndexInfo<Serial> itemIndexInfo = new EntityTypeIndex("Items");
-        IIndexInfo<Serial> mobileIndexInfo = new EntityTypeIndex("Mobiles");
-        IIndexInfo<Serial> guildIndexInfo = new EntityTypeIndex("Guilds");
-
-        EntityPersistence.WriteEntities(mobileIndexInfo, Mobiles, basePath, SerializedTypes, out var mobileCounts);
-        EntityPersistence.WriteEntities(itemIndexInfo, Items, basePath, SerializedTypes, out var itemCounts);
-        EntityPersistence.WriteEntities(guildIndexInfo, Guilds, basePath, SerializedTypes, out var guildCounts);
-
-        if (_enableSaveStats)
-        {
-            TraceSave(mobileCounts?.ToList(), itemCounts?.ToList(), guildCounts?.ToList());
-        }
+        Persistence.PostSerializeAll(); // Process safety queues
     }
 
     public static void WriteFiles(object state)
@@ -453,6 +231,7 @@ public static class World
             {
                 EventSink.InvokeWorldSavePostSnapshot(SavePath, tempPath);
                 PathUtility.MoveDirectory(tempPath, SavePath);
+                Directory.SetLastWriteTimeUtc(SavePath, Core.Now);
             }
             catch (Exception ex)
             {
@@ -463,7 +242,7 @@ public static class World
         // Clear types
         SerializedTypes.Clear();
 
-        m_DiskWriteHandle.Set();
+        _diskWriteHandle.Set();
 
         Core.LoopContext.Post(FinishWorldSave);
     }
@@ -515,25 +294,6 @@ public static class World
      */
     public static ConcurrentQueue<Type> SerializedTypes { get; } = new();
 
-    private static void SaveEntities()
-    {
-        _serializationStart = DateTime.UtcNow;
-        EntityPersistence.SaveEntities(Items.Values, SaveEntity);
-        EntityPersistence.SaveEntities(Mobiles.Values, SaveEntity);
-        EntityPersistence.SaveEntities(Guilds.Values, SaveEntity);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void SaveEntity<T>(T entity) where T : class, ISerializable
-    {
-        if (entity is Item item && item.CanDecay() && item.LastMoved + item.DecayTime <= _serializationStart)
-        {
-            EnqueueForDecay(item);
-        }
-
-        entity.Serialize(SerializedTypes);
-    }
-
     public static void Save()
     {
         if (WorldState != WorldState.Running)
@@ -543,9 +303,25 @@ public static class World
 
         WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
 
-        WorldState = WorldState.Saving;
+        _diskWriteHandle.Reset();
 
-        m_DiskWriteHandle.Reset();
+        // Start our serialization threads
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            _threadWorkers[i].Wake();
+        }
+
+        WorldState = WorldState.PendingSave;
+
+        Core.RequestSnapshot();
+    }
+
+    internal static TimeSpan Snapshot()
+    {
+        if (WorldState != WorldState.PendingSave)
+        {
+            return TimeSpan.Zero;
+        }
 
         Broadcast(0x35, true, "The world is saving, please wait.");
 
@@ -557,7 +333,15 @@ public static class World
 
         try
         {
-            Persistence.Serialize();
+            _serializationStart = Core.Now;
+            Persistence.SerializeAll();
+
+            // Pause the workers
+            foreach (var worker in _threadWorkers)
+            {
+                worker.Sleep();
+            }
+
             EventSink.InvokeWorldSave();
         }
         catch (Exception ex)
@@ -567,248 +351,236 @@ public static class World
 
         WorldState = WorldState.WritingSave;
 
-        watch.Stop();
-
         if (exception == null)
         {
             var duration = watch.Elapsed.TotalSeconds;
             logger.Information("Saving world {Status} ({Duration:F2} seconds)", "done", duration);
 
-            // Only broadcast if it took at least 150ms
-            if (duration >= 0.15)
-            {
-                Broadcast(0x35, true, $"World Save completed in {duration:F2} seconds.");
-            }
+            Broadcast(0x35, true, $"World save completed in {duration:F2} seconds.");
         }
         else
         {
             logger.Error(exception, "Saving world {Status}", "failed");
             Persistence.TraceException(exception);
 
-            BroadcastStaff(0x35, true, "World save failed.");
+            BroadcastStaff(0x35, true, "World save failed! Check the logs!");
         }
 
         ThreadPool.QueueUserWorkItem(WriteFiles);
+
+        watch.Stop();
+
+        return watch.Elapsed;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEntity FindEntity(Serial serial, bool returnDeleted = false) => FindEntity<IEntity>(serial, returnDeleted);
-
-    public static T FindEntity<T>(Serial serial, bool returnDeleted = false) where T : class, IEntity
+    internal static void PushToCache(IGenericSerializable e)
     {
-        switch (WorldState)
+        _threadWorkers[_threadId++].Push(e);
+        if (_threadId == _threadWorkers.Length)
         {
-            default: return default;
-            case WorldState.Loading:
-            case WorldState.Saving:
-            case WorldState.WritingSave:
-                {
-                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
-                    {
-                        return entity as T;
-                    }
+            _threadId = 0;
+        }
+    }
 
-                    if (!_pendingAdd.TryGetValue(serial, out entity))
-                    {
-                        if (serial.IsItem)
-                        {
-                            if (Items.TryGetValue(serial, out var item))
-                            {
-                                entity = item;
-                            }
-                        }
-                        else // if (serial.IsMobile)
-                        {
-                            if (Mobiles.TryGetValue(serial, out var mob))
-                            {
-                                entity = mob;
-                            }
-                        }
-                    }
-
-                    return entity?.Deleted == false || returnDeleted ? entity as T : null;
-                }
-            case WorldState.Running:
-                {
-                    if (serial.IsItem)
-                    {
-                        Items.TryGetValue(serial, out var item);
-                        return item as T;
-                    }
-
-                    if (serial.IsMobile)
-                    {
-                        Mobiles.TryGetValue(serial, out var mob);
-                        return mob as T;
-                    }
-
-                    return default;
-                }
+    internal static void SleepSerializationThreads()
+    {
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            _threadWorkers[i].Sleep();
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Item FindItem(Serial serial, bool returnDeleted = false) => FindEntity<Item>(serial, returnDeleted);
+    public static Item FindItem(Serial serial, bool returnDeleted = false) => _itemPersistence.Find(serial, returnDeleted);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Mobile FindMobile(Serial serial, bool returnDeleted = false) =>
-        FindEntity<Mobile>(serial, returnDeleted);
+        _mobilePersistence.Find(serial, returnDeleted);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static BaseGuild FindGuild(Serial serial) => Guilds.TryGetValue(serial, out var guild) ? guild : null;
-
-    public static void AddEntity<T>(T entity) where T : class, IEntity
+    // Legacy: Only used for retrieving Items and Mobiles.
+    public static void AddEntity(IEntity entity)
     {
-        switch (WorldState)
+        if (entity is Item item)
         {
-            default: // Not Running
-                {
-                    throw new Exception($"Added {entity.GetType().Name} before world load.");
-                }
-            case WorldState.Saving:
-                {
-                    AppendSafetyLog("add", entity);
-                    goto case WorldState.WritingSave;
-                }
-            case WorldState.Loading:
-            case WorldState.WritingSave:
-                {
-                    if (_pendingDelete.Remove(entity.Serial))
-                    {
-                        logger.Warning("Deleted then added {Entity} during {WorldState} state.", entity.GetType().Name, WorldState.ToString());
-                    }
-                    _pendingAdd[entity.Serial] = entity;
-                    break;
-                }
-            case WorldState.Running:
-                {
-                    if (entity.Serial.IsItem)
-                    {
-                        if (!Items.TryAdd(entity.Serial, entity as Item))
-                        {
-                            var existing = Items[entity.Serial];
-
-                            if (existing == entity)
-                            {
-                                logger.Error(
-                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
-                                    entity.GetType().FullName,
-                                    entity.Serial,
-                                    new StackTrace()
-                                );
-                            }
-                            else
-                            {
-                                logger.Error(
-                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
-                                    entity.GetType().FullName,
-                                    entity.Serial,
-                                    existing.GetType().FullName,
-                                    existing.Serial,
-                                    new StackTrace()
-                                );
-                            }
-                        }
-                    }
-
-                    if (entity.Serial.IsMobile)
-                    {
-                        if (!Mobiles.TryAdd(entity.Serial, entity as Mobile))
-                        {
-                            var existing = Mobiles[entity.Serial];
-
-                            if (existing == entity)
-                            {
-                                logger.Error(
-                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
-                                    entity.GetType().FullName,
-                                    entity.Serial,
-                                    new StackTrace()
-                                );
-                            }
-                            else
-                            {
-                                logger.Error(
-                                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Mobiles but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
-                                    entity.GetType().FullName,
-                                    entity.Serial,
-                                    existing.GetType().FullName,
-                                    existing.Serial,
-                                    new StackTrace()
-                                );
-                            }
-                        }
-                    }
-                    break;
-                }
+            _itemPersistence.AddEntity(item);
+        }
+        else if (entity is Mobile mobile)
+        {
+            _mobilePersistence.AddEntity(mobile);
+        }
+        else
+        {
+            logger.Warning($"Attempted to call World.AddEntity with '{entity.GetType()}'. Must be a mobile or item.");
         }
     }
 
-    public static void AddGuild(BaseGuild guild)
+    public static void RemoveEntity(IEntity entity)
     {
-        if (!Guilds.TryAdd(guild.Serial, guild))
+        if (entity is Item item)
         {
-            var existing = Guilds[guild.Serial];
-
-            if (existing == guild)
-            {
-                logger.Error(
-                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
-                    guild.GetType().FullName,
-                    guild.Serial,
-                    new StackTrace()
-                );
-            }
-            else
-            {
-                logger.Error(
-                    $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Guilds but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
-                    guild.GetType().FullName,
-                    guild.Serial,
-                    existing.GetType().FullName,
-                    existing.Serial,
-                    new StackTrace()
-                );
-            }
+            _itemPersistence.RemoveEntity(item);
         }
-    }
-
-    public static void RemoveEntity<T>(T entity) where T : class, IEntity
-    {
-        switch (WorldState)
+        else if (entity is Mobile mobile)
         {
-            default: // Not Running
-                {
-                    throw new Exception($"Removed {entity.GetType().Name} before world load.");
-                }
-            case WorldState.Saving:
-                {
-                    AppendSafetyLog("delete", entity);
-                    goto case WorldState.WritingSave;
-                }
-            case WorldState.Loading:
-            case WorldState.WritingSave:
-                {
-                    _pendingAdd.Remove(entity.Serial);
-                    _pendingDelete[entity.Serial] = entity;
-                    break;
-                }
-            case WorldState.Running:
-                {
-                    if (entity.Serial.IsItem)
-                    {
-                        Items.Remove(entity.Serial);
-                    }
-
-                    if (entity.Serial.IsMobile)
-                    {
-                        Mobiles.Remove(entity.Serial);
-                    }
-                    break;
-                }
+            _mobilePersistence.RemoveEntity(mobile);
+        }
+        else
+        {
+            logger.Warning($"Attempted to call World.RemoveEntity with '{entity.GetType()}'. Must be a mobile or item.");
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void RemoveGuild(BaseGuild guild) => Guilds.Remove(guild.Serial);
+    public static BaseGuild FindGuild(Serial serial) => _guildPersistence.Find(serial);
+
+    public static void AddGuild(BaseGuild guild) => _guildPersistence.AddEntity(guild);
+
+    public static void RemoveGuild(BaseGuild guild) => _guildPersistence.RemoveEntity(guild);
+
+    // Legacy: Only used for retrieving Items and Mobiles.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEntity FindEntity(Serial serial, bool returnDeleted = false, bool returnPending = false) =>
+        FindEntity<IEntity>(serial, returnDeleted, returnPending);
+
+    // Legacy: Only used for retrieving Items and Mobiles.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T FindEntity<T>(Serial serial, bool returnDeleted = false, bool returnPending = false)
+        where T : class, IEntity
+    {
+        if (serial.IsItem)
+        {
+            return _itemPersistence.Find(serial, returnDeleted, returnPending) as T;
+        }
+
+        return _mobilePersistence.Find(serial, returnDeleted, returnPending) as T;
+    }
+
+    private class ItemPersistence : GenericEntityPersistence<Item>
+    {
+        public ItemPersistence() : base("Items", 2, ItemOffset, MaxItemSerial)
+        {
+        }
+
+        public override void PostDeserialize()
+        {
+            base.PostDeserialize();
+
+            foreach (var item in EntitiesBySerial.Values)
+            {
+                if (item.Parent == null)
+                {
+                    item.UpdateTotals();
+                }
+
+                item.ClearProperties();
+            }
+        }
+
+        public override void WriteSnapshot(string basePath)
+        {
+            base.WriteSnapshot(basePath);
+
+            foreach (var item in EntitiesBySerial.Values)
+            {
+                if (item.CanDecay() && item.LastMoved + item.DecayTime <= _serializationStart)
+                {
+                    EnqueueForDecay(item);
+                }
+            }
+        }
+
+        public override void PostSerialize()
+        {
+            ProcessDecay(); // Run this before the safety queue
+
+            base.PostSerialize();
+        }
+    }
+
+    private class MobilePersistence : GenericEntityPersistence<Mobile>
+    {
+        public MobilePersistence() : base("Mobiles", 1, 1, MaxMobileSerial)
+        {
+        }
+
+        public override void PostDeserialize()
+        {
+            base.PostDeserialize();
+
+            foreach (var m in EntitiesBySerial.Values)
+            {
+                m.UpdateRegion(); // Is this really needed?
+                m.UpdateTotals();
+
+                m.ClearProperties();
+            }
+        }
+    }
+
+    private class SerializationThreadWorker
+    {
+        private readonly Thread _thread;
+        private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
+        private readonly AutoResetEvent _stopEvent; // Main thread waits for the worker finish draining
+        private bool _pause;
+        private readonly ConcurrentQueue<IGenericSerializable> _entities;
+
+        public SerializationThreadWorker()
+        {
+            _startEvent = new AutoResetEvent(false);
+            _stopEvent = new AutoResetEvent(false);
+            _entities = new ConcurrentQueue<IGenericSerializable>();
+            _thread = new Thread(Execute);
+            _thread.Start(this);
+        }
+
+        public void Wake()
+        {
+            _startEvent.Set();
+        }
+
+        public void Sleep()
+        {
+            Volatile.Write(ref _pause, true);
+            _stopEvent.WaitOne();
+        }
+
+        public void Push(IGenericSerializable entity)
+        {
+            _entities.Enqueue(entity);
+        }
+
+        private static void Execute(object obj)
+        {
+            var serializedTypes = SerializedTypes;
+            SerializationThreadWorker worker = (SerializationThreadWorker)obj;
+
+            var reader = worker._entities;
+
+            while (worker._startEvent.WaitOne())
+            {
+                while (true)
+                {
+                    bool pauseRequested = Volatile.Read(ref worker._pause);
+                    if (reader.TryDequeue(out var entity))
+                    {
+                        entity.Serialize(serializedTypes);
+                    }
+                    else if (pauseRequested) // Break when finished
+                    {
+                        break;
+                    }
+                }
+
+                worker._stopEvent.Set(); // Allow the main thread to continue now that we are finished
+                worker._pause = false;
+
+                if (Core.Closing)
+                {
+                    return;
+                }
+            }
+        }
+    }
 }

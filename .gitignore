@@ -9,6 +9,7 @@
 /Distribution/Configuration/modernuo.json
 /Distribution/Configuration/email-settings.json
 /Distribution/Configuration/throttles.json
+/Distribution/Configuration/tot.json
 /Distribution/Logs
 /Distribution/Archives
 /Distribution/Backups

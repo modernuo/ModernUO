@@ -6,8 +6,10 @@ using Server.Mobiles;
 
 namespace Server.Engines.CannedEvil;
 
-public static class ChampionTitleSystem
+public class ChampionTitleSystem : GenericPersistence
 {
+    private static ChampionTitleSystem _championTitlePersistence;
+
     // All of the players with murders
     private static readonly Dictionary<PlayerMobile, ChampionTitleContext> _championTitleContexts = new();
 
@@ -15,7 +17,7 @@ public static class ChampionTitleSystem
 
     public static void Configure()
     {
-        GenericPersistence.Register("ChampionTitles", Serialize, Deserialize);
+        _championTitlePersistence = new ChampionTitleSystem();
     }
 
     public static void Initialize()
@@ -33,7 +35,11 @@ public static class ChampionTitleSystem
         }
     }
 
-    private static void Deserialize(IGenericReader reader)
+    public ChampionTitleSystem() : base("ChampionTitles", 10)
+    {
+    }
+
+    public override void Deserialize(IGenericReader reader)
     {
         var version = reader.ReadEncodedInt();
 
@@ -47,7 +53,7 @@ public static class ChampionTitleSystem
         }
     }
 
-    private static void Serialize(IGenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
         writer.WriteEncodedInt(0); // version
 
@@ -59,10 +65,18 @@ public static class ChampionTitleSystem
         }
     }
 
-    public static bool GetChampionTitleContext(this PlayerMobile player, out ChampionTitleContext context) =>
-        _championTitleContexts.TryGetValue(player, out context);
+    public static bool GetChampionTitleContext(PlayerMobile player, out ChampionTitleContext context)
+    {
+        if (player != null && _championTitleContexts.TryGetValue(player, out context))
+        {
+            return true;
+        }
 
-    public static ChampionTitleContext GetOrCreateChampionTitleContext(this PlayerMobile player)
+        context = null;
+        return false;
+    }
+
+    public static ChampionTitleContext GetOrCreateChampionTitleContext(PlayerMobile player)
     {
         ref var context = ref CollectionsMarshal.GetValueRefOrAddDefault(_championTitleContexts, player, out var exists);
         if (!exists)
@@ -76,7 +90,7 @@ public static class ChampionTitleSystem
     // Called when killing a harrower. Will give a minimum of 1 point.
     public static void AwardHarrowerTitle(PlayerMobile pm)
     {
-        var context = pm.GetOrCreateChampionTitleContext();
+        var context = GetOrCreateChampionTitleContext(pm);
 
         var count = 1;
         for (var i = 0; i < ChampionSpawnInfo.Table.Length; i++)
@@ -91,9 +105,9 @@ public static class ChampionTitleSystem
         context.Harrower = Math.Max(count, context.Harrower); // Harrower titles never decay.
     }
 
-    public static int GetChampionTitleLabel(this PlayerMobile player)
+    public static int GetChampionTitleLabel(PlayerMobile player)
     {
-        if (!player.GetChampionTitleContext(out var context))
+        if (!GetChampionTitleContext(player, out var context))
         {
             return 0;
         }

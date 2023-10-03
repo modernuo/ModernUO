@@ -113,7 +113,7 @@ public class VirtueGump : Gump
 
     private int GetHueFor(int index)
     {
-        var value = _beheld.GetVirtues()?.GetValue(index) ?? 0;
+        var value = VirtueSystem.GetVirtues((_beheld))?.GetValue(index) ?? 0;
 
         if (value < 4000)
         {

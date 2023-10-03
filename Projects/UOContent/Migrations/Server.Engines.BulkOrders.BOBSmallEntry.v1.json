@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "type": "Server.Engines.BulkOrders.BOBSmallEntry",
+  "properties": [
+    {
+      "name": "ItemType",
+      "type": "System.Type",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "AmountCur",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "Number",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "Graphic",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    }
+  ]
+}

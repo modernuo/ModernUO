@@ -14,40 +14,46 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Server;
 
-public static class GenericPersistence
+public abstract class GenericPersistence : Persistence, IGenericSerializable
 {
-    public static void Register(
-        string name,
-        Action<IGenericWriter> serializer,
-        Action<IGenericReader> deserializer,
-        int priority = Persistence.DefaultPriority
-    )
+    public string Name { get; }
+
+    public GenericPersistence(string name, int priority) : base(priority) => Name = name;
+
+    public override void Serialize()
     {
-        BufferWriter saveBuffer = null;
-
-        void Serialize()
-        {
-            saveBuffer ??= new BufferWriter(true, World.SerializedTypes);
-            saveBuffer.Seek(0, SeekOrigin.Begin);
-
-            serializer(saveBuffer);
-        }
-
-        void WriteSnapshot(string savePath)
-        {
-            string binPath = Path.Combine(savePath, name, $"{name}.bin");
-            var buffer = saveBuffer!.Buffer.AsSpan(0, (int)saveBuffer.Position);
-            AdhocPersistence.WriteSnapshot(new FileInfo(binPath), buffer);
-        }
-
-        void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
-            AdhocPersistence.Deserialize(Path.Combine(savePath, name, $"{name}.bin"), deserializer);
-
-        Persistence.Register(name, Serialize, WriteSnapshot, Deserialize, priority);
+        World.PushToCache(this);
     }
+
+    public long SavePosition { get; set; }
+
+    public BufferWriter SaveBuffer { get; set; }
+
+    public void Serialize(ConcurrentQueue<Type> types)
+    {
+        SaveBuffer ??= new BufferWriter(true, types);
+
+        SaveBuffer.Seek(0, SeekOrigin.Begin);
+        Serialize(SaveBuffer);
+    }
+
+    public abstract void Serialize(IGenericWriter writer);
+
+    public override void WriteSnapshot(string basePath)
+    {
+        string binPath = Path.Combine(basePath, Name, $"{Name}.bin");
+        var buffer = SaveBuffer!.Buffer.AsSpan(0, (int)SaveBuffer.Position);
+        AdhocPersistence.WriteSnapshot(new FileInfo(binPath), buffer);
+    }
+
+    public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
+        AdhocPersistence.Deserialize(Path.Combine(savePath, Name, $"{Name}.bin"), Deserialize);
+
+    public abstract void Deserialize(IGenericReader reader);
 }

@@ -1,5 +1,4 @@
 using System;
-using ModernUO.Serialization;
 using Server.Factions.AI;
 using Server.Items;
 using Server.Mobiles;

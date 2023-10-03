@@ -129,7 +129,7 @@ public partial class ArcaneGem : Item
                     else
                     {
                         weapon.Quality = WeaponQuality.Regular;
-                        weapon.Crafter = from;
+                        weapon.Crafter = from.RawName;
                     }
 
                     eq.CurArcaneCharges = eq.MaxArcaneCharges = charges;

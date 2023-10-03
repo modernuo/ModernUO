@@ -1,238 +1,130 @@
 ﻿using System;
+using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Items;
 
-namespace Server.Engines.MLQuests.Items
+namespace Server.Engines.MLQuests.Items;
+
+[SerializationGenerator(0, false)]
+public abstract partial class BaseCraftmansSatchel : Backpack
 {
-    public abstract class BaseCraftmansSatchel : Backpack
+    protected static readonly Type[] m_TalismanType = { typeof(RandomTalisman) };
+
+    public BaseCraftmansSatchel() => Hue = Utility.RandomBrightHue();
+
+    protected void AddBaseLoot(params Type[][] lootSets)
     {
-        protected static readonly Type[] m_TalismanType = { typeof(RandomTalisman) };
+        var loot = Loot.Construct(lootSets.RandomElement());
 
-        public BaseCraftmansSatchel() => Hue = Utility.RandomBrightHue();
-
-        public BaseCraftmansSatchel(Serial serial)
-            : base(serial)
+        if (loot == null)
         {
+            return;
         }
 
-        protected void AddBaseLoot(params Type[][] lootSets)
-        {
-            var loot = Loot.Construct(lootSets.RandomElement());
-
-            if (loot == null)
-            {
-                return;
-            }
-
-            RewardBag.Enhance(loot);
-            DropItem(loot);
-        }
-
-        protected void AddRecipe(CraftSystem system)
-        {
-            // TODO: change craftable artifact recipes to a rarer drop
-            var recipeID = system.RandomRecipe();
-
-            if (recipeID != -1)
-            {
-                DropItem(new RecipeScroll(recipeID));
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        RewardBag.Enhance(loot);
+        DropItem(loot);
     }
 
-    public class TailorSatchel : BaseCraftmansSatchel
+    protected void AddRecipe(CraftSystem system)
     {
-        [Constructible]
-        public TailorSatchel()
+        // TODO: change craftable artifact recipes to a rarer drop
+        var recipeID = system.RandomRecipe();
+
+        if (recipeID != -1)
         {
-            AddBaseLoot(Loot.MLArmorTypes, Loot.JewelryTypes, m_TalismanType);
-
-            if (Utility.RandomBool())
-            {
-                AddRecipe(DefTailoring.CraftSystem);
-            }
-        }
-
-        public TailorSatchel(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            DropItem(new RecipeScroll(recipeID));
         }
     }
+}
 
-    public class BlacksmithSatchel : BaseCraftmansSatchel
+[SerializationGenerator(0, false)]
+public partial class TailorSatchel : BaseCraftmansSatchel
+{
+    [Constructible]
+    public TailorSatchel()
     {
-        [Constructible]
-        public BlacksmithSatchel()
+        AddBaseLoot(Loot.MLArmorTypes, Loot.JewelryTypes, m_TalismanType);
+
+        if (Utility.RandomBool())
         {
-            AddBaseLoot(Loot.MLWeaponTypes, Loot.JewelryTypes, m_TalismanType);
-
-            if (Utility.RandomBool())
-            {
-                AddRecipe(DefBlacksmithy.CraftSystem);
-            }
-        }
-
-        public BlacksmithSatchel(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            AddRecipe(DefTailoring.CraftSystem);
         }
     }
+}
 
-    public class TinkerSatchel : BaseCraftmansSatchel
+[SerializationGenerator(0, false)]
+public partial class BlacksmithSatchel : BaseCraftmansSatchel
+{
+    [Constructible]
+    public BlacksmithSatchel()
     {
-        [Constructible]
-        public TinkerSatchel()
+        AddBaseLoot(Loot.MLWeaponTypes, Loot.JewelryTypes, m_TalismanType);
+
+        if (Utility.RandomBool())
         {
-            AddBaseLoot(Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
-
-            if (Utility.RandomBool())
-            {
-                switch (Utility.Random(6))
-                {
-                    case 0:
-                        AddRecipe(DefInscription.CraftSystem);
-                        break;
-                    case 1:
-                        AddRecipe(DefAlchemy.CraftSystem);
-                        break;
-                    // TODO
-                    // case 2: AddNonArtifactRecipe( DefTailoring.CraftSystem ); break;
-                    // case 3: AddNonArtifactRecipe( DefBlacksmithy.CraftSystem ); break;
-                    // case 4: AddNonArtifactRecipe( DefCarpentry.CraftSystem ); break;
-                    // case 5: AddNonArtifactRecipe( DefBowFletching.CraftSystem ); break;
-                }
-            }
-        }
-
-        public TinkerSatchel(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
+            AddRecipe(DefBlacksmithy.CraftSystem);
         }
     }
+}
 
-    public class FletchingSatchel : BaseCraftmansSatchel
+[SerializationGenerator(0, false)]
+public partial class TinkerSatchel : BaseCraftmansSatchel
+{
+    [Constructible]
+    public TinkerSatchel()
     {
-        [Constructible]
-        public FletchingSatchel()
-        {
-            AddBaseLoot(Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
+        AddBaseLoot(Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
 
-            if (Utility.RandomBool())
+        if (Utility.RandomBool())
+        {
+            switch (Utility.Random(6))
             {
-                AddRecipe(DefBowFletching.CraftSystem);
+                case 0:
+                    AddRecipe(DefInscription.CraftSystem);
+                    break;
+                case 1:
+                    AddRecipe(DefAlchemy.CraftSystem);
+                    break;
+                // TODO
+                // case 2: AddNonArtifactRecipe( DefTailoring.CraftSystem ); break;
+                // case 3: AddNonArtifactRecipe( DefBlacksmithy.CraftSystem ); break;
+                // case 4: AddNonArtifactRecipe( DefCarpentry.CraftSystem ); break;
+                // case 5: AddNonArtifactRecipe( DefBowFletching.CraftSystem ); break;
             }
-
-            // TODO: runic fletching kit
-        }
-
-        public FletchingSatchel(Serial serial)
-            : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
     }
+}
 
-    public class CarpentrySatchel : BaseCraftmansSatchel
+[SerializationGenerator(0, false)]
+public partial class FletchingSatchel : BaseCraftmansSatchel
+{
+    [Constructible]
+    public FletchingSatchel()
     {
-        [Constructible]
-        public CarpentrySatchel()
+        AddBaseLoot(Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
+
+        if (Utility.RandomBool())
         {
-            AddBaseLoot(Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
-
-            if (Utility.RandomBool())
-            {
-                AddRecipe(DefCarpentry.CraftSystem);
-            }
-
-            // TODO: Add runic dovetail saw
+            AddRecipe(DefBowFletching.CraftSystem);
         }
 
-        public CarpentrySatchel(Serial serial)
-            : base(serial)
+        // TODO: runic fletching kit
+    }
+}
+
+[SerializationGenerator(0, false)]
+public partial class CarpentrySatchel : BaseCraftmansSatchel
+{
+    [Constructible]
+    public CarpentrySatchel()
+    {
+        AddBaseLoot(Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
+
+        if (Utility.RandomBool())
         {
+            AddRecipe(DefCarpentry.CraftSystem);
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        // TODO: Add runic dovetail saw
     }
 }

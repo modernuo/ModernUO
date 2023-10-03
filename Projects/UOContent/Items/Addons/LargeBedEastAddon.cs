@@ -17,32 +17,15 @@ namespace Server.Items
         public override BaseAddonDeed Deed => new LargeBedEastDeed();
     }
 
-    public class LargeBedEastDeed : BaseAddonDeed
+    [SerializationGenerator(0, false)]
+    public partial class LargeBedEastDeed : BaseAddonDeed
     {
         [Constructible]
         public LargeBedEastDeed()
         {
         }
 
-        public LargeBedEastDeed(Serial serial) : base(serial)
-        {
-        }
-
         public override BaseAddon Addon => new LargeBedEastAddon();
         public override int LabelNumber => 1044324; // large bed (east)
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

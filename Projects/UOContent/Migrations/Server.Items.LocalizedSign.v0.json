@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.LocalizedSign",
+  "properties": [
+    {
+      "name": "Number",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

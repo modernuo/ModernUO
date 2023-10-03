@@ -83,12 +83,8 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
                     return 1;
                 }
 
-                var kegs = pack.FindItemsByType<PotionKeg>();
-
-                for (var i = 0; i < kegs.Count; ++i)
+                foreach (var keg in pack.EnumerateItemsByType<PotionKeg>())
                 {
-                    var keg = kegs[i];
-
                     if (keg.Held is <= 0 or >= 100)
                     {
                         continue;

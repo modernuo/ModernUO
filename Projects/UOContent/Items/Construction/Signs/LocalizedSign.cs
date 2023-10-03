@@ -1,56 +1,21 @@
-namespace Server.Items
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class LocalizedSign : Sign
 {
-    public class LocalizedSign : Sign
-    {
-        private int m_LabelNumber;
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _number;
 
-        [Constructible]
-        public LocalizedSign(SignType type, SignFacing facing, int labelNumber) :
-            base(0xB95 + 2 * (int)type + (int)facing) => m_LabelNumber = labelNumber;
+    [Constructible]
+    public LocalizedSign(SignType type, SignFacing facing, int labelNumber) :
+        base(0xB95 + 2 * (int)type + (int)facing) => _number = labelNumber;
 
-        [Constructible]
-        public LocalizedSign(int itemID, int labelNumber) : base(itemID) => m_LabelNumber = labelNumber;
+    [Constructible]
+    public LocalizedSign(int itemID, int labelNumber) : base(itemID) => _number = labelNumber;
 
-        public LocalizedSign(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => m_LabelNumber;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Number
-        {
-            get => m_LabelNumber;
-            set
-            {
-                m_LabelNumber = value;
-                InvalidateProperties();
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(m_LabelNumber);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_LabelNumber = reader.ReadInt();
-                        break;
-                    }
-            }
-        }
-    }
+    public override int LabelNumber => _number;
 }

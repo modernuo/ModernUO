@@ -1,215 +1,149 @@
 using System;
+using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Spells;
 
-namespace Server.Engines.Doom
+namespace Server.Engines.Doom;
+
+[SerializationGenerator(0, false)]
+public partial class LampRoomBox : Item
 {
-    public class LampRoomBox : Item
+    [SerializableField(0)]
+    private LeverPuzzleController _controller;
+    private Mobile _wanderer;
+
+    public LampRoomBox(LeverPuzzleController controller) : base(0xe80)
     {
-        private LeverPuzzleController m_Controller;
-        private Mobile m_Wanderer;
+        _controller = controller;
+        ItemID = 0xe80;
+        Movable = false;
+    }
 
-        public LampRoomBox(LeverPuzzleController controller) : base(0xe80)
+    public override void OnDoubleClick(Mobile m)
+    {
+        if (!m.InRange(GetWorldLocation(), 3))
         {
-            m_Controller = controller;
-            ItemID = 0xe80;
-            Movable = false;
+            return;
         }
 
-        public LampRoomBox(Serial serial) : base(serial)
+        if (_controller.Enabled)
         {
+            return;
         }
 
-        public override void OnDoubleClick(Mobile m)
+        if (_wanderer?.Alive != true)
         {
-            if (!m.InRange(GetWorldLocation(), 3))
-            {
-                return;
-            }
-
-            if (m_Controller.Enabled)
-            {
-                return;
-            }
-
-            if (m_Wanderer?.Alive != true)
-            {
-                m_Wanderer = new WandererOfTheVoid();
-                m_Wanderer.MoveToWorld(LeverPuzzleController.lr_Enter, Map.Malas);
-                m_Wanderer.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1060002); // I am the guardian of...
-                Timer.StartTimer(TimeSpan.FromSeconds(5.0), CallBackMessage);
-            }
-        }
-
-        public void CallBackMessage()
-        {
-            PublicOverheadMessage(MessageType.Regular, 0x3B2, 1060003); // You try to pry the box open...
-        }
-
-        public override void OnAfterDelete()
-        {
-            if (m_Controller?.Deleted == false)
-            {
-                m_Controller.Delete();
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-            writer.Write(m_Controller);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-            m_Controller = reader.ReadEntity<LeverPuzzleController>();
+            _wanderer = new WandererOfTheVoid();
+            _wanderer.MoveToWorld(LeverPuzzleController.lr_Enter, Map.Malas);
+            _wanderer.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1060002); // I am the guardian of...
+            Timer.StartTimer(TimeSpan.FromSeconds(5.0), CallBackMessage);
         }
     }
 
-    public class LeverPuzzleStatue : Item
+    public void CallBackMessage()
     {
-        private LeverPuzzleController m_Controller;
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1060003); // You try to pry the box open...
+    }
 
-        public LeverPuzzleStatue(int[] dat, LeverPuzzleController controller) : base(dat[0])
+    public override void OnAfterDelete()
+    {
+        if (_controller?.Deleted == false)
         {
-            m_Controller = controller;
-            Hue = 0x44E;
-            Movable = false;
+            _controller.Delete();
         }
+    }
+}
 
-        public LeverPuzzleStatue(Serial serial) : base(serial)
+[SerializationGenerator(0, false)]
+public partial class LeverPuzzleStatue : Item
+{
+    private LeverPuzzleController _controller;
+
+    public LeverPuzzleStatue(int[] dat, LeverPuzzleController controller) : base(dat[0])
+    {
+        _controller = controller;
+        Hue = 0x44E;
+        Movable = false;
+    }
+
+    public override void OnAfterDelete()
+    {
+        if (_controller?.Deleted == false)
         {
+            _controller.Delete();
         }
+    }
+}
 
-        public override void OnAfterDelete()
+[SerializationGenerator(0, false)]
+public partial class LeverPuzzleLever : Item
+{
+    [SerializableField(0, setter: "private")]
+    private ushort _code;
+
+    [SerializableField(1)]
+    private LeverPuzzleController _controller;
+
+    public LeverPuzzleLever(ushort code, LeverPuzzleController controller) : base(0x108E)
+    {
+        _controller = controller;
+        _code = code;
+        Hue = 0x66D;
+        Movable = false;
+    }
+
+    public override void OnDoubleClick(Mobile m)
+    {
+        if (m != null && _controller.Enabled)
         {
-            if (m_Controller?.Deleted == false)
-            {
-                m_Controller.Delete();
-            }
+            ItemID ^= 2;
+            Effects.PlaySound(Location, Map, 0x3E8);
+            _controller.LeverPulled(Code);
         }
-
-        public override void Serialize(IGenericWriter writer)
+        else
         {
-            base.Serialize(writer);
-            writer.Write(0); // version
-            writer.Write(m_Controller);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-            m_Controller = reader.ReadEntity<LeverPuzzleController>();
+            m?.SendLocalizedMessage(1060001); // You throw the switch, but the mechanism cannot be engaged again so soon.
         }
     }
 
-    public class LeverPuzzleLever : Item
+    public override void OnAfterDelete()
     {
-        private LeverPuzzleController m_Controller;
-
-        public LeverPuzzleLever(ushort code, LeverPuzzleController controller) : base(0x108E)
+        if (_controller?.Deleted == false)
         {
-            m_Controller = controller;
-            Code = code;
-            Hue = 0x66D;
-            Movable = false;
+            _controller.Delete();
         }
+    }
+}
 
-        public LeverPuzzleLever(Serial serial) : base(serial)
+[TypeAlias("Server.Engines.Doom.LampRoomTelePorter")]
+[SerializationGenerator(0, false)]
+public partial class LampRoomTeleporter : Item
+{
+    public LampRoomTeleporter(int[] dat)
+    {
+        Hue = dat[1];
+        ItemID = dat[0];
+        Movable = false;
+    }
+
+    public override bool HandlesOnMovement => true;
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (m is PlayerMobile)
         {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ushort Code { get; private set; }
-
-        public override void OnDoubleClick(Mobile m)
-        {
-            if (m != null && m_Controller.Enabled)
+            if (SpellHelper.CheckCombat(m))
             {
-                ItemID ^= 2;
-                Effects.PlaySound(Location, Map, 0x3E8);
-                m_Controller.LeverPulled(Code);
+                m.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
             }
             else
             {
-                m?.SendLocalizedMessage(1060001); // You throw the switch, but the mechanism cannot be engaged again so soon.
+                BaseCreature.TeleportPets(m, LeverPuzzleController.lr_Exit, Map.Malas);
+                m.MoveToWorld(LeverPuzzleController.lr_Exit, Map.Malas);
+                return false;
             }
         }
 
-        public override void OnAfterDelete()
-        {
-            if (m_Controller?.Deleted == false)
-            {
-                m_Controller.Delete();
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-            writer.Write(Code);
-            writer.Write(m_Controller);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-            Code = reader.ReadUShort();
-            m_Controller = reader.ReadEntity<LeverPuzzleController>();
-        }
-    }
-
-    [TypeAlias("Server.Engines.Doom.LampRoomTelePorter")]
-    public class LampRoomTeleporter : Item
-    {
-        public LampRoomTeleporter(int[] dat)
-        {
-            Hue = dat[1];
-            ItemID = dat[0];
-            Movable = false;
-        }
-
-        public LampRoomTeleporter(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool HandlesOnMovement => true;
-
-        public override bool OnMoveOver(Mobile m)
-        {
-            if (m is PlayerMobile)
-            {
-                if (SpellHelper.CheckCombat(m))
-                {
-                    m.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
-                }
-                else
-                {
-                    BaseCreature.TeleportPets(m, LeverPuzzleController.lr_Exit, Map.Malas);
-                    m.MoveToWorld(LeverPuzzleController.lr_Exit, Map.Malas);
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-            var version = reader.ReadInt();
-        }
+        return true;
     }
 }
