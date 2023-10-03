@@ -106,10 +106,15 @@ public class VirtueSystem : GenericPersistence
     }
 
     public static VirtueContext GetVirtues(PlayerMobile from) =>
-        _playerVirtues.TryGetValue(from, out var context) ? context : null;
+        from != null && _playerVirtues.TryGetValue(from, out var context) ? context : null;
 
     public static VirtueContext GetOrCreateVirtues(PlayerMobile from)
     {
+        if (from == null)
+        {
+            return null;
+        }
+
         ref VirtueContext context = ref CollectionsMarshal.GetValueRefOrAddDefault(_playerVirtues, from, out bool exists);
         if (!exists)
         {

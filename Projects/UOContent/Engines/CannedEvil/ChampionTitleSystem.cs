@@ -65,8 +65,16 @@ public class ChampionTitleSystem : GenericPersistence
         }
     }
 
-    public static bool GetChampionTitleContext(PlayerMobile player, out ChampionTitleContext context) =>
-        _championTitleContexts.TryGetValue(player, out context);
+    public static bool GetChampionTitleContext(PlayerMobile player, out ChampionTitleContext context)
+    {
+        if (player != null && _championTitleContexts.TryGetValue(player, out context))
+        {
+            return true;
+        }
+
+        context = null;
+        return false;
+    }
 
     public static ChampionTitleContext GetOrCreateChampionTitleContext(PlayerMobile player)
     {
