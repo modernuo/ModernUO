@@ -124,7 +124,7 @@ namespace Server.Mobiles
                         if (!pet.Deleted)
                         {
                             list.Add(pet);
-                            break;
+                            continue;
                         }
 
                         pet.IsStabled = false;
