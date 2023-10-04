@@ -1,0 +1,44 @@
+{
+  "version": 3,
+  "type": "Server.Engines.BulkOrders.BulkOrderBook",
+  "properties": [
+    {
+      "name": "ItemCount",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Level",
+      "type": "Server.Multis.SecureLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "BookName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Filter",
+      "type": "Server.Engines.BulkOrders.BOBFilter",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Entries",
+      "type": "System.Collections.Generic.List\u003CServer.Engines.BulkOrders.IBOBEntry\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Engines.BulkOrders.IBOBEntry",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}
