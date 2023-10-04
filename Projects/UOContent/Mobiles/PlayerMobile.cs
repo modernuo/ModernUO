@@ -3040,7 +3040,8 @@ namespace Server.Mobiles
                 case 13: // just removed m_PaidInsurance list
                 case 12:
                     {
-                        BOBFilter = new BOBFilter(reader);
+                        BOBFilter = new BOBFilter();
+                        BOBFilter.Deserialize(reader);
                         goto case 11;
                     }
                 case 11:

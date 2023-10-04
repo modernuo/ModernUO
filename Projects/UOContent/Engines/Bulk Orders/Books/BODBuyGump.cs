@@ -103,7 +103,7 @@ namespace Server.Engines.BulkOrders
             {
                 if (pack.ConsumeTotal(typeof(Gold), price) || Banker.Withdraw(m_From, price))
                 {
-                    m_Book.Entries.Remove(m_Entry);
+                    m_Book.RemoveEntry(m_Entry);
                     m_Book.InvalidateProperties();
                     pv.HoldGold += price;
                     m_From.AddToBackpack(item);
