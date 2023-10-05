@@ -21,6 +21,14 @@ namespace Server;
 
 public static class SerializationExtensions
 {
+    private static readonly Dictionary<Type, Func<Serial, bool, bool, ISerializable>> _directFinderTable = new();
+    private static readonly Dictionary<Type, Func<Serial, bool, bool, ISerializable>> _searchTable = new();
+
+    public static void RegisterFindEntity(this Type type, Func<Serial, bool, bool, ISerializable> func)
+    {
+        _searchTable[type] = func;
+    }
+
     public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
     {
         Serial serial = reader.ReadSerial();
@@ -31,21 +39,55 @@ public static class SerializationExtensions
         // Add to this list when creating new serializable types
         if (typeof(BaseGuild).IsAssignableFrom(typeT))
         {
-            entity = World.FindGuild(serial) as T;
             // If we check for `entity.Deleted` here during deserialization then all guilds are deleted because
             // Deleted -> Disbanded -> No leader, which is the case before deserialization.
-            // TODO: Use a deleted flag instead, and actively check for dibanded guilds properly.
+            // TODO: Use a deleted flag instead, and actively check for disbanded guilds properly.
+            return World.FindGuild(serial) as T;
         }
-        else
+
+        if (typeof(IEntity).IsAssignableFrom(typeT))
         {
-            entity = World.FindEntity<IEntity>(serial) as T;
-            if (entity?.Deleted == false)
+            return World.FindEntity<IEntity>(serial, returnPending: false) as T;
+        }
+
+        if (_directFinderTable.TryGetValue(typeT, out var finder))
+        {
+            return finder(serial, false, false) as T;
+        }
+
+        Type type = null;
+        foreach (var baseType in _searchTable.Keys)
+        {
+            if (baseType.IsAssignableFrom(typeT))
             {
-                return entity;
+                type = baseType;
+                break;
             }
         }
 
-        return entity?.Created <= reader.LastSerialized ? entity : null;
+        if (type == null)
+        {
+            type = typeT;
+            while (true)
+            {
+                var baseType = type?.BaseType;
+
+                // Find the parent class with ISerializable registered. To do this we break on it's parent class (or object)
+                // that doesn't have ISerializable implemented.
+                if (baseType?.GetInterface("ISerializable") == null && type?.GetInterface("ISerializable") != null)
+                {
+                    break;
+                }
+
+                type = baseType;
+            }
+
+            throw new Exception($"No FindEntity registered for '{type.FullName}'.");
+        }
+
+        finder = _searchTable[type];
+        _directFinderTable[type] = finder;
+        return finder(serial, false, false) as T;
     }
 
     public static List<T> ReadEntityList<T>(

@@ -385,7 +385,14 @@ namespace Server.Factions
 
             // Ordinarily, through normal faction removal, this will never find any sigils.
             // Only with a leave delay less than the ReturnPeriod or a Faction Kick/Ban, will this ever do anything
-            mob.Backpack?.FindItemsByType<Sigil>().ForEach(sigil => sigil.ReturnHome());
+
+            if (mob.Backpack != null)
+            {
+                foreach (var sigil in mob.Backpack.EnumerateItemsByType<Sigil>())
+                {
+                    sigil.ReturnHome();
+                }
+            }
 
             if (pl.RankIndex != -1)
             {
@@ -1039,35 +1046,36 @@ namespace Server.Factions
 
             var killerState = PlayerState.Find(killer);
             var killerPack = killer?.Backpack;
-            victim.Backpack?.FindItemsByType<Sigil>()
-                .ForEach(
-                    sigil =>
-                    {
-                        if (killerState == null || killerPack == null)
-                        {
-                            sigil.ReturnHome();
-                            return;
-                        }
 
-                        if (killer?.GetDistanceToSqrt(victim) > 64)
-                        {
-                            sigil.ReturnHome();
-                            killer.SendLocalizedMessage(1042230); // The sigil has gone back to its home location.
-                        }
-                        else if (Sigil.ExistsOn(killer))
-                        {
-                            sigil.ReturnHome();
-                            // The sigil has gone back to its home location because you already have a sigil.
-                            killer?.SendLocalizedMessage(1010258);
-                        }
-                        else if (!killerPack.TryDropItem(killer, sigil, false))
-                        {
-                            sigil.ReturnHome();
-                            // The sigil has gone home because your backpack is full.
-                            killer?.SendLocalizedMessage(1010259);
-                        }
+            if (victim.Backpack != null)
+            {
+                foreach (var sigil in victim.Backpack.EnumerateItemsByType<Sigil>())
+                {
+                    if (killerState == null || killerPack == null)
+                    {
+                        sigil.ReturnHome();
+                        continue;
                     }
-                );
+
+                    if (killer?.GetDistanceToSqrt(victim) > 64)
+                    {
+                        sigil.ReturnHome();
+                        killer.SendLocalizedMessage(1042230); // The sigil has gone back to its home location.
+                    }
+                    else if (Sigil.ExistsOn(killer))
+                    {
+                        sigil.ReturnHome();
+                        // The sigil has gone back to its home location because you already have a sigil.
+                        killer?.SendLocalizedMessage(1010258);
+                    }
+                    else if (!killerPack.TryDropItem(killer, sigil, false))
+                    {
+                        sigil.ReturnHome();
+                        // The sigil has gone home because your backpack is full.
+                        killer?.SendLocalizedMessage(1010259);
+                    }
+                }
+            }
 
             if (killerState == null)
             {
@@ -1227,7 +1235,13 @@ namespace Server.Factions
 
         private static void EventSink_Logout(Mobile m)
         {
-            m.Backpack?.FindItemsByType<Sigil>().ForEach(sigil => sigil.ReturnHome());
+            if (m.Backpack != null)
+            {
+                foreach (var sigil in m.Backpack.EnumerateItemsByType<Sigil>())
+                {
+                    sigil.ReturnHome();
+                }
+            }
         }
 
         private static void EventSink_Login(Mobile m) => CheckLeaveTimer(m);

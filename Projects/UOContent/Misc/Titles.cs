@@ -321,7 +321,7 @@ namespace Server.Misc
 
             if (beheld is PlayerMobile mobile && mobile.DisplayChampionTitle)
             {
-                var titleLabel = mobile.GetChampionTitleLabel();
+                var titleLabel = ChampionTitleSystem.GetChampionTitleLabel(mobile);
                 if (titleLabel > 0)
                 {
                     // Should this be translated to the receivers language? Prefix titles aren't?

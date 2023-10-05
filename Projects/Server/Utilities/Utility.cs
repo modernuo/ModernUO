@@ -1761,4 +1761,20 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNullOrWhiteSpace(this ReadOnlySpan<char> span) =>
         span == default || span.IsEmpty || span.IsWhiteSpace();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool InTypeList(this Item item, Type[] types) => item.GetType().InTypeList(types);
+
+    public static bool InTypeList(this Type t, Type[] types)
+    {
+        for (var i = 0; i < types.Length; ++i)
+        {
+            if (types[i].IsAssignableFrom(t))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

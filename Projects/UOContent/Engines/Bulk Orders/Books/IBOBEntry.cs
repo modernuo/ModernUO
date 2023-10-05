@@ -1,6 +1,6 @@
 namespace Server.Engines.BulkOrders
 {
-    public interface IBOBEntry
+    public interface IBOBEntry : ISerializable
     {
         bool RequireExceptional { get; }
         BODType DeedType { get; }

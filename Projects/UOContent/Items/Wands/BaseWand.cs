@@ -226,7 +226,7 @@ public abstract partial class BaseWand : BaseBashing
             return;
         }
 
-        from.NetState.SendDisplayEquipmentInfo(Serial, number, Crafter?.RawName, false, attrs);
+        from.NetState.SendDisplayEquipmentInfo(Serial, number, Crafter, false, attrs);
     }
 
     public void Cast(Spell spell)

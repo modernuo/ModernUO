@@ -205,7 +205,7 @@ public class Region : IComparable<Region>
 
     public int Priority { get; }
 
-    public int ChildLevel { get; }
+    public int ChildLevel { get; internal set; }
 
     public bool Registered { get; private set; }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Gumps;
 
 namespace Server.Engines.MLQuests.Objectives
@@ -110,8 +109,16 @@ namespace Server.Engines.MLQuests.Objectives
                 return 0;
             }
 
-            var items = pack.FindItemsByType(Objective.AcceptedType, false); // Note: subclasses are included
-            return items.Where(item => item.QuestItem && Objective.CheckItem(item)).Sum(item => item.Amount);
+            var total = 0;
+            foreach (var item in pack.FindItems(false))
+            {
+                if (ClaimTypePredicate(item) && item.QuestItem && Objective.CheckItem(item))
+                {
+                    total += item.Amount;
+                }
+            }
+
+            return total;
         }
 
         public override bool AllowsQuestItem(Item item, Type type) => Objective.CheckType(type) && Objective.CheckItem(item);
@@ -128,18 +135,19 @@ namespace Server.Engines.MLQuests.Objectives
                 return;
             }
 
-            var checkType = Objective.AcceptedType;
-            var items = pack.FindItemsByType(checkType, false);
-
-            foreach (var item in items)
+            foreach (var item in pack.FindItems(false))
             {
-                if (item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, checkType)
-                ) // does another quest still need this item? (OSI just unmarks everything)
+                // does another quest still need this item? (OSI just unmarks everything)
+                if (ClaimTypePredicate(item) &&
+                    item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, Objective.AcceptedType))
                 {
                     item.QuestItem = false;
                 }
             }
         }
+
+        // Note: subclasses are included
+        private bool ClaimTypePredicate(Item item) => Objective.AcceptedType.IsInstanceOfType(item);
 
         // Should only be called after IsComplete() is checked to be true
         public override void OnClaimReward()
@@ -153,10 +161,9 @@ namespace Server.Engines.MLQuests.Objectives
 
             // TODO: OSI also counts the item in the cursor?
 
-            var items = pack.FindItemsByType(Objective.AcceptedType, false);
             var left = Objective.DesiredAmount;
 
-            foreach (var item in items)
+            foreach (var item in pack.EnumerateItemsByType<Item>(false, ClaimTypePredicate))
             {
                 if (item.QuestItem && Objective.CheckItem(item))
                 {

@@ -1,0 +1,43 @@
+{
+  "version": 2,
+  "type": "Server.Mobiles.BaseEscortable",
+  "properties": [
+    {
+      "name": "DestinationString",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "DeleteTimer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        "@TimerDrift"
+      ]
+    },
+    {
+      "name": "MlQuestType",
+      "type": "System.Type",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "MlQuestDestinationMessage",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "TextDefinition"
+      ]
+    },
+    {
+      "name": "MlQuestPaymentMessage",
+      "type": "Server.TextDefinition",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "TextDefinition"
+      ]
+    }
+  ]
+}

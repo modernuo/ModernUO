@@ -6,10 +6,11 @@ using Server.Utilities;
 
 namespace Server.Engines.Stealables;
 
-public static class StealableArtifacts
+public class StealableArtifacts : GenericPersistence
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(StealableArtifacts));
 
+    private static StealableArtifacts _stealableArtifactsPersistence;
     private static bool _enabled;
     private static Type[] _typesOfEntries;
     private static StealableInstance[] _artifacts;
@@ -19,7 +20,11 @@ public static class StealableArtifacts
 
     public static void Configure()
     {
-        GenericPersistence.Register("StealableArtifacts", Serialize, Deserialize);
+        _stealableArtifactsPersistence = new StealableArtifacts();
+    }
+
+    public StealableArtifacts() : base("StealableArtifacts", 10)
+    {
     }
 
     private static void RemoveStealableArtifacts()
@@ -242,7 +247,7 @@ public static class StealableArtifacts
         }
     }
 
-    private static void Serialize(IGenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
         writer.WriteEncodedInt(1); // version
 
@@ -262,7 +267,7 @@ public static class StealableArtifacts
         }
     }
 
-    private static void Deserialize(IGenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
         var version = reader.ReadEncodedInt();
 
@@ -441,7 +446,7 @@ public static class StealableArtifacts
         {
             base.Deserialize(reader);
 
-            StealableArtifacts.Deserialize(reader);
+            _stealableArtifactsPersistence.Deserialize(reader);
 
             Timer.DelayCall(Delete);
         }

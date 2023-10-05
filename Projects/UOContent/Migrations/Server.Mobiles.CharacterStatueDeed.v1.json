@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "type": "Server.Mobiles.CharacterStatueDeed",
+  "properties": [
+    {
+      "name": "StatueType",
+      "type": "Server.Mobiles.StatueType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Statue",
+      "type": "Server.Mobiles.CharacterStatue",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -65,19 +65,4 @@ namespace Server.Network
             return p;
         }
     }
-
-    public sealed class NullFastwalkStack : Packet
-    {
-        public NullFastwalkStack() : base(0xBF)
-        {
-            EnsureCapacity(29);
-            Stream.Write((short)0x1);
-            Stream.Write(0x0);
-            Stream.Write(0x0);
-            Stream.Write(0x0);
-            Stream.Write(0x0);
-            Stream.Write(0x0);
-            Stream.Write(0x0);
-        }
-    }
 }

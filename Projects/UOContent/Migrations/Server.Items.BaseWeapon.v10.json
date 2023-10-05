@@ -1,0 +1,255 @@
+{
+  "version": 10,
+  "type": "Server.Items.BaseWeapon",
+  "properties": [
+    {
+      "name": "DamageLevel",
+      "type": "Server.Items.WeaponDamageLevel",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "AccuracyLevel",
+      "type": "Server.Items.WeaponAccuracyLevel",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "DurabilityLevel",
+      "type": "Server.Items.WeaponDurabilityLevel",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Quality",
+      "type": "Server.Items.WeaponQuality",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "HitPoints",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxHitPoints",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Slayer",
+      "type": "Server.Items.SlayerName",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Poison",
+      "type": "Server.Poison",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Poison"
+      ]
+    },
+    {
+      "name": "PoisonCharges",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Crafter",
+      "type": "string",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Identified",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "StrRequirement",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "DexRequirement",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "IntRequirement",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MinDamage",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxDamage",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "HitSound",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MissSound",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Speed",
+      "type": "float",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaxRange",
+      "type": "int",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Skill",
+      "type": "Server.SkillName",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Type",
+      "type": "Server.Items.WeaponType",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Animation",
+      "type": "Server.Items.WeaponAnimation",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Resource",
+      "type": "Server.Items.CraftResource",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Attributes",
+      "type": "Server.AosAttributes",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "WeaponAttributes",
+      "type": "Server.AosWeaponAttributes",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "PlayerConstructed",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SkillBonuses",
+      "type": "Server.AosSkillBonuses",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "Slayer2",
+      "type": "Server.Items.SlayerName",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "AosElementDamages",
+      "type": "Server.AosElementAttributes",
+      "usesSaveFlag": true,
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "EngravedText",
+      "type": "string",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

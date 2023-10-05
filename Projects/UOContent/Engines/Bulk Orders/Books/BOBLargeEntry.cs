@@ -1,119 +1,83 @@
-namespace Server.Engines.BulkOrders
+using ModernUO.Serialization;
+
+namespace Server.Engines.BulkOrders;
+
+[SerializationGenerator(1)]
+public partial class BOBLargeEntry : BaseBOBEntry
 {
-    public class BOBLargeEntry : IBOBEntry
+    [SerializableField(0, setter: "private")]
+    private BOBLargeSubEntry[] _entries;
+
+    public BOBLargeEntry(LargeBOD bod)
     {
-        public BOBLargeEntry(LargeBOD bod)
+        RequireExceptional = bod.RequireExceptional;
+
+        DeedType = bod switch
         {
-            RequireExceptional = bod.RequireExceptional;
+            LargeTailorBOD => BODType.Tailor,
+            LargeSmithBOD  => BODType.Smith,
+            _              => DeedType
+        };
 
-            DeedType = bod switch
-            {
-                LargeTailorBOD => BODType.Tailor,
-                LargeSmithBOD  => BODType.Smith,
-                _              => DeedType
-            };
+        Material = bod.Material;
+        AmountMax = bod.AmountMax;
 
-            Material = bod.Material;
-            AmountMax = bod.AmountMax;
+        _entries = new BOBLargeSubEntry[bod.Entries.Length];
 
-            Entries = new BOBLargeSubEntry[bod.Entries.Length];
+        for (var i = 0; i < _entries.Length; ++i)
+        {
+            _entries[i] = new BOBLargeSubEntry(bod.Entries[i]);
+        }
+    }
 
-            for (var i = 0; i < Entries.Length; ++i)
-            {
-                Entries[i] = new BOBLargeSubEntry(bod.Entries[i]);
-            }
+    public override Item Reconstruct()
+    {
+        LargeBOD bod = DeedType switch
+        {
+            BODType.Smith  => new LargeSmithBOD(AmountMax, RequireExceptional, Material, ReconstructEntries()),
+            BODType.Tailor => new LargeTailorBOD(AmountMax, RequireExceptional, Material, ReconstructEntries()),
+            _              => null
+        };
+
+        for (var i = 0; i < bod?.Entries.Length; ++i)
+        {
+            bod.Entries[i].Owner = bod;
         }
 
-        public BOBLargeEntry(IGenericReader reader)
+        return bod;
+    }
+
+    private LargeBulkEntry[] ReconstructEntries()
+    {
+        var entries = new LargeBulkEntry[Entries.Length];
+
+        for (var i = 0; i < Entries.Length; ++i)
         {
-            var version = reader.ReadEncodedInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        RequireExceptional = reader.ReadBool();
-
-                        DeedType = (BODType)reader.ReadEncodedInt();
-
-                        Material = (BulkMaterialType)reader.ReadEncodedInt();
-                        AmountMax = reader.ReadEncodedInt();
-                        Price = reader.ReadEncodedInt();
-
-                        Entries = new BOBLargeSubEntry[reader.ReadEncodedInt()];
-
-                        for (var i = 0; i < Entries.Length; ++i)
-                        {
-                            Entries[i] = new BOBLargeSubEntry(reader);
-                        }
-
-                        break;
-                    }
-            }
+            entries[i] = new LargeBulkEntry(
+                    null,
+                    new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic)
+                )
+                { Amount = Entries[i].AmountCur };
         }
 
-        public BOBLargeSubEntry[] Entries { get; }
+        return entries;
+    }
 
-        public bool RequireExceptional { get; }
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        RequireExceptional = reader.ReadBool();
 
-        public BODType DeedType { get; }
+        DeedType = (BODType)reader.ReadEncodedInt();
+        Material = (BulkMaterialType)reader.ReadEncodedInt();
+        AmountMax = reader.ReadEncodedInt();
+        Price = reader.ReadEncodedInt();
 
-        public BulkMaterialType Material { get; }
+        _entries = new BOBLargeSubEntry[reader.ReadEncodedInt()];
 
-        public int AmountMax { get; }
-
-        public int Price { get; set; }
-
-        public Item Reconstruct()
+        for (var i = 0; i < Entries.Length; ++i)
         {
-            LargeBOD bod = DeedType switch
-            {
-                BODType.Smith  => new LargeSmithBOD(AmountMax, RequireExceptional, Material, ReconstructEntries()),
-                BODType.Tailor => new LargeTailorBOD(AmountMax, RequireExceptional, Material, ReconstructEntries()),
-                _              => null
-            };
-
-            for (var i = 0; i < bod?.Entries.Length; ++i)
-            {
-                bod.Entries[i].Owner = bod;
-            }
-
-            return bod;
-        }
-
-        private LargeBulkEntry[] ReconstructEntries()
-        {
-            var entries = new LargeBulkEntry[Entries.Length];
-
-            for (var i = 0; i < Entries.Length; ++i)
-            {
-                entries[i] = new LargeBulkEntry(
-                        null,
-                        new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic)
-                    )
-                    { Amount = Entries[i].AmountCur };
-            }
-
-            return entries;
-        }
-
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(RequireExceptional);
-
-            writer.WriteEncodedInt((int)DeedType);
-            writer.WriteEncodedInt((int)Material);
-            writer.WriteEncodedInt(AmountMax);
-            writer.WriteEncodedInt(Price);
-
-            writer.WriteEncodedInt(Entries.Length);
-
-            for (var i = 0; i < Entries.Length; ++i)
-            {
-                Entries[i].Serialize(writer);
-            }
+            _entries[i] = new BOBLargeSubEntry();
+            _entries[i].Deserialize(reader);
         }
     }
 }

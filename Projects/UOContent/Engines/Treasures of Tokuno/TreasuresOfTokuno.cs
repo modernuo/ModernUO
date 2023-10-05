@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Items;
+using Server.Json;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Multis;
@@ -20,8 +23,15 @@ namespace Server.Misc
         ToTThree
     }
 
+    public class ToTConfig
+    {
+        public TreasuresOfTokunoEra DropEra { get; set; }
+        public TreasuresOfTokunoEra RewardEra { get; set; }
+    }
+
     public static class TreasuresOfTokuno
     {
+        public const string ToTConfigurationPath = "Configuration/tot.json";
         public const int ItemsPerReward = 10;
 
         private static readonly Type[][] m_LesserArtifacts =
@@ -86,9 +96,45 @@ namespace Server.Misc
             typeof(BaseFormTalisman), typeof(BaseWand), typeof(JesterHatofChuckles)
         };
 
-        public static TreasuresOfTokunoEra DropEra { get; set; } = TreasuresOfTokunoEra.None;
+        public static void Configure()
+        {
+            var pathToTFile = Path.Combine(Core.BaseDirectory, ToTConfigurationPath);
+            _totConfig = File.Exists(pathToTFile)
+                ? JsonConfig.Deserialize<ToTConfig>(pathToTFile)
+                : new ToTConfig
+                {
+                    DropEra = TreasuresOfTokunoEra.None,
+                    RewardEra = TreasuresOfTokunoEra.ToTOne,
+                };
+        }
 
-        public static TreasuresOfTokunoEra RewardEra { get; set; } = TreasuresOfTokunoEra.ToTOne;
+        private static ToTConfig _totConfig;
+
+        public static TreasuresOfTokunoEra DropEra
+        {
+            get => _totConfig.DropEra;
+            set
+            {
+                _totConfig.DropEra = value;
+                SaveConfiguration();
+            }
+        }
+
+        public static TreasuresOfTokunoEra RewardEra
+        {
+            get => _totConfig.RewardEra;
+            set
+            {
+                _totConfig.RewardEra = value;
+                SaveConfiguration();
+            }
+        }
+
+        private static void SaveConfiguration()
+        {
+            var pathToTFile = Path.Combine(Core.BaseDirectory, ToTConfigurationPath);
+            JsonConfig.Serialize(pathToTFile, _totConfig);
+        }
 
         public static Type[] LesserArtifacts => m_LesserArtifacts[(int)RewardEra - 1];
 
@@ -203,7 +249,8 @@ namespace Server.Misc
 
 namespace Server.Mobiles
 {
-    public class IharaSoko : BaseVendor
+    [SerializationGenerator(0, false)]
+    public partial class IharaSoko : BaseVendor
     {
         protected List<SBInfo> m_SBInfos = new();
 
@@ -213,10 +260,6 @@ namespace Server.Mobiles
             Female = false;
             Body = 0x190;
             Hue = 0x8403;
-        }
-
-        public IharaSoko(Serial serial) : base(serial)
-        {
         }
 
         public override bool IsActiveVendor => false;
@@ -241,20 +284,6 @@ namespace Server.Mobiles
             item.Hue = 0x711;
 
             AddItem(item);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
         }
 
         public override bool CanBeDamaged() => false;
@@ -295,14 +324,14 @@ namespace Server.Mobiles
 
                         var buttons = ToTTurnInGump.FindRedeemableItems(pm);
 
-                        if (buttons.Count > 0 && !pm.HasGump<ToTTurnInGump>())
+                        if (buttons?.Count > 0 && !pm.HasGump<ToTTurnInGump>())
                         {
                             pm.SendGump(new ToTTurnInGump(this, buttons));
                         }
                     }
                 }
 
-                var leaveRange = 7;
+                const int leaveRange = 7;
 
                 if (!InRange(m, leaveRange) && InRange(oldLocation, leaveRange))
                 {
@@ -344,16 +373,17 @@ namespace Server.Gumps
             var pack = m.Backpack;
             if (pack == null)
             {
-                return new List<ImageTileButtonInfo>();
+                return null;
             }
 
             var buttons = new List<ImageTileButtonInfo>();
-
-            var items = pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal);
-
-            for (var i = 0; i < items.Count; i++)
+            foreach (var item in pack.FindItems())
             {
-                var item = items[i];
+                if (!item.InTypeList(TreasuresOfTokuno.LesserArtifactsTotal))
+                {
+                    continue;
+                }
+
                 if (item is ChestOfHeirlooms heirlooms && (!heirlooms.Locked || heirlooms.TrapLevel != 10))
                 {
                     continue;
@@ -407,7 +437,7 @@ namespace Server.Gumps
 
                 pm.CloseGump<ToTTurnInGump>(); // Sanity
 
-                if (buttons.Count > 0)
+                if (buttons?.Count > 0)
                 {
                     pm.SendGump(new ToTTurnInGump(m_Collector, buttons));
                 }

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "type": "Server.Items.CharacterStatueMaker",
+  "properties": [
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "StatueType",
+      "type": "Server.Mobiles.StatueType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

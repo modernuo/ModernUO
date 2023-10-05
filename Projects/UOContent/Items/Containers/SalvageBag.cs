@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Engines.Craft;
@@ -173,7 +172,20 @@ public partial class SalvageBag : Bag
 
     private void SalvageIngots(Mobile from)
     {
-        if (from.Backpack.FindItemsByType<BaseTool>().All(tool => tool.CraftSystem != DefBlacksmithy.CraftSystem))
+        var hasTool = false;
+        if (from.Backpack != null)
+        {
+            foreach (var tool in from.Backpack.FindItemsByType<BaseTool>())
+            {
+                if (tool.CraftSystem == DefBlacksmithy.CraftSystem)
+                {
+                    hasTool = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasTool)
         {
             from.SendLocalizedMessage(1079822); // You need a blacksmithing tool in order to salvage ingots.
             return;
@@ -190,11 +202,7 @@ public partial class SalvageBag : Bag
         var salvaged = 0;
         var notSalvaged = 0;
 
-        Container sBag = this;
-
-        var smeltables = sBag.FindItemsByType<Item>();
-
-        foreach (var item in smeltables)
+        foreach (var item in EnumerateItems())
         {
             if (item?.Deleted != false)
             {
@@ -220,10 +228,8 @@ public partial class SalvageBag : Bag
         }
         else
         {
-            from.SendLocalizedMessage(
-                1079973,
-                $"{salvaged}\t{salvaged + notSalvaged}"
-            ); // Salvaged: ~1_COUNT~/~2_NUM~ blacksmithed items
+            // Salvaged: ~1_COUNT~/~2_NUM~ blacksmithed items
+            from.SendLocalizedMessage(1079973, $"{salvaged}\t{salvaged + notSalvaged}");
         }
     }
 
@@ -245,14 +251,8 @@ public partial class SalvageBag : Bag
         var salvaged = 0;
         var notSalvaged = 0;
 
-        Container sBag = this;
-
-        var scissorables = sBag.FindItemsByType<Item>();
-
-        for (var i = scissorables.Count - 1; i >= 0; --i)
+        foreach (var item in EnumerateItemsByType<Item>())
         {
-            var item = scissorables[i];
-
             if (item is not IScissorable scissorable)
             {
                 continue;
@@ -271,11 +271,12 @@ public partial class SalvageBag : Bag
         // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
         from.SendLocalizedMessage(1079974, $"{salvaged}\t{salvaged + notSalvaged}");
 
-        var items = FindItemsByType(_clothTypes);
-
-        for (var i = 0; i < items.Count; i++)
+        foreach (var item in EnumerateItems())
         {
-            from.AddToBackpack(items[i]);
+            if (item.InTypeList(_clothTypes))
+            {
+                from.AddToBackpack(item);
+            }
         }
     }
 

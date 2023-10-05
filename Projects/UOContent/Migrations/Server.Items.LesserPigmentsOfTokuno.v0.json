@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.LesserPigmentsOfTokuno",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Items.LesserPigmentType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
