@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+
 namespace Server.Network;
 
 public static class IncomingMovementPackets
@@ -25,7 +27,7 @@ public static class IncomingMovementPackets
         // IncomingPackets.Register(0xF1, 9, true, TimeSyncReq);
     }
 
-    public static void NewMovementReq(NetState ns, CircularBufferReader reader)
+    public static void NewMovementReq(NetState ns, SpanReader reader)
     {
         var from = ns.Mobile;
 
@@ -71,14 +73,14 @@ public static class IncomingMovementPackets
         }
     }
 
-    public static void TimeSyncReq(NetState ns, CircularBufferReader reader)
+    public static void TimeSyncReq(NetState ns, SpanReader reader)
     {
         reader.ReadUInt64(); // Client Time?
 
         ns.SendTimeSyncResponse();
     }
 
-    public static void MovementReq(NetState state, CircularBufferReader reader, int packetLength)
+    public static void MovementReq(NetState state, SpanReader reader, int packetLength)
     {
         var from = state.Mobile;
 

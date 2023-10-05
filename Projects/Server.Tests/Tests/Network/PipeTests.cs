@@ -1,244 +1,89 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Network
+namespace Server.Tests.Network;
+
+public class PipeTests
 {
-    [Collection("Sequential Tests")]
-    public class PipeTests
+    [Fact]
+    public void TestSizeMatchesPageSize()
     {
-        private async void DelayedExecute(Action action)
-        {
-            await Task.Delay(1);
+        var pageSize = (uint)Environment.SystemPageSize;
+        using var pipe = new Pipe(128);
 
-            action();
+        // Available memory should be in increments of system page size minus one.
+        Assert.Equal(pageSize, pipe.Size);
+        Assert.Equal(pageSize - 1, (uint)pipe.Writer.AvailableToWrite().Length);
+    }
+
+    [Fact]
+    public void TestWriteReadsWrap()
+    {
+        var pageSize = (uint)Environment.SystemPageSize;
+        using var pipe = new Pipe(pageSize);
+
+        var span = pipe.Writer.AvailableToWrite();
+
+        for (var i = 0; i < span.Length; i++)
+        {
+            span[i] = (byte)(i % 256);
         }
 
-        [Fact]
-        public async void AwaitRead()
+        pipe.Writer.Advance((uint)(span.Length - 10));
+
+        var readBytes = pipe.Reader.AvailableToRead();
+
+        // Make a sequence from what we expect.
+        Span<byte> seq = new byte[readBytes.Length];
+        for (var i = 0; i < readBytes.Length; i++)
         {
-            var pipe = new Pipe<byte>(new byte[128]);
-
-            var reader = pipe.Reader;
-            var writer = pipe.Writer;
-
-            DelayedExecute(() =>
-            {
-                // Write some data into the pipe
-                var buffer = writer.TryGetMemory();
-                Assert.Equal(127, buffer.Length);
-
-                buffer.CopyFrom(new byte[] { 1 });
-                buffer.CopyFrom(new byte[] { 2 });
-                buffer.CopyFrom(new byte[] { 3 });
-
-                writer.Advance(3);
-                writer.Flush();
-            });
-
-            var result = await reader.Read();
-
-            Assert.Equal(3, result.Buffer[0].Count);
+            seq[i] = (byte)(i % 256);
         }
 
-        [Fact]
-        public async void AwaitWrite()
+        AssertThat.Equal(readBytes, seq);
+
+        // Advance by half. Expected writer length should be half + 10
+        pipe.Reader.Advance(pageSize / 2);
+
+        span = pipe.Writer.AvailableToWrite();
+
+        var halfStart = pageSize / 2 + 10;
+
+        Assert.Equal(halfStart, (uint)span.Length);
+
+        seq = new byte[20];
+
+        for (var i = 0; i < 10; i++)
         {
-            var pipe = new Pipe<byte>(new byte[128]);
-
-            var reader = pipe.Reader;
-            var writer = pipe.Writer;
-
-            // Fill the entire pipe up
-            writer.Advance(127);
-
-            DelayedExecute(() =>
-            {
-                // Read some data from the pipe
-                var buffer = reader.TryRead();
-                Assert.Equal(127, buffer.Length);
-
-                reader.Advance(50);
-                reader.Commit();
-            });
-
-            var result = await writer.GetMemory();
-            Assert.Equal(50, result.Length);
+            seq[i] = (byte)(0xF5 + i);
         }
 
-        private bool _signal;
-
-        private void Consumer(object state)
+        // The last element, the sentinel, is excluded.
+        // The wrap around values start at 11
+        for (var i = 11; i < 20; i++)
         {
-            var reader = ((Pipe<byte>)state).Reader;
-
-            int count = 0;
-            byte expected_value = 0xFA;
-
-            while (count < 0x8000000)
-            {
-                var result = reader.TryRead();
-
-                for (int i = 0; i < result.Buffer[0].Count; i++)
-                {
-                    Assert.Equal(expected_value, result.Buffer[0][i]);
-                    count++;
-
-                    if (count == 0x1000)
-                    {
-                        expected_value = 0xAC;
-                    }
-                }
-
-                for (int i = 0; i < result.Buffer[1].Count; i++)
-                {
-                    Assert.Equal(expected_value, result.Buffer[1][i]);
-                    count++;
-
-                    if (count == 0x1000)
-                    {
-                        expected_value = 0xAC;
-                    }
-                }
-
-                reader.Advance((uint)result.Length);
-            }
-
-            _signal = true;
+            seq[i] = (byte)(i - 11);
         }
 
-        [Fact]
-        public async void Threading()
+        // Test the uncommitted overwritten memory and shifted offset to make sure the ring is working
+        AssertThat.Equal(span[..20], seq[..20]);
+    }
+
+    [Fact]
+    public void TestWriteReadMatches()
+    {
+        var pipe = new Pipe(16);
+
+        var reader = pipe.Reader;
+        var writer = pipe.Writer;
+
+        for (uint i = 0; i < 16; i++)
         {
-            var pipe = new Pipe<byte>(new byte[0x1000]);
+            writer.Advance(i);
 
-            ThreadPool.UnsafeQueueUserWorkItem(Consumer, pipe);
-
-            var writer = pipe.Writer;
-
-            int count = 0;
-            byte expected_value = 0xFA;
-
-            while (count < 0x8000000)
-            {
-                var result = writer.TryGetMemory();
-
-                if (result.Length < 16)
-                {
-                    continue;
-                }
-
-                result.CopyFrom(new[] {
-                    expected_value, expected_value, expected_value, expected_value,
-                    expected_value, expected_value, expected_value, expected_value,
-                    expected_value, expected_value, expected_value, expected_value,
-                    expected_value, expected_value, expected_value, expected_value
-                });
-
-                writer.Advance(16);
-                count += 16;
-
-                if (count == 0x1000)
-                {
-                    expected_value = 0xAC;
-                }
-            }
-
-            while (_signal == false) { }
-
-            _signal = false;
-        }
-
-        [Fact]
-        public void Wrap()
-        {
-            var pipe = new Pipe<byte>(new byte[16]);
-
-            var reader = pipe.Reader;
-            var writer = pipe.Writer;
-
-            var result = writer.TryGetMemory();
-            Assert.Equal(15, result.Length);
-            Assert.Equal(0u, reader.GetAvailable());
-            result = reader.TryRead();
-            Assert.Equal(0, result.Length);
-
-            writer.Advance(7);
-            result = writer.TryGetMemory();
-            Assert.Equal(8, result.Length);
-            Assert.Equal(7u, reader.GetAvailable());
-            result = reader.TryRead();
-            Assert.Equal(7, result.Length);
-
-            reader.Advance(4);
-            result = writer.TryGetMemory();
-            Assert.Equal(12, result.Length);
-            Assert.Equal(3u, reader.GetAvailable());
-            result = reader.TryRead();
-            Assert.Equal(3, result.Length);
-
-            writer.Advance(3);
-            result = writer.TryGetMemory();
-            Assert.Equal(9, result.Length);
-            Assert.Equal(6u, reader.GetAvailable());
-            result = reader.TryRead();
-            Assert.Equal(6, result.Length);
-
-        }
-
-        [Fact]
-        public void Match()
-        {
-            var pipe = new Pipe<byte>(new byte[16]);
-
-            var reader = pipe.Reader;
-            var writer = pipe.Writer;
-
-            for (uint i = 0; i < 16; i++)
-            {
-                writer.Advance(i);
-                writer.Flush();
-
-                Assert.Equal(i, reader.GetAvailable());
-                reader.Advance(i);
-            }
-        }
-
-        [Fact]
-        public void Sequence()
-        {
-            var pipe = new Pipe<byte>(new byte[16]);
-
-            var reader = pipe.Reader;
-            var writer = pipe.Writer;
-
-            var buffer = writer.TryGetMemory();
-            Assert.Equal(15, buffer.Length);
-
-            buffer.CopyFrom(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
-
-            writer.Advance(9);
-            writer.Flush();
-
-            Assert.Equal(9u, reader.GetAvailable());
-
-            buffer = reader.TryRead();
-
-            for (int i = 0; i < 9; i++)
-            {
-                Assert.Equal(i, buffer.Buffer[0][i]);
-            }
-
-            reader.Advance(4);
-            buffer = reader.TryRead();
-            Assert.Equal(5, buffer.Length);
-            Assert.Equal(4, buffer.Buffer[0][0]);
-            Assert.Equal(5, buffer.Buffer[0][1]);
-            Assert.Equal(6, buffer.Buffer[0][2]);
-            Assert.Equal(7, buffer.Buffer[0][3]);
-            Assert.Equal(8, buffer.Buffer[0][4]);
+            Assert.Equal((int)i, reader.AvailableToRead().Length);
+            reader.Advance(i);
         }
     }
 }

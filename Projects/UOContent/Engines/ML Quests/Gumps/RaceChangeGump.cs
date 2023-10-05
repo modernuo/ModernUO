@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Gumps;
@@ -195,7 +196,7 @@ namespace Server.Engines.MLQuests.Gumps
             return false;
         }
 
-        private static void RaceChangeReply(NetState state, CircularBufferReader reader, int packetLength)
+        private static void RaceChangeReply(NetState state, SpanReader reader, int packetLength)
         {
             if (!m_Pending.TryGetValue(state, out var raceChangeState))
             {

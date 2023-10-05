@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+
 namespace Server.Network;
 
 public static class IncomingHousePackets
@@ -22,7 +24,7 @@ public static class IncomingHousePackets
         IncomingPackets.Register(0xFB, 2, false, &ShowPublicHouseContent);
     }
 
-    public static void ShowPublicHouseContent(NetState state, CircularBufferReader reader, int packetLength)
+    public static void ShowPublicHouseContent(NetState state, SpanReader reader, int packetLength)
     {
         var showPublicHouseContent = reader.ReadBoolean();
     }

@@ -55,8 +55,8 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
 
         ns.SendMoveBoatHS(beholder, boat, d, speed, boat.GetMovingEntities(true), xOffset, yOffset);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -98,8 +98,8 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
 
         ns.SendDisplayBoatHS(beholder, boat);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     private class TestBoat : BaseBoat

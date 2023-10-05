@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using Server.Gumps;
@@ -1811,7 +1812,7 @@ namespace Server.Multis
             context.Foundation.SendInfoTo(state);
         }
 
-        public static void QueryDesignDetails(NetState state, CircularBufferReader reader, int packetLength)
+        public static void QueryDesignDetails(NetState state, SpanReader reader, int packetLength)
         {
             var from = state.Mobile;
 

@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace Server.Network;
@@ -25,7 +26,7 @@ public static class IncomingPackets
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void Register(int packetID, int length, bool ingame,
-        delegate*<NetState, CircularBufferReader, int, void> onReceive) =>
+        delegate*<NetState, SpanReader, int, void> onReceive) =>
         Register(new PacketHandler(packetID, length, ingame, onReceive));
 
     public static void Register(PacketHandler packetHandler)

@@ -84,8 +84,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendChangeCharacter(account);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -97,8 +97,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
 
         ns.SendClientVersionRequest();
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -109,8 +109,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCharacterDeleteResult(DeleteResultType.BadRequest);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPopupMessage(PMMessage.LoginSyncError);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Theory, InlineData(ProtocolChanges.Version70610), InlineData(ProtocolChanges.Version6000)]
@@ -148,8 +148,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var expected = new SupportedFeatures(ns).Compile();
         ns.SendSupportedFeature();
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -169,8 +169,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLoginConfirmation(m);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -181,8 +181,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLoginComplete();
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -206,8 +206,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCharacterListUpdate(account);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -240,8 +240,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
 
         ns.SendCharacterList();
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -273,8 +273,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
 
         ns.SendCharacterList();
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -286,8 +286,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendAccountLoginRejected(reason);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -305,8 +305,8 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
 
         ns.SendAccountLoginAck();
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -321,7 +321,7 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
 
         ns.SendPlayServerAck(si, authId);
 
-        var result = ns.SendPipe.Reader.TryRead();
-        AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 }

@@ -48,7 +48,7 @@ namespace Server.Network
             return $"{seconds} second{(seconds == 1 ? "" : "s")}";
         }
 
-        public static void BBClientRequest(NetState state, CircularBufferReader reader, int packetLength)
+        public static void BBClientRequest(NetState state, SpanReader reader, int packetLength)
         {
             var from = state.Mobile;
 
@@ -76,7 +76,7 @@ namespace Server.Network
             }
         }
 
-        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        public static void BBRequestContent(Mobile from, BaseBulletinBoard board, SpanReader reader)
         {
             if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
@@ -86,7 +86,7 @@ namespace Server.Network
             from.NetState.SendBBMessage(board, msg, true);
         }
 
-        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, SpanReader reader)
         {
             if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
@@ -96,7 +96,7 @@ namespace Server.Network
             from.NetState.SendBBMessage(board, msg);
         }
 
-        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        public static void BBPostMessage(Mobile from, BaseBulletinBoard board, SpanReader reader)
         {
             var thread = World.FindItem((Serial)reader.ReadUInt32()) as BulletinMessage;
 
@@ -151,7 +151,7 @@ namespace Server.Network
             board.PostMessage(from, thread, subject, lines);
         }
 
-        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, CircularBufferReader reader)
+        public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, SpanReader reader)
         {
             if (World.FindItem((Serial)reader.ReadUInt32()) is not BulletinMessage msg || msg.Parent != board)
             {
