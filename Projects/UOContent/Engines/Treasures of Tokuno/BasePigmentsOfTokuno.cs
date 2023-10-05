@@ -1,302 +1,231 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.Stealables;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Targeting;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public abstract partial class BasePigmentsOfTokuno : Item, IUsesRemaining
 {
-    public abstract class BasePigmentsOfTokuno : Item, IUsesRemaining
+    private static readonly Type[] m_Glasses =
     {
-        private static readonly Type[] m_Glasses =
+        typeof(MaritimeGlasses),
+        typeof(WizardsGlasses),
+        typeof(TradeGlasses),
+        typeof(LyricalGlasses),
+        typeof(NecromanticGlasses),
+        typeof(LightOfWayGlasses),
+        typeof(FoldedSteelGlasses),
+        typeof(PoisonedGlasses),
+        typeof(TreasureTrinketGlasses),
+        typeof(MaceShieldGlasses),
+        typeof(ArtsGlasses),
+        typeof(AnthropomorphistGlasses)
+    };
+
+    private static readonly Type[] m_Replicas =
+    {
+        typeof(ANecromancerShroud),
+        typeof(BraveKnightOfTheBritannia),
+        typeof(CaptainJohnsHat),
+        typeof(DetectiveBoots),
+        typeof(DjinnisRing),
+        typeof(EmbroideredOakLeafCloak),
+        typeof(GuantletsOfAnger),
+        typeof(LieutenantOfTheBritannianRoyalGuard),
+        typeof(OblivionsNeedle),
+        typeof(RoyalGuardSurvivalKnife),
+        typeof(SamaritanRobe),
+        typeof(TheMostKnowledgePerson),
+        typeof(TheRobeOfBritanniaAri),
+        typeof(AcidProofRobe),
+        typeof(Calm),
+        typeof(CrownOfTalKeesh),
+        typeof(FangOfRactus),
+        typeof(GladiatorsCollar),
+        typeof(OrcChieftainHelm),
+        typeof(Pacify),
+        typeof(Quell),
+        typeof(ShroudOfDeciet),
+        typeof(Subdue)
+    };
+
+    private static readonly Type[] m_DyableHeritageItems =
+    {
+        typeof(ChargerOfTheFallen),
+        typeof(SamuraiHelm),
+        typeof(HolySword),
+        typeof(LeggingsOfEmbers),
+        typeof(ShaminoCrossbow)
+    };
+
+    private TextDefinition m_Label;
+
+    [EncodedInt]
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _usesRemaining;
+
+    public BasePigmentsOfTokuno() : base(0xEFF)
+    {
+        Weight = 1.0;
+        _usesRemaining = 1;
+    }
+
+    public BasePigmentsOfTokuno(int uses) : base(0xEFF)
+    {
+        Weight = 1.0;
+        _usesRemaining = uses;
+    }
+
+    public BasePigmentsOfTokuno(Serial serial) : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1070933; // Pigments of Tokuno
+
+    protected TextDefinition Label
+    {
+        get => m_Label;
+        set
         {
-            typeof(MaritimeGlasses),
-            typeof(WizardsGlasses),
-            typeof(TradeGlasses),
-            typeof(LyricalGlasses),
-            typeof(NecromanticGlasses),
-            typeof(LightOfWayGlasses),
-            typeof(FoldedSteelGlasses),
-            typeof(PoisonedGlasses),
-            typeof(TreasureTrinketGlasses),
-            typeof(MaceShieldGlasses),
-            typeof(ArtsGlasses),
-            typeof(AnthropomorphistGlasses)
-        };
+            m_Label = value;
+            InvalidateProperties();
+        }
+    }
 
-        private static readonly Type[] m_Replicas =
+    bool IUsesRemaining.ShowUsesRemaining
+    {
+        get => true;
+        set { }
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        m_Label.AddTo(list);
+        list.Add(1060584, _usesRemaining); // uses remaining: ~1_val~
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (IsAccessibleTo(from) && from.InRange(GetWorldLocation(), 3))
         {
-            typeof(ANecromancerShroud),
-            typeof(BraveKnightOfTheBritannia),
-            typeof(CaptainJohnsHat),
-            typeof(DetectiveBoots),
-            typeof(DjinnisRing),
-            typeof(EmbroideredOakLeafCloak),
-            typeof(GuantletsOfAnger),
-            typeof(LieutenantOfTheBritannianRoyalGuard),
-            typeof(OblivionsNeedle),
-            typeof(RoyalGuardSurvivalKnife),
-            typeof(SamaritanRobe),
-            typeof(TheMostKnowledgePerson),
-            typeof(TheRobeOfBritanniaAri),
-            typeof(AcidProofRobe),
-            typeof(Calm),
-            typeof(CrownOfTalKeesh),
-            typeof(FangOfRactus),
-            typeof(GladiatorsCollar),
-            typeof(OrcChieftainHelm),
-            typeof(Pacify),
-            typeof(Quell),
-            typeof(ShroudOfDeciet),
-            typeof(Subdue)
-        };
-
-        private static readonly Type[] m_DyableHeritageItems =
+            from.SendLocalizedMessage(1070929); // Select the artifact or enhanced magic item to dye.
+            from.BeginTarget(3, false, TargetFlags.None, InternalCallback);
+        }
+        else
         {
-            typeof(ChargerOfTheFallen),
-            typeof(SamuraiHelm),
-            typeof(HolySword),
-            typeof(LeggingsOfEmbers),
-            typeof(ShaminoCrossbow)
-        };
+            from.SendLocalizedMessage(502436); // That is not accessible.
+        }
+    }
 
-        private TextDefinition m_Label;
-
-        private int m_UsesRemaining;
-
-        public BasePigmentsOfTokuno() : base(0xEFF)
+    private void InternalCallback(Mobile from, object targeted)
+    {
+        if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
+            !IsAccessibleTo(from))
         {
-            Weight = 1.0;
-            m_UsesRemaining = 1;
+            return;
         }
 
-        public BasePigmentsOfTokuno(int uses) : base(0xEFF)
+        if (targeted is not Item i)
         {
-            Weight = 1.0;
-            m_UsesRemaining = uses;
+            from.SendLocalizedMessage(1070931); // You can only dye artifacts and enhanced magic items with this tub.
         }
-
-        public BasePigmentsOfTokuno(Serial serial) : base(serial)
+        else if (!from.InRange(i.GetWorldLocation(), 3) || !IsAccessibleTo(from))
         {
+            from.SendLocalizedMessage(502436); // That is not accessible.
         }
-
-        public override int LabelNumber => 1070933; // Pigments of Tokuno
-
-        protected TextDefinition Label
+        else if (from.Items.Contains(i))
         {
-            get => m_Label;
-            set
-            {
-                m_Label = value;
-                InvalidateProperties();
-            }
+            from.SendLocalizedMessage(1070930); // Can't dye artifacts or enhanced magic items that are being worn.
         }
-
-        /* DO NOT USE! Only used in serialization of pigments that originally derived from Item */
-
-        protected bool InheritsItem { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int UsesRemaining
+        else if (i.IsLockedDown)
         {
-            get => m_UsesRemaining;
-            set
-            {
-                m_UsesRemaining = value;
-                InvalidateProperties();
-            }
+            // You may not dye artifacts and enhanced magic items which are locked down.
+            from.SendLocalizedMessage(1070932);
         }
-
-        bool IUsesRemaining.ShowUsesRemaining
+        else if (i.QuestItem)
         {
-            get => true;
-            set { }
+            from.SendLocalizedMessage(1151836); // You may not dye toggled quest items.
         }
-
-        public override void GetProperties(IPropertyList list)
+        else if (i is MetalPigmentsOfTokuno)
         {
-            base.GetProperties(list);
-
-            m_Label.AddTo(list);
-            list.Add(1060584, m_UsesRemaining); // uses remaining: ~1_val~
+            from.SendLocalizedMessage(1042417); // You cannot dye that.
         }
-
-        public override void OnDoubleClick(Mobile from)
+        else if (i is LesserPigmentsOfTokuno)
         {
-            if (IsAccessibleTo(from) && from.InRange(GetWorldLocation(), 3))
-            {
-                from.SendLocalizedMessage(1070929); // Select the artifact or enhanced magic item to dye.
-                from.BeginTarget(3, false, TargetFlags.None, InternalCallback);
-            }
-            else
-            {
-                from.SendLocalizedMessage(502436); // That is not accessible.
-            }
+            from.SendLocalizedMessage(1042417); // You cannot dye that.
         }
-
-        private void InternalCallback(Mobile from, object targeted)
+        else if (i is PigmentsOfTokuno)
         {
-            if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
-                !IsAccessibleTo(from))
-            {
-                return;
-            }
-
-            if (targeted is not Item i)
-            {
-                from.SendLocalizedMessage(1070931); // You can only dye artifacts and enhanced magic items with this tub.
-            }
-            else if (!from.InRange(i.GetWorldLocation(), 3) || !IsAccessibleTo(from))
-            {
-                from.SendLocalizedMessage(502436); // That is not accessible.
-            }
-            else if (from.Items.Contains(i))
-            {
-                from.SendLocalizedMessage(1070930); // Can't dye artifacts or enhanced magic items that are being worn.
-            }
-            else if (i.IsLockedDown)
-            {
-                from.SendLocalizedMessage(
-                    1070932
-                ); // You may not dye artifacts and enhanced magic items which are locked down.
-            }
-            else if (i.QuestItem)
-            {
-                from.SendLocalizedMessage(1151836); // You may not dye toggled quest items.
-            }
-            else if (i is MetalPigmentsOfTokuno)
-            {
-                from.SendLocalizedMessage(1042417); // You cannot dye that.
-            }
-            else if (i is LesserPigmentsOfTokuno)
-            {
-                from.SendLocalizedMessage(1042417); // You cannot dye that.
-            }
-            else if (i is PigmentsOfTokuno)
-            {
-                from.SendLocalizedMessage(1042417); // You cannot dye that.
-            }
-            else if (!IsValidItem(i))
-            {
-                from.SendLocalizedMessage(
-                    1070931
-                ); // You can only dye artifacts and enhanced magic items with this tub.	//Yes, it says tub on OSI.  Don't ask me why ;p
-            }
-            else
-            {
-                // Notes: on OSI there IS no hue check to see if it's already hued.  and no messages on successful hue either
-                i.Hue = Hue;
-
-                if (--UsesRemaining <= 0)
-                {
-                    Delete();
-                }
-
-                from.PlaySound(0x23E); // As per OSI TC1
-            }
+            from.SendLocalizedMessage(1042417); // You cannot dye that.
         }
-
-        public static bool IsValidItem(Item i)
+        else if (!IsValidItem(i))
         {
-            if (i is BasePigmentsOfTokuno)
-            {
-                return false;
-            }
-
-            var t = i.GetType();
-
-            var resource = CraftResource.None;
-
-            if (i is BaseWeapon weapon)
-            {
-                resource = weapon.Resource;
-            }
-            else if (i is BaseArmor armor)
-            {
-                resource = armor.Resource;
-            }
-            else if (i is BaseClothing clothing)
-            {
-                resource = clothing.Resource;
-            }
-
-            if (!CraftResources.IsStandard(resource))
-            {
-                return true;
-            }
-
-            return IsInTypeList(t, TreasuresOfTokuno.TokunoDyable)
-                   || IsInTypeList(t, TreasuresOfTokuno.LesserArtifactsTotal)
-                   || IsInTypeList(t, TreasuresOfTokuno.GreaterArtifacts)
-                   || IsInTypeList(t, DemonKnight.ArtifactRarity10)
-                   || IsInTypeList(t, DemonKnight.ArtifactRarity11)
-                   || IsInTypeList(t, MondainsLegacy.Artifacts)
-                   || IsInTypeList(t, StealableArtifacts.TypesOfEntries)
-                   || IsInTypeList(t, Paragon.Artifacts)
-                   || IsInTypeList(t, Leviathan.Artifacts)
-                   || IsInTypeList(t, TreasureMapChest.Artifacts)
-                   || IsInTypeList(t, m_Replicas)
-                   || IsInTypeList(t, m_DyableHeritageItems)
-                   || IsInTypeList(t, m_Glasses);
+            // You can only dye artifacts and enhanced magic items with this tub.	//Yes, it says tub on OSI.  Don't ask me why ;p
+            from.SendLocalizedMessage(1070931);
         }
-
-        private static bool IsInTypeList(Type t, Type[] list)
+        else
         {
-            for (var i = 0; i < list.Length; i++)
+            // Notes: on OSI there IS no hue check to see if it's already hued.  and no messages on successful hue either
+            i.Hue = Hue;
+
+            if (--UsesRemaining <= 0)
             {
-                if (list[i].IsAssignableFrom(t))
-                {
-                    return true;
-                }
+                Delete();
             }
 
+            from.PlaySound(0x23E); // As per OSI TC1
+        }
+    }
+
+    public static bool IsValidItem(Item i)
+    {
+        if (i is BasePigmentsOfTokuno)
+        {
             return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        var t = i.GetType();
+
+        var resource = CraftResource.None;
+
+        if (i is BaseWeapon weapon)
         {
-            base.Serialize(writer);
-
-            writer.Write(1);
-
-            writer.WriteEncodedInt(m_UsesRemaining);
+            resource = weapon.Resource;
+        }
+        else if (i is BaseArmor armor)
+        {
+            resource = armor.Resource;
+        }
+        else if (i is BaseClothing clothing)
+        {
+            resource = clothing.Resource;
         }
 
-        public override void Deserialize(IGenericReader reader)
+        if (!CraftResources.IsStandard(resource))
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        m_UsesRemaining = reader.ReadEncodedInt();
-                        break;
-                    }
-                case 0: // Old pigments that inherited from item
-                    {
-                        InheritsItem = true;
-
-                        if (this is LesserPigmentsOfTokuno)
-                        {
-                            ((LesserPigmentsOfTokuno)this).Type = (LesserPigmentType)reader.ReadEncodedInt();
-                        }
-                        else if (this is PigmentsOfTokuno)
-                        {
-                            ((PigmentsOfTokuno)this).Type = (PigmentType)reader.ReadEncodedInt();
-                        }
-                        else if (this is MetalPigmentsOfTokuno)
-                        {
-                            reader.ReadEncodedInt();
-                        }
-
-                        m_UsesRemaining = reader.ReadEncodedInt();
-
-                        break;
-                    }
-            }
+            return true;
         }
+
+        return t.InTypeList(TreasuresOfTokuno.TokunoDyable)
+               || t.InTypeList(TreasuresOfTokuno.LesserArtifactsTotal)
+               || t.InTypeList(TreasuresOfTokuno.GreaterArtifacts)
+               || t.InTypeList(DemonKnight.ArtifactRarity10)
+               || t.InTypeList(DemonKnight.ArtifactRarity11)
+               || t.InTypeList(MondainsLegacy.Artifacts)
+               || t.InTypeList(StealableArtifacts.TypesOfEntries)
+               || t.InTypeList(Paragon.Artifacts)
+               || t.InTypeList(Leviathan.Artifacts)
+               || t.InTypeList(TreasureMapChest.Artifacts)
+               || t.InTypeList(m_Replicas)
+               || t.InTypeList(m_DyableHeritageItems)
+               || t.InTypeList(m_Glasses);
     }
 }

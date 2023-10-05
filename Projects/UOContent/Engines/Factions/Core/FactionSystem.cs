@@ -2,8 +2,9 @@ using System;
 
 namespace Server.Factions;
 
-public static class FactionSystem
+public class FactionSystem : GenericPersistence
 {
+    private static FactionSystem _factionSystem;
     public static bool Enabled { get; private set; }
 
     public static void Configure()
@@ -12,8 +13,12 @@ public static class FactionSystem
 
         if (Enabled)
         {
-            GenericPersistence.Register("Factions", Serialize, Deserialize);
+            _factionSystem = new();
         }
+    }
+
+    public FactionSystem() : base("Factions", 10)
+    {
     }
 
     // This does not do the actual work of removing faction stuff, only turns off the persistence.
@@ -24,7 +29,7 @@ public static class FactionSystem
             return;
         }
 
-        Persistence.Unregister("Factions");
+        _factionSystem.Unregister();
         Enabled = false;
         ServerConfiguration.SetSetting("factions.enabled", false);
     }
@@ -37,12 +42,12 @@ public static class FactionSystem
             return;
         }
 
-        GenericPersistence.Register("Factions", Serialize, Deserialize);
+        _factionSystem.Register();
         Enabled = true;
         ServerConfiguration.SetSetting("factions.enabled", true);
     }
 
-    private static void Serialize(IGenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
         writer.WriteEncodedInt(0); // version
 
@@ -59,7 +64,7 @@ public static class FactionSystem
         }
     }
 
-    private static void Deserialize(IGenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
         var version = reader.ReadEncodedInt();
 

@@ -1018,23 +1018,20 @@ namespace Server.Engines.ConPVP
 
             var hadFlag = false;
 
-            corpse.FindItemsByType<CTFFlag>(false)
-                .ForEach(
-                    flag =>
-                    {
-                        hadFlag = true;
-                        flag.DropTo(mob, killer);
-                    }
-                );
+            foreach (var flag in corpse.EnumerateItemsByType<CTFFlag>(false))
+            {
+                hadFlag = true;
+                flag.DropTo(mob, killer);
+            }
 
-            mob.Backpack?.FindItemsByType<CTFFlag>(false)
-                .ForEach(
-                    flag =>
-                    {
-                        hadFlag = true;
-                        flag.DropTo(mob, killer);
-                    }
-                );
+            if (mob.Backpack != null)
+            {
+                foreach (var flag in mob.Backpack.EnumerateItemsByType<CTFFlag>(false))
+                {
+                    hadFlag = true;
+                    flag.DropTo(mob, killer);
+                }
+            }
 
             if (killer?.Player == true)
             {

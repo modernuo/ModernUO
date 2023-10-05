@@ -36,6 +36,7 @@ public static class Core
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
 
+    private static bool _performSnapshot;
     private static bool _crashed;
     private static string _baseDirectory;
 
@@ -556,6 +557,12 @@ public static class Core
 
                 Timer.CheckTimerPool(); // Check for pool depletion so we can async refill it.
 
+                if (_performSnapshot)
+                {
+                    // Return value is the offset that can be used to fix timers that should drift
+                    World.Snapshot();
+                }
+
                 _tickCount = 0;
                 _now = DateTime.MinValue;
 
@@ -578,7 +585,13 @@ public static class Core
         {
             CurrentDomain_UnhandledException(null, new UnhandledExceptionEventArgs(e, true));
         }
+        finally
+        {
+            World.SleepSerializationThreads();
+        }
     }
+
+    internal static void RequestSnapshot() => _performSnapshot = true;
 
     public static void VerifySerialization()
     {

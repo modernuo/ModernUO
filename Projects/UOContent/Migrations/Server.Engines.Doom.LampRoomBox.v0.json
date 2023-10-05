@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Doom.LampRoomBox",
+  "properties": [
+    {
+      "name": "Controller",
+      "type": "Server.Engines.Doom.LeverPuzzleController",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

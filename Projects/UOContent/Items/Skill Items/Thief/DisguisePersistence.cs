@@ -4,16 +4,21 @@ using Server.Mobiles;
 
 namespace Server.Items;
 
-public static class DisguisePersistence
+public class DisguisePersistence : GenericPersistence
 {
+    private static DisguisePersistence _disguisePersistence;
     public static Dictionary<Mobile, Timer> Timers { get; } = new();
 
     public static void Configure()
     {
-        GenericPersistence.Register("Disguises", Serialize, Deserialize);
+        _disguisePersistence = new DisguisePersistence();
     }
 
-    private static void Deserialize(IGenericReader reader)
+    public DisguisePersistence() : base("Disguises", 10)
+    {
+    }
+
+    public override void Deserialize(IGenericReader reader)
     {
         var count = reader.ReadEncodedInt();
         for (var i = 0; i < count; ++i)
@@ -24,7 +29,7 @@ public static class DisguisePersistence
         }
     }
 
-    private static void Serialize(IGenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
         writer.WriteEncodedInt(Timers.Count);
         foreach (var (m, timer) in Timers)

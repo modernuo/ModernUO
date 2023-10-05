@@ -1,0 +1,30 @@
+{
+  "version": 0,
+  "type": "Server.Items.KhaldunPitTeleporter",
+  "properties": [
+    {
+      "name": "Active",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "PointDest",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "MapDest",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    }
+  ]
+}

@@ -15,7 +15,7 @@ public enum DFAlgorithm
     PainSpike
 }
 
-public static class StaminaSystem
+public class StaminaSystem : GenericPersistence
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(StaminaSystem));
 
@@ -44,11 +44,13 @@ public static class StaminaSystem
         AdditionalLossWhenBelow = ServerConfiguration.GetOrUpdateSetting("stamina.additionalLossWhenBelow", 0.10);
         EnableMountStamina = ServerConfiguration.GetOrUpdateSetting("stamina.enableMountStamina", true);
         UseMountStaminaOnlyWhenOverloaded = ServerConfiguration.GetSetting("stamina.useMountStaminaOnlyWhenOverloaded", Core.SA);
-
-        GenericPersistence.Register("StaminaSystem", Serialize, Deserialize);
     }
 
-    private static void Serialize(IGenericWriter writer)
+    public StaminaSystem() : base("StaminaSystem", 10)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
     {
         writer.WriteEncodedInt(0); // version
 
@@ -60,7 +62,7 @@ public static class StaminaSystem
         }
     }
 
-    private static void Deserialize(IGenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
         var version = reader.ReadEncodedInt();
 

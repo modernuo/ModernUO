@@ -44,7 +44,7 @@ public partial class ArcherGuard : BaseGuard
         var bow = new Bow();
 
         bow.Movable = false;
-        bow.Crafter = this;
+        bow.Crafter = Name;
         bow.Quality = WeaponQuality.Exceptional;
 
         AddItem(bow);

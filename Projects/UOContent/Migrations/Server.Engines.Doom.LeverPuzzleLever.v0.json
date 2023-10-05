@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Doom.LeverPuzzleLever",
+  "properties": [
+    {
+      "name": "Code",
+      "type": "ushort",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Controller",
+      "type": "Server.Engines.Doom.LeverPuzzleController",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

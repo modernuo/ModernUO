@@ -760,12 +760,9 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    DateTime ISerializable.LastSerialized { get; set; } = Core.Now;
+    public long SavePosition { get; set; } = -1;
 
-    long ISerializable.SavePosition { get; set; } = -1;
-
-    BufferWriter ISerializable.SaveBuffer { get; set; }
+    public BufferWriter SaveBuffer { get; set; }
 
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
@@ -4187,19 +4184,15 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    public virtual void Consume()
+    public virtual void Consume(int amount = 1)
     {
-        Consume(1);
-    }
-
-    public virtual void Consume(int amount)
-    {
-        Amount -= amount;
-
-        if (Amount <= 0)
+        if (Amount <= amount)
         {
             Delete();
+            return;
         }
+
+        Amount -= amount;
     }
 
     public virtual void ReplaceWith(Item newItem)

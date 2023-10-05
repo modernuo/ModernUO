@@ -1091,31 +1091,9 @@ namespace Server.Mobiles
 
         public HonorContext ReceivedHonorContext { get; set; }
 
-        public List<MLQuest> MLQuests
-        {
-            get
-            {
-                if (m_MLQuests == null)
-                {
-                    if (StaticMLQuester)
-                    {
-                        m_MLQuests = MLQuestSystem.FindQuestList(GetType());
-                    }
-                    else
-                    {
-                        m_MLQuests = ConstructQuestList();
-                    }
-
-                    if (m_MLQuests == null)
-                    {
-                        // return EmptyList, but don't cache it (run construction again next time)
-                        return MLQuestSystem.EmptyList;
-                    }
-                }
-
-                return m_MLQuests;
-            }
-        }
+        public List<MLQuest> MLQuests =>
+            // Assign the quests if we don't have one, and if it is still null, return an empty list
+            (m_MLQuests ??= StaticMLQuester ? MLQuestSystem.FindQuestList(GetType()) : ConstructQuestList()) ?? MLQuestSystem.EmptyList;
 
         public virtual MonsterAbility[] GetMonsterAbilities() => null;
 
@@ -1310,7 +1288,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if ((m as PlayerMobile)?.GetVirtues()?.HonorActive == true)
+            if (VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true)
             {
                 return false;
             }
