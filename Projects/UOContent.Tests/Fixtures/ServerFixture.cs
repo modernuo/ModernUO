@@ -37,6 +37,8 @@ namespace Server.Tests
 
             // Load the world
             World.Load();
+
+            World.ExitSerializationThreads();
         }
 
         public void Dispose()
