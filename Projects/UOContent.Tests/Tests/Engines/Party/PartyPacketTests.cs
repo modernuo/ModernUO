@@ -19,8 +19,8 @@ namespace UOContent.Tests
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyRemoveMember(m);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -40,8 +40,8 @@ namespace UOContent.Tests
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyRemoveMember(member.Serial, p);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -61,8 +61,8 @@ namespace UOContent.Tests
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyMemberList(p);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
 
         [Theory]
@@ -78,8 +78,8 @@ namespace UOContent.Tests
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyTextMessage(serial, text, toAll);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -92,8 +92,8 @@ namespace UOContent.Tests
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPartyInvitation(m);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
     }
 }

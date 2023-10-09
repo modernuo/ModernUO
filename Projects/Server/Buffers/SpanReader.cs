@@ -31,6 +31,8 @@ public ref struct SpanReader
     public int Position { get; private set; }
     public int Remaining => Length - Position;
 
+    public ReadOnlySpan<byte> Buffer => _buffer;
+
     public SpanReader(ReadOnlySpan<byte> span)
     {
         _buffer = span;
@@ -184,13 +186,13 @@ public ref struct SpanReader
         {
             // In case the remaining is not evenly divisible
             size = remaining - (remaining & (byteLength - 1));
-            int index = _buffer.Slice(Position, size).IndexOfTerminator(byteLength);
-            size = index < 0 ? size : index;
         }
 
         var span = _buffer.Slice(Position, size);
-        Position += size;
-        return TextEncoding.GetString(span, encoding, safeString);
+        var index = span.IndexOfTerminator(byteLength);
+
+        Position += isFixedLength || index < 0 ? size : index;
+        return TextEncoding.GetString(span[..index], encoding, safeString);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

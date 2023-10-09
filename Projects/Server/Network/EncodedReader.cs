@@ -13,15 +13,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+
 namespace Server.Network;
 
 public ref struct EncodedReader
 {
-    private CircularBufferReader _reader;
+    private SpanReader _reader;
 
-    public EncodedReader(CircularBufferReader reader) => _reader = reader;
+    public EncodedReader(SpanReader reader) => _reader = reader;
 
-    public void Trace(NetState state) => _reader.Trace(state);
+    public void Trace(NetState state) => state.Trace(_reader.Buffer);
 
     public int ReadInt32() => _reader.ReadByte() != 0 ? 0 : _reader.ReadInt32();
 

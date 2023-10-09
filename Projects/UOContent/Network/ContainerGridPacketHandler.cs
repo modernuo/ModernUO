@@ -13,12 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+
 namespace Server.Network;
 
 public unsafe class ContainerGridPacketHandler : PacketHandler
 {
     public ContainerGridPacketHandler(int packetID, int length, bool ingame,
-        delegate*<NetState, CircularBufferReader, int, void> onReceive)
+        delegate*<NetState, SpanReader, int, void> onReceive)
         : base(packetID, length, ingame, onReceive)
     {
     }

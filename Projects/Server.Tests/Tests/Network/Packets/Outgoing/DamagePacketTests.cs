@@ -16,8 +16,8 @@ namespace Server.Tests.Network
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDamage(serial, inputAmount);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
 
         [Theory, InlineData(10), InlineData(-5), InlineData(1024), InlineData(100000)]
@@ -32,8 +32,8 @@ namespace Server.Tests.Network
 
             ns.SendDamage(serial, inputAmount);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
     }
 }

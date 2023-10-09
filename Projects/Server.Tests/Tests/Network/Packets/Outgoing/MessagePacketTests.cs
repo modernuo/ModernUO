@@ -42,8 +42,8 @@ namespace Server.Tests.Network
                 args
             );
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -87,8 +87,8 @@ namespace Server.Tests.Network
                 args
             );
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -125,8 +125,8 @@ namespace Server.Tests.Network
                 text
             );
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -165,8 +165,8 @@ namespace Server.Tests.Network
                 text
             );
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -180,8 +180,8 @@ namespace Server.Tests.Network
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendFollowMessage(serial, serial2);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
 
         [Fact]
@@ -195,8 +195,8 @@ namespace Server.Tests.Network
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendHelpResponse(s, text);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+            var result = ns.SendPipe.Reader.AvailableToRead();
+            AssertThat.Equal(result, expected);
         }
 
         internal class TestPrompt : Prompt
@@ -214,8 +214,8 @@ namespace Server.Tests.Network
                 var ns = PacketTestUtilities.CreateTestNetState();
                 ns.SendPrompt(prompt);
 
-                var result = ns.SendPipe.Reader.TryRead();
-                AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+                var result = ns.SendPipe.Reader.AvailableToRead();
+                AssertThat.Equal(result, expected);
 
             }
         }

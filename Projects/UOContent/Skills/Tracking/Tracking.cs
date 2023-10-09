@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using Server.Gumps;
 using Server.Mobiles;
@@ -22,7 +23,7 @@ namespace Server.SkillHandlers
             SkillInfo.Table[(int)SkillName.Tracking].Callback = OnUse;
         }
 
-        public static void QuestArrow(NetState state, CircularBufferReader reader, int packetLength)
+        public static void QuestArrow(NetState state, SpanReader reader, int packetLength)
         {
             if (state.Mobile is PlayerMobile from)
             {

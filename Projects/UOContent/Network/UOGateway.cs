@@ -33,7 +33,7 @@ namespace Server.Network
             }
         }
 
-        public static void QueryCompactShardStats(NetState state, CircularBufferReader reader, int packetLength)
+        public static void QueryCompactShardStats(NetState state, SpanReader reader, int packetLength)
         {
             state.SendCompactShardStats(
                 (uint)(Core.Uptime / 1000),
@@ -44,7 +44,7 @@ namespace Server.Network
             );
         }
 
-        public static void QueryExtendedShardStats(NetState state, CircularBufferReader reader, int packetLength)
+        public static void QueryExtendedShardStats(NetState state, SpanReader reader, int packetLength)
         {
             const long ticksInHour = 1000 * 60 * 60;
             state.SendExtendedShardStats(

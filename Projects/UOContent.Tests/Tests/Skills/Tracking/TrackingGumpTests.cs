@@ -26,8 +26,8 @@ namespace UOContent.Tests
             var expected = g.Compile(ns).Compile();
             ns.SendDisplayGump(g, out var switches, out var entries);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
     }
 }
