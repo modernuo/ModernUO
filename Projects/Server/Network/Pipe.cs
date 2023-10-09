@@ -305,7 +305,7 @@ public partial class Pipe : IDisposable
             }
             else
             {
-                var fdName = $"/mirrored_ring_buffer_{Guid.NewGuid()}";
+                var fdName = $"/muo/ring/{GetHashCode()}";
                 fd = NativeMethods_Linux.shm_open(fdName, NativeMethods_Linux.O_CREAT | NativeMethods_Linux.O_RDWR, 0600);
 
                 // Unlink immediately to emulate memfd_create() functionality
