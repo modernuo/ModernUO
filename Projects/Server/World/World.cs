@@ -323,6 +323,8 @@ public static class World
             return TimeSpan.Zero;
         }
 
+        WorldState = WorldState.Saving;
+        
         Broadcast(0x35, true, "The world is saving, please wait.");
 
         logger.Information("Saving world");
