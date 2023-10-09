@@ -30,6 +30,8 @@ internal class ServerFixture : IDisposable
 
         // Load the world
         World.Load();
+
+        World.ExitSerializationThreads();
     }
 
     public void Dispose()
