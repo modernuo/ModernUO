@@ -243,7 +243,7 @@ public partial class Pipe : IDisposable
 
             // Create a file descriptor
             _handle = NativeMethods_Windows.CreateFileMappingW(
-                -1,
+                NativeMethods_Windows.InvalidHandleValue,
                 IntPtr.Zero,
                 NativeMethods_Windows.PAGE_READWRITE,
                 0,
@@ -312,7 +312,7 @@ public partial class Pipe : IDisposable
                 NativeMethods_Linux.shm_unlink(fdName);
             }
 
-            if (fd == -1)
+            if (fd == NativeMethods_Linux.InvalidPtrValue)
             {
                 throw new InvalidOperationException($"Creating file descriptor failed. ({Marshal.GetLastPInvokeError()})");
             }
@@ -326,9 +326,9 @@ public partial class Pipe : IDisposable
             // Get virtual address space, must be double the size so we can map twice
             _buffer = NativeMethods_Linux.mmap(IntPtr.Zero, adjustedSize * 2,
                 NativeMethods_Linux.PROT_READ | NativeMethods_Linux.PROT_WRITE,
-                NativeMethods_Linux.MAP_PRIVATE | anon, -1, 0);
+                NativeMethods_Linux.MAP_PRIVATE | anon, NativeMethods_Linux.InvalidFileDescriptor, 0);
 
-            if (_buffer == -1)
+            if (_buffer == NativeMethods_Linux.InvalidPtrValue)
             {
                 throw new InsufficientMemoryException($"Allocating virtual memory failed. ({Marshal.GetLastPInvokeError()})");
             }
@@ -338,7 +338,7 @@ public partial class Pipe : IDisposable
                 NativeMethods_Linux.PROT_READ | NativeMethods_Linux.PROT_WRITE,
                 NativeMethods_Linux.MAP_SHARED | NativeMethods_Linux.MAP_FIXED, fd, 0);
 
-            if (view1 == -1)
+            if (view1 == NativeMethods_Linux.InvalidPtrValue)
             {
                 throw new InvalidOperationException($"Mapping memory failed. ({Marshal.GetLastPInvokeError()})");
             }
@@ -348,7 +348,7 @@ public partial class Pipe : IDisposable
                 NativeMethods_Linux.PROT_READ | NativeMethods_Linux.PROT_WRITE,
                 NativeMethods_Linux.MAP_SHARED | NativeMethods_Linux.MAP_FIXED, fd, 0);
 
-            if (view2 == -1)
+            if (view2 == NativeMethods_Linux.InvalidPtrValue)
             {
                 throw new InvalidOperationException($"Mapping mirrored memory failed. ({Marshal.GetLastPInvokeError()})");
             }
@@ -368,8 +368,8 @@ public partial class Pipe : IDisposable
     private static partial class NativeMethods_Windows
     {
         private const string Kernel32 = "kernel32.dll";
-
         private const string KernelBase = "kernelbase.dll";
+        public const IntPtr InvalidHandleValue = -1;
 
         [LibraryImport(Kernel32, SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
         public static partial IntPtr CreateFileMappingW(
@@ -419,6 +419,8 @@ public partial class Pipe : IDisposable
     private static partial class NativeMethods_Linux
     {
         private const string LibC = "libc";
+        public const IntPtr InvalidPtrValue = -1;
+        public const int InvalidFileDescriptor = -1;
 
         // For MacOS
         [LibraryImport(LibC, SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
@@ -478,13 +480,13 @@ public partial class Pipe : IDisposable
         }
         else if (Core.IsLinux || Core.IsDarwin)
         {
-            if (_handle != -1)
+            if (_handle != NativeMethods_Linux.InvalidFileDescriptor)
             {
 #pragma warning disable CA2020
                 NativeMethods_Linux.close((int)_handle);
 #pragma warning restore CA2020
 
-                _handle = -1;
+                _handle = NativeMethods_Linux.InvalidFileDescriptor;
             }
 
             if (_buffer != IntPtr.Zero)
