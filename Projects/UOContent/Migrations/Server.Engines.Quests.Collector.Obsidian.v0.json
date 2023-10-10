@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Collector.Obsidian",
+  "properties": [
+    {
+      "name": "Quantity",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    },
+    {
+      "name": "StatueName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

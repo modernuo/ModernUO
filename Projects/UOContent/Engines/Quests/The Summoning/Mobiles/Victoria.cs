@@ -47,7 +47,7 @@ namespace Server.Engines.Quests.Doom
 
         public override void InitSBInfo()
         {
-            m_SBInfos.Add(new SBMage());
+            _sbInfos.Add(new SBMage());
         }
 
         public override void InitBody()

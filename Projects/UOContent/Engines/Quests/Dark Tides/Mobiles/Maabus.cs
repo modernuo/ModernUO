@@ -1,42 +1,25 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Necro
+namespace Server.Engines.Quests.Necro;
+
+[SerializationGenerator(0, false)]
+public partial class Maabus : BaseQuester
 {
-    public class Maabus : BaseQuester
+    public Maabus()
     {
-        public Maabus()
-        {
-        }
+    }
 
-        public Maabus(Serial serial) : base(serial)
-        {
-        }
+    public override string DefaultName => "Maabus";
 
-        public override string DefaultName => "Maabus";
+    public override void InitBody()
+    {
+        Body = 0x94;
+    }
 
-        public override void InitBody()
-        {
-            Body = 0x94;
-        }
+    public override bool CanTalkTo(PlayerMobile to) => false;
 
-        public override bool CanTalkTo(PlayerMobile to) => false;
-
-        public override void OnTalk(PlayerMobile player, bool contextMenu)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
     }
 }

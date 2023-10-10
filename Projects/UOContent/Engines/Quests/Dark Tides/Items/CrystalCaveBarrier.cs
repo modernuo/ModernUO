@@ -1,72 +1,51 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Necro
-{
-    public class CrystalCaveBarrier : Item
-    {
-        [Constructible]
-        public CrystalCaveBarrier() : base(0x3967) => Movable = false;
+namespace Server.Engines.Quests.Necro;
 
-        public CrystalCaveBarrier(Serial serial) : base(serial)
+[SerializationGenerator(0, false)]
+public partial class CrystalCaveBarrier : Item
+{
+    [Constructible]
+    public CrystalCaveBarrier() : base(0x3967) => Movable = false;
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (m.AccessLevel > AccessLevel.Player)
         {
+            return true;
         }
 
-        public override bool OnMoveOver(Mobile m)
+        var mob = m;
+
+        if (m is BaseCreature creature)
         {
-            if (m.AccessLevel > AccessLevel.Player)
-            {
-                return true;
-            }
+            mob = creature.ControlMaster;
+        }
 
-            var mob = m;
-
-            if (m is BaseCreature creature)
-            {
-                mob = creature.ControlMaster;
-            }
-
-            if (mob is not PlayerMobile pm)
-            {
-                return false;
-            }
-
-            var qs = pm.Quest;
-
-            if (qs is DarkTidesQuest)
-            {
-                QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
-
-                if (obj?.Completed == true)
-                {
-                    m.SendLocalizedMessage(
-                        1060648
-                    ); // With Horus' permission, you are able to pass through the barrier.
-
-                    return true;
-                }
-            }
-
-            m.SendLocalizedMessage(
-                1060649,
-                "",
-                0x66D
-            ); // Without the permission of the guardian Horus, the magic of the barrier prevents your passage.
-
+        if (mob is not PlayerMobile pm)
+        {
             return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+        var qs = pm.Quest;
 
-            writer.Write(0); // version
+        if (qs is DarkTidesQuest)
+        {
+            QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
+
+            if (obj?.Completed == true)
+            {
+                // With Horus' permission, you are able to pass through the barrier.
+                m.SendLocalizedMessage(1060648);
+
+                return true;
+            }
         }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        // Without the permission of the guardian Horus, the magic of the barrier prevents your passage.
+        m.SendLocalizedMessage(1060649, "", 0x66D);
 
-            var version = reader.ReadInt();
-        }
+        return false;
     }
 }

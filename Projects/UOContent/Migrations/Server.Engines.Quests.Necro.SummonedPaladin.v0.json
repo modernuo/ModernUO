@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Necro.SummonedPaladin",
+  "properties": [
+    {
+      "name": "Necromancer",
+      "type": "Server.Mobiles.PlayerMobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "ToDelete",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
