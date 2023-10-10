@@ -115,7 +115,7 @@ public static class TextEncoding
         };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool IsSafeChar(ushort c) => c >= 0x20 && c < 0xFFFE;
+    private static bool IsSafeChar(ushort c) => c is >= 0x20 and < 0xFFFE;
 
     public static string GetString(ReadOnlySpan<byte> span, Encoding encoding, bool safeString = false)
     {

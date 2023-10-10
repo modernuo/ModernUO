@@ -398,6 +398,8 @@ public static class Core
 
         World.WaitForWriteCompletion();
 
+        World.ExitSerializationThreads();
+
         if (!_crashed)
         {
             EventSink.InvokeShutdown();
@@ -587,7 +589,7 @@ public static class Core
         }
         finally
         {
-            World.SleepSerializationThreads();
+            World.ExitSerializationThreads();
         }
     }
 

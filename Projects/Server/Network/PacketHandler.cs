@@ -13,13 +13,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+
 namespace Server.Network;
 
 public unsafe class PacketHandler
 {
     private readonly int _length;
 
-    public PacketHandler(int packetID, int length, bool ingame, delegate*<NetState, CircularBufferReader, int, void> onReceive)
+    public PacketHandler(int packetID, int length, bool ingame, delegate*<NetState, SpanReader, int, void> onReceive)
     {
         _length = length;
         PacketID = packetID;
@@ -31,7 +33,7 @@ public unsafe class PacketHandler
 
     public virtual int GetLength(NetState ns) => _length;
 
-    public delegate*<NetState, CircularBufferReader, int, void> OnReceive { get; }
+    public delegate*<NetState, SpanReader, int, void> OnReceive { get; }
 
     public delegate*<int, NetState, out bool, bool> ThrottleCallback { get; set; }
 

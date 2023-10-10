@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using CV = Server.ClientVersion;
@@ -54,7 +55,7 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0xF8, 106, false, &CreateCharacter);
     }
 
-    public static void CreateCharacter(NetState state, CircularBufferReader reader, int packetLength)
+    public static void CreateCharacter(NetState state, SpanReader reader, int packetLength)
     {
         reader.Seek(9, SeekOrigin.Current);
         /*
@@ -184,7 +185,7 @@ public static class IncomingAccountPackets
         }
     }
 
-    public static void DeleteCharacter(NetState state, CircularBufferReader reader, int packetLength)
+    public static void DeleteCharacter(NetState state, SpanReader reader, int packetLength)
     {
         reader.Seek(30, SeekOrigin.Current);
         var index = reader.ReadInt32();
@@ -192,18 +193,18 @@ public static class IncomingAccountPackets
         EventSink.InvokeDeleteRequest(state, index);
     }
 
-    public static void AccountID(NetState state, CircularBufferReader reader, int packetLength)
+    public static void AccountID(NetState state, SpanReader reader, int packetLength)
     {
     }
 
-    public static void ClientVersion(NetState state, CircularBufferReader reader, int packetLength)
+    public static void ClientVersion(NetState state, SpanReader reader, int packetLength)
     {
         var version = state.Version = new CV(reader.ReadAscii());
 
         EventSink.InvokeClientVersionReceived(state, version);
     }
 
-    public static void ClientType(NetState state, CircularBufferReader reader, int packetLength)
+    public static void ClientType(NetState state, SpanReader reader, int packetLength)
     {
         reader.ReadUInt16();
 
@@ -213,7 +214,7 @@ public static class IncomingAccountPackets
         EventSink.InvokeClientVersionReceived(state, version);
     }
 
-    public static void PlayCharacter(NetState state, CircularBufferReader reader, int packetLength)
+    public static void PlayCharacter(NetState state, SpanReader reader, int packetLength)
     {
         reader.Seek(36, SeekOrigin.Current); // 4 = 0xEDEDEDED, 30 = Name, 2 = unknown
         var flags = reader.ReadInt32();
@@ -345,7 +346,7 @@ public static class IncomingAccountPackets
         return authID;
     }
 
-    public static void GameLogin(NetState state, CircularBufferReader reader, int packetLength)
+    public static void GameLogin(NetState state, SpanReader reader, int packetLength)
     {
         // TODO: Connection throttling
 
@@ -399,7 +400,7 @@ public static class IncomingAccountPackets
         }
     }
 
-    public static void PlayServer(NetState state, CircularBufferReader reader, int packetLength)
+    public static void PlayServer(NetState state, SpanReader reader, int packetLength)
     {
         int index = reader.ReadInt16();
         var info = state.ServerInfo;
@@ -420,7 +421,7 @@ public static class IncomingAccountPackets
         }
     }
 
-    public static void LoginServerSeed(NetState state, CircularBufferReader reader, int packetLength)
+    public static void LoginServerSeed(NetState state, SpanReader reader, int packetLength)
     {
         state.Seed = reader.ReadInt32();
         state.Seeded = true;
@@ -440,7 +441,7 @@ public static class IncomingAccountPackets
         state.Version = new ClientVersion(clientMaj, clientMin, clientRev, clientPat);
     }
 
-    public static void AccountLogin(NetState state, CircularBufferReader reader, int packetLength)
+    public static void AccountLogin(NetState state, SpanReader reader, int packetLength)
     {
         // TODO: Throttle Connection
 

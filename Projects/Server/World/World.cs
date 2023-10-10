@@ -323,6 +323,8 @@ public static class World
             return TimeSpan.Zero;
         }
 
+        WorldState = WorldState.Saving;
+        
         Broadcast(0x35, true, "The world is saving, please wait.");
 
         logger.Information("Saving world");
@@ -383,11 +385,11 @@ public static class World
         }
     }
 
-    internal static void SleepSerializationThreads()
+    public static void ExitSerializationThreads()
     {
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
-            _threadWorkers[i].Sleep();
+            _threadWorkers[i].Exit();
         }
     }
 
@@ -524,6 +526,7 @@ public static class World
         private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
         private readonly AutoResetEvent _stopEvent; // Main thread waits for the worker finish draining
         private bool _pause;
+        private bool _exit;
         private readonly ConcurrentQueue<IGenericSerializable> _entities;
 
         public SerializationThreadWorker()
@@ -544,6 +547,13 @@ public static class World
         {
             Volatile.Write(ref _pause, true);
             _stopEvent.WaitOne();
+        }
+
+        public void Exit()
+        {
+            _exit = true;
+            Wake();
+            Sleep();
         }
 
         public void Push(IGenericSerializable entity)
@@ -576,7 +586,7 @@ public static class World
                 worker._stopEvent.Set(); // Allow the main thread to continue now that we are finished
                 worker._pause = false;
 
-                if (Core.Closing)
+                if (Core.Closing || worker._exit)
                 {
                     return;
                 }

@@ -25,8 +25,8 @@ namespace UOContent.Tests
                 (Packet)new MapDetailsNew(mapItem) : new MapDetails(mapItem)).Compile();
             ns.SendMapDetails(mapItem);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
 
         [Theory]
@@ -43,8 +43,8 @@ namespace UOContent.Tests
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendMapCommand(mapItem, command, x, y, number > 0);
 
-            var result = ns.SendPipe.Reader.TryRead();
-            AssertThat.Equal(result.Buffer[0].AsSpan(0), expected);
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
         }
     }
 }

@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
 using Server.Diagnostics;
 using Server.Targeting;
 
@@ -25,7 +26,7 @@ public static class IncomingTargetingPackets
         IncomingPackets.Register(0x6C, 19, true, &TargetResponse);
     }
 
-    public static void TargetResponse(NetState state, CircularBufferReader reader, int packetLength)
+    public static void TargetResponse(NetState state, SpanReader reader, int packetLength)
     {
         int type = reader.ReadByte();
         var targetID = reader.ReadInt32();

@@ -1262,7 +1262,8 @@ public partial class Container : Item
         {
             if (type.IsInstanceOfType(item))
             {
-                Items.Add(item);
+                items.Enqueue(item);
+
                 total += item.Amount;
                 if (total >= amount)
                 {

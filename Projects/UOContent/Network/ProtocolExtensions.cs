@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Buffers;
+
 namespace Server.Network
 {
     public interface IProtocolExtensionsInfo
@@ -33,7 +35,7 @@ namespace Server.Network
             return packetHandlers;
         }
 
-        private static unsafe void DecodeBundledPacket(NetState state, CircularBufferReader reader, int packetLength)
+        private static unsafe void DecodeBundledPacket(NetState state, SpanReader reader, int packetLength)
         {
             int cmd = reader.ReadByte();
 
