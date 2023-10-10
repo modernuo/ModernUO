@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Necro.MaabusCoffin",
+  "properties": [
+    {
+      "name": "Maabus",
+      "type": "Server.Engines.Quests.Necro.Maabus",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "SpawnLocation",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    }
+  ]
+}

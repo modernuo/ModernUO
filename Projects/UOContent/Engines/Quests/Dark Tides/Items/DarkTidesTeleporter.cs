@@ -1,76 +1,59 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Necro
+namespace Server.Engines.Quests.Necro;
+
+[SerializationGenerator(0, false)]
+public partial class DarkTidesTeleporter : DynamicTeleporter
 {
-    public class DarkTidesTeleporter : DynamicTeleporter
+    [Constructible]
+    public DarkTidesTeleporter()
     {
-        [Constructible]
-        public DarkTidesTeleporter()
-        {
-        }
+    }
 
-        public DarkTidesTeleporter(Serial serial) : base(serial)
-        {
-        }
+    public override bool GetDestination(PlayerMobile player, ref Point3D loc, ref Map map)
+    {
+        var qs = player.Quest;
 
-        public override bool GetDestination(PlayerMobile player, ref Point3D loc, ref Map map)
+        if (qs is DarkTidesQuest)
         {
-            var qs = player.Quest;
-
-            if (qs is DarkTidesQuest)
+            if (qs.IsObjectiveInProgress(typeof(FindMaabusTombObjective)))
             {
-                if (qs.IsObjectiveInProgress(typeof(FindMaabusTombObjective)))
-                {
-                    loc = new Point3D(2038, 1263, -90);
-                    map = Map.Malas;
-                    qs.AddConversation(new RadarConversation());
-                    return true;
-                }
-
-                if (qs.IsObjectiveInProgress(typeof(FindCrystalCaveObjective)))
-                {
-                    loc = new Point3D(1194, 521, -90);
-                    map = Map.Malas;
-                    return true;
-                }
-
-                if (qs.IsObjectiveInProgress(typeof(FindCityOfLightObjective)))
-                {
-                    loc = new Point3D(1091, 519, -90);
-                    map = Map.Malas;
-                    return true;
-                }
-
-                if (qs.IsObjectiveInProgress(typeof(ReturnToCrystalCaveObjective)))
-                {
-                    loc = new Point3D(1194, 521, -90);
-                    map = Map.Malas;
-                    return true;
-                }
-
-                if (DarkTidesQuest.HasLostCallingScroll(player))
-                {
-                    loc = new Point3D(1194, 521, -90);
-                    map = Map.Malas;
-                    return true;
-                }
+                loc = new Point3D(2038, 1263, -90);
+                map = Map.Malas;
+                qs.AddConversation(new RadarConversation());
+                return true;
             }
 
-            return false;
+            if (qs.IsObjectiveInProgress(typeof(FindCrystalCaveObjective)))
+            {
+                loc = new Point3D(1194, 521, -90);
+                map = Map.Malas;
+                return true;
+            }
+
+            if (qs.IsObjectiveInProgress(typeof(FindCityOfLightObjective)))
+            {
+                loc = new Point3D(1091, 519, -90);
+                map = Map.Malas;
+                return true;
+            }
+
+            if (qs.IsObjectiveInProgress(typeof(ReturnToCrystalCaveObjective)))
+            {
+                loc = new Point3D(1194, 521, -90);
+                map = Map.Malas;
+                return true;
+            }
+
+            if (DarkTidesQuest.HasLostCallingScroll(player))
+            {
+                loc = new Point3D(1194, 521, -90);
+                map = Map.Malas;
+                return true;
+            }
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        return false;
     }
 }

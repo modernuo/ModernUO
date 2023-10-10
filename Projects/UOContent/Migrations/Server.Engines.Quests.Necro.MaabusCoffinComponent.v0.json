@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Necro.MaabusCoffinComponent",
+  "properties": [
+    {
+      "name": "FullItemID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "EmptyItemID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

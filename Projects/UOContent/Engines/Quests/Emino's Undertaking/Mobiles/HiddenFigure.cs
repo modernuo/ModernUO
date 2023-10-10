@@ -1,89 +1,69 @@
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Ninja
+namespace Server.Engines.Quests.Ninja;
+
+[SerializationGenerator(0)]
+public partial class HiddenFigure : BaseQuester
 {
-    public class HiddenFigure : BaseQuester
+    private static int[] _messages =
     {
-        public static int[] Messages =
-        {
-            1063191, // They won't find me here.
-            1063192  // Ah, a quiet hideout.
-        };
+        1063191, // They won't find me here.
+        1063192  // Ah, a quiet hideout.
+    };
 
-        [Constructible]
-        public HiddenFigure() => Message = Messages.RandomElement();
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _message;
 
-        public HiddenFigure(Serial serial) : base(serial)
+    [Constructible]
+    public HiddenFigure() => Message = _messages.RandomElement();
+
+    public override int TalkNumber => -1;
+
+    public override void InitBody()
+    {
+        InitStats(100, 100, 25);
+
+        Hue = Race.Human.RandomSkinHue();
+
+        Female = Utility.RandomBool();
+
+        if (Female)
         {
+            Body = 0x191;
+            Name = NameList.RandomName("female");
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Message { get; set; }
-
-        public override int TalkNumber => -1;
-
-        public override void InitBody()
+        else
         {
-            InitStats(100, 100, 25);
-
-            Hue = Race.Human.RandomSkinHue();
-
-            Female = Utility.RandomBool();
-
-            if (Female)
-            {
-                Body = 0x191;
-                Name = NameList.RandomName("female");
-            }
-            else
-            {
-                Body = 0x190;
-                Name = NameList.RandomName("male");
-            }
+            Body = 0x190;
+            Name = NameList.RandomName("male");
         }
+    }
 
-        public override void InitOutfit()
+    public override void InitOutfit()
+    {
+        Utility.AssignRandomHair(this);
+
+        AddItem(new TattsukeHakama(GetRandomHue()));
+        AddItem(new Kasa());
+        AddItem(new HakamaShita(GetRandomHue()));
+
+        if (Utility.RandomBool())
         {
-            Utility.AssignRandomHair(this);
-
-            AddItem(new TattsukeHakama(GetRandomHue()));
-            AddItem(new Kasa());
-            AddItem(new HakamaShita(GetRandomHue()));
-
-            if (Utility.RandomBool())
-            {
-                AddItem(new Shoes(GetShoeHue()));
-            }
-            else
-            {
-                AddItem(new Sandals(GetShoeHue()));
-            }
+            AddItem(new Shoes(GetShoeHue()));
         }
-
-        public override int GetAutoTalkRange(PlayerMobile pm) => 3;
-
-        public override void OnTalk(PlayerMobile player, bool contextMenu)
+        else
         {
-            PrivateOverheadMessage(MessageType.Regular, 0x3B2, Message, player.NetState);
+            AddItem(new Sandals(GetShoeHue()));
         }
+    }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+    public override int GetAutoTalkRange(PlayerMobile pm) => 3;
 
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(Message);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-
-            Message = reader.ReadInt();
-        }
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+        PrivateOverheadMessage(MessageType.Regular, 0x3B2, Message, player.NetState);
     }
 }

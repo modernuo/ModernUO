@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Collector.PaintedImage",
+  "properties": [
+    {
+      "name": "Image",
+      "type": "Server.Engines.Quests.Collector.ImageType",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}
