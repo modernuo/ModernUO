@@ -3,7 +3,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests;
 
-[SerializationGenerator(0)]
+[SerializationGenerator(0, false)]
 public abstract partial class DynamicTeleporter : Item
 {
     public DynamicTeleporter(int itemID = 0x1822, int hue = 0x482) : base(itemID)
