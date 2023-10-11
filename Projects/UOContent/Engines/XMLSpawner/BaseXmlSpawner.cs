@@ -28,10 +28,7 @@ public class BaseXmlSpawner
     }
 
     private static readonly Type typeofTimeSpan = typeof(TimeSpan);
-    private static readonly Type typeofParsable = typeof(ParsableAttribute);
     private static readonly Type typeofCustomEnum = typeof(CustomEnumAttribute);
-
-    private static bool IsParsable(Type t) => t == typeofTimeSpan || t.IsDefined(typeofParsable, false);
 
     private static readonly Type[] m_ParseTypes = { typeof(string) };
     private static readonly object[] m_ParseParams = new object[1];
@@ -204,7 +201,7 @@ public class BaseXmlSpawner
             Type = type;
             m_Delay = delay;
             m_Timeout = timeout;
-            m_TimeoutEnd = DateTime.UtcNow + timeout;
+            m_TimeoutEnd = Core.Now + timeout;
             m_Spawner = spawner;
             m_Condition = condition;
             m_Goto = gotogroup;
@@ -280,7 +277,7 @@ public class BaseXmlSpawner
 
         private void DoTimer(TimeSpan delay, TimeSpan repeatdelay, string condition, int gotogroup)
         {
-            m_End = DateTime.UtcNow + delay;
+            m_End = Core.Now + delay;
 
             if (m_Timer != null)
             {
@@ -303,11 +300,11 @@ public class BaseXmlSpawner
             if (Type == 0)
             {
                 // save any timer information
-                writer.Write(m_End - DateTime.UtcNow);
+                writer.Write(m_End - Core.Now);
                 writer.Write(m_Delay);
                 writer.Write(m_Condition);
                 writer.Write(m_Goto);
-                writer.Write(m_TimeoutEnd - DateTime.UtcNow);
+                writer.Write(m_TimeoutEnd - Core.Now);
                 writer.Write(m_Timeout);
                 writer.Write(m_TrigMob);
             }
@@ -337,7 +334,7 @@ public class BaseXmlSpawner
                             m_Goto = reader.ReadInt();
 
                             TimeSpan timeoutdelay = reader.ReadTimeSpan();
-                            m_TimeoutEnd = DateTime.UtcNow + timeoutdelay;
+                            m_TimeoutEnd = Core.Now + timeoutdelay;
                             m_Timeout = reader.ReadTimeSpan();
                             m_TrigMob = reader.ReadEntity<Mobile>();
 
@@ -373,9 +370,8 @@ public class BaseXmlSpawner
                 if (!string.IsNullOrEmpty(m_Condition) && m_Spawner != null && m_Spawner.Running)
                 {
                     // if the test is valid then terminate the timer
-                    string status_str;
 
-                    if (TestItemProperty(m_Spawner, m_Spawner, m_Condition, out status_str))
+                    if (TestItemProperty(m_Spawner, m_Spawner, m_Condition, out _))
                     {
                         // spawn the designated subgroup if specified
                         if (m_Goto >= 0 && m_Spawner != null && !m_Spawner.Deleted)
@@ -403,7 +399,7 @@ public class BaseXmlSpawner
                         if (m_Tag != null && !m_Tag.Deleted)
                         {
                             // check the timeout if applicable
-                            if (m_Tag.m_Timeout > TimeSpan.Zero && m_Tag.m_TimeoutEnd < DateTime.UtcNow)
+                            if (m_Tag.m_Timeout > TimeSpan.Zero && m_Tag.m_TimeoutEnd < Core.Now)
                             {
                                 // release the hold on spawning and delete the tag
                                 m_Tag.Delete();
@@ -576,17 +572,6 @@ public class BaseXmlSpawner
             catch
             {
                 return "No type with that name was found.";
-            }
-        }
-        else if (IsParsable(type))
-        {
-            try
-            {
-                toSet = Parse(obj, type, value);
-            }
-            catch
-            {
-                return "That is not properly formatted.";
             }
         }
         else if (value == null)
@@ -2553,11 +2538,6 @@ public class BaseXmlSpawner
                     }
                     catch { }
                 }
-                // try to find the attachment on the mob
-                if (XmlAttach.FindAttachmentOnMobile(m, atype, aname) != null)
-                {
-                    return true;
-                }
 
                 return false;
             }
@@ -2603,87 +2583,13 @@ public class BaseXmlSpawner
         // found the item
         if (testitem != null)
         {
-            // check to see if it is a quest token item.  If so, then check validity, otherwise just finding it is enough
-            if (testitem is IXmlQuest token)
+            // is the equippedonly flag set?  If so then see if the item is equipped
+            if (equippedonly && testitem.Parent == m || !equippedonly)
             {
-                if (token.IsValid)
-                {
-                    if (objstr.Length > objoffset)
-                    {
-                        has_valid_item = true;
-                        // get any objectives and test for them.  If any of the required conditions are false, then dont trigger
-                        for (int n = objoffset; n < objstr.Length; n++)
-                        {
-                            try
-                            {
-                                switch (int.Parse(objstr[n]) - objoffset + 1)
-                                {
-                                    case 1:
-                                        {
-                                            if (!token.Completed1)
-                                            {
-                                                has_valid_item = false;
-                                            }
-
-                                            break;
-                                        }
-                                    case 2:
-                                        {
-                                            if (!token.Completed2)
-                                            {
-                                                has_valid_item = false;
-                                            }
-
-                                            break;
-                                        }
-                                    case 3:
-                                        {
-                                            if (!token.Completed3)
-                                            {
-                                                has_valid_item = false;
-                                            }
-
-                                            break;
-                                        }
-                                    case 4:
-                                        {
-                                            if (!token.Completed4)
-                                            {
-                                                has_valid_item = false;
-                                            }
-
-                                            break;
-                                        }
-                                    case 5:
-                                        {
-                                            if (!token.Completed5)
-                                            {
-                                                has_valid_item = false;
-                                            }
-
-                                            break;
-                                        }
-                                }
-                            }
-                            catch { }
-                        }
-                    }
-                    else
-                        // if an objective list has not been specified then just a valid item is enough
-                    {
-                        has_valid_item = true;
-                    }
-                }
-            }
-            else
-            {
-                // is the equippedonly flag set?  If so then see if the item is equipped
-                if (equippedonly && testitem.Parent == m || !equippedonly)
-                {
-                    has_valid_item = true;
-                }
+                has_valid_item = true;
             }
         }
+
         return has_valid_item;
     }
     public static bool CheckForNotCarried(Mobile m, string objectivestr)
@@ -2767,12 +2673,6 @@ public class BaseXmlSpawner
                     catch { }
                 }
 
-                // try to find the attachment on the mob
-                if (XmlAttach.FindAttachmentOnMobile(m, atype, aname) != null)
-                {
-                    return false;
-                }
-
                 return true;
             }
 
@@ -2818,81 +2718,10 @@ public class BaseXmlSpawner
         // found the item
         if (testitem != null)
         {
-            // check to see if it is a quest token item.  If so, then check validity, otherwise just finding it is enough
-            if (testitem is IXmlQuest token && token.IsValid)
+            // is the equippedonly flag set?  If so then see if the item is equipped
+            if (equippedonly && testitem.Parent == m || !equippedonly)
             {
-                if (objstr.Length > objoffset)
-                {
-                    has_no_such_item = true;
-                    // get any objectives and test for them.  If any of the required conditions are true, then block trigger
-                    for (int n = objoffset; n < objstr.Length; n++)
-                    {
-                        try
-                        {
-                            switch (int.Parse(objstr[n]) - objoffset + 1)
-                            {
-                                case 1:
-                                    {
-                                        if (token.Completed1)
-                                        {
-                                            has_no_such_item = false;
-                                        }
-
-                                        break;
-                                    }
-                                case 2:
-                                    {
-                                        if (token.Completed2)
-                                        {
-                                            has_no_such_item = false;
-                                        }
-
-                                        break;
-                                    }
-                                case 3:
-                                    {
-                                        if (token.Completed3)
-                                        {
-                                            has_no_such_item = false;
-                                        }
-
-                                        break;
-                                    }
-                                case 4:
-                                    {
-                                        if (token.Completed4)
-                                        {
-                                            has_no_such_item = false;
-                                        }
-
-                                        break;
-                                    }
-                                case 5:
-                                    {
-                                        if (token.Completed5)
-                                        {
-                                            has_no_such_item = false;
-                                        }
-
-                                        break;
-                                    }
-                            }
-                        }
-                        catch { }
-                    }
-                }
-                else
-                {
-                    has_no_such_item = false;
-                }
-            }
-            else
-            {
-                // is the equippedonly flag set?  If so then see if the item is equipped
-                if (equippedonly && testitem.Parent == m || !equippedonly)
-                {
-                    has_no_such_item = false;
-                }
+                has_no_such_item = false;
             }
         }
         return has_no_such_item;
@@ -3296,9 +3125,8 @@ public class BaseXmlSpawner
             string keypart = remaining.Substring(startindex + 1, endindex);
 
             // try to evaluate and then substitute the arg
-            Type ptype;
 
-            string value = ParseForKeywords(spawner, o, keypart.Trim(), true, out ptype);
+            string value = ParseForKeywords(spawner, o, keypart.Trim(), true, out _);
 
             // trim off the " from strings
             if (value != null)

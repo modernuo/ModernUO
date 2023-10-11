@@ -206,11 +206,11 @@ public class SpawnerExporter
                     }
                 }
 
-                e.Mobile.SendMessage("{0} spawners loaded successfully from {1}, {2} failures.", successes, filePath, failures);
+                e.Mobile.SendMessage($"{successes} spawners loaded successfully from {filePath}, {failures} failures.");
             }
             else
             {
-                e.Mobile.SendMessage("File {0} does not exist.", filePath);
+                e.Mobile.SendMessage($"File {filePath} does not exist.");
             }
         }
         else

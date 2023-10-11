@@ -59,7 +59,7 @@ public class XmlFindGump : Gump
                 from.SendGump(gump);
                 if (status_str != null)
                 {
-                    from.SendMessage(33, "XmlFind: {0}", status_str);
+                    from.SendMessage(33, $"XmlFind: {status_str}");
                 }
             }
         }
@@ -280,7 +280,7 @@ public class XmlFindGump : Gump
             if (direction)
             {
                 // true means allow only mobs greater than the age
-                if (DateTime.UtcNow - mob.Created > TimeSpan.FromHours(age))
+                if (Core.Now - mob.Created > TimeSpan.FromHours(age))
                 {
                     return true;
                 }
@@ -288,7 +288,7 @@ public class XmlFindGump : Gump
             else
             {
                 // false means allow only mobs less than the age
-                if (DateTime.UtcNow - mob.Created < TimeSpan.FromHours(age))
+                if (Core.Now - mob.Created < TimeSpan.FromHours(age))
                 {
                     return true;
                 }
@@ -843,7 +843,7 @@ public class XmlFindGump : Gump
             catch
             {
                 dorange = false;
-                e.Mobile.SendMessage("Invalid range argument {0}", e.Arguments[1]);
+                e.Mobile.SendMessage($"Invalid range argument {e.Arguments[1]}");
             }
         }
 
@@ -1844,7 +1844,7 @@ public class XmlFindGump : Gump
                         return;
                     }
                 }
-                from.SendMessage("Invalid command: {0}", args[0]);
+                from.SendMessage($"Invalid command: {args[0]}");
             }
         }
     }
@@ -1987,8 +1987,7 @@ public class XmlFindGump : Gump
             case 4: // SubSearch
                 {
                     // do the search
-                    string status_str;
-                    m_SearchList = Search(m_SearchCriteria, out status_str);
+                    m_SearchList = Search(m_SearchCriteria, out _);
                     break;
                 }
             case 150: // Open the map gump

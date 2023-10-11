@@ -608,10 +608,10 @@ public class XmlPropertiesGump : Gump
             {
                 if (t == typeof(ulong) || t == typeof(uint) || t == typeof(ushort) || t == typeof(byte))
                 {
-                    return Convert.ChangeType(Convert.ToUInt64(s.Substring(2), 16), t);
+                    return Convert.ChangeType(Convert.ToUInt64(s[2..], 16), t);
                 }
 
-                return Convert.ChangeType(Convert.ToInt64(s.Substring(2), 16), t);
+                return Convert.ChangeType(Convert.ToInt64(s[2..], 16), t);
             }
 
             return Convert.ChangeType(s, t);
@@ -620,12 +620,6 @@ public class XmlPropertiesGump : Gump
         if (t == typeof(double) || t == typeof(float))
         {
             return Convert.ChangeType(s, t);
-        }
-        if (t.IsDefined(typeof(ParsableAttribute), false))
-        {
-            MethodInfo parseMethod = t.GetMethod("Parse", new[] { typeof(string) });
-
-            return parseMethod.Invoke(null, new object[] { s });
         }
 
         throw new Exception("bad");

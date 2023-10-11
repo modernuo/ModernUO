@@ -510,18 +510,18 @@ public class XmlSpawnerGump : Gump
                     }
 
                     string strnext;
-                    if (m_Spawner.SpawnObjects[i].NextSpawn > DateTime.UtcNow)
+                    if (m_Spawner.SpawnObjects[i].NextSpawn > Core.Now)
                     {
                         // if the next spawn tick of the spawner will occur after the subgroup is available for spawning
                         // then report the next spawn tick since that is the earliest that the subgroup can actually be spawned
-                        if (DateTime.UtcNow + m_Spawner.NextSpawn > m_Spawner.SpawnObjects[i].NextSpawn)
+                        if (Core.Now + m_Spawner.NextSpawn > m_Spawner.SpawnObjects[i].NextSpawn)
                         {
                             strnext = m_Spawner.NextSpawn.ToString();
                         }
                         else
                         {
                             // estimate the earliest the next spawn could occur as the first spawn tick after reaching the subgroup nextspawn
-                            strnext = (m_Spawner.SpawnObjects[i].NextSpawn - DateTime.UtcNow + m_Spawner.NextSpawn).ToString();
+                            strnext = (m_Spawner.SpawnObjects[i].NextSpawn - Core.Now + m_Spawner.NextSpawn).ToString();
                         }
                     }
                     else
@@ -665,16 +665,7 @@ public class XmlSpawnerGump : Gump
                             {
                                 CommandLogging.WriteLine(
                                     from,
-                                    "{0} {1} changed XmlSpawner {2} '{3}' [{4}, {5}] ({6}) : {7} to {8}",
-                                    from.AccessLevel,
-                                    CommandLogging.Format(from),
-                                    m_Spawner.Serial,
-                                    m_Spawner.Name,
-                                    m_Spawner.GetWorldLocation().X,
-                                    m_Spawner.GetWorldLocation().Y,
-                                    m_Spawner.Map,
-                                    m_Spawner.SpawnObjects[i].TypeName,
-                                    str
+                                    $"{from.AccessLevel} {CommandLogging.Format(from)} changed XmlSpawner {m_Spawner.Serial} '{m_Spawner.Name}' [{m_Spawner.GetWorldLocation().X}, {m_Spawner.GetWorldLocation().Y}] ({m_Spawner.Map}) : {m_Spawner.SpawnObjects[i].TypeName} to {str}"
                                 );
 
                             }
@@ -740,7 +731,7 @@ public class XmlSpawnerGump : Gump
 
             if (from != null && !from.Deleted)
             {
-                from.SendMessage("{0} is not available", i);
+                from.SendMessage($"{i} is not available");
             }
         }
         else if (o is Mobile m)
@@ -752,7 +743,7 @@ public class XmlSpawnerGump : Gump
 
             if (from != null && !from.Deleted)
             {
-                from.SendMessage("{0} is not available", m);
+                from.SendMessage($"{m} is not available");
             }
         }
 

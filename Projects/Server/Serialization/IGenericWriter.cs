@@ -70,7 +70,7 @@ public interface IGenericWriter
         }
 
         // Technically supports negative deltas for times in the past
-        Write(value.Ticks - DateTime.UtcNow.Ticks);
+        Write(value.Ticks - Core.Now.Ticks);
     }
     void Write(IPAddress value)
     {

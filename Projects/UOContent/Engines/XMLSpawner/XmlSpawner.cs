@@ -231,11 +231,11 @@ public class XmlSpawner : Item, ISpawner
     // is not counted in the normal item count
     public override bool IsVirtualItem => true;
 
-    private bool m_skillTriggerActivated;
-    private SkillName m_SkillTriggerName;
-    private double m_SkillTriggerMin;
-    private double m_SkillTriggerMax;
-    private int m_SkillTriggerSuccess;
+    // private bool m_skillTriggerActivated;
+    // private SkillName m_SkillTriggerName;
+    // private double m_SkillTriggerMin;
+    // private double m_SkillTriggerMax;
+    // private int m_SkillTriggerSuccess;
 
     public bool DebugThis { get; set; } = false;
 
@@ -279,17 +279,17 @@ public class XmlSpawner : Item, ISpawner
             int minutes;
 
             Clock.GetTime(Map, Location.X, Location.Y, out hours, out minutes);
-            return new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, hours, minutes, 0).TimeOfDay;
+            return new DateTime(Core.Now.Year, Core.Now.Month, Core.Now.Day, hours, minutes, 0).TimeOfDay;
         }
     }
 
-    public TimeSpan RealTOD => DateTime.UtcNow.TimeOfDay;
+    public TimeSpan RealTOD => Core.Now.TimeOfDay;
 
-    public int RealDay => DateTime.UtcNow.Day;
+    public int RealDay => Core.Now.Day;
 
-    public int RealMonth => DateTime.UtcNow.Month;
+    public int RealMonth => Core.Now.Month;
 
-    public DayOfWeek RealDayOfWeek => DateTime.UtcNow.DayOfWeek;
+    public DayOfWeek RealDayOfWeek => Core.Now.DayOfWeek;
 
     public MoonPhase MoonPhase => Clock.GetMoonPhase(Map, Location.X, Location.Y);
 
@@ -532,7 +532,7 @@ public class XmlSpawner : Item, ISpawner
 
                                     using (StreamWriter op = new StreamWriter("badspawn.log", true))
                                     {
-                                        op.WriteLine("{0} SmartSpawning disabled at {1} {2} : Range too large.", DateTime.UtcNow, loc, Map);
+                                        op.WriteLine("{0} SmartSpawning disabled at {1} {2} : Range too large.", Core.Now, loc, Map);
                                         op.WriteLine();
                                     }
                                 }
@@ -656,7 +656,7 @@ public class XmlSpawner : Item, ISpawner
                     }
                     else
                     {
-                        status_str = string.Format("{0} is not a valid type name.", str);
+                        status_str = $"{str} is not a valid type name.";
                     }
                 }
                 InvalidateProperties();
@@ -1304,7 +1304,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (m_refractActivated)
             {
-                return m_RefractEnd - DateTime.UtcNow;
+                return m_RefractEnd - Core.Now;
             }
 
             return TimeSpan.FromSeconds(0);
@@ -1402,10 +1402,10 @@ public class XmlSpawner : Item, ISpawner
                 int hours;
                 int minutes;
                 Clock.GetTime(Map, Location.X, Location.Y, out hours, out minutes);
-                return new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, hours, minutes, 0).TimeOfDay;
+                return new DateTime(Core.Now.Year, Core.Now.Month, Core.Now.Day, hours, minutes, 0).TimeOfDay;
             }
 
-            return DateTime.UtcNow.TimeOfDay;
+            return Core.Now.TimeOfDay;
         }
 
     }
@@ -1434,12 +1434,12 @@ public class XmlSpawner : Item, ISpawner
                 int hours;
                 int minutes;
                 Clock.GetTime(Map, Location.X, Location.Y, out hours, out minutes);
-                now = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, hours, minutes, 0);
+                now = new DateTime(Core.Now.Year, Core.Now.Month, Core.Now.Day, hours, minutes, 0);
             }
             else
             {
                 // calculate the time window
-                now = DateTime.UtcNow;
+                now = Core.Now;
             }
             var day_start = new DateTime(now.Year, now.Month, now.Day);
             // calculate the starting TOD window by adding the TODStart to day_start
@@ -1491,7 +1491,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (m_durActivated)
             {
-                return m_DurEnd - DateTime.UtcNow;
+                return m_DurEnd - Core.Now;
             }
 
             return TimeSpan.FromSeconds(0);
@@ -1565,7 +1565,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (m_Running)
             {
-                return m_End - DateTime.UtcNow;
+                return m_End - Core.Now;
             }
 
             return TimeSpan.FromSeconds(0);
@@ -1610,14 +1610,14 @@ public class XmlSpawner : Item, ISpawner
     {
         get
         {
-            if (m_Running && m_SeqEnd - DateTime.UtcNow > TimeSpan.Zero)
+            if (m_Running && m_SeqEnd - Core.Now > TimeSpan.Zero)
             {
-                return m_SeqEnd - DateTime.UtcNow;
+                return m_SeqEnd - Core.Now;
             }
 
             return TimeSpan.FromSeconds(0);
         }
-        set => m_SeqEnd = DateTime.UtcNow + value;
+        set => m_SeqEnd = Core.Now + value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -2149,7 +2149,7 @@ public class XmlSpawner : Item, ISpawner
 
             if (fs == null)
             {
-                status_str = string.Format("Unable to open {0} for loading", filename);
+                status_str = $"Unable to open {filename} for loading";
                 return;
             }
 
@@ -2558,14 +2558,14 @@ public class XmlSpawner : Item, ISpawner
     public static TimeSpan[] _traceTotal = new TimeSpan[MaxTraces];
     public static string[] _traceName = new string[MaxTraces];
     public static int[] _traceCount = new int[MaxTraces];
-    private static DateTime _traceStartTime = DateTime.UtcNow;
+    private static DateTime _traceStartTime = Core.Now;
     private static double _startProcessTime;
 
     public static void _TraceStart(int index)
     {
         if (index < MaxTraces)
         {
-            _traceStart[index] = DateTime.UtcNow;
+            _traceStart[index] = Core.Now;
             //_traceStart[index] =  Process.GetCurrentProcess().UserProcessorTime;
         }
     }
@@ -2573,7 +2573,7 @@ public class XmlSpawner : Item, ISpawner
     {
         if (index < MaxTraces)
         {
-            _traceTotal[index] = _traceTotal[index].Add(DateTime.UtcNow - _traceStart[index]);
+            _traceTotal[index] = _traceTotal[index].Add(Core.Now - _traceStart[index]);
             //XmlSpawner._traceTotal[index] = XmlSpawner._traceTotal[index].Add(Process.GetCurrentProcess().UserProcessorTime - _traceStart[index]);
             _traceCount[index]++;
         }
@@ -2725,19 +2725,19 @@ public class XmlSpawner : Item, ISpawner
                 return;
             }
 
-            m_skillTriggerActivated = false;
+            // m_skillTriggerActivated = false;
 
             // check the skill trigger conditions, Skillname[+/-][,min,max]
-            if (m_SkillTrigger != null && skill.SkillName == m_SkillTriggerName &&
-                (m_SkillTriggerMin < 0 || skill.Value >= m_SkillTriggerMin) &&
-                (m_SkillTriggerMax < 0 || skill.Value <= m_SkillTriggerMax) &&
-                (m_SkillTriggerSuccess == 3 || m_SkillTriggerSuccess == 1 && success || m_SkillTriggerSuccess == 2 && !success))
-            {
-                // have a skill trigger so flag it and test it
-                m_skillTriggerActivated = true;
-
-                CheckTriggers(m, skill, true);
-            }
+            // if (m_SkillTrigger != null && skill.SkillName == m_SkillTriggerName &&
+            //     (m_SkillTriggerMin < 0 || skill.Value >= m_SkillTriggerMin) &&
+            //     (m_SkillTriggerMax < 0 || skill.Value <= m_SkillTriggerMax) &&
+            //     (m_SkillTriggerSuccess == 3 || m_SkillTriggerSuccess == 1 && success || m_SkillTriggerSuccess == 2 && !success))
+            // {
+            //     // have a skill trigger so flag it and test it
+            // m_skillTriggerActivated = true;
+            //
+            //     CheckTriggers(m, skill, true);
+            // }
         }
     }
     public override bool HandlesOnSpeech => m_Running && !string.IsNullOrEmpty(m_SpeechTrigger);
@@ -3326,7 +3326,7 @@ public class XmlSpawner : Item, ISpawner
             {
                 return;
             }
-            from.SendMessage("{0}", result);
+            from.SendMessage($"{result}");
 
         }
     }
@@ -3448,7 +3448,7 @@ public class XmlSpawner : Item, ISpawner
 
                     if (o == targeted)
                     {
-                        from.SendMessage("{0}, {1}, {2}", spawner.X, spawner.Y, spawner.Z);
+                        from.SendMessage($"{spawner.Location}");
 
                         if (m_e.GetString(0) == "go")
                         {
@@ -3581,7 +3581,7 @@ public class XmlSpawner : Item, ISpawner
 
             xml.Close();
         }
-        m.SendMessage("defaults saved to {0}", filePath);
+        m.SendMessage($"defaults saved to {filePath}");
     }
 
     public static void XmlLoadDefaults(string filePath, Mobile m)
@@ -3601,11 +3601,11 @@ public class XmlSpawner : Item, ISpawner
 
                 XmlElement root = doc["XmlDefaults"];
                 LoadDefaults(root);
-                m.SendMessage("defaults loaded successfully from {0}", filePath);
+                m.SendMessage($"defaults loaded successfully from {filePath}");
             }
             else
             {
-                m.SendMessage("File {0} does not exist.", filePath);
+                m.SendMessage($"File {filePath} does not exist.");
             }
         }
     }
@@ -3742,126 +3742,126 @@ public class XmlSpawner : Item, ISpawner
                     try
                     {
                         defMaxDelay = TimeSpan.FromMinutes(Convert.ToDouble(e.Arguments[1]));
-                        m.SendMessage("MaxDelay = {0}", defMaxDelay);
+                        m.SendMessage($"MaxDelay = {defMaxDelay}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "mindelay")
                 {
                     try
                     {
                         defMinDelay = TimeSpan.FromMinutes(Convert.ToDouble(e.Arguments[1]));
-                        m.SendMessage("MinDelay = {0}", defMinDelay);
+                        m.SendMessage($"MinDelay = {defMinDelay}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "spawnrange")
                 {
                     try
                     {
                         defSpawnRange = Convert.ToInt32(e.Arguments[1]);
-                        m.SendMessage("SpawnRange = {0}", defSpawnRange);
+                        m.SendMessage($"SpawnRange = {defSpawnRange}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "homerange")
                 {
                     try
                     {
                         defHomeRange = Convert.ToInt32(e.Arguments[1]);
-                        m.SendMessage("HomeRange = {0}", defHomeRange);
+                        m.SendMessage($"HomeRange = {defHomeRange}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "relativehome")
                 {
                     try
                     {
                         defRelativeHome = Convert.ToBoolean(e.Arguments[1]);
-                        m.SendMessage("RelativeHome = {0}", defRelativeHome);
+                        m.SendMessage($"RelativeHome = {defRelativeHome}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "proximitytriggersound")
                 {
                     try
                     {
                         defProximityTriggerSound = Convert.ToInt32(e.Arguments[1]);
-                        m.SendMessage("ProximityTriggerSound = {0}", defProximityTriggerSound);
+                        m.SendMessage($"ProximityTriggerSound = {defProximityTriggerSound}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "proximityrange")
                 {
                     try
                     {
                         defProximityRange = Convert.ToInt32(e.Arguments[1]);
-                        m.SendMessage("ProximityRange = {0}", defProximityRange);
+                        m.SendMessage($"ProximityRange = {defProximityRange}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "triggerprobability")
                 {
                     try
                     {
                         defTriggerProbability = Convert.ToDouble(e.Arguments[1]);
-                        m.SendMessage("TriggerProbability = {0}", defTriggerProbability);
+                        m.SendMessage($"TriggerProbability = {defTriggerProbability}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "todstart")
                 {
                     try
                     {
                         defTODStart = TimeSpan.FromMinutes(Convert.ToDouble(e.Arguments[1]));
-                        m.SendMessage("TODStart = {0}", defTODStart);
+                        m.SendMessage($"TODStart = {defTODStart}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "todend")
                 {
                     try
                     {
                         defTODEnd = TimeSpan.FromMinutes(Convert.ToDouble(e.Arguments[1]));
-                        m.SendMessage("TODEnd = {0}", defTODEnd);
+                        m.SendMessage($"TODEnd = {defTODEnd}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "stackamount")
                 {
                     try
                     {
                         defAmount = Convert.ToInt32(e.Arguments[1]);
-                        m.SendMessage("StackAmount = {0}", defAmount);
+                        m.SendMessage($"StackAmount = {defAmount}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "duration")
                 {
                     try
                     {
                         defDuration = TimeSpan.FromMinutes(Convert.ToDouble(e.Arguments[1]));
-                        m.SendMessage("Duration = {0}", defDuration);
+                        m.SendMessage($"Duration = {defDuration}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "group")
                 {
                     try
                     {
                         defIsGroup = Convert.ToBoolean(e.Arguments[1]);
-                        m.SendMessage("Group = {0}", defIsGroup);
+                        m.SendMessage($"Group = {defIsGroup}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "team")
                 {
                     try
                     {
                         defTeam = Convert.ToInt32(e.Arguments[1]);
-                        m.SendMessage("Team = {0}", defTeam);
+                        m.SendMessage($"Team = {defTeam}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "todmode")
                 {
@@ -3881,31 +3881,31 @@ public class XmlSpawner : Item, ISpawner
                                     break;
                                 }
                         }
-                        m.SendMessage("TODMode = {0}", defTODMode);
+                        m.SendMessage($"TODMode = {defTODMode}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "maxrefractory")
                 {
                     try
                     {
                         defMaxRefractory = TimeSpan.FromMinutes(Convert.ToDouble(e.Arguments[1]));
-                        m.SendMessage("MaxRefractory = {0}", defMaxRefractory);
+                        m.SendMessage($"MaxRefractory = {defMaxRefractory}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else if (e.Arguments[0].ToLower() == "minrefractory")
                 {
                     try
                     {
                         defMinRefractory = TimeSpan.FromMinutes(Convert.ToDouble(e.Arguments[1]));
-                        m.SendMessage("MinRefractory = {0}", defMinRefractory);
+                        m.SendMessage($"MinRefractory = {defMinRefractory}");
                     }
-                    catch { m.SendMessage("invalid value : {0}", e.Arguments[1]); }
+                    catch { m.SendMessage($"invalid value : {e.Arguments[1]}"); }
                 }
                 else
                 {
-                    m.SendMessage("{0} : no such default value.", e.Arguments[0]);
+                    m.SendMessage($"{e.Arguments[0]} : no such default value.");
                 }
             }
 
@@ -3913,23 +3913,23 @@ public class XmlSpawner : Item, ISpawner
         else
         {
             // just display the values
-            m.SendMessage("TriggerProbability = {0}", defTriggerProbability);
-            m.SendMessage("ProximityRange = {0}", defProximityRange);
-            m.SendMessage("ProximityTriggerSound = {0}", defProximityTriggerSound);
-            m.SendMessage("MinRefractory = {0}", defMinRefractory);
-            m.SendMessage("MaxRefractory = {0}", defMaxRefractory);
-            m.SendMessage("TODStart = {0}", defTODStart);
-            m.SendMessage("TODEnd = {0}", defTODEnd);
-            m.SendMessage("TODMode = {0}", defTODMode);
-            m.SendMessage("StackAmount = {0}", defAmount);
-            m.SendMessage("Duration = {0}", defDuration);
-            m.SendMessage("Group = {0}", defIsGroup);
-            m.SendMessage("Team = {0}", defTeam);
-            m.SendMessage("RelativeHome = {0}", defRelativeHome);
-            m.SendMessage("SpawnRange = {0}", defSpawnRange);
-            m.SendMessage("HomeRange = {0}", defHomeRange);
-            m.SendMessage("MinDelay = {0}", defMinDelay);
-            m.SendMessage("MaxDelay = {0}", defMaxDelay);
+            m.SendMessage($"TriggerProbability = {defTriggerProbability}");
+            m.SendMessage($"ProximityRange = {defProximityRange}");
+            m.SendMessage($"ProximityTriggerSound = {defProximityTriggerSound}");
+            m.SendMessage($"MinRefractory = {defMinRefractory}");
+            m.SendMessage($"MaxRefractory = {defMaxRefractory}");
+            m.SendMessage($"TODStart = {defTODStart}");
+            m.SendMessage($"TODEnd = {defTODEnd}");
+            m.SendMessage($"TODMode = {defTODMode}");
+            m.SendMessage($"StackAmount = {defAmount}");
+            m.SendMessage($"Duration = {defDuration}");
+            m.SendMessage($"Group = {defIsGroup}");
+            m.SendMessage($"Team = {defTeam}");
+            m.SendMessage($"RelativeHome = {defRelativeHome}");
+            m.SendMessage($"SpawnRange = {defSpawnRange}");
+            m.SendMessage($"HomeRange = {defHomeRange}");
+            m.SendMessage($"MinDelay = {defMinDelay}");
+            m.SendMessage($"MaxDelay = {defMaxDelay}");
         }
     }
 
@@ -4054,7 +4054,7 @@ public class XmlSpawner : Item, ISpawner
             }
             else
             {
-                from.SendMessage("Map '{0}' does not exist!", MapName);
+                from.SendMessage($"Map '{MapName}' does not exist!");
                 return;
             }
 
@@ -4157,21 +4157,18 @@ public class XmlSpawner : Item, ISpawner
             maxpercent = 100 * maxcount / totalcount;
         }
 
-        e.Mobile.SendMessage(
-            "Smartspawning access level is {10}\n" +
-            "--------------------------------\n" +
-            "{0} XmlSpawners\n" +
-            "{1} are configured for SmartSpawning\n" +
-            "{2} are currently inactivated\n" +
-            "{9} sectors being monitored\n" +
-            "Maximum possible spawn count is {3}\n" +
-            "Maximum possible spawn reduction is {4}\n" +
-            "Current spawn count is {5}\n" +
-            "Current spawn reduction is {6}\n" +
-            "Maximum possible savings is {7}%\n" +
-            "Current savings is {8}%",
-            count, smartcount, inactivecount, totalcount, maxcount, currentcount, savings, maxpercent,
-            percent, totalSectorsMonitored, SmartSpawnAccessLevel);
+        e.Mobile.SendMessage($"Smartspawning access level is {SmartSpawnAccessLevel}");
+        e.Mobile.SendMessage($"--------------------------------");
+        e.Mobile.SendMessage($"{count} XmlSpawners");
+        e.Mobile.SendMessage($"{smartcount} are configured for SmartSpawning\n");
+        e.Mobile.SendMessage($"{inactivecount} are currently inactivated");
+        e.Mobile.SendMessage($"{totalSectorsMonitored} sectors being monitored\n");
+        e.Mobile.SendMessage($"Maximum possible spawn count is {totalcount}");
+        e.Mobile.SendMessage($"Maximum possible spawn reduction is {maxcount}\n");
+        e.Mobile.SendMessage($"Current spawn count is {currentcount}");
+        e.Mobile.SendMessage($"Current spawn reduction is {savings}");
+        e.Mobile.SendMessage($"Maximum possible savings is {maxpercent}%");
+        e.Mobile.SendMessage($"Current savings is {percent}%");
     }
 
     [Usage("OptimalSmartSpawning [max spawn/homerange diff]")]
@@ -4268,8 +4265,8 @@ public class XmlSpawner : Item, ISpawner
             }
         }
 
-        e.Mobile.SendMessage("Configured {0} XmlSpawners for SmartSpawning using maxdiff of {1}", count, maxdiff);
-        e.Mobile.SendMessage("Estimated item/mob reduction is {0}", maxcount);
+        e.Mobile.SendMessage($"Configured {count} XmlSpawners for SmartSpawning using maxdiff of {maxdiff}");
+        e.Mobile.SendMessage($"Estimated item/mob reduction is {maxcount}");
     }
 
     [Usage("XmlSpawnerWipe [SpawnerPrefixFilter]")]
@@ -4313,7 +4310,7 @@ public class XmlSpawner : Item, ISpawner
             {
                 if (from != null)
                 {
-                    from.SendMessage("Unable to open {0} for unloading", filename);
+                    from.SendMessage($"Unable to open {filename} for unloading");
                 }
 
                 return;
@@ -4337,7 +4334,7 @@ public class XmlSpawner : Item, ISpawner
             {
                 if (from != null)
                 {
-                    from.SendMessage("UnLoading {0} .xml files from directory {1}", files.Length, filename);
+                    from.SendMessage($"UnLoading {files.Length} .xml files from directory {filename}");
                 }
 
                 foreach (string file in files)
@@ -4365,7 +4362,7 @@ public class XmlSpawner : Item, ISpawner
             }
             if (from != null)
             {
-                from.SendMessage("UnLoaded a total of {0} .xml files and {2} spawners from directory {1}", total_processed_maps, filename, total_processed_spawners);
+                from.SendMessage($"UnLoaded a total of {total_processed_maps} .xml files and {total_processed_spawners} spawners from directory {filename}");
             }
 
             processedmaps = total_processed_maps;
@@ -4375,7 +4372,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (from != null)
             {
-                from.SendMessage("{0} does not exist", filename);
+                from.SendMessage($"{filename} does not exist");
             }
         }
 
@@ -4403,8 +4400,9 @@ public class XmlSpawner : Item, ISpawner
 
         if (from != null)
         {
-            from.SendMessage(string.Format("UnLoading {0} objects{1} from file {2}.",
-                "XmlSpawner", !string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty, filename));
+            from.SendMessage(
+                $"UnLoading {"XmlSpawner"} objects{(!string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty)} from file {filename}."
+            );
         }
 
         // Create the data set
@@ -4421,7 +4419,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (from != null)
             {
-                from.SendMessage(33, "Error reading xml file {0}", filename);
+                from.SendMessage(33, $"Error reading xml file {filename}");
             }
 
             fileerror = true;
@@ -4544,15 +4542,16 @@ public class XmlSpawner : Item, ISpawner
 
         if (from != null)
         {
-            from.SendMessage("{0}/{8} spawner(s) were unloaded using file {1} [Trammel={2}, Felucca={3}, Ilshenar={4}, Malas={5}, Tokuno={6}, Other={7}].",
-                spawners_deleted, filename, TrammelCount, FeluccaCount, IlshenarCount, MalasCount, TokunoCount, OtherCount, TotalCount);
+            from.SendMessage(
+                $"{spawners_deleted}/{TotalCount} spawner(s) were unloaded using file {filename} [Trammel={TrammelCount}, Felucca={FeluccaCount}, Ilshenar={IlshenarCount}, Malas={MalasCount}, Tokuno={TokunoCount}, Other={OtherCount}]."
+            );
         }
 
         if (bad_spawner_count > 0)
         {
             if (from != null)
             {
-                from.SendMessage(33, "{0} bad spawners detected.", bad_spawner_count);
+                from.SendMessage(33, $"{bad_spawner_count} bad spawners detected.");
             }
         }
 
@@ -4579,13 +4578,11 @@ public class XmlSpawner : Item, ISpawner
                 }
 
                 string filename = LocateFile(e.Arguments[0]);
-                int processedmaps;
-                int processedspawners;
-                XmlUnLoadFromFile(filename, SpawnerPrefix, e.Mobile, out processedmaps, out processedspawners);
+                XmlUnLoadFromFile(filename, SpawnerPrefix, e.Mobile, out _, out _);
             }
             else
             {
-                e.Mobile.SendMessage("Usage:  {0} <SpawnFile or directory>", e.Command);
+                e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile or directory>");
             }
         }
         else
@@ -4604,13 +4601,11 @@ public class XmlSpawner : Item, ISpawner
             {
                 string filename = e.Arguments[0];
 
-                int processedmaps;
-                int processedspawners;
-                XmlImportMap(filename, e.Mobile, out processedmaps, out processedspawners);
+                XmlImportMap(filename, e.Mobile, out _, out _);
             }
             else
             {
-                e.Mobile.SendMessage("Usage:  {0} <MapFile>", e.Command);
+                e.Mobile.SendMessage($"Usage:  {e.Command} <MapFile>");
             }
         }
         else
@@ -4688,10 +4683,10 @@ public class XmlSpawner : Item, ISpawner
             catch (Exception e)
             {
                 // Let the user know what went wrong.
-                from.SendMessage("The file could not be read: {0}", e.Message);
+                from.SendMessage($"The file could not be read: {e.Message}");
             }
-            from.SendMessage("Imported {0} spawners from {1}", spawnercount, filename);
-            from.SendMessage("{0} bad spawners detected", badspawnercount);
+            from.SendMessage($"Imported {spawnercount} spawners from {filename}");
+            from.SendMessage($"{badspawnercount} bad spawners detected");
             processedmaps = 1;
             processedspawners = spawnercount;
         }
@@ -4708,7 +4703,7 @@ public class XmlSpawner : Item, ISpawner
             catch { }
             if (files != null && files.Length > 0)
             {
-                from.SendMessage("Importing {0} .map files from directory {1}", files.Length, filename);
+                from.SendMessage($"Importing {files.Length} .map files from directory {filename}");
                 foreach (string file in files)
                 {
                     XmlImportMap(file, from, out processedmaps, out processedspawners);
@@ -4732,13 +4727,15 @@ public class XmlSpawner : Item, ISpawner
                     total_processed_spawners += processedspawners;
                 }
             }
-            from.SendMessage("Imported a total of {0} .map files and {2} spawners from directory {1}", total_processed_maps, filename, total_processed_spawners);
+            from.SendMessage(
+                $"Imported a total of {total_processed_maps} .map files and {filename} spawners from directory {total_processed_spawners}"
+            );
             processedmaps = total_processed_maps;
             processedspawners = total_processed_spawners;
         }
         else
         {
-            from.SendMessage("{0} does not exist", filename);
+            from.SendMessage($"{filename} does not exist");
         }
     }
 
@@ -4835,7 +4832,7 @@ public class XmlSpawner : Item, ISpawner
                     maxcount[k] = int.Parse(args[k + 16]);
                 }
             }
-            catch { from.SendMessage("Parsing error at line {0}", linenumber); badspawn = true; }
+            catch { from.SendMessage($"Parsing error at line {linenumber}"); badspawn = true; }
 
             // compute the total number of spawns
             int totalspawns = 0;
@@ -4924,8 +4921,8 @@ public class XmlSpawner : Item, ISpawner
                 {
                     // invalid so dont spawn it
                     badspawnercount++;
-                    from.SendMessage("Invalid map/location at line {0}", linenumber);
-                    from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                    from.SendMessage($"Invalid map/location at line {linenumber}");
+                    from.SendMessage($"Bad spawn at line {line}: {line}");
                     return;
                 }
 
@@ -4966,7 +4963,7 @@ public class XmlSpawner : Item, ISpawner
                 Guid SpawnId = Guid.NewGuid();
 
                 // and give it a name based on the spawner count and file
-                string spawnername = string.Format("{0}#{1}", Path.GetFileNameWithoutExtension(filename), spawnercount);
+                string spawnername = $"{Path.GetFileNameWithoutExtension(filename)}#{spawnercount}";
 
                 // Create the new xml spawner
                 XmlSpawner spawner = new XmlSpawner(SpawnId, x, y, 0, 0, spawnername, totalmaxcount,
@@ -4985,8 +4982,8 @@ public class XmlSpawner : Item, ISpawner
                 {
                     badspawnercount++;
                     spawner.Delete();
-                    from.SendMessage("Invalid map at line {0}", linenumber);
-                    from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                    from.SendMessage($"Invalid map at line {linenumber}");
+                    from.SendMessage($"Bad spawn at line {linenumber}: {line}");
                     return;
                 }
                 spawnercount++;
@@ -5013,7 +5010,7 @@ public class XmlSpawner : Item, ISpawner
                     {
                         badspawnercount++;
                         spawner.Delete();
-                        from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                        from.SendMessage($"Bad spawn at line {linenumber}: {line}");
                         return;
                     }
                     spawnercount++;
@@ -5022,7 +5019,7 @@ public class XmlSpawner : Item, ISpawner
             else
             {
                 badspawnercount++;
-                from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                from.SendMessage($"Bad spawn at line {linenumber}: {line}");
             }
         }
     }
@@ -5095,7 +5092,7 @@ public class XmlSpawner : Item, ISpawner
             if (args.Length != 11 && args.Length != 12)
             {
                 badspawn = true;
-                from.SendMessage("Invalid arg count {1} at line {0}", linenumber, args.Length);
+                from.SendMessage($"Invalid arg count {args.Length} at line {linenumber}");
             }
             else
             {
@@ -5119,7 +5116,7 @@ public class XmlSpawner : Item, ISpawner
                         maxcount = int.Parse(args[10]);
 
                     }
-                    catch { from.SendMessage("Parsing error at line {0}", linenumber); badspawn = true; }
+                    catch { from.SendMessage($"Parsing error at line {linenumber}"); badspawn = true; }
                 }
                 else
                 if (args.Length == 12)
@@ -5139,7 +5136,7 @@ public class XmlSpawner : Item, ISpawner
                         maxcount = int.Parse(args[11]);
 
                     }
-                    catch { from.SendMessage("Parsing error at line {0}", linenumber); badspawn = true; }
+                    catch { from.SendMessage($"Parsing error at line {linenumber}"); badspawn = true; }
                 }
             }
 
@@ -5207,8 +5204,8 @@ public class XmlSpawner : Item, ISpawner
                 {
                     // invalid so dont spawn it
                     badspawnercount++;
-                    from.SendMessage("Invalid map/location at line {0}", linenumber);
-                    from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                    from.SendMessage($"Invalid map/location at line {linenumber}");
+                    from.SendMessage($"Bad spawn at line {linenumber}: {line}");
                     return;
                 }
 
@@ -5236,7 +5233,7 @@ public class XmlSpawner : Item, ISpawner
                 Guid SpawnId = Guid.NewGuid();
 
                 // and give it a name based on the spawner count and file
-                string spawnername = string.Format("{0}#{1}", Path.GetFileNameWithoutExtension(filename), spawnercount);
+                string spawnername = $"{Path.GetFileNameWithoutExtension(filename)}#{spawnercount}";
 
                 // Create the new xml spawner
                 XmlSpawner spawner = new XmlSpawner(SpawnId, x, y, 0, 0, spawnername, maxcount,
@@ -5255,8 +5252,8 @@ public class XmlSpawner : Item, ISpawner
                 {
                     badspawnercount++;
                     spawner.Delete();
-                    from.SendMessage("Invalid map at line {0}", linenumber);
-                    from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                    from.SendMessage($"Invalid map at line {linenumber}");
+                    from.SendMessage($"Bad spawn at line {linenumber}: {line}");
                     return;
                 }
                 spawnercount++;
@@ -5283,7 +5280,7 @@ public class XmlSpawner : Item, ISpawner
                     {
                         badspawnercount++;
                         spawner.Delete();
-                        from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                        from.SendMessage($"Bad spawn at line {linenumber}: {line}");
                         return;
                     }
                     spawnercount++;
@@ -5292,7 +5289,7 @@ public class XmlSpawner : Item, ISpawner
             else
             {
                 badspawnercount++;
-                from.SendMessage("Bad spawn at line {1}: {0}", line, linenumber);
+                from.SendMessage($"Bad spawn at line {linenumber}: {line}");
             }
         }
     }
@@ -5314,7 +5311,7 @@ public class XmlSpawner : Item, ISpawner
                 }
                 catch
                 {
-                    e.Mobile.SendMessage("unable to load file {0}.", filePath);
+                    e.Mobile.SendMessage($"unable to load file {filePath}.");
                     return;
                 }
 
@@ -5329,14 +5326,14 @@ public class XmlSpawner : Item, ISpawner
                             ImportSpawner(spawner, e.Mobile);
                             successes++;
                         }
-                        catch (Exception ex) { e.Mobile.SendMessage(33, "{0} {1}", ex.Message, spawner.InnerText); failures++; }
+                        catch (Exception ex) { e.Mobile.SendMessage(33, $"{ex.Message} {spawner.InnerText}"); failures++; }
                     }
                 }
-                e.Mobile.SendMessage("{0} spawners loaded successfully from {1}, {2} failures.", successes, filePath, failures);
+                e.Mobile.SendMessage($"{successes} spawners loaded successfully from {filePath}, {failures} failures.");
             }
             else
             {
-                e.Mobile.SendMessage("File {0} does not exist.", filePath);
+                e.Mobile.SendMessage($"File {filePath} does not exist.");
             }
         }
         else
@@ -5461,9 +5458,9 @@ public class XmlSpawner : Item, ISpawner
                             ImportMegaSpawner(e.Mobile, spawner);
                             successes++;
                         }
-                        catch (Exception ex) { e.Mobile.SendMessage(33, "{0} {1}", ex.Message, spawner.InnerText); failures++; }
+                        catch (Exception ex) { e.Mobile.SendMessage(33, $"{ex.Message} {spawner.InnerText}"); failures++; }
                     }
-                    e.Mobile.SendMessage("{0} megaspawners loaded successfully from {1}, {2} failures.", successes, filePath, failures);
+                    e.Mobile.SendMessage($"{successes} megaspawners loaded successfully from {filePath}, {failures} failures.");
                 }
                 else
                 {
@@ -5472,7 +5469,7 @@ public class XmlSpawner : Item, ISpawner
             }
             else
             {
-                e.Mobile.SendMessage("File {0} does not exist.", filePath);
+                e.Mobile.SendMessage($"File {filePath} does not exist.");
             }
         }
         else
@@ -5631,12 +5628,12 @@ public class XmlSpawner : Item, ISpawner
                             {
                                 using (StreamWriter op = new StreamWriter("badimport.log", true))
                                 {
-                                    op.WriteLine("{0} MSFImport Error; inconsistent entry count {1} {2}", DateTime.UtcNow, location, map);
+                                    op.WriteLine($"{Core.Now} MSFImport Error; inconsistent entry count {location} {map}");
                                     op.WriteLine();
                                 }
                             }
                             catch { }
-                            from.SendMessage("Inconsistent entry count detected at {0} {1}.", location, map);
+                            from.SendMessage($"Inconsistent entry count detected at {location} {map}.");
                             break;
                         }
 
@@ -5644,13 +5641,13 @@ public class XmlSpawner : Item, ISpawner
                 }
                 if (diff)
                 {
-                    from.SendMessage("Individual entry setting detected at {0} {1}.", location, map);
+                    from.SendMessage($"Individual entry setting detected at {location} {map}.");
                     // log it
                     try
                     {
                         using (StreamWriter op = new StreamWriter("badimport.log", true))
                         {
-                            op.WriteLine("{0} MSFImport: Individual entry setting differences listed above from spawner at {1} {2}", DateTime.UtcNow, location, map);
+                            op.WriteLine($"{Core.Now} MSFImport: Individual entry setting differences listed above from spawner at {location} {map}");
                             op.WriteLine();
                         }
                     }
@@ -5729,7 +5726,7 @@ public class XmlSpawner : Item, ISpawner
             {
                 if (from != null)
                 {
-                    from.SendMessage("Unable to open {0} for loading", filename);
+                    from.SendMessage($"Unable to open {filename} for loading");
                 }
 
                 return;
@@ -5752,7 +5749,7 @@ public class XmlSpawner : Item, ISpawner
             {
                 if (from != null)
                 {
-                    from.SendMessage("Loading {0} .xml files from directory {1}", files.Length, filename);
+                    from.SendMessage($"Loading {files.Length} .xml files from directory {filename}");
                 }
 
                 foreach (string file in files)
@@ -5780,7 +5777,7 @@ public class XmlSpawner : Item, ISpawner
             }
             if (from != null)
             {
-                from.SendMessage("Loaded a total of {0} .xml files and {2} spawners from directory {1}", total_processed_maps, filename, total_processed_spawners);
+                from.SendMessage($"Loaded a total of {total_processed_maps} .xml files and {filename} spawners from directory {total_processed_spawners}");
             }
 
             processedmaps = total_processed_maps;
@@ -5790,7 +5787,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (from != null)
             {
-                from.SendMessage("{0} does not exist", filename);
+                from.SendMessage($"{filename} does not exist");
             }
         }
 
@@ -5877,7 +5874,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (from != null)
             {
-                from.SendMessage(33, "Error reading xml file {0}", filename);
+                from.SendMessage(33, $"Error reading xml file {filename}");
             }
 
             fileerror = true;
@@ -5908,7 +5905,7 @@ public class XmlSpawner : Item, ISpawner
                     if (loadnew)
                     {
                         // append the new id to the name
-                        SpawnName = string.Format("{0}-{1}", SpawnName, newloadid);
+                        SpawnName = $"{SpawnName}-{newloadid}";
                     }
 
                     // Check if there is any spawner name criteria specified on the load
@@ -6272,8 +6269,7 @@ public class XmlSpawner : Item, ISpawner
                         {
                             if (from != null)
                             {
-                                from.SendMessage(33, "Invalid location '{0}' at [{1} {2}] in {3}",
-                                    SpawnName, SpawnCentreX, SpawnCentreY, XmlMapName);
+                                from.SendMessage(33, $"Invalid location '{SpawnName}' at [{SpawnCentreX} {SpawnCentreY}] in {XmlMapName}");
                             }
 
                             bad_spawner = true;
@@ -6333,7 +6329,7 @@ public class XmlSpawner : Item, ISpawner
                             {
                                 using (StreamWriter op = new StreamWriter("badxml.log", true))
                                 {
-                                    op.WriteLine("# Invalid spawner : {0}: Fileposition {1} {2}", DateTime.UtcNow, fileposition, filename);
+                                    op.WriteLine("# Invalid spawner : {0}: Fileposition {1} {2}", Core.Now, fileposition, filename);
                                     op.WriteLine();
                                 }
                             }
@@ -6345,8 +6341,7 @@ public class XmlSpawner : Item, ISpawner
                             questionablecount++;
                             if (from != null)
                             {
-                                from.SendMessage(33, "Questionable spawner '{0}' at [{1} {2}] in {3}",
-                                    SpawnName, SpawnCentreX, SpawnCentreY, XmlMapName);
+                                from.SendMessage(33, $"Questionable spawner '{SpawnName}' at [{SpawnCentreX} {SpawnCentreY}] in {XmlMapName}");
                             }
 
                             // log it
@@ -6357,7 +6352,7 @@ public class XmlSpawner : Item, ISpawner
                             {
                                 using (StreamWriter op = new StreamWriter("badxml.log", true))
                                 {
-                                    op.WriteLine("# Questionable spawner : {0}: Format: X Y Z Map SpawnerName Fileposition Xmlfile", DateTime.UtcNow);
+                                    op.WriteLine("# Questionable spawner : {0}: Format: X Y Z Map SpawnerName Fileposition Xmlfile", Core.Now);
                                     op.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", SpawnCentreX, SpawnCentreY, SpawnCentreZ, XmlMapName, SpawnName, fileposition, filename);
                                     op.WriteLine();
                                 }
@@ -6441,7 +6436,7 @@ public class XmlSpawner : Item, ISpawner
                             // Send a message to the client that the spawner is created
                             if (from != null && verbose)
                             {
-                                from.SendMessage(188, "Created '{0}' in {1} at {2}", TheSpawn.Name, TheSpawn.Map.Name, TheSpawn.Location.ToString());
+                                from.SendMessage(188, $"Created '{TheSpawn.Name}' in {TheSpawn.Map.Name} at {TheSpawn.Location}");
                             }
 
                             // Do a total respawn
@@ -6536,7 +6531,7 @@ public class XmlSpawner : Item, ISpawner
                             // if this is a new load then assume that it will be referring to another newly loaded object so append the newloadid
                             if (loadnew)
                             {
-                                string tmpsetObjectName = string.Format("{0}-{1}", namestr, newloadid);
+                                string tmpsetObjectName = $"{namestr}-{newloadid}";
                                 OldSpawner.m_SetPropertyItem = BaseXmlSpawner.FindItemByName(null, tmpsetObjectName, typestr);
                             }
                             // if this fails then try the original
@@ -6549,8 +6544,7 @@ public class XmlSpawner : Item, ISpawner
                                 failedsetitemcount++;
                                 if (from != null)
                                 {
-                                    from.SendMessage(33, "Failed to initialize SetItemProperty Object '{0}' on ' '{1}' at [{2} {3}] in {4}",
-                                        setObjectName, OldSpawner.Name, OldSpawner.Location.X, OldSpawner.Location.Y, OldSpawner.Map);
+                                    from.SendMessage(33, $"Failed to initialize SetItemProperty Object '{setObjectName}' on ' '{OldSpawner.Name}' at [{OldSpawner.Location.X} {OldSpawner.Location.Y}] in {OldSpawner.Map}");
                                 }
 
                                 // log it
@@ -6559,7 +6553,7 @@ public class XmlSpawner : Item, ISpawner
                                     using (StreamWriter op = new StreamWriter("badxml.log", true))
                                     {
                                         op.WriteLine("# Failed SetItemProperty Object initialization : {0}: Format: ObjectName X Y Z Map SpawnerName Xmlfile",
-                                            DateTime.UtcNow);
+                                            Core.Now);
                                         op.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}",
                                             setObjectName, OldSpawner.Location.X, OldSpawner.Location.Y, OldSpawner.Location.Z, OldSpawner.Map, OldSpawner.Name, filename);
                                         op.WriteLine();
@@ -6588,7 +6582,7 @@ public class XmlSpawner : Item, ISpawner
                             // if this is a new load then assume that it will be referring to another newly loaded object so append the newloadid
                             if (loadnew)
                             {
-                                string tmptriggerObjectName = string.Format("{0}-{1}", namestr, newloadid);
+                                string tmptriggerObjectName = $"{namestr}-{newloadid}";
                                 OldSpawner.m_ObjectPropertyItem = BaseXmlSpawner.FindItemByName(null, tmptriggerObjectName, typestr);
                             }
                             // if this fails then try the original
@@ -6601,8 +6595,7 @@ public class XmlSpawner : Item, ISpawner
                                 failedobjectitemcount++;
                                 if (from != null)
                                 {
-                                    from.SendMessage(33, "Failed to initialize TriggerObject '{0}' on ' '{1}' at [{2} {3}] in {4}",
-                                        triggerObjectName, OldSpawner.Name, OldSpawner.Location.X, OldSpawner.Location.Y, OldSpawner.Map);
+                                    from.SendMessage(33, $"Failed to initialize TriggerObject '{triggerObjectName}' on ' '{OldSpawner.Name}' at [{OldSpawner.Location.X} {OldSpawner.Location.Y}] in {OldSpawner.Map}");
                                 }
 
                                 // log it
@@ -6611,7 +6604,7 @@ public class XmlSpawner : Item, ISpawner
                                     using (StreamWriter op = new StreamWriter("badxml.log", true))
                                     {
                                         op.WriteLine("# Failed TriggerObject initialization : {0}: Format: ObjectName X Y Z Map SpawnerName Xmlfile",
-                                            DateTime.UtcNow);
+                                            Core.Now);
                                         op.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}",
                                             triggerObjectName, OldSpawner.Location.X, OldSpawner.Location.Y, OldSpawner.Location.Z, OldSpawner.Map, OldSpawner.Name, filename);
                                         op.WriteLine();
@@ -6634,36 +6627,35 @@ public class XmlSpawner : Item, ISpawner
 
         if (from != null)
         {
-            from.SendMessage("{0} spawner(s) were created from file {1} [Trammel={2}, Felucca={3}, Ilshenar={4}, Malas={5}, Tokuno={6} Other={7}].",
-                TotalCount, filename, TrammelCount, FeluccaCount, IlshenarCount, MalasCount, TokunoCount, OtherCount);
+            from.SendMessage($"{TotalCount} spawner(s) were created from file {filename} [Trammel={TrammelCount}, Felucca={FeluccaCount}, Ilshenar={IlshenarCount}, Malas={MalasCount}, Tokuno={TokunoCount} Other={OtherCount}].");
         }
 
         if (failedobjectitemcount > 0)
         {
             if (from != null)
             {
-                from.SendMessage(33, "Failed to initialize TriggerObjects in {0} spawners. Saved to 'badxml.log'", failedobjectitemcount);
+                from.SendMessage(33, $"Failed to initialize TriggerObjects in {failedobjectitemcount} spawners. Saved to 'badxml.log'");
             }
         }
         if (failedsetitemcount > 0)
         {
             if (from != null)
             {
-                from.SendMessage(33, "Failed to initialize SetItemProperty Objects in {0} spawners. Saved to 'badxml.log'", failedsetitemcount);
+                from.SendMessage(33, $"Failed to initialize SetItemProperty Objects in {failedsetitemcount} spawners. Saved to 'badxml.log'");
             }
         }
         if (badcount > 0)
         {
             if (from != null)
             {
-                from.SendMessage(33, "{0} bad spawners detected. Saved to 'badxml.log'", badcount);
+                from.SendMessage(33, $"{badcount} bad spawners detected. Saved to 'badxml.log'");
             }
         }
         if (questionablecount > 0)
         {
             if (from != null)
             {
-                from.SendMessage(33, "{0} questionable spawners detected. Saved to 'badxml.log'", questionablecount);
+                from.SendMessage(33, $"{questionablecount} questionable spawners detected. Saved to 'badxml.log'");
             }
         }
         processedmaps = 1;
@@ -6680,7 +6672,7 @@ public class XmlSpawner : Item, ISpawner
         if (Directory.Exists(XmlSpawnDir))
         {
             // get it from the defaults directory if it exists
-            dirname = string.Format("{0}/{1}", XmlSpawnDir, filename);
+            dirname = $"{XmlSpawnDir}/{filename}";
             found = File.Exists(dirname) || Directory.Exists(dirname);
         }
 
@@ -6712,14 +6704,11 @@ public class XmlSpawner : Item, ISpawner
                     SpawnerPrefix = e.Arguments[1];
                 }
 
-                int processedmaps;
-                int processedspawners;
-
-                XmlLoadFromFile(filename, SpawnerPrefix, e.Mobile, false, 0, true, out processedmaps, out processedspawners);
+                XmlLoadFromFile(filename, SpawnerPrefix, e.Mobile, false, 0, true, out _, out _);
             }
             else
             {
-                e.Mobile.SendMessage("Usage:  {0} <SpawnFile or directory> [SpawnerPrefixFilter]", e.Command);
+                e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile or directory> [SpawnerPrefixFilter]");
             }
         }
         else
@@ -6749,14 +6738,11 @@ public class XmlSpawner : Item, ISpawner
                     SpawnerPrefix = e.Arguments[1];
                 }
 
-                int processedmaps;
-                int processedspawners;
-
-                XmlLoadFromFile(filename, SpawnerPrefix, m, false, 0, false, out processedmaps, out processedspawners);
+                XmlLoadFromFile(filename, SpawnerPrefix, m, false, 0, false, out _, out _);
             }
             else if (m != null)
             {
-                e.Mobile.SendMessage("Usage:  {0} <SpawnFile or directory> [SpawnerPrefixFilter]", e.Command);
+                e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile or directory> [SpawnerPrefixFilter]");
             }
         }
         else
@@ -6797,19 +6783,16 @@ public class XmlSpawner : Item, ISpawner
                         }
                     }
                 }
-                catch { e.Mobile.SendMessage("Usage:  {0} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]", e.Command); badargs = true; }
+                catch { e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]"); badargs = true; }
 
                 if (!badargs)
                 {
-                    int processedmaps;
-                    int processedspawners;
-
-                    XmlLoadFromFile(filename, SpawnerPrefix, e.Mobile, true, maxrange, true, out processedmaps, out processedspawners);
+                    XmlLoadFromFile(filename, SpawnerPrefix, e.Mobile, true, maxrange, true, out _, out _);
                 }
             }
             else
             {
-                e.Mobile.SendMessage("Usage:  {0} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]", e.Command);
+                e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]");
             }
         }
         else
@@ -6849,19 +6832,16 @@ public class XmlSpawner : Item, ISpawner
                         }
                     }
                 }
-                catch { e.Mobile.SendMessage("Usage:  {0} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]", e.Command); badargs = true; }
+                catch { e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]"); badargs = true; }
 
                 if (!badargs)
                 {
-                    int processedmaps;
-                    int processedspawners;
-
-                    XmlLoadFromFile(filename, SpawnerPrefix, e.Mobile, true, maxrange, false, out processedmaps, out processedspawners);
+                    XmlLoadFromFile(filename, SpawnerPrefix, e.Mobile, true, maxrange, false, out _, out _);
                 }
             }
             else
             {
-                e.Mobile.SendMessage("Usage:  {0} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]", e.Command);
+                e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile or directory> [SpawnerPrefixFilter][-maxrange range]");
             }
         }
         else
@@ -6912,7 +6892,7 @@ public class XmlSpawner : Item, ISpawner
 
             if (e.Arguments.Length < 1)
             {
-                e.Mobile.SendMessage("Usage:  {0} <SpawnFile> (without spaces!!)", e.Command);
+                e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile> (without spaces!!)");
                 return;
             }
 
@@ -6928,7 +6908,7 @@ public class XmlSpawner : Item, ISpawner
 
             Mobile m = e.Mobile;
 
-            CommandLogging.WriteLine(m, "{0} {1} Saving XmlSpawner {2} on file {3}", m.AccessLevel, CommandLogging.Format(m), CommandLogging.Format(xmlspawner), CommandLogging.Format(filename));
+            CommandLogging.WriteLine(m, $"{m.AccessLevel} {CommandLogging.Format(m)} Saving XmlSpawner {CommandLogging.Format(xmlspawner)} on file {CommandLogging.Format(filename)}");
             SaveSpawns(m, xmlspawner, filename);
         }
     }
@@ -6946,7 +6926,7 @@ public class XmlSpawner : Item, ISpawner
         if (Directory.Exists(XmlSpawnDir) && filename != null && !filename.StartsWith("/") && !filename.StartsWith("\\"))
         {
             // put it in the defaults directory if it exists
-            dirname = string.Format("{0}/{1}", XmlSpawnDir, filename);
+            dirname = $"{XmlSpawnDir}/{filename}";
         }
         else
         {
@@ -6954,7 +6934,7 @@ public class XmlSpawner : Item, ISpawner
             dirname = filename;
         }
 
-        m.SendMessage("Saving object in folder {0} - file {1} - spawner {2}.", dirname, filename, xmlspawner);
+        m.SendMessage($"Saving object in folder {dirname} - file {filename} - spawner {xmlspawner}.");
 
         List<XmlSpawner> saveslist = new List<XmlSpawner>(1);
         saveslist.Add(xmlspawner);
@@ -6976,7 +6956,7 @@ public class XmlSpawner : Item, ISpawner
 
         if (e.Arguments != null && e.Arguments.Length < 1)
         {
-            e.Mobile.SendMessage("Usage:  {0} <SpawnFile> [SpawnerPrefixFilter]", e.Command);
+            e.Mobile.SendMessage($"Usage:  {e.Command} <SpawnFile> [SpawnerPrefixFilter]");
             return;
         }
 
@@ -6995,7 +6975,7 @@ public class XmlSpawner : Item, ISpawner
         if (Directory.Exists(XmlSpawnDir) && filename != null && !filename.StartsWith("/") && !filename.StartsWith("\\"))
         {
             // put it in the defaults directory if it exists
-            dirname = string.Format("{0}/{1}", XmlSpawnDir, filename);
+            dirname = $"{XmlSpawnDir}/{filename}";
         }
         else
         {
@@ -7005,13 +6985,15 @@ public class XmlSpawner : Item, ISpawner
 
         if (SaveAllMaps)
         {
-            e.Mobile.SendMessage(string.Format("Saving {0} objects{1} to file {2} from {3}.", "XmlSpawner",
-                !string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty, dirname, e.Mobile.Map));
+            e.Mobile.SendMessage(
+                $"Saving XmlSpawner objects{(!string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty)} to file {dirname} from {e.Mobile.Map}."
+            );
         }
         else
         {
-            e.Mobile.SendMessage(string.Format("Saving {0} obejcts{1} to file {2} from the entire world.", "XmlSpawner",
-                !string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty, dirname));
+            e.Mobile.SendMessage(
+                $"Saving XmlSpawner obejcts{(!string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty)} to file {dirname} from the entire world."
+            );
         }
 
 
@@ -7055,7 +7037,7 @@ public class XmlSpawner : Item, ISpawner
         {
             if (from != null)
             {
-                from.SendMessage("Error creating file {0}", dirname);
+                from.SendMessage($"Error creating file {dirname}");
             }
 
             save_ok = false;
@@ -7181,7 +7163,7 @@ public class XmlSpawner : Item, ISpawner
             if (verbose && from != null)
                 // Send a message to the client that the spawner is being saved
             {
-                from.SendMessage(68, "Saving '{0}' in {1} at {2}", sp.Name, sp.Map.Name, sp.Location.ToString());
+                from.SendMessage(68, $"Saving '{sp.Name}' in {sp.Map.Name} at {sp.Location}");
             }
 
             // Create a new data row
@@ -7285,8 +7267,7 @@ public class XmlSpawner : Item, ISpawner
             dr["ProximityTriggerMessage"] = sp.m_ProximityTriggerMessage;
             if (sp.m_ObjectPropertyItem != null && !sp.m_ObjectPropertyItem.Deleted)
             {
-                dr["ObjectPropertyItemName"] = string.Format("{0},{1}", sp.m_ObjectPropertyItem.Name,
-                    sp.m_ObjectPropertyItem.GetType().Name);
+                dr["ObjectPropertyItemName"] = $"{sp.m_ObjectPropertyItem.Name},{sp.m_ObjectPropertyItem.GetType().Name}";
             }
             else
             {
@@ -7296,8 +7277,7 @@ public class XmlSpawner : Item, ISpawner
             dr["ObjectPropertyName"] = sp.m_ObjectPropertyName;
             if (sp.m_SetPropertyItem != null && !sp.m_SetPropertyItem.Deleted)
             {
-                dr["SetPropertyItemName"] = string.Format("{0},{1}", sp.m_SetPropertyItem.Name,
-                    sp.m_SetPropertyItem.GetType().Name);
+                dr["SetPropertyItemName"] = $"{sp.m_SetPropertyItem.Name},{sp.m_SetPropertyItem.GetType().Name}";
             }
             else
             {
@@ -7334,7 +7314,7 @@ public class XmlSpawner : Item, ISpawner
                 }
                 else
                 {
-                    waystr = string.Format("SERIAL,{0}", sp.m_WayPoint.Serial);
+                    waystr = $"SERIAL,{sp.m_WayPoint.Serial}";
                 }
             }
             dr["WayPoint"] = waystr;
@@ -7382,8 +7362,7 @@ public class XmlSpawner : Item, ISpawner
         // Indicate how many spawners were written
         if (from != null)
         {
-            from.SendMessage("{0} spawner(s) were saved to file {1} [Trammel={2}, Felucca={3}, Ilshenar={4}, Malas={5}, Tokuno={6}, Other={7}].",
-                TotalCount, dirname, TrammelCount, FeluccaCount, IlshenarCount, MalasCount, TokunoCount, OtherCount);
+            from.SendMessage($"{TotalCount} spawner(s) were saved to file {dirname} [Trammel={TrammelCount}, Felucca={FeluccaCount}, Ilshenar={IlshenarCount}, Malas={MalasCount}, Tokuno={TokunoCount}, Other={OtherCount}].");
         }
         return true;
 
@@ -7409,13 +7388,11 @@ public class XmlSpawner : Item, ISpawner
 
             if (WipeAll)
             {
-                e.Mobile.SendMessage("Removing ALL XmlSpawner objects from the world{0}.", !string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}"
-                    : string.Empty);
+                e.Mobile.SendMessage($"Removing ALL XmlSpawner objects from the world{(!string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty)}.");
             }
             else
             {
-                e.Mobile.SendMessage("Removing ALL XmlSpawner objects from {0}{1}.", e.Mobile.Map, !string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}"
-                    : string.Empty);
+                e.Mobile.SendMessage($"Removing ALL XmlSpawner objects from {e.Mobile.Map}{(!string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty)}.");
             }
 
             // Delete Xml spawner's in the world based on the mobiles current map
@@ -7445,11 +7422,11 @@ public class XmlSpawner : Item, ISpawner
 
             if (WipeAll)
             {
-                e.Mobile.SendMessage("Removed {0} XmlSpawner objects from the world.", Count);
+                e.Mobile.SendMessage($"Removed {Count} XmlSpawner objects from the world.");
             }
             else
             {
-                e.Mobile.SendMessage("Removed {0} XmlSpawner objects from {1}.", Count, e.Mobile.Map);
+                e.Mobile.SendMessage($"Removed {Count} XmlSpawner objects from {e.Mobile.Map}.");
             }
         }
         else
@@ -7493,13 +7470,11 @@ public class XmlSpawner : Item, ISpawner
 
             if (RespawnAll)
             {
-                e.Mobile.SendMessage("Respawning ALL XmlSpawner objects from the world{0}.", !string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}"
-                    : string.Empty);
+                e.Mobile.SendMessage($"Respawning ALL XmlSpawner objects from the world{(!string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty)}.");
             }
             else
             {
-                e.Mobile.SendMessage("Respawning ALL XmlSpawner objects from {0}{1}.", e.Mobile.Map, !string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}"
-                    : string.Empty);
+                e.Mobile.SendMessage($"Respawning ALL XmlSpawner objects from {e.Mobile.Map}{(!string.IsNullOrEmpty(SpawnerPrefix) ? $" beginning with {SpawnerPrefix}" : string.Empty)}.");
             }
 
             // Respawn Xml spawner's in the world based on the mobiles current map
@@ -7509,7 +7484,6 @@ public class XmlSpawner : Item, ISpawner
             {
                 try
                 {
-
                     if (i is XmlSpawner && (RespawnAll || i.Map == e.Mobile.Map) && i.Deleted == false)
                     {
                         // Check if there is a respawn condition
@@ -7527,18 +7501,18 @@ public class XmlSpawner : Item, ISpawner
             {
 
                 // Send a message to the client that the spawner is being respawned
-                e.Mobile.SendMessage(33, "Respawning '{0}' in {1} at {2}", i.Name, i.Map.Name, i.Location.ToString());
+                e.Mobile.SendMessage(33, $"Respawning '{i.Name}' in {i.Map.Name} at {i.Location}");
                 XmlSpawner CheckXmlSpawner = (XmlSpawner)i;
                 CheckXmlSpawner.TryRespawn();
             }
 
             if (RespawnAll)
             {
-                e.Mobile.SendMessage("Respawned {0} XmlSpawner objects from the world.", Count);
+                e.Mobile.SendMessage($"Respawned {Count} XmlSpawner objects from the world.");
             }
             else
             {
-                e.Mobile.SendMessage("Respawned {0} XmlSpawner objects from {1}.", Count, e.Mobile.Map);
+                e.Mobile.SendMessage($"Respawned {Count} XmlSpawner objects from {e.Mobile.Map}.");
             }
         }
         else
@@ -7581,11 +7555,11 @@ public class XmlSpawner : Item, ISpawner
             }
             if (e.Arguments.Length > 2)
             {
-                e.Mobile.SendMessage("Created {0} Spawner objects.", count);
+                e.Mobile.SendMessage($"Created {count} Spawner objects.");
             }
             else
             {
-                e.Mobile.SendMessage("Created {0} XmlSpawner objects.", count);
+                e.Mobile.SendMessage($"Created {count} XmlSpawner objects.");
             }
 
 
@@ -7600,7 +7574,7 @@ public class XmlSpawner : Item, ISpawner
     public static void XmlTrace_OnCommand(CommandEventArgs e)
     {
         Process currentprocess = Process.GetCurrentProcess();
-        TimeSpan runningtime = DateTime.UtcNow - _traceStartTime;
+        TimeSpan runningtime = Core.Now - _traceStartTime;
         double processtime = currentprocess.UserProcessorTime.TotalMilliseconds - _startProcessTime;
         double sysload = 0;
 
@@ -7641,7 +7615,7 @@ public class XmlSpawner : Item, ISpawner
                 _traceCount[i] = 0;
                 _traceTotal[i] = TimeSpan.Zero;
             }
-            _traceStartTime = DateTime.UtcNow;
+            _traceStartTime = Core.Now;
 
             Process currentprocess = Process.GetCurrentProcess();
             _startProcessTime = currentprocess.UserProcessorTime.TotalMilliseconds;
@@ -7846,7 +7820,7 @@ public class XmlSpawner : Item, ISpawner
                 {
                     bool despawned = false;
                     // check to see if the despawn time has elapsed.  If so, then delete it if it hasnt been picked up or stolen.
-                    if (DespawnTime.TotalHours > 0 && !item.Deleted && item.LastMoved < DateTime.UtcNow - DespawnTime && item.Parent == Parent
+                    if (DespawnTime.TotalHours > 0 && !item.Deleted && item.LastMoved < Core.Now - DespawnTime && item.Parent == Parent
                         && (!ItemFlags.GetTaken(item) || item.Parent != null && item.Parent == Parent)) // can despawn if just moved within the same container
                     {
                         //item.Delete();
@@ -7886,7 +7860,7 @@ public class XmlSpawner : Item, ISpawner
                 {
                     bool despawned = false;
                     // check to see if the despawn time has elapsed.  If so, and the sector is not active then delete it.
-                    if (DespawnTime.TotalHours > 0 && !mobile.Deleted && mobile.Created < DateTime.UtcNow - DespawnTime
+                    if (DespawnTime.TotalHours > 0 && !mobile.Deleted && mobile.Created < Core.Now - DespawnTime
                         && mobile.Map != null && mobile.Map != Map.Internal && !mobile.Map.GetSector(mobile.Location).Active)
                     {
                         //m.Delete();
@@ -8986,7 +8960,7 @@ public class XmlSpawner : Item, ISpawner
             }
 
             // check the nextspawn time to see if it is available
-            if (TheSpawn.NextSpawn > DateTime.UtcNow)
+            if (TheSpawn.NextSpawn > Core.Now)
             {
                 return false;
             }
@@ -9738,7 +9712,7 @@ public class XmlSpawner : Item, ISpawner
             {
                 SpawnObject so = m_SpawnObjects[i];
 
-                so.NextSpawn = DateTime.UtcNow;
+                so.NextSpawn = Core.Now;
             }
         }
     }
@@ -9754,14 +9728,14 @@ public class XmlSpawner : Item, ISpawner
         int maxd = (int)(so.MaxDelay * 60);
         if (mind < 0 || maxd < 0)
         {
-            so.NextSpawn = DateTime.UtcNow;
+            so.NextSpawn = Core.Now;
         }
         else
         {
 
             TimeSpan delay = TimeSpan.FromSeconds(Utility.RandomMinMax(mind, maxd));
 
-            so.NextSpawn = DateTime.UtcNow + delay;
+            so.NextSpawn = Core.Now + delay;
         }
 
     }
@@ -11258,7 +11232,8 @@ public class XmlSpawner : Item, ISpawner
                     m_SpawnObjects.Remove(TheSpawn);
                     if (from != null)
                     {
-                        CommandLogging.WriteLine(from, "{0} {1} removed from XmlSpawner {2} '{3}' [{4}, {5}] ({6}) : {7}", from.AccessLevel, CommandLogging.Format(from), Serial, Name, GetWorldLocation().X, GetWorldLocation().Y, Map, SpawnObjectName);
+                        var loc = GetWorldLocation();
+                        CommandLogging.WriteLine(from, $"{from.AccessLevel} {CommandLogging.Format(from)} removed from XmlSpawner {Serial} '{Name}' [{loc.X}, {loc.Y}] ({Map}) : {SpawnObjectName}");
                     }
                 }
             }
@@ -11518,7 +11493,7 @@ public class XmlSpawner : Item, ISpawner
 
                 using (StreamWriter op = new StreamWriter("badspawn.log", true))
                 {
-                    op.WriteLine("# Bad spawns : {0}", DateTime.UtcNow);
+                    op.WriteLine("# Bad spawns : {0}", Core.Now);
                     op.WriteLine("# Format: X Y Z F Name");
                     op.WriteLine();
 
@@ -11557,7 +11532,7 @@ public class XmlSpawner : Item, ISpawner
             return;
         }
 
-        m_End = DateTime.UtcNow + delay;
+        m_End = Core.Now + delay;
 
         if (m_Timer != null)
         {
@@ -11570,7 +11545,7 @@ public class XmlSpawner : Item, ISpawner
 
     public void DoTimer2(TimeSpan delay)
     {
-        m_DurEnd = DateTime.UtcNow + delay;
+        m_DurEnd = Core.Now + delay;
         if (m_Duration > TimeSpan.FromMinutes(0) || m_durActivated)
         {
             if (m_DurTimer != null)
@@ -11586,7 +11561,7 @@ public class XmlSpawner : Item, ISpawner
 
     public void DoTimer3(TimeSpan delay)
     {
-        m_RefractEnd = DateTime.UtcNow + delay;
+        m_RefractEnd = Core.Now + delay;
         m_refractActivated = true;
 
         if (m_RefractoryTimer != null)
@@ -11850,12 +11825,12 @@ public class XmlSpawner : Item, ISpawner
         writer.Write(m_MaxRefractory);
         if (m_refractActivated)
         {
-            writer.Write(m_RefractEnd - DateTime.UtcNow);
+            writer.Write(m_RefractEnd - Core.Now);
         }
 
         if (m_durActivated)
         {
-            writer.Write(m_DurEnd - DateTime.UtcNow);
+            writer.Write(m_DurEnd - Core.Now);
         }
 
         // Version 3
@@ -11884,7 +11859,7 @@ public class XmlSpawner : Item, ISpawner
 
         if (m_Running)
         {
-            writer.Write(m_End - DateTime.UtcNow);
+            writer.Write(m_End - Core.Now);
         }
 
         // Write the spawn object list
@@ -12119,7 +12094,7 @@ public class XmlSpawner : Item, ISpawner
                     hasnewobjectinfo = true;
                     m_SequentialSpawning = reader.ReadInt();
                     TimeSpan seqdelay = reader.ReadTimeSpan();
-                    m_SeqEnd = DateTime.UtcNow + seqdelay;
+                    m_SeqEnd = Core.Now + seqdelay;
 
                     tmpSubGroup = new List<int>(tmpSpawnListSize);
                     tmpSequentialResetTime = new List<double>(tmpSpawnListSize);
@@ -12535,7 +12510,8 @@ public class XmlSpawner : Item, ISpawner
 
                 if (!found)
                 {
-                    CommandLogging.WriteLine(from, "{0} {1} added to XmlSpawner {2} '{3}' [{4}, {5}] ({6}) : {7}", from.AccessLevel, CommandLogging.Format(from), spawner.Serial, spawner.Name, spawner.GetWorldLocation().X, spawner.GetWorldLocation().Y, spawner.Map, name);
+                    var loc = spawner.GetWorldLocation();
+                    CommandLogging.WriteLine(from, $"{from.AccessLevel} {CommandLogging.Format(from)} added to XmlSpawner {spawner.Serial} '{spawner.Name}' [{loc.X}, {loc.Y}] ({spawner.Map}) : {name}");
                 }
             }
 

@@ -51,7 +51,7 @@ public interface IGenericReader
         {
             long.MinValue => DateTime.MinValue,
             long.MaxValue => DateTime.MaxValue,
-            var delta     => new DateTime(delta + DateTime.UtcNow.Ticks, DateTimeKind.Utc)
+            var delta     => new DateTime(delta + Core.Now.Ticks, DateTimeKind.Utc)
         };
     }
     decimal ReadDecimal() => new(stackalloc int[4] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });

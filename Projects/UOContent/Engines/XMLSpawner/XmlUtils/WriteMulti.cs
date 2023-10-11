@@ -46,7 +46,7 @@ public class WriteMulti
 
         if (e.Arguments != null && e.Arguments.Length < 1)
         {
-            e.Mobile.SendMessage("Usage:  {0} <MultiFile> [zmin zmax][-noitems][-nostatics][-nomultis][-noaddons][-invisible]", e.Command);
+            e.Mobile.SendMessage($"Usage:  {e.Command} <MultiFile> [zmin zmax][-noitems][-nostatics][-nomultis][-noaddons][-invisible]");
             return;
         }
 
@@ -99,7 +99,7 @@ public class WriteMulti
                     }
                     catch
                     {
-                        e.Mobile.SendMessage("{0} : Invalid zmin zmax arguments", e.Command);
+                        e.Mobile.SendMessage($"{e.Command} : Invalid zmin zmax arguments");
                         return;
                     }
                 }
@@ -126,13 +126,6 @@ public class WriteMulti
             try
             {
                 StreamReader op = new StreamReader(dirname, false);
-
-                if (op == null)
-                {
-                    e.Mobile.SendMessage("Cannot access file {0}", dirname);
-                    return;
-                }
-
                 string line = op.ReadLine();
 
                 op.Close();
@@ -142,28 +135,28 @@ public class WriteMulti
                 {
 
                     string[] args = line.Split(" ".ToCharArray(), 3);
-                    if (args == null || args.Length < 3)
+                    if (args.Length < 3)
                     {
-                        e.Mobile.SendMessage("Cannot overwrite file {0} : not owner", dirname);
+                        e.Mobile.SendMessage($"Cannot overwrite file {dirname} : not owner");
                         return;
                     }
 
                     if (args[2] != e.Mobile.Name)
                     {
-                        e.Mobile.SendMessage("Cannot overwrite file {0} : not owner", dirname);
+                        e.Mobile.SendMessage($"Cannot overwrite file {dirname} : not owner");
                         return;
                     }
                 }
                 else
                 {
-                    e.Mobile.SendMessage("Cannot overwrite file {0} : not owner", dirname);
+                    e.Mobile.SendMessage($"Cannot overwrite file {dirname} : not owner");
                     return;
                 }
 
             }
             catch
             {
-                e.Mobile.SendMessage("Cannot overwrite file {0}", dirname);
+                e.Mobile.SendMessage($"Cannot overwrite file {dirname}");
                 return;
             }
 
@@ -410,7 +403,7 @@ public class WriteMulti
             }
             catch
             {
-                from.SendMessage("Error writing multi file {0}", dirname);
+                from.SendMessage($"Error writing multi file {dirname}");
                 return;
             }
 
@@ -418,11 +411,11 @@ public class WriteMulti
 
             if (includeitems)
             {
-                from.SendMessage(66, "Included {0} items", nitems);
+                from.SendMessage(66, $"Included {nitems} items");
 
                 if (includemultis)
                 {
-                    from.SendMessage("{0} multis", nmultis);
+                    from.SendMessage($"{nmultis} multis");
                 }
                 else
                 {
@@ -431,7 +424,7 @@ public class WriteMulti
 
                 if (includeinvisible)
                 {
-                    from.SendMessage("{0} invisible", ninvisible);
+                    from.SendMessage($"{ninvisible} invisible");
                 }
                 else
                 {
@@ -440,7 +433,7 @@ public class WriteMulti
 
                 if (includeaddons)
                 {
-                    from.SendMessage("{0} addons", naddons);
+                    from.SendMessage($"{naddons} addons");
                 }
                 else
                 {
@@ -455,14 +448,14 @@ public class WriteMulti
 
             if (includestatics)
             {
-                from.SendMessage(66, "Included {0} statics", nstatics);
+                from.SendMessage(66, $"Included {nstatics} statics");
             }
             else
             {
                 from.SendMessage(33, "Ignored statics");
             }
 
-            from.SendMessage(66, "Saved {0} components to {1}", ntotal, dirname);
+            from.SendMessage(66, $"Saved {ntotal} components to {dirname}");
         }
     }
 }

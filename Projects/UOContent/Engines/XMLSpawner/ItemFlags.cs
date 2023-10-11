@@ -64,7 +64,7 @@ public partial class ItemFlags
             {
                 bool state = item.GetSavedFlag(m_flag);
 
-                from.SendMessage("Flag (0x{0:X}) = {1}",m_flag,state);
+                from.SendMessage($"Flag (0x{m_flag:X}) = {state}");
             } else
             {
                 from.SendMessage("Must target an Item");
@@ -123,7 +123,7 @@ public partial class ItemFlags
 
                 bool state = GetStealable(item);
 
-                from.SendMessage("Stealable = {0}",state);
+                from.SendMessage($"Stealable = {state}");
 
             } else
             {

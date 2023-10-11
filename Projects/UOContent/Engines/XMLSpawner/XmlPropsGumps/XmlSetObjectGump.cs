@@ -181,7 +181,7 @@ public class XmlSetObjectGump : Gump
                 {
                     toSet = null;
                     shouldSet = false;
-                    m_Mobile.SendMessage("The object with that serial could not be assigned to a property of type : {0}", m_Type.Name);
+                    m_Mobile.SendMessage($"The object with that serial could not be assigned to a property of type : {m_Type.Name}");
                 }
                 else
                 {

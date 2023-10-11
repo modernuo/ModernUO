@@ -255,7 +255,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         try
         {
             using var op = new StreamWriter("world-save-errors.log", true);
-            op.WriteLine("{0}\t{1}", DateTime.UtcNow, message);
+            op.WriteLine("{0}\t{1}", Core.Now, message);
             op.WriteLine(new StackTrace(2).ToString());
             op.WriteLine();
         }

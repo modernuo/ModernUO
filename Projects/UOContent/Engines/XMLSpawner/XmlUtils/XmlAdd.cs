@@ -378,7 +378,7 @@ public class XmlAddGump : Gump
         {
             if (from != null && !from.Deleted)
             {
-                from.SendMessage("Error trying to save to file {0}", dirname);
+                from.SendMessage($"Error trying to save to file {dirname}");
             }
 
             return;
@@ -386,7 +386,7 @@ public class XmlAddGump : Gump
 
         if (from != null && !from.Deleted)
         {
-            from.SendMessage("Saved defs to file {0}", dirname);
+            from.SendMessage($"Saved defs to file {dirname}");
         }
     }
 
@@ -426,7 +426,7 @@ public class XmlAddGump : Gump
 
             if (fs == null)
             {
-                from.SendMessage("Unable to open {0} for loading", dirname);
+                from.SendMessage($"Unable to open {dirname} for loading");
                 return;
             }
 
@@ -447,7 +447,7 @@ public class XmlAddGump : Gump
             {
                 if (from != null && !from.Deleted)
                 {
-                    from.SendMessage(33, "Error reading defs file {0}", dirname);
+                    from.SendMessage(33, $"Error reading defs file {dirname}");
                 }
 
                 return;
@@ -590,7 +590,7 @@ public class XmlAddGump : Gump
 
                     if (from != null && !from.Deleted)
                     {
-                        from.SendMessage("Loaded defs from file {0}", dirname);
+                        from.SendMessage($"Loaded defs from file {dirname}");
                     }
                 }
             }
@@ -599,7 +599,7 @@ public class XmlAddGump : Gump
         {
             if (from != null && !from.Deleted)
             {
-                from.SendMessage(33, "File not found: {0}", dirname);
+                from.SendMessage(33, $"File not found: {dirname}");
             }
         }
     }

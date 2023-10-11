@@ -119,7 +119,7 @@ public static class EntityPersistence
             return map;
         }
 
-        var now = DateTime.UtcNow;
+        var now = Core.Now;
 
         for (int i = 0; i < count; ++i)
         {

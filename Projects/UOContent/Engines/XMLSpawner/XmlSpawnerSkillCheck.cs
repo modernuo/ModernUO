@@ -270,25 +270,11 @@ public class XmlSpawnerSkillCheck
         // determine whether there are any registered objects for this skill
         foreach(RegisteredSkill rs in skilllist)
         {
-            if (rs.sid == skill.SkillName)
+            // if so then invoke their skill handlers
+            // call the spawner handler
+            if (rs.sid == skill.SkillName && rs.target is XmlSpawner spawner && spawner.HandlesOnSkillUse)
             {
-                // if so then invoke their skill handlers
-                if (rs.target is XmlSpawner spawner)
-                {
-                    if (spawner.HandlesOnSkillUse)
-                    {
-                        // call the spawner handler
-                        spawner.OnSkillUse(m, skill, success);
-                    }
-                } else
-                if (rs.target is IXmlQuest quest)
-                {
-                    if (quest.HandlesOnSkillUse)
-                    {
-                        // call the xmlquest handler
-                        quest.OnSkillUse(m, skill, success);
-                    }
-                }
+                spawner.OnSkillUse(m, skill, success);
             }
         }
     }
