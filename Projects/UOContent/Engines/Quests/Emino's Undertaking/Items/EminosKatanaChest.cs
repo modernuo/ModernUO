@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Engines.Quests.Ninja;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class EminosKatanaChest : WoodenChest
 {
     [Constructible]

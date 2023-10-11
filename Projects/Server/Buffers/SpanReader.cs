@@ -168,6 +168,11 @@ public ref struct SpanReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
     {
+        if (fixedLength == 0)
+        {
+            return "";
+        }
+
         int byteLength = encoding.GetByteLengthForEncoding();
 
         bool isFixedLength = fixedLength > -1;
@@ -191,8 +196,10 @@ public ref struct SpanReader
         var span = _buffer.Slice(Position, size);
         var index = span.IndexOfTerminator(byteLength);
 
-        Position += isFixedLength || index < 0 ? size : index;
-        return TextEncoding.GetString(span[..index], encoding, safeString);
+        Position += isFixedLength || index < 0  ? size : index;
+
+        // The string is either as long as the first terminator character, remaining buffer size, or fixed length.
+        return TextEncoding.GetString(span[..(index < 0 ? size : index)], encoding, safeString);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
