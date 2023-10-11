@@ -324,7 +324,7 @@ public static class World
         }
 
         WorldState = WorldState.Saving;
-        
+
         Broadcast(0x35, true, "The world is saving, please wait.");
 
         logger.Information("Saving world");
@@ -479,16 +479,16 @@ public static class World
             }
         }
 
-        public override void WriteSnapshot(string basePath)
+        public override void Serialize()
         {
-            base.WriteSnapshot(basePath);
-
             foreach (var item in EntitiesBySerial.Values)
             {
                 if (item.CanDecay() && item.LastMoved + item.DecayTime <= _serializationStart)
                 {
                     EnqueueForDecay(item);
                 }
+
+                PushToCache(item);
             }
         }
 
