@@ -1,62 +1,45 @@
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Doom
+namespace Server.Engines.Quests.Doom;
+
+[SerializationGenerator(0, false)]
+public partial class SummoningAltar : AbbatoirAddon
 {
-    public class SummoningAltar : AbbatoirAddon
+    [Constructible]
+    public SummoningAltar()
     {
-        private BoneDemon m_Daemon;
+    }
 
-        [Constructible]
-        public SummoningAltar()
+    [SerializableProperty(0)]
+    public BoneDemon Daemon
+    {
+        get => _daemon;
+        set
         {
-        }
-
-        public SummoningAltar(Serial serial) : base(serial)
-        {
-        }
-
-        public BoneDemon Daemon
-        {
-            get => m_Daemon;
-            set
-            {
-                m_Daemon = value;
-                CheckDaemon();
-            }
-        }
-
-        public void CheckDaemon()
-        {
-            if (m_Daemon?.Alive != true)
-            {
-                m_Daemon = null;
-                Hue = 0;
-            }
-            else
-            {
-                Hue = 0x66D;
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(m_Daemon);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_Daemon = reader.ReadEntity<BoneDemon>();
-
+            _daemon = value;
             CheckDaemon();
+            this.MarkDirty();
         }
+    }
+
+    public void CheckDaemon()
+    {
+        if (_daemon?.Alive != true)
+        {
+            _daemon = null;
+            Hue = 0;
+        }
+        else
+        {
+            Hue = 0x66D;
+        }
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        CheckDaemon();
     }
 }

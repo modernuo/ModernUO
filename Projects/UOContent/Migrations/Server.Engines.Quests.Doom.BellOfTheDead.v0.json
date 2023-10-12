@@ -1,0 +1,16 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Doom.BellOfTheDead",
+  "properties": [
+    {
+      "name": "Chyloth",
+      "type": "Server.Engines.Quests.Doom.Chyloth",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Dragon",
+      "type": "Server.Mobiles.SkeletalDragon",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

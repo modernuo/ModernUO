@@ -1,134 +1,113 @@
 using System;
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Doom
+namespace Server.Engines.Quests.Doom;
+
+[SerializationGenerator(0, false)]
+public partial class BellOfTheDead : Item
 {
-    public class BellOfTheDead : Item
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    private Chyloth _chyloth;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    private SkeletalDragon _dragon;
+
+    [Constructible]
+    public BellOfTheDead() : base(0x91A)
     {
-        [Constructible]
-        public BellOfTheDead() : base(0x91A)
+        Hue = 0x835;
+        Movable = false;
+    }
+
+    public override int LabelNumber => 1050018; // bell of the dead
+
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    public bool Summoning { get; set; }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (from.InRange(GetWorldLocation(), 2))
         {
-            Hue = 0x835;
-            Movable = false;
+            BeginSummon(from);
         }
-
-        public BellOfTheDead(Serial serial) : base(serial)
+        else
         {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
+    }
 
-        public override int LabelNumber => 1050018; // bell of the dead
-
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public Chyloth Chyloth { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public SkeletalDragon Dragon { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public bool Summoning { get; set; }
-
-        public override void OnDoubleClick(Mobile from)
+    public virtual void BeginSummon(Mobile from)
+    {
+        if (_chyloth?.Deleted == false)
         {
-            if (from.InRange(GetWorldLocation(), 2))
-            {
-                BeginSummon(from);
-            }
-            else
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
+            // The ferry man has already been summoned.  There is no need to ring for him again.
+            from.SendLocalizedMessage(1050010);
         }
-
-        public virtual void BeginSummon(Mobile from)
+        else if (_dragon?.Deleted == false)
         {
-            if (Chyloth?.Deleted == false)
-            {
-                from.SendLocalizedMessage(
-                    1050010
-                ); // The ferry man has already been summoned.  There is no need to ring for him again.
-            }
-            else if (Dragon?.Deleted == false)
-            {
-                from.SendLocalizedMessage(
-                    1050017
-                ); // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.
-            }
-            else if (!Summoning)
-            {
-                Summoning = true;
-
-                Effects.PlaySound(GetWorldLocation(), Map, 0x100);
-
-                Timer.StartTimer(TimeSpan.FromSeconds(8.0), () => EndSummon(from));
-            }
+            // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.
+            from.SendLocalizedMessage(1050017);
         }
-
-        public virtual void EndSummon(Mobile from)
+        else if (!Summoning)
         {
-            if (Chyloth?.Deleted == false)
-            {
-                from.SendLocalizedMessage(
-                    1050010
-                ); // The ferry man has already been summoned.  There is no need to ring for him again.
-            }
-            else if (Dragon?.Deleted == false)
-            {
-                from.SendLocalizedMessage(
-                    1050017
-                ); // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.
-            }
-            else if (Summoning)
-            {
-                Summoning = false;
+            Summoning = true;
 
-                var loc = GetWorldLocation();
+            Effects.PlaySound(GetWorldLocation(), Map, 0x100);
 
-                loc.Z -= 16;
-
-                Effects.SendLocationParticles(
-                    EffectItem.Create(loc, Map, EffectItem.DefaultDuration),
-                    0x3728,
-                    10,
-                    10,
-                    0,
-                    0,
-                    2023,
-                    0
-                );
-                Effects.PlaySound(loc, Map, 0x1FE);
-
-                Chyloth = new Chyloth { Direction = (Direction)(7 & (4 + (int)from.GetDirectionTo(loc))) };
-
-                Chyloth.MoveToWorld(loc, Map);
-
-                Chyloth.Bell = this;
-                Chyloth.AngryAt = from;
-                Chyloth.BeginGiveWarning();
-                Chyloth.BeginRemove(TimeSpan.FromSeconds(40.0));
-            }
+            Timer.StartTimer(TimeSpan.FromSeconds(8.0), () => EndSummon(from));
         }
+    }
 
-        public override void Serialize(IGenericWriter writer)
+    public virtual void EndSummon(Mobile from)
+    {
+        if (_chyloth?.Deleted == false)
         {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Chyloth);
-            writer.Write(Dragon);
+            // The ferry man has already been summoned.  There is no need to ring for him again.
+            from.SendLocalizedMessage(1050010);
         }
-
-        public override void Deserialize(IGenericReader reader)
+        else if (_dragon?.Deleted == false)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            Chyloth = reader.ReadEntity<Chyloth>();
-            Dragon = reader.ReadEntity<SkeletalDragon>();
-
-            Chyloth?.Delete();
+            // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.
+            from.SendLocalizedMessage(1050017);
         }
+        else if (Summoning)
+        {
+            Summoning = false;
+
+            var loc = GetWorldLocation();
+
+            loc.Z -= 16;
+
+            Effects.SendLocationParticles(
+                EffectItem.Create(loc, Map, EffectItem.DefaultDuration),
+                0x3728,
+                10,
+                10,
+                0,
+                0,
+                2023,
+                0
+            );
+            Effects.PlaySound(loc, Map, 0x1FE);
+
+            Chyloth = new Chyloth { Direction = (Direction)(7 & (4 + (int)from.GetDirectionTo(loc))) };
+
+            Chyloth.MoveToWorld(loc, Map);
+
+            Chyloth.Bell = this;
+            Chyloth.AngryAt = from;
+            Chyloth.BeginGiveWarning();
+            Chyloth.BeginRemove(TimeSpan.FromSeconds(40.0));
+        }
+    }
+
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        _chyloth?.Delete();
     }
 }
