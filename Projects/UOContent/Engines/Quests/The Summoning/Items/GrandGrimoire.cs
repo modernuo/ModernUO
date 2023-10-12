@@ -1,34 +1,18 @@
-namespace Server.Engines.Quests.Doom
+using ModernUO.Serialization;
+
+namespace Server.Engines.Quests.Doom;
+
+[SerializationGenerator(0, false)]
+public partial class GrandGrimoire : Item
 {
-    public class GrandGrimoire : Item
+    [Constructible]
+    public GrandGrimoire() : base(0xEFA)
     {
-        [Constructible]
-        public GrandGrimoire() : base(0xEFA)
-        {
-            Weight = 1.0;
-            Hue = 0x835;
-            Layer = Layer.OneHanded;
-            LootType = LootType.Blessed;
-        }
-
-        public GrandGrimoire(Serial serial) : base(serial)
-        {
-        }
-
-        public override int LabelNumber => 1060801; // The Grand Grimoire
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        Weight = 1.0;
+        Hue = 0x835;
+        Layer = Layer.OneHanded;
+        LootType = LootType.Blessed;
     }
+
+    public override int LabelNumber => 1060801; // The Grand Grimoire
 }

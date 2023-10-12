@@ -88,9 +88,8 @@ namespace Server.Engines.Quests.Doom
             {
                 From.BankBox.DropItem(new DaemonBone(obj.CurProgress));
 
-                From.SendLocalizedMessage(
-                    1050030
-                ); // The Daemon bones that you have thus far given to Victoria have been returned to you.
+                // The Daemon bones that you have thus far given to Victoria have been returned to you.
+                From.SendLocalizedMessage(1050030);
             }
         }
 
