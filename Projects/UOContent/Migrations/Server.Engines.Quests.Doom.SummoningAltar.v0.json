@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Doom.SummoningAltar",
+  "properties": [
+    {
+      "name": "Daemon",
+      "type": "Server.Mobiles.BoneDemon",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
