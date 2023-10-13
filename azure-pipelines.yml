@@ -15,6 +15,12 @@ jobs:
 
   steps:
   - task: UseDotNet@2
+    displayName: 'Install .NET 8'
+    inputs:
+      packageType: sdk
+      version: '8.0.x'
+      includePreviewVersions: true
+  - task: UseDotNet@2
     displayName: 'Install .NET 7'
     inputs:
       packageType: sdk
