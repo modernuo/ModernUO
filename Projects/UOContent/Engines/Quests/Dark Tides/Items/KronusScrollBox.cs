@@ -1,79 +1,59 @@
+using ModernUO.Serialization;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Necro
+namespace Server.Engines.Quests.Necro;
+
+[SerializationGenerator(0, false)]
+public partial class KronusScrollBox : MetalBox
 {
-    public class KronusScrollBox : MetalBox
+    [Constructible]
+    public KronusScrollBox()
     {
-        [Constructible]
-        public KronusScrollBox()
-        {
-            ItemID = 0xE80;
-            Movable = false;
+        ItemID = 0xE80;
+        Movable = false;
 
-            for (var i = 0; i < 40; i++)
-            {
-                Item scroll = Loot.RandomScroll(0, 15, SpellbookType.Necromancer);
-                scroll.Movable = false;
-                DropItem(scroll);
-            }
+        for (var i = 0; i < 40; i++)
+        {
+            Item scroll = Loot.RandomScroll(0, 15, SpellbookType.Necromancer);
+            scroll.Movable = false;
+            DropItem(scroll);
         }
+    }
 
-        public KronusScrollBox(Serial serial) : base(serial)
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (from is PlayerMobile pm && pm.InRange(GetWorldLocation(), 2))
         {
-        }
+            var qs = pm.Quest;
 
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (from is PlayerMobile pm && pm.InRange(GetWorldLocation(), 2))
+            if (qs is DarkTidesQuest)
             {
-                var qs = pm.Quest;
+                QuestObjective obj = qs.FindObjective<FindCallingScrollObjective>();
 
-                if (qs is DarkTidesQuest)
+                if (obj?.Completed == false || DarkTidesQuest.HasLostCallingScroll(from))
                 {
-                    QuestObjective obj = qs.FindObjective<FindCallingScrollObjective>();
+                    Item scroll = new KronusScroll();
 
-                    if (obj?.Completed == false || DarkTidesQuest.HasLostCallingScroll(from))
+                    if (pm.PlaceInBackpack(scroll))
                     {
-                        Item scroll = new KronusScroll();
+                        // You rummage through the scrolls until you find the Scroll of Calling.  You quickly put it in your pack.
+                        pm.SendLocalizedMessage(1060120, "", 0x41);
 
-                        if (pm.PlaceInBackpack(scroll))
+                        if (obj?.Completed == false)
                         {
-                            pm.SendLocalizedMessage(
-                                1060120,
-                                "",
-                                0x41
-                            ); // You rummage through the scrolls until you find the Scroll of Calling.  You quickly put it in your pack.
-
-                            if (obj?.Completed == false)
-                            {
-                                obj.Complete();
-                            }
+                            obj.Complete();
                         }
-                        else
-                        {
-                            pm.SendLocalizedMessage(1060148, "", 0x41); // You were unable to take the scroll.
-                            scroll.Delete();
-                        }
+                    }
+                    else
+                    {
+                        pm.SendLocalizedMessage(1060148, "", 0x41); // You were unable to take the scroll.
+                        scroll.Delete();
                     }
                 }
             }
-
-            base.OnDoubleClick(from);
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        base.OnDoubleClick(from);
     }
 }

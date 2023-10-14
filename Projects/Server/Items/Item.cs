@@ -2247,8 +2247,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public bool AtPoint(int x, int y) => m_Location.m_X == x && m_Location.m_Y == y;
 
-    public virtual bool CanDecay() =>
-        Decays && Parent == null && Map != Map.Internal;
+    public virtual bool CanDecay() => Decays && Parent == null && Map != Map.Internal;
 
 
     public virtual bool OnDecay() =>

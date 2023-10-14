@@ -1,74 +1,57 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Ninja
+namespace Server.Engines.Quests.Ninja;
+
+[SerializationGenerator(0, false)]
+public partial class GuardianBarrier : Item
 {
-    public class GuardianBarrier : Item
+    [Constructible]
+    public GuardianBarrier() : base(0x3967)
     {
-        [Constructible]
-        public GuardianBarrier() : base(0x3967)
+        Movable = false;
+        Visible = false;
+    }
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (m.AccessLevel > AccessLevel.Player)
         {
-            Movable = false;
-            Visible = false;
+            return true;
         }
 
-        public GuardianBarrier(Serial serial) : base(serial)
+        // If the mobile is to the north of the barrier, allow him to pass
+        if (Y >= m.Y)
         {
+            return true;
         }
 
-        public override bool OnMoveOver(Mobile m)
+        if (m is BaseCreature creature)
         {
-            if (m.AccessLevel > AccessLevel.Player)
-            {
-                return true;
-            }
+            var master = creature.GetMaster();
 
-            // If the mobile is to the north of the barrier, allow him to pass
-            if (Y >= m.Y)
-            {
-                return true;
-            }
+            // Allow creatures to cross from the south to the north only if their master is near to the north
+            return master != null && Y >= master.Y && master.InRange(this, 4);
+        }
 
-            if (m is BaseCreature creature)
+        if (m is PlayerMobile pm && pm.Quest is EminosUndertakingQuest qs)
+        {
+            var obj = qs.FindObjective<SneakPastGuardiansObjective>();
+            if (obj != null)
             {
-                var master = creature.GetMaster();
-
-                // Allow creatures to cross from the south to the north only if their master is near to the north
-                return master != null && Y >= master.Y && master.InRange(this, 4);
-            }
-
-            if (m is PlayerMobile pm && pm.Quest is EminosUndertakingQuest qs)
-            {
-                var obj = qs.FindObjective<SneakPastGuardiansObjective>();
-                if (obj != null)
+                if (m.Hidden)
                 {
-                    if (m.Hidden)
-                    {
-                        return true; // Hidden ninjas can pass
-                    }
+                    return true; // Hidden ninjas can pass
+                }
 
-                    if (!obj.TaughtHowToUseSkills)
-                    {
-                        obj.TaughtHowToUseSkills = true;
-                        qs.AddConversation(new NeedToHideConversation());
-                    }
+                if (!obj.TaughtHowToUseSkills)
+                {
+                    obj.TaughtHowToUseSkills = true;
+                    qs.AddConversation(new NeedToHideConversation());
                 }
             }
-
-            return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+        return false;
     }
 }
