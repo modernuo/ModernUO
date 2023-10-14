@@ -64,6 +64,12 @@ public static class ServerConfiguration
         return bool.TryParse(strValue, out var value) ? value : defaultValue;
     }
 
+    public static TimeSpan GetSetting(string key, TimeSpan defaultValue)
+    {
+        _settings.Settings.TryGetValue(key, out var strValue);
+        return TimeSpan.TryParse(strValue, out var value) ? value : defaultValue;
+    }
+
     public static T GetSetting<T>(string key, T defaultValue) where T : struct, Enum
     {
         _settings.Settings.TryGetValue(key, out var strValue);
