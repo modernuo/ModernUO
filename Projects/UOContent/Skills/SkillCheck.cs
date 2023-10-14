@@ -133,6 +133,12 @@ public static class SkillCheck
                     Gain(from, skill);
                 }
             }
+
+            // Gain one stat per 10 minutes, regardless of whether you gain in the skill
+            if (!_usePub45StatGain && success)
+            {
+                LegacyGain(from, skill.Info);
+            }
         }
 
         return success;
@@ -247,51 +253,49 @@ public static class SkillCheck
             }
         }
 
-        if (skill.Lock == SkillLock.Up)
+        if (_usePub45StatGain && skill.Lock == SkillLock.Up)
         {
             var info = skill.Info;
 
-            if (_usePub45StatGain)
+            var primaryStat = info.PrimaryStat;
+            var secondaryStat = info.SecondaryStat;
+
+            var primaryStatLock = primaryStat.ToLock(from);
+            var secondaryStatLock = secondaryStat.ToLock(from);
+
+            if (primaryStatLock != StatLockType.Up && secondaryStatLock != StatLockType.Up)
             {
-                var primaryStat = info.PrimaryStat;
-                var secondaryStat = info.SecondaryStat;
-
-                var primaryStatLock = primaryStat.ToLock(from);
-                var secondaryStatLock = secondaryStat.ToLock(from);
-
-                if (primaryStatLock != StatLockType.Up && secondaryStatLock != StatLockType.Up)
-                {
-                    return;
-                }
-
-                // Flat 1 in 20 chance to gain anything
-                if (0.05 * _statGainChanceMultiplier > Utility.RandomDouble())
-                {
-                    // 75% for primary, 25% for secondary - Unless primary is not set to gain.
-                    var statToGain = primaryStatLock is StatLockType.Up && _primaryStatGainChance > Utility.RandomDouble()
-                        ? primaryStat
-                        : secondaryStat;
-
-                    GainStat(from, statToGain);
-                }
+                return;
             }
-            else
+
+            // Flat 1 in 20 chance to gain anything
+            if (0.05 * _statGainChanceMultiplier > Utility.RandomDouble())
             {
-                if (info.StrGain > 0 && from.StrLock == StatLockType.Up && RollStatIncreaseChance(info.StrGain))
-                {
-                    GainStat(from, Stat.Str);
-                }
+                // 75% for primary, 25% for secondary - Unless primary is not set to gain.
+                var statToGain = primaryStatLock is StatLockType.Up && _primaryStatGainChance > Utility.RandomDouble()
+                    ? primaryStat
+                    : secondaryStat;
 
-                if (info.DexGain > 0 && from.DexLock == StatLockType.Up && RollStatIncreaseChance(info.DexGain))
-                {
-                    GainStat(from, Stat.Dex);
-                }
-
-                if (info.IntGain > 0 && from.IntLock == StatLockType.Up && RollStatIncreaseChance(info.IntGain))
-                {
-                    GainStat(from, Stat.Int);
-                }
+                GainStat(from, statToGain);
             }
+        }
+    }
+
+    public static void LegacyGain(Mobile from, SkillInfo info)
+    {
+        if (info.StrGain > 0 && from.StrLock == StatLockType.Up && RollStatIncreaseChance(info.StrGain))
+        {
+            GainStat(from, Stat.Str);
+        }
+
+        if (info.DexGain > 0 && from.DexLock == StatLockType.Up && RollStatIncreaseChance(info.DexGain))
+        {
+            GainStat(from, Stat.Dex);
+        }
+
+        if (info.IntGain > 0 && from.IntLock == StatLockType.Up && RollStatIncreaseChance(info.IntGain))
+        {
+            GainStat(from, Stat.Int);
         }
     }
 
