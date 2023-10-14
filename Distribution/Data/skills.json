@@ -813,7 +813,7 @@
     "GainFactor": 1,
     "ProfessionSkillName": "Focus",
     "PrimaryStat": "Dex",
-    "SecondaryStat": "Iint"
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 51,
