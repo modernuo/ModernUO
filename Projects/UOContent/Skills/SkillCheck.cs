@@ -1,24 +1,34 @@
 using System;
+using System.Runtime.CompilerServices;
 using Server.Factions;
 using Server.Mobiles;
 
 namespace Server.Misc;
 
-// TODO: Make this entirely configurable
 public static class SkillCheck
 {
-    public enum Stat
+    private static int _statMax;
+    private static double _statGainChanceMultiplier;
+    private static bool _usePub45StatGain;
+    private static double _primaryStatGainChance;
+    private static TimeSpan _statGainDelay;
+    private static TimeSpan _petStatGainDelay;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool RollStatIncreaseChance(double statGain) =>
+        statGain / 33.3 * _statGainChanceMultiplier > Utility.RandomDouble();
+
+    public static void Configure()
     {
-        Str,
-        Dex,
-        Int
+        _statMax = ServerConfiguration.GetOrUpdateSetting("stats.statMax", Core.LBR ? 125 : 100);
+        _statGainChanceMultiplier = ServerConfiguration.GetOrUpdateSetting("stats.gainChanceMultiplier", 1.0);
+        _primaryStatGainChance = ServerConfiguration.GetSetting("stats.primaryStatGainChance", 0.75);
+        _statGainDelay = ServerConfiguration.GetSetting("stats.gainDelay", TimeSpan.FromMinutes(Core.ML ? 0.05 : 10));
+        _petStatGainDelay = ServerConfiguration.GetSetting("stats.petGainDelay", TimeSpan.FromMinutes(5.0));
+
+        // Publish 45 - Preparation for UOKR
+        _usePub45StatGain = ServerConfiguration.GetSetting("stats.usePub45StatGain", Core.ML);
     }
-
-    // Publish 16 changed max stats from 100 to 125
-    private static int StatMax = Core.LBR ? 125 : 100;
-
-    private static readonly TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
-    private static readonly TimeSpan m_PetStatGainDelay = TimeSpan.FromMinutes(5.0);
 
     public static void Initialize()
     {
@@ -123,6 +133,12 @@ public static class SkillCheck
                     Gain(from, skill);
                 }
             }
+
+            // Gain one stat per 10 minutes, regardless of whether you gain in the skill
+            if (!_usePub45StatGain && success)
+            {
+                LegacyGain(from, skill.Info);
+            }
         }
 
         return success;
@@ -220,43 +236,80 @@ public static class SkillCheck
 
                     if (toLower != skill && toLower.Lock == SkillLock.Down && toLower.BaseFixedPoint >= toGain)
                     {
-                        toLower.BaseFixedPoint -= toGain;
+                        toLower.BaseFixedPoint = Math.Max(toLower.BaseFixedPoint - toGain, 0);
                         break;
                     }
                 }
             }
 
-            if (from is PlayerMobile pm && skill.SkillName == pm.AcceleratedSkill &&
-                pm.AcceleratedStart > Core.Now)
+            if (from is PlayerMobile pm && skill.SkillName == pm.AcceleratedSkill && pm.AcceleratedStart > Core.Now)
             {
                 toGain *= Utility.RandomMinMax(2, 5);
             }
 
-            if (!from.Player || skills.Total + toGain <= skills.Cap)
+            if (!from.Player || skills.Total < skills.Cap)
             {
-                skill.BaseFixedPoint += toGain;
+                skill.BaseFixedPoint = Math.Min(toGain, skill.CapFixedPoint - skill.BaseFixedPoint);
             }
         }
 
-        if (skill.Lock == SkillLock.Up)
+        if (_usePub45StatGain && skill.Lock == SkillLock.Up)
         {
             var info = skill.Info;
 
-            if (from.StrLock == StatLockType.Up && info.StrGain / 33.3 > Utility.RandomDouble())
+            var primaryStat = info.PrimaryStat;
+            var secondaryStat = info.SecondaryStat;
+
+            var primaryStatLock = primaryStat.ToLock(from);
+            var secondaryStatLock = secondaryStat.ToLock(from);
+
+            if (primaryStatLock != StatLockType.Up && secondaryStatLock != StatLockType.Up)
             {
-                GainStat(from, Stat.Str);
+                return;
             }
-            else if (from.DexLock == StatLockType.Up && info.DexGain / 33.3 > Utility.RandomDouble())
+
+            // Flat 1 in 20 chance to gain anything
+            if (0.05 * _statGainChanceMultiplier > Utility.RandomDouble())
             {
-                GainStat(from, Stat.Dex);
-            }
-            else if (from.IntLock == StatLockType.Up && info.IntGain / 33.3 > Utility.RandomDouble())
-            {
-                GainStat(from, Stat.Int);
+                // 75% for primary, 25% for secondary - Unless primary is not set to gain.
+                var statToGain = primaryStatLock is StatLockType.Up && _primaryStatGainChance > Utility.RandomDouble()
+                    ? primaryStat
+                    : secondaryStat;
+
+                GainStat(from, statToGain);
             }
         }
     }
 
+    public static void LegacyGain(Mobile from, SkillInfo info)
+    {
+        if (info.StrGain > 0 && from.StrLock == StatLockType.Up && RollStatIncreaseChance(info.StrGain))
+        {
+            GainStat(from, Stat.Str);
+        }
+
+        if (info.DexGain > 0 && from.DexLock == StatLockType.Up && RollStatIncreaseChance(info.DexGain))
+        {
+            GainStat(from, Stat.Dex);
+        }
+
+        if (info.IntGain > 0 && from.IntLock == StatLockType.Up && RollStatIncreaseChance(info.IntGain))
+        {
+            GainStat(from, Stat.Int);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static StatLockType ToLock(this Stat stat, Mobile from) =>
+        stat switch
+        {
+            Stat.Str => from.StrLock,
+            Stat.Dex => from.DexLock,
+            Stat.Int => from.IntLock,
+            _ => StatLockType.Up
+        };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CanLower(Mobile from, Stat stat)
     {
         return stat switch
@@ -268,6 +321,7 @@ public static class SkillCheck
         };
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CanRaise(Mobile from, Stat stat)
     {
         if (!(from is BaseCreature creature && creature.Controlled))
@@ -280,9 +334,9 @@ public static class SkillCheck
 
         return stat switch
         {
-            Stat.Str => from.StrLock == StatLockType.Up && from.RawStr < StatMax,
-            Stat.Dex => from.DexLock == StatLockType.Up && from.RawDex < StatMax,
-            Stat.Int => from.IntLock == StatLockType.Up && from.RawInt < StatMax,
+            Stat.Str => from.StrLock == StatLockType.Up && from.RawStr < _statMax,
+            Stat.Dex => from.DexLock == StatLockType.Up && from.RawDex < _statMax,
+            Stat.Int => from.IntLock == StatLockType.Up && from.RawInt < _statMax,
             _        => false
         };
     }
@@ -299,17 +353,17 @@ public static class SkillCheck
                     {
                         if (CanLower(from, Stat.Dex) && (from.RawDex < from.RawInt || !CanLower(from, Stat.Int)))
                         {
-                            --from.RawDex;
+                            from.RawDex -= 1;
                         }
                         else if (CanLower(from, Stat.Int))
                         {
-                            --from.RawInt;
+                            from.RawInt -= 1;
                         }
                     }
 
                     if (CanRaise(from, Stat.Str))
                     {
-                        ++from.RawStr;
+                        from.RawStr = Math.Min(from.RawStr + 1, _statMax);
                     }
 
                     break;
@@ -320,17 +374,17 @@ public static class SkillCheck
                     {
                         if (CanLower(from, Stat.Str) && (from.RawStr < from.RawInt || !CanLower(from, Stat.Int)))
                         {
-                            --from.RawStr;
+                            from.RawStr -= 1;
                         }
                         else if (CanLower(from, Stat.Int))
                         {
-                            --from.RawInt;
+                            from.RawInt -= 1;
                         }
                     }
 
                     if (CanRaise(from, Stat.Dex))
                     {
-                        ++from.RawDex;
+                        from.RawDex = Math.Min(from.RawDex + 1, _statMax);
                     }
 
                     break;
@@ -341,17 +395,17 @@ public static class SkillCheck
                     {
                         if (CanLower(from, Stat.Str) && (from.RawStr < from.RawDex || !CanLower(from, Stat.Dex)))
                         {
-                            --from.RawStr;
+                            from.RawStr -= 1;
                         }
                         else if (CanLower(from, Stat.Dex))
                         {
-                            --from.RawDex;
+                            from.RawDex -= 1;
                         }
                     }
 
                     if (CanRaise(from, Stat.Int))
                     {
-                        ++from.RawInt;
+                        from.RawInt = Math.Min(from.RawInt + 1, _statMax);
                     }
 
                     break;
@@ -367,12 +421,12 @@ public static class SkillCheck
                 {
                     if (from is BaseCreature creature && creature.Controlled)
                     {
-                        if (creature.LastStrGain + m_PetStatGainDelay >= Core.Now)
+                        if (creature.LastStrGain + _petStatGainDelay >= Core.Now)
                         {
                             return;
                         }
                     }
-                    else if (from.LastStrGain + m_StatGainDelay >= Core.Now)
+                    else if (from.LastStrGain + _statGainDelay >= Core.Now)
                     {
                         return;
                     }
@@ -384,12 +438,12 @@ public static class SkillCheck
                 {
                     if (from is BaseCreature creature && creature.Controlled)
                     {
-                        if (creature.LastDexGain + m_PetStatGainDelay >= Core.Now)
+                        if (creature.LastDexGain + _petStatGainDelay >= Core.Now)
                         {
                             return;
                         }
                     }
-                    else if (from.LastDexGain + m_StatGainDelay >= Core.Now)
+                    else if (from.LastDexGain + _statGainDelay >= Core.Now)
                     {
                         return;
                     }
@@ -401,12 +455,12 @@ public static class SkillCheck
                 {
                     if (from is BaseCreature creature && creature.Controlled)
                     {
-                        if (creature.LastIntGain + m_PetStatGainDelay >= Core.Now)
+                        if (creature.LastIntGain + _petStatGainDelay >= Core.Now)
                         {
                             return;
                         }
                     }
-                    else if (from.LastIntGain + m_StatGainDelay >= Core.Now)
+                    else if (from.LastIntGain + _statGainDelay >= Core.Now)
                     {
                         return;
                     }
