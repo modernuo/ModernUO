@@ -11,7 +11,9 @@
     "DexGain": 0.5,
     "IntGain": 0.5,
     "GainFactor": 1,
-    "ProfessionSkillName": "Alchemy"
+    "ProfessionSkillName": "Alchemy",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 1,
@@ -25,7 +27,9 @@
     "DexGain": 0.15,
     "IntGain": 0.7,
     "GainFactor": 1,
-    "ProfessionSkillName": "Anatomy"
+    "ProfessionSkillName": "Anatomy",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 2,
@@ -39,7 +43,9 @@
     "DexGain": 0,
     "IntGain": 1,
     "GainFactor": 1,
-    "ProfessionSkillName": "AnimalLore"
+    "ProfessionSkillName": "AnimalLore",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 3,
@@ -53,7 +59,9 @@
     "DexGain": 0,
     "IntGain": 1,
     "GainFactor": 1,
-    "ProfessionSkillName": "ItemID"
+    "ProfessionSkillName": "ItemID",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 4,
@@ -67,7 +75,9 @@
     "DexGain": 0.15,
     "IntGain": 0.1,
     "GainFactor": 1,
-    "ProfessionSkillName": "ArmsLore"
+    "ProfessionSkillName": "ArmsLore",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 5,
@@ -81,7 +91,9 @@
     "DexGain": 0.25,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Parrying"
+    "ProfessionSkillName": "Parrying",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 6,
@@ -95,7 +107,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Begging"
+    "ProfessionSkillName": "Begging",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 7,
@@ -109,7 +123,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Blacksmith"
+    "ProfessionSkillName": "Blacksmith",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 8,
@@ -123,7 +139,9 @@
     "DexGain": 1.6,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Bowcraft"
+    "ProfessionSkillName": "Bowcraft",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 9,
@@ -137,7 +155,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Peacemaking"
+    "ProfessionSkillName": "Peacemaking",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 10,
@@ -151,7 +171,9 @@
     "DexGain": 1.5,
     "IntGain": 1.5,
     "GainFactor": 1,
-    "ProfessionSkillName": "Camping"
+    "ProfessionSkillName": "Camping",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 11,
@@ -165,7 +187,9 @@
     "DexGain": 0.5,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Carpentry"
+    "ProfessionSkillName": "Carpentry",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 12,
@@ -179,7 +203,9 @@
     "DexGain": 0.75,
     "IntGain": 0.75,
     "GainFactor": 1,
-    "ProfessionSkillName": "Cartography"
+    "ProfessionSkillName": "Cartography",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 13,
@@ -193,7 +219,9 @@
     "DexGain": 2,
     "IntGain": 3,
     "GainFactor": 1,
-    "ProfessionSkillName": "Cooking"
+    "ProfessionSkillName": "Cooking",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 14,
@@ -207,7 +235,9 @@
     "DexGain": 0.4,
     "IntGain": 0.6,
     "GainFactor": 1,
-    "ProfessionSkillName": "DetectingHidden"
+    "ProfessionSkillName": "DetectingHidden",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 15,
@@ -221,7 +251,9 @@
     "DexGain": 0.25,
     "IntGain": 0.25,
     "GainFactor": 1,
-    "ProfessionSkillName": "Enticement"
+    "ProfessionSkillName": "Enticement",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 16,
@@ -235,7 +267,9 @@
     "DexGain": 0,
     "IntGain": 1,
     "GainFactor": 1,
-    "ProfessionSkillName": "EvaluateIntelligence"
+    "ProfessionSkillName": "EvaluateIntelligence",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 17,
@@ -249,7 +283,9 @@
     "DexGain": 0.6,
     "IntGain": 0.8,
     "GainFactor": 1,
-    "ProfessionSkillName": "Healing"
+    "ProfessionSkillName": "Healing",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 18,
@@ -263,7 +299,9 @@
     "DexGain": 0.5,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Fishing"
+    "ProfessionSkillName": "Fishing",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 19,
@@ -277,7 +315,9 @@
     "DexGain": 0.2,
     "IntGain": 0.8,
     "GainFactor": 1,
-    "ProfessionSkillName": "ForensicEvaluation"
+    "ProfessionSkillName": "ForensicEvaluation",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 20,
@@ -291,7 +331,9 @@
     "DexGain": 0.625,
     "IntGain": 0.25,
     "GainFactor": 1,
-    "ProfessionSkillName": "Herding"
+    "ProfessionSkillName": "Herding",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 21,
@@ -305,7 +347,9 @@
     "DexGain": 0.8,
     "IntGain": 0.2,
     "GainFactor": 1,
-    "ProfessionSkillName": "Hiding"
+    "ProfessionSkillName": "Hiding",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 22,
@@ -319,7 +363,9 @@
     "DexGain": 0.45,
     "IntGain": 0.05,
     "GainFactor": 1,
-    "ProfessionSkillName": "Provocation"
+    "ProfessionSkillName": "Provocation",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 23,
@@ -333,7 +379,9 @@
     "DexGain": 0.2,
     "IntGain": 0.8,
     "GainFactor": 1,
-    "ProfessionSkillName": "Inscription"
+    "ProfessionSkillName": "Inscription",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 24,
@@ -347,7 +395,9 @@
     "DexGain": 2,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Lockpicking"
+    "ProfessionSkillName": "Lockpicking",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 25,
@@ -361,7 +411,9 @@
     "DexGain": 0,
     "IntGain": 1.5,
     "GainFactor": 1,
-    "ProfessionSkillName": "Magery"
+    "ProfessionSkillName": "Magery",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 26,
@@ -375,7 +427,9 @@
     "DexGain": 0.25,
     "IntGain": 0.5,
     "GainFactor": 1,
-    "ProfessionSkillName": "ResistingSpells"
+    "ProfessionSkillName": "ResistingSpells",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 27,
@@ -389,7 +443,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Tactics"
+    "ProfessionSkillName": "Tactics",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 28,
@@ -403,7 +459,9 @@
     "DexGain": 2.5,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Snooping"
+    "ProfessionSkillName": "Snooping",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 29,
@@ -417,7 +475,9 @@
     "DexGain": 0.8,
     "IntGain": 0.2,
     "GainFactor": 1,
-    "ProfessionSkillName": "Musicianship"
+    "ProfessionSkillName": "Musicianship",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 30,
@@ -431,7 +491,9 @@
     "DexGain": 0.4,
     "IntGain": 1.6,
     "GainFactor": 1,
-    "ProfessionSkillName": "Poisoning"
+    "ProfessionSkillName": "Poisoning",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 31,
@@ -445,7 +507,9 @@
     "DexGain": 0.75,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Archery"
+    "ProfessionSkillName": "Archery",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 32,
@@ -459,7 +523,9 @@
     "DexGain": 0,
     "IntGain": 1,
     "GainFactor": 1,
-    "ProfessionSkillName": "SpiritSpeak"
+    "ProfessionSkillName": "SpiritSpeak",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 33,
@@ -473,7 +539,9 @@
     "DexGain": 1,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Stealing"
+    "ProfessionSkillName": "Stealing",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 34,
@@ -487,7 +555,9 @@
     "DexGain": 1.63,
     "IntGain": 0.5,
     "GainFactor": 1,
-    "ProfessionSkillName": "Tailoring"
+    "ProfessionSkillName": "Tailoring",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 35,
@@ -501,7 +571,9 @@
     "DexGain": 0.2,
     "IntGain": 0.4,
     "GainFactor": 1,
-    "ProfessionSkillName": "AnimalTaming"
+    "ProfessionSkillName": "AnimalTaming",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 36,
@@ -515,7 +587,9 @@
     "DexGain": 0,
     "IntGain": 0.8,
     "GainFactor": 1,
-    "ProfessionSkillName": "TasteIdentification"
+    "ProfessionSkillName": "TasteIdentification",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 37,
@@ -529,7 +603,9 @@
     "DexGain": 0.2,
     "IntGain": 0.3,
     "GainFactor": 1,
-    "ProfessionSkillName": "Tinkering"
+    "ProfessionSkillName": "Tinkering",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 38,
@@ -543,7 +619,9 @@
     "DexGain": 1.25,
     "IntGain": 1.25,
     "GainFactor": 1,
-    "ProfessionSkillName": "Tracking"
+    "ProfessionSkillName": "Tracking",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 39,
@@ -557,7 +635,9 @@
     "DexGain": 0.4,
     "IntGain": 0.8,
     "GainFactor": 1,
-    "ProfessionSkillName": "Veterinary"
+    "ProfessionSkillName": "Veterinary",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 40,
@@ -571,7 +651,9 @@
     "DexGain": 0.25,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Swordsmanship"
+    "ProfessionSkillName": "Swordsmanship",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 41,
@@ -585,7 +667,9 @@
     "DexGain": 0.1,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "MaceFighting"
+    "ProfessionSkillName": "MaceFighting",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 42,
@@ -599,7 +683,9 @@
     "DexGain": 0.55,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Fencing"
+    "ProfessionSkillName": "Fencing",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 43,
@@ -613,7 +699,9 @@
     "DexGain": 0.1,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Wrestling"
+    "ProfessionSkillName": "Wrestling",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 44,
@@ -627,7 +715,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Lumberjacking"
+    "ProfessionSkillName": "Lumberjacking",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 45,
@@ -641,7 +731,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Mining"
+    "ProfessionSkillName": "Mining",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Dex"
   },
   {
     "SkillID": 46,
@@ -655,7 +747,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Meditation"
+    "ProfessionSkillName": "Meditation",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 47,
@@ -669,7 +763,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Stealth"
+    "ProfessionSkillName": "Stealth",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 48,
@@ -683,7 +779,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Disarm"
+    "ProfessionSkillName": "Disarm",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 49,
@@ -697,7 +795,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Necromancy"
+    "ProfessionSkillName": "Necromancy",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 50,
@@ -711,7 +811,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Focus"
+    "ProfessionSkillName": "Focus",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 51,
@@ -725,7 +827,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Chivalry"
+    "ProfessionSkillName": "Chivalry",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 52,
@@ -739,7 +843,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Bushido"
+    "ProfessionSkillName": "Bushido",
+    "PrimaryStat": "Str",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 53,
@@ -753,7 +859,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Ninjitsu"
+    "ProfessionSkillName": "Ninjitsu",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Int"
   },
   {
     "SkillID": 54,
@@ -767,7 +875,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Spellweaving"
+    "ProfessionSkillName": "Spellweaving",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 55,
@@ -781,7 +891,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Mysticism"
+    "ProfessionSkillName": "Mysticism",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 56,
@@ -795,7 +907,9 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Imbuing"
+    "ProfessionSkillName": "Imbuing",
+    "PrimaryStat": "Int",
+    "SecondaryStat": "Str"
   },
   {
     "SkillID": 57,
@@ -809,6 +923,8 @@
     "DexGain": 0,
     "IntGain": 0,
     "GainFactor": 1,
-    "ProfessionSkillName": "Throwing"
+    "ProfessionSkillName": "Throwing",
+    "PrimaryStat": "Dex",
+    "SecondaryStat": "Str"
   }
 ]

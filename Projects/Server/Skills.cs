@@ -76,6 +76,13 @@ public enum SkillName
     Throwing = 57
 }
 
+public enum Stat
+{
+    Str,
+    Dex,
+    Int
+}
+
 [PropertyObject]
 public class Skill
 {
@@ -135,7 +142,7 @@ public class Skill
                 }
         }
 
-        if (Lock is < SkillLock.Up or > SkillLock.Locked)
+        if (Lock > SkillLock.Locked)
         {
             Lock = SkillLock.Up;
         }
@@ -245,25 +252,29 @@ public class Skill
         get
         {
             var baseValue = Base;
-            var inv = 100.0 - baseValue;
-
-            if (inv < 0.0)
-            {
-                inv = 0.0;
-            }
-
-            inv /= 100.0;
-
             var statsOffset = Owner.Owner.RawStr * Info.StrScale +
                               Owner.Owner.RawDex * Info.DexScale +
                               Owner.Owner.RawInt * Info.IntScale;
-            var statTotal = Info.StatTotal * inv;
 
-            statsOffset *= inv;
+            var inv = 100.0 - baseValue;
 
-            if (statsOffset > statTotal)
+            if (inv <= 0.0)
             {
-                statsOffset = statTotal;
+                statsOffset = 0.0;
+            }
+            else
+            {
+                statsOffset *= inv;
+
+                if (Info.StatTotal > 0)
+                {
+                    var statTotal = Info.StatTotal * inv;
+
+                    if (statsOffset > statTotal)
+                    {
+                        statsOffset = statTotal;
+                    }
+                }
             }
 
             var value = baseValue + statsOffset;
@@ -323,7 +334,7 @@ public class Skill
 
     public void SetLockNoRelay(SkillLock skillLock)
     {
-        if (skillLock is < SkillLock.Up or > SkillLock.Locked)
+        if (skillLock > SkillLock.Locked)
         {
             return;
         }
@@ -387,7 +398,7 @@ public class SkillInfo
     public SkillInfo(
         int skillID, string name, double strScale, double dexScale, double intScale, string title,
         SkillUseCallback callback, double strGain, double dexGain, double intGain, double gainFactor,
-        string professionSkillName = null
+        string professionSkillName, Stat primaryStat, Stat secondaryStat
     )
     {
         Name = name;
@@ -403,6 +414,8 @@ public class SkillInfo
         GainFactor = gainFactor;
         ProfessionSkillName = professionSkillName ?? Name.RemoveOrdinal(" ");
         StatTotal = strScale + dexScale + intScale;
+        PrimaryStat = primaryStat;
+        SecondaryStat = secondaryStat;
     }
 
     public SkillUseCallback Callback { get; set; }
@@ -430,6 +443,10 @@ public class SkillInfo
     public double GainFactor { get; set; }
 
     public string ProfessionSkillName { get; set; }
+
+    public Stat PrimaryStat { get; set; }
+
+    public Stat SecondaryStat { get; set; }
 
     public static SkillInfo[] Table { get; set; } = Array.Empty<SkillInfo>();
 }
