@@ -23,6 +23,7 @@ using System.Network;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Accounting;
+using Server.Collections;
 using Server.Diagnostics;
 using Server.Gumps;
 using Server.HuePickers;
@@ -37,7 +38,7 @@ public delegate void NetStateCreatedCallback(NetState ns);
 public delegate void DecodePacket(Span<byte> buffer, ref int length);
 public delegate int EncodePacket(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer);
 
-public partial class NetState : IComparable<NetState>
+public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetState>
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
@@ -154,6 +155,11 @@ public partial class NetState : IComparable<NetState>
 
         CreatedCallback?.Invoke(this);
     }
+
+    // Sectors
+    public NetState Next { get; set; }
+    public NetState Previous { get; set; }
+    public bool OnLinkList { get; set; }
 
     // Only use this for debugging. This will make your server very slow!
     public bool PacketLogging
