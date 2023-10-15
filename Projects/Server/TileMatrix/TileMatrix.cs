@@ -244,7 +244,7 @@ public class TileMatrix
         {
             var eable = _map.GetMultiTilesAt(x, y);
 
-            if (eable == Map.NullEnumerable<StaticTile[]>.Instance)
+            if (eable == PooledEnumeration.NullEnumerable<StaticTile[]>.Instance)
             {
                 return tiles[x & 0x7][y & 0x7];
             }
