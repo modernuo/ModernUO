@@ -539,7 +539,6 @@ public partial class Harrower : BaseCreature
                     break;
                 }
             }
-            eable.Free();
 
             if (toTeleport == null)
             {

@@ -82,8 +82,6 @@ public static class Effects
                 OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, p);
                 state.Send(buffer);
             }
-
-            eable.Free();
         }
     }
 
@@ -127,8 +125,6 @@ public static class Effects
                 }
             }
         }
-
-        eable.Free();
     }
 
     public static void SendLocationEffect(
@@ -196,8 +192,6 @@ public static class Effects
                 state.Send(regular);
             }
         }
-
-        eable.Free();
     }
 
     public static void SendTargetEffect(IEntity target, int itemID, int speed, int duration, int hue = 0, int renderMode = 0)
@@ -258,8 +252,6 @@ public static class Effects
                 state.Send(regular);
             }
         }
-
-        eable.Free();
     }
 
     public static void SendMovingEffect(
@@ -478,8 +470,6 @@ public static class Effects
                 state.Send(regular);
             }
         }
-
-        eable.Free();
     }
 
     public static void SendPacket(Point3D origin, Map map, Span<byte> effectBuffer)
@@ -496,7 +486,5 @@ public static class Effects
             state.Mobile.ProcessDelta();
             state.Send(effectBuffer);
         }
-
-        eable.Free();
     }
 }

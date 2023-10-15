@@ -270,7 +270,6 @@ namespace Server.Items
             {
                 var eable = map.GetItemsInRange<SHTeleporter>(p, 0);
                 var teleporter = eable.FirstOrDefault(item => item.Z == p.Z);
-                eable.Free();
                 return teleporter;
             }
 

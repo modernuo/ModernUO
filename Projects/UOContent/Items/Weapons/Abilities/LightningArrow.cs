@@ -1,6 +1,6 @@
 using Server.Spells;
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 
 namespace Server.Items
 {
@@ -27,29 +27,25 @@ namespace Server.Items
                 return;
             }
 
-            List<Mobile> targets = new List<Mobile>();
-            IPooledEnumerable eable = defender.GetMobilesInRange(5);
-
-            foreach (Mobile m in eable)
+            using var list = PooledRefList<Mobile>.Create();
+            foreach (Mobile m in defender.GetMobilesInRange(5))
             {
                 if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) && m?.Deleted == false &&
                     m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
                     attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
                 {
-                    targets.Add(m);
+                    list.Add(m);
                 }
             }
 
-            eable.Free();
             defender.BoltEffect(0);
 
-            var mobilesLeft = Math.Min(targets.Count, 2);
-            while (mobilesLeft-- > 0)
-            {
-                var index = Utility.Random(targets.Count);
-                var m = targets[index];
-                targets.RemoveAt(index);
+            var count = Math.Min(list.Count, 2);
+            list.Shuffle();
 
+            for (var i = 0; i < count; i++)
+            {
+                var m = list[i];
                 m.BoltEffect(0);
                 AOS.Damage(m, attacker, Utility.RandomMinMax(29, 40), 0, 0, 0, 0, 100);
             }

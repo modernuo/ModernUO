@@ -2985,8 +2985,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             SendOPLPacketTo(state);
         }
-
-        eable.Free();
     }
 
     public ISpawner Spawner { get; set; }
@@ -4313,8 +4311,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
-            eable.Free();
-
             const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
             const int width = OutgoingMobilePackets.MobileMovingPacketLength;
 
@@ -4790,8 +4786,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     }
                 }
             }
-
-            eable.Free();
         }
 
         Region.OnDeath(this);
@@ -5092,8 +5086,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                                     ns.Send(buffer);
                                 }
                             }
-
-                            eable.Free();
                         }
 
                         var fixLoc = item.Location;
@@ -5253,8 +5245,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             ns.Send(buffer);
         }
-
-        eable.Free();
     }
 
     public virtual bool Drop(Item to, Point3D loc)
@@ -5584,8 +5574,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     }
                 }
             }
-
-            eable.Free();
 
             object mutateContext = null;
             var mutatedText = text;
@@ -5983,8 +5971,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 ns.SendDamage(Serial, amount);
             }
         }
-
-        eable.Free();
     }
 
     public void SendVisibleDamageSelective(Mobile from, int amount)
@@ -6745,8 +6731,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             state.Send(buffer);
         }
-
-        eable.Free();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6783,8 +6767,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public virtual void SendOPLPacketTo(NetState ns)
@@ -6837,8 +6819,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(removeEntity);
             }
         }
-
-        eable.Free();
     }
 
     public void ClearScreen()
@@ -6867,8 +6847,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
         }
-
-        eable.Free();
     }
 
     /// <summary>
@@ -6949,8 +6927,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
         }
-
-        eable.Free();
     }
 
     public void UpdateRegion()
@@ -7086,8 +7062,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 SendOPLPacketTo(state);
             }
         }
-
-        eable.Free();
     }
 
     public virtual void OnConnected()
@@ -7307,18 +7281,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
-            eable.Free();
-
             var ourState = m_NetState;
 
             // Check to see if we are attached to a client
             if (ourState != null)
             {
-                var eeable = map.GetObjectsInRange(newLocation, Core.GlobalMaxUpdateRange);
-
                 // We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
-
-                foreach (var o in eeable)
+                foreach (var o in map.GetObjectsInRange(newLocation, Core.GlobalMaxUpdateRange))
                 {
                     if (o is Item item)
                     {
@@ -7381,8 +7350,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                         m.SendOPLPacketTo(ourState);
                     }
                 }
-
-                eeable.Free();
             }
             else
             {
@@ -7411,8 +7378,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                         SendOPLPacketTo(ns);
                     }
                 }
-
-                eable.Free();
             }
         }
 
@@ -7494,8 +7459,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 SendOPLPacketTo(state);
             }
         }
-
-        eable.Free();
     }
 
     public bool PlaceInBackpack(Item item) =>
@@ -8009,7 +7972,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     }
 
     /// <summary>
-    ///     Overridable. Virtual event invoked when the sector this Mobile is in gets <see cref="Sector.Activate">activated</see>.
+    ///     Overridable. Virtual event invoked when the sector this Mobile is in gets <see cref="Map.Sector.Activate">activated</see>.
     /// </summary>
     public virtual void OnSectorActivate()
     {
@@ -8017,7 +7980,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     /// <summary>
     ///     Overridable. Virtual event invoked when the sector this Mobile is in gets
-    ///     <see cref="Sector.Deactivate">deactivated</see>.
+    ///     <see cref="Map.Sector.Deactivate">deactivated</see>.
     /// </summary>
     public virtual void OnSectorDeactivate()
     {
@@ -8956,8 +8919,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "", bool noLineOfSight = true)
@@ -8987,8 +8948,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public void PublicOverheadMessage(
@@ -9027,8 +8986,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, string text, NetState state)
@@ -9075,8 +9032,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
@@ -9106,8 +9061,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public void SendLocalizedMessage(int number, string args = "", int hue = 0x3B2) =>

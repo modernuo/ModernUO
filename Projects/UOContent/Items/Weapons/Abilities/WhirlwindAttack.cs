@@ -51,8 +51,6 @@ namespace Server.Items
                 }
             }
 
-            eable.Free();
-
             if (queue.Count <= 0)
             {
                 return;

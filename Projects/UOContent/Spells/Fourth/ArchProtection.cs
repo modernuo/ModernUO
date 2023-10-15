@@ -59,8 +59,6 @@ namespace Server.Spells.Fourth
                     }
                 }
 
-                eable.Free();
-
                 if (Core.AOS)
                 {
                     var party = Party.Get(Caster);

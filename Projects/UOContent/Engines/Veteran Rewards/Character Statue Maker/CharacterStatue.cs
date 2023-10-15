@@ -380,8 +380,6 @@ public partial class CharacterStatue : Mobile, IRewardItem
             CharacterStatuePackets.CreateStatueAnimation(animPacket, Serial, 1, m_Animation, m_Frames);
             state.Send(animPacket);
         }
-
-        eable.Free();
     }
 
     private class DemolishEntry : ContextMenuEntry

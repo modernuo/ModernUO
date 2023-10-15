@@ -2193,8 +2193,6 @@ public abstract class BaseAI
                     }
                 }
 
-                eable.Free();
-
                 if (destroyables > 0)
                 {
                     Effects.PlaySound(new Point3D(x, y, m_Mobile.Z), m_Mobile.Map, 0x3B3);
@@ -2764,8 +2762,6 @@ public abstract class BaseAI
             }
         }
 
-        eable.Free();
-
         m_Mobile.FocusMob = newFocusMob ?? enemySummonMob;
         return m_Mobile.FocusMob != null;
     }
@@ -2845,8 +2841,6 @@ public abstract class BaseAI
                 }
             }
         }
-
-        eable.Free();
     }
 
     public virtual void Deactivate()

@@ -84,8 +84,6 @@ namespace Server.Spells.Necromancy
                         pool.Enqueue(targ);
                     }
 
-                    eable.Free();
-
                     Effects.PlaySound(Caster.Location, map, 0x1FB);
                     Effects.PlaySound(Caster.Location, map, 0x10B);
                     Effects.SendLocationParticles(

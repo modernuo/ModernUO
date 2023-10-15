@@ -273,12 +273,9 @@ namespace Server.Factions
 
                 if (type.IsInstanceOfType(obj))
                 {
-                    eable.Free();
                     return true;
                 }
             }
-
-            eable.Free();
 
             return false;
         }
@@ -292,13 +289,10 @@ namespace Server.Factions
                 {
                     if (types[i].IsInstanceOfType(obj))
                     {
-                        eable.Free();
                         return true;
                     }
                 }
             }
-
-            eable.Free();
             return false;
         }
 

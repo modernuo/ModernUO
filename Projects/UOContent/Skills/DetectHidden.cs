@@ -81,8 +81,6 @@ namespace Server.SkillHandlers
                         }
                     }
 
-                    inRange.Free();
-
                     if (Faction.Find(src) != null)
                     {
                         var itemsInRange = src.Map.GetItemsInRange<BaseFactionTrap>(p, range);
@@ -103,8 +101,6 @@ namespace Server.SkillHandlers
                                 foundAnyone = true;
                             }
                         }
-
-                        itemsInRange.Free();
                     }
                 }
 

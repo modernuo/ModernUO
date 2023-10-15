@@ -22,7 +22,7 @@ namespace Server.Movement
 
         private readonly List<Item>[] _pools = { new(), new(), new(), new() };
 
-        private readonly HashSet<Sector> _sectors = new();
+        private readonly HashSet<Map.Sector> _sectors = new();
 
         private MovementImpl()
         {

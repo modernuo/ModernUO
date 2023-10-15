@@ -65,8 +65,6 @@ public class DefBlacksmithy : CraftSystem
             }
         }
 
-        eable.Free();
-
         for (var x = -range; (!anvil || !forge) && x <= range; ++x)
         {
             for (var y = -range; (!anvil || !forge) && y <= range; ++y)

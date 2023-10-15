@@ -770,8 +770,6 @@ namespace Server.Multis
                     }
                 }
             }
-
-            eable.Free();
         }
 
         public List<Mobile> AvailableVendorsFor(Mobile m) =>
@@ -1156,8 +1154,6 @@ namespace Server.Multis
 
             var eable = Map.GetItemsInBounds(rect);
             var list = eable.Where(item => item.Movable && IsInside(item)).ToList();
-
-            eable.Free();
 
             return list;
         }
@@ -3661,7 +3657,6 @@ namespace Server.Multis
                 map.GetItemsInBounds<Guildstone>(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
 
             var item = eable.FirstOrDefault(Contains);
-            eable.Free();
             return item;
         }
 

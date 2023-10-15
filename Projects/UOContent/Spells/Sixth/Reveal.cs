@@ -53,8 +53,6 @@ namespace Server.Spells.Sixth
                         m.FixedParticles(0x375A, 9, 20, 5049, EffectLayer.Head);
                         m.PlaySound(0x1FD);
                     }
-
-                    eable.Free();
                 }
             }
 

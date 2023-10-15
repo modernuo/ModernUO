@@ -60,8 +60,6 @@ public partial class OilFlask : Item
                     }
                 }
 
-                eable.Free();
-
                 if (!didStack)
                 {
                     emptyFlask.MoveToWorld(Location, Map);

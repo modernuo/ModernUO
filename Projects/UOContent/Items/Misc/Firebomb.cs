@@ -132,7 +132,6 @@ public partial class Firebomb : Item
                                 targets.Enqueue(m);
                             }
                         }
-                        eable.Free();
 
                         while (targets.Count > 0)
                         {

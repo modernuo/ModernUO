@@ -862,12 +862,9 @@ namespace Server.Mobiles
                 {
                     if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
                     {
-                        mobiles.Free();
                         return false;
                     }
                 }
-
-                mobiles.Free();
             }
 
             var bi = item.GetBounce();

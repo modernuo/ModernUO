@@ -1729,8 +1729,6 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
             }
         }
 
-        eable.Free();
-
         return inPack switch
         {
             >= 5 => 100,
@@ -1765,8 +1763,6 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
                     break;
                 }
             }
-
-            eable.Free();
         }
 
         PlaySwingAnimation(attacker);
@@ -3586,8 +3582,6 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
                 queue.Enqueue(m);
             }
         }
-
-        eable.Free();
 
         if (queue.Count == 0)
         {

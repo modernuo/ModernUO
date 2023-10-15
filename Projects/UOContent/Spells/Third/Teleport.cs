@@ -106,8 +106,6 @@ namespace Server.Spells.Third
                         item.OnMoveOver(m);
                     }
                 }
-
-                eable.Free();
             }
 
             FinishSequence();

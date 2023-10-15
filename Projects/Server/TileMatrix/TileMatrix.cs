@@ -261,8 +261,6 @@ public class TileMatrix
                 m_TilesList.AddRange(multiTiles);
             }
 
-            eable.Free();
-
             if (!any)
             {
                 return tiles[x & 0x7][y & 0x7];

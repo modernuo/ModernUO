@@ -103,12 +103,9 @@ namespace Server.Spells.Spellweaving
             {
                 if (item.Z + item.ItemData.CalcHeight == location.Z && IsValidTile(item.ItemID))
                 {
-                    eable.Free();
                     return true;
                 }
             }
-
-            eable.Free();
 
             return false;
         }
@@ -125,12 +122,9 @@ namespace Server.Spells.Spellweaving
                 if (m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
                     Math.Abs(spellWeaving - m.Skills.Spellweaving.Value) <= 20)
                 {
-                    eable.Free();
                     return true;
                 }
             }
-
-            eable.Free();
             return false;
         }
 
@@ -150,8 +144,6 @@ namespace Server.Spells.Spellweaving
                     pool.Enqueue(m);
                 }
             }
-
-            eable.Free();
             return pool;
         }
 

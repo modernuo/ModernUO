@@ -97,8 +97,6 @@ namespace Server.Commands
                 }
             }
 
-            eable.Free();
-
             for (var i = 0; i < toDelete.Count; ++i)
             {
                 toDelete[i].Delete();

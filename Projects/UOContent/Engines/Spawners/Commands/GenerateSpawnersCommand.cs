@@ -162,8 +162,6 @@ namespace Server.Engines.Spawners
                     queue.Dequeue().Delete();
                 }
 
-                eable.Free();
-
                 try
                 {
                     var spawner = type.CreateInstance<ISpawner>(json, options);

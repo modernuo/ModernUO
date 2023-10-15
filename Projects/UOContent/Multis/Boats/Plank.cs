@@ -237,12 +237,9 @@ namespace Server.Items
             {
                 if (obj == this)
                 {
-                    eable.Free();
                     return true;
                 }
             }
-
-            eable.Free();
 
             return false;
         }

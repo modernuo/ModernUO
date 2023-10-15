@@ -1526,8 +1526,6 @@ namespace Server.Multis
                         newComponents.Tiles[x][y].Length == 0 || Contains(item);
                 }
             );
-
-            eable.Free();
             return canFit;
         }
 
@@ -1905,7 +1903,7 @@ namespace Server.Multis
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Dispose()
             {
-                _entities?.Free();
+                _entities?.Dispose();
                 _enumerator?.Dispose();
             }
 

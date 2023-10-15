@@ -90,7 +90,6 @@ namespace Server.Mobiles
                     queue.Enqueue(m);
                 }
             }
-            eable.Free();
 
             if (queue.Count == 0)
             {

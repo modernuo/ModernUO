@@ -69,8 +69,6 @@ namespace Server.Spells.Seventh
                         }
                     }
 
-                    eable.Free();
-
                     while (queue.Count > 0)
                     {
                         queue.Dequeue().Delete();

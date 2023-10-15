@@ -115,8 +115,6 @@ public partial class FireHorn : Item
             }
         }
 
-        eable.Free();
-
         if (targets.Count > 0)
         {
             var prov = from.Skills.Provocation.Fixed;

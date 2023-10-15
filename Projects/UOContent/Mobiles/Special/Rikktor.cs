@@ -132,8 +132,6 @@ public partial class Rikktor : BaseChampion
                 m.Animate(20, 7, 1, true, false, 0); // take hit
             }
         }
-
-        eable.Free();
     }
 
     public override int GetAngerSound() => Utility.Random(0x2CE, 2);

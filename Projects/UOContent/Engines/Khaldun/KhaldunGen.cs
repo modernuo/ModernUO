@@ -26,8 +26,6 @@ namespace Server.Commands
                     break;
                 }
             }
-
-            eable.Free();
             return found;
         }
 
@@ -44,8 +42,6 @@ namespace Server.Commands
                     break;
                 }
             }
-
-            eable.Free();
             return found;
         }
 
@@ -53,7 +49,6 @@ namespace Server.Commands
         {
             var eable = Map.Felucca.GetItemsInBounds<T>(new Rectangle2D(x, y, 1, 1));
             var t = eable.FirstOrDefault(item => item.GetType() == srcItem.GetType());
-            eable.Free();
             if (t != null)
             {
                 srcItem.Delete();

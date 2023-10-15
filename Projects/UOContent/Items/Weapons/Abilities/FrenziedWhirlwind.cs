@@ -63,8 +63,6 @@ namespace Server.Items
                 }
             }
 
-            eable.Free();
-
             if (didEffect)
             {
                 attacker.FixedEffect(0x3728, 10, 15);

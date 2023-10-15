@@ -77,7 +77,6 @@ public partial class ShadowWispFamiliar : BaseFamiliar
                 queue.Enqueue(m);
             }
         }
-        eable.Free();
 
         while (queue.Count > 0)
         {

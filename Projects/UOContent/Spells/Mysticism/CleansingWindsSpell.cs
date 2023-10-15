@@ -47,9 +47,7 @@ namespace Server.Spells.Mysticism
                 var casterParty = Party.Get(Caster);
                 if (casterParty != null)
                 {
-                    IPooledEnumerable eable = Caster.Map.GetMobilesInRange(m.Location, 2);
-
-                    foreach (Mobile mob in eable)
+                    foreach (Mobile mob in Caster.Map.GetMobilesInRange(m.Location, 2))
                     {
                         if (mob == m)
                         {
@@ -65,8 +63,6 @@ namespace Server.Spells.Mysticism
                             }
                         }
                     }
-
-                    eable.Free();
                 }
 
                 var primarySkill = GetBaseSkill(Caster);

@@ -111,8 +111,6 @@ namespace Server.Spells.Necromancy
                         pool.Enqueue(targ);
                     }
 
-                    eable.Free();
-
                     while (pool.Count > 0)
                     {
                         var targ = pool.Dequeue();

@@ -386,7 +386,7 @@ namespace Server.Multis
                 }
             }
 
-            var _sectors = new List<Sector>();
+            var _sectors = new List<Map.Sector>();
             var _houses = new List<BaseHouse>();
 
             for (var i = 0; i < yard.Count; i++)

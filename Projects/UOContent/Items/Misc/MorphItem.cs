@@ -88,8 +88,6 @@ public partial class MorphItem : Item
             }
         }
 
-        eable.Free();
-
         ItemID = found ? _activeItemId : _inactiveItemId;
 
         Visible = ItemID != 0x1;
