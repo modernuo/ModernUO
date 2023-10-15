@@ -141,9 +141,7 @@ namespace Server.Spells.Seventh
 
         private static bool GateExistsAt(Map map, Point3D loc)
         {
-            var eable = map.GetItemsInRange(loc, 0);
-
-            foreach (var item in eable)
+            foreach (var item in map.GetItemsInRange(loc, 0))
             {
                 if (item is Moongate or PublicMoongate)
                 {

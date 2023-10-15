@@ -155,10 +155,9 @@ namespace Server.Ethics
                         continue;
                     }
 
-                    var eable = e.Mobile.GetItemsInRange(2);
                     var found = false;
 
-                    foreach (var item in eable)
+                    foreach (var item in e.Mobile.GetItemsInRange(2))
                     {
                         if (item is AnkhNorth or AnkhWest)
                         {

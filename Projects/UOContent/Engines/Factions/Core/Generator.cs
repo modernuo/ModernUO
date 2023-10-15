@@ -78,14 +78,14 @@ namespace Server.Factions
 
         private static bool CheckExistence(Point3D loc, Map facet, Type type)
         {
-            var eable = facet.GetItemsInRange(loc, 0);
-            foreach (var item in eable)
+            foreach (var item in facet.GetItemsInRange(loc, 0))
             {
                 if (type.IsInstanceOfType(item))
                 {
                     return true;
                 }
             }
+
             return false;
         }
     }

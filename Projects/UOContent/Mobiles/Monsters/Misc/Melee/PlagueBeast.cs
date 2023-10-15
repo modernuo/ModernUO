@@ -165,18 +165,13 @@ namespace Server.Mobiles
             base.OnThink();
 
             // Check to see if we need to devour any corpses
-            var eable = GetItemsInRange<Corpse>(3); // Get all corpses in range
-
-            foreach (var item in eable)
-                // Ensure that the corpse was killed by us
+            foreach (var item in GetItemsInRange<Corpse>(3)) // Get all corpses in range
             {
+                // Ensure that the corpse was killed by us
                 if (item.Killer == this && item.Owner != null && !item.DevourCorpse() && !item.Devoured)
                 {
-                    PublicOverheadMessage(
-                        MessageType.Emote,
-                        0x3B2,
-                        1053032
-                    ); // * The plague beast attempts to absorb the remains, but cannot! *
+                    // * The plague beast attempts to absorb the remains, but cannot! *
+                    PublicOverheadMessage(MessageType.Emote, 0x3B2, 1053032);
                 }
             }
         }

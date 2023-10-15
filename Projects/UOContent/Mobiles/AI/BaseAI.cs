@@ -2157,10 +2157,7 @@ public abstract class BaseAI
                 Movement.Movement.Offset(d, ref x, ref y);
 
                 var destroyables = 0;
-
-                var eable = map.GetItemsInRange(new Point3D(x, y, m_Mobile.Location.Z), 1);
-
-                foreach (var item in eable)
+                foreach (var item in map.GetItemsInRange(new Point3D(x, y, m_Mobile.Location.Z), 1))
                 {
                     if (canOpenDoors && item is BaseDoor door && door.Z + door.ItemData.Height > m_Mobile.Z &&
                         m_Mobile.Z + 16 > door.Z)

@@ -124,9 +124,8 @@ namespace Server.SkillHandlers
 
             public override void OnCast()
             {
-                var eable = Caster.GetItemsInRange<Corpse>(3);
                 Corpse toChannel = null;
-                foreach (var corpse in eable)
+                foreach (var corpse in Caster.GetItemsInRange<Corpse>(3))
                 {
                     if (!corpse.Channeled)
                     {

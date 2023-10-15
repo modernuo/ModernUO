@@ -147,8 +147,7 @@ namespace Server.Engines.Spawners
 
                 // Delete all spawners at this location.
                 // Probably shouldn't do this outside of migrations? Is there a better way to find/fix spawners?
-                var eable = map.GetItemsInRange<BaseSpawner>(location, 0);
-                foreach (var spawner in eable)
+                foreach (var spawner in map.GetItemsInRange<BaseSpawner>(location, 0))
                 {
                     if (spawner.GetType() == type)
                     {

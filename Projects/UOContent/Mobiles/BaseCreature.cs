@@ -3638,9 +3638,8 @@ namespace Server.Mobiles
                 return false;
             }
 
-            var eable = GetItemsInRange<Corpse>(2);
             Corpse toRummage = null;
-            foreach (var c in eable)
+            foreach (var c in GetItemsInRange<Corpse>(2))
             {
                 if (c.Items.Count > 0)
                 {

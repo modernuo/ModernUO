@@ -38,7 +38,7 @@ public enum MapRules
     FeluccaRules = None
 }
 
-public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
+public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 {
     public const int SectorSize = 16;
     public const int SectorShift = 4;
@@ -297,9 +297,6 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         return v / 2;
     }
 
-    public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) =>
-        PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
-
     private static void AcquireFixItems(Map map, int x, int y, Item[] pool, out int length)
     {
         length = 0;
@@ -308,8 +305,8 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
             return;
         }
 
-        var eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
-        foreach (var item in eable)
+        var p = new Point3D(x, y, 0);
+        foreach (var item in map.GetItemsInRange(p, 0))
         {
             if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue)
             {
@@ -489,28 +486,28 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         var sector = GetSector(p.X, p.Y);
 
-        for (var i = 0; i < sector.Items.Count; i++)
+        foreach (var item in sector.Items)
         {
-            var item = sector.Items[i];
-
-            if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(p.X, p.Y) &&
-                !item.Movable)
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(p.X, p.Y) ||
+                item.Movable)
             {
-                var id = item.ItemData;
+                continue;
+            }
 
-                if (id.Surface || id.Wet)
+            var id = item.ItemData;
+
+            if (id.Surface || id.Wet)
+            {
+                var itemZ = item.Z + id.CalcHeight;
+
+                if (itemZ > surfaceZ && itemZ <= p.Z)
                 {
-                    var itemZ = item.Z + id.CalcHeight;
+                    surface = item;
+                    surfaceZ = itemZ;
 
-                    if (itemZ > surfaceZ && itemZ <= p.Z)
+                    if (surfaceZ == p.Z)
                     {
-                        surface = item;
-                        surfaceZ = itemZ;
-
-                        if (surfaceZ == p.Z)
-                        {
-                            return surface;
-                        }
+                        return surface;
                     }
                 }
             }
@@ -536,6 +533,29 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
     {
         Bound(p.m_X, p.m_Y, out var x, out var y);
         return new Point2D(x, y);
+    }
+
+    private void CalculateSectors(
+        Rectangle2D bounds,
+        out int sectorStartX, out int sectorStartY,
+        out int sectorEndX, out int sectorEndY)
+    {
+        int left = bounds.Start.X;
+        int top = bounds.Start.Y;
+        int right = bounds.End.X;
+        int bottom = bounds.End.Y;
+
+        // Limit the coordinates to inside the valid map region
+        Bound(left, top, out left, out top);
+        Bound(right - 1, bottom - 1, out right, out bottom);
+
+        // Calculate the top left sector
+        sectorStartX = left >> SectorShift;
+        sectorStartY = top >> SectorShift;
+
+        // Calculate the bottom right sector.
+        sectorEndX = right >> SectorShift;
+        sectorEndY = bottom >> SectorShift;
     }
 
     public void ActivateSectors(int cx, int cy)
@@ -593,22 +613,36 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         }
     }
 
-    public void OnEnter(Mobile m)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void OnEnter(Mobile m) => OnEnter(m.Location, m);
+
+    public void OnEnter(Point3D p, Mobile m)
     {
         if (this != Internal)
         {
-            GetSector(m.Location).OnEnter(m);
+            GetSector(p).OnEnter(m);
         }
     }
 
     public void OnEnter(Item item)
+    {
+        if (IsIteratingItems)
+        {
+            _delayedItemActions.Add((MapAction.Enter, item.Location, item));
+            return;
+        }
+
+        OnEnter(item.Location, item);
+    }
+
+    public void OnEnter(Point3D p, Item item)
     {
         if (this == Internal)
         {
             return;
         }
 
-        GetSector(item.Location).OnEnter(item);
+        GetSector(p).OnEnter(item);
 
         if (item is BaseMulti m)
         {
@@ -621,22 +655,36 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         }
     }
 
-    public void OnLeave(Mobile m)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void OnLeave(Mobile m) => OnLeave(m.Location, m);
+
+    public void OnLeave(Point3D p, Mobile m)
     {
         if (this != Internal)
         {
-            GetSector(m.Location).OnLeave(m);
+            GetSector(p).OnLeave(m);
         }
     }
 
     public void OnLeave(Item item)
+    {
+        if (IsIteratingItems)
+        {
+            _delayedItemActions.Add((MapAction.Leave, item.Location, item));
+            return;
+        }
+
+        OnLeave(item.Location, item);
+    }
+
+    public void OnLeave(Point3D p, Item item)
     {
         if (this == Internal)
         {
             return;
         }
 
-        GetSector(item.Location).OnLeave(item);
+        GetSector(p).OnLeave(item);
 
         if (item is BaseMulti m)
         {
@@ -716,6 +764,12 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         if (oldSector != newSector)
         {
+            if (IsIteratingItems)
+            {
+                _delayedItemActions.Add((MapAction.Move, item.Location, item));
+                return;
+            }
+
             oldSector.OnLeave(item);
             newSector.OnEnter(item);
         }
@@ -732,6 +786,12 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
             if (oldStart != start || oldEnd != end)
             {
+                if (IsIteratingItems)
+                {
+                    _delayedItemActions.Add((MapAction.Enter, oldLocation, item));
+                    return;
+                }
+
                 RemoveMulti(m, oldStart, oldEnd);
                 AddMulti(m, start, end);
             }
@@ -821,6 +881,9 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         return p;
     }
 
+    public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) =>
+        PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
+
     public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p) => GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
 
     public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range) =>
@@ -836,18 +899,6 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
     public IPooledEnumerable<NetState> GetClientsInBounds(Rectangle2D bounds) =>
         PooledEnumeration.GetClients(this, bounds);
-
-    public IPooledEnumerable<Item> GetItemsInRange(Point3D p) => GetItemsInRange(p, Core.GlobalMaxUpdateRange);
-
-    public IPooledEnumerable<Item> GetItemsInRange(Point3D p, int range) => GetItemsInRange<Item>(p, range);
-
-    public IPooledEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item =>
-        GetItemsInBounds<T>(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
-
-    public IPooledEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
-
-    public IPooledEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds) where T : Item =>
-        PooledEnumeration.GetItems<T>(this, bounds);
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(Point3D p) => GetMobilesInRange(p, Core.GlobalMaxUpdateRange);
 
@@ -926,29 +977,28 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         }
 
         var sector = GetSector(x, y);
-        var items = sector.Items;
         var mobs = sector.Mobiles;
 
-        for (var i = 0; i < items.Count; ++i)
+        foreach (var item in sector.Items)
         {
-            var item = items[i];
-
-            if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y))
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y))
             {
-                var id = item.ItemData;
-                surface = id.Surface;
-                impassable = id.Impassable;
+                continue;
+            }
 
-                if ((surface || impassable || checkBlocksFit && item.BlocksFit) && item.Z + id.CalcHeight > z &&
-                    z + height > item.Z)
-                {
-                    return false;
-                }
+            var id = item.ItemData;
+            surface = id.Surface;
+            impassable = id.Impassable;
 
-                if (surface && !impassable && !item.Movable && z == item.Z + id.CalcHeight)
-                {
-                    hasSurface = true;
-                }
+            if ((surface || impassable || checkBlocksFit && item.BlocksFit) && item.Z + id.CalcHeight > z &&
+                z + height > item.Z)
+            {
+                return false;
+            }
+
+            if (surface && !impassable && !item.Movable && z == item.Z + id.CalcHeight)
+            {
+                hasSurface = true;
             }
         }
 
@@ -1140,9 +1190,7 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
             if (contains && statics.Length == 0)
             {
-                var eable = GetItemsInRange(point, 0);
-
-                foreach (Item item in eable)
+                foreach (Item item in GetItemsInRange(point, 0))
                 {
                     if (item.Visible)
                     {
@@ -1180,9 +1228,7 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         var rect = new Rectangle2D(pTop.m_X, pTop.m_Y, pBottom.m_X - pTop.m_X + 1, pBottom.m_Y - pTop.m_Y + 1);
 
-        var area = GetItemsInBounds(rect);
-
-        foreach (var i in area)
+        foreach (var i in GetItemsInBounds(rect))
         {
             if (!i.Visible)
             {
@@ -1412,39 +1458,27 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         return false;
     }
 
-    public class RegionRect : IComparable<RegionRect>
+    private enum MapAction
     {
-        private Rectangle3D m_Rect;
-
-        public RegionRect(Region region, Rectangle3D rect)
-        {
-            Region = region;
-            m_Rect = rect;
-        }
-
-        public Region Region { get; }
-
-        public Rectangle3D Rect => m_Rect;
-
-        public int CompareTo(RegionRect regRect) => regRect == null ? 1 : Region.CompareTo(regRect.Region);
-
-        public bool Contains(Point3D loc) => m_Rect.Contains(loc);
+        None,
+        Enter,
+        Leave,
+        Move
     }
 
     public class Sector
     {
         // TODO: Can we avoid this?
         private static readonly List<Mobile> m_DefaultMobileList = new();
-        private static readonly List<Item> m_DefaultItemList = new();
         private static readonly List<NetState> m_DefaultClientList = new();
         private static readonly List<BaseMulti> m_DefaultMultiList = new();
-        private static readonly List<RegionRect> m_DefaultRectList = new();
+        private static readonly List<Region> m_DefaultRectList = new();
         private bool m_Active;
-        private List<NetState> m_Clients;
-        private List<Item> m_Items;
-        private List<Mobile> m_Mobiles;
-        private List<BaseMulti> m_Multis;
-        private List<RegionRect> m_RegionRects;
+        private List<NetState> _clients;
+        private ValueLinkList<Item> _items;
+        private List<Mobile> _mobiles;
+        private List<BaseMulti> _multis;
+        private List<Region> _regions;
 
         public Sector(int x, int y, Map owner)
         {
@@ -1454,15 +1488,15 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
             m_Active = false;
         }
 
-        public List<RegionRect> RegionRects => m_RegionRects ?? m_DefaultRectList;
+        public List<Region> Regions => _regions ?? m_DefaultRectList;
 
-        public List<BaseMulti> Multis => m_Multis ?? m_DefaultMultiList;
+        public List<BaseMulti> Multis => _multis ?? m_DefaultMultiList;
 
-        public List<Mobile> Mobiles => m_Mobiles ?? m_DefaultMobileList;
+        public List<Mobile> Mobiles => _mobiles ?? m_DefaultMobileList;
 
-        public List<Item> Items => m_Items ?? m_DefaultItemList;
+        public ref ValueLinkList<Item> Items => ref _items;
 
-        public List<NetState> Clients => m_Clients ?? m_DefaultClientList;
+        public List<NetState> Clients => _clients ?? m_DefaultClientList;
 
         public bool Active => m_Active && Owner != Map.Internal;
 
@@ -1474,26 +1508,26 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         public void OnClientChange(NetState oldState, NetState newState)
         {
-            Utility.Replace(ref m_Clients, oldState, newState);
+            Utility.Replace(ref _clients, oldState, newState);
         }
 
         public void OnEnter(Item item)
         {
-            Utility.Add(ref m_Items, item);
+            _items.AddLast(item);
         }
 
         public void OnLeave(Item item)
         {
-            Utility.Remove(ref m_Items, item);
+            _items.Remove(item);
         }
 
         public void OnEnter(Mobile mob)
         {
-            Utility.Add(ref m_Mobiles, mob);
+            Utility.Add(ref _mobiles, mob);
 
             if (mob.NetState != null)
             {
-                Utility.Add(ref m_Clients, mob.NetState);
+                Utility.Add(ref _clients, mob.NetState);
 
                 Owner.ActivateSectors(X, Y);
             }
@@ -1501,11 +1535,11 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         public void OnLeave(Mobile mob)
         {
-            Utility.Remove(ref m_Mobiles, mob);
+            Utility.Remove(ref _mobiles, mob);
 
             if (mob.NetState != null)
             {
-                Utility.Remove(ref m_Clients, mob.NetState);
+                Utility.Remove(ref _clients, mob.NetState);
 
                 Owner.DeactivateSectors(X, Y);
             }
@@ -1513,31 +1547,31 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         public void OnEnter(Region region, Rectangle3D rect)
         {
-            Utility.Add(ref m_RegionRects, new RegionRect(region, rect));
+            Utility.Add(ref _regions, region);
 
-            m_RegionRects.Sort();
+            _regions.Sort();
 
             UpdateMobileRegions();
         }
 
         public void OnLeave(Region region)
         {
-            if (m_RegionRects != null)
+            if (_regions != null)
             {
-                for (var i = m_RegionRects.Count - 1; i >= 0; i--)
+                for (var i = _regions.Count - 1; i >= 0; i--)
                 {
-                    var regRect = m_RegionRects[i];
+                    var r = _regions[i];
 
-                    if (regRect.Region == region)
+                    if (r == region)
                     {
-                        m_RegionRects.RemoveAt(i);
+                        _regions.RemoveAt(i);
                         break;
                     }
                 }
 
-                if (m_RegionRects.Count == 0)
+                if (_regions.Count == 0)
                 {
-                    m_RegionRects = null;
+                    _regions = null;
                 }
             }
 
@@ -1546,10 +1580,10 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         private void UpdateMobileRegions()
         {
-            if (m_Mobiles != null)
+            if (_mobiles != null)
             {
-                using var queue = PooledRefQueue<Mobile>.Create(m_Mobiles.Count);
-                foreach (var mob in m_Mobiles)
+                using var queue = PooledRefQueue<Mobile>.Create(_mobiles.Count);
+                foreach (var mob in _mobiles)
                 {
                     queue.Enqueue(mob);
                 }
@@ -1563,29 +1597,26 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            Utility.Add(ref m_Multis, multi);
+            Utility.Add(ref _multis, multi);
         }
 
         public void OnMultiLeave(BaseMulti multi)
         {
-            Utility.Remove(ref m_Multis, multi);
+            Utility.Remove(ref _multis, multi);
         }
 
         public void Activate()
         {
             if (!Active)
             {
-                if (m_Items != null)
+                foreach (var item in _items)
                 {
-                    foreach (var item in m_Items)
-                    {
-                        item.OnSectorActivate();
-                    }
+                    item.OnSectorActivate();
                 }
 
-                if (m_Mobiles != null)
+                if (_mobiles != null)
                 {
-                    foreach (var mob in m_Mobiles)
+                    foreach (var mob in _mobiles)
                     {
                         mob.OnSectorActivate();
                     }
@@ -1599,17 +1630,14 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         {
             if (Active)
             {
-                if (m_Items != null)
+                foreach (var item in _items)
                 {
-                    foreach (var item in m_Items)
-                    {
-                        item.OnSectorDeactivate();
-                    }
+                    item.OnSectorDeactivate();
                 }
 
-                if (m_Mobiles != null)
+                if (_mobiles != null)
                 {
-                    foreach (var mob in m_Mobiles)
+                    foreach (var mob in _mobiles)
                     {
                         mob.OnSectorDeactivate();
                     }

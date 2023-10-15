@@ -4165,10 +4165,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
-            for (var i = 0; i < oldSector.Items.Count; ++i)
+            foreach (var item in oldSector.Items)
             {
-                var item = oldSector.Items[i];
-
                 if (item.AtWorldPoint(oldX, oldY) &&
                     (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                     !item.OnMoveOff(this))
@@ -4187,10 +4185,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
-            for (var i = 0; i < newSector.Items.Count; ++i)
+            foreach (var item in newSector.Items)
             {
-                var item = newSector.Items[i];
-
                 if (item.AtWorldPoint(x, y) &&
                     (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
                     !item.OnMoveOver(this))
@@ -4217,10 +4213,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
-            for (var i = 0; i < oldSector.Items.Count; ++i)
+            foreach (var item in oldSector.Items)
             {
-                var item = oldSector.Items[i];
-
                 if (item.AtWorldPoint(oldX, oldY) &&
                     (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                     !item.OnMoveOff(this))
@@ -8064,10 +8058,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return -1;
     }
 
-    public IPooledEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ItemEnumerator<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
 
-    public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
-        m_Map?.GetItemsInRange<T>(m_Location, range) ?? PooledEnumeration.NullEnumerable<T>.Instance;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ItemEnumerator<T> GetItemsInRange<T>(int range) where T : Item =>
+        m_Map == null ? Map.ItemEnumerator<T>.Empty : m_Map.GetItemsInRange<T>(m_Location, range);
 
     public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
         m_Map?.GetObjectsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<IEntity>.Instance;

@@ -387,8 +387,7 @@ namespace Server.Engines.Craft
                 return false;
             }
 
-            var eable = map.GetItemsInRange(from.Location, 2);
-            foreach (var item in eable)
+            foreach (var item in map.GetItemsInRange(from.Location, 2))
             {
                 if (item.Z + 16 > item.Z && item.Z + 16 > item.Z && Find(item.ItemID, itemIDs))
                 {

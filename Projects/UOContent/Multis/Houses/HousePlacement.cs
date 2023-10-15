@@ -142,10 +142,8 @@ namespace Server.Multis
 
                     items.Clear();
 
-                    for (var i = 0; i < sector.Items.Count; ++i)
+                    foreach (var item in sector.Items)
                     {
-                        var item = sector.Items[i];
-
                         if (item.Visible && item.X == tileX && item.Y == tileY)
                         {
                             items.Add(item);
@@ -366,12 +364,9 @@ namespace Server.Multis
                 }
 
                 var sector = map.GetSector(borderPoint.X, borderPoint.Y);
-                var sectorItems = sector.Items;
 
-                for (var j = 0; j < sectorItems.Count; ++j)
+                foreach (var item in sector.Items)
                 {
-                    var item = sectorItems[j];
-
                     if (item.X != borderPoint.X || item.Y != borderPoint.Y || item.Movable)
                     {
                         continue;

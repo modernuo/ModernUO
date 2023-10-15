@@ -467,10 +467,8 @@ namespace Server.Engines.ConPVP
 
                     if (landTile.ID == 0x244 && statics.Length == 0) // 0x244 = invalid land tile
                     {
-                        var eable = Map.GetItemsInRange(point, 0);
-
                         var empty = true;
-                        foreach (var item in eable)
+                        foreach (var item in Map.GetItemsInRange(point, 0))
                         {
                             if (item != this)
                             {
@@ -513,8 +511,7 @@ namespace Server.Engines.ConPVP
 
                 var rect = new Rectangle2D(pTop.X, pTop.Y, pBottom.X - pTop.X + 1, pBottom.Y - pTop.Y + 1);
 
-                var area = Map.GetItemsInBounds(rect);
-                foreach (var i in area)
+                foreach (var i in Map.GetItemsInBounds(rect))
                 {
                     if (i == this || i.ItemID >= 0x4000)
                     {
@@ -567,6 +564,7 @@ namespace Server.Engines.ConPVP
                     {
                         continue;
                     }
+
                     if (i is BRGoal goal)
                     {
                         var oldLoc = new Point3D(GetWorldLocation());
@@ -662,8 +660,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
 
-                var eable = GetItemsInRange(0);
-                foreach (var item in eable)
+                foreach (var item in GetItemsInRange(0))
                 {
                     if (item.Visible && item != this)
                     {

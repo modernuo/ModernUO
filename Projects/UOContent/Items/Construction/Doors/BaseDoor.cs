@@ -332,13 +332,10 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         var z = p.Z;
 
         var sector = map.GetSector(x, y);
-        var items = sector.Items;
         var mobs = sector.Mobiles;
 
-        for (var i = 0; i < items.Count; ++i)
+        foreach (var item in sector.Items)
         {
-            var item = items[i];
-
             if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y) &&
                 item is not BaseDoor)
             {

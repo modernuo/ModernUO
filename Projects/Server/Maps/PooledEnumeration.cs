@@ -35,7 +35,6 @@ public static class PooledEnumeration
         ClientSelector = SelectClients;
         EntitySelector = SelectEntities;
         MobileSelector = SelectMobiles<Mobile>;
-        ItemSelector = SelectItems<Item>;
         MultiSelector = SelectMultis;
         MultiTileSelector = SelectMultiTiles;
     }
@@ -43,7 +42,6 @@ public static class PooledEnumeration
     public static Selector<NetState> ClientSelector { get; set; }
     public static Selector<IEntity> EntitySelector { get; set; }
     public static Selector<Mobile> MobileSelector { get; set; }
-    public static Selector<Item> ItemSelector { get; set; }
     public static Selector<BaseMulti> MultiSelector { get; set; }
     public static Selector<StaticTile[]> MultiTileSelector { get; set; }
 
@@ -66,26 +64,20 @@ public static class PooledEnumeration
     public static IEnumerable<IEntity> SelectEntities(Map.Sector s, Rectangle2D bounds)
     {
         var entities = new List<IEntity>(s.Mobiles.Count + s.Items.Count);
-        for (int i = s.Mobiles.Count - 1, j = s.Items.Count - 1; i >= 0 || j >= 0; --i, --j)
+        for (int i = s.Mobiles.Count - 1; i >= 0; --i)
         {
-            if (j >= 0)
+            Mobile mob = s.Mobiles[i];
+            if (mob is { Deleted: false } && bounds.Contains(mob.Location))
             {
-                Item item = s.Items[j];
-                if (item is { Deleted: false, Parent: null } && bounds.Contains(item.Location))
-                {
-                    entities.Add(item);
-                }
-            }
-
-            if (i >= 0)
-            {
-                Mobile mob = s.Mobiles[i];
-                if (mob is { Deleted: false } && bounds.Contains(mob.Location))
-                {
-                    entities.Add(mob);
-                }
+                entities.Add(mob);
             }
         }
+
+        foreach (var item in s.Items)
+        {
+            entities.Add(item);
+        }
+
         return entities;
     }
 
@@ -97,19 +89,6 @@ public static class PooledEnumeration
             if (s.Mobiles[i] is T { Deleted: false } mob && bounds.Contains(mob.Location))
             {
                 entities.Add(mob);
-            }
-        }
-        return entities;
-    }
-
-    public static IEnumerable<T> SelectItems<T>(Map.Sector s, Rectangle2D bounds) where T : Item
-    {
-        var entities = new List<T>(s.Items.Count);
-        for (int i = s.Items.Count - 1; i >= 0; --i)
-        {
-            if (s.Items[i] is T { Deleted: false, Parent: null } item && bounds.Contains(item.Location))
-            {
-                entities.Add(item);
             }
         }
         return entities;
@@ -194,9 +173,6 @@ public static class PooledEnumeration
 
     public static PooledEnumerable<T> GetMobiles<T>(Map map, Rectangle2D bounds) where T : Mobile =>
         PooledEnumerable<T>.Instantiate(map, bounds, SelectMobiles<T>);
-
-    public static PooledEnumerable<T> GetItems<T>(Map map, Rectangle2D bounds) where T : Item =>
-        PooledEnumerable<T>.Instantiate(map, bounds, SelectItems<T>);
 
     public static PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds) =>
         PooledEnumerable<BaseMulti>.Instantiate(map, bounds, MultiSelector ?? SelectMultis);

@@ -49,9 +49,8 @@ public partial class OilFlask : Item
             if (!from.PlaceInBackpack(emptyFlask))
             {
                 var didStack = false;
-                var eable = from.GetItemsInRange(0);
 
-                foreach (var i in eable)
+                foreach (var i in from.GetItemsInRange(0))
                 {
                     if (i.StackWith(from, this, false))
                     {

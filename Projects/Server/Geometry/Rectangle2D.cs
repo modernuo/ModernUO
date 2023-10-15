@@ -22,6 +22,8 @@ namespace Server;
 [PropertyObject]
 public struct Rectangle2D : IEquatable<Rectangle2D>, ISpanFormattable, ISpanParsable<Rectangle2D>
 {
+    public static Rectangle2D Empty => new();
+
     private Point2D _start;
     private Point2D _end;
 
