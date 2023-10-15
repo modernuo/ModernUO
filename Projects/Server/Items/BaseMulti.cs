@@ -1,9 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
+using Server.Collections;
 
 namespace Server.Items;
 
-public abstract class BaseMulti : Item
+public abstract partial class BaseMulti : Item
 {
     public BaseMulti(int itemID) : base(itemID) => Movable = false;
 

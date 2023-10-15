@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Server.Collections;
 using Server.Json;
 using Server.Logging;
 using Server.Network;
@@ -117,7 +118,7 @@ public enum MusicName
     NoMusic = 0x1FFF
 }
 
-public class Region : IComparable<Region>
+public class Region : IComparable<Region>, IValueLinkListNode<Region>
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Region));
 
@@ -174,6 +175,16 @@ public class Region : IComparable<Region>
             Priority = Parent.Priority;
         }
     }
+
+    // Sectors
+    [JsonIgnore]
+    public Region Next { get; set; }
+
+    [JsonIgnore]
+    public Region Previous { get; set; }
+
+    [JsonIgnore]
+    public bool OnLinkList { get; set; }
 
     // Used during deserialization only
     public Expansion MinExpansion { get; set; } = Expansion.None;

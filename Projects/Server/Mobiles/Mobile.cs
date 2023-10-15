@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Guilds;
 using Server.Gumps;
@@ -180,7 +181,7 @@ public delegate int AOSStatusHandler(Mobile from, int index);
 /// <summary>
 ///     Base class representing players, npcs, and creatures.
 /// </summary>
-public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity
+public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity, IValueLinkListNode<Mobile>
 {
     // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
     private const int WarmodeCatchCount = 4;
@@ -361,6 +362,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         NextSkillTime = Core.TickCount;
         DamageEntries = new List<DamageEntry>();
     }
+
+    // Sectors
+    public Mobile Next { get; set; }
+    public Mobile Previous { get; set; }
+    public bool OnLinkList { get; set; }
 
     public static bool DragEffects { get; set; } = true;
 
