@@ -339,7 +339,7 @@ public static class PooledEnumeration
 
 #pragma warning disable CA1000 // Do not declare static members on generic types
         public static PooledEnumerable<T> Instantiate(
-            Map map, Rectangle2D bounds, PooledEnumeration.Selector<T> selector
+            Map map, Rectangle2D bounds, Selector<T> selector
         )
         {
             PooledEnumerable<T> e = null;
@@ -352,7 +352,7 @@ public static class PooledEnumeration
                 }
             }
 
-            var pool = PooledEnumeration.EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));
+            var pool = EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));
 
             if (e == null)
             {

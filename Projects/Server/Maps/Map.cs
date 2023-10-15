@@ -1498,7 +1498,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public List<NetState> Clients => _clients ?? m_DefaultClientList;
 
-        public bool Active => m_Active && Owner != Map.Internal;
+        public bool Active => m_Active && Owner != Internal;
 
         public Map Owner { get; }
 
