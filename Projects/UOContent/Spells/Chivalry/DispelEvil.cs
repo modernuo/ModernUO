@@ -55,7 +55,6 @@ namespace Server.Spells.Chivalry
                         queue.Enqueue(m);
                     }
                 }
-                eable.Free();
 
                 while (queue.Count > 0)
                 {

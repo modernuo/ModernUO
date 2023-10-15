@@ -154,8 +154,6 @@ public partial class HarrowerTentacles : BaseCreature
 
                 m.Damage(drain, m_Owner);
             }
-
-            eable.Free();
         }
     }
 }

@@ -167,8 +167,6 @@ public abstract partial class BaseExplosionPotion : BasePotion
             }
         }
 
-        eable.Free();
-
         var min = Scale(from, MinDamage);
         var max = Scale(from, MaxDamage);
 

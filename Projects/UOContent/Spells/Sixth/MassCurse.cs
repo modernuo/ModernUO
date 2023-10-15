@@ -54,8 +54,6 @@ namespace Server.Spells.Sixth
 
                         HarmfulSpell(m);
                     }
-
-                    eable.Free();
                 }
             }
 

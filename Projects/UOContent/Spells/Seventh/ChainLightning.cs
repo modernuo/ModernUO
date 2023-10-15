@@ -56,8 +56,6 @@ namespace Server.Spells.Seventh
                         pool.Enqueue(m);
                     }
 
-                    eable.Free();
-
                     if (pool.Count > 0)
                     {
                         double damage = Core.AOS

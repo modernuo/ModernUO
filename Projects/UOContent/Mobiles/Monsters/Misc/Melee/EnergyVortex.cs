@@ -84,7 +84,6 @@ namespace Server.Mobiles
                         queue.Enqueue(m);
                     }
                 }
-                eable.Free();
 
                 var amount = queue.Count - 6;
                 if (amount > 0)

@@ -83,12 +83,9 @@ namespace Server.Factions
             {
                 if (type.IsInstanceOfType(item))
                 {
-                    eable.Free();
                     return true;
                 }
             }
-
-            eable.Free();
             return false;
         }
     }

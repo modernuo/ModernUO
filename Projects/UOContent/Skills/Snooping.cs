@@ -77,8 +77,6 @@ public static class Snooping
                             ns.Mobile.SendMessage(message);
                         }
                     }
-
-                    eable.Free();
                 }
             }
 

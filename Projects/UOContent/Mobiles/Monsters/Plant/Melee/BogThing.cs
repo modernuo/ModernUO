@@ -100,8 +100,6 @@ namespace Server.Mobiles
                 Hits += bogling.Hits / 2;
                 bogling.Delete();
             }
-
-            eable.Free();
         }
 
         public override void OnGotMeleeAttack(Mobile attacker, int damage)

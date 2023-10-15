@@ -60,8 +60,6 @@ namespace Server.Engines.Events
                     }
                 }
 
-                eable.Free();
-
                 if (spawncount > pumpkins)
                 {
                     new HalloweenPumpkin().MoveToWorld(Utility.RandomPointIn(rect, map), map);

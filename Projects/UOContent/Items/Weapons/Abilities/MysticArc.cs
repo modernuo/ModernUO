@@ -28,9 +28,7 @@ public class MysticArc : WeaponAbility
         }
 
         using var queue = PooledRefQueue<Mobile>.Create();
-        IPooledEnumerable eable = attacker.GetMobilesInRange(weapon.MaxRange);
-
-        foreach (Mobile m in eable)
+        foreach (Mobile m in attacker.GetMobilesInRange(weapon.MaxRange))
         {
             if (m == defender)
             {
@@ -44,8 +42,6 @@ public class MysticArc : WeaponAbility
 
             queue.Enqueue(m);
         }
-
-        eable.Free();
 
         if (queue.Count > 0)
         {

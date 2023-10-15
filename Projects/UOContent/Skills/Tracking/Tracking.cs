@@ -225,7 +225,6 @@ namespace Server.SkillHandlers
                     list.Add(m);
                 }
             }
-            eable.Free();
 
             if (list.Count > 0)
             {

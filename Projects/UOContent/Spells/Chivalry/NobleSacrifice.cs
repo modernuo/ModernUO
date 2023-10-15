@@ -46,8 +46,6 @@ namespace Server.Spells.Chivalry
                     }
                 }
 
-                eable.Free();
-
                 Caster.PlaySound(0x244);
                 Caster.FixedParticles(0x3709, 1, 30, 9965, 5, 7, EffectLayer.Waist);
                 Caster.FixedParticles(0x376A, 1, 30, 9502, 5, 3, EffectLayer.Waist);

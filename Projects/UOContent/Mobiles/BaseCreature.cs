@@ -3649,8 +3649,6 @@ namespace Server.Mobiles
                 }
             }
 
-            eable.Free();
-
             if (toRummage == null)
             {
                 return false;
@@ -3813,7 +3811,6 @@ namespace Server.Mobiles
                     queue.Enqueue(pet);
                 }
             }
-            eable.Free();
 
             while (queue.Count > 0)
             {
@@ -5360,7 +5357,6 @@ namespace Server.Mobiles
                     queue.Enqueue(m);
                 }
             }
-            eable.Free();
 
             while (queue.Count > 0)
             {

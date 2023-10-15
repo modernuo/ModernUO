@@ -57,8 +57,6 @@ namespace Server.Spells.Fourth
                         }
                     }
 
-                    eable.Free();
-
                     Effects.PlaySound(loc, Caster.Map, 0x299);
 
                     var cured = 0;

@@ -1137,13 +1137,10 @@ namespace Server.Commands
                 {
                     if (item.Z == z && item.ItemID == itemID)
                     {
-                        eable.Free();
                         return true;
                     }
                 }
             }
-
-            eable.Free();
 
             while (m_DeleteQueue.Count > 0)
             {
@@ -1197,8 +1194,6 @@ namespace Server.Commands
                                     break;
                                 }
                             }
-
-                            eable.Free();
                         }
                         else if (item is MarkContainer markCont)
                         {

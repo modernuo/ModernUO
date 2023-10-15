@@ -141,8 +141,6 @@ namespace Server.Mobiles
                     m.FixedParticles(0x36BD, 1, 10, 0x1F78, 0xA6, 0, (EffectLayer)255);
                     m.ApplyPoison(this, Poison.Lethal);
                 }
-
-                eable.Free();
             }
         }
 

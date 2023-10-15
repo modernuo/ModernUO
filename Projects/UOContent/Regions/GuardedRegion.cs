@@ -156,8 +156,6 @@ public class GuardedRegion : BaseRegion
         var eable = focus.GetMobilesInRange<BaseGuard>(8);
         var useGuard = eable.FirstOrDefault(m => m.Focus == null);
 
-        eable.Free();
-
         if (useGuard == null)
         {
             m_GuardParams[0] = focus;
@@ -338,8 +336,6 @@ public class GuardedRegion : BaseRegion
                 break;
             }
         }
-
-        eable.Free();
     }
 
     public bool IsGuardCandidate(Mobile m) =>

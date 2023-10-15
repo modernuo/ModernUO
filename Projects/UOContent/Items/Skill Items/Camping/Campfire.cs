@@ -143,8 +143,6 @@ public partial class Campfire : Item
                 pm.SendLocalizedMessage(500620); // You feel it would take a few moments to secure your camp.
             }
         }
-
-        eable.Free();
     }
 
     private void ClearEntries()

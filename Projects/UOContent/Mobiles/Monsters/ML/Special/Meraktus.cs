@@ -246,8 +246,6 @@ public partial class Meraktus : BaseChampion
                 m.Animate(20, 7, 1, true, false, 0); // take hit
             }
         }
-
-        eable.Free();
     }
 
     private void MigrateFrom(V0Content content)

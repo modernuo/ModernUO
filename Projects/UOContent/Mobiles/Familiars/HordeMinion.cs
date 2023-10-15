@@ -84,8 +84,6 @@ public partial class HordeMinionFamiliar : BaseFamiliar
             }
         }
 
-        eable.Free();
-
         var pickedUp = 3;
 
         while (pickedUp > 0 && queue.Count > 0)

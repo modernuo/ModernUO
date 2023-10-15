@@ -393,7 +393,6 @@ namespace Server.Engines.Craft
             {
                 if (item.Z + 16 > item.Z && item.Z + 16 > item.Z && Find(item.ItemID, itemIDs))
                 {
-                    eable.Free();
                     return true;
                 }
             }

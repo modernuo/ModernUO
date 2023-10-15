@@ -997,6 +997,17 @@ public static class Utility
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Shuffle<T>(this PooledRefList<T> list)
+    {
+        var count = list.Count;
+        for (var i = 0; i < count; i++)
+        {
+            var r = RandomMinMax(i, count - 1);
+            (list[r], list[i]) = (list[i], list[r]);
+        }
+    }
+
     /**
      * Gets a random sample from the source list.
      * Not meant for unbounded lists. Does not shuffle or modify source.

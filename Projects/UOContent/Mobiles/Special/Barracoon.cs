@@ -148,13 +148,10 @@ public partial class Barracoon : BaseChampion
                 rats++;
                 if (rats >= 16)
                 {
-                    eable.Free();
                     return;
                 }
             }
         }
-
-        eable.Free();
 
         PlaySound(0x3D);
 

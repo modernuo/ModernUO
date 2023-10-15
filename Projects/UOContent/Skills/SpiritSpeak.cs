@@ -134,7 +134,6 @@ namespace Server.SkillHandlers
                         break;
                     }
                 }
-                eable.Free();
 
                 var min = 1 + (int)(Caster.Skills.SpiritSpeak.Value * 0.25);
                 var max = min + 4;

@@ -124,8 +124,6 @@ namespace Server.Mobiles
                 orc.MoveToWorld(map.GetRandomNearbyLocation(target.Location), map);
                 orc.Combatant = target;
             }
-
-            eable.Free();
         }
     }
 }

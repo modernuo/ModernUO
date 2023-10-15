@@ -179,8 +179,6 @@ namespace Server.Mobiles
                     ); // * The plague beast attempts to absorb the remains, but cannot! *
                 }
             }
-
-            eable.Free();
         }
 
         private void IncreaseHits(int hp)

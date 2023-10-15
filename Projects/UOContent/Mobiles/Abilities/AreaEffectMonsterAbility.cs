@@ -17,7 +17,6 @@ public abstract class AreaEffectMonsterAbility : MonsterAbility
                 queue.Enqueue(m);
             }
         }
-        eable.Free();
 
         while (queue.Count > 0)
         {

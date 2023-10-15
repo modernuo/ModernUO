@@ -136,12 +136,9 @@ public partial class MarkContainer : LockableContainer
         {
             if (item.Z == p.Z)
             {
-                eable.Free();
                 return true;
             }
         }
-
-        eable.Free();
         return false;
     }
 

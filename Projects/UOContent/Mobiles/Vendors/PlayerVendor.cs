@@ -1277,8 +1277,6 @@ namespace Server.Mobiles
                                 m.OpenBackpack(from);
                             }
                         }
-
-                        mobiles.Free();
                     }
 
                     e.Handled = true;

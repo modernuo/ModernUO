@@ -102,8 +102,6 @@ namespace Server
                 }
             }
 
-            eable.Free();
-
             foreach (var mob in targets)
             {
                 var damage = mob.Hits * 6 / 10;

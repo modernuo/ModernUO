@@ -346,8 +346,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                             state.Send(removeEntity);
                         }
                     }
-
-                    eable.Free();
                 }
 
                 Delta(ItemDelta.Update);
@@ -1148,8 +1146,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                         }
                     }
                 }
-
-                eable.Free();
             }
 
             RemDelta(ItemDelta.Update);
@@ -1179,8 +1175,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                         state.Send(removeEntity);
                     }
                 }
-
-                eable.Free();
             }
 
             var oldInternalLocation = m_Location;
@@ -1199,8 +1193,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                     SendInfoTo(state);
                 }
             }
-
-            eable.Free();
 
             m_Map.OnMove(oldInternalLocation, this);
 
@@ -1403,8 +1395,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                 SendOPLPacketTo(state);
             }
         }
-
-        eable.Free();
     }
 
     public virtual void Delete()
@@ -1516,8 +1506,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                                 state.Send(removeEntity);
                             }
                         }
-
-                        eable.Free();
                     }
 
                     var oldLoc = m_Location;
@@ -1538,8 +1526,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                             SendInfoTo(state);
                         }
                     }
-
-                    eable.Free();
 
                     RemDelta(ItemDelta.Update);
                 }
@@ -3302,8 +3288,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "")
@@ -3336,8 +3320,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                 state.Send(buffer);
             }
         }
-
-        eable.Free();
     }
 
     public virtual void OnAfterDelete()
@@ -3589,8 +3571,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             items.Add(item);
         }
 
-        eable.Free();
-
         if (z == int.MinValue)
         {
             return false;
@@ -3792,8 +3772,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                 state.Send(removeEntity);
             }
         }
-
-        eable.Free();
     }
 
     public virtual int GetDropSound() => -1;

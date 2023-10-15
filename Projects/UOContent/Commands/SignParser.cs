@@ -101,8 +101,6 @@ namespace Server.Commands
                 }
             }
 
-            eable.Free();
-
             while (m_ToDelete.Count > 0)
             {
                 m_ToDelete.Dequeue().Delete();

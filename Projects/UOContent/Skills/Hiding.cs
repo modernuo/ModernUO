@@ -69,8 +69,6 @@ namespace Server.SkillHandlers
                             break;
                         }
                     }
-
-                    eable.Free();
                 }
 
                 ok = !badCombat && m.CheckSkill(SkillName.Hiding, 0.0 - bonus, 100.0 - bonus);

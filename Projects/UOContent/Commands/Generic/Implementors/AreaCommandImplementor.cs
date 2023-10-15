@@ -59,8 +59,6 @@ namespace Server.Commands.Generic
                         objs.Add(obj);
                     }
                 }
-
-                eable.Free();
                 ext.Filter(objs);
 
                 RunCommand(from, objs, command, args);

@@ -132,8 +132,6 @@ namespace Server.Commands
                         item.Delete();
                     }
                 }
-
-                eable.Free();
                 return count;
             }
 

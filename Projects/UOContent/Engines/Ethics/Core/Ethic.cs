@@ -167,8 +167,6 @@ namespace Server.Ethics
                         }
                     }
 
-                    eable.Free();
-
                     if (!found)
                     {
                         continue;
