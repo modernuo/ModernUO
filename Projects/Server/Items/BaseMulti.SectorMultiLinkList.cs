@@ -21,10 +21,6 @@ namespace Server.Items;
 // Adds support for the specific value link list on sectors for multis, separate from items
 public partial class BaseMulti : BaseMulti.ISectorMultiLinkListNode<BaseMulti>
 {
-    public BaseMulti SectorMultiNext { get; set; }
-    public BaseMulti SectorMultiPrevious { get; set; }
-    public bool OnSectorMultiLinkList { get; set; }
-
     public interface ISectorMultiLinkListNode<T> where T : class
     {
         public T SectorMultiNext { get; set; }
@@ -440,4 +436,9 @@ public partial class BaseMulti : BaseMulti.ISectorMultiLinkListNode<BaseMulti>
             public DescendingSectorMultiListEnumerator GetEnumerator() => this;
         }
     }
+
+    // Sectors, specifically for multis
+    public BaseMulti SectorMultiNext { get; set; }
+    public BaseMulti SectorMultiPrevious { get; set; }
+    public bool OnSectorMultiLinkList { get; set; }
 }
