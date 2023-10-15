@@ -1,4 +1,3 @@
-using System;
 using Server.Items;
 using Server.Tests;
 using Server.Tests.Network;

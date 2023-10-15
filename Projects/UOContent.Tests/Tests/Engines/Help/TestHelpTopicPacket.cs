@@ -1,4 +1,3 @@
-using System;
 using Server.Engines.Help;
 using Server.Network;
 using Server.Tests;
