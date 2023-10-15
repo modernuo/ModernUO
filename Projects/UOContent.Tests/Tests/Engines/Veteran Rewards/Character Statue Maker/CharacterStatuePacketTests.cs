@@ -1,4 +1,3 @@
-using System;
 using Server;
 using Server.Engines.VeteranRewards;
 using Server.Network;

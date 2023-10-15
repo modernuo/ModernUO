@@ -1,4 +1,3 @@
-using System;
 using Server.Engines.Chat;
 using Server.Tests;
 using Server.Tests.Network;

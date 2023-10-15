@@ -1,4 +1,3 @@
-using System;
 using ModernUO.Serialization;
 using Server.Network;
 using Server.Prompts;

@@ -1,4 +1,3 @@
-using System;
 using Server.Network;
 using Server.Tests.Network;
 using Xunit;
