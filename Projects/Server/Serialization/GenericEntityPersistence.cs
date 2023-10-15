@@ -49,6 +49,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         _name = name;
         _minSerial = minSerial;
         _maxSerial = maxSerial;
+        _lastEntitySerial = (Serial)(minSerial - 1);
         typeof(T).RegisterFindEntity(Find);
     }
 
