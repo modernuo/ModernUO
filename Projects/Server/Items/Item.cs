@@ -2469,7 +2469,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         var map = m_Map;
 
         return map == null
-            ? Map.NullEnumerable<IEntity>.Instance
+            ? PooledEnumeration.NullEnumerable<IEntity>.Instance
             : map.GetObjectsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
     }
 
@@ -2478,7 +2478,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         var map = m_Map;
 
         return map?.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
-               ?? Map.NullEnumerable<Item>.Instance;
+               ?? PooledEnumeration.NullEnumerable<Item>.Instance;
     }
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
@@ -2486,7 +2486,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         var map = m_Map;
 
         return map?.GetMobilesInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
-               ?? Map.NullEnumerable<Mobile>.Instance;
+               ?? PooledEnumeration.NullEnumerable<Mobile>.Instance;
     }
 
     public IPooledEnumerable<NetState> GetClientsInRange(int range)
@@ -2494,7 +2494,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         var map = m_Map;
 
         return map.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
-               ?? Map.NullEnumerable<NetState>.Instance;
+               ?? PooledEnumeration.NullEnumerable<NetState>.Instance;
     }
 
     public bool GetTempFlag(int flag) => ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;

@@ -8067,18 +8067,18 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public IPooledEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
 
     public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
-        m_Map?.GetItemsInRange<T>(m_Location, range) ?? Map.NullEnumerable<T>.Instance;
+        m_Map?.GetItemsInRange<T>(m_Location, range) ?? PooledEnumeration.NullEnumerable<T>.Instance;
 
     public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
-        m_Map?.GetObjectsInRange(m_Location, range) ?? Map.NullEnumerable<IEntity>.Instance;
+        m_Map?.GetObjectsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<IEntity>.Instance;
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
 
     public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
-        m_Map?.GetMobilesInRange<T>(m_Location, range) ?? Map.NullEnumerable<T>.Instance;
+        m_Map?.GetMobilesInRange<T>(m_Location, range) ?? PooledEnumeration.NullEnumerable<T>.Instance;
 
     public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
-        m_Map?.GetClientsInRange(m_Location, range) ?? Map.NullEnumerable<NetState>.Instance;
+        m_Map?.GetClientsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<NetState>.Instance;
 
     public void SayTo(Mobile to, bool ascii, string text) =>
         PrivateOverheadMessage(MessageType.Regular, SpeechHue, ascii, text, to.NetState);
