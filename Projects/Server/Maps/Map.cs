@@ -1,8 +1,21 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: Map.cs                                                          *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Server.Buffers;
 using Server.Collections;
@@ -1303,88 +1316,6 @@ public sealed class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
         return loc;
     }
 
-    public class NullEnumerable<T> : IPooledEnumerable<T>
-    {
-        public static readonly NullEnumerable<T> Instance = new();
-
-        private readonly IEnumerable<T> m_Empty = Enumerable.Empty<T>();
-
-        IEnumerator IEnumerable.GetEnumerator() => m_Empty.GetEnumerator();
-
-        public IEnumerator<T> GetEnumerator() => m_Empty.GetEnumerator();
-
-        public void Dispose()
-        {
-        }
-    }
-
-    public sealed class PooledEnumerable<T> : IPooledEnumerable<T>
-    {
-        private static readonly Queue<PooledEnumerable<T>> _Buffer = new(0x400);
-
-        private bool m_IsDisposed;
-
-        private List<T> m_Pool = new(0x40);
-
-        public PooledEnumerable(IEnumerable<T> pool)
-        {
-            m_Pool.AddRange(pool);
-        }
-
-        public void Dispose()
-        {
-            if (m_IsDisposed)
-            {
-                return;
-            }
-
-            m_IsDisposed = true;
-
-            m_Pool.Clear();
-            m_Pool.Capacity = Math.Max(m_Pool.Capacity, 0x100);
-
-            lock (((ICollection)_Buffer).SyncRoot)
-            {
-                _Buffer.Enqueue(this);
-            }
-        }
-
-        ~PooledEnumerable()
-        {
-            Dispose();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => m_Pool.GetEnumerator();
-
-        public IEnumerator<T> GetEnumerator() => m_Pool.GetEnumerator();
-
-
-#pragma warning disable CA1000 // Do not declare static members on generic types
-        public static PooledEnumerable<T> Instantiate(
-            Map map, Rectangle2D bounds, PooledEnumeration.Selector<T> selector
-        )
-        {
-            PooledEnumerable<T> e = null;
-
-            lock (((ICollection)_Buffer).SyncRoot)
-            {
-                if (_Buffer.Count > 0)
-                {
-                    e = _Buffer.Dequeue();
-                }
-            }
-
-            var pool = PooledEnumeration.EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));
-
-            if (e == null)
-            {
-                return new PooledEnumerable<T>(pool);
-            }
-
-            e.m_Pool.AddRange(pool);
-            return e;
-        }
-    }
 #pragma warning restore CA1000 // Do not declare static members on generic types
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Map Parse(string s) => Parse(s, null);

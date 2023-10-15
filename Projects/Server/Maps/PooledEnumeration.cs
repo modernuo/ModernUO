@@ -14,7 +14,9 @@
  *************************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Network;
 
@@ -181,26 +183,26 @@ public static class PooledEnumeration
         }
     }
 
-    public static Map.PooledEnumerable<NetState> GetClients(Map map, Rectangle2D bounds) =>
-        Map.PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
+    public static PooledEnumerable<NetState> GetClients(Map map, Rectangle2D bounds) =>
+        PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
 
-    public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds) =>
-        Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
+    public static PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds) =>
+        PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
 
-    public static Map.PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds) =>
+    public static PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds) =>
         GetMobiles<Mobile>(map, bounds);
 
-    public static Map.PooledEnumerable<T> GetMobiles<T>(Map map, Rectangle2D bounds) where T : Mobile =>
-        Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectMobiles<T>);
+    public static PooledEnumerable<T> GetMobiles<T>(Map map, Rectangle2D bounds) where T : Mobile =>
+        PooledEnumerable<T>.Instantiate(map, bounds, SelectMobiles<T>);
 
-    public static Map.PooledEnumerable<T> GetItems<T>(Map map, Rectangle2D bounds) where T : Item =>
-        Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectItems<T>);
+    public static PooledEnumerable<T> GetItems<T>(Map map, Rectangle2D bounds) where T : Item =>
+        PooledEnumerable<T>.Instantiate(map, bounds, SelectItems<T>);
 
-    public static Map.PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds) =>
-        Map.PooledEnumerable<BaseMulti>.Instantiate(map, bounds, MultiSelector ?? SelectMultis);
+    public static PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds) =>
+        PooledEnumerable<BaseMulti>.Instantiate(map, bounds, MultiSelector ?? SelectMultis);
 
-    public static Map.PooledEnumerable<StaticTile[]> GetMultiTiles(Map map, Rectangle2D bounds) =>
-        Map.PooledEnumerable<StaticTile[]>.Instantiate(map, bounds, MultiTileSelector ?? SelectMultiTiles);
+    public static PooledEnumerable<StaticTile[]> GetMultiTiles(Map map, Rectangle2D bounds) =>
+        PooledEnumerable<StaticTile[]>.Instantiate(map, bounds, MultiTileSelector ?? SelectMultiTiles);
 
     public static IEnumerable<Map.Sector> EnumerateSectors(Map map, Rectangle2D bounds)
     {
@@ -301,5 +303,88 @@ public static class PooledEnumeration
 
         s = map.GetRealSector(xSector, ySector);
         return true;
+    }
+
+    public class NullEnumerable<T> : IPooledEnumerable<T>
+    {
+        public static readonly NullEnumerable<T> Instance = new();
+
+        private readonly IEnumerable<T> m_Empty = Enumerable.Empty<T>();
+
+        IEnumerator IEnumerable.GetEnumerator() => m_Empty.GetEnumerator();
+
+        public IEnumerator<T> GetEnumerator() => m_Empty.GetEnumerator();
+
+        public void Dispose()
+        {
+        }
+    }
+
+    public sealed class PooledEnumerable<T> : IPooledEnumerable<T>
+    {
+        private static readonly Queue<PooledEnumerable<T>> _Buffer = new(0x400);
+
+        private bool m_IsDisposed;
+
+        private List<T> m_Pool = new(0x40);
+
+        public PooledEnumerable(IEnumerable<T> pool)
+        {
+            m_Pool.AddRange(pool);
+        }
+
+        public void Dispose()
+        {
+            if (m_IsDisposed)
+            {
+                return;
+            }
+
+            m_IsDisposed = true;
+
+            m_Pool.Clear();
+            m_Pool.Capacity = Math.Max(m_Pool.Capacity, 0x100);
+
+            lock (((ICollection)_Buffer).SyncRoot)
+            {
+                _Buffer.Enqueue(this);
+            }
+        }
+
+        ~PooledEnumerable()
+        {
+            Dispose();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => m_Pool.GetEnumerator();
+
+        public IEnumerator<T> GetEnumerator() => m_Pool.GetEnumerator();
+
+
+#pragma warning disable CA1000 // Do not declare static members on generic types
+        public static PooledEnumerable<T> Instantiate(
+            Map map, Rectangle2D bounds, PooledEnumeration.Selector<T> selector
+        )
+        {
+            PooledEnumerable<T> e = null;
+
+            lock (((ICollection)_Buffer).SyncRoot)
+            {
+                if (_Buffer.Count > 0)
+                {
+                    e = _Buffer.Dequeue();
+                }
+            }
+
+            var pool = PooledEnumeration.EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));
+
+            if (e == null)
+            {
+                return new PooledEnumerable<T>(pool);
+            }
+
+            e.m_Pool.AddRange(pool);
+            return e;
+        }
     }
 }
