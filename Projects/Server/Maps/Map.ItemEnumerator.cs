@@ -73,7 +73,7 @@ public partial class Map
         return owner;
     }
 
-    private void EndIteratingItems(ItemIterationOwner owner)
+    private void EndIteratingItems()
     {
 #if THREADGUARD
             if (Thread.CurrentThread != Core.Thread)
@@ -87,7 +87,6 @@ public partial class Map
 #endif
 
         _iteratingItems--;
-        _itemIterationOwners.Add(owner);
 
         // Finished iterating, check for deferred actions
         if (_iteratingItems == 0 && _delayedItemActions.Count > 0)
@@ -227,18 +226,15 @@ public partial class Map
 
         ~ItemIterationOwner()
         {
-            Release();
-            GC.ReRegisterForFinalize(this);
-        }
-
-        private void Release()
-        {
-            _map.EndIteratingItems(this);
+            _map.EndIteratingItems();
+            // Let it finalize otherwise it will eventually get moved to Gen 2 and rarely be called
+            // This makes putting it back into the pool a bad idea.
         }
 
         public void Dispose()
         {
-            Release();
+            _map.EndIteratingItems();
+            _map._itemIterationOwners.Add(this);
             GC.SuppressFinalize(this);
         }
     }
