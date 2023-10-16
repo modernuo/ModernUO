@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -22,6 +23,7 @@ public partial class Map
 {
     private int _iteratingItems;
     private List<(MapAction, Point3D, Item)> _delayedItemActions = new();
+    private List<ItemIterationOwner> _itemIterationOwners = new();
 
     public bool IsIteratingItems
     {
@@ -41,7 +43,7 @@ public partial class Map
     public ItemEnumerator<T> GetItemsInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Item =>
         new(this, bounds, makeBoundsInclusive);
 
-    private void BeginIteratingItems()
+    private ItemIterationOwner BeginIteratingItems()
     {
 #if THREADGUARD
             if (Thread.CurrentThread != Core.Thread)
@@ -55,9 +57,23 @@ public partial class Map
 #endif
 
         _iteratingItems++;
+        ItemIterationOwner owner;
+
+        if (_itemIterationOwners.Count == 0)
+        {
+            owner = new ItemIterationOwner(this);
+        }
+        else
+        {
+            var last = _itemIterationOwners.Count - 1;
+            owner = _itemIterationOwners[last];
+            _itemIterationOwners.RemoveAt(last);
+        }
+
+        return owner;
     }
 
-    private void EndIteratingItems()
+    private void EndIteratingItems(ItemIterationOwner owner)
     {
 #if THREADGUARD
             if (Thread.CurrentThread != Core.Thread)
@@ -71,6 +87,7 @@ public partial class Map
 #endif
 
         _iteratingItems--;
+        _itemIterationOwners.Add(owner);
 
         // Finished iterating, check for deferred actions
         if (_iteratingItems == 0 && _delayedItemActions.Count > 0)
@@ -105,10 +122,10 @@ public partial class Map
     {
         private Map _map;
         private int _sectorStartX;
-        private int _sectorStartY;
         private int _sectorEndX;
         private int _sectorEndY;
         private Rectangle2D _bounds;
+        private ItemIterationOwner _owner;
 
         private int _currentSectorX;
         private int _currentSectorY;
@@ -128,13 +145,13 @@ public partial class Map
 
             _bounds = bounds;
 
-            map.CalculateSectors(bounds, out _sectorStartX, out _sectorStartY, out _sectorEndX, out _sectorEndY);
+            map.CalculateSectors(bounds, out _sectorStartX, out var _sectorStartY, out _sectorEndX, out _sectorEndY);
 
             // We start the X sector one short because it gets incremented immediately in MoveNext()
             _currentSectorX = _sectorStartX - 1;
             _currentSectorY = _sectorStartY;
 
-            _map.BeginIteratingItems();
+            _owner = _map.BeginIteratingItems();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -188,7 +205,7 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() => _map.EndIteratingItems();
+        public void Dispose() => _owner.Dispose();
 
         public T Current
         {
@@ -200,5 +217,29 @@ public partial class Map
         public ItemEnumerator<T> GetEnumerator() => this;
 
         public static ItemEnumerator<T> Empty => new(null, Rectangle2D.Empty, false);
+    }
+
+    private class ItemIterationOwner : IDisposable
+    {
+        private readonly Map _map;
+
+        public ItemIterationOwner(Map map) => _map = map;
+
+        ~ItemIterationOwner()
+        {
+            Release();
+            GC.ReRegisterForFinalize(this);
+        }
+
+        private void Release()
+        {
+            _map.EndIteratingItems(this);
+        }
+
+        public void Dispose()
+        {
+            Release();
+            GC.SuppressFinalize(this);
+        }
     }
 }
