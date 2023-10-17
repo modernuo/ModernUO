@@ -103,7 +103,6 @@ public partial class Map
 
     public ref struct ItemEnumerable<T> where T : Item
     {
-
         public static ItemEnumerable<T> Empty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -121,6 +120,7 @@ public partial class Map
             _makeBoundsInclusive = makeBoundsInclusive;
         }
 
+        // The enumerator MUST be disposed. Not disposing it will damage the sector irreparably.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ItemEnumerator<T> GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
     }
