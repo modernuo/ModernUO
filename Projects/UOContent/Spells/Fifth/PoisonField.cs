@@ -243,17 +243,15 @@ namespace Server.Spells.Fifth
                         if (map != null && caster != null)
                         {
                             var eastToWest = m_Item.ItemID == 0x3915;
-                            var eable = map.GetMobilesInBounds(
-                                new Rectangle2D(
-                                    m_Item.X - (eastToWest ? 0 : 1),
-                                    m_Item.Y - (eastToWest ? 1 : 0),
-                                    eastToWest ? 1 : 2,
-                                    eastToWest ? 2 : 1
-                                )
+                            var bounds = new Rectangle2D(
+                                m_Item.X - (eastToWest ? 0 : 1),
+                                m_Item.Y - (eastToWest ? 1 : 0),
+                                eastToWest ? 1 : 2,
+                                eastToWest ? 2 : 1
                             );
 
                             using var queue = PooledRefQueue<Mobile>.Create();
-                            foreach (var m in eable)
+                            foreach (var m in map.GetMobilesInBounds(bounds))
                             {
                                 if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                                     SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))

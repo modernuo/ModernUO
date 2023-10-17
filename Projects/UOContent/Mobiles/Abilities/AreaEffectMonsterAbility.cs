@@ -8,9 +8,8 @@ public abstract class AreaEffectMonsterAbility : MonsterAbility
 
     public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
-        var eable = source.GetMobilesInRange(AreaRange);
         using var queue = PooledRefQueue<Mobile>.Create();
-        foreach (var m in eable)
+        foreach (var m in source.GetMobilesInRange(AreaRange))
         {
             if (CanEffectTarget(source, m))
             {

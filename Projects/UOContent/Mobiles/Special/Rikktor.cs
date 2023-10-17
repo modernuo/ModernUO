@@ -98,9 +98,7 @@ public partial class Rikktor : BaseChampion
 
         PlaySound(0x2F3);
 
-        var eable = GetMobilesInRange<Mobile>(8);
-
-        foreach (var m in eable)
+        foreach (var m in GetMobilesInRange<Mobile>(8))
         {
             if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
             {

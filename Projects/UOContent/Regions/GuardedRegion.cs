@@ -153,8 +153,14 @@ public class GuardedRegion : BaseRegion
 
     public override void MakeGuard(Mobile focus)
     {
-        var eable = focus.GetMobilesInRange<BaseGuard>(8);
-        var useGuard = eable.FirstOrDefault(m => m.Focus == null);
+        BaseGuard useGuard = null;
+        foreach (var m in focus.GetMobilesInRange<BaseGuard>(8))
+        {
+            if (m.Focus == null)
+            {
+                useGuard = m;
+            }
+        }
 
         if (useGuard == null)
         {
@@ -319,9 +325,7 @@ public class GuardedRegion : BaseRegion
             return;
         }
 
-        var eable = Map.GetMobilesInRange(p, 14);
-
-        foreach (var m in eable)
+        foreach (var m in Map.GetMobilesInRange(p, 14))
         {
             if (IsGuardCandidate(m) &&
                 (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))

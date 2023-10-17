@@ -166,6 +166,89 @@ namespace Server.Mobiles
             }
         }
 
+        private void DoGreaterHeal(Mobile m, bool isFriendly)
+        {
+            if (!isFriendly || m.Poisoned || MortalStrike.IsWounded(m) || !CanBeBeneficial(m))
+            {
+                return;
+            }
+
+            DoBeneficial(m);
+
+            // Algorithm: (40% of magery) + (1-10)
+
+            var toHeal = (int)(Skills.Magery.Value * 0.4);
+            toHeal += Utility.Random(1, 10);
+
+            m.Heal(toHeal, this);
+
+            m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
+            m.PlaySound(0x202);
+        }
+
+        private void DoLightning(Mobile m, bool isFriendly)
+        {
+            if (isFriendly || !CanBeHarmful(m))
+            {
+                return;
+            }
+
+            DoHarmful(m);
+
+            double damage;
+
+            if (Core.AOS)
+            {
+                var baseDamage = 6 + (int)(Skills.EvalInt.Value / 5.0);
+
+                damage = Utility.RandomMinMax(baseDamage, baseDamage + 3);
+            }
+            else
+            {
+                damage = Utility.Random(12, 9);
+            }
+
+            m.BoltEffect(0);
+
+            SpellHelper.Damage(TimeSpan.FromSeconds(0.25), m, this, damage, 0, 0, 0, 0, 100);
+        }
+
+        private void DoPoison(Mobile m, bool isFriendly)
+        {
+            if (isFriendly || !CanBeHarmful(m))
+            {
+                return;
+            }
+
+            DoHarmful(m);
+
+            m.Spell?.OnCasterHurt();
+
+            m.Paralyzed = false;
+
+            var total = Skills.Magery.Value + Skills.Poisoning.Value;
+
+            var dist = GetDistanceToSqrt(m);
+
+            if (dist >= 3.0)
+            {
+                total -= (dist - 3.0) * 10.0;
+            }
+
+            int level = total switch
+            {
+                >= 200.0 => Utility.Random(10) == 0 ? 3 : 2,
+                > 170.0  => 2,
+                > 130.0  => 1,
+                _        => 0
+            };
+
+            m.ApplyPoison(this, Poison.GetPoison(level));
+
+            m.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);
+            m.PlaySound(0x474);
+        }
+
         public void EndSavageDance()
         {
             if (Deleted)
@@ -173,137 +256,30 @@ namespace Server.Mobiles
                 return;
             }
 
-            var eable = GetMobilesInRange(8);
+            var rnd = Utility.Random(3);
 
-            switch (Utility.Random(3))
+            foreach (var m in GetMobilesInRange(8))
             {
-                case 0: /* greater heal */
-                    {
-                        foreach (var m in eable)
+                var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
+
+                switch (rnd)
+                {
+                    case 0:
                         {
-                            var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
-
-                            if (!isFriendly)
-                            {
-                                continue;
-                            }
-
-                            if (m.Poisoned || MortalStrike.IsWounded(m) || !CanBeBeneficial(m))
-                            {
-                                continue;
-                            }
-
-                            DoBeneficial(m);
-
-                            // Algorithm: (40% of magery) + (1-10)
-
-                            var toHeal = (int)(Skills.Magery.Value * 0.4);
-                            toHeal += Utility.Random(1, 10);
-
-                            m.Heal(toHeal, this);
-
-                            m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
-                            m.PlaySound(0x202);
+                            DoGreaterHeal(m, isFriendly);
+                            break;
                         }
-
-                        break;
-                    }
-                case 1: /* lightning */
-                    {
-                        foreach (var m in eable)
+                    case 1:
                         {
-                            var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
-
-                            if (isFriendly)
-                            {
-                                continue;
-                            }
-
-                            if (!CanBeHarmful(m))
-                            {
-                                continue;
-                            }
-
-                            DoHarmful(m);
-
-                            double damage;
-
-                            if (Core.AOS)
-                            {
-                                var baseDamage = 6 + (int)(Skills.EvalInt.Value / 5.0);
-
-                                damage = Utility.RandomMinMax(baseDamage, baseDamage + 3);
-                            }
-                            else
-                            {
-                                damage = Utility.Random(12, 9);
-                            }
-
-                            m.BoltEffect(0);
-
-                            SpellHelper.Damage(TimeSpan.FromSeconds(0.25), m, this, damage, 0, 0, 0, 0, 100);
+                            DoLightning(m, isFriendly);
+                            break;
                         }
-
-                        break;
-                    }
-                case 2: /* poison */
-                    {
-                        foreach (var m in eable)
+                    case 2:
                         {
-                            var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
-
-                            if (isFriendly)
-                            {
-                                continue;
-                            }
-
-                            if (!CanBeHarmful(m))
-                            {
-                                continue;
-                            }
-
-                            DoHarmful(m);
-
-                            m.Spell?.OnCasterHurt();
-
-                            m.Paralyzed = false;
-
-                            var total = Skills.Magery.Value + Skills.Poisoning.Value;
-
-                            var dist = GetDistanceToSqrt(m);
-
-                            if (dist >= 3.0)
-                            {
-                                total -= (dist - 3.0) * 10.0;
-                            }
-
-                            int level;
-
-                            if (total >= 200.0 && Utility.Random(1, 100) <= 10)
-                            {
-                                level = 3;
-                            }
-                            else if (total > 170.0)
-                            {
-                                level = 2;
-                            }
-                            else if (total > 130.0)
-                            {
-                                level = 1;
-                            }
-                            else
-                            {
-                                level = 0;
-                            }
-
-                            m.ApplyPoison(this, Poison.GetPoison(level));
-
-                            m.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);
-                            m.PlaySound(0x474);
+                            DoPoison(m, isFriendly);
+                            break;
                         }
-
-                        break;
-                    }
+                }
             }
         }
     }

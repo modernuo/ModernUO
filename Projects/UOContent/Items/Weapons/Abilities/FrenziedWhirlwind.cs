@@ -39,8 +39,7 @@ namespace Server.Items
 
             bool didEffect = false;
 
-            var eable = attacker.GetMobilesInRange(1);
-            foreach (var m in eable)
+            foreach (var m in attacker.GetMobilesInRange(1))
             {
                 if (m?.Deleted == false && m != defender && m != attacker &&
                     SpellHelper.ValidIndirectTarget(attacker, m) &&

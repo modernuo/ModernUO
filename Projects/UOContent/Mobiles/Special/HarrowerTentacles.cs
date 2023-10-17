@@ -119,9 +119,7 @@ public partial class HarrowerTentacles : BaseCreature
                 return;
             }
 
-            var eable = m_Owner.GetMobilesInRange<Mobile>(9);
-
-            foreach (var m in eable)
+            foreach (var m in m_Owner.GetMobilesInRange<Mobile>(9))
             {
                 if (m == m_Owner || !m_Owner.CanBeHarmful(m))
                 {

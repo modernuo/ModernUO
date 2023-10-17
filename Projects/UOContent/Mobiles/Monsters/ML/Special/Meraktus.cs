@@ -214,9 +214,7 @@ public partial class Meraktus : BaseChampion
 
     public void Earthquake()
     {
-        var eable = GetMobilesInRange(8);
-
-        foreach (var m in eable)
+        foreach (var m in GetMobilesInRange(8))
         {
             if (m == this || !CanBeHarmful(m) || m.Deleted || !m.Player &&
                 !(m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team)))

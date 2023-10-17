@@ -120,9 +120,7 @@ namespace Server.Mobiles
 
                 Animate(10, 4, 1, true, false, 0);
 
-                var eable = target.GetMobilesInRange<Mobile>(8);
-
-                foreach (var m in eable)
+                foreach (var m in target.GetMobilesInRange<Mobile>(8))
                 {
                     if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
                     {

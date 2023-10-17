@@ -3800,8 +3800,7 @@ namespace Server.Mobiles
             }
 
             using var queue = PooledRefQueue<Mobile>.Create();
-            var eable = master.GetMobilesInRange(3);
-            foreach (var m in eable)
+            foreach (var m in master.GetMobilesInRange(3))
             {
                 if (m is BaseCreature
                         { Controlled: true, ControlOrder: OrderType.Guard or OrderType.Follow or OrderType.Come } pet &&
@@ -5346,9 +5345,8 @@ namespace Server.Mobiles
                 return;
             }
 
-            var eable = GetMobilesInRange(AuraRange);
             using var queue = PooledRefQueue<Mobile>.Create();
-            foreach (var m in eable)
+            foreach (var m in GetMobilesInRange(AuraRange))
             {
                 if (m != this && CanBeHarmful(m, false) && (Core.AOS || InLOS(m)) &&
                     (m is BaseCreature bc && (bc.Controlled || bc.Summoned || bc.Team != Team) || m.Player))

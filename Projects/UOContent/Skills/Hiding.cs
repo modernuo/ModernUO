@@ -60,8 +60,7 @@ namespace Server.SkillHandlers
             {
                 if (!CombatOverride)
                 {
-                    var eable = m.GetMobilesInRange(range);
-                    foreach (var check in eable)
+                    foreach (var check in m.GetMobilesInRange(range))
                     {
                         if (check.InLOS(m) && check.Combatant == m)
                         {

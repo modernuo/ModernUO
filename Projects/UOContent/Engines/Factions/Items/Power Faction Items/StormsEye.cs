@@ -90,9 +90,8 @@ namespace Server
 
         private static void OnHit(Mobile from, Point3D origin, Map facet)
         {
-            var eable = facet.GetMobilesInRange(origin, 12);
             var targets = new List<Mobile>();
-            foreach (var m in eable)
+            foreach (var m in facet.GetMobilesInRange(origin, 12))
             {
                 if (from.CanBeHarmful(m, false) &&
                     m.InLOS(new Point3D(origin.X, origin.Y, origin.Z + 1)) &&

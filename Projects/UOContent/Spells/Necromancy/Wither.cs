@@ -51,8 +51,7 @@ namespace Server.Spells.Necromancy
                     var cbc = Caster as BaseCreature;
                     var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
-                    var eable = Caster.GetMobilesInRange(Core.ML ? 4 : 5);
-                    foreach (var targ in eable)
+                    foreach (var targ in Caster.GetMobilesInRange(Core.ML ? 4 : 5))
                     {
                         if (targ == Caster
                             || !Caster.InLOS(targ)

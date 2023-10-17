@@ -4154,10 +4154,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         if (oldSector != newSector)
         {
             using var queue = PooledRefQueue<IEntity>.Create(2048);
-            for (var i = 0; i < oldSector.Mobiles.Count; ++i)
+            foreach (var m in oldSector.Mobiles)
             {
-                var m = oldSector.Mobiles[i];
-
                 if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z)
                 {
                     queue.Enqueue(m);
@@ -4189,10 +4187,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
-            for (var i = 0; i < newSector.Mobiles.Count; ++i)
+            foreach (var m in newSector.Mobiles)
             {
-                var m = newSector.Mobiles[i];
-
                 if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z)
                 {
                     queue.Enqueue(m);
@@ -4227,9 +4223,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         else
         {
             using var queue = PooledRefQueue<(IEntity, byte)>.Create(2048);
-            for (var i = 0; i < oldSector.Mobiles.Count; ++i)
+            foreach (var m in oldSector.Mobiles)
             {
-                var m = oldSector.Mobiles[i];
                 byte flag;
                 if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z)
                 {
@@ -8129,10 +8124,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
         m_Map?.GetObjectsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<IEntity>.Instance;
 
-    public IPooledEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
+    public Map.MobileEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
 
-    public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
-        m_Map?.GetMobilesInRange<T>(m_Location, range) ?? PooledEnumeration.NullEnumerable<T>.Instance;
+    public Map.MobileEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
+        m_Map == null ? Map.MobileEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Location, range);
 
     public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
         m_Map?.GetClientsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<NetState>.Instance;

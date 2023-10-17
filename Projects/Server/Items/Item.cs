@@ -2488,13 +2488,12 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     public Map.ItemBoundsEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
         m_Map == null ? Map.ItemBoundsEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
-    public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
-    {
-        var map = m_Map;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
 
-        return map?.GetMobilesInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
-               ?? PooledEnumeration.NullEnumerable<Mobile>.Instance;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
+        m_Map == null ? Map.MobileEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
     public IPooledEnumerable<NetState> GetClientsInRange(int range)
     {

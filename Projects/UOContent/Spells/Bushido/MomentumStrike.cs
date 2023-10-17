@@ -21,9 +21,8 @@ namespace Server.Spells.Bushido
 
             var weapon = attacker.Weapon;
 
-            var eable = attacker.GetMobilesInRange(weapon.MaxRange);
             using var queue = PooledRefQueue<Mobile>.Create();
-            foreach (var m in eable)
+            foreach (var m in attacker.GetMobilesInRange(weapon.MaxRange))
             {
                 if (m != defender && m.Combatant == attacker)
                 {

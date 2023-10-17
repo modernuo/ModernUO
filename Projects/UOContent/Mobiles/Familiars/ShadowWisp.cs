@@ -68,9 +68,8 @@ public partial class ShadowWispFamiliar : BaseFamiliar
             return;
         }
 
-        var eable = GetMobilesInRange(5);
         using var queue = PooledRefQueue<Mobile>.Create();
-        foreach (var m in eable)
+        foreach (var m in GetMobilesInRange(5))
         {
             if (m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor)
             {

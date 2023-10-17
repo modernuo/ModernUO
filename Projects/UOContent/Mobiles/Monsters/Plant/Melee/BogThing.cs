@@ -81,10 +81,9 @@ namespace Server.Mobiles
 
         public void EatBoglings()
         {
-            var eable = GetMobilesInRange<Bogling>(2);
             var sound = true;
 
-            foreach (var bogling in eable)
+            foreach (var bogling in GetMobilesInRange<Bogling>(2))
             {
                 if (Hits >= HitsMax)
                 {

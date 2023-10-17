@@ -214,9 +214,8 @@ namespace Server.SkillHandlers
 
             var range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
-            var eable = from.GetMobilesInRange(range);
             var list = new List<Mobile>();
-            foreach (var m in eable)
+            foreach (var m in from.GetMobilesInRange(range))
             {
                 if (m != from && (!Core.AOS || m.Alive) &&
                     (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) &&

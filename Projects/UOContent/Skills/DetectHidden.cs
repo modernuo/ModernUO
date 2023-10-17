@@ -58,9 +58,7 @@ namespace Server.SkillHandlers
 
                 if (range > 0)
                 {
-                    var inRange = src.Map.GetMobilesInRange(p, range);
-
-                    foreach (var trg in inRange)
+                    foreach (var trg in src.Map.GetMobilesInRange(p, range))
                     {
                         if (trg.Hidden && src != trg)
                         {

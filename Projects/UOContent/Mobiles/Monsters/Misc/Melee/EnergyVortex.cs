@@ -75,9 +75,8 @@ namespace Server.Mobiles
         {
             if (Core.SE && Summoned)
             {
-                var eable = GetMobilesInRange(5);
                 using var queue = PooledRefQueue<Mobile>.Create();
-                foreach (var m in eable)
+                foreach (var m in GetMobilesInRange(5))
                 {
                     if (m is EnergyVortex or BladeSpirits && ((BaseCreature)m).Summoned)
                     {

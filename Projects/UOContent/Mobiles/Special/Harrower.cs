@@ -529,9 +529,8 @@ public partial class Harrower : BaseCreature
                 return;
             }
 
-            var eable = m_Owner.GetMobilesInRange(16);
             Mobile toTeleport = null;
-            foreach (var m in eable)
+            foreach (var m in m_Owner.GetMobilesInRange(16))
             {
                 if (m != m_Owner && m.Player && m_Owner.CanBeHarmful(m) && m_Owner.CanSee(m))
                 {
