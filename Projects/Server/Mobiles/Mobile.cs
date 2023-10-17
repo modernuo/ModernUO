@@ -8059,11 +8059,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemEnumerator<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
+    public Map.ItemEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemEnumerator<T> GetItemsInRange<T>(int range) where T : Item =>
-        m_Map == null ? Map.ItemEnumerator<T>.Empty : m_Map.GetItemsInRange<T>(m_Location, range);
+    public Map.ItemEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
+        m_Map == null ? Map.ItemEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Location, range);
 
     public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
         m_Map?.GetObjectsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<IEntity>.Instance;

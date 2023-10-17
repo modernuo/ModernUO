@@ -1175,9 +1175,10 @@ namespace Server.Commands
 
                         if (item is BaseDoor door)
                         {
+                            var eable = maps[j].GetItemsInRange<BaseDoor>(loc, 1);
                             var itemType = door.GetType();
 
-                            foreach (var link in maps[j].GetItemsInRange<BaseDoor>(loc, 1))
+                            foreach (var link in eable)
                             {
                                 if (link != item && link.Z == door.Z && link.GetType() == itemType)
                                 {

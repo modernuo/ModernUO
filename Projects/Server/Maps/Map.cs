@@ -58,19 +58,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     private TileMatrix m_Tiles;
 
-    public static void Configure()
-    {
-        for (var i = 0; i < AllMaps.Count; i++)
-        {
-            var map = AllMaps[i];
-            // Prepopulate the pool
-            for (var j = 0; j < 8; j++)
-            {
-                map._itemIterationOwners.Add(new ItemIterationOwner(map));
-            }
-        }
-    }
-
     public Map(int mapID, int mapIndex, int fileIndex, int width, int height, int season, string name, MapRules rules)
     {
         MapID = mapID;

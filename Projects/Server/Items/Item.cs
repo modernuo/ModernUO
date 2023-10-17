@@ -2474,12 +2474,12 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemEnumerator<Item> GetItemsInRange(int range) =>
-        m_Map == null ? Map.ItemEnumerator<Item>.Empty : m_Map.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
+    public Map.ItemEnumerable<Item> GetItemsInRange(int range) =>
+        m_Map == null ? Map.ItemEnumerable<Item>.Empty : m_Map.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemEnumerator<T> GetItemsInRange<T>(int range) where T : Item =>
-        m_Map == null ? Map.ItemEnumerator<T>.Empty : m_Map.GetItemsInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
+    public Map.ItemEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
+        m_Map == null ? Map.ItemEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
     {

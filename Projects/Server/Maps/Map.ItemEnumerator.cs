@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -23,7 +22,6 @@ public partial class Map
 {
     private int _iteratingItems;
     private List<(MapAction, Point3D, Item)> _delayedItemActions = new();
-    private List<ItemIterationOwner> _itemIterationOwners = new();
 
     public bool IsIteratingItems
     {
@@ -31,19 +29,19 @@ public partial class Map
         get => _iteratingItems > 0;
     }
 
-    public ItemEnumerator<Item> GetItemsInRange(Point3D p) => GetItemsInRange(p, Core.GlobalMaxUpdateRange);
+    public ItemEnumerable<Item> GetItemsInRange(Point3D p) => GetItemsInRange(p, Core.GlobalMaxUpdateRange);
 
-    public ItemEnumerator<Item> GetItemsInRange(Point3D p, int range) => GetItemsInRange<Item>(p, range);
+    public ItemEnumerable<Item> GetItemsInRange(Point3D p, int range) => GetItemsInRange<Item>(p, range);
 
-    public ItemEnumerator<T> GetItemsInRange<T>(Point3D p, int range) where T : Item =>
+    public ItemEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item =>
         GetItemsInBounds<T>(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
 
-    public ItemEnumerator<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
+    public ItemEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
 
-    public ItemEnumerator<T> GetItemsInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Item =>
+    public ItemEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Item =>
         new(this, bounds, makeBoundsInclusive);
 
-    private ItemIterationOwner BeginIteratingItems()
+    private void BeginIteratingItems()
     {
 #if THREADGUARD
             if (Thread.CurrentThread != Core.Thread)
@@ -57,20 +55,6 @@ public partial class Map
 #endif
 
         _iteratingItems++;
-        ItemIterationOwner owner;
-
-        if (_itemIterationOwners.Count == 0)
-        {
-            owner = new ItemIterationOwner(this);
-        }
-        else
-        {
-            var last = _itemIterationOwners.Count - 1;
-            owner = _itemIterationOwners[last];
-            _itemIterationOwners.RemoveAt(last);
-        }
-
-        return owner;
     }
 
     private void EndIteratingItems()
@@ -117,6 +101,30 @@ public partial class Map
         }
     }
 
+    public ref struct ItemEnumerable<T> where T : Item
+    {
+
+        public static ItemEnumerable<T> Empty
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new(null, Rectangle2D.Empty, false);
+        }
+
+        private Map _map;
+        private Rectangle2D _bounds;
+        private bool _makeBoundsInclusive;
+
+        public ItemEnumerable(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
+        {
+            _map = map;
+            _bounds = bounds;
+            _makeBoundsInclusive = makeBoundsInclusive;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ItemEnumerator<T> GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
+    }
+
     public ref struct ItemEnumerator<T> where T : Item
     {
         private Map _map;
@@ -124,7 +132,6 @@ public partial class Map
         private int _sectorEndX;
         private int _sectorEndY;
         private Rectangle2D _bounds;
-        private ItemIterationOwner _owner;
 
         private int _currentSectorX;
         private int _currentSectorY;
@@ -150,7 +157,7 @@ public partial class Map
             _currentSectorX = _sectorStartX - 1;
             _currentSectorY = _sectorStartY;
 
-            _owner = _map.BeginIteratingItems();
+            _map.BeginIteratingItems();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -204,38 +211,12 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() => _owner.Dispose();
+        public void Dispose() => _map.EndIteratingItems();
 
         public T Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _current;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ItemEnumerator<T> GetEnumerator() => this;
-
-        public static ItemEnumerator<T> Empty => new(null, Rectangle2D.Empty, false);
-    }
-
-    private class ItemIterationOwner : IDisposable
-    {
-        private readonly Map _map;
-
-        public ItemIterationOwner(Map map) => _map = map;
-
-        ~ItemIterationOwner()
-        {
-            _map.EndIteratingItems();
-            // Let it finalize otherwise it will eventually get moved to Gen 2 and rarely be called
-            // This makes putting it back into the pool a bad idea.
-        }
-
-        public void Dispose()
-        {
-            _map.EndIteratingItems();
-            _map._itemIterationOwners.Add(this);
-            GC.SuppressFinalize(this);
         }
     }
 }
