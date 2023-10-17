@@ -83,17 +83,15 @@ namespace Server.SkillHandlers
 
                     if (Faction.Find(src) != null)
                     {
-                        var itemsInRange = src.Map.GetItemsInRange<BaseFactionTrap>(p, range);
-
-                        foreach (var trap in itemsInRange)
+                        foreach (var trap in src.Map.GetItemsInRange<BaseFactionTrap>(p, range))
                         {
                             if (src.CheckTargetSkill(SkillName.DetectHidden, trap, 80.0, 100.0))
                             {
                                 src.SendLocalizedMessage(
-                                    1042712,
+                                    1042712, // You reveal a trap placed by a faction:
                                     true,
                                     $" {(trap.Faction == null ? "" : trap.Faction.Definition.FriendlyName)}"
-                                ); // You reveal a trap placed by a faction:
+                                );
 
                                 trap.Visible = true;
                                 trap.BeginConceal();

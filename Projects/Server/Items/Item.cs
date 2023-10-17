@@ -2473,13 +2473,13 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             : map.GetObjectsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
     }
 
-    public IPooledEnumerable<Item> GetItemsInRange(int range)
-    {
-        var map = m_Map;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ItemEnumerable<Item> GetItemsInRange(int range) =>
+        m_Map == null ? Map.ItemEnumerable<Item>.Empty : m_Map.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
-        return map?.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
-               ?? PooledEnumeration.NullEnumerable<Item>.Instance;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ItemEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
+        m_Map == null ? Map.ItemEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
     {
@@ -3547,10 +3547,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             z = top;
         }
 
-        var eable = map.GetItemsInRange(p, 0);
-
-        var items = new List<Item>();
-        foreach (var item in eable)
+        using var items = PooledRefList<Item>.Create();
+        foreach (var item in map.GetItemsInRange(p, 0))
         {
             if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
             {
@@ -3611,7 +3609,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             m_OpenSlots &= ~(((1 << bitCount) - 1) << zStart);
         }
 
-        for (var i = 0; i < items.Count; ++i)
+        for (var i = 0; i < items.Count; i++)
         {
             var item = items[i];
             var id = item.ItemData;

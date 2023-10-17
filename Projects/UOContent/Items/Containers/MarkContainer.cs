@@ -130,15 +130,14 @@ public partial class MarkContainer : LockableContainer
 
     private static bool FindMarkContainer(Point3D p, Map map)
     {
-        var eable = map.GetItemsInRange<MarkContainer>(p, 0);
-
-        foreach (var item in eable)
+        foreach (var item in map.GetItemsInRange<MarkContainer>(p, 0))
         {
             if (item.Z == p.Z)
             {
                 return true;
             }
         }
+
         return false;
     }
 

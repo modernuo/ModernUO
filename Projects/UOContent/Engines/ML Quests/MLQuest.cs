@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Server.Collections;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
@@ -266,25 +266,39 @@ namespace Server.Engines.MLQuests
         {
             var name = $"MLQS-{GetType().Name}";
 
-            var toDelete = map.GetItemsInRange(loc, 0).Where(item => item is BaseSpawner && item.Name == name);
-
-            foreach (var item in toDelete)
+            using var queue = PooledRefQueue<Item>.Create();
+            foreach (var item in map.GetItemsInRange(loc, 0))
             {
-                item.Delete();
+                // This predates GUIDs. Let's build these spawners and export them so we can delete this code!
+                if (item is BaseSpawner spawner && spawner.Name == name)
+                {
+                    queue.Enqueue(item);
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                queue.Dequeue().Delete();
             }
 
             s.Name = name;
             s.MoveToWorld(loc, map);
         }
 
-        public void PutDeco(Item deco, Point3D loc, Map map)
+        public static void PutDeco(Item deco, Point3D loc, Map map)
         {
-            // Auto cleanup on regeneration
-            var toDelete = map.GetItemsInRange(loc, 0).Where(item => item.ItemID == deco.ItemID && item.Z == loc.Z);
-
-            foreach (var item in toDelete)
+            using var queue = PooledRefQueue<Item>.Create();
+            foreach (var item in map.GetItemsInRange(loc, 0))
             {
-                item.Delete();
+                if (item.ItemID == deco.ItemID && item.Z == loc.Z)
+                {
+                    queue.Enqueue(item);
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                queue.Dequeue().Delete();
             }
 
             deco.MoveToWorld(loc, map);

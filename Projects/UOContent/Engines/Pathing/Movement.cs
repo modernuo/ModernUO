@@ -98,10 +98,8 @@ namespace Server.Movement
 
                 foreach (var sector in _sectors)
                 {
-                    for (var j = 0; j < sector.Items.Count; ++j)
+                    foreach (var item in sector.Items)
                     {
-                        var item = sector.Items[j];
-
                         if (ignoreMovableImpassables && item.Movable && item.ItemData.ImpassableSurface)
                         {
                             continue;
@@ -167,10 +165,8 @@ namespace Server.Movement
 
                 if (!sectorStartIsForward)
                 {
-                    for (var i = 0; i < sectorForward.Items.Count; ++i)
+                    foreach (var item in sectorForward.Items)
                     {
-                        var item = sectorForward.Items[i];
-
                         if (ignoreMovableImpassables && item.Movable && item.ItemData.ImpassableSurface)
                         {
                             continue;
@@ -193,10 +189,8 @@ namespace Server.Movement
                     }
                 }
 
-                for (var i = 0; i < sectorStart.Items.Count; ++i)
+                foreach (var item in sectorStart.Items)
                 {
-                    var item = sectorStart.Items[i];
-
                     if (ignoreMovableImpassables && item.Movable && item.ItemData.ImpassableSurface)
                     {
                         continue;

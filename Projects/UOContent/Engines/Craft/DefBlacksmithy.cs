@@ -39,9 +39,7 @@ public class DefBlacksmithy : CraftSystem
             return;
         }
 
-        var eable = map.GetItemsInRange(from.Location, range);
-
-        foreach (var item in eable)
+        foreach (var item in map.GetItemsInRange(from.Location, range))
         {
             var type = item.GetType();
 

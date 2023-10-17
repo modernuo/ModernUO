@@ -121,17 +121,16 @@ namespace Server.Commands
 
             public static int DeleteTeleporters(WorldLocation worldLocation)
             {
-                var eable = worldLocation.Map.GetItemsInRange<Teleporter>(worldLocation, 0);
-
                 var count = 0;
-                foreach (var item in eable)
+                foreach (var item in worldLocation.Map.GetItemsInRange<Teleporter>(worldLocation, 0))
                 {
-                    if (!(item is KeywordTeleporter or SkillTeleporter) && IsWithinZ(item.Z - worldLocation.Z))
+                    if (item is not (KeywordTeleporter or SkillTeleporter) && IsWithinZ(item.Z - worldLocation.Z))
                     {
                         count++;
                         item.Delete();
                     }
                 }
+
                 return count;
             }
 

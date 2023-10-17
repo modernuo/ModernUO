@@ -295,15 +295,15 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
         }
 
         var sector = map.GetSector(p);
-        var list = sector.RegionRects;
+        var list = sector.Regions;
 
         for (var i = 0; i < list.Count; ++i)
         {
-            var regRect = list[i];
+            var region = list[i];
 
-            if (regRect.Contains(p))
+            if (region.Contains(p))
             {
-                return regRect.Region;
+                return region;
             }
         }
 

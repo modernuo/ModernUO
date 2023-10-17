@@ -234,9 +234,13 @@ namespace Server.Mobiles
                 {
                     p = GetSpawnPosition(2);
 
-                    var eable = Map.GetItemsInRange<StainedOoze>(p, 0);
-                    using var enumerator = eable.GetEnumerator();
-                    bool atLocation = enumerator.MoveNext();
+                    var atLocation = false;
+                    foreach (var item in Map.GetItemsInRange<StainedOoze>(p, 0))
+                    {
+                        atLocation = true;
+                        break;
+                    }
+
                     if (!atLocation)
                     {
                         break;

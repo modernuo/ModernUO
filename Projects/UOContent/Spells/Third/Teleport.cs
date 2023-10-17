@@ -96,9 +96,7 @@ namespace Server.Spells.Third
 
                 m.PlaySound(0x1FE);
 
-                var eable = m.GetItemsInRange(0);
-
-                foreach (var item in eable)
+                foreach (var item in m.GetItemsInRange(0))
                 {
                     if (item is ParalyzeFieldSpell.InternalItem or
                         PoisonFieldSpell.InternalItem or FireFieldSpell.FireFieldItem)

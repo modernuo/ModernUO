@@ -1,4 +1,3 @@
-using System.Linq;
 using ModernUO.Serialization;
 using Server.Mobiles;
 
@@ -268,9 +267,15 @@ namespace Server.Items
 
             public static SHTeleporter FindSHTeleporter(Map map, Point3D p)
             {
-                var eable = map.GetItemsInRange<SHTeleporter>(p, 0);
-                var teleporter = eable.FirstOrDefault(item => item.Z == p.Z);
-                return teleporter;
+                foreach (var teleporter in map.GetItemsInRange<SHTeleporter>(p, 0))
+                {
+                    if (teleporter.Z == p.Z)
+                    {
+                        return teleporter;
+                    }
+                }
+
+                return null;
             }
 
             public SHTeleporter AddSHT(Map map, bool ext, int x, int y, int z)

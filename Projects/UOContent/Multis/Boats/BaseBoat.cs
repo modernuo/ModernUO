@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Server.Engines.Spawners;
 using Server.Items;
@@ -1502,31 +1501,32 @@ namespace Server.Multis
                 }
             }
 
-            var eable = map.GetItemsInBounds(
-                new Rectangle2D(
-                    p.X + newComponents.Min.X,
-                    p.Y + newComponents.Min.Y,
-                    newComponents.Width,
-                    newComponents.Height
-                )
+            var bounds = new Rectangle2D(
+                p.X + newComponents.Min.X,
+                p.Y + newComponents.Min.Y,
+                newComponents.Width,
+                newComponents.Height
             );
 
-            var canFit = eable.All(
-                item =>
+            foreach (var item in map.GetItemsInBounds(bounds))
+            {
+                if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || item.Z < p.Z || !item.Visible)
                 {
-                    if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || item.Z < p.Z || !item.Visible)
-                    {
-                        return true;
-                    }
-
-                    var x = item.X - p.X + newComponents.Min.X;
-                    var y = item.Y - p.Y + newComponents.Min.Y;
-
-                    return x >= 0 && x < newComponents.Width && y >= 0 && y < newComponents.Height &&
-                        newComponents.Tiles[x][y].Length == 0 || Contains(item);
+                    continue;
                 }
-            );
-            return canFit;
+
+                var x = item.X - p.X + newComponents.Min.X;
+                var y = item.Y - p.Y + newComponents.Min.Y;
+
+                // Out of bounds, return false - cannot fit
+                if ((x < 0 || x >= newComponents.Width || y < 0 || y >= newComponents.Height ||
+                     newComponents.Tiles[x][y].Length != 0) && !Contains(item))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public Point3D Rotate(Point3D p, int count)
