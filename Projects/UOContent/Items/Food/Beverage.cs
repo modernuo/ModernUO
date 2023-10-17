@@ -479,7 +479,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
 
                 var obj = qs.FindObjective<FindIngredientObjective>();
 
-                if (obj?.Completed == true && obj.Ingredient == Ingredient.SwampWater)
+                if (obj?.Completed == false && obj.Ingredient == Ingredient.SwampWater)
                 {
                     var contains = false;
 
