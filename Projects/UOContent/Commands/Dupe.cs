@@ -51,7 +51,7 @@ namespace Server.Commands
                 try
                 {
                     // Do not set the parent since it screws up mobile/container totals and weights.
-                    if (p.CanRead && p.CanWrite && p.Name != "Parent")
+                    if (p.CanRead && p.CanWrite && !src.DupeExcludedProperty(p.Name) && !dest.DupeExcludedProperty(p.Name))
                     {
                         p.SetValue(dest, p.GetValue(src, null), null);
                     }
