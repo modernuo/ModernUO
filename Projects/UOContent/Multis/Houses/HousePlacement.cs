@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Regions;
 using Server.Spells;
 
@@ -80,7 +81,7 @@ namespace Server.Multis
             var start = new Point3D(center.X + mcl.Min.X, center.Y + mcl.Min.Y, center.Z);
 
             // These are storage lists. They hold items and mobiles found in the map for further processing
-            var items = new List<Item>();
+            using var items = PooledRefList<Item>.Create();
             var mobiles = new List<Mobile>();
 
             // These are also storage lists. They hold location values indicating the yard and border locations.
@@ -138,11 +139,9 @@ namespace Server.Multis
 
                     var oldTiles = map.Tiles.GetStaticTiles(tileX, tileY, true);
 
-                    var sector = map.GetSector(tileX, tileY);
-
                     items.Clear();
 
-                    foreach (var item in sector.Items)
+                    foreach (var item in map.GetItemsAt(tileX, tileY))
                     {
                         if (item.Visible && item.X == tileX && item.Y == tileY)
                         {
@@ -151,6 +150,8 @@ namespace Server.Multis
                     }
 
                     mobiles.Clear();
+
+                    var sector = map.GetSector(tileX, tileY);
 
                     for (var i = 0; i < sector.Mobiles.Count; ++i)
                     {
@@ -220,9 +221,8 @@ namespace Server.Multis
                                 hasSurface = true;*/
                         }
 
-                        for (var j = 0; j < items.Count; ++j)
+                        foreach (var item in items)
                         {
-                            var item = items[j];
                             var id = item.ItemData;
 
                             if (addTileTop > item.Z && item.Z + id.CalcHeight > addTileZ)
@@ -236,11 +236,6 @@ namespace Server.Multis
                                     return HousePlacementResult.BadItem; // Broke rule #2
                                 }
                             }
-
-                            /*else if (isFoundation && !hasSurface && (id.Flags & TileFlag.Surface) != 0 && (item.Z + id.CalcHeight) == center.Z)
-                              {
-                                hasSurface = true;
-                              }*/
                         }
 
                         if (isFoundation && !hasSurface)

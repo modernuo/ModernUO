@@ -21,7 +21,7 @@ namespace Server;
 public partial class Map
 {
     private int _iteratingItems;
-    private List<(MapAction, Point3D, Item)> _delayedItemActions = new();
+    private readonly List<(MapAction, Point3D, Item)> _delayedItemActions = new();
 
     public bool IsIteratingItems
     {
@@ -29,15 +29,58 @@ public partial class Map
         get => _iteratingItems > 0;
     }
 
-    public ItemEnumerable<Item> GetItemsInRange(Point3D p) => GetItemsInRange(p, Core.GlobalMaxUpdateRange);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<Item> GetItemsAt(Point3D p) => GetItemsInRange(p, 0);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsAt<T>(Point3D p) where T : Item => GetItemsInRange<T>(p, 0);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<Item> GetItemsInRange(Point3D p) => GetItemsInRange<Item>(p);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ItemEnumerable<Item> GetItemsInRange(Point3D p, int range) => GetItemsInRange<Item>(p, range);
 
-    public ItemEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item =>
-        GetItemsInBounds<T>(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsInRange<T>(Point3D p) where T : Item => GetItemsInRange<T>(p, Core.GlobalMaxUpdateRange);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item =>
+        GetItemsInRange<T>(p.m_X, p.m_Y, range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<Item> GetItemsAt(Point2D p) => GetItemsInRange(p, 0);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsAt<T>(Point2D p) where T : Item => GetItemsInRange<T>(p, 0);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<Item> GetItemsInRange(Point2D p) => GetItemsInRange<Item>(p);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<Item> GetItemsInRange(Point2D p, int range) => GetItemsInRange<Item>(p, range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsInRange<T>(Point2D p) where T : Item => GetItemsInRange<T>(p, Core.GlobalMaxUpdateRange);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsInRange<T>(Point2D p, int range) where T : Item =>
+        GetItemsInRange<T>(p.m_X, p.m_Y, range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<Item> GetItemsAt(int x, int y) => GetItemsAt<Item>(x, y);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsAt<T>(int x, int y) where T : Item => GetItemsInRange<T>(x, y, 0);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemEnumerable<T> GetItemsInRange<T>(int x, int y, int range) where T : Item =>
+        GetItemsInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ItemEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ItemEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Item =>
         new(this, bounds, makeBoundsInclusive);
 

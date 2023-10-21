@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Targeting;
 
@@ -226,12 +227,13 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
 
     private static void EventSink_OpenDoorMacroUsed(Mobile m)
     {
-        if (m.Map == null)
+        if (m.Map == null || !m.CheckAlive())
         {
             return;
         }
 
-        int x = m.X, y = m.Y;
+        int x = m.X;
+        int y = m.Y;
 
         switch (m.Direction & Direction.Mask)
         {
@@ -281,18 +283,13 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
                 }
         }
 
-        var sector = m.Map.GetSector(x, y);
-
-        foreach (var item in sector.Items)
+        foreach (var item in m.Map.GetItemsAt(x, y))
         {
-            if (item.Location.X == x && item.Location.Y == y && item.Z + item.ItemData.Height > m.Z &&
+            if (item.Z + item.ItemData.Height > m.Z &&
                 m.Z + 16 > item.Z && item is BaseDoor && m.CanSee(item) && m.InLOS(item))
             {
-                if (m.CheckAlive())
-                {
-                    m.SendLocalizedMessage(500024); // Opening door...
-                    item.OnDoubleClick(m);
-                }
+                m.SendLocalizedMessage(500024); // Opening door...
+                item.OnDoubleClick(m);
 
                 break;
             }
@@ -320,7 +317,7 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         return CheckFit(map, p, 16);
     }
 
-    private bool CheckFit(Map map, Point3D p, int height)
+    private static bool CheckFit(Map map, Point3D p, int height)
     {
         if (map == Map.Internal)
         {
@@ -331,13 +328,9 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         var y = p.Y;
         var z = p.Z;
 
-        var sector = map.GetSector(x, y);
-        var mobs = sector.Mobiles;
-
-        foreach (var item in sector.Items)
+        foreach (var item in map.GetItemsAt(x, y))
         {
-            if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y) &&
-                item is not BaseDoor)
+            if (item.ItemID <= TileData.MaxItemValue && item is not (BaseMulti or BaseDoor))
             {
                 var id = item.ItemData;
                 var surface = id.Surface;
@@ -349,6 +342,8 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
                 }
             }
         }
+
+        var mobs = map.GetSector(x, y).Mobiles;
 
         for (var i = 0; i < mobs.Count; ++i)
         {
@@ -376,19 +371,7 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         return true;
     }
 
-    public List<BaseDoor> GetChain()
-    {
-        var list = new List<BaseDoor>();
-        var c = this;
-
-        do
-        {
-            list.Add(c);
-            c = c.Link;
-        } while (c?.Deleted == false && !list.Contains(c));
-
-        return list;
-    }
+    public ChainEnumerable GetChain() => new(this);
 
     public bool IsFreeToClose()
     {
@@ -397,16 +380,15 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             return CanClose();
         }
 
-        var list = GetChain();
-
-        var freeToClose = true;
-
-        for (var i = 0; freeToClose && i < list.Count; ++i)
+        foreach (var link in GetChain())
         {
-            freeToClose = list[i].CanClose();
+            if (!link.CanClose())
+            {
+                return false;
+            }
         }
 
-        return freeToClose;
+        return true;
     }
 
     public virtual bool IsInside(Mobile from) => false;
@@ -419,28 +401,18 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
             {
-                from.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    502502
-                ); // That is locked, but you open it with your godly powers.
-                // from.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, 0x3B2, 3, 502502, "", "" ) ); // That is locked, but you open it with your godly powers.
+                // That is locked, but you open it with your godly powers.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502502);
             }
             else if (Key.ContainsKey(from.Backpack, KeyValue))
             {
-                from.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    501282
-                ); // You quickly unlock, open, and relock the door
+                // You quickly unlock, open, and relock the door
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501282);
             }
             else if (IsInside(from))
             {
-                from.LocalOverheadMessage(
-                    MessageType.Regular,
-                    0x3B2,
-                    501280
-                ); // That is locked, but is usable from the inside.
+                // That is locked, but is usable from the inside.
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501280);
             }
             else
             {
@@ -475,11 +447,9 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         {
             var open = !_open;
 
-            var list = GetChain();
-
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var link in GetChain())
             {
-                list[i].Open = open;
+                link.Open = open;
             }
         }
         else
@@ -538,6 +508,60 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             {
                 _door.Open = false;
             }
+        }
+    }
+
+    public ref struct ChainEnumerable
+    {
+        private readonly BaseDoor _door;
+
+        public ChainEnumerable(BaseDoor door) => _door = door;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ChainEnumerator GetEnumerator() => new(_door);
+    }
+
+    public ref struct ChainEnumerator
+    {
+        private BaseDoor _door;
+        private BaseDoor _current;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ChainEnumerator(BaseDoor door)
+        {
+            _door = door;
+            _current = null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool MoveNext()
+        {
+            bool valid;
+
+            if (_current == null)
+            {
+                _current = _door;
+                valid = _current != null;
+            }
+            else
+            {
+                _current = _current.Link;
+                valid = _current?.Deleted == false && _current != _door;
+            }
+
+            if (!valid)
+            {
+                _door = null;
+                _current = null;
+            }
+
+            return valid;
+        }
+
+        public BaseDoor Current
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _current;
         }
     }
 }
