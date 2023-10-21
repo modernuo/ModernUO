@@ -3221,7 +3221,7 @@ namespace Server.Mobiles
                 ControlTarget = ControlMaster;
                 ControlOrder = OrderType.Follow;
 
-                ProcessDeltaQueue();
+                ProcessDelta();
                 SendIncomingPacket();
                 SendIncomingPacket();
 
@@ -3834,7 +3834,7 @@ namespace Server.Mobiles
             Stam = StamMax;
             Mana = 0;
 
-            ProcessDeltaQueue();
+            ProcessDelta();
 
             IsDeadPet = false;
 
