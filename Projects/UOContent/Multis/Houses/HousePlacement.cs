@@ -81,7 +81,7 @@ namespace Server.Multis
             var start = new Point3D(center.X + mcl.Min.X, center.Y + mcl.Min.Y, center.Z);
 
             // These are storage lists. They hold items and mobiles found in the map for further processing
-            using var items = PooledRefQueue<Item>.Create();
+            using var items = PooledRefList<Item>.Create();
             var mobiles = new List<Mobile>();
 
             // These are also storage lists. They hold location values indicating the yard and border locations.
@@ -145,7 +145,7 @@ namespace Server.Multis
                     {
                         if (item.Visible && item.X == tileX && item.Y == tileY)
                         {
-                            items.Enqueue(item);
+                            items.Add(item);
                         }
                     }
 
@@ -221,10 +221,8 @@ namespace Server.Multis
                                 hasSurface = true;*/
                         }
 
-                        while (items.Count > 0)
+                        foreach (var item in items)
                         {
-                            var item = items.Dequeue();
-
                             var id = item.ItemData;
 
                             if (addTileTop > item.Z && item.Z + id.CalcHeight > addTileZ)
