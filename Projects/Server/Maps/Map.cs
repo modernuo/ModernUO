@@ -535,6 +535,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return new Point2D(x, y);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void CalculateSectors(
         Rectangle2D bounds,
         out int sectorStartX, out int sectorStartY,

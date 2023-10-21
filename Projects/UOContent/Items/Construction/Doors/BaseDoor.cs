@@ -523,7 +523,7 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
 
     public ref struct ChainEnumerator
     {
-        private readonly BaseDoor _door;
+        private BaseDoor _door;
         private BaseDoor _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -536,14 +536,26 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
+            bool valid;
+
             if (_current == null)
             {
                 _current = _door;
-                return _current != null;
+                valid = _current != null;
+            }
+            else
+            {
+                _current = _current.Link;
+                valid = _current?.Deleted == false && _current != _door;
             }
 
-            _current = _current.Link;
-            return _current?.Deleted == false && _current != _door;
+            if (!valid)
+            {
+                _door = null;
+                _current = null;
+            }
+
+            return valid;
         }
 
         public BaseDoor Current
