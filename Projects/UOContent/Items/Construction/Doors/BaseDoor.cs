@@ -517,7 +517,6 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
 
         public ChainEnumerable(BaseDoor door) => _door = door;
 
-        // The enumerator MUST be disposed. Not disposing it will damage the sector irreparably.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ChainEnumerator GetEnumerator() => new(_door);
     }
