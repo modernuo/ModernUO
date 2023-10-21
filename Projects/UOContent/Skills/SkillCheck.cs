@@ -249,7 +249,7 @@ public static class SkillCheck
 
             if (!from.Player || skills.Total < skills.Cap)
             {
-                skill.BaseFixedPoint = Math.Min(toGain, skill.CapFixedPoint - skill.BaseFixedPoint);
+                skill.BaseFixedPoint = Math.Min(skill.BaseFixedPoint + toGain, skill.CapFixedPoint);
             }
         }
 
