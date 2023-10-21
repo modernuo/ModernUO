@@ -4501,7 +4501,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             BodyMod = 0;
             Body = Race.AliveBody(this);
 
-            ProcessDeltaQueue();
+            ProcessDelta();
 
             for (var i = Items.Count - 1; i >= 0; --i)
             {
@@ -4839,7 +4839,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             EventSink.InvokePlayerDeath(this);
 
-            ProcessDeltaQueue();
+            ProcessDelta();
 
             m_NetState.SendDeathStatus(false);
 
