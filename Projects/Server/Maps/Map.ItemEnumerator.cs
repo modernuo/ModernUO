@@ -15,14 +15,13 @@
 
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Server.Collections;
 
 namespace Server;
 
 public partial class Map
 {
     private int _iteratingItems;
-    private List<(MapAction, Point3D, Item)> _delayedItemActions = new();
+    private readonly List<(MapAction, Point3D, Item)> _delayedItemActions = new();
 
     public bool IsIteratingItems
     {
