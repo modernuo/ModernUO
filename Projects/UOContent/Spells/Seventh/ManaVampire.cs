@@ -57,8 +57,14 @@ namespace Server.Spells.Seventh
                     }
                 }
 
-                m.Mana -= Math.Clamp(toDrain, 0, Math.Min(m.Mana, Caster.ManaMax - Caster.Mana));
-                Caster.Mana += toDrain;
+                // Will not drain more than the target has currently and will not put the caster over his maximum mana
+                toDrain = Math.Clamp(toDrain, 0, Math.Min(m.Mana, Caster.ManaMax - Caster.Mana));
+
+                if (toDrain > 0)
+                {
+                    m.Mana -= toDrain;
+                    Caster.Mana += toDrain;
+                }
 
                 if (Core.AOS)
                 {
