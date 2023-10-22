@@ -85,6 +85,11 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         node.Previous = null;
         node.OnLinkList = false;
         Count--;
+
+        if (Count < 0)
+        {
+            throw new Exception("Count is negative!");
+        }
     }
 
     // Remove all entries before this node, not including this node.
@@ -116,6 +121,11 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             current.Next = null;
             current.Previous = null;
             Count--;
+
+            if (Count < 0)
+            {
+                throw new Exception("Count is negative!");
+            }
 
             current = previous;
         }
@@ -153,6 +163,11 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             current.Previous = null;
             Count--;
 
+            if (Count < 0)
+            {
+                throw new Exception("Count is negative!");
+            }
+
             current = next;
         }
 
@@ -179,10 +194,9 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         {
             First = e;
             Last = e;
-            Count++;
+            Count = 1;
+            e.OnLinkList = true;
         }
-
-        e.OnLinkList = true;
     }
 
     public void AddFirst(T e)
@@ -205,10 +219,9 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         {
             First = e;
             Last = e;
-            Count++;
+            Count = 1;
+            e.OnLinkList = true;
         }
-
-        e.OnLinkList = true;
     }
 
     public void AddBefore(T existing, T node)
@@ -339,6 +352,11 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         }
 
         otherList.Count -= count;
+
+        if (otherList.Count < 0)
+        {
+            throw new Exception("Count is negative!");
+        }
 
         if (Last != null)
         {
