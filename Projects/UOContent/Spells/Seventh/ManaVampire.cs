@@ -57,7 +57,8 @@ namespace Server.Spells.Seventh
                     }
                 }
 
-                m.Mana -= Math.Clamp(toDrain, 0, Math.Min(m.Mana, Caster.ManaMax - Caster.Mana));
+                toDrain = Math.Clamp(toDrain, 0, Math.Min(m.Mana, Caster.ManaMax - Caster.Mana));
+                m.Mana -= toDrain;
                 Caster.Mana += toDrain;
 
                 if (Core.AOS)
