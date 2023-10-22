@@ -789,7 +789,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             {
                 if (IsIteratingItems)
                 {
-                    _delayedItemActions.Add((MapAction.Enter, oldLocation, item));
+                    _delayedItemActions.Add((MapAction.Move, oldLocation, item));
                     return;
                 }
 
