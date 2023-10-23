@@ -59,7 +59,7 @@ public class FlippableAttribute : Attribute
 
     public virtual void Flip(Item item)
     {
-        if (ItemIDs == null)
+        if (ItemIDs == null || ItemIDs.Length == 0)
         {
             try
             {
