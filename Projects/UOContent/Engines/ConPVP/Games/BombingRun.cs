@@ -468,7 +468,7 @@ namespace Server.Engines.ConPVP
                     if (landTile.ID == 0x244 && statics.Length == 0) // 0x244 = invalid land tile
                     {
                         var empty = true;
-                        foreach (var item in Map.GetItemsInRange(point, 0))
+                        foreach (var item in Map.GetItemsAt(point))
                         {
                             if (item != this)
                             {
@@ -660,7 +660,7 @@ namespace Server.Engines.ConPVP
                     }
                 }
 
-                foreach (var item in GetItemsInRange(0))
+                foreach (var item in GetItemsAt())
                 {
                     if (item.Visible && item != this)
                     {

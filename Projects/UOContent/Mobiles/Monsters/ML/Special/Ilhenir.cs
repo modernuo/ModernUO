@@ -235,7 +235,7 @@ namespace Server.Mobiles
                     p = GetSpawnPosition(2);
 
                     var atLocation = false;
-                    foreach (var item in Map.GetItemsInRange<StainedOoze>(p, 0))
+                    foreach (var item in Map.GetItemsAt<StainedOoze>(p))
                     {
                         atLocation = true;
                         break;

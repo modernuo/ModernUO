@@ -97,7 +97,7 @@ namespace Server.Spells.Spellweaving
                 }
             }
 
-            foreach (var item in map.GetItemsInRange(location, 0))
+            foreach (var item in map.GetItemsAt(location))
             {
                 if (item.Z + item.ItemData.CalcHeight == location.Z && IsValidTile(item.ItemID))
                 {

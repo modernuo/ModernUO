@@ -197,7 +197,7 @@ public partial class LeverPuzzleController : Item
     [Usage("GenLeverPuzzle"), Description("Generates lamp room and lever puzzle in doom.")]
     public static void GenLampPuzzle_OnCommand(CommandEventArgs e)
     {
-        foreach (var item in Map.Malas.GetItemsInRange(lp_Center, 0))
+        foreach (var item in Map.Malas.GetItemsAt(lp_Center))
         {
             if (item is LeverPuzzleController)
             {

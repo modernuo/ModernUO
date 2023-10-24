@@ -358,11 +358,9 @@ namespace Server.Multis
                     }
                 }
 
-                var sector = map.GetSector(borderPoint.X, borderPoint.Y);
-
-                foreach (var item in sector.Items)
+                foreach (var item in map.GetItemsAt(borderPoint))
                 {
-                    if (item.X != borderPoint.X || item.Y != borderPoint.Y || item.Movable)
+                    if (item.Movable)
                     {
                         continue;
                     }

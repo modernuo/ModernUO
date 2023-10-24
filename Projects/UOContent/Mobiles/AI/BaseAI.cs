@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
@@ -94,7 +95,6 @@ public abstract class BaseAI
         SkillName.Meditation
     };
 
-    private static readonly Queue<Item> m_Obstacles = new();
     protected ActionType m_Action;
 
     public BaseCreature m_Mobile;
@@ -2156,8 +2156,9 @@ public abstract class BaseAI
                 int x = m_Mobile.X, y = m_Mobile.Y;
                 Movement.Movement.Offset(d, ref x, ref y);
 
+                using var queue = PooledRefQueue<Item>.Create();
                 var destroyables = 0;
-                foreach (var item in map.GetItemsInRange(new Point3D(x, y, m_Mobile.Location.Z), 1))
+                foreach (var item in map.GetItemsInRange(new Point2D(x, y), 1))
                 {
                     if (canOpenDoors && item is BaseDoor door && door.Z + door.ItemData.Height > m_Mobile.Z &&
                         m_Mobile.Z + 16 > door.Z)
@@ -2169,7 +2170,7 @@ public abstract class BaseAI
 
                         if (!door.Locked || !door.UseLocks())
                         {
-                            m_Obstacles.Enqueue(door);
+                            queue.Enqueue(door);
                         }
 
                         if (!canDestroyObstacles)
@@ -2185,7 +2186,7 @@ public abstract class BaseAI
                             continue;
                         }
 
-                        m_Obstacles.Enqueue(item);
+                        queue.Enqueue(item);
                         ++destroyables;
                     }
                 }
@@ -2195,14 +2196,14 @@ public abstract class BaseAI
                     Effects.PlaySound(new Point3D(x, y, m_Mobile.Z), m_Mobile.Map, 0x3B3);
                 }
 
-                if (m_Obstacles.Count > 0)
+                if (queue.Count > 0)
                 {
                     blocked = false; // retry movement
                 }
 
-                while (m_Obstacles.Count > 0)
+                while (queue.Count > 0)
                 {
-                    var item = m_Obstacles.Dequeue();
+                    var item = queue.Dequeue();
 
                     if (item is BaseDoor door)
                     {
@@ -2238,7 +2239,7 @@ public abstract class BaseAI
                                 if (check.Movable && check.ItemData.Impassable &&
                                     cont.Z + check.ItemData.Height > m_Mobile.Z)
                                 {
-                                    m_Obstacles.Enqueue(check);
+                                    queue.Enqueue(check);
                                 }
                             }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
+using Server.Collections;
 using Server.Items;
 using Server.Json;
 using Server.Network;
@@ -121,16 +122,20 @@ namespace Server.Commands
 
             public static int DeleteTeleporters(WorldLocation worldLocation)
             {
-                var count = 0;
-                foreach (var item in worldLocation.Map.GetItemsInRange<Teleporter>(worldLocation, 0))
+                using var queue = PooledRefQueue<Item>.Create();
+                foreach (var item in worldLocation.Map.GetItemsAt<Teleporter>(worldLocation))
                 {
                     if (item is not (KeywordTeleporter or SkillTeleporter) && IsWithinZ(item.Z - worldLocation.Z))
                     {
-                        count++;
-                        item.Delete();
+                        queue.Enqueue(item);
                     }
                 }
 
+                var count = queue.Count;
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().Delete();
+                }
                 return count;
             }
 

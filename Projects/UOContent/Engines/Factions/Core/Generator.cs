@@ -78,7 +78,7 @@ namespace Server.Factions
 
         private static bool CheckExistence(Point3D loc, Map facet, Type type)
         {
-            foreach (var item in facet.GetItemsInRange(loc, 0))
+            foreach (var item in facet.GetItemsAt(loc))
             {
                 if (type.IsInstanceOfType(item))
                 {

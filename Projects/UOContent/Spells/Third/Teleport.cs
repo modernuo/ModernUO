@@ -1,3 +1,4 @@
+using Server.Collections;
 using Server.Factions;
 using Server.Items;
 using Server.Misc;
@@ -96,13 +97,20 @@ namespace Server.Spells.Third
 
                 m.PlaySound(0x1FE);
 
-                foreach (var item in m.GetItemsInRange(0))
+                using var queue = PooledRefQueue<Item>.Create();
+                foreach (var item in m.GetItemsAt())
                 {
                     if (item is ParalyzeFieldSpell.InternalItem or
                         PoisonFieldSpell.InternalItem or FireFieldSpell.FireFieldItem)
                     {
-                        item.OnMoveOver(m);
+                        // Use a queue just in case OnMoveOver changes the item's sector
+                        queue.Enqueue(item);
                     }
+                }
+
+                while (queue.Count > 0)
+                {
+                    queue.Dequeue().OnMoveOver(m);
                 }
             }
 

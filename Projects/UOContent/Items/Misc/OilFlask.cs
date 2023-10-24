@@ -50,7 +50,7 @@ public partial class OilFlask : Item
             {
                 var didStack = false;
 
-                foreach (var i in from.GetItemsInRange(0))
+                foreach (var i in from.GetItemsAt())
                 {
                     if (i.StackWith(from, this, false))
                     {

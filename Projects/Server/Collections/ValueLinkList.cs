@@ -28,8 +28,10 @@ public interface IValueLinkListNode<T> where T : class
 public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
 {
     public int Count { get; internal set; }
-    public T First { get; internal set; }
-    public T Last { get; internal set; }
+    internal T _first;
+    internal T _last;
+
+    public int Version { get; private set; }
 
     public void Remove(T node)
     {
@@ -46,19 +48,19 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         if (node.Previous == null)
         {
             // If previous is null, then it is the first element.
-            if (First != node)
+            if (_first != node)
             {
                 throw new ArgumentException("Attempted to remove a node that is not on the list.");
             }
 
-            if (First == Last)
+            if (_first == _last)
             {
-                Last = null;
-                First = null;
+                _last = null;
+                _first = null;
             }
             else
             {
-                First = node.Next;
+                _first = node.Next;
             }
 
             if (node.Next != null)
@@ -73,7 +75,7 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             // If next is null, then it is the last element.
             if (node.Next == null)
             {
-                Last = node.Previous;
+                _last = node.Previous;
             }
             else
             {
@@ -85,6 +87,7 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         node.Previous = null;
         node.OnLinkList = false;
         Count--;
+        Version++;
 
         if (Count < 0)
         {
@@ -130,7 +133,8 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             current = previous;
         }
 
-        First = e;
+        _first = e;
+        Version++;
     }
 
     // Remove all entries after this node, not including this node.
@@ -171,7 +175,8 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             current = next;
         }
 
-        Last = e;
+        _last = e;
+        Version++;
     }
 
     public void AddLast(T e)
@@ -186,15 +191,16 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             throw new ArgumentException("Attempted to add a node that is already on a list.");
         }
 
-        if (Last != null)
+        if (_last != null)
         {
-            AddAfter(Last, e);
+            AddAfter(_last, e);
         }
         else
         {
-            First = e;
-            Last = e;
+            _first = e;
+            _last = e;
             Count = 1;
+            Version++;
             e.OnLinkList = true;
         }
     }
@@ -211,15 +217,16 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             throw new ArgumentException("Attempted to add a node that is already on a list.");
         }
 
-        if (First != null)
+        if (_first != null)
         {
-            AddBefore(First, e);
+            AddBefore(_first, e);
         }
         else
         {
-            First = e;
-            Last = e;
+            _first = e;
+            _last = e;
             Count = 1;
+            Version++;
             e.OnLinkList = true;
         }
     }
@@ -252,12 +259,13 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         }
         else
         {
-            First = node;
+            _first = node;
         }
 
         existing.Previous = node;
         node.OnLinkList = true;
         Count++;
+        Version++;
     }
 
     public void AddAfter(T existing, T node)
@@ -288,17 +296,18 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         }
         else
         {
-            Last = node;
+            _last = node;
         }
 
         existing.Next = node;
         node.OnLinkList = true;
         Count++;
+        Version++;
     }
 
     public void RemoveAll()
     {
-        var current = First;
+        var current = _first;
         while (current != null)
         {
             var next = current.Next;
@@ -309,15 +318,16 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             current = next;
         }
 
-        First = null;
-        Last = null;
+        _first = null;
+        _last = null;
         Count = 0;
+        Version++;
     }
 
     public void AddLast(ref ValueLinkList<T> otherList, T start, T end)
     {
         // Should we check if start and end actually exist on the other list?
-        if (otherList.Count == 0 || otherList.Count == 1 && (start != end || otherList.First != start))
+        if (otherList.Count == 0 || otherList.Count == 1 && (start != end || otherList._first != start))
         {
             throw new ArgumentException("Attempted to add nodes that are not on the specified linklist.");
         }
@@ -329,7 +339,7 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         else
         {
             // Start is first
-            otherList.First = end.Next;
+            otherList._first = end.Next;
         }
 
         if (end.Next != null)
@@ -338,7 +348,7 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         }
         else
         {
-            otherList.Last = start.Previous;
+            otherList._last = start.Previous;
         }
 
         var count = 1;
@@ -358,45 +368,62 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
             throw new Exception("Count is negative!");
         }
 
-        if (Last != null)
+        if (_last != null)
         {
-            Last.Next = start;
-            start.Previous = Last;
+            _last.Next = start;
+            start.Previous = _last;
         }
         else
         {
-            First = start;
+            _first = start;
         }
 
-        Last = end;
+        _last = end;
         Count += count;
+        Version++;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ValueListEnumerator GetEnumerator() => new(First);
+    public T[] ToArray()
+    {
+        var arr = new T[Count];
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public DescendingValueListEnumerator ByDescending() => new(Last);
+        var index = 0;
+        foreach (var t in this)
+        {
+            arr[index++] = t;
+        }
+
+        return arr;
+    }
 
     public ref struct ValueListEnumerator
     {
-        private T _head;
+        private bool _started;
         private T _current;
+        private ref readonly ValueLinkList<T> _linkList;
+        private int _version;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ValueListEnumerator(T head)
+        public ValueListEnumerator(in ValueLinkList<T> linkList)
         {
-            _head = head;
+            _linkList = ref linkList;
+            _started = false;
             _current = null;
+            _version = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            if (_current == null)
+            if (!_started)
             {
-                _current = _head;
-                _head = null;
+                _current = _linkList._first;
+                _started = true;
+                _version = _linkList.Version;
+            }
+            else if (_linkList.Version != _version)
+            {
+                throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
             else
             {
@@ -415,23 +442,32 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
 
     public ref struct DescendingValueListEnumerator
     {
-        private T _tail;
+        private bool _started;
         private T _current;
+        private ref readonly ValueLinkList<T> _linkList;
+        private int _version;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public DescendingValueListEnumerator(T head)
+        public DescendingValueListEnumerator(in ValueLinkList<T> linkList)
         {
-            _tail = head;
+            _linkList = ref linkList;
+            _started = false;
             _current = null;
+            _version = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            if (_current == null)
+            if (!_started)
             {
-                _current = _tail;
-                _tail = null;
+                _current = _linkList._last;
+                _started = true;
+                _version = _linkList.Version;
+            }
+            else if (_linkList.Version != _version)
+            {
+                throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
             else
             {
@@ -450,4 +486,15 @@ public struct ValueLinkList<T> where T : class, IValueLinkListNode<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DescendingValueListEnumerator GetEnumerator() => this;
     }
+}
+
+public static class ValueLinkListExt
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValueLinkList<T>.ValueListEnumerator GetEnumerator<T>(this in ValueLinkList<T> linkList)
+        where T : class, IValueLinkListNode<T> => new(in linkList);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValueLinkList<T>.DescendingValueListEnumerator ByDescending<T>(this in ValueLinkList<T> linkList)
+        where T : class, IValueLinkListNode<T> => new(in linkList);
 }

@@ -114,7 +114,7 @@ namespace Server.Factions
 
             if (Core.ML)
             {
-                foreach (var item in m.GetItemsInRange(p, 0))
+                foreach (var item in m.GetItemsAt(p))
                 {
                     if (item is BaseFactionTrap trap && trap.Faction == Faction)
                     {

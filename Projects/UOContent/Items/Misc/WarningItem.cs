@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 
 namespace Server.Items;
 
@@ -83,19 +83,18 @@ public partial class WarningItem : Item
 
         if (NeighborRange >= 0)
         {
-            var list = new List<WarningItem>();
-
-            foreach (var item in GetItemsInRange(NeighborRange))
+            using var queue = PooledRefQueue<WarningItem>.Create();
+            foreach (var warningItem in GetItemsInRange<WarningItem>(NeighborRange))
             {
-                if (item != this && item is WarningItem warningItem)
+                if (warningItem != this)
                 {
-                    list.Add(warningItem);
+                    queue.Enqueue(warningItem);
                 }
             }
 
-            for (var i = 0; i < list.Count; i++)
+            while (queue.Count > 0)
             {
-                list[i].Broadcast(triggerer);
+                queue.Dequeue().Broadcast(triggerer);
             }
         }
 

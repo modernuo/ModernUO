@@ -267,7 +267,7 @@ namespace Server.Items
 
             public static SHTeleporter FindSHTeleporter(Map map, Point3D p)
             {
-                foreach (var teleporter in map.GetItemsInRange<SHTeleporter>(p, 0))
+                foreach (var teleporter in map.GetItemsAt<SHTeleporter>(p))
                 {
                     if (teleporter.Z == p.Z)
                     {

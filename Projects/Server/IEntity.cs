@@ -30,6 +30,12 @@ public interface IEntity : IPoint3D, ISerializable
     bool InRange(Point3D p, int range);
 
     void RemoveItem(Item item);
+
+    bool OnMoveOff(Mobile m);
+
+    bool OnMoveOver(Mobile m);
+
+    public void OnMovement(Mobile m, Point3D oldLocation);
 }
 
 public class Entity : IEntity
@@ -80,6 +86,14 @@ public class Entity : IEntity
     }
 
     public void RemoveItem(Item item)
+    {
+    }
+
+    public bool OnMoveOff(Mobile m) => true;
+
+    public bool OnMoveOver(Mobile m) => true;
+
+    public void OnMovement(Mobile m, Point3D oldLocation)
     {
     }
 

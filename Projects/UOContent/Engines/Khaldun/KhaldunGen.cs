@@ -15,9 +15,9 @@ namespace Server.Commands
         public static bool FindMorphItem(int x, int y, int z, int inactiveItemID, int activeItemID)
         {
             var found = false;
-            foreach (var item in Map.Felucca.GetItemsInRange(new Point3D(x, y, z), 0))
+            foreach (var morphItem in Map.Felucca.GetItemsAt<MorphItem>(x, y))
             {
-                if (item is MorphItem morphItem && morphItem.Z == z && morphItem.InactiveItemId == inactiveItemID && morphItem.ActiveItemId == activeItemID)
+                if (morphItem.Z == z && morphItem.InactiveItemId == inactiveItemID && morphItem.ActiveItemId == activeItemID)
                 {
                     found = true;
                     break;
@@ -30,9 +30,9 @@ namespace Server.Commands
         public static bool FindEffectController(int x, int y, int z)
         {
             var found = false;
-            foreach (var item in Map.Felucca.GetItemsInRange(new Point3D(x, y, z), 0))
+            foreach (var item in Map.Felucca.GetItemsAt<EffectController>(x, y))
             {
-                if (item is EffectController && item.Z == z)
+                if (item.Z == z)
                 {
                     found = true;
                     break;
@@ -44,7 +44,7 @@ namespace Server.Commands
 
         public static T TryCreateItem<T>(int x, int y, int z, T srcItem) where T : Item
         {
-            foreach (var item in Map.Felucca.GetItemsInBounds<T>(new Rectangle2D(x, y, 1, 1)))
+            foreach (var item in Map.Felucca.GetItemsAt<T>(x, y))
             {
                 srcItem.Delete();
                 return item;
