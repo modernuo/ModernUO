@@ -1461,7 +1461,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public List<Mobile> Mobiles => _mobiles ?? m_DefaultMobileList;
 
-        public ref readonly ValueLinkList<Item> Items => ref _items;
+        internal ref readonly ValueLinkList<Item> Items => ref _items;
 
         public List<NetState> Clients => _clients ?? m_DefaultClientList;
 
