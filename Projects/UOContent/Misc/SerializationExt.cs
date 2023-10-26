@@ -10,7 +10,7 @@ public static class SerializationExt
         {
             0 => null,
             1 => Accounts.GetAccount(reader.ReadStringRaw()),
-            2 => Accounts.GetAccount(reader.ReadSerial())
+            2 => Accounts.FindAccount(reader.ReadSerial())
         };
     }
 

@@ -29,8 +29,6 @@ public class Accounts : GenericEntityPersistence<IAccount>
 
     public static IEnumerable<IAccount> GetAccounts() => _accountsByName.Values;
 
-    public static IAccount GetAccount(Serial serial) => _accountsPersistence.FindEntity<IAccount>(serial);
-
     public static IAccount GetAccount(string username)
     {
         _accountsByName.TryGetValue(username, out var a);
@@ -93,5 +91,5 @@ public class Accounts : GenericEntityPersistence<IAccount>
         }
     }
 
-    public static IAccount FindAccount(Serial serial) => _accountsPersistence.FindEntity<Account>(serial);
+    public static IAccount FindAccount(Serial serial) => _accountsPersistence.FindEntity<IAccount>(serial);
 }
