@@ -47,15 +47,19 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
             }
         }
 
-        public void Delete()
-        {
-            throw new NotImplementedException();
-        }
+        public DateTime Created { get; set; }
+        public long SavePosition { get; set; }
+        public BufferWriter SaveBuffer { get; set; }
+        public Serial Serial { get; }
+        public void Deserialize(IGenericReader reader) => throw new NotImplementedException();
 
-        public void SetPassword(string password)
-        {
-            throw new NotImplementedException();
-        }
+        public void Serialize(IGenericWriter writer) => throw new NotImplementedException();
+
+        public bool Deleted { get; }
+
+        public void Delete() => throw new NotImplementedException();
+
+        public void SetPassword(string password) => throw new NotImplementedException();
 
         public bool CheckPassword(string password) => throw new NotImplementedException();
     }

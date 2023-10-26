@@ -95,7 +95,7 @@ public interface IGoldAccount
     long GetTotalGold();
 }
 
-public interface IAccount : IGoldAccount, IComparable<IAccount>
+public interface IAccount : ISerializable, IGoldAccount, IComparable<IAccount>
 {
     string Username { get; set; }
     string Email { get; set; }

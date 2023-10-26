@@ -76,8 +76,8 @@ public static class ServerAccess
             return;
         }
 
-        var acct = Accounts.GetAccount(username);
-        if (acct == null || !acct.Banned && acct.AccessLevel >= AccessLevel.Owner || !acct.CheckPassword(e.Password))
+        if (Accounts.GetAccount(username) is not Account acct
+            || !acct.Banned && acct.AccessLevel >= AccessLevel.Owner || !acct.CheckPassword(e.Password))
         {
             return;
         }

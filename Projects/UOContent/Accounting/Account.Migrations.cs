@@ -7,9 +7,30 @@ namespace Server.Accounting
 {
     public partial class Account
     {
+        // Username was not interned
+        private void MigrateFrom(V4Content content)
+        {
+            _username = content.Username;
+            _passwordAlgorithm = content.PasswordAlgorithm;
+            _password = content.Password;
+            _accessLevel = content.AccessLevel;
+            _flags = content.Flags;
+            _lastLogin = content.LastLogin;
+            _totalGold = content.TotalGold;
+            _totalPlat = content.TotalPlat;
+            _mobiles = content.Mobiles;
+            _comments = content.Comments;
+            _tags = content.Tags;
+            _loginIPs = content.LoginIPs;
+            _ipRestrictions = content.IpRestrictions;
+            _totalGameTime = content.TotalGameTime;
+            _email = content.Email;
+        }
+
         private void MigrateFrom(V3Content content)
         {
             _username = content.Username;
+            _username.Intern();
             _passwordAlgorithm = content.PasswordAlgorithm;
             _password = content.Password;
             _accessLevel = content.AccessLevel;
@@ -35,7 +56,7 @@ namespace Server.Accounting
                 reader.Seek(0, SeekOrigin.Begin);
             }
 
-            _username = reader.ReadString();
+            _username = reader.ReadString(true);
             _passwordAlgorithm = version < 2 ? (PasswordProtectionAlgorithm)reader.ReadInt() : reader.ReadEnum<PasswordProtectionAlgorithm>();
             _password = reader.ReadString();
             _accessLevel = version < 2 ? (AccessLevel)reader.ReadInt() : reader.ReadEnum<AccessLevel>();
