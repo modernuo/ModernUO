@@ -26,6 +26,8 @@ public interface IGenericReader
     DateTime LastSerialized { get; init; }
 
     string ReadString(bool intern = false);
+    public string ReadStringRaw(bool intern = false);
+
     long ReadLong();
     ulong ReadULong();
     int ReadInt();
