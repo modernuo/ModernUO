@@ -1,6 +1,6 @@
 using Server.Accounting;
 
-namespace Server.Misc;
+namespace Server;
 
 public static class SerializationExt
 {
