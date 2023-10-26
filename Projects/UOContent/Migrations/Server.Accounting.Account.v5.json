@@ -1,0 +1,125 @@
+{
+  "version": 5,
+  "type": "Server.Accounting.Account",
+  "properties": [
+    {
+      "name": "Username",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "InternString"
+      ]
+    },
+    {
+      "name": "PasswordAlgorithm",
+      "type": "Server.Accounting.Security.PasswordProtectionAlgorithm",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "AccessLevel",
+      "type": "Server.AccessLevel",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Flags",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastLogin",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "TotalGold",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "TotalPlat",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Mobiles",
+      "type": "Server.Mobile[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Comments",
+      "type": "System.Collections.Generic.List\u003CServer.Accounting.AccountComment\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Accounting.AccountComment",
+        "SerializationMethodSignatureMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "Tags",
+      "type": "System.Collections.Generic.List\u003CServer.Accounting.AccountTag\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Accounting.AccountTag",
+        "SerializationMethodSignatureMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "LoginIPs",
+      "type": "System.Net.IPAddress[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "System.Net.IPAddress",
+        "PrimitiveTypeMigrationRule"
+      ]
+    },
+    {
+      "name": "IpRestrictions",
+      "type": "string[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "string",
+        "PrimitiveTypeMigrationRule",
+        ""
+      ]
+    },
+    {
+      "name": "TotalGameTime",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "Email",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

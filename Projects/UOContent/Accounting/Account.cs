@@ -12,7 +12,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-    [SerializationGenerator(4)]
+    [SerializationGenerator(5)]
     public partial class Account : IAccount, IComparable<Account>
     {
         public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
