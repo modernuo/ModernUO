@@ -6,11 +6,11 @@ using Server.Logging;
 
 namespace Server.Accounting;
 
-public class Accounts : GenericEntityPersistence<Account>
+public class Accounts : GenericEntityPersistence<IAccount>
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Accounts));
 
-    private static readonly Dictionary<string, Account> _accountsByName = new(32, StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, IAccount> _accountsByName = new(32, StringComparer.OrdinalIgnoreCase);
 
     public static int Count => _accountsByName.Count;
 
@@ -29,7 +29,7 @@ public class Accounts : GenericEntityPersistence<Account>
 
     public static IEnumerable<IAccount> GetAccounts() => _accountsByName.Values;
 
-    public static Account GetAccount(string username)
+    public static IAccount GetAccount(string username)
     {
         _accountsByName.TryGetValue(username, out var a);
         return a;
@@ -41,7 +41,7 @@ public class Accounts : GenericEntityPersistence<Account>
         _accountsPersistence.AddEntity(a);
     }
 
-    public static void Remove(Account a)
+    public static void Remove(IAccount a)
     {
         _accountsByName.Remove(a.Username);
         _accountsPersistence.RemoveEntity(a);
@@ -91,5 +91,5 @@ public class Accounts : GenericEntityPersistence<Account>
         }
     }
 
-    public static IAccount FindAccount(Serial serial) => _accountsPersistence.FindEntity<Account>(serial);
+    public static IAccount FindAccount(Serial serial) => _accountsPersistence.FindEntity<IAccount>(serial);
 }
