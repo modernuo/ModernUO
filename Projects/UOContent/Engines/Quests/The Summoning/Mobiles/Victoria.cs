@@ -29,13 +29,9 @@ public partial class Victoria : BaseQuester
             if (_altar?.Deleted != false || _altar.Map != Map ||
                 !Utility.InRange(_altar.Location, Location, AltarRange))
             {
-                foreach (var item in GetItemsInRange(AltarRange))
+                foreach (var altar in GetItemsInRange<SummoningAltar>(AltarRange))
                 {
-                    if (item is SummoningAltar altar)
-                    {
-                        _altar = altar;
-                        break;
-                    }
+                    _altar = altar;
                 }
             }
 

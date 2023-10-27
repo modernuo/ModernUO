@@ -180,7 +180,7 @@ namespace Server.Engines.Doom
         public static void RemoveDoorSet(int x, int y)
         {
             var loc = new Point3D(x, y, -1);
-            foreach (var item in Map.Malas.GetItemsInRange(loc, 0))
+            foreach (var item in Map.Malas.GetItemsAt(loc))
             {
                 if (item is BaseDoor door)
                 {
@@ -226,9 +226,9 @@ namespace Server.Engines.Doom
 
         public static void RemoveItem<T>(int x, int y, int z = -1) where T : Item
         {
-            foreach (var item in Map.Malas.GetItemsInRange(new Point3D(x, y, z), 0))
+            foreach (var item in Map.Malas.GetItemsAt(x, y))
             {
-                if (item is T)
+                if (item is T && z == -1 || item.Z == z)
                 {
                     item.Delete();
                     break;

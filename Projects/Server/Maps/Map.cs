@@ -627,12 +627,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     public void OnEnter(Item item)
     {
-        if (IsIteratingItems)
-        {
-            _delayedItemActions.Add((MapAction.Enter, item.Location, item));
-            return;
-        }
-
         OnEnter(item.Location, item);
     }
 
@@ -669,12 +663,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     public void OnLeave(Item item)
     {
-        if (IsIteratingItems)
-        {
-            _delayedItemActions.Add((MapAction.Leave, item.Location, item));
-            return;
-        }
-
         OnLeave(item.Location, item);
     }
 
@@ -765,12 +753,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         if (oldSector != newSector)
         {
-            if (IsIteratingItems)
-            {
-                _delayedItemActions.Add((MapAction.Move, item.Location, item));
-                return;
-            }
-
             oldSector.OnLeave(item);
             newSector.OnEnter(item);
         }
@@ -787,12 +769,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             if (oldStart != start || oldEnd != end)
             {
-                if (IsIteratingItems)
-                {
-                    _delayedItemActions.Add((MapAction.Move, oldLocation, item));
-                    return;
-                }
-
                 RemoveMulti(m, oldStart, oldEnd);
                 AddMulti(m, start, end);
             }
@@ -1037,8 +1013,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public Sector GetSector(Point3D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
 
     public Sector GetSector(Point2D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
-
-    // public Sector GetSector(IPoint2D p) => InternalGetSector(p.X >> SectorShift, p.Y >> SectorShift);
 
     public Sector GetSector(int x, int y) => InternalGetSector(x >> SectorShift, y >> SectorShift);
 
@@ -1459,14 +1433,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return false;
     }
 
-    private enum MapAction
-    {
-        None,
-        Enter,
-        Leave,
-        Move
-    }
-
     public class Sector
     {
         // TODO: Can we avoid this?
@@ -1495,7 +1461,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public List<Mobile> Mobiles => _mobiles ?? m_DefaultMobileList;
 
-        public ref ValueLinkList<Item> Items => ref _items;
+        internal ref readonly ValueLinkList<Item> Items => ref _items;
 
         public List<NetState> Clients => _clients ?? m_DefaultClientList;
 

@@ -307,7 +307,7 @@ namespace Server.Engines.Harvest
                 return false;
             }
 
-            foreach (var i in m.GetItemsInRange(0))
+            foreach (var i in m.GetItemsAt())
             {
                 if (i.StackWith(m, i, false))
                 {

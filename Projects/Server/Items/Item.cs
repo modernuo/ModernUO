@@ -2241,7 +2241,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public virtual bool CanDecay() => Decays && Parent == null && Map != Map.Internal;
 
-
     public virtual bool OnDecay() =>
         CanDecay() && Region.Find(Location, Map).OnDecay(this);
 
@@ -2474,12 +2473,20 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemEnumerable<Item> GetItemsInRange(int range) =>
-        m_Map == null ? Map.ItemEnumerable<Item>.Empty : m_Map.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
+    public Map.ItemAtEnumerable<Item> GetItemsAt() =>
+        m_Map == null ? Map.ItemAtEnumerable<Item>.Empty : m_Map.GetItemsAt(m_Parent == null ? m_Location : GetWorldLocation());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
-        m_Map == null ? Map.ItemEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
+    public Map.ItemAtEnumerable<T> GetItemsAt<T>() where T : Item =>
+        m_Map == null ? Map.ItemAtEnumerable<T>.Empty : m_Map.GetItemsAt<T>(m_Parent == null ? m_Location : GetWorldLocation());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ItemBoundsEnumerable<Item> GetItemsInRange(int range) =>
+        m_Map == null ? Map.ItemBoundsEnumerable<Item>.Empty : m_Map.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ItemBoundsEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
+        m_Map == null ? Map.ItemBoundsEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
     {

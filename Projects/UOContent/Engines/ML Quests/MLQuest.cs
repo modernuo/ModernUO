@@ -267,7 +267,7 @@ namespace Server.Engines.MLQuests
             var name = $"MLQS-{GetType().Name}";
 
             using var queue = PooledRefQueue<Item>.Create();
-            foreach (var item in map.GetItemsInRange(loc, 0))
+            foreach (var item in map.GetItemsAt(loc))
             {
                 // This predates GUIDs. Let's build these spawners and export them so we can delete this code!
                 if (item is BaseSpawner spawner && spawner.Name == name)
@@ -288,7 +288,7 @@ namespace Server.Engines.MLQuests
         public static void PutDeco(Item deco, Point3D loc, Map map)
         {
             using var queue = PooledRefQueue<Item>.Create();
-            foreach (var item in map.GetItemsInRange(loc, 0))
+            foreach (var item in map.GetItemsAt(loc))
             {
                 if (item.ItemID == deco.ItemID && item.Z == loc.Z)
                 {

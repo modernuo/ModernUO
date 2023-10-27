@@ -199,9 +199,9 @@ namespace Server.Items
 
                                 bool isclear = true;
 
-                                foreach (Item item in Map.Malas.GetItemsInRange(p3d, 0))
+                                foreach (Fireflies fireflies in Map.Malas.GetItemsAt<Fireflies>(p3d))
                                 {
-                                    if (item is Fireflies)
+                                    if (fireflies.Z == p3d.Z)
                                     {
                                         isclear = false;
                                     }

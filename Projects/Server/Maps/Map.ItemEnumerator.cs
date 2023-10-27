@@ -13,140 +13,159 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
+using System;
 using System.Runtime.CompilerServices;
+using Server.Collections;
 
 namespace Server;
 
 public partial class Map
 {
-    private int _iteratingItems;
-    private readonly List<(MapAction, Point3D, Item)> _delayedItemActions = new();
-
-    public bool IsIteratingItems
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _iteratingItems > 0;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemAtEnumerable<Item> GetItemsAt(Point3D p) => GetItemsAt<Item>(p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsAt(Point3D p) => GetItemsInRange(p, 0);
+    public ItemAtEnumerable<T> GetItemsAt<T>(Point3D p) where T : Item => GetItemsAt<T>(new Point2D(p.X, p.Y));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsAt<T>(Point3D p) where T : Item => GetItemsInRange<T>(p, 0);
+    public ItemAtEnumerable<Item> GetItemsAt(int x, int y) => GetItemsAt<Item>(new Point2D(x, y));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsInRange(Point3D p) => GetItemsInRange<Item>(p);
+    public ItemAtEnumerable<T> GetItemsAt<T>(int x, int y) where T : Item => GetItemsAt<T>(new Point2D(x, y));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsInRange(Point3D p, int range) => GetItemsInRange<Item>(p, range);
+    public ItemAtEnumerable<Item> GetItemsAt(Point2D p) => GetItemsAt<Item>(p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsInRange<T>(Point3D p) where T : Item => GetItemsInRange<T>(p, Core.GlobalMaxUpdateRange);
+    public ItemAtEnumerable<T> GetItemsAt<T>(Point2D p) where T : Item => new(this, p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item =>
+    public ItemBoundsEnumerable<Item> GetItemsInRange(Point3D p) => GetItemsInRange<Item>(p);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemBoundsEnumerable<Item> GetItemsInRange(Point3D p, int range) => GetItemsInRange<Item>(p, range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemBoundsEnumerable<T> GetItemsInRange<T>(Point3D p) where T : Item => GetItemsInRange<T>(p, Core.GlobalMaxUpdateRange);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ItemBoundsEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item =>
         GetItemsInRange<T>(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsAt(Point2D p) => GetItemsInRange(p, 0);
+    public ItemBoundsEnumerable<Item> GetItemsInRange(Point2D p) => GetItemsInRange<Item>(p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsAt<T>(Point2D p) where T : Item => GetItemsInRange<T>(p, 0);
+    public ItemBoundsEnumerable<Item> GetItemsInRange(Point2D p, int range) => GetItemsInRange<Item>(p, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsInRange(Point2D p) => GetItemsInRange<Item>(p);
+    public ItemBoundsEnumerable<T> GetItemsInRange<T>(Point2D p) where T : Item => GetItemsInRange<T>(p, Core.GlobalMaxUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsInRange(Point2D p, int range) => GetItemsInRange<Item>(p, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsInRange<T>(Point2D p) where T : Item => GetItemsInRange<T>(p, Core.GlobalMaxUpdateRange);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsInRange<T>(Point2D p, int range) where T : Item =>
+    public ItemBoundsEnumerable<T> GetItemsInRange<T>(Point2D p, int range) where T : Item =>
         GetItemsInRange<T>(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsAt(int x, int y) => GetItemsAt<Item>(x, y);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsAt<T>(int x, int y) where T : Item => GetItemsInRange<T>(x, y, 0);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsInRange<T>(int x, int y, int range) where T : Item =>
+    public ItemBoundsEnumerable<T> GetItemsInRange<T>(int x, int y, int range) where T : Item =>
         GetItemsInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
+    public ItemBoundsEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Item =>
+    public ItemBoundsEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Item =>
         new(this, bounds, makeBoundsInclusive);
 
-    private void BeginIteratingItems()
+    public ref struct ItemAtEnumerable<T> where T : Item
     {
-#if THREADGUARD
-            if (Thread.CurrentThread != Core.Thread)
-            {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine($"Iterating through items on {this} from an invalid thread!");
-                Console.WriteLine(new StackTrace());
-                Utility.PopColor();
-                return;
-            }
-#endif
+        public static ItemAtEnumerable<T> Empty
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new();
+        }
 
-        _iteratingItems++;
+        private Map _map;
+        private Point2D _location;
+
+        public ItemAtEnumerable(Map map, Point2D loc)
+        {
+            _map = map;
+            _location = loc;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ItemAtEnumerator<T> GetEnumerator() => new(_map, _location);
     }
 
-    private void EndIteratingItems()
+    public ref struct ItemAtEnumerator<T> where T : Item
     {
-#if THREADGUARD
-            if (Thread.CurrentThread != Core.Thread)
-            {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine($"Iterating through items on {this} from an invalid thread!");
-                Console.WriteLine(new StackTrace());
-                Utility.PopColor();
-                return;
-            }
-#endif
+        private bool _started;
+        private Point2D _location;
+        private ref readonly ValueLinkList<Item> _linkList;
+        private int _version;
+        private T _current;
 
-        _iteratingItems--;
-
-        // Finished iterating, check for deferred actions
-        if (_iteratingItems == 0 && _delayedItemActions.Count > 0)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ItemAtEnumerator(Map map, Point2D loc)
         {
-            foreach (var (a, p, i) in _delayedItemActions)
+            _started = false;
+            _location = loc;
+            _linkList = ref map.GetRealSector(loc.m_X, loc.m_Y).Items;
+            _version = 0;
+            _current = null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool MoveNext()
+        {
+            ref var loc = ref _location;
+            Item current;
+
+            if (!_started)
             {
-                switch (a)
+                current = _linkList._first;
+                _started = true;
+                _version = _linkList.Version;
+
+                if (current is T { Deleted: false, Parent: null } o && o.X == loc.m_X && o.Y == loc.m_Y)
                 {
-                    case MapAction.Enter:
-                        {
-                            OnEnter(p, i);
-                            break;
-                        }
-                    case MapAction.Leave:
-                        {
-                            OnLeave(p, i);
-                            break;
-                        }
-                    case MapAction.Move:
-                        {
-                            OnMove(p, i);
-                            break;
-                        }
+                    _current = o;
+                    return true;
+                }
+            }
+            else if (_linkList.Version != _version)
+            {
+                throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
+            }
+            else
+            {
+                current = _current;
+            }
+
+            while (current != null)
+            {
+                current = current.Next;
+
+                if (current is T { Deleted: false, Parent: null } o && o.X == loc.m_X && o.Y == loc.m_Y)
+                {
+                    _current = o;
+                    return true;
                 }
             }
 
-            _delayedItemActions.Clear();
+            return false;
+        }
+
+        public T Current
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _current;
         }
     }
 
-    public ref struct ItemEnumerable<T> where T : Item
+    public ref struct ItemBoundsEnumerable<T> where T : Item
     {
-        public static ItemEnumerable<T> Empty
+        public static ItemBoundsEnumerable<T> Empty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new(null, Rectangle2D.Empty, false);
@@ -156,14 +175,13 @@ public partial class Map
         private Rectangle2D _bounds;
         private bool _makeBoundsInclusive;
 
-        public ItemEnumerable(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
+        public ItemBoundsEnumerable(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
         {
             _map = map;
             _bounds = bounds;
             _makeBoundsInclusive = makeBoundsInclusive;
         }
 
-        // The enumerator MUST be disposed. Not disposing it will damage the sector irreparably.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ItemEnumerator<T> GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
     }
@@ -178,6 +196,9 @@ public partial class Map
 
         private int _currentSectorX;
         private int _currentSectorY;
+
+        private ref readonly ValueLinkList<Item> _linkList;
+        private int _currentVersion;
         private T _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -199,8 +220,6 @@ public partial class Map
             // We start the X sector one short because it gets incremented immediately in MoveNext()
             _currentSectorX = _sectorStartX - 1;
             _currentSectorY = _sectorStartY;
-
-            _map.BeginIteratingItems();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -242,7 +261,14 @@ public partial class Map
                         return false;
                     }
 
-                    current = map.GetRealSector(currentSectorX, currentSectorY).Items.First;
+                    _linkList = ref map.GetRealSector(currentSectorX, currentSectorY).Items;
+                    _currentVersion = _linkList.Version;
+                    current = _linkList._first;
+                }
+
+                if (_linkList.Version != _currentVersion)
+                {
+                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
                 if (current is T { Deleted: false, Parent: null } o && bounds.Contains(o.Location))
@@ -252,9 +278,6 @@ public partial class Map
                 }
             }
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() => _map.EndIteratingItems();
 
         public T Current
         {

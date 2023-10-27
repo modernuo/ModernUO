@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Server.Collections;
 using Server.Items;
 using Server.Network;
 
@@ -8,8 +9,6 @@ namespace Server.Commands
 {
     public static class SignParser
     {
-        private static readonly Queue<Item> m_ToDelete = new();
-
         public static void Initialize()
         {
             CommandSystem.Register("SignGen", AccessLevel.Administrator, SignGen_OnCommand);
@@ -91,17 +90,18 @@ namespace Server.Commands
 
         public static void Add_Static(int itemID, Point3D location, Map map, string name)
         {
+            using var queue = PooledRefQueue<Item>.Create();
             foreach (var item in map.GetItemsInRange(location, 0))
             {
                 if (item is Sign && item.Z == location.Z && item.ItemID == itemID)
                 {
-                    m_ToDelete.Enqueue(item);
+                    queue.Enqueue(item);
                 }
             }
 
-            while (m_ToDelete.Count > 0)
+            while (queue.Count > 0)
             {
-                m_ToDelete.Dequeue().Delete();
+                queue.Dequeue().Delete();
             }
 
             Item sign;
