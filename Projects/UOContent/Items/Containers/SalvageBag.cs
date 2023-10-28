@@ -251,7 +251,7 @@ public partial class SalvageBag : Bag
         var salvaged = 0;
         var notSalvaged = 0;
 
-        foreach (var item in EnumerateItemsByType<Item>())
+        foreach (var item in EnumerateItems())
         {
             if (item is not IScissorable scissorable)
             {

@@ -2396,7 +2396,7 @@ namespace Server.Mobiles
             // This fixes a "bug" where players put blessed items in nested bags and they were dropped on death
             if (Core.AOS && Backpack?.Deleted == false)
             {
-                foreach (var item in Backpack.EnumerateItemsByType<Item>(predicate: FindItems_Callback))
+                foreach (var item in Backpack.EnumerateItems(true, FindItems_Callback))
                 {
                     Backpack.AddItem(item);
                 }

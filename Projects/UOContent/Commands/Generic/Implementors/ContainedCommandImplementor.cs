@@ -67,12 +67,9 @@ namespace Server.Commands.Generic
 
                 var list = new List<object>();
 
-                foreach (var item in cont.FindItems())
+                foreach (var item in cont.EnumerateItems(true, ext.IsValid))
                 {
-                    if (ext.IsValid(item))
-                    {
-                        list.Add(item);
-                    }
+                    list.Add(item);
                 }
 
                 ext.Filter(list);

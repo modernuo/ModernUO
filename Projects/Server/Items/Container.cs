@@ -800,14 +800,7 @@ public partial class Container : Item
             throw new ArgumentNullException(nameof(grouper));
         }
 
-        using var typedItems = PooledRefList<Item>.Create();
-        foreach (var item in FindItems(recurse))
-        {
-            if (type.IsInstanceOfType(item))
-            {
-                typedItems.Add(item);
-            }
-        }
+        using var typedItems = ListItemsByType(type, recurse);
 
         var groups = new List<List<Item>>();
         var idx = 0;
@@ -815,9 +808,10 @@ public partial class Container : Item
         while (idx < typedItems.Count)
         {
             var a = typedItems[idx++];
-            var group = new List<Item>();
-
-            group.Add(a);
+            var group = new List<Item>
+            {
+                a
+            };
 
             while (idx < typedItems.Count)
             {
@@ -920,14 +914,8 @@ public partial class Container : Item
         for (var i = 0; i < types.Length; ++i)
         {
             var type = types[i];
-            using var typedItems = PooledRefList<Item>.Create();
-            foreach (var item in FindItems(recurse))
-            {
-                if (type.IsInstanceOfType(item))
-                {
-                    typedItems.Add(item);
-                }
-            }
+
+            using var typedItems = ListItemsByType(type, recurse);
 
             var groups = new List<List<Item>>();
             var idx = 0;
@@ -935,9 +923,10 @@ public partial class Container : Item
             while (idx < typedItems.Count)
             {
                 var a = typedItems[idx++];
-                var group = new List<Item>();
-
-                group.Add(a);
+                var group = new List<Item>
+                {
+                    a
+                };
 
                 while (idx < typedItems.Count)
                 {
@@ -1043,19 +1032,20 @@ public partial class Container : Item
 
         for (var i = 0; i < types.Length; ++i)
         {
-            var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(types[i], recurse));
+            using var typedItems = ListItemsByType(types[i], recurse);
 
             var groups = new List<List<Item>>();
             var idx = 0;
 
-            while (idx < typedItems.Length)
+            while (idx < typedItems.Count)
             {
                 var a = typedItems[idx++];
-                var group = new List<Item>();
+                var group = new List<Item>
+                {
+                    a
+                };
 
-                group.Add(a);
-
-                while (idx < typedItems.Length)
+                while (idx < typedItems.Count)
                 {
                     var b = typedItems[idx];
                     var v = grouper(a, b);
@@ -1146,16 +1136,19 @@ public partial class Container : Item
             throw new ArgumentException("length of types and amounts must match");
         }
 
-        var items = new List<Item>[types.Length];
+        var items = new Item[types.Length][];
         var totals = new int[types.Length];
 
         for (var i = 0; i < types.Length; ++i)
         {
-            items[i] = FindItemsByType(types[i], recurse);
+            using var typedItems = ListItemsByType(types[i], recurse);
 
-            for (var j = 0; j < items[i].Count; ++j)
+            items[i] = new Item[typedItems.Count];
+
+            for (var j = 0; j < typedItems.Count; ++j)
             {
-                totals[i] += items[i][j].Amount;
+                items[i][j] = typedItems[j];
+                totals[i] += typedItems[j].Amount;
             }
 
             if (totals[i] < amounts[i])
@@ -1168,7 +1161,7 @@ public partial class Container : Item
         {
             var need = amounts[i];
 
-            for (var j = 0; j < items[i].Count; ++j)
+            for (var j = 0; j < items[i].Length; ++j)
             {
                 var item = items[i][j];
 
@@ -1201,19 +1194,19 @@ public partial class Container : Item
             throw new ArgumentException("length of types and amounts must match");
         }
 
-        var items = new List<Item>[types.Length];
+        var items = new Item[types.Length][];
         var totals = new int[types.Length];
 
         for (var i = 0; i < types.Length; ++i)
         {
-            var itemList = items[i] = new List<Item>();
-            foreach (var item in FindItems())
+            using var typedItems = ListItemsByType(types[i], recurse);
+
+            items[i] = new Item[typedItems.Count];
+
+            for (var j = 0; j < typedItems.Count; ++j)
             {
-                if (types[i].IsInstanceOfType(item))
-                {
-                    totals[i] += item.Amount;
-                    itemList.Add(item);
-                }
+                items[i][j] = typedItems[j];
+                totals[i] += typedItems[j].Amount;
             }
 
             if (totals[i] < amounts[i])
@@ -1226,7 +1219,7 @@ public partial class Container : Item
         {
             var need = amounts[i];
 
-            for (var j = 0; j < items[i].Count; ++j)
+            for (var j = 0; j < items[i].Length; ++j)
             {
                 var item = items[i][j];
 
@@ -1255,20 +1248,17 @@ public partial class Container : Item
     public bool ConsumeTotal(Type type, int amount = 1, bool recurse = true, OnItemConsumed callback = null)
     {
         var total = 0;
-        using var items = PooledRefQueue<Item>.Create();
+
+        using var typedItems = ListItemsByType(type, recurse);
 
         // First pass, compute total
-        foreach (var item in FindItems(recurse))
+        foreach (var item in typedItems)
         {
-            if (type.IsInstanceOfType(item))
-            {
-                items.Enqueue(item);
+            total += item.Amount;
 
-                total += item.Amount;
-                if (total >= amount)
-                {
-                    break;
-                }
+            if (total >= amount)
+            {
+                break;
             }
         }
 
@@ -1277,10 +1267,8 @@ public partial class Container : Item
         {
             var need = amount;
 
-            while (items.Count > 0)
+            foreach (var item in typedItems)
             {
-                var item = items.Dequeue();
-
                 var theirAmount = item.Amount;
 
                 if (theirAmount < need)
@@ -1308,6 +1296,7 @@ public partial class Container : Item
         var consumed = 0;
 
         using var toDelete = PooledRefQueue<Item>.Create();
+
         RecurseConsumeUpTo(this, type, amount, recurse, ref consumed, toDelete);
 
         while (toDelete.Count > 0)
@@ -1368,14 +1357,7 @@ public partial class Container : Item
 
         var best = 0;
 
-        using var typedItems = PooledRefList<Item>.Create();
-        foreach (var item in FindItems(recurse))
-        {
-            if (type.IsInstanceOfType(item))
-            {
-                typedItems.Add(item);
-            }
-        }
+        using var typedItems = ListItemsByType(type, recurse);
 
         var groups = new List<List<Item>>();
         var idx = 0;
@@ -1437,12 +1419,12 @@ public partial class Container : Item
 
         var best = 0;
 
-        var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(types, recurse));
+        var typedItems = ListItemsByType(types, recurse);
 
         var groups = new List<List<Item>>();
         var idx = 0;
 
-        while (idx < typedItems.Length)
+        while (idx < typedItems.Count)
         {
             var a = typedItems[idx++];
             var group = new List<Item>
@@ -1450,7 +1432,7 @@ public partial class Container : Item
                 a
             };
 
-            while (idx < typedItems.Length)
+            while (idx < typedItems.Count)
             {
                 var b = typedItems[idx];
                 var v = grouper(a, b);
@@ -1474,6 +1456,7 @@ public partial class Container : Item
         {
             var items = groups[j].ToArray();
             var total = 0;
+
             foreach (var item in items)
             {
                 total += item.Amount;
@@ -1499,19 +1482,20 @@ public partial class Container : Item
 
         for (var i = 0; i < types.Length; ++i)
         {
-            var typedItems = CollectionsMarshal.AsSpan(FindItemsByType(types[i], recurse));
+            using var typedItems = ListItemsByType(types[i], recurse);
 
             var groups = new List<List<Item>>();
             var idx = 0;
 
-            while (idx < typedItems.Length)
+            while (idx < typedItems.Count)
             {
                 var a = typedItems[idx++];
-                var group = new List<Item>();
+                var group = new List<Item>
+                {
+                    a
+                };
 
-                group.Add(a);
-
-                while (idx < typedItems.Length)
+                while (idx < typedItems.Count)
                 {
                     var b = typedItems[idx];
                     var v = grouper(a, b);
@@ -1554,12 +1538,10 @@ public partial class Container : Item
     public int GetAmount(Type type, bool recurse = true)
     {
         var total = 0;
-        foreach (var item in FindItems(recurse))
+
+        foreach (var item in FindItemsByType(type, recurse))
         {
-            if (type.IsInstanceOfType(item))
-            {
-                total += item.Amount;
-            }
+            total += item.Amount;
         }
 
         return total;
@@ -1568,53 +1550,20 @@ public partial class Container : Item
     public int GetAmount(Type[] types, bool recurse = true)
     {
         var total = 0;
-        foreach (var item in FindItems(recurse))
+
+        foreach (var item in FindItemsByType(types, recurse))
         {
-            if (item.InTypeList(types))
-            {
-                total += item.Amount;
-            }
+            total += item.Amount;
         }
 
         return total;
     }
-
-    public List<Item> FindItemsByType(Type type, bool recurse = true)
-    {
-        var items = new List<Item>();
-        foreach (var item in FindItems(recurse))
-        {
-            if (type.IsInstanceOfType(item))
-            {
-                items.Add(item);
-            }
-        }
-
-        return items;
-    }
-
-    public List<Item> FindItemsByType(Type[] types, bool recurse = true)
-    {
-        var items = new List<Item>();
-        foreach (var item in FindItems(recurse))
-        {
-            if (item.InTypeList(types))
-            {
-                items.Add(item);
-            }
-        }
-
-        return items;
-    }
-
+    
     public Item FindItemByType(Type type, bool recurse = true)
     {
-        foreach (var item in FindItems(recurse))
+        foreach (var item in FindItemsByType(type, recurse))
         {
-            if (type.IsInstanceOfType(item))
-            {
-                return item;
-            }
+            return item;
         }
 
         return null;
@@ -1622,12 +1571,9 @@ public partial class Container : Item
 
     public Item FindItemByType(Type[] types, bool recurse = true)
     {
-        foreach (var item in FindItems(recurse))
+        foreach (var item in FindItemsByType(types, recurse))
         {
-            if (item.InTypeList(types))
-            {
-                return item;
-            }
+            return item;
         }
 
         return null;
