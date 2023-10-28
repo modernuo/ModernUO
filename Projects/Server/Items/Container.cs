@@ -1558,7 +1558,6 @@ public partial class Container : Item
 
         return total;
     }
-    
     public Item FindItemByType(Type type, bool recurse = true)
     {
         foreach (var item in FindItemsByType(type, recurse))
