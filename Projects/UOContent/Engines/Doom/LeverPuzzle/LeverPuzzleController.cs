@@ -615,21 +615,22 @@ public partial class LeverPuzzleController : Item
                         // Queue the mobiles because we cannot modify while iterating through mobiles in range
                         foreach (var m in entity.Map.GetMobilesInRange(entity.Location, 2))
                         {
-                            queue.Enqueue(m);
+                            if (IsValidDamagable(m) && m != m_Player)
+                            {
+                                queue.Enqueue(m);
+                            }
                         }
 
                         while (queue.Count > 0)
                         {
                             var m = queue.Dequeue();
-                            if (IsValidDamagable(m) && m != m_Player)
-                            {
-                                PlayEffect(m_Player, m, Rock(), 8, true);
-                                DoDamage(m, 25, 30, false);
 
-                                if (m.Player)
-                                {
-                                    POHMessage(m, 2); // OUCH!
-                                }
+                            PlayEffect(m_Player, m, Rock(), 8, true);
+                            DoDamage(m, 25, 30, false);
+
+                            if (m.Player)
+                            {
+                                POHMessage(m, 2); // OUCH!
                             }
                         }
 
