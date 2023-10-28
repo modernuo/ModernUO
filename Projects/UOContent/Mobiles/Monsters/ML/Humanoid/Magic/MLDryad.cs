@@ -122,16 +122,15 @@ namespace Server.Mobiles
                     UndressItem(m, Layer.Pants);
                     UndressItem(m, Layer.Shirt);
 
-                    m.SendLocalizedMessage(
-                        1072197
-                    ); // The dryad's beauty makes your blood race. Your clothing is too confining.
+                    // The dryad's beauty makes your blood race. Your clothing is too confining.
+                    m.SendLocalizedMessage(1072197);
                 }
             }
 
             m_NextUndress = Core.Now + TimeSpan.FromMinutes(1);
         }
 
-        public void UndressItem(Mobile m, Layer layer)
+        public static void UndressItem(Mobile m, Layer layer)
         {
             var item = m.FindItemOnLayer(layer);
 

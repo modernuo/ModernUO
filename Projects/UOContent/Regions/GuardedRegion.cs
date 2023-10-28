@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using Server.Mobiles;
 using Server.Utilities;
@@ -159,6 +158,7 @@ public class GuardedRegion : BaseRegion
             if (m.Focus == null)
             {
                 useGuard = m;
+                break;
             }
         }
 
@@ -292,19 +292,8 @@ public class GuardedRegion : BaseRegion
 
             if (fakeCall != null)
             {
-                fakeCall.Say(
-                    Utility.RandomList(
-                        1007037,
-                        501603,
-                        1013037,
-                        1013038,
-                        1013039,
-                        1013041,
-                        1013042,
-                        1013043,
-                        1013052
-                    )
-                );
+                fakeCall.Say(Utility.Random(1013037, 16));
+
                 MakeGuard(m);
                 timer.Stop();
                 m_GuardCandidates.Remove(m);

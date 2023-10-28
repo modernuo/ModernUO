@@ -64,7 +64,7 @@ public partial class Acid : Item
 
         using var queue = PooledRefQueue<Mobile>.Create();
 
-        foreach (var m in GetMobilesInRange(0))
+        foreach (var m in GetMobilesAt())
         {
             if (m.AccessLevel == AccessLevel.Player &&
                 m.Alive && !m.IsDeadBondedPet && (m is not BaseCreature bc || bc.Controlled || bc.Summoned))

@@ -114,6 +114,7 @@ namespace Server.Mobiles
                 {
                     BaseCreature orc = new SpawnedOrcishLord { Team = Team };
 
+                    // This MoveToWorld is safe since we return after executing and do not keep looping.
                     orc.MoveToWorld(map.GetRandomNearbyLocation(target.Location), map);
                     orc.Combatant = target;
                     return;

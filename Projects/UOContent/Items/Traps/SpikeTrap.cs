@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Spells;
 
 namespace Server.Items;
@@ -92,12 +93,19 @@ public partial class SpikeTrap : BaseTrap
         Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue());
         Effects.PlaySound(Location, Map, 0x22C);
 
-        foreach (var mob in GetMobilesInRange(0))
+        var queue = PooledRefQueue<Mobile>.Create();
+        foreach (var mob in GetMobilesAt())
         {
-            if (mob.Alive && !mob.IsDeadBondedPet)
+            if (mob.Alive && !mob.IsDeadBondedPet && mob.AccessLevel == AccessLevel.Player)
             {
-                SpellHelper.Damage(TimeSpan.FromTicks(1), mob, mob, Utility.RandomMinMax(1, 6) * 6);
+                queue.Enqueue(mob);
             }
+        }
+
+        while (queue.Count > 0)
+        {
+            var mob = queue.Dequeue();
+            SpellHelper.Damage(TimeSpan.FromTicks(1), mob, mob, Utility.RandomMinMax(1, 6) * 6);
         }
 
         Timer.StartTimer(TimeSpan.FromSeconds(1.0), OnSpikeExtended);

@@ -856,7 +856,7 @@ namespace Server.Mobiles
 
             if (Core.AOS)
             {
-                foreach (Mobile m in Map.GetMobilesInRange(location, 0))
+                foreach (Mobile m in Map.GetMobilesAt(location))
                 {
                     if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
                     {

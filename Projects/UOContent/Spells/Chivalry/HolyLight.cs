@@ -1,4 +1,5 @@
 using System;
+using Server.Collections;
 using Server.Items;
 
 namespace Server.Spells.Chivalry
@@ -54,6 +55,7 @@ namespace Server.Spells.Chivalry
                     0
                 );
 
+                using var queue = PooledRefQueue<Mobile>.Create();
                 foreach (var m in Caster.GetMobilesInRange(3))
                 {
                     if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
@@ -61,6 +63,13 @@ namespace Server.Spells.Chivalry
                     {
                         continue;
                     }
+
+                    queue.Enqueue(m);
+                }
+
+                while (queue.Count > 0)
+                {
+                    var m = queue.Dequeue();
 
                     var damage = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
 

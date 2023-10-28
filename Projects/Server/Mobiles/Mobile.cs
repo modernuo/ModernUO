@@ -8121,14 +8121,25 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public Map.ItemBoundsEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
         m_Map == null ? Map.ItemBoundsEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Location, range);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
         m_Map?.GetObjectsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<IEntity>.Instance;
 
-    public Map.MobileEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileAtEnumerable<Mobile> GetMobilesInRange() => GetMobilesInRange<Mobile>();
 
-    public Map.MobileEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
-        m_Map == null ? Map.MobileEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Location, range);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileAtEnumerable<T> GetMobilesInRange<T>() where T : Mobile =>
+        m_Map == null ? Map.MobileAtEnumerable<T>.Empty : m_Map.GetMobilesAt<T>(m_Location);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileBoundsEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileBoundsEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
+        m_Map == null ? Map.MobileBoundsEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Location, range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
         m_Map?.GetClientsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<NetState>.Instance;
 

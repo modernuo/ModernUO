@@ -151,21 +151,21 @@ public class HealerAI : BaseAI
 
         foreach (var m in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
         {
-            if (!m_Mobile.CanSee(m) || !(m is BaseCreature) || ((BaseCreature)m).Team != m_Mobile.Team)
+            if (!m_Mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != m_Mobile.Team)
             {
                 continue;
             }
 
             for (var i = 0; i < funcs.Length; ++i)
             {
-                if (funcs[i](m))
+                if (funcs[i](bc))
                 {
-                    var val = -m_Mobile.GetDistanceToSqrt(m);
+                    var val = -m_Mobile.GetDistanceToSqrt(bc);
 
                     if (found == null || val > prio)
                     {
                         prio = val;
-                        found = m;
+                        found = bc;
                     }
 
                     break;

@@ -616,12 +616,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     public void OnEnter(Mobile m)
     {
-        if (IsIteratingMobiles)
-        {
-            _delayedMobileActions.Add((MapAction.Enter, m.Location, m));
-            return;
-        }
-
         OnEnter(m.Location, m);
     }
 
@@ -660,12 +654,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     public void OnLeave(Mobile m)
     {
-        if (IsIteratingMobiles)
-        {
-            _delayedMobileActions.Add((MapAction.Leave, m.Location, m));
-            return;
-        }
-
         OnLeave(m.Location, m);
     }
 
@@ -752,12 +740,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         if (oldSector != newSector)
         {
-            if (IsIteratingMobiles)
-            {
-                _delayedMobileActions.Add((MapAction.Move, m.Location, m));
-                return;
-            }
-
             oldSector.OnLeave(m);
             newSector.OnEnter(m);
         }

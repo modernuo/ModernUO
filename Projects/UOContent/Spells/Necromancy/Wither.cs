@@ -105,7 +105,7 @@ namespace Server.Spells.Necromancy
 
                         double damage = Utility.RandomMinMax(30, 35);
 
-                        damage *= 300 + m.Karma / 100 + GetDamageSkill(Caster) * 10;
+                        damage *= 300 + m.Karma / 100.0 + GetDamageSkill(Caster) * 10;
                         damage /= 1000;
 
                         var sdiBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);

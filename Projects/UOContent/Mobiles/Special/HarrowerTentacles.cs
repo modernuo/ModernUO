@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Collections;
 
 namespace Server.Mobiles;
 
@@ -119,6 +120,7 @@ public partial class HarrowerTentacles : BaseCreature
                 return;
             }
 
+            using var queue = PooledRefQueue<Mobile>.Create();
             foreach (var m in m_Owner.GetMobilesInRange<Mobile>(9))
             {
                 if (m == m_Owner || !m_Owner.CanBeHarmful(m))
@@ -136,6 +138,12 @@ public partial class HarrowerTentacles : BaseCreature
                     continue;
                 }
 
+                queue.Enqueue(m);
+            }
+
+            while (queue.Count > 0)
+            {
+                var m = queue.Dequeue();
                 m_Owner.DoHarmful(m);
 
                 m.FixedParticles(0x374A, 10, 15, 5013, 0x455, 0, EffectLayer.Waist);

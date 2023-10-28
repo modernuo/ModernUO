@@ -1,6 +1,7 @@
 using ModernUO.Serialization;
 using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Server.Collections;
 using Server.Items;
 using Server.Spells;
 
@@ -131,13 +132,13 @@ namespace Server.Mobiles
                 return;
             }
 
-            var list = new List<SavageShaman>();
+            using var queue = PooledRefQueue<BaseCreature>.Create();
 
             foreach (var m in GetMobilesInRange(8))
             {
                 if (m != this && m is SavageShaman ss)
                 {
-                    list.Add(ss);
+                    queue.Enqueue(ss);
                 }
             }
 
@@ -148,31 +149,32 @@ namespace Server.Mobiles
                 AIObject.NextMove = Core.TickCount + 1000;
             }
 
-            if (list.Count >= 3)
-            {
-                for (var i = 0; i < list.Count; ++i)
-                {
-                    var dancer = list[i];
-
-                    dancer.Animate(111, 5, 1, true, false, 0); // Get down tonight...
-
-                    if (dancer.AIObject != null)
-                    {
-                        dancer.AIObject.NextMove = Core.TickCount + 1000;
-                    }
-                }
-
-                Timer.StartTimer(TimeSpan.FromSeconds(1.0), EndSavageDance);
-            }
-        }
-
-        private void DoGreaterHeal(Mobile m, bool isFriendly)
-        {
-            if (!isFriendly || m.Poisoned || MortalStrike.IsWounded(m) || !CanBeBeneficial(m))
+            if (queue.Count < 3)
             {
                 return;
             }
 
+            while (queue.Count > 0)
+            {
+                var dancer = queue.Dequeue();
+
+                dancer.Animate(111, 5, 1, true, false, 0); // Get down tonight...
+
+                if (dancer.AIObject != null)
+                {
+                    dancer.AIObject.NextMove = Core.TickCount + 1000;
+                }
+            }
+
+            Timer.StartTimer(TimeSpan.FromSeconds(1.0), EndSavageDance);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool CanDoGreaterHeal(Mobile m, bool isFriendly) =>
+            isFriendly && !m.Poisoned && !MortalStrike.IsWounded(m) && CanBeBeneficial(m);
+
+        private void DoGreaterHeal(Mobile m)
+        {
             DoBeneficial(m);
 
             // Algorithm: (40% of magery) + (1-10)
@@ -186,13 +188,12 @@ namespace Server.Mobiles
             m.PlaySound(0x202);
         }
 
-        private void DoLightning(Mobile m, bool isFriendly)
-        {
-            if (isFriendly || !CanBeHarmful(m))
-            {
-                return;
-            }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool CanDoLightning(Mobile m, bool isFriendly) =>
+            !isFriendly && CanBeHarmful(m) && (!m.Hidden || m.AccessLevel == AccessLevel.Player);
 
+        private void DoLightning(Mobile m)
+        {
             DoHarmful(m);
 
             double damage;
@@ -213,13 +214,12 @@ namespace Server.Mobiles
             SpellHelper.Damage(TimeSpan.FromSeconds(0.25), m, this, damage, 0, 0, 0, 0, 100);
         }
 
-        private void DoPoison(Mobile m, bool isFriendly)
-        {
-            if (isFriendly || !CanBeHarmful(m))
-            {
-                return;
-            }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool CanDoPoison(Mobile m, bool isFriendly) =>
+            !isFriendly && CanBeHarmful(m) && (!m.Hidden || m.AccessLevel == AccessLevel.Player);
 
+        private void DoPoison(Mobile m)
+        {
             DoHarmful(m);
 
             m.Spell?.OnCasterHurt();
@@ -258,25 +258,42 @@ namespace Server.Mobiles
 
             var rnd = Utility.Random(3);
 
+            using var queue = PooledRefQueue<Mobile>.Create();
             foreach (var m in GetMobilesInRange(8))
             {
                 var isFriendly = m is Savage or SavageRider or SavageShaman or SavageRidgeback;
+                var shouldApply = rnd switch
+                {
+                    0 => CanDoGreaterHeal(m, isFriendly),
+                    1 => CanDoLightning(m, isFriendly),
+                    2 => CanDoPoison(m, isFriendly),
+                };
+
+                if (shouldApply)
+                {
+                    queue.Enqueue(m);
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                var m = queue.Dequeue();
 
                 switch (rnd)
                 {
                     case 0:
                         {
-                            DoGreaterHeal(m, isFriendly);
+                            DoGreaterHeal(m);
                             break;
                         }
                     case 1:
                         {
-                            DoLightning(m, isFriendly);
+                            DoLightning(m);
                             break;
                         }
                     case 2:
                         {
-                            DoPoison(m, isFriendly);
+                            DoPoison(m);
                             break;
                         }
                 }
