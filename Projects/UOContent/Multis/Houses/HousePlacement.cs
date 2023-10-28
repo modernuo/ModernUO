@@ -151,8 +151,7 @@ namespace Server.Multis
 
                     mobiles.Clear();
 
-                    var sector = map.GetSector(tileX, tileY);
-                    foreach (var m in sector.Mobiles)
+                    foreach (var m in map.GetMobilesAt(tileX, tileY))
                     {
                         if (m.X == tileX && m.Y == tileY)
                         {

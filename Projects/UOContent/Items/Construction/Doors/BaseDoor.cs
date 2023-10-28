@@ -344,8 +344,7 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             }
         }
 
-        var sector = map.GetSector(x, y);
-        foreach (var m in sector.Mobiles)
+        foreach (var m in map.GetMobilesAt(x, y))
         {
             // At the same location, not hidden, or is a player, alive, and within z-bounds - then cannot fit
             if (m.Location.X == x && m.Location.Y == y &&
