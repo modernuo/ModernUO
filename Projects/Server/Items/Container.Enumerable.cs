@@ -103,6 +103,19 @@ public partial class Container
     ///     <paramref name="predicate" />.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PooledRefQueue<T> EnumerateItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
+    {
+        var queue = PooledRefQueue<T>.Create(128);
+
+        foreach (var item in FindItemsByType(recurse, predicate))
+        {
+            queue.Enqueue(item);
+        }
+
+        return queue;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PooledRefQueue<Item> EnumerateItemsByType(Type type, bool recurse = true)
     {
         var queue = PooledRefQueue<Item>.Create(128);
@@ -137,19 +150,6 @@ public partial class Container
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PooledRefQueue<Item> EnumerateItems(bool recurse = true, Predicate<Item> predicate = null) =>
         EnumerateItemsByType(recurse, predicate);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefQueue<T> EnumerateItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
-    {
-        var queue = PooledRefQueue<T>.Create(128);
-
-        foreach (var item in FindItemsByType(recurse, predicate))
-        {
-            queue.Enqueue(item);
-        }
-
-        return queue;
-    }
 
     public PooledRefList<T> ListItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
