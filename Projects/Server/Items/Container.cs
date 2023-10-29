@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using Server.Collections;
 using Server.Logging;
 using Server.Network;
@@ -1539,9 +1538,12 @@ public partial class Container : Item
     {
         var total = 0;
 
-        foreach (var item in FindItemsByType(type, recurse))
+        foreach (var item in FindItems(recurse))
         {
-            total += item.Amount;
+            if (type.IsInstanceOfType(item))
+            {
+                total += item.Amount;
+            }
         }
 
         return total;
@@ -1551,18 +1553,24 @@ public partial class Container : Item
     {
         var total = 0;
 
-        foreach (var item in FindItemsByType(types, recurse))
+        foreach (var item in FindItems(recurse))
         {
-            total += item.Amount;
+            if (item.InTypeList(types))
+            {
+                total += item.Amount;
+            }
         }
 
         return total;
     }
     public Item FindItemByType(Type type, bool recurse = true)
     {
-        foreach (var item in FindItemsByType(type, recurse))
+        foreach (var item in FindItems(recurse))
         {
-            return item;
+            if (type.IsInstanceOfType(item))
+            {
+                return item;
+            }
         }
 
         return null;
@@ -1570,9 +1578,12 @@ public partial class Container : Item
 
     public Item FindItemByType(Type[] types, bool recurse = true)
     {
-        foreach (var item in FindItemsByType(types, recurse))
+        foreach (var item in FindItems(recurse))
         {
-            return item;
+            if (item.InTypeList(types))
+            {
+                return item;
+            }
         }
 
         return null;

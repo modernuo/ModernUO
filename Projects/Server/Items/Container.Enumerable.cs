@@ -27,12 +27,12 @@ public partial class Container
     ///     nested <see cref="Container" />s within this <see cref="Container" />.
     /// </summary>
     /// <remarks>
-    ///     DO NOT consume, delete, or move items while iterating
+    ///     DO NOT consume, delete, or move items while iterating any FindItemByType or FindItems overloads
     /// </remarks>
     /// <example>
     /// <code>
     ///     var total = 0;
-    ///     
+    ///
     ///     foreach (var gold in cont.FindItemsByType&lt;Gold&gt;())
     ///     {
     ///         total += gold.Amount;
@@ -103,24 +103,45 @@ public partial class Container
     ///     <paramref name="predicate" />.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public QueuedItemsEnumerator<T> EnumerateItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item =>
-        new(QueueItemsByType(recurse, predicate));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public QueuedItemsEnumerator<Item> EnumerateItemsByType(Type type, bool recurse = true) =>
-        new(QueueItemsByType<Item>(recurse, type.IsInstanceOfType));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public QueuedItemsEnumerator<Item> EnumerateItemsByType(Type[] types, bool recurse = true) =>
-        new(QueueItemsByType<Item>(recurse, item => item.InTypeList(types)));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public QueuedItemsEnumerator<Item> EnumerateItems(bool recurse = true, Predicate<Item> predicate = null) =>
-        new(QueueItemsByType(recurse, predicate));
-    
-    public PooledRefQueue<T> QueueItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
+    public PooledRefQueue<Item> EnumerateItemsByType(Type type, bool recurse = true)
     {
-        var queue = PooledRefQueue<T>.Create();
+        var queue = PooledRefQueue<Item>.Create(128);
+
+        foreach (var item in FindItemsByType<Item>(recurse))
+        {
+            if (type.IsInstanceOfType(item))
+            {
+                queue.Enqueue(item);
+            }
+        }
+
+        return queue;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PooledRefQueue<Item> EnumerateItemsByType(Type[] types, bool recurse = true)
+    {
+        var queue = PooledRefQueue<Item>.Create(128);
+
+        foreach (var item in FindItemsByType<Item>(recurse))
+        {
+            if (item.InTypeList(types))
+            {
+                queue.Enqueue(item);
+            }
+        }
+
+        return queue;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PooledRefQueue<Item> EnumerateItems(bool recurse = true, Predicate<Item> predicate = null) =>
+        EnumerateItemsByType(recurse, predicate);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PooledRefQueue<T> EnumerateItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
+    {
+        var queue = PooledRefQueue<T>.Create(128);
 
         foreach (var item in FindItemsByType(recurse, predicate))
         {
@@ -130,21 +151,9 @@ public partial class Container
         return queue;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefQueue<Item> QueueItemsByType(Type type, bool recurse = true) =>
-        QueueItemsByType<Item>(recurse, type.IsInstanceOfType);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefQueue<Item> QueueItemsByType(Type[] types, bool recurse = true) =>
-        QueueItemsByType<Item>(recurse, item => item.InTypeList(types));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefQueue<Item> QueueItems(bool recurse = true, Predicate<Item> predicate = null) =>
-        QueueItemsByType(recurse, predicate);
-    
     public PooledRefList<T> ListItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-        var list = PooledRefList<T>.Create();
+        var list = PooledRefList<T>.Create(128);
 
         foreach (var item in FindItemsByType(recurse, predicate))
         {
@@ -155,12 +164,36 @@ public partial class Container
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefList<Item> ListItemsByType(Type type, bool recurse = true) =>
-        ListItemsByType<Item>(recurse, type.IsInstanceOfType);
+    public PooledRefList<Item> ListItemsByType(Type type, bool recurse = true)
+    {
+        var list = PooledRefList<Item>.Create(128);
+
+        foreach (var item in FindItemsByType<Item>(recurse))
+        {
+            if (type.IsInstanceOfType(item))
+            {
+                list.Add(item);
+            }
+        }
+
+        return list;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefList<Item> ListItemsByType(Type[] types, bool recurse = true) =>
-        ListItemsByType<Item>(recurse, item => item.InTypeList(types));
+    public PooledRefList<Item> ListItemsByType(Type[] types, bool recurse = true)
+    {
+        var list = PooledRefList<Item>.Create(128);
+
+        foreach (var item in FindItemsByType<Item>(recurse))
+        {
+            if (item.InTypeList(types))
+            {
+                list.Add(item);
+            }
+        }
+
+        return list;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PooledRefList<Item> ListItems(bool recurse = true, Predicate<Item> predicate = null) =>
@@ -238,41 +271,5 @@ public partial class Container
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FindItemsByTypeEnumerator<T> GetEnumerator() => this;
-    }
-
-    public ref struct QueuedItemsEnumerator<T> where T : Item
-    {
-        private PooledRefQueue<T> _queue;
-        private T _current;
-
-        public QueuedItemsEnumerator(PooledRefQueue<T> queue)
-        {
-            _queue = queue;
-            _current = default;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext()
-        {
-            if (_queue.TryDequeue(out var item))
-            {
-                _current = item;
-                return true;
-            }
-
-            return false;
-        }
-
-        public T Current
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _current;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() => _queue.Dispose();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public QueuedItemsEnumerator<T> GetEnumerator() => this;
     }
 }
