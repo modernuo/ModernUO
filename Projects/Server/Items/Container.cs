@@ -26,6 +26,7 @@ public partial class Container : Item
 
     private int m_TotalItems;
     private int m_TotalWeight;
+    private int _version;
 
     public Container(int itemID) : base(itemID)
     {
@@ -461,6 +462,18 @@ public partial class Container : Item
             m_TotalItems += item.TotalItems + 1;
             m_TotalWeight += item.TotalWeight + item.PileWeight;
         }
+    }
+
+    public override void OnItemAdded(Item item)
+    {
+        base.OnItemAdded(item);
+        _version++;
+    }
+
+    public override void OnItemRemoved(Item item)
+    {
+        base.OnItemRemoved(item);
+        _version++;
     }
 
     public virtual bool OnStackAttempt(Mobile from, Item stack, Item dropped) =>

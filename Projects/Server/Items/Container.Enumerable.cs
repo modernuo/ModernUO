@@ -201,26 +201,33 @@ public partial class Container
 
     public ref struct FindItemsByTypeEnumerator<T> where T : Item
     {
+        private const string InvalidOperation_EnumFailedVersion =
+            "Container was modified after enumerator was instantiated. Use Container.EnumerateItems method instead for safe enumerations.";
+
         private PooledRefQueue<Container> _containers;
         private Span<Item> _items;
         private int _index;
         private T _current;
-        private bool _recurse;
-        private Predicate<T> _predicate;
+        private readonly bool _recurse;
+        private readonly Predicate<T> _predicate;
+        private Container _currentContainer;
+        private int _version;
 
         public FindItemsByTypeEnumerator(Container container, bool recurse, Predicate<T> predicate)
         {
-            _containers = PooledRefQueue<Container>.Create();
+            _containers = _recurse ? PooledRefQueue<Container>.Create() : default;
 
             if (container?.m_Items != null)
             {
                 _items = CollectionsMarshal.AsSpan(container.m_Items);
             }
 
+            _currentContainer = container;
             _current = default;
             _index = 0;
             _recurse = recurse;
             _predicate = predicate;
+            _version = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -234,14 +241,21 @@ public partial class Container
                 return false;
             }
 
+            _currentContainer = c;
             _items = CollectionsMarshal.AsSpan(c.m_Items);
             _index = 0;
+            _version = c._version;
             return SetNextItem();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool SetNextItem()
         {
+            if (_version != _currentContainer._version)
+            {
+                throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
+            }
+
             while (_index < _items.Length)
             {
                 Item item = _items[_index++];
@@ -252,6 +266,11 @@ public partial class Container
 
                 if (item is T t && _predicate?.Invoke(t) != false)
                 {
+                    if (_version != _currentContainer._version)
+                    {
+                        throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
+                    }
+
                     _current = t;
                     return true;
                 }
