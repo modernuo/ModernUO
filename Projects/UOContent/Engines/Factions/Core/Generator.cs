@@ -11,6 +11,7 @@ namespace Server.Factions
 
         public static void GenerateFactions_OnCommand(CommandEventArgs e)
         {
+            var from = e.Mobile;
             FactionSystem.Enable();
 
             var factions = Faction.Factions;
@@ -18,6 +19,7 @@ namespace Server.Factions
             foreach (var faction in factions)
             {
                 Generate(faction);
+                from.SendMessage($"Generated {faction}");
             }
 
             var towns = Town.Towns;
@@ -25,7 +27,10 @@ namespace Server.Factions
             foreach (var town in towns)
             {
                 Generate(town);
+                from.SendMessage($"Generated {town}");
             }
+
+            from.SendMessage("Faction generation completed.");
         }
 
         public static void Generate(Town town)
