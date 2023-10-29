@@ -42,6 +42,7 @@ public class FactionSystem : GenericPersistence
             return;
         }
 
+        _factionSystem ??= new FactionSystem();
         _factionSystem.Register();
         Enabled = true;
         ServerConfiguration.SetSetting("factions.enabled", true);
