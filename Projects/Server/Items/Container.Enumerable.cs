@@ -275,41 +275,4 @@ public partial class Container
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public QueuedItemsEnumerator<T> GetEnumerator() => this;
     }
-
-    public ref struct ListedItemsEnumerator<T> where T : Item
-    {
-        private PooledRefList<T> _list;
-        private T _current;
-        private int _index;
-
-        public ListedItemsEnumerator(PooledRefList<T> list)
-        {
-            _list = list;
-            _current = default;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext()
-        {
-            if (_index < _list.Count) 
-            {
-                _current = _list[_index++];
-                return true;
-            }
-
-            return false;
-        }
-
-        public T Current
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _current;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose() => _list.Dispose();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ListedItemsEnumerator<T> GetEnumerator() => this;
-    }
 }
