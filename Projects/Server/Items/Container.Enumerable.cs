@@ -215,19 +215,23 @@ public partial class Container
 
         public FindItemsByTypeEnumerator(Container container, bool recurse, Predicate<T> predicate)
         {
-            _containers = _recurse ? PooledRefQueue<Container>.Create() : default;
+            _containers = PooledRefQueue<Container>.Create(_recurse ? 64 : 0);
 
-            if (container?.m_Items != null)
+            if (container != null)
             {
-                _items = CollectionsMarshal.AsSpan(container.m_Items);
+                if (container.m_Items != null)
+                {
+                    _items = CollectionsMarshal.AsSpan(container.m_Items);
+                }
+
+                _currentContainer = container;
+                _version = container._version;
             }
 
-            _currentContainer = container;
             _current = default;
             _index = 0;
             _recurse = recurse;
             _predicate = predicate;
-            _version = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
