@@ -135,8 +135,9 @@ namespace Server.SkillHandlers
 
     public class TrackWhoGump : Gump
     {
-        private readonly PlayerMobile _from;
+        private const int MaxClosest = 12;
 
+        private readonly PlayerMobile _from;
         private readonly Mobile[] _targets;
         private readonly int _range;
 
@@ -231,8 +232,8 @@ namespace Server.SkillHandlers
             var loc = from.Location;
 
             // We only track the closest 12
-            var mobs = new Mobile[12];
-            Span<double> distances = stackalloc double[12];
+            var mobs = new Mobile[MaxClosest];
+            Span<double> distances = stackalloc double[MaxClosest];
             distances.Fill(double.MaxValue); // Fill with max values
             var total = 0;
 
@@ -248,12 +249,12 @@ namespace Server.SkillHandlers
                 total++;
 
                 var distance = m.GetDistanceToSqrt(loc);
-                for (var i = 0; i < 12; i++)
+                for (var i = 0; i < MaxClosest; i++)
                 {
                     if (distance < distances[i])
                     {
                         // Shift down the rest
-                        for (int j = 11; j > i; j--)
+                        for (int j = MaxClosest - 1; j > i; j--)
                         {
                             mobs[j] = mobs[j - 1];
                             distances[j] = distances[j - 1];
@@ -266,7 +267,7 @@ namespace Server.SkillHandlers
                 }
             }
 
-            if (total < 12)
+            if (total < MaxClosest)
             {
                 Array.Resize(ref mobs, total);
             }
