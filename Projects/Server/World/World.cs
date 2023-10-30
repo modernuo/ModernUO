@@ -45,7 +45,7 @@ public static class World
     private static readonly GenericEntityPersistence<BaseGuild> _guildPersistence = new("Guilds", 3, 1, 0x7FFFFFFF);
 
     private static int _threadId;
-    private static readonly SerializationThreadWorker[] _threadWorkers = new SerializationThreadWorker[Environment.ProcessorCount - 1];
+    private static readonly SerializationThreadWorker[] _threadWorkers = new SerializationThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
     private static readonly ManualResetEvent _diskWriteHandle = new(true);
     private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
