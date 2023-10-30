@@ -11,7 +11,7 @@ namespace Server.SkillHandlers
 {
     public static class Tracking
     {
-        private static readonly Dictionary<Mobile, TrackingInfo> m_Table = new();
+        private static readonly Dictionary<Mobile, TrackingInfo> _table = new();
 
         public static unsafe void Configure()
         {
@@ -50,18 +50,18 @@ namespace Server.SkillHandlers
         public static void AddInfo(Mobile tracker, Mobile target)
         {
             var info = new TrackingInfo(tracker, target);
-            m_Table[tracker] = info;
+            _table[tracker] = info;
         }
 
         public static double GetStalkingBonus(Mobile tracker, Mobile target)
         {
-            if (!m_Table.Remove(tracker, out var info) || info.m_Target != target || info.m_Map != target.Map)
+            if (!_table.Remove(tracker, out var info) || info._target != target || info._map != target.Map)
             {
                 return 0.0;
             }
 
-            var xDelta = info.m_Location.X - target.X;
-            var yDelta = info.m_Location.Y - target.Y;
+            var xDelta = info._location.X - target.X;
+            var yDelta = info._location.Y - target.Y;
 
             var bonus = Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
 
@@ -70,35 +70,35 @@ namespace Server.SkillHandlers
 
         public static void ClearTrackingInfo(Mobile tracker)
         {
-            m_Table.Remove(tracker);
+            _table.Remove(tracker);
         }
 
-        public class TrackingInfo
+        private class TrackingInfo
         {
-            public Point2D m_Location;
-            public Map m_Map;
-            public Mobile m_Target;
-            public Mobile m_Tracker;
+            public Point2D _location;
+            public readonly Map _map;
+            public readonly Mobile _target;
+            public Mobile _tracker;
 
             public TrackingInfo(Mobile tracker, Mobile target)
             {
-                m_Tracker = tracker;
-                m_Target = target;
-                m_Location = new Point2D(target);
-                m_Map = target.Map;
+                _tracker = tracker;
+                _target = target;
+                _location = new Point2D(target);
+                _map = target.Map;
             }
         }
     }
 
     public class TrackWhatGump : Gump
     {
-        private readonly PlayerMobile m_From;
-        private readonly bool m_Success;
+        private readonly PlayerMobile _from;
+        private readonly bool _success;
 
         public TrackWhatGump(PlayerMobile from) : base(20, 30)
         {
-            m_From = from;
-            m_Success = from.CheckSkill(SkillName.Tracking, 0.0, 21.1);
+            _from = from;
+            _success = from.CheckSkill(SkillName.Tracking, 0.0, 21.1);
 
             AddPage(0);
 
@@ -128,33 +128,24 @@ namespace Server.SkillHandlers
         {
             if (info.ButtonID >= 1 && info.ButtonID <= 4)
             {
-                TrackWhoGump.DisplayTo(m_Success, m_From, info.ButtonID - 1);
+                TrackWhoGump.DisplayTo(_success, _from, info.ButtonID - 1);
             }
         }
     }
 
-    public delegate bool TrackTypeDelegate(Mobile m);
-
     public class TrackWhoGump : Gump
     {
-        private static readonly TrackTypeDelegate[] m_Delegates =
+        private const int MaxClosest = 12;
+
+        private readonly PlayerMobile _from;
+        private readonly Mobile[] _targets;
+        private readonly int _range;
+
+        private TrackWhoGump(PlayerMobile from, Mobile[] targets, int range) : base(20, 30)
         {
-            IsAnimal,
-            IsMonster,
-            IsHumanNPC,
-            IsPlayer
-        };
-
-        private readonly PlayerMobile m_From;
-
-        private readonly List<Mobile> m_List;
-        private readonly int m_Range;
-
-        private TrackWhoGump(PlayerMobile from, List<Mobile> list, int range) : base(20, 30)
-        {
-            m_From = from;
-            m_List = list;
-            m_Range = range;
+            _from = from;
+            _targets = targets;
+            _range = range;
 
             AddPage(0);
 
@@ -163,14 +154,14 @@ namespace Server.SkillHandlers
             AddBackground(10, 10, 420, 75, 2620);
             AddBackground(10, 85, 420, 45, 3000);
 
-            if (list.Count > 4)
+            if (targets.Length > 4)
             {
                 AddBackground(0, 155, 440, 155, 5054);
 
                 AddBackground(10, 165, 420, 75, 2620);
                 AddBackground(10, 240, 420, 45, 3000);
 
-                if (list.Count > 8)
+                if (targets.Length > 8)
                 {
                     AddBackground(0, 310, 440, 155, 5054);
 
@@ -179,9 +170,9 @@ namespace Server.SkillHandlers
                 }
             }
 
-            for (var i = 0; i < list.Count && i < 12; ++i)
+            for (var i = 0; i < targets.Length; ++i)
             {
-                var m = list[i];
+                var m = targets[i];
 
                 AddItem(20 + i % 4 * 100, 20 + i / 4 * 155, ShrinkTable.Lookup(m));
                 AddButton(20 + i % 4 * 100, 130 + i / 4 * 155, 4005, 4007, i + 1);
@@ -208,29 +199,15 @@ namespace Server.SkillHandlers
                 return;
             }
 
-            var check = m_Delegates[type];
-
             from.CheckSkill(SkillName.Tracking, 21.1, 100.0); // Passive gain
 
             var range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
-            var eable = from.GetMobilesInRange(range);
-            var list = new List<Mobile>();
-            foreach (var m in eable)
-            {
-                if (m != from && (!Core.AOS || m.Alive) &&
-                    (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) &&
-                    check(m) && CheckDifficulty(from, m))
-                {
-                    list.Add(m);
-                }
-            }
+            var mobs = GetClosestMobs(from, range, type);
 
-            if (list.Count > 0)
+            if (mobs.Length > 0)
             {
-                list.Sort(new InternalSorter(from));
-
-                from.SendGump(new TrackWhoGump(from, list, range));
+                from.SendGump(new TrackWhoGump(from, mobs, range));
                 from.SendLocalizedMessage(1018093); // Select the one you would like to track.
             }
             else
@@ -248,6 +225,54 @@ namespace Server.SkillHandlers
                     from.SendLocalizedMessage(502995); // You see no evidence of people in the area.
                 }
             }
+        }
+
+        private static Mobile[] GetClosestMobs(Mobile from, int range, int type)
+        {
+            var loc = from.Location;
+
+            // We only track the closest 12
+            var mobs = new Mobile[MaxClosest];
+            Span<double> distances = stackalloc double[MaxClosest];
+            distances.Fill(double.MaxValue); // Fill with max values
+            var total = 0;
+
+            foreach (var m in from.GetMobilesInRange(range))
+            {
+                if (m == from || Core.AOS && !m.Alive ||
+                    m.Hidden && m.AccessLevel != AccessLevel.Player && from.AccessLevel <= m.AccessLevel ||
+                    !IsValidMobileType(m, type) || !CheckDifficulty(from, m))
+                {
+                    continue;
+                }
+
+                total++;
+
+                var distance = m.GetDistanceToSqrt(loc);
+                for (var i = 0; i < MaxClosest; i++)
+                {
+                    if (distance < distances[i])
+                    {
+                        // Shift down the rest
+                        for (int j = MaxClosest - 1; j > i; j--)
+                        {
+                            mobs[j] = mobs[j - 1];
+                            distances[j] = distances[j - 1];
+                        }
+
+                        mobs[i] = m;
+                        distances[i] = distance;
+                        break;
+                    }
+                }
+            }
+
+            if (total < MaxClosest)
+            {
+                Array.Resize(ref mobs, total);
+            }
+
+            return mobs;
         }
 
         // Tracking players uses tracking and detect hidden vs. hiding and stealth
@@ -304,55 +329,29 @@ namespace Server.SkillHandlers
             return chance > Utility.Random(100);
         }
 
-        private static bool IsAnimal(Mobile m) => !m.Player && m.Body.IsAnimal;
-
-        private static bool IsMonster(Mobile m) => !m.Player && m.Body.IsMonster;
-
-        private static bool IsHumanNPC(Mobile m) => !m.Player && m.Body.IsHuman;
-
-        private static bool IsPlayer(Mobile m) => m.Player;
+        private static bool IsValidMobileType(Mobile m, int type) =>
+            type switch
+            {
+                0 => !m.Player && m.Body.IsAnimal,
+                1 => !m.Player && m.Body.IsMonster,
+                2 => !m.Player && m.Body.IsHuman,
+                _ => m.Player
+            };
 
         public override void OnResponse(NetState state, RelayInfo info)
         {
             var index = info.ButtonID - 1;
 
-            if (index >= 0 && index < m_List.Count && index < 12)
+            if (index >= 0 && index < _targets.Length && index < 12)
             {
-                var m = m_List[index];
+                var m = _targets[index];
 
-                m_From.QuestArrow = new TrackArrow(m_From, m, m_Range * 2);
+                _from.QuestArrow = new TrackArrow(_from, m, _range * 2);
 
                 if (Core.SE)
                 {
-                    Tracking.AddInfo(m_From, m);
+                    Tracking.AddInfo(_from, m);
                 }
-            }
-        }
-
-        private class InternalSorter : IComparer<Mobile>
-        {
-            private readonly Mobile m_From;
-
-            public InternalSorter(Mobile from) => m_From = from;
-
-            public int Compare(Mobile x, Mobile y)
-            {
-                if (x == null && y == null)
-                {
-                    return 0;
-                }
-
-                if (x == null)
-                {
-                    return -1;
-                }
-
-                if (y == null)
-                {
-                    return 1;
-                }
-
-                return m_From.GetDistanceToSqrt(x).CompareTo(m_From.GetDistanceToSqrt(y));
             }
         }
     }
