@@ -122,9 +122,8 @@ public partial class Firebomb : Item
                     }
                     else if (RootParent == null)
                     {
-                        var eable = Map.GetMobilesInRange(Location, 1);
                         using var targets = PooledRefQueue<Mobile>.Create();
-                        foreach (var m in eable)
+                        foreach (var m in Map.GetMobilesInRange(Location, 1))
                         {
                             if (m_LitBy == null || SpellHelper.ValidIndirectTarget(m_LitBy, m) &&
                                 m_LitBy.CanBeHarmful(m, false))

@@ -90,6 +90,8 @@ public partial class FlameSpurtTrap : BaseTrap
                 if (_spurt?.Deleted != false)
                 {
                     _spurt = new Static(0x3709);
+
+                    // This MoveToWorld is generally not safe in a range loop, except we return after this on L100
                     _spurt.MoveToWorld(Location, Map);
 
                     Effects.PlaySound(GetWorldLocation(), Map, 0x309);

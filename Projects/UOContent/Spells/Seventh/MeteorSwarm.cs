@@ -42,9 +42,8 @@ namespace Server.Spells.Seventh
 
                 if (map != null)
                 {
-                    var eable = map.GetMobilesInRange(loc, 2);
                     using var queue = PooledRefQueue<Mobile>.Create();
-                    foreach (var m in eable)
+                    foreach (var m in map.GetMobilesInRange(loc, 2))
                     {
                         if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) ||
                             !Caster.CanBeHarmful(m, false) || Core.AOS && !Caster.InLOS(m))

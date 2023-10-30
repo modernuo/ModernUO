@@ -210,20 +210,17 @@ namespace Server.SkillHandlers
                 from.SendGump(new TrackWhoGump(from, mobs, range));
                 from.SendLocalizedMessage(1018093); // Select the one you would like to track.
             }
+            else if (type == 0)
+            {
+                from.SendLocalizedMessage(502991); // You see no evidence of animals in the area.
+            }
+            else if (type == 1)
+            {
+                from.SendLocalizedMessage(502993); // You see no evidence of creatures in the area.
+            }
             else
             {
-                if (type == 0)
-                {
-                    from.SendLocalizedMessage(502991); // You see no evidence of animals in the area.
-                }
-                else if (type == 1)
-                {
-                    from.SendLocalizedMessage(502993); // You see no evidence of creatures in the area.
-                }
-                else
-                {
-                    from.SendLocalizedMessage(502995); // You see no evidence of people in the area.
-                }
+                from.SendLocalizedMessage(502995); // You see no evidence of people in the area.
             }
         }
 

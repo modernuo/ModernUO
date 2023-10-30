@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Factions;
 using Server.Spells;
 using Server.Targeting;
@@ -90,20 +90,21 @@ namespace Server
 
         private static void OnHit(Mobile from, Point3D origin, Map facet)
         {
-            var eable = facet.GetMobilesInRange(origin, 12);
-            var targets = new List<Mobile>();
-            foreach (var m in eable)
+            using var queue = PooledRefQueue<Mobile>.Create();
+            foreach (var m in facet.GetMobilesInRange(origin, 12))
             {
                 if (from.CanBeHarmful(m, false) &&
                     m.InLOS(new Point3D(origin.X, origin.Y, origin.Z + 1)) &&
                     Faction.Find(m) != null)
                 {
-                    targets.Add(from);
+                    queue.Enqueue(from);
                 }
             }
 
-            foreach (var mob in targets)
+            while (queue.Count > 0)
             {
+                var mob = queue.Dequeue();
+
                 var damage = mob.Hits * 6 / 10;
 
                 if (!mob.Player && damage < 10)

@@ -1,6 +1,7 @@
 using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Engines.CannedEvil;
 using Server.Items;
 using Server.Network;
@@ -311,31 +312,19 @@ namespace Server.Mobiles
 
         private void OnTick()
         {
-            var toDamage = new List<Mobile>();
-
-            foreach (var m in GetMobilesInRange(0))
+            using var queue = PooledRefQueue<Mobile>.Create();
+            foreach (var m in GetMobilesAt())
             {
-                if (m is BaseCreature bc)
+                if ((m.Player || m is BaseCreature bc && (bc.Controlled || bc.Summoned))
+                    && m.Alive && !m.IsDeadBondedPet && m.CanBeDamaged())
                 {
-                    if (!bc.Controlled && !bc.Summoned)
-                    {
-                        continue;
-                    }
-                }
-                else if (!m.Player)
-                {
-                    continue;
-                }
-
-                if (m.Alive && !m.IsDeadBondedPet && m.CanBeDamaged())
-                {
-                    toDamage.Add(m);
+                    queue.Enqueue(m);
                 }
             }
 
-            for (var i = 0; i < toDamage.Count; ++i)
+            while (queue.Count > 0)
             {
-                Damage(toDamage[i]);
+                Damage(queue.Dequeue());
             }
 
             ++m_Ticks;

@@ -78,8 +78,7 @@ public partial class MorphItem : Item
     public void Refresh()
     {
         var found = false;
-        var eable = GetMobilesInRange(CurrentRange);
-        foreach (var mob in eable)
+        foreach (var mob in GetMobilesInRange(CurrentRange))
         {
             if (!mob.Hidden || mob.AccessLevel <= AccessLevel.Player)
             {

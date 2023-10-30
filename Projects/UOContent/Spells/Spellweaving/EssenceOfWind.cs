@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 
 namespace Server.Spells.Spellweaving
 {
@@ -24,7 +25,6 @@ namespace Server.Spells.Spellweaving
             {
                 Caster.PlaySound(0x5C6);
 
-                var range = 5 + FocusLevel;
                 var damage = 25 + FocusLevel;
 
                 var skill = Caster.Skills.Spellweaving.Value;
@@ -34,9 +34,8 @@ namespace Server.Spells.Spellweaving
                 var fcMalus = FocusLevel + 1;
                 var ssiMalus = 2 * (FocusLevel + 1);
 
-                var eable = Caster.GetMobilesInRange(range);
-
-                foreach (var m in eable)
+                using var queue = PooledRefQueue<Mobile>.Create();
+                foreach (var m in Caster.GetMobilesInRange(5 + FocusLevel))
                 {
                     if (Caster == m || !Caster.InLOS(m) || !SpellHelper.ValidIndirectTarget(Caster, m) ||
                         !Caster.CanBeHarmful(m, false))
@@ -44,6 +43,12 @@ namespace Server.Spells.Spellweaving
                         continue;
                     }
 
+                    queue.Enqueue(m);
+                }
+
+                while (queue.Count > 0)
+                {
+                    var m = queue.Dequeue();
                     Caster.DoHarmful(m);
 
                     SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);

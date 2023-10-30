@@ -1718,9 +1718,8 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
             return 0;
         }
 
-        var eable = defender.GetMobilesInRange<BaseCreature>(1);
         var inPack = 1;
-        foreach (var m in eable)
+        foreach (var m in defender.GetMobilesInRange<BaseCreature>(1))
         {
             if (m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned) &&
                 master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender)
@@ -1743,8 +1742,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
     {
         if (MirrorImage.HasClone(defender) && defender.Skills.Ninjitsu.Value / 150.0 > Utility.RandomDouble())
         {
-            var eable = defender.GetMobilesInRange<Clone>(4);
-            foreach (var m in eable)
+            foreach (var m in defender.GetMobilesInRange<Clone>(4))
             {
                 if (m?.Summoned == true && m.SummonMaster == defender)
                 {
@@ -3570,11 +3568,8 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
             return;
         }
 
-        var range = Core.ML ? 5 : 10;
-
-        var eable = from.GetMobilesInRange(range);
         using var queue = PooledRefQueue<Mobile>.Create();
-        foreach (var m in eable)
+        foreach (var m in from.GetMobilesInRange(Core.ML ? 5 : 10))
         {
             if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m)
                 && from.CanBeHarmful(m, false) && (!Core.ML || from.InLOS(m)))

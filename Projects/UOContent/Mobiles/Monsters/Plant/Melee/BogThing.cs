@@ -1,4 +1,5 @@
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -81,24 +82,33 @@ namespace Server.Mobiles
 
         public void EatBoglings()
         {
-            var eable = GetMobilesInRange<Bogling>(2);
-            var sound = true;
+            if (Hits >= HitsMax)
+            {
+                return;
+            }
 
-            foreach (var bogling in eable)
+            using var queue = PooledRefQueue<Mobile>.Create();
+            foreach (var bogling in GetMobilesInRange<Bogling>(2))
             {
                 if (Hits >= HitsMax)
                 {
                     break;
                 }
 
-                if (sound)
-                {
-                    PlaySound(Utility.Random(0x3B, 2)); // Eat sound
-                    sound = false;
-                }
-
                 Hits += bogling.Hits / 2;
-                bogling.Delete();
+                queue.Enqueue(bogling);
+            }
+
+            if (queue.Count <= 0)
+            {
+                return;
+            }
+
+            PlaySound(Utility.Random(0x3B, 2)); // Eat sound
+
+            while (queue.Count > 0)
+            {
+                queue.Dequeue().Delete();
             }
         }
 

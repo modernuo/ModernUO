@@ -80,8 +80,7 @@ namespace Server.Spells.Necromancy
                     var cbc = Caster as BaseCreature;
                     var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
-                    var eable = m.GetMobilesInRange(2);
-                    foreach (Mobile targ in eable)
+                    foreach (Mobile targ in m.GetMobilesInRange(2))
                     {
                         if (targ == Caster || m == targ || !SpellHelper.ValidIndirectTarget(Caster, targ)
                             || !Caster.CanBeHarmful(targ, false))

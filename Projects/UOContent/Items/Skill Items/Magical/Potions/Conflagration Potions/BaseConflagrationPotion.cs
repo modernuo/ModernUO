@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Spells;
 using Server.Targeting;
 
@@ -275,16 +276,23 @@ public abstract partial class BaseConflagrationPotion : BasePotion
                     return;
                 }
 
-                foreach (var m in _item.GetMobilesInRange(0))
+                using var queue = PooledRefQueue<Mobile>.Create();
+                foreach (var m in _item.GetMobilesAt())
                 {
                     if (m.Z + 16 > _item.Z && _item.Z + 12 > m.Z && (!Core.AOS || m != from) &&
                         SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
                     {
-                        from.DoHarmful(m);
-
-                        AOS.Damage(m, from, _item.GetDamage(), 0, 100, 0, 0, 0);
-                        m.PlaySound(0x208);
+                        queue.Enqueue(m);
                     }
+                }
+
+                while (queue.Count > 0)
+                {
+                    var m = queue.Dequeue();
+
+                    from.DoHarmful(m);
+                    AOS.Damage(m, from, _item.GetDamage(), 0, 100, 0, 0, 0);
+                    m.PlaySound(0x208);
                 }
             }
         }

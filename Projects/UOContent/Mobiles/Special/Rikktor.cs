@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.CannedEvil;
 using Server.Items;
 
@@ -98,9 +99,8 @@ public partial class Rikktor : BaseChampion
 
         PlaySound(0x2F3);
 
-        var eable = GetMobilesInRange<Mobile>(8);
-
-        foreach (var m in eable)
+        using var queue = PooledRefQueue<Mobile>.Create();
+        foreach (var m in GetMobilesInRange<Mobile>(8))
         {
             if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
             {
@@ -112,20 +112,18 @@ public partial class Rikktor : BaseChampion
                 continue;
             }
 
-            var damage = m.Hits * 0.6;
+            queue.Enqueue(m);
+        }
 
-            if (damage < 10.0)
-            {
-                damage = 10.0;
-            }
-            else if (damage > 75.0)
-            {
-                damage = 75.0;
-            }
+        while (queue.Count > 0)
+        {
+            var m = queue.Dequeue();
+
+            var damage = Math.Clamp((int)(m.Hits * 0.6), 10, 75);
 
             DoHarmful(m);
 
-            AOS.Damage(m, this, (int)damage, 100, 0, 0, 0, 0);
+            AOS.Damage(m, this, damage, 100, 0, 0, 0, 0);
 
             if (m.Alive && m.Body.IsHuman && !m.Mounted)
             {

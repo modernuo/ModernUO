@@ -35,11 +35,8 @@ namespace Server.Spells.Seventh
 
                 if (map != null)
                 {
-                    var eable = map.GetMobilesInRange<BaseCreature>(new Point3D(p), 8);
-
                     using var queue = PooledRefQueue<Mobile>.Create();
-
-                    foreach (var bc in eable)
+                    foreach (var bc in map.GetMobilesInRange<BaseCreature>(new Point3D(p), 8))
                     {
                         if (!(bc.IsDispellable && Caster.CanBeHarmful(bc, false)))
                         {

@@ -2488,21 +2488,24 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     public Map.ItemBoundsEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
         m_Map == null ? Map.ItemBoundsEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
-    public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
-    {
-        var map = m_Map;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileAtEnumerable<Mobile> GetMobilesAt() => GetMobilesAt<Mobile>();
 
-        return map?.GetMobilesInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
-               ?? PooledEnumeration.NullEnumerable<Mobile>.Instance;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileAtEnumerable<T> GetMobilesAt<T>() where T : Mobile =>
+        m_Map == null ? Map.MobileAtEnumerable<T>.Empty : m_Map.GetMobilesAt<T>(m_Parent == null ? m_Location : GetWorldLocation());
 
-    public IPooledEnumerable<NetState> GetClientsInRange(int range)
-    {
-        var map = m_Map;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileBoundsEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
 
-        return map.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
-               ?? PooledEnumeration.NullEnumerable<NetState>.Instance;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.MobileBoundsEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
+        m_Map == null ? Map.MobileBoundsEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
+        m_Map.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
+        ?? PooledEnumeration.NullEnumerable<NetState>.Instance;
 
     public bool GetTempFlag(int flag) => ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;
 

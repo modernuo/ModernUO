@@ -98,10 +98,9 @@ public partial class FireHorn : Item
         );
 
         var playerVsPlayer = false;
-        var eable = from.Map.GetMobilesInRange(loc, 2);
 
         using var targets = PooledRefQueue<Mobile>.Create();
-        foreach (var m in eable)
+        foreach (var m in from.Map.GetMobilesInRange(loc, 2))
         {
             if (from != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
                 (!Core.AOS || from.InLOS(m)))

@@ -36,10 +36,9 @@ namespace Server.Items
             attacker.FixedEffect(0x3728, 10, 15);
             attacker.PlaySound(0x2A1);
 
-            var eable = attacker.GetMobilesInRange(1);
             using var queue = PooledRefQueue<Mobile>.Create();
 
-            foreach (var m in eable)
+            foreach (var m in attacker.GetMobilesInRange(1))
             {
                 if (m?.Deleted == false && m != defender && m != attacker &&
                     m.Map == attacker.Map && m.Alive &&

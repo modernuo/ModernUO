@@ -1,4 +1,5 @@
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -120,9 +121,8 @@ namespace Server.Mobiles
 
                 Animate(10, 4, 1, true, false, 0);
 
-                var eable = target.GetMobilesInRange<Mobile>(8);
-
-                foreach (var m in eable)
+                using var queue = PooledRefQueue<Mobile>.Create();
+                foreach (var m in target.GetMobilesInRange<Mobile>(8))
                 {
                     if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
                     {
@@ -134,6 +134,12 @@ namespace Server.Mobiles
                         continue;
                     }
 
+                    queue.Enqueue(m);
+                }
+
+                while (queue.Count > 0)
+                {
+                    var m = queue.Dequeue();
                     DoHarmful(m);
 
                     AOS.Damage(m, this, Utility.RandomMinMax(20, 25), true, 0, 0, 0, 100, 0);

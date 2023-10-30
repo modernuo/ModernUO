@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Spells;
 
 namespace Server.Items;
@@ -94,12 +95,19 @@ public partial class StoneFaceTrap : BaseTrap
 
     public virtual void TriggerDamage()
     {
+        var queue = PooledRefQueue<Mobile>.Create();
         foreach (var mob in GetMobilesInRange(1))
         {
             if (mob.Alive && !mob.IsDeadBondedPet && mob.AccessLevel == AccessLevel.Player)
             {
-                SpellHelper.Damage(TimeSpan.FromTicks(1), mob, mob, Utility.Dice(3, 15, 0));
+                queue.Enqueue(mob);
             }
+        }
+
+        while (queue.Count > 0)
+        {
+            var mob = queue.Dequeue();
+            SpellHelper.Damage(TimeSpan.FromTicks(1), mob, mob, Utility.Dice(3, 15, 0));
         }
     }
 

@@ -58,27 +58,29 @@ namespace Server.SkillHandlers
 
                 if (range > 0)
                 {
-                    var inRange = src.Map.GetMobilesInRange(p, range);
-
-                    foreach (var trg in inRange)
+                    foreach (var trg in src.Map.GetMobilesInRange(p, range))
                     {
-                        if (trg.Hidden && src != trg)
+                        if (!trg.Hidden || src == trg)
                         {
-                            var ss = srcSkill + Utility.Random(21) - 10;
-                            var ts = trg.Skills.Hiding.Value + Utility.Random(21) - 10;
-
-                            if (src.AccessLevel >= trg.AccessLevel && (ss >= ts || inHouse && house.IsInside(trg)))
-                            {
-                                if (trg is ShadowKnight && (trg.X != p.X || trg.Y != p.Y))
-                                {
-                                    continue;
-                                }
-
-                                trg.RevealingAction();
-                                trg.SendLocalizedMessage(500814); // You have been revealed!
-                                foundAnyone = true;
-                            }
+                            continue;
                         }
+
+                        var ss = srcSkill + Utility.Random(21) - 10;
+                        var ts = trg.Skills.Hiding.Value + Utility.Random(21) - 10;
+
+                        if (src.AccessLevel < trg.AccessLevel || ss < ts && (!inHouse || !house.IsInside(trg)))
+                        {
+                            continue;
+                        }
+
+                        if (trg is ShadowKnight && (trg.X != p.X || trg.Y != p.Y))
+                        {
+                            continue;
+                        }
+
+                        trg.RevealingAction();
+                        trg.SendLocalizedMessage(500814); // You have been revealed!
+                        foundAnyone = true;
                     }
 
                     if (Faction.Find(src) != null)

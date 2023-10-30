@@ -32,9 +32,7 @@ namespace Server.Spells.Sixth
 
                 if (map != null)
                 {
-                    var eable = map.GetMobilesInRange(new Point3D(p), 2);
-
-                    foreach (var m in eable)
+                    foreach (var m in map.GetMobilesInRange(new Point3D(p), 2))
                     {
                         if (Core.AOS && (m == Caster || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanSee(m) ||
                                          !Caster.CanBeHarmful(m, false)))
