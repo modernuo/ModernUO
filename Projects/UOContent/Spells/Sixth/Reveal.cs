@@ -29,12 +29,8 @@ namespace Server.Spells.Sixth
 
                 if (map != null)
                 {
-                    var eable = map.GetMobilesInRange(
-                        new Point3D(p),
-                        1 + (int)(Caster.Skills.Magery.Value / 20.0)
-                    );
-
-                    foreach (var m in eable)
+                    var range = 1 + (int)(Caster.Skills.Magery.Value / 20.0);
+                    foreach (var m in map.GetMobilesInRange(new Point3D(p), range))
                     {
                         if (m is ShadowKnight && (m.X != p.X || m.Y != p.Y))
                         {

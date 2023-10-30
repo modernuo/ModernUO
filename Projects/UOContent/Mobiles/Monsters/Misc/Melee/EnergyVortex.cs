@@ -1,6 +1,5 @@
 using ModernUO.Serialization;
 using System;
-using Server.Buffers;
 using Server.Collections;
 
 namespace Server.Mobiles
@@ -75,28 +74,24 @@ namespace Server.Mobiles
         {
             if (Core.SE && Summoned)
             {
-                var eable = GetMobilesInRange(5);
-                using var queue = PooledRefQueue<Mobile>.Create();
-                foreach (var m in eable)
+                using var list = PooledRefList<Mobile>.Create();
+                foreach (var m in GetMobilesInRange(5))
                 {
                     if (m is EnergyVortex or BladeSpirits && ((BaseCreature)m).Summoned)
                     {
-                        queue.Enqueue(m);
+                        list.Add(m);
                     }
                 }
 
-                var amount = queue.Count - 6;
+                var amount = list.Count - 6;
                 if (amount > 0)
                 {
-                    var mobs = queue.ToPooledArray();
-                    mobs.Shuffle();
+                    list.Shuffle();
 
                     while (amount > 0)
                     {
-                        Dispel(mobs[amount--]);
+                        Dispel(list[amount--]);
                     }
-
-                    STArrayPool<Mobile>.Shared.Return(mobs, true);
                 }
             }
 

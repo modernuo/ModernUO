@@ -35,7 +35,6 @@ public static class PooledEnumeration
     {
         ClientSelector = SelectClients;
         EntitySelector = SelectEntities;
-        MobileSelector = SelectMobiles<Mobile>;
         MultiSelector = SelectMultis;
         MultiTileSelector = SelectMultiTiles;
     }
@@ -65,13 +64,9 @@ public static class PooledEnumeration
     public static IEnumerable<IEntity> SelectEntities(Map.Sector s, Rectangle2D bounds)
     {
         var entities = new List<IEntity>(s.Mobiles.Count + s.Items.Count);
-        for (int i = s.Mobiles.Count - 1; i >= 0; --i)
+        foreach (var mob in s.Mobiles)
         {
-            Mobile mob = s.Mobiles[i];
-            if (mob is { Deleted: false } && bounds.Contains(mob.Location))
-            {
-                entities.Add(mob);
-            }
+            entities.Add(mob);
         }
 
         foreach (var item in s.Items)
@@ -79,19 +74,6 @@ public static class PooledEnumeration
             entities.Add(item);
         }
 
-        return entities;
-    }
-
-    public static IEnumerable<T> SelectMobiles<T>(Map.Sector s, Rectangle2D bounds) where T : Mobile
-    {
-        var entities = new List<T>(s.Mobiles.Count);
-        for (int i = s.Mobiles.Count - 1; i >= 0; --i)
-        {
-            if (s.Mobiles[i] is T { Deleted: false } mob && bounds.Contains(mob.Location))
-            {
-                entities.Add(mob);
-            }
-        }
         return entities;
     }
 
@@ -168,12 +150,6 @@ public static class PooledEnumeration
 
     public static PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds) =>
         PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
-
-    public static PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds) =>
-        GetMobiles<Mobile>(map, bounds);
-
-    public static PooledEnumerable<T> GetMobiles<T>(Map map, Rectangle2D bounds) where T : Mobile =>
-        PooledEnumerable<T>.Instantiate(map, bounds, SelectMobiles<T>);
 
     public static PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds) =>
         PooledEnumerable<BaseMulti>.Instantiate(map, bounds, MultiSelector ?? SelectMultis);

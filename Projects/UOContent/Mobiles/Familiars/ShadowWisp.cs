@@ -1,6 +1,5 @@
 using System;
 using ModernUO.Serialization;
-using Server.Collections;
 
 namespace Server.Mobiles;
 
@@ -68,19 +67,13 @@ public partial class ShadowWispFamiliar : BaseFamiliar
             return;
         }
 
-        var eable = GetMobilesInRange(5);
-        using var queue = PooledRefQueue<Mobile>.Create();
-        foreach (var m in eable)
+        foreach (var m in GetMobilesInRange(5))
         {
-            if (m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor)
+            if (!m.Player || !m.Alive || m.IsDeadBondedPet || m.Karma > 0 || m.AccessLevel >= AccessLevel.Counselor)
             {
-                queue.Enqueue(m);
+                continue;
             }
-        }
 
-        while (queue.Count > 0)
-        {
-            var m = queue.Dequeue();
             var friendly = true;
 
             for (var j = 0; friendly && j < caster.Aggressors.Count; ++j)

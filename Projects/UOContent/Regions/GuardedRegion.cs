@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using Server.Mobiles;
 using Server.Utilities;
@@ -153,8 +152,15 @@ public class GuardedRegion : BaseRegion
 
     public override void MakeGuard(Mobile focus)
     {
-        var eable = focus.GetMobilesInRange<BaseGuard>(8);
-        var useGuard = eable.FirstOrDefault(m => m.Focus == null);
+        BaseGuard useGuard = null;
+        foreach (var m in focus.GetMobilesInRange<BaseGuard>(8))
+        {
+            if (m.Focus == null)
+            {
+                useGuard = m;
+                break;
+            }
+        }
 
         if (useGuard == null)
         {
@@ -286,19 +292,8 @@ public class GuardedRegion : BaseRegion
 
             if (fakeCall != null)
             {
-                fakeCall.Say(
-                    Utility.RandomList(
-                        1007037,
-                        501603,
-                        1013037,
-                        1013038,
-                        1013039,
-                        1013041,
-                        1013042,
-                        1013043,
-                        1013052
-                    )
-                );
+                fakeCall.Say(Utility.Random(1013037, 16));
+
                 MakeGuard(m);
                 timer.Stop();
                 m_GuardCandidates.Remove(m);
@@ -319,9 +314,7 @@ public class GuardedRegion : BaseRegion
             return;
         }
 
-        var eable = Map.GetMobilesInRange(p, 14);
-
-        foreach (var m in eable)
+        foreach (var m in Map.GetMobilesInRange(p, 14))
         {
             if (IsGuardCandidate(m) &&
                 (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))

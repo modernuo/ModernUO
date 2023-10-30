@@ -244,7 +244,7 @@ namespace Server.Spells.Fourth
                         }
 
                         using var queue = PooledRefQueue<Mobile>.Create();
-                        foreach (var m in m_Item.GetMobilesInRange(0))
+                        foreach (var m in m_Item.GetMobilesAt())
                         {
                             if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                                 SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
@@ -256,10 +256,6 @@ namespace Server.Spells.Fourth
                         while (queue.Count > 0)
                         {
                             var m = queue.Dequeue();
-                            if (m == null)
-                            {
-                                continue;
-                            }
 
                             if (SpellHelper.CanRevealCaster(m))
                             {

@@ -1,4 +1,5 @@
 using System;
+using Server.Collections;
 using Server.Engines.CannedEvil;
 using Server.Engines.PartySystem;
 using Server.Factions;
@@ -94,13 +95,22 @@ namespace Server.Spells.Necromancy
 
                 if (map != null)
                 {
-                    // Surprisingly, no sparkle type effects
+                    // Cannot move a mobile while iterating mobiles in range, so use a queue
+                    using var queue = PooledRefQueue<Mobile>.Create();
                     foreach (var m in r.Spawn.GetMobilesInRange(Range))
                     {
                         if (IsValidTarget(m))
                         {
-                            m.Location = GetNearestShrine(m);
+                            queue.Enqueue(m);
                         }
+                    }
+
+                    while (queue.Count > 0)
+                    {
+                        var m = queue.Dequeue();
+
+                        // Surprisingly, no sparkle type effects
+                        m.Location = GetNearestShrine(m);
                     }
                 }
             }

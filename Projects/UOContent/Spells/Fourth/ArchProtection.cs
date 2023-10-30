@@ -48,10 +48,8 @@ namespace Server.Spells.Fourth
                     return;
                 }
 
-                var eable = Caster.Map.GetMobilesInRange(loc, Core.AOS ? 2 : 3);
                 using var targets = PooledRefQueue<Mobile>.Create();
-
-                foreach (var m in eable)
+                foreach (var m in Caster.Map.GetMobilesInRange(loc, Core.AOS ? 2 : 3))
                 {
                     if (Caster.CanBeBeneficial(m, false))
                     {

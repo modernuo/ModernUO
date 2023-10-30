@@ -37,9 +37,8 @@ namespace Server.Spells.Eighth
                     return;
                 }
 
-                var eable = Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0));
                 using var queue = PooledRefQueue<Mobile>.Create();
-                foreach (var m in eable)
+                foreach (var m in Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0)))
                 {
                     if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
                         (!Core.AOS || Caster.InLOS(m)))

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 
 namespace Server.Spells.Spellweaving
 {
@@ -38,12 +39,10 @@ namespace Server.Spells.Spellweaving
 
                 var pvpDamage = damage * (100 + Math.Min(sdiBonus, 15)) / 100;
 
-                var range = 2 + FocusLevel;
                 var duration = TimeSpan.FromSeconds(5 + FocusLevel);
 
-                var eable = Caster.GetMobilesInRange(range);
-
-                foreach (var m in eable)
+                using var queue = PooledRefQueue<Mobile>.Create();
+                foreach (var m in Caster.GetMobilesInRange(2 + FocusLevel))
                 {
                     if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
                         !Caster.InLOS(m))
@@ -51,6 +50,12 @@ namespace Server.Spells.Spellweaving
                         continue;
                     }
 
+                    queue.Enqueue(m);
+                }
+
+                while (queue.Count > 0)
+                {
+                    var m = queue.Dequeue();
                     Caster.DoHarmful(m);
 
                     var oldSpell = m.Spell as Spell;

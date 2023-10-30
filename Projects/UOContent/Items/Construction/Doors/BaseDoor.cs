@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -343,28 +344,13 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             }
         }
 
-        var mobs = map.GetSector(x, y).Mobiles;
-
-        for (var i = 0; i < mobs.Count; ++i)
+        foreach (var m in map.GetMobilesAt(x, y))
         {
-            var m = mobs[i];
-
-            if (m.Location.X == x && m.Location.Y == y)
+            // At the same location, not hidden, or is a player, alive, and within z-bounds - then cannot fit
+            if (m.Location.X == x && m.Location.Y == y &&
+                (!m.Hidden || m.AccessLevel == AccessLevel.Player) && m.Alive && m.Z + 16 > z && z + height > m.Z)
             {
-                if (m.Hidden && m.AccessLevel > AccessLevel.Player)
-                {
-                    continue;
-                }
-
-                if (!m.Alive)
-                {
-                    continue;
-                }
-
-                if (m.Z + 16 > z && z + height > m.Z)
-                {
-                    return false;
-                }
+                return false;
             }
         }
 

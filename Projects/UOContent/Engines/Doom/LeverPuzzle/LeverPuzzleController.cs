@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
@@ -605,30 +606,35 @@ public partial class LeverPuzzleController : Item
                     PlayerSendASCII(m_Player, 1); // A speeding rock  ...
                     PlaySounds(m_Player.Location, !m_Player.Female ? fs2 : ms2);
 
+                    using var queue = PooledRefQueue<Mobile>.Create();
                     var j = Utility.Random(6, 10);
                     for (var i = 0; i < j; i++)
                     {
-                        IEntity m_IEntity = new Entity(Serial.Zero, RandomPointIn(m_Player.Location, 10), m_Player.Map);
+                        var entity = new Entity(Serial.Zero, RandomPointIn(m_Player.Location, 10), m_Player.Map);
 
-                        var eable = m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2);
-                        var mobiles = new List<Mobile>();
-                        mobiles.AddRange(eable);
-
-                        for (var k = 0; k < mobiles.Count; k++)
+                        // Queue the mobiles because we cannot modify while iterating through mobiles in range
+                        foreach (var m in entity.Map.GetMobilesInRange(entity.Location, 2))
                         {
-                            if (IsValidDamagable(mobiles[k]) && mobiles[k] != m_Player)
+                            if (IsValidDamagable(m) && m != m_Player)
                             {
-                                PlayEffect(m_Player, mobiles[k], Rock(), 8, true);
-                                DoDamage(mobiles[k], 25, 30, false);
-
-                                if (mobiles[k].Player)
-                                {
-                                    POHMessage(mobiles[k], 2); // OUCH!
-                                }
+                                queue.Enqueue(m);
                             }
                         }
 
-                        PlayEffect(m_Player, m_IEntity, Rock(), 8, false);
+                        while (queue.Count > 0)
+                        {
+                            var m = queue.Dequeue();
+
+                            PlayEffect(m_Player, m, Rock(), 8, true);
+                            DoDamage(m, 25, 30, false);
+
+                            if (m.Player)
+                            {
+                                POHMessage(m, 2); // OUCH!
+                            }
+                        }
+
+                        PlayEffect(m_Player, entity, Rock(), 8, false);
                     }
                 }
             }

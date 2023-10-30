@@ -2,6 +2,7 @@ using System;
 using Server.Engines.CannedEvil;
 using Server.Items;
 using ModernUO.Serialization;
+using Server.Collections;
 
 namespace Server.Mobiles;
 
@@ -214,30 +215,30 @@ public partial class Meraktus : BaseChampion
 
     public void Earthquake()
     {
-        var eable = GetMobilesInRange(8);
-
-        foreach (var m in eable)
+        using var queue = PooledRefQueue<Mobile>.Create();
+        foreach (var m in GetMobilesInRange(8))
         {
-            if (m == this || !CanBeHarmful(m) || m.Deleted || !m.Player &&
-                !(m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team)))
+            if (m.Deleted || m == this || !CanBeHarmful(m))
             {
                 continue;
             }
+
+            if (m.Player || m is BaseCreature bc && (bc.Controlled || bc.Summoned || bc.Team != Team))
+            {
+                queue.Enqueue(m);
+            }
+        }
+
+        while (queue.Count > 0)
+        {
+            var m = queue.Dequeue();
 
             if (m is PlayerMobile pm && pm.Mounted)
             {
                 pm.Mount.Rider = null;
             }
 
-            var damage = (int)(m.Hits * 0.6);
-            if (damage < 10)
-            {
-                damage = 10;
-            }
-            else if (damage > 75)
-            {
-                damage = 75;
-            }
+            var damage = Math.Clamp((int)(m.Hits * 0.6), 10, 75);
 
             DoHarmful(m);
             AOS.Damage(m, this, damage, 100, 0, 0, 0, 0);
