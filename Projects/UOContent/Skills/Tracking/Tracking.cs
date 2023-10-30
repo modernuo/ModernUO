@@ -169,7 +169,7 @@ namespace Server.SkillHandlers
                 }
             }
 
-            for (var i = 0; i < targets.Length && i < 12; ++i)
+            for (var i = 0; i < targets.Length; ++i)
             {
                 var m = targets[i];
 
