@@ -84,8 +84,8 @@ public partial class Map
             get => new();
         }
 
-        private Map _map;
-        private Point2D _location;
+        private readonly Map _map;
+        private readonly Point2D _location;
 
         public ItemAtEnumerable(Map map, Point2D loc)
         {

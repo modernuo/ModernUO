@@ -140,8 +140,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            var eable = GetClientsInRange(0);
-            foreach (var ns in eable)
+            foreach (var ns in GetClientsAt())
             {
                 var m = ns.Mobile;
 
@@ -585,8 +584,7 @@ namespace Server.Engines.ConPVP
                     return;
                 }
 
-                var clients = Map.GetClientsInBounds(rect);
-                foreach (var ns in clients)
+                foreach (var ns in Map.GetClientsInBounds(rect))
                 {
                     var m = ns.Mobile;
 

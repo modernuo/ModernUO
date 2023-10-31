@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Server.Collections;
 using Server.Items;
-using Server.Network;
 
 namespace Server;
 
@@ -33,33 +32,15 @@ public static class PooledEnumeration
 
     static PooledEnumeration()
     {
-        ClientSelector = SelectClients;
         EntitySelector = SelectEntities;
         MultiSelector = SelectMultis;
         MultiTileSelector = SelectMultiTiles;
     }
 
-    public static Selector<NetState> ClientSelector { get; set; }
     public static Selector<IEntity> EntitySelector { get; set; }
     public static Selector<Mobile> MobileSelector { get; set; }
     public static Selector<BaseMulti> MultiSelector { get; set; }
     public static Selector<StaticTile[]> MultiTileSelector { get; set; }
-
-    public static IEnumerable<NetState> SelectClients(Map.Sector s, Rectangle2D bounds)
-    {
-        var clients = new List<NetState>(s.Clients.Count);
-        foreach (var client in s.Clients)
-        {
-            var m = client.Mobile;
-
-            if (m?.Deleted == false && bounds.Contains(m.Location))
-            {
-                clients.Add(client);
-            }
-        }
-
-        return clients;
-    }
 
     public static IEnumerable<IEntity> SelectEntities(Map.Sector s, Rectangle2D bounds)
     {
@@ -144,9 +125,6 @@ public static class PooledEnumeration
             }
         }
     }
-
-    public static PooledEnumerable<NetState> GetClients(Map map, Rectangle2D bounds) =>
-        PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
 
     public static PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds) =>
         PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
