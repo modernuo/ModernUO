@@ -56,14 +56,14 @@ jobs:
         delete_release: true
         tag_name: v${{ steps.changelog.outputs.version }}
       env:
-        github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Delete v0.1.0 Tag
       uses: dev-drprasad/delete-tag-and-release@v0.2.1
       with:
         delete_release: true
         tag_name: v0.1.0
       env:
-        github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v1
