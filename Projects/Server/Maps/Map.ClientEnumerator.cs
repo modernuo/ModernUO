@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Map.MobileEnumerator.cs                                         *
+ * File: Map.ClientEnumerator.cs                                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -16,69 +16,46 @@
 using System;
 using System.Runtime.CompilerServices;
 using Server.Collections;
+using Server.Network;
 
 namespace Server;
 
 public partial class Map
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileAtEnumerable<Mobile> GetMobilesAt(Point3D p) => GetMobilesAt<Mobile>(p);
+    public ClientAtEnumerable GetClientsAt(Point3D p) => GetClientsAt(new Point2D(p.X, p.Y));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileAtEnumerable<T> GetMobilesAt<T>(Point3D p) where T : Mobile => GetMobilesAt<T>(new Point2D(p.X, p.Y));
+    public ClientAtEnumerable GetClientsAt(int x, int y) => GetClientsAt(new Point2D(x, y));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileAtEnumerable<Mobile> GetMobilesAt(int x, int y) => GetMobilesAt<Mobile>(new Point2D(x, y));
+    public ClientAtEnumerable GetClientsAt(Point2D p) => new(this, p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileAtEnumerable<T> GetMobilesAt<T>(int x, int y) where T : Mobile => GetMobilesAt<T>(new Point2D(x, y));
+    public ClientBoundsEnumerable GetClientsInRange(Point3D p) => GetClientsInRange(p, Core.GlobalMaxUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileAtEnumerable<Mobile> GetMobilesAt(Point2D p) => GetMobilesAt<Mobile>(p);
+    public ClientBoundsEnumerable GetClientsInRange(Point3D p, int range) =>
+        GetClientsInRange(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileAtEnumerable<T> GetMobilesAt<T>(Point2D p) where T : Mobile => new(this, p);
+    public ClientBoundsEnumerable GetClientsInRange(Point2D p) => GetClientsInRange(p, Core.GlobalMaxUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<Mobile> GetMobilesInRange(Point3D p) => GetMobilesInRange<Mobile>(p);
+    public ClientBoundsEnumerable GetClientsInRange(Point2D p, int range) =>
+        GetClientsInRange(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<Mobile> GetMobilesInRange(Point3D p, int range) => GetMobilesInRange<Mobile>(p, range);
+    public ClientBoundsEnumerable GetClientsInRange(int x, int y, int range) =>
+        GetClientsInBounds(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<T> GetMobilesInRange<T>(Point3D p) where T : Mobile => GetMobilesInRange<T>(p, Core.GlobalMaxUpdateRange);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<T> GetMobilesInRange<T>(Point3D p, int range) where T : Mobile =>
-        GetMobilesInRange<T>(p.m_X, p.m_Y, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<Mobile> GetMobilesInRange(Point2D p) => GetMobilesInRange<Mobile>(p);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<Mobile> GetMobilesInRange(Point2D p, int range) => GetMobilesInRange<Mobile>(p, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<T> GetMobilesInRange<T>(Point2D p) where T : Mobile => GetMobilesInRange<T>(p, Core.GlobalMaxUpdateRange);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<T> GetMobilesInRange<T>(Point2D p, int range) where T : Mobile =>
-        GetMobilesInRange<T>(p.m_X, p.m_Y, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<T> GetMobilesInRange<T>(int x, int y, int range) where T : Mobile =>
-        GetMobilesInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<Mobile> GetMobilesInBounds(Rectangle2D bounds) => GetMobilesInBounds<Mobile>(bounds);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<T> GetMobilesInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Mobile =>
+    public ClientBoundsEnumerable GetClientsInBounds(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
         new(this, bounds, makeBoundsInclusive);
 
-    public ref struct MobileAtEnumerable<T> where T : Mobile
+    public ref struct ClientAtEnumerable
     {
-        public static MobileAtEnumerable<T> Empty
+        public static ClientAtEnumerable Empty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new();
@@ -87,30 +64,30 @@ public partial class Map
         private readonly Map _map;
         private readonly Point2D _location;
 
-        public MobileAtEnumerable(Map map, Point2D loc)
+        public ClientAtEnumerable(Map map, Point2D loc)
         {
             _map = map;
             _location = loc;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileAtEnumerator<T> GetEnumerator() => new(_map, _location);
+        public ClientAtEnumerator GetEnumerator() => new(_map, _location);
     }
 
-    public ref struct MobileAtEnumerator<T> where T : Mobile
+    public ref struct ClientAtEnumerator
     {
         private bool _started;
         private Point2D _location;
-        private ref readonly ValueLinkList<Mobile> _linkList;
+        private ref readonly ValueLinkList<NetState> _linkList;
         private int _version;
-        private T _current;
+        private NetState _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileAtEnumerator(Map map, Point2D loc)
+        public ClientAtEnumerator(Map map, Point2D loc)
         {
             _started = false;
             _location = loc;
-            _linkList = ref map.GetRealSector(loc.m_X, loc.m_Y).Mobiles;
+            _linkList = ref map.GetRealSector(loc.m_X, loc.m_Y).Clients;
             _version = 0;
             _current = null;
         }
@@ -119,7 +96,8 @@ public partial class Map
         public bool MoveNext()
         {
             ref var loc = ref _location;
-            Mobile current;
+            NetState current;
+            Mobile m;
 
             if (!_started)
             {
@@ -127,9 +105,10 @@ public partial class Map
                 _started = true;
                 _version = _linkList.Version;
 
-                if (current is T { Deleted: false } o && o.X == loc.m_X && o.Y == loc.m_Y)
+                m = current.Mobile;
+                if (m?.Deleted == false && m.X == loc.m_X && m.Y == loc.m_Y)
                 {
-                    _current = o;
+                    _current = current;
                     return true;
                 }
             }
@@ -146,9 +125,10 @@ public partial class Map
             {
                 current = current.Next;
 
-                if (current is T { Deleted: false } o && o.X == loc.m_X && o.Y == loc.m_Y)
+                m = current.Mobile;
+                if (m?.Deleted == false && m.X == loc.m_X && m.Y == loc.m_Y)
                 {
-                    _current = o;
+                    _current = current;
                     return true;
                 }
             }
@@ -156,26 +136,26 @@ public partial class Map
             return false;
         }
 
-        public T Current
+        public NetState Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _current;
         }
     }
 
-    public ref struct MobileBoundsEnumerable<T> where T : Mobile
+    public ref struct ClientBoundsEnumerable
     {
-        public static MobileBoundsEnumerable<T> Empty
+        public static ClientBoundsEnumerable Empty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new(null, Rectangle2D.Empty, false);
         }
 
-        private Map _map;
-        private Rectangle2D _bounds;
-        private bool _makeBoundsInclusive;
+        private readonly Map _map;
+        private readonly Rectangle2D _bounds;
+        private readonly bool _makeBoundsInclusive;
 
-        public MobileBoundsEnumerable(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
+        public ClientBoundsEnumerable(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
         {
             _map = map;
             _bounds = bounds;
@@ -183,23 +163,23 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileEnumerator<T> GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
+        public MobileEnumerator GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
     }
 
-    public ref struct MobileEnumerator<T> where T : Mobile
+    public ref struct MobileEnumerator
     {
-        private Map _map;
-        private int _sectorStartX;
-        private int _sectorEndX;
-        private int _sectorEndY;
+        private readonly Map _map;
+        private readonly int _sectorStartX;
+        private readonly int _sectorEndX;
+        private readonly int _sectorEndY;
         private Rectangle2D _bounds;
 
         private int _currentSectorX;
         private int _currentSectorY;
 
-        private ref readonly ValueLinkList<Mobile> _linkList;
+        private ref readonly ValueLinkList<NetState> _linkList;
         private int _currentVersion;
-        private T _current;
+        private NetState _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MobileEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
@@ -232,7 +212,8 @@ public partial class Map
                 return false;
             }
 
-            Mobile current = _current;
+            Mobile m;
+            NetState current = _current;
             ref Rectangle2D bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
             var currentSectorY = _currentSectorY;
@@ -261,7 +242,7 @@ public partial class Map
                         return false;
                     }
 
-                    _linkList = ref map.GetRealSector(currentSectorX, currentSectorY).Mobiles;
+                    _linkList = ref map.GetRealSector(currentSectorX, currentSectorY).Clients;
                     _currentVersion = _linkList.Version;
                     current = _linkList._first;
                 }
@@ -271,15 +252,16 @@ public partial class Map
                     throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
-                if (current is T { Deleted: false } o && bounds.Contains(o.Location))
+                m = current.Mobile;
+                if (m?.Deleted == false && bounds.Contains(m.Location))
                 {
-                    _current = o;
+                    _current = current;
                     return true;
                 }
             }
         }
 
-        public T Current
+        public NetState Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _current;

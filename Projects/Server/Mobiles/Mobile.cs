@@ -8140,8 +8140,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_Map == null ? Map.MobileBoundsEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Location, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
-        m_Map?.GetClientsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<NetState>.Instance;
+    public Map.ClientBoundsEnumerable GetClientsInRange(int range) =>
+        m_Map == null ? Map.ClientBoundsEnumerable.Empty : Map.GetClientsInRange(m_Location, range);
 
     public void SayTo(Mobile to, bool ascii, string text) =>
         PrivateOverheadMessage(MessageType.Regular, SpeechHue, ascii, text, to.NetState);
