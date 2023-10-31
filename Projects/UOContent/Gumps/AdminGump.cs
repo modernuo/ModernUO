@@ -226,6 +226,10 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Information_Perf:
                     {
+                        AddLabel(20, 130, LabelHue, "Cycles Per Second:");
+                        AddLabel(40, 150, LabelHue, $"Current: {Core.CyclesPerSecond:N2}");
+                        AddLabel(40, 170, LabelHue, $"Average: {Core.AverageCPS:N2}");
+
                         using var sb = ValueStringBuilder.Create();
 
                         ThreadPool.GetAvailableThreads(out var curUser, out var curIOCP);
