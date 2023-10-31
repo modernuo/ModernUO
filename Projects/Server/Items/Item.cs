@@ -2485,6 +2485,9 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         m_Map == null ? Map.MobileBoundsEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Parent == null ? m_Location : GetWorldLocation(), range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ClientAtEnumerable GetClientsAt() => m_Map == null ? Map.ClientAtEnumerable.Empty : Map.GetClientsAt(m_Parent == null ? m_Location : GetWorldLocation());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Map.ClientBoundsEnumerable GetClientsInRange(int range) =>
         m_Map == null ? Map.ClientBoundsEnumerable.Empty : Map.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
 

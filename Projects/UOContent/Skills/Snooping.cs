@@ -68,9 +68,7 @@ public static class Snooping
                 {
                     var message = $"You notice {from.Name} attempting to peek into {root.Name}'s belongings.";
 
-                    var eable = map.GetClientsInRange(from.Location, 8);
-
-                    foreach (var ns in eable)
+                    foreach (var ns in map.GetClientsInRange(from.Location, 8))
                     {
                         if (ns.Mobile != from)
                         {
