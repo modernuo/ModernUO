@@ -144,6 +144,7 @@ public static class Core
             }
 
             var timestamp = Stopwatch.GetTimestamp();
+
             return timestamp > _maxTickCountBeforePrecisionLoss
                 ? timestamp / _ticksPerMillisecond
                 // No precision loss
@@ -167,10 +168,12 @@ public static class Core
 
     public static long Uptime => Thread.CurrentThread != Thread ? 0 : TickCount - _firstTick;
 
-    private static long _cycleIndex = 1;
-    private static float[] _cyclesPerSecond = new float[128];
+    private static long _cycleIndex;
+    private static readonly double[] _cyclesPerSecond = new double[128];
 
-    public static float CyclesPerSecond => _cyclesPerSecond[(_cycleIndex - 1) % _cyclesPerSecond.Length];
+    public static double CyclesPerSecond => _cyclesPerSecond[_cycleIndex];
+
+    public static double AverageCPS => _cyclesPerSecond.Average();
 
     public static bool MultiProcessor { get; private set; }
 
@@ -534,9 +537,10 @@ public static class Core
             var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
 #endif
 
-            long last = TickCount;
+            var cycleCount = _cyclesPerSecond.Length;
+            long last = Stopwatch.GetTimestamp();
             const int interval = 100;
-            const float ticksPerSecond = 1000 * interval;
+            double frequency = Stopwatch.Frequency * interval;
 
             int sample = 0;
 
@@ -568,15 +572,20 @@ public static class Core
                 _tickCount = 0;
                 _now = DateTime.MinValue;
 
-                if (idleCPU && ++sample % interval == 0)
+                if (++sample % interval == 0)
                 {
-                    var now = TickCount;
+                    var now = Stopwatch.GetTimestamp();
 
-                    var cyclesPerSecond = ticksPerSecond / (now - last);
-                    _cyclesPerSecond[_cycleIndex++ % _cyclesPerSecond.Length] = cyclesPerSecond;
+                    var cyclesPerSecond = frequency / (now - last);
+                    _cyclesPerSecond[_cycleIndex++] = cyclesPerSecond;
+                    if (_cycleIndex == cycleCount)
+                    {
+                        _cycleIndex = 0;
+                    }
+
                     last = now;
 
-                    if (cyclesPerSecond > 80)
+                    if (idleCPU && cyclesPerSecond > 125)
                     {
                         Thread.Sleep(2);
                     }
