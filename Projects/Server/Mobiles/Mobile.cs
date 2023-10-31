@@ -2864,8 +2864,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = Map.GetClientsInRange(m_Location);
-
         Span<byte> statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
         Span<byte> statBufferFalse = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
         Span<byte> hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
@@ -2874,7 +2872,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
         Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
 
-        foreach (var state in eable)
+        foreach (var state in Map.GetClientsInRange(m_Location))
         {
             var beholder = state.Mobile;
 
@@ -4808,13 +4806,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if (m_Map != null)
         {
-            var eable = m_Map.GetClientsInRange(m_Location);
             var corpseSerial = c?.Serial ?? Serial.Zero;
 
             Span<byte> deathAnimation = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength].InitializePacket();
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
-            foreach (var state in eable)
+            foreach (var state in m_Map.GetClientsInRange(m_Location))
             {
                 if (state != m_NetState)
                 {
@@ -5104,12 +5101,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                         if (DragEffects && map != null && root is null or Item)
                         {
-                            var eable = map.GetClientsInRange(from.Location);
                             var rootItem = root as Item;
 
                             Span<byte> buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength].InitializePacket();
 
-                            foreach (var ns in eable)
+                            foreach (var ns in map.GetClientsInRange(from.Location))
                             {
                                 if (ns.Mobile != from && ns.Mobile.CanSee(from) && ns.Mobile.InLOS(from) &&
                                     ns.Mobile.CanSee(root))
@@ -5262,11 +5258,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = map.GetClientsInRange(m_Location);
-
         Span<byte> buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength].InitializePacket();
 
-        foreach (var ns in eable)
+        foreach (var ns in map.GetClientsInRange(m_Location))
         {
             if (ns.StygianAbyss || ns.Mobile == this ||
                 !ns.Mobile.CanSee(this) || !ns.Mobile.InLOS(this) || !ns.Mobile.CanSee(root))
@@ -6004,9 +5998,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = map.GetClientsInRange(m_Location);
-
-        foreach (var ns in eable)
+        foreach (var ns in map.GetClientsInRange(m_Location))
         {
             if (ns.Mobile.CanSee(this))
             {
@@ -6718,11 +6710,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         ProcessDelta();
 
-        var eable = map.GetClientsInRange(m_Location);
-
         Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.MobileAnimationPacketLength].InitializePacket();
 
-        foreach (var state in eable)
+        foreach (var state in map.GetClientsInRange(m_Location))
         {
             if (!state.Mobile.CanSee(this))
             {
@@ -6799,9 +6789,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             if (state.Mobile.CanSee(this))
             {
@@ -6849,11 +6837,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
         Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
             {
@@ -7080,11 +7066,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
         Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             var m = state.Mobile;
             if (!m.CanSee(this))
@@ -7309,12 +7293,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         if (map != null)
         {
             // First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
-
-            var eable = map.GetClientsInRange(oldLocation);
-
             Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
-            foreach (var ns in eable)
+            foreach (var ns in map.GetClientsInRange(oldLocation))
             {
                 if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
                 {
@@ -7395,10 +7376,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
             else
             {
-                eable = map.GetClientsInRange(newLocation);
-
                 // We're not attached to a client, so simply send an Incoming
-                foreach (var ns in eable)
+                foreach (var ns in map.GetClientsInRange(newLocation))
                 {
                     var m = ns.Mobile;
                     if ((isTeleport && (!ns.HighSeas || !NoMoveHS) || !Utility.InUpdateRange(oldLocation, m.Location)) &&
@@ -7478,9 +7457,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             var m = state.Mobile;
             if (m.CanSee(this))
@@ -8140,8 +8117,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_Map == null ? Map.MobileBoundsEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Location, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
-        m_Map?.GetClientsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<NetState>.Instance;
+    public Map.ClientAtEnumerable GetClientsAt() => m_Map == null ? Map.ClientAtEnumerable.Empty : Map.GetClientsAt(m_Location);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.ClientBoundsEnumerable GetClientsInRange(int range) =>
+        m_Map == null ? Map.ClientBoundsEnumerable.Empty : Map.GetClientsInRange(m_Location, range);
 
     public void SayTo(Mobile to, bool ascii, string text) =>
         PrivateOverheadMessage(MessageType.Regular, SpeechHue, ascii, text, to.NetState);
@@ -8960,9 +8940,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             if (
                 state.Mobile.AccessLevel >= accessLevel &&
@@ -8993,9 +8971,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
             {
@@ -9027,9 +9003,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)]
             .InitializePacket();
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             if (
                 state.Mobile.AccessLevel >= accessLevel &&
@@ -9077,9 +9051,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             if (state != m_NetState && state.Mobile.CanSee(this))
             {
@@ -9106,9 +9078,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
-        var eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (var state in eable)
+        foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
             if (state != m_NetState && state.Mobile.CanSee(this))
             {

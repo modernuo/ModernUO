@@ -129,9 +129,7 @@ public partial class Campfire : Item
             }
         }
 
-        var eable = GetClientsInRange(SecureRange);
-
-        foreach (var state in eable)
+        foreach (var state in GetClientsInRange(SecureRange))
         {
             if (state.Mobile is PlayerMobile pm && GetEntry(pm) == null)
             {

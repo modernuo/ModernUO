@@ -74,9 +74,7 @@ public static class Effects
         {
             Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
-            var eable = map.GetClientsInRange(new Point3D(p));
-
-            foreach (var state in eable)
+            foreach (var state in map.GetClientsInRange(p))
             {
                 state.Mobile.ProcessDelta();
                 OutgoingEffectPackets.CreateSoundEffect(buffer, soundID, p);
@@ -100,9 +98,7 @@ public static class Effects
         Span<byte> boltEffect = stackalloc byte[OutgoingEffectPackets.BoltEffectLength].InitializePacket();
         Span<byte> soundEffect = sound ? stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket() : null;
 
-        var eable = map.GetClientsInRange(e.Location);
-
-        foreach (var state in eable)
+        foreach (var state in map.GetClientsInRange(e.Location))
         {
             if (state.Mobile.CanSee(e))
             {
@@ -169,9 +165,7 @@ public static class Effects
 
         Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
 
-        var eable = map.GetClientsInRange(e.Location);
-
-        foreach (var state in eable)
+        foreach (var state in map.GetClientsInRange(e.Location))
         {
             state.Mobile.ProcessDelta();
 
@@ -232,9 +226,7 @@ public static class Effects
         Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
         Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
 
-        var eable = map.GetClientsInRange(target.Location);
-
-        foreach (var state in eable)
+        foreach (var state in map.GetClientsInRange(target.Location))
         {
             state.Mobile.ProcessDelta();
 
@@ -446,9 +438,7 @@ public static class Effects
         Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
         Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
 
-        var eable = map.GetClientsInRange(from.Location);
-
-        foreach (var state in eable)
+        foreach (var state in map.GetClientsInRange(from.Location))
         {
             state.Mobile.ProcessDelta();
 
@@ -479,9 +469,7 @@ public static class Effects
             return;
         }
 
-        var eable = map.GetClientsInRange(new Point3D(origin));
-
-        foreach (var state in eable)
+        foreach (var state in map.GetClientsInRange(origin))
         {
             state.Mobile.ProcessDelta();
             state.Send(effectBuffer);

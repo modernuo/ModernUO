@@ -505,9 +505,7 @@ public partial class LeverPuzzleController : Item
     {
         Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])].InitializePacket();
 
-        var eable = from.Map.GetClientsInRange(from.Location);
-
-        foreach (var state in eable)
+        foreach (var state in from.Map.GetClientsInRange(from.Location))
         {
             var length = OutgoingMessagePackets.CreateMessage(
                 buffer,
