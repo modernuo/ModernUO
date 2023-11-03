@@ -16,13 +16,14 @@
 using System;
 using System.Buffers;
 using System.IO;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Multis.Boats
 {
     public static class BoatPackets
     {
-        public static void SendMoveBoatHS(this NetState ns, Mobile beholder, BaseBoat boat,
+        public static void SendMoveBoatHS(this NetState ns, Mobile beholder, BaseBoat boat, PooledRefList<IEntity> entities,
             Direction d, int speed, int xOffset, int yOffset)
         {
             if (ns?.HighSeas != true)
@@ -46,8 +47,10 @@ namespace Server.Multis.Boats
 
             var count = 0;
 
-            foreach (var ent in boat.GetMovingEntities(true))
+            for (var i = 0; i < entities.Count; i++)
             {
+                var ent = entities[i];
+
                 // If we assume that the entities list contains everything a player can see,
                 // then this can be removed and the packet can be written once and copied to improve performance
                 if (!beholder.CanSee(ent))

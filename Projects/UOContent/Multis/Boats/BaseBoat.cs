@@ -1792,6 +1792,14 @@ namespace Server.Multis
             }
             else
             {
+                // We use a list because GetMovingEntities uses Map.GetItemsInRange which isn't safe for
+                // moving items while iterating.
+                using var list = PooledRefList<IEntity>.Create(64);
+                foreach (var e in GetMovingEntities(true))
+                {
+                    list.Add(e);
+                }
+
                 // Packet must be sent before actual locations are changed
                 foreach (var ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
                 {
@@ -1799,27 +1807,18 @@ namespace Server.Multis
 
                     if (ns.HighSeas && m.CanSee(this) && m.InRange(Location, GetUpdateRange(m)))
                     {
-                        ns.SendMoveBoatHS(m, this, d, clientSpeed, xOffset, yOffset);
+                        ns.SendMoveBoatHS(m, this, list, d, clientSpeed, xOffset, yOffset);
                     }
                 }
 
-                using var queue = PooledRefQueue<IEntity>.Create(64);
-                foreach (var e in GetMovingEntities())
+                for (var i = 0; i < list.Count; i++)
                 {
-                    queue.Enqueue(e);
-                }
-
-                NoMoveHS = true;
-                Location = new Point3D(X + xOffset, Y + yOffset, Z);
-                NoMoveHS = false;
-
-                while (queue.Count > 0)
-                {
-                    var e = queue.Dequeue();
+                    var e = list[i];
 
                     if (e is Item item)
                     {
-                        if (item is not (Server.Items.TillerMan or Server.Items.Hold or Plank))
+                        // We want to enable smooth movement for boat parts, but they are ACTUALLY moved when the boat moves
+                        if (item is not Server.Items.TillerMan and not Server.Items.Hold and not Plank)
                         {
                             item.NoMoveHS = true;
                             item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
@@ -1832,6 +1831,44 @@ namespace Server.Multis
                         m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z);
                         m.NoMoveHS = false;
                     }
+                }
+
+                if (TillerMan != null)
+                {
+                    TillerMan.NoMoveHS = true;
+                }
+                if (SPlank != null)
+                {
+                    SPlank.NoMoveHS = true;
+                }
+                if (PPlank != null)
+                {
+                    PPlank.NoMoveHS = true;
+                }
+                if (Hold != null)
+                {
+                    Hold.NoMoveHS = true;
+                }
+
+                NoMoveHS = true;
+                Location = new Point3D(X + xOffset, Y + yOffset, Z);
+                NoMoveHS = false;
+
+                if (TillerMan != null)
+                {
+                    TillerMan.NoMoveHS = false;
+                }
+                if (SPlank != null)
+                {
+                    SPlank.NoMoveHS = false;
+                }
+                if (PPlank != null)
+                {
+                    PPlank.NoMoveHS = false;
+                }
+                if (Hold != null)
+                {
+                    Hold.NoMoveHS = false;
                 }
             }
 
@@ -1944,7 +1981,7 @@ namespace Server.Multis
                         var current = _items.Current;
                         // Skip the boat, effects, spawners, or parts of the boat
                         if (current == _boat || current is EffectItem or BaseSpawner ||
-                            !_includeBoat && current is Server.Items.TillerMan or Server.Items.Hold or Plank)
+                            !_includeBoat && (current == _boat.TillerMan || current == _boat.SPlank || current == _boat.PPlank || current == _boat.Hold))
                         {
                             continue;
                         }
