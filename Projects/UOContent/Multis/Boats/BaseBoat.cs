@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Server.Collections;
 using Server.Engines.Spawners;
 using Server.Items;
 using Server.Multis.Boats;
@@ -733,12 +734,7 @@ namespace Server.Multis
 
             foreach (var ent in GetMovingEntities())
             {
-                if (ent is Mobile)
-                {
-                    return DryDockResult.Mobiles;
-                }
-
-                return DryDockResult.Items;
+                return ent is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
             }
 
             return DryDockResult.Valid;
@@ -1807,40 +1803,36 @@ namespace Server.Multis
                     }
                 }
 
-                foreach (var e in GetMovingEntities(true))
+                using var queue = PooledRefQueue<IEntity>.Create(64);
+                foreach (var e in GetMovingEntities())
                 {
+                    queue.Enqueue(e);
+                }
+
+                NoMoveHS = true;
+                Location = new Point3D(X + xOffset, Y + yOffset, Z);
+                NoMoveHS = false;
+
+                while (queue.Count > 0)
+                {
+                    var e = queue.Dequeue();
+
                     if (e is Item item)
                     {
-                        item.NoMoveHS = true;
-
                         if (item is not (Server.Items.TillerMan or Server.Items.Hold or Plank))
                         {
+                            item.NoMoveHS = true;
                             item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
+                            item.NoMoveHS = false;
                         }
                     }
                     else if (e is Mobile m)
                     {
                         m.NoMoveHS = true;
                         m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z);
+                        m.NoMoveHS = false;
                     }
                 }
-
-                NoMoveHS = true;
-                Location = new Point3D(X + xOffset, Y + yOffset, Z);
-
-                foreach (var e in GetMovingEntities(true))
-                {
-                    if (e is Item item)
-                    {
-                        item.NoMoveHS = false;
-                    }
-                    else if (e is Mobile mobile)
-                    {
-                        mobile.NoMoveHS = false;
-                    }
-                }
-
-                NoMoveHS = false;
             }
 
             return true;
@@ -1848,8 +1840,16 @@ namespace Server.Multis
 
         public void Teleport(int xOffset, int yOffset, int zOffset)
         {
+            using var queue = PooledRefQueue<IEntity>.Create(64);
             foreach (var e in GetMovingEntities())
             {
+                queue.Enqueue(e);
+            }
+
+            while (queue.Count > 0)
+            {
+                var e = queue.Dequeue();
+
                 if (e is Item item)
                 {
                     item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
