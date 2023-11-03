@@ -2302,10 +2302,6 @@ namespace Server.Multis
             {
                 from.SendLocalizedMessage(1005330); // You cannot transfer a house to yourself, silly.
             }
-            else if (!to.Player)
-            {
-                from.SendLocalizedMessage(501384);  // Only a player can own a house!
-            }
             else if (HasAccountHouse(to))
             {
                 from.SendLocalizedMessage(501388); // You cannot transfer ownership to another house owner or co-owner!
