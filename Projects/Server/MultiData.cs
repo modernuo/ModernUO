@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using Microsoft.Toolkit.HighPerformance;
 
 namespace Server;
 

@@ -1401,11 +1401,9 @@ namespace Server.Multis
                 return null;
             }
 
-            var sector = map.GetSector(loc);
-
-            for (var i = 0; i < sector.Multis.Count; ++i)
+            foreach (var house in map.GetMultisAt<BaseHouse>(loc))
             {
-                if (sector.Multis[i] is BaseHouse house && house.IsInside(loc, height))
+                if (house.IsInside(loc, height))
                 {
                     return house;
                 }

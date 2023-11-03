@@ -69,7 +69,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         m_Name = name;
         Rules = rules;
         Regions = new Dictionary<string, Region>(StringComparer.OrdinalIgnoreCase);
-        InvalidSector = new Sector(0, 0, this);
+        _invalidSector = new Sector(0, 0, this);
         m_SectorsWidth = width >> SectorShift;
         m_SectorsHeight = height >> SectorShift;
         m_Sectors = new Sector[m_SectorsWidth][];
@@ -123,7 +123,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     public MapRules Rules { get; set; }
 
-    public Sector InvalidSector { get; }
+    private readonly Sector _invalidSector;
 
     public string Name
     {
@@ -566,7 +566,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             for (var y = cy - SectorActiveRange; y <= cy + SectorActiveRange; ++y)
             {
                 var sect = GetRealSector(x, y);
-                if (sect != InvalidSector)
+                if (sect != _invalidSector)
                 {
                     sect.Activate();
                 }
@@ -581,7 +581,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             for (var y = cy - SectorActiveRange; y <= cy + SectorActiveRange; ++y)
             {
                 var sect = GetRealSector(x, y);
-                if (sect != InvalidSector && !PlayersInRange(sect, SectorActiveRange))
+                if (sect != _invalidSector && !PlayersInRange(sect, SectorActiveRange))
                 {
                     sect.Deactivate();
                 }
@@ -596,7 +596,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             for (var y = sect.Y - range; y <= sect.Y + range; ++y)
             {
                 var check = GetRealSector(x, y);
-                if (check != InvalidSector && check.Clients.Count > 0)
+                if (check != _invalidSector && check.Clients.Count > 0)
                 {
                     return true;
                 }
@@ -690,7 +690,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
     }
 
-    public void RemoveMulti(BaseMulti m, Sector start, Sector end)
+    private void RemoveMulti(BaseMulti m, Sector start, Sector end)
     {
         if (this == Internal)
         {
@@ -706,7 +706,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
     }
 
-    public void AddMulti(BaseMulti m, Sector start, Sector end)
+    private void AddMulti(BaseMulti m, Sector start, Sector end)
     {
         if (this == Internal)
         {
@@ -862,9 +862,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return p;
     }
 
-    public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) =>
-        PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
-
     public bool CanFit(
         Point3D p, int height, bool checkBlocksFit = false, bool checkMobiles = true,
         bool requireSurface = true
@@ -1011,7 +1008,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return sec;
         }
 
-        return InvalidSector;
+        return _invalidSector;
     }
 
     public bool LineOfSight(Point3D org, Point3D dest)
@@ -1408,13 +1405,12 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public class Sector
     {
         // TODO: Can we avoid this?
-        private static readonly List<BaseMulti> m_DefaultMultiList = new();
         private static readonly List<Region> m_DefaultRectList = new();
         private bool m_Active;
         private ValueLinkList<NetState> _clients;
         private ValueLinkList<Item> _items;
         private ValueLinkList<Mobile> _mobiles;
-        private List<BaseMulti> _multis;
+        private List<BaseMulti> _multis = new();
         private List<Region> _regions;
 
         public Sector(int x, int y, Map owner)
@@ -1427,7 +1423,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public List<Region> Regions => _regions ?? m_DefaultRectList;
 
-        public List<BaseMulti> Multis => _multis ?? m_DefaultMultiList;
+        internal List<BaseMulti> Multis => _multis;
 
         internal ref ValueLinkList<Mobile> Mobiles => ref _mobiles;
 
@@ -1553,12 +1549,12 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            Utility.Add(ref _multis, multi);
+            _multis.Add(multi);
         }
 
         public void OnMultiLeave(BaseMulti multi)
         {
-            Utility.Remove(ref _multis, multi);
+            _multis.Remove(multi);
         }
 
         public void Activate()

@@ -240,38 +240,27 @@ public class TileMatrix
     {
         var tiles = GetStaticBlock(x >> 3, y >> 3);
 
-        if (multis)
+        if (!multis)
         {
-            var eable = _map.GetMultiTilesAt(x, y);
-
-            if (eable == PooledEnumeration.NullEnumerable<StaticTile[]>.Instance)
-            {
-                return tiles[x & 0x7][y & 0x7];
-            }
-
-            var any = false;
-
-            foreach (var multiTiles in eable)
-            {
-                if (!any)
-                {
-                    any = true;
-                }
-
-                m_TilesList.AddRange(multiTiles);
-            }
-
-            if (!any)
-            {
-                return tiles[x & 0x7][y & 0x7];
-            }
-
-            m_TilesList.AddRange(tiles[x & 0x7][y & 0x7]);
-
-            return m_TilesList.ToArray();
+            return tiles[x & 0x7][y & 0x7];
         }
 
-        return tiles[x & 0x7][y & 0x7];
+        var any = false;
+
+        foreach (var multiTiles in _map.GetMultiTilesAt(x, y))
+        {
+            any = true;
+            m_TilesList.AddRange(multiTiles);
+        }
+
+        if (!any)
+        {
+            return tiles[x & 0x7][y & 0x7];
+        }
+
+        m_TilesList.AddRange(tiles[x & 0x7][y & 0x7]);
+
+        return m_TilesList.ToArray();
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]
