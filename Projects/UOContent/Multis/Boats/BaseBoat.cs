@@ -5,6 +5,7 @@ using Server.Collections;
 using Server.Engines.Spawners;
 using Server.Items;
 using Server.Multis.Boats;
+using Server.Network;
 
 namespace Server.Multis
 {
@@ -1800,6 +1801,9 @@ namespace Server.Multis
                     list.Add(e);
                 }
 
+                Span<byte> moveBoatPacket = stackalloc byte[BoatPackets.GetMoveBoatHSPacketLength(list.Count)]
+                    .InitializePacket();
+
                 // Packet must be sent before actual locations are changed
                 foreach (var ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
                 {
@@ -1807,7 +1811,7 @@ namespace Server.Multis
 
                     if (ns.HighSeas && m.CanSee(this) && m.InRange(Location, GetUpdateRange(m)))
                     {
-                        ns.SendMoveBoatHS(m, this, list, d, clientSpeed, xOffset, yOffset);
+                        ns.SendMoveBoatHSUsingCache(moveBoatPacket, this, list, d, clientSpeed, xOffset, yOffset);
                     }
                 }
 

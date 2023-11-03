@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Server;
+using Server.Collections;
 using Server.Multis;
 using Server.Multis.Boats;
 using Server.Network;
@@ -37,7 +38,10 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
         beholder.Map = Map.Felucca;
         beholder.CanSeeEntities.Add(item1);
 
-        var list = new List<IEntity> { beholder, item1 };
+        using var list = PooledRefList<IEntity>.Create();
+        list.Add(beholder);
+        list.Add(item1);
+
         var notContained = new List<IEntity> { item2 };
         var boat = new TestBoat((Serial)0x3000, notContained)
         {
@@ -52,7 +56,7 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         var expected = new MoveBoatHS(beholder, boat, d, speed, list, xOffset, yOffset).Compile();
 
-        ns.SendMoveBoatHS(beholder, boat, d, speed, xOffset, yOffset);
+        ns.SendMoveBoatHS(boat, list, d, speed, xOffset, yOffset);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);

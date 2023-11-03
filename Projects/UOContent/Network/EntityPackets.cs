@@ -27,7 +27,7 @@ namespace Server.Network
 
         public static void SendBatchEntities(this NetState ns, IEnumerable<IEntity> entities, int estimatedCount)
         {
-            if (ns?.HighSeas != true)
+            if (ns?.HighSeas != true || ns.CannotSendPackets())
             {
                 return;
             }

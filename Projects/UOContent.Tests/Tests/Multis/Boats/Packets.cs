@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Server;
+using Server.Collections;
 using Server.Items;
 using Server.Multis;
 using Server.Network;
@@ -11,7 +12,7 @@ namespace UOContent.Tests
     {
         public MoveBoatHS(
             Mobile beholder, BaseBoat boat, Direction d,
-            int speed, List<IEntity> ents, int xOffset,
+            int speed, PooledRefList<IEntity> ents, int xOffset,
             int yOffset
         ) : base(0xF6)
         {
@@ -30,11 +31,6 @@ namespace UOContent.Tests
 
             foreach (var ent in ents)
             {
-                if (!beholder.CanSee(ent))
-                {
-                    continue;
-                }
-
                 Stream.Write(ent.Serial);
                 Stream.Write((short)(ent.X + xOffset));
                 Stream.Write((short)(ent.Y + yOffset));
