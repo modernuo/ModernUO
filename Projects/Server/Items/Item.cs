@@ -2445,15 +2445,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
-    public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
-    {
-        var map = m_Map;
-
-        return map == null
-            ? PooledEnumeration.NullEnumerable<IEntity>.Instance
-            : map.GetObjectsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range);
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Map.ItemAtEnumerable<Item> GetItemsAt() =>
         m_Map == null ? Map.ItemAtEnumerable<Item>.Empty : m_Map.GetItemsAt(m_Parent == null ? m_Location : GetWorldLocation());

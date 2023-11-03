@@ -1762,7 +1762,7 @@ public static class Utility
         span == default || span.IsEmpty || span.IsWhiteSpace();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InTypeList(this Item item, Type[] types) => item.GetType().InTypeList(types);
+    public static bool InTypeList<T>(this T obj, Type[] types) => obj.GetType().InTypeList(types);
 
     public static bool InTypeList(this Type t, Type[] types)
     {

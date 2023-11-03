@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Server.Collections;
 using Server.Engines.Spawners;
 using Server.Items;
 using Server.Multis.Boats;
+using Server.Network;
 
 namespace Server.Multis
 {
@@ -731,12 +733,9 @@ namespace Server.Multis
                 return DryDockResult.Items;
             }
 
-            using var ents = GetMovingEntities();
-            var enumerator = ents.GetEnumerator();
-
-            if (enumerator.MoveNext())
+            foreach (var ent in GetMovingEntities())
             {
-                return enumerator.Current is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
+                return ent is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
             }
 
             return DryDockResult.Valid;
@@ -1794,7 +1793,16 @@ namespace Server.Multis
             }
             else
             {
-                using var eable = GetMovingEntities(true);
+                // We use a list because GetMovingEntities uses Map.GetItemsInRange which isn't safe for
+                // moving items while iterating.
+                using var list = PooledRefList<IEntity>.Create(64);
+                foreach (var e in GetMovingEntities(true))
+                {
+                    list.Add(e);
+                }
+
+                Span<byte> moveBoatPacket = stackalloc byte[BoatPackets.GetMoveBoatHSPacketLength(list.Count)]
+                    .InitializePacket();
 
                 // Packet must be sent before actual locations are changed
                 foreach (var ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
@@ -1803,47 +1811,69 @@ namespace Server.Multis
 
                     if (ns.HighSeas && m.CanSee(this) && m.InRange(Location, GetUpdateRange(m)))
                     {
-                        ns.SendMoveBoatHS(m, this, d, clientSpeed, eable, xOffset, yOffset);
-                        eable.Reset();
+                        ns.SendMoveBoatHSUsingCache(moveBoatPacket, this, list, d, clientSpeed, xOffset, yOffset);
                     }
                 }
 
-                foreach (var e in eable)
+                for (var i = 0; i < list.Count; i++)
                 {
+                    var e = list[i];
+
                     if (e is Item item)
                     {
-                        item.NoMoveHS = true;
-
-                        if (item is not (Server.Items.TillerMan or Server.Items.Hold or Plank))
+                        // We want to enable smooth movement for boat parts, but they are ACTUALLY moved when the boat moves
+                        if (item is not Server.Items.TillerMan and not Server.Items.Hold and not Plank)
                         {
+                            item.NoMoveHS = true;
                             item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
+                            item.NoMoveHS = false;
                         }
                     }
                     else if (e is Mobile m)
                     {
                         m.NoMoveHS = true;
                         m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z);
+                        m.NoMoveHS = false;
                     }
+                }
+
+                if (TillerMan != null)
+                {
+                    TillerMan.NoMoveHS = true;
+                }
+                if (SPlank != null)
+                {
+                    SPlank.NoMoveHS = true;
+                }
+                if (PPlank != null)
+                {
+                    PPlank.NoMoveHS = true;
+                }
+                if (Hold != null)
+                {
+                    Hold.NoMoveHS = true;
                 }
 
                 NoMoveHS = true;
                 Location = new Point3D(X + xOffset, Y + yOffset, Z);
-
-                eable.Reset();
-
-                foreach (var e in eable)
-                {
-                    if (e is Item item)
-                    {
-                        item.NoMoveHS = false;
-                    }
-                    else if (e is Mobile mobile)
-                    {
-                        mobile.NoMoveHS = false;
-                    }
-                }
-
                 NoMoveHS = false;
+
+                if (TillerMan != null)
+                {
+                    TillerMan.NoMoveHS = false;
+                }
+                if (SPlank != null)
+                {
+                    SPlank.NoMoveHS = false;
+                }
+                if (PPlank != null)
+                {
+                    PPlank.NoMoveHS = false;
+                }
+                if (Hold != null)
+                {
+                    Hold.NoMoveHS = false;
+                }
             }
 
             return true;
@@ -1851,8 +1881,16 @@ namespace Server.Multis
 
         public void Teleport(int xOffset, int yOffset, int zOffset)
         {
+            using var queue = PooledRefQueue<IEntity>.Create(64);
             foreach (var e in GetMovingEntities())
             {
+                queue.Enqueue(e);
+            }
+
+            while (queue.Count > 0)
+            {
+                var e = queue.Dequeue();
+
                 if (e is Item item)
                 {
                     item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
@@ -1872,93 +1910,95 @@ namespace Server.Multis
 
             if (map == null || map == Map.Internal)
             {
-                return new MovingEntitiesEnumerable(this, includeBoat, null);
+                return new MovingEntitiesEnumerable(this, includeBoat, Rectangle2D.Empty);
             }
 
             var mcl = Components;
 
-            var eable = map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
-            return new MovingEntitiesEnumerable(this, includeBoat, eable);
+            var rect = new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height);
+            return new MovingEntitiesEnumerable(this, includeBoat, rect);
         }
 
         public ref struct MovingEntitiesEnumerable
         {
-            private readonly IPooledEnumerable<IEntity> _entities;
-            private readonly IEnumerator<IEntity> _enumerator;
             private readonly bool _includeBoat;
-            private BaseBoat _boat;
+            private readonly BaseBoat _boat;
+            private readonly Rectangle2D _bounds;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public MovingEntitiesEnumerable(BaseBoat boat, bool includeBoat, IPooledEnumerable<IEntity> entities)
+            public MovingEntitiesEnumerable(BaseBoat boat, bool includeBoat, Rectangle2D bounds)
             {
-                _entities = entities;
-                _enumerator = entities?.GetEnumerator();
+                _bounds = bounds;
                 _boat = boat;
                 _includeBoat = includeBoat;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public MovingEntitiesEnumerator GetEnumerator() => new(_boat, _includeBoat, _enumerator);
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void Dispose()
-            {
-                _entities?.Dispose();
-                _enumerator?.Dispose();
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public void Reset()
-            {
-                _enumerator?.Reset();
-            }
+            public MovingEntitiesEnumerator GetEnumerator() => new(_boat, _includeBoat, _bounds);
         }
 
         public ref struct MovingEntitiesEnumerator
         {
-            private readonly IEnumerator<IEntity> _enumerator;
             private IEntity? _current;
             private readonly bool _includeBoat;
             private readonly BaseBoat _boat;
+            private bool _iterateMobiles;
+            private bool _iterateItems;
+            private Map.MobileEnumerator<Mobile> _mobiles;
+            private Map.ItemEnumerator<Item> _items;
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public MovingEntitiesEnumerator(BaseBoat boat, bool includeBoat, IEnumerator<IEntity> enumerator = null)
+            public MovingEntitiesEnumerator(BaseBoat boat, bool includeBoat, Rectangle2D bounds)
             {
-                _enumerator = enumerator;
                 _current = default;
                 _includeBoat = includeBoat;
                 _boat = boat;
+
+                _mobiles = boat.Map.GetMobilesInBounds(bounds).GetEnumerator();
+                _items = boat.Map.GetItemsInBounds(bounds).GetEnumerator();
+                _iterateMobiles = true;
+                _iterateItems = true;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
-                IEntity current;
-                while (_enumerator?.MoveNext() == true)
+                if (_iterateMobiles)
                 {
-                    current = _enumerator.Current;
-
-                    // Skip the boat, effects, spawners, or parts of the boat
-                    if (current == _boat || current is EffectItem or BaseSpawner ||
-                        !_includeBoat && current is Server.Items.TillerMan or Server.Items.Hold or Plank)
+                    while (_mobiles.MoveNext())
                     {
-                        continue;
-                    }
-
-                    if (current is Item item)
-                    {
-                        // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
-                        if (_boat!.Contains(item) && item.Visible && item.Z >= _boat.Z)
+                        var current = _mobiles.Current;
+                        if (_boat.Contains(current))
                         {
                             _current = current;
                             return true;
                         }
                     }
-                    else if (current is Mobile m && _boat!.Contains(m))
+
+                    _iterateMobiles = false;
+                }
+
+                if (_iterateItems)
+                {
+                    while (_items.MoveNext())
                     {
-                        _current = current;
-                        return true;
+                        var current = _items.Current;
+                        // Skip the boat, effects, spawners, or parts of the boat
+                        if (current == _boat || current is EffectItem or BaseSpawner ||
+                            !_includeBoat && (current == _boat.TillerMan || current == _boat.SPlank || current == _boat.PPlank || current == _boat.Hold))
+                        {
+                            continue;
+                        }
+
+                        // TODO: Remove visible check and use something better, like check for spawners, or other things in the ocean we shouldn't pick up on accident
+                        if (_boat!.Contains(current) && current.Visible && current.Z >= _boat.Z)
+                        {
+                            _current = current;
+                            return true;
+                        }
                     }
+
+                    _iterateItems = false;
                 }
 
                 return false;

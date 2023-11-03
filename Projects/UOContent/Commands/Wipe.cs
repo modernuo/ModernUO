@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Multis;
 
@@ -68,38 +68,42 @@ namespace Server.Commands
             var multis = (type & WipeType.Multis) != 0;
             var items = (type & WipeType.Items) != 0;
 
-            var toDelete = new List<IEntity>();
-
             var rect = new Rectangle2D(start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1);
 
-            IPooledEnumerable<IEntity> eable;
+            using var toDelete = PooledRefQueue<IEntity>.Create();
 
-            if (!items && !multis || !mobiles)
+            if (mobiles)
             {
-                return;
-            }
-
-            eable = map.GetObjectsInBounds(rect);
-
-            foreach (var obj in eable)
-            {
-                if (items && obj is Item && !(obj is BaseMulti or HouseSign))
+                foreach (var mobile in map.GetMobilesInBounds(rect))
                 {
-                    toDelete.Add(obj);
-                }
-                else if (multis && obj is BaseMulti)
-                {
-                    toDelete.Add(obj);
-                }
-                else if (obj is Mobile mobile && !mobile.Player)
-                {
-                    toDelete.Add(mobile);
+                    if (!mobile.Player)
+                    {
+                        toDelete.Enqueue(mobile);
+                    }
                 }
             }
 
-            for (var i = 0; i < toDelete.Count; ++i)
+            if (items || multis)
             {
-                toDelete[i].Delete();
+                foreach (var item in map.GetItemsInBounds(rect))
+                {
+                    if (item is BaseMulti)
+                    {
+                        if (multis)
+                        {
+                            toDelete.Enqueue(item);
+                        }
+                    }
+                    else if (items && item is not HouseSign)
+                    {
+                        toDelete.Enqueue(item);
+                    }
+                }
+            }
+
+            while (toDelete.Count > 0)
+            {
+                toDelete.Dequeue().Delete();
             }
         }
     }

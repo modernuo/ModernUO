@@ -231,17 +231,20 @@ namespace Server.Items
                 return false;
             }
 
-            var eable = GetObjectsInRange(0);
-
-            foreach (var obj in eable)
+            foreach (var item in GetItemsAt())
             {
-                if (obj == this)
+                if (item != this)
                 {
-                    return true;
+                    return false;
                 }
             }
 
-            return false;
+            foreach (var m in GetMobilesAt())
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void Close()

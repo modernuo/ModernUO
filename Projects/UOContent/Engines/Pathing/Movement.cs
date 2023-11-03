@@ -81,43 +81,9 @@ namespace Server.Movement
 
             var checkMobs = (m as BaseCreature)?.Controlled == false && (xForward != _goal.X || yForward != _goal.Y);
 
-            foreach (var entity in map.GetObjectsInRange(loc, 1))
+            if (checkMobs)
             {
-                if (entity is Item item)
-                {
-                    if (ignoreMovableImpassables && item.Movable && item.ItemData.ImpassableSurface)
-                    {
-                        continue;
-                    }
-
-                    if (!item.ItemData[reqFlags] || item.ItemID > TileData.MaxItemValue || item.Parent != null)
-                    {
-                        continue;
-                    }
-
-                    if (item is BaseMulti)
-                    {
-                        continue;
-                    }
-
-                    if (item.AtPoint(xStart, yStart))
-                    {
-                        itemsStart.Add(item);
-                    }
-                    else if (item.AtPoint(xForward, yForward))
-                    {
-                        itemsForward.Add(item);
-                    }
-                    else if (checkDiagonals && item.AtPoint(xLeft, yLeft))
-                    {
-                        itemsLeft.Add(item);
-                    }
-                    else if (checkDiagonals && item.AtPoint(xRight, yRight))
-                    {
-                        itemsRight.Add(item);
-                    }
-                }
-                else if (checkMobs && entity is Mobile mob)
+                foreach (var mob in map.GetMobilesInRange(loc, 1))
                 {
                     if (mob.AtPoint(xForward, yForward))
                     {
@@ -131,6 +97,41 @@ namespace Server.Movement
                     {
                         mobsRight.Add(mob);
                     }
+                }
+            }
+
+            foreach (var item in map.GetItemsInRange(loc, 1))
+            {
+                if (ignoreMovableImpassables && item.Movable && item.ItemData.ImpassableSurface)
+                {
+                    continue;
+                }
+
+                if (!item.ItemData[reqFlags] || item.ItemID > TileData.MaxItemValue || item.Parent != null)
+                {
+                    continue;
+                }
+
+                if (item is BaseMulti)
+                {
+                    continue;
+                }
+
+                if (item.AtPoint(xStart, yStart))
+                {
+                    itemsStart.Add(item);
+                }
+                else if (item.AtPoint(xForward, yForward))
+                {
+                    itemsForward.Add(item);
+                }
+                else if (checkDiagonals && item.AtPoint(xLeft, yLeft))
+                {
+                    itemsLeft.Add(item);
+                }
+                else if (checkDiagonals && item.AtPoint(xRight, yRight))
+                {
+                    itemsRight.Add(item);
                 }
             }
 

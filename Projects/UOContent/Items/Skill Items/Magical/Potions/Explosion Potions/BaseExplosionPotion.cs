@@ -142,28 +142,26 @@ public abstract partial class BaseExplosionPotion : BasePotion
             alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
         }
 
-        var eable = map.GetObjectsInRange(loc, ExplosionRange);
         using var queue = PooledRefQueue<IEntity>.Create();
 
         var toDamage = 0;
-        foreach (var entity in eable)
+        foreach (var mobile in map.GetMobilesInRange(loc, ExplosionRange))
         {
-            if (entity == this)
+            if (from == null || SpellHelper.ValidIndirectTarget(from, mobile) && from.CanBeHarmful(mobile, false))
             {
-                continue;
+                ++toDamage;
+                queue.Enqueue(mobile);
             }
+        }
 
-            if (entity is Mobile mobile)
+        if (LeveledExplosion)
+        {
+            foreach (var item in map.GetItemsInRange<BaseExplosionPotion>(loc, ExplosionRange))
             {
-                if (from == null || SpellHelper.ValidIndirectTarget(from, mobile) && from.CanBeHarmful(mobile, false))
+                if (item != this)
                 {
-                    ++toDamage;
-                    queue.Enqueue(entity);
+                    queue.Enqueue(item);
                 }
-            }
-            else if (LeveledExplosion && entity is BaseExplosionPotion)
-            {
-                queue.Enqueue(entity);
             }
         }
 
