@@ -17,7 +17,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Server.Collections;
 using Server.Items;
 
 namespace Server;
@@ -32,31 +31,12 @@ public static class PooledEnumeration
 
     static PooledEnumeration()
     {
-        EntitySelector = SelectEntities;
         MultiSelector = SelectMultis;
         MultiTileSelector = SelectMultiTiles;
     }
 
-    public static Selector<IEntity> EntitySelector { get; set; }
-    public static Selector<Mobile> MobileSelector { get; set; }
     public static Selector<BaseMulti> MultiSelector { get; set; }
     public static Selector<StaticTile[]> MultiTileSelector { get; set; }
-
-    public static IEnumerable<IEntity> SelectEntities(Map.Sector s, Rectangle2D bounds)
-    {
-        var entities = new List<IEntity>(s.Mobiles.Count + s.Items.Count);
-        foreach (var mob in s.Mobiles)
-        {
-            entities.Add(mob);
-        }
-
-        foreach (var item in s.Items)
-        {
-            entities.Add(item);
-        }
-
-        return entities;
-    }
 
     public static IEnumerable<BaseMulti> SelectMultis(Map.Sector s, Rectangle2D bounds)
     {
@@ -125,9 +105,6 @@ public static class PooledEnumeration
             }
         }
     }
-
-    public static PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds) =>
-        PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
 
     public static PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds) =>
         PooledEnumerable<BaseMulti>.Instantiate(map, bounds, MultiSelector ?? SelectMultis);

@@ -43,22 +43,29 @@ namespace Server.Commands.Generic
                     return;
                 }
 
-                var eable = map.GetObjectsInBounds(rect);
-
                 var objs = new List<object>();
-
-                foreach (var obj in eable)
+                if (mobiles)
                 {
-                    if (!mobiles && obj is Mobile || !items && obj is Item)
+                    foreach (var m in map.GetMobilesInBounds(rect))
                     {
-                        continue;
-                    }
-
-                    if (BaseCommand.IsAccessible(from, obj) && ext.IsValid(obj))
-                    {
-                        objs.Add(obj);
+                        if (BaseCommand.IsAccessible(from, m) && ext.IsValid(m))
+                        {
+                            objs.Add(m);
+                        }
                     }
                 }
+
+                if (items)
+                {
+                    foreach (var item in map.GetItemsInBounds(rect))
+                    {
+                        if (BaseCommand.IsAccessible(from, item) && ext.IsValid(item))
+                        {
+                            objs.Add(item);
+                        }
+                    }
+                }
+
                 ext.Filter(objs);
 
                 RunCommand(from, objs, command, args);

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Server;
+using Server.Collections;
 using Server.Multis;
 using Server.Multis.Boats;
 using Server.Network;
@@ -37,9 +38,12 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
         beholder.Map = Map.Felucca;
         beholder.CanSeeEntities.Add(item1);
 
-        var list = new List<IEntity> { item1, beholder };
+        using var list = PooledRefList<IEntity>.Create();
+        list.Add(beholder);
+        list.Add(item1);
+
         var notContained = new List<IEntity> { item2 };
-        var boat = new TestBoat((Serial)0x3000, list, notContained)
+        var boat = new TestBoat((Serial)0x3000, notContained)
         {
             Location = new Point3D(10, 20, 15),
             Facing = Direction.Right,
@@ -52,7 +56,7 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         var expected = new MoveBoatHS(beholder, boat, d, speed, list, xOffset, yOffset).Compile();
 
-        ns.SendMoveBoatHS(beholder, boat, d, speed, boat.GetMovingEntities(true), xOffset, yOffset);
+        ns.SendMoveBoatHS(boat, list, d, speed, xOffset, yOffset);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
@@ -77,15 +81,16 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
         var beholder = new MockedMobile((Serial)0x100);
         beholder.DefaultMobileInit();
         beholder.Location = new Point3D(10, 20, 15);
+        beholder.Map = Map.Felucca;
 
         beholder.CanSeeEntities.Add(item1);
 
-        var list = new List<IEntity> { item1, beholder };
         var notContained = new List<IEntity> { item2 };
-        var boat = new TestBoat((Serial)0x3000, list, notContained)
+        var boat = new TestBoat((Serial)0x3000, notContained)
         {
             Location = new Point3D(10, 20, 15),
-            Facing = Direction.Right
+            Facing = Direction.Right,
+            Map = Map.Felucca
         };
 
         beholder.CanSeeEntities.Add(boat);
@@ -103,21 +108,16 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
 
     private class TestBoat : BaseBoat
     {
-        private readonly List<IEntity> _list;
         private readonly List<IEntity> _notContainedList;
 
-        public TestBoat(Serial serial, List<IEntity> list, List<IEntity> notContainedList) : base(serial)
-        {
-            _list = list;
-            _notContainedList = notContainedList;
-        }
+        public TestBoat(Serial serial, List<IEntity> notContainedList) : base(serial) => _notContainedList = notContainedList;
 
         public override MultiComponentList Components { get; } = new(new List<MultiTileEntry>());
 
         public override bool Contains(int x, int y) => !_notContainedList.Any(e => e.X == x && e.Y == y);
 
         public override MovingEntitiesEnumerable GetMovingEntities(bool includeBoat = false) =>
-            new(this, true, new PooledEnumeration.PooledEnumerable<IEntity>(_list));
+            new(this, true, new Rectangle2D(new Point2D(9, 19), new Point2D(13, 22)));
     }
 
     private class MockedMobile : Mobile

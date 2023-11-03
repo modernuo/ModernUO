@@ -21,6 +21,9 @@ namespace Server;
 
 public partial class Map
 {
+    private static ValueLinkList<Item> _emptyItemLinkList = new();
+    public static ref readonly ValueLinkList<Item> EmptyItemLinkList => ref _emptyItemLinkList;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ItemAtEnumerable<Item> GetItemsAt(Point3D p) => GetItemsAt<Item>(p);
 
@@ -110,7 +113,15 @@ public partial class Map
         {
             _started = false;
             _location = loc;
-            _linkList = ref map.GetRealSector(loc.m_X, loc.m_Y).Items;
+            if (map == null)
+            {
+                _linkList = ref EmptyItemLinkList;
+            }
+            else
+            {
+                _linkList = ref map.GetRealSector(loc.m_X, loc.m_Y).Items;
+            }
+
             _version = 0;
             _current = null;
         }

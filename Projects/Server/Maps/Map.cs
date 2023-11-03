@@ -865,25 +865,15 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) =>
         PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
 
-    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p) => GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
-
-    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range) =>
-        GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
-
-    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds) =>
-        PooledEnumeration.GetEntities(this, bounds);
-
     public bool CanFit(
         Point3D p, int height, bool checkBlocksFit = false, bool checkMobiles = true,
         bool requireSurface = true
-    ) =>
-        CanFit(p.m_X, p.m_Y, p.m_Z, height, checkBlocksFit, checkMobiles, requireSurface);
+    ) => CanFit(p.m_X, p.m_Y, p.m_Z, height, checkBlocksFit, checkMobiles, requireSurface);
 
     public bool CanFit(
         Point2D p, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true,
         bool requireSurface = true
-    ) =>
-        CanFit(p.m_X, p.m_Y, z, height, checkBlocksFit, checkMobiles, requireSurface);
+    ) => CanFit(p.m_X, p.m_Y, z, height, checkBlocksFit, checkMobiles, requireSurface);
 
     public bool CanFit(
         int x, int y, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true,
