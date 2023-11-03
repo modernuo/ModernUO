@@ -751,29 +751,47 @@ namespace Server.Multis
             vendor = false;
             rentalContract = false;
 
-            var eable = map.GetObjectsInRange(location, 0);
-
-            foreach (var entity in eable)
+            foreach (var m in map.GetMobilesAt(location))
             {
-                if ((location.Z - entity.Z).Abs() <= 16)
+                if ((location.Z - m.Z).Abs() <= 16 && m is PlayerVendor or PlayerBarkeeper)
                 {
-                    if (entity is PlayerVendor or PlayerBarkeeper or PlayerVendorPlaceholder)
+                    vendor = true;
+                    return;
+                }
+            }
+
+            foreach (var item in map.GetItemsAt(location))
+            {
+                if ((location.Z - item.Z).Abs() <= 16)
+                {
+                    if (item is PlayerVendorPlaceholder)
                     {
                         vendor = true;
-                        break;
+                        return;
                     }
 
-                    if (entity is VendorRentalContract)
+                    if (item is VendorRentalContract)
                     {
                         rentalContract = true;
-                        break;
+                        return;
                     }
                 }
             }
         }
 
-        public List<Mobile> AvailableVendorsFor(Mobile m) =>
-            PlayerVendors.Where(vendor => vendor.CanInteractWith(m, false)).ToList<Mobile>();
+        public List<Mobile> AvailableVendorsFor(Mobile m)
+        {
+            List<Mobile> list = new List<Mobile>();
+            foreach (PlayerVendor vendor in PlayerVendors)
+            {
+                if (vendor.CanInteractWith(m, false))
+                {
+                    list.Add(vendor);
+                }
+            }
+
+            return list;
+        }
 
         public bool AreThereAvailableVendorsFor(Mobile m)
         {

@@ -4342,25 +4342,25 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             using var moveQueue = PooledRefQueue<IEntity>.Create(2048);
             using var moveClientQueue = PooledRefQueue<Mobile>.Create(2048);
-            var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
-            foreach (var o in eable)
+            foreach (var mob in m_Map.GetMobilesInRange(m_Location, Core.GlobalMaxUpdateRange))
             {
-                if (o == this)
+                if (mob == this)
                 {
                     continue;
                 }
 
-                if (o is Mobile mob)
+                if (mob.NetState != null)
                 {
-                    if (mob.NetState != null)
-                    {
-                        moveClientQueue.Enqueue(mob);
-                    }
-
-                    moveQueue.Enqueue(mob);
+                    moveClientQueue.Enqueue(mob);
                 }
-                else if (o is Item item && item.HandlesOnMovement)
+
+                moveQueue.Enqueue(mob);
+            }
+
+            foreach (var item in m_Map.GetItemsInRange(m_Location, Core.GlobalMaxUpdateRange))
+            {
+                if (item.HandlesOnMovement)
                 {
                     moveQueue.Enqueue(item);
                 }
@@ -5561,44 +5561,27 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if (m_Map != null)
         {
-            var eable = m_Map.GetObjectsInRange(m_Location, range);
-
-            foreach (var o in eable)
+            foreach (var heard in m_Map.GetMobilesInRange(m_Location, range))
             {
-                if (o is Mobile heard)
+                if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
                 {
-                    if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
-                    {
-                        continue;
-                    }
-
-                    if (heard.m_NetState != null)
-                    {
-                        hears.Add(heard);
-                    }
-
-                    if (heard.HandlesOnSpeech(this))
-                    {
-                        onSpeech.Add(heard);
-                    }
-
-                    for (var i = 0; i < heard.Items.Count; ++i)
-                    {
-                        var item = heard.Items[i];
-
-                        if (item.HandlesOnSpeech)
-                        {
-                            onSpeech.Add(item);
-                        }
-
-                        if (item is Container container)
-                        {
-                            AddSpeechItemsFrom(onSpeech, container);
-                        }
-                    }
+                    continue;
                 }
-                else if (o is Item item)
+
+                if (heard.m_NetState != null)
                 {
+                    hears.Add(heard);
+                }
+
+                if (heard.HandlesOnSpeech(this))
+                {
+                    onSpeech.Add(heard);
+                }
+
+                for (var i = 0; i < heard.Items.Count; ++i)
+                {
+                    var item = heard.Items[i];
+
                     if (item.HandlesOnSpeech)
                     {
                         onSpeech.Add(item);
@@ -5608,6 +5591,19 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     {
                         AddSpeechItemsFrom(onSpeech, container);
                     }
+                }
+            }
+
+            foreach (var item in m_Map.GetItemsInRange(m_Location, range))
+            {
+                if (item.HandlesOnSpeech)
+                {
+                    onSpeech.Add(item);
+                }
+
+                if (item is Container container)
+                {
+                    AddSpeechItemsFrom(onSpeech, container);
                 }
             }
 
@@ -6856,23 +6852,19 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
-
-        foreach (var o in eable)
+        foreach (var m in m_Map.GetMobilesInRange(m_Location, Core.GlobalMaxUpdateRange))
         {
-            if (o is Mobile m)
+            if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
             {
-                if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
-                {
-                    m_NetState.SendRemoveEntity(m.Serial);
-                }
+                m_NetState.SendRemoveEntity(m.Serial);
             }
-            else if (o is Item item)
+        }
+
+        foreach (var item in m_Map.GetItemsInRange(m_Location, Core.GlobalMaxUpdateRange))
+        {
+            if (InRange(item.Location, item.GetUpdateRange(this)))
             {
-                if (InRange(item.Location, item.GetUpdateRange(this)))
-                {
-                    m_NetState.SendRemoveEntity(item.Serial);
-                }
+                m_NetState.SendRemoveEntity(item.Serial);
             }
         }
     }
@@ -6923,36 +6915,32 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
-
-        foreach (var o in eable)
+        foreach (var m in m_Map.GetMobilesInRange(m_Location, Core.GlobalMaxUpdateRange))
         {
-            if (o is Item item)
+            if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
             {
-                if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
+                ns.SendMobileIncoming(this, m);
+
+                if (ns.StygianAbyss)
                 {
-                    item.SendInfoTo(ns);
+                    ns.SendMobileHealthbar(m, Healthbar.Poison);
+                    ns.SendMobileHealthbar(m, Healthbar.Yellow);
                 }
+
+                if (m.IsDeadBondedPet)
+                {
+                    ns.SendBondedStatus(m.Serial, true);
+                }
+
+                m.SendOPLPacketTo(ns);
             }
-            else if (o is Mobile m)
+        }
+
+        foreach (var item in m_Map.GetItemsInRange(m_Location, Core.GlobalMaxUpdateRange))
+        {
+            if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
             {
-                if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
-                {
-                    ns.SendMobileIncoming(this, m);
-
-                    if (ns.StygianAbyss)
-                    {
-                        ns.SendMobileHealthbar(m, Healthbar.Poison);
-                        ns.SendMobileHealthbar(m, Healthbar.Yellow);
-                    }
-
-                    if (m.IsDeadBondedPet)
-                    {
-                        ns.SendBondedStatus(m.Serial, true);
-                    }
-
-                    m.SendOPLPacketTo(ns);
-                }
+                item.SendInfoTo(ns);
             }
         }
     }
@@ -7310,67 +7298,70 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             if (ourState != null)
             {
                 // We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
-                foreach (var o in map.GetObjectsInRange(newLocation, Core.GlobalMaxUpdateRange))
+
+                foreach (var m in map.GetMobilesInRange(newLocation, Core.GlobalMaxUpdateRange))
                 {
-                    if (o is Item item)
+                    if (m == this)
                     {
-                        var range = item.GetUpdateRange(this);
-                        var loc = item.Location;
-
-                        if (!Utility.InRange(oldLocation, loc, range) && Utility.InRange(newLocation, loc, range) &&
-                            CanSee(item))
-                        {
-                            item.SendInfoTo(ourState);
-                        }
+                        continue;
                     }
-                    else if (o != this && o is Mobile m)
+
+                    if (!Utility.InUpdateRange(newLocation, m.m_Location))
                     {
-                        if (!Utility.InUpdateRange(newLocation, m.m_Location))
+                        continue;
+                    }
+
+                    var inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
+                    var ns = m.m_NetState;
+
+                    if (ns != null &&
+                        (isTeleport && (!ns.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
+                    {
+                        ns.SendMobileIncoming(m, this);
+
+                        if (ns.StygianAbyss)
                         {
-                            continue;
+                            ns.SendMobileHealthbar(this, Healthbar.Poison);
+                            ns.SendMobileHealthbar(this, Healthbar.Yellow);
                         }
 
-                        var inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
-                        var ns = m.m_NetState;
-
-                        if (ns != null &&
-                            (isTeleport && (!ns.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
+                        if (IsDeadBondedPet)
                         {
-                            ns.SendMobileIncoming(m, this);
-
-                            if (ns.StygianAbyss)
-                            {
-                                ns.SendMobileHealthbar(this, Healthbar.Poison);
-                                ns.SendMobileHealthbar(this, Healthbar.Yellow);
-                            }
-
-                            if (IsDeadBondedPet)
-                            {
-                                ns.SendBondedStatus(Serial, true);
-                            }
-
-                            SendOPLPacketTo(ns);
+                            ns.SendBondedStatus(Serial, true);
                         }
 
-                        if (inOldRange || !CanSee(m))
-                        {
-                            continue;
-                        }
+                        SendOPLPacketTo(ns);
+                    }
 
-                        ourState.SendMobileIncoming(this, m);
+                    if (inOldRange || !CanSee(m))
+                    {
+                        continue;
+                    }
 
-                        if (ourState.StygianAbyss)
-                        {
-                            ourState.SendMobileHealthbar(m, Healthbar.Poison);
-                            ourState.SendMobileHealthbar(m, Healthbar.Yellow);
-                        }
+                    ourState.SendMobileIncoming(this, m);
 
-                        if (m.IsDeadBondedPet)
-                        {
-                            ourState.SendBondedStatus(m.Serial, true);
-                        }
+                    if (ourState.StygianAbyss)
+                    {
+                        ourState.SendMobileHealthbar(m, Healthbar.Poison);
+                        ourState.SendMobileHealthbar(m, Healthbar.Yellow);
+                    }
 
-                        m.SendOPLPacketTo(ourState);
+                    if (m.IsDeadBondedPet)
+                    {
+                        ourState.SendBondedStatus(m.Serial, true);
+                    }
+
+                    m.SendOPLPacketTo(ourState);
+                }
+                foreach (var item in map.GetItemsInRange(newLocation, Core.GlobalMaxUpdateRange))
+                {
+                    var range = item.GetUpdateRange(this);
+                    var loc = item.Location;
+
+                    if (!Utility.InRange(oldLocation, loc, range) && Utility.InRange(newLocation, loc, range) &&
+                        CanSee(item))
+                    {
+                        item.SendInfoTo(ourState);
                     }
                 }
             }
@@ -8097,10 +8088,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Map.ItemBoundsEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
         m_Map == null ? Map.ItemBoundsEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Location, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
-        m_Map?.GetObjectsInRange(m_Location, range) ?? PooledEnumeration.NullEnumerable<IEntity>.Instance;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Map.MobileAtEnumerable<Mobile> GetMobilesInRange() => GetMobilesInRange<Mobile>();

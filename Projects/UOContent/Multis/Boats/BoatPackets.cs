@@ -23,7 +23,7 @@ namespace Server.Multis.Boats
     public static class BoatPackets
     {
         public static void SendMoveBoatHS(this NetState ns, Mobile beholder, BaseBoat boat,
-            Direction d, int speed, BaseBoat.MovingEntitiesEnumerable ents, int xOffset, int yOffset)
+            Direction d, int speed, int xOffset, int yOffset)
         {
             if (ns?.HighSeas != true)
             {
@@ -46,7 +46,7 @@ namespace Server.Multis.Boats
 
             var count = 0;
 
-            foreach (var ent in ents)
+            foreach (var ent in boat.GetMovingEntities(true))
             {
                 // If we assume that the entities list contains everything a player can see,
                 // then this can be removed and the packet can be written once and copied to improve performance
@@ -76,9 +76,9 @@ namespace Server.Multis.Boats
                 return;
             }
 
-            var minLength = PacketContainerBuilder.MinPacketLength
-                            + OutgoingEntityPackets.MaxWorldEntityPacketLength
-                            * 5; // Minimum of boat, hold, planks, and the player
+            const int minLength = PacketContainerBuilder.MinPacketLength
+                                  + OutgoingEntityPackets.MaxWorldEntityPacketLength
+                                  * 5; // Minimum of boat, hold, planks, and the player
 
             using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
 
