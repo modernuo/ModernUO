@@ -2683,9 +2683,8 @@ namespace Server.Multis
             }
             else if (!Public && IsAosRules)
             {
-                from.SendLocalizedMessage(
-                    1062521
-                ); // You cannot ban someone from a private house.  Revoke their access instead.
+                // You cannot ban someone from a private house.  Revoke their access instead.
+                from.SendLocalizedMessage(1062521);
             }
             else if (targ is BaseCreature bc && bc.NoHouseRestrictions)
             {
@@ -3988,11 +3987,8 @@ namespace Server.Multis
                 {
                     if (item is VendorRentalContract)
                     {
-                        from.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1062392
-                        ); // You must double click the contract in your pack to lock it down.
+                        // You must double click the contract in your pack to lock it down.
+                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1062392);
                         from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501732); // I cannot lock this down!
                     }
                     else if (item is AddonComponent)
@@ -4071,11 +4067,8 @@ namespace Server.Multis
                 {
                     if (item is VendorRentalContract)
                     {
-                        from.LocalOverheadMessage(
-                            MessageType.Regular,
-                            0x3B2,
-                            1062392
-                        ); // You must double click the contract in your pack to lock it down.
+                        // You must double click the contract in your pack to lock it down.
+                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1062392);
                         from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501732); // I cannot lock this down!
                     }
                     else
