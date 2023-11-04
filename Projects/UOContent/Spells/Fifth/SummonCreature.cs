@@ -75,7 +75,7 @@ namespace Server.Spells.Fifth
                     var duration = Core.Expansion switch
                     {
                         Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
-                        _ => TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0)
+                        _ => TimeSpan.FromSeconds((int)Caster.Skills.Magery.Value * 4)
                     };
 
                     SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);

@@ -18,17 +18,15 @@ namespace Server.Items
 
             ClearCurrentAbility(attacker);
 
-            defender.SendLocalizedMessage(1112369); // You have been poisoned by a lethal arrow!
-
             int level;
 
             if (attacker.InRange(defender, 2))
             {
-                level = attacker.Skills.Poisoning.Fixed / 2 switch
+                level = (attacker.Skills.Archery.Value + attacker.Skills.Poisoning.Value) switch
                 {
-                    >= 1000 => 3,
-                    > 850   => 2,
-                    > 650   => 1,
+                    > 199.8 => 3,
+                    > 170.2 => 2,
+                    > 130.2 => 1,
                     _       => 0
                 };
             }
@@ -37,6 +35,7 @@ namespace Server.Items
                 level = 0;
             }
 
+            defender.SendLocalizedMessage(1112369); // You have been poisoned by a lethal arrow!
             defender.ApplyPoison(attacker, Poison.GetPoison(level));
 
             defender.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);

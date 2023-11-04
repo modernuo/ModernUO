@@ -42,7 +42,7 @@ namespace Server.Spells.Fifth
                 {
                     Expansion.None  => TimeSpan.FromSeconds(20),
                     < Expansion.LBR => TimeSpan.FromSeconds(15 + Caster.Skills.Magery.Value * 0.4),
-                    _               => TimeSpan.FromSeconds(3 + Caster.Skills.Magery.Fixed * 0.4)
+                    _               => TimeSpan.FromSeconds(3 + Caster.Skills.Magery.Value * 0.4)
                 };
 
                 for (var i = -2; i <= 2; ++i)
@@ -142,24 +142,24 @@ namespace Server.Spells.Fifth
                     return;
                 }
 
-                Poison p;
+                int level;
 
                 if (Core.AOS)
                 {
-                    p = ((m_Caster.Skills.Magery.Fixed + m_Caster.Skills.Poisoning.Fixed) / 2) switch
+                    level = (m_Caster.Skills.Magery.Value + m_Caster.Skills.Poisoning.Value) switch
                     {
-                        >= 1000 => Poison.Deadly,
-                        > 850   => Poison.Greater,
-                        > 650   => Poison.Regular,
-                        _       => Poison.Lesser
+                        > 199.8 => 3,
+                        > 170.2  => 2,
+                        > 130.2  => 1,
+                        _        => 0
                     };
                 }
                 else
                 {
-                    p = Poison.Regular;
+                    level = 1;
                 }
 
-                if (m.ApplyPoison(m_Caster, p) == ApplyPoisonResult.Poisoned)
+                if (m.ApplyPoison(m_Caster, Poison.GetPoison(level)) is ApplyPoisonResult.Poisoned or ApplyPoisonResult.HigherPoisonActive)
                 {
                     if (SpellHelper.CanRevealCaster(m))
                     {

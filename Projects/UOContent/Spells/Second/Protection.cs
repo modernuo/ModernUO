@@ -133,11 +133,11 @@ namespace Server.Spells.Second
                 {
                     if (Caster.BeginAction<DefensiveSpell>())
                     {
-                        int value = (Caster.Skills.EvalInt.Fixed +
-                                     Caster.Skills.Meditation.Fixed +
-                                     Caster.Skills.Inscribe.Fixed) / 4;
+                        double value = (Caster.Skills.EvalInt.Value +
+                                        Caster.Skills.Meditation.Value +
+                                        Caster.Skills.Inscribe.Value) * 10 / 4;
 
-                        Registry.Add(Caster, Math.Clamp(value, 0, 750)); // 75.0% protection from disruption
+                        Registry.Add(Caster, Math.Clamp((int)value, 0, 750)); // 75.0% protection from disruption
                         new InternalTimer(Caster).Start();
 
                         Caster.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);

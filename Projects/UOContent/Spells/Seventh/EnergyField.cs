@@ -39,7 +39,7 @@ namespace Server.Spells.Seventh
                 Effects.PlaySound(loc, Caster.Map, 0x20B);
 
                 TimeSpan duration = Core.AOS
-                    ? TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 7.0)
+                    ? TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Value * 2) / 7.0)
                     : TimeSpan.FromSeconds(Caster.Skills.Magery.Value * 0.28 + 2.0);
 
                 var itemID = eastToWest ? 0x3946 : 0x3956;

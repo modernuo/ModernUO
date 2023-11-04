@@ -1,3 +1,4 @@
+using System;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -37,70 +38,56 @@ namespace Server.Spells.Third
                 }
                 else
                 {
-                    int level;
+                    var total = Caster.Skills.Magery.Value;
 
-                    if (Core.AOS)
+                    if (Caster is PlayerMobile pm)
                     {
-                        if (Caster.InRange(m, 2))
+                        if (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
+                            pm.DuelContext.Ruleset.GetOption("Skills", "Poisoning"))
                         {
-                            level = ((Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2) switch
-                            {
-                                >= 1000 => 3,
-                                > 850   => 2,
-                                > 650   => 1,
-                                _       => 0
-                            };
-                        }
-                        else
-                        {
-                            level = 0;
+                            total += pm.Skills.Poisoning.Value;
                         }
                     }
                     else
                     {
-                        // double total = Caster.Skills.Magery.Value + Caster.Skills.Poisoning.Value;
+                        total += Caster.Skills.Poisoning.Value;
+                    }
 
-                        var total = Caster.Skills.Magery.Value;
+                    var dist = Caster.GetDistanceToSqrt(m);
+                    int level;
 
-                        if (Caster is PlayerMobile pm)
-                        {
-                            if (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
-                                pm.DuelContext.Ruleset.GetOption("Skills", "Poisoning"))
-                            {
-                                total += pm.Skills.Poisoning.Value;
-                            }
-                        }
-                        else
-                        {
-                            total += Caster.Skills.Poisoning.Value;
-                        }
-
-                        var dist = Caster.GetDistanceToSqrt(m);
-
-                        if (dist >= 3.0)
+                    if (Core.AOS && dist >= 3)
+                    {
+                        level = 0;
+                    }
+                    else
+                    {
+                        if (!Core.AOS && dist >= 3.0)
                         {
                             total -= (dist - 3.0) * 10.0;
                         }
 
-                        if (total >= 200.0 && Utility.Random(10) < 1)
+                        if (Core.SA && dist >= 2.0)
                         {
-                            level = 3;
+                            total -= (dist - 2) * 31; // 240 -
                         }
-                        else if (total > (Core.AOS ? 170.1 : 170.0))
+
+                        level = total switch
                         {
-                            level = 2;
-                        }
-                        else if (total > (Core.AOS ? 130.1 : 130.0))
+                            > 200.0 when Core.SA && dist <= 2.0 => Utility.Random(10) == 0 ? 4 : 3,
+                            > 199.8                            => Core.AOS || Utility.Random(10) == 0 ? 3 : 2,
+                            > 170.2                             => 2,
+                            > 130.2                             => 1,
+                            _                                   => 0
+                        };
+
+                        if (Core.SA && dist > 2.0)
                         {
-                            level = 1;
-                        }
-                        else
-                        {
-                            level = 0;
+                            level -= (int)dist / 3;
                         }
                     }
 
-                    m.ApplyPoison(Caster, Poison.GetPoison(level));
+                    m.ApplyPoison(Caster, Poison.GetPoison(Math.Max(level, 0)));
                 }
 
                 m.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);

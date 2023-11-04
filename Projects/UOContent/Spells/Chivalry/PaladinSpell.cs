@@ -140,7 +140,7 @@ namespace Server.Spells.Chivalry
                 return 0;
             }
 
-            var v = (int)Math.Sqrt(from.Karma + 20000 + from.Skills.Chivalry.Fixed * 10);
+            var v = (int)Math.Sqrt(from.Karma + 20000 + from.Skills.Chivalry.Value * 100);
 
             return v / div;
         }

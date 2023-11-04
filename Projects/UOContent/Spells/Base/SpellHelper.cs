@@ -359,11 +359,11 @@ namespace Server.Spells
 
             if (curse)
             {
-                percent = 8 + caster.Skills.EvalInt.Fixed / 100 - target.Skills.MagicResist.Fixed / 100;
+                percent = 8 + (caster.Skills.EvalInt.Value - target.Skills.MagicResist.Value) / 10;
             }
             else
             {
-                percent = 1 + caster.Skills.EvalInt.Fixed / 100;
+                percent = 1 + caster.Skills.EvalInt.Value / 10;
             }
 
             percent *= 0.01;
