@@ -22,12 +22,12 @@ namespace Server.Items
 
             if (attacker.InRange(defender, 2))
             {
-                level = ((attacker.Skills.Archery.Value + attacker.Skills.Poisoning.Value) / 2) switch
+                level = (attacker.Skills.Archery.Value + attacker.Skills.Poisoning.Value) switch
                 {
-                    >= 100.0 => 3,
-                    > 85.0   => 2,
-                    > 65.0   => 1,
-                    _        => 0
+                    > 199.8 => 3,
+                    > 170.2 => 2,
+                    > 130.2 => 1,
+                    _       => 0
                 };
             }
             else
