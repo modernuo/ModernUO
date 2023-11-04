@@ -195,7 +195,7 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
     public static int EnhancePotions(Mobile m)
     {
         var EP = AosAttributes.GetValue(m, AosAttribute.EnhancePotions);
-        var skillBonus = m.Skills.Alchemy.Fixed / 330 * 10;
+        var skillBonus = (int)(m.Skills.Alchemy.Value * 10 / 33);
 
         if (Core.ML && EP > 50 && m.AccessLevel <= AccessLevel.Player)
         {
