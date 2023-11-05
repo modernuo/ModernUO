@@ -12,7 +12,7 @@ namespace Server.Items
     {
         public override int BaseMana => 15;
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage, Point3D location)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
             {

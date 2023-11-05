@@ -97,7 +97,7 @@ namespace Server.Items
         public virtual bool ValidatesDuringHit => true;
 
         // Passing location since defender might be already killed (deleted/internalized)
-        public virtual void OnHit(Mobile attacker, Mobile defender, int damage, Point3D location)
+        public virtual void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
         }
 

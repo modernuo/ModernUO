@@ -1869,7 +1869,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
         damage = AOS.Scale(damage, 100 + percentageBonus);
 
-        var defLoc = defender.Location;
+        var defLoc = new WorldLocation(defender);
         var bcAtt = attacker as BaseCreature;
         var bcDef = defender as BaseCreature;
 

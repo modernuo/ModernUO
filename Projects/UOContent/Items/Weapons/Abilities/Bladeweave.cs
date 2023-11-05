@@ -69,7 +69,7 @@ namespace Server.Items
                 ? bwr.NewAbility.OnBeforeDamage(attacker, defender)
                 : base.OnBeforeDamage(attacker, defender);
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage, Point3D location)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (CheckMana(attacker, false))
             {

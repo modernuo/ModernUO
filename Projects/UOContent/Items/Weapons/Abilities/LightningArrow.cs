@@ -8,10 +8,7 @@ namespace Server.Items
     {
         public override int BaseMana => 20;
 
-        //TODO - add ConsumeAmmo on weaponabilities
-       // public override bool ConsumeAmmo => false;
-
-        public override void OnHit(Mobile attacker, Mobile defender, int damage, Point3D location)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (!Validate(attacker))
             {
@@ -28,7 +25,7 @@ namespace Server.Items
             }
 
             using var list = PooledRefList<Mobile>.Create();
-            foreach (Mobile m in defender.GetMobilesInRange(5))
+            foreach (Mobile m in worldLocation.Map.GetMobilesInRange(5))
             {
                 if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) && m?.Deleted == false &&
                     m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
@@ -38,16 +35,23 @@ namespace Server.Items
                 }
             }
 
-            defender.BoltEffect(0);
+            if (defender?.Deleted == false && defender.Map != null)
+            {
+                defender.BoltEffect(0);
+                AOS.Damage(defender, attacker, Utility.RandomMinMax(29, 40), 0, 0, 0, 0, 100);
+            }
 
             var count = Math.Min(list.Count, 2);
-            list.Shuffle();
-
-            for (var i = 0; i < count; i++)
+            if (count > 0)
             {
-                var m = list[i];
-                m.BoltEffect(0);
-                AOS.Damage(m, attacker, Utility.RandomMinMax(29, 40), 0, 0, 0, 0, 100);
+                list.Shuffle();
+
+                for (var i = 0; i < count; i++)
+                {
+                    var m = list[i];
+                    m.BoltEffect(0);
+                    AOS.Damage(m, attacker, Utility.RandomMinMax(29, 40), 0, 0, 0, 0, 100);
+                }
             }
         }
     }

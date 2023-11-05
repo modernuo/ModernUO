@@ -85,7 +85,7 @@ namespace Server.Items
                     {
                         // Lightning Arrow doesn't require ammunition
                         attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
-                        lightningArrow.OnHit(attacker, defender, 0, defender.Location);
+                        lightningArrow.OnHit(attacker, defender, 0, new WorldLocation(defender));
                     }
                 }
 
