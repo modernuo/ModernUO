@@ -13,7 +13,7 @@ public class MysticArc : WeaponAbility
 
     public override int BaseMana => 20;
 
-    public override void OnHit(Mobile attacker, Mobile defender, int damage)
+    public override void OnHit(Mobile attacker, Mobile defender, int damage, Point3D location)
     {
         if (!CheckMana(attacker, true) && defender != null)
         {

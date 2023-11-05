@@ -11,7 +11,7 @@ namespace Server.Items
         //TODO - add ConsumeAmmo on weaponabilities
        // public override bool ConsumeAmmo => false;
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, Point3D location)
         {
             if (!Validate(attacker))
             {

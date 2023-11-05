@@ -21,7 +21,7 @@ namespace Server.Items
 
         public override bool RequiresTactics(Mobile from) => false;
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, Point3D location)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
             {
