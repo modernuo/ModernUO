@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: TileList.cs                                                     *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -6,33 +21,17 @@ namespace Server;
 
 public class TileList
 {
-    private static readonly StaticTile[] m_EmptyTiles = Array.Empty<StaticTile>();
-    private StaticTile[] m_Tiles;
-
-    public TileList()
-    {
-        m_Tiles = new StaticTile[8];
-        Count = 0;
-    }
+    private static readonly StaticTile[] _emptyTiles = Array.Empty<StaticTile>();
+    private StaticTile[] _tiles;
 
     public int Count { get; private set; }
 
-    public void AddRange(StaticTile[] tiles)
+    public void AddRange(ReadOnlySpan<StaticTile> tiles)
     {
-        if (Count + tiles.Length > m_Tiles.Length)
-        {
-            var old = m_Tiles;
-            m_Tiles = new StaticTile[(Count + tiles.Length) * 2];
-
-            for (var i = 0; i < old.Length; ++i)
-            {
-                m_Tiles[i] = old[i];
-            }
-        }
-
+        TryResize(tiles.Length);
         for (var i = 0; i < tiles.Length; ++i)
         {
-            m_Tiles[Count++] = tiles[i];
+            _tiles[Count++] = tiles[i];
         }
     }
 
@@ -41,15 +40,15 @@ public class TileList
 
     public void Add(StaticTile tile)
     {
-        TryResize();
-        m_Tiles[Count] = tile;
+        TryResize(1);
+        _tiles[Count] = tile;
         ++Count;
     }
 
     public void Add(ushort id, byte x, byte y, sbyte z, short hue = 0)
     {
-        TryResize();
-        ref var tile = ref m_Tiles[Count];
+        TryResize(1);
+        ref var tile = ref _tiles[Count];
         tile.m_ID = id;
         tile.m_X = x;
         tile.m_Y = y;
@@ -60,22 +59,24 @@ public class TileList
 
     public void Add(ushort id, sbyte z)
     {
-        TryResize();
-        m_Tiles[Count].m_ID = id;
-        m_Tiles[Count].m_Z = z;
+        TryResize(1);
+        _tiles[Count].m_ID = id;
+        _tiles[Count].m_Z = z;
         ++Count;
     }
 
-    private void TryResize()
+    private void TryResize(int length)
     {
-        if (Count + 1 > m_Tiles.Length)
+        _tiles ??= new StaticTile[length];
+
+        if (Count + length > _tiles.Length)
         {
-            var old = m_Tiles;
-            m_Tiles = new StaticTile[old.Length * 2];
+            var old = _tiles;
+            _tiles = new StaticTile[old.Length * 2];
 
             for (var i = 0; i < old.Length; ++i)
             {
-                m_Tiles[i] = old[i];
+                _tiles[i] = old[i];
             }
         }
     }
@@ -84,16 +85,13 @@ public class TileList
     {
         if (Count == 0)
         {
-            return m_EmptyTiles;
+            return _emptyTiles;
         }
 
-        var tiles = new StaticTile[Count];
+        Array.Resize(ref _tiles, Count);
+        var tiles = _tiles;
 
-        for (var i = 0; i < Count; ++i)
-        {
-            tiles[i] = m_Tiles[i];
-        }
-
+        _tiles = null;
         Count = 0;
 
         return tiles;

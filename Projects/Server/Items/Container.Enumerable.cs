@@ -240,16 +240,20 @@ public partial class Container
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool SetNextContainer()
         {
-            if (!_containers.TryDequeue(out var c))
+            while (_containers.TryDequeue(out var c))
             {
-                return false;
+                _currentContainer = c;
+                _items = CollectionsMarshal.AsSpan(c.m_Items);
+                _index = 0;
+                _version = c._version;
+                
+                if (SetNextItem())
+                {
+                    return true;
+                }
             }
 
-            _currentContainer = c;
-            _items = CollectionsMarshal.AsSpan(c.m_Items);
-            _index = 0;
-            _version = c._version;
-            return SetNextItem();
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

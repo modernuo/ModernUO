@@ -79,7 +79,7 @@ namespace Server.Misc
 
             if (AnimalForm.UnderTransformation(from, typeof(Dog)) || AnimalForm.UnderTransformation(from, typeof(Cat)))
             {
-                points += from.Skills.Ninjitsu.Fixed / 30;
+                points += (int)(from.Skills.Ninjitsu.Value / 3);
             }
 
             return TimeSpan.FromSeconds(10.0 / (1 + points));

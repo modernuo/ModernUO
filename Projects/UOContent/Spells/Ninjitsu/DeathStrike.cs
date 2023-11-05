@@ -53,7 +53,7 @@ namespace Server.Spells.Ninjitsu
 
                 if (timer.Steps > 0)
                 {
-                    damageBonus = attacker.Skills.Ninjitsu.Fixed / 150;
+                    damageBonus = (int)(attacker.Skills.Ninjitsu.Value / 15);
                 }
 
                 timer.Stop();

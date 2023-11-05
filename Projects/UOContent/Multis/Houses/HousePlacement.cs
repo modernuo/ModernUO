@@ -370,58 +370,35 @@ namespace Server.Multis
                 }
             }
 
-            var _sectors = new List<Map.Sector>();
-            var _houses = new List<BaseHouse>();
-
             for (var i = 0; i < yard.Count; i++)
             {
-                var sector = map.GetSector(yard[i]);
+                var yardPoint = yard[i];
 
-                if (!_sectors.Contains(sector))
+                foreach (var house in map.GetMultisAt<BaseHouse>(yardPoint))
                 {
-                    _sectors.Add(sector);
-
-                    for (var j = 0; j < sector.Multis?.Count; j++)
-                    {
-                        if (sector.Multis[j] is BaseHouse)
-                        {
-                            var _house = (BaseHouse)sector.Multis[j];
-                            if (!_houses.Contains(_house))
-                            {
-                                _houses.Add(_house);
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (var i = 0; i < yard.Count; ++i)
-            {
-                foreach (var b in _houses)
-                {
-                    if (b.Contains(yard[i]))
+                    if (house.Contains(yard[i]))
                     {
                         return HousePlacementResult.BadStatic; // Broke rule #3
                     }
                 }
             }
-            /*Point2D yardPoint = yard[i];
 
-              IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
-
-              foreach ( StaticTile[] tile in eable )
-              {
-                for ( int j = 0; j < tile.Length; ++j )
-                {
-                  if ((TileData.ItemTable[tile[j].ID & TileData.MaxItemValue].Flags & (TileFlag.Impassable | TileFlag.Surface)) != 0)
-                  {
-                    eable.Free();
-                    return HousePlacementResult.BadStatic; // Broke rule #3
-                  }
-                }
-              }
-
-              eable.Free();*/
+            // TODO: Should we check for MultiTilesAt each yard point?
+            // for (var i = 0; i < yard.Count; i++)
+            // {
+            //     var yardPoint = yard[i];
+            //
+            //     foreach (var tiles in map.GetMultiTilesAt(yardPoint))
+            //     {
+            //         for (int j = 0; j < tiles.Length; ++j)
+            //         {
+            //             if ((TileData.ItemTable[tiles[j].ID & TileData.MaxItemValue].Flags & (TileFlag.Impassable | TileFlag.Surface)) != 0)
+            //             {
+            //                 return HousePlacementResult.BadStatic; // Broke rule #3
+            //             }
+            //         }
+            //     }
+            // }
 
             return HousePlacementResult.Valid;
         }
