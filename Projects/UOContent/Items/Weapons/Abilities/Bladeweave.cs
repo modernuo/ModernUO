@@ -76,11 +76,11 @@ namespace Server.Items
                 if (_newAttack.TryGetValue(attacker, out var bwr))
                 {
                     attacker.SendLocalizedMessage(1072841, $"#{bwr.ClilocEntry}");
-                    bwr.NewAbility.OnHit(attacker, defender, damage, location);
+                    bwr.NewAbility.OnHit(attacker, defender, damage, worldLocation);
                 }
                 else
                 {
-                    base.OnHit(attacker, defender, damage, location);
+                    base.OnHit(attacker, defender, damage, worldLocation);
                 }
 
                 _newAttack.Remove(attacker);

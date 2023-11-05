@@ -25,7 +25,7 @@ namespace Server.Items
             }
 
             using var list = PooledRefList<Mobile>.Create();
-            foreach (Mobile m in worldLocation.Map.GetMobilesInRange(5))
+            foreach (Mobile m in worldLocation.Map.GetMobilesInRange(worldLocation.Location, 5))
             {
                 if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) && m?.Deleted == false &&
                     m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
