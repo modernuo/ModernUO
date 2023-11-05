@@ -158,12 +158,8 @@ namespace Server.Spells
                 return false;
             }
 
-            var sector = map.GetSector(p.X, p.Y);
-
-            for (var i = 0; i < sector.Multis.Count; ++i)
+            foreach (var multi in map.GetMultisAt(p))
             {
-                var multi = sector.Multis[i];
-
                 if (multi is BaseHouse bh)
                 {
                     if (houses && bh.IsInside(p, 16) || housingrange > 0 && bh.InRange(p, housingrange))
