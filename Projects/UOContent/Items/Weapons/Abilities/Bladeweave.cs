@@ -69,18 +69,18 @@ namespace Server.Items
                 ? bwr.NewAbility.OnBeforeDamage(attacker, defender)
                 : base.OnBeforeDamage(attacker, defender);
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (CheckMana(attacker, false))
             {
                 if (_newAttack.TryGetValue(attacker, out var bwr))
                 {
                     attacker.SendLocalizedMessage(1072841, $"#{bwr.ClilocEntry}");
-                    bwr.NewAbility.OnHit(attacker, defender, damage);
+                    bwr.NewAbility.OnHit(attacker, defender, damage, worldLocation);
                 }
                 else
                 {
-                    base.OnHit(attacker, defender, damage);
+                    base.OnHit(attacker, defender, damage, worldLocation);
                 }
 
                 _newAttack.Remove(attacker);

@@ -96,7 +96,8 @@ namespace Server.Items
 
         public virtual bool ValidatesDuringHit => true;
 
-        public virtual void OnHit(Mobile attacker, Mobile defender, int damage)
+        // Passing location since defender might be already killed (deleted/internalized)
+        public virtual void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
         }
 
@@ -276,7 +277,7 @@ namespace Server.Items
 
             return false;
         }
-        private int GetSkillLocalization(SkillName skill)
+        private static int GetSkillLocalization(SkillName skill)
         {
             return skill switch
             {
@@ -359,28 +360,36 @@ namespace Server.Items
             string option = this switch
             {
                 ArmorIgnore _       => "Armor Ignore",
+                ArmorPierce _       => "Armor Pierce",
+                Bladeweave _        => "Bladeweave",
                 BleedAttack _       => "Bleed Attack",
+                Block _             => "Block",
                 ConcussionBlow _    => "Concussion Blow",
                 CrushingBlow _      => "Crushing Blow",
+                DefenseMastery _    => "Defense Mastery",
                 Disarm _            => "Disarm",
                 Dismount _          => "Dismount",
+                DoubleShot _        => "Double Shot",
                 DoubleStrike _      => "Double Strike",
+                DualWield  _        => "Dual Wield",
+                Feint _             => "Feint",
+                ForceArrow _        => "Force Arrow",
+                ForceOfNature _     => "Force of Nature",
+                FrenziedWhirlwind _ => "Frenzied Whirlwind",
                 InfectiousStrike _  => "Infectious Strike",
+                InfusedThrow _      => "Infused Throw",
+                LightningArrow _    => "Lightning Arrow",
                 MortalStrike _      => "Mortal Strike",
                 MovingShot _        => "Moving Shot",
-                ParalyzingBlow _    => "Paralyzing Blow",
-                ShadowStrike _      => "Shadow Strike",
-                WhirlwindAttack _   => "Whirlwind Attack",
-                RidingSwipe _       => "Riding Swipe",
-                FrenziedWhirlwind _ => "Frenzied Whirlwind",
-                Block _             => "Block",
-                DefenseMastery _    => "Defense Mastery",
+                MysticArc _         => "Mystic Arc",
                 NerveStrike _       => "Nerve Strike",
+                ParalyzingBlow _    => "Paralyzing Blow",
+                PsychicAttack _     => "Psychic Attack",
+                RidingSwipe _       => "Riding Swipe",
+                SerpentArrow _      => "Serpent Arrow",
+                ShadowStrike _      => "Shadow Strike",
                 TalonStrike _       => "Talon Strike",
-                Feint _             => "Feint",
-                DualWield  _        => "Dual Wield",
-                DoubleShot _        => "Double Shot",
-                ArmorPierce _       => "Armor Pierce",
+                WhirlwindAttack _   => "Whirlwind Attack",
                 _                   => null
             };
 

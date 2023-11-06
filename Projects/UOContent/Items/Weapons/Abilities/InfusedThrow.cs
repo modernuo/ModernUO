@@ -12,7 +12,7 @@ public class InfusedThrow : WeaponAbility
 {
     public override int BaseMana => 25;
 
-    public override void OnHit(Mobile attacker, Mobile defender, int damage)
+    public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
     {
         if (!CheckMana(attacker, true))
         {

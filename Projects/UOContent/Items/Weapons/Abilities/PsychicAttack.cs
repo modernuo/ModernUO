@@ -8,7 +8,7 @@ namespace Server.Items
         public static Dictionary<Mobile, PsychicAttackTimer> Registry { get; } = new();
         public override int BaseMana => 30;
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
             {

@@ -23,7 +23,7 @@ namespace Server.Items
             attacker.SendLocalizedMessage(1060089); // You fail to execute your special move
         }
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             // Validates in OnSwing for accuracy scalar
 
