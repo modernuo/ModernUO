@@ -27,18 +27,23 @@ namespace Server.Items
             using var list = PooledRefList<Mobile>.Create();
             foreach (Mobile m in worldLocation.Map.GetMobilesInRange(worldLocation.Location, 5))
             {
-                if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) && m?.Deleted == false &&
-                    m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+                if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) &&
+                    m is { Deleted: false, Alive: true } && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
                     attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
                 {
                     list.Add(m);
                 }
             }
 
-            if (defender?.Deleted == false && defender.Map != null)
+            // Defender might be already dead/internalized
+            if (defender is { Deleted: false, Alive: true })
             {
                 defender.BoltEffect(0);
                 AOS.Damage(defender, attacker, Utility.RandomMinMax(29, 40), 0, 0, 0, 0, 100);
+            }
+            else
+            {
+                Effects.SendBoltEffect(new Entity(Serial.Zero, worldLocation.Location, worldLocation.Map));
             }
 
             var count = Math.Min(list.Count, 2);
