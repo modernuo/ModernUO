@@ -13,7 +13,7 @@ namespace Server.Items
         public override int BaseMana => 30;
         public override bool RequiresSecondarySkill(Mobile from) => true;
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
             {

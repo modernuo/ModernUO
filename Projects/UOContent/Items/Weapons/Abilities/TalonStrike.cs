@@ -17,7 +17,7 @@ namespace Server.Items
         public override SkillName GetSecondarySkillName(Mobile from) => SkillName.Ninjitsu;
 
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (_defenders.Contains(defender) || !Validate(attacker) || !CheckMana(attacker, true))
             {

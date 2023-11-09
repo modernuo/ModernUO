@@ -16,7 +16,7 @@ namespace Server.Items
         public override bool RequiresSecondarySkill(Mobile from) => true;
         public override SkillName GetSecondarySkillName(Mobile from) => SkillName.Bushido;
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (!defender.Mounted)
             {

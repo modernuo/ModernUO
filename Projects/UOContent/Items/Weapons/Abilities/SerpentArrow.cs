@@ -9,7 +9,7 @@ namespace Server.Items
         public override double GetRequiredSecondarySkill(Mobile from) => 60;
         public override SkillName GetSecondarySkillName(Mobile from) => SkillName.Poisoning;
 
-        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
             {
