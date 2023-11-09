@@ -421,6 +421,8 @@ namespace Server.Mobiles
             : base(0x20DD, 0x3EAA)
         {
         }
+
+        public override int LabelNumber => 1041298; // Ethereal Horse Statuette
     }
 
     [SerializationGenerator(0, false)]
