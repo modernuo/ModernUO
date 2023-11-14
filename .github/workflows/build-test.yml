@@ -45,12 +45,18 @@ jobs:
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
+          - container: ubuntu:focal
+            name: Ubuntu 20
+            packageManager: apt
           - container: debian:bookworm
             name: Debian 12
             packageManager: apt
           - container: debian:bullseye
             name: Debian 11
             packageManager: apt
+          - container: fedora:39
+            name: Fedora 38
+            packageManager: dnf
           - container: fedora:38
             name: Fedora 38
             packageManager: dnf
