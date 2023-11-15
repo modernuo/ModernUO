@@ -21,7 +21,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![Ubuntu 20+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
 <br />
 [![Alpine 3.18+](https://img.shields.io/badge/-3.18-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
-[![Fedora 37+](https://img.shields.io/badge/-38-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
+[![Fedora 37+](https://img.shields.io/badge/-39-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
 [![RedHat 7/8](https://img.shields.io/badge/-8-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
 [![CentOS 7/8/9](https://img.shields.io/badge/-9-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
 [![openSUSE 15+](https://img.shields.io/badge/-15-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
