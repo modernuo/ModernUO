@@ -6,7 +6,7 @@ title: Installation
 
 === "Windows"
     ### Prerequisites
-    1. Download and install the latest [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
+    1. Download and install the latest [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
     1. Download and install from [here](https://git-scm.com/download/win)
 
         !!! Tip
@@ -22,7 +22,7 @@ title: Installation
 
 === "OSX"
     ### Prerequisites
-    1. Download and install the latest [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0).
+    1. Download and install the latest [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
     1. Using _terminal_, install [homebrew](https://brew.sh) and git:
         ```bash
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -37,7 +37,7 @@ title: Installation
 
 === "Linux"
     ### Prerequisites
-    1. Download and install the latest [.NET 7 SDK](https://docs.microsoft.com/en-us/dotnet/core/install/linux).
+    1. Download and install the latest [.NET 8 SDK](https://docs.microsoft.com/en-us/dotnet/core/install/linux).
     1. Using _bash_, install git:
         ```bash
         sudo apt update && sudo apt install git

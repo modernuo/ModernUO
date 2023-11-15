@@ -15,10 +15,10 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: 'Install .NET 7'
+    displayName: 'Install .NET 8'
     inputs:
       packageType: sdk
-      version: '7.0.x'
+      version: '8.0.x'
   - task: NuGetAuthenticate@1
   - script: ./publish.cmd Release
     displayName: 'Build'
