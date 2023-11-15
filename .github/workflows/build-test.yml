@@ -55,7 +55,7 @@ jobs:
             name: Debian 11
             packageManager: apt
           - container: fedora:39
-            name: Fedora 38
+            name: Fedora 39
             packageManager: dnf
           - container: fedora:38
             name: Fedora 38
