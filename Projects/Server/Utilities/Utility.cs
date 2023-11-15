@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
-using Microsoft.Toolkit.HighPerformance;
 using Server.Buffers;
 using Server.Collections;
 using Server.Logging;

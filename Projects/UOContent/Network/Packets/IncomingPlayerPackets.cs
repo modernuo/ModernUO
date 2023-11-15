@@ -15,7 +15,7 @@
 
 using System.Buffers;
 using System.Diagnostics;
-using Microsoft.Toolkit.HighPerformance;
+using CommunityToolkit.HighPerformance;
 using Server.Diagnostics;
 using Server.Engines.Virtues;
 using Server.Exceptions;

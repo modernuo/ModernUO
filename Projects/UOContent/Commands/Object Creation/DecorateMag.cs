@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Toolkit.HighPerformance;
+using CommunityToolkit.HighPerformance;
 using Server.Collections;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
@@ -9,6 +9,7 @@ using Server.Engines.Spawners;
 using Server.Items;
 using Server.Network;
 using Server.Utilities;
+using MemoryExtensions = System.MemoryExtensions;
 
 namespace Server.Commands
 {
@@ -1252,7 +1253,7 @@ namespace Server.Commands
                 }
                 else
                 {
-                    list.m_Params = new string[parms.Count(';') + 1];
+                    list.m_Params = new string[MemoryExtensions.Count(parms, ';') + 1];
 
                     indexOf = 0;
                     foreach (var part in parms.Tokenize(';'))

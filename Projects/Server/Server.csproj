@@ -22,7 +22,7 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\CommunityToolkit.HighPerformance.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\PollGroup.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\ref\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Serilog.dll" ContinueOnError="true" />
@@ -32,12 +32,12 @@
         <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
+        <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
         <PackageReference Include="PollGroup" Version="1.4.3" />
         <PackageReference Include="Standart.Hash.xxHash.Signed" Version="4.0.5" />
         <PackageReference Include="Zlib.Bindings" Version="1.11.0" />
 
-        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.6.0" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.8.0" />
         <PackageReference Include="ModernUO.Serialization.Generator" Version="2.7.2" />
     </ItemGroup>
     <ItemGroup>
