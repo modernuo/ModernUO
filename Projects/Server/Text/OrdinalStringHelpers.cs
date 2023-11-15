@@ -37,7 +37,7 @@ public static class OrdinalStringHelpers
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool StartsWithOrdinal(this ReadOnlySpan<char> a, char b) =>
-        a.StartsWithOrdinal(new ReadOnlySpan<char>(b));
+        a.StartsWithOrdinal(new ReadOnlySpan<char>(ref b));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool StartsWithOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
@@ -52,7 +52,7 @@ public static class OrdinalStringHelpers
         a?.EndsWith(b, StringComparison.Ordinal) == true;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool EndsWithOrdinal(this ReadOnlySpan<char> a, char b) => a.EndsWithOrdinal(new ReadOnlySpan<char>(b));
+    public static bool EndsWithOrdinal(this ReadOnlySpan<char> a, char b) => a.EndsWithOrdinal(new ReadOnlySpan<char>(ref b));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool EndsWithOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
@@ -86,7 +86,7 @@ public static class OrdinalStringHelpers
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IndexOfOrdinal(this ReadOnlySpan<char> a, char b) =>
-        a.IndexOfOrdinal(new ReadOnlySpan<char>(b));
+        a.IndexOfOrdinal(new ReadOnlySpan<char>(ref b));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IndexOfOrdinal(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
