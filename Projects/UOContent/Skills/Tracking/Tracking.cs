@@ -323,7 +323,7 @@ namespace Server.SkillHandlers
                 chance = 100;
             }
 
-            return chance > Utility.Random(100);
+            return chance >= 100 || chance > Utility.Random(100);
         }
 
         private static bool IsValidMobileType(Mobile m, int type) =>
