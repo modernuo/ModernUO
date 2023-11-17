@@ -126,15 +126,12 @@ public interface IGenericReader
     {
         var byteArrayLength = ReadEncodedInt();
 
-        // We need an exact array size, not much we can do at this point.
+        // We need an exact array size since the ctor doesn't allow for offset/length, not much we can do at this point.
         var byteArray = new byte[byteArrayLength];
 
         Read(byteArray);
 
-        // BinaryReader doesn't expose a Span slice of the buffer, so we use a custom ctor
-        var bitArray = new BitArray(byteArray);
-        ArrayPool<byte>.Shared.Return(byteArray, true);
-        return bitArray;
+        return new BitArray(byteArray);
     }
 
     TextDefinition ReadTextDefinition()
