@@ -14,6 +14,8 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
+using System.Collections;
 using System.IO;
 using System.Net;
 using Server.Collections;
@@ -120,7 +122,20 @@ public interface IGenericReader
         return new Guid(bytes);
     }
 
-    BitArray ReadBitArray();
+    public BitArray ReadBitArray()
+    {
+        var byteArrayLength = ReadEncodedInt();
+
+        // We need an exact array size, not much we can do at this point.
+        var byteArray = new byte[byteArrayLength];
+
+        Read(byteArray);
+
+        // BinaryReader doesn't expose a Span slice of the buffer, so we use a custom ctor
+        var bitArray = new BitArray(byteArray);
+        ArrayPool<byte>.Shared.Return(byteArray, true);
+        return bitArray;
+    }
 
     TextDefinition ReadTextDefinition()
     {

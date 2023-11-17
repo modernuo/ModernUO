@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Server.Collections;
 using Server.Text;
 
 namespace Server;
@@ -133,17 +132,6 @@ public class BufferWriter : IGenericWriter
 
         bytes.CopyTo(_buffer.AsSpan((int)_index));
         Index += length;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Write(BitArray bitArray)
-    {
-        var byteLength = BitArray.GetByteArrayLengthFromBitLength(bitArray.Length);
-
-        ((IGenericWriter)this).WriteEncodedInt(bitArray.Length);
-        FlushIfNeeded(byteLength);
-        bitArray.CopyTo(_buffer.AsSpan((int)Index, byteLength));
-        Index += byteLength;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
