@@ -14,10 +14,13 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Server;
 
@@ -165,51 +168,14 @@ public interface IGenericWriter
 
     public void Write(BitArray bitArray)
     {
-        var array = Unsafe.As<BitArray, int[]>(ref bitArray); // This is so dangerous, :O
         var bytesLength = (bitArray.Length - 1 + (1 << 3)) >>> 3;
+        var arrayBuffer = ArrayPool<byte>.Shared.Rent(bytesLength);
 
         WriteEncodedInt(bytesLength);
+        bitArray.CopyTo(arrayBuffer, 0);
 
-        var extraBits = (uint)bitArray.Length & 7;
-        if (extraBits > 0)
-        {
-            // last byte is not aligned, we will directly copy one less byte
-            bytesLength -= 1;
-        }
-
-        int quotient = Math.DivRem(bytesLength, 4, out int remainder);
-        for (int i = 0; i < quotient; i++)
-        {
-            Write(array[i]);
-        }
-
-        switch (remainder)
-        {
-            case 3:
-                {
-                    Write((byte)array[quotient]);
-                    Write((byte)(array[quotient] >> 8));
-                    Write((byte)(array[quotient] >> 16));
-                    break;
-                }
-            case 2:
-                {
-                    Write((byte)array[quotient]);
-                    Write((byte)(array[quotient] >> 8));
-                    break;
-                }
-            case 1:
-                {
-                    Write((byte)array[quotient]);
-                    break;
-                }
-        }
-
-        if (extraBits > 0)
-        {
-            // mask the final byte
-            Write((byte)((array[quotient] >> (remainder * 8)) & ((1 << (int)extraBits) - 1)));
-        }
+        Write(arrayBuffer.AsSpan(0, bytesLength));
+        ArrayPool<byte>.Shared.Return(arrayBuffer);
     }
 
     void Write(TextDefinition def)
