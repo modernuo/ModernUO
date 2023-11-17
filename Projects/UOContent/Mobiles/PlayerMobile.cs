@@ -3244,9 +3244,9 @@ namespace Server.Mobiles
             {
                 writer.Write(_acquiredRecipes.Count);
 
-                foreach (var kvp in _acquiredRecipes)
+                foreach (var recipeId in _acquiredRecipes)
                 {
-                    writer.Write(kvp);
+                    writer.Write(recipeId);
                 }
             }
 
