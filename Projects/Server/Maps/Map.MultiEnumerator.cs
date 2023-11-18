@@ -83,6 +83,18 @@ public partial class Map
     public MultiBoundsEnumerable<T> GetMultisInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : BaseMulti =>
         new(this, bounds, makeBoundsInclusive);
 
+    public ref struct MultiSectorEnumerable<T>(Map map, Point2D loc) where T : BaseMulti
+    {
+        public static MultiSectorEnumerable<T> Empty
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public MultiSectorEnumerator<T> GetEnumerator() => new(map, loc);
+    }
+
     public ref struct MultiSectorEnumerator<T> where T : BaseMulti
     {
         private Point2D _location;
@@ -126,18 +138,6 @@ public partial class Map
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _current;
         }
-    }
-
-    public ref struct MultiSectorEnumerable<T>(Map map, Point2D loc) where T : BaseMulti
-    {
-        public static MultiSectorEnumerable<T> Empty
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MultiSectorEnumerator<T> GetEnumerator() => new(map, loc);
     }
 
     public ref struct MultiBoundsEnumerable<T> where T : BaseMulti
