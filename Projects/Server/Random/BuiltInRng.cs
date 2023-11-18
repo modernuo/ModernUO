@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SecureRandom.cs                                                 *
+ * File: BuiltInRng.cs                                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,27 +14,34 @@
  *************************************************************************/
 
 using System;
-using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using Server.Random;
 
-namespace Server;
+namespace Server.Random;
 
-public class SecureRandom : BaseRandomSource
+public static class BuiltInRng
 {
-    private RandomNumberGenerator m_Random;
+    public static System.Random Generator { get; private set; } = new();
 
-    public RandomNumberGenerator Generator => m_Random ??= RandomNumberGenerator.Create();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override ulong NextULong()
-    {
-        Span<byte> buffer = stackalloc byte[sizeof(ulong)];
-        NextBytes(buffer);
-        return BinaryPrimitives.ReadUInt64BigEndian(buffer);
-    }
+    public static void Reset() => Generator = new System.Random();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
+    public static int Next() => Generator.Next();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Next(int maxValue) => Generator.Next(maxValue);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Next(int minValue, int count) => minValue + Generator.Next(count);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long Next(long maxValue) => Generator.NextInt64(maxValue);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long Next(long minValue, long count) => minValue + Generator.NextInt64(count);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double NextDouble() => Generator.NextDouble();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NextBytes(Span<byte> buffer) => Generator.NextBytes(buffer);
 }

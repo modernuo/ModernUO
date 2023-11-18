@@ -413,7 +413,7 @@ public static class World
         }
         else
         {
-            logger.Warning($"Attempted to call World.AddEntity with '{entity.GetType()}'. Must be a mobile or item.");
+            logger.Warning("Attempted to call World.AddEntity with '{Entity}'. Must be a mobile or item.", entity.GetType());
         }
     }
 
