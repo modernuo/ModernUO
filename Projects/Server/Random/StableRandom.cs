@@ -21,7 +21,7 @@ namespace Server.Random;
 
 public static class StableRandom
 {
-    // Returns the first long of a new Rng. Used for stable values give a specific set of inputs.
+    // Returns the first long of a new Rng. Used for stable values given a specific set of inputs.
     public static long First(ulong seed, long maxValue)
     {
         Span<ulong> state = stackalloc ulong[4];
