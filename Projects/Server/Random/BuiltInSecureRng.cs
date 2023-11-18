@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: IRandomSource.cs                                                *
+ * File: SecureRandom.cs                                                 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,27 +14,15 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
-namespace Server.Random;
+namespace Server;
 
-public interface IRandomSource
+public static class BuiltInSecureRng
 {
-    int Next();
-    int Next(int maxValue);
-    int Next(int minValue, int count);
-    uint Next(uint maxValue);
-    uint Next(uint minValue, uint count);
-    long Next(long maxValue);
-    long Next(long minValue, long count);
-    double NextDouble();
-    void NextBytes(Span<byte> buffer);
-    int NextInt();
-    uint NextUInt();
-    ulong NextULong();
-    bool NextBool();
-    byte NextByte();
-    float NextFloat();
-    float NextFloatNonZero();
-    double NextDoubleNonZero();
-    double NextDoubleHighRes();
+    public static RandomNumberGenerator Generator { get; } = RandomNumberGenerator.Create();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
 }
