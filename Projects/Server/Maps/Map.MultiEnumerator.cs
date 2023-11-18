@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Items;
@@ -26,22 +27,23 @@ public partial class Map
     public static ref readonly SectorMultiValueLinkList EmptyMultiLinkList => ref _emptyMultiLinkList;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiAtEnumerable<BaseMulti> GetMultisAt(Point3D p) => GetMultisAt<BaseMulti>(p);
+    public MultiSectorEnumerable<BaseMulti> GetMultisInSector(Point3D p) => GetMultisInSector<BaseMulti>(p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiAtEnumerable<T> GetMultisAt<T>(Point3D p) where T : BaseMulti => GetMultisAt<T>(new Point2D(p.X, p.Y));
+    public MultiSectorEnumerable<BaseMulti> GetMultisInSector(Point2D p) => GetMultisInSector<BaseMulti>(p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiAtEnumerable<BaseMulti> GetMultisAt(int x, int y) => GetMultisAt<BaseMulti>(new Point2D(x, y));
+    public MultiSectorEnumerable<BaseMulti> GetMultisInSector(int x, int y) => GetMultisInSector<BaseMulti>(x, y);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiAtEnumerable<T> GetMultisAt<T>(int x, int y) where T : BaseMulti => GetMultisAt<T>(new Point2D(x, y));
+    public MultiSectorEnumerable<T> GetMultisInSector<T>(Point3D p) where T : BaseMulti =>
+        new(this, new Point2D(p.X, p.Y));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiAtEnumerable<BaseMulti> GetMultisAt(Point2D p) => GetMultisAt<BaseMulti>(p);
+    public MultiSectorEnumerable<T> GetMultisInSector<T>(Point2D p) where T : BaseMulti => new(this, p);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiAtEnumerable<T> GetMultisAt<T>(Point2D p) where T : BaseMulti => new(this, p);
+    public MultiSectorEnumerable<T> GetMultisInSector<T>(int x, int y) where T : BaseMulti => new(this, new Point2D(x, y));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MultiBoundsEnumerable<BaseMulti> GetMultisInRange(Point3D p) => GetMultisInRange<BaseMulti>(p);
@@ -74,34 +76,14 @@ public partial class Map
         GetMultisInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiBoundsEnumerable<BaseMulti> GetMultisInBounds(Rectangle2D bounds) => GetMultisInBounds<BaseMulti>(bounds);
+    public MultiBoundsEnumerable<BaseMulti> GetMultisInBounds(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
+        GetMultisInBounds<BaseMulti>(bounds, makeBoundsInclusive);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MultiBoundsEnumerable<T> GetMultisInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : BaseMulti =>
         new(this, bounds, makeBoundsInclusive);
 
-    public ref struct MultiAtEnumerable<T> where T : BaseMulti
-    {
-        public static MultiAtEnumerable<T> Empty
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new();
-        }
-
-        private readonly Map _map;
-        private readonly Point2D _location;
-
-        public MultiAtEnumerable(Map map, Point2D loc)
-        {
-            _map = map;
-            _location = loc;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MultiAtEnumerator<T> GetEnumerator() => new(_map, _location);
-    }
-
-    public ref struct MultiAtEnumerator<T> where T : BaseMulti
+    public ref struct MultiSectorEnumerator<T> where T : BaseMulti
     {
         private Point2D _location;
         private readonly Span<BaseMulti> _list;
@@ -109,12 +91,13 @@ public partial class Map
         private T _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MultiAtEnumerator(Map map, Point2D loc)
+        public MultiSectorEnumerator(Map map, Point2D loc)
         {
             _location = loc;
+
             _list = map == null
                 ? Span<BaseMulti>.Empty
-                : CollectionsMarshal.AsSpan(map.GetRealSector(loc.m_X, loc.m_Y).Multis);
+                : CollectionsMarshal.AsSpan(map.GetSector(loc.m_X, loc.m_Y).Multis);
 
             _index = 0;
             _current = null;
@@ -128,7 +111,7 @@ public partial class Map
             while ((uint)_index < (uint)_list.Length)
             {
                 var current = _list[_index++];
-                if (current is T { Deleted: false } o && o.X == loc.m_X && o.Y == loc.m_Y)
+                if (current is T { Deleted: false } o)
                 {
                     _current = o;
                     return true;
@@ -143,6 +126,18 @@ public partial class Map
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _current;
         }
+    }
+
+    public ref struct MultiSectorEnumerable<T>(Map map, Point2D loc) where T : BaseMulti
+    {
+        public static MultiSectorEnumerable<T> Empty
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public MultiSectorEnumerator<T> GetEnumerator() => new(map, loc);
     }
 
     public ref struct MultiBoundsEnumerable<T> where T : BaseMulti
@@ -165,10 +160,10 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MultiEnumerator<T> GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
+        public MultiBoundsEnumerator<T> GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
     }
 
-    public ref struct MultiEnumerator<T> where T : BaseMulti
+    public ref struct MultiBoundsEnumerator<T> where T : BaseMulti
     {
         private readonly Map _map;
         private readonly int _sectorStartX;
@@ -183,8 +178,10 @@ public partial class Map
         private T _current;
         private int _index;
 
+        private HashSet<Serial> _dupes;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MultiEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
+        public MultiBoundsEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
         {
             _map = map;
             _bounds = bounds;
@@ -213,8 +210,11 @@ public partial class Map
             while ((uint)_index < (uint)_list.Length)
             {
                 var current = _list[_index++];
-                if (current is T { Deleted: false } o && bounds.Contains(o.Location))
+                _dupes ??= new HashSet<Serial>();
+
+                if (current is T { Deleted: false } o && bounds.Contains(o.Location) && !_dupes.Contains(o.Serial))
                 {
+                    _dupes.Add(o.Serial);
                     _current = o;
                     return true;
                 }
