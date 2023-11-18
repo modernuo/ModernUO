@@ -20,16 +20,6 @@ using System.Runtime.CompilerServices;
 
 namespace Server;
 
-/// <summary>
-/// Represents supported non-cryptographic fast hash algorithms.
-/// </summary>
-public enum FastHashAlgorithm
-{
-    None, // Used for collisions where full-data is serialized instead
-    XxHash3_64, // xxHash3 64bit
-    XxHash_32, // xxHash 32bit
-}
-
 public static class HashUtility
 {
     // *************** DO NOT CHANGE THIS NUMBER ****************
@@ -44,15 +34,7 @@ public static class HashUtility
     [ThreadStatic]
     private static XxHash32 _xxHash32;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong ComputeHash64(string? data, FastHashAlgorithm algorithm = FastHashAlgorithm.XxHash3_64) =>
-        algorithm switch
-        {
-            FastHashAlgorithm.XxHash3_64 => ComputeXXHash3_64(data),
-            _                            => throw new NotSupportedException($"Hash {algorithm} is not supported.")
-        };
-
-    public static unsafe ulong ComputeXXHash3_64(string? str)
+    public static unsafe ulong ComputeHash64(string? str)
     {
         if (str == null)
         {
@@ -72,7 +54,7 @@ public static class HashUtility
         return result;
     }
 
-    public static unsafe uint ComputeXXHash_32(string? str)
+    public static unsafe uint ComputeHash32(string? str)
     {
         if (str == null)
         {
@@ -91,14 +73,6 @@ public static class HashUtility
 
         return result;
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint ComputeHash32(string? data, FastHashAlgorithm algorithm = FastHashAlgorithm.XxHash_32) =>
-        algorithm switch
-        {
-            FastHashAlgorithm.XxHash_32 => ComputeXXHash_32(data),
-            _                            => throw new NotSupportedException($"Hash {algorithm} is not supported.")
-        };
 
     public static unsafe int GetNetFrameworkHashCode(this string? str)
     {
