@@ -135,12 +135,12 @@ namespace Server.Engines.Harvest
 
             if (RandomizeVeins)
             {
-                return GetVeinFrom(Utility.Random(1000u));
+                return GetVeinFrom((uint)Utility.Random(1000));
             }
 
             // TODO: Introduce pulling primes from a config and writing them if they don't exist to the config
-            var random = new Xoshiro256PlusPlus((ulong)(x * 17 + y * 11 + map.MapID * 3));
-            return GetVeinFrom(random.Next(VeinWeights));
+            var seed = (ulong)(x * 17 + y * 11 + map.MapID * 3);
+            return GetVeinFrom((uint)StableRandom.First(seed, VeinWeights));
         }
 
         public HarvestVein GetVeinFrom(uint randomValue)

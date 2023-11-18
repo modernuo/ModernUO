@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers.Binary;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -219,21 +220,6 @@ public class BufferReader : IGenericReader
         _buffer.AsSpan(_position, length).CopyTo(buffer);
         _position += length;
         return length;
-    }
-
-    public BitArray ReadBitArray()
-    {
-        var bitLength = ((IGenericReader)this).ReadEncodedInt();
-        var length = BitArray.GetByteArrayLengthFromBitLength(bitLength);
-
-        if (length > _buffer.Length - _position)
-        {
-            throw new OutOfMemoryException();
-        }
-
-        var bitArray = new BitArray(_buffer.AsSpan(_position, length), bitLength);
-        _position += length;
-        return bitArray;
     }
 
     public virtual long Seek(long offset, SeekOrigin origin)

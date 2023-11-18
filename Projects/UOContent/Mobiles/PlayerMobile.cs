@@ -144,7 +144,7 @@ namespace Server.Mobiles
             new(268, 624, 15)
         };
 
-        private Dictionary<int, bool> m_AcquiredRecipes;
+        private HashSet<int> _acquiredRecipes;
 
         private HashSet<Mobile> _allFollowers;
         private int m_BeardModID = -1, m_BeardModHue;
@@ -719,7 +719,7 @@ namespace Server.Mobiles
                 : DateTime.MinValue;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int KnownRecipes => m_AcquiredRecipes?.Count ?? 0;
+        public int KnownRecipes => _acquiredRecipes?.Count ?? 0;
 
         [CommandProperty(AccessLevel.Counselor, canModify: true)]
         public VirtueContext Virtues => VirtueSystem.GetOrCreateVirtues(this);
@@ -2852,6 +2852,7 @@ namespace Server.Mobiles
 
             switch (version)
             {
+                case 34: // Acquired Recipes is now a Set
                 case 33: // Removes champion title
                 case 32: // Removes virtue properties
                 case 31: // Removed Short/Long Term Elapse
@@ -2902,14 +2903,14 @@ namespace Server.Mobiles
 
                         if (recipeCount > 0)
                         {
-                            m_AcquiredRecipes = new Dictionary<int, bool>();
+                            _acquiredRecipes = new HashSet<int>();
 
                             for (var i = 0; i < recipeCount; i++)
                             {
                                 var r = reader.ReadInt();
-                                if (reader.ReadBool()) // Don't add in recipes which we haven't gotten or have been removed
+                                if (version > 33 || reader.ReadBool()) // Don't add in recipes which we haven't gotten or have been removed
                                 {
-                                    m_AcquiredRecipes.Add(r, true);
+                                    _acquiredRecipes.Add(r);
                                 }
                             }
                         }
@@ -3195,7 +3196,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(33); // version
+            writer.Write(34); // version
 
             if (Stabled == null)
             {
@@ -3235,18 +3236,17 @@ namespace Server.Mobiles
                 writer.Write(AutoStabled);
             }
 
-            if (m_AcquiredRecipes == null)
+            if (_acquiredRecipes == null)
             {
                 writer.Write(0);
             }
             else
             {
-                writer.Write(m_AcquiredRecipes.Count);
+                writer.Write(_acquiredRecipes.Count);
 
-                foreach (var kvp in m_AcquiredRecipes)
+                foreach (var recipeId in _acquiredRecipes)
                 {
-                    writer.Write(kvp.Key);
-                    writer.Write(kvp.Value);
+                    writer.Write(recipeId);
                 }
             }
 
@@ -4458,12 +4458,11 @@ namespace Server.Mobiles
             InvalidateProperties();
         }
 
-        public virtual bool HasRecipe(Recipe r) => r != null && HasRecipe(r.ID);
+        public bool HasRecipe(Recipe r) => r != null && HasRecipe(r.ID);
 
-        public virtual bool HasRecipe(int recipeID) =>
-            m_AcquiredRecipes != null && m_AcquiredRecipes.TryGetValue(recipeID, out var value) && value;
+        public bool HasRecipe(int recipeID) => _acquiredRecipes?.Contains(recipeID) == true;
 
-        public virtual void AcquireRecipe(Recipe r)
+        public void AcquireRecipe(Recipe r)
         {
             if (r != null)
             {
@@ -4471,16 +4470,15 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual void AcquireRecipe(int recipeID)
+        public void AcquireRecipe(int recipeID)
         {
-            m_AcquiredRecipes ??= new Dictionary<int, bool>();
-            m_AcquiredRecipes[recipeID] = true;
+            _acquiredRecipes ??= new HashSet<int>();
+            _acquiredRecipes.Add(recipeID);
         }
 
-        public virtual void ResetRecipes()
-        {
-            m_AcquiredRecipes = null;
-        }
+        public void RemoveRecipe(int recipeID) => _acquiredRecipes?.Remove(recipeID);
+
+        public void ResetRecipes() => _acquiredRecipes = null;
 
         public void ResendBuffs()
         {

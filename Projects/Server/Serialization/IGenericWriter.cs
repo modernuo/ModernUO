@@ -14,9 +14,13 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
+using System.Collections;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
-using Server.Collections;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Server;
 
@@ -162,7 +166,17 @@ public interface IGenericWriter
         Write(stack);
     }
 
-    void Write(BitArray bitArray);
+    public void Write(BitArray bitArray)
+    {
+        var bytesLength = (bitArray.Length - 1 + (1 << 3)) >>> 3;
+        var arrayBuffer = ArrayPool<byte>.Shared.Rent(bytesLength);
+
+        WriteEncodedInt(bytesLength);
+        bitArray.CopyTo(arrayBuffer, 0);
+
+        Write(arrayBuffer.AsSpan(0, bytesLength));
+        ArrayPool<byte>.Shared.Return(arrayBuffer);
+    }
 
     void Write(TextDefinition def)
     {

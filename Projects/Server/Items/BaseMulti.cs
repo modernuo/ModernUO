@@ -116,6 +116,47 @@ public abstract partial class BaseMulti : Item
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Contains(Item item) => item.Map == Map && Contains(item.X, item.Y);
 
+    public bool Intersects(Rectangle2D bounds)
+    {
+        if (bounds.X > Location.X + Components.Max.X || bounds.X + bounds.Width < Location.X + Components.Min.X)
+        {
+            return false;
+        }
+
+        if (bounds.Y > Location.Y + Components.Max.Y || bounds.Y + bounds.Height < Location.Y + Components.Min.Y)
+        {
+            return false;
+        }
+
+        int minX = Math.Max(bounds.X, Location.X + Components.Min.X);
+        int maxX = Math.Min(bounds.X + bounds.Width, Location.X + Components.Max.X);
+        int minY = Math.Max(bounds.Y, Location.Y + Components.Min.Y);
+        int maxY = Math.Min(bounds.Y + bounds.Height, Location.Y + Components.Max.Y);
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int y = minY; y <= maxY; y++)
+            {
+                int offsetX = x - Location.X - Components.Min.X;
+                int offsetY = y - Location.Y - Components.Min.Y;
+
+                if (offsetX < 0 || offsetY < 0 || offsetX >= Components.Width || offsetY >= Components.Height)
+                {
+                    continue;
+                }
+
+                // TODO: Use a ref struct
+                var tiles = Components.Tiles[offsetX][offsetY];
+                if (tiles.Length > 0)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public override void Serialize(IGenericWriter writer)
     {
         base.Serialize(writer);

@@ -19,7 +19,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Buffers;
-using Server.Collections;
 using Server.Logging;
 using Server.Text;
 
@@ -165,15 +164,6 @@ public class BinaryFileReader : IGenericReader, IDisposable
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Read(Span<byte> buffer) => _reader.Read(buffer);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BitArray ReadBitArray()
-    {
-        var length = ((IGenericReader)this).ReadEncodedInt();
-
-        // BinaryReader doesn't expose a Span slice of the buffer, so we use a custom ctor
-        return new BitArray(_reader, length);
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long Seek(long offset, SeekOrigin origin) => _reader.BaseStream.Seek(offset, origin);
