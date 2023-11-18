@@ -1236,13 +1236,13 @@ public static class Utility
     public static int Random(int from, int count) => BuiltInRng.Next(from, count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Random(int count) => BuiltInRng.Next(count);
+    public static int Random(int count) => count < 0 ? -BuiltInRng.Next(-count) : BuiltInRng.Next(count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static long Random(long from, long count) => BuiltInRng.Next(from, count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long Random(long count) => BuiltInRng.Next(count);
+    public static long Random(long count) => count < 0 ? -BuiltInRng.Next(-count) : BuiltInRng.Next(count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void RandomBytes(Span<byte> buffer) => BuiltInRng.NextBytes(buffer);
