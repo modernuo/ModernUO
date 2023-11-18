@@ -374,7 +374,7 @@ namespace Server.Multis
             {
                 var yardPoint = yard[i];
 
-                foreach (var house in map.GetMultisAt<BaseHouse>(yardPoint))
+                foreach (var house in map.GetMultisInSector<BaseHouse>(yardPoint))
                 {
                     if (house.Contains(yard[i]))
                     {

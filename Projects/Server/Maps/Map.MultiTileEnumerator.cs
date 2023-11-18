@@ -50,14 +50,14 @@ public partial class Map
     public ref struct MultiTilesAtEnumerator
     {
         private Point2D _location;
-        private MultiAtEnumerator<BaseMulti> _multis;
+        private MultiSectorEnumerator<BaseMulti> _multis;
         private BaseMulti _currentMulti;
         private StaticTile[] _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MultiTilesAtEnumerator(Map map, Point2D loc)
         {
-            _multis = (map == null ? MultiAtEnumerable<BaseMulti>.Empty : map.GetMultisAt(loc)).GetEnumerator();
+            _multis = (map == null ? MultiSectorEnumerable<BaseMulti>.Empty : map.GetMultisInSector(loc)).GetEnumerator();
 
             _current = null;
             _location = loc;

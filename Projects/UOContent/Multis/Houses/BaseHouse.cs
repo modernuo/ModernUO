@@ -1401,7 +1401,7 @@ namespace Server.Multis
                 return null;
             }
 
-            foreach (var house in map.GetMultisAt<BaseHouse>(loc))
+            foreach (var house in map.GetMultisInSector<BaseHouse>(loc))
             {
                 if (house.IsInside(loc, height))
                 {
@@ -1482,8 +1482,8 @@ namespace Server.Multis
 
             var mcl = Components;
 
-            var x = p.X - (X + mcl.Min.X);
-            var y = p.Y - (Y + mcl.Min.Y);
+            var x = p.X - X - mcl.Min.X;
+            var y = p.Y - Y - mcl.Min.Y;
 
             if (x < 0 || x >= mcl.Width || y < 0 || y >= mcl.Height)
             {
@@ -1495,6 +1495,7 @@ namespace Server.Multis
                 return true;
             }
 
+            // TODO: Use ref struct
             var tiles = mcl.Tiles[x][y];
 
             for (var j = 0; j < tiles.Length; ++j)
