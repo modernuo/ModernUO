@@ -14,9 +14,9 @@
  *************************************************************************/
 
 using System;
+using System.IO.Hashing;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Standart.Hash.xxHash;
 
 namespace Server;
 
@@ -38,6 +38,12 @@ public static class HashUtility
     private const ulong xxHash3Seed = 9609125370673258709ul; // Randomly generated 64-bit prime number
     private const uint xxHash1Seed = 665738807u; // Randomly generated 32-bit prime number
 
+    [ThreadStatic]
+    private static XxHash3 _xxHash3;
+
+    [ThreadStatic]
+    private static XxHash32 _xxHash32;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ComputeHash64(string? data, FastHashAlgorithm algorithm = FastHashAlgorithm.XxHash3_64) =>
         algorithm switch
@@ -46,8 +52,45 @@ public static class HashUtility
             _                            => throw new NotSupportedException($"Hash {algorithm} is not supported.")
         };
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong ComputeXXHash3_64(string? data) => data == null ? 0 : xxHash3.ComputeHash(data, xxHash3Seed);
+    public static unsafe ulong ComputeXXHash3_64(string? str)
+    {
+        if (str == null)
+        {
+            return 0;
+        }
+
+        var hasher = _xxHash3 ??= new XxHash3(unchecked((long)xxHash3Seed));
+
+        fixed (char* src = &str.GetPinnableReference())
+        {
+            hasher.Append(new ReadOnlySpan<byte>(src, str.Length * 2));
+        }
+
+        var result = hasher.GetCurrentHashAsUInt64();
+        hasher.Reset();
+
+        return result;
+    }
+
+    public static unsafe uint ComputeXXHash_32(string? str)
+    {
+        if (str == null)
+        {
+            return 0;
+        }
+
+        var hasher = _xxHash32 ??= new XxHash32(unchecked((int)xxHash1Seed));
+
+        fixed (char* src = &str.GetPinnableReference())
+        {
+            hasher.Append(new ReadOnlySpan<byte>(src, str.Length * 2));
+        }
+
+        var result = hasher.GetCurrentHashAsUInt32();
+        hasher.Reset();
+
+        return result;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint ComputeHash32(string? data, FastHashAlgorithm algorithm = FastHashAlgorithm.XxHash_32) =>
@@ -56,9 +99,6 @@ public static class HashUtility
             FastHashAlgorithm.XxHash_32 => ComputeXXHash_32(data),
             _                            => throw new NotSupportedException($"Hash {algorithm} is not supported.")
         };
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint ComputeXXHash_32(string? data) => data == null ? 0 : xxHash32.ComputeHash(data, xxHash1Seed);
 
     public static unsafe int GetNetFrameworkHashCode(this string? str)
     {
