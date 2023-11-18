@@ -26,10 +26,11 @@ public static class StableRandom
     {
         Span<ulong> state = stackalloc ulong[4];
 
-        state[0] = NextSplitMix(seed);
-        state[1] = NextSplitMix(state[0]);
-        state[2] = NextSplitMix(state[1]);
-        state[3] = NextSplitMix(state[3]);
+        var x = seed;
+        state[0] = NextSplitMix(ref x);
+        state[1] = NextSplitMix(ref x);
+        state[2] = NextSplitMix(ref x);
+        state[3] = NextSplitMix(ref x);
 
         return (long)NextUInt64(state, (ulong)maxValue);
     }
@@ -70,7 +71,7 @@ public static class StableRandom
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ulong NextSplitMix(ulong x)
+    private static ulong NextSplitMix(ref ulong x)
     {
         var z = x += 0x9e3779b97f4a7c15;
         z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
