@@ -9,7 +9,7 @@ public class TryParseTests
     [Theory]
     [InlineData("True", null, true)]
     [InlineData("False", null, false)]
-    [InlineData("Alakazam", "Bool parse failed", true)]
+    [InlineData("Alakazam", "Not a valid boolean string.", true)]
     public void TestTryParseBool(string value, string returned, bool parsedAs)
     {
         string actualReturned = Server.Types.TryParse(typeof(bool), value, out object constructed);
