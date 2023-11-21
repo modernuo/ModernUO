@@ -16,6 +16,8 @@ public class TryParseTests
         Assert.Equal(returned, actualReturned);
 
         if (returned == null)
+        {
             Assert.Equal(parsedAs, constructed);
+        }
     }
 }
