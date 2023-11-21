@@ -1001,6 +1001,8 @@ public static class Utility
 
         var length = source.Length;
         Span<bool> list = stackalloc bool[length];
+        list.Clear();
+
         var sampleList = new T[count];
 
         var i = 0;
@@ -1025,6 +1027,8 @@ public static class Utility
 
         var length = source.Count;
         Span<bool> list = stackalloc bool[length];
+        list.Clear();
+
         var sampleList = new List<T>(count);
 
         var i = 0;
@@ -1049,6 +1053,7 @@ public static class Utility
 
         var length = source.Length;
         Span<bool> list = stackalloc bool[length];
+        list.Clear();
 
         var i = 0;
         do

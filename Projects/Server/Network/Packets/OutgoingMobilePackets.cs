@@ -604,9 +604,7 @@ public static class OutgoingMobilePackets
         }
 
         Span<bool> layers = stackalloc bool[256];
-#if NO_LOCAL_INIT
-            layers.Clear();
-#endif
+        layers.Clear();
 
         var eq = beheld.Items;
         var maxLength = 23 + (eq.Count + 2) * 9;
