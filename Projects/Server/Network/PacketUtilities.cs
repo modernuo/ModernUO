@@ -35,24 +35,7 @@ public static class PacketUtilities
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<byte> InitializePacket(this Span<byte> buffer)
     {
-#if NO_LOCAL_INIT
-            if (buffer != null)
-            {
-                buffer[0] = 0;
-            }
-#endif
-        return buffer;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Span<byte> InitializePackets(this Span<byte> buffer, int width)
-    {
-#if NO_LOCAL_INIT
-            for (var i = 0; i < buffer.Length; i += width)
-            {
-                buffer[i] = 0;
-            }
-#endif
+        buffer[0] = 0;
         return buffer;
     }
 }
