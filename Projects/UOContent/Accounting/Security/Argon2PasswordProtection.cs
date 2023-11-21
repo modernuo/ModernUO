@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System.Security.Cryptography;
-using Server.Random;
 
 namespace Server.Accounting.Security
 {

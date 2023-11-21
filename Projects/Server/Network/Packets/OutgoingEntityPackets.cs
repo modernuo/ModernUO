@@ -15,10 +15,8 @@
 
 using System;
 using System.Buffers;
-using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using Server.Items;
-using Server.Text;
 
 namespace Server.Network;
 
