@@ -27,7 +27,6 @@
         <DefineConstants Condition="'$(IsOSX)'=='true' OR '$(IsLinux)'=='true'">UNIX</DefineConstants>
         <DefineConstants Condition="'$(IsX64)'=='true'">CPU_X64</DefineConstants>
         <DefineConstants Condition="'$(IsArm64)'=='true'">CPU_ARM64</DefineConstants>
-        <DefineConstants Condition="'$(SkipLocalsInitAttribute)'=='true'">NO_LOCAL_INIT</DefineConstants>
         <DefineConstants>MUO</DefineConstants>
         <GitVersionBaseDirectory>$(SolutionDir)</GitVersionBaseDirectory>
         <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
