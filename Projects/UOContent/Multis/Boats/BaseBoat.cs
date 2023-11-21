@@ -243,7 +243,7 @@ namespace Server.Multis
 
         public static BaseBoat FindBoatAt(Point3D loc, Map map)
         {
-            foreach (var boat in map.GetMultisAt<BaseBoat>(loc))
+            foreach (var boat in map.GetMultisInSector<BaseBoat>(loc))
             {
                 if (boat.Contains(loc.X, loc.Y))
                 {

@@ -19,8 +19,8 @@ namespace Server.Mobiles
             Skills.MagicResist.Base = Utility.Random(15, 6);
             Skills.Poisoning.Base = Utility.Random(31, 20);
 
-            Fame = Utility.Random(0, 1249);
-            Karma = Utility.Random(0, -624);
+            Fame = Utility.Random(1249);
+            Karma = -Utility.Random(624);
         }
 
         public override string CorpseName => "a jwilson corpse";

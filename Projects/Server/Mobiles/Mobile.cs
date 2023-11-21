@@ -6943,6 +6943,16 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 item.SendInfoTo(ns);
             }
         }
+
+        var range = new Rectangle2D(m_Location.X - Core.GlobalMaxUpdateRange,
+            m_Location.Y - Core.GlobalMaxUpdateRange,
+            Core.GlobalMaxUpdateRange * 2 + 1,
+            Core.GlobalMaxUpdateRange * 2 + 1);
+
+        foreach (var multi in m_Map.GetMultisInBounds(range))
+        {
+            multi.SendInfoTo(ns);
+        }
     }
 
     public void UpdateRegion()
