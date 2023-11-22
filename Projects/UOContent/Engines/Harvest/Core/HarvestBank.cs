@@ -60,7 +60,7 @@ namespace Server.Engines.Harvest
 
             if (Definition.RandomizeVeins)
             {
-                m_DefaultVein = Definition.GetVeinFrom(Utility.Random(Definition.VeinWeights));
+                m_DefaultVein = Definition.GetVeinFrom((uint)Utility.Random(Definition.VeinWeights));
             }
 
             m_Vein = m_DefaultVein;

@@ -14,9 +14,9 @@
  *************************************************************************/
 
 using System;
+using System.Collections;
 using System.IO;
 using System.Net;
-using Server.Collections;
 
 namespace Server;
 
@@ -120,7 +120,17 @@ public interface IGenericReader
         return new Guid(bytes);
     }
 
-    BitArray ReadBitArray();
+    public BitArray ReadBitArray()
+    {
+        var byteArrayLength = ReadEncodedInt();
+
+        // We need an exact array size since the ctor doesn't allow for offset/length, not much we can do at this point.
+        var byteArray = new byte[byteArrayLength];
+
+        Read(byteArray);
+
+        return new BitArray(byteArray);
+    }
 
     TextDefinition ReadTextDefinition()
     {

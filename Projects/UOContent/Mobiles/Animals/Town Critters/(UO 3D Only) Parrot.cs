@@ -17,8 +17,8 @@ namespace Server.Mobiles
             Skills.Tactics.Base = 6;
             Skills.MagicResist.Base = 5;
 
-            Fame = Utility.Random(0, 1249);
-            Karma = Utility.Random(0, -624);
+            Fame = Utility.Random(1249);
+            Karma = -Utility.Random(624);
 
             Tamable = true;
             ControlSlots = 1;

@@ -15,6 +15,6 @@ public class ResetRng
     )]
     private static void ResetRng_OnCommand(CommandEventArgs e)
     {
-        RandomSources.SetRng(new Xoshiro256PlusPlus());
+        BuiltInRng.Reset();
     }
 }

@@ -2721,9 +2721,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Span<byte> facialHairPacket = stackalloc byte[facialHairLength].InitializePacket();
 
         const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
-        const int width = OutgoingMobilePackets.MobileMovingPacketLength;
 
-        var mobileMovingCache = stackalloc byte[cacheLength].InitializePackets(width);
+        Span<byte> mobileMovingCache = stackalloc byte[cacheLength];
+        mobileMovingCache.Clear();
 
         var ourState = m_NetState;
 
@@ -4369,9 +4369,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             if (moveClientQueue.Count > 0)
             {
                 const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
-                const int width = OutgoingMobilePackets.MobileMovingPacketLength;
 
-                var mobileMovingCache = stackalloc byte[cacheLength].InitializePackets(width);
+                Span<byte> mobileMovingCache = stackalloc byte[cacheLength];
+                mobileMovingCache.Clear();
 
                 while (moveClientQueue.Count > 0)
                 {
@@ -6923,8 +6923,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                 if (ns.StygianAbyss)
                 {
-                    ns.SendMobileHealthbar(m, Healthbar.Poison);
-                    ns.SendMobileHealthbar(m, Healthbar.Yellow);
+                    if (m.Blessed || m.YellowHealthbar)
+                    {
+                        ns.SendMobileHealthbar(m, Healthbar.Yellow);
+                    }
+                    else if (m.Poisoned)
+                    {
+                        ns.SendMobileHealthbar(m, Healthbar.Poison);
+                    }
                 }
 
                 if (m.IsDeadBondedPet)
@@ -6942,6 +6948,16 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 item.SendInfoTo(ns);
             }
+        }
+
+        var range = new Rectangle2D(m_Location.X - Core.GlobalMaxUpdateRange,
+            m_Location.Y - Core.GlobalMaxUpdateRange,
+            Core.GlobalMaxUpdateRange * 2 + 1,
+            Core.GlobalMaxUpdateRange * 2 + 1);
+
+        foreach (var multi in m_Map.GetMultisInBounds(range))
+        {
+            multi.SendInfoTo(ns);
         }
     }
 

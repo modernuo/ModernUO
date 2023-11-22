@@ -24,9 +24,11 @@ public class WorldLocationConverter : JsonConverter<WorldLocation>
     private static Point3DConverter _point3DConverter;
     private static MapConverter _mapConverter;
 
-    private WorldLocation DeserializeArray(ref Utf8JsonReader reader)
+    private static WorldLocation DeserializeArray(ref Utf8JsonReader reader)
     {
         Span<int> data = stackalloc int[3];
+        data.Clear();
+
         var count = 0;
         var hasMap = false;
         Map map = null;
@@ -77,9 +79,11 @@ public class WorldLocationConverter : JsonConverter<WorldLocation>
         return new WorldLocation(data[0], data[1], data[2], map);
     }
 
-    private WorldLocation DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
+    private static WorldLocation DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
     {
         Span<int> data = stackalloc int[3];
+        data.Clear();
+
         var hasLoc = false;
         var hasXYZ = false;
         var hasMap = false;

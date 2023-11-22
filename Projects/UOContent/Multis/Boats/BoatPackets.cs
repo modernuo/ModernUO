@@ -106,8 +106,6 @@ public static class BoatPackets
 
         using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
 
-        Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
-
         foreach (var entity in boat.GetMovingEntities(true))
         {
             if (!beholder.CanSee(entity))
@@ -115,7 +113,7 @@ public static class BoatPackets
                 continue;
             }
 
-            buffer.InitializePacket();
+            Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength).InitializePacket();
             var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
             builder.Advance(bytesWritten);
         }

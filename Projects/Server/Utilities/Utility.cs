@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 using Server.Buffers;
@@ -968,44 +969,24 @@ public static class Utility
 
         for (var i = 0; i < amount; ++i)
         {
-            total += RandomSources.Source.Next(1, sides);
+            total += BuiltInRng.Next(1, sides);
         }
 
         return total + bonus;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Shuffle<T>(this IList<T> list)
-    {
-        var count = list.Count;
-        for (var i = 0; i < count; i++)
-        {
-            var r = RandomMinMax(i, count - 1);
-            (list[r], list[i]) = (list[i], list[r]);
-        }
-    }
+    public static void Shuffle<T>(this T[] array) => BuiltInRng.Generator.Shuffle(array);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Shuffle<T>(this Span<T> list)
-    {
-        var count = list.Length;
-        for (var i = 0; i < count; i++)
-        {
-            var r = RandomMinMax(i, count - 1);
-            (list[r], list[i]) = (list[i], list[r]);
-        }
-    }
+    public static void Shuffle<T>(this List<T> list) => BuiltInRng.Generator.Shuffle(CollectionsMarshal.AsSpan(list));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Shuffle<T>(this PooledRefList<T> list)
-    {
-        var count = list.Count;
-        for (var i = 0; i < count; i++)
-        {
-            var r = RandomMinMax(i, count - 1);
-            (list[r], list[i]) = (list[i], list[r]);
-        }
-    }
+    public static void Shuffle<T>(this Span<T> span) => BuiltInRng.Generator.Shuffle(span);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Shuffle<T>(this PooledRefList<T> list) =>
+        BuiltInRng.Generator.Shuffle(list._items.AsSpan(0, list.Count));
 
     /**
      * Gets a random sample from the source list.
@@ -1020,6 +1001,8 @@ public static class Utility
 
         var length = source.Length;
         Span<bool> list = stackalloc bool[length];
+        list.Clear();
+
         var sampleList = new T[count];
 
         var i = 0;
@@ -1044,6 +1027,8 @@ public static class Utility
 
         var length = source.Count;
         Span<bool> list = stackalloc bool[length];
+        list.Clear();
+
         var sampleList = new List<T>(count);
 
         var i = 0;
@@ -1068,6 +1053,7 @@ public static class Utility
 
         var length = source.Length;
         Span<bool> list = stackalloc bool[length];
+        list.Clear();
 
         var i = 0;
         do
@@ -1201,7 +1187,7 @@ public static class Utility
         list.Count == 0 ? valueIfZero : list[Random(list.Count)];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool RandomBool() => RandomSources.Source.NextBool();
+    public static bool RandomBool() => BuiltInRng.Next(2) == 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TimeSpan RandomMinMax(TimeSpan min, TimeSpan max) => new(RandomMinMax(min.Ticks, max.Ticks));
@@ -1218,22 +1204,7 @@ public static class Utility
             return min;
         }
 
-        return min + RandomSources.Source.NextDouble() * (max - min);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint RandomMinMax(uint min, uint max)
-    {
-        if (min > max)
-        {
-            (min, max) = (max, min);
-        }
-        else if (min == max)
-        {
-            return min;
-        }
-
-        return min + RandomSources.Source.Next(max - min + 1);
+        return min + BuiltInRng.NextDouble() * (max - min);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1248,7 +1219,7 @@ public static class Utility
             return min;
         }
 
-        return min + (int)RandomSources.Source.Next((uint)(max - min + 1));
+        return min + BuiltInRng.Next(max - min + 1);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1263,23 +1234,26 @@ public static class Utility
             return min;
         }
 
-        return min + RandomSources.Source.Next(max - min + 1);
+        return min + BuiltInRng.Next(max - min + 1);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Random(int from, int count) => RandomSources.Source.Next(from, count);
+    public static int Random(int from, int count) => BuiltInRng.Next(from, count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Random(int count) => RandomSources.Source.Next(count);
+    public static int Random(int count) => count < 0 ? -BuiltInRng.Next(-count) : BuiltInRng.Next(count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint Random(uint count) => RandomSources.Source.Next(count);
+    public static long Random(long from, long count) => BuiltInRng.Next(from, count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void RandomBytes(Span<byte> buffer) => RandomSources.Source.NextBytes(buffer);
+    public static long Random(long count) => count < 0 ? -BuiltInRng.Next(-count) : BuiltInRng.Next(count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static double RandomDouble() => RandomSources.Source.NextDouble();
+    public static void RandomBytes(Span<byte> buffer) => BuiltInRng.NextBytes(buffer);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double RandomDouble() => BuiltInRng.NextDouble();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Point3D RandomPointIn(Rectangle2D rect, Map map)

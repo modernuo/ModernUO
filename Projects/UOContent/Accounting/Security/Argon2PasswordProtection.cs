@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System.Security.Cryptography;
-using Server.Random;
 
 namespace Server.Accounting.Security
 {
@@ -22,9 +21,7 @@ namespace Server.Accounting.Security
     {
         public static IPasswordProtection Instance = new Argon2PasswordProtection();
 
-        private readonly Argon2PasswordHasher m_PasswordHasher = new(
-            rng: (RandomSources.SecureSource as SecureRandom)?.Generator
-        );
+        private readonly Argon2PasswordHasher m_PasswordHasher = new(rng: BuiltInSecureRng.Generator);
 
         public string EncryptPassword(string plainPassword) =>
             m_PasswordHasher.Hash(plainPassword);

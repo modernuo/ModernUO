@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using Server.Items;
 
 namespace Server.Network;
@@ -25,6 +26,7 @@ public static class OutgoingEntityPackets
     public const int RemoveEntityLength = 5;
     public const int MaxWorldEntityPacketLength = 26;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CreateOPLInfo(Span<byte> buffer, Item item) =>
         CreateOPLInfo(buffer, item.Serial, item.PropertyList.Hash);
 
@@ -41,6 +43,7 @@ public static class OutgoingEntityPackets
         writer.Write(hash);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SendOPLInfo(this NetState ns, IObjectPropertyListEntity obj) =>
         ns.SendOPLInfo(obj.Serial, obj.PropertyList.Hash);
 

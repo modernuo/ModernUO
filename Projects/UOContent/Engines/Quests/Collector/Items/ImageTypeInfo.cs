@@ -86,6 +86,8 @@ public class ImageTypeInfo
 
         var length = m_Table.Length;
         Span<bool> list = stackalloc bool[length];
+        list.Clear();
+
         var imageTypes = new ImageType[count];
 
         var i = 0;

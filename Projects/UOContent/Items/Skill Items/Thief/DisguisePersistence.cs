@@ -36,6 +36,7 @@ public class DisguisePersistence : GenericPersistence
         {
             writer.Write(m);
             writer.Write(timer.Next - Core.Now);
+            writer.Write(m.NameMod);
         }
     }
 
