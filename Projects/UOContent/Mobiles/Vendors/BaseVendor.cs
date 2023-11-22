@@ -181,7 +181,9 @@ namespace Server.Mobiles
                     if (gbi != null)
                     {
                         if (!ProcessSinglePurchase(buy, gbi, validBuy, ref controlSlots, ref fullPurchase, ref totalCost))
+                        {
                             return false;
+                        }
                     }
                     else if (item != BuyPack && item.IsChildOf(BuyPack))
                     {
@@ -197,14 +199,11 @@ namespace Server.Mobiles
 
                         foreach (var ssi in info)
                         {
-                            if (ssi.IsSellable(item))
+                            if (ssi.IsSellable(item) && ssi.IsResellable(item))
                             {
-                                if (ssi.IsResellable(item))
-                                {
-                                    totalCost += ssi.GetBuyPriceFor(item) * amount;
-                                    validBuy.Add(buy);
-                                    break;
-                                }
+                                totalCost += ssi.GetBuyPriceFor(item) * amount;
+                                validBuy.Add(buy);
+                                break;
                             }
                         }
                     }
@@ -220,10 +219,9 @@ namespace Server.Mobiles
 
                     var gbi = LookupDisplayObject(mob);
 
-                    if (gbi != null)
+                    if (gbi != null && !ProcessSinglePurchase(buy, gbi, validBuy, ref controlSlots, ref fullPurchase, ref totalCost))
                     {
-                        if (!ProcessSinglePurchase(buy, gbi, validBuy, ref controlSlots, ref fullPurchase, ref totalCost))
-                            return false;
+                        return false;
                     }
                 }
             } // foreach
@@ -313,28 +311,19 @@ namespace Server.Mobiles
 
                         foreach (var ssi in info)
                         {
-                            if (ssi.IsSellable(item))
+                            if (!ssi.IsSellable(item) || !ssi.IsResellable(item))
                             {
-                                if (ssi.IsResellable(item))
-                                {
-                                    Item buyItem;
-                                    if (amount >= item.Amount)
-                                    {
-                                        buyItem = item;
-                                    }
-                                    else
-                                    {
-                                        buyItem = LiftItemDupe(item, item.Amount - amount) ?? item;
-                                    }
-
-                                    if (cont?.TryDropItem(buyer, buyItem, false) != true)
-                                    {
-                                        buyItem.MoveToWorld(buyer.Location, buyer.Map);
-                                    }
-
-                                    break;
-                                }
+                                continue;
                             }
+
+                            var buyItem = amount >= item.Amount ? item : LiftItemDupe(item, item.Amount - amount) ?? item;
+
+                            if (cont?.TryDropItem(buyer, buyItem, false) != true)
+                            {
+                                buyItem.MoveToWorld(buyer.Location, buyer.Map);
+                            }
+
+                            break;
                         }
                     }
                 }
@@ -1174,7 +1163,7 @@ namespace Server.Mobiles
             return null;
         }
 
-        private bool ProcessSinglePurchase(
+        private static bool ProcessSinglePurchase(
             BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy,
             ref int controlSlots, ref bool fullPurchase, ref int totalCost
         )
@@ -1203,23 +1192,27 @@ namespace Server.Mobiles
                 return false;
             }
 
-            checked
+            long totalCostLong = (long)totalCost + bii.Price * amount;
+
+            if (totalCostLong > int.MaxValue)
             {
-                try
-                {
-                    totalCost += bii.Price * amount;
-                }
-                catch (OverflowException e)
-                {
-                    logger.Error($"BaseVendor int overflow for Name/cliloc: {bii.Name} ItemId: {bii.ItemID} totalCost: {totalCost} adding: {bii.Price} * {bii.Amount}");
-                    return false;
-                }
+                logger.Error(
+                    "BaseVendor int overflow for Name/cliloc: {BuyName} ItemId: {BuyItemId} totalCost: {TotalCost} adding: {BuyPrice} * {BuyAmount}",
+                    bii.Name,
+                    bii.ItemID,
+                    totalCostLong,
+                    bii.Price,
+                    bii.Amount
+                );
+                return false;
             }
             validBuy.Add(buy);
+            totalCost = (int)totalCostLong;
+
             return true;
         }
 
-        private void ProcessValidPurchase(int amount, IBuyItemInfo bii, Mobile buyer, Container cont)
+        private static void ProcessValidPurchase(int amount, IBuyItemInfo bii, Mobile buyer, Container cont)
         {
             if (amount > bii.Amount)
             {
