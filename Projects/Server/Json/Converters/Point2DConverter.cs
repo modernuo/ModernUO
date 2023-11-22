@@ -21,9 +21,10 @@ namespace Server.Json;
 
 public class Point2DConverter : JsonConverter<Point2D>
 {
-    private Point2D DeserializeArray(ref Utf8JsonReader reader)
+    private static Point2D DeserializeArray(ref Utf8JsonReader reader)
     {
         Span<int> data = stackalloc int[2];
+        data.Clear();
         var count = 0;
 
         while (true)
@@ -53,9 +54,10 @@ public class Point2DConverter : JsonConverter<Point2D>
         return new Point2D(data[0], data[1]);
     }
 
-    private Point2D DeserializeObj(ref Utf8JsonReader reader)
+    private static Point2D DeserializeObj(ref Utf8JsonReader reader)
     {
         Span<int> data = stackalloc int[2];
+        data.Clear();
 
         while (true)
         {

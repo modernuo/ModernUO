@@ -106,6 +106,8 @@ namespace Server.Multis
             using var planesWriter = new SpanWriter(planeLength * planeCount);
 
             Span<bool> planesUsed = stackalloc bool[9];
+            planesUsed.Clear();
+
             int index;
             var totalPlaneOffsets = 0;
             var totalPlanes = 0;

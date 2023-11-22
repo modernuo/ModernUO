@@ -82,27 +82,14 @@ public static class StringHelpers
             return "";
         }
 
-        Span<char> span = a.Length < 1024 ? stackalloc char[a.Length] : null;
-        char[] chrs;
-        if (span == null)
-        {
-            chrs = STArrayPool<char>.Shared.Rent(a.Length);
-            span = chrs.AsSpan();
-        }
-        else
-        {
-            chrs = null;
-        }
+        char[] chrs = STArrayPool<char>.Shared.Rent(a.Length);
+        var span = chrs.AsSpan(0, a.Length);
 
         a.Remove(b, comparison, span, out var size);
 
         var str = span[..size].ToString();
 
-        if (chrs != null)
-        {
-            STArrayPool<char>.Shared.Return(chrs);
-        }
-
+        STArrayPool<char>.Shared.Return(chrs);
         return str;
     }
 
@@ -114,17 +101,8 @@ public static class StringHelpers
             return value;
         }
 
-        Span<char> span = value.Length < 1024 ? stackalloc char[value.Length] : null;
-        char[] chrs;
-        if (span == null)
-        {
-            chrs = STArrayPool<char>.Shared.Rent(value.Length);
-            span = chrs.AsSpan();
-        }
-        else
-        {
-            chrs = null;
-        }
+        char[] chrs = STArrayPool<char>.Shared.Rent(value.Length);
+        var span = chrs.AsSpan(0, value.Length);
 
         var sliced = value.AsSpan();
         // Copy over the previous span
@@ -161,11 +139,7 @@ public static class StringHelpers
 
         var str = span.ToString();
 
-        if (chrs != null)
-        {
-            STArrayPool<char>.Shared.Return(chrs);
-        }
-
+        STArrayPool<char>.Shared.Return(chrs);
         return str;
     }
 

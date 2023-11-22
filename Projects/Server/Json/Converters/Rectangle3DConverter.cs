@@ -21,9 +21,11 @@ namespace Server.Json;
 
 public class Rectangle3DConverter : JsonConverter<Rectangle3D>
 {
-    private Rectangle3D DeserializeArray(ref Utf8JsonReader reader)
+    private static Rectangle3D DeserializeArray(ref Utf8JsonReader reader)
     {
         Span<int> data = stackalloc int[6];
+        data.Clear();
+
         var count = 0;
 
         while (true)
@@ -53,9 +55,10 @@ public class Rectangle3DConverter : JsonConverter<Rectangle3D>
         return new Rectangle3D(data[0], data[1], data[2], data[3], data[4], data[5]);
     }
 
-    private Rectangle3D DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
+    private static Rectangle3D DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
     {
         Span<int> data = stackalloc int[6];
+        data.Clear();
 
         // 0 - xyzwhd, 1 - x1y1z1x2y2z2, 2 - start/end
         var objType = -1;

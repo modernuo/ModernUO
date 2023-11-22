@@ -187,6 +187,17 @@ namespace Server
                 return null;
             }
 
+            if (IsType(type, OfBool))
+            {
+                if (bool.TryParse(value, out bool parsed))
+                {
+                    constructed = parsed;
+                    return null;
+                }
+                
+                return "Not a valid boolean string.";
+            }
+
             if (value.StartsWithOrdinal("0x") && IsNumeric(type))
             {
                 try

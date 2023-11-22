@@ -21,9 +21,11 @@ namespace Server.Json;
 
 public class Point3DConverter : JsonConverter<Point3D>
 {
-    private Point3D DeserializeArray(ref Utf8JsonReader reader)
+    private static Point3D DeserializeArray(ref Utf8JsonReader reader)
     {
         Span<int> data = stackalloc int[3];
+        data.Clear();
+
         var count = 0;
 
         while (true)
@@ -53,9 +55,10 @@ public class Point3DConverter : JsonConverter<Point3D>
         return new Point3D(data[0], data[1], data[2]);
     }
 
-    private Point3D DeserializeObj(ref Utf8JsonReader reader)
+    private static Point3D DeserializeObj(ref Utf8JsonReader reader)
     {
         Span<int> data = stackalloc int[3];
+        data.Clear();
 
         while (true)
         {
