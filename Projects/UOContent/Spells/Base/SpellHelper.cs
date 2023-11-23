@@ -509,7 +509,7 @@ namespace Server.Spells
 
             if (scaleDuration)
             {
-                duration = TimeSpan.FromSeconds(duration.TotalSeconds * scale);
+                duration *= scale;
             }
 
             if (scaleStats)

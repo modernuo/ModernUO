@@ -31,9 +31,8 @@ namespace Server.Network
 
         public static string FormatTS(TimeSpan ts)
         {
-            var totalSeconds = (int)ts.TotalSeconds;
-            var seconds = totalSeconds % 60;
-            var minutes = totalSeconds / 60;
+            var totalSeconds = (int)Math.Round(ts.TotalSeconds);
+            var minutes = Math.DivRem(totalSeconds, 60, out var seconds);
 
             if (minutes != 0 && seconds != 0)
             {
