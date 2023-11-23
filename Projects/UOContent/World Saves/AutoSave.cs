@@ -95,9 +95,7 @@ namespace Server.Saves
 
         private static void BroadcastWarning()
         {
-            var s = (int)Warning.TotalSeconds;
-            var m = s / 60;
-            s %= 60;
+            var m = Math.DivRem((int)Math.Round(Warning.TotalSeconds), 60, out var s);
 
             if (m > 0 && s > 0)
             {

@@ -330,12 +330,11 @@ namespace Server.Saves
 
                 if (archiveCreated)
                 {
-                    var elapsed = stopWatch.Elapsed.TotalSeconds;
                     logger.Information(
                         "Created {Period} archive at {Path} ({Elapsed:F2} seconds)",
                         archivePeriodStrLower,
                         archiveFilePath,
-                        elapsed
+                        stopWatch.Elapsed.TotalSeconds
                     );
 
                     var i = minimum;

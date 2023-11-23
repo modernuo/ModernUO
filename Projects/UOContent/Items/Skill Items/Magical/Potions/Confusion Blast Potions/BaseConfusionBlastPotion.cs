@@ -115,7 +115,7 @@ public abstract partial class BaseConfusionBlastPotion : BasePotion
     {
         if (_delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
         {
-            return (int)(timer.Next - Core.Now).TotalSeconds;
+            return (int)Math.Round((timer.Next - Core.Now).TotalSeconds);
         }
 
         return 0;

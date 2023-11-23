@@ -495,35 +495,32 @@ public class BandageContext : Timer
                     seconds = 9.4 + 0.6 * ((double)(120 - dex) / 10);
                 }
             }
-            else
+            else if (Core.AOS && GetPrimarySkill(patient) == SkillName.Veterinary)
             {
-                if (Core.AOS && GetPrimarySkill(patient) == SkillName.Veterinary)
+                seconds = 2.0;
+            }
+            else if (Core.AOS)
+            {
+                if (dex < 204)
                 {
-                    seconds = 2.0;
-                }
-                else if (Core.AOS)
-                {
-                    if (dex < 204)
-                    {
-                        seconds = 3.2 - Math.Sin((double)dex / 130) * 2.5 + resDelay;
-                    }
-                    else
-                    {
-                        seconds = 0.7 + resDelay;
-                    }
-                }
-                else if (dex >= 100)
-                {
-                    seconds = 3.0 + resDelay;
-                }
-                else if (dex >= 40)
-                {
-                    seconds = 4.0 + resDelay;
+                    seconds = 3.2 - Math.Sin((double)dex / 130) * 2.5 + resDelay;
                 }
                 else
                 {
-                    seconds = 5.0 + resDelay;
+                    seconds = 0.7 + resDelay;
                 }
+            }
+            else if (dex >= 100)
+            {
+                seconds = 3.0 + resDelay;
+            }
+            else if (dex >= 40)
+            {
+                seconds = 4.0 + resDelay;
+            }
+            else
+            {
+                seconds = 5.0 + resDelay;
             }
 
             var context = GetContext(healer);
