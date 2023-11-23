@@ -181,7 +181,7 @@ namespace Server.Misc
 
             if (shouldKick)
             {
-                state.Mobile.SendMessage(0x22, $"You will be disconnected in {KickDelay.TotalSeconds} seconds.");
+                state.Mobile.SendMessage(0x22, $"You will be disconnected in {KickDelay.TotalSeconds:F0} seconds.");
                 Timer.StartTimer(KickDelay, () => OnKick(state));
                 return;
             }

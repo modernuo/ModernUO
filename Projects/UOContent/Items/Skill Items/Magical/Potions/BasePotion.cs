@@ -212,9 +212,7 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
             return v;
         }
 
-        var scalar = 1.0 + 0.01 * EnhancePotions(m);
-
-        return TimeSpan.FromSeconds(v.TotalSeconds * scalar);
+        return v * (1.0 + 0.01 * EnhancePotions(m));
     }
 
     public static double Scale(Mobile m, double v)

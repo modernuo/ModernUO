@@ -797,10 +797,10 @@ public abstract class BaseSpawner : Item, ISpawner
             return;
         }
 
-        var minSeconds = (int)m_MinDelay.TotalSeconds;
-        var maxSeconds = (int)m_MaxDelay.TotalSeconds;
+        var min = (long)m_MinDelay.TotalMilliseconds;
+        var max = (long)m_MaxDelay.TotalMilliseconds;
 
-        var delay = TimeSpan.FromSeconds(Utility.RandomMinMax(minSeconds, maxSeconds));
+        var delay = TimeSpan.FromMilliseconds(Utility.RandomMinMax(min, max));
         DoTimer(delay);
     }
 

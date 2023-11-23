@@ -100,7 +100,7 @@ public abstract partial class BaseConflagrationPotion : BasePotion
     {
         if (m_Delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
         {
-            return (int)(timer.Next - Core.Now).TotalSeconds;
+            return (int)Math.Round((timer.Next - Core.Now).TotalSeconds);
         }
 
         return 0;

@@ -162,7 +162,7 @@ namespace Server
             }
 
             var hasArgs = args != null;
-            var length = hasArgs ? args.ToString().Length * 2 + 52 : 46;
+            var length = hasArgs ? args.ToString()!.Length * 2 + 52 : 46;
             var writer = new SpanWriter(stackalloc byte[length]);
             writer.Write((byte)0xDF); // Packet ID
             writer.Write((ushort)length);
@@ -174,6 +174,8 @@ namespace Server
             writer.Write((short)iconID);
             writer.Write((short)0x1); // command (0 = remove, 1 = add, 2 = data)
             writer.Write(0);
+
+            // Truncate to whole seconds - The packet should be delayed by the partial seconds and then sent "on the second"
             writer.Write((short)(ticks / 1000));
             writer.Clear(3);
             writer.Write(titleCliloc);

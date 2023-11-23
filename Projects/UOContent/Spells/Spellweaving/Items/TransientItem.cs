@@ -51,7 +51,7 @@ namespace Server.Items
         {
             to.SendLocalizedMessage(
                 1072516, // ~1_name~ will expire in ~2_val~ seconds!
-                $"{Name ?? $"#{LabelNumber}"}\t{(int)LifeSpan.TotalSeconds}"
+                $"{Name ?? $"#{LabelNumber}"}\t{LifeSpan.TotalSeconds:F0}"
             );
         }
 
@@ -79,7 +79,7 @@ namespace Server.Items
 
             var remaining = CreationTime + LifeSpan - Core.Now;
 
-            list.Add(1072517, $"{(int)remaining.TotalSeconds}"); // Lifespan: ~1_val~ seconds
+            list.Add(1072517, $"{remaining.TotalSeconds:F0}"); // Lifespan: ~1_val~ seconds
         }
 
         public override void Serialize(IGenericWriter writer)

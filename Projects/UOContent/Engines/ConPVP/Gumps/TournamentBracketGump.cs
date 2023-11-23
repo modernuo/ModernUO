@@ -100,12 +100,11 @@ namespace Server.Engines.ConPVP
                         {
                             var until = m_Tournament.SignupStart + m_Tournament.SignupPeriod - Core.Now;
                             string text;
-                            var secs = (int)until.TotalSeconds;
+                            var secs = (int)Math.Round(until.TotalSeconds);
 
                             if (secs > 0)
                             {
-                                var mins = secs / 60;
-                                secs %= 60;
+                                var mins = Math.DivRem(secs, 60, out secs);
 
                                 if (mins > 0 && secs > 0)
                                 {
