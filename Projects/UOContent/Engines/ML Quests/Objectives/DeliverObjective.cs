@@ -193,7 +193,7 @@ namespace Server.Engines.MLQuests.Objectives
 
             var left = Objective.Amount;
 
-            foreach (var item in pack.EnumerateItemsByType<Item>(false, ClaimTypePredicate))
+            foreach (var item in pack.EnumerateItems(false, ClaimTypePredicate))
             {
                 if (left == 0)
                 {

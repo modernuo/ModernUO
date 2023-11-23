@@ -209,7 +209,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         m_ItemID = itemID;
         Serial = World.NewItem;
 
-        // m_Items = new ArrayList( 1 );
         Visible = true;
         Movable = true;
         Amount = 1;

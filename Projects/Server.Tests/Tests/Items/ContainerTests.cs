@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Items;
 using Xunit;
@@ -69,5 +70,55 @@ public class ContainerTests : IClassFixture<ServerFixture>
         }
 
         Assert.Null(staticItem);
+    }
+
+    [Fact]
+    public void TestFindItemsByTypeShouldThrowWhenModified()
+    {
+        var container = new Container((Serial)0x1);
+        container.AddItem(new Item((Serial)0x2));
+        var staticItem = new Static((Serial)0x3);
+        container.AddItem(staticItem);
+        container.AddItem(new Item((Serial)0x4));
+
+        Assert.Throws<InvalidOperationException>(
+            () =>
+            {
+                foreach (var item in container.FindItemsByType<Static>())
+                {
+                    if (item == staticItem)
+                    {
+                        container.RemoveItem(staticItem);
+                    }
+                }
+            }
+        );
+    }
+
+    [Fact]
+    public void TestEnumerateItemsByTypeWhenModified()
+    {
+        var container = new Container((Serial)0x1);
+
+        var item1 = new Item((Serial)0x2);
+        container.AddItem(item1);
+        var item2 = new Static((Serial)0x3);
+        container.AddItem(item2);
+        var item3 = new Item((Serial)0x4);
+        container.AddItem(item3);
+
+        foreach (var item in container.EnumerateItemsByType<Static>())
+        {
+            if (item == item2)
+            {
+                container.RemoveItem(item2);
+            }
+        }
+
+        Assert.Equal(2, container.Items.Count);
+        Assert.Collection(container.Items,
+            item => Assert.Equal(item1, item),
+            item => Assert.Equal(item3, item)
+        );
     }
 }
