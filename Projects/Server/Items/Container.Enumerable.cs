@@ -27,7 +27,7 @@ public partial class Container
     ///     nested <see cref="Container" />s within this <see cref="Container" />.
     /// </summary>
     /// <remarks>
-    ///     DO NOT consume, delete, or move items while iterating any FindItemByType or FindItems overloads
+    ///     DO NOT consume, delete, or move items while iterating with any FindItemByType or FindItems overloads
     /// </remarks>
     /// <example>
     /// <code>
@@ -75,7 +75,8 @@ public partial class Container
     /// </summary>
     /// <remarks>
     ///    Use EnumerateItemsByType for situations where the item might be manipulated, consumed, or moved.
-    ///    Note: This method scans through the container before returning the enumerator for iteration.
+    ///    Note: This method scans through the container before returning the enumerator for iteration and therefore
+    ///    incurs a performance penalty from the overhead.
     /// </remarks>
     /// <example>
     /// <code>
@@ -246,7 +247,7 @@ public partial class Container
                 _items = CollectionsMarshal.AsSpan(c.m_Items);
                 _index = 0;
                 _version = c._version;
-                
+
                 if (SetNextItem())
                 {
                     return true;
