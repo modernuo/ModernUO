@@ -67,19 +67,17 @@ public class DefBlacksmithy : CraftSystem
         {
             for (var y = -range; (!anvil || !forge) && y <= range; ++y)
             {
-                var tiles = map.Tiles.GetStaticTiles(from.X + x, from.Y + y, true);
-
-                for (var i = 0; (!anvil || !forge) && i < tiles.Length; ++i)
+                foreach (var tile in map.Tiles.GetStaticAndMultiTiles(from.X + x, from.Y + y))
                 {
-                    var id = tiles[i].ID;
+                    var id = tile.ID;
 
                     var isAnvil = id is 4015 or 4016 or 11733 or 11734;
                     var isForge = id is 4017 or >= 6522 and <= 6569 or 11736;
 
                     if (isAnvil || isForge)
                     {
-                        if (from.Z + 16 < tiles[i].Z || tiles[i].Z + 16 < from.Z ||
-                            !from.InLOS(new Point3D(from.X + x, from.Y + y, tiles[i].Z + tiles[i].Height / 2 + 1)))
+                        if (from.Z + 16 < tile.Z || tile.Z + 16 < from.Z ||
+                            !from.InLOS(new Point3D(from.X + x, from.Y + y, tile.Z + tile.Height / 2 + 1)))
                         {
                             continue;
                         }

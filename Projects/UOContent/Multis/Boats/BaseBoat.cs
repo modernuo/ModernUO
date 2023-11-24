@@ -1462,10 +1462,9 @@ namespace Server.Multis
                     }
 
                     var landTile = map.Tiles.GetLandTile(tx, ty);
-                    var tiles = map.Tiles.GetStaticTiles(tx, ty, true);
 
                     var hasWater = landTile.Z == p.Z &&
-                                   (landTile.ID >= 168 && landTile.ID <= 171 || landTile.ID >= 310 && landTile.ID <= 311);
+                                   landTile.ID is >= 168 and <= 171 or >= 310 and <= 311;
 
                     // int z = p.Z;
 
@@ -1476,9 +1475,8 @@ namespace Server.Multis
                     // if (!landTile.Ignored && top > landZ && landTop > z)
                     // return false;
 
-                    for (var i = 0; i < tiles.Length; ++i)
+                    foreach (var tile in map.Tiles.GetStaticAndMultiTiles(tx, ty))
                     {
-                        var tile = tiles[i];
                         var isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
 
                         if (tile.Z == p.Z && isWater)

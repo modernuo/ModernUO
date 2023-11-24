@@ -462,30 +462,10 @@ namespace Server.Engines.ConPVP
                         return;
                     }
 
-                    var statics = Map.Tiles.GetStaticTiles(point.X, point.Y, true);
-
-                    if (landTile.ID == 0x244 && statics.Length == 0) // 0x244 = invalid land tile
+                    var foundStatics = false;
+                    foreach (var t in Map.Tiles.GetStaticAndMultiTiles(point.X, point.Y))
                     {
-                        var empty = true;
-                        foreach (var item in Map.GetItemsAt(point))
-                        {
-                            if (item != this)
-                            {
-                                empty = false;
-                                break;
-                            }
-                        }
-
-                        if (empty)
-                        {
-                            HitObject(point, landTop, 0);
-                            return;
-                        }
-                    }
-
-                    for (var j = 0; j < statics.Length; j++)
-                    {
-                        var t = statics[j];
+                        foundStatics = true;
 
                         var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
                         height = id.CalcHeight;
@@ -503,6 +483,25 @@ namespace Server.Engines.ConPVP
                             }
 
                             HitObject(point, t.Z, height);
+                            return;
+                        }
+                    }
+
+                    if (landTile.ID == 0x244 && foundStatics) // 0x244 = invalid land tile
+                    {
+                        var empty = true;
+                        foreach (var item in Map.GetItemsAt(point))
+                        {
+                            if (item != this)
+                            {
+                                empty = false;
+                                break;
+                            }
+                        }
+
+                        if (empty)
+                        {
+                            HitObject(point, landTop, 0);
                             return;
                         }
                     }
@@ -640,14 +639,10 @@ namespace Server.Engines.ConPVP
 
                 var myZ = Map?.GetAverageZ(X, Y) ?? 0;
 
-                var statics = Map?.Tiles?.GetStaticTiles(X, Y, true);
-
-                if (statics != null)
+                if (Map?.Tiles != null)
                 {
-                    for (var j = 0; j < statics.Length; j++)
+                    foreach (var t in Map.Tiles.GetStaticAndMultiTiles(X, Y))
                     {
-                        var t = statics[j];
-
                         var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
                         height = id.CalcHeight;
 

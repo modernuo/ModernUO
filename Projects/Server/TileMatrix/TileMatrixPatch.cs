@@ -15,7 +15,6 @@
 
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace Server;
 
@@ -72,7 +71,6 @@ public class TileMatrixPatch
         }
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     private unsafe int PatchLand(TileMatrix matrix, string dataPath, string indexPath)
     {
         using var fsData = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -100,7 +98,6 @@ public class TileMatrixPatch
         return count;
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     private unsafe int PatchStatics(TileMatrix matrix, string dataPath, string indexPath, string lookupPath)
     {
         using var fsData = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.Read);

@@ -3518,11 +3518,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             }
         }
 
-        var tiles = map.Tiles.GetStaticTiles(x, y, true);
-
-        for (var i = 0; i < tiles.Length; ++i)
+        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
         {
-            var tile = tiles[i];
             var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
             if (!id.Surface)
@@ -3576,9 +3573,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
         var surfaceZ = z;
 
-        for (var i = 0; i < tiles.Length; ++i)
+        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
         {
-            var tile = tiles[i];
             var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
             var checkZ = tile.Z;
@@ -3681,9 +3677,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             return false;
         }
 
-        for (var i = 0; i < tiles.Length; ++i)
+        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
         {
-            var tile = tiles[i];
             var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
             var checkZ = tile.Z;

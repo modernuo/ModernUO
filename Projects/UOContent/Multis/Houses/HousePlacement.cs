@@ -137,8 +137,6 @@ namespace Server.Multis
                     var landTile = map.Tiles.GetLandTile(tileX, tileY);
                     var landID = landTile.ID & TileData.MaxLandValue;
 
-                    var oldTiles = map.Tiles.GetStaticTiles(tileX, tileY, true);
-
                     items.Clear();
 
                     foreach (var item in map.GetItemsAt(tileX, tileY))
@@ -202,13 +200,12 @@ namespace Server.Multis
                             hasSurface = true;
                         }
 
-                        for (var j = 0; j < oldTiles.Length; ++j)
+                        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(tileX, tileY))
                         {
-                            var oldTile = oldTiles[j];
-                            var id = TileData.ItemTable[oldTile.ID & TileData.MaxItemValue];
+                            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
                             if ((id.Impassable || id.Surface && !id.Background) &&
-                                addTileTop > oldTile.Z && oldTile.Z + id.CalcHeight > addTileZ)
+                                addTileTop > tile.Z && tile.Z + id.CalcHeight > addTileZ)
                             {
                                 return HousePlacementResult.BadStatic; // Broke rule #2
                             }
@@ -341,11 +338,8 @@ namespace Server.Multis
                     }
                 }
 
-                var tiles = map.Tiles.GetStaticTiles(borderPoint.X, borderPoint.Y, true);
-
-                for (var j = 0; j < tiles.Length; ++j)
+                foreach (var tile in map.Tiles.GetStaticAndMultiTiles(borderPoint.X, borderPoint.Y))
                 {
-                    var tile = tiles[j];
                     var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
                     if (id.Impassable || id.Surface && !id.Background && tile.Z + id.CalcHeight > center.Z + 2)

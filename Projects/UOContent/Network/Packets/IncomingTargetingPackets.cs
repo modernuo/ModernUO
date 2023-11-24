@@ -83,10 +83,6 @@ public static class IncomingTargetingPackets
                         }
                         else
                         {
-                            var tiles = map.Tiles.GetStaticTiles(x, y, !t.DisallowMultis);
-
-                            var valid = false;
-
                             if (state.HighSeas)
                             {
                                 var id = TileData.ItemTable[graphic & TileData.MaxItemValue];
@@ -97,14 +93,30 @@ public static class IncomingTargetingPackets
                             }
 
                             int hue = 0;
+                            var valid = false;
 
-                            for (var i = 0; !valid && i < tiles.Length; ++i)
+                            if (t.DisallowMultis)
                             {
-                                var tile = tiles[i];
-                                if (tile.Z == z && tile.ID == graphic)
+                                var tiles = map.Tiles.GetStaticTiles(x, y);
+                                for (var i = 0; !valid && i < tiles.Length; ++i)
                                 {
-                                    valid = true;
-                                    hue = tile.Hue;
+                                    var tile = tiles[i];
+                                    if (tile.Z == z && tile.ID == graphic)
+                                    {
+                                        valid = true;
+                                        hue = tile.Hue;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+                                {
+                                    if (tile.Z == z && tile.ID == graphic)
+                                    {
+                                        valid = true;
+                                        hue = tile.Hue;
+                                    }
                                 }
                             }
 

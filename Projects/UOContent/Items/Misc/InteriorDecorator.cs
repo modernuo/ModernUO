@@ -328,13 +328,10 @@ public partial class InteriorDecorator : Item
                 return int.MinValue;
             }
 
-            var tiles = map.Tiles.GetStaticTiles(item.X, item.Y, true);
-
             var z = int.MinValue;
 
-            for (var i = 0; i < tiles.Length; ++i)
+            foreach (var tile in map.Tiles.GetStaticAndMultiTiles(item.X, item.Y))
             {
-                var tile = tiles[i];
                 var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
                 var top = tile.Z; // Confirmed : no height checks here

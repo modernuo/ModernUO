@@ -217,11 +217,8 @@ namespace Server.Items
                 return false;
             }
 
-            var tiles = map.Tiles.GetStaticTiles(x, y, true);
-
-            for (var i = 0; i < tiles.Length; ++i)
+            foreach (var t in map.Tiles.GetStaticAndMultiTiles(x, y))
             {
-                var t = tiles[i];
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
                 if ((id.Flags & TileFlag.Wall) != 0 && z + 16 > t.Z && t.Z + t.Height > z)

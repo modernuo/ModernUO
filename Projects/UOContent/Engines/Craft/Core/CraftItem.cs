@@ -402,12 +402,10 @@ namespace Server.Engines.Craft
                     var vx = from.X + x;
                     var vy = from.Y + y;
 
-                    var tiles = map.Tiles.GetStaticTiles(vx, vy, true);
-
-                    for (var i = 0; i < tiles.Length; ++i)
+                    foreach (var tile in map.Tiles.GetStaticAndMultiTiles(vx, vy))
                     {
-                        var z = tiles[i].Z;
-                        var id = tiles[i].ID;
+                        var z = tile.Z;
+                        var id = tile.ID;
 
                         if (z + 16 > from.Z && from.Z + 16 > z && Find(id, itemIDs))
                         {
