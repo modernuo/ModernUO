@@ -398,16 +398,6 @@ public static class CharacterCreation
                 }
         }
 
-        if (args.City.Map == Map.Trammel && !availableMaps.Includes(MapSelectionFlags.Trammel))
-        {
-            args.City.Map = Map.Felucca;
-        }
-
-        if (args.City.Map == Map.Felucca && !availableMaps.Includes(MapSelectionFlags.Felucca))
-        {
-            args.City.Map = Map.Trammel;
-        }
-
         return args.City;
     }
 
