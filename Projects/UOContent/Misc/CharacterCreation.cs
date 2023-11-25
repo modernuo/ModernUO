@@ -136,19 +136,9 @@ public static class CharacterCreation
 
     public static CityInfo[] GetStartingCities(bool isYoung)
     {
-        if (isYoung)
+        if (isYoung && ExpansionInfo.CoreExpansion.MapSelectionFlags.Includes(MapSelectionFlags.Trammel))
         {
-            var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-
-            if (availableMaps.Includes(MapSelectionFlags.Trammel))
-            {
-                return NewHavenInn;
-            }
-
-            if (availableMaps.Includes(MapSelectionFlags.Felucca))
-            {
-                return OldHavenBank;
-            }
+            return TileMatrix.Pre6000ClientSupport ? OldHavenBank : NewHavenInn;
         }
 
         return _availableStartingCities ??= ConstructAvailableStartingCities();
