@@ -36,6 +36,8 @@ public static class Core
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
 
+    private static bool _performProcessKill;
+    private static bool _restartOnKill;
     private static bool _performSnapshot;
     private static bool _crashed;
     private static string _baseDirectory;
@@ -304,6 +306,12 @@ public static class Core
         }
     }
 
+    public static void Kill(bool restart = false)
+    {
+        _performProcessKill = true;
+        _restartOnKill = restart;
+    }
+
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         Console.WriteLine(e.IsTerminating ? "Error:" : "Warning:");
@@ -359,7 +367,7 @@ public static class Core
         Kill();
     }
 
-    public static void Kill(bool restart = false)
+    internal static void DoKill(bool restart = false)
     {
         if (Closing)
         {
@@ -567,6 +575,11 @@ public static class Core
                 {
                     // Return value is the offset that can be used to fix timers that should drift
                     World.Snapshot();
+                }
+
+                if (_performProcessKill)
+                {
+                    DoKill(_restartOnKill);
                 }
 
                 _tickCount = 0;
