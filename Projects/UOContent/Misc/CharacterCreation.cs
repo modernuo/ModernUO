@@ -132,6 +132,7 @@ public static class CharacterCreation
         new("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Trammel)
     };
 
+
     private static CityInfo[] _availableStartingCities;
 
     public static CityInfo[] GetStartingCities(bool isYoung)
@@ -321,10 +322,18 @@ public static class CharacterCreation
     private static CityInfo GetStartLocation(CharacterCreatedEventArgs args)
     {
         var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-
-        var flags = args.State?.Flags ?? ClientFlags.None;
         var m = args.Mobile;
 
+        if (m.AccessLevel > AccessLevel.Player)
+        {
+            var map = availableMaps.Includes(MapSelectionFlags.Felucca) ? Map.Felucca : Map.Trammel;
+            if (availableMaps.Includes(MapSelectionFlags.Felucca))
+            {
+                return new CityInfo("Green Acres", "Green Acres", 5445, 1153, 0, map);
+            }
+        }
+
+        var flags = args.State?.Flags ?? ClientFlags.None;
         var profession = ProfessionInfo.Professions[args.Profession];
 
         switch (profession?.Name.ToLowerInvariant())
