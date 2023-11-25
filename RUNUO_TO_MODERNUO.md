@@ -8,9 +8,9 @@ Please ask for help in our discord!
 ## Technology
 |              | RunUO                                                                                                 | ModernUO                                                    |
 |:-------------|:------------------------------------------------------------------------------------------------------|:------------------------------------------------------------|
-| Language     | C# 4                                                                                                  | C# 11 (.NET 6/7)                                            |
+| Language     | C# 4                                                                                                  | C# 11 (.NET 8)                                            |
 | Supported OS | 32 & 64bit Windows or Mono                                                                            | 64bit Windows, MacOS & Linux                                |
-| IDEs         | [VS](https://visualstudio.microsoft.com/downloads/), [VSCode](https://code.visualstudio.com/download) | VS 2022+ or [Rider 2022+](https://www.jetbrains.com/rider/) |
+| IDEs         | [VS](https://visualstudio.microsoft.com/downloads/), [VSCode](https://code.visualstudio.com/download) | VS 2022+ or [Rider 2023+](https://www.jetbrains.com/rider/) |
 
 ## Code API Changes
 * **ModernUO can use source generators to [serialization/deserialization](https://github.com/modernuo/SerializationGenerator#basic-usage) automatically.**
@@ -68,7 +68,7 @@ list.Add(1060830, $"{dirt:#}");
 * Timer system improved drastically by using [Timer Wheels](http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf).
 * Networking is 5-10x faster by using fixed [Circular Buffers](https://en.wikipedia.org/wiki/Circular_buffer).
 * Network packets are no longer objects and write directly to the network buffer, improving performance by 10x.
-* World saves are 10x faster by saving to memory and flushing to disk in the background.
+* World saves are 30x faster by saving to memory and flushing to disk in the background.
 * Improved RNG accuracy and performance by 5x using [Xoshiro256++](https://prng.di.unimi.it/)
 * Converted quite a bit of configuration to JSON with a central settings file.
 * Logging changed from Console.WriteLine to Serilog (still work in progress).
@@ -116,7 +116,6 @@ list.Add(1060830, $"{dirt:#}");
   * [OrderedHashSet](https://github.com/modernuo/ModernUO/blob/main/Projects/Server/Collections/OrderedHashSet.cs)
   * [PooledOrderedHashSet](https://github.com/modernuo/ModernUO/blob/main/Projects/Server/Collections/PooledOrderedHashSet.cs)
 * Adds [StringBuilder](https://github.com/modernuo/ModernUO/blob/main/Projects/Server/Buffers/ValueStringBuilder.cs) that is fast and does not impose garbage collection.
-* Adds [BitArray](https://github.com/modernuo/ModernUO/blob/main/Projects/Server/Collections/BitArray.cs) that can be serialized/deserialized directly to a buffer.
 * Adds performant [JSON](https://github.com/modernuo/ModernUO/blob/main/Projects/Server/Json/JsonConfig.cs) support with simple API.
 * Adds performant, thread _unsafe_, [ArrayPool](https://github.com/modernuo/ModernUO/blob/main/Projects/Server/Buffers/STArrayPool.cs)
 * Adds highly performant and easy to use converters for [HexString](https://github.com/modernuo/ModernUO/blob/main/Projects/Server/Text/HexStringConverter.cs) representation of data
