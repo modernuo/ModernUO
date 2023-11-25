@@ -28,6 +28,11 @@ public class TileList
 
     public void AddRange(ReadOnlySpan<StaticTile> tiles)
     {
+        if (tiles.Length == 0)
+        {
+            return;
+        }
+
         TryResize(tiles.Length);
         for (var i = 0; i < tiles.Length; ++i)
         {
