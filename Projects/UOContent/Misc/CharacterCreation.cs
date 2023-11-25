@@ -181,6 +181,13 @@ public static class CharacterCreation
             Array.Copy(FeluccaStartingCities, 0, cities, index, FeluccaStartingCities.Length);
         }
 
+        // TODO: Add Royal City for gargoyles
+
+        if (cities.Length == 0)
+        {
+            logger.Warning("Both Felucca and Trammel are unavailable maps, therefore no starting cities are available.");
+        }
+
         return cities;
     }
 
