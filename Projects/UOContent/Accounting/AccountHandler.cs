@@ -5,6 +5,7 @@ using System.Net;
 using Server.Accounting;
 using Server.Engines.Help;
 using Server.Logging;
+using Server.Maps;
 using Server.Network;
 using Server.Regions;
 
@@ -19,33 +20,6 @@ public static class AccountHandler
     private static bool RestrictDeletion = !TestCenter.Enabled;
     private static TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
     private static bool PasswordCommandEnabled;
-
-    private static CityInfo[] OldHavenStartingCities =
-    {
-        new("Yew", "The Empath Abbey", 633, 858, 0),
-        new("Minoc", "The Barnacle", 2476, 413, 15),
-        new("Britain", "Sweet Dreams Inn", 1496, 1628, 10),
-        new("Moonglow", "The Scholars Inn", 4408, 1168, 0),
-        new("Trinsic", "The Traveler's Inn", 1845, 2745, 0),
-        new("Magincia", "The Great Horns Tavern", 3734, 2222, 20),
-        new("Jhelom", "The Mercenary Inn", 1374, 3826, 0),
-        new("Skara Brae", "The Falconer's Inn", 618, 2234, 0),
-        new("Vesper", "The Ironwood Inn", 2771, 976, 0),
-        new("Haven", "Buckler's Hideaway", 3667, 2625, 0)
-    };
-
-    private static CityInfo[] StartingCities =
-    {
-        new("New Haven", "New Haven Bank", 1150168, 3667, 2625, 0),
-        new("Yew", "The Empath Abbey", 1075072, 633, 858, 0),
-        new("Minoc", "The Barnacle", 1075073, 2476, 413, 15),
-        new("Britain", "The Wayfarer's Inn", 1075074, 1602, 1591, 20),
-        new("Moonglow", "The Scholars Inn", 1075075, 4408, 1168, 0),
-        new("Trinsic", "The Traveler's Inn", 1075076, 1845, 2745, 0),
-        new("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0),
-        new("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0),
-        new("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0)
-    };
 
     private static Dictionary<IPAddress, int> m_IPTable;
 
@@ -439,7 +413,7 @@ public static class AccountHandler
             logger.Information("Login: {NetState} Account '{Username}' at character list", e.State, un);
             e.State.Account = acct;
             e.Accepted = true;
-            e.CityInfo = TileMatrix.Pre6000ClientSupport ? OldHavenStartingCities : StartingCities;
+            e.CityInfo = CharacterCreation.GetStartingCities(acct.AccessLevel == AccessLevel.Player && acct.Young);
         }
 
         if (!e.Accepted)

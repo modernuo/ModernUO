@@ -76,8 +76,113 @@ public static class CharacterCreation
 
     private static readonly TimeSpan BadStartMessageDelay = TimeSpan.FromSeconds(3.5);
 
-    private static readonly CityInfo _newHavenInfo =
-        new("New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel);
+    public static readonly CityInfo[] NewHavenInn =
+    {
+        new("New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel)
+    };
+
+    // TODO: Verify this location (v5.0.8.3 client)
+    public static readonly CityInfo[] OldHavenBank =
+    {
+        new("Haven", "Haven bank", 3677, 2513, -1, Map.Trammel)
+    };
+
+    // Map property is not supported (Pre v6 clients)
+    public static readonly CityInfo[] OldHavenStartingCities =
+    {
+        new("Yew", "The Empath Abbey", 633, 858, 0),
+        new("Minoc", "The Barnacle", 2476, 413, 15),
+        new("Britain", "Sweet Dreams Inn", 1496, 1628, 10),
+        new("Moonglow", "The Scholars Inn", 4408, 1168, 0),
+        new("Trinsic", "The Traveler's Inn", 1845, 2745, 0),
+        new("Magincia", "The Great Horns Tavern", 3734, 2222, 20),
+        new("Jhelom", "The Mercenary Inn", 1374, 3826, 0),
+        new("Skara Brae", "The Falconer's Inn", 618, 2234, 0),
+        new("Vesper", "The Ironwood Inn", 2771, 976, 0),
+        new("Occlo", "Buckler's Hideaway", 3667, 2625, 0)
+    };
+
+    // TODO: Move to JSON files
+    public static readonly CityInfo[] FeluccaStartingCities =
+    {
+        new("Yew", "The Empath Abbey", 633, 858, 0, Map.Felucca),
+        new("Minoc", "The Barnacle", 2476, 413, 15, Map.Felucca),
+        new("Britain", "Sweet Dreams Inn", 1496, 1628, 10, Map.Felucca),
+        // TODO: Add New Magincia
+        new("Moonglow", "The Scholars Inn", 4408, 1168, 0, Map.Felucca),
+        new("Trinsic", "The Traveler's Inn", 1845, 2745, 0, Map.Felucca),
+        new("Magincia", "The Great Horns Tavern", 3734, 2222, 20, Map.Felucca),
+        new("Jhelom", "The Mercenary Inn", 1374, 3826, 0, Map.Felucca),
+        new("Skara Brae", "The Falconer's Inn", 618, 2234, 0, Map.Felucca),
+        new("Vesper", "The Ironwood Inn", 2771, 976, 0, Map.Felucca),
+    };
+
+    // TODO: Move to JSON files
+    public static readonly CityInfo[] TrammelStartingCities =
+    {
+        new("New Haven", "New Haven Bank", 1150168, 3667, 2625, 0, Map.Trammel),
+        new("Yew", "The Empath Abbey", 1075072, 633, 858, 0, Map.Trammel),
+        new("Minoc", "The Barnacle", 1075073, 2476, 413, 15, Map.Trammel),
+        new("Britain", "The Wayfarer's Inn", 1075074, 1602, 1591, 20, Map.Trammel),
+        // TODO: Add New Magincia
+        new("Moonglow", "The Scholars Inn", 1075075, 4408, 1168, 0, Map.Trammel),
+        new("Trinsic", "The Traveler's Inn", 1075076, 1845, 2745, 0, Map.Trammel),
+        new("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0, Map.Trammel),
+        new("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0, Map.Trammel),
+        new("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Trammel)
+    };
+
+    private static CityInfo[] _availableStartingCities;
+
+    public static CityInfo[] GetStartingCities(bool isYoung)
+    {
+        if (isYoung)
+        {
+            var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+
+            if (availableMaps.Includes(MapSelectionFlags.Trammel))
+            {
+                return NewHavenInn;
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Felucca))
+            {
+                return OldHavenBank;
+            }
+        }
+
+        return _availableStartingCities ??= ConstructAvailableStartingCities();
+    }
+
+    private static CityInfo[] ConstructAvailableStartingCities()
+    {
+        if (!TileMatrix.Pre6000ClientSupport)
+        {
+            return OldHavenStartingCities;
+        }
+
+        var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+        var trammelAvailable = availableMaps.Includes(MapSelectionFlags.Trammel);
+        var feluccaAvailable = availableMaps.Includes(MapSelectionFlags.Felucca);
+
+        var length = (trammelAvailable ? TrammelStartingCities.Length : 0) +
+                     (feluccaAvailable ? FeluccaStartingCities.Length : 0);
+
+        var cities = new CityInfo[length];
+        var index = 0;
+        if (trammelAvailable)
+        {
+            Array.Copy(TrammelStartingCities, 0, cities, index, TrammelStartingCities.Length);
+            index += TrammelStartingCities.Length;
+        }
+
+        if (feluccaAvailable)
+        {
+            Array.Copy(FeluccaStartingCities, 0, cities, index, FeluccaStartingCities.Length);
+        }
+
+        return cities;
+    }
 
     public static void Initialize()
     {
@@ -197,7 +302,7 @@ public static class CharacterCreation
             newChar.BankBox.DropItem(ticket);
         }
 
-        var city = GetStartLocation(args, young);
+        var city = GetStartLocation(args);
         newChar.MoveToWorld(city.Location, city.Map);
 
         logger.Information(
@@ -216,18 +321,9 @@ public static class CharacterCreation
     public static bool VerifyProfession(int profession) =>
         profession >= 0 && profession < ProfessionInfo.Professions.Length;
 
-    private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
+    private static CityInfo GetStartLocation(CharacterCreatedEventArgs args)
     {
-        // We don't get the actual client version until after character creation
-        var post6000Supported = !TileMatrix.Pre6000ClientSupport;
         var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-
-        if (Core.ML && post6000Supported && availableMaps.Includes(MapSelectionFlags.Trammel))
-        {
-            return _newHavenInfo;
-        }
-
-        var useHaven = isYoung;
 
         var flags = args.State?.Flags ?? ClientFlags.None;
         var m = args.Mobile;
@@ -243,8 +339,6 @@ public static class CharacterCreation
                         return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
                     }
 
-                    useHaven = true;
-
                     /*
                      * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
                      * installation and cannot be transported to Malas.
@@ -254,16 +348,11 @@ public static class CharacterCreation
                      */
                     Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1062205));
 
-                    break;
+                    return GetStartingCities(true)[0];
                 }
             case "paladin":
                 {
-                    if (availableMaps.Includes(MapSelectionFlags.Trammel) && post6000Supported)
-                    {
-                        return _newHavenInfo;
-                    }
-
-                    break;
+                    return GetStartingCities(true)[0];
                 }
             case "samurai":
                 {
@@ -277,8 +366,6 @@ public static class CharacterCreation
                         return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
                     }
 
-                    useHaven = true;
-
                     /*
                      * Unfortunately you are playing on a *NON-Samurai-Empire* game
                      * installation and cannot be transported to Tokuno.
@@ -288,7 +375,7 @@ public static class CharacterCreation
                      */
                     Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1063487));
 
-                    break;
+                    return GetStartingCities(true)[0];
                 }
             case "ninja":
                 {
@@ -302,8 +389,6 @@ public static class CharacterCreation
                         return new CityInfo("Ninja DE", "Enimo's Residence", 414, 823, -1, Map.Malas);
                     }
 
-                    useHaven = true;
-
                     /*
                      * Unfortunately you are playing on a *NON-Samurai-Empire* game
                      * installation and cannot be transported to Tokuno.
@@ -312,37 +397,10 @@ public static class CharacterCreation
                      * Haven on the Trammel facet.
                      */
                     Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1063487));
-
-                    break;
+                    return GetStartingCities(true)[0];
                 }
         }
 
-        if (post6000Supported && useHaven && availableMaps.Includes(MapSelectionFlags.Trammel))
-        {
-            // New Haven is supported, so put them there...
-            // Note: if your server maps don't contain New Haven, this will place
-            // them in the wilderness of Ocllo
-            return _newHavenInfo;
-        }
-
-        if (useHaven)
-        {
-            // New Haven is not available, so place them in Ocllo instead, if they're aiming for Haven
-            CityInfo oclloBank = new CityInfo("Ocllo", "Near the bank", 3677, 2513, -1, Map.Trammel);
-            if (availableMaps.Includes(MapSelectionFlags.Trammel))
-            {
-                return oclloBank;
-            }
-
-            if (availableMaps.Includes(MapSelectionFlags.Felucca))
-            {
-                oclloBank.Map = Map.Felucca;
-                return oclloBank;
-            }
-        }
-
-        // They're not trying to get to Haven, so use their city selection
-        // instead - adjusted according to available maps
         if (args.City.Map == Map.Trammel && !availableMaps.Includes(MapSelectionFlags.Trammel))
         {
             args.City.Map = Map.Felucca;
