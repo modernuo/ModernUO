@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: MultiData.cs                                                    *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -508,13 +523,9 @@ public sealed class MultiComponentList
             oldTiles = Tiles[vx][vy];
 
             var newTiles = new StaticTile[oldTiles.Length + 1];
+            Array.Copy(oldTiles, newTiles, oldTiles.Length);
 
-            for (var i = 0; i < oldTiles.Length; ++i)
-            {
-                newTiles[i] = oldTiles[i];
-            }
-
-            newTiles[oldTiles.Length] = new StaticTile((ushort)itemID, (sbyte)z);
+            newTiles[^1] = new StaticTile((ushort)itemID, (sbyte)z);
 
             Tiles[vx][vy] = newTiles;
 
@@ -574,16 +585,8 @@ public sealed class MultiComponentList
                 if (tile.Z == z && tile.Height >= minHeight)
                 {
                     var newTiles = new StaticTile[oldTiles.Length - 1];
-
-                    for (var j = 0; j < i; ++j)
-                    {
-                        newTiles[j] = oldTiles[j];
-                    }
-
-                    for (var j = i + 1; j < oldTiles.Length; ++j)
-                    {
-                        newTiles[j - 1] = oldTiles[j];
-                    }
+                    Array.Copy(oldTiles, newTiles, i);
+                    Array.Copy(oldTiles, i + 1, newTiles, i, oldTiles.Length - i - 1);
 
                     Tiles[vx][vy] = newTiles;
 
@@ -601,16 +604,8 @@ public sealed class MultiComponentList
                     TileData.ItemTable[tile.ItemId & TileData.MaxItemValue].Height >= minHeight)
                 {
                     var newList = new MultiTileEntry[oldList.Length - 1];
-
-                    for (var j = 0; j < i; ++j)
-                    {
-                        newList[j] = oldList[j];
-                    }
-
-                    for (var j = i + 1; j < oldList.Length; ++j)
-                    {
-                        newList[j - 1] = oldList[j];
-                    }
+                    Array.Copy(oldList, newList, i);
+                    Array.Copy(oldList, i + 1, newList, i, oldList.Length - i - 1);
 
                     List = newList;
 
@@ -636,16 +631,8 @@ public sealed class MultiComponentList
                 if (tile.ID == itemID && tile.Z == z)
                 {
                     var newTiles = new StaticTile[oldTiles.Length - 1];
-
-                    for (var j = 0; j < i; ++j)
-                    {
-                        newTiles[j] = oldTiles[j];
-                    }
-
-                    for (var j = i + 1; j < oldTiles.Length; ++j)
-                    {
-                        newTiles[j - 1] = oldTiles[j];
-                    }
+                    Array.Copy(oldTiles, newTiles, i);
+                    Array.Copy(oldTiles, i + 1, newTiles, i, oldTiles.Length - i - 1);
 
                     Tiles[vx][vy] = newTiles;
 
@@ -663,16 +650,8 @@ public sealed class MultiComponentList
                     tile.OffsetZ == (short)z)
                 {
                     var newList = new MultiTileEntry[oldList.Length - 1];
-
-                    for (var j = 0; j < i; ++j)
-                    {
-                        newList[j] = oldList[j];
-                    }
-
-                    for (var j = i + 1; j < oldList.Length; ++j)
-                    {
-                        newList[j - 1] = oldList[j];
-                    }
+                    Array.Copy(oldList, newList, i);
+                    Array.Copy(oldList, i + 1, newList, i, oldList.Length - i - 1);
 
                     List = newList;
 

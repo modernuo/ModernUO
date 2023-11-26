@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Server.Buffers;
 
 namespace Server;
 
@@ -34,10 +35,8 @@ public class TileList
         }
 
         TryResize(tiles.Length);
-        for (var i = 0; i < tiles.Length; ++i)
-        {
-            _tiles[Count++] = tiles[i];
-        }
+        tiles.CopyTo(_tiles.AsSpan(Count));
+        Count += tiles.Length;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46,43 +45,42 @@ public class TileList
     public void Add(StaticTile tile)
     {
         TryResize(1);
-        _tiles[Count] = tile;
-        ++Count;
+        _tiles[Count++] = tile;
     }
 
     public void Add(ushort id, byte x, byte y, sbyte z, short hue = 0)
     {
         TryResize(1);
-        ref var tile = ref _tiles[Count];
+        ref var tile = ref _tiles[Count++];
         tile.m_ID = id;
         tile.m_X = x;
         tile.m_Y = y;
         tile.m_Z = z;
         tile.m_Hue = hue;
-        ++Count;
     }
 
     public void Add(ushort id, sbyte z)
     {
         TryResize(1);
-        _tiles[Count].m_ID = id;
-        _tiles[Count].m_Z = z;
-        ++Count;
+        ref var tile = ref _tiles[Count++];
+        tile.m_ID = id;
+        tile.m_X = 0;
+        tile.m_Y = 0;
+        tile.m_Z = z;
+        tile.m_Hue = 0;
     }
 
     private void TryResize(int length)
     {
-        _tiles ??= new StaticTile[length];
+        _tiles ??= STArrayPool<StaticTile>.Shared.Rent(length);
 
-        if (Count + length > _tiles.Length)
+        var newLength = Count + length;
+        if (newLength > _tiles.Length)
         {
             var old = _tiles;
-            _tiles = new StaticTile[old.Length * 2];
-
-            for (var i = 0; i < old.Length; ++i)
-            {
-                _tiles[i] = old[i];
-            }
+            _tiles = STArrayPool<StaticTile>.Shared.Rent(newLength);
+            old.CopyTo(_tiles.AsSpan());
+            STArrayPool<StaticTile>.Shared.Return(old);
         }
     }
 
@@ -93,9 +91,11 @@ public class TileList
             return _emptyTiles;
         }
 
-        Array.Resize(ref _tiles, Count);
-        var tiles = _tiles;
+        var tiles = new StaticTile[Count];
+        _tiles.AsSpan(0, Count).CopyTo(tiles);
 
+        // Cleanup
+        STArrayPool<StaticTile>.Shared.Return(_tiles);
         _tiles = null;
         Count = 0;
 

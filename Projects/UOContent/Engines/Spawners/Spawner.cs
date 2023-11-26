@@ -61,12 +61,8 @@ namespace Server.Engines.Spawners
                 return true;
             }
 
-            var staticTiles = map.Tiles.GetStaticTiles(x, y, true);
-
-            for (var i = 0; i < staticTiles.Length; ++i)
+            foreach (var staticTile in map.Tiles.GetStaticAndMultiTiles(x, y))
             {
-                var staticTile = staticTiles[i];
-
                 if (staticTile.Z == z && TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Wet)
                 {
                     return true;

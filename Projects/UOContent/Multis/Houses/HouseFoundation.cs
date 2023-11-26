@@ -125,7 +125,7 @@ namespace Server.Multis
                     SetInitialState();
                 }
 
-                return m_Current.Components;
+                return m_Current!.Components;
             }
         }
 

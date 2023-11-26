@@ -51,7 +51,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     private readonly int m_SectorsWidth;
 
-    private readonly object tileLock = new();
     private Region m_DefaultRegion;
 
     private string m_Name;
@@ -89,21 +88,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     public int Season { get; set; }
 
-    public TileMatrix Tiles
-    {
-        get
-        {
-            if (m_Tiles == null)
-            {
-                lock (tileLock)
-                {
-                    m_Tiles = new TileMatrix(this, m_FileIndex, MapID, Width, Height);
-                }
-            }
-
-            return m_Tiles;
-        }
-    }
+    public TileMatrix Tiles => m_Tiles ??= new TileMatrix(this, m_FileIndex, MapID, Width, Height);
 
     public int MapID { get; }
 
@@ -325,7 +310,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public void FixColumn(int x, int y)
     {
         var landTile = Tiles.GetLandTile(x, y);
-        var tiles = Tiles.GetStaticTiles(x, y, true);
 
         GetAverageZ(x, y, out _, out var landAvg, out _);
 
@@ -349,7 +333,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 z = landAvg;
             }
 
-            foreach (var tile in tiles)
+            foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
             {
                 var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
@@ -400,33 +384,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         STArrayPool<Item>.Shared.Return(items, true);
     }
 
-    /* This could probably be re-implemented if necessary (perhaps via an ITile interface?).
-    public List<Tile> GetTilesAt( Point2D p, bool items, bool land, bool statics )
-    {
-      List<Tile> list = new List<Tile>();
-
-      if (this == Internal)
-        return list;
-
-      if (land)
-        list.Add( Tiles.GetLandTile( p.m_X, p.m_Y ) );
-
-      if (statics)
-        list.AddRange( Tiles.GetStaticTiles( p.m_X, p.m_Y, true ) );
-
-      if (items)
-      {
-        Sector sector = GetSector( p );
-
-        foreach ( Item item in sector.Items )
-          if (item.AtWorldPoint( p.m_X, p.m_Y ))
-            list.Add( new StaticTile( (ushort)item.ItemID, (sbyte) item.Z ) );
-      }
-
-      return list;
-    }
-    */
-
     /// <summary>
     ///     Gets the highest surface that is lower than <paramref name="p" />.
     /// </summary>
@@ -460,11 +417,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        var staticTiles = Tiles.GetStaticTiles(p.X, p.Y, true);
-
-        for (var i = 0; i < staticTiles.Length; i++)
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(p.X, p.Y))
         {
-            var tile = staticTiles[i];
             var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
             if (id.Surface || id.Wet)
@@ -862,14 +816,14 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return p;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanFit(
-        Point3D p, int height, bool checkBlocksFit = false, bool checkMobiles = true,
-        bool requireSurface = true
+        Point3D p, int height, bool checkBlocksFit = false, bool checkMobiles = true, bool requireSurface = true
     ) => CanFit(p.m_X, p.m_Y, p.m_Z, height, checkBlocksFit, checkMobiles, requireSurface);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanFit(
-        Point2D p, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true,
-        bool requireSurface = true
+        Point2D p, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true, bool requireSurface = true
     ) => CanFit(p.m_X, p.m_Y, z, height, checkBlocksFit, checkMobiles, requireSurface);
 
     public bool CanFit(
@@ -903,29 +857,26 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             hasSurface = true;
         }
 
-        var staticTiles = Tiles.GetStaticTiles(x, y, true);
-
         bool surface, impassable;
 
-        for (var i = 0; i < staticTiles.Length; ++i)
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
         {
-            var id = TileData.ItemTable[staticTiles[i].ID & TileData.MaxItemValue];
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
             surface = id.Surface;
             impassable = id.Impassable;
 
-            if ((surface || impassable) && staticTiles[i].Z + id.CalcHeight > z && z + height > staticTiles[i].Z)
+            if ((surface || impassable) && tile.Z + id.CalcHeight > z && z + height > tile.Z)
             {
                 return false;
             }
 
-            if (surface && !impassable && z == staticTiles[i].Z + id.CalcHeight)
+            if (surface && !impassable && z == tile.Z + id.CalcHeight)
             {
                 hasSurface = true;
             }
         }
 
         var sector = GetSector(x, y);
-        var mobs = sector.Mobiles;
 
         foreach (var item in sector.Items)
         {
@@ -1122,8 +1073,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
               return false;
             */
 
-            var statics = Tiles.GetStaticTiles(point.m_X, point.m_Y, true);
-
             var contains = false;
             var ltID = landTile.ID;
 
@@ -1132,26 +1081,11 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 contains = ltID == InvalidLandTiles[j];
             }
 
-            if (contains && statics.Length == 0)
-            {
-                foreach (Item item in GetItemsInRange(point, 0))
-                {
-                    if (item.Visible)
-                    {
-                        contains = false;
-                        break;
-                    }
-                }
+            bool foundStatic = false;
 
-                if (contains)
-                {
-                    return false;
-                }
-            }
-
-            for (var j = 0; j < statics.Length; ++j)
+            foreach (var t in Tiles.GetStaticAndMultiTiles(point.m_X, point.m_Y))
             {
-                var t = statics[j];
+                foundStatic = true;
 
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
@@ -1165,6 +1099,23 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                         continue;
                     }
 
+                    return false;
+                }
+            }
+
+            if (contains && !foundStatic)
+            {
+                foreach (Item item in GetItemsAt(point))
+                {
+                    if (item.Visible)
+                    {
+                        contains = false;
+                        break;
+                    }
+                }
+
+                if (contains)
+                {
                     return false;
                 }
             }

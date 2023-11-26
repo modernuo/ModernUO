@@ -15,9 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Server.Logging;
 
 namespace Server;
@@ -158,7 +160,6 @@ public class TileMatrix
 
     public StaticTile[][][] EmptyStaticBlock => _emptyStaticBlock;
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public void SetStaticBlock(int x, int y, StaticTile[][][] value)
     {
         if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
@@ -173,7 +174,6 @@ public class TileMatrix
         _staticPatches[x][y >> 5] |= 1 << (y & 0x1F);
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public StaticTile[][][] GetStaticBlock(int x, int y)
     {
         if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
@@ -187,31 +187,28 @@ public class TileMatrix
 
         if (tiles == null)
         {
-            lock (_fileShare)
+            for (var i = 0; tiles == null && i < _fileShare.Count; ++i)
             {
-                for (var i = 0; tiles == null && i < _fileShare.Count; ++i)
+                var shared = _fileShare[i];
+
+                lock (shared)
                 {
-                    var shared = _fileShare[i];
-
-                    lock (shared)
+                    if (x < shared.BlockWidth && y < shared.BlockHeight)
                     {
-                        if (x < shared.BlockWidth && y < shared.BlockHeight)
+                        var theirTiles = shared._staticTiles[x];
+
+                        if (theirTiles != null)
                         {
-                            var theirTiles = shared._staticTiles[x];
+                            tiles = theirTiles[y];
+                        }
 
-                            if (theirTiles != null)
+                        if (tiles != null)
+                        {
+                            var theirBits = shared._staticPatches[x];
+
+                            if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
                             {
-                                tiles = theirTiles[y];
-                            }
-
-                            if (tiles != null)
-                            {
-                                var theirBits = shared._staticPatches[x];
-
-                                if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
-                                {
-                                    tiles = null;
-                                }
+                                tiles = null;
                             }
                         }
                     }
@@ -226,44 +223,15 @@ public class TileMatrix
         return tiles;
     }
 
-    public StaticTile[] GetStaticTiles(int x, int y)
-    {
-        var tiles = GetStaticBlock(x >> 3, y >> 3);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.StaticTileEnumerable GetStaticTiles(int x, int y) => new(_map, new Point2D(x, y), includeMultis: false);
 
-        return tiles[x & 0x7][y & 0x7];
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.StaticTileEnumerable GetStaticAndMultiTiles(int x, int y) => new(_map, new Point2D(x, y));
 
-    private readonly TileList m_TilesList = new();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map.StaticTileEnumerable GetMultiTiles(int x, int y) => new(_map, new Point2D(x, y), false);
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public StaticTile[] GetStaticTiles(int x, int y, bool multis)
-    {
-        var tiles = GetStaticBlock(x >> 3, y >> 3);
-
-        if (!multis)
-        {
-            return tiles[x & 0x7][y & 0x7];
-        }
-
-        var any = false;
-
-        foreach (var multiTiles in _map.GetMultiTilesAt(x, y))
-        {
-            any = true;
-            m_TilesList.AddRange(multiTiles);
-        }
-
-        if (!any)
-        {
-            return tiles[x & 0x7][y & 0x7];
-        }
-
-        m_TilesList.AddRange(tiles[x & 0x7][y & 0x7]);
-
-        return m_TilesList.ToArray();
-    }
-
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public void SetLandBlock(int x, int y, LandTile[] value)
     {
         if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
@@ -278,7 +246,6 @@ public class TileMatrix
         _landPatches[x][y >> 5] |= 1 << (y & 0x1F);
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     public LandTile[] GetLandBlock(int x, int y)
     {
         if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null)
@@ -295,32 +262,26 @@ public class TileMatrix
             return tiles;
         }
 
-        lock (_fileShare)
+        for (var i = 0; tiles == null && i < _fileShare.Count; ++i)
         {
-            for (var i = 0; tiles == null && i < _fileShare.Count; ++i)
+            var shared = _fileShare[i];
+
+            if (x < shared.BlockWidth && y < shared.BlockHeight)
             {
-                var shared = _fileShare[i];
+                var theirTiles = shared._landTiles[x];
 
-                lock (shared)
+                if (theirTiles != null)
                 {
-                    if (x < shared.BlockWidth && y < shared.BlockHeight)
+                    tiles = theirTiles[y];
+                }
+
+                if (tiles != null)
+                {
+                    var theirBits = shared._landPatches[x];
+
+                    if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
                     {
-                        var theirTiles = shared._landTiles[x];
-
-                        if (theirTiles != null)
-                        {
-                            tiles = theirTiles[y];
-                        }
-
-                        if (tiles != null)
-                        {
-                            var theirBits = shared._landPatches[x];
-
-                            if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
-                            {
-                                tiles = null;
-                            }
-                        }
+                        tiles = null;
                     }
                 }
             }
@@ -344,7 +305,6 @@ public class TileMatrix
 
     private StaticTile[] m_TileBuffer = new StaticTile[128];
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     private unsafe StaticTile[][][] ReadStaticBlock(int x, int y)
     {
         try
@@ -440,7 +400,6 @@ public class TileMatrix
         throw new Exception("No assemblies were loaded, therefore we cannot load TileMatrix.");
     }
 
-    [MethodImpl(MethodImplOptions.Synchronized)]
     private unsafe LandTile[] ReadLandBlock(int x, int y)
     {
         try
