@@ -132,12 +132,11 @@ public static class CharacterCreation
         new("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Trammel)
     };
 
-
     private static CityInfo[] _availableStartingCities;
 
-    public static CityInfo[] GetStartingCities(bool isYoung)
+    public static CityInfo[] GetStartingCities(Account acct)
     {
-        if (isYoung && ExpansionInfo.CoreExpansion.MapSelectionFlags.Includes(MapSelectionFlags.Trammel))
+        if (acct.Young && ExpansionInfo.CoreExpansion.MapSelectionFlags.Includes(MapSelectionFlags.Trammel))
         {
             return TileMatrix.Pre6000ClientSupport ? OldHavenBank : NewHavenInn;
         }
