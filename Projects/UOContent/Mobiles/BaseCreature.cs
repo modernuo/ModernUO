@@ -3223,7 +3223,6 @@ namespace Server.Mobiles
 
                 ProcessDelta();
                 SendIncomingPacket();
-                SendIncomingPacket();
 
                 // TODO: This can be done in Parallel if there are lots of them.
                 var aggressors = Aggressors;
@@ -3841,7 +3840,6 @@ namespace Server.Mobiles
             OutgoingMobilePackets.CreateBondedStatus(buffer, Serial, false);
             Effects.SendPacket(Location, Map, buffer);
 
-            SendIncomingPacket();
             SendIncomingPacket();
 
             OnAfterResurrect();

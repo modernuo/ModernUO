@@ -60,8 +60,8 @@ public static class OutgoingPlayerPackets
         ns?.Send(stackalloc byte[] { 0xC8, range });
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendDeathStatus(this NetState ns, bool dead) =>
-        ns?.Send(stackalloc byte[] { 0x2C, dead ? (byte)0 : (byte)2 });
+    public static void SendDeathStatus(this NetState ns) =>
+        ns?.Send(stackalloc byte[] { 0x2C, 2 });
 
     public static void SendDisplayProfile(this NetState ns, Serial m, string header, string body, string footer)
     {
