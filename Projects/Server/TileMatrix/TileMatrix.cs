@@ -223,10 +223,13 @@ public class TileMatrix
         return tiles;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Map.StaticTileEnumerable GetStaticTiles(int x, int y) => new(_map, new Point2D(x, y), includeMultis: false);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Map.StaticTileEnumerable GetStaticAndMultiTiles(int x, int y) => new(_map, new Point2D(x, y));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Map.StaticTileEnumerable GetMultiTiles(int x, int y) => new(_map, new Point2D(x, y), false);
 
     public void SetLandBlock(int x, int y, LandTile[] value)
