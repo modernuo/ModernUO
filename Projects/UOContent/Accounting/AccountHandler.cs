@@ -412,7 +412,7 @@ public static class AccountHandler
             logger.Information("Login: {NetState} Account '{Username}' at character list", e.State, un);
             e.State.Account = acct;
             e.Accepted = true;
-            e.CityInfo = CharacterCreation.GetStartingCities(acct.AccessLevel == AccessLevel.Player && acct.Young);
+            e.CityInfo = CharacterCreation.GetStartingCities(acct.Young);
         }
 
         if (!e.Accepted)
