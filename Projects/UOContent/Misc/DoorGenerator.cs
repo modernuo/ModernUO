@@ -431,12 +431,8 @@ namespace Server
 
         public static bool IsEastFrame(int x, int y, int z)
         {
-            var tiles = m_Map.Tiles.GetStaticTiles(x, y);
-
-            for (var i = 0; i < tiles.Length; ++i)
+            foreach (var tile in m_Map.Tiles.GetStaticTiles(x, y))
             {
-                var tile = tiles[i];
-
                 if (tile.Z == z && IsEastFrame(tile.ID))
                 {
                     return true;
@@ -448,12 +444,8 @@ namespace Server
 
         public static bool IsSouthFrame(int x, int y, int z)
         {
-            var tiles = m_Map.Tiles.GetStaticTiles(x, y);
-
-            for (var i = 0; i < tiles.Length; ++i)
+            foreach (var tile in m_Map.Tiles.GetStaticTiles(x, y))
             {
-                var tile = tiles[i];
-
                 if (tile.Z == z && IsSouthFrame(tile.ID))
                 {
                     return true;
@@ -510,12 +502,8 @@ namespace Server
                     var vx = rx + region.X;
                     var vy = ry + region.Y;
 
-                    var tiles = m_Map.Tiles.GetStaticTiles(vx, vy);
-
-                    for (var i = 0; i < tiles.Length; ++i)
+                    foreach (var tile in m_Map.Tiles.GetStaticTiles(vx, vy))
                     {
-                        var tile = tiles[i];
-
                         var id = tile.ID;
                         var z = tile.Z;
 

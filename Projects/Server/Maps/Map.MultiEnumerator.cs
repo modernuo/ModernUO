@@ -97,7 +97,6 @@ public partial class Map
 
     public ref struct MultiSectorEnumerator<T> where T : BaseMulti
     {
-        private Point2D _location;
         private readonly Span<BaseMulti> _list;
         private int _index;
         private T _current;
@@ -105,8 +104,6 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MultiSectorEnumerator(Map map, Point2D loc)
         {
-            _location = loc;
-
             _list = map == null
                 ? Span<BaseMulti>.Empty
                 : CollectionsMarshal.AsSpan(map.GetSector(loc.m_X, loc.m_Y).Multis);
@@ -118,8 +115,6 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            ref var loc = ref _location;
-
             while ((uint)_index < (uint)_list.Length)
             {
                 var current = _list[_index++];

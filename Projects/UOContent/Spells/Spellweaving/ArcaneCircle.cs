@@ -77,11 +77,8 @@ namespace Server.Spells.Spellweaving
                 return true;
             }
 
-            var tiles = map.Tiles.GetStaticTiles(location.X, location.Y); // Static Tiles
-
-            for (var i = 0; i < tiles.Length; ++i)
+            foreach (var t in map.Tiles.GetStaticTiles(location.X, location.Y))
             {
-                var t = tiles[i];
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
                 var tand = t.ID;

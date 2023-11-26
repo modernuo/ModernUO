@@ -223,12 +223,7 @@ public class TileMatrix
         return tiles;
     }
 
-    public StaticTile[] GetStaticTiles(int x, int y)
-    {
-        var tiles = GetStaticBlock(x >> 3, y >> 3);
-
-        return tiles[x & 0x7][y & 0x7];
-    }
+    public Map.StaticTileEnumerable GetStaticTiles(int x, int y) => new(_map, new Point2D(x, y), includeMultis: false);
 
     public Map.StaticTileEnumerable GetStaticAndMultiTiles(int x, int y) => new(_map, new Point2D(x, y));
 

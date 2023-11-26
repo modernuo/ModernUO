@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Items;
 
@@ -32,16 +31,18 @@ public partial class Map
         private readonly Map _map;
         private readonly Point2D _location;
         private readonly bool _includeStatics;
+        private readonly bool _includeMultis;
 
-        public StaticTileEnumerable(Map map, Point2D loc, bool includeStatics = true)
+        public StaticTileEnumerable(Map map, Point2D loc, bool includeStatics = true, bool includeMultis = true)
         {
             _map = map;
             _location = loc;
             _includeStatics = includeStatics;
+            _includeMultis = includeMultis;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public StaticTileEnumerator GetEnumerator() => new(_map, _location, _includeStatics);
+        public StaticTileEnumerator GetEnumerator() => new(_map, _location, _includeStatics, _includeMultis);
     }
 
     public ref struct StaticTileEnumerator
@@ -56,7 +57,7 @@ public partial class Map
         private int _index;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public StaticTileEnumerator(Map map, Point2D p, bool includeStatics)
+        public StaticTileEnumerator(Map map, Point2D p, bool includeStatics, bool includeMultis)
         {
             _map = map;
             _point = p;
@@ -68,11 +69,14 @@ public partial class Map
 
             if (includeStatics)
             {
-                _tiles = map.Tiles.GetStaticTiles(p.X, p.Y);
+                var tiles = map.Tiles.GetStaticBlock(p.X >> SectorShift, p.Y >> SectorShift);
+                _tiles = tiles[p.X & 0x7][p.Y & 0x7];
                 _index = -1;
             }
 
-            _multis = _map.GetMultisInSector(p).GetEnumerator();
+            _multis = includeMultis
+                ? _map.GetMultisInSector(p).GetEnumerator()
+                : MultiSectorEnumerable<BaseMulti>.Empty.GetEnumerator();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

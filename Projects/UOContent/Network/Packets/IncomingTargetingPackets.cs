@@ -95,28 +95,17 @@ public static class IncomingTargetingPackets
                             int hue = 0;
                             var valid = false;
 
-                            if (t.DisallowMultis)
+                            var eable = t.DisallowMultis
+                                ? map.Tiles.GetStaticTiles(x, y)
+                                : map.Tiles.GetStaticAndMultiTiles(x, y);
+
+                            foreach (var tile in eable)
                             {
-                                var tiles = map.Tiles.GetStaticTiles(x, y);
-                                for (var i = 0; !valid && i < tiles.Length; ++i)
+                                if (tile.Z == z && tile.ID == graphic)
                                 {
-                                    var tile = tiles[i];
-                                    if (tile.Z == z && tile.ID == graphic)
-                                    {
-                                        valid = true;
-                                        hue = tile.Hue;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
-                                {
-                                    if (tile.Z == z && tile.ID == graphic)
-                                    {
-                                        valid = true;
-                                        hue = tile.Hue;
-                                    }
+                                    valid = true;
+                                    hue = tile.Hue;
+                                    break;
                                 }
                             }
 
