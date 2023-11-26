@@ -42,15 +42,13 @@ namespace Server.Tests.Network
             AssertThat.Equal(result, expected);
         }
 
-        [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public void TestDeathStatus(bool dead)
+        [Fact]
+        public void TestDeathStatus()
         {
-            var expected = new DeathStatus(dead).Compile();
+            var expected = new DeathStatus(false).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendDeathStatus(dead);
+            ns.SendDeathStatus();
 
             var result = ns.SendPipe.Reader.AvailableToRead();
             AssertThat.Equal(result, expected);

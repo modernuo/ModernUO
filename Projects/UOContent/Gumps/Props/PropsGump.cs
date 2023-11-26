@@ -303,7 +303,7 @@ namespace Server.Gumps
 
                         var type = prop.PropertyType;
 
-                        if (IsType(type, OfMobile) || IsType(type, OfItem))
+                        if (IsType(type, OfEntity))
                         {
                             from.SendGump(new SetObjectGump(prop, from, m_Object, type, this));
                         }

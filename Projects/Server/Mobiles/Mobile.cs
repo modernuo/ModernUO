@@ -4565,7 +4565,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
 
             SendIncomingPacket();
-            SendIncomingPacket();
 
             OnAfterResurrect();
         }
@@ -4860,7 +4859,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
         else
         {
-            m_NetState.SendDeathStatus(true);
+            m_NetState.SendDeathStatus();
 
             Warmode = false;
 
@@ -4885,8 +4884,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             EventSink.InvokePlayerDeath(this);
 
             ProcessDelta();
-
-            m_NetState.SendDeathStatus(false);
 
             CheckStatTimers();
         }
@@ -6923,14 +6920,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                 if (ns.StygianAbyss)
                 {
-                    if (m.Blessed || m.YellowHealthbar)
-                    {
-                        ns.SendMobileHealthbar(m, Healthbar.Yellow);
-                    }
-                    else if (m.Poisoned)
-                    {
-                        ns.SendMobileHealthbar(m, Healthbar.Poison);
-                    }
+                    ns.SendMobileHealthbar(m, Healthbar.Yellow);
+                    ns.SendMobileHealthbar(m, Healthbar.Poison);
                 }
 
                 if (m.IsDeadBondedPet)

@@ -137,8 +137,9 @@ namespace Server
         {
             constructed = null;
             var isSerial = IsType(type, OfSerial);
+            var isEntity = IsType(type, OfEntity);
 
-            if (isSerial) // mutate into int32
+            if (isSerial || isEntity) // mutate into int32
             {
                 type = OfInt;
             }
@@ -194,19 +195,33 @@ namespace Server
                     constructed = parsed;
                     return null;
                 }
-                
+
                 return "Not a valid boolean string.";
             }
 
-            if (value.StartsWithOrdinal("0x") && IsNumeric(type))
+            if (IsNumeric(type))
             {
                 try
                 {
-                    if (ulong.TryParse(value.AsSpan(2), NumberStyles.HexNumber, null, out var num))
+                    var isHex = value.StartsWithOrdinal("0x");
+                    var index = isHex ? 2 : 0;
+                    if (ulong.TryParse(value.AsSpan(index), isHex ? NumberStyles.HexNumber : NumberStyles.Integer, null, out var num))
                     {
-                        constructed = Convert.ChangeType(num, type);
+                        if (isEntity)
+                        {
+                            constructed = World.FindEntity((Serial)num);
+                        }
+                        else if (isSerial)
+                        {
+                            constructed = (Serial)num;
+                        }
+                        else
+                        {
+                            constructed = Convert.ChangeType(num, type);
+                        }
+
+                        return null;
                     }
-                    return null;
                 }
                 catch
                 {
@@ -230,11 +245,6 @@ namespace Server
             try
             {
                 constructed = Convert.ChangeType(value, type);
-                if (isSerial) // mutate back
-                {
-                    constructed = (Serial)(constructed ?? Serial.MinusOne);
-                }
-
                 return null;
             }
             catch
