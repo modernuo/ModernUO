@@ -134,9 +134,9 @@ public static class CharacterCreation
 
     private static CityInfo[] _availableStartingCities;
 
-    public static CityInfo[] GetStartingCities(Account acct)
+    public static CityInfo[] GetStartingCities(bool isYoung)
     {
-        if (acct.Young && ExpansionInfo.CoreExpansion.MapSelectionFlags.Includes(MapSelectionFlags.Trammel))
+        if (isYoung && ExpansionInfo.CoreExpansion.MapSelectionFlags.Includes(MapSelectionFlags.Trammel))
         {
             return TileMatrix.Pre6000ClientSupport ? OldHavenBank : NewHavenInn;
         }
