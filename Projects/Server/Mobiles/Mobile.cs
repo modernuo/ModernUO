@@ -6920,14 +6920,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                 if (ns.StygianAbyss)
                 {
-                    if (m.Blessed || m.YellowHealthbar)
-                    {
-                        ns.SendMobileHealthbar(m, Healthbar.Yellow);
-                    }
-                    else if (m.Poisoned)
-                    {
-                        ns.SendMobileHealthbar(m, Healthbar.Poison);
-                    }
+                    ns.SendMobileHealthbar(m, Healthbar.Yellow);
+                    ns.SendMobileHealthbar(m, Healthbar.Poison);
                 }
 
                 if (m.IsDeadBondedPet)
@@ -7334,14 +7328,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                         if (ns.StygianAbyss)
                         {
-                            if (Blessed || YellowHealthbar)
-                            {
-                                ns.SendMobileHealthbar(this, Healthbar.Yellow);
-                            }
-                            else if (Poisoned)
-                            {
-                                ns.SendMobileHealthbar(this, Healthbar.Poison);
-                            }
+                            ns.SendMobileHealthbar(this, Healthbar.Poison);
+                            ns.SendMobileHealthbar(this, Healthbar.Yellow);
                         }
 
                         if (IsDeadBondedPet)
@@ -7361,14 +7349,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                     if (ourState.StygianAbyss)
                     {
-                        if (m.Blessed || m.YellowHealthbar)
-                        {
-                            ourState.SendMobileHealthbar(m, Healthbar.Yellow);
-                        }
-                        else if (m.Poisoned)
-                        {
-                            ourState.SendMobileHealthbar(m, Healthbar.Poison);
-                        }
+                        ourState.SendMobileHealthbar(m, Healthbar.Poison);
+                        ourState.SendMobileHealthbar(m, Healthbar.Yellow);
                     }
 
                     if (m.IsDeadBondedPet)
@@ -7403,14 +7385,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                         if (ns.StygianAbyss)
                         {
-                            if (Blessed || YellowHealthbar)
-                            {
-                                ns.SendMobileHealthbar(this, Healthbar.Yellow);
-                            }
-                            else if (m.Poisoned)
-                            {
-                                ns.SendMobileHealthbar(this, Healthbar.Poison);
-                            }
+                            ns.SendMobileHealthbar(this, Healthbar.Poison);
+                            ns.SendMobileHealthbar(this, Healthbar.Yellow);
                         }
 
                         if (IsDeadBondedPet)
@@ -7488,14 +7464,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                 if (state.StygianAbyss)
                 {
-                    if (Blessed || YellowHealthbar)
-                    {
-                        state.SendMobileHealthbar(this, Healthbar.Yellow);
-                    }
-                    else if (m.Poisoned)
-                    {
-                        state.SendMobileHealthbar(this, Healthbar.Poison);
-                    }
+                    state.SendMobileHealthbar(this, Healthbar.Poison);
+                    state.SendMobileHealthbar(this, Healthbar.Yellow);
                 }
 
                 if (IsDeadBondedPet)
