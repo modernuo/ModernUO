@@ -16,7 +16,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 ## Requirements
 #### Supported Operating Systems
 [![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows&logoColor=0078D6&labelColor=222222)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
-![MacOS 11+](https://img.shields.io/badge/-ventura-222222?logo=apple&logoColor=white&labelColor=222222)
+![MacOS 11+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
 [![Debian 11+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
 [![Ubuntu 20+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
 <br />
