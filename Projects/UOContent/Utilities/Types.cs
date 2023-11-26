@@ -211,7 +211,7 @@ namespace Server
                         {
                             constructed = World.FindEntity((Serial)num);
                         }
-                        else if (isSerial) // mutate back
+                        else if (isSerial)
                         {
                             constructed = (Serial)num;
                         }

@@ -45,7 +45,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestDeathStatus()
         {
-            var expected = new DeathStatus(true).Compile();
+            var expected = new DeathStatus(false).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendDeathStatus();
