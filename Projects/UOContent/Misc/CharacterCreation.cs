@@ -159,6 +159,12 @@ public static class CharacterCreation
         var length = (trammelAvailable ? TrammelStartingCities.Length : 0) +
                      (feluccaAvailable ? FeluccaStartingCities.Length : 0);
 
+        if (length == 0)
+        {
+            logger.Error("Both Felucca and Trammel are unavailable maps, therefore no starting cities are available.");
+            return Array.Empty<CityInfo>();
+        }
+
         var cities = new CityInfo[length];
         var index = 0;
         if (trammelAvailable)
@@ -173,11 +179,6 @@ public static class CharacterCreation
         }
 
         // TODO: Add Royal City for gargoyles
-
-        if (cities.Length == 0)
-        {
-            logger.Warning("Both Felucca and Trammel are unavailable maps, therefore no starting cities are available.");
-        }
 
         return cities;
     }
