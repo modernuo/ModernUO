@@ -446,7 +446,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         {
             var info = LookupCompactInfo();
 
-            return info != null && info.m_Weight != -1 ? info.m_Weight : DefaultWeight;
+            return info is { m_Weight: >= 0 } ? info.m_Weight : DefaultWeight;
         }
         set
         {
@@ -458,7 +458,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
                 info.m_Weight = value;
 
-                if (info.m_Weight == -1)
+                if (info.m_Weight < 0)
                 {
                     VerifyCompactInfo();
                 }
@@ -883,26 +883,23 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             }
         }
 
-        if (info == null || info.m_Weight == -1.0)
+        if (info == null || info.m_Weight < 0)
         {
             flags |= SaveFlag.NullWeight;
         }
-        else
+        else if (info.m_Weight == 0.0)
         {
-            if (info.m_Weight == 0.0)
+            flags |= SaveFlag.WeightIs0;
+        }
+        else if (info.m_Weight > 0)
+        {
+            if (info.m_Weight == (int)info.m_Weight)
             {
-                flags |= SaveFlag.WeightIs0;
+                flags |= SaveFlag.IntWeight;
             }
-            else if (info.m_Weight != 1.0)
+            else
             {
-                if (info.m_Weight == (int)info.m_Weight)
-                {
-                    flags |= SaveFlag.IntWeight;
-                }
-                else
-                {
-                    flags |= SaveFlag.WeightNot1or0;
-                }
+                flags |= SaveFlag.WeightNot1or0;
             }
         }
 
@@ -1607,7 +1604,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                 flags |= ExpandFlag.TempFlag;
             }
 
-            if (info.m_Weight != -1)
+            if (info.m_Weight >= 0)
             {
                 flags |= ExpandFlag.Weight;
             }
@@ -1642,7 +1639,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                       || info.m_Spawner != null
                       || info.m_TempFlags != 0
                       || info.m_SavedFlags != 0
-                      || info.m_Weight != -1;
+                      || info.m_Weight >= 0;
 
         if (!isValid)
         {
