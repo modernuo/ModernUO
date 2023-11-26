@@ -2060,148 +2060,41 @@ namespace Server.Multis
             }
         }
 
-        public static bool IsFixture(int itemID)
-        {
-            if (itemID >= 0x675 && itemID < 0x6F5)
+        public static bool IsFixture(int itemID) =>
+            itemID switch
             {
-                return true;
-            }
-
-            if (itemID >= 0x314 && itemID < 0x364)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x824 && itemID < 0x834)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x839 && itemID < 0x849)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x84C && itemID < 0x85C)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x866 && itemID < 0x876)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x0E8 && itemID < 0x0F8)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x1FED && itemID < 0x1FFD)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x181D && itemID < 0x1829)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x241F && itemID < 0x2421)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x2423 && itemID < 0x2425)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x2A05 && itemID < 0x2A1D)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x319C && itemID < 0x31B0)
-            {
-                return true;
-            }
-
-            // ML doors
-            if (itemID is 0x2D46 or 0x2D48 or 0x2FE2 or 0x2FE4)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x2D63 && itemID < 0x2D70)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x319C && itemID < 0x31AF)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x367B && itemID < 0x369B)
-            {
-                return true;
-            }
-
-            // SA doors
-            if (itemID >= 0x409B && itemID < 0x40A3)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x410C && itemID < 0x4114)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x41C2 && itemID < 0x41CA)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x41CF && itemID < 0x41D7)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x436E && itemID < 0x437E)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x46DD && itemID < 0x46E5)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x4D22 && itemID < 0x4D2A)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x50C8 && itemID < 0x50D8)
-            {
-                return true;
-            }
-
-            if (itemID >= 0x5142 && itemID < 0x514A)
-            {
-                return true;
-            }
-
-            // TOL doors
-            if (itemID >= 0x9AD7 && itemID < 0x9AE7)
-            {
-                return true;
-            }
-
-            return itemID >= 0x9B3C && itemID < 0x9B4C;
-        }
+                >= 0x675 and < 0x6F5   => true,
+                >= 0x314 and < 0x364   => true,
+                >= 0x824 and < 0x834   => true,
+                >= 0x839 and < 0x849   => true,
+                >= 0x84C and < 0x85C   => true,
+                >= 0x866 and < 0x876   => true,
+                >= 0x0E8 and < 0x0F8   => true,
+                >= 0x1FED and < 0x1FFD => true,
+                >= 0x181D and < 0x1829 => true,
+                >= 0x241F and < 0x2421 => true,
+                >= 0x2423 and < 0x2425 => true,
+                >= 0x2A05 and < 0x2A1D => true,
+                >= 0x319C and < 0x31B0 => true,
+                // ML doors
+                0x2D46 or 0x2D48 or 0x2FE2 or 0x2FE4 => true,
+                >= 0x2D63 and < 0x2D70               => true,
+                >= 0x367B and < 0x369B               => true,
+                // SA doors
+                >= 0x409B and < 0x40A3 => true,
+                >= 0x410C and < 0x4114 => true,
+                >= 0x41C2 and < 0x41CA => true,
+                >= 0x41CF and < 0x41D7 => true,
+                >= 0x436E and < 0x437E => true,
+                >= 0x46DD and < 0x46E5 => true,
+                >= 0x4D22 and < 0x4D2A => true,
+                >= 0x50C8 and < 0x50D8 => true,
+                >= 0x5142 and < 0x514A => true,
+                // TOL doors
+                >= 0x9AD7 and < 0x9AE7 => true,
+                >= 0x9B3C and < 0x9B4C => true,
+                _                      => false
+            };
     }
 
     public class ConfirmCommitGump : Gump
