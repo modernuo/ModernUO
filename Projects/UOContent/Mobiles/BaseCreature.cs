@@ -1415,7 +1415,7 @@ namespace Server.Mobiles
             return chance / 1000.0;
         }
 
-        public override void Damage(int amount, Mobile from = null, bool informMount = true)
+        public override void Damage(int amount, Mobile from = null, bool informMount = true, bool ignoreEvilOmen = false)
         {
             var oldHits = Hits;
 
