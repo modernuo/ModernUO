@@ -15,16 +15,14 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using ModernUO.Serialization;
 
 namespace Server.Items;
 
+[SerializationGenerator(0, false)]
 public abstract partial class BaseMulti : Item
 {
     public BaseMulti(int itemID) : base(itemID) => Movable = false;
-
-    public BaseMulti(Serial serial) : base(serial)
-    {
-    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public override int ItemID
@@ -155,27 +153,5 @@ public abstract partial class BaseMulti : Item
         }
 
         return false;
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(1); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        if (version == 0)
-        {
-            if (ItemID >= 0x4000)
-            {
-                ItemID -= 0x4000;
-            }
-        }
     }
 }
