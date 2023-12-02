@@ -13,19 +13,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading;
-using Server.Logging;
 
 namespace Server;
 
 public class TileMatrix
 {
+    public const int SectorShift = 3;
+
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(TileMatrix));
     private static readonly List<TileMatrix> _instances = new();
 
@@ -82,8 +82,8 @@ public class TileMatrix
         }
 
         _fileIndex = fileIndex;
-        BlockWidth = width >> 3;
-        BlockHeight = height >> 3;
+        BlockWidth = width >> SectorShift;
+        BlockHeight = height >> SectorShift;
 
         _map = owner;
 
@@ -296,7 +296,7 @@ public class TileMatrix
 
     public LandTile GetLandTile(int x, int y)
     {
-        var tiles = GetLandBlock(x >> 3, y >> 3);
+        var tiles = GetLandBlock(x >> SectorShift, y >> SectorShift);
 
         return tiles[((y & 0x7) << 3) + (x & 0x7)];
     }

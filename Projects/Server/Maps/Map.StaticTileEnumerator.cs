@@ -20,7 +20,7 @@ namespace Server;
 
 public partial class Map
 {
-    public ref struct StaticTileEnumerable
+    public readonly ref struct StaticTileEnumerable
     {
         public static StaticTileEnumerable Empty
         {
@@ -69,7 +69,7 @@ public partial class Map
 
             if (includeStatics)
             {
-                var tiles = map.Tiles.GetStaticBlock(p.X >> SectorShift, p.Y >> SectorShift);
+                var tiles = map.Tiles.GetStaticBlock(p.X >> TileMatrix.SectorShift, p.Y >> TileMatrix.SectorShift);
                 _tiles = tiles[p.X & 0x7][p.Y & 0x7];
                 _index = -1;
             }
