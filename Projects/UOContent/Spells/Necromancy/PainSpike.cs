@@ -74,7 +74,7 @@ namespace Server.Spells.Necromancy
 
                 // TODO: Find a better way to do this
                 StaminaSystem.DFA = DFAlgorithm.PainSpike;
-                m.Damage((int)damage, Caster);
+                m.Damage((int)damage, Caster, ignoreEvilOmen: true);
                 SpellHelper.DoLeech((int)damage, Caster, m);
                 StaminaSystem.DFA = DFAlgorithm.Standard;
 

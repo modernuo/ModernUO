@@ -291,11 +291,14 @@ namespace Server.Spells
                 caster,
                 target,
                 type,
-                GetOffset(caster, target, type, false, skillCheck),
-                duration
+                GetOffset(caster, target, type, false),
+                duration,
+                skillCheck
             );
 
-        public static bool AddStatBonus(Mobile caster, Mobile target, StatType type, int bonus, TimeSpan duration)
+        public static bool AddStatBonus(
+            Mobile caster, Mobile target, StatType type, int bonus, TimeSpan duration, bool skillCheck = false
+        )
         {
             var name = $"[Magic] {type} Buff";
 
@@ -311,8 +314,22 @@ namespace Server.Spells
                 target.RemoveStatMod(mod);
             }
 
+            if (skillCheck)
+            {
+                caster.CheckSkill(SkillName.EvalInt, 0.0, 120.0);
+            }
+
             target.AddStatMod(new StatMod(type, name, bonus, duration));
             return true;
+        }
+
+        public static int GetCurse(Mobile caster, Mobile target, StatType type)
+        {
+            var name = $"[Magic] {type} Curse";
+
+            var mod = target.GetStatMod(name);
+
+            return mod?.Offset ?? 0;
         }
 
         public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, TimeSpan duration, bool skillCheck = true) =>
@@ -320,11 +337,14 @@ namespace Server.Spells
                 caster,
                 target,
                 type,
-                GetOffset(caster, target, type, true, skillCheck),
-                duration
+                GetOffset(caster, target, type, true),
+                duration,
+                skillCheck
             );
 
-        public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, int curse, TimeSpan duration)
+        public static bool AddStatCurse(
+            Mobile caster, Mobile target, StatType type, int curse, TimeSpan duration, bool skillCheck = false
+        )
         {
             var malus = -curse;
             var name = $"[Magic] {type} Curse";
@@ -341,6 +361,12 @@ namespace Server.Spells
                 target.RemoveStatMod(mod);
             }
 
+            if (skillCheck)
+            {
+                caster.CheckSkill(SkillName.EvalInt, 0.0, 120.0);
+                target.CheckSkill(SkillName.MagicResist, 0.0, 120.0);
+            }
+
             target.AddStatMod(new StatMod(type, name, malus, duration));
             return true;
         }
@@ -351,37 +377,20 @@ namespace Server.Spells
 
         public static double GetOffsetScalar(Mobile caster, Mobile target, bool curse)
         {
-            double percent;
-
-            if (curse)
-            {
-                percent = 8 + (caster.Skills.EvalInt.Value - target.Skills.MagicResist.Value) / 10;
-            }
-            else
-            {
-                percent = 1 + caster.Skills.EvalInt.Value / 10;
-            }
+            var percent = curse
+                ? 8 + (caster.Skills.EvalInt.Value - target.Skills.MagicResist.Value) / 10
+                : 1 + caster.Skills.EvalInt.Value / 10;
 
             percent *= 0.01;
 
             return Math.Max(percent, 0);
         }
 
-        public static int GetOffset(Mobile caster, Mobile target, StatType type, bool curse, bool skillCheck)
+        public static int GetOffset(Mobile caster, Mobile target, StatType type, bool curse)
         {
             if (!Core.AOS)
             {
                 return 1 + (int)(caster.Skills.Magery.Value * 0.1);
-            }
-
-            if (skillCheck)
-            {
-                caster.CheckSkill(SkillName.EvalInt, 0.0, 120.0);
-
-                if (curse)
-                {
-                    target.CheckSkill(SkillName.MagicResist, 0.0, 120.0);
-                }
             }
 
             var percent = GetOffsetScalar(caster, target, curse);
@@ -390,8 +399,7 @@ namespace Server.Spells
             {
                 StatType.Str => (int)(target.RawStr * percent),
                 StatType.Dex => (int)(target.RawDex * percent),
-                StatType.Int => (int)(target.RawInt * percent),
-                _            => 1 + (int)(caster.Skills.Magery.Value * 0.1)
+                StatType.Int => (int)(target.RawInt * percent)
             };
         }
 

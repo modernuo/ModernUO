@@ -2769,11 +2769,11 @@ namespace Server.Mobiles
             }
         }
 
-        public override void Damage(int amount, Mobile from = null, bool informMount = true)
+        public override void Damage(int amount, Mobile from = null, bool informMount = true, bool ignoreEvilOmen = false)
         {
             var damageBonus = 1.0;
 
-            if (EvilOmenSpell.EndEffect(this) && !PainSpikeSpell.UnderEffect(this))
+            if (EvilOmenSpell.EndEffect(this) && !ignoreEvilOmen)
             {
                 damageBonus += 0.25;
             }

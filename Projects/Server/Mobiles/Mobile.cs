@@ -5884,7 +5884,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual bool CanBeDamaged() => !m_Blessed;
 
-    public virtual void Damage(int amount, Mobile from = null, bool informMount = true)
+    public virtual void Damage(int amount, Mobile from = null, bool informMount = true, bool ignoreEvilOmen = false)
     {
         if (amount <= 0)
         {
