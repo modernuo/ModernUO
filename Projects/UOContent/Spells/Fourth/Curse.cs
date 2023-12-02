@@ -34,7 +34,7 @@ namespace Server.Spells.Fourth
             }
 
             // Allow curse duration to refresh if the new curse is longer
-            if (_table.TryGetValue(m, out var existingTimer) && existingTimer.Next - Core.Now > duration)
+            if (_table.TryGetValue(m, out var existingTimer) && existingTimer.Next - Core.Now > duration && Core.AOS)
             {
                 return false;
             }
@@ -68,7 +68,7 @@ namespace Server.Spells.Fourth
 
             existingTimer?.Stop();
             m.UpdateResistances();
-            _table[m] = Timer.DelayCall(duration, () => RemoveEffect(m));
+            _table[m] = Timer.DelayCall(duration, mob => RemoveEffect(mob), m);
 
             m.Spell?.OnCasterHurt();
 
