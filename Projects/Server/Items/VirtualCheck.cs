@@ -19,8 +19,8 @@ using Server.Network;
 
 namespace Server.Items;
 
-[SerializationGenerator(1, false)]
-public sealed class VirtualCheck : Item
+[SerializationGenerator(0, false)]
+public sealed partial class VirtualCheck : Item
 {
     public static bool UseEditGump { get; private set; }
 
