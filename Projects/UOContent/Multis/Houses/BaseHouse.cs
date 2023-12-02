@@ -2625,7 +2625,7 @@ namespace Server.Multis
                 /* You have been ejected from this house.
                  * If you persist in entering, you may be banned from the house.
                  */
-                    targ.SendLocalizedMessage(501341);
+                targ.SendLocalizedMessage(501341);
             }
         }
 
