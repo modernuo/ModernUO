@@ -22,7 +22,7 @@ jobs:
   - task: NuGetAuthenticate@1
   - script: ./publish.cmd Release
     displayName: 'Build'
-  - script: git diff --exit-code ./**/Migrations/*.v*.json
+  - powershell: ./.github/porcelain.ps1
     displayName: Migration Changes
   - script: dotnet test --no-restore
     displayName: 'Test'
