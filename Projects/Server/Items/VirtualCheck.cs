@@ -13,12 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Network;
 
 namespace Server.Items;
 
-public sealed class VirtualCheck : Item
+[SerializationGenerator(0, false)]
+public sealed partial class VirtualCheck : Item
 {
     public static bool UseEditGump { get; private set; }
 
@@ -27,9 +29,9 @@ public sealed class VirtualCheck : Item
         UseEditGump = ServerConfiguration.GetSetting("virtualChecks.useEditGump", Core.TOL);
     }
 
-    private int m_Gold;
+    private int _gold;
 
-    private int m_Plat;
+    private int _plat;
 
     public VirtualCheck(int plat = 0, int gold = 0) : base(0x14F0)
     {
@@ -37,11 +39,6 @@ public sealed class VirtualCheck : Item
         Gold = gold;
 
         Movable = false;
-    }
-
-    public VirtualCheck(Serial serial)
-        : base(serial)
-    {
     }
 
     public override bool IsVirtualItem => true;
@@ -58,10 +55,10 @@ public sealed class VirtualCheck : Item
     [CommandProperty(AccessLevel.Administrator)]
     public int Plat
     {
-        get => m_Plat;
+        get => _plat;
         set
         {
-            m_Plat = value;
+            _plat = value;
             InvalidateProperties();
         }
     }
@@ -69,10 +66,10 @@ public sealed class VirtualCheck : Item
     [CommandProperty(AccessLevel.Administrator)]
     public int Gold
     {
-        get => m_Gold;
+        get => _gold;
         set
         {
-            m_Gold = value;
+            _gold = value;
             InvalidateProperties();
         }
     }
@@ -159,11 +156,8 @@ public sealed class VirtualCheck : Item
         }
     }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-    }
-
-    public override void Deserialize(IGenericReader reader)
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
     {
         Delete();
     }
@@ -179,15 +173,15 @@ public sealed class VirtualCheck : Item
             AllGold
         }
 
-        private int m_Plat, m_Gold;
+        private int _plat, _gold;
 
         public EditGump(Mobile user, VirtualCheck check) : base(50, 50)
         {
             User = user;
             Check = check;
 
-            m_Plat = Check.Plat;
-            m_Gold = Check.Gold;
+            _plat = Check.Plat;
+            _gold = Check.Gold;
 
             Closable = true;
             Disposable = true;
@@ -289,7 +283,7 @@ public sealed class VirtualCheck : Item
 
             AddBackground(210, 60, 175, 20, 9300);
             AddBackground(215, 45, 165, 30, 9350);
-            AddTextEntry(225, 50, 145, 20, 0, 0, m_Plat.ToString(), User.Account.TotalPlat.ToString().Length);
+            AddTextEntry(225, 50, 145, 20, 0, 0, _plat.ToString(), User.Account.TotalPlat.ToString().Length);
 
             // Gold Row
             AddBackground(15, 100, 175, 20, 9300);
@@ -301,7 +295,7 @@ public sealed class VirtualCheck : Item
 
             AddBackground(210, 100, 175, 20, 9300);
             AddBackground(215, 85, 165, 30, 9350);
-            AddTextEntry(225, 90, 145, 20, 0, 1, m_Gold.ToString(), User.Account.TotalGold.ToString().Length);
+            AddTextEntry(225, 90, 145, 20, 0, 1, _gold.ToString(), User.Account.TotalGold.ToString().Length);
 
             // Buttons
             AddButton(20, 128, 12006, 12007, (int)Buttons.Close);
@@ -317,29 +311,28 @@ public sealed class VirtualCheck : Item
                 return;
             }
 
-            bool refresh = false, updated = false;
+            var refresh = false;
+            var updated = false;
 
             switch ((Buttons)info.ButtonID)
             {
-                case Buttons.Close:
-                    break;
                 case Buttons.Clear:
                     {
-                        m_Plat = m_Gold = 0;
+                        _plat = _gold = 0;
                         refresh = true;
+                        break;
                     }
-                    break;
                 case Buttons.Accept:
                     {
                         var platText = info.GetTextEntry(0).Text;
                         var goldText = info.GetTextEntry(1).Text;
 
-                        if (!int.TryParse(platText, out m_Plat))
+                        if (!int.TryParse(platText, out _plat))
                         {
                             User.SendMessage("That is not a valid amount of platinum.");
                             refresh = true;
                         }
-                        else if (!int.TryParse(goldText, out m_Gold))
+                        else if (!int.TryParse(goldText, out _gold))
                         {
                             User.SendMessage("That is not a valid amount of gold.");
                             refresh = true;
@@ -349,34 +342,34 @@ public sealed class VirtualCheck : Item
                             var totalPlat = User.Account.TotalPlat;
                             var totalGold = User.Account.TotalGold;
 
-                            if (totalPlat < m_Plat || totalGold < m_Gold)
+                            if (totalPlat < _plat || totalGold < _gold)
                             {
-                                m_Plat = User.Account.TotalPlat;
-                                m_Gold = User.Account.TotalGold;
+                                _plat = User.Account.TotalPlat;
+                                _gold = User.Account.TotalGold;
                                 User.SendMessage("You do not have that much currency.");
                                 refresh = true;
                             }
                             else
                             {
-                                Check.Plat = m_Plat;
-                                Check.Gold = m_Gold;
+                                Check.Plat = _plat;
+                                Check.Gold = _gold;
                                 updated = true;
                             }
                         }
+                        break;
                     }
-                    break;
                 case Buttons.AllPlat:
                     {
-                        m_Plat = User.Account.TotalPlat;
+                        _plat = User.Account.TotalPlat;
                         refresh = true;
+                        break;
                     }
-                    break;
                 case Buttons.AllGold:
                     {
-                        m_Gold = User.Account.TotalGold;
+                        _gold = User.Account.TotalGold;
                         refresh = true;
+                        break;
                     }
-                    break;
             }
 
             if (updated)

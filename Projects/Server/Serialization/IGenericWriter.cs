@@ -133,7 +133,10 @@ public interface IGenericWriter
     {
         switch (sizeof(T))
         {
-            default: throw new ArgumentException($"Argument of type {typeof(T)} is not a normal enum");
+            default:
+                {
+                    throw new ArgumentException($"Argument of type {typeof(T)} is not a normal enum");
+                }
             case 1:
                 {
                     Write(*(byte*)&value);

@@ -4,6 +4,7 @@ using System.IO;
 using Server.Collections;
 using Server.Logging;
 using Server.Network;
+using ModernUO.Serialization;
 
 namespace Server.Items;
 
@@ -13,47 +14,38 @@ public delegate int CheckItemGroup(Item a, Item b);
 
 public delegate void ContainerSnoopHandler(Container cont, Mobile from);
 
+[SerializationGenerator(0, false)]
 public partial class Container : Item
 {
     private ContainerData m_ContainerData;
 
-    private int m_DropSound;
-    private int m_GumpID;
-
     internal List<Item> m_Items;
-    private int m_MaxItems;
+
     private int m_TotalGold;
 
     private int m_TotalItems;
     private int m_TotalWeight;
     private int _version;
 
+    [SerializableField(3)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _liftOverride;
+
+    [SerializableFieldSaveFlag(3)]
+    private bool ShouldSerializeLiftOverride() => _liftOverride;
+
     public Container(int itemID) : base(itemID)
     {
-        m_GumpID = -1;
-        m_DropSound = -1;
-        m_MaxItems = -1;
-
-        UpdateContainerData();
-    }
-
-    public Container(Serial serial) : base(serial)
-    {
+        _gumpID = -1;
+        _dropSound = -1;
+        _maxItems = -1;
     }
 
     public static ContainerSnoopHandler SnoopHandler { get; set; }
 
     public ContainerData ContainerData
     {
-        get
-        {
-            if (m_ContainerData == null)
-            {
-                UpdateContainerData();
-            }
-
-            return m_ContainerData;
-        }
+        get => m_ContainerData ?? UpdateContainerData();
         set => m_ContainerData = value;
     }
 
@@ -69,52 +61,62 @@ public partial class Container : Item
 
             if (ItemID != oldID)
             {
-                UpdateContainerData();
+                m_ContainerData = null;
             }
         }
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int GumpID
-    {
-        get => m_GumpID == -1 ? DefaultGumpID : m_GumpID;
-        set => m_GumpID = value;
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int DropSound
-    {
-        get => m_DropSound == -1 ? DefaultDropSound : m_DropSound;
-        set => m_DropSound = value;
-    }
-
+    [EncodedInt]
+    [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]
     public int MaxItems
     {
-        get => m_MaxItems == -1 ? DefaultMaxItems : m_MaxItems;
+        get => _maxItems == -1 ? DefaultMaxItems : _maxItems;
         set
         {
-            m_MaxItems = value;
+            _maxItems = value;
             InvalidateProperties();
+            this.MarkDirty();
         }
     }
 
+    [SerializableFieldSaveFlag(0)]
+    private bool ShouldSerializeMaxItems() => _maxItems != -1;
+
+    [EncodedInt]
+    [SerializableProperty(1)]
     [CommandProperty(AccessLevel.GameMaster)]
-    public virtual int MaxWeight
+    public int GumpID
     {
-        get
+        get => _gumpID == -1 ? DefaultGumpID : _gumpID;
+        set
         {
-            if (Parent is Container container && container.MaxWeight == 0)
-            {
-                return 0;
-            }
-
-            return DefaultMaxWeight;
+            _gumpID = value;
+            this.MarkDirty();
         }
     }
 
+    [SerializableFieldSaveFlag(1)]
+    private bool ShouldSerializeGumpId() => _gumpID != -1;
+
+    [EncodedInt]
+    [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool LiftOverride { get; set; }
+    public int DropSound
+    {
+        get => _dropSound == -1 ? DefaultDropSound : _dropSound;
+        set
+        {
+            _dropSound = value;
+            this.MarkDirty();
+        }
+    }
+
+    [SerializableFieldSaveFlag(2)]
+    private bool ShouldSerializeDropSound() => _dropSound != -1;
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual int MaxWeight => Parent is Container { MaxWeight: 0 } ? 0 : DefaultMaxWeight;
 
     public virtual Rectangle2D Bounds => ContainerData.Bounds;
 
@@ -139,10 +141,7 @@ public partial class Container : Item
 
     public virtual bool IsPublicContainer => false;
 
-    public virtual void UpdateContainerData()
-    {
-        ContainerData = ContainerData.GetData(ItemID);
-    }
+    public virtual ContainerData UpdateContainerData() => ContainerData = ContainerData.GetData(ItemID);
 
     public virtual int GetDroppedSound(Item item)
     {
@@ -283,118 +282,9 @@ public partial class Container : Item
 
     private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
-    public override void Serialize(IGenericWriter writer)
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        base.Serialize(writer);
-
-        writer.Write(2); // version
-
-        var flags = SaveFlag.None;
-
-        SetSaveFlag(ref flags, SaveFlag.MaxItems, m_MaxItems != -1);
-        SetSaveFlag(ref flags, SaveFlag.GumpID, m_GumpID != -1);
-        SetSaveFlag(ref flags, SaveFlag.DropSound, m_DropSound != -1);
-        SetSaveFlag(ref flags, SaveFlag.LiftOverride, LiftOverride);
-
-        writer.Write((byte)flags);
-
-        if (GetSaveFlag(flags, SaveFlag.MaxItems))
-        {
-            writer.WriteEncodedInt(m_MaxItems);
-        }
-
-        if (GetSaveFlag(flags, SaveFlag.GumpID))
-        {
-            writer.WriteEncodedInt(m_GumpID);
-        }
-
-        if (GetSaveFlag(flags, SaveFlag.DropSound))
-        {
-            writer.WriteEncodedInt(m_DropSound);
-        }
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        switch (version)
-        {
-            case 2:
-                {
-                    var flags = (SaveFlag)reader.ReadByte();
-
-                    if (GetSaveFlag(flags, SaveFlag.MaxItems))
-                    {
-                        m_MaxItems = reader.ReadEncodedInt();
-                    }
-                    else
-                    {
-                        m_MaxItems = -1;
-                    }
-
-                    if (GetSaveFlag(flags, SaveFlag.GumpID))
-                    {
-                        m_GumpID = reader.ReadEncodedInt();
-                    }
-                    else
-                    {
-                        m_GumpID = -1;
-                    }
-
-                    if (GetSaveFlag(flags, SaveFlag.DropSound))
-                    {
-                        m_DropSound = reader.ReadEncodedInt();
-                    }
-                    else
-                    {
-                        m_DropSound = -1;
-                    }
-
-                    LiftOverride = GetSaveFlag(flags, SaveFlag.LiftOverride);
-
-                    break;
-                }
-            case 1:
-                {
-                    m_MaxItems = reader.ReadInt();
-                    goto case 0;
-                }
-            case 0:
-                {
-                    if (version < 1)
-                    {
-                        m_MaxItems = GlobalMaxItems;
-                    }
-
-                    m_GumpID = reader.ReadInt();
-                    m_DropSound = reader.ReadInt();
-
-                    if (m_GumpID == DefaultGumpID)
-                    {
-                        m_GumpID = -1;
-                    }
-
-                    if (m_DropSound == DefaultDropSound)
-                    {
-                        m_DropSound = -1;
-                    }
-
-                    if (m_MaxItems == DefaultMaxItems)
-                    {
-                        m_MaxItems = -1;
-                    }
-
-                    // m_Bounds = new Rectangle2D( reader.ReadPoint2D(), reader.ReadPoint2D() );
-                    reader.ReadPoint2D();
-                    reader.ReadPoint2D();
-
-                    break;
-                }
-        }
-
         UpdateContainerData();
     }
 
@@ -416,18 +306,24 @@ public partial class Container : Item
             switch (type)
             {
                 case TotalType.Gold:
-                    m_TotalGold += delta;
-                    break;
+                    {
+                        m_TotalGold += delta;
+                        break;
+                    }
 
                 case TotalType.Items:
-                    m_TotalItems += delta;
-                    InvalidateProperties();
-                    break;
+                    {
+                        m_TotalItems += delta;
+                        InvalidateProperties();
+                        break;
+                    }
 
                 case TotalType.Weight:
-                    m_TotalWeight += delta;
-                    InvalidateProperties();
-                    break;
+                    {
+                        m_TotalWeight += delta;
+                        InvalidateProperties();
+                        break;
+                    }
             }
         }
 
@@ -1628,16 +1524,6 @@ public partial class Container : Item
         }
 
         return null;
-    }
-
-    [Flags]
-    private enum SaveFlag : byte
-    {
-        None = 0x00000000,
-        MaxItems = 0x00000001,
-        GumpID = 0x00000002,
-        DropSound = 0x00000004,
-        LiftOverride = 0x00000008
     }
 
     private struct ItemStackEntry
