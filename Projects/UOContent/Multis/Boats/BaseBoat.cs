@@ -134,6 +134,7 @@ namespace Server.Multis
             }
         }
 
+        [DeltaDateTime]
         [SerializableProperty(3)]
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime TimeOfDecay
