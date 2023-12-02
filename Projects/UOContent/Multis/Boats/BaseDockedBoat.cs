@@ -1,225 +1,170 @@
+using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Regions;
 using Server.Targeting;
 
-namespace Server.Multis
+namespace Server.Multis;
+
+[SerializationGenerator(0, false)]
+public abstract partial class BaseDockedBoat : Item
 {
-    public abstract class BaseDockedBoat : Item
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _multiId;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Point3D _offset;
+
+    [InvalidateProperties]
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _shipName;
+
+    public BaseDockedBoat(int id, Point3D offset, BaseBoat boat) : base(0x14F4)
     {
-        private string m_ShipName;
+        Weight = 1.0;
+        LootType = LootType.Blessed;
 
-        public BaseDockedBoat(int id, Point3D offset, BaseBoat boat) : base(0x14F4)
+        _multiId = id;
+        _offset = offset;
+
+        _shipName = boat.ShipName;
+    }
+
+    public abstract BaseBoat Boat { get; }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!IsChildOf(from.Backpack))
         {
-            Weight = 1.0;
-            LootType = LootType.Blessed;
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+        }
+        else
+        {
+            from.SendLocalizedMessage(502482); // Where do you wish to place the ship?
 
-            MultiID = id;
-            Offset = offset;
+            from.Target = new InternalTarget(this);
+        }
+    }
 
-            m_ShipName = boat.ShipName;
+    public override void AddNameProperty(IPropertyList list)
+    {
+        if (_shipName != null)
+        {
+            list.Add(_shipName);
+        }
+        else
+        {
+            base.AddNameProperty(list);
+        }
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        if (_shipName != null)
+        {
+            LabelTo(from, _shipName);
+        }
+        else
+        {
+            base.OnSingleClick(from);
+        }
+    }
+
+    public void OnPlacement(Mobile from, Point3D p)
+    {
+        if (Deleted)
+        {
+            return;
         }
 
-        public BaseDockedBoat(Serial serial) : base(serial)
+        if (!IsChildOf(from.Backpack))
         {
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MultiID { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Point3D Offset { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string ShipName
+        else
         {
-            get => m_ShipName;
-            set
-            {
-                m_ShipName = value;
-                InvalidateProperties();
-            }
-        }
+            var map = from.Map;
 
-        public abstract BaseBoat Boat { get; }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write(MultiID);
-            writer.Write(Offset);
-            writer.Write(m_ShipName);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                case 0:
-                    {
-                        MultiID = reader.ReadInt();
-                        Offset = reader.ReadPoint3D();
-                        m_ShipName = reader.ReadString();
-
-                        if (version == 0)
-                        {
-                            reader.ReadUInt();
-                        }
-
-                        break;
-                    }
-            }
-
-            if (LootType == LootType.Newbied)
-            {
-                LootType = LootType.Blessed;
-            }
-
-            if (Weight == 0.0)
-            {
-                Weight = 1.0;
-            }
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (!IsChildOf(from.Backpack))
-            {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-            }
-            else
-            {
-                from.SendLocalizedMessage(502482); // Where do you wish to place the ship?
-
-                from.Target = new InternalTarget(this);
-            }
-        }
-
-        public override void AddNameProperty(IPropertyList list)
-        {
-            if (m_ShipName != null)
-            {
-                list.Add(m_ShipName);
-            }
-            else
-            {
-                base.AddNameProperty(list);
-            }
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            if (m_ShipName != null)
-            {
-                LabelTo(from, m_ShipName);
-            }
-            else
-            {
-                base.OnSingleClick(from);
-            }
-        }
-
-        public void OnPlacement(Mobile from, Point3D p)
-        {
-            if (Deleted)
+            if (map == null)
             {
                 return;
             }
 
-            if (!IsChildOf(from.Backpack))
+            var boat = Boat;
+
+            if (boat == null)
             {
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                return;
+            }
+
+            p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
+
+            if (BaseBoat.IsValidLocation(p, map) && boat.CanFit(p, map, boat.ItemID) && map != Map.Ilshenar &&
+                map != Map.Malas)
+            {
+                Delete();
+
+                boat.Owner = from;
+                boat.Anchored = true;
+                boat.ShipName = _shipName;
+
+                var keyValue = boat.CreateKeys(from);
+
+                if (boat.PPlank != null)
+                {
+                    boat.PPlank.KeyValue = keyValue;
+                }
+
+                if (boat.SPlank != null)
+                {
+                    boat.SPlank.KeyValue = keyValue;
+                }
+
+                boat.MoveToWorld(p, map);
             }
             else
             {
-                var map = from.Map;
-
-                if (map == null)
-                {
-                    return;
-                }
-
-                var boat = Boat;
-
-                if (boat == null)
-                {
-                    return;
-                }
-
-                p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-
-                if (BaseBoat.IsValidLocation(p, map) && boat.CanFit(p, map, boat.ItemID) && map != Map.Ilshenar &&
-                    map != Map.Malas)
-                {
-                    Delete();
-
-                    boat.Owner = from;
-                    boat.Anchored = true;
-                    boat.ShipName = m_ShipName;
-
-                    var keyValue = boat.CreateKeys(from);
-
-                    if (boat.PPlank != null)
-                    {
-                        boat.PPlank.KeyValue = keyValue;
-                    }
-
-                    if (boat.SPlank != null)
-                    {
-                        boat.SPlank.KeyValue = keyValue;
-                    }
-
-                    boat.MoveToWorld(p, map);
-                }
-                else
-                {
-                    boat.Delete();
-                    from.SendLocalizedMessage(1043284); // A ship can not be created here.
-                }
+                boat.Delete();
+                from.SendLocalizedMessage(1043284); // A ship can not be created here.
             }
         }
+    }
 
-        private class InternalTarget : MultiTarget
+    private class InternalTarget : MultiTarget
+    {
+        private readonly BaseDockedBoat m_Model;
+
+        public InternalTarget(BaseDockedBoat model) : base(model.MultiId, model.Offset) => m_Model = model;
+
+        protected override void OnTarget(Mobile from, object o)
         {
-            private readonly BaseDockedBoat m_Model;
-
-            public InternalTarget(BaseDockedBoat model) : base(model.MultiID, model.Offset) => m_Model = model;
-
-            protected override void OnTarget(Mobile from, object o)
+            if (o is not IPoint3D ip)
             {
-                if (o is not IPoint3D ip)
-                {
-                    return;
-                }
+                return;
+            }
 
-                Point3D p = ip switch
-                {
-                    Item item => item.GetWorldTop(),
-                    Mobile m  => m.Location,
-                    _         => new Point3D(ip)
-                };
+            Point3D p = ip switch
+            {
+                Item item => item.GetWorldTop(),
+                Mobile m  => m.Location,
+                _         => new Point3D(ip)
+            };
 
-                var region = Region.Find(p, from.Map);
+            var region = Region.Find(p, from.Map);
 
-                if (region.IsPartOf<DungeonRegion>())
-                {
-                    from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
-                }
-                else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
-                {
-                    from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
-                }
-                else
-                {
-                    m_Model.OnPlacement(from, p);
-                }
+            if (region.IsPartOf<DungeonRegion>())
+            {
+                from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+            }
+            else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
+            {
+                from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+            }
+            else
+            {
+                m_Model.OnPlacement(from, p);
             }
         }
     }

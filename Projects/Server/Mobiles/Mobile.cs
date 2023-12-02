@@ -3715,6 +3715,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
+    public double GetDistanceToSqrt(Point2D p)
+    {
+        var xDelta = m_Location.m_X - p.X;
+        var yDelta = m_Location.m_Y - p.Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
     public double GetDistanceToSqrt(IPoint2D p)
     {
         var xDelta = m_Location.m_X - p.X;
