@@ -280,7 +280,10 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
     {
         switch (World.WorldState)
         {
-            default: return null;
+            default:
+                {
+                    return null;
+                }
             case WorldState.Loading:
             case WorldState.Saving:
             case WorldState.WritingSave:

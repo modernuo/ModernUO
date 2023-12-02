@@ -36,7 +36,7 @@ public partial class Container : Item
 
     public Container(int itemID) : base(itemID)
     {
-        _gumpId = -1;
+        _gumpID = -1;
         _dropSound = -1;
         _maxItems = -1;
     }
@@ -88,16 +88,16 @@ public partial class Container : Item
     [CommandProperty(AccessLevel.GameMaster)]
     public int GumpID
     {
-        get => _gumpId == -1 ? DefaultGumpID : _gumpId;
+        get => _gumpID == -1 ? DefaultGumpID : _gumpID;
         set
         {
-            _gumpId = value;
+            _gumpID = value;
             this.MarkDirty();
         }
     }
 
     [SerializableFieldSaveFlag(1)]
-    private bool ShouldSerializeGumpId() => _gumpId != -1;
+    private bool ShouldSerializeGumpId() => _gumpID != -1;
 
     [EncodedInt]
     [SerializableProperty(2)]

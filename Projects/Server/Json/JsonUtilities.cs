@@ -54,46 +54,63 @@ public static class JsonUtilities
         switch(je.ValueKind)
         {
             case JsonValueKind.Object:
-                writer.WriteStartObject();
-
-                // TODO: This is slow, can make it faster?
-                foreach (JsonProperty x in je.EnumerateObject().OrderBy(prop => prop.Name))
                 {
-                    writer.WritePropertyName(x.Name);
-                    WriteJsonElementSorted(x.Value, writer);
-                }
+                    writer.WriteStartObject();
 
-                writer.WriteEndObject();
-                break;
+                    // TODO: This is slow, can make it faster?
+                    foreach (JsonProperty x in je.EnumerateObject().OrderBy(prop => prop.Name))
+                    {
+                        writer.WritePropertyName(x.Name);
+                        WriteJsonElementSorted(x.Value, writer);
+                    }
+
+                    writer.WriteEndObject();
+                    break;
+                }
             case JsonValueKind.Array:
-                writer.WriteStartArray();
-                foreach(JsonElement x in je.EnumerateArray())
                 {
-                    WriteJsonElementSorted(x, writer);
+                    writer.WriteStartArray();
+                    foreach(JsonElement x in je.EnumerateArray())
+                    {
+                        WriteJsonElementSorted(x, writer);
+                    }
+                    writer.WriteEndArray();
+                    break;
                 }
-                writer.WriteEndArray();
-                break;
             case JsonValueKind.Number:
-                writer.WriteNumberValue(je.GetDouble());
-                break;
+                {
+                    writer.WriteNumberValue(je.GetDouble());
+                    break;
+                }
             case JsonValueKind.String:
-                // Escape the string
-                writer.WriteStringValue(je.GetString());
-                break;
+                {
+                    // Escape the string
+                    writer.WriteStringValue(je.GetString());
+                    break;
+                }
             case JsonValueKind.Null:
-                writer.WriteNullValue();
-                break;
+                {
+                    writer.WriteNullValue();
+                    break;
+                }
             case JsonValueKind.True:
-                writer.WriteBooleanValue(true);
-                break;
+                {
+                    writer.WriteBooleanValue(true);
+                    break;
+                }
             case JsonValueKind.False:
-                writer.WriteBooleanValue(false);
-                break;
+                {
+                    writer.WriteBooleanValue(false);
+                    break;
+                }
             case JsonValueKind.Undefined: // Don't write anything
-                break;
+                {
+                    break;
+                }
             default:
-                throw new NotImplementedException($"Kind: {je.ValueKind}");
-
+                {
+                    throw new NotImplementedException($"Kind: {je.ValueKind}");
+                }
         }
     }
 }
