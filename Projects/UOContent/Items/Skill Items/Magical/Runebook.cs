@@ -151,7 +151,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
             DefaultIndex = -1;
         }
 
-        this.RemoveAt(_entries, index);
+        RemoveFromEntriesAt(index);
 
         var rune = new RecallRune
         {

@@ -922,7 +922,7 @@ namespace Server.Engines.ConPVP
                 ac.Delete();
             }
 
-            this.Clear(Components);
+            ClearComponents();
 
             // stairs
             AddComponent(new AddonComponent(0x74D), -1, +1, -5);

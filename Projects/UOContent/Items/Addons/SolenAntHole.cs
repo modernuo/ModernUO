@@ -119,7 +119,7 @@ namespace Server.Items
 
         public void SpawnAnt(BaseCreature ant)
         {
-            this.Add(_spawned, ant);
+            AddToSpawned(ant);
 
             var map = Map;
             var p = Location;
@@ -143,7 +143,7 @@ namespace Server.Items
             {
                 if (!_spawned[i].Alive || _spawned[i].Deleted)
                 {
-                    this.RemoveAt(_spawned, i);
+                    RemoveFromSpawnedAt(i);
                 }
             }
 

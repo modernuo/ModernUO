@@ -550,7 +550,7 @@ namespace Server.Items
                 LiveCreatures = Math.Max(LiveCreatures - 1, 0);
 
                 // An unfortunate accident has left a creature floating upside-down.  It is starting to smell.
-                this.Add(_events, 1074366);
+                AddToEvents(1074366);
             }
         }
 
@@ -563,7 +563,7 @@ namespace Server.Items
             else if (m_EvaluateDay)
             {
                 // reset events
-                this.Clear(_events);
+                ClearEvents();
 
                 // food events
                 if (
@@ -571,7 +571,7 @@ namespace Server.Items
                     _food.State != (int)FoodState.Dead ||
                     _food.Added >= _food.Improve && _food.State == (int)FoodState.Full)
                 {
-                    this.Add(_events, 1074368); // The tank looks worse than it did yesterday.
+                    AddToEvents(1074368); // The tank looks worse than it did yesterday.
                 }
 
                 if (
@@ -579,18 +579,18 @@ namespace Server.Items
                     _food.State != (int)FoodState.Overfed ||
                     _food.Added < _food.Maintain && _food.State == (int)FoodState.Overfed)
                 {
-                    this.Add(_events, 1074367); // The tank looks healthier today.
+                    AddToEvents(1074367); // The tank looks healthier today.
                 }
 
                 // water events
                 if (_water.Added < _water.Maintain && _water.State != (int)WaterState.Dead)
                 {
-                    this.Add(_events, 1074370); // This tank can use more water.
+                    AddToEvents(1074370); // This tank can use more water.
                 }
 
                 if (_water.Added >= _water.Improve && _water.State != (int)WaterState.Strong)
                 {
-                    this.Add(_events, 1074369); // The water looks clearer today.
+                    AddToEvents(1074369); // The water looks clearer today.
                 }
 
                 UpdateFoodState();
@@ -663,7 +663,7 @@ namespace Server.Items
 
                         if (AddFish(fish))
                         {
-                            this.Add(_events, message);
+                            AddToEvents(message);
                         }
                         else
                         {
@@ -1017,7 +1017,7 @@ namespace Server.Items
                     Owner.From.PlaySound(0x5A2);
                 }
 
-                m_Aquarium.RemoveAt(m_Aquarium._events, 0);
+                m_Aquarium.RemoveFromEventsAt(0);
                 m_Aquarium.InvalidateProperties();
             }
         }

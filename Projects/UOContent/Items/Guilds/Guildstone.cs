@@ -184,7 +184,7 @@ public partial class Guildstone : Item, IAddon, IChoppable
                 targetState.Leaving = guildState.Leaving;
             }
 
-            _guild.Remove(_guild.Accepted, from);
+            _guild.Accepted.Remove(from);
             _guild.AddMember(from);
 
             GuildGump.EnsureClosed(from);
@@ -305,7 +305,7 @@ public partial class GuildstoneDeed : Item
 
             addon.MoveToWorld(loc, from.Map);
 
-            house.Add(house.Addons, addon);
+            house.Addons.Add(addon);
             Delete();
         }
         else

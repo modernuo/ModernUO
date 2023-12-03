@@ -146,13 +146,13 @@ public partial class BroadcastCrystal : Item
 
     public void AddReceiver(ReceiverCrystal receiver)
     {
-        this.Add(Receivers, receiver);
+        AddToReceivers(receiver);
         InvalidateProperties();
     }
 
     public void RemoveReceiver(ReceiverCrystal receiver)
     {
-        this.Remove(Receivers, receiver);
+        RemoveFromReceivers(receiver);
         InvalidateProperties();
     }
 

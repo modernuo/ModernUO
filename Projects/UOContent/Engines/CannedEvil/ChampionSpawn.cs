@@ -534,7 +534,7 @@ public partial class ChampionSpawn : Item
                     AwardArtifact((Champion as BaseChampion)?.GetArtifact());
                 }
 
-                this.Clear(_damageEntries);
+                ClearDamageEntries();
 
                 if (_platform != null)
                 {
@@ -570,7 +570,7 @@ public partial class ChampionSpawn : Item
                         ((Corpse)m.Corpse).BeginDecay(TimeSpan.FromMinutes(1));
                     }
 
-                    this.RemoveAt(_creatures, i);
+                    RemoveFromCreaturesAt(i);
                     --i;
                     ++_kills;
 
@@ -776,7 +776,7 @@ public partial class ChampionSpawn : Item
             // Allow creatures to turn into Paragons at Ilshenar champions.
             m.OnBeforeSpawn(loc, Map);
 
-            this.Add(_creatures, m);
+            AddToCreatures(m);
             m.MoveToWorld(loc, Map);
 
             if (m is BaseCreature bc)
@@ -1114,7 +1114,7 @@ public partial class ChampionSpawn : Item
                 _redSkulls[i].Delete();
             }
 
-            this.Clear(_redSkulls);
+            ClearRedSkulls();
         }
 
         if (_whiteSkulls != null)
@@ -1124,7 +1124,7 @@ public partial class ChampionSpawn : Item
                 _whiteSkulls[i].Delete();
             }
 
-            this.Clear(_whiteSkulls);
+            ClearWhiteSkulls();
         }
 
         DeleteCreatures();
@@ -1161,7 +1161,7 @@ public partial class ChampionSpawn : Item
                 }
             }
 
-            this.Clear(_creatures);
+            ClearCreatures();
         }
     }
 
