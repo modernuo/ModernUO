@@ -149,13 +149,13 @@ public partial class BulkOrderBook : Item, ISecurable
 
     public void AddEntry(IBOBEntry entry)
     {
-        this.Add(Entries, entry);
+        AddToEntries(entry);
         InvalidateProperties();
     }
 
     public void RemoveEntry(IBOBEntry entry)
     {
-        this.Remove(Entries, entry);
+        RemoveFromEntries(entry);
         InvalidateProperties();
     }
 

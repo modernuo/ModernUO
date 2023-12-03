@@ -216,14 +216,14 @@ public partial class GauntletSpawner : Item
         return area / 100;
     }
 
-    public virtual void ClearTraps()
+    public virtual void RemoveAllTraps()
     {
         for (var i = 0; i < Traps.Count; ++i)
         {
             Traps[i].Delete();
         }
 
-        Traps.Clear();
+        ClearTraps();
     }
 
     public virtual void SpawnTrap()
@@ -303,19 +303,19 @@ public partial class GauntletSpawner : Item
         return Math.Max((playerCount + PlayersPerSpawn - 1) / PlayersPerSpawn, 1);
     }
 
-    public virtual void ClearCreatures()
+    public virtual void RemoveAllCreatures()
     {
         for (var i = 0; i < Creatures.Count; ++i)
         {
             Creatures[i].Delete();
         }
 
-        Creatures.Clear();
+        ClearCreatures();
     }
 
     public virtual void FullSpawn()
     {
-        ClearCreatures();
+        RemoveAllCreatures();
 
         var count = ComputeSpawnCount();
 
@@ -324,7 +324,7 @@ public partial class GauntletSpawner : Item
             Spawn();
         }
 
-        ClearTraps();
+        RemoveAllTraps();
 
         count = ComputeTrapCount();
 

@@ -37,7 +37,7 @@ public partial class MiniHouseAddon : BaseAddon
             c.Delete();
         }
 
-        this.Clear(Components);
+        ClearComponents();
 
         var info = MiniHouseInfo.GetInfo(_type);
 

@@ -94,7 +94,7 @@ public partial class PlagueBeastComponent : PlagueBeastInnard
     {
         if (_organ?.OnDropped(from, dropped, this) == true && dropped is PlagueBeastComponent component)
         {
-            _organ.Add(_organ.Components, component);
+            _organ.AddToComponents(component);
         }
 
         return true;
@@ -109,7 +109,7 @@ public partial class PlagueBeastComponent : PlagueBeastInnard
                 // * You rip the organ out of the plague beast's flesh *
                 from.SendLocalizedMessage(IsGland ? 1071895 : 1071914, null);
 
-                _organ.Remove(_organ.Components, this);
+                _organ.RemoveFromComponents(this);
 
                 Organ = null;
                 from.PlaySound(0x1CA);

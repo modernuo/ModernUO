@@ -275,11 +275,6 @@ public partial class MapItem : Item, ICraftable
         }
     }
 
-    public virtual void ClearPins()
-    {
-        Pins.Clear();
-    }
-
     private void Deserialize(IGenericReader reader, int version)
     {
         // Version 0 doesn't serialize Facet/Editable, and count is not encoded

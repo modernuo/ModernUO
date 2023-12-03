@@ -675,7 +675,7 @@ public partial class Corpse : Container, ICarvable
             from.CriminalAction(true);
         }
 
-        this.Add(_looters, from);
+        AddToLooters(from);
 
         _instancedItems?.Remove(item);
 
@@ -695,7 +695,7 @@ public partial class Corpse : Container, ICarvable
             from.CriminalAction(true);
         }
 
-        this.Add(_looters, from);
+        AddToLooters(from);
 
         _instancedItems?.Remove(item);
     }

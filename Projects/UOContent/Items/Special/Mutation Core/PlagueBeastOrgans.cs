@@ -45,7 +45,7 @@ public partial class PlagueBeastOrgan : PlagueBeastInnard
         c.Location = new Point3D(X + x, Y + y, Z);
         c.Map = Map;
 
-        this.Add(Components, c);
+        AddToComponents(c);
     }
 
     public override bool Scissor(Mobile from, Scissors scissors)
@@ -55,6 +55,12 @@ public partial class PlagueBeastOrgan : PlagueBeastInnard
             if (!Opened && !_opening)
             {
                 _opening = true;
+
+                Timer.StartTimer(TimeSpan.FromSeconds(3), Open);
+
+                scissors.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1071897); // You carefully cut into the organ.
+                return true;
+
                 void Open()
                 {
                     _opening = false;
@@ -63,11 +69,6 @@ public partial class PlagueBeastOrgan : PlagueBeastInnard
                         FinishOpening(from);
                     }
                 }
-
-                Timer.StartTimer(TimeSpan.FromSeconds(3), Open);
-
-                scissors.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1071897); // You carefully cut into the organ.
-                return true;
             }
 
             scissors.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1071898); // You have already cut this organ open.

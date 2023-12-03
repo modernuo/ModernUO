@@ -66,13 +66,13 @@ public partial class KeyRing : Item
             key.Delete();
         }
 
-        this.Clear(_keys);
+        ClearKeys();
     }
 
     public void Add(Key key)
     {
         key.Internalize();
-        this.Add(_keys, key);
+        AddToKeys(key);
 
         UpdateItemID();
     }
@@ -93,7 +93,7 @@ public partial class KeyRing : Item
                 break;
             }
 
-            this.RemoveAt(_keys, i);
+            RemoveFromKeysAt(i);
         }
 
         UpdateItemID();
@@ -108,7 +108,7 @@ public partial class KeyRing : Item
             if (key.KeyValue == keyValue)
             {
                 key.Delete();
-                this.RemoveAt(_keys, i);
+                RemoveFromKeysAt(i);
             }
         }
 

@@ -124,7 +124,7 @@ public class FlippableAddonAttribute : Attribute
                 c.Delete();
             }
 
-            addon.Clear(addon.Components);
+            addon.ClearComponents();
         }
         else if (item is BaseAddonContainer addonContainer)
         {
@@ -134,7 +134,7 @@ public class FlippableAddonAttribute : Attribute
                 c.Delete();
             }
 
-            addonContainer.Clear(addonContainer.Components);
+            addonContainer.ClearComponents();
         }
     }
 }

@@ -153,11 +153,11 @@ public abstract partial class BasePlayerBB : Item, ISecurable
                 }
                 else
                 {
-                    board.Add(board.Messages, message);
+                    board.AddToMessages(message);
 
                     if (board.Messages.Count > 50)
                     {
-                        board.RemoveAt(board.Messages, 0);
+                        board.RemoveFromMessagesAt(0);
 
                         if (page > 0)
                         {
@@ -491,7 +491,7 @@ public class PlayerBBGump : Gump
                     {
                         if (page >= 1 && page <= board.Messages.Count)
                         {
-                            board.RemoveAt(board.Messages, page - 1);
+                            board.RemoveFromMessagesAt(page - 1);
                         }
 
                         from.SendGump(new PlayerBBGump(from, house, board, 0));

@@ -34,13 +34,6 @@ namespace Server.Items
         [SerializableField(2, setter: "private")]
         private List<Mobile> _no;
 
-        public void ClearTopic()
-        {
-            Topic = Array.Empty<string>();
-
-            ClearVotes();
-        }
-
         public void AddLineToTopic(string line)
         {
             if (Topic.Length >= MaxTopicLines)
@@ -59,11 +52,8 @@ namespace Server.Items
 
         public void ClearVotes()
         {
-            if (Yes.Count > 0 || No.Count > 0)
-            {
-                this.Clear(_yes);
-                this.Clear(_no);
-            }
+            ClearYes();
+            ClearNo();
         }
 
         public bool IsOwner(Mobile from)
@@ -197,6 +187,7 @@ namespace Server.Items
                             if (isOwner)
                             {
                                 m_Box.ClearTopic();
+                                m_Box.ClearVotes();
 
                                 from.SendLocalizedMessage(
                                     500370,
@@ -228,7 +219,7 @@ namespace Server.Items
                                 }
                                 else
                                 {
-                                    m_Box.Add(m_Box._yes, from);
+                                    m_Box.AddToYes(from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }
@@ -245,7 +236,7 @@ namespace Server.Items
                                 }
                                 else
                                 {
-                                    m_Box.Add(m_Box._no, from);
+                                    m_Box.AddToNo(from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }

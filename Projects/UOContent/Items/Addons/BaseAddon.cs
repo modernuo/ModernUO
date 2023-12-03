@@ -138,7 +138,7 @@ namespace Server.Items
                 return;
             }
 
-            this.Add(Components, c);
+            AddToComponents(c);
 
             c.Addon = this;
             c.Offset = new Point3D(x, y, z);
