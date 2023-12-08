@@ -118,6 +118,9 @@ public partial class Container : Item
     [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializeDropSound() => _dropSound != -1;
 
+    [SerializableFieldDefault(2)]
+    private int DropSoundDefaultValue() => -1;
+
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int MaxWeight => Parent is Container { MaxWeight: 0 } ? 0 : DefaultMaxWeight;
 
