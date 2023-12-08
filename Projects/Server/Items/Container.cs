@@ -99,6 +99,9 @@ public partial class Container : Item
     [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeGumpId() => _gumpID != -1;
 
+    [SerializableFieldDefault(1)]
+    private int GumpIDDefaultValue() => -1;
+
     [EncodedInt]
     [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
