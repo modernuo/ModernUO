@@ -99,6 +99,9 @@ public partial class Container : Item
     [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeGumpId() => _gumpID != -1;
 
+    [SerializableFieldDefault(1)]
+    private int GumpIDDefaultValue() => -1;
+
     [EncodedInt]
     [SerializableProperty(2)]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -114,6 +117,9 @@ public partial class Container : Item
 
     [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializeDropSound() => _dropSound != -1;
+
+    [SerializableFieldDefault(2)]
+    private int DropSoundDefaultValue() => -1;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int MaxWeight => Parent is Container { MaxWeight: 0 } ? 0 : DefaultMaxWeight;
