@@ -66,7 +66,8 @@ public partial class Banker : BaseVendor
     public static int GetBalance(Mobile m, out List<Item> gold, out List<Item> checks)
     {
         long balance = 0;
-        gold = checks = new List<Item>();
+        var gold = new List<Item>();
+        var checks = new List<Item>();
 
         if (AccountGold.Enabled && m.Account != null)
         {
@@ -82,7 +83,7 @@ public partial class Banker : BaseVendor
 
         if (bank != null)
         {
-            foreach (var g in bank.FindItemsByType<Gold>())
+            foreach (var g in bank.FindItemsByType<Gold>(true))
             {
                 balance += g.Amount;
                 gold.Add(g);
@@ -93,7 +94,7 @@ public partial class Banker : BaseVendor
                 return int.MaxValue;
             }
 
-            foreach (var bc in bank.FindItemsByType<BankCheck>())
+            foreach (var bc in bank.FindItemsByType<BankCheck>(true))
             {
                 balance += bc.Worth;
                 checks.Add(bc);
