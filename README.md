@@ -31,14 +31,14 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Required Frameworks
 ##### All Operating Systems
-[![.NET](https://img.shields.io/badge/-8.0.0-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+[![.NET](https://img.shields.io/badge/-8.0.0-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 ##### Windows
 [![VC++ Redistributable 17](https://img.shields.io/badge/-Redist%2017-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%208.0.100%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/7.0)
+[![.NET](https://img.shields.io/badge/-%208.0.100%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 #### Supported IDEs
 
