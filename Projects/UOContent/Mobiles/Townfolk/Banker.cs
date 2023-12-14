@@ -126,7 +126,7 @@ public partial class Banker : BaseVendor
         gold = PooledRefList<Gold>.Create();
         checks = PooledRefList<BankCheck>.Create();
 
-        foreach (var g in bank.FindItemsByType<Gold>(true))
+        foreach (var g in bank.FindItemsByType<Gold>())
         {
             balance += g.Amount;
             gold.Add(g);
@@ -137,7 +137,7 @@ public partial class Banker : BaseVendor
             }
         }
 
-        foreach (var bc in bank.FindItemsByType<BankCheck>(true))
+        foreach (var bc in bank.FindItemsByType<BankCheck>())
         {
             balance += bc.Worth;
             checks.Add(bc);
