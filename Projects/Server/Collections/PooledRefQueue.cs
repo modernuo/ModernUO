@@ -385,7 +385,7 @@ public ref struct PooledRefQueue<T>
     public void Dispose()
     {
         var array = _array;
-        if (array.Length > 0)
+        if (array?.Length > 0)
         {
             Clear();
             (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Return(array);

@@ -1143,7 +1143,7 @@ public ref struct PooledRefList<T>
     {
         var array = _items;
 
-        if (array.Length > 0)
+        if (array?.Length > 0)
         {
             Clear();
             ArrayPool.Return(_items);
