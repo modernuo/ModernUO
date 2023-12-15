@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
@@ -63,10 +64,11 @@ public partial class Banker : BaseVendor
         return (int)Math.Clamp(balance, 0, int.MaxValue);
     }
 
-    public static int GetBalance(Mobile m, out List<Item> gold, out List<Item> checks)
+    public static int GetBalance(Mobile m, out List<Gold> gold, out List<BankCheck> checks)
     {
         long balance = 0;
-        gold = checks = new List<Item>();
+        gold = null;
+        checks = null;
 
         if (AccountGold.Enabled && m.Account != null)
         {
@@ -82,6 +84,8 @@ public partial class Banker : BaseVendor
 
         if (bank != null)
         {
+            gold = new List<Gold>();
+
             foreach (var g in bank.FindItemsByType<Gold>())
             {
                 balance += g.Amount;
@@ -93,6 +97,8 @@ public partial class Banker : BaseVendor
                 return int.MaxValue;
             }
 
+            checks = new List<BankCheck>();
+
             foreach (var bc in bank.FindItemsByType<BankCheck>())
             {
                 balance += bc.Worth;
@@ -103,6 +109,52 @@ public partial class Banker : BaseVendor
         return (int)Math.Clamp(balance, 0, int.MaxValue);
     }
 
+    private static bool HasRequiredBalance(int requiredBalance, Mobile m, out PooledRefList<Gold> gold, out PooledRefList<BankCheck> checks)
+    {
+        Container bank = m.FindBankNoCreate();
+
+        if (bank == null)
+        {
+            gold = default;
+            checks = default;
+
+            return false;
+        }
+
+        long balance = 0;
+
+        gold = PooledRefList<Gold>.Create();
+        foreach (var g in bank.FindItemsByType<Gold>())
+        {
+            balance += g.Amount;
+            gold.Add(g);
+
+            if (balance >= requiredBalance)
+            {
+                checks = default;
+                return true;
+            }
+        }
+
+        checks = PooledRefList<BankCheck>.Create();
+ 
+        foreach (var bc in bank.FindItemsByType<BankCheck>())
+        {
+            balance += bc.Worth;
+            checks.Add(bc);
+
+            if (balance >= requiredBalance)
+            {
+                return true;
+            }
+        }
+
+        gold.Dispose();
+        checks.Dispose();
+
+        return false;
+    }
+
     public static bool Withdraw(Mobile from, int amount)
     {
         // If for whatever reason the TOL checks fail, we should still try old methods for withdrawing currency.
@@ -111,30 +163,30 @@ public partial class Banker : BaseVendor
             return true;
         }
 
-        var balance = GetBalance(from, out var gold, out var checks);
-
-        if (balance < amount)
+        if (!HasRequiredBalance(amount, from, out var gold, out var checks))
         {
             return false;
         }
 
         for (var i = 0; amount > 0 && i < gold.Count; ++i)
         {
-            if (gold[i].Amount <= amount)
+            var g = gold[i];
+
+            if (g.Amount <= amount)
             {
-                amount -= gold[i].Amount;
-                gold[i].Delete();
+                amount -= g.Amount;
+                g.Delete();
             }
             else
             {
-                gold[i].Amount -= amount;
+                g.Amount -= amount;
                 amount = 0;
             }
         }
 
         for (var i = 0; amount > 0 && i < checks.Count; ++i)
         {
-            var check = (BankCheck)checks[i];
+            var check = checks[i];
 
             if (check.Worth <= amount)
             {
@@ -147,6 +199,9 @@ public partial class Banker : BaseVendor
                 amount = 0;
             }
         }
+
+        gold.Dispose();
+        checks.Dispose();
 
         return true;
     }
