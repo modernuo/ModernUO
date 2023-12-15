@@ -124,8 +124,6 @@ public partial class Banker : BaseVendor
         long balance = 0;
 
         gold = PooledRefList<Gold>.Create();
-        checks = PooledRefList<BankCheck>.Create();
-
         foreach (var g in bank.FindItemsByType<Gold>())
         {
             balance += g.Amount;
@@ -133,10 +131,13 @@ public partial class Banker : BaseVendor
 
             if (balance >= requiredBalance)
             {
+                checks = default;
                 return true;
             }
         }
 
+        checks = PooledRefList<BankCheck>.Create();
+ 
         foreach (var bc in bank.FindItemsByType<BankCheck>())
         {
             balance += bc.Worth;
