@@ -40,8 +40,8 @@ public ref struct PooledRefQueue<T>
         _array = capacity switch
         {
             < 0 => throw new ArgumentOutOfRangeException(nameof(capacity), capacity, CollectionThrowStrings.ArgumentOutOfRange_NeedNonNegNum),
-            0   => s_emptyArray,
-            _   => (mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity)
+            0 => s_emptyArray,
+            _ => (mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity)
         };
 
         _head = 0;
@@ -385,7 +385,7 @@ public ref struct PooledRefQueue<T>
     public void Dispose()
     {
         var array = _array;
-        if (array.Length > 0)
+        if (array is { Length: > 0 })
         {
             Clear();
             (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Return(array);

@@ -55,8 +55,8 @@ public ref struct PooledRefList<T>
         _items = capacity switch
         {
             < 0 => throw new ArgumentOutOfRangeException(nameof(capacity), capacity, CollectionThrowStrings.ArgumentOutOfRange_NeedNonNegNum),
-            0   => Array.Empty<T>(),
-            _   => (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity)
+            0 => Array.Empty<T>(),
+            _ => (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity)
         };
 
     }
@@ -1143,7 +1143,7 @@ public ref struct PooledRefList<T>
     {
         var array = _items;
 
-        if (array.Length > 0)
+        if (array is { Length: > 0 })
         {
             Clear();
             ArrayPool.Return(_items);
