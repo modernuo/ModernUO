@@ -86,7 +86,7 @@ public partial class Banker : BaseVendor
         {
             gold = new List<Gold>();
 
-            foreach (var g in bank.FindItemsByType<Gold>(true))
+            foreach (var g in bank.FindItemsByType<Gold>())
             {
                 balance += g.Amount;
                 gold.Add(g);
@@ -99,7 +99,7 @@ public partial class Banker : BaseVendor
 
             checks = new List<BankCheck>();
 
-            foreach (var bc in bank.FindItemsByType<BankCheck>(true))
+            foreach (var bc in bank.FindItemsByType<BankCheck>())
             {
                 balance += bc.Worth;
                 checks.Add(bc);
