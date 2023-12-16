@@ -127,10 +127,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         Connection = connection;
         Seeded = false;
-        Gumps = new List<Gump>();
-        HuePickers = new List<HuePicker>();
-        Menus = new List<IMenu>();
-        Trades = new List<SecureTrade>();
+        Gumps = [];
+        HuePickers = [];
+        Menus = [];
+        Trades = [];
         RecvPipe = new Pipe(RecvPipeSize);
         SendPipe = new Pipe(SendPipeSize);
         _nextActivityCheck = Core.TickCount + 30000;
@@ -225,7 +225,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public int Sequence { get; set; }
 
-    public List<Gump> Gumps { get; private set; }
+    public List<BaseGump> Gumps { get; private set; }
 
     public List<HuePicker> HuePickers { get; private set; }
 
@@ -381,7 +381,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void AddMenu(IMenu menu)
     {
-        Menus ??= new List<IMenu>();
+        Menus ??= [];
 
         if (Menus.Count < MenuCap)
         {
@@ -411,7 +411,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void AddHuePicker(HuePicker huePicker)
     {
-        HuePickers ??= new List<HuePicker>();
+        HuePickers ??= [];
 
         if (HuePickers.Count < HuePickerCap)
         {
@@ -439,9 +439,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         HuePickers?.Clear();
     }
 
-    public void AddGump(Gump gump)
+    public void AddGump(BaseGump gump)
     {
-        Gumps ??= new List<Gump>();
+        Gumps ??= [];
 
         if (Gumps.Count < GumpCap)
         {
@@ -454,7 +454,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
-    public void RemoveGump(Gump gump)
+    public void RemoveGump(BaseGump gump)
     {
         Gumps?.Remove(gump);
     }
@@ -1172,7 +1172,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            using StreamWriter op = new StreamWriter("network-disconnects.log", true);
+            using StreamWriter op = new("network-disconnects.log", true);
             op.WriteLine($"# {Core.Now}");
 
             op.WriteLine($"NetState: {ip}");
