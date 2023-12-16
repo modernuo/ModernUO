@@ -419,6 +419,8 @@ public static class Core
 
     public static void Main(string[] args)
     {
+        Console.OutputEncoding = Encoding.UTF8;
+        
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
         AppDomain.CurrentDomain.AssemblyResolve += AssemblyHandler.AssemblyResolver;
