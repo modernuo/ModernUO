@@ -1,0 +1,95 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: DynamicGridGump.cs                                             *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
+using Server.Gumps.Components;
+using Server.Gumps.Enums;
+using Server.Network;
+
+namespace Server.Gumps
+{
+    public abstract class DynamicGridGump : BaseGump
+    {
+        protected const int ArrowLeftID1 = 0x15E3;
+        protected const int ArrowLeftID2 = 0x15E7;
+        protected const int ArrowLeftWidth = 16;
+        protected const int ArrowLeftHeight = 16;
+        protected const int ArrowRightID1 = 0x15E1;
+        protected const int ArrowRightID2 = 0x15E5;
+        protected const int ArrowRightWidth = 16;
+        protected const int ArrowRightHeight = 16;
+
+        private readonly int x;
+        private readonly int y;
+        private readonly GumpFlags flags;
+
+        protected virtual ushort BorderSize => 10;
+        protected virtual ushort OffsetSize => 1;
+        protected virtual ushort EntryHeight => 20;
+        protected virtual ushort OffsetGumpId => 0x0A40;
+        protected virtual ushort HeaderGumpId => 0x0E14;
+        protected virtual ushort EntryGumpId => 0x0BBC;
+        protected virtual ushort BackGumpId => 0x13BE;
+        protected virtual ushort TextHue => 0;
+        protected virtual ushort TextOffsetX => 2;
+
+        protected DynamicGridGump(int x, int y, GumpFlags flags = GumpFlags.None)
+        {
+            this.x = x;
+            this.y = y;
+            this.flags = flags;
+        }
+
+        protected static int GetButtonID(int typeCount, int type, int index)
+        {
+            return 1 + index * typeCount + type;
+        }
+
+        protected static bool SplitButtonID(int buttonID, int typeCount, out int type, out int index)
+        {
+            if (buttonID < 1)
+            {
+                type = 0;
+                index = 0;
+                return false;
+            }
+
+            buttonID -= 1;
+
+            type = buttonID % typeCount;
+            index = buttonID / typeCount;
+
+            return true;
+        }
+
+        public override void SendTo(NetState ns)
+        {
+            GridGumpBuilder<StaticStringsHandler> builder = new(flags, BorderSize, OffsetSize, EntryHeight,
+                OffsetGumpId, HeaderGumpId, EntryGumpId, BackGumpId, TextHue, TextOffsetX);
+
+            try
+            {
+                Build(ref builder);
+                ns.AddGump(this);
+                builder.Send(ns, Serial, TypeID, x, y, out _switches, out _textEntries);
+            }
+            finally
+            {
+                builder.Dispose();
+            }
+        }
+
+        protected abstract void Build(ref GridGumpBuilder<StaticStringsHandler> builder);
+    }
+}

@@ -352,9 +352,9 @@ public static class IncomingPlayerPackets
 
         Gump gump = null;
 
-        foreach (var g in state.Gumps)
+        foreach (var baseGump in state.Gumps)
         {
-            if (g.Serial != serial || g.TypeID != typeId)
+            if (baseGump is not Gump g || g.Serial != serial || g.TypeID != typeId)
             {
                 continue;
             }
