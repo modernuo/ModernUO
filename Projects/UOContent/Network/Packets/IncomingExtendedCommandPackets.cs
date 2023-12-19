@@ -23,7 +23,7 @@ public static class IncomingExtendedCommandPackets
     private static readonly PacketHandler[] _extendedHandlers = new PacketHandler[0x100];
 
     // TODO: Change to outside configuration
-    public static int[] ValidAnimations { get; set; } =
+    public static int[] ValidAnimations { get; } =
     {
         6, 21, 32, 33,
         100, 101, 102, 103,
@@ -133,29 +133,45 @@ public static class IncomingExtendedCommandPackets
         switch (reader.ReadByte())
         {
             case 0x01:
-                PartyMessage_AddMember(state, reader);
-                break;
+                {
+                    PartyMessage_AddMember(state, reader);
+                    break;
+                }
             case 0x02:
-                PartyMessage_RemoveMember(state, reader);
-                break;
+                {
+                    PartyMessage_RemoveMember(state, reader);
+                    break;
+                }
             case 0x03:
-                PartyMessage_PrivateMessage(state, reader);
-                break;
+                {
+                    PartyMessage_PrivateMessage(state, reader);
+                    break;
+                }
             case 0x04:
-                PartyMessage_PublicMessage(state, reader);
-                break;
+                {
+                    PartyMessage_PublicMessage(state, reader);
+                    break;
+                }
             case 0x06:
-                PartyMessage_SetCanLoot(state, reader);
-                break;
+                {
+                    PartyMessage_SetCanLoot(state, reader);
+                    break;
+                }
             case 0x08:
-                PartyMessage_Accept(state, reader);
-                break;
+                {
+                    PartyMessage_Accept(state, reader);
+                    break;
+                }
             case 0x09:
-                PartyMessage_Decline(state, reader);
-                break;
+                {
+                    PartyMessage_Decline(state, reader);
+                    break;
+                }
             default:
-                state.Trace(reader.Buffer);
-                break;
+                {
+                    state.Trace(reader.Buffer);
+                    break;
+                }
         }
     }
 
@@ -286,14 +302,20 @@ public static class IncomingExtendedCommandPackets
         switch (stat)
         {
             case 0:
-                from.StrLock = (StatLockType)lockValue;
-                break;
+                {
+                    from.StrLock = (StatLockType)lockValue;
+                    break;
+                }
             case 1:
-                from.DexLock = (StatLockType)lockValue;
-                break;
+                {
+                    from.DexLock = (StatLockType)lockValue;
+                    break;
+                }
             case 2:
-                from.IntLock = (StatLockType)lockValue;
-                break;
+                {
+                    from.IntLock = (StatLockType)lockValue;
+                    break;
+                }
         }
     }
 
@@ -382,7 +404,7 @@ public static class IncomingExtendedCommandPackets
 
                 int index = reader.ReadUInt16();
 
-                if (index >= 0 && index < menu.Entries.Length)
+                if (index < menu.Entries.Length)
                 {
                     var e = menu.Entries[index];
 
@@ -407,34 +429,39 @@ public static class IncomingExtendedCommandPackets
         var from = state.Mobile;
         var target = World.FindEntity((Serial)reader.ReadUInt32());
 
-        if (from != null && target != null && from.Map == target.Map && from.CanSee(target))
+        if (from == null || target == null || from.Map != target.Map || !from.CanSee(target))
         {
-            var item = target as Item;
+            return;
+        }
 
-            var checkLocation = item?.GetWorldLocation() ?? target.Location;
-            if (!(Utility.InUpdateRange(from.Location, checkLocation) && from.CheckContextMenuDisplay(target)))
+        var item = target as Item;
+
+        var checkLocation = item?.GetWorldLocation() ?? target.Location;
+        if (!(Utility.InUpdateRange(from.Location, checkLocation) && from.CheckContextMenuDisplay(target)))
+        {
+            return;
+        }
+
+        var c = new ContextMenu(from, target);
+
+        if (c.Entries.Length <= 0)
+        {
+            return;
+        }
+
+        if (item?.RootParent is Mobile mobile && mobile != from && mobile.AccessLevel >= from.AccessLevel)
+        {
+            for (var i = 0; i < c.Entries.Length; ++i)
             {
-                return;
-            }
-
-            var c = new ContextMenu(from, target);
-
-            if (c.Entries.Length > 0)
-            {
-                if (item?.RootParent is Mobile mobile && mobile != from && mobile.AccessLevel >= from.AccessLevel)
+                var entry = c.Entries[i];
+                if (!entry.NonLocalUse)
                 {
-                    for (var i = 0; i < c.Entries.Length; ++i)
-                    {
-                        if (!c.Entries[i].NonLocalUse)
-                        {
-                            c.Entries[i].Enabled = false;
-                        }
-                    }
+                    entry.Enabled = false;
                 }
-
-                from.ContextMenu = c;
             }
         }
+
+        from.ContextMenu = c;
     }
 
     public static void BandageTarget(NetState state, SpanReader reader)
