@@ -23,7 +23,7 @@ namespace Server.SkillHandlers
             SkillInfo.Table[(int)SkillName.Tracking].Callback = OnUse;
         }
 
-        public static void QuestArrow(NetState state, SpanReader reader, int packetLength)
+        public static void QuestArrow(NetState state, SpanReader reader)
         {
             if (state.Mobile is PlayerMobile from)
             {

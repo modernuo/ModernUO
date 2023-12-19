@@ -80,7 +80,7 @@ public static class IncomingMovementPackets
         ns.SendTimeSyncResponse();
     }
 
-    public static void MovementReq(NetState state, SpanReader reader, int packetLength)
+    public static void MovementReq(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 

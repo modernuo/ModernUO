@@ -55,18 +55,18 @@ public static class IncomingPlayerPackets
         IncomingPackets.RegisterEncoded(0x32, true, &QuestGumpRequest);
     }
 
-    public static void DeathStatusResponse(NetState state, SpanReader reader, int packetLength)
+    public static void DeathStatusResponse(NetState state, SpanReader reader)
     {
         // Ignored
     }
 
-    public static void RequestScrollWindow(NetState state, SpanReader reader, int packetLength)
+    public static void RequestScrollWindow(NetState state, SpanReader reader)
     {
         int lastTip = reader.ReadInt16();
         int type = reader.ReadByte();
     }
 
-    public static void AttackReq(NetState state, SpanReader reader, int packetLength)
+    public static void AttackReq(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -83,7 +83,7 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void HuePickerResponse(NetState state, SpanReader reader, int packetLength)
+    public static void HuePickerResponse(NetState state, SpanReader reader)
     {
         var serial = reader.ReadUInt32();
         _ = reader.ReadInt16(); // Item ID
@@ -100,7 +100,7 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void SystemInfo(NetState state, SpanReader reader, int packetLength)
+    public static void SystemInfo(NetState state, SpanReader reader)
     {
         int v1 = reader.ReadByte();
         int v2 = reader.ReadUInt16();
@@ -116,7 +116,7 @@ public static class IncomingPlayerPackets
         var v8 = reader.ReadInt32();
     }
 
-    public static void TextCommand(NetState state, SpanReader reader, int packetLength)
+    public static void TextCommand(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -211,7 +211,7 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void AsciiPromptResponse(NetState state, SpanReader reader, int packetLength)
+    public static void AsciiPromptResponse(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -247,7 +247,7 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void UnicodePromptResponse(NetState state, SpanReader reader, int packetLength)
+    public static void UnicodePromptResponse(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -284,7 +284,7 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void MenuResponse(NetState state, SpanReader reader, int packetLength)
+    public static void MenuResponse(NetState state, SpanReader reader)
     {
         var serial = reader.ReadUInt32();
         int menuID = reader.ReadInt16(); // unused in our implementation
@@ -314,33 +314,33 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void Disconnect(NetState state, SpanReader reader, int packetLength)
+    public static void Disconnect(NetState state, SpanReader reader)
     {
         var minusOne = reader.ReadInt32();
     }
 
-    public static void ConfigurationFile(NetState state, SpanReader reader, int packetLength)
+    public static void ConfigurationFile(NetState state, SpanReader reader)
     {
     }
 
-    public static void LogoutReq(NetState state, SpanReader reader, int packetLength)
+    public static void LogoutReq(NetState state, SpanReader reader)
     {
         state.SendLogoutAck();
     }
 
-    public static void ChangeSkillLock(NetState state, SpanReader reader, int packetLength)
+    public static void ChangeSkillLock(NetState state, SpanReader reader)
     {
         var s = state.Mobile.Skills[reader.ReadInt16()];
 
         s?.SetLockNoRelay((SkillLock)reader.ReadByte());
     }
 
-    public static void HelpRequest(NetState state, SpanReader reader, int packetLength)
+    public static void HelpRequest(NetState state, SpanReader reader)
     {
         EventSink.InvokeHelpRequest(state.Mobile);
     }
 
-    public static void DisplayGumpResponse(NetState state, SpanReader reader, int packetLength)
+    public static void DisplayGumpResponse(NetState state, SpanReader reader)
     {
         var serial = (Serial)reader.ReadUInt32();
         var typeID = reader.ReadInt32();
@@ -482,13 +482,13 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void SetWarMode(NetState state, SpanReader reader, int packetLength)
+    public static void SetWarMode(NetState state, SpanReader reader)
     {
         state.Mobile?.DelayChangeWarmode(reader.ReadBoolean());
     }
 
     // TODO: Throttle/make this more safe
-    public static void Resynchronize(NetState state, SpanReader reader, int packetLength)
+    public static void Resynchronize(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -505,17 +505,17 @@ public static class IncomingPlayerPackets
         state.Sequence = 0;
     }
 
-    public static void PingReq(NetState state, SpanReader reader, int packetLength)
+    public static void PingReq(NetState state, SpanReader reader)
     {
         state.SendPingAck(reader.ReadByte());
     }
 
-    public static void SetUpdateRange(NetState state, SpanReader reader, int packetLength)
+    public static void SetUpdateRange(NetState state, SpanReader reader)
     {
         state.SendChangeUpdateRange(18);
     }
 
-    public static void MobileQuery(NetState state, SpanReader reader, int packetLength)
+    public static void MobileQuery(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
         if (from == null)
@@ -552,7 +552,7 @@ public static class IncomingPlayerPackets
         }
     }
 
-    public static void CrashReport(NetState state, SpanReader reader, int packetLength)
+    public static void CrashReport(NetState state, SpanReader reader)
     {
         var clientMaj = reader.ReadByte();
         var clientMin = reader.ReadByte();
@@ -596,7 +596,7 @@ public static class IncomingPlayerPackets
         EventSink.InvokeQuestGumpRequest(state.Mobile);
     }
 
-    public static unsafe void EncodedCommand(NetState state, SpanReader reader, int packetLength)
+    public static unsafe void EncodedCommand(NetState state, SpanReader reader)
     {
         var e = World.FindEntity((Serial)reader.ReadUInt32());
         int packetId = reader.ReadUInt16();

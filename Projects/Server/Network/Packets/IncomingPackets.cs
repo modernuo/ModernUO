@@ -26,7 +26,7 @@ public static class IncomingPackets
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void Register(int packetID, int length, bool ingame,
-        delegate*<NetState, SpanReader, int, void> onReceive) =>
+        delegate*<NetState, SpanReader, void> onReceive) =>
         Register(new PacketHandler(packetID, length, ingame, onReceive));
 
     public static void Register(PacketHandler packetHandler)

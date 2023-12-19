@@ -196,7 +196,7 @@ namespace Server.Engines.MLQuests.Gumps
             return false;
         }
 
-        private static void RaceChangeReply(NetState state, SpanReader reader, int packetLength)
+        private static void RaceChangeReply(NetState state, SpanReader reader)
         {
             if (!m_Pending.TryGetValue(state, out var raceChangeState))
             {

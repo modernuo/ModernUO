@@ -25,7 +25,7 @@ namespace Server.Network
             IncomingPackets.Register(0x56, 11, true, &OnMapCommand);
         }
 
-        private static void OnMapCommand(NetState state, SpanReader reader, int packetLength)
+        private static void OnMapCommand(NetState state, SpanReader reader)
         {
             var from = state.Mobile;
 
