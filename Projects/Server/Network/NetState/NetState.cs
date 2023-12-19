@@ -469,7 +469,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 Console.WriteLine("Attempting to get pipe buffer from wrong thread!");
                 Console.WriteLine(new StackTrace());
                 Utility.PopColor();
-                return;
+
+                buffer = Array.Empty<byte>();
+                return false;
             }
 #endif
         buffer = SendPipe.Writer.AvailableToWrite();
