@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GridGumpBuilder.cs                                             *
+ * File: GridGumpBuilder.cs                                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Gumps.Components.Interpolation;
 using Server.Gumps.Enums;
 using Server.Gumps.Interfaces;
 using Server.Network;
@@ -21,6 +22,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using static Server.Gumps.Components.Interpolation.GumpInterpolatedStringHandler;
 
 namespace Server.Gumps.Components
 {
@@ -126,6 +128,64 @@ namespace Server.Gumps.Components
         {
             builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
             builder.AddHtml(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, text);
+
+            IncreaseX(width);
+        }
+
+        public void AddEntryHtml(int width, ref GumpInterpolatedStringHandler<T, None> handler)
+        {
+            builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
+            builder.AddHtml(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, ref handler);
+
+            IncreaseX(width);
+        }
+
+        public void AddEntryHtml(int width, int color, string? text)
+        {
+            builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
+            builder.AddHtml(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, color, text);
+
+            IncreaseX(width);
+        }
+
+        public void AddEntryHtml(int width, int color,
+            [InterpolatedStringHandlerArgument(nameof(color))] scoped ref GumpInterpolatedStringHandler<T, Colored> handler)
+        {
+            builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
+            builder.AddHtml(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, color, ref handler);
+
+            IncreaseX(width);
+        }
+
+        public void AddEntryHtmlCentered(int width, string? text)
+        {
+            builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
+            builder.AddHtmlCentered(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, text);
+
+            IncreaseX(width);
+        }
+
+        public void AddEntryHtmlCentered(int width, ref GumpInterpolatedStringHandler<T, Centered> handler)
+        {
+            builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
+            builder.AddHtmlCentered(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, ref handler);
+
+            IncreaseX(width);
+        }
+
+        public void AddEntryHtmlCentered(int width, int color, string? text)
+        {
+            builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
+            builder.AddHtmlCentered(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, color, text);
+
+            IncreaseX(width);
+        }
+
+        public void AddEntryHtmlCentered(int width, int color,
+            [InterpolatedStringHandlerArgument(nameof(color))] ref GumpInterpolatedStringHandler<T, Centered> handler)
+        {
+            builder.AddImageTiled(currentX, currentY, width, entryHeight, entryGumpId);
+            builder.AddHtmlCentered(currentX + textOffsetX, currentY, width - textOffsetX, entryHeight, color, ref handler);
 
             IncreaseX(width);
         }

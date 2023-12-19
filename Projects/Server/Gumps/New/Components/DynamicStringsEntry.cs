@@ -19,6 +19,7 @@ using System;
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Specialized;
+using System.Runtime.InteropServices;
 
 namespace Server.Gumps.Components
 {
@@ -74,8 +75,17 @@ namespace Server.Gumps.Components
 
                     BinaryPrimitives.WriteUInt16BigEndian(buffer.AsSpan(bufferPosition), (ushort)s.Length);
                     bufferPosition += 2;
-                    
-                    bufferPosition += TextEncoding.Unicode.GetBytes(s.AsSpan(), buffer.AsSpan(bufferPosition..));
+
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        bufferPosition += TextEncoding.Unicode.GetBytes(s.AsSpan(), buffer.AsSpan(bufferPosition));
+                    }
+                    else
+                    {
+                        ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(s.AsSpan());
+                        bytes.CopyTo(buffer.AsSpan(bufferPosition));
+                        bufferPosition += bytes.Length;
+                    }
                 }
                 else
                 {

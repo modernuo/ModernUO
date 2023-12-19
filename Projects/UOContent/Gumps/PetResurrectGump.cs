@@ -50,7 +50,7 @@ namespace Server.Gumps
         protected override void GetGumpData(out LayoutEntry layout, out StringsEntry strings)
         {
             layout = PetResurrectGump.layout;
-            strings = PetResurrectGump.strings.BuildCompressed(GumpHelper.Center(_pet.Name));
+            strings = PetResurrectGump.strings.BuildCompressed(GumpText.Center(_pet.Name));
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpHelper.cs                                             *
+ * File: GumpText.cs                                                     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -15,11 +15,10 @@
 
 namespace Server.Gumps
 {
-    public static class GumpHelper
+    public static class GumpText
     {
-        public static string Center(string text) => $"<CENTER>{text}</CENTER>";
-        public static string Center(string text, int color) => $"<BASEFONT COLOR=#{color:X6}><CENTER>{text}</CENTER></BASEFONT>";
-        public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-        public static string Right(string text) => $"<div align=right>{text}</div>";
+        public static string Color(string? text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+        public static string Center(string? text) => $"<CENTER>{text}</CENTER>";
+        public static string Center(string? text, int color) => $"<BASEFONT COLOR=#{color:X6}><CENTER>{text}</CENTER></BASEFONT>";
     }
 }

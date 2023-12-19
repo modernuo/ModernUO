@@ -23,7 +23,7 @@ namespace Server.Gumps.Interfaces
         public int BytesWritten { get; }
         public int Count { get; }
 
-        public int Internalize(string? value);
+        public int Internalize(ReadOnlySpan<char> value);
         public void WriteCompressed(ref SpanWriter writer);
         public byte[] ToArray();
         public byte[] ToCompressedArray();

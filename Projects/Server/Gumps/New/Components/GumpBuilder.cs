@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpBuilder.cs                                             *
+ * File: GumpBuilder.cs                                                  *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,17 +13,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Buffers;
+using Server.Gumps.Components.Interpolation;
 using Server.Gumps.Enums;
 using Server.Gumps.Interfaces;
 using Server.Network;
 using System;
 using System.Buffers;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Text;
+using static Server.Gumps.Components.Interpolation.GumpInterpolatedStringHandler;
 
 namespace Server.Gumps.Components
 {
@@ -127,7 +129,8 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddHtml(int x, int y, int width, int height, string? text, bool background = false, bool scrollbar = false)
+        public void AddHtml(int x, int y, int width, int height, ReadOnlySpan<char> text,
+            bool background = false, bool scrollbar = false)
         {
             WriteStart(Labels.Html);
             WriteValue(x);
@@ -140,14 +143,100 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddHtmlColored(int x, int y, int width, int height, string text, int color, bool background = false, bool scrollbar = false)
+        public void AddHtml(int x, int y, int width, int height, ref GumpInterpolatedStringHandler<T, None> handler,
+            bool background = false, bool scrollbar = false)
         {
             WriteStart(Labels.Html);
             WriteValue(x);
             WriteValue(y);
             WriteValue(width);
             WriteValue(height);
-            WriteValueInternalized(GumpHelper.Color(text, color));
+            WriteValueInternalized(ref handler);
+            WriteValue(background);
+            WriteValue(scrollbar);
+            WriteEnd();
+        }
+
+        public void AddHtml(int x, int y, int width, int height, int color, string? text, bool background = false, bool scrollbar = false)
+        {
+            WriteStart(Labels.Html);
+            WriteValue(x);
+            WriteValue(y);
+            WriteValue(width);
+            WriteValue(height);
+            WriteValueInternalized($"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>");
+            WriteValue(background);
+            WriteValue(scrollbar);
+            WriteEnd();
+        }
+
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "used by interpolated string handler")]
+        public void AddHtml(int x, int y, int width, int height, int color,
+            [InterpolatedStringHandlerArgument(nameof(color))] scoped ref GumpInterpolatedStringHandler<T, Colored> handler,
+            bool background = false, bool scrollbar = false)
+        {
+            WriteStart(Labels.Html);
+            WriteValue(x);
+            WriteValue(y);
+            WriteValue(width);
+            WriteValue(height);
+            WriteValueInternalized(ref handler);
+            WriteValue(background);
+            WriteValue(scrollbar);
+            WriteEnd();
+        }
+
+        public void AddHtmlCentered(int x, int y, int width, int height, string? text, bool background = false, bool scrollbar = false)
+        {
+            WriteStart(Labels.Html);
+            WriteValue(x);
+            WriteValue(y);
+            WriteValue(width);
+            WriteValue(height);
+            WriteValueInternalized($"<CENTER>{text}</CENTER>");
+            WriteValue(background);
+            WriteValue(scrollbar);
+            WriteEnd();
+        }
+
+        public void AddHtmlCentered(int x, int y, int width, int height, ref GumpInterpolatedStringHandler<T, Centered> handler,
+            bool background = false, bool scrollbar = false)
+        {
+            WriteStart(Labels.Html);
+            WriteValue(x);
+            WriteValue(y);
+            WriteValue(width);
+            WriteValue(height);
+            WriteValueInternalized(ref handler);
+            WriteValue(background);
+            WriteValue(scrollbar);
+            WriteEnd();
+        }
+
+        public void AddHtmlCentered(int x, int y, int width, int height, int color, string? text, bool background = false, bool scrollbar = false)
+        {
+            WriteStart(Labels.Html);
+            WriteValue(x);
+            WriteValue(y);
+            WriteValue(width);
+            WriteValue(height);
+            WriteValueInternalized($"</BASEFONT COLOR=#{color:X6}><CENTER>{text}<CENTER></BASECOLOR>");
+            WriteValue(background);
+            WriteValue(scrollbar);
+            WriteEnd();
+        }
+
+        [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "used by interpolated string handler")]
+        public void AddHtmlCentered(int x, int y, int width, int height, int color,
+            [InterpolatedStringHandlerArgument(nameof(color))] ref GumpInterpolatedStringHandler<T, Centered> handler,
+            bool background = false, bool scrollbar = false)
+        {
+            WriteStart(Labels.Html);
+            WriteValue(x);
+            WriteValue(y);
+            WriteValue(width);
+            WriteValue(height);
+            WriteValueInternalized(ref handler);
             WriteValue(background);
             WriteValue(scrollbar);
             WriteEnd();
@@ -180,7 +269,7 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddHtmlLocalized(int x, int y, int width, int height, int number, string args, int color,
+        public void AddHtmlLocalized(int x, int y, int width, int height, int number, ReadOnlySpan<char> args, int color,
             bool background = false, bool scrollbar = false)
         {
             WriteStart(Labels.HtmlLocalizedWithArgs);
@@ -198,7 +287,7 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddImage(int x, int y, int gumpId, int hue = 0, string? @class = null)
+        public void AddImage(int x, int y, int gumpId, int hue = 0, ReadOnlySpan<char> @class = default)
         {
             WriteStart(Labels.Image);
             WriteValue(x);
@@ -211,7 +300,7 @@ namespace Server.Gumps.Components
                 WriteValue(hue);
             }
 
-            if (@class is not null)
+            if (!@class.IsEmpty)
             {
                 Write(GumpBuilder.ClassAttr);
                 WriteValue(@class);
@@ -280,7 +369,7 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddLabel(int x, int y, int hue, string? text = null)
+        public void AddLabel(int x, int y, int hue, ReadOnlySpan<char> text)
         {
             WriteStart(Labels.Label);
             WriteValue(x);
@@ -290,7 +379,7 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddLabelCropped(int x, int y, int width, int height, int hue, string? text = null)
+        public void AddLabelCropped(int x, int y, int width, int height, int hue, ReadOnlySpan<char> text)
         {
             WriteStart(Labels.LabelCropped);
             WriteValue(x);
@@ -343,7 +432,7 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddTextEntry(int x, int y, int width, int height, int hue, int entryId, string? initialText = null)
+        public void AddTextEntry(int x, int y, int width, int height, int hue, int entryId, ReadOnlySpan<char> initialText = default)
         {
             WriteStart(Labels.TextEntry);
             WriteValue(x);
@@ -358,7 +447,7 @@ namespace Server.Gumps.Components
             textEntries++;
         }
 
-        public void AddTextEntryLimited(int x, int y, int width, int height, int hue, int entryId, string? initialText = null, int size = 0)
+        public void AddTextEntryLimited(int x, int y, int width, int height, int hue, int entryId, ReadOnlySpan<char> initialText = default, int size = 0)
         {
             WriteStart(Labels.TextEntryLimited);
             WriteValue(x);
@@ -381,7 +470,7 @@ namespace Server.Gumps.Components
             WriteEnd();
         }
 
-        public void AddTooltip(int number, string args)
+        public void AddTooltip(int number, ReadOnlySpan<char> args)
         {
             WriteStart(Labels.Tooltip);
             WriteValue(number);
@@ -424,9 +513,9 @@ namespace Server.Gumps.Components
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteValue(string? value)
+        private void WriteValue(ReadOnlySpan<char> value)
         {
-            if (value is { Length: > 0 })
+            if (!value.IsEmpty)
             {
                 OperationStatus result = Ascii.FromUtf16(value, layoutBuffer.AsSpan(layoutPosition), out int bytesWritten);
                 layoutPosition += bytesWritten;
@@ -438,9 +527,22 @@ namespace Server.Gumps.Components
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteValueInternalized(string? value)
+        private void WriteValueInternalized(ReadOnlySpan<char> value)
         {
             int index = stringsWriter.Internalize(value);
+            WriteValue(index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteValueInternalized<TFormatter>(ref GumpInterpolatedStringHandler<T, TFormatter> handler)
+            where TFormatter : struct, IGumpInterpolationTextFormatter<TFormatter>
+        {
+            if (!handler.Success)
+            {
+                throw new Exception("Cannot convert interpolated string for gump content");
+            }
+
+            int index = stringsWriter.Internalize(handler.ToSpanAndClose());
             WriteValue(index);
         }
 
@@ -490,7 +592,7 @@ namespace Server.Gumps.Components
         {
             switches = this.switches;
             textEntries = this.textEntries;
-            
+
             int worstLayoutLength = Zlib.MaxPackSize(layoutPosition);
             int worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
 
@@ -580,9 +682,7 @@ namespace Server.Gumps.Components
         {
             builder.FinalizeLayout();
 
-            int worstLayoutLength = Zlib.MaxPackSize(builder.LayoutSize);
-
-            SpanWriter compressedLayoutWriter = new(worstLayoutLength);
+            SpanWriter compressedLayoutWriter = new(Zlib.MaxPackSize(builder.LayoutSize));
             OutgoingGumpPackets.WritePacked(builder.Layout, ref compressedLayoutWriter);
             layout = new(compressedLayoutWriter.Span.ToArray(), true, builder.LayoutSize - 1);
 
