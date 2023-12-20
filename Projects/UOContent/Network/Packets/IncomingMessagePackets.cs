@@ -28,7 +28,7 @@ public static class IncomingMessagePackets
         IncomingPackets.Register(0xAD, 0, true, &UnicodeSpeech);
     }
 
-    public static void AsciiSpeech(NetState state, SpanReader reader, int packetLength)
+    public static void AsciiSpeech(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -55,7 +55,7 @@ public static class IncomingMessagePackets
         from.DoSpeech(text, Array.Empty<int>(), type, Utility.ClipDyedHue(hue));
     }
 
-    public static void UnicodeSpeech(NetState state, SpanReader reader, int packetLength)
+    public static void UnicodeSpeech(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 

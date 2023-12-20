@@ -33,7 +33,7 @@ namespace Server.Network
             }
         }
 
-        public static void QueryCompactShardStats(NetState state, SpanReader reader, int packetLength)
+        public static void QueryCompactShardStats(NetState state, SpanReader reader)
         {
             state.SendCompactShardStats(
                 (uint)(Core.Uptime / 1000),
@@ -44,7 +44,7 @@ namespace Server.Network
             );
         }
 
-        public static void QueryExtendedShardStats(NetState state, SpanReader reader, int packetLength)
+        public static void QueryExtendedShardStats(NetState state, SpanReader reader)
         {
             const long ticksInHour = 1000 * 60 * 60;
             state.SendExtendedShardStats(

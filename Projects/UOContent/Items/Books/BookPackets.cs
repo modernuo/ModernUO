@@ -29,7 +29,7 @@ namespace Server.Items
             IncomingPackets.Register(0x93, 99, true, &OldHeaderChange);
         }
 
-        public static void OldHeaderChange(NetState state, SpanReader reader, int packetLength)
+        public static void OldHeaderChange(NetState state, SpanReader reader)
         {
             var from = state.Mobile;
 
@@ -48,7 +48,7 @@ namespace Server.Items
             book.Author = Utility.FixHtml(author);
         }
 
-        public static void HeaderChange(NetState state, SpanReader reader, int packetLength)
+        public static void HeaderChange(NetState state, SpanReader reader)
         {
             var from = state.Mobile;
 
@@ -84,7 +84,7 @@ namespace Server.Items
             book.Author = Utility.FixHtml(author);
         }
 
-        public static void ContentChange(NetState state, SpanReader reader, int packetLength)
+        public static void ContentChange(NetState state, SpanReader reader)
         {
             var from = state.Mobile;
 

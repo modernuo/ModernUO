@@ -24,7 +24,7 @@ public static class IncomingHousePackets
         IncomingPackets.Register(0xFB, 2, false, &ShowPublicHouseContent);
     }
 
-    public static void ShowPublicHouseContent(NetState state, SpanReader reader, int packetLength)
+    public static void ShowPublicHouseContent(NetState state, SpanReader reader)
     {
         var showPublicHouseContent = reader.ReadBoolean();
     }

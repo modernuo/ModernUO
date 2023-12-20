@@ -29,7 +29,7 @@ public static class IncomingEntityPackets
         IncomingPackets.Register(0xD6, 0, true, &BatchQueryProperties);
     }
 
-    public static void ObjectHelpRequest(NetState state, SpanReader reader, int packetLength)
+    public static void ObjectHelpRequest(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -58,7 +58,7 @@ public static class IncomingEntityPackets
         }
     }
 
-    public static void UseReq(NetState state, SpanReader reader, int packetLength)
+    public static void UseReq(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -102,7 +102,7 @@ public static class IncomingEntityPackets
         }
     }
 
-    public static void LookReq(NetState state, SpanReader reader, int packetLength)
+    public static void LookReq(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
 
@@ -151,7 +151,7 @@ public static class IncomingEntityPackets
         }
     }
 
-    public static void BatchQueryProperties(NetState state, SpanReader reader, int packetLength)
+    public static void BatchQueryProperties(NetState state, SpanReader reader)
     {
         if (!ObjectPropertyList.Enabled)
         {

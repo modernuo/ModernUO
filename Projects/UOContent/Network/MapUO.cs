@@ -29,14 +29,14 @@ public static class MapUO
         AssistantProtocol.Register(0x01, true, &QueryGuildMemberLocations);
     }
 
-    public static void QueryGuildMemberLocations(NetState state, SpanReader reader, int packetLength)
+    public static void QueryGuildMemberLocations(NetState state, SpanReader reader)
     {
         Mobile from = state.Mobile;
 
         state.SendGuildMemberLocations(from, from.Guild as Guild, reader.ReadBoolean());
     }
 
-    public static void QueryPartyMemberLocations(NetState state, SpanReader reader, int packetLength)
+    public static void QueryPartyMemberLocations(NetState state, SpanReader reader)
     {
         Mobile from = state.Mobile;
         var party = Party.Get(from);

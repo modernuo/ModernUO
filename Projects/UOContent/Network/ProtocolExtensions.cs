@@ -35,7 +35,7 @@ namespace Server.Network
             return packetHandlers;
         }
 
-        private static unsafe void DecodeBundledPacket(NetState state, SpanReader reader, int packetLength)
+        private static unsafe void DecodeBundledPacket(NetState state, SpanReader reader)
         {
             int cmd = reader.ReadByte();
 
@@ -57,7 +57,7 @@ namespace Server.Network
             }
             else
             {
-                ph.OnReceive(state, reader, packetLength);
+                ph.OnReceive(state, reader);
             }
         }
     }

@@ -12,7 +12,7 @@ public static class AssistantProtocol
         _handlers = ProtocolExtensions<AssistantsProtocolInfo>.Register(new AssistantsProtocolInfo());
     }
 
-    public static unsafe void Register(int cmd, bool ingame, delegate*<NetState, SpanReader, int, void> onReceive) =>
+    public static unsafe void Register(int cmd, bool ingame, delegate*<NetState, SpanReader, void> onReceive) =>
         _handlers[cmd] = new PacketHandler(cmd, 0, ingame, onReceive);
 
     private struct AssistantsProtocolInfo : IProtocolExtensionsInfo

@@ -1812,7 +1812,7 @@ namespace Server.Multis
             context.Foundation.SendInfoTo(state);
         }
 
-        public static void QueryDesignDetails(NetState state, SpanReader reader, int packetLength)
+        public static void QueryDesignDetails(NetState state, SpanReader reader)
         {
             var from = state.Mobile;
 
