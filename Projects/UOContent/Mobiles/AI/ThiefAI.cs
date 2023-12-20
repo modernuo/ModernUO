@@ -40,7 +40,8 @@ public class ThiefAI : BaseAI
     {
         var combatant = m_Mobile.Combatant;
 
-        if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map)
+        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+            combatant.IsDeadBondedPet)
         {
             if (m_Mobile.Debug)
             {

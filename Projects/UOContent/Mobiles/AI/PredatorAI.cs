@@ -38,14 +38,15 @@ public class PredatorAI : BaseAI
     {
         var combatant = m_Mobile.Combatant;
 
-        if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map)
+        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+            combatant.IsDeadBondedPet)
         {
             if (m_Mobile.Debug)
             {
                 m_Mobile.DebugSay("My combatant is gone, so my guard is up");
             }
 
-            Action = ActionType.Wander;
+            Action = ActionType.Guard;
             return true;
         }
 

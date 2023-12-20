@@ -780,6 +780,7 @@ public class MageAI : BaseAI
             }
         }
 
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, c))
         {
             if (m_Mobile.Debug)

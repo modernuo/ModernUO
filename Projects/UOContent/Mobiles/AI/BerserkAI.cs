@@ -33,38 +33,32 @@ public class BerserkAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        if (m_Mobile.Combatant?.Deleted != false)
+        var combatant = m_Mobile.Combatant;
+
+        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+            combatant.IsDeadBondedPet)
         {
             if (m_Mobile.Debug)
             {
-                m_Mobile.DebugSay("My combatant is deleted");
+                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
             }
 
             Action = ActionType.Guard;
             return true;
         }
 
-        if (
-            m_Mobile.Combatant != null &&
-            !WalkMobileRange(
-                m_Mobile.Combatant,
-                1,
-                true,
-                m_Mobile.RangeFight,
-                m_Mobile.RangeFight
-            )
-        )
+        if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
         {
             if (m_Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I am still not in range of {m_Mobile.Combatant.Name}");
+                m_Mobile.DebugSay($"I am still not in range of {combatant.Name}");
             }
 
-            if ((int)m_Mobile.GetDistanceToSqrt(m_Mobile.Combatant) > m_Mobile.RangePerception + 1)
+            if ((int)m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
             {
                 if (m_Mobile.Debug)
                 {
-                    m_Mobile.DebugSay($"I have lost {m_Mobile.Combatant.Name}");
+                    m_Mobile.DebugSay($"I have lost {combatant.Name}");
                 }
 
                 Action = ActionType.Guard;
@@ -72,11 +66,12 @@ public class BerserkAI : BaseAI
             }
         }
 
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             if (m_Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
+                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
             }
         }
 
