@@ -844,16 +844,17 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         UpdatePacketCount(packetId);
 
-        var packetBuffer = packetReader.Buffer[..packetLength];
-
         if (PacketLogging)
         {
-            LogPacket(packetBuffer, true);
+            LogPacket(packetReader.Buffer[..packetLength], true);
         }
 
         // Make a new SpanReader that is limited to the length of the packet.
         // This allows us to use reader.Remaining for VendorBuyReply packet
-        handler.OnReceive(this, new SpanReader(packetBuffer));
+        var start = packetReader.Position;
+        var remainingLength = packetLength - packetReader.Position;
+
+        handler.OnReceive(this, new SpanReader(packetReader.Buffer.Slice(start, remainingLength)));
 
         prof?.Finish(packetLength);
 
