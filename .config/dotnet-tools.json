@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "modernuoschemagenerator": {
-      "version": "2.10.8",
+      "version": "2.10.9",
       "commands": [
         "ModernUOSchemaGenerator"
       ]

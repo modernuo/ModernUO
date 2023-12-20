@@ -8,6 +8,7 @@ namespace Server.Multis;
 [SerializationGenerator(0, false)]
 public partial class BrigandCamp : BaseCamp
 {
+    [SerializableField(0)]
     private Mobile _prisoner;
 
     [Constructible]

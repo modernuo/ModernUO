@@ -40,7 +40,7 @@
         <PackageReference Include="Zstd.Binaries" Version="1.6.0" />
 
         <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.9.1" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.10.8" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.10.9" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />

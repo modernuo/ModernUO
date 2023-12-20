@@ -1,4 +1,11 @@
 {
   "version": 0,
-  "type": "Server.Multis.BrigandCamp"
+  "type": "Server.Multis.BrigandCamp",
+  "properties": [
+    {
+      "name": "Prisoner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
 }

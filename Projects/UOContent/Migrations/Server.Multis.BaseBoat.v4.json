@@ -1,0 +1,73 @@
+{
+  "version": 4,
+  "type": "Server.Multis.BaseBoat",
+  "properties": [
+    {
+      "name": "MapItem",
+      "type": "Server.Items.MapItem",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "NextNavPoint",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Facing",
+      "type": "Server.Direction",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "TimeOfDecay",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "PPlank",
+      "type": "Server.Items.Plank",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "SPlank",
+      "type": "Server.Items.Plank",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "TillerMan",
+      "type": "Server.Items.TillerMan",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Hold",
+      "type": "Server.Items.Hold",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Anchored",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "ShipName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
