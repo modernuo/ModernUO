@@ -37,7 +37,7 @@ public class MeleeAI : BaseAI
     {
         var combatant = m_Mobile.Combatant;
 
-        if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
             if (m_Mobile.Debug)
@@ -128,6 +128,7 @@ public class MeleeAI : BaseAI
             }
         }
 
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             if (m_Mobile.Debug)

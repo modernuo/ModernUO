@@ -998,20 +998,26 @@ public abstract class BaseAI
             return true;
         }
 
-        var c = m_Mobile.Combatant;
+        var combatant = m_Mobile.Combatant;
 
-        if (c?.Deleted != false || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
+        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+            combatant.IsDeadBondedPet)
         {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay("My combatant is gone!");
+            }
+
             Action = ActionType.Wander;
             return true;
         }
 
-        m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, c))
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             if (m_Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I used my abilities on {c.Name}!");
+                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
             }
         }
 
@@ -1949,31 +1955,28 @@ public abstract class BaseAI
             m_Mobile.Combatant = null;
             m_Mobile.Warmode = false;
         }
+        else if (m_Mobile.BardTarget?.Deleted != false || m_Mobile.BardTarget.Map != m_Mobile.Map ||
+                 m_Mobile.GetDistanceToSqrt(m_Mobile.BardTarget) > m_Mobile.RangePerception)
+        {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay("I have lost my provoke target");
+            }
+
+            m_Mobile.BardProvoked = false;
+            m_Mobile.BardMaster = null;
+            m_Mobile.BardTarget = null;
+
+            m_Mobile.Combatant = null;
+            m_Mobile.Warmode = false;
+        }
         else
         {
-            if (m_Mobile.BardTarget?.Deleted != false || m_Mobile.BardTarget.Map != m_Mobile.Map ||
-                m_Mobile.GetDistanceToSqrt(m_Mobile.BardTarget) > m_Mobile.RangePerception)
-            {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("I have lost my provoke target");
-                }
+            m_Mobile.Combatant = m_Mobile.BardTarget;
+            m_Action = ActionType.Combat;
 
-                m_Mobile.BardProvoked = false;
-                m_Mobile.BardMaster = null;
-                m_Mobile.BardTarget = null;
-
-                m_Mobile.Combatant = null;
-                m_Mobile.Warmode = false;
-            }
-            else
-            {
-                m_Mobile.Combatant = m_Mobile.BardTarget;
-                m_Action = ActionType.Combat;
-
-                m_Mobile.OnThink();
-                Think();
-            }
+            m_Mobile.OnThink();
+            Think();
         }
 
         return true;
