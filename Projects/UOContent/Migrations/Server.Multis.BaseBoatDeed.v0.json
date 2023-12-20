@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Multis.BaseBoatDeed",
+  "properties": [
+    {
+      "name": "MultiId",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Offset",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    }
+  ]
+}

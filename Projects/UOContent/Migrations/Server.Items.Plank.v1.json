@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "type": "Server.Items.Plank",
+  "properties": [
+    {
+      "name": "Boat",
+      "type": "Server.Multis.BaseBoat",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Side",
+      "type": "Server.Items.PlankSide",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Locked",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "KeyValue",
+      "type": "uint",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

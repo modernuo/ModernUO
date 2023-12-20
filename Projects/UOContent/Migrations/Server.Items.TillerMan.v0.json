@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.TillerMan",
+  "properties": [
+    {
+      "name": "Boat",
+      "type": "Server.Multis.BaseBoat",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

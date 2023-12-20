@@ -1,4 +1,11 @@
 {
   "version": 0,
-  "type": "Server.Multis.RatCamp"
+  "type": "Server.Multis.RatCamp",
+  "properties": [
+    {
+      "name": "Prisoner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
 }

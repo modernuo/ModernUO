@@ -1,4 +1,11 @@
 {
   "version": 0,
-  "type": "Server.Multis.OrcCamp"
+  "type": "Server.Multis.OrcCamp",
+  "properties": [
+    {
+      "name": "Prisoner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
 }
