@@ -392,7 +392,7 @@ public partial class Corpse : Container, ICarvable
             }
         }
 
-        using var attackers = PooledRefList<Mobile>.Create();
+        using var attackers = PooledRefList<Mobile>.Create(_aggressors.Count);
         attackers.AddRange(_aggressors);
         attackers.Shuffle();
 
