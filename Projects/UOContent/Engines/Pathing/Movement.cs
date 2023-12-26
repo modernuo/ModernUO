@@ -20,9 +20,9 @@ namespace Server.Movement
             Movement.Impl = new MovementImpl();
         }
 
-        private readonly List<Mobile>[] _mobPools = { new(), new(), new() };
+        private readonly List<Mobile>[] _mobPools = [[], [], []];
 
-        private readonly List<Item>[] _pools = { new(), new(), new(), new() };
+        private readonly List<Item>[] _pools = [[], [], [], []];
 
         private MovementImpl()
         {

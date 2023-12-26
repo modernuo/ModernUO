@@ -22,9 +22,9 @@ namespace Server.Engines.Help
     {
         // What page types should have a speech log as attachment?
         public static readonly PageType[] SpeechLogAttachment =
-        {
+        [
             PageType.VerbalHarassment
-        };
+        ];
 
         private Mobile m_Handler;
 
@@ -41,7 +41,7 @@ namespace Server.Engines.Help
 
             if (sender is PlayerMobile pm && pm.SpeechLog != null && Array.IndexOf(SpeechLogAttachment, type) >= 0)
             {
-                SpeechLog = new List<SpeechLogEntry>(pm.SpeechLog);
+                SpeechLog = [..pm.SpeechLog];
             }
 
             m_Timer = new InternalTimer(this);
@@ -119,7 +119,7 @@ namespace Server.Engines.Help
         private static readonly Dictionary<Mobile, PageEntry> m_KeyedByHandler = new();
         private static readonly Dictionary<Mobile, PageEntry> m_KeyedBySender = new();
 
-        public static List<PageEntry> List { get; } = new();
+        public static List<PageEntry> List { get; } = [];
 
         public static void Initialize()
         {

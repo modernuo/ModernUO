@@ -120,10 +120,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         Connection = connection;
         Seeded = false;
-        Gumps = new List<Gump>();
-        HuePickers = new List<HuePicker>();
-        Menus = new List<IMenu>();
-        Trades = new List<SecureTrade>();
+        Gumps = [];
+        HuePickers = [];
+        Menus = [];
+        Trades = [];
         RecvPipe = new Pipe(RecvPipeSize);
         SendPipe = new Pipe(SendPipeSize);
         _nextActivityCheck = Core.TickCount + 30000;
@@ -364,7 +364,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void AddMenu(IMenu menu)
     {
-        Menus ??= new List<IMenu>();
+        Menus ??= [];
 
         if (Menus.Count < MenuCap)
         {
@@ -394,7 +394,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void AddHuePicker(HuePicker huePicker)
     {
-        HuePickers ??= new List<HuePicker>();
+        HuePickers ??= [];
 
         if (HuePickers.Count < HuePickerCap)
         {
@@ -424,7 +424,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void AddGump(Gump gump)
     {
-        Gumps ??= new List<Gump>();
+        Gumps ??= [];
 
         if (Gumps.Count < GumpCap)
         {

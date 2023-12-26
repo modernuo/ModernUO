@@ -41,7 +41,7 @@ namespace Server.Items
         [Constructible]
         public SolenAntHole()
         {
-            _spawned = new List<Mobile>();
+            _spawned = [];
 
             AddComponent(new AddonComponent(0x914), "dirt", 0, 0, 0, 0);
             AddComponent(new SolenAntHoleComponent(0x122A), "a hole", 0x1, 0, 0, 0);

@@ -7,7 +7,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class RaiJu : BaseCreature
     {
-        private static readonly HashSet<Mobile> m_Table = new();
+        private static readonly HashSet<Mobile> m_Table = [];
 
         [Constructible]
         public RaiJu() : base(AIType.AI_Melee)

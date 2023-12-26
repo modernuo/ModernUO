@@ -7,7 +7,7 @@ namespace Server.Commands.Generic
     {
         public AreaCommandImplementor()
         {
-            Accessors = new[] { "Area", "Group" };
+            Accessors = ["Area", "Group"];
             SupportRequirement = CommandSupport.Area;
             SupportsConditionals = true;
             AccessLevel = AccessLevel.GameMaster;

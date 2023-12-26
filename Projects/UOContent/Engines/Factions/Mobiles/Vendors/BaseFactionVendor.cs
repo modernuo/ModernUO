@@ -51,7 +51,7 @@ namespace Server.Factions
             }
         }
 
-        protected override List<SBInfo> SBInfos { get; } = new();
+        protected override List<SBInfo> SBInfos { get; } = [];
 
         public void Register()
         {

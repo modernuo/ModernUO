@@ -12,7 +12,7 @@ namespace Server.Engines.Harvest
         private static Fishing _system;
 
         private static readonly MutateEntry[] _mutateTable =
-        {
+        [
             new(80.0, 80.0, 4080.0, true, typeof(SpecialFishingNet)),
             new(80.0, 80.0, 4080.0, true, typeof(BigFish)),
             new(90.0, 80.0, 4080.0, true, typeof(TreasureMap)),
@@ -28,43 +28,46 @@ namespace Server.Engines.Harvest
                 typeof(PeculiarFish)
             ),
             new(0.0, 105.0, -420.0, false, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
-            new(0.0, 200.0, -200.0, false, new Type[] { null })
-        };
+            new(0.0, 200.0, -200.0, false, [null])
+        ];
 
         private static readonly int[] _waterLandTiles =
-        {
+        [
             0x00A8, 0x00AB,
             0x0136, 0x0137
-        };
+        ];
 
         private static readonly int[] waterStaticTiles =
-        {
+        [
             0x1797, 0x179C,
             0x346E, 0x3485,
             0x3490, 0x34AB,
             0x34B5, 0x35D5
-        };
+        ];
 
-        private static readonly int[] bodyParts = {
+        private static readonly int[] bodyParts =
+        [
             0x1CDD, 0x1CE5, // arm
             0x1CE0, 0x1CE8, // torso
             0x1CE1, 0x1CE9, // head
             0x1CE2, 0x1CEC  // leg
-        };
+        ];
 
-        private static readonly int[] boneParts = {
+        private static readonly int[] boneParts =
+        [
             0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4,                         // skulls
             0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
             0x1B15, 0x1B16                                                  // pelvis bones
-        };
+        ];
 
-        private static readonly int[] miscItems = {
+        private static readonly int[] miscItems =
+        [
             0x1EB5,                        // unfinished barrel
             0xA2A,                         // stool
             0xC1F,                         // broken clock
             0x1047, 0x1048,                // globe
             0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4 // barrel staves
-        };
+        ];
 
         private Fishing()
         {
@@ -83,9 +86,9 @@ namespace Server.Engines.Harvest
                 MaxRange = 4,
                 ConsumedPerHarvest = 1,
                 ConsumedPerFeluccaHarvest = 1,
-                EffectActions = new[] { 12 },
+                EffectActions = [12],
                 EffectSounds = Array.Empty<int>(),
-                EffectCounts = new[] { 1 },
+                EffectCounts = [1],
                 EffectDelay = TimeSpan.Zero,
                 EffectSoundDelay = TimeSpan.FromSeconds(8.0),
                 NoResourcesMessage = 503172,     // The fish don't seem to be biting here.
@@ -97,28 +100,28 @@ namespace Server.Engines.Harvest
             };
 
             HarvestResource[] res =
-            {
+            [
                 new(00.0, 00.0, 100.0, 1043297, typeof(Fish))
-            };
+            ];
 
             HarvestVein[] veins =
-            {
+            [
                 new(1000, 0.0, res[0], null)
-            };
+            ];
 
             fish.Resources = res;
             fish.Veins = veins;
 
             if (Core.ML)
             {
-                fish.BonusResources = new[]
-                {
+                fish.BonusResources =
+                [
                     new BonusHarvestResource(0, 99.4, null, null), // set to same chance as mining ml gems
                     new BonusHarvestResource(80.0, .6, 1072597, typeof(WhitePearl))
-                };
+                ];
             }
 
-            Definitions = new[] { fish };
+            Definitions = [fish];
         }
 
         public static Fishing System => _system ??= new Fishing();

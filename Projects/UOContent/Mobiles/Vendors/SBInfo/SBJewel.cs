@@ -29,7 +29,7 @@ namespace Server.Mobiles
                         20,
                         0x1ED0,
                         0,
-                        new object[] { 500 } // 500 charges
+                        [500] // 500 charges
                     )
                 );
                 Add(new GenericBuyInfo(
@@ -39,7 +39,7 @@ namespace Server.Mobiles
                         20,
                         0x1ED0,
                         0,
-                        new object[] { 1000 } // 1000 charges
+                        [1000] // 1000 charges
                     )
                 );
                 Add(
@@ -50,7 +50,7 @@ namespace Server.Mobiles
                         20,
                         0x1ED0,
                         0,
-                        new object[] { 2000 } // 2000 charges
+                        [2000] // 2000 charges
                     )
                 );
 

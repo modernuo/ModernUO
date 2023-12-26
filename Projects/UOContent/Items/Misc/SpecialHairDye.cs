@@ -34,7 +34,7 @@ public partial class SpecialHairDye : Item
 public class SpecialHairDyeGump : Gump
 {
     private static readonly SpecialHairDyeEntry[] _entries =
-    {
+    [
         new("*****", 12, 10),
         new("*****", 32, 5),
         new("*****", 38, 8),
@@ -43,7 +43,7 @@ public class SpecialHairDyeGump : Gump
         new("*****", 81, 2),
         new("*****", 89, 2),
         new("*****", 1153, 2)
-    };
+    ];
 
     private SpecialHairDye _specialHairDye;
 

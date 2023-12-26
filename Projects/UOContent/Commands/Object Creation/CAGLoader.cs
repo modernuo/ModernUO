@@ -54,7 +54,7 @@ public static class CAGLoader
                 if (parent.Nodes == null)
                 {
                     var cat = new CAGCategory(category, parent);
-                    parent.Nodes = new CAGNode[] { cat };
+                    parent.Nodes = [cat];
                     parent = cat;
                     continue;
                 }

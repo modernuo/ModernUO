@@ -119,7 +119,7 @@ public abstract class Persistence
         _typesSet.Clear();
     }
 
-    private static HashSet<Type> _typesSet = new();
+    private static HashSet<Type> _typesSet = [];
 
     public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
     {

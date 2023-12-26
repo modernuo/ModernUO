@@ -3,7 +3,7 @@ namespace Server.PathAlgorithms
     public abstract class PathAlgorithm
     {
         private static readonly Direction[] m_CalcDirections =
-        {
+        [
             Direction.Up,
             Direction.North,
             Direction.Right,
@@ -13,7 +13,7 @@ namespace Server.PathAlgorithms
             Direction.Left,
             Direction.South,
             Direction.Down
-        };
+        ];
 
         public abstract bool CheckCondition(Mobile m, Map map, Point3D start, Point3D goal);
         public abstract Direction[] Find(Mobile m, Map map, Point3D start, Point3D goal);

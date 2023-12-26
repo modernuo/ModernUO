@@ -10,7 +10,7 @@ namespace Server.Accounting
     {
         public static bool Enabled;
 
-        private static readonly List<InvalidAccountAccessLog> m_List = new();
+        private static readonly List<InvalidAccountAccessLog> m_List = [];
 
         public static void Configure()
         {

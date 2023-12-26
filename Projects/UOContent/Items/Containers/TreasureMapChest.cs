@@ -57,7 +57,7 @@ public partial class TreasureMapChest : LockableContainer
         _level = level;
 
         _temporary = temporary;
-        _guardians = new List<Mobile>();
+        _guardians = [];
 
         _expireTimer = Timer.DelayCall(TimeSpan.FromHours(3.0), Delete);
         Fill(this, level);
@@ -66,7 +66,7 @@ public partial class TreasureMapChest : LockableContainer
     public override int LabelNumber => 3000541;
 
     public static Type[] Artifacts { get; } =
-    {
+    [
         typeof(CandelabraOfSouls), typeof(GoldBricks), typeof(PhillipsWoodenSteed),
         typeof(ArcticDeathDealer), typeof(BlazeOfDeath), typeof(BurglarsBandana),
         typeof(CavortingClub), typeof(DreadPirateHat),
@@ -74,7 +74,7 @@ public partial class TreasureMapChest : LockableContainer
         typeof(LunaLance), typeof(NightsKiss), typeof(NoxRangersHeavyCrossbow),
         typeof(PolarBearMask), typeof(VioletCourage), typeof(HeartOfTheLion),
         typeof(ColdBlood), typeof(AlchemistsBauble)
-    };
+    ];
 
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime DeleteTime => _expireTimer.Next;
@@ -366,7 +366,7 @@ public partial class TreasureMapChest : LockableContainer
 
         if (notYetLifted)
         {
-            _lifted ??= new HashSet<Item>();
+            _lifted ??= [];
             _lifted.Add(item);
 
             if (Utility.RandomDouble() < 0.1) // 10% chance to spawn a new monster
@@ -391,7 +391,7 @@ public partial class TreasureMapChest : LockableContainer
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        _guardians = new List<Mobile>();
+        _guardians = [];
 
         _owner = reader.ReadEntity<Mobile>();
         _level = reader.ReadInt();

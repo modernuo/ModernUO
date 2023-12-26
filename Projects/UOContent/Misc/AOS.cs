@@ -1096,7 +1096,7 @@ namespace Server
                     continue;
                 }
 
-                m_Mods ??= new HashSet<SkillMod>();
+                m_Mods ??= [];
 
                 SkillMod sk = new DefaultSkillMod(skill, $"{GetHashCode()}{skill}", true, bonus);
                 sk.ObeyCap = true;

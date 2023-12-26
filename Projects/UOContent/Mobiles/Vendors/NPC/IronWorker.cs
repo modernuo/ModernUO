@@ -7,7 +7,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class IronWorker : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public IronWorker() : base("the iron worker")

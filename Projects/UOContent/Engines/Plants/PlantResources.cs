@@ -7,7 +7,7 @@ namespace Server.Engines.Plants
     public class PlantResourceInfo
     {
         private static readonly PlantResourceInfo[] m_ResourceList =
-        {
+        [
             new(PlantType.ElephantEarPlant, PlantHue.BrightRed, typeof(RedLeaves)),
             new(PlantType.PonytailPalm, PlantHue.BrightRed, typeof(RedLeaves)),
             new(PlantType.CenturyPlant, PlantHue.BrightRed, typeof(RedLeaves)),
@@ -17,7 +17,7 @@ namespace Server.Engines.Plants
             new(PlantType.SnakePlant, PlantHue.BrightGreen, typeof(GreenThorns)),
             new(PlantType.BarrelCactus, PlantHue.BrightGreen, typeof(GreenThorns)),
             new(PlantType.CocoaTree, PlantHue.Plain, typeof(CocoaPulp))
-        };
+        ];
 
         private PlantResourceInfo(PlantType plantType, PlantHue plantHue, Type resourceType)
         {

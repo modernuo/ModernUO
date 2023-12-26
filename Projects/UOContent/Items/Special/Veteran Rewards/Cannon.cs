@@ -33,7 +33,7 @@ public partial class CannonAddonComponent : AddonComponent
 [SerializationGenerator(1)]
 public partial class CannonAddon : BaseAddon
 {
-    private static readonly int[] m_Effects = { 0x36B0, 0x3728, 0x3709, 0x36FE };
+    private static readonly int[] m_Effects = [0x36B0, 0x3728, 0x3709, 0x36FE];
 
     [SerializableField(0, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]

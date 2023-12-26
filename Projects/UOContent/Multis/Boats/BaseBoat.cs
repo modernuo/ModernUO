@@ -33,9 +33,9 @@ namespace Server.Multis
         }
 
         private static readonly Rectangle2D[] BritWrap =
-            { new(16, 16, 5120 - 32, 4096 - 32), new(5136, 2320, 992, 1760) };
-        private static readonly Rectangle2D[] IlshWrap = { new(16, 16, 2304 - 32, 1600 - 32) };
-        private static readonly Rectangle2D[] TokunoWrap = { new(16, 16, 1448 - 32, 1448 - 32) };
+            [new(16, 16, 5120 - 32, 4096 - 32), new(5136, 2320, 992, 1760)];
+        private static readonly Rectangle2D[] IlshWrap = [new(16, 16, 2304 - 32, 1600 - 32)];
+        private static readonly Rectangle2D[] TokunoWrap = [new(16, 16, 1448 - 32, 1448 - 32)];
 
         private static readonly TimeSpan BoatDecayDelay = TimeSpan.FromDays(9.0);
 
@@ -221,7 +221,7 @@ namespace Server.Multis
 
         public virtual BaseDockedBoat DockedBoat => null;
 
-        public static List<BaseBoat> Boats { get; } = new();
+        public static List<BaseBoat> Boats { get; } = [];
 
         /*
          * Intervals:

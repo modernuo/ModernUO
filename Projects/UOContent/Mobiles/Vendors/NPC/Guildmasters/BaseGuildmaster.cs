@@ -12,7 +12,7 @@ namespace Server.Mobiles
         public BaseGuildmaster(string title) : base(title) =>
             Title = $"the {title} {(Female ? "guildmistress" : "guildmaster")}";
 
-        protected override List<SBInfo> SBInfos { get; } = new();
+        protected override List<SBInfo> SBInfos { get; } = [];
 
         public override bool IsActiveVendor => false;
 

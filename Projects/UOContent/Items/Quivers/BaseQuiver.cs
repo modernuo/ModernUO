@@ -7,7 +7,7 @@ namespace Server.Items;
 [SerializationGenerator(1, false)]
 public partial class BaseQuiver : Container, ICraftable, IAosItem
 {
-    private static Type[] m_Ammo = { typeof(Arrow), typeof(Bolt) };
+    private static Type[] m_Ammo = [typeof(Arrow), typeof(Bolt)];
 
     [SerializableField(0, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]

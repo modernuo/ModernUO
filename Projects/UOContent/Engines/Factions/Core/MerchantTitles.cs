@@ -38,7 +38,7 @@ namespace Server.Factions
     public static class MerchantTitles
     {
         public static MerchantTitleInfo[] Info { get; } =
-        {
+        [
             new(
                 SkillName.Inscribe,
                 90.0,
@@ -81,7 +81,7 @@ namespace Server.Factions
                 1018300, // TAILOR
                 1042162 // You now have the faction title of Tailor
             )
-        };
+        ];
 
         public static MerchantTitleInfo GetInfo(MerchantTitle title)
         {

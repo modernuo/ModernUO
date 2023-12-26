@@ -1436,7 +1436,7 @@ namespace Server.Mobiles
 
                 string firstWord;
 
-                var sep = text.IndexOfAny(new[] { ' ', ',' });
+                var sep = text.IndexOfAny([' ', ',']);
                 firstWord = sep >= 0 ? text[..sep] : text;
 
                 string description;

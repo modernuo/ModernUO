@@ -15,7 +15,7 @@ internal class ServerFixture : IDisposable
 
         // Load an empty assembly list into the resolver
         ServerConfiguration.AssemblyDirectories.Add(Core.BaseDirectory);
-        AssemblyHandler.LoadAssemblies(new[]{ "ModernUO.dll" });
+        AssemblyHandler.LoadAssemblies(["ModernUO.dll"]);
 
         Core.LoopContext = new EventLoopContext();
         Core.Expansion = Expansion.EJ;

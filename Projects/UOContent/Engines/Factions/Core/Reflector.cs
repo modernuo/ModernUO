@@ -50,8 +50,8 @@ namespace Server.Factions
 
         private static void ProcessTypes()
         {
-            m_Factions = new List<Faction>();
-            m_Towns = new List<Town>();
+            m_Factions = [];
+            m_Towns = [];
 
             var asms = AssemblyHandler.Assemblies;
 

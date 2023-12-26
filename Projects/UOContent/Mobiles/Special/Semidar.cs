@@ -47,12 +47,12 @@ public partial class Semidar : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-    public override Type[] UniqueList => new[] { typeof(GladiatorsCollar) };
+    public override Type[] UniqueList => [typeof(GladiatorsCollar)];
 
-    public override Type[] SharedList => new[]
-        { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) };
+    public override Type[] SharedList => [typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard)
+    ];
 
-    public override Type[] DecorativeList => new[] { typeof(LavaTile), typeof(DemonSkull) };
+    public override Type[] DecorativeList => [typeof(LavaTile), typeof(DemonSkull)];
 
     public override MonsterStatuetteType[] StatueTypes => Array.Empty<MonsterStatuetteType>();
 
@@ -83,7 +83,7 @@ public partial class Semidar : BaseChampion
         }
     }
 
-    private static MonsterAbility[] _abilities = { new SemidarDrainLife() };
+    private static MonsterAbility[] _abilities = [new SemidarDrainLife()];
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     private class SemidarDrainLife : DrainLifeAreaAttack

@@ -4,7 +4,7 @@ namespace Server.Commands.Generic
     {
         public SelfCommandImplementor()
         {
-            Accessors = new[] { "Self" };
+            Accessors = ["Self"];
             SupportRequirement = CommandSupport.Self;
             AccessLevel = AccessLevel.Counselor;
             Usage = "Self <command>";

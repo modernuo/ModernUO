@@ -10,7 +10,7 @@ namespace Server.Commands
     {
         public static Dictionary<string, CommandInfo> HelpInfos { get; } = new();
 
-        public static List<CommandInfo> SortedHelpInfo { get; private set; } = new();
+        public static List<CommandInfo> SortedHelpInfo { get; private set; } = [];
 
         public static void Initialize()
         {
@@ -261,7 +261,7 @@ namespace Server.Commands
 
                 if (list == null)
                 {
-                    m_List = new List<CommandInfo>();
+                    m_List = [];
 
                     foreach (var c in SortedHelpInfo)
                     {

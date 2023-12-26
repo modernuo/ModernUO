@@ -192,7 +192,7 @@ public partial class PlantItem : Item, ISecurable
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Reproduces => PlantHueInfo.CanReproduce(PlantHue) && PlantTypeInfo.CanReproduce(PlantType);
 
-    public static List<PlantItem> Plants { get; } = new();
+    public static List<PlantItem> Plants { get; } = [];
 
     public override void OnSingleClick(Mobile from)
     {

@@ -52,7 +52,7 @@ namespace Server.Commands.Generic
             {
                 if (m_Implementors == null)
                 {
-                    m_Implementors = new List<BaseCommandImplementor>();
+                    m_Implementors = [];
                     RegisterImplementors();
                 }
 
@@ -245,7 +245,7 @@ namespace Server.Commands.Generic
             {
                 if (command.ListOptimized)
                 {
-                    command.ExecuteList(e, new List<object> { obj });
+                    command.ExecuteList(e, [obj]);
                 }
                 else
                 {

@@ -8,7 +8,7 @@ namespace Server.Engines.Craft;
 public class DefTinkering : CraftSystem
 {
     private static readonly Type[] _tinkerColorables =
-    {
+    [
         typeof(ForkLeft), typeof(ForkRight),
         typeof(SpoonLeft), typeof(SpoonRight),
         typeof(KnifeLeft), typeof(KnifeRight),
@@ -19,7 +19,7 @@ public class DefTinkering : CraftSystem
         typeof(Key), typeof(Globe),
         typeof(Spyglass), typeof(Lantern),
         typeof(HeatingStand)
-    };
+    ];
 
     public static void Initialize()
     {

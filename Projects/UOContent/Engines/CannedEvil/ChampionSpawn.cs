@@ -141,9 +141,9 @@ public partial class ChampionSpawn : Item
         Movable = false;
         Visible = false;
 
-        _creatures = new List<Mobile>();
-        _redSkulls = new List<Item>();
-        _whiteSkulls = new List<Item>();
+        _creatures = [];
+        _redSkulls = [];
+        _whiteSkulls = [];
 
         _platform = new ChampionPlatform(this);
         _altar = new ChampionAltar(this);
@@ -1389,7 +1389,7 @@ public class ChampionSpawnRegion : BaseRegion
             else if (Spawn.ProximitySpawn && !Spawn.ActivatedByProximity && Core.Now >= Spawn.NextProximityTime)
             {
                 List<Mobile> players = parent.GetPlayers();
-                List<IPAddress> addresses = new List<IPAddress>();
+                List<IPAddress> addresses = [];
                 for (var i = 0; i < players.Count; i++)
                 {
                     if (players[i].AccessLevel == AccessLevel.Player && players[i].NetState != null &&

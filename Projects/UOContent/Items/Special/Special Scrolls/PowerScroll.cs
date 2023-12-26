@@ -7,7 +7,7 @@ namespace Server.Items;
 public partial class PowerScroll : SpecialScroll
 {
     private static readonly SkillName[] _preAosSkills =
-    {
+    [
         SkillName.Blacksmith,
         SkillName.Tailoring,
         SkillName.Swords,
@@ -30,28 +30,28 @@ public partial class PowerScroll : SpecialScroll
         SkillName.Provocation,
         SkillName.Discordance,
         SkillName.Peacemaking
-    };
+    ];
 
     private static readonly SkillName[] _aosSkills =
-    {
+    [
         SkillName.Chivalry,
         SkillName.Focus,
         SkillName.Necromancy,
         SkillName.Stealing,
         SkillName.Stealth,
         SkillName.SpiritSpeak
-    };
+    ];
 
     private static readonly SkillName[] _seSkills =
-    {
+    [
         SkillName.Ninjitsu,
         SkillName.Bushido
-    };
+    ];
 
     private static readonly SkillName[] _mlSkills =
-    {
+    [
         SkillName.Spellweaving
-    };
+    ];
 
     /*
     private static SkillName[] _saSkills = new SkillName[]

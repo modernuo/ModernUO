@@ -190,13 +190,13 @@ namespace Server.Mobiles
         public const int ShoutRange = 8;
 
         private static readonly Type[] m_AnimateDeadTypes =
-        {
+        [
             typeof(MoundOfMaggots), typeof(HellSteed), typeof(SkeletalMount),
             typeof(WailingBanshee), typeof(Wraith), typeof(SkeletalDragon),
             typeof(LichLord), typeof(FleshGolem), typeof(Lich),
             typeof(SkeletalKnight), typeof(BoneKnight), typeof(Mummy),
             typeof(SkeletalMage), typeof(BoneMagi), typeof(PatchworkSkeleton)
-        };
+        ];
 
         private static Mobile m_NoDupeGuards;
 
@@ -204,22 +204,22 @@ namespace Server.Mobiles
         public static readonly TimeSpan ShoutDelay = TimeSpan.FromMinutes(1);
 
         private static readonly Type[] m_Eggs =
-        {
+        [
             typeof(FriedEggs), typeof(Eggs)
-        };
+        ];
 
         private static readonly Type[] m_Fish =
-        {
+        [
             typeof(FishSteak), typeof(RawFishSteak)
-        };
+        ];
 
         private static readonly Type[] m_GrainsAndHay =
-        {
+        [
             typeof(BreadLoaf), typeof(FrenchBread), typeof(SheafOfHay)
-        };
+        ];
 
         private static readonly Type[] m_Meat =
-        {
+        [
             /* Cooked */
             typeof(Bacon), typeof(CookedBird), typeof(Sausage),
             typeof(Ham), typeof(Ribs), typeof(LambLeg),
@@ -232,23 +232,23 @@ namespace Server.Mobiles
             /* Body Parts */
             typeof(Head), typeof(LeftArm), typeof(LeftLeg),
             typeof(Torso), typeof(RightArm), typeof(RightLeg)
-        };
+        ];
 
         private static readonly Type[] m_FruitsAndVegies =
-        {
+        [
             typeof(HoneydewMelon), typeof(YellowGourd), typeof(GreenGourd),
             typeof(Banana), typeof(Bananas), typeof(Lemon), typeof(Lime),
             typeof(Dates), typeof(Grapes), typeof(Peach), typeof(Pear),
             typeof(Apple), typeof(Watermelon), typeof(Squash),
             typeof(Cantaloupe), typeof(Carrot), typeof(Cabbage),
             typeof(Onion), typeof(Lettuce), typeof(Pumpkin)
-        };
+        ];
 
         private static readonly Type[] m_Gold =
-        {
+        [
             // white wyrms eat gold..
             typeof(Gold)
-        };
+        ];
 
         private bool _summoned;
 
@@ -352,7 +352,7 @@ namespace Server.Mobiles
 
             m_bTamable = false;
 
-            Owners = new List<Mobile>();
+            Owners = [];
 
             NextReacquireTime = Core.TickCount + (int)ReacquireDelay.TotalMilliseconds;
 
@@ -2050,7 +2050,7 @@ namespace Server.Mobiles
             }
             else
             {
-                Owners = new List<Mobile>();
+                Owners = [];
             }
 
             if (version >= 10)
@@ -4045,7 +4045,7 @@ namespace Server.Mobiles
 
         public virtual void AddPetFriend(Mobile m)
         {
-            Friends ??= new List<Mobile>();
+            Friends ??= [];
 
             Friends.Add(m);
         }

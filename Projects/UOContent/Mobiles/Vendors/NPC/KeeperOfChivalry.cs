@@ -7,7 +7,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class KeeperOfChivalry : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public KeeperOfChivalry() : base("the Keeper of Chivalry")

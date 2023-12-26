@@ -70,7 +70,7 @@ namespace Server.Mobiles
         public override string CorpseName => "a kappa corpse";
         public override string DefaultName => "a kappa";
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.DrainLifeAttack };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.DrainLifeAttack];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

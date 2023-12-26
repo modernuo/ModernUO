@@ -39,14 +39,12 @@ public class Minax : Faction
                 1005191, // Followers of Minax will now be told to go away.
                 1005192, // Followers of Minax will now be hanged by their toes.
                 new StrongholdDefinition(
-                    new[]
-                    {
+                    [
                         new Rectangle2D(1097, 2570, 70, 50)
-                    },
+                    ],
                     new Point3D(1172, 2593, 0),
                     new Point3D(1117, 2587, 18),
-                    new[]
-                    {
+                    [
                         new Point3D(1113, 2601, 18),
                         new Point3D(1113, 2598, 18),
                         new Point3D(1113, 2595, 18),
@@ -55,10 +53,9 @@ public class Minax : Faction
                         new Point3D(1116, 2598, 18),
                         new Point3D(1116, 2595, 18),
                         new Point3D(1116, 2592, 18)
-                    }
+                    ]
                 ),
-                new[]
-                {
+                [
                     new RankDefinition(10, 991, 8, 1060784), // Avenger of Mondain
                     new RankDefinition(9, 950, 7, 1060783),  // Dread Knight
                     new RankDefinition(8, 900, 6, 1060782),  // Warlord
@@ -69,9 +66,8 @@ public class Minax : Faction
                     new RankDefinition(3, 400, 4, 1060780),  // Defiler
                     new RankDefinition(2, 200, 4, 1060780),  // Defiler
                     new RankDefinition(1, 0, 4, 1060780)     // Defiler
-                },
-                new[]
-                {
+                ],
+                [
                     new GuardDefinition(
                         typeof(FactionHenchman),
                         0x1403,
@@ -108,7 +104,7 @@ public class Minax : Faction
                         1011506, // DRAGOON
                         1011500  // Hire Dragoon
                     )
-                }
+                ]
             );
     }
 

@@ -29,7 +29,7 @@ public static class RegionJsonSerializer
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(RegionJsonSerializer));
 
-    private static JsonDerivedType[] _derivedTypes = { new(typeof(Region), nameof(Region)) };
+    private static JsonDerivedType[] _derivedTypes = [new(typeof(Region), nameof(Region))];
 
     public static IJsonTypeInfoResolver RegionJsonTypeInfoResolver => new DefaultJsonTypeInfoResolver()
     {

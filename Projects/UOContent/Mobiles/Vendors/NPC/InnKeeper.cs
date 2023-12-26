@@ -6,7 +6,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class InnKeeper : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public InnKeeper() : base("the innkeeper")

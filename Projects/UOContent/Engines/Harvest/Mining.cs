@@ -11,7 +11,7 @@ namespace Server.Engines.Harvest
         private static Mining _system;
 
         private static readonly int[] _offsets =
-        {
+        [
             -1, -1,
             -1, 0,
             -1, 1,
@@ -20,10 +20,10 @@ namespace Server.Engines.Harvest
             1, -1,
             1, 0,
             1, 1
-        };
+        ];
 
         private static readonly int[] _mountainCaveTiles =
-        {
+        [
             220, 231,
             236, 247,
             252, 236,
@@ -48,15 +48,15 @@ namespace Server.Engines.Harvest
             0x3F39, 0x3F74,
             0x3F82, 0x3F8F,
             0x3F91, 0x3FCF
-        };
+        ];
 
         private static readonly int[] _mountainCaveStaticTiles =
-        {
-            0x053B, 0x054F,
-        };
+        [
+            0x053B, 0x054F
+        ];
 
         private static readonly int[] _sandTiles =
-        {
+        [
             22, 62,
             68, 75,
 
@@ -78,7 +78,7 @@ namespace Server.Engines.Harvest
             1623, 1626,
             1635, 1642,
             1647, 1650
-        };
+        ];
 
         private Mining()
         {
@@ -97,9 +97,9 @@ namespace Server.Engines.Harvest
                 MaxRange = 2,
                 ConsumedPerHarvest = 1,
                 ConsumedPerFeluccaHarvest = 2,
-                EffectActions = new[] { 11 },
-                EffectSounds = new[] { 0x125, 0x126 },
-                EffectCounts = new[] { 1 },
+                EffectActions = [11],
+                EffectSounds = [0x125, 0x126],
+                EffectCounts = [1],
                 EffectDelay = TimeSpan.FromSeconds(1.6),
                 EffectSoundDelay = TimeSpan.FromSeconds(0.9),
                 NoResourcesMessage = 503040,     // There is no metal here to mine.
@@ -112,7 +112,7 @@ namespace Server.Engines.Harvest
             };
 
             HarvestResource[] res =
-            {
+            [
                 new(00.0, 00.0, 100.0, 1007072, typeof(IronOre), typeof(Granite)),
                 new(
                     65.0,
@@ -186,10 +186,10 @@ namespace Server.Engines.Harvest
                     typeof(ValoriteGranite),
                     typeof(ValoriteElemental)
                 )
-            };
+            ];
 
             HarvestVein[] veins =
-            {
+            [
                 new(496, 0.0, res[0], null),   // Iron
                 new(112, 0.5, res[1], res[0]), // Dull Copper
                 new(098, 0.5, res[2], res[0]), // Shadow Iron
@@ -199,15 +199,15 @@ namespace Server.Engines.Harvest
                 new(042, 0.5, res[6], res[0]), // Agapite
                 new(028, 0.5, res[7], res[0]), // Verite
                 new(014, 0.5, res[8], res[0])  // Valorite
-            };
+            ];
 
             OreAndStone.Resources = res;
             OreAndStone.Veins = veins;
 
             if (Core.ML)
             {
-                OreAndStone.BonusResources = new[]
-                {
+                OreAndStone.BonusResources =
+                [
                     new BonusHarvestResource(0, 99.4, null, null), // Nothing
                     new BonusHarvestResource(100, .1, 1072562, typeof(BlueDiamond)),
                     new BonusHarvestResource(100, .1, 1072567, typeof(DarkSapphire)),
@@ -215,7 +215,7 @@ namespace Server.Engines.Harvest
                     new BonusHarvestResource(100, .1, 1072564, typeof(FireRuby)),
                     new BonusHarvestResource(100, .1, 1072566, typeof(PerfectEmerald)),
                     new BonusHarvestResource(100, .1, 1072568, typeof(Turquoise))
-                };
+                ];
             }
 
             OreAndStone.RaceBonus = Core.ML;
@@ -236,9 +236,9 @@ namespace Server.Engines.Harvest
                 MaxRange = 2,
                 ConsumedPerHarvest = 1,
                 ConsumedPerFeluccaHarvest = 1,
-                EffectActions = new[] { 11 },
-                EffectSounds = new[] { 0x125, 0x126 },
-                EffectCounts = new[] { 6 },
+                EffectActions = [11],
+                EffectSounds = [0x125, 0x126],
+                EffectCounts = [6],
                 EffectDelay = TimeSpan.FromSeconds(1.6),
                 EffectSoundDelay = TimeSpan.FromSeconds(0.9),
                 NoResourcesMessage = 1044629, // There is no sand here to mine.
@@ -250,20 +250,20 @@ namespace Server.Engines.Harvest
                 ToolBrokeMessage = 1044038 // You have worn out your tool!
             };
 
-            res = new[]
-            {
+            res =
+            [
                 new HarvestResource(100.0, 70.0, 400.0, 1044631, typeof(Sand))
-            };
+            ];
 
-            veins = new[]
-            {
+            veins =
+            [
                 new HarvestVein(1000, 0.0, res[0], null)
-            };
+            ];
 
             Sand.Resources = res;
             Sand.Veins = veins;
 
-            Definitions = new[] { OreAndStone, Sand };
+            Definitions = [OreAndStone, Sand];
         }
 
         public static Mining System => _system ?? (_system = new Mining());

@@ -1766,7 +1766,7 @@ namespace Server.Engines.MLQuests.Definitions
 
     public class Ryuichi : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public Ryuichi()
@@ -2014,7 +2014,7 @@ namespace Server.Engines.MLQuests.Definitions
 
     public class Hamato : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public Hamato()

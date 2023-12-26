@@ -55,19 +55,19 @@ public partial class Barracoon : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Greed;
 
-    public override Type[] UniqueList => new[] { typeof(FangOfRactus) };
+    public override Type[] UniqueList => [typeof(FangOfRactus)];
 
-    public override Type[] SharedList => new[]
-    {
+    public override Type[] SharedList =>
+    [
         typeof(EmbroideredOakLeafCloak),
         typeof(DjinnisRing),
         typeof(DetectiveBoots),
         typeof(GuantletsOfAnger)
-    };
+    ];
 
-    public override Type[] DecorativeList => new[] { typeof(SwampTile), typeof(MonsterStatuette) };
+    public override Type[] DecorativeList => [typeof(SwampTile), typeof(MonsterStatuette)];
 
-    public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.Slime };
+    public override MonsterStatuetteType[] StatueTypes => [MonsterStatuetteType.Slime];
 
     public override string DefaultName => "Barracoon";
 

@@ -7,10 +7,10 @@ namespace Server.Mobiles
     public partial class OphidianMage : BaseCreature
     {
         private static readonly string[] m_Names =
-        {
+        [
             "an ophidian apprentice mage",
             "an ophidian shaman"
-        };
+        ];
 
         [Constructible]
         public OphidianMage() : base(AIType.AI_Mage)

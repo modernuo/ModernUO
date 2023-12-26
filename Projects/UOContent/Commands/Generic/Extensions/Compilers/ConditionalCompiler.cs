@@ -155,7 +155,7 @@ namespace Server.Commands.Generic
                     }
 
                     parseMethod = parseNumber;
-                    parseArgs = new object[] { toParse, style };
+                    parseArgs = [toParse, style];
                 }
                 else
                 {
@@ -168,7 +168,7 @@ namespace Server.Commands.Generic
                     );
 
                     parseMethod = parseGeneral;
-                    parseArgs = new object[] { toParse, null };
+                    parseArgs = [toParse, null];
                 }
 
                 if (parseMethod != null)
@@ -339,11 +339,10 @@ namespace Server.Commands.Generic
                         methodName,
                         BindingFlags.Public | BindingFlags.Static,
                         null,
-                        new[]
-                        {
+                        [
                             typeof(string),
                             typeof(string)
-                        },
+                        ],
                         null
                     )
                 );
@@ -379,10 +378,9 @@ namespace Server.Commands.Generic
                         methodName,
                         BindingFlags.Public | BindingFlags.Instance,
                         null,
-                        new[]
-                        {
+                        [
                             typeof(string)
-                        },
+                        ],
                         null
                     )
                 );
@@ -576,7 +574,7 @@ namespace Server.Commands.Generic
                     /* return */
                     typeof(bool),
                     /* params */
-                    new[] { typeof(object) }
+                    [typeof(object)]
                 );
 
                 var obj = emitter.CreateLocal(objectType);
@@ -614,10 +612,9 @@ namespace Server.Commands.Generic
                     emitter.Method,
                     typeof(IConditional).GetMethod(
                         "Verify",
-                        new[]
-                        {
+                        [
                             typeof(object)
-                        }
+                        ]
                     )
                 );
 

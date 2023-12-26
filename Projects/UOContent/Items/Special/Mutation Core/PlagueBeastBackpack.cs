@@ -8,25 +8,22 @@ namespace Server.Items;
 public partial class PlagueBeastBackpack : BaseContainer
 {
     private static readonly Point3D[][] _positions =
-    {
-        new []
-        {
+    [
+        [
             new Point3D(275, 85, 0), new Point3D(360, 111, 0), new Point3D(375, 184, 0),
             new Point3D(332, 228, 0), new Point3D(141, 105, 0), new Point3D(189, 75, 0)
-        },
-        new []
-        {
+        ],
+        [
             new Point3D(274, 34, 0), new Point3D(327, 89, 0), new Point3D(354, 168, 0),
             new Point3D(304, 225, 0), new Point3D(113, 86, 0), new Point3D(189, 75, 0)
-        },
-        new []
-        {
+        ],
+        [
             new Point3D(276, 79, 0), new Point3D(369, 117, 0), new Point3D(372, 192, 0),
             new Point3D(336, 230, 0), new Point3D(141, 116, 0), new Point3D( 189, 75, 0)
-        }
-    };
+        ]
+    ];
 
-    private static readonly int[] _brainHues = { 0x2B, 0x42, 0x54, 0x60 };
+    private static readonly int[] _brainHues = [0x2B, 0x42, 0x54, 0x60];
 
     public PlagueBeastBackpack() : base(0x261B) => Layer = Layer.Backpack;
 

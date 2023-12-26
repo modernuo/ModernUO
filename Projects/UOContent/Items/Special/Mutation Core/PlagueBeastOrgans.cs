@@ -20,7 +20,7 @@ public partial class PlagueBeastOrgan : PlagueBeastInnard
 
     public PlagueBeastOrgan(int itemID = 1, int hue = 0) : base(itemID, hue)
     {
-        Components = new List<PlagueBeastComponent>();
+        Components = [];
         Opened = false;
         Movable = false;
         Visible = itemID <= 1;
@@ -174,7 +174,7 @@ public partial class PlagueBeastRockOrgan : PlagueBeastOrgan
 [SerializationGenerator(0)]
 public partial class PlagueBeastRubbleOrgan : PlagueBeastOrgan
 {
-    private static readonly int[] _hues = { 0xD, 0x17, 0x2B, 0x42, 0x54, 0x5D };
+    private static readonly int[] _hues = [0xD, 0x17, 0x2B, 0x42, 0x54, 0x5D];
 
     [SerializableField(0, getter: "private", setter: "private")]
     private int _veins;

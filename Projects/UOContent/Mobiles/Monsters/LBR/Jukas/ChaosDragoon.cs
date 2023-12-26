@@ -100,7 +100,7 @@ namespace Server.Mobiles
         public override bool AlwaysMurderer => true;
         public override bool ShowFameTitle => false;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.FireBreath];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override int GetIdleSound() => 0x2CE;

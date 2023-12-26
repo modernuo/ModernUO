@@ -7,7 +7,7 @@ namespace Server.Events.Halloween
     internal class HolidaySettings
     {
         private static readonly Type[] m_GMBeggarTreats =
-        {
+        [
             typeof(CreepyCake),
             typeof(PumpkinPizza),
             typeof(GrimWarning),
@@ -19,16 +19,16 @@ namespace Server.Events.Halloween
             typeof(ExcellentIronMaiden),
             typeof(HalloweenGuillotine),
             typeof(ColoredSmallWebs)
-        };
+        ];
 
         private static readonly Type[] m_Treats =
-        {
+        [
             typeof(Lollipops),
             typeof(WrappedCandy),
             typeof(JellyBeans),
             typeof(Taffy),
             typeof(NougatSwirl)
-        };
+        ];
 
         // YY MM DD
         public static DateTime StartHalloween => new(2021, 10, 24);

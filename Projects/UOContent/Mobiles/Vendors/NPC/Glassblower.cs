@@ -8,7 +8,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class Glassblower : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public Glassblower() : base("the alchemist")

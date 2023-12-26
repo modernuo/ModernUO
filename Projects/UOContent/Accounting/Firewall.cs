@@ -13,7 +13,7 @@ namespace Server
 
         static Firewall()
         {
-            Set = new HashSet<IFirewallEntry>();
+            Set = [];
 
             if (File.Exists(firewallConfigPath))
             {

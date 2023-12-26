@@ -47,18 +47,18 @@ namespace Server.Multis
             BuiltOn = Core.Now;
             LastTraded = DateTime.MinValue;
 
-            Doors = new List<BaseDoor>();
-            LockDowns = new List<Item>();
-            Secures = new List<SecureInfo>();
-            Addons = new List<Item>();
+            Doors = [];
+            LockDowns = [];
+            Secures = [];
+            Addons = [];
 
-            CoOwners = new List<Mobile>();
-            Friends = new List<Mobile>();
-            Bans = new List<Mobile>();
-            Access = new List<Mobile>();
+            CoOwners = [];
+            Friends = [];
+            Bans = [];
+            Access = [];
 
-            VendorRentalContracts = new List<VendorRentalContract>();
-            InternalizedVendors = new List<Mobile>();
+            VendorRentalContracts = [];
+            InternalizedVendors = [];
 
             m_Owner = owner;
 
@@ -73,7 +73,7 @@ namespace Server.Multis
             {
                 if (!m_Table.TryGetValue(owner, out var list))
                 {
-                    m_Table[owner] = list = new List<BaseHouse>();
+                    m_Table[owner] = list = [];
                 }
 
                 list.Add(this);
@@ -299,7 +299,7 @@ namespace Server.Multis
             }
         }
 
-        public static List<BaseHouse> AllHouses { get; } = new();
+        public static List<BaseHouse> AllHouses { get; } = [];
 
         public abstract Rectangle2D[] Area { get; }
         public abstract Point3D BaseBanLocation { get; }
@@ -333,7 +333,7 @@ namespace Server.Multis
                 {
                     if (!m_Table.TryGetValue(m_Owner, out var list))
                     {
-                        m_Table[m_Owner] = list = new List<BaseHouse>();
+                        m_Table[m_Owner] = list = [];
                     }
 
                     list.Add(this);
@@ -485,15 +485,15 @@ namespace Server.Multis
 
         public HouseSign Sign { get; set; }
 
-        public List<PlayerVendor> PlayerVendors { get; } = new();
+        public List<PlayerVendor> PlayerVendors { get; } = [];
 
-        public List<PlayerBarkeeper> PlayerBarkeepers { get; } = new();
+        public List<PlayerBarkeeper> PlayerBarkeepers { get; } = [];
 
         public List<VendorRentalContract> VendorRentalContracts { get; private set; }
 
-        public List<VendorInventory> VendorInventories { get; } = new();
+        public List<VendorInventory> VendorInventories { get; } = [];
 
-        public List<RelocatedEntity> RelocatedEntities { get; } = new();
+        public List<RelocatedEntity> RelocatedEntities { get; } = [];
 
         public MovingCrate MovingCrate { get; set; }
 
@@ -789,7 +789,7 @@ namespace Server.Multis
 
         public List<Mobile> AvailableVendorsFor(Mobile m)
         {
-            List<Mobile> list = new List<Mobile>();
+            List<Mobile> list = [];
             foreach (PlayerVendor vendor in PlayerVendors)
             {
                 if (vendor.CanInteractWith(m, false))
@@ -1212,7 +1212,7 @@ namespace Server.Multis
         {
             if (Map == null || Map == Map.Internal)
             {
-                return new List<Item>();
+                return [];
             }
 
             var start = new Point2D(X + Components.Min.X, Y + Components.Min.Y);
@@ -1235,7 +1235,7 @@ namespace Server.Multis
         {
             if (Map == null || Map == Map.Internal)
             {
-                return new List<Mobile>();
+                return [];
             }
 
             var list = new List<Mobile>();
@@ -1718,7 +1718,7 @@ namespace Server.Multis
             AddDoor(westDoor, x, y, z);
             AddDoor(eastDoor, x + 1, y, z);
 
-            return new[] { westDoor, eastDoor };
+            return [westDoor, eastDoor];
         }
 
         protected BaseDoor AddDoor(int itemID, int xOffset, int yOffset, int zOffset) =>
@@ -1972,7 +1972,7 @@ namespace Server.Multis
             AddDoor(westDoor, x, y, z);
             AddDoor(eastDoor, x + 1, y, z);
 
-            return new[] { westDoor, eastDoor };
+            return [westDoor, eastDoor];
         }
 
         public BaseDoor MakeDoor(bool wood, DoorFacing facing)
@@ -3107,18 +3107,18 @@ namespace Server.Multis
 
                         if (version < 12)
                         {
-                            VendorRentalContracts = new List<VendorRentalContract>();
-                            InternalizedVendors = new List<Mobile>();
+                            VendorRentalContracts = [];
+                            InternalizedVendors = [];
                         }
 
                         if (version < 4)
                         {
-                            Addons = new List<Item>();
+                            Addons = [];
                         }
 
                         if (version < 7)
                         {
-                            Access = new List<Mobile>();
+                            Access = [];
                         }
 
                         if (version < 8)
@@ -3187,7 +3187,7 @@ namespace Server.Multis
                         {
                             if (!m_Table.TryGetValue(m_Owner, out var list))
                             {
-                                m_Table[m_Owner] = list = new List<BaseHouse>();
+                                m_Table[m_Owner] = list = [];
                             }
 
                             list.Add(this);

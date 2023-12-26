@@ -75,12 +75,12 @@ namespace Server.Mobiles
             if (!willKill && amount > 5 && from?.Player == true && Utility.Random(100) < 5)
             {
                 string[] toSay =
-                {
+                [
                     "{0}!!  You will have to do better than that!",
                     "{0}!!  Prepare to meet your doom!",
                     "{0}!!  My armies will crush you!",
                     "{0}!!  You will pay for that!"
-                };
+                ];
 
                 Say(true, string.Format(toSay.RandomElement(), from.Name));
             }

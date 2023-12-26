@@ -22,7 +22,7 @@ namespace Server.Misc
     public static class LanguageStatistics
     {
         private static readonly InternationalCode[] InternationalCodes =
-        {
+        [
             new("ARA", "Arabic", "Saudi Arabia", "العربية", "السعودية"),
             new("ARI", "Arabic", "Iraq", "العربية", "العراق"),
             new("ARE", "Arabic", "Egypt", "العربية", "مصر"),
@@ -158,7 +158,7 @@ namespace Server.Misc
             new("MAR", "Marathi", "India", "मराठी", "भारत"),
             new("SAN", "Sanskrit", "India", "संस्कृत", "भारतम्"),
             new("KOK", "Konkani", "India", "कोंकणी", "भारत")
-        };
+        ];
 
         private static readonly bool DefaultLocalNames = false;
         private static readonly bool ShowAlternatives = true;

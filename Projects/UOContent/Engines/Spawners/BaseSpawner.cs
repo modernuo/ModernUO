@@ -316,7 +316,7 @@ public abstract class BaseSpawner : Item, ISpawner
         {
             newSpawner._guid = Guid.NewGuid();
             newSpawner.Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
-            newSpawner.Entries = new List<SpawnerEntry>();
+            newSpawner.Entries = [];
 
             for (var i = 0; i < Entries.Count; i++)
             {
@@ -362,7 +362,7 @@ public abstract class BaseSpawner : Item, ISpawner
         m_Count = amount;
         m_Team = team;
         m_HomeRange = homeRange;
-        Entries = new List<SpawnerEntry>();
+        Entries = [];
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
         DoTimer(TimeSpan.FromSeconds(1));
@@ -444,7 +444,7 @@ public abstract class BaseSpawner : Item, ISpawner
 
     public void Defrag()
     {
-        Entries ??= new List<SpawnerEntry>();
+        Entries ??= [];
 
         for (var i = 0; i < Entries.Count; ++i)
         {
@@ -973,7 +973,7 @@ public abstract class BaseSpawner : Item, ISpawner
 
         if (version < 7)
         {
-            Entries = new List<SpawnerEntry>();
+            Entries = [];
         }
 
         switch (version)
@@ -1163,7 +1163,7 @@ public abstract class BaseSpawner : Item, ISpawner
 
         public WarnTimer() : base(TimeSpan.FromSeconds(1.0))
         {
-            m_List = new List<WarnEntry>();
+            m_List = [];
             Start();
         }
 

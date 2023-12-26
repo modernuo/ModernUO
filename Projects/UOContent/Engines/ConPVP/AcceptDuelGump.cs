@@ -124,7 +124,7 @@ namespace Server.Engines.ConPVP
         {
             if (!m_IgnoreLists.TryGetValue(source, out var list))
             {
-                m_IgnoreLists[source] = list = new List<IgnoreEntry>();
+                m_IgnoreLists[source] = list = [];
             }
 
             for (var i = 0; i < list.Count; ++i)

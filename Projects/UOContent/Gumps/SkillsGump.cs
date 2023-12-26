@@ -451,11 +451,10 @@ namespace Server.Gumps
         public SkillName[] Skills { get; }
 
         public static SkillsGumpGroup[] Groups { get; } =
-        {
+        [
             new(
                 "Crafting",
-                new[]
-                {
+                [
                     SkillName.Alchemy,
                     SkillName.Blacksmith,
                     SkillName.Cartography,
@@ -466,22 +465,20 @@ namespace Server.Gumps
                     SkillName.Tailoring,
                     SkillName.Tinkering,
                     SkillName.Imbuing
-                }
+                ]
             ),
             new(
                 "Bardic",
-                new[]
-                {
+                [
                     SkillName.Discordance,
                     SkillName.Musicianship,
                     SkillName.Peacemaking,
                     SkillName.Provocation
-                }
+                ]
             ),
             new(
                 "Magical",
-                new[]
-                {
+                [
                     SkillName.Chivalry,
                     SkillName.EvalInt,
                     SkillName.Magery,
@@ -493,12 +490,11 @@ namespace Server.Gumps
                     SkillName.Bushido,
                     SkillName.Spellweaving,
                     SkillName.Mysticism
-                }
+                ]
             ),
             new(
                 "Miscellaneous",
-                new[]
-                {
+                [
                     SkillName.Camping,
                     SkillName.Fishing,
                     SkillName.Focus,
@@ -509,12 +505,11 @@ namespace Server.Gumps
                     SkillName.Mining,
                     SkillName.Snooping,
                     SkillName.Veterinary
-                }
+                ]
             ),
             new(
                 "Combat Ratings",
-                new[]
-                {
+                [
                     SkillName.Archery,
                     SkillName.Fencing,
                     SkillName.Macing,
@@ -523,12 +518,11 @@ namespace Server.Gumps
                     SkillName.Tactics,
                     SkillName.Wrestling,
                     SkillName.Throwing
-                }
+                ]
             ),
             new(
                 "Actions",
-                new[]
-                {
+                [
                     SkillName.AnimalTaming,
                     SkillName.Begging,
                     SkillName.DetectHidden,
@@ -538,21 +532,20 @@ namespace Server.Gumps
                     SkillName.Stealing,
                     SkillName.Stealth,
                     SkillName.Tracking
-                }
+                ]
             ),
             new(
                 "Lore & Knowledge",
-                new[]
-                {
+                [
                     SkillName.Anatomy,
                     SkillName.AnimalLore,
                     SkillName.ArmsLore,
                     SkillName.Forensics,
                     SkillName.ItemID,
                     SkillName.TasteID
-                }
+                ]
             )
-        };
+        ];
 
         private class SkillNameComparer : IComparer<SkillName>
         {

@@ -12,7 +12,7 @@ namespace Server.Items
     public abstract class WeaponAbility
     {
         public static WeaponAbility[] Abilities { get; } =
-        {
+        [
             null,
             new ArmorIgnore(),
             new BleedAttack(),
@@ -45,8 +45,8 @@ namespace Server.Items
             new SerpentArrow(),
             new ForceOfNature(),
             new InfusedThrow(),
-            new MysticArc(),
-        };
+            new MysticArc()
+        ];
 
         public static readonly WeaponAbility ArmorIgnore = Abilities[1];
         public static readonly WeaponAbility BleedAttack = Abilities[2];

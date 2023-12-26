@@ -10,31 +10,26 @@ namespace Server
         public OppositionGroup(Type[][] types) => m_Types = types;
 
         public static OppositionGroup TerathansAndOphidians { get; } = new(
-            new[]
-            {
-                new[]
-                {
+            [
+                [
                     typeof(TerathanAvenger),
                     typeof(TerathanDrone),
                     typeof(TerathanMatriarch),
                     typeof(TerathanWarrior)
-                },
-                new[]
-                {
+                ],
+                [
                     typeof(OphidianArchmage),
                     typeof(OphidianKnight),
                     typeof(OphidianMage),
                     typeof(OphidianMatriarch),
                     typeof(OphidianWarrior)
-                }
-            }
+                ]
+            ]
         );
 
         public static OppositionGroup SavagesAndOrcs { get; } = new(
-            new[]
-            {
-                new[]
-                {
+            [
+                [
                     typeof(Orc),
                     typeof(OrcBomber),
                     typeof(OrcBrute),
@@ -42,22 +37,19 @@ namespace Server
                     typeof(OrcishLord),
                     typeof(OrcishMage),
                     typeof(SpawnedOrcishLord)
-                },
-                new[]
-                {
+                ],
+                [
                     typeof(Savage),
                     typeof(SavageRider),
                     typeof(SavageRidgeback),
                     typeof(SavageShaman)
-                }
-            }
+                ]
+            ]
         );
 
         public static OppositionGroup FeyAndUndead { get; } = new(
-            new[]
-            {
-                new[]
-                {
+            [
+                [
                     typeof(Centaur),
                     typeof(EtherealWarrior),
                     typeof(Kirin),
@@ -69,9 +61,8 @@ namespace Server
                     typeof(Treefellow),
                     typeof(MLDryad),
                     typeof(Satyr)
-                },
-                new[]
-                {
+                ],
+                [
                     typeof(AncientLich),
                     typeof(Bogle),
                     typeof(LichLord),
@@ -91,8 +82,8 @@ namespace Server
                     typeof(RottingCorpse),
                     typeof(SkeletalDragon),
                     typeof(Lich)
-                }
-            }
+                ]
+            ]
         );
 
         public bool IsEnemy(object from, object target)

@@ -17,7 +17,7 @@ public abstract partial class BaseWindChimes : Item
     {
     }
 
-    public static int[] Sounds { get; } = { 0x505, 0x506, 0x507 };
+    public static int[] Sounds { get; } = [0x505, 0x506, 0x507];
 
     public override bool HandlesOnMovement => _turnedOn && IsLockedDown;
 

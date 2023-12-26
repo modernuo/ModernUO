@@ -11,7 +11,7 @@ namespace Server.Items;
 public abstract partial class BasePigmentsOfTokuno : Item, IUsesRemaining
 {
     private static readonly Type[] m_Glasses =
-    {
+    [
         typeof(MaritimeGlasses),
         typeof(WizardsGlasses),
         typeof(TradeGlasses),
@@ -24,10 +24,10 @@ public abstract partial class BasePigmentsOfTokuno : Item, IUsesRemaining
         typeof(MaceShieldGlasses),
         typeof(ArtsGlasses),
         typeof(AnthropomorphistGlasses)
-    };
+    ];
 
     private static readonly Type[] m_Replicas =
-    {
+    [
         typeof(ANecromancerShroud),
         typeof(BraveKnightOfTheBritannia),
         typeof(CaptainJohnsHat),
@@ -51,16 +51,16 @@ public abstract partial class BasePigmentsOfTokuno : Item, IUsesRemaining
         typeof(Quell),
         typeof(ShroudOfDeciet),
         typeof(Subdue)
-    };
+    ];
 
     private static readonly Type[] m_DyableHeritageItems =
-    {
+    [
         typeof(ChargerOfTheFallen),
         typeof(SamuraiHelm),
         typeof(HolySword),
         typeof(LeggingsOfEmbers),
         typeof(ShaminoCrossbow)
-    };
+    ];
 
     private TextDefinition m_Label;
 

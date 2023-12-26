@@ -9,7 +9,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class KhaldunRevenant : BaseCreature
     {
-        private static readonly HashSet<Mobile> m_Set = new();
+        private static readonly HashSet<Mobile> m_Set = [];
         private readonly DateTime m_ExpireTime;
 
         private readonly Mobile m_Target;

@@ -59,8 +59,8 @@ public partial class GauntletSpawner : Item
         Movable = false;
 
         TypeName = typeName;
-        Creatures = new List<Mobile>();
-        Traps = new List<BaseTrap>();
+        Creatures = [];
+        Traps = [];
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

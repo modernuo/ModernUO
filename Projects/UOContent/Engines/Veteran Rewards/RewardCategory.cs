@@ -7,13 +7,13 @@ namespace Server.Engines.VeteranRewards
         public RewardCategory(int name)
         {
             Name = name;
-            Entries = new List<RewardEntry>();
+            Entries = [];
         }
 
         public RewardCategory(string name)
         {
             NameString = name;
-            Entries = new List<RewardEntry>();
+            Entries = [];
         }
 
         public int Name { get; }

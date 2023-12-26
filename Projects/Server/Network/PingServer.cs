@@ -39,8 +39,8 @@ public static class PingServer
             return;
         }
 
-        HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
-        List<UdpClient> listeners = new List<UdpClient>();
+        HashSet<IPEndPoint> listeningAddresses = [];
+        List<UdpClient> listeners = [];
 
         foreach (var serverIpep in ServerConfiguration.Listeners)
         {

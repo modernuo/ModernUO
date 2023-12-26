@@ -524,7 +524,7 @@ namespace Server.Items
                 _                => ArmorBodyType.Gorget
             };
 
-        public static double[] ArmorScalars { get; set; } = { 0.07, 0.07, 0.14, 0.15, 0.22, 0.35 };
+        public static double[] ArmorScalars { get; set; } = [0.07, 0.07, 0.14, 0.15, 0.22, 0.35];
 
         public virtual CraftResource DefaultResource => CraftResource.Iron;
 

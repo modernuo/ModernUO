@@ -49,7 +49,7 @@ public abstract partial class BasePlayerBB : Item, ISecurable
 
     public BasePlayerBB(int itemID) : base(itemID)
     {
-        _messages = new List<PlayerBBMessage>();
+        _messages = [];
         _level = SecureLevel.Anyone;
     }
 

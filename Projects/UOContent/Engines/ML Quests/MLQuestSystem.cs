@@ -20,8 +20,8 @@ namespace Server.Engines.MLQuests
         public static readonly bool AutoGenerateNew = true;
         public static readonly bool Debug = false;
 
-        public static readonly List<MLQuest> EmptyList = new();
-        private static readonly List<MLQuest> m_EligiblePool = new();
+        public static readonly List<MLQuest> EmptyList = [];
+        private static readonly List<MLQuest> m_EligiblePool = [];
 
         static MLQuestSystem()
         {
@@ -125,7 +125,7 @@ namespace Server.Engines.MLQuests
         {
             if (!QuestGivers.TryGetValue(questerType, out var questList))
             {
-                QuestGivers[questerType] = questList = new List<MLQuest>();
+                QuestGivers[questerType] = questList = [];
             }
 
             questList.Add(quest);
@@ -310,7 +310,7 @@ namespace Server.Engines.MLQuests
             }
             else
             {
-                m.SendGump(new InterfaceGump(m, new[] { "Object" }, found, 0, null));
+                m.SendGump(new InterfaceGump(m, ["Object"], found, 0, null));
             }
         }
 
@@ -813,7 +813,7 @@ namespace Server.Engines.MLQuests
             {
                 AccessLevel = AccessLevel.GameMaster;
                 Supports = CommandSupport.Simple;
-                Commands = new[] { "ViewQuests" };
+                Commands = ["ViewQuests"];
                 ObjectTypes = ObjectTypes.Mobiles;
                 Usage = "ViewQuests";
                 Description = "Displays a targeted mobile's quest overview.";
@@ -843,7 +843,7 @@ namespace Server.Engines.MLQuests
             {
                 AccessLevel = AccessLevel.GameMaster;
                 Supports = CommandSupport.Simple;
-                Commands = new[] { "ViewMLContext" };
+                Commands = ["ViewMLContext"];
                 ObjectTypes = ObjectTypes.Mobiles;
                 Usage = "ViewMLContext";
                 Description = "Opens the ML quest context for a targeted mobile.";

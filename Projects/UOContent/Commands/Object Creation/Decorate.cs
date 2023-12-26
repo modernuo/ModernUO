@@ -1282,7 +1282,7 @@ namespace Server.Commands
             }
 
             list.m_ItemID = Utility.ToInt32(argsStart > -1 ? span[..argsStart] : span);
-            list.m_Entries = new List<DecorationEntry>();
+            list.m_Entries = [];
 
             while ((line = ip.ReadLine()) != null)
             {

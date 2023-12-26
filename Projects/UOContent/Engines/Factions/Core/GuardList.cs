@@ -8,7 +8,7 @@ namespace Server.Factions
         public GuardList(GuardDefinition definition)
         {
             Definition = definition;
-            Guards = new List<BaseFactionGuard>();
+            Guards = [];
         }
 
         public GuardDefinition Definition { get; }

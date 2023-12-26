@@ -69,7 +69,7 @@ namespace Server.Spells
         private static readonly bool RestrictTravelCombat = true;
 
         private static readonly int[] m_Offsets =
-        {
+        [
             -1, -1,
             -1, 0,
             -1, 1,
@@ -78,10 +78,10 @@ namespace Server.Spells
             1, -1,
             1, 0,
             1, 1
-        };
+        ];
 
         private static readonly TravelValidator[] m_Validators =
-        {
+        [
             IsFeluccaT2A,
             IsKhaldun,
             IsIlshenar,
@@ -101,7 +101,7 @@ namespace Server.Spells
             IsGuardianRoom,
             IsHeartwood,
             IsMLDungeon
-        };
+        ];
 
         // TODO: Move to configuration
         private static readonly bool[,] m_Rules =

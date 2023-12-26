@@ -73,7 +73,7 @@ public partial class DisguiseKit : Item
 public class DisguiseGump : Gump
 {
     private static readonly DisguiseEntry[] m_HairEntries =
-    {
+    [
         new(8251, 50700, 0, 5, 1011052),  // Short
         new(8261, 60710, 0, 3, 1011047),  // Pageboy
         new(8252, 60708, 0, -5, 1011053), // Long
@@ -84,10 +84,10 @@ public class DisguiseGump : Gump
         new(8266, 60713, 0, 10, 1011050), // Topknot
         null,
         new(0, 0, 0, 0, 1011051) // None
-    };
+    ];
 
     private static readonly DisguiseEntry[] m_BeardEntries =
-    {
+    [
         new(8269, 50906, 0, 0, 1011401),   // Vandyke
         new(8257, 50808, 0, -2, 1011062),  // Mustache
         new(8255, 50802, 0, 0, 1011060),   // Short beard
@@ -96,7 +96,7 @@ public class DisguiseGump : Gump
         new(8254, 50801, 0, -10, 1011061), // Long beard
         null,
         new(0, 0, 0, 0, 1011051) // None
-    };
+    ];
 
     private readonly Mobile m_From;
     private readonly DisguiseKit m_Kit;

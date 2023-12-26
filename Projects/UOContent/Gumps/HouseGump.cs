@@ -122,7 +122,7 @@ namespace Server.Gumps
                 return;
             }
 
-            m_Copy = new List<Mobile>(list);
+            m_Copy = [..list];
 
             for (var i = 0; i < list.Count; ++i)
             {

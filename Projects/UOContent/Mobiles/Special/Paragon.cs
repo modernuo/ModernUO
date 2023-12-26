@@ -10,15 +10,15 @@ public static class Paragon
     public const double ChocolateIngredientChance = 0.20; // Chance that a paragon will drop a chocolatiering ingredient
 
     public static Map[] Maps =
-    {
+    [
         Map.Ilshenar
-    };
+    ];
 
     private static readonly TimeSpan FastRegenRate = TimeSpan.FromSeconds(0.5);
     private static readonly TimeSpan CPUSaverRate = TimeSpan.FromSeconds(2);
 
     public static Type[] Artifacts =
-    {
+    [
         typeof(GoldBricks), typeof(PhillipsWoodenSteed),
         typeof(AlchemistsBauble), typeof(ArcticDeathDealer),
         typeof(BlazeOfDeath), typeof(BowOfTheJukaKing),
@@ -31,7 +31,7 @@ public static class Paragon
         typeof(VioletCourage), typeof(HeartOfTheLion),
         typeof(WrathOfTheDryad), typeof(PixieSwatter),
         typeof(GlovesOfThePugilist)
-    };
+    ];
 
     public static int Hue = 0x501; // Paragon hue
 

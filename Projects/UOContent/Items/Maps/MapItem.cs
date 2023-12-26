@@ -46,7 +46,7 @@ public partial class MapItem : Item, ICraftable
         _width = 200;
         _height = 200;
         _facet = facet;
-        _pins = new List<Point2D>();
+        _pins = [];
     }
 
     public int OnCraft(

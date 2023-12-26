@@ -222,7 +222,7 @@ namespace Server.Commands
             {
                 using var op = new StreamWriter("expandedItems.log", true);
                 string[] names =
-                {
+                [
                     "Name",
                     "Items",
                     "Bounce",
@@ -232,7 +232,7 @@ namespace Server.Commands
                     "SaveFlag",
                     "Weight",
                     "Spawner"
-                };
+                ];
 
                 var list = typeTable.ToList();
 
@@ -286,7 +286,7 @@ namespace Server.Commands
                 }
                 else
                 {
-                    table[type] = new[] { 1, item.Amount };
+                    table[type] = [1, item.Amount];
                 }
             }
 

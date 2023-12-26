@@ -42,32 +42,32 @@ namespace Server.Gumps
         private const int HighlightedLabelHue = 0x64;
 
         private static readonly int[] m_HangerNumbers =
-        {
+        [
             2968, 2970, 2972,
             2974, 2976, 2978
-        };
+        ];
 
         private static readonly int[] m_FoundationNumbers = Core.ML
-            ? new[]
-            {
+            ?
+            [
                 20, 189, 765, 65, 101, 0x2DF7, 0x2DFB, 0x3672, 0x3676
-            }
-            : new[]
-            {
+            ]
+            :
+            [
                 20, 189, 765, 65, 101
-            };
+            ];
 
         private static readonly int[] m_PostNumbers =
-        {
+        [
             9, 29, 54, 90, 147, 169,
             177, 204, 251, 257, 263,
             298, 347, 424, 441, 466,
             514, 600, 601, 602, 603,
             660, 666, 672, 898, 970,
             974, 982
-        };
+        ];
 
-        private static readonly List<int> _HouseSigns = new();
+        private static readonly List<int> _HouseSigns = [];
         private readonly BaseHouse m_House;
         private readonly HouseGumpPageAOS m_Page;
 
@@ -600,7 +600,7 @@ namespace Server.Gumps
                 return;
             }
 
-            m_List = new List<Mobile>(list);
+            m_List = [..list];
 
             var lastPage = 0;
             var index = 0;
@@ -833,10 +833,10 @@ namespace Server.Gumps
 
                     house.MoveAllToCrate();
 
-                    newHouse.Friends = new List<Mobile>(house.Friends);
-                    newHouse.CoOwners = new List<Mobile>(house.CoOwners);
-                    newHouse.Bans = new List<Mobile>(house.Bans);
-                    newHouse.Access = new List<Mobile>(house.Access);
+                    newHouse.Friends = [..house.Friends];
+                    newHouse.CoOwners = [..house.CoOwners];
+                    newHouse.Bans = [..house.Bans];
+                    newHouse.Access = [..house.Access];
                     newHouse.BuiltOn = house.BuiltOn;
                     newHouse.LastTraded = house.LastTraded;
                     newHouse.Public = house.Public;

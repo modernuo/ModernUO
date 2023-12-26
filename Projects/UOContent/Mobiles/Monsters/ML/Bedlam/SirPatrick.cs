@@ -57,7 +57,7 @@ namespace Server.Mobiles
 
         public override bool GivesMLMinorArtifact => true;
 
-        private static MonsterAbility[] _abilities = { new SirPatrickDrainLife() };
+        private static MonsterAbility[] _abilities = [new SirPatrickDrainLife()];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

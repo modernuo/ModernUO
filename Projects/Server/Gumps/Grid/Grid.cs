@@ -66,8 +66,8 @@ public class Grid
     public string Name { get; set; }
     public int Height { get; set; }
     public int Width { get; set; }
-    public List<Col> Columns { get; set; } = new();
-    public List<Row> Rows { get; set; } = new();
+    public List<Col> Columns { get; set; } = [];
+    public List<Row> Rows { get; set; } = [];
 }
 
 public class Swap

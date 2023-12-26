@@ -61,7 +61,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
         Layer = Core.AOS ? Layer.Invalid : Layer.OneHanded;
 
-        _entries = new List<RunebookEntry>();
+        _entries = [];
         _maxCharges = maxCharges;
         _defaultIndex = -1;
         _level = SecureLevel.CoOwners;
@@ -70,7 +70,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime NextUse { get; set; }
 
-    public List<Mobile> Openers { get; set; } = new();
+    public List<Mobile> Openers { get; set; } = [];
 
     public override int LabelNumber => 1041267; // runebook
 
@@ -281,7 +281,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
             return;
         }
 
-        book.Entries = new List<RunebookEntry>();
+        book.Entries = [];
 
         for (var i = 0; i < Entries.Count; i++)
         {

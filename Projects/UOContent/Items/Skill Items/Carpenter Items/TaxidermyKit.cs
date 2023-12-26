@@ -11,7 +11,7 @@ namespace Server.Items;
 public partial class TaxidermyKit : Item
 {
     private static TrophyInfo[] _table =
-    {
+    [
         new(typeof(BrownBear), 0x1E60, 1041093, 1041107),
         new(typeof(GreatHart), 0x1E61, 1041095, 1041109),
         new(typeof(BigFish), 0x1E62, 1041096, 1041110),
@@ -19,7 +19,7 @@ public partial class TaxidermyKit : Item
         new(typeof(Orc), 0x1E64, 1041090, 1041104),
         new(typeof(PolarBear), 0x1E65, 1041094, 1041108),
         new(typeof(Troll), 0x1E66, 1041092, 1041106)
-    };
+    ];
 
     [Constructible]
     public TaxidermyKit() : base(0x1EBA) => Weight = 1.0;

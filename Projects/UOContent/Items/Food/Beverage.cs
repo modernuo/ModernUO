@@ -207,7 +207,7 @@ public partial class Pitcher : BaseBeverage
 public abstract partial class BaseBeverage : Item, IHasQuantity
 {
     private readonly int[] _swampTiles =
-    {
+    [
         0x9C4, 0x9EB,
         0x3D65, 0x3D65,
         0x3DC0, 0x3DD9,
@@ -215,7 +215,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         0x3DDE, 0x3EF0,
         0x3FF6, 0x3FF6,
         0x3FFC, 0x3FFE
-    };
+    ];
 
     private static readonly Dictionary<Mobile, Timer> m_Table = new();
 

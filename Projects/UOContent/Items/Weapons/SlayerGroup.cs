@@ -15,8 +15,8 @@ namespace Server.Items
             var reptilian = new SlayerGroup();
             var fey = new SlayerGroup();
 
-            humanoid.Opposition = new[] { undead };
-            humanoid.FoundOn = new[] { typeof(BoneKnight), typeof(Lich), typeof(LichLord) };
+            humanoid.Opposition = [undead];
+            humanoid.FoundOn = [typeof(BoneKnight), typeof(Lich), typeof(LichLord)];
             humanoid.Super = new SlayerEntry(
                 SlayerName.Repond,
                 typeof(ArcticOgreLord),
@@ -47,8 +47,8 @@ namespace Server.Items
                 typeof(Troglodyte),
                 typeof(Troll)
             );
-            humanoid.Entries = new[]
-            {
+            humanoid.Entries =
+            [
                 new SlayerEntry(SlayerName.OgreTrashing, typeof(Ogre), typeof(OgreLord), typeof(ArcticOgreLord)),
                 new SlayerEntry(
                     SlayerName.OrcSlaying,
@@ -60,9 +60,9 @@ namespace Server.Items
                     typeof(OrcishMage)
                 ),
                 new SlayerEntry(SlayerName.TrollSlaughter, typeof(Troll), typeof(FrostTroll))
-            };
+            ];
 
-            undead.Opposition = new[] { humanoid };
+            undead.Opposition = [humanoid];
             undead.Super = new SlayerEntry(
                 SlayerName.Silver,
                 typeof(AncientLich),
@@ -94,7 +94,7 @@ namespace Server.Items
             );
             undead.Entries = Array.Empty<SlayerEntry>();
 
-            fey.Opposition = new[] { abyss };
+            fey.Opposition = [abyss];
             fey.Super = new SlayerEntry(
                 SlayerName.Fey,
                 typeof(Centaur),
@@ -112,8 +112,8 @@ namespace Server.Items
             );
             fey.Entries = Array.Empty<SlayerEntry>();
 
-            elemental.Opposition = new[] { abyss };
-            elemental.FoundOn = new[] { typeof(Balron), typeof(Daemon) };
+            elemental.Opposition = [abyss];
+            elemental.FoundOn = [typeof(Balron), typeof(Daemon)];
             elemental.Super = new SlayerEntry(
                 SlayerName.ElementalBan,
                 typeof(AcidElemental),
@@ -143,8 +143,8 @@ namespace Server.Items
                 typeof(WaterElemental),
                 typeof(SummonedWaterElemental)
             );
-            elemental.Entries = new[]
-            {
+            elemental.Entries =
+            [
                 new SlayerEntry(SlayerName.BloodDrinking, typeof(BloodElemental)),
                 new SlayerEntry(
                     SlayerName.EarthShatter,
@@ -164,10 +164,10 @@ namespace Server.Items
                 new SlayerEntry(SlayerName.SummerWind, typeof(SnowElemental), typeof(IceElemental)),
                 new SlayerEntry(SlayerName.Vacuum, typeof(AirElemental), typeof(SummonedAirElemental)),
                 new SlayerEntry(SlayerName.WaterDissipation, typeof(WaterElemental), typeof(SummonedWaterElemental))
-            };
+            ];
 
-            abyss.Opposition = new[] { elemental, fey };
-            abyss.FoundOn = new[] { typeof(BloodElemental) };
+            abyss.Opposition = [elemental, fey];
+            abyss.FoundOn = [typeof(BloodElemental)];
 
             if (Core.AOS)
             {
@@ -202,8 +202,8 @@ namespace Server.Items
                     typeof(TsukiWolf)
                 );
 
-                abyss.Entries = new[]
-                {
+                abyss.Entries =
+                [
                     // Daemon Dismissal & Balron Damnation have been removed and moved up to super slayer on OSI.
                     new SlayerEntry(
                         SlayerName.GargoylesFoe,
@@ -214,7 +214,7 @@ namespace Server.Items
                         typeof(GargoyleEnforcer),
                         typeof(StoneGargoyle)
                     )
-                };
+                ];
             }
             else
             {
@@ -244,8 +244,8 @@ namespace Server.Items
                     typeof(Moloch)
                 );
 
-                abyss.Entries = new[]
-                {
+                abyss.Entries =
+                [
                     new SlayerEntry(
                         SlayerName.DaemonDismissal,
                         typeof(AbysmalHorror),
@@ -275,14 +275,14 @@ namespace Server.Items
                         typeof(GargoyleEnforcer)
                     ),
                     new SlayerEntry(SlayerName.BalronDamnation, typeof(Balron))
-                };
+                ];
             }
 
-            arachnid.Opposition = new[] { reptilian };
-            arachnid.FoundOn = new[]
-            {
+            arachnid.Opposition = [reptilian];
+            arachnid.FoundOn =
+            [
                 typeof(AncientWyrm), typeof(GreaterDragon), typeof(Dragon), typeof(OphidianMatriarch), typeof(ShadowWyrm)
-            };
+            ];
             arachnid.Super = new SlayerEntry(
                 SlayerName.ArachnidDoom,
                 typeof(DreadSpider),
@@ -296,8 +296,8 @@ namespace Server.Items
                 typeof(TerathanMatriarch),
                 typeof(TerathanWarrior)
             );
-            arachnid.Entries = new[]
-            {
+            arachnid.Entries =
+            [
                 new SlayerEntry(SlayerName.ScorpionsBane, typeof(Scorpion)),
                 new SlayerEntry(
                     SlayerName.SpidersDeath,
@@ -314,10 +314,10 @@ namespace Server.Items
                     typeof(TerathanMatriarch),
                     typeof(TerathanWarrior)
                 )
-            };
+            ];
 
-            reptilian.Opposition = new[] { arachnid };
-            reptilian.FoundOn = new[] { typeof(TerathanAvenger), typeof(TerathanMatriarch) };
+            reptilian.Opposition = [arachnid];
+            reptilian.FoundOn = [typeof(TerathanAvenger), typeof(TerathanMatriarch)];
             reptilian.Super = new SlayerEntry(
                 SlayerName.ReptilianDeath,
                 typeof(AncientWyrm),
@@ -355,8 +355,8 @@ namespace Server.Items
                 typeof(Wyvern),
                 typeof(Yamandon)
             );
-            reptilian.Entries = new[]
-            {
+            reptilian.Entries =
+            [
                 new SlayerEntry(
                     SlayerName.DragonSlaying,
                     typeof(AncientWyrm),
@@ -397,10 +397,10 @@ namespace Server.Items
                     typeof(Snake),
                     typeof(Yamandon)
                 )
-            };
+            ];
 
-            Groups = new[]
-            {
+            Groups =
+            [
                 humanoid,
                 elemental,
                 abyss,
@@ -410,7 +410,7 @@ namespace Server.Items
                 undead,
                 // Skip fey for random slayer
                 fey
-            };
+            ];
 
             TotalEntries = CompileEntries(Groups);
         }

@@ -466,7 +466,7 @@ namespace Server
         {
             var active = Active;
 
-            var compareTo = active.GetMethod("CompareTo", new[] { active });
+            var compareTo = active.GetMethod("CompareTo", [active]);
 
             if (compareTo == null)
             {
@@ -502,7 +502,7 @@ namespace Server
 
                 if (ifaces.Length > 0)
                 {
-                    compareTo = ifaces[0].GetMethod("CompareTo", new[] { active });
+                    compareTo = ifaces[0].GetMethod("CompareTo", [active]);
                 }
                 else
                 {
@@ -510,7 +510,7 @@ namespace Server
 
                     if (ifaces.Length > 0)
                     {
-                        compareTo = ifaces[0].GetMethod("CompareTo", new[] { active });
+                        compareTo = ifaces[0].GetMethod("CompareTo", [active]);
                     }
                 }
             }

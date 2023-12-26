@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Ninja
     public class EminosUndertakingQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(AcceptConversation),
             typeof(FindZoelConversation),
             typeof(RadarConversation),
@@ -40,7 +40,7 @@ namespace Server.Engines.Quests.Ninja
             typeof(ReturnSwordObjective),
             typeof(SlayHenchmenObjective),
             typeof(GiveEminoSwordObjective)
-        };
+        ];
 
         private bool m_SentRadarConversion;
 

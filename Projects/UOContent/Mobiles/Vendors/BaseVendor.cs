@@ -29,8 +29,8 @@ namespace Server.Mobiles
 
         private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-        private readonly List<IBuyItemInfo> _buyInfo = new();
-        private readonly List<IShopSellInfo> _sellInfo = new();
+        private readonly List<IBuyItemInfo> _buyInfo = [];
+        private readonly List<IShopSellInfo> _sellInfo = [];
 
         private static bool _enableVendorBuyOPL;
         private static bool _vendorInvulnerable;

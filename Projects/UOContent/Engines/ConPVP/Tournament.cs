@@ -98,9 +98,9 @@ namespace Server.Engines.ConPVP
                         Pyramid = new TourneyPyramid();
                         Ruleset = new Ruleset(RulesetLayout.Root);
                         Ruleset.ApplyDefault(Ruleset.Layout.Defaults[0]);
-                        Participants = new List<TourneyParticipant>();
-                        Undefeated = new List<TourneyParticipant>();
-                        Arenas = new List<Arena>();
+                        Participants = [];
+                        Undefeated = [];
+                        Arenas = [];
 
                         break;
                     }
@@ -116,9 +116,9 @@ namespace Server.Engines.ConPVP
             Pyramid = new TourneyPyramid();
             Ruleset = new Ruleset(RulesetLayout.Root);
             Ruleset.ApplyDefault(Ruleset.Layout.Defaults[0]);
-            Participants = new List<TourneyParticipant>();
-            Undefeated = new List<TourneyParticipant>();
-            Arenas = new List<Arena>();
+            Participants = [];
+            Undefeated = [];
+            Arenas = [];
             SignupPeriod = TimeSpan.FromMinutes(10.0);
 
             Timer.StartTimer(SliceInterval, SliceInterval, Slice);

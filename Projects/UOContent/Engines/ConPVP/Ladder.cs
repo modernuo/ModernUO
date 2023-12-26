@@ -73,7 +73,7 @@ namespace Server.Engines.ConPVP
     public class Ladder
     {
         private static readonly int[] m_ShortLevels =
-        {
+        [
             1,
             2,
             3, 3,
@@ -83,21 +83,21 @@ namespace Server.Engines.ConPVP
             7, 7, 7, 7,
             8, 8, 8, 8,
             9, 9, 9, 9, 9
-        };
+        ];
 
         private static readonly int[] m_BaseXP =
-        {
+        [
             0, 100, 200, 400, 600, 900, 1200, 1600, 2000, 2500
-        };
+        ];
 
         private static readonly int[] m_LossFactors =
-        {
+        [
             10,
             11, 11,
             25, 25,
             43, 43,
             67, 67
-        };
+        ];
 
         private static readonly int[,] m_OffsetScalar =
         {
@@ -164,7 +164,7 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public List<LadderEntry> Entries { get; } = new();
+        public List<LadderEntry> Entries { get; } = [];
 
         public static Ladder Instance { get; set; }
 

@@ -6,9 +6,9 @@ namespace Server.Misc
     public static class IPLimiter
     {
         public static readonly IPAddress[] Exemptions =
-        {
+        [
             IPAddress.Parse( "127.0.0.1" )
-        };
+        ];
 
         public static bool Enabled { get; private set; }
         public static bool SocketBlock { get; private set; }

@@ -112,7 +112,7 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
 
         public TestBoat(Serial serial, List<IEntity> notContainedList) : base(serial) => _notContainedList = notContainedList;
 
-        public override MultiComponentList Components { get; } = new(new List<MultiTileEntry>());
+        public override MultiComponentList Components { get; } = new([]);
 
         public override bool Contains(int x, int y) => !_notContainedList.Any(e => e.X == x && e.Y == y);
 
@@ -122,7 +122,7 @@ public class BoatPacketTests : IClassFixture<ServerFixture>
 
     private class MockedMobile : Mobile
     {
-        public HashSet<IEntity> CanSeeEntities = new();
+        public HashSet<IEntity> CanSeeEntities = [];
 
         public MockedMobile(Serial serial) : base(serial)
         {

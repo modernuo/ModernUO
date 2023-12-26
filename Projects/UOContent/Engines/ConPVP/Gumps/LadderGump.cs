@@ -78,7 +78,7 @@ namespace Server.Engines.ConPVP
 
             AddPage(0);
 
-            m_List = new List<LadderEntry>(ladder.Entries);
+            m_List = [..ladder.Entries];
 
             var lc = Math.Min(m_List.Count, 150);
 

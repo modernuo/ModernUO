@@ -12,7 +12,7 @@ namespace Server.Commands.Generic
 
         private IComparer<object> m_Comparer;
 
-        public DistinctExtension() => m_Properties = new List<Property>();
+        public DistinctExtension() => m_Properties = [];
 
         public override ExtensionInfo Info => ExtInfo;
 

@@ -51,7 +51,7 @@ public partial class Firebomb : Item
             from.SendLocalizedMessage(1060582); // You light the firebomb.  Throw it now!
         }
 
-        _users ??= new List<Mobile>();
+        _users ??= [];
 
         if (!_users.Contains(from))
         {

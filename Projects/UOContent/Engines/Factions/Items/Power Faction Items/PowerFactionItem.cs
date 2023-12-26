@@ -9,13 +9,13 @@ namespace Server
     public abstract class PowerFactionItem : Item
     {
         private static readonly WeightedItem[] _items =
-        {
+        [
             new(30, typeof(GemOfEmpowerment)),
             new(25, typeof(BloodRose)),
             new(20, typeof(ClarityPotion)),
             new(15, typeof(UrnOfAscension)),
             new(10, typeof(StormsEye))
-        };
+        ];
 
         public PowerFactionItem(int itemId)
             : base(itemId)

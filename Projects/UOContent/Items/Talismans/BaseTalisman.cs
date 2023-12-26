@@ -24,12 +24,12 @@ public enum TalismanRemoval
 public partial class BaseTalisman : Item, IAosItem
 {
     private static readonly int[] _itemIDs =
-    {
+    [
         0x2F58, 0x2F59, 0x2F5A, 0x2F5B
-    };
+    ];
 
     private static readonly Type[] _summons =
-    {
+    [
         typeof(SummonedAntLion),
         typeof(SummonedCow),
         typeof(SummonedLavaSerpent),
@@ -51,10 +51,10 @@ public partial class BaseTalisman : Item, IAosItem
         typeof(Board),
         typeof(IronIngot),
         typeof(Bandage)
-    };
+    ];
 
     private static readonly int[] _summonLabels =
-    {
+    [
         1075211, // Ant Lion
         1072494, // Cow
         1072434, // Lava Serpent
@@ -76,10 +76,10 @@ public partial class BaseTalisman : Item, IAosItem
         1015101, // Boards
         1044036, // Ingots
         1023817  // clean bandage
-    };
+    ];
 
     private static readonly Type[] _killers =
-    {
+    [
         typeof(OrcBomber), typeof(OrcBrute), typeof(SewerRat), typeof(Rat), typeof(GiantRat),
         typeof(Ratman), typeof(RatmanArcher), typeof(GiantSpider), typeof(FrostSpider), typeof(GiantBlackWidow),
         typeof(DreadSpider), typeof(SilverSerpent), typeof(DeepSeaSerpent), typeof(GiantSerpent), typeof(Snake),
@@ -94,10 +94,10 @@ public partial class BaseTalisman : Item, IAosItem
         typeof(FireSteed), typeof(HellHound), typeof(HellCat), typeof(PredatorHellCat), typeof(LavaLizard),
         typeof(FireBeetle), typeof(Cow), typeof(Bull), typeof(Gaman) // , typeof( Minotaur)
         // TODO Meraktus, Tormented Minotaur, Minotaur
-    };
+    ];
 
     private static readonly int[] _killerLabels =
-    {
+    [
         1072413, 1072414, 1072418, 1072419, 1072420,
         1072421, 1072423, 1072424, 1072425, 1072426,
         1072427, 1072428, 1072429, 1072430, 1072431,
@@ -111,10 +111,10 @@ public partial class BaseTalisman : Item, IAosItem
         1072480, 1072481, 1072483, 1072485, 1072486,
         1072487, 1072489, 1072490, 1072491, 1072492,
         1072493, 1072494, 1072495, 1072498
-    };
+    ];
 
     private static readonly SkillName[] _skills =
-    {
+    [
         SkillName.Alchemy,
         SkillName.Blacksmith,
         SkillName.Carpentry,
@@ -124,7 +124,7 @@ public partial class BaseTalisman : Item, IAosItem
         SkillName.Inscribe,
         SkillName.Tailoring,
         SkillName.Tinkering
-    };
+    ];
 
     [SerializableField(0, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]

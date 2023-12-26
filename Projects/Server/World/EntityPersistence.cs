@@ -84,7 +84,7 @@ public static class EntityPersistence
 
         string indexPath = Path.Combine(path, indexType, $"{indexType}.idx");
 
-        entities = new List<EntitySpan<T>>();
+        entities = [];
 
         if (!File.Exists(indexPath))
         {

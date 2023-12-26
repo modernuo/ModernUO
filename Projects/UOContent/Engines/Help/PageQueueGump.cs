@@ -183,7 +183,7 @@ namespace Server.Engines.Help
 
             if (!File.Exists(path))
             {
-                return new List<PredefinedResponse>();
+                return [];
             }
 
             var list = new List<PredefinedResponse>();
@@ -470,7 +470,7 @@ namespace Server.Engines.Help
     public class PageEntryGump : Gump
     {
         private static readonly int[] m_AccessLevelHues =
-        {
+        [
             2100,
             2122,
             2117,
@@ -478,7 +478,7 @@ namespace Server.Engines.Help
             2415,
             2415,
             2415
-        };
+        ];
 
         private readonly PageEntry m_Entry;
         private readonly Mobile m_Mobile;

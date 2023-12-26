@@ -243,7 +243,7 @@ public partial class BaseHire : BaseCreature
 
     public class PayTimer : Timer
     {
-        private readonly HashSet<BaseHire> _hires = new();
+        private readonly HashSet<BaseHire> _hires = [];
         public static PayTimer Instance { get; set; }
 
         public PayTimer() : base(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1))

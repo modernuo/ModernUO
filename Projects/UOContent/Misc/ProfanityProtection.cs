@@ -21,15 +21,15 @@ namespace Server.Misc
             Action = ProfanityAction.Disallow; // change here what to do when profanity is detected
 
         public static char[] Exceptions { get; } =
-        {
+        [
             ' ', '-', '.', '\'', '"', ',', '_', '+', '=', '~', '`', '!', '^', '*', '\\', '/', ';', ':', '<', '>', '[', ']',
             '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
-        };
+        ];
 
         public static string[] StartDisallowed { get; } = Array.Empty<string>();
 
         public static string[] Disallowed { get; } =
-        {
+        [
             "jigaboo",
             "chigaboo",
             "wop",
@@ -75,7 +75,7 @@ namespace Server.Misc
             "twat",
             "shit",
             "fuck"
-        };
+        ];
 
         public static void Initialize()
         {

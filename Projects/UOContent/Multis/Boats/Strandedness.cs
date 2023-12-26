@@ -3,7 +3,7 @@ namespace Server.Misc
     public static class Strandedness
     {
         private static readonly Point2D[] m_Felucca =
-        {
+        [
             new(2528, 3568), new(2376, 3400), new(2528, 3896),
             new(2168, 3904), new(1136, 3416), new(1432, 3648),
             new(1416, 4000), new(4512, 3936), new(4440, 3120),
@@ -35,22 +35,22 @@ namespace Server.Misc
             new(2048, 1264), new(1808, 1528), new(1496, 1880),
             new(1656, 2168), new(2096, 2320), new(1816, 2528),
             new(1840, 2640), new(1928, 2952), new(2120, 2712)
-        };
+        ];
 
         private static readonly Point2D[] m_Trammel = m_Felucca;
 
         private static readonly Point2D[] m_Ilshenar =
-        {
+        [
             new(1252, 1180), new(1562, 1090), new(1444, 1016),
             new(1324, 968), new(1418, 806), new(1722, 874),
             new(1456, 684), new(1036, 866), new(612, 476),
             new(1476, 372), new(762, 472), new(812, 1162),
             new(1422, 1144), new(1254, 1066), new(1598, 870),
             new(1358, 866), new(510, 302), new(510, 392)
-        };
+        ];
 
         private static readonly Point2D[] m_Tokuno =
-        {
+        [
             // Makoto-Jima
             new(837, 1351), new(941, 1241), new(959, 1185),
             new(923, 1091), new(904, 983), new(845, 944),
@@ -81,7 +81,7 @@ namespace Server.Misc
             new(1275, 488), new(1348, 611), new(1363, 739),
             new(1364, 765), new(1364, 876), new(1300, 936),
             new(1240, 1003)
-        };
+        ];
 
         public static void Initialize()
         {

@@ -26,8 +26,8 @@ public abstract partial class BaseCamp : BaseMulti
 
     public BaseCamp(int multiID) : base(multiID)
     {
-        _items = new List<Item>();
-        _mobiles = new List<Mobile>();
+        _items = [];
+        _mobiles = [];
         m_DecayDelay = TimeSpan.FromMinutes(30.0);
         RefreshDecay(true);
 

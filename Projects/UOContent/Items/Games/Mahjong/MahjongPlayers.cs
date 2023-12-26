@@ -31,7 +31,7 @@ public partial class MahjongPlayers
     public MahjongPlayers(MahjongGame game, int maxPlayers, int baseScore)
     {
         _game = game;
-        _spectators = new List<Mobile>();
+        _spectators = [];
 
         _players = new Mobile[maxPlayers];
         _inGame = new bool[maxPlayers];
@@ -47,7 +47,7 @@ public partial class MahjongPlayers
     public MahjongPlayers(MahjongGame game)
     {
         _game = game;
-        _spectators = new List<Mobile>();
+        _spectators = [];
     }
 
     private void Deserialize(IGenericReader reader, int version)

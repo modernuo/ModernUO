@@ -16,7 +16,7 @@ namespace Server.Spells.Fourth
             Reagent.SpidersSilk
         );
 
-        private static readonly HashSet<Mobile> _table = new();
+        private static readonly HashSet<Mobile> _table = [];
 
         public ManaDrainSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {

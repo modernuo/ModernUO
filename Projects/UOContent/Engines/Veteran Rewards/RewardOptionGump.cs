@@ -12,7 +12,7 @@ namespace Server.Gumps
     public class RewardOptionGump : Gump
     {
         private readonly IRewardOption m_Option;
-        private readonly RewardOptionList m_Options = new();
+        private readonly RewardOptionList m_Options = [];
 
         public RewardOptionGump(IRewardOption option, int title = 0) : base(60, 36)
         {

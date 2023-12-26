@@ -16,7 +16,7 @@ namespace Server.Engines.Help
 
         public ContainedMenu(Mobile from) : base(
             "You already have an open help request. We will have someone assist you as soon as possible.  What would you like to do?",
-            new[] { "Leave my old help request like it is.", "Remove my help request from the queue." }
+            ["Leave my old help request like it is.", "Remove my help request from the queue."]
         ) =>
             m_From = from;
 

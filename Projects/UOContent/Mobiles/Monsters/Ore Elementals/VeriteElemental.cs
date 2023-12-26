@@ -50,7 +50,7 @@ namespace Server.Mobiles
         public override bool BleedImmune => true;
         public override int TreasureMapLevel => 1;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.DestroyEquipment };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.DestroyEquipment];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

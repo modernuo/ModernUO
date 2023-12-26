@@ -6,7 +6,7 @@ namespace Server.Commands
 {
     public static class CommandLogging
     {
-        private static readonly char[] m_NotSafe = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+        private static readonly char[] m_NotSafe = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
         public static bool Enabled { get; set; } = true;
 
         public static StreamWriter Output { get; private set; }

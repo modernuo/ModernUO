@@ -175,7 +175,7 @@ namespace Server.Mobiles
             private DisplayCache() : base(0)
             {
                 m_Table = new Dictionary<Type, IEntity>();
-                m_Mobiles = new List<Mobile>();
+                m_Mobiles = [];
             }
 
             public DisplayCache(Serial serial) : base(serial)
@@ -258,10 +258,10 @@ namespace Server.Mobiles
 
                 var version = reader.ReadInt();
 
-                List<IEntity> entities = new (Items);
+                List<IEntity> entities = [..Items];
                 entities.AddRange(reader.ReadEntityList<Mobile>());
 
-                m_Mobiles = new List<Mobile>(); // This cannot be null in case it is referenced before disposing
+                m_Mobiles = []; // This cannot be null in case it is referenced before disposing
 
                 Timer.StartTimer(() =>
                     {

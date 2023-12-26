@@ -52,25 +52,25 @@ public partial class LordOaks : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Enlightenment;
 
-    public override Type[] UniqueList => new[] { typeof(OrcChieftainHelm) };
+    public override Type[] UniqueList => [typeof(OrcChieftainHelm)];
 
-    public override Type[] SharedList => new[]
-    {
+    public override Type[] SharedList =>
+    [
         typeof(RoyalGuardSurvivalKnife),
         typeof(DjinnisRing),
         typeof(LieutenantOfTheBritannianRoyalGuard),
         typeof(SamaritanRobe),
         typeof(DetectiveBoots),
         typeof(TheMostKnowledgePerson)
-    };
+    ];
 
-    public override Type[] DecorativeList => new[]
-    {
+    public override Type[] DecorativeList =>
+    [
         typeof(WaterTile),
         typeof(WindSpirit),
         typeof(Pier),
         typeof(DirtPatch)
-    };
+    ];
 
     public override MonsterStatuetteType[] StatueTypes => Array.Empty<MonsterStatuetteType>();
 
@@ -85,7 +85,7 @@ public partial class LordOaks : BaseChampion
 
     public override Poison PoisonImmune => Poison.Deadly;
 
-    private static MonsterAbility[] _abilities = { MonsterAbilities.SummonPixiesCounter };
+    private static MonsterAbility[] _abilities = [MonsterAbilities.SummonPixiesCounter];
     public override MonsterAbility[] GetMonsterAbilities() => CheckQueen() ? _abilities : MonsterAbilities.Empty;
 
     public override void GenerateLoot()

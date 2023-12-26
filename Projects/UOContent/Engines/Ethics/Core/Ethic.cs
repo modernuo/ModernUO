@@ -11,16 +11,16 @@ namespace Server.Ethics
         public static readonly Ethic Evil = new EvilEthic();
 
         public static readonly Ethic[] Ethics =
-        {
+        [
             Hero,
             Evil
-        };
+        ];
 
         protected EthicDefinition m_Definition;
 
         protected PlayerCollection m_Players;
 
-        public Ethic() => m_Players = new PlayerCollection();
+        public Ethic() => m_Players = [];
         public static bool Enabled { get; private set; }
 
         public EthicDefinition Definition => m_Definition;

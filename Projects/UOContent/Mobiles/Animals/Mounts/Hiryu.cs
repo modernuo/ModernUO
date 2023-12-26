@@ -66,7 +66,7 @@ namespace Server.Mobiles
         public override FoodType FavoriteFood => FoodType.Meat;
         public override bool CanAngerOnTame => true;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.GraspingClaw };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.GraspingClaw];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;

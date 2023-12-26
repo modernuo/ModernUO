@@ -5,7 +5,7 @@ namespace Server.Engines.Spawners
 {
     public class SpawnerEntry
     {
-        public SpawnerEntry() => Spawned = new List<ISpawnable>();
+        public SpawnerEntry() => Spawned = [];
 
         public SpawnerEntry(
             string name,

@@ -14,7 +14,7 @@ public abstract partial class BaseRunicTool : BaseTool
     private static int m_LuckChance;
 
     private static readonly SkillName[] m_PossibleBonusSkills =
-    {
+    [
         SkillName.Swords,
         SkillName.Fencing,
         SkillName.Macing,
@@ -43,15 +43,15 @@ public abstract partial class BaseRunicTool : BaseTool
         SkillName.SpiritSpeak,
         SkillName.Bushido,
         SkillName.Ninjitsu
-    };
+    ];
 
     private static readonly SkillName[] m_PossibleSpellbookSkills =
-    {
+    [
         SkillName.Magery,
         SkillName.Meditation,
         SkillName.EvalInt,
         SkillName.MagicResist
-    };
+    ];
 
     private static readonly BitArray m_Props = new(MaxProperties);
     private static readonly int[] m_Possible = new int[MaxProperties];
@@ -522,12 +522,12 @@ public abstract partial class BaseRunicTool : BaseTool
         var totalDamage = phys;
 
         AosElementAttribute[] attrs =
-        {
+        [
             AosElementAttribute.Cold,
             AosElementAttribute.Energy,
             AosElementAttribute.Fire,
             AosElementAttribute.Poison
-        };
+        ];
 
         if (randomizeOrder)
         {

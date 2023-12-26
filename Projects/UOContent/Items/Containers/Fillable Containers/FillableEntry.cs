@@ -7,11 +7,11 @@ public class FillableEntry
     protected Type[] _types;
     protected int _weight;
 
-    public FillableEntry(Type type) : this(1, new[] { type })
+    public FillableEntry(Type type) : this(1, [type])
     {
     }
 
-    public FillableEntry(int weight, Type type) : this(weight, new[] { type })
+    public FillableEntry(int weight, Type type) : this(weight, [type])
     {
     }
 

@@ -19,11 +19,11 @@ namespace Server.Engines.Quests.Necro
     public class ReanimateMaabusConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1026153, 6178), // teleporter
             new(1049117, 4036), // Horn of Retreat
             new(1048032, 3702)  // a bag
-        };
+        ];
 
         public override object Message => 1060099;
 
@@ -38,9 +38,9 @@ namespace Server.Engines.Quests.Necro
     public class MaabasConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1026153, 6178) // teleporter
-        };
+        ];
 
         public override object Message => 1060103;
 
@@ -75,9 +75,9 @@ namespace Server.Engines.Quests.Necro
     public class VaultOfSecretsConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1023643, 8787) // spellbook
-        };
+        ];
 
         public override object Message => 1060110;
 

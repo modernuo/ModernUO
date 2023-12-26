@@ -41,7 +41,7 @@ namespace Server.Items
     public partial class AddonComponent : Item, IChoppable
     {
         private static LightEntry[] _entries =
-        {
+        [
             new(
                 LightType.WestSmall,
                 1122,
@@ -94,7 +94,7 @@ namespace Server.Items
             ),
             new(LightType.Circle300, 6526, 6538, 6571),
             new(LightType.Circle150, 5703, 6587)
-        };
+        ];
 
         [Constructible]
         public AddonComponent(int itemID) : base(itemID)

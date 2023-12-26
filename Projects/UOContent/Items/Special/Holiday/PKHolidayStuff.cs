@@ -19,7 +19,7 @@ public partial class Coal : Item
 [SerializationGenerator(0, false)]
 public partial class BadCard : Item
 {
-    private static readonly int[] _cardHues = { 0x45, 0x27, 0x3d0 };
+    private static readonly int[] _cardHues = [0x45, 0x27, 0x3d0];
 
     [Constructible]
     public BadCard() : base(0x14ef)

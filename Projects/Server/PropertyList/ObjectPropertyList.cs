@@ -29,13 +29,13 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 {
     // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
     private static readonly int[] _stringNumbers =
-    {
+    [
         1042971,
         1070722,
         1114057, // ~1_val~
         1114778, // ~1_val~
         1114779 // ~1_val~
-    };
+    ];
 
     private int _hash;
     private int _stringNumbersIndex;

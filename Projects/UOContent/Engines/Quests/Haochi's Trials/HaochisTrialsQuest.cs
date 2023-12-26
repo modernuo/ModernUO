@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Samurai
     public class HaochisTrialsQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(AcceptConversation),
             typeof(RadarConversation),
             typeof(FirstTrialIntroConversation),
@@ -43,7 +43,7 @@ namespace Server.Engines.Quests.Samurai
             typeof(SixthTrialReturnObjective),
             typeof(SeventhTrialIntroObjective),
             typeof(SeventhTrialReturnObjective)
-        };
+        ];
 
         private bool m_SentRadarConversion;
 

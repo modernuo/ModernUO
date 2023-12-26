@@ -26,7 +26,7 @@ public class TalkEntry : ContextMenuEntry
 [SerializationGenerator(0, false)]
 public abstract partial class BaseQuester : BaseVendor
 {
-    protected List<SBInfo> _sbInfos = new();
+    protected List<SBInfo> _sbInfos = [];
 
     public BaseQuester(string title = null) : base(title)
     {

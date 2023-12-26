@@ -884,7 +884,7 @@ public partial class ConditionTeleporter : Teleporter
             }
 
             if (GetFlag(ConditionFlag.DenyPackEthereals) &&
-                pack.FindItemByType(new[] { typeof(EtherealMount), typeof(BaseImprisonedMobile) }) != null)
+                pack.FindItemByType([typeof(EtherealMount), typeof(BaseImprisonedMobile)]) != null)
             {
                 m.SendMessage("You must empty your backpack of ethereal mounts before proceeding.");
                 return false;

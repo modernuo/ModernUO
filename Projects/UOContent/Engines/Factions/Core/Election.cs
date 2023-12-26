@@ -18,7 +18,7 @@ namespace Server.Factions
         public Election(Faction faction)
         {
             Faction = faction;
-            Candidates = new List<Candidate>();
+            Candidates = [];
 
             StartTimer();
         }
@@ -36,7 +36,7 @@ namespace Server.Factions
                         LastStateTime = reader.ReadDateTime();
                         CurrentState = (ElectionState)reader.ReadEncodedInt();
 
-                        Candidates = new List<Candidate>();
+                        Candidates = [];
 
                         var count = reader.ReadEncodedInt();
 
@@ -455,7 +455,7 @@ namespace Server.Factions
 
             var totalFactor = Math.Clamp(factorSkills * factorKillPts * Math.Max(factorGameTime, 100) / 10000, 0, 100);
 
-            return new object[] { From, Address, Time, totalFactor };
+            return [From, Address, Time, totalFactor];
         }
 
         public void Serialize(IGenericWriter writer)
@@ -473,7 +473,7 @@ namespace Server.Factions
         public Candidate(Mobile mob)
         {
             Mobile = mob;
-            Voters = new List<Voter>();
+            Voters = [];
         }
 
         public Candidate(IGenericReader reader)

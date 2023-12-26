@@ -100,13 +100,13 @@ namespace Server.Spells.Mysticism
                     var offset = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 24.0);
 
                     ResistanceMod[] mods =
-                    {
+                    [
                         new(ResistanceType.Physical, "PhysicalResistStoneFormSpell", offset),
                         new(ResistanceType.Fire, "FireResistStoneFormSpell", offset),
                         new(ResistanceType.Cold, "ColdResistStoneFormSpell", offset),
                         new(ResistanceType.Poison, "PoisonResistStoneFormSpell", offset),
                         new(ResistanceType.Energy, "EnergyResistStoneFormSpell", offset)
-                    };
+                    ];
 
                     for (var i = 0; i < mods.Length; ++i)
                     {

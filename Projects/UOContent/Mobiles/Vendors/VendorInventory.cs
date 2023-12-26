@@ -17,7 +17,7 @@ namespace Server.Mobiles
             VendorName = vendorName;
             ShopName = shopName;
 
-            Items = new List<Item>();
+            Items = [];
 
             ExpireTime = Core.Now + GracePeriod;
             m_ExpireTimer = new ExpireTimer(this, GracePeriod);

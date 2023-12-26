@@ -37,14 +37,14 @@ namespace Server.Engines.Events
     public class EventScheduler : Timer
     {
         private static EventScheduler _instance;
-        private readonly List<EventScheduleEntry> _schedule = new();
+        private readonly List<EventScheduleEntry> _schedule = [];
 
         private EventScheduler() : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
         {
         }
 
         public static EventScheduler Instance => _instance ??= new EventScheduler();
-        public static List<IEvent> AvailableEvents { get; } = new();
+        public static List<IEvent> AvailableEvents { get; } = [];
 
         public static void Initialize()
         {

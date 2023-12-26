@@ -65,7 +65,7 @@ namespace Server.Mobiles
         public override int Hides => 25;
         public override FoodType FavoriteFood => FoodType.Meat;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.BloodBathAttack };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.BloodBathAttack];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

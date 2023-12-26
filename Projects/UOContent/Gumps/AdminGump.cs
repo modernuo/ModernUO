@@ -59,7 +59,7 @@ namespace Server.Gumps
         private const int RedHue = 0x20;
 
         private static readonly string[] m_AccessLevelStrings =
-        {
+        [
             "Player",
             "Counselor",
             "Game Master",
@@ -67,7 +67,7 @@ namespace Server.Gumps
             "Administrator",
             "Developer",
             "Owner"
-        };
+        ];
 
         private readonly Mobile m_From;
         private readonly List<object> m_List;
@@ -685,7 +685,7 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Accounts:
                     {
-                        m_List ??= new List<object>();
+                        m_List ??= [];
 
                         var rads = state as List<Account>;
 
@@ -1551,7 +1551,7 @@ namespace Server.Gumps
                     // If we don't have a list, create one
                     if (!acctExists)
                     {
-                        accts = new List<Account>();
+                        accts = [];
                     }
 
                     accts.Add(acct);
@@ -2818,7 +2818,7 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        results = new List<IAccount>();
+                                        results = [];
                                         foreach (var acct in Accounts.GetAccounts())
                                         {
                                             if (acct.Username.InsensitiveContains(match))

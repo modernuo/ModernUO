@@ -8,10 +8,10 @@ namespace Server.Mobiles
     public partial class OphidianKnight : BaseCreature
     {
         private static readonly string[] m_Names =
-        {
+        [
             "an ophidian knight-errant",
             "an ophidian avenger"
-        };
+        ];
 
         [Constructible]
         public OphidianKnight() : base(AIType.AI_Melee)

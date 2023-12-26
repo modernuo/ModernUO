@@ -321,28 +321,26 @@ namespace Server.Gumps
     public class PlayerVendorCustomizeGump : Gump
     {
         private static readonly CustomCategory[] Categories =
-        {
+        [
             new(
                 Layer.InnerTorso,
                 1011357,
                 true,
-                new[]
-                {
+                [
                     // Upper Torso
                     new CustomItem(typeof(Shirt), 1011359, 5399),
                     new CustomItem(typeof(FancyShirt), 1011360, 7933),
                     new CustomItem(typeof(PlainDress), 1011363, 7937),
                     new CustomItem(typeof(FancyDress), 1011364, 7935),
                     new CustomItem(typeof(Robe), 1011365, 7939)
-                }
+                ]
             ),
 
             new(
                 Layer.MiddleTorso,
                 1011371,
                 true,
-                new[]
-                {
+                [
                     // Over chest
                     new CustomItem(typeof(Doublet), 1011358, 8059),
                     new CustomItem(typeof(Tunic), 1011361, 8097),
@@ -351,29 +349,27 @@ namespace Server.Gumps
                     new CustomItem(typeof(Surcoat), 1011362, 8189),
                     new CustomItem(typeof(HalfApron), 1011373, 5435),
                     new CustomItem(typeof(FullApron), 1011374, 5437)
-                }
+                ]
             ),
 
             new(
                 Layer.Shoes,
                 1011388,
                 true,
-                new[]
-                {
+                [
                     // Footwear
                     new CustomItem(typeof(Sandals), 1011389, 5901),
                     new CustomItem(typeof(Shoes), 1011390, 5904),
                     new CustomItem(typeof(Boots), 1011391, 5899),
                     new CustomItem(typeof(ThighBoots), 1011392, 5906)
-                }
+                ]
             ),
 
             new(
                 Layer.Helm,
                 1011375,
                 true,
-                new[]
-                {
+                [
                     // Hats
                     new CustomItem(typeof(SkullCap), 1011376, 5444),
                     new CustomItem(typeof(Bandana), 1011377, 5440),
@@ -381,15 +377,14 @@ namespace Server.Gumps
                     new CustomItem(typeof(WideBrimHat), 1011379, 5908),
                     new CustomItem(typeof(Cap), 1011380, 5909),
                     new CustomItem(typeof(TallStrawHat), 1011382, 5910)
-                }
+                ]
             ),
 
             new(
                 Layer.Helm,
                 1015319,
                 true,
-                new[]
-                {
+                [
                     // More Hats
                     new CustomItem(typeof(StrawHat), 1011382, 5911),
                     new CustomItem(typeof(WizardsHat), 1011383, 5912),
@@ -397,39 +392,36 @@ namespace Server.Gumps
                     new CustomItem(typeof(FeatheredHat), 1011385, 5914),
                     new CustomItem(typeof(TricorneHat), 1011386, 5915),
                     new CustomItem(typeof(JesterHat), 1011387, 5916)
-                }
+                ]
             ),
 
             new(
                 Layer.Pants,
                 1011367,
                 true,
-                new[]
-                {
+                [
                     // Lower Torso
                     new CustomItem(typeof(LongPants), 1011368, 5433),
                     new CustomItem(typeof(Kilt), 1011369, 5431),
                     new CustomItem(typeof(Skirt), 1011370, 5398)
-                }
+                ]
             ),
 
             new(
                 Layer.Cloak,
                 1011393,
                 true,
-                new[]
-                {
+                [
                     // Back
                     new CustomItem(typeof(Cloak), 1011394, 5397)
-                }
+                ]
             ),
 
             new(
                 Layer.Hair,
                 1011395,
                 true,
-                new[]
-                {
+                [
                     // Hair
                     new CustomItem(0x203B, 1011052),
                     new CustomItem(0x203C, 1011053),
@@ -440,15 +432,14 @@ namespace Server.Gumps
                     new CustomItem(0x2047, 1011396),
                     new CustomItem(0x2048, 1011048),
                     new CustomItem(0x2049, 1011049)
-                }
+                ]
             ),
 
             new(
                 Layer.FacialHair,
                 1015320,
                 true,
-                new[]
-                {
+                [
                     // Facial Hair
                     new CustomItem(0x2041, 1011062),
                     new CustomItem(0x203F, 1011060),
@@ -457,15 +448,14 @@ namespace Server.Gumps
                     new CustomItem(0x204C, 1015322, true),
                     new CustomItem(0x2040, 1015323),
                     new CustomItem(0x204D, 1011401)
-                }
+                ]
             ),
 
             new(
                 Layer.FirstValid,
                 1011397,
                 false,
-                new[]
-                {
+                [
                     // Held items
                     new CustomItem(typeof(FishingPole), 1011406, 3520),
                     new CustomItem(typeof(Pickaxe), 1011407, 3717),
@@ -476,15 +466,14 @@ namespace Server.Gumps
                     new CustomItem(typeof(Hammer), 1011411, 4020),
                     new CustomItem(typeof(Longsword), 1011412, 3936),
                     new CustomItem(typeof(GnarledStaff), 1011413, 5113)
-                }
+                ]
             ),
 
             new(
                 Layer.FirstValid,
                 1015325,
                 false,
-                new[]
-                {
+                [
                     // More held items
                     new CustomItem(typeof(Crossbow), 1011414, 3920),
                     new CustomItem(typeof(WarMace), 1011415, 5126),
@@ -492,9 +481,9 @@ namespace Server.Gumps
                     new CustomItem(typeof(Spear), 1011417, 3939),
                     new CustomItem(typeof(Katana), 1011418, 5118),
                     new CustomItem(typeof(Spellbook), 1011419, 3834)
-                }
+                ]
             )
-        };
+        ];
 
         private readonly Mobile m_Vendor;
 
@@ -912,7 +901,7 @@ namespace Server.Gumps
     public class NewPlayerVendorCustomizeGump : Gump
     {
         private static readonly HairOrBeard[] m_HairStyles =
-        {
+        [
             new(0x203B, 1011052), // Short
             new(0x203C, 1011053), // Long
             new(0x203D, 1011054), // Ponytail
@@ -922,10 +911,10 @@ namespace Server.Gumps
             new(0x2047, 1011396), // Curly
             new(0x2048, 1011048), // Receding
             new(0x2049, 1011049)  // 2-tails
-        };
+        ];
 
         private static readonly HairOrBeard[] m_BeardStyles =
-        {
+        [
             new(0x2041, 1011062), // Mustache
             new(0x203F, 1011060), // Short beard
             new(0x204B, 1015321), // Short Beard & Moustache
@@ -933,7 +922,7 @@ namespace Server.Gumps
             new(0x204C, 1015322), // Long Beard & Moustache
             new(0x2040, 1015323), // Goatee
             new(0x204D, 1011401)  // Vandyke
-        };
+        ];
 
         private readonly PlayerVendor m_Vendor;
 

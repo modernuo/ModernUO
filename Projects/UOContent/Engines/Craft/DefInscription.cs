@@ -11,7 +11,7 @@ public class DefInscription : CraftSystem
     private static readonly Type typeofSpellScroll = typeof(SpellScroll);
 
     private static readonly Type[] regTypes =
-    {
+    [
         typeof(BlackPearl),
         typeof(Bloodmoss),
         typeof(Garlic),
@@ -20,7 +20,7 @@ public class DefInscription : CraftSystem
         typeof(Nightshade),
         typeof(SulfurousAsh),
         typeof(SpidersSilk)
-    };
+    ];
 
     private int _circle, _mana;
     private int _index;

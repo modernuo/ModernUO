@@ -44,17 +44,17 @@ public partial class Mephitis : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Venom;
 
-    public override Type[] UniqueList => new[] { typeof(Calm) };
+    public override Type[] UniqueList => [typeof(Calm)];
 
-    public override Type[] SharedList => new[]
-    {
+    public override Type[] SharedList =>
+    [
         typeof(OblivionsNeedle), typeof(ANecromancerShroud), typeof(EmbroideredOakLeafCloak),
         typeof(TheMostKnowledgePerson)
-    };
+    ];
 
-    public override Type[] DecorativeList => new[] { typeof(Web), typeof(MonsterStatuette) };
+    public override Type[] DecorativeList => [typeof(Web), typeof(MonsterStatuette)];
 
-    public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.Spider };
+    public override MonsterStatuetteType[] StatueTypes => [MonsterStatuetteType.Spider];
 
     public override string DefaultName => "Mephitis";
 

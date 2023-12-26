@@ -40,7 +40,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073581; // Until you kill 12 Wailing Banshees, there will be no peace.
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(WailingBanshee) }, "wailing banshees"));
+            Objectives.Add(new KillObjective(12, [typeof(WailingBanshee)], "wailing banshees"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -57,7 +57,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(FrenziedOstard) }, "frenzied ostards"));
+            Objectives.Add(new KillObjective(12, [typeof(FrenziedOstard)], "frenzied ostards"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -74,7 +74,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(DireWolf) }, "dire wolves"));
+            Objectives.Add(new KillObjective(10, [typeof(DireWolf)], "dire wolves"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -95,9 +95,9 @@ namespace Server.Engines.MLQuests.Definitions
             CompletionMessage =
                 1074747; // Are you one of THEM?  Ahhhh!  Oh, wait, if you were them, then you'd be me.  So you're -- you.  Good job!
 
-            Objectives.Add(new KillObjective(1, new[] { typeof(Guile) }, "Guile"));
-            Objectives.Add(new KillObjective(1, new[] { typeof(Irk) }, "Irk"));
-            Objectives.Add(new KillObjective(1, new[] { typeof(Spite) }, "Spite"));
+            Objectives.Add(new KillObjective(1, [typeof(Guile)], "Guile"));
+            Objectives.Add(new KillObjective(1, [typeof(Irk)], "Irk"));
+            Objectives.Add(new KillObjective(1, [typeof(Spite)], "Spite"));
 
             Rewards.Add(ItemReward.Strongbox);
         }

@@ -62,7 +62,7 @@ namespace Server.Accounting
         [SerializableProperty(9)]
         public List<AccountComment> Comments
         {
-            get => _comments ??= new List<AccountComment>();
+            get => _comments ??= [];
             private set
             {
                 _comments = value;
@@ -73,7 +73,7 @@ namespace Server.Accounting
         [SerializableProperty(10)]
         public List<AccountTag> Tags
         {
-            get => _tags ??= new List<AccountTag>();
+            get => _tags ??= [];
             private set
             {
                 _tags = value;
@@ -977,7 +977,7 @@ namespace Server.Accounting
 
             if (comments != null)
             {
-                list = new List<AccountComment>();
+                list = [];
 
                 foreach (XmlElement comment in comments.GetElementsByTagName("comment"))
                 {
@@ -1007,7 +1007,7 @@ namespace Server.Accounting
 
             if (tags != null)
             {
-                list = new List<AccountTag>();
+                list = [];
 
                 foreach (XmlElement tag in tags.GetElementsByTagName("tag"))
                 {

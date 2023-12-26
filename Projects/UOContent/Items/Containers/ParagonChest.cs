@@ -7,15 +7,15 @@ namespace Server.Items;
 public partial class ParagonChest : LockableContainer
 {
     private static readonly int[] _itemIDs =
-    {
+    [
         0x9AB, 0xE40, 0xE41, 0xE7C
-    };
+    ];
 
     private static readonly int[] _hues =
-    {
+    [
         0x0, 0x455, 0x47E, 0x89F, 0x8A5, 0x8AB,
         0x966, 0x96D, 0x972, 0x973, 0x979
-    };
+    ];
 
     [InternString]
     [SerializableField(0, "private", "private")]

@@ -17,7 +17,7 @@ public abstract class Poison : ISpanParsable<Poison>
     public static Poison Deadly => GetPoison("Deadly");
     public static Poison Lethal => GetPoison("Lethal");
 
-    public static List<Poison> Poisons { get; } = new();
+    public static List<Poison> Poisons { get; } = [];
 
     public abstract Timer ConstructTimer(Mobile m);
     /*public abstract void OnDamage( Mobile m, ref object state );*/

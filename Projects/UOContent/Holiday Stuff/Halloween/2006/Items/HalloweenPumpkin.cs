@@ -7,13 +7,13 @@ namespace Server.Items
     public partial class HalloweenPumpkin : Item
     {
         private static readonly string[] m_Staff =
-        {
+        [
             "Owyn",
             "Luthius",
             "Kamron",
             "Jaedan",
             "Vorspire"
-        };
+        ];
 
         [Constructible]
         public HalloweenPumpkin()

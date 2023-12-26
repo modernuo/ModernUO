@@ -28,7 +28,7 @@ public class ServerListEventArgs
     {
         State = state;
         Account = account;
-        Servers = new List<ServerInfo>();
+        Servers = [];
     }
 
     public NetState State { get; }

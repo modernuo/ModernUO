@@ -25,7 +25,7 @@ namespace Server.Engines.Quests.Hag
     public class IngredientInfo
     {
         private static readonly IngredientInfo[] m_Table =
-        {
+        [
             // sheep liver
             new(1055020, 5, typeof(Sheep)),
             // rabbit's foot
@@ -56,7 +56,7 @@ namespace Server.Engines.Quests.Hag
             new(1055033, 1),
             // Captain Blackheart's Whiskey
             new(1055034, 1)
-        };
+        ];
 
         private IngredientInfo(int name, int quantity, params Type[] creatures)
         {

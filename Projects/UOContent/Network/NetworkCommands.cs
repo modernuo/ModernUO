@@ -14,7 +14,7 @@ namespace Server.Network
         public PacketLoggingCommand()
         {
             AccessLevel = AccessLevel.Developer;
-            Commands = new[] { "PacketLogging" };
+            Commands = ["PacketLogging"];
             ObjectTypes = ObjectTypes.Mobiles;
             Supports = CommandSupport.AllMobiles;
             Usage = "PacketLogging <on|off>";

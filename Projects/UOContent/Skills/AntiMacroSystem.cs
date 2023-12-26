@@ -14,7 +14,7 @@ public static class AntiMacroSystem
 {
     // *** NOTE ***: Modifying these values will not change an already created antimacro.json file!
     private static readonly bool[] _antiMacroSkillDefaults =
-    {
+    [
         false, // Alchemy = 0,
         true,  // Anatomy = 1,
         true,  // AnimalLore = 2,
@@ -72,8 +72,8 @@ public static class AntiMacroSystem
         true,  // Spellweaving
         true,  // Mysticism = 55
         true,  // Imbuing = 56
-        false, // Throwing = 57
-    };
+        false  // Throwing = 57
+    ];
 
     private static Dictionary<Mobile, PlayerAntiMacro> _antiMacroTable;
     private static Dictionary<Mobile, Timer> _logoutCleanup;

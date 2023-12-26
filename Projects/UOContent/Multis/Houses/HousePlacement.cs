@@ -25,7 +25,7 @@ namespace Server.Multis
 
         // Any land tile which matches one of these ID numbers is considered a road and cannot be placed over.
         private static readonly int[] m_RoadIDs =
-        {
+        [
             0x0071, 0x0078,
             0x00E8, 0x00EB,
             0x07AE, 0x07B1,
@@ -35,12 +35,12 @@ namespace Server.Multis
             0x0501, 0x0510, // Sand stones
             0x0009, 0x0015, // Furrows
             0x0150, 0x015C  // Furrows
-        };
+        ];
 
         public static HousePlacementResult Check(Mobile from, int multiID, Point3D center, out List<IEntity> toMove)
         {
             // If this spot is considered valid, every item and mobile in this list will be moved under the house sign
-            toMove = new List<IEntity>();
+            toMove = [];
 
             var map = from.Map;
 
@@ -85,7 +85,7 @@ namespace Server.Multis
             var mobiles = new List<Mobile>();
 
             // These are also storage lists. They hold location values indicating the yard and border locations.
-            List<Point2D> yard = new(), borders = new();
+            List<Point2D> yard = [], borders = [];
 
             /* RULES:
              *

@@ -4,7 +4,7 @@ namespace Server.Items
     public class LightOfTheWinterSolstice : Item
     {
         private static readonly string[] m_StaffNames =
-        {
+        [
             "Aenima",
             "Alkiser",
             "ASayre",
@@ -21,7 +21,7 @@ namespace Server.Items
             "Outkast", // TheOutkastDev
             "V",       // Admin_V
             "Zippy"
-        };
+        ];
 
         [Constructible]
         public LightOfTheWinterSolstice(string dipper = null) : base(0x236E)

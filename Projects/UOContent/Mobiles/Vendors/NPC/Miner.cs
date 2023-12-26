@@ -7,7 +7,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class Miner : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public Miner() : base("the miner")

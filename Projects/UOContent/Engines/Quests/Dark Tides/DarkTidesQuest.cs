@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Necro
     public class DarkTidesQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(AcceptConversation),
             typeof(AnimateMaabusCorpseObjective),
             typeof(BankerConversation),
@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Necro
             typeof(FindHorusAboutRewardObjective),
             typeof(HealConversation),
             typeof(HorusRewardConversation)
-        };
+        ];
 
         public DarkTidesQuest(PlayerMobile from) : base(from)
         {

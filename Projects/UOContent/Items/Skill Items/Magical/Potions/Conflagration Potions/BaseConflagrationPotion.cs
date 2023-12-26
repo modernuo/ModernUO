@@ -11,7 +11,7 @@ namespace Server.Items;
 public abstract partial class BaseConflagrationPotion : BasePotion
 {
     private static readonly Dictionary<Mobile, TimerExecutionToken> m_Delay = new();
-    private readonly List<Mobile> m_Users = new();
+    private readonly List<Mobile> m_Users = [];
 
     public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x489;
 

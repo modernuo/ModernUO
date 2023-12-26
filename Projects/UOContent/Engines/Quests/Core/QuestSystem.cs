@@ -24,7 +24,7 @@ namespace Server.Engines.Quests
     public abstract class QuestSystem
     {
         public static readonly Type[] QuestTypes =
-        {
+        [
             typeof(TheSummoningQuest),
             typeof(DarkTidesQuest),
             typeof(UzeraanTurmoilQuest),
@@ -36,15 +36,15 @@ namespace Server.Engines.Quests
             typeof(EminosUndertakingQuest),
             typeof(HaochisTrialsQuest),
             typeof(TerribleHatchlingsQuest)
-        };
+        ];
 
         private TimerExecutionToken _timerToken;
 
         public QuestSystem(PlayerMobile from)
         {
             From = from;
-            Objectives = new List<QuestObjective>();
-            Conversations = new List<QuestConversation>();
+            Objectives = [];
+            Conversations = [];
         }
 
         public QuestSystem()
@@ -354,7 +354,7 @@ namespace Server.Engines.Quests
 
             if (completed && restartDelay > TimeSpan.Zero || !completed && restartDelay == TimeSpan.MaxValue)
             {
-                From.DoneQuests ??= new List<QuestRestartInfo>();
+                From.DoneQuests ??= [];
 
                 var found = false;
 

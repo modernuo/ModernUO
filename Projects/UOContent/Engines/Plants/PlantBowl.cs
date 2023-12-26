@@ -8,7 +8,7 @@ namespace Server.Engines.Plants;
 public partial class PlantBowl : Item
 {
     private static readonly int[] _dirtPatchLandTiles =
-    {
+    [
         0x9, 0x15,
         0x71, 0x7C,
         0x82, 0xA7,
@@ -46,14 +46,14 @@ public partial class PlantBowl : Item
         0x5B27, 0x5B3E,
         0x71F4, 0x71FB,
         0x72C9, 0x72CA
-    };
+    ];
 
     private static readonly int[] _dirtPatchStaticTiles =
-    {
+    [
         0x1B27, 0x1B3E,
         0x31F4, 0x31FB,
         0x32C9, 0x32CA
-    };
+    ];
 
     [Constructible]
     public PlantBowl() : base(0x15FD) => Weight = 1.0;

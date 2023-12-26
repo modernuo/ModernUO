@@ -23,18 +23,18 @@ namespace Server.Engines.MLQuests
         public MLQuestContext(PlayerMobile owner)
         {
             Owner = owner;
-            QuestInstances = new List<MLQuestInstance>();
-            m_DoneQuests = new List<MLDoneQuestInfo>();
-            ChainOffers = new List<MLQuest>();
+            QuestInstances = [];
+            m_DoneQuests = [];
+            ChainOffers = [];
             m_Flags = MLQuestFlag.None;
         }
 
         public MLQuestContext(IGenericReader reader, int version)
         {
             Owner = reader.ReadEntity<PlayerMobile>();
-            QuestInstances = new List<MLQuestInstance>();
-            m_DoneQuests = new List<MLDoneQuestInfo>();
-            ChainOffers = new List<MLQuest>();
+            QuestInstances = [];
+            m_DoneQuests = [];
+            ChainOffers = [];
 
             var instances = reader.ReadInt();
 

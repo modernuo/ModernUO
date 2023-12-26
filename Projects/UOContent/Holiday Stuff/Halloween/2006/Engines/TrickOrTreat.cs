@@ -237,7 +237,7 @@ namespace Server.Engines.Events
     public partial class NaughtyTwin : BaseCreature
     {
         private static readonly Point3D[] Felucca_Locations =
-        {
+        [
             new(4467, 1283, 5),                                  // Moonglow
             new(1336, 1997, 5),                                  // Britain
             new(1499, 3771, 5),                                  // Jhelom
@@ -246,16 +246,16 @@ namespace Server.Engines.Events
             new(1828, 2948, -20),                                // Trinsic
             new(643, 2067, 5),                                   // Skara Brae
             new(3563, 2139, Map.Trammel.GetAverageZ(3563, 2139)) // (New) Magincia
-        };
+        ];
 
         private static readonly Point3D[] Malas_Locations =
-        {
+        [
             new(1015, 527, -65), // Luna
             new(1997, 1386, -85) // Umbra
-        };
+        ];
 
         private static readonly Point3D[] Ilshenar_Locations =
-        {
+        [
             new(1215, 467, -13),  // Compassion
             new(722, 1366, -60),  // Honesty
             new(744, 724, -28),   // Honor
@@ -265,14 +265,14 @@ namespace Server.Engines.Events
             new(1532, 1340, -3),  // Spirituality
             new(528, 216, -45),   // Valor
             new(1721, 218, 96)    // Chaos
-        };
+        ];
 
         private static readonly Point3D[] Tokuno_Locations =
-        {
+        [
             new(1169, 998, 41), // Isamu-Jima
             new(802, 1204, 25), // Makoto-Jima
             new(270, 628, 15)   // Homare-Jima
-        };
+        ];
 
         private readonly Mobile m_From;
 
@@ -300,7 +300,7 @@ namespace Server.Engines.Events
         public static Item FindCandyTypes(Mobile target)
         {
             Type[] types =
-                { typeof(WrappedCandy), typeof(Lollipops), typeof(NougatSwirl), typeof(Taffy), typeof(JellyBeans) };
+                [typeof(WrappedCandy), typeof(Lollipops), typeof(NougatSwirl), typeof(Taffy), typeof(JellyBeans)];
 
             return TrickOrTreat.CheckMobile(target) ? target.Backpack.FindItemByType(types) : null;
         }

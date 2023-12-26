@@ -12,7 +12,7 @@ namespace Server.SkillHandlers
 {
     public static class AnimalTaming
     {
-        private static readonly HashSet<Mobile> m_BeingTamed = new();
+        private static readonly HashSet<Mobile> m_BeingTamed = [];
 
         public static bool DisableMessage { get; set; }
 

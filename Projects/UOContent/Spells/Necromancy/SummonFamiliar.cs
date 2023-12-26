@@ -31,13 +31,13 @@ namespace Server.Spells.Necromancy
         public static Dictionary<Mobile, BaseCreature> Table { get; } = new();
 
         public static SummonFamiliarEntry[] Entries { get; } =
-        {
+        [
             new(typeof(HordeMinionFamiliar), 1060146, 30.0, 30.0), // Horde Minion
             new(typeof(ShadowWispFamiliar), 1060142, 50.0, 50.0),  // Shadow Wisp
             new(typeof(DarkWolfFamiliar), 1060143, 60.0, 60.0),    // Dark Wolf
             new(typeof(DeathAdder), 1060145, 80.0, 80.0),          // Death Adder
             new(typeof(VampireBatFamiliar), 1060144, 100.0, 100.0) // Vampire Bat
-        };
+        ];
 
         public override bool CheckCast()
         {

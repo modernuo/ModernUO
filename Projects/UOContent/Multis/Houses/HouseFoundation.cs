@@ -33,29 +33,29 @@ namespace Server.Multis
          * (sorted ascending)
          */
         private static readonly int[] m_BlockIDs =
-        {
+        [
             0x3EE, 0x709, 0x71E, 0x721,
             0x738, 0x750, 0x76C, 0x788,
             0x7A3, 0x7BA, 0x35D2, 0x3609,
             0x4317, 0x4318, 0x4B07, 0x7807
-        };
+        ];
 
         /* Stair sequence IDs
          * (sorted ascending)
          * Use this for stairs in the proper N,W,S,E sequence
          */
         private static readonly int[] m_StairSeqs =
-        {
+        [
             0x3EF, 0x70A, 0x722, 0x739,
             0x751, 0x76D, 0x789, 0x7A4
-        };
+        ];
 
         /* Other stair IDs
          * Listed in order: north, west, south, east
          * Use this for stairs not in the proper sequence
          */
         private static readonly int[] m_StairIDs =
-        {
+        [
             0x71F, 0x736, 0x737, 0x749,
             0x35D4, 0x35D3, 0x35D6, 0x35D5,
             0x360B, 0x360A, 0x360D, 0x360C,
@@ -65,7 +65,7 @@ namespace Server.Multis
             0x4B05, 0x4B04, 0x4B34, 0x4B33,
             0x7809, 0x7808, 0x780A, 0x780B,
             0x7BB, 0x7BC
-        };
+        ];
 
         private DesignState m_Backup;  // State at last user backup.
         private DesignState m_Current; // State which is currently visible.
@@ -78,7 +78,7 @@ namespace Server.Multis
         {
             SignpostGraphic = 9;
 
-            Fixtures = new List<Item>();
+            Fixtures = [];
 
             var x = Components.Min.X;
             var y = Components.Height - 1 - Components.Center.Y;
@@ -177,7 +177,7 @@ namespace Server.Multis
             {
                 var mcl = Components;
 
-                return new[] { new Rectangle2D(mcl.Min.X, mcl.Min.Y, mcl.Width, mcl.Height) };
+                return [new Rectangle2D(mcl.Min.X, mcl.Min.Y, mcl.Width, mcl.Height)];
             }
         }
 
@@ -336,7 +336,7 @@ namespace Server.Multis
 
         public void AddFixtures(Mobile from, MultiTileEntry[] list)
         {
-            Fixtures ??= new List<Item>();
+            Fixtures ??= [];
 
             uint keyValue = 0;
 

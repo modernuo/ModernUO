@@ -10,7 +10,7 @@ namespace Server.Items;
 public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
 {
     private static readonly Point3D[] m_Offsets =
-    {
+    [
         new(-1, 1, 0),
         new(1, 1, 0),
         new(-1, 0, 0),
@@ -24,7 +24,7 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         new(0, 0, 0),
         new(0, 0, 0),
         new(0, 0, 0)
-    };
+    ];
 
     private Timer _timer;
 

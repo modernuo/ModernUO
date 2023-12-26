@@ -14,7 +14,7 @@ namespace Server.Items
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
 
         private static readonly Type[] m_Decorations =
-        {
+        [
             typeof(FishBones),
             typeof(WaterloggedBoots),
             typeof(CaptainBlackheartsFishingPole),
@@ -24,7 +24,7 @@ namespace Server.Items
             typeof(IslandStatue),
             typeof(Shell),
             typeof(ToyBoat)
-        };
+        ];
 
         private bool m_EvaluateDay;
 
@@ -91,7 +91,7 @@ namespace Server.Items
 
             _water.Maintain = Utility.RandomMinMax(1, 3);
 
-            _events = new List<int>();
+            _events = [];
 
             _evaluateTimer = Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate);
         }
@@ -146,9 +146,9 @@ namespace Server.Items
         public override double DefaultWeight => 10.0;
 
         private static int[] FishHues =
-        {
+        [
             0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
-        };
+        ];
 
         public override void OnDelete()
         {
@@ -501,7 +501,7 @@ namespace Server.Items
                         _water = new AquariumState(this);
                         _water.Deserialize(reader);
 
-                        _events = new List<int>();
+                        _events = [];
                         var count = reader.ReadInt();
                         for (var i = 0; i < count; i++)
                         {

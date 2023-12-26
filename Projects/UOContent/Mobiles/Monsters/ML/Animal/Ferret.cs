@@ -8,11 +8,11 @@ namespace Server.Mobiles
     public partial class Ferret : BaseCreature
     {
         private static readonly string[] m_Vocabulary =
-        {
+        [
             "dook",
             "dook dook",
             "dook dook dook!"
-        };
+        ];
 
         private bool m_CanTalk;
 

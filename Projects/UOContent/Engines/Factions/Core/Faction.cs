@@ -12,7 +12,7 @@ using Server.Targeting;
 
 namespace Server.Factions
 {
-    [CustomEnum(new[] { "Minax", "Council of Mages", "True Britannians", "Shadowlords" })]
+    [CustomEnum(["Minax", "Council of Mages", "True Britannians", "Shadowlords"])]
     public abstract class Faction : IComparable<Faction>
     {
         public const int StabilityFactor = 300;     // 300% greater (3 times) than smallest faction
@@ -1345,7 +1345,7 @@ namespace Server.Factions
             var context = new SkillLossContext();
             m_SkillLoss[mob] = context;
 
-            var mods = context.m_Mods = new HashSet<SkillMod>();
+            var mods = context.m_Mods = [];
 
             for (var i = 0; i < mob.Skills.Length; ++i)
             {
@@ -1435,7 +1435,7 @@ namespace Server.Factions
             {
                 case FactionKickType.Kick:
                     {
-                        Commands = new[] { "FactionKick" };
+                        Commands = ["FactionKick"];
                         Usage = "FactionKick";
                         Description =
                             "Kicks the targeted player out of his current faction. This does not prevent them from rejoining.";
@@ -1443,7 +1443,7 @@ namespace Server.Factions
                     }
                 case FactionKickType.Ban:
                     {
-                        Commands = new[] { "FactionBan" };
+                        Commands = ["FactionBan"];
                         Usage = "FactionBan";
                         Description =
                             "Bans the account of a targeted player from joining factions. All players on the account are removed from their current faction, if any.";
@@ -1451,7 +1451,7 @@ namespace Server.Factions
                     }
                 case FactionKickType.Unban:
                     {
-                        Commands = new[] { "FactionUnban" };
+                        Commands = ["FactionUnban"];
                         Usage = "FactionUnban";
                         Description = "Unbans the account of a targeted player from joining factions.";
                         break;

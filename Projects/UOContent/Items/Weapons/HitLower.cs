@@ -8,8 +8,8 @@ namespace Server.Items
         public static readonly TimeSpan AttackEffectDuration = TimeSpan.FromSeconds(10.0);
         public static readonly TimeSpan DefenseEffectDuration = TimeSpan.FromSeconds(8.0);
 
-        private static readonly HashSet<Mobile> m_AttackTable = new();
-        private static readonly HashSet<Mobile> m_DefenseTable = new();
+        private static readonly HashSet<Mobile> m_AttackTable = [];
+        private static readonly HashSet<Mobile> m_DefenseTable = [];
 
         public static bool IsUnderAttackEffect(Mobile m) => m_AttackTable.Contains(m);
 

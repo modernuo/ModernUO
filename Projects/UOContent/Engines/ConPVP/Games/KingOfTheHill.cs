@@ -691,7 +691,7 @@ namespace Server.Engines.ConPVP
             Name = "King of the Hill Controller";
 
             Duration = TimeSpan.FromMinutes(30.0);
-            Boards = new List<KHBoard>();
+            Boards = [];
             Hills = new HillOfTheKing[4];
             TeamInfo = new KHTeamInfo[8];
 

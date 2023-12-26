@@ -11,7 +11,7 @@ namespace Server.Engines.Quests.Doom;
 public partial class Chyloth : BaseQuester
 {
     private static readonly int[] _offsets =
-    {
+    [
         -1, -1,
         -1, 0,
         -1, 1,
@@ -20,7 +20,7 @@ public partial class Chyloth : BaseQuester
         1, -1,
         1, 0,
         1, 1
-    };
+    ];
 
     [Constructible]
     public Chyloth() : base("the Ferryman")

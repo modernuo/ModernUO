@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Hag
     public class WitchApprenticeQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(FindApprenticeObjective),
             typeof(FindGrizeldaAboutMurderObjective),
             typeof(KillImpsObjective),
@@ -29,10 +29,10 @@ namespace Server.Engines.Quests.Hag
             typeof(BlackheartPirateConversation),
             typeof(EndConversation),
             typeof(RecentlyFinishedConversation)
-        };
+        ];
 
         private static readonly Point3D[] m_ZeefzorpulLocations =
-        {
+        [
             new(1226, 1573, 0),
             new(1929, 1148, 0),
             new(1366, 2723, 0),
@@ -53,7 +53,7 @@ namespace Server.Engines.Quests.Hag
             new(3704, 2196, 20),
             new(3346, 572, 0),
             new(569, 1309, 0)
-        };
+        ];
 
         public WitchApprenticeQuest(PlayerMobile from) : base(from)
         {

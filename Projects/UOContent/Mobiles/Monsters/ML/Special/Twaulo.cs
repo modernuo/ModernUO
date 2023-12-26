@@ -54,11 +54,11 @@ namespace Server.Mobiles
         public override string CorpseName => "a corpse of Twaulo";
         public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-        public override Type[] UniqueList => new[] { typeof(Quell) };
-        public override Type[] SharedList => new[] { typeof(TheMostKnowledgePerson), typeof(OblivionsNeedle) };
-        public override Type[] DecorativeList => new[] { typeof(Pier), typeof(MonsterStatuette) };
+        public override Type[] UniqueList => [typeof(Quell)];
+        public override Type[] SharedList => [typeof(TheMostKnowledgePerson), typeof(OblivionsNeedle)];
+        public override Type[] DecorativeList => [typeof(Pier), typeof(MonsterStatuette)];
 
-        public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.DreadHorn };
+        public override MonsterStatuetteType[] StatueTypes => [MonsterStatuetteType.DreadHorn];
 
         public override string DefaultName => "Twaulo";
 
@@ -71,7 +71,7 @@ namespace Server.Mobiles
         public override int Hides => 8;
         public override HideType HideType => HideType.Spined;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.SummonPixiesCounter };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.SummonPixiesCounter];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

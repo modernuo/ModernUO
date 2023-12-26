@@ -89,7 +89,7 @@ namespace Server.Mobiles
             AddLoot(LootPack.MedScrolls, 1);
         }
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.RuneCorruption };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.RuneCorruption];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
     }
 }

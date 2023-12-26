@@ -6,7 +6,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class Jeweler : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public Jeweler() : base("the jeweler")

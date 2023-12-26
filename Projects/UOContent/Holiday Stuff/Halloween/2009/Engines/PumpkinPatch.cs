@@ -9,7 +9,7 @@ namespace Server.Engines.Events
         private static Timer _timer;
 
         private static readonly Rectangle2D[] m_PumpkinFields =
-        {
+        [
             new(4557, 1471, 20, 10),
             new(796, 2152, 36, 24),
             new(816, 2251, 16, 8),
@@ -18,7 +18,7 @@ namespace Server.Engines.Events
             new(816, 2281, 16, 8),
             new(835, 2344, 16, 16),
             new(816, 2344, 16, 24)
-        };
+        ];
 
         public static void Initialize()
         {

@@ -16,10 +16,10 @@ namespace Server.Factions
         {
             m_Faction = faction;
             Tithe = 50;
-            Members = new List<PlayerState>();
+            Members = [];
             Election = new Election(faction);
-            FactionItems = new List<FactionItem>();
-            Traps = new List<BaseFactionTrap>();
+            FactionItems = [];
+            Traps = [];
         }
 
         public FactionState(IGenericReader reader)
@@ -83,7 +83,7 @@ namespace Server.Factions
 
                         var memberCount = reader.ReadEncodedInt();
 
-                        Members = new List<PlayerState>();
+                        Members = [];
 
                         for (var i = 0; i < memberCount; ++i)
                         {
@@ -114,7 +114,7 @@ namespace Server.Factions
                             }
                         }
 
-                        FactionItems = new List<FactionItem>();
+                        FactionItems = [];
 
                         if (version >= 2)
                         {
@@ -128,7 +128,7 @@ namespace Server.Factions
                             }
                         }
 
-                        Traps = new List<BaseFactionTrap>();
+                        Traps = [];
 
                         if (version >= 3)
                         {

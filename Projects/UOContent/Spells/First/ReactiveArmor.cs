@@ -79,8 +79,8 @@ namespace Server.Spells.First
                         targ.PlaySound(0x1E9);
                         targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-                        mods = new[]
-                        {
+                        mods =
+                        [
                             new ResistanceMod(
                                 ResistanceType.Physical,
                                 "PhysicalResistReactiveArmorSpell",
@@ -90,7 +90,7 @@ namespace Server.Spells.First
                             new ResistanceMod(ResistanceType.Cold, "ColdResistReactiveArmorSpell", -5),
                             new ResistanceMod(ResistanceType.Poison, "PoisonResistReactiveArmorSpell", -5),
                             new ResistanceMod(ResistanceType.Energy, "EnergyResistReactiveArmorSpell", -5)
-                        };
+                        ];
 
                         _table[targ] = mods;
 

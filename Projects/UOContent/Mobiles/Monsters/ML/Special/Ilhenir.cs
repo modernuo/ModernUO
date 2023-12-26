@@ -11,7 +11,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class Ilhenir : BaseChampion
     {
-        private static readonly HashSet<Mobile> m_Table = new();
+        private static readonly HashSet<Mobile> m_Table = [];
 
         [Constructible]
         public Ilhenir()
@@ -66,21 +66,21 @@ namespace Server.Mobiles
 
         public override Type[] UniqueList => Array.Empty<Type>();
 
-        public override Type[] SharedList => new[]
-        {
+        public override Type[] SharedList =>
+        [
             typeof(ANecromancerShroud),
             typeof(LieutenantOfTheBritannianRoyalGuard),
             typeof(OblivionsNeedle),
             typeof(TheRobeOfBritanniaAri)
-        };
+        ];
 
-        public override Type[] DecorativeList => new[] { typeof(MonsterStatuette) };
+        public override Type[] DecorativeList => [typeof(MonsterStatuette)];
 
-        public override MonsterStatuetteType[] StatueTypes => new[]
-        {
+        public override MonsterStatuetteType[] StatueTypes =>
+        [
             MonsterStatuetteType.PlagueBeast,
             MonsterStatuetteType.RedDeath
-        };
+        ];
 
         public override string DefaultName => "Ilhenir";
 

@@ -9,7 +9,7 @@ namespace Server.Engines.Harvest
         private static Lumberjacking m_System;
 
         private static readonly int[] m_TreeTiles =
-        {
+        [
             0x0CCA, 0x0CCB, 0x0CCC, 0x0CCD, 0x0CD0, 0x0CD3, 0x0CD6, 0x0CD8,
             0x0CDA, 0x0CDD, 0x0CE0, 0x0CE3, 0x0CE6, 0x0CF8, 0x0CFB, 0x0CFE,
             0x0D01, 0x0D41, 0x0D42, 0x0D43, 0x0D44, 0x0D57, 0x0D58, 0x0D59,
@@ -31,7 +31,7 @@ namespace Server.Engines.Harvest
             0x0DA2, 0x0DA3, 0x0DA5, 0x0DA6, 0x0DA7, 0x0DA9, 0x0DAA, 0x0DAB,
             0x12BE, 0x12BF, 0x12C0, 0x12C1, 0x12C2, 0x12C3, 0x12C4, 0x12C5,
             0x12C6, 0x12C7
-        };
+        ];
 
         private Lumberjacking()
         {
@@ -52,9 +52,9 @@ namespace Server.Engines.Harvest
                 MaxRange = 2,
                 ConsumedPerHarvest = 10,
                 ConsumedPerFeluccaHarvest = 20,
-                EffectActions = new[] { 13 },
-                EffectSounds = new[] { 0x13E },
-                EffectCounts = Core.AOS ? new[] { 1 } : new[] { 1, 2, 2, 2, 3 },
+                EffectActions = [13],
+                EffectSounds = [0x13E],
+                EffectCounts = Core.AOS ? [1] : [1, 2, 2, 2, 3],
                 EffectDelay = TimeSpan.FromSeconds(1.6),
                 EffectSoundDelay = TimeSpan.FromSeconds(0.9),
                 NoResourcesMessage = 500493, // There's not enough wood here to harvest.
@@ -66,8 +66,8 @@ namespace Server.Engines.Harvest
 
             if (Core.ML)
             {
-                res = new[]
-                {
+                res =
+                [
                     new HarvestResource(00.0, 00.0, 100.0, 1072540, typeof(Log)),
                     new HarvestResource(65.0, 25.0, 105.0, 1072541, typeof(OakLog)),
                     new HarvestResource(80.0, 40.0, 120.0, 1072542, typeof(AshLog)),
@@ -75,10 +75,10 @@ namespace Server.Engines.Harvest
                     new HarvestResource(100.0, 60.0, 140.0, 1072544, typeof(HeartwoodLog)),
                     new HarvestResource(100.0, 60.0, 140.0, 1072545, typeof(BloodwoodLog)),
                     new HarvestResource(100.0, 60.0, 140.0, 1072546, typeof(FrostwoodLog))
-                };
+                ];
 
-                veins = new[]
-                {
+                veins =
+                [
                     new HarvestVein(490, 0.0, res[0], null),   // Ordinary Logs
                     new HarvestVein(300, 0.5, res[1], res[0]), // Oak
                     new HarvestVein(100, 0.5, res[2], res[0]), // Ash
@@ -86,29 +86,29 @@ namespace Server.Engines.Harvest
                     new HarvestVein(030, 0.5, res[4], res[0]), // Heartwood
                     new HarvestVein(020, 0.5, res[5], res[0]), // Bloodwood
                     new HarvestVein(010, 0.5, res[6], res[0])  // Frostwood
-                };
+                ];
 
-                lumber.BonusResources = new[]
-                {
+                lumber.BonusResources =
+                [
                     new BonusHarvestResource(0, 83.9, null, null), // Nothing
                     new BonusHarvestResource(100, 10.0, 1072548, typeof(BarkFragment)),
                     new BonusHarvestResource(100, 03.0, 1072550, typeof(LuminescentFungi)),
                     new BonusHarvestResource(100, 02.0, 1072547, typeof(SwitchItem)),
                     new BonusHarvestResource(100, 01.0, 1072549, typeof(ParasiticPlant)),
                     new BonusHarvestResource(100, 00.1, 1072551, typeof(BrilliantAmber))
-                };
+                ];
             }
             else
             {
-                res = new[]
-                {
+                res =
+                [
                     new HarvestResource(00.0, 00.0, 100.0, 500498, typeof(Log))
-                };
+                ];
 
-                veins = new[]
-                {
+                veins =
+                [
                     new HarvestVein(1000, 0.0, res[0], null)
-                };
+                ];
             }
 
             lumber.Resources = res;
@@ -117,7 +117,7 @@ namespace Server.Engines.Harvest
             lumber.RaceBonus = Core.ML;
             lumber.RandomizeVeins = Core.ML;
 
-            Definitions = new[] { lumber };
+            Definitions = [lumber];
         }
 
         public static Lumberjacking System => m_System ??= new Lumberjacking();

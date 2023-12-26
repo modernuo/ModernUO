@@ -73,7 +73,7 @@ public partial class DawnsMusicBox : Item, ISecurable
     };
 
     public static readonly MusicName[] _commonTracks =
-    {
+    [
         MusicName.Samlethe, MusicName.Sailing, MusicName.Britain2, MusicName.Britain1,
         MusicName.Bucsden, MusicName.Forest_a, MusicName.Cove, MusicName.Death,
         MusicName.Dungeon9, MusicName.Dungeon2, MusicName.Cave01, MusicName.Combat3,
@@ -84,20 +84,20 @@ public partial class DawnsMusicBox : Item, ISecurable
         MusicName.Tavern02, MusicName.Tavern03, MusicName.TokunoDungeon, MusicName.Trinsic,
         MusicName.OldUlt01, MusicName.Ocllo, MusicName.Vesper, MusicName.Victory,
         MusicName.Mountn_a, MusicName.Wind, MusicName.Yew, MusicName.Zento
-    };
+    ];
 
     public static readonly MusicName[] _uncommonTracks =
-    {
+    [
         MusicName.GwennoConversation, MusicName.DreadHornArea, MusicName.ElfCity,
         MusicName.GoodEndGame, MusicName.GoodVsEvil, MusicName.GreatEarthSerpents,
         MusicName.GrizzleDungeon, MusicName.Humanoids_U9, MusicName.MelisandesLair,
         MusicName.MinocNegative, MusicName.ParoxysmusLair, MusicName.Paws
-    };
+    ];
 
     public static readonly MusicName[] _rareTracks =
-    {
+    [
         MusicName.SelimsBar, MusicName.SerpentIsleCombat_U7, MusicName.ValoriaShips
-    };
+    ];
 
     [SerializableField(0, setter: "private")]
     private List<MusicName> _tracks;
@@ -117,7 +117,7 @@ public partial class DawnsMusicBox : Item, ISecurable
     {
         Weight = 1.0;
 
-        _tracks = new List<MusicName>();
+        _tracks = [];
 
         GetTracks(DawnsMusicRarity.Common).RandomSample(4, _tracks);
     }
@@ -131,7 +131,7 @@ public partial class DawnsMusicBox : Item, ISecurable
             return;
         }
 
-        box.Tracks = new List<MusicName>();
+        box.Tracks = [];
         box.Tracks.AddRange(Tracks);
     }
 
@@ -257,7 +257,7 @@ public partial class DawnsMusicBox : Item, ISecurable
     private void Deserialize(IGenericReader reader, int version)
     {
         var count = reader.ReadInt();
-        _tracks = new List<MusicName>();
+        _tracks = [];
 
         for (var i = 0; i < count; i++)
         {

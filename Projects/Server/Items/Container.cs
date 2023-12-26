@@ -650,7 +650,7 @@ public partial class Container : Item
 
         if (!contains)
         {
-            Openers ??= new List<Mobile>();
+            Openers ??= [];
 
             Openers.Add(opener);
         }

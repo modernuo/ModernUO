@@ -167,13 +167,13 @@ namespace Server.Items
             if (Core.ML && IsRewardItem)
             {
                 // X Year Veteran Reward
-                list.Add(RewardSystem.GetRewardYearLabel(this, new object[] { Hue, _number }));
+                list.Add(RewardSystem.GetRewardYearLabel(this, [Hue, _number]));
             }
         }
 
         public override bool CanEquip(Mobile m) =>
             base.CanEquip(m) &&
-            (!IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, _number }));
+            (!IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, [Hue, _number]));
 
         [AfterDeserialization]
         private void AfterDeserialization()

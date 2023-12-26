@@ -84,7 +84,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public static Map TerMur => Maps[5];
     public static Map Internal => Maps[0x7F];
 
-    public static List<Map> AllMaps { get; } = new();
+    public static List<Map> AllMaps { get; } = [];
 
     public int Season { get; set; }
 
@@ -142,7 +142,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
     }
 
-    public static int[] InvalidLandTiles { get; set; } = { 0x244 };
+    public static int[] InvalidLandTiles { get; set; } = [0x244];
 
     public static int MaxLOSDistance { get; set; } = 25;
 
@@ -1356,12 +1356,12 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public class Sector
     {
         // TODO: Can we avoid this?
-        private static readonly List<Region> m_DefaultRectList = new();
+        private static readonly List<Region> m_DefaultRectList = [];
         private bool m_Active;
         private ValueLinkList<NetState> _clients;
         private ValueLinkList<Item> _items;
         private ValueLinkList<Mobile> _mobiles;
-        private List<BaseMulti> _multis = new();
+        private List<BaseMulti> _multis = [];
         private List<Region> _regions;
 
         public Sector(int x, int y, Map owner)

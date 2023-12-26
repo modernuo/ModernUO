@@ -11,8 +11,7 @@ namespace Server.Ethics.Evil
                 "Evil",
                 "(Evil)",
                 "I am evil incarnate",
-                new Power[]
-                {
+                [
                     new UnholySense(),
                     new UnholyItem(),
                     new SummonFamiliar(),
@@ -21,7 +20,7 @@ namespace Server.Ethics.Evil
                     new UnholyShield(),
                     new UnholySteed(),
                     new UnholyWord()
-                }
+                ]
             );
         }
 

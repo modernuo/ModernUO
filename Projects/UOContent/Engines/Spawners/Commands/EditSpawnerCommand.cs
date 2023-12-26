@@ -32,7 +32,7 @@ namespace Server.Engines.Spawners
         {
             AccessLevel = AccessLevel.GameMaster;
             Supports = CommandSupport.Complex | CommandSupport.Simple;
-            Commands = new[] { "EditSpawner" };
+            Commands = ["EditSpawner"];
             ObjectTypes = ObjectTypes.Items;
             Usage = "EditSpawner <type> <arguments> set <properties> where <properties>";
             Description = "Modifies spawners arguments and properties for the given type";

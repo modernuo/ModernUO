@@ -16,10 +16,10 @@ namespace Server.Engines.Chat
         {
             m_Name = name;
 
-            m_Users = new List<ChatUser>();
-            m_Banned = new List<ChatUser>();
-            m_Moderators = new List<ChatUser>();
-            m_Voices = new List<ChatUser>();
+            m_Users = [];
+            m_Banned = [];
+            m_Moderators = [];
+            m_Voices = [];
         }
 
         public Channel(string name, string password) : this(name) => m_Password = password;
@@ -64,7 +64,7 @@ namespace Server.Engines.Chat
 
         public bool AlwaysAvailable { get; set; }
 
-        public static List<Channel> Channels { get; } = new();
+        public static List<Channel> Channels { get; } = [];
 
         public bool Contains(ChatUser user) => m_Users.Contains(user);
 

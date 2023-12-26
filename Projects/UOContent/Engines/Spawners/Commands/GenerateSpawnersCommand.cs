@@ -54,7 +54,7 @@ namespace Server.Engines.Spawners
                 .Execute(new DirectoryInfoWrapper(di))
                 .Files;
 
-            List<FileInfo> files = new List<FileInfo>();
+            List<FileInfo> files = [];
             foreach (var match in patternMatches)
             {
                 files.Add(new FileInfo(match.Path));

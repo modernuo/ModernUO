@@ -62,7 +62,7 @@ namespace Server.Engines.Plants
     public class PlantTypeInfo
     {
         private static readonly PlantTypeInfo[] m_Table =
-        {
+        [
             new(0xC83, 0, 0, PlantType.CampionFlowers, false, true, true, true, PlantCategory.Default),
             new(0xC86, 0, 0, PlantType.Poppies, false, true, true, true, PlantCategory.Default),
             new(0xC88, 0, 10, PlantType.Snowdrops, false, true, true, true, PlantCategory.Default),
@@ -188,7 +188,7 @@ namespace Server.Engines.Plants
                 1080533,
                 1113716
             )
-        };
+        ];
 
         private readonly int m_PlantLabelDecorative;
         private readonly int m_PlantLabelFullGrown;

@@ -60,7 +60,7 @@ namespace Server.Engines.Quests
     {
         private readonly List<QuestConversation> m_Conversations;
 
-        public QuestConversationsGump(QuestConversation conv) : this(new List<QuestConversation> { conv })
+        public QuestConversationsGump(QuestConversation conv) : this([conv])
         {
         }
 

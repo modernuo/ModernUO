@@ -4,7 +4,7 @@ namespace Server.Commands.Generic
     {
         public ScreenCommandImplementor()
         {
-            Accessors = new[] { "Screen" };
+            Accessors = ["Screen"];
             SupportRequirement = CommandSupport.Area;
             SupportsConditionals = true;
             AccessLevel = AccessLevel.GameMaster;

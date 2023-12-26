@@ -20,11 +20,11 @@ namespace Server.Items
     public partial class FlourMillEastAddon : BaseAddon, IFlourMill
     {
         private static readonly int[][] m_StageTable =
-        {
-            new[] { 0x1920, 0x1921, 0x1925 },
-            new[] { 0x1922, 0x1923, 0x1926 },
-            new[] { 0x1924, 0x1924, 0x1928 }
-        };
+        [
+            [0x1920, 0x1921, 0x1925],
+            [0x1922, 0x1923, 0x1926],
+            [0x1924, 0x1924, 0x1928]
+        ];
 
         [Constructible]
         public FlourMillEastAddon()

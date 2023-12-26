@@ -23,7 +23,7 @@ namespace Server
 
         static ValidationQueue()
         {
-            m_Queue = new List<T>();
+            m_Queue = [];
             ValidationQueue.StartValidation += ValidateAll;
         }
 

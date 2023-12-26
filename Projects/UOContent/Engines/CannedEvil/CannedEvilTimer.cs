@@ -29,8 +29,8 @@ namespace Server.Engines.CannedEvil
             Instance.OnTick();
         }
 
-        private static readonly HashSet<DungeonChampionSpawn> _dungeonSpawns = new();
-        private static readonly HashSet<LLChampionSpawn> _lostLandsSpawns = new();
+        private static readonly HashSet<DungeonChampionSpawn> _dungeonSpawns = [];
+        private static readonly HashSet<LLChampionSpawn> _lostLandsSpawns = [];
         private static DateTime _sliceTime;
 
         public static CannedEvilTimer Instance { get; private set; }
@@ -68,7 +68,7 @@ namespace Server.Engines.CannedEvil
         {
             if (list.Count > 0)
             {
-                List<T> valid = new List<T>();
+                List<T> valid = [];
 
                 foreach (T spawn in list)
                 {

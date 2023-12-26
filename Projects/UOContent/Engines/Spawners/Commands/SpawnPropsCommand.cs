@@ -33,7 +33,7 @@ namespace Server.Engines.Spawners
         {
             AccessLevel = AccessLevel.GameMaster;
             Supports = CommandSupport.Complex | CommandSupport.Simple;
-            Commands = new[] { "SpawnProps" };
+            Commands = ["SpawnProps"];
             ObjectTypes = ObjectTypes.Items;
             Usage = "SpawnProps";
             Description = "Shows a props gump that will modify the properties of spawn entries related to the chosen entity";

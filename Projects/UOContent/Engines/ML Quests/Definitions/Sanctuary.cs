@@ -237,7 +237,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073741; // There's too much cuteness in the world -- kill those pixies!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Pixie) }, "pixies"));
+            Objectives.Add(new KillObjective(10, [typeof(Pixie)], "pixies"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -356,7 +356,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(Orc) },
+                    [typeof(Orc)],
                     "orcs",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -364,7 +364,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     5,
-                    new[] { typeof(OrcBomber) },
+                    [typeof(OrcBomber)],
                     "orc bombers",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -372,7 +372,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     3,
-                    new[] { typeof(OrcBrute) },
+                    [typeof(OrcBrute)],
                     "orc brutes",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -394,7 +394,7 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage =
                 1073595; // I don't see 10 tails from Ratman Archers on your belt -- and until I do, no reward for you.
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(RatmanArcher) }, "ratman archers"));
+            Objectives.Add(new KillObjective(10, [typeof(RatmanArcher)], "ratman archers"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -411,7 +411,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(Ratman) }, "ratmen"));
+            Objectives.Add(new KillObjective(12, [typeof(Ratman)], "ratmen"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -433,7 +433,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     1,
-                    new[] { typeof(MougGuur) },
+                    [typeof(MougGuur)],
                     "Moug-Guur",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -462,7 +462,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     1,
-                    new[] { typeof(Chiikkaha) },
+                    [typeof(Chiikkaha)],
                     "Chiikkaha",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -492,7 +492,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     1,
-                    new[] { typeof(Szavetra) },
+                    [typeof(Szavetra)],
                     "Szavetra",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -599,7 +599,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(Ogre) },
+                    [typeof(Ogre)],
                     "ogres",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -626,7 +626,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(OgreLord) },
+                    [typeof(OgreLord)],
                     "ogre lords",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -653,7 +653,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     6,
-                    new[] { typeof(Cyclops) },
+                    [typeof(Cyclops)],
                     "cyclops",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -682,7 +682,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     3,
-                    new[] { typeof(Titan) },
+                    [typeof(Titan)],
                     "titans",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -709,7 +709,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     12,
-                    new[] { typeof(Gargoyle) },
+                    [typeof(Gargoyle)],
                     "gargoyles",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -751,7 +751,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073592; // The Brigands still plague us. Have you killed 20 of their number?<br>
 
-            Objectives.Add(new KillObjective(20, new[] { typeof(Brigand) }, 1074894)); // Common brigands
+            Objectives.Add(new KillObjective(20, [typeof(Brigand)], 1074894)); // Common brigands
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }

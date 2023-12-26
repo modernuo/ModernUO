@@ -630,7 +630,7 @@ namespace Server.Gumps
                             }
                             else
                             {
-                                groups[type] = new List<PropertyInfo> { prop };
+                                groups[type] = [prop];
                             }
                         }
                     }

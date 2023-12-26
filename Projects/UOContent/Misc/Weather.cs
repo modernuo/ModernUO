@@ -58,7 +58,7 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            m_Facets = new[] { Map.Felucca, Map.Trammel };
+            m_Facets = [Map.Felucca, Map.Trammel];
 
             /* Static weather:
              *
@@ -103,7 +103,7 @@ namespace Server.Misc
 
             if (!m_WeatherByFacet.TryGetValue(facet, out var list))
             {
-                m_WeatherByFacet[facet] = list = new List<Weather>();
+                m_WeatherByFacet[facet] = list = [];
             }
 
             return list;
@@ -146,7 +146,7 @@ namespace Server.Misc
 
                 new Weather(
                         m_Facets[i],
-                        new[] { area },
+                        [area],
                         temperature,
                         chanceOfPercipitation,
                         chanceOfExtremeTemperature,

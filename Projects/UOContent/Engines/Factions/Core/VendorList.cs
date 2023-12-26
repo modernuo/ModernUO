@@ -8,7 +8,7 @@ namespace Server.Factions
         public VendorList(VendorDefinition definition)
         {
             Definition = definition;
-            Vendors = new List<BaseFactionVendor>();
+            Vendors = [];
         }
 
         public VendorDefinition Definition { get; }

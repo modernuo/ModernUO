@@ -10,7 +10,7 @@ namespace Server.Misc
 {
     public class ShardPoller : Item
     {
-        private static readonly List<ShardPoller> m_ActivePollers = new();
+        private static readonly List<ShardPoller> m_ActivePollers = [];
 
         private bool m_Active;
         private string m_Title;

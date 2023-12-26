@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Ambitious
     public class AmbitiousQueenQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(DontOfferConversation),
             typeof(AcceptConversation),
             typeof(DuringKillQueensConversation),
@@ -20,7 +20,7 @@ namespace Server.Engines.Quests.Ambitious
             typeof(ReturnAfterKillsObjective),
             typeof(GatherFungiObjective),
             typeof(GetRewardObjective)
-        };
+        ];
 
         public AmbitiousQueenQuest(PlayerMobile from, bool redSolen) : base(from) => RedSolen = redSolen;
 

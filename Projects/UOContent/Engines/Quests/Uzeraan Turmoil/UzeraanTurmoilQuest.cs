@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Haven
     public class UzeraanTurmoilQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(AcceptConversation),
             typeof(UzeraanTitheConversation),
             typeof(UzeraanFirstTaskConversation),
@@ -40,7 +40,7 @@ namespace Server.Engines.Quests.Haven
             typeof(ReturnDaemonBoneObjective),
             typeof(CashBankCheckObjective),
             typeof(FewReagentsConversation)
-        };
+        ];
 
         private bool m_HasLeftTheMansion;
 

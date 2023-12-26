@@ -20,7 +20,7 @@ namespace Server.Engines.Events
         private static HashSet<PlayerMobile> _deathQueue;
 
         private static readonly Rectangle2D[] m_Cemetaries =
-        {
+        [
             new(1272, 3712, 30, 20), // Jhelom
             new(1337, 1444, 48, 52), // Britain
             new(2424, 1098, 20, 28), // Trinsic
@@ -38,7 +38,7 @@ namespace Server.Engines.Events
             new(712, 1104, 22, 30),  // Yew
             new(5824, 1464, 6, 22),  // Fire Dungeon
             new(5224, 3655, 5, 14)   // T2A
-        };
+        ];
 
         internal static Dictionary<PlayerMobile, ZombieSkeleton> _reAnimated;
 
@@ -54,7 +54,7 @@ namespace Server.Engines.Events
             var clear = TimeSpan.FromSeconds(m_QueueClearIntervalSeconds);
 
             _reAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
-            _deathQueue = new HashSet<PlayerMobile>();
+            _deathQueue = [];
 
             if (today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween)
             {

@@ -11,7 +11,7 @@ namespace Server.Multis
 
         public PreviewHouse(int multiID) : base(multiID)
         {
-            m_Components = new List<Item>();
+            m_Components = [];
 
             var mcl = Components;
 

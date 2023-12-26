@@ -7,7 +7,7 @@ namespace Server.Commands.Generic
     {
         public GlobalCommandImplementor()
         {
-            Accessors = new[] { "Global" };
+            Accessors = ["Global"];
             SupportRequirement = CommandSupport.Global;
             SupportsConditionals = true;
             AccessLevel = AccessLevel.Administrator;

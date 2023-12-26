@@ -8,10 +8,10 @@ namespace Server.Factions
     public class FinanceGump : FactionGump
     {
         private static readonly int[] m_PriceOffsets =
-        {
+        [
             -30, -25, -20, -15, -10, -5,
             +50, +100, +150, +200, +250, +300
-        };
+        ];
 
         private readonly Faction m_Faction;
         private readonly PlayerMobile m_From;

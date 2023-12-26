@@ -15,7 +15,7 @@ public partial class EnchantedSextant : Item
 
     // TODO: Trammel/Haven
     private static readonly Point2D[] _trammelBanks =
-    {
+    [
         new(652, 820),
         new(1813, 2825),
         new(3734, 2149),
@@ -34,10 +34,10 @@ public partial class EnchantedSextant : Item
         new(5346, 74),
         new(5275, 3977),
         new(5669, 3131)
-    };
+    ];
 
     private static readonly Point2D[] _feluccaBanks =
-    {
+    [
         new(652, 820),
         new(1813, 2825),
         new(3734, 2149),
@@ -56,21 +56,21 @@ public partial class EnchantedSextant : Item
         new(5346, 74),
         new(5275, 3977),
         new(5669, 3131)
-    };
+    ];
 
     private static readonly Point2D[] _ilshenarBanks =
-    {
+    [
         new(854, 680),
         new(855, 603),
         new(1226, 554),
         new(1610, 556)
-    };
+    ];
 
     private static readonly Point2D[] _malasBanks =
-    {
+    [
         new(996, 519),
         new(2048, 1345)
-    };
+    ];
 
     [Constructible]
     public EnchantedSextant() : base(0x1058) => Weight = 2.0;

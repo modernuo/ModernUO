@@ -87,7 +87,7 @@ namespace Server.Commands.Generic
                     /* return */
                     typeof(int),
                     /* params */
-                    new[] { typeof(T), typeof(T) }
+                    [typeof(T), typeof(T)]
                 );
 
                 var a = emitter.CreateLocal(objectType);
@@ -151,11 +151,10 @@ namespace Server.Commands.Generic
                     emitter.Method,
                     typeof(IComparer<T>).GetMethod(
                         "Compare",
-                        new[]
-                        {
+                        [
                             typeof(T),
                             typeof(T)
-                        }
+                        ]
                     ) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}")
                 );
             }

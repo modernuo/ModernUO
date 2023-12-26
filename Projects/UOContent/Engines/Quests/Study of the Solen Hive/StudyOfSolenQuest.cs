@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Naturalist
     public class StudyOfSolenQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(StudyNestsObjective),
             typeof(ReturnToNaturalistObjective),
             typeof(DontOfferConversation),
@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Naturalist
             typeof(EndConversation),
             typeof(SpecialEndConversation),
             typeof(FullBackpackConversation)
-        };
+        ];
 
         public StudyOfSolenQuest(PlayerMobile from, Naturalist naturalist) : base(from) => Naturalist = naturalist;
 

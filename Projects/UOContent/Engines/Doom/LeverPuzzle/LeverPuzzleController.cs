@@ -14,47 +14,47 @@ public partial class LeverPuzzleController : Item
     private static bool installed;
 
     public static string[] Msgs =
-    {
+    [
         "You are pinned down by the weight of the boulder!!!", // 0
         "A speeding rock hits you in the head!",               // 1
         "OUCH!"                                                // 2
-    };
+    ];
     /* font&hue for above msgs. index matches */
 
     public static int[][] MsgParams =
-    {
-        new[] { 0x66d, 3 },
-        new[] { 0x66d, 3 },
-        new[] { 0x34, 3 }
-    };
+    [
+        [0x66d, 3],
+        [0x66d, 3],
+        [0x34, 3]
+    ];
     /* World data for items */
 
     public static int[][] TA =
-    {
-        new[] { 316, 64, 5 }, /* 3D Coords for levers */
-        new[] { 323, 58, 5 },
-        new[] { 332, 63, 5 },
-        new[] { 323, 71, 5 },
+    [
+        [316, 64, 5], /* 3D Coords for levers */
+        [323, 58, 5],
+        [332, 63, 5],
+        [323, 71, 5],
 
-        new[] { 324, 64 }, /* 2D Coords for standing regions */
-        new[] { 316, 65 },
-        new[] { 324, 58 },
-        new[] { 332, 64 },
-        new[] { 323, 72 },
+        [324, 64], /* 2D Coords for standing regions */
+        [316, 65],
+        [324, 58],
+        [332, 64],
+        [323, 72],
 
-        new[] { 468, 92, -1 }, new[] { 0x181D, 0x482 }, /* 3D coord, itemid+hue for L.R. teles */
-        new[] { 469, 92, -1 }, new[] { 0x1821, 0x3fd },
-        new[] { 470, 92, -1 }, new[] { 0x1825, 0x66d },
+        [468, 92, -1], [0x181D, 0x482], /* 3D coord, itemid+hue for L.R. teles */
+        [469, 92, -1], [0x1821, 0x3fd],
+        [470, 92, -1], [0x1825, 0x66d],
 
-        new[] { 319, 70, 18 }, new[] { 0x12d8 }, /* 3D coord, itemid for statues */
-        new[] { 329, 60, 18 }, new[] { 0x12d9 },
+        [319, 70, 18], [0x12d8], /* 3D coord, itemid for statues */
+        [329, 60, 18], [0x12d9],
 
-        new[] { 469, 96, 6 } /* 3D Coords for Fake Box */
-    };
+        [469, 96, 6] /* 3D Coords for Fake Box */
+    ];
 
     /* CLILOC data for statue "correct souls" messages */
 
-    public static int[] Statue_Msg = { 1050009, 1050007, 1050008, 1050008 };
+    public static int[] Statue_Msg = [1050009, 1050007, 1050008, 1050008];
 
     /* Exit & Enter locations for the lamp room */
 
@@ -72,33 +72,33 @@ public partial class LeverPuzzleController : Item
     /* Lamp Room area Poison message data */
 
     public static int[][] PA =
-    {
-        new[] { 0, 0, 0xA6 },
-        new[] { 1050001, 0x485, 0xAA },
-        new[] { 1050003, 0x485, 0xAC },
-        new[] { 1050056, 0x485, 0xA8 },
-        new[] { 1050057, 0x485, 0xA4 },
-        new[] { 1062091, 0x23F3, 0xAC }
-    };
+    [
+        [0, 0, 0xA6],
+        [1050001, 0x485, 0xAA],
+        [1050003, 0x485, 0xAC],
+        [1050056, 0x485, 0xA8],
+        [1050057, 0x485, 0xA4],
+        [1062091, 0x23F3, 0xAC]
+    ];
 
     public static Poison[] PA2 =
-    {
+    [
         Poison.Lesser,
         Poison.Regular,
         Poison.Greater,
         Poison.Deadly,
         Poison.Lethal,
         Poison.Lethal
-    };
+    ];
 
     /* SOUNDS */
 
-    private static readonly int[] fs = { 0x144, 0x154 };
-    private static readonly int[] ms = { 0x144, 0x14B };
-    private static readonly int[] fs2 = { 0x13F, 0x154 };
-    private static readonly int[] ms2 = { 0x13F, 0x14B };
-    private static readonly int[] cs1 = { 0x244 };
-    private static readonly int[] exp = { 0x307 };
+    private static readonly int[] fs = [0x144, 0x154];
+    private static readonly int[] ms = [0x144, 0x14B];
+    private static readonly int[] fs2 = [0x13F, 0x154];
+    private static readonly int[] ms2 = [0x13F, 0x14B];
+    private static readonly int[] cs1 = [0x244];
+    private static readonly int[] exp = [0x307];
     private TimerExecutionToken _resetTimerToken;
     private Region _lampRoom;
 
@@ -125,25 +125,25 @@ public partial class LeverPuzzleController : Item
         installed = true;
         var i = 0;
 
-        _levers = new List<Item>(); /* codes are 0x1 shifted left x # of bits, easily handled here */
+        _levers = []; /* codes are 0x1 shifted left x # of bits, easily handled here */
         for (; i < 4; i++)
         {
             _levers.Add(AddLeverPuzzlePart(TA[i], new LeverPuzzleLever((ushort)(1 << i), this)));
         }
 
-        _tiles = new List<LeverPuzzleRegion>();
+        _tiles = [];
         for (; i < 9; i++)
         {
             _tiles.Add(new LeverPuzzleRegion(TA[i]));
         }
 
-        _teles = new List<Item>();
+        _teles = [];
         for (; i < 15; i++)
         {
             _teles.Add(AddLeverPuzzlePart(TA[i], new LampRoomTeleporter(TA[++i])));
         }
 
-        _statues = new List<Item>();
+        _statues = [];
         for (; i < 19; i++)
         {
             _statues.Add(AddLeverPuzzlePart(TA[i], new LeverPuzzleStatue(TA[++i], this)));
@@ -540,7 +540,7 @@ public partial class LeverPuzzleController : Item
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        _tiles = new List<LeverPuzzleRegion>();
+        _tiles = [];
         for (var i = 4; i < 9; i++)
         {
             _tiles.Add(new LeverPuzzleRegion(TA[i]));

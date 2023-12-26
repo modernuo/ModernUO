@@ -20,7 +20,7 @@ namespace Server.Commands.Generic
         {
             AccessLevel = AccessLevel.GameMaster;
             Supports = CommandSupport.Single | CommandSupport.Area;
-            Commands = new[] { "DesignInsert" };
+            Commands = ["DesignInsert"];
             ObjectTypes = ObjectTypes.Items;
             Usage = "DesignInsert [allItems=false]";
             Description = "Inserts multiple targeted items into a customizable house's design.";
@@ -79,7 +79,7 @@ namespace Server.Commands.Generic
 
         public override void Execute(CommandEventArgs e, object obj)
         {
-            Target t = new DesignInsertTarget(new List<HouseFoundation>(), e.Length < 1 || !e.GetBoolean(0));
+            Target t = new DesignInsertTarget([], e.Length < 1 || !e.GetBoolean(0));
             t.Invoke(e.Mobile, obj);
         }
 

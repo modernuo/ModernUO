@@ -31,7 +31,7 @@ namespace Server.Engines.Craft
         private static readonly Dictionary<Type, int> _itemIds = new();
 
         private static readonly int[] m_HeatSources =
-        {
+        [
             0x461, 0x48E,   // Sandstone oven/fireplace
             0x92B, 0x96C,   // Stone oven/fireplace
             0xDE3, 0xDE9,   // Campfire
@@ -44,57 +44,57 @@ namespace Server.Engines.Craft
             0x197A, 0x19A9, // Large Forge
             0x0FB1, 0x0FB1, // Small Forge
             0x2DD8, 0x2DD8  // Elven Forge
-        };
+        ];
 
         private static readonly int[] m_Ovens =
-        {
+        [
             0x461, 0x46F,  // Sandstone oven
             0x92B, 0x93F,  // Stone oven
             0x2DDB, 0x2DDC // Elven stove
-        };
+        ];
 
         private static readonly int[] m_Mills =
-        {
+        [
             0x1920, 0x1921, 0x1922, 0x1923, 0x1924, 0x1295, 0x1926, 0x1928,
             0x192C, 0x192D, 0x192E, 0x129F, 0x1930, 0x1931, 0x1932, 0x1934
-        };
+        ];
 
         private static readonly Type[][] m_TypesTable =
-        {
-            new[] { typeof(Log), typeof(Board) },
-            new[] { typeof(HeartwoodLog), typeof(HeartwoodBoard) },
-            new[] { typeof(BloodwoodLog), typeof(BloodwoodBoard) },
-            new[] { typeof(FrostwoodLog), typeof(FrostwoodBoard) },
-            new[] { typeof(OakLog), typeof(OakBoard) },
-            new[] { typeof(AshLog), typeof(AshBoard) },
-            new[] { typeof(YewLog), typeof(YewBoard) },
-            new[] { typeof(Leather), typeof(Hides) },
-            new[] { typeof(SpinedLeather), typeof(SpinedHides) },
-            new[] { typeof(HornedLeather), typeof(HornedHides) },
-            new[] { typeof(BarbedLeather), typeof(BarbedHides) },
-            new[] { typeof(BlankMap), typeof(BlankScroll) },
-            new[] { typeof(Cloth), typeof(UncutCloth) },
-            new[] { typeof(CheeseWheel), typeof(CheeseWedge) },
-            new[] { typeof(Pumpkin), typeof(SmallPumpkin) },
-            new[] { typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas) }
-        };
+        [
+            [typeof(Log), typeof(Board)],
+            [typeof(HeartwoodLog), typeof(HeartwoodBoard)],
+            [typeof(BloodwoodLog), typeof(BloodwoodBoard)],
+            [typeof(FrostwoodLog), typeof(FrostwoodBoard)],
+            [typeof(OakLog), typeof(OakBoard)],
+            [typeof(AshLog), typeof(AshBoard)],
+            [typeof(YewLog), typeof(YewBoard)],
+            [typeof(Leather), typeof(Hides)],
+            [typeof(SpinedLeather), typeof(SpinedHides)],
+            [typeof(HornedLeather), typeof(HornedHides)],
+            [typeof(BarbedLeather), typeof(BarbedHides)],
+            [typeof(BlankMap), typeof(BlankScroll)],
+            [typeof(Cloth), typeof(UncutCloth)],
+            [typeof(CheeseWheel), typeof(CheeseWedge)],
+            [typeof(Pumpkin), typeof(SmallPumpkin)],
+            [typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas)]
+        ];
 
         private static readonly Type[] m_ColoredItemTable =
-        {
+        [
             typeof(BaseWeapon), typeof(BaseArmor), typeof(BaseClothing),
             typeof(BaseJewel), typeof(DragonBardingDeed)
-        };
+        ];
 
         private static readonly Type[] m_ColoredResourceTable =
-        {
+        [
             typeof(BaseIngot), typeof(BaseOre),
             typeof(BaseLeather), typeof(BaseHides),
             typeof(UncutCloth), typeof(Cloth),
             typeof(BaseGranite), typeof(BaseScales)
-        };
+        ];
 
         private static readonly Type[] m_MarkableTable =
-        {
+        [
             typeof(BaseArmor),
             typeof(BaseWeapon),
             typeof(BaseClothing),
@@ -105,12 +105,12 @@ namespace Server.Engines.Craft
             typeof(FukiyaDarts), typeof(Shuriken),
             typeof(Spellbook), typeof(Runebook),
             typeof(BaseQuiver)
-        };
+        ];
 
         private static readonly Type[] m_NeverColorTable =
-        {
+        [
             typeof(OrcHelm)
-        };
+        ];
 
         private int m_ResAmount;
 
@@ -124,8 +124,8 @@ namespace Server.Engines.Craft
 
         public CraftItem(Type type, TextDefinition groupName, TextDefinition name, int itemId)
         {
-            Resources = new List<CraftRes>();
-            Skills = new List<CraftSkill>();
+            Resources = [];
+            Skills = [];
 
             ItemType = type;
 
@@ -461,7 +461,7 @@ namespace Server.Engines.Craft
             // First pass, make sure we have enough
             for (var i = 0; i < types.Length; ++i)
             {
-                var itemList = items[i] = new List<Item>();
+                var itemList = items[i] = [];
                 var typeList = types[i];
 
                 // Since we are making our own list, we don't need to use EnumerateItems
@@ -630,7 +630,7 @@ namespace Server.Engines.Craft
                     }
                 }
 
-                types[i] ??= new[] { baseType };
+                types[i] ??= [baseType];
                 amounts[i] = craftRes.Amount;
 
                 // For stackable items that can be crafted more than one at a time

@@ -61,7 +61,7 @@ namespace Server.Mobiles
         public override int Meat => 1;
         public override int TreasureMapLevel => 5;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.ColossalBlow };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.ColossalBlow];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void OnDeath(Container c)

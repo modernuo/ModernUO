@@ -70,12 +70,12 @@ namespace Server.Spells.Necromancy
                 var duration = TimeSpan.FromSeconds((ss - mr) / 2.5 + 40.0);
 
                 ResistanceMod[] mods =
-                {
+                [
                     new(ResistanceType.Fire, "FireResistCorpseSkinSpell", -15),
                     new(ResistanceType.Poison, "PoisonResistCorpseSkinSpell", -15),
                     new(ResistanceType.Cold, "ColdResistCorpseSkinSpell", +10),
                     new(ResistanceType.Physical, "PhysicalResistCorpseSkinSpell", +10)
-                };
+                ];
 
                 timer = new ExpireTimer(m, mods, duration);
                 timer.Start();

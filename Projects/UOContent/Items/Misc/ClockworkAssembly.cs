@@ -8,28 +8,28 @@ namespace Server.Items;
 public partial class ClockworkAssembly : Item
 {
     private static Type[] _requiredParts =
-    {
+    [
         typeof(PowerCrystal),
         typeof(Gears),
         typeof(BronzeIngot),
-        typeof(IronIngot),
-    };
+        typeof(IronIngot)
+    ];
 
     private static int[] _requiredPartsClilocs =
-    {
+    [
         1071945, // You need a power crystal to construct a golem.
         1071946, // You need more gears to construct a golem.
         1071947, // You need more bronze ingots to construct a golem.
-        1071948, // You need more iron ingots to construct a golem.
-    };
+        1071948  // You need more iron ingots to construct a golem.
+    ];
 
     private static int[] _requiredAmounts =
-    {
+    [
         1,  // Power Crystal
         5,  // Gears
         50, // Bronze Ingot
-        50, // Iron Ingot
-    };
+        50  // Iron Ingot
+    ];
 
     [Constructible]
     public ClockworkAssembly() : base(0x1EA8)

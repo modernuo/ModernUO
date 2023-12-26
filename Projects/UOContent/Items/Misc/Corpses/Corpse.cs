@@ -169,7 +169,7 @@ public partial class Corpse : Container, ICarvable
         // This corpse does not turn to bones if: the owner is not a player
         SetFlag(CorpseFlag.NoBones, !owner.Player);
 
-        _looters = new HashSet<Mobile>();
+        _looters = [];
         _equipItems = equipItems;
 
         _aggressors = new List<Mobile>(owner.Aggressors.Count + owner.Aggressed.Count);

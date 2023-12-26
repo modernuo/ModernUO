@@ -24,7 +24,7 @@ public static class Utility
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
     private static SkillName[] _allSkills =
-    {
+    [
         SkillName.Alchemy,
         SkillName.Anatomy,
         SkillName.AnimalLore,
@@ -84,19 +84,19 @@ public static class Utility
         // SkillName.Mysticism,
         // SkillName.Imbuing,
         SkillName.Throwing
-    };
+    ];
 
     private static readonly SkillName[] m_CombatSkills =
-    {
+    [
         SkillName.Archery,
         SkillName.Swords,
         SkillName.Macing,
         SkillName.Fencing,
         SkillName.Wrestling
-    };
+    ];
 
     private static readonly SkillName[] m_CraftSkills =
-    {
+    [
         SkillName.Alchemy,
         SkillName.Blacksmith,
         SkillName.Fletching,
@@ -106,7 +106,7 @@ public static class Utility
         SkillName.Inscribe,
         SkillName.Tailoring,
         SkillName.Tinkering
-    };
+    ];
 
     private static readonly Stack<ConsoleColor> m_ConsoleColors = new();
 
@@ -583,8 +583,8 @@ public static class Utility
             return;
         }
 
-        ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
-        ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
+        ReadOnlySpan<char> invalid = ['<', '>', '#'];
+        ReadOnlySpan<char> replacement = ['(', ')', '-'];
 
         chars.ReplaceAny(invalid, replacement);
     }
@@ -1022,7 +1022,7 @@ public static class Utility
     {
         if (count <= 0)
         {
-            return new List<T>();
+            return [];
         }
 
         var length = source.Count;
@@ -1452,14 +1452,14 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Add<T>(ref List<T> list, T value)
     {
-        list ??= new List<T>();
+        list ??= [];
         list.Add(value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Add<T>(ref HashSet<T> set, T value)
     {
-        set ??= new HashSet<T>();
+        set ??= [];
         set.Add(value);
     }
 

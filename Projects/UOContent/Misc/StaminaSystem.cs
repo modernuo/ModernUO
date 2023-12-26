@@ -22,7 +22,7 @@ public class StaminaSystem : GenericPersistence
     private static TimeSpan ResetDuration = TimeSpan.FromHours(24);
 
     private static readonly Dictionary<IHasSteps, StepsTaken> _stepsTaken = new();
-    private static readonly OrderedHashSet<IHasSteps> _resetHash = new();
+    private static readonly OrderedHashSet<IHasSteps> _resetHash = [];
 
     // TODO: This exploits single thread processing and is not thread safe!
     public static DFAlgorithm DFA { get; set; }

@@ -9,7 +9,7 @@ namespace Server.Items;
 [SerializationGenerator(0)]
 public partial class RewardBrazier : Item, IRewardItem
 {
-    private static readonly int[] _art = { 0x19AA, 0x19BB };
+    private static readonly int[] _art = [0x19AA, 0x19BB];
 
     [InvalidateProperties]
     [SerializableField(0)]

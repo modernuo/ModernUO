@@ -53,20 +53,20 @@ namespace Server.Engines.BulkOrders
         };
 
         private static readonly int[][,] m_Filters =
-        {
+        [
             m_TypeFilters,
             m_QualityFilters,
             m_MaterialFilters,
             m_AmountFilters
-        };
+        ];
 
-        private static readonly int[] m_XOffsets_Type = { 0, 75, 170 };
-        private static readonly int[] m_XOffsets_Quality = { 0, 75, 170 };
-        private static readonly int[] m_XOffsets_Amount = { 0, 75, 180, 275 };
-        private static readonly int[] m_XOffsets_Material = { 0, 105, 210, 305, 390, 485 };
+        private static readonly int[] m_XOffsets_Type = [0, 75, 170];
+        private static readonly int[] m_XOffsets_Quality = [0, 75, 170];
+        private static readonly int[] m_XOffsets_Amount = [0, 75, 180, 275];
+        private static readonly int[] m_XOffsets_Material = [0, 105, 210, 305, 390, 485];
 
-        private static readonly int[] m_XWidths_Small = { 50, 50, 70, 50 };
-        private static readonly int[] m_XWidths_Large = { 80, 50, 50, 50, 50, 50 };
+        private static readonly int[] m_XWidths_Small = [50, 50, 70, 50];
+        private static readonly int[] m_XWidths_Large = [80, 50, 50, 50, 50, 50];
         private readonly BulkOrderBook m_Book;
         private readonly PlayerMobile m_From;
 

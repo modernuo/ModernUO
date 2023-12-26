@@ -358,7 +358,7 @@ namespace Server.Items
         public Point3D Offset { get; }
 
         public static HousePlacementEntry[] ClassicHouses { get; } =
-        {
+        [
             new(typeof(SmallOldHouse), 1011303, 425, 212, 489, 244, 10, 37000, 0, 4, 0, 0x0064),
             new(typeof(SmallOldHouse), 1011304, 425, 212, 489, 244, 10, 37000, 0, 4, 0, 0x0066),
             new(typeof(SmallOldHouse), 1011305, 425, 212, 489, 244, 10, 36750, 0, 4, 0, 0x0068),
@@ -379,10 +379,10 @@ namespace Server.Items
             new(typeof(Tower), 1011312, 2119, 1059, 2437, 1218, 42, 366500, 0, 7, 0, 0x007A),
             new(typeof(Keep), 1011313, 2625, 1312, 3019, 1509, 52, 572750, 0, 11, 0, 0x007C),
             new(typeof(Castle), 1011314, 4076, 2038, 4688, 2344, 78, 865250, 0, 16, 0, 0x007E)
-        };
+        ];
 
         public static HousePlacementEntry[] HousesEJ { get; } =
-        {
+        [
             new(typeof(SmallOldHouse), 1011303, 425, 212, 489, 244, 10, 36750, 0, 4, 0, 0x0064),
             new(typeof(SmallOldHouse), 1011304, 425, 212, 489, 244, 10, 36750, 0, 4, 0, 0x0066),
             new(typeof(SmallOldHouse), 1011305, 425, 212, 489, 244, 10, 36500, 0, 4, 0, 0x0068),
@@ -514,10 +514,10 @@ namespace Server.Items
                 0,
                 0x148F
             )
-        };
+        ];
 
         public static HousePlacementEntry[] TwoStoryFoundations { get; } =
-        {
+        [
             new(
                 typeof(HouseFoundation),
                 1060241,
@@ -1176,10 +1176,10 @@ namespace Server.Items
                 0,
                 0x143A
             ) // 13x13 2-Story Customizable House
-        };
+        ];
 
         public static HousePlacementEntry[] ThreeStoryFoundations { get; } =
-        {
+        [
             new(
                 typeof(HouseFoundation),
                 1060272,
@@ -1950,7 +1950,7 @@ namespace Server.Items
                 0,
                 0x147B
             ) // 18x18 3-Story Customizable House
-        };
+        ];
 
         public BaseHouse ConstructHouse(Mobile from)
         {
@@ -1960,15 +1960,15 @@ namespace Server.Items
 
                 if (Type == typeof(HouseFoundation))
                 {
-                    args = new object[] { from, MultiID, m_Storage, m_Lockdowns };
+                    args = [from, MultiID, m_Storage, m_Lockdowns];
                 }
                 else if (Type == typeof(SmallOldHouse) || Type == typeof(SmallShop) || Type == typeof(TwoStoryHouse))
                 {
-                    args = new object[] { from, MultiID };
+                    args = [from, MultiID];
                 }
                 else
                 {
-                    args = new object[] { from };
+                    args = [from];
                 }
 
                 return Type.CreateInstance<BaseHouse>(args);

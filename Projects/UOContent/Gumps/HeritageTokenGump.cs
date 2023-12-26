@@ -291,43 +291,43 @@ namespace Server.Gumps
                 // 7th anniversary
                 case 0x64:
                     {
-                        types = new [] { typeof(LeggingsOfEmbers) };
+                        types = [typeof(LeggingsOfEmbers)];
                         cliloc = 1078147;
                         break;
                     }
                 case 0x65:
                     {
-                        types = new [] { typeof(RoseOfTrinsic) };
+                        types = [typeof(RoseOfTrinsic)];
                         cliloc = 1062913;
                         break;
                     }
                 case 0x66:
                     {
-                        types = new [] { typeof(ShaminoCrossbow) };
+                        types = [typeof(ShaminoCrossbow)];
                         cliloc = 1062915;
                         break;
                     }
                 case 0x67:
                     {
-                        types = new [] { typeof(TapestryOfSosaria) };
+                        types = [typeof(TapestryOfSosaria)];
                         cliloc = 1062917;
                         break;
                     }
                 case 0x68:
                     {
-                        types = new [] { typeof(HearthOfHomeFireDeed) };
+                        types = [typeof(HearthOfHomeFireDeed)];
                         cliloc = 1062919;
                         break;
                     }
                 case 0x69:
                     {
-                        types = new [] { typeof(HolySword) };
+                        types = [typeof(HolySword)];
                         cliloc = 1062921;
                         break;
                     }
                 case 0x6A:
                     {
-                        types = new [] { typeof(SamuraiHelm) };
+                        types = [typeof(SamuraiHelm)];
                         cliloc = 1062923;
                         break;
                     }
@@ -337,55 +337,55 @@ namespace Server.Gumps
                 case 0x6C: types = new [] {  typeof( ValorGauntlets )  }; cliloc = 1075192; break;*/
                 case 0x6D:
                     {
-                        types = new [] { typeof(DupresShield) };
+                        types = [typeof(DupresShield)];
                         cliloc = 1075196;
                         break;
                     }
                 case 0x6E:
                     {
-                        types = new [] { typeof(FountainOfLifeDeed) };
+                        types = [typeof(FountainOfLifeDeed)];
                         cliloc = 1075197;
                         break;
                     }
                 case 0x6F:
                     {
-                        types = new [] { typeof(DawnsMusicBox) };
+                        types = [typeof(DawnsMusicBox)];
                         cliloc = 1075198;
                         break;
                     }
                 case 0x70:
                     {
-                        types = new [] { typeof(OssianGrimoire) };
+                        types = [typeof(OssianGrimoire)];
                         cliloc = 1078148;
                         break;
                     }
                 case 0x71:
                     {
-                        types = new [] { typeof(FerretFormTalisman) };
+                        types = [typeof(FerretFormTalisman)];
                         cliloc = 1078142;
                         break;
                     }
                 case 0x72:
                     {
-                        types = new [] { typeof(SquirrelFormTalisman) };
+                        types = [typeof(SquirrelFormTalisman)];
                         cliloc = 1078143;
                         break;
                     }
                 case 0x73:
                     {
-                        types = new [] { typeof(CuSidheFormTalisman) };
+                        types = [typeof(CuSidheFormTalisman)];
                         cliloc = 1078144;
                         break;
                     }
                 case 0x74:
                     {
-                        types = new [] { typeof(ReptalonFormTalisman) };
+                        types = [typeof(ReptalonFormTalisman)];
                         cliloc = 1078145;
                         break;
                     }
                 case 0x75:
                     {
-                        types = new [] { typeof(QuiverOfInfinity) };
+                        types = [typeof(QuiverOfInfinity)];
                         cliloc = 1075201;
                         break;
                     }
@@ -393,49 +393,49 @@ namespace Server.Gumps
                 // evil home decor
                 case 0x76:
                     {
-                        types = new [] { typeof(BoneThroneDeed), typeof(BoneCouchDeed), typeof(BoneTableDeed) };
+                        types = [typeof(BoneThroneDeed), typeof(BoneCouchDeed), typeof(BoneTableDeed)];
                         cliloc = 1074797;
                         break;
                     }
                 case 0x77:
                     {
-                        types = new []
-                        {
+                        types =
+                        [
                             typeof(CreepyPortraitDeed),
                             typeof(DisturbingPortraitDeed),
                             typeof(UnsettlingPortraitDeed)
-                        };
+                        ];
                         cliloc = 1078146;
                         break;
                     }
                 case 0x78:
                     {
-                        types = new []
-                        {
+                        types =
+                        [
                             typeof(MountedPixieBlueDeed),
                             typeof(MountedPixieGreenDeed),
                             typeof(MountedPixieLimeDeed),
                             typeof(MountedPixieOrangeDeed),
                             typeof(MountedPixieWhiteDeed)
-                        };
+                        ];
                         cliloc = 1074799;
                         break;
                     }
                 case 0x79:
                     {
-                        types = new [] { typeof(HaunterMirrorDeed) };
+                        types = [typeof(HaunterMirrorDeed)];
                         cliloc = 1074800;
                         break;
                     }
                 case 0x7A:
                     {
-                        types = new [] { typeof(BedOfNailsDeed) };
+                        types = [typeof(BedOfNailsDeed)];
                         cliloc = 1074801;
                         break;
                     }
                 case 0x7B:
                     {
-                        types = new [] { typeof(SacrificialAltarDeed) };
+                        types = [typeof(SacrificialAltarDeed)];
                         cliloc = 1074818;
                         break;
                     }
@@ -443,49 +443,49 @@ namespace Server.Gumps
                 // broken furniture
                 case 0x7C:
                     {
-                        types = new [] { typeof(BrokenCoveredChairDeed) };
+                        types = [typeof(BrokenCoveredChairDeed)];
                         cliloc = 1076257;
                         break;
                     }
                 case 0x7D:
                     {
-                        types = new [] { typeof(BrokenBookcaseDeed) };
+                        types = [typeof(BrokenBookcaseDeed)];
                         cliloc = 1076258;
                         break;
                     }
                 case 0x7E:
                     {
-                        types = new [] { typeof(StandingBrokenChairDeed) };
+                        types = [typeof(StandingBrokenChairDeed)];
                         cliloc = 1076259;
                         break;
                     }
                 case 0x7F:
                     {
-                        types = new [] { typeof(BrokenVanityDeed) };
+                        types = [typeof(BrokenVanityDeed)];
                         cliloc = 1076260;
                         break;
                     }
                 case 0x80:
                     {
-                        types = new [] { typeof(BrokenChestOfDrawersDeed) };
+                        types = [typeof(BrokenChestOfDrawersDeed)];
                         cliloc = 1076261;
                         break;
                     }
                 case 0x81:
                     {
-                        types = new [] { typeof(BrokenArmoireDeed) };
+                        types = [typeof(BrokenArmoireDeed)];
                         cliloc = 1076262;
                         break;
                     }
                 case 0x82:
                     {
-                        types = new [] { typeof(BrokenBedDeed) };
+                        types = [typeof(BrokenBedDeed)];
                         cliloc = 1076263;
                         break;
                     }
                 case 0x83:
                     {
-                        types = new [] { typeof(BrokenFallenChairDeed) };
+                        types = [typeof(BrokenFallenChairDeed)];
                         cliloc = 1076264;
                         break;
                     }
@@ -493,211 +493,211 @@ namespace Server.Gumps
                 // other
                 case 0x84:
                     {
-                        types = new [] { typeof(SuitOfGoldArmorDeed) };
+                        types = [typeof(SuitOfGoldArmorDeed)];
                         cliloc = 1076265;
                         break;
                     }
                 case 0x85:
                     {
-                        types = new [] { typeof(SuitOfSilverArmorDeed) };
+                        types = [typeof(SuitOfSilverArmorDeed)];
                         cliloc = 1076266;
                         break;
                     }
                 case 0x86:
                     {
-                        types = new [] { typeof(BoilingCauldronDeed) };
+                        types = [typeof(BoilingCauldronDeed)];
                         cliloc = 1076267;
                         break;
                     }
                 case 0x87:
                     {
-                        types = new [] { typeof(GuillotineDeed) };
+                        types = [typeof(GuillotineDeed)];
                         cliloc = 1024656;
                         break;
                     }
                 case 0x88:
                     {
-                        types = new [] { typeof(CherryBlossomTreeDeed) };
+                        types = [typeof(CherryBlossomTreeDeed)];
                         cliloc = 1076268;
                         break;
                     }
                 case 0x89:
                     {
-                        types = new [] { typeof(AppleTreeDeed) };
+                        types = [typeof(AppleTreeDeed)];
                         cliloc = 1076269;
                         break;
                     }
                 case 0x8A:
                     {
-                        types = new [] { typeof(PeachTreeDeed) };
+                        types = [typeof(PeachTreeDeed)];
                         cliloc = 1076270;
                         break;
                     }
                 case 0x8B:
                     {
-                        types = new [] { typeof(HangingAxesDeed) };
+                        types = [typeof(HangingAxesDeed)];
                         cliloc = 1076271;
                         break;
                     }
                 case 0x8C:
                     {
-                        types = new [] { typeof(HangingSwordsDeed) };
+                        types = [typeof(HangingSwordsDeed)];
                         cliloc = 1076272;
                         break;
                     }
                 case 0x8D:
                     {
-                        types = new [] { typeof(BlueFancyRugDeed) };
+                        types = [typeof(BlueFancyRugDeed)];
                         cliloc = 1076273;
                         break;
                     }
                 case 0x8E:
                     {
-                        types = new [] { typeof(WoodenCoffinDeed) };
+                        types = [typeof(WoodenCoffinDeed)];
                         cliloc = 1076274;
                         break;
                     }
                 case 0x8F:
                     {
-                        types = new [] { typeof(VanityDeed) };
+                        types = [typeof(VanityDeed)];
                         cliloc = 1074027;
                         break;
                     }
                 case 0x90:
                     {
-                        types = new [] { typeof(TableWithPurpleClothDeed) };
+                        types = [typeof(TableWithPurpleClothDeed)];
                         cliloc = 1076635;
                         break;
                     }
                 case 0x91:
                     {
-                        types = new [] { typeof(TableWithBlueClothDeed) };
+                        types = [typeof(TableWithBlueClothDeed)];
                         cliloc = 1076636;
                         break;
                     }
                 case 0x92:
                     {
-                        types = new [] { typeof(TableWithRedClothDeed) };
+                        types = [typeof(TableWithRedClothDeed)];
                         cliloc = 1076637;
                         break;
                     }
                 case 0x93:
                     {
-                        types = new [] { typeof(TableWithOrangeClothDeed) };
+                        types = [typeof(TableWithOrangeClothDeed)];
                         cliloc = 1076638;
                         break;
                     }
                 case 0x94:
                     {
-                        types = new [] { typeof(UnmadeBedDeed) };
+                        types = [typeof(UnmadeBedDeed)];
                         cliloc = 1076279;
                         break;
                     }
                 case 0x95:
                     {
-                        types = new [] { typeof(CurtainsDeed) };
+                        types = [typeof(CurtainsDeed)];
                         cliloc = 1076280;
                         break;
                     }
                 case 0x96:
                     {
-                        types = new [] { typeof(ScarecrowDeed) };
+                        types = [typeof(ScarecrowDeed)];
                         cliloc = 1076281;
                         break;
                     }
                 case 0x97:
                     {
-                        types = new [] { typeof(WallTorchDeed) };
+                        types = [typeof(WallTorchDeed)];
                         cliloc = 1076282;
                         break;
                     }
                 case 0x98:
                     {
-                        types = new [] { typeof(FountainDeed) };
+                        types = [typeof(FountainDeed)];
                         cliloc = 1076283;
                         break;
                     }
                 case 0x99:
                     {
-                        types = new [] { typeof(StoneStatueDeed) };
+                        types = [typeof(StoneStatueDeed)];
                         cliloc = 1076284;
                         break;
                     }
                 case 0x9A:
                     {
-                        types = new [] { typeof(LargeFishingNetDeed) };
+                        types = [typeof(LargeFishingNetDeed)];
                         cliloc = 1076285;
                         break;
                     }
                 case 0x9B:
                     {
-                        types = new [] { typeof(SmallFishingNetDeed) };
+                        types = [typeof(SmallFishingNetDeed)];
                         cliloc = 1076286;
                         break;
                     }
                 case 0x9C:
                     {
-                        types = new [] { typeof(HouseLadderDeed) };
+                        types = [typeof(HouseLadderDeed)];
                         cliloc = 1076287;
                         break;
                     }
                 case 0x9D:
                     {
-                        types = new [] { typeof(IronMaidenDeed) };
+                        types = [typeof(IronMaidenDeed)];
                         cliloc = 1076288;
                         break;
                     }
                 case 0x9E:
                     {
-                        types = new [] { typeof(BluePlainRugDeed) };
+                        types = [typeof(BluePlainRugDeed)];
                         cliloc = 1076585;
                         break;
                     }
                 case 0x9F:
                     {
-                        types = new [] { typeof(GoldenDecorativeRugDeed) };
+                        types = [typeof(GoldenDecorativeRugDeed)];
                         cliloc = 1076586;
                         break;
                     }
                 case 0xA0:
                     {
-                        types = new [] { typeof(CinnamonFancyRugDeed) };
+                        types = [typeof(CinnamonFancyRugDeed)];
                         cliloc = 1076587;
                         break;
                     }
                 case 0xA1:
                     {
-                        types = new [] { typeof(RedPlainRugDeed) };
+                        types = [typeof(RedPlainRugDeed)];
                         cliloc = 1076588;
                         break;
                     }
                 case 0xA2:
                     {
-                        types = new [] { typeof(BlueDecorativeRugDeed) };
+                        types = [typeof(BlueDecorativeRugDeed)];
                         cliloc = 1076589;
                         break;
                     }
                 case 0xA3:
                     {
-                        types = new [] { typeof(PinkFancyRugDeed) };
+                        types = [typeof(PinkFancyRugDeed)];
                         cliloc = 1076590;
                         break;
                     }
                 case 0xA4:
                     {
-                        types = new [] { typeof(CherryBlossomTrunkDeed) };
+                        types = [typeof(CherryBlossomTrunkDeed)];
                         cliloc = 1076784;
                         break;
                     }
                 case 0xA5:
                     {
-                        types = new [] { typeof(AppleTrunkDeed) };
+                        types = [typeof(AppleTrunkDeed)];
                         cliloc = 1076785;
                         break;
                     }
                 case 0xA6:
                     {
-                        types = new [] { typeof(PeachTrunkDeed) };
+                        types = [typeof(PeachTrunkDeed)];
                         cliloc = 1076786;
                         break;
                     }

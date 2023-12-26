@@ -6,12 +6,12 @@ namespace Server.Engines.Craft;
 public class DefTailoring : CraftSystem
 {
     private static readonly Type[] tailorColorables =
-    {
+    [
         typeof(GozaMatEastDeed), typeof(GozaMatSouthDeed),
         typeof(SquareGozaMatEastDeed), typeof(SquareGozaMatSouthDeed),
         typeof(BrocadeGozaMatEastDeed), typeof(BrocadeGozaMatSouthDeed),
         typeof(BrocadeSquareGozaMatEastDeed), typeof(BrocadeSquareGozaMatSouthDeed)
-    };
+    ];
 
     public static void Initialize()
     {

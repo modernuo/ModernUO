@@ -25,8 +25,8 @@ namespace Server.Gumps
 {
     public class SpawnPropsGump : PropertiesGump
     {
-        public static readonly HashSet<string> MobileAttributes = new()
-        {
+        public static readonly HashSet<string> MobileAttributes =
+        [
             nameof(Mobile.Hue),
             nameof(Mobile.Str),
             nameof(Mobile.Dex),
@@ -37,8 +37,9 @@ namespace Server.Gumps
             nameof(BaseCreature.DamageMax),
             nameof(BaseCreature.ActiveSpeed),
             nameof(BaseCreature.PassiveSpeed),
+
             nameof(BaseCreature.VirtualArmor)
-        };
+        ];
 
         private List<object> _spawners;
 

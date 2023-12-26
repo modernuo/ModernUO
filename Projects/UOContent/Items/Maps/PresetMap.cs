@@ -56,7 +56,7 @@ public class PresetMapEntry
     public Rectangle2D Bounds { get; }
 
     public static PresetMapEntry[] Table { get; } =
-    {
+    [
         new(1041189, 200, 200, 1092, 1396, 1736, 1924), // map of Britain
         new(1041203, 200, 200, 0256, 1792, 1736, 2560), // map of Britain to Skara Brae
         new(1041192, 200, 200, 1024, 1280, 2304, 3072), // map of Britain to Trinsic
@@ -85,7 +85,7 @@ public class PresetMapEntry
         new(1041196, 200, 200, 2636, 0592, 3840, 1536), // map of Vesper to Nujelm
         new(1041179, 200, 200, 0236, 0741, 0766, 1269), // map of Yew
         new(1041202, 200, 200, 0000, 0512, 1792, 2048)  // map of Yew to Britain
-    };
+    ];
 }
 
 public enum PresetMapType

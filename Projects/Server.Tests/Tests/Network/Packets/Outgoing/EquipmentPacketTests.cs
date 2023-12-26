@@ -22,12 +22,11 @@ namespace Server.Tests.Network
                 500000,
                 m,
                 unidentified,
-                new[]
-                {
+                [
                     new EquipInfoAttribute(500001, 1),
                     new EquipInfoAttribute(500002, 2),
                     new EquipInfoAttribute(500002, 3)
-                }
+                ]
             );
 
             var expected = new DisplayEquipmentInfo(item, info).Compile();
@@ -38,7 +37,7 @@ namespace Server.Tests.Network
                 info.Number,
                 info.Crafter?.RawName,
                 info.Unidentified,
-                new List<EquipInfoAttribute>(info.Attributes)
+                [..info.Attributes]
             );
 
             var result = ns.SendPipe.Reader.AvailableToRead();

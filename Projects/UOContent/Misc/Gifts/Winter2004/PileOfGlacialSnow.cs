@@ -6,7 +6,7 @@ namespace Server.Items
 {
     public class PileOfGlacialSnow : Item
     {
-        private static Type[] _snowPileTypes = { typeof(SnowPile), typeof(PileOfGlacialSnow) };
+        private static Type[] _snowPileTypes = [typeof(SnowPile), typeof(PileOfGlacialSnow)];
 
         [Constructible]
         public PileOfGlacialSnow() : base(0x913)

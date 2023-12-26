@@ -50,17 +50,17 @@ public partial class Serado : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Power;
 
-    public override Type[] UniqueList => new[] { typeof(Pacify) };
+    public override Type[] UniqueList => [typeof(Pacify)];
 
-    public override Type[] SharedList => new[]
-    {
+    public override Type[] SharedList =>
+    [
         typeof(BraveKnightOfTheBritannia),
         typeof(DetectiveBoots),
         typeof(EmbroideredOakLeafCloak),
         typeof(LieutenantOfTheBritannianRoyalGuard)
-    };
+    ];
 
-    public override Type[] DecorativeList => new[] { typeof(Futon), typeof(SwampTile) };
+    public override Type[] DecorativeList => [typeof(Futon), typeof(SwampTile)];
 
     public override MonsterStatuetteType[] StatueTypes => Array.Empty<MonsterStatuetteType>();
 

@@ -9,9 +9,9 @@ public class FlippableAddonAttribute : Attribute
     private static readonly string m_MethodName = "Flip";
 
     private static readonly Type[] m_Params =
-    {
+    [
         typeof(Mobile), typeof(Direction)
-    };
+    ];
 
     public FlippableAddonAttribute(params Direction[] directions) => Directions = directions;
 
@@ -51,7 +51,7 @@ public class FlippableAddonAttribute : Attribute
 
             ClearComponents(addon);
 
-            flipMethod.Invoke(addon, new object[] { from, Directions[index] });
+            flipMethod.Invoke(addon, [from, Directions[index]]);
 
             BaseHouse house = null;
             var result = AddonFitResult.Valid;
@@ -82,7 +82,7 @@ public class FlippableAddonAttribute : Attribute
 
                 ClearComponents(addon);
 
-                flipMethod.Invoke(addon, new object[] { from, Directions[index] });
+                flipMethod.Invoke(addon, [from, Directions[index]]);
 
                 if (result == AddonFitResult.Blocked)
                 {

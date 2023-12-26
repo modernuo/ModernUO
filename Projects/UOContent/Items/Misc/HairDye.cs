@@ -30,7 +30,7 @@ public partial class HairDye : Item
 public class HairDyeGump : Gump
 {
     private static HairDyeEntry[] _entries =
-    {
+    [
         new("*****", 1602, 26),
         new("*****", 1628, 27),
         new("*****", 1502, 32),
@@ -43,7 +43,7 @@ public class HairDyeGump : Gump
         new("*****", 1110, 8),
         new("*****", 1118, 16),
         new("*****", 1134, 16)
-    };
+    ];
 
     private HairDye _hairDye;
 

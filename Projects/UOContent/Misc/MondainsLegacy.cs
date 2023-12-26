@@ -8,14 +8,14 @@ namespace Server
     public static class MondainsLegacy
     {
         public static Type[] Artifacts { get; } =
-        {
+        [
             typeof(AegisOfGrace), typeof(BladeDance), typeof(BloodwoodSpirit), typeof(Bonesmasher),
             typeof(Boomstick), typeof(BrightsightLenses), typeof(FeyLeggings), typeof(FleshRipper),
             typeof(HelmOfSwiftness), typeof(PadsOfTheCuSidhe), typeof(QuiverOfRage), typeof(QuiverOfElements),
             typeof(RaedsGlory), typeof(RighteousAnger), typeof(RobeOfTheEclipse), typeof(RobeOfTheEquinox),
             typeof(SoulSeeker), typeof(TalonBite), typeof(TotemOfVoid), typeof(WildfireBow),
             typeof(Windsong)
-        };
+        ];
 
         public static bool CheckArtifactChance(Mobile m, BaseCreature bc)
         {

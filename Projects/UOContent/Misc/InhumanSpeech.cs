@@ -42,8 +42,8 @@ namespace Server.Misc
 
                     m_RatmanSpeech.Flags = IHSFlags.All;
 
-                    m_RatmanSpeech.Keywords = new[]
-                    {
+                    m_RatmanSpeech.Keywords =
+                    [
                         "meat", "gold", "kill", "killing", "slay",
                         "sword", "axe", "spell", "magic", "spells",
                         "swords", "axes", "mace", "maces", "monster",
@@ -55,10 +55,10 @@ namespace Server.Misc
                         "ultima", "silly", "stupid", "dumb", "idiot",
                         "idiots", "cheesy", "cheezy", "crazy", "dork",
                         "jerk", "fool", "foolish", "ugly", "insult", "scum"
-                    };
+                    ];
 
-                    m_RatmanSpeech.Responses = new[]
-                    {
+                    m_RatmanSpeech.Responses =
+                    [
                         "meat", "kill", "pound", "crush", "yum yum",
                         "crunch", "destroy", "murder", "eat", "munch",
                         "massacre", "food", "monster", "evil", "run",
@@ -69,10 +69,10 @@ namespace Server.Misc
                         "stupid", "hideous", "smell", "tasty", "invader",
                         "attack", "raid", "plunder", "pillage", "treasure",
                         "loser", "lose", "scum"
-                    };
+                    ];
 
-                    m_RatmanSpeech.Syllables = new[]
-                    {
+                    m_RatmanSpeech.Syllables =
+                    [
                         "skrit",
 
                         "ch", "ch",
@@ -96,7 +96,7 @@ namespace Server.Misc
                         "rach", "rech", "rich", "roch", "ruch", "rych",
                         "rrap", "rrep", "rrip", "rrop", "rrup", "rryp",
                         "ccka", "ccke", "ccki", "ccko", "ccku", "ccky"
-                    };
+                    ];
                 }
 
                 return m_RatmanSpeech;
@@ -116,8 +116,8 @@ namespace Server.Misc
 
                     m_OrcSpeech.Flags = IHSFlags.All;
 
-                    m_OrcSpeech.Keywords = new[]
-                    {
+                    m_OrcSpeech.Keywords =
+                    [
                         "meat", "gold", "kill", "killing", "slay",
                         "sword", "axe", "spell", "magic", "spells",
                         "swords", "axes", "mace", "maces", "monster",
@@ -129,10 +129,10 @@ namespace Server.Misc
                         "ultima", "silly", "stupid", "dumb", "idiot",
                         "idiots", "cheesy", "cheezy", "crazy", "dork",
                         "jerk", "fool", "foolish", "ugly", "insult", "scum"
-                    };
+                    ];
 
-                    m_OrcSpeech.Responses = new[]
-                    {
+                    m_OrcSpeech.Responses =
+                    [
                         "meat", "kill", "pound", "crush", "yum yum",
                         "crunch", "destroy", "murder", "eat", "munch",
                         "massacre", "food", "monster", "evil", "run",
@@ -143,10 +143,10 @@ namespace Server.Misc
                         "stupid", "hideous", "smell", "tasty", "invader",
                         "attack", "raid", "plunder", "pillage", "treasure",
                         "loser", "lose", "scum"
-                    };
+                    ];
 
-                    m_OrcSpeech.Syllables = new[]
-                    {
+                    m_OrcSpeech.Syllables =
+                    [
                         "bu", "du", "fu", "ju", "gu",
                         "ulg", "gug", "gub", "gur", "oog",
                         "gub", "log", "ru", "stu", "glu",
@@ -181,7 +181,7 @@ namespace Server.Misc
                         "nar", "nag", "neg", "neh", "oag", "ob", "ogh", "oh",
                         "om", "dud", "oo", "pa", "hrak", "qo", "quad", "quil",
                         "ghig", "rur", "sag", "sah", "sg"
-                    };
+                    ];
                 }
 
                 return m_OrcSpeech;
@@ -201,8 +201,8 @@ namespace Server.Misc
 
                     m_LizardmanSpeech.Flags = IHSFlags.All;
 
-                    m_LizardmanSpeech.Keywords = new[]
-                    {
+                    m_LizardmanSpeech.Keywords =
+                    [
                         "meat", "gold", "kill", "killing", "slay",
                         "sword", "axe", "spell", "magic", "spells",
                         "swords", "axes", "mace", "maces", "monster",
@@ -214,10 +214,10 @@ namespace Server.Misc
                         "ultima", "silly", "stupid", "dumb", "idiot",
                         "idiots", "cheesy", "cheezy", "crazy", "dork",
                         "jerk", "fool", "foolish", "ugly", "insult", "scum"
-                    };
+                    ];
 
-                    m_LizardmanSpeech.Responses = new[]
-                    {
+                    m_LizardmanSpeech.Responses =
+                    [
                         "meat", "kill", "pound", "crush", "yum yum",
                         "crunch", "destroy", "murder", "eat", "munch",
                         "massacre", "food", "monster", "evil", "run",
@@ -228,10 +228,10 @@ namespace Server.Misc
                         "stupid", "hideous", "smell", "tasty", "invader",
                         "attack", "raid", "plunder", "pillage", "treasure",
                         "loser", "lose", "scum"
-                    };
+                    ];
 
-                    m_LizardmanSpeech.Syllables = new[]
-                    {
+                    m_LizardmanSpeech.Syllables =
+                    [
                         "ss", "sth", "iss", "is", "ith", "kth",
                         "sith", "this", "its", "sit", "tis", "tsi",
                         "ssi", "sil", "lis", "sis", "lil", "thil",
@@ -243,7 +243,7 @@ namespace Server.Misc
                         "syth", "thys", "yts", "syt", "tys", "tsy", "ssy",
                         "syl", "lys", "sys", "lyl", "thyl", "lyth", "sthy",
                         "lysh", "shy", "myss", "ysa", "sthy", "ysth"
-                    };
+                    ];
                 }
 
                 return m_LizardmanSpeech;
@@ -263,15 +263,15 @@ namespace Server.Misc
 
                     m_WispSpeech.Flags = IHSFlags.OnMovement;
 
-                    m_WispSpeech.Syllables = new[]
-                    {
+                    m_WispSpeech.Syllables =
+                    [
                         "b", "c", "d", "f", "g", "h", "i",
                         "j", "k", "l", "m", "n", "p", "r",
                         "s", "t", "v", "w", "x", "z", "c",
                         "c", "x", "x", "x", "x", "x", "y",
                         "y", "y", "y", "t", "t", "k", "k",
                         "l", "l", "m", "m", "m", "m", "z"
-                    };
+                    ];
                 }
 
                 return m_WispSpeech;

@@ -17,7 +17,7 @@ namespace Server.Spells.First
         );
 
         private static readonly FoodInfo[] m_Food =
-        {
+        [
             new(typeof(Grapes), "a grape bunch"),
             new(typeof(Ham), "a ham"),
             new(typeof(CheeseWedge), "a wedge of cheese"),
@@ -28,7 +28,7 @@ namespace Server.Spells.First
             new(typeof(Sausage), "sausage"),
             new(typeof(Apple), "an apple"),
             new(typeof(Peach), "a peach")
-        };
+        ];
 
         public CreateFoodSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {

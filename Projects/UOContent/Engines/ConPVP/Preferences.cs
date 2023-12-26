@@ -132,7 +132,7 @@ namespace Server.Engines.ConPVP
         public PreferencesEntry(Mobile mob)
         {
             Mobile = mob;
-            Disliked = new List<string>();
+            Disliked = [];
         }
 
         public PreferencesEntry(IGenericReader reader, int version)

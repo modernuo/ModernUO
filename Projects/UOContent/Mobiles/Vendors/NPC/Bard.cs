@@ -6,7 +6,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class Bard : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public Bard() : base("the bard")

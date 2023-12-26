@@ -39,7 +39,7 @@ public partial class CharacterStatueMaker : Item, IRewardItem
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this, new object[] { _statueType }))
+        if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this, [_statueType]))
         {
             return;
         }

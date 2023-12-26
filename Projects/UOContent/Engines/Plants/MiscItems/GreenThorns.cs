@@ -133,10 +133,9 @@ public partial class GreenThorns : Item
 public abstract class GreenThornsEffect : Timer
 {
     private static readonly TilesAndEffect[] _table =
-    {
+    [
         new(
-            new[]
-            {
+            [
                 0x71, 0x7C,
                 0x82, 0xA7,
                 0xDC, 0xE3,
@@ -169,22 +168,20 @@ public abstract class GreenThornsEffect : Timer
                 0x777, 0x791,
                 0x79A, 0x7A9,
                 0x7AE, 0x7B1
-            },
+            ],
             typeof(DirtGreenThornsEffect)
         ),
 
         new(
-            new[]
-            {
+            [
                 0x9, 0x15,
                 0x150, 0x15C
-            },
+            ],
             typeof(FurrowsGreenThornsEffect)
         ),
 
         new(
-            new[]
-            {
+            [
                 0x9C4, 0x9EB,
                 0x3D65, 0x3D65,
                 0x3DC0, 0x3DD9,
@@ -192,13 +189,12 @@ public abstract class GreenThornsEffect : Timer
                 0x3DDE, 0x3EF0,
                 0x3FF6, 0x3FF6,
                 0x3FFC, 0x3FFE
-            },
+            ],
             typeof(SwampGreenThornsEffect)
         ),
 
         new(
-            new[]
-            {
+            [
                 0x10C, 0x10F,
                 0x114, 0x117,
                 0x119, 0x11D,
@@ -213,13 +209,12 @@ public abstract class GreenThornsEffect : Timer
                 0x751, 0x758,
                 0x75D, 0x760,
                 0x76D, 0x773
-            },
+            ],
             typeof(SnowGreenThornsEffect)
         ),
 
         new(
-            new[]
-            {
+            [
                 0x16, 0x3A,
                 0x44, 0x4B,
                 0x11E, 0x121,
@@ -241,10 +236,10 @@ public abstract class GreenThornsEffect : Timer
                 0x663, 0x66A,
                 0x66F, 0x672,
                 0x7BD, 0x7D0
-            },
+            ],
             typeof(SandGreenThornsEffect)
         )
-    };
+    ];
 
     private int _step;
 

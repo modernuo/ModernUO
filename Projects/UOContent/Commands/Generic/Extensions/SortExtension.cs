@@ -11,7 +11,7 @@ namespace Server.Commands.Generic
 
         private IComparer<object> m_Comparer;
 
-        public SortExtension() => m_Orders = new List<OrderInfo>();
+        public SortExtension() => m_Orders = [];
 
         public override ExtensionInfo Info => ExtInfo;
 

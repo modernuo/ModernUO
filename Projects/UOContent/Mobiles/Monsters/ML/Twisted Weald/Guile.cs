@@ -46,7 +46,7 @@ namespace Server.Mobiles
         public override int DefaultHue => 0x3F;
         public override bool GivesMLMinorArtifact => true;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.DrainLifeAttack };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.DrainLifeAttack];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

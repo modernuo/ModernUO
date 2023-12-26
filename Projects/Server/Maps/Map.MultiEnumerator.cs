@@ -205,7 +205,7 @@ public partial class Map
             while ((uint)_index < (uint)_list.Length)
             {
                 var current = _list[_index++];
-                _dupes ??= new HashSet<Serial>();
+                _dupes ??= [];
 
                 if (current is T { Deleted: false } o && bounds.Contains(o.Location) && !_dupes.Contains(o.Serial))
                 {

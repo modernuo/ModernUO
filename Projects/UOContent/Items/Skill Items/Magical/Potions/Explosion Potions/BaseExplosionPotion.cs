@@ -67,7 +67,7 @@ public abstract partial class BaseExplosionPotion : BasePotion
 
         from.RevealingAction();
 
-        _users ??= new HashSet<Mobile>();
+        _users ??= [];
         _users.Add(from);
 
         from.Target = new ThrowTarget(this);

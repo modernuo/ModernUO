@@ -5,7 +5,7 @@ namespace Server.Mobiles;
 
 public class DeathExplosion : AreaEffectMonsterAbility
 {
-    private static HashSet<Mobile> _exploding = new();
+    private static HashSet<Mobile> _exploding = [];
 
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.Death;
     public override MonsterAbilityType AbilityType => MonsterAbilityType.DeathExplosion;

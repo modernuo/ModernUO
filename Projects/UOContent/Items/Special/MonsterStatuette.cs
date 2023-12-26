@@ -54,7 +54,7 @@ public enum MonsterStatuetteType
 public class MonsterStatuetteInfo
 {
     private static readonly MonsterStatuetteInfo[] m_Table =
-    {
+    [
         /* Crocodile */ new(1041249, 0x20DA, 660),
         /* Daemon */ new(1041250, 0x20D3, 357),
         /* Dragon */ new(1041251, 0x20D6, 362),
@@ -80,7 +80,7 @@ public class MonsterStatuetteInfo
         /* Wolf */ new(1049770, 0x2122, 229),
         /* Phillip's Steed */ new(1063488, 0x3FFE, 168),
         /* Seahorse */ new(1070819, 0x25BA, 138),
-        /* Harrower */ new(1080520, 0x25BB, new[] { 0x289, 0x28A, 0x28B }),
+        /* Harrower */ new(1080520, 0x25BB, [0x289, 0x28A, 0x28B]),
         /* Efreet */ new(1080521, 0x2590, 0x300),
         /* Slime */ new(1015246, 0x20E8, 456),
         /* PlagueBeast */ new(1029747, 0x2613, 0x1BF),
@@ -95,13 +95,13 @@ public class MonsterStatuetteInfo
         /* Black Cat */ new(1096928, 0x4688, 0x69),
         /* HalloweenGhoul */ new(1076782, 0x2109, 0x482),
         /* Santa */ new(1097968, 0x4A98, 0x669)
-    };
+    ];
 
     public MonsterStatuetteInfo(int labelNumber, int itemID, int baseSoundID)
     {
         LabelNumber = labelNumber;
         ItemID = itemID;
-        Sounds = new[] { baseSoundID, baseSoundID + 1, baseSoundID + 2, baseSoundID + 3, baseSoundID + 4 };
+        Sounds = [baseSoundID, baseSoundID + 1, baseSoundID + 2, baseSoundID + 3, baseSoundID + 4];
     }
 
     public MonsterStatuetteInfo(int labelNumber, int itemID, int[] sounds)
@@ -209,7 +209,7 @@ public partial class MonsterStatuette : Item, IRewardItem
 
         if (Core.ML && IsRewardItem)
         {
-            list.Add(RewardSystem.GetRewardYearLabel(this, new object[] { _type })); // X Year Veteran Reward
+            list.Add(RewardSystem.GetRewardYearLabel(this, [_type])); // X Year Veteran Reward
         }
 
         if (_turnedOn)

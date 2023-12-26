@@ -252,7 +252,7 @@ namespace Server.Engines.MLQuests.Mobiles
     public class Darius : DoneQuestCollector
     {
         private static readonly TextDefinition[] m_Offer =
-        {
+        [
             1073998, // Blessings of Sosaria to you and merry met, friend.
             1073999, // I am glad for your company and wonder if you seek the heritage of your people?  I sense within you an elven bloodline -- the purity of which was lost when our brothers and sisters were exiled here in the Rupture.
             1074000, // If it is your desire to reclaim your place amongst the people, you must demonstrate that you understand and embrace the responsibilities expected of you as an elf.
@@ -260,31 +260,31 @@ namespace Server.Engines.MLQuests.Mobiles
             1074398, // Seek Strongroot, the great treefellow, whose very roots reach to the heart of the world.  Seek Enigma, whose wisdom can only be conveyed in riddles and rhymes.  Seek Bravehorn, the great hart, who exemplifies the fierce dedication of a protector of his people.
             1074399, // Seek the Huntsman, the centaur tasked with maintaining the balance.  And lastly seek Arielle, the pixie, who has perhaps the most important lesson -- not to take yourself too seriously.
             1074400 // Or do none of these things.  You must choose your own path in the world, and what use you'll make of your existence.
-        };
+        ];
 
         private static readonly TextDefinition[] m_Incomplete =
-        {
+        [
             1074002, // You have begun to walk the path of reclaiming your heritage, but you have not learned all the lessons before you.
             1074003 // You yet must perform these services:
-        };
+        ];
 
         private static readonly TextDefinition[] m_Complete =
-        {
+        [
             1074004, // You have carved a path in history, sought to understand the way from our sage companions.
             1074005, // And now you have returned full circle to the place of your origin within the arms of Mother Sosaria. There is but one thing left to do if you truly wish to embrace your elven heritage.
             1074006, // To be born once more an elf, you must strip of all worldly possessions. Nothing of man or beast much touch your skin.
             1074007 // Then you may step forth into history.
-        };
+        ];
 
         private static readonly Type[] m_Needed =
-        {
+        [
             typeof(Seasons),
             typeof(CaretakerOfTheLand),
             typeof(WisdomOfTheSphynx),
             typeof(DefendingTheHerd),
             typeof(TheBalanceOfNature),
             typeof(TheJoysOfLife)
-        };
+        ];
 
         [Constructible]
         public Darius()
@@ -348,7 +348,7 @@ namespace Server.Engines.MLQuests.Mobiles
     public class Nedrick : DoneQuestCollector
     {
         private static readonly TextDefinition[] m_Offer =
-        {
+        [
             1074403, // Greetings, traveler and welcome.
             1074404, // Perhaps you have heard of the service I offer?  Perhaps you wish to avail yourself of the opportunity I lay before you.
             1074405, // Elves and humans; we lived together once in peace.  Mighty relics that attest to our friendship remain, of course.  Yet, memories faded when the Gem was shattered and the world torn asunder.  Alone in The Heartwood, our elven brothers and sisters wondered what terrible evil had befallen Sosaria.
@@ -357,28 +357,28 @@ namespace Server.Engines.MLQuests.Mobiles
             1074408, // Seek Sledge the Versatile and learn about human ingenuity and creativity.  Seek Patricus and demonstrate your integrity and strength.
             1074409, // Seek out a human in need and prove your worth as a defender of humanity.  Seek Belulah in Nu'Jelm and heartily challenge the elements in a display of toughness to rival any human.
             1074411 // Or turn away and embrace your heritage.  It matters not to me.
-        };
+        ];
 
         private static readonly TextDefinition[] m_Incomplete =
-        {
+        [
             1074412, // You have made a good start but have more yet to do.
             1074413  // You must yet perform these deeds:
-        };
+        ];
 
         private static readonly TextDefinition[] m_Complete =
-        {
+        [
             1074410, // You have proven yourself capable and commited and so I will grant you the transformation you seek.
             1074531, // The first time you were born, you entered the world bare of all possessions and concerns.  So too as you transform to your new life as a human, you must remove all worldly goods from the touch of your flesh.
             1074532 // I call upon all nearby to witness your rebirth!
-        };
+        ];
 
         private static readonly Type[] m_Needed =
-        {
+        [
             typeof(Ingenuity),
             typeof(HeaveHo),
             typeof(HumanInNeed),
             typeof(AllSeasonAdventurer)
-        };
+        ];
 
         [Constructible]
         public Nedrick()

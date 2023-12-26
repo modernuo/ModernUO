@@ -50,7 +50,7 @@ namespace Server.Mobiles
         public override bool AutoDispel => true;
         public override int TreasureMapLevel => 1;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.PoisonGasCounter };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.PoisonGasCounter];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

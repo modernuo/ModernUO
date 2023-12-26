@@ -14,7 +14,7 @@ namespace Server.Items
         {
             AddonComponent.ApplyLightTo(this);
 
-            _components = new List<AddonContainerComponent>();
+            _components = [];
         }
 
         public override bool DisplayWeight => false;

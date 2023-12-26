@@ -5,7 +5,7 @@ namespace Server.Items
     public class SlayerEntry
     {
         private static readonly int[] m_AosTitles =
-        {
+        [
             1060479, // undead slayer
             1060470, // orc slayer
             1060480, // troll slayer
@@ -33,10 +33,10 @@ namespace Server.Items
             1060476, // snow elemental slayer
             1060464, // elemental slayer
             1070855  // fey slayer
-        };
+        ];
 
         private static readonly int[] m_OldTitles =
-        {
+        [
             1017384, // Silver
             1017385, // Orc Slaying
             1017386, // Troll Slaughter
@@ -64,7 +64,7 @@ namespace Server.Items
             1017408, // Summer Wind
             1017409, // Elemental Ban
             1070855  // fey slayer
-        };
+        ];
 
         public SlayerEntry(SlayerName name, params Type[] types)
         {

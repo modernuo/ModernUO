@@ -12,8 +12,8 @@ namespace Server.Commands.Generic
 
     public abstract class BaseCommand
     {
-        private readonly List<MessageEntry> m_Failures = new();
-        private readonly List<MessageEntry> m_Responses = new();
+        private readonly List<MessageEntry> m_Failures = [];
+        private readonly List<MessageEntry> m_Responses = [];
 
         public bool ListOptimized { get; set; }
 

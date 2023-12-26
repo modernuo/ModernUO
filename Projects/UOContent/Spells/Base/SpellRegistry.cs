@@ -14,7 +14,7 @@ namespace Server.Spells
         private static readonly object[] m_Params = new object[2];
 
         private static readonly string[] m_CircleNames =
-        {
+        [
             "First",
             "Second",
             "Third",
@@ -28,7 +28,7 @@ namespace Server.Spells
             "Bushido",
             "Ninjitsu",
             "Spellweaving"
-        };
+        ];
 
         public static Type[] Types
         {

@@ -38,15 +38,13 @@ public class Shadowlords : Faction
                 1005185, // Minions of the Shadowlords will now be warned of their impending deaths.
                 1005186, // Minions of the Shadowlords will now be attacked at will.
                 new StrongholdDefinition(
-                    new[]
-                    {
+                    [
                         new Rectangle2D(960, 688, 8, 9),
                         new Rectangle2D(944, 697, 24, 23)
-                    },
+                    ],
                     new Point3D(969, 768, 0),
                     new Point3D(947, 713, 0),
-                    new[]
-                    {
+                    [
                         new Point3D(953, 713, 20),
                         new Point3D(953, 709, 20),
                         new Point3D(953, 705, 20),
@@ -55,10 +53,9 @@ public class Shadowlords : Faction
                         new Point3D(957, 709, 20),
                         new Point3D(957, 705, 20),
                         new Point3D(957, 701, 20)
-                    }
+                    ]
                 ),
-                new[]
-                {
+                [
                     new RankDefinition(10, 991, 8, 1060799), // Purveyor of Darkness
                     new RankDefinition(9, 950, 7, 1060798),  // Agent of Evil
                     new RankDefinition(8, 900, 6, 1060797),  // Bringer of Sorrow
@@ -69,9 +66,8 @@ public class Shadowlords : Faction
                     new RankDefinition(3, 400, 4, 1060795),  // Servant
                     new RankDefinition(2, 200, 4, 1060795),  // Servant
                     new RankDefinition(1, 0, 4, 1060795)    // Servant
-                },
-                new[]
-                {
+                ],
+                [
                     new GuardDefinition(
                         typeof(FactionHenchman),
                         0x1403,
@@ -108,7 +104,7 @@ public class Shadowlords : Faction
                         1011513, // SHADOW MAGE
                         1011504  // Hire Shadow Mage
                     )
-                }
+                ]
             );
     }
 

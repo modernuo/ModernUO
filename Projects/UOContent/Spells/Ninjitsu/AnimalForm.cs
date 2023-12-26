@@ -43,7 +43,7 @@ namespace Server.Spells.Ninjitsu
         public override bool BlockedByAnimalForm => false;
 
         public static AnimalFormEntry[] Entries { get; } =
-        {
+        [
             new(typeof(Kirin), 1029632, 9632, 0, 1070811, 100.0, 0x84, 0, 0),
             new(typeof(Unicorn), 1018214, 9678, 0, 1070812, 100.0, 0x7A, 0, 0),
             new(typeof(BakeKitsune), 1030083, 10083, 0, 1070810, 82.5, 0xF6, 0, 0),
@@ -60,7 +60,7 @@ namespace Server.Spells.Ninjitsu
             new(typeof(Ferret), 1031672, 11672, 0, 1075220, 40.0, 0x117, 0, 0, false, false, true),
             new(typeof(CuSidhe), 1031670, 11670, 0, 1075221, 60.0, 0x115, 0, 0, false, false),
             new(typeof(Reptalon), 1075202, 11669, 0, 1075222, 90.0, 0x114, 0, 0, false, false)
-        };
+        ];
 
         public static void Initialize()
         {

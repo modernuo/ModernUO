@@ -7,7 +7,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class Thief : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public Thief() : base("the thief")

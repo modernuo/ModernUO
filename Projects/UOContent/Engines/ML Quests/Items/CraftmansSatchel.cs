@@ -8,7 +8,7 @@ namespace Server.Engines.MLQuests.Items;
 [SerializationGenerator(0, false)]
 public abstract partial class BaseCraftmansSatchel : Backpack
 {
-    protected static readonly Type[] m_TalismanType = { typeof(RandomTalisman) };
+    protected static readonly Type[] m_TalismanType = [typeof(RandomTalisman)];
 
     public BaseCraftmansSatchel() => Hue = Utility.RandomBrightHue();
 

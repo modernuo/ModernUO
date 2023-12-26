@@ -13,7 +13,7 @@ public partial class Obsidian : Item
     private const int Completed = 10;
 
     private static readonly string[] _names =
-    {
+    [
         null,
         "an aggressive cavalier",
         "a beguiling rogue",
@@ -74,7 +74,7 @@ public partial class Obsidian : Item
         "an unflappable wizard",
         "a valiant warrior",
         "a wayward fool"
-    };
+    ];
 
     [InvalidateProperties]
     [SerializableField(1)]

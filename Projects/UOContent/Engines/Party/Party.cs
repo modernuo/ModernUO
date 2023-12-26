@@ -15,9 +15,9 @@ namespace Server.Engines.PartySystem
         {
             Leader = leader;
 
-            Members = new List<PartyMemberInfo>();
-            Candidates = new List<Mobile>();
-            m_Listeners = new HashSet<Mobile>();
+            Members = [];
+            Candidates = [];
+            m_Listeners = [];
 
             Members.Add(new PartyMemberInfo(leader));
         }

@@ -59,13 +59,13 @@ namespace Server.Mobiles
         public override bool IgnoreYoungProtection => Core.ML;
 
         public static Type[] ArtifactRarity10 { get; } =
-        {
+        [
             typeof(LegacyOfTheDreadLord),
             typeof(TheTaskmaster)
-        };
+        ];
 
         public static Type[] ArtifactRarity11 { get; } =
-        {
+        [
             typeof(TheDragonSlayer),
             typeof(ArmorOfFortune),
             typeof(GauntletsOfNobility),
@@ -97,7 +97,7 @@ namespace Server.Mobiles
             typeof(HatOfTheMagi),
             typeof(HuntersHeaddress),
             typeof(SpiritOfTheTotem)
-        };
+        ];
 
         public override bool BardImmune => !Core.SE;
         public override bool Unprovokable => Core.SE;

@@ -9,7 +9,7 @@ namespace Server.Engines.BulkOrders
     public partial class SmallSmithBOD : SmallBOD
     {
         public static double[] m_BlacksmithMaterialChances =
-        {
+        [
             0.501953125, // None
             0.250000000, // Dull Copper
             0.125000000, // Shadow Iron
@@ -19,7 +19,7 @@ namespace Server.Engines.BulkOrders
             0.007812500, // Agapite
             0.003906250, // Verite
             0.001953125  // Valorite
-        };
+        ];
 
         private SmallSmithBOD(SmallBulkEntry entry, BulkMaterialType mat, int amountMax, bool reqExceptional)
             : base(0x44E, 0, amountMax, entry.Type, entry.Number, entry.Graphic, reqExceptional, mat)

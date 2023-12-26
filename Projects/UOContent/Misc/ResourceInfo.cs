@@ -416,7 +416,7 @@ namespace Server.Items
     public static class CraftResources
     {
         private static readonly CraftResourceInfo[] m_MetalInfo =
-        {
+        [
             new(
                 0x000,
                 1053109,
@@ -507,10 +507,10 @@ namespace Server.Items
                 typeof(ValoriteOre),
                 typeof(ValoriteGranite)
             )
-        };
+        ];
 
         private static readonly CraftResourceInfo[] m_ScaleInfo =
-        {
+        [
             new(
                 0x66D,
                 1053129,
@@ -559,10 +559,10 @@ namespace Server.Items
                 CraftResource.BlueScales,
                 typeof(BlueScales)
             )
-        };
+        ];
 
         private static readonly CraftResourceInfo[] m_LeatherInfo =
-        {
+        [
             new(
                 0x000,
                 1049353,
@@ -599,10 +599,10 @@ namespace Server.Items
                 typeof(BarbedLeather),
                 typeof(BarbedHides)
             )
-        };
+        ];
 
         private static readonly CraftResourceInfo[] m_AOSLeatherInfo =
-        {
+        [
             new(
                 0x000,
                 1049353,
@@ -639,10 +639,10 @@ namespace Server.Items
                 typeof(BarbedLeather),
                 typeof(BarbedHides)
             )
-        };
+        ];
 
         private static readonly CraftResourceInfo[] m_WoodInfo =
-        {
+        [
             new(
                 0x000,
                 1011542,
@@ -706,7 +706,7 @@ namespace Server.Items
                 typeof(FrostwoodLog),
                 typeof(FrostwoodBoard)
             )
-        };
+        ];
 
         private static Dictionary<Type, CraftResource> m_TypeTable;
 

@@ -8,10 +8,10 @@ namespace Server.Engines.Quests.Ninja;
 public partial class HiddenFigure : BaseQuester
 {
     private static int[] _messages =
-    {
+    [
         1063191, // They won't find me here.
         1063192  // Ah, a quiet hideout.
-    };
+    ];
 
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]

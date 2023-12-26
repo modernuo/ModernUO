@@ -123,7 +123,7 @@ public partial class TreasureChestLevel3 : LockableContainer
     public override Rectangle2D Bounds => new(18, 105, 144, 73);
 
     private static readonly (int, int)[] _chestAppearances =
-    {
+    [
         // Wooden Chest
         (0xe42, 0x49),
         (0xe43, 0x49),
@@ -134,8 +134,8 @@ public partial class TreasureChestLevel3 : LockableContainer
 
         // Metal Golden Chest
         (0xe40, 0x42),
-        (0xe41, 0x42),
-    };
+        (0xe41, 0x42)
+    ];
 
     private void SetChestAppearance()
     {

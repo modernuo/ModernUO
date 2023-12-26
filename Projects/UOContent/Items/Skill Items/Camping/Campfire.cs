@@ -28,7 +28,7 @@ public partial class Campfire : Item
         Movable = false;
         Light = LightType.Circle300;
 
-        m_Entries = new List<CampfireEntry>();
+        m_Entries = [];
 
         Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick, out _timerToken);
     }

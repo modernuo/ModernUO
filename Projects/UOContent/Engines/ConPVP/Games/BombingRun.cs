@@ -27,7 +27,7 @@ namespace Server.Engines.ConPVP
 
             m_Game = game;
 
-            m_Helpers = new List<Mobile>();
+            m_Helpers = [];
 
             m_Timer = new EffectTimer(this);
             m_Timer.Start();

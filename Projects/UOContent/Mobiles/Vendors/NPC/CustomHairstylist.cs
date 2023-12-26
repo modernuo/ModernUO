@@ -16,79 +16,71 @@ namespace Server.Mobiles
         public static readonly object Price = new();
 
         private static readonly HairstylistBuyInfo[] m_SellList =
-        {
+        [
             new(
                 1018357,
                 50000,
                 false,
                 typeof(ChangeHairstyleGump),
-                new[]
-                    { From, Vendor, Price, false, ChangeHairstyleEntry.HairEntries }
+                [From, Vendor, Price, false, ChangeHairstyleEntry.HairEntries]
             ),
             new(
                 1018358,
                 50000,
                 true,
                 typeof(ChangeHairstyleGump),
-                new[]
-                    { From, Vendor, Price, true, ChangeHairstyleEntry.BeardEntries }
+                [From, Vendor, Price, true, ChangeHairstyleEntry.BeardEntries]
             ),
             new(
                 1018359,
                 50,
                 false,
                 typeof(ChangeHairHueGump),
-                new[]
-                    { From, Vendor, Price, true, true, ChangeHairHueEntry.RegularEntries }
+                [From, Vendor, Price, true, true, ChangeHairHueEntry.RegularEntries]
             ),
             new(
                 1018360,
                 500000,
                 false,
                 typeof(ChangeHairHueGump),
-                new[]
-                    { From, Vendor, Price, true, true, ChangeHairHueEntry.BrightEntries }
+                [From, Vendor, Price, true, true, ChangeHairHueEntry.BrightEntries]
             ),
             new(
                 1018361,
                 30000,
                 false,
                 typeof(ChangeHairHueGump),
-                new[]
-                    { From, Vendor, Price, true, false, ChangeHairHueEntry.RegularEntries }
+                [From, Vendor, Price, true, false, ChangeHairHueEntry.RegularEntries]
             ),
             new(
                 1018362,
                 30000,
                 true,
                 typeof(ChangeHairHueGump),
-                new[]
-                    { From, Vendor, Price, false, true, ChangeHairHueEntry.RegularEntries }
+                [From, Vendor, Price, false, true, ChangeHairHueEntry.RegularEntries]
             ),
             new(
                 1018363,
                 500000,
                 false,
                 typeof(ChangeHairHueGump),
-                new[]
-                    { From, Vendor, Price, true, false, ChangeHairHueEntry.BrightEntries }
+                [From, Vendor, Price, true, false, ChangeHairHueEntry.BrightEntries]
             ),
             new(
                 1018364,
                 500000,
                 true,
                 typeof(ChangeHairHueGump),
-                new[]
-                    { From, Vendor, Price, false, true, ChangeHairHueEntry.BrightEntries }
+                [From, Vendor, Price, false, true, ChangeHairHueEntry.BrightEntries]
             )
-        };
+        ];
 
         [Constructible]
         public CustomHairstylist() : base("the hairstylist")
         {
         }
 
-        protected override List<SBInfo> SBInfos { get; } = new();
+        protected override List<SBInfo> SBInfos { get; } = [];
 
         public override bool ClickTitle => false;
 
@@ -269,7 +261,7 @@ namespace Server.Mobiles
     public class ChangeHairHueEntry
     {
         public static readonly ChangeHairHueEntry[] BrightEntries =
-        {
+        [
             new("*****", 12, 10),
             new("*****", 32, 5),
             new("*****", 38, 8),
@@ -278,10 +270,10 @@ namespace Server.Mobiles
             new("*****", 81, 2),
             new("*****", 89, 2),
             new("*****", 1153, 2)
-        };
+        ];
 
         public static readonly ChangeHairHueEntry[] RegularEntries =
-        {
+        [
             new("*****", 1602, 26),
             new("*****", 1628, 27),
             new("*****", 1502, 32),
@@ -294,7 +286,7 @@ namespace Server.Mobiles
             new("*****", 1110, 8),
             new("*****", 1118, 16),
             new("*****", 1134, 16)
-        };
+        ];
 
         public ChangeHairHueEntry(string name, int[] hues)
         {
@@ -447,7 +439,7 @@ namespace Server.Mobiles
     public class ChangeHairstyleEntry
     {
         public static readonly ChangeHairstyleEntry[] HairEntries =
-        {
+        [
             new(50700, 70 - 137, 20 - 60, 0x203B),
             new(60710, 193 - 260, 18 - 60, 0x2045),
             new(50703, 316 - 383, 25 - 60, 0x2044),
@@ -458,10 +450,10 @@ namespace Server.Mobiles
             new(60707, 193 - 260, 140 - 190, 0x2049),
             new(60901, 315 - 383, 150 - 190, 0x2048),
             new(0, 0, 0, 0)
-        };
+        ];
 
         public static readonly ChangeHairstyleEntry[] BeardEntries =
-        {
+        [
             new(50800, 120 - 187, 30 - 80, 0x2040),
             new(50904, 243 - 310, 33 - 80, 0x204B),
             new(50906, 120 - 187, 100 - 150, 0x204D),
@@ -470,7 +462,7 @@ namespace Server.Mobiles
             new(50905, 243 - 310, 165 - 220, 0x204C),
             new(50808, 120 - 187, 242 - 290, 0x2041),
             new(0, 0, 0, 0)
-        };
+        ];
 
         public ChangeHairstyleEntry(int gumpID, int x, int y, int itemID)
         {

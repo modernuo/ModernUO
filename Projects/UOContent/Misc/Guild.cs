@@ -31,7 +31,7 @@ namespace Server.Guilds
     public class RankDefinition
     {
         public static RankDefinition[] Ranks =
-        {
+        [
             new(1062963, 0, RankFlags.None),   // Ronin
             new(1062962, 1, RankFlags.Member), // Member
             new(
@@ -42,7 +42,7 @@ namespace Server.Guilds
             ),
             new(1062960, 3, RankFlags.Member | RankFlags.ControlWarStatus), // Warlord
             new(1062959, 4, RankFlags.All)                                  // Leader
-        };
+        ];
 
         public RankDefinition(TextDefinition name, int rank, RankFlags flags)
         {
@@ -87,8 +87,8 @@ namespace Server.Guilds
             m_Leader = leader;
             Name = name;
 
-            m_Members = new List<Guild>();
-            m_PendingMembers = new List<Guild>();
+            m_Members = [];
+            m_PendingMembers = [];
 
             leader.Alliance = this;
             partner.Alliance = this;
@@ -569,15 +569,15 @@ namespace Server.Guilds
         {
             m_Leader = leader;
 
-            Members = new List<Mobile>();
-            Allies = new List<Guild>();
-            Enemies = new List<Guild>();
-            WarDeclarations = new List<Guild>();
-            WarInvitations = new List<Guild>();
-            AllyDeclarations = new List<Guild>();
-            AllyInvitations = new List<Guild>();
-            Candidates = new List<Mobile>();
-            Accepted = new List<Mobile>();
+            Members = [];
+            Allies = [];
+            Enemies = [];
+            WarDeclarations = [];
+            WarInvitations = [];
+            AllyDeclarations = [];
+            AllyInvitations = [];
+            Candidates = [];
+            Accepted = [];
 
             LastFealty = Core.Now;
 
@@ -593,8 +593,8 @@ namespace Server.Guilds
                 mobile.GuildRank = RankDefinition.Leader;
             }
 
-            AcceptedWars = new List<WarDeclaration>();
-            PendingWars = new List<WarDeclaration>();
+            AcceptedWars = [];
+            PendingWars = [];
         }
 
         public Guild(Serial serial) : base(serial)
@@ -1222,14 +1222,14 @@ namespace Server.Guilds
                     {
                         var count = reader.ReadInt();
 
-                        PendingWars = new List<WarDeclaration>();
+                        PendingWars = [];
                         for (var i = 0; i < count; i++)
                         {
                             PendingWars.Add(new WarDeclaration(reader));
                         }
 
                         count = reader.ReadInt();
-                        AcceptedWars = new List<WarDeclaration>();
+                        AcceptedWars = [];
                         for (var i = 0; i < count; i++)
                         {
                             AcceptedWars.Add(new WarDeclaration(reader));
@@ -1304,10 +1304,10 @@ namespace Server.Guilds
                     }
             }
 
-            AllyDeclarations ??= new List<Guild>();
-            AllyInvitations ??= new List<Guild>();
-            AcceptedWars ??= new List<WarDeclaration>();
-            PendingWars ??= new List<WarDeclaration>();
+            AllyDeclarations ??= [];
+            AllyInvitations ??= [];
+            AcceptedWars ??= [];
+            PendingWars ??= [];
 
             Timer.StartTimer(VerifyGuild_Callback);
         }

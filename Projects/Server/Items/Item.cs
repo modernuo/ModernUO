@@ -181,7 +181,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
 
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
-    public static readonly List<Item> EmptyItems = new();
+    public static readonly List<Item> EmptyItems = [];
     private static readonly Queue<Item> m_DeltaQueue = new();
 
     private static int m_OpenSlots;
@@ -1653,11 +1653,11 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     {
         if (this is Container cont)
         {
-            return cont.m_Items ?? (cont.m_Items = new List<Item>());
+            return cont.m_Items ?? (cont.m_Items = []);
         }
 
         var info = AcquireCompactInfo();
-        return info.m_Items ?? (info.m_Items = new List<Item>());
+        return info.m_Items ?? (info.m_Items = []);
     }
 
     private void SetFlag(ImplFlag flag, bool value)
@@ -3328,13 +3328,13 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    private static readonly HashSet<string> _excludedProperties = new()
-    {
+    private static readonly HashSet<string> _excludedProperties =
+    [
         "Parent",
         "Next",
         "Previous",
         "OnLinkList"
-    };
+    ];
 
     public virtual bool DupeExcludedProperty(string propertyName) => _excludedProperties.Contains(propertyName);
 

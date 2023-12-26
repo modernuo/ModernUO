@@ -30,7 +30,7 @@ public class HouseRaffleManagementGump : Gump
         _stone = stone;
         _page = page;
 
-        _list = new List<RaffleEntry>(_stone.Entries);
+        _list = [.._stone.Entries];
         _sort = sort;
 
         switch (_sort)

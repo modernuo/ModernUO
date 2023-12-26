@@ -13,20 +13,20 @@ public partial class SOS : Item
     private static bool UseNewMessages = false;
 
     private static int[] WaterTiles =
-    {
+    [
         0x00A8, 0x00AB,
         0x0136, 0x0137
-    };
+    ];
 
-    private static Rectangle2D[] BritRegions = { new(0, 0, 5120, 4096) };
+    private static Rectangle2D[] BritRegions = [new(0, 0, 5120, 4096)];
 
     private static Rectangle2D[] IlshRegions =
-        { new(1472, 272, 304, 240), new(1240, 1000, 312, 160) };
+        [new(1472, 272, 304, 240), new(1240, 1000, 312, 160)];
 
-    private static Rectangle2D[] MalasRegions = { new(1376, 1520, 464, 280) };
+    private static Rectangle2D[] MalasRegions = [new(1376, 1520, 464, 280)];
 
     private static TextDefinition[] MessageEntries =
-    {
+    [
         // Help! Ship going do...n heavy storms...precious cargo...st reach dest...current coordinates ~1_SEXTANT~...ve any survivors...ease!
         1153537,
         // ...was a cad and a boor, no matter what momma s...rew him overboard! Oh, Anna, 'twas so exciting! Unfort...y he grabbe...est, and all his riches went with him! ...sked the captain, and he says we're at ~1_SEXTANT~ ... so maybe ...
@@ -55,7 +55,7 @@ public partial class SOS : Item
         1153549,
         // ...round Jhelom towne we did roam, drinking all night. Got into a fight...hoisted sail on the morn, all crew aboard but the cook...ull breach, last known coordinates ~1_SEXTANT~...be better off in Stone's jail cell!
         1153550
-    };
+    ];
 
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
@@ -163,7 +163,7 @@ public partial class SOS : Item
         }
         else
         {
-            regions = new[] { new Rectangle2D(0, 0, map.Width, map.Height) };
+            regions = [new Rectangle2D(0, 0, map.Width, map.Height)];
         }
 
         if (regions.Length == 0)

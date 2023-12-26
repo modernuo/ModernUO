@@ -35,12 +35,11 @@ namespace Server.Tests.Network
         {
             var menu = new ItemListMenu(
                 "Which item would you choose?",
-                new[]
-                {
+                [
                     new ItemListEntry("Item 1", 0x01),
                     new ItemListEntry("Item 2", 0x100),
                     new ItemListEntry("Item 3", 0x1000, 250)
-                }
+                ]
             );
 
             var expected = new DisplayItemListMenu(menu).Compile();
@@ -57,12 +56,11 @@ namespace Server.Tests.Network
         {
             var menu = new QuestionMenu(
                 "Which option would you choose?",
-                new[]
-                {
+                [
                     "Option 1",
                     "Option 2",
                     "Option 3"
-                }
+                ]
             );
 
             var expected = new DisplayQuestionMenu(menu).Compile();

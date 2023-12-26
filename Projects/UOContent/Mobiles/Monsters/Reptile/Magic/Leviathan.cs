@@ -64,7 +64,7 @@ namespace Server.Mobiles
         public override int TreasureMapLevel => 5;
 
         public static Type[] Artifacts { get; } =
-        {
+        [
             // Decorations
             typeof(CandelabraOfSouls),
             typeof(GhostShipAnchor),
@@ -90,9 +90,9 @@ namespace Server.Mobiles
             typeof(NoxRangersHeavyCrossbow),
             typeof(PolarBearMask),
             typeof(VioletCourage)
-        };
+        ];
 
-        private static MonsterAbility[] _abilities = { new LeviathanBreath() };
+        private static MonsterAbility[] _abilities = [new LeviathanBreath()];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

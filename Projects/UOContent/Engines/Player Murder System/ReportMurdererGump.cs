@@ -12,7 +12,7 @@ public class ReportMurdererGump : Gump
 {
     // Recently reported
     private static TimeSpan _recentlyReportedDelay;
-    private static readonly HashSet<(Mobile, Mobile)> _recentlyReported = new();
+    private static readonly HashSet<(Mobile, Mobile)> _recentlyReported = [];
 
     private readonly List<Mobile> _killers;
     private int _idx;
@@ -46,7 +46,7 @@ public class ReportMurdererGump : Gump
                 {
                     if (notInThievesGuild)
                     {
-                        killers ??= new List<Mobile>();
+                        killers ??= [];
                         killers.Add(ai.Attacker);
                     }
 
@@ -57,7 +57,7 @@ public class ReportMurdererGump : Gump
 
             if (ai.Attacker.Player && Core.Now - ai.LastCombatTime < TimeSpan.FromSeconds(30.0))
             {
-                toGive ??= new HashSet<Mobile>();
+                toGive ??= [];
                 toGive.Add(ai.Attacker);
             }
         }
@@ -66,7 +66,7 @@ public class ReportMurdererGump : Gump
         {
             if (ai.Defender.Player && Core.Now - ai.LastCombatTime < TimeSpan.FromSeconds(30.0))
             {
-                toGive ??= new HashSet<Mobile>();
+                toGive ??= [];
                 toGive.Add(ai.Defender);
             }
         }

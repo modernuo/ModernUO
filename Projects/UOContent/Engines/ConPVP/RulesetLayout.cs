@@ -68,86 +68,77 @@ namespace Server.Engines.ConPVP
                 {
                     new(
                         "Spells",
-                        new[]
-                        {
+                        [
                             new RulesetLayout(
                                 "1st Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Reactive Armor", "Clumsy", "Create Food", "Feeblemind", "Heal", "Magic Arrow",
                                     "Night Sight",
                                     "Weaken"
-                                }
+                                ]
                             ),
                             new RulesetLayout(
                                 "2nd Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Agility", "Cunning", "Cure", "Harm", "Magic Trap", "Untrap", "Protection", "Strength"
-                                }
+                                ]
                             ),
                             new RulesetLayout(
                                 "3rd Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Bless", "Fireball", "Magic Lock", "Poison", "Telekinesis", "Teleport", "Unlock Spell",
                                     "Wall of Stone"
-                                }
+                                ]
                             ),
                             new RulesetLayout(
                                 "4th Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Arch Cure", "Arch Protection", "Curse", "Fire Field", "Greater Heal", "Lightning",
                                     "Mana Drain",
                                     "Recall"
-                                }
+                                ]
                             ),
                             new RulesetLayout(
                                 "5th Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Blade Spirits", "Dispel Field", "Incognito", "Magic Reflection", "Mind Blast",
                                     "Paralyze",
                                     "Poison Field", "Summon Creature"
-                                }
+                                ]
                             ),
                             new RulesetLayout(
                                 "6th Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Dispel", "Energy Bolt", "Explosion", "Invisibility", "Mark", "Mass Curse",
                                     "Paralyze Field",
                                     "Reveal"
-                                }
+                                ]
                             ),
                             new RulesetLayout(
                                 "7th Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Chain Lightning", "Energy Field", "Flame Strike", "Gate Travel", "Mana Vampire",
                                     "Mass Dispel",
                                     "Meteor Swarm", "Polymorph"
-                                }
+                                ]
                             ),
                             new RulesetLayout(
                                 "8th Circle",
                                 "Spells",
-                                new[]
-                                {
+                                [
                                     "Earthquake", "Energy Vortex", "Resurrection", "Air Elemental", "Summon Daemon",
                                     "Earth Elemental",
                                     "Fire Elemental", "Water Elemental"
-                                }
+                                ]
                             )
-                        }
+                        ]
                     )
                 };
 
@@ -156,8 +147,7 @@ namespace Server.Engines.ConPVP
                     entries.Add(
                         new RulesetLayout(
                             "Chivalry",
-                            new[]
-                            {
+                            [
                                 "Cleanse by Fire",
                                 "Close Wounds",
                                 "Consecrate Weapon",
@@ -168,15 +158,14 @@ namespace Server.Engines.ConPVP
                                 "Noble Sacrifice",
                                 "Remove Curse",
                                 "Sacred Journey"
-                            }
+                            ]
                         )
                     );
 
                     entries.Add(
                         new RulesetLayout(
                             "Necromancy",
-                            new[]
-                            {
+                            [
                                 "Animate Dead",
                                 "Blood Oath",
                                 "Corpse Skin",
@@ -193,7 +182,7 @@ namespace Server.Engines.ConPVP
                                 "Vengeful Spirit",
                                 "Wither",
                                 "Wraith Form"
-                            }
+                            ]
                         )
                     );
 
@@ -202,23 +191,21 @@ namespace Server.Engines.ConPVP
                         entries.Add(
                             new RulesetLayout(
                                 "Bushido",
-                                new[]
-                                {
+                                [
                                     "Confidence",
                                     "Counter Attack",
                                     "Evasion",
                                     "Honorable Execution",
                                     "Lightning Strike",
                                     "Momentum Strike"
-                                }
+                                ]
                             )
                         );
 
                         entries.Add(
                             new RulesetLayout(
                                 "Ninjitsu",
-                                new[]
-                                {
+                                [
                                     "Animal Form",
                                     "Backstab",
                                     "Death Strike",
@@ -227,7 +214,7 @@ namespace Server.Engines.ConPVP
                                     "Mirror Image",
                                     "Shadow Jump",
                                     "Suprise Attack"
-                                }
+                                ]
                             )
                         );
 
@@ -236,8 +223,7 @@ namespace Server.Engines.ConPVP
                             entries.Add(
                                 new RulesetLayout(
                                     "Spellweaving",
-                                    new[]
-                                    {
+                                    [
                                         "Arcane Circle",
                                         "Arcane Empowerment",
                                         "Attune Weapon",
@@ -254,7 +240,7 @@ namespace Server.Engines.ConPVP
                                         "Thunderstorm",
                                         "Wildfire",
                                         "Word of Death"
-                                    }
+                                    ]
                                 )
                             );
                         }
@@ -268,8 +254,7 @@ namespace Server.Engines.ConPVP
                         entries.Add(
                             new RulesetLayout(
                                 "Combat Abilities",
-                                new[]
-                                {
+                                [
                                     "Stun",
                                     "Disarm",
                                     "Armor Ignore",
@@ -295,7 +280,7 @@ namespace Server.Engines.ConPVP
                                     "Dual Wield",
                                     "Double Shot",
                                     "Armor Pierce"
-                                }
+                                ]
                             )
                         );
                     }
@@ -304,8 +289,7 @@ namespace Server.Engines.ConPVP
                         entries.Add(
                             new RulesetLayout(
                                 "Combat Abilities",
-                                new[]
-                                {
+                                [
                                     "Stun",
                                     "Disarm",
                                     "Armor Ignore",
@@ -321,7 +305,7 @@ namespace Server.Engines.ConPVP
                                     "Paralyzing Blow",
                                     "Shadow Strike",
                                     "Whirlwind Attack"
-                                }
+                                ]
                             )
                         );
                     }
@@ -331,14 +315,13 @@ namespace Server.Engines.ConPVP
                     entries.Add(
                         new RulesetLayout(
                             "Combat Abilities",
-                            new[]
-                            {
+                            [
                                 "Stun",
                                 "Disarm",
                                 "Concussion Blow",
                                 "Crushing Blow",
                                 "Paralyzing Blow"
-                            }
+                            ]
                         )
                     );
                 }
@@ -346,8 +329,7 @@ namespace Server.Engines.ConPVP
                 entries.Add(
                     new RulesetLayout(
                         "Skills",
-                        new[]
-                        {
+                        [
                             "Anatomy",
                             "Detect Hidden",
                             "Evaluating Intelligence",
@@ -357,7 +339,7 @@ namespace Server.Engines.ConPVP
                             "Stealing",
                             "Spirit Speak",
                             "Stealth"
-                        }
+                        ]
                     )
                 );
 
@@ -366,25 +348,23 @@ namespace Server.Engines.ConPVP
                     entries.Add(
                         new RulesetLayout(
                             "Weapons",
-                            new[]
-                            {
+                            [
                                 "Magical",
                                 "Melee",
                                 "Ranged",
                                 "Poisoned",
                                 "Wrestling"
-                            }
+                            ]
                         )
                     );
 
                     entries.Add(
                         new RulesetLayout(
                             "Armor",
-                            new[]
-                            {
+                            [
                                 "Magical",
                                 "Shields"
-                            }
+                            ]
                         )
                     );
                 }
@@ -393,27 +373,25 @@ namespace Server.Engines.ConPVP
                     entries.Add(
                         new RulesetLayout(
                             "Weapons",
-                            new[]
-                            {
+                            [
                                 "Magical",
                                 "Melee",
                                 "Ranged",
                                 "Poisoned",
                                 "Wrestling",
                                 "Runics"
-                            }
+                            ]
                         )
                     );
 
                     entries.Add(
                         new RulesetLayout(
                             "Armor",
-                            new[]
-                            {
+                            [
                                 "Magical",
                                 "Shields",
                                 "Colored"
-                            }
+                            ]
                         )
                     );
                 }
@@ -423,12 +401,10 @@ namespace Server.Engines.ConPVP
                     entries.Add(
                         new RulesetLayout(
                             "Items",
-                            new[]
-                            {
+                            [
                                 new RulesetLayout(
                                     "Potions",
-                                    new[]
-                                    {
+                                    [
                                         "Agility",
                                         "Cure",
                                         "Explosion",
@@ -437,11 +413,10 @@ namespace Server.Engines.ConPVP
                                         "Poison",
                                         "Refresh",
                                         "Strength"
-                                    }
+                                    ]
                                 )
-                            },
-                            new[]
-                            {
+                            ],
+                            [
                                 "Bandages",
                                 "Wands",
                                 "Trapped Containers",
@@ -451,7 +426,7 @@ namespace Server.Engines.ConPVP
                                 "Shurikens",
                                 "Fukiya Darts",
                                 "Fire Horns"
-                            }
+                            ]
                         )
                     );
                 }
@@ -460,12 +435,10 @@ namespace Server.Engines.ConPVP
                     entries.Add(
                         new RulesetLayout(
                             "Items",
-                            new[]
-                            {
+                            [
                                 new RulesetLayout(
                                     "Potions",
-                                    new[]
-                                    {
+                                    [
                                         "Agility",
                                         "Cure",
                                         "Explosion",
@@ -474,11 +447,10 @@ namespace Server.Engines.ConPVP
                                         "Poison",
                                         "Refresh",
                                         "Strength"
-                                    }
+                                    ]
                                 )
-                            },
-                            new[]
-                            {
+                            ],
+                            [
                                 "Bandages",
                                 "Wands",
                                 "Trapped Containers",
@@ -486,7 +458,7 @@ namespace Server.Engines.ConPVP
                                 "Mounts",
                                 "Orange Petals",
                                 "Fire Horns"
-                            }
+                            ]
                         )
                     );
                 }
@@ -646,7 +618,7 @@ namespace Server.Engines.ConPVP
                     s7x.SetOption("Items", "Bandages", true);
                     s7x.SetOption("Items", "Trapped Containers", true);
 
-                    m_Root.Defaults = new[] { m5x, m7x, s7x };
+                    m_Root.Defaults = [m5x, m7x, s7x];
                 }
                 else
                 {
@@ -732,7 +704,7 @@ namespace Server.Engines.ConPVP
                     all.SetOption("Items", "Bandages", true);
                     all.SetOption("Items", "Trapped Containers", true);
 
-                    m_Root.Defaults = new[] { all };
+                    m_Root.Defaults = [all];
                 }
 
                 // Set up flavors
@@ -781,7 +753,7 @@ namespace Server.Engines.ConPVP
                 summons.SetOption("Spellweaving", "Summon Fiend", true);
                 summons.SetOption("Spellweaving", "Nature's Fury", true);
 
-                m_Root.Flavors = new[] { pots, para, fields, area, summons };
+                m_Root.Flavors = [pots, para, fields, area, summons];
 
                 return m_Root;
             }

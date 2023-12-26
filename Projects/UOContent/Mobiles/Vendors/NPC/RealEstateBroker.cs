@@ -10,7 +10,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class RealEstateBroker : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
         private DateTime m_NextCheckPack;
 
         [Constructible]

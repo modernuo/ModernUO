@@ -60,7 +60,7 @@ namespace Server.Factions.AI
         public Orders(BaseFactionGuard guard)
         {
             Guard = guard;
-            m_Reactions = new List<Reaction>();
+            m_Reactions = [];
             Movement = MovementType.Patrol;
         }
 

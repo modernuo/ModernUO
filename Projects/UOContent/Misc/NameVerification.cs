@@ -5,24 +5,24 @@ namespace Server.Misc
     public static class NameVerification
     {
         public static readonly char[] SpaceDashPeriodQuote =
-        {
+        [
             ' ', '-', '.', '\''
-        };
+        ];
 
         public static readonly char[] Empty = Array.Empty<char>();
 
         public static string[] StartDisallowed { get; } =
-        {
+        [
             "seer",
             "counselor",
             "gm",
             "admin",
             "lady",
             "lord"
-        };
+        ];
 
         public static string[] Disallowed { get; } =
-        {
+        [
             "jigaboo",
             "chigaboo",
             "wop",
@@ -98,7 +98,7 @@ namespace Server.Misc
             "invulnerable",
             "osi",
             "origin"
-        };
+        ];
 
         public static void Initialize()
         {

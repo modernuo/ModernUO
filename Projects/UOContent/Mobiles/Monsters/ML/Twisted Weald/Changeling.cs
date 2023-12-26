@@ -9,18 +9,18 @@ namespace Server.Mobiles
     public partial class Changeling : BaseCreature
     {
         private static readonly int[] m_FireNorth =
-        {
+        [
             -1, -1,
             1, -1,
             -1, 2,
             1, 2
-        };
+        ];
 
         private static readonly int[] m_FireEast =
-        {
+        [
             -1, 0,
             2, 0
-        };
+        ];
 
         private DateTime m_LastMorph;
         private DateTime m_NextFireRing;

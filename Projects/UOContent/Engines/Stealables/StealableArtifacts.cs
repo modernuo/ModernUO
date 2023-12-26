@@ -64,7 +64,7 @@ public class StealableArtifacts : GenericPersistence
     }
 
     public static StealableEntry[] Entries { get; } =
-    {
+    [
         // Doom - Artifact rarity 1
         new(Map.Malas, new Point3D(317, 56, -1), 72, 108, typeof(RockArtifact)),
         new(Map.Malas, new Point3D(360, 31, 8), 72, 108, typeof(SkullCandleArtifact)),
@@ -169,7 +169,7 @@ public class StealableArtifacts : GenericPersistence
         new(Map.Malas, new Point3D(187, 643, 1), 18432, 27648, typeof(Painting6NorthArtifact)),
         new(Map.Malas, new Point3D(146, 623, 1), 18432, 27648, typeof(Painting6WestArtifact)),
         new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact))
-    };
+    ];
 
     public static Type[] TypesOfEntries
     {

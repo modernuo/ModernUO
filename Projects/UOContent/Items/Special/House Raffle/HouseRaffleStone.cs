@@ -111,7 +111,7 @@ public partial class HouseRaffleStone : Item
         _expireAction = HouseRaffleExpireAction.None;
         _ticketPrice = DefaultTicketPrice;
 
-        Entries = new List<RaffleEntry>();
+        Entries = [];
 
         Movable = false;
     }
@@ -216,7 +216,7 @@ public partial class HouseRaffleStone : Item
 
     private static void AddRaffleStone(HouseRaffleStone stone)
     {
-        _allStones ??= new HashSet<HouseRaffleStone>();
+        _allStones ??= [];
         _allStones.Add(stone);
 
         if (_allStones.Count == 1)

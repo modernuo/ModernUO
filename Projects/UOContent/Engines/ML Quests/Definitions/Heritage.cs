@@ -150,7 +150,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     15,
-                    new[] { typeof(TimberWolf) },
+                    [typeof(TimberWolf)],
                     "timber wolves",
                     new QuestArea(1074833, "Huntsman's Forest")
                 )
@@ -567,7 +567,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     5,
-                    new[] { typeof(Efreet) },
+                    [typeof(Efreet)],
                     "efreets",
                     new QuestArea(1074808, "Fire")
                 )
@@ -575,7 +575,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     5,
-                    new[] { typeof(IceFiend) },
+                    [typeof(IceFiend)],
                     "ice fiends",
                     new QuestArea(1074809, "Ice")
                 )

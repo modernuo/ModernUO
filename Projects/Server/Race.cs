@@ -34,7 +34,7 @@ public abstract class Race : ISpanParsable<Race>
     public static Race Elf => Races[1];
     public static Race Gargoyle => Races[2];
 
-    public static List<Race> AllRaces { get; } = new();
+    public static List<Race> AllRaces { get; } = [];
 
     public const int AllowAllRaces = 0x7;      // Race.Human.RaceFlag | Race.Elf.RaceFlag | Race.Gargoyle.RaceFlag
     public const int AllowHumanOrElves = 0x3;  // Race.Human.RaceFlag | Race.Elf.RaceFlag

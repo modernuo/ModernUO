@@ -322,7 +322,7 @@ public class TypeCache
         }
         else
         {
-            refs = new HashSet<Type> { type };
+            refs = [type];
             map.Add(key, refs);
         }
     }

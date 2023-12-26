@@ -27,57 +27,55 @@ namespace Server.Items
     public class CustomHuePicker
     {
         public static readonly CustomHuePicker SpecialDyeTub = new(
-            new[]
-            {
+            [
                 /* Violet */
-                new CustomHueGroup(1018345, new[] { 1230, 1231, 1232, 1233, 1234, 1235 }),
+                new CustomHueGroup(1018345, [1230, 1231, 1232, 1233, 1234, 1235]),
                 /* Tan */
-                new CustomHueGroup(1018346, new[] { 1501, 1502, 1503, 1504, 1505, 1506, 1507, 1508 }),
+                new CustomHueGroup(1018346, [1501, 1502, 1503, 1504, 1505, 1506, 1507, 1508]),
                 /* Brown */
-                new CustomHueGroup(1018347, new[] { 2012, 2013, 2014, 2015, 2016, 2017 }),
+                new CustomHueGroup(1018347, [2012, 2013, 2014, 2015, 2016, 2017]),
                 /* Dark Blue */
-                new CustomHueGroup(1018348, new[] { 1303, 1304, 1305, 1306, 1307, 1308 }),
+                new CustomHueGroup(1018348, [1303, 1304, 1305, 1306, 1307, 1308]),
                 /* Forest Green */
-                new CustomHueGroup(1018349, new[] { 1420, 1421, 1422, 1423, 1424, 1425, 1426 }),
+                new CustomHueGroup(1018349, [1420, 1421, 1422, 1423, 1424, 1425, 1426]),
                 /* Pink */
-                new CustomHueGroup(1018350, new[] { 1619, 1620, 1621, 1622, 1623, 1624, 1625, 1626 }),
+                new CustomHueGroup(1018350, [1619, 1620, 1621, 1622, 1623, 1624, 1625, 1626]),
                 /* Red */
-                new CustomHueGroup(1018351, new[] { 1640, 1641, 1642, 1643, 1644 }),
+                new CustomHueGroup(1018351, [1640, 1641, 1642, 1643, 1644]),
                 /* Olive */
-                new CustomHueGroup(1018352, new[] { 2001, 2002, 2003, 2004, 2005 })
-            },
+                new CustomHueGroup(1018352, [2001, 2002, 2003, 2004, 2005])
+            ],
             false,
             1018344
         );
 
         public static readonly CustomHuePicker LeatherDyeTub = new(
-            new[]
-            {
+            [
                 /* Dull Copper */
-                new CustomHueGroup(1018332, new[] { 2419, 2420, 2421, 2422, 2423, 2424 }),
+                new CustomHueGroup(1018332, [2419, 2420, 2421, 2422, 2423, 2424]),
                 /* Shadow Iron */
-                new CustomHueGroup(1018333, new[] { 2406, 2407, 2408, 2409, 2410, 2411, 2412 }),
+                new CustomHueGroup(1018333, [2406, 2407, 2408, 2409, 2410, 2411, 2412]),
                 /* Copper */
-                new CustomHueGroup(1018334, new[] { 2413, 2414, 2415, 2416, 2417, 2418 }),
+                new CustomHueGroup(1018334, [2413, 2414, 2415, 2416, 2417, 2418]),
                 /* Bronze */
-                new CustomHueGroup(1018335, new[] { 2414, 2415, 2416, 2417, 2418 }),
+                new CustomHueGroup(1018335, [2414, 2415, 2416, 2417, 2418]),
                 /* Glden */
-                new CustomHueGroup(1018336, new[] { 2213, 2214, 2215, 2216, 2217, 2218 }),
+                new CustomHueGroup(1018336, [2213, 2214, 2215, 2216, 2217, 2218]),
                 /* Agapite */
-                new CustomHueGroup(1018337, new[] { 2425, 2426, 2427, 2428, 2429, 2430 }),
+                new CustomHueGroup(1018337, [2425, 2426, 2427, 2428, 2429, 2430]),
                 /* Verite */
-                new CustomHueGroup(1018338, new[] { 2207, 2208, 2209, 2210, 2211, 2212 }),
+                new CustomHueGroup(1018338, [2207, 2208, 2209, 2210, 2211, 2212]),
                 /* Valorite */
-                new CustomHueGroup(1018339, new[] { 2219, 2220, 2221, 2222, 2223, 2224 }),
+                new CustomHueGroup(1018339, [2219, 2220, 2221, 2222, 2223, 2224]),
                 /* Reds */
-                new CustomHueGroup(1018340, new[] { 2113, 2114, 2115, 2116, 2117, 2118 }),
+                new CustomHueGroup(1018340, [2113, 2114, 2115, 2116, 2117, 2118]),
                 /* Blues */
-                new CustomHueGroup(1018341, new[] { 2119, 2120, 2121, 2122, 2123, 2124 }),
+                new CustomHueGroup(1018341, [2119, 2120, 2121, 2122, 2123, 2124]),
                 /* Greens */
-                new CustomHueGroup(1018342, new[] { 2126, 2127, 2128, 2129, 2130 }),
+                new CustomHueGroup(1018342, [2126, 2127, 2128, 2129, 2130]),
                 /* Yellows */
-                new CustomHueGroup(1018343, new[] { 2213, 2214, 2215, 2216, 2217, 2218 })
-            },
+                new CustomHueGroup(1018343, [2213, 2214, 2215, 2216, 2217, 2218])
+            ],
             true
         );
 

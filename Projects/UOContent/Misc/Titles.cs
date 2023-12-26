@@ -28,11 +28,10 @@ namespace Server.Misc
         };
 
         private static readonly FameEntry[] m_FameEntries =
-        {
+        [
             new(
                 1249,
-                new[]
-                {
+                [
                     new KarmaEntry(-10000, "The Outcast "),
                     new KarmaEntry(-5000, "The Despicable "),
                     new KarmaEntry(-2500, "The Scoundrel "),
@@ -44,12 +43,11 @@ namespace Server.Misc
                     new KarmaEntry(4999, "The Good "),
                     new KarmaEntry(9999, "The Honest "),
                     new KarmaEntry(10000, "The Trustworthy ")
-                }
+                ]
             ),
             new(
                 2499,
-                new[]
-                {
+                [
                     new KarmaEntry(-10000, "The Wretched "),
                     new KarmaEntry(-5000, "The Dastardly "),
                     new KarmaEntry(-2500, "The Malicious "),
@@ -61,12 +59,11 @@ namespace Server.Misc
                     new KarmaEntry(4999, "The Honorable "),
                     new KarmaEntry(9999, "The Commendable "),
                     new KarmaEntry(10000, "The Estimable ")
-                }
+                ]
             ),
             new(
                 4999,
-                new[]
-                {
+                [
                     new KarmaEntry(-10000, "The Nefarious "),
                     new KarmaEntry(-5000, "The Wicked "),
                     new KarmaEntry(-2500, "The Vile "),
@@ -78,12 +75,11 @@ namespace Server.Misc
                     new KarmaEntry(4999, "The Admirable "),
                     new KarmaEntry(9999, "The Famed "),
                     new KarmaEntry(10000, "The Great ")
-                }
+                ]
             ),
             new(
                 9999,
-                new[]
-                {
+                [
                     new KarmaEntry(-10000, "The Dread "),
                     new KarmaEntry(-5000, "The Evil "),
                     new KarmaEntry(-2500, "The Villainous "),
@@ -95,12 +91,11 @@ namespace Server.Misc
                     new KarmaEntry(4999, "The Noble "),
                     new KarmaEntry(9999, "The Illustrious "),
                     new KarmaEntry(10000, "The Glorious ")
-                }
+                ]
             ),
             new(
                 10000,
-                new[]
-                {
+                [
                     new KarmaEntry(-10000, "The Dread "),
                     new KarmaEntry(-5000, "The Evil "),
                     new KarmaEntry(-2500, "The Dark "),
@@ -112,9 +107,9 @@ namespace Server.Misc
                     new KarmaEntry(4999, "The Noble "),
                     new KarmaEntry(9999, "The Illustrious "),
                     new KarmaEntry(10000, "The Glorious ")
-                }
+                ]
             )
-        };
+        ];
 
         public static void AwardFame(Mobile m, int offset, bool message)
         {

@@ -193,8 +193,8 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage = 1072779; // Every moment you procrastinate, these unnatural creatures damage Sosaria.
             CompletionMessage = 1074167; // Well done!  Well done, indeed.  You are worthy to become an arcanist!
 
-            Objectives.Add(new KillObjective(5, new[] { typeof(ExodusOverseer) }, "Exodus Overseers"));
-            Objectives.Add(new KillObjective(2, new[] { typeof(ExodusMinion) }, "Exodus Minions"));
+            Objectives.Add(new KillObjective(5, [typeof(ExodusOverseer)], "Exodus Overseers"));
+            Objectives.Add(new KillObjective(2, [typeof(ExodusMinion)], "Exodus Minions"));
 
             Rewards.Add(new ItemReward(1031601, typeof(ArcaneCircleScroll)));  // Arcane Circle
             Rewards.Add(new ItemReward(1031600, typeof(SpellweavingBook)));    // Spellweaving Spellbook
@@ -226,7 +226,7 @@ namespace Server.Engines.MLQuests.Definitions
                 new TimedKillObjective(
                     TimeSpan.FromHours(1),
                     50,
-                    new[] { typeof(Rat) },
+                    [typeof(Rat)],
                     "rats",
                     new QuestArea(1074807, "Sanctuary")
                 )
@@ -388,7 +388,7 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage = 1074316; // Mean reapers are all around trees!  *giggle*  You fix them up, please.
             CompletionNotice = CompletionNoticeShortReturn;
 
-            Objectives.Add(new KillObjective(20, new[] { typeof(Reaper) }, "reapers"));
+            Objectives.Add(new KillObjective(20, [typeof(Reaper)], "reapers"));
 
             Rewards.Add(new ItemReward(1031607, typeof(SummonFeyScroll))); // Summon Fey
         }
@@ -418,7 +418,7 @@ namespace Server.Engines.MLQuests.Definitions
             // TODO: Verify
             CompletionMessage = 1074291; // Hah!  You showed them!
 
-            Objectives.Add(new KillObjective(50, new[] { typeof(Imp) }, "imps"));
+            Objectives.Add(new KillObjective(50, [typeof(Imp)], "imps"));
 
             // The opportunity to prove yourself worthy of learning to Summon Fiends.
             // (Sufficient spellweaving skill is required to cast the spell)
@@ -464,7 +464,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1074314; // If you're not up for it, so be it.
             InProgressMessage = 1074318; // You need to vanquish an arcane daemon before the imps will fear you properly.
 
-            Objectives.Add(new KillObjective(1, new[] { typeof(ArcaneDaemon) }, 1029733)); // arcane demon
+            Objectives.Add(new KillObjective(1, [typeof(ArcaneDaemon)], 1029733)); // arcane demon
 
             Rewards.Add(new ItemReward(1031608, typeof(SummonFiendScroll))); // Summon Fiend
         }

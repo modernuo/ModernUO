@@ -29,7 +29,7 @@ namespace Server.Items
             Movable = false;
             Visible = false;
 
-            Components = new List<AddonComponent>();
+            Components = [];
         }
 
         public virtual bool RetainDeedHue => false;

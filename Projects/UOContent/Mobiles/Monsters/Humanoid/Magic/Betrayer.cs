@@ -97,12 +97,12 @@ namespace Server.Mobiles
         }
 
         private static MonsterAbility[] _abilities =
-        {
+        [
             new MonsterAbilityGroup(
                 (1, MonsterAbilities.ColossalBlow),
                 (1, MonsterAbilities.PoisonGasAreaAttack)
             )
-        };
+        ];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
     }
 }

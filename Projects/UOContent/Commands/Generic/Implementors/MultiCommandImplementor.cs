@@ -6,7 +6,7 @@ namespace Server.Commands.Generic
     {
         public MultiCommandImplementor()
         {
-            Accessors = new[] { "Multi", "m" };
+            Accessors = ["Multi", "m"];
             SupportRequirement = CommandSupport.Multi;
             AccessLevel = AccessLevel.Counselor;
             Usage = "Multi <command>";

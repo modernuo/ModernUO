@@ -149,9 +149,9 @@ namespace Server.Engines.MLQuests.Definitions
 
             var bedlam = new QuestArea(1074835, "Bedlam"); // Bedlam
 
-            Objectives.Add(new KillObjective(1, new[] { typeof(RedDeath) }, "Red Death", bedlam));
-            Objectives.Add(new KillObjective(10, new[] { typeof(GoreFiend) }, "gore fiends", bedlam));
-            Objectives.Add(new KillObjective(8, new[] { typeof(RottingCorpse) }, "rotting corpses", bedlam));
+            Objectives.Add(new KillObjective(1, [typeof(RedDeath)], "Red Death", bedlam));
+            Objectives.Add(new KillObjective(10, [typeof(GoreFiend)], "gore fiends", bedlam));
+            Objectives.Add(new KillObjective(8, [typeof(RottingCorpse)], "rotting corpses", bedlam));
 
             Rewards.Add(new DummyReward(1074634)); // Tuition Reimbursement
         }

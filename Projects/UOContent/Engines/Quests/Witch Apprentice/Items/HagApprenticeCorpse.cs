@@ -37,7 +37,7 @@ namespace Server.Engines.Quests.Hag
             return apprentice;
         }
 
-        private static List<Item> GetEquipment() => new();
+        private static List<Item> GetEquipment() => [];
 
         public override void AddNameProperty(IPropertyList list)
         {

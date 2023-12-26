@@ -49,7 +49,7 @@ public class GlobalTownCrierEntryList : ITownCrierEntryList
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-        Entries ??= new List<TownCrierEntry>();
+        Entries ??= [];
 
         var tce = new TownCrierEntry(lines, duration);
 
@@ -131,7 +131,7 @@ public class TownCrierDurationPrompt : Prompt
         from.SendMessage($"Duration set to: {ts}");
         from.SendMessage("Enter the first line to shout:");
 
-        from.Prompt = new TownCrierLinesPrompt(m_Owner, null, new List<string>(), ts);
+        from.Prompt = new TownCrierLinesPrompt(m_Owner, null, [], ts);
     }
 
     public override void OnCancel(Mobile from)
@@ -287,7 +287,7 @@ public class TownCrierGump : Gump
 
                 m_From.SendMessage($"Editing entry #{index + 1}.");
                 m_From.SendMessage("Enter the first line to shout:");
-                m_From.Prompt = new TownCrierLinesPrompt(m_Owner, tce, new List<string>(), ts);
+                m_From.Prompt = new TownCrierLinesPrompt(m_Owner, tce, [], ts);
             }
         }
     }
@@ -357,7 +357,7 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
         Instances.Add(this);
     }
 
-    public static List<TownCrier> Instances { get; } = new();
+    public static List<TownCrier> Instances { get; } = [];
 
     public List<TownCrierEntry> Entries { get; private set; }
 
@@ -390,7 +390,7 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-        Entries ??= new List<TownCrierEntry>();
+        Entries ??= [];
 
         var tce = new TownCrierEntry(lines, duration);
 

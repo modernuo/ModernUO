@@ -8,14 +8,14 @@ namespace Server.Engines.Chat
         public const char ModeratorColorCharacter = '1';
         public const char VoicedColorCharacter = '2';
 
-        private static readonly List<ChatUser> m_Users = new();
+        private static readonly List<ChatUser> m_Users = [];
         private static readonly Dictionary<Mobile, ChatUser> m_Table = new();
 
         public ChatUser(Mobile m, string username)
         {
             Mobile = m;
-            Ignored = new List<ChatUser>();
-            Ignoring = new List<ChatUser>();
+            Ignored = [];
+            Ignoring = [];
             Username = username;
         }
 

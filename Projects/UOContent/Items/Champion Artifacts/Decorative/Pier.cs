@@ -18,7 +18,7 @@ namespace Server.Items
          * is kind of senseless, so it is what it is.
          *
          */
-        private static readonly int[] ItemIds = { 0x3486, 0x348b, 0x3ae };
+        private static readonly int[] ItemIds = [0x3486, 0x348b, 0x3ae];
 
         [Constructible]
         public Pier() : base(ItemIds[Utility.Random(3)])

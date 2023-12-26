@@ -12,7 +12,7 @@ public class VirtueGump : Gump
     private static readonly Dictionary<int, OnVirtueUsed> _callbacks = new();
 
     private static readonly int[] _table =
-    {
+    [
         0x0481, 0x0963, 0x0965,
         0x060A, 0x060F, 0x002A,
         0x08A4, 0x08A7, 0x0034,
@@ -21,7 +21,7 @@ public class VirtueGump : Gump
         0x0011, 0x0269, 0x013D,
         0x08A1, 0x08A3, 0x0042,
         0x0543, 0x0547, 0x0061
-    };
+    ];
 
     public static void Register(int gumpID, OnVirtueUsed callback)
     {

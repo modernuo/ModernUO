@@ -28,7 +28,8 @@ namespace Server.Engines.CannedEvil
             CommandSystem.Register("GenChamps", AccessLevel.Owner, ChampGen_OnCommand);
         }
 
-        private static readonly ChampionEntry[] LLLocations = {
+        private static readonly ChampionEntry[] LLLocations =
+        [
             new(typeof(LLChampionSpawn), new Point3D(5511, 2360, 42), Map.Felucca, new Point3D(5439, 2323, 26 ), Map.Felucca),
             new(typeof(LLChampionSpawn), new Point3D(6038, 2401, 47), Map.Felucca, new Point3D(5988, 2340, 24), Map.Felucca),
             new(typeof(LLChampionSpawn), new Point3D(5549, 2640, 16), Map.Felucca, new Point3D(5645, 2696, -8), Map.Felucca),
@@ -40,16 +41,17 @@ namespace Server.Engines.CannedEvil
             new(typeof(LLChampionSpawn), new Point3D(5954, 3475, 25), Map.Felucca, new Point3D(6013, 3529, 0), Map.Felucca),
             new(typeof(LLChampionSpawn), new Point3D(5982, 3882, 20), Map.Felucca, new Point3D(5929, 3820, -1), Map.Felucca),
             new(typeof(LLChampionSpawn), new Point3D(5724, 3991, 41), Map.Felucca, new Point3D(5774, 4041, 26), Map.Felucca),
-            new(typeof(LLChampionSpawn), ChampionSpawnType.ForestLord, new Point3D(5559, 3757, 21), Map.Felucca, new Point3D(5513, 3878, 3), Map.Felucca),
-        };
+            new(typeof(LLChampionSpawn), ChampionSpawnType.ForestLord, new Point3D(5559, 3757, 21), Map.Felucca, new Point3D(5513, 3878, 3), Map.Felucca)
+        ];
 
-        private static readonly ChampionEntry[] DungeonLocations = {
+        private static readonly ChampionEntry[] DungeonLocations =
+        [
             new(typeof(DungeonChampionSpawn), ChampionSpawnType.UnholyTerror, new Point3D(5179, 709, 20), Map.Felucca, new Point3D(4111, 432, 5), Map.Felucca),
             new(typeof(DungeonChampionSpawn), ChampionSpawnType.VerminHorde, new Point3D(5557, 827, 65), Map.Felucca, new Point3D(5580, 632, 30), Map.Felucca),
             new(typeof(DungeonChampionSpawn), ChampionSpawnType.ColdBlood, new Point3D(5259, 837, 64), Map.Felucca, new Point3D(1176, 2637, 0), Map.Felucca),
             new(typeof(DungeonChampionSpawn), ChampionSpawnType.Abyss, new Point3D(5815, 1352, 5), Map.Felucca, new Point3D(2923, 3406, 8), Map.Felucca),
-            new(typeof(DungeonChampionSpawn), ChampionSpawnType.Arachnid, new Point3D(5190, 1607, 20), Map.Felucca, new Point3D(5482, 3161, -54), Map.Felucca),
-        };
+            new(typeof(DungeonChampionSpawn), ChampionSpawnType.Arachnid, new Point3D(5190, 1607, 20), Map.Felucca, new Point3D(5482, 3161, -54), Map.Felucca)
+        ];
 
         [Usage("GenChamps")]
         [Description("Generates champions for Felucca Dungeons & Lost Lands.")]
@@ -65,7 +67,7 @@ namespace Server.Engines.CannedEvil
             */
 
             //We assume that all champion spawns are generated here.
-            List<ChampionSpawn> spawns = new List<ChampionSpawn>();
+            List<ChampionSpawn> spawns = [];
             foreach (Item item in World.Items.Values)
             {
                 if (item is ChampionSpawn spawn)

@@ -54,7 +54,7 @@ public partial class ContestMiniHouseDeed : MiniHouseDeed, IRewardItem
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this, new object[] { Type }))
+        if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this, [Type]))
         {
             return;
         }

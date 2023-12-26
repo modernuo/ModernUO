@@ -31,12 +31,12 @@ namespace Server.Engines.MLQuests
         public MLQuest()
         {
             Activated = false;
-            Objectives = new List<BaseObjective>();
+            Objectives = [];
             ObjectiveType = ObjectiveType.All;
-            Rewards = new List<BaseReward>();
+            Rewards = [];
             CompletionNotice = CompletionNoticeDefault;
 
-            Instances = new List<MLQuestInstance>();
+            Instances = [];
 
             SaveEnabled = true;
         }

@@ -17,8 +17,8 @@ namespace Server.Misc
         public static void Initialize()
         {
             m_Messages = TestCenter.Enabled
-                ? new[]
-                {
+                ?
+                [
                     $"Welcome to {ServerList.ServerName}.",
                     "You are able to customize your character's stats and skills at anytime to anything you wish.",
                     "To see the commands to do this just say 'help'.",
@@ -31,12 +31,12 @@ namespace Server.Misc
                     "You will find 9000 silver pieces deposited into your bank box. Spend it as you see fit and enjoy yourself!",
                     "You will find 9000 gold pieces deposited into your bank box. Spend it as you see fit and enjoy yourself!",
                     "A bag of PowerScrolls has been placed in your bank box."
-                }
-                : new[]
-                {
+                ]
+                :
+                [
                     $"Welcome to {ServerList.ServerName}.",
                     "Please enjoy your stay."
-                };
+                ];
         }
 
         public WelcomeTimer(Mobile m) : this(m, m_Messages.Length)

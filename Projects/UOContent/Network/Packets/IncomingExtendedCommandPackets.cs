@@ -24,7 +24,7 @@ public static class IncomingExtendedCommandPackets
 
     // TODO: Change to outside configuration
     public static int[] ValidAnimations { get; } =
-    {
+    [
         6, 21, 32, 33,
         100, 101, 102, 103,
         104, 105, 106, 107,
@@ -33,7 +33,7 @@ public static class IncomingExtendedCommandPackets
         116, 117, 118, 119,
         120, 121, 123, 124,
         125, 126, 127, 128
-    };
+    ];
 
     public static unsafe void Configure()
     {

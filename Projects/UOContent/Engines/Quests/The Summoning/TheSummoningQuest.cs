@@ -7,12 +7,12 @@ namespace Server.Engines.Quests.Doom
     public class TheSummoningQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(AcceptConversation),
             typeof(CollectBonesObjective),
             typeof(VanquishDaemonConversation),
             typeof(VanquishDaemonObjective)
-        };
+        ];
 
         public TheSummoningQuest(Victoria victoria, PlayerMobile from) : base(from) => Victoria = victoria;
 

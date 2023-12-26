@@ -21,7 +21,7 @@ public abstract class StunAttack : MonsterAbility
     {
         if (source.Weapon is BaseWeapon weapon)
         {
-            _stunning ??= new HashSet<BaseCreature>();
+            _stunning ??= [];
             _stunning.Add(source);
             weapon.OnHit(source, target);
             _stunning.Remove(source);

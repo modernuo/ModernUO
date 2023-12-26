@@ -294,7 +294,7 @@ namespace Server.Gumps
                     _         => new Point3D(ip)
                 };
 
-                Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), new[] { m_Type.Name });
+                Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), [m_Type.Name]);
 
                 from.Target = new InternalTarget(m_Type, m_SearchResults, m_SearchString, m_Page);
             }

@@ -4,7 +4,7 @@ namespace Server.Commands.Generic
     {
         public SerialCommandImplementor()
         {
-            Accessors = new[] { "Serial" };
+            Accessors = ["Serial"];
             SupportRequirement = CommandSupport.Single;
             AccessLevel = AccessLevel.Counselor;
             Usage = "Serial <serial> <command>";

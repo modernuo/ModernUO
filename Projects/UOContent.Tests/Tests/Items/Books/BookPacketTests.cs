@@ -61,25 +61,25 @@ namespace UOContent.Tests
 
             Serial serial = (Serial)0x1001;
             var book = new TestBook(serial) { Author = "Some Author", Title = "Some Title" };
-            book.Pages[0].Lines = new[]
-            {
+            book.Pages[0].Lines =
+            [
                 "Some books start with actual content",
                 "This book does not have any actual content",
                 "Instead it has several pages of useless text"
-            };
+            ];
 
-            book.Pages[1].Lines = new[]
-            {
+            book.Pages[1].Lines =
+            [
                 "Another page exists but this page:",
                 "Has lots of: 🅵🅰🅽🅲🆈 🆃🅴🆇🆃",
                 "And just more: 🅵🅰🅽🅲🆈 🆃🅴🆇🆃",
                 "So everyone can read: 🅵🅰🅽🅲🆈 🆃🅴🆇🆃"
-            };
+            ];
 
-            book.Pages[2].Lines = new[]
-            {
+            book.Pages[2].Lines =
+            [
                 "The end"
-            };
+            ];
 
             var expected = new BookPageDetails(book).Compile();
 

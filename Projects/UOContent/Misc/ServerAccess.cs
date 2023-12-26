@@ -97,5 +97,5 @@ public static class ServerAccess
 public record ServerAccessConfiguration
 {
     [JsonPropertyName("protectedAccounts")]
-    public HashSet<string> ProtectedAccounts { get; set; } = new();
+    public HashSet<string> ProtectedAccounts { get; set; } = [];
 }

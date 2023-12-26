@@ -201,13 +201,13 @@ namespace Server.Network
     public sealed class SeasonChange : Packet
     {
         private static readonly SeasonChange[][] m_Cache =
-        {
+        [
             new SeasonChange[2],
             new SeasonChange[2],
             new SeasonChange[2],
             new SeasonChange[2],
             new SeasonChange[2]
-        };
+        ];
 
         public SeasonChange(int season, bool playSound = true) : base(0xBC, 3)
         {

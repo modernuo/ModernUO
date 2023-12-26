@@ -80,14 +80,14 @@ namespace Server.Spells.Fifth
                         var physiMod = -25 + (int)(targ.Skills.Inscribe.Value / 20);
                         const int otherMod = 10;
 
-                        mods = new[]
-                        {
+                        mods =
+                        [
                             new ResistanceMod(ResistanceType.Physical, "PhysicalResistMagicResist", physiMod),
                             new ResistanceMod(ResistanceType.Fire, "FireResistMagicResist", otherMod),
                             new ResistanceMod(ResistanceType.Cold, "ColdResistMagicResist", otherMod),
                             new ResistanceMod(ResistanceType.Poison, "PoisonResistMagicResist", otherMod),
                             new ResistanceMod(ResistanceType.Energy, "EnergyResistMagicResist", otherMod)
-                        };
+                        ];
 
                         _table[targ] = mods;
 

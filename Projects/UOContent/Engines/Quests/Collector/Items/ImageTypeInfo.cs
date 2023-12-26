@@ -31,7 +31,7 @@ public enum ImageType
 public class ImageTypeInfo
 {
     private static readonly ImageTypeInfo[] m_Table =
-    {
+    [
         new(9734, typeof(Betrayer), 75, 45),
         new(9735, typeof(Bogling), 75, 45),
         new(9736, typeof(BogThing), 60, 47),
@@ -53,7 +53,7 @@ public class ImageTypeInfo
         new(9753, typeof(SwampDragon), 50, 55),
         new(8448, typeof(Wisp), 75, 45),
         new(9746, typeof(Juggernaut), 55, 38)
-    };
+    ];
 
     public ImageTypeInfo(int figurine, Type type, int x, int y)
     {

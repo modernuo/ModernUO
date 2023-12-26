@@ -9,8 +9,8 @@ namespace Server.Regions;
 
 public class BaseRegion : Region
 {
-    private static readonly List<Rectangle3D> m_RectBuffer1 = new();
-    private static readonly List<Rectangle3D> m_RectBuffer2 = new();
+    private static readonly List<Rectangle3D> m_RectBuffer1 = [];
+    private static readonly List<Rectangle3D> m_RectBuffer2 = [];
 
     public BaseRegion(string name, Map map, int priority, params Rectangle2D[] area) : base(name, map, priority, area)
     {

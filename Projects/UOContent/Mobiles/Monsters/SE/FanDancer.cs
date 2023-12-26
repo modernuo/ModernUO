@@ -59,11 +59,11 @@ namespace Server.Mobiles
         public override bool Uncalmable => true;
 
         private static MonsterAbility[] _abilities =
-        {
+        [
             MonsterAbilities.ReflectPhysicalDamage,
             MonsterAbilities.FanningFire,
             MonsterAbilities.FanThrowCounter
-        };
+        ];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

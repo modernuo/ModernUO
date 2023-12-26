@@ -59,7 +59,7 @@ namespace Server.Engines.MLQuests.Definitions
             CompletionMessage =
                 1074859; // You look a bit worse for wear!  He put up a good fight did he?  Hah!  That's the spirit … a Master of Bedlam is a match for most.
 
-            Objectives.Add(new KillObjective(1, new[] { typeof(MasterTheophilus) }, "Master Theophilus"));
+            Objectives.Add(new KillObjective(1, [typeof(MasterTheophilus)], "Master Theophilus"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }

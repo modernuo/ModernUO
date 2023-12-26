@@ -23,9 +23,9 @@ namespace Server.Engines.Quests.Haven
     public class UzeraanFirstTaskConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1023676, 0xE68) // glowing rune
-        };
+        ];
 
         public override object Message
         {
@@ -79,10 +79,10 @@ namespace Server.Engines.Quests.Haven
     public class UzeraanReportConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1026153, 0x1822), // teleporter
             new(1048032, 0xE76)   // a bag
-        };
+        ];
 
         public override object Message
         {
@@ -134,9 +134,9 @@ namespace Server.Engines.Quests.Haven
     public class SchmendrickConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1023637, 0xE34) // scroll
-        };
+        ];
 
         public override object Message
         {
@@ -179,11 +179,11 @@ namespace Server.Engines.Quests.Haven
     public class UzeraanScrollOfPowerConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1048030, 0x14EB), // a Treasure Map
             new(1023969, 0xF81),  // Fertile Dirt
             new(1049117, 0xFC4)   // Horn of Retreat
-        };
+        ];
 
         public override object Message => 1049325;
 
@@ -208,10 +208,10 @@ namespace Server.Engines.Quests.Haven
     public class UzeraanFertileDirtConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1023965, 0xF7D), // Daemon Blood
             new(1022581, 0xA22)  // lantern
-        };
+        ];
 
         public override object Message
         {
@@ -257,15 +257,15 @@ namespace Server.Engines.Quests.Haven
     public class UzeraanDaemonBloodConversation : QuestConversation
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1017412, 0xF80) // Daemon Bone
-        };
+        ];
 
         private static readonly QuestItemInfo[] m_InfoPaladin =
-        {
+        [
             new(1017412, 0xF80), // Daemon Bone
             new(1060577, 0x1F14) // Recall Rune
-        };
+        ];
 
         public override object Message
         {

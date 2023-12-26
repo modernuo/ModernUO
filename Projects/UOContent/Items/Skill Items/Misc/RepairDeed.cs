@@ -191,7 +191,7 @@ public partial class RepairDeed : Item
         }
 
         public RepairSkillInfo(CraftSystem system, Type nearbyType, TextDefinition notNearbyMessage, TextDefinition name)
-            : this(system, new[] { nearbyType }, notNearbyMessage, name)
+            : this(system, [nearbyType], notNearbyMessage, name)
         {
         }
 
@@ -204,13 +204,13 @@ public partial class RepairDeed : Item
         public Type[] NearbyTypes { get; }
 
         public static RepairSkillInfo[] Table { get; } =
-        {
+        [
             new(DefBlacksmithy.CraftSystem, typeof(Blacksmith), 1047013, 1023015),
             new(DefTailoring.CraftSystem, typeof(Tailor), 1061132, 1022981),
             new(DefTinkering.CraftSystem, typeof(Tinker), 1061166, 1022983),
             new(DefCarpentry.CraftSystem, typeof(Carpenter), 1061135, 1060774),
             new(DefBowFletching.CraftSystem, typeof(Bowyer), 1061134, 1023005)
-        };
+        ];
 
         public static RepairSkillInfo GetInfo(RepairSkillType type)
         {

@@ -55,7 +55,7 @@ namespace Server.Mobiles
         public override int Meat => 1;
         public override bool CanFly => true;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.ThrowHatchetCounter };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.ThrowHatchetCounter];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

@@ -44,7 +44,7 @@ public enum ActionType
 public abstract class BaseAI
 {
     private static readonly SkillName[] m_KeywordTable =
-    {
+    [
         SkillName.Parry,
         SkillName.Healing,
         SkillName.Hiding,
@@ -93,7 +93,7 @@ public abstract class BaseAI
         SkillName.Lumberjacking,
         SkillName.Mining,
         SkillName.Meditation
-    };
+    ];
 
     protected ActionType m_Action;
 

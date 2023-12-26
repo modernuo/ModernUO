@@ -27,7 +27,7 @@ public class TileMatrix
     public const int SectorShift = 3;
 
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(TileMatrix));
-    private static readonly List<TileMatrix> _instances = new();
+    private static readonly List<TileMatrix> _instances = [];
 
     private readonly StaticTile[][][][][] _staticTiles;
     private readonly LandTile[][][] _landTiles;
@@ -38,7 +38,7 @@ public class TileMatrix
     private readonly Map _map;
     private readonly int[][] _staticPatches;
     private readonly int[][] _landPatches;
-    private readonly List<TileMatrix> _fileShare = new();
+    private readonly List<TileMatrix> _fileShare = [];
 
     public TileMatrixPatch Patch { get; }
     public int BlockWidth { get; }

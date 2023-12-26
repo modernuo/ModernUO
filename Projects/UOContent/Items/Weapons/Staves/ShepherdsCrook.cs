@@ -39,13 +39,13 @@ namespace Server.Items
         private class HerdingTarget : Target
         {
             private static readonly Type[] m_ChampTamables =
-            {
+            [
                 typeof(StrongMongbat), typeof(Imp), typeof(Scorpion), typeof(GiantSpider),
                 typeof(Snake), typeof(LavaLizard), typeof(Drake), typeof(Dragon),
                 typeof(Kirin), typeof(Unicorn), typeof(GiantRat), typeof(Slime),
                 typeof(DireWolf), typeof(HellHound), typeof(DeathwatchBeetle),
                 typeof(LesserHiryu), typeof(Hiryu)
-            };
+            ];
 
             public HerdingTarget() : base(10, false, TargetFlags.None)
             {

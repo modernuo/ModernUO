@@ -46,7 +46,7 @@ namespace Server.Factions
 
     public class SBFactionOre : SBInfo
     {
-        private static readonly object[] m_FixedSizeArgs = { true };
+        private static readonly object[] m_FixedSizeArgs = [true];
 
         public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 

@@ -97,7 +97,7 @@ public partial class CandyCane : Food
 public partial class GingerBreadCookie : Food
 {
     private readonly int[] _messages =
-    {
+    [
         0,
         1077396, // Noooo!
         1077397, // Please don't eat me... *whimper*
@@ -106,7 +106,7 @@ public partial class GingerBreadCookie : Food
         1077407, // Please. No! I have gingerkids!
         1077408, // No, no! I'm really made of poison. Really.
         1077409  // Run, run as fast as you can! You can't catch me! I'm the gingerbread man!
-    };
+    ];
 
     [Constructible]
     public GingerBreadCookie() : base(Utility.RandomBool() ? 0x2be1 : 0x2be2)

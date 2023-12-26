@@ -43,7 +43,7 @@ public class ContainerTests : IClassFixture<ServerFixture>
 
         container2.AddItem(static1);
 
-        List<Static> statics = new List<Static>();
+        List<Static> statics = [];
         foreach (var item in container.FindItemsByType<Static>())
         {
             statics.Add(item);

@@ -6,7 +6,7 @@ namespace Server.Engines.ConPVP
 {
     public class TourneyPyramid
     {
-        public TourneyPyramid() => Levels = new List<PyramidLevel>();
+        public TourneyPyramid() => Levels = [];
 
         public List<PyramidLevel> Levels { get; set; }
 
@@ -31,7 +31,7 @@ namespace Server.Engines.ConPVP
 
                         for (var i = 0; i < parts.Length; ++i)
                         {
-                            parts[i] = new TourneyParticipant(new List<Mobile>());
+                            parts[i] = new TourneyParticipant([]);
                         }
 
                         for (var i = 0; i < copy.Count; ++i)
@@ -53,7 +53,7 @@ namespace Server.Engines.ConPVP
                             }
                         }
 
-                        level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
+                        level.Matches.Add(new TourneyMatch([..parts]));
                         break;
                     }
                 case TourneyType.Faction:
@@ -62,7 +62,7 @@ namespace Server.Engines.ConPVP
 
                         for (var i = 0; i < parts.Length; ++i)
                         {
-                            parts[i] = new TourneyParticipant(new List<Mobile>());
+                            parts[i] = new TourneyParticipant([]);
                         }
 
                         for (var i = 0; i < copy.Count; ++i)
@@ -105,7 +105,7 @@ namespace Server.Engines.ConPVP
                             }
                         }
 
-                        level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
+                        level.Matches.Add(new TourneyMatch([..parts]));
                         break;
                     }
                 case TourneyType.RandomTeam:
@@ -114,7 +114,7 @@ namespace Server.Engines.ConPVP
 
                         for (var i = 0; i < partsPerMatch; ++i)
                         {
-                            parts[i] = new TourneyParticipant(new List<Mobile>());
+                            parts[i] = new TourneyParticipant([]);
                         }
 
                         for (var i = 0; i < copy.Count; ++i)
@@ -122,7 +122,7 @@ namespace Server.Engines.ConPVP
                             parts[i % parts.Length].Players.AddRange(copy[i].Players);
                         }
 
-                        level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
+                        level.Matches.Add(new TourneyMatch([..parts]));
                         break;
                     }
                 case TourneyType.FreeForAll:
@@ -209,7 +209,7 @@ namespace Server.Engines.ConPVP
 
     public class PyramidLevel
     {
-        public List<TourneyMatch> Matches { get; set; } = new();
+        public List<TourneyMatch> Matches { get; set; } = [];
         public TourneyParticipant FreeAdvance { get; set; }
     }
 }

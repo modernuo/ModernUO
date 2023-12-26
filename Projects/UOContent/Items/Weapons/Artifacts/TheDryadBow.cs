@@ -6,14 +6,14 @@ namespace Server.Items
     public partial class TheDryadBow : Bow
     {
         private static readonly SkillName[] m_PossibleBonusSkills =
-        {
+        [
             SkillName.Archery,
             SkillName.Healing,
             SkillName.MagicResist,
             SkillName.Peacemaking,
             SkillName.Chivalry,
             SkillName.Ninjitsu
-        };
+        ];
 
         [Constructible]
         public TheDryadBow()

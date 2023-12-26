@@ -35,7 +35,7 @@ namespace Server.Factions
         public TextDefinition Label { get; }
 
         public static VendorDefinition[] Definitions { get; } =
-        {
+        [
             new(
                 typeof(FactionBottleVendor),
                 0xF0E,
@@ -81,6 +81,6 @@ namespace Server.Factions
                 1011556, // HORSE BREEDER
                 1011555 // Buy Horse Breeder
             )
-        };
+        ];
     }
 }

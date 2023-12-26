@@ -203,7 +203,7 @@ namespace Server.Items
                 list.Add(
                     RewardSystem.GetRewardYearLabel(
                         this,
-                        new object[] { Hue, _number }
+                        [Hue, _number]
                     )
                 );
             }
@@ -211,7 +211,7 @@ namespace Server.Items
 
         public override bool CanEquip(Mobile m) =>
             base.CanEquip(m) &&
-            (!IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, _number }));
+            (!IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, [Hue, _number]));
 
         [AfterDeserialization]
         private void AfterDeserialization()
@@ -285,7 +285,7 @@ namespace Server.Items
                 list.Add(
                     RewardSystem.GetRewardYearLabel(
                         this,
-                        new object[] { Hue, _number }
+                        [Hue, _number]
                     )
                 );
             }
@@ -293,7 +293,7 @@ namespace Server.Items
 
         public override bool CanEquip(Mobile m) =>
             base.CanEquip(m) &&
-            (!_isRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, _number }));
+            (!_isRewardItem || RewardSystem.CheckIsUsableBy(m, this, [Hue, _number]));
 
         [AfterDeserialization]
         private void AfterDeserialization()

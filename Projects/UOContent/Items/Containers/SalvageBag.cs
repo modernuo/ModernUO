@@ -233,10 +233,11 @@ public partial class SalvageBag : Bag
         }
     }
 
-    private static readonly Type[] _clothTypes = {
+    private static readonly Type[] _clothTypes =
+    [
         typeof(Leather), typeof(Cloth), typeof(SpinedLeather), typeof(HornedLeather), typeof(BarbedLeather),
         typeof(Bandage), typeof(Bone)
-    };
+    ];
 
     private void SalvageCloth(Mobile from)
     {

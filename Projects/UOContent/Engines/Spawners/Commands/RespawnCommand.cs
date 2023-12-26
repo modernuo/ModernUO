@@ -30,7 +30,7 @@ namespace Server.Engines.Spawners
         {
             AccessLevel = AccessLevel.GameMaster;
             Supports = CommandSupport.Complex | CommandSupport.Simple;
-            Commands = new[] { "Respawn" };
+            Commands = ["Respawn"];
             ObjectTypes = ObjectTypes.Items;
             Usage = "Respawn";
             Description = "Respawns the given the spawners.";

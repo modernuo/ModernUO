@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Collector
     public class CollectorQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(DontOfferConversation),
             typeof(DeclineConversation),
             typeof(AcceptConversation),
@@ -50,7 +50,7 @@ namespace Server.Engines.Quests.Collector
             typeof(ReturnImagesObjective),
             typeof(ReturnToysObjective),
             typeof(MakeRoomObjective)
-        };
+        ];
 
         public CollectorQuest(PlayerMobile from) : base(from)
         {

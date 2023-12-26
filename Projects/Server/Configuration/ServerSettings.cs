@@ -23,13 +23,13 @@ namespace Server;
 public class ServerSettings
 {
     [JsonPropertyName("assemblyDirectories")]
-    public List<string> AssemblyDirectories { get; set; } = new();
+    public List<string> AssemblyDirectories { get; set; } = [];
 
     [JsonPropertyName("dataDirectories")]
-    public HashSet<string> DataDirectories { get; set; } = new();
+    public HashSet<string> DataDirectories { get; set; } = [];
 
     [JsonPropertyName("listeners")]
-    public List<IPEndPoint> Listeners { get; set; } = new();
+    public List<IPEndPoint> Listeners { get; set; } = [];
 
     [JsonPropertyName("settings")]
     public SortedDictionary<string, string> Settings { get; set; } = new();

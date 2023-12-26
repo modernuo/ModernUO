@@ -7,7 +7,7 @@ namespace Server.Engines.Quests.Matriarch
     public class SolenMatriarchQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(DontOfferConversation),
             typeof(AcceptConversation),
             typeof(DuringKillInfiltratorsConversation),
@@ -23,7 +23,7 @@ namespace Server.Engines.Quests.Matriarch
             typeof(ReturnAfterWaterObjective),
             typeof(ProcessFungiObjective),
             typeof(GetRewardObjective)
-        };
+        ];
 
         public SolenMatriarchQuest(PlayerMobile from, bool redSolen) : base(from) => RedSolen = redSolen;
 

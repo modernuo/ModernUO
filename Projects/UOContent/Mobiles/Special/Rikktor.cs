@@ -45,27 +45,27 @@ public partial class Rikktor : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Power;
 
-    public override Type[] UniqueList => new[] { typeof(CrownOfTalKeesh) };
+    public override Type[] UniqueList => [typeof(CrownOfTalKeesh)];
 
-    public override Type[] SharedList => new[]
-    {
+    public override Type[] SharedList =>
+    [
         typeof(TheMostKnowledgePerson),
         typeof(BraveKnightOfTheBritannia),
         typeof(LieutenantOfTheBritannianRoyalGuard)
-    };
+    ];
 
-    public override Type[] DecorativeList => new[]
-    {
+    public override Type[] DecorativeList =>
+    [
         typeof(LavaTile),
         typeof(MonsterStatuette),
         typeof(MonsterStatuette)
-    };
+    ];
 
-    public override MonsterStatuetteType[] StatueTypes => new[]
-    {
+    public override MonsterStatuetteType[] StatueTypes =>
+    [
         MonsterStatuetteType.OphidianArchMage,
         MonsterStatuetteType.OphidianWarrior
-    };
+    ];
 
     public override string DefaultName => "Rikktor";
 

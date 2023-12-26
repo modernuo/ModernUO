@@ -7,20 +7,20 @@ namespace Server
     public static class Loot
     {
         public static Type[] MLWeaponTypes { get; } =
-        {
+        [
             typeof(AssassinSpike), typeof(DiamondMace), typeof(ElvenMachete),
             typeof(ElvenSpellblade), typeof(Leafblade), typeof(OrnateAxe),
             typeof(RadiantScimitar), typeof(RuneBlade), typeof(WarCleaver),
             typeof(WildStaff)
-        };
+        ];
 
         public static Type[] MLRangedWeaponTypes { get; } =
-        {
+        [
             typeof(ElvenCompositeLongbow), typeof(MagicalShortbow)
-        };
+        ];
 
         public static Type[] MLArmorTypes { get; } =
-        {
+        [
             typeof(Circlet), typeof(GemmedCirclet), typeof(LeafTonlet),
             typeof(RavenHelm), typeof(RoyalCirclet), typeof(VultureHelm),
             typeof(WingedHelm), typeof(LeafArms), typeof(LeafChest),
@@ -29,32 +29,32 @@ namespace Server
             typeof(WoodlandGorget), typeof(WoodlandLegs), typeof(HideChest),
             typeof(HideGloves), typeof(HideGorget), typeof(HidePants),
             typeof(HidePauldrons)
-        };
+        ];
 
         public static Type[] MLClothingTypes { get; } =
-        {
+        [
             typeof(MaleElvenRobe), typeof(FemaleElvenRobe), typeof(ElvenPants),
             typeof(ElvenShirt), typeof(ElvenDarkShirt), typeof(ElvenBoots),
             typeof(VultureHelm), typeof(WoodlandBelt)
-        };
+        ];
 
         public static Type[] SEWeaponTypes { get; } =
-        {
+        [
             typeof(Bokuto), typeof(Daisho), typeof(Kama),
             typeof(Lajatang), typeof(NoDachi), typeof(Nunchaku),
             typeof(Sai), typeof(Tekagi), typeof(Tessen),
             typeof(Tetsubo), typeof(Wakizashi)
-        };
+        ];
 
         public static Type[] AosWeaponTypes { get; } =
-        {
+        [
             typeof(Scythe), typeof(BoneHarvester), typeof(Scepter),
             typeof(BladedStaff), typeof(Pike), typeof(DoubleBladedStaff),
             typeof(Lance), typeof(CrescentBlade)
-        };
+        ];
 
         public static Type[] WeaponTypes { get; } =
-        {
+        [
             typeof(Axe), typeof(BattleAxe), typeof(DoubleAxe),
             typeof(ExecutionersAxe), typeof(Hatchet), typeof(LargeBattleAxe),
             typeof(TwoHandedAxe), typeof(WarAxe), typeof(Club),
@@ -67,25 +67,25 @@ namespace Server
             typeof(Scimitar), typeof(VikingSword), typeof(Pickaxe),
             typeof(HammerPick), typeof(ButcherKnife), typeof(Cleaver),
             typeof(Dagger), typeof(SkinningKnife), typeof(ShepherdsCrook)
-        };
+        ];
 
         public static Type[] SERangedWeaponTypes { get; } =
-        {
+        [
             typeof(Yumi)
-        };
+        ];
 
         public static Type[] AosRangedWeaponTypes { get; } =
-        {
+        [
             typeof(CompositeBow), typeof(RepeatingCrossbow)
-        };
+        ];
 
         public static Type[] RangedWeaponTypes { get; } =
-        {
+        [
             typeof(Bow), typeof(Crossbow), typeof(HeavyCrossbow)
-        };
+        ];
 
         public static Type[] SEArmorTypes { get; } =
-        {
+        [
             typeof(ChainHatsuburi), typeof(LeatherDo), typeof(LeatherHaidate),
             typeof(LeatherHiroSode), typeof(LeatherJingasa), typeof(LeatherMempo),
             typeof(LeatherNinjaHood), typeof(LeatherNinjaJacket), typeof(LeatherNinjaMitts),
@@ -96,10 +96,10 @@ namespace Server
             typeof(SmallPlateJingasa), typeof(StandardPlateKabuto), typeof(StuddedDo),
             typeof(StuddedHaidate), typeof(StuddedHiroSode), typeof(StuddedMempo),
             typeof(StuddedSuneate)
-        };
+        ];
 
         public static Type[] ArmorTypes { get; } =
-        {
+        [
             typeof(BoneArms), typeof(BoneChest), typeof(BoneGloves),
             typeof(BoneLegs), typeof(BoneHelm), typeof(ChainChest),
             typeof(ChainLegs), typeof(ChainCoif), typeof(Bascinet),
@@ -114,72 +114,72 @@ namespace Server
             typeof(RingmailLegs), typeof(FemaleStuddedChest), typeof(StuddedArms),
             typeof(StuddedBustierArms), typeof(StuddedChest), typeof(StuddedGloves),
             typeof(StuddedGorget), typeof(StuddedLegs)
-        };
+        ];
 
         public static Type[] AosShieldTypes { get; } =
-        {
+        [
             typeof(ChaosShield), typeof(OrderShield)
-        };
+        ];
 
         public static Type[] ShieldTypes { get; } =
-        {
+        [
             typeof(BronzeShield), typeof(Buckler), typeof(HeaterShield),
             typeof(MetalShield), typeof(MetalKiteShield), typeof(WoodenKiteShield),
             typeof(WoodenShield)
-        };
+        ];
 
         public static Type[] GemTypes { get; } =
-        {
+        [
             typeof(Amber), typeof(Amethyst), typeof(Citrine),
             typeof(Diamond), typeof(Emerald), typeof(Ruby),
             typeof(Sapphire), typeof(StarSapphire), typeof(Tourmaline)
-        };
+        ];
 
         public static Type[] JewelryTypes { get; } =
-        {
+        [
             typeof(GoldRing), typeof(GoldBracelet),
             typeof(SilverRing), typeof(SilverBracelet)
-        };
+        ];
 
         public static Type[] RegTypes { get; } =
-        {
+        [
             typeof(BlackPearl), typeof(Bloodmoss), typeof(Garlic),
             typeof(Ginseng), typeof(MandrakeRoot), typeof(Nightshade),
             typeof(SulfurousAsh), typeof(SpidersSilk)
-        };
+        ];
 
         public static Type[] NecroRegTypes { get; } =
-        {
+        [
             typeof(BatWing), typeof(GraveDust), typeof(DaemonBlood),
             typeof(NoxCrystal), typeof(PigIron)
-        };
+        ];
 
         public static Type[] PotionTypes { get; } =
-        {
+        [
             typeof(AgilityPotion), typeof(StrengthPotion), typeof(RefreshPotion),
             typeof(LesserCurePotion), typeof(LesserHealPotion), typeof(LesserPoisonPotion)
-        };
+        ];
 
         public static Type[] SEInstrumentTypes { get; } =
-        {
+        [
             typeof(BambooFlute)
-        };
+        ];
 
         public static Type[] InstrumentTypes { get; } =
-        {
+        [
             typeof(Drums), typeof(Harp), typeof(LapHarp),
             typeof(Lute), typeof(Tambourine), typeof(TambourineTassel)
-        };
+        ];
 
         public static Type[] StatueTypes { get; } =
-        {
+        [
             typeof(StatueSouth), typeof(StatueSouth2), typeof(StatueNorth),
             typeof(StatueWest), typeof(StatueEast), typeof(StatueEast2),
             typeof(StatueSouthEast), typeof(BustSouth), typeof(BustEast)
-        };
+        ];
 
         public static Type[] RegularScrollTypes { get; } =
-        {
+        [
             typeof(ReactiveArmorScroll), typeof(ClumsyScroll), typeof(CreateFoodScroll), typeof(FeeblemindScroll),
             typeof(HealScroll), typeof(MagicArrowScroll), typeof(NightSightScroll), typeof(WeakenScroll),
             typeof(AgilityScroll), typeof(CunningScroll), typeof(CureScroll), typeof(HarmScroll),
@@ -198,29 +198,29 @@ namespace Server
             typeof(SummonAirElementalScroll),
             typeof(SummonDaemonScroll), typeof(SummonEarthElementalScroll), typeof(SummonFireElementalScroll),
             typeof(SummonWaterElementalScroll)
-        };
+        ];
 
         public static Type[] NecromancyScrollTypes { get; } =
-        {
+        [
             typeof(AnimateDeadScroll), typeof(BloodOathScroll), typeof(CorpseSkinScroll), typeof(CurseWeaponScroll),
             typeof(EvilOmenScroll), typeof(HorrificBeastScroll), typeof(LichFormScroll), typeof(MindRotScroll),
             typeof(PainSpikeScroll), typeof(PoisonStrikeScroll), typeof(StrangleScroll), typeof(SummonFamiliarScroll),
             typeof(VampiricEmbraceScroll), typeof(VengefulSpiritScroll), typeof(WitherScroll), typeof(WraithFormScroll)
-        };
+        ];
 
         public static Type[] SENecromancyScrollTypes { get; } =
-        {
+        [
             typeof(AnimateDeadScroll), typeof(BloodOathScroll), typeof(CorpseSkinScroll), typeof(CurseWeaponScroll),
             typeof(EvilOmenScroll), typeof(HorrificBeastScroll), typeof(LichFormScroll), typeof(MindRotScroll),
             typeof(PainSpikeScroll), typeof(PoisonStrikeScroll), typeof(StrangleScroll), typeof(SummonFamiliarScroll),
             typeof(VampiricEmbraceScroll), typeof(VengefulSpiritScroll), typeof(WitherScroll), typeof(WraithFormScroll),
             typeof(ExorcismScroll)
-        };
+        ];
 
         public static Type[] PaladinScrollTypes { get; } = Array.Empty<Type>();
 
         public static Type[] ArcanistScrollTypes { get; } =
-        {
+        [
             typeof(ArcaneCircleScroll), typeof(GiftOfRenewalScroll), typeof(ImmolatingWeaponScroll),
             typeof(AttuneWeaponScroll),
             typeof(ThunderstormScroll),
@@ -228,63 +228,63 @@ namespace Server
             typeof(ReaperFormScroll), typeof(WildfireScroll), typeof(EssenceOfWindScroll), typeof(DryadAllureScroll),
             typeof(EtherealVoyageScroll), typeof(WordOfDeathScroll), typeof(GiftOfLifeScroll),
             typeof(ArcaneEmpowermentScroll)
-        };
+        ];
 
         public static Type[] GrimmochJournalTypes { get; } =
-        {
+        [
             typeof(GrimmochJournal1), typeof(GrimmochJournal2), typeof(GrimmochJournal3),
             typeof(GrimmochJournal6), typeof(GrimmochJournal7), typeof(GrimmochJournal11),
             typeof(GrimmochJournal14), typeof(GrimmochJournal17), typeof(GrimmochJournal23)
-        };
+        ];
 
         public static Type[] LysanderNotebookTypes { get; } =
-        {
+        [
             typeof(LysanderNotebook1), typeof(LysanderNotebook2), typeof(LysanderNotebook3),
             typeof(LysanderNotebook7), typeof(LysanderNotebook8), typeof(LysanderNotebook11)
-        };
+        ];
 
         public static Type[] TavarasJournalTypes { get; } =
-        {
+        [
             typeof(TavarasJournal1), typeof(TavarasJournal2), typeof(TavarasJournal3),
             typeof(TavarasJournal6), typeof(TavarasJournal7), typeof(TavarasJournal8),
             typeof(TavarasJournal9), typeof(TavarasJournal11), typeof(TavarasJournal14),
             typeof(TavarasJournal16), typeof(TavarasJournal16b), typeof(TavarasJournal17),
             typeof(TavarasJournal19)
-        };
+        ];
 
         public static Type[] NewWandTypes { get; } =
-        {
+        [
             typeof(FireballWand), typeof(LightningWand), typeof(MagicArrowWand),
             typeof(GreaterHealWand), typeof(HarmWand), typeof(HealWand)
-        };
+        ];
 
         public static Type[] WandTypes { get; } =
-        {
+        [
             typeof(ClumsyWand), typeof(FeebleWand),
             typeof(ManaDrainWand), typeof(WeaknessWand)
-        };
+        ];
 
         public static Type[] OldWandTypes { get; } =
-        {
+        [
             typeof(IDWand)
-        };
+        ];
 
         public static Type[] SEClothingTypes { get; } =
-        {
+        [
             typeof(ClothNinjaJacket), typeof(FemaleKimono), typeof(Hakama),
             typeof(HakamaShita), typeof(JinBaori), typeof(Kamishimo),
             typeof(MaleKimono), typeof(NinjaTabi), typeof(Obi),
             typeof(SamuraiTabi), typeof(TattsukeHakama), typeof(Waraji)
-        };
+        ];
 
         public static Type[] AosClothingTypes { get; } =
-        {
+        [
             typeof(FurSarong), typeof(FurCape), typeof(FlowerGarland),
             typeof(GildedDress), typeof(FurBoots), typeof(FormalShirt)
-        };
+        ];
 
         public static Type[] ClothingTypes { get; } =
-        {
+        [
             typeof(Cloak),
             typeof(Bonnet), typeof(Cap), typeof(FeatheredHat),
             typeof(FloppyHat), typeof(JesterHat), typeof(Surcoat),
@@ -297,29 +297,29 @@ namespace Server
             typeof(FancyDress), typeof(ThighBoots), typeof(LongPants),
             typeof(PlainDress), typeof(Robe), typeof(ShortPants),
             typeof(HalfApron)
-        };
+        ];
 
         public static Type[] SEHatTypes { get; } =
-        {
+        [
             typeof(ClothNinjaHood), typeof(Kasa)
-        };
+        ];
 
         public static Type[] AosHatTypes { get; } =
-        {
+        [
             typeof(FlowerGarland), typeof(BearMask),
             typeof(DeerMask) // Are Bear& Deer mask inside the Pre-AoS loottables too?
-        };
+        ];
 
         public static Type[] HatTypes { get; } =
-        {
+        [
             typeof(SkullCap), typeof(Bandana), typeof(FloppyHat),
             typeof(Cap), typeof(WideBrimHat), typeof(StrawHat),
             typeof(TallStrawHat), typeof(WizardsHat), typeof(Bonnet),
             typeof(FeatheredHat), typeof(TricorneHat), typeof(JesterHat)
-        };
+        ];
 
         public static Type[] LibraryBookTypes { get; } =
-        {
+        [
             typeof(GrammarOfOrcish), typeof(CallToAnarchy), typeof(ArmsAndWeaponsPrimer),
             typeof(SongOfSamlethe), typeof(TaleOfThreeTribes), typeof(GuideToGuilds),
             typeof(BirdsOfBritannia), typeof(BritannianFlora), typeof(ChildrenTalesVol2),
@@ -330,7 +330,7 @@ namespace Server
             typeof(TheFight), typeof(LifeOfATravellingMinstrel), typeof(MajorTradeAssociation),
             typeof(RankingsOfTrades), typeof(WildGirlOfTheForest), typeof(TreatiseOnAlchemy),
             typeof(VirtueBook)
-        };
+        ];
 
         public static BaseWand RandomWand()
         {

@@ -62,7 +62,7 @@ namespace Server.Mobiles
         public override bool ClickTitle => false;
         public override bool PropertyTitle => false;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.BloodBathAttack };
+        private static MonsterAbility[] _abilities = [MonsterAbilities.BloodBathAttack];
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
         public override void GenerateLoot()

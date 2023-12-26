@@ -53,7 +53,7 @@ public static class Core
     private static int _mobileCount;
     public static EventLoopContext LoopContext { get; set; }
 
-    private static readonly Type[] _serialTypeArray = { typeof(Serial) };
+    private static readonly Type[] _serialTypeArray = [typeof(Serial)];
 
     public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
@@ -420,7 +420,7 @@ public static class Core
     public static void Main(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
-        
+
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
         AppDomain.CurrentDomain.AssemblyResolve += AssemblyHandler.AssemblyResolver;

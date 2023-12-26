@@ -141,7 +141,7 @@ namespace Server.Mobiles
 
     public class PlayerBarkeeper : BaseVendor
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+        private readonly List<SBInfo> m_SBInfos = [];
         private BaseHouse m_House;
 
         private Timer _newsTimer;
@@ -620,7 +620,7 @@ namespace Server.Mobiles
     public class BarkeeperTitleGump : Gump
     {
         private static readonly Entry[] m_Entries =
-        {
+        [
             new("Alchemist"),
             new("Animal Tamer"),
             new("Apothecary"),
@@ -681,7 +681,7 @@ namespace Server.Mobiles
             new("Warrior"),
             new("Watchman"),
             new("No Title", null)
-        };
+        ];
 
         private readonly PlayerBarkeeper m_Barkeeper;
         private readonly Mobile m_From;

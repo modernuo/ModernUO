@@ -56,7 +56,7 @@ public abstract partial class BaseHealer : BaseVendor
         PackItem(new CurePotion());
     }
 
-    protected override List<SBInfo> SBInfos { get; } = new();
+    protected override List<SBInfo> SBInfos { get; } = [];
 
     public override bool IsActiveVendor => false;
     public override bool IsInvulnerable => false;

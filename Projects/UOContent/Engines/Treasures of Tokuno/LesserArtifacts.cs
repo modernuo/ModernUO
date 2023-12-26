@@ -361,7 +361,7 @@ public partial class AncientUrn : Item
     }
 
     public static string[] Names { get; } =
-    {
+    [
         "Akira",
         "Avaniaga",
         "Aya",
@@ -397,7 +397,7 @@ public partial class AncientUrn : Item
         "Yeijiro",
         "Yoshi",
         "Zeshin"
-    };
+    ];
 
     public override int LabelNumber => 1071014; // Ancient Urn
 
@@ -566,53 +566,42 @@ public enum LesserPigmentType
 public partial class LesserPigmentsOfTokuno : BasePigmentsOfTokuno
 {
     private static readonly int[][] _table =
-    {
+    [
         // Hue, Label
-        new[]
-        {
+        [
             /*PigmentType.None,*/ 0, -1
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.PaleOrange,*/ 0x02E, 1071458
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.FreshRose,*/ 0x4B9, 1071455
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.ChaosBlue,*/ 0x005, 1071459
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.Silver,*/ 0x3E9, 1071451
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.NobleGold,*/ 0x227, 1071457
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.LightGreen,*/ 0x1C8, 1071454
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.PaleBlue,*/ 0x24F, 1071456
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.FreshPlum,*/ 0x145, 1071450
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.DeepBrown,*/ 0x3F0, 1071452
-        },
-        new[]
-        {
+        ],
+        [
             /*PigmentType.BurntBrown,*/ 0x41A, 1071453
-        }
-    };
+        ]
+    ];
 
     [Constructible]
     public LesserPigmentsOfTokuno() : this((LesserPigmentType)Utility.Random(0, 11))

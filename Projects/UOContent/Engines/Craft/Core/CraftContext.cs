@@ -13,7 +13,7 @@ namespace Server.Engines.Craft
     {
         public CraftContext()
         {
-            Items = new List<CraftItem>();
+            Items = [];
             LastResourceIndex = -1;
             LastResourceIndex2 = -1;
             LastGroupIndex = -1;

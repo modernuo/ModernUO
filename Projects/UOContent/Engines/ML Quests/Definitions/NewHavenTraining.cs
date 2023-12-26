@@ -35,7 +35,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1075483; // Fair enough, the bow isn't for everyone. Good day then.
             InProgressMessage = 1075484; // Return once ye have killed ten sheep with a bow and not a moment before.
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Sheep) }, 1018270)); // sheep
+            Objectives.Add(new KillObjective(10, [typeof(Sheep)], 1018270)); // sheep
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }

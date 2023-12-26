@@ -159,7 +159,7 @@ namespace Server.Engines.Quests
     {
         private readonly List<QuestObjective> m_Objectives;
 
-        public QuestObjectivesGump(QuestObjective obj) : this(new List<QuestObjective> { obj })
+        public QuestObjectivesGump(QuestObjective obj) : this([obj])
         {
         }
 

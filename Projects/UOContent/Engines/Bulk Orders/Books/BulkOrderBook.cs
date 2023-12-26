@@ -39,7 +39,7 @@ public partial class BulkOrderBook : Item, ISecurable
         Weight = 1.0;
         LootType = LootType.Blessed;
 
-        _entries = new List<IBOBEntry>();
+        _entries = [];
         _filter = new BOBFilter();
 
         _level = SecureLevel.CoOwners;

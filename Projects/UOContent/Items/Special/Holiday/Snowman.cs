@@ -8,7 +8,7 @@ public partial class Snowman : Item, IDyable
 {
     // All hail OSI staff
     private static readonly string[] titles =
-    {
+    [
         /*  1 */ "Backflash",
         /*  2 */ "Carbon",
         /*  3 */ "Colbalistic",
@@ -62,7 +62,7 @@ public partial class Snowman : Item, IDyable
         /* 51 */ "Zilo",
         /* 52 */ "Zippy",
         /* 53 */ "Zoer"
-    };
+    ];
 
     [InvalidateProperties]
     [SerializableField(0)]

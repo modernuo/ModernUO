@@ -8,7 +8,7 @@ namespace Server.Commands.Generic
     {
         public OnlineCommandImplementor()
         {
-            Accessors = new[] { "Online" };
+            Accessors = ["Online"];
             SupportRequirement = CommandSupport.Online;
             SupportsConditionals = true;
             AccessLevel = AccessLevel.GameMaster;

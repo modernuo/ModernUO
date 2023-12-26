@@ -27,7 +27,7 @@ namespace Server.Engines.ConPVP
         private static readonly TimeSpan CombatDelay = TimeSpan.FromSeconds(30.0);
         private static readonly TimeSpan AutoTieDelay = TimeSpan.FromMinutes(15.0);
 
-        private readonly List<Item> m_Walls = new();
+        private readonly List<Item> m_Walls = [];
 
         private TimerExecutionToken _autoTieTimerToken;
         private TimerExecutionToken _countdownTimerToken;
@@ -49,7 +49,7 @@ namespace Server.Engines.ConPVP
         public DuelContext(Mobile initiator, RulesetLayout layout, bool addNew = true)
         {
             Initiator = initiator;
-            Participants = new List<Participant>();
+            Participants = [];
             Ruleset = new Ruleset(layout);
             Ruleset.ApplyDefault(layout.Defaults[0]);
 
@@ -2628,7 +2628,7 @@ namespace Server.Engines.ConPVP
 
             public ExitTeleporter() : base(0x1822)
             {
-                m_Entries = new List<ReturnEntry>();
+                m_Entries = [];
 
                 Hue = 0x482;
                 Movable = false;

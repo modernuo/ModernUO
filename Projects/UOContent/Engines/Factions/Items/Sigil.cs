@@ -106,7 +106,7 @@ namespace Server.Factions
                 TimeSpan.Zero :
                 Utility.Max(CorruptionStart + CorruptionPeriod - Core.Now, TimeSpan.Zero);
 
-        public static List<Sigil> Sigils { get; } = new();
+        public static List<Sigil> Sigils { get; } = [];
 
         public void Update()
         {

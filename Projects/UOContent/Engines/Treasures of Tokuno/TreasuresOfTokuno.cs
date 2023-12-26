@@ -35,10 +35,9 @@ namespace Server.Misc
         public const int ItemsPerReward = 10;
 
         private static readonly Type[][] m_LesserArtifacts =
-        {
+        [
             // ToT One Rewards
-            new[]
-            {
+            [
                 typeof(AncientFarmersKasa), typeof(AncientSamuraiDo), typeof(ArmsOfTacticalExcellence),
                 typeof(BlackLotusHood),
                 typeof(DaimyosHelm), typeof(DemonForks), typeof(DragonNunchaku), typeof(Exiler), typeof(GlovesOfTheSun),
@@ -46,10 +45,9 @@ namespace Server.Misc
                 typeof(TheDestroyer),
                 typeof(TomeOfEnlightenment), typeof(AncientUrn), typeof(HonorableSwords), typeof(PigmentsOfTokuno),
                 typeof(FluteOfRenewal), typeof(ChestOfHeirlooms)
-            },
+            ],
             // ToT Two Rewards
-            new[]
-            {
+            [
                 typeof(MetalPigmentsOfTokuno), typeof(AncientFarmersKasa), typeof(AncientSamuraiDo),
                 typeof(ArmsOfTacticalExcellence),
                 typeof(MetalPigmentsOfTokuno), typeof(BlackLotusHood), typeof(DaimyosHelm), typeof(DemonForks),
@@ -59,10 +57,9 @@ namespace Server.Misc
                 typeof(TheDestroyer),
                 typeof(MetalPigmentsOfTokuno), typeof(TomeOfEnlightenment), typeof(AncientUrn), typeof(HonorableSwords),
                 typeof(MetalPigmentsOfTokuno), typeof(FluteOfRenewal), typeof(ChestOfHeirlooms)
-            },
+            ],
             // ToT Three Rewards
-            new[]
-            {
+            [
                 typeof(LesserPigmentsOfTokuno), typeof(AncientFarmersKasa), typeof(AncientSamuraiDo),
                 typeof(ArmsOfTacticalExcellence),
                 typeof(LesserPigmentsOfTokuno), typeof(BlackLotusHood), typeof(DaimyosHelm), typeof(HanzosBow),
@@ -73,13 +70,13 @@ namespace Server.Misc
                 typeof(LesserPigmentsOfTokuno), typeof(TomeOfEnlightenment), typeof(AncientUrn), typeof(HonorableSwords),
                 typeof(FluteOfRenewal),
                 typeof(LesserPigmentsOfTokuno), typeof(LeurociansMempoOfFortune), typeof(ChestOfHeirlooms)
-            }
-        };
+            ]
+        ];
 
         private static Type[][] m_GreaterArtifacts;
 
         public static Type[] LesserArtifactsTotal { get; } =
-        {
+        [
             typeof(AncientFarmersKasa), typeof(AncientSamuraiDo), typeof(ArmsOfTacticalExcellence), typeof(BlackLotusHood),
             typeof(DaimyosHelm), typeof(DemonForks), typeof(DragonNunchaku), typeof(Exiler), typeof(GlovesOfTheSun),
             typeof(HanzosBow), typeof(LegsOfStability), typeof(PeasantsBokuto), typeof(PilferedDancerFans),
@@ -88,13 +85,13 @@ namespace Server.Misc
             typeof(FluteOfRenewal),
             typeof(LeurociansMempoOfFortune), typeof(LesserPigmentsOfTokuno), typeof(MetalPigmentsOfTokuno),
             typeof(ChestOfHeirlooms)
-        };
+        ];
 
         public static Type[] TokunoDyable { get; } =
-        {
+        [
             typeof(DupresShield), typeof(CrimsonCincture), typeof(OssianGrimoire), typeof(QuiverOfInfinity),
             typeof(BaseFormTalisman), typeof(BaseWand), typeof(JesterHatofChuckles)
-        };
+        ];
 
         public static void Configure()
         {
@@ -252,7 +249,7 @@ namespace Server.Mobiles
     [SerializationGenerator(0, false)]
     public partial class IharaSoko : BaseVendor
     {
-        protected List<SBInfo> m_SBInfos = new();
+        protected List<SBInfo> m_SBInfos = [];
 
         [Constructible]
         public IharaSoko() : base("the Imperial Minister of Trade")
@@ -485,10 +482,9 @@ namespace Server.Gumps
             m_Collector = collector;
 
         public static TypeTileButtonInfo[][] NormalRewards { get; } =
-        {
+        [
             // ToT One Rewards
-            new[]
-            {
+            [
                 new TypeTileButtonInfo(typeof(SwordsOfProsperity), 0x27A9, 1070963, 1071002),
                 new TypeTileButtonInfo(typeof(SwordOfTheStampede), 0x27A2, 1070964, 1070978),
                 new TypeTileButtonInfo(typeof(WindsEdge), 0x27A3, 1070965, 1071003),
@@ -499,10 +495,9 @@ namespace Server.Gumps
                 new TypeTileButtonInfo(typeof(Stormgrip), 0x2792, 1070970, 1071008),
                 new TypeTileButtonInfo(typeof(TomeOfLostKnowledge), 0x0EFA, 0x530, 1070971, 1071009),
                 new TypeTileButtonInfo(typeof(PigmentsOfTokuno), 0x0EFF, 1070933, 1071011)
-            },
+            ],
             // ToT Two Rewards
-            new[]
-            {
+            [
                 new TypeTileButtonInfo(typeof(SwordsOfProsperity), 0x27A9, 1070963, 1071002),
                 new TypeTileButtonInfo(typeof(SwordOfTheStampede), 0x27A2, 1070964, 1070978),
                 new TypeTileButtonInfo(typeof(WindsEdge), 0x27A3, 1070965, 1071003),
@@ -513,10 +508,9 @@ namespace Server.Gumps
                 new TypeTileButtonInfo(typeof(Stormgrip), 0x2792, 1070970, 1071008),
                 new TypeTileButtonInfo(typeof(TomeOfLostKnowledge), 0x0EFA, 0x530, 1070971, 1071009),
                 new TypeTileButtonInfo(typeof(PigmentsOfTokuno), 0x0EFF, 1070933, 1071011)
-            },
+            ],
             // ToT Three Rewards
-            new[]
-            {
+            [
                 new TypeTileButtonInfo(typeof(SwordsOfProsperity), 0x27A9, 1070963, 1071002),
                 new TypeTileButtonInfo(typeof(SwordOfTheStampede), 0x27A2, 1070964, 1070978),
                 new TypeTileButtonInfo(typeof(WindsEdge), 0x27A3, 1070965, 1071003),
@@ -526,14 +520,13 @@ namespace Server.Gumps
                 new TypeTileButtonInfo(typeof(KasaOfTheRajin), 0x2798, 1070969, 1071007),
                 new TypeTileButtonInfo(typeof(Stormgrip), 0x2792, 1070970, 1071008),
                 new TypeTileButtonInfo(typeof(TomeOfLostKnowledge), 0x0EFA, 0x530, 1070971, 1071009)
-            }
-        };
+            ]
+        ];
 
         public static PigmentsTileButtonInfo[][] PigmentRewards { get; } =
-        {
+        [
             // ToT One Pigment Rewards
-            new[]
-            {
+            [
                 new PigmentsTileButtonInfo(PigmentType.ParagonGold),
                 new PigmentsTileButtonInfo(PigmentType.VioletCouragePurple),
                 new PigmentsTileButtonInfo(PigmentType.InvulnerabilityBlue),
@@ -544,10 +537,9 @@ namespace Server.Gumps
                 new PigmentsTileButtonInfo(PigmentType.NoxGreen),
                 new PigmentsTileButtonInfo(PigmentType.RumRed),
                 new PigmentsTileButtonInfo(PigmentType.FireOrange)
-            },
+            ],
             // ToT Two Pigment Rewards
-            new[]
-            {
+            [
                 new PigmentsTileButtonInfo(PigmentType.FadedCoal),
                 new PigmentsTileButtonInfo(PigmentType.Coal),
                 new PigmentsTileButtonInfo(PigmentType.FadedGold),
@@ -557,10 +549,9 @@ namespace Server.Gumps
                 new PigmentsTileButtonInfo(PigmentType.FadedBronze),
                 new PigmentsTileButtonInfo(PigmentType.FadedRose),
                 new PigmentsTileButtonInfo(PigmentType.DeepRose)
-            },
+            ],
             // ToT Three Pigment Rewards
-            new[]
-            {
+            [
                 new PigmentsTileButtonInfo(PigmentType.ParagonGold),
                 new PigmentsTileButtonInfo(PigmentType.VioletCouragePurple),
                 new PigmentsTileButtonInfo(PigmentType.InvulnerabilityBlue),
@@ -571,8 +562,8 @@ namespace Server.Gumps
                 new PigmentsTileButtonInfo(PigmentType.NoxGreen),
                 new PigmentsTileButtonInfo(PigmentType.RumRed),
                 new PigmentsTileButtonInfo(PigmentType.FireOrange)
-            }
-        };
+            ]
+        ];
 
         public override void HandleButtonResponse(NetState sender, int adjustedButton, ImageTileButtonInfo buttonInfo)
         {

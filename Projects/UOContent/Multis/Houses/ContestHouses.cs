@@ -44,7 +44,7 @@ namespace Server.Multis
             get
             {
                 var mcl = Components;
-                return new[] { new Rectangle2D(mcl.Min.X, mcl.Min.Y, mcl.Width, mcl.Height) };
+                return [new Rectangle2D(mcl.Min.X, mcl.Min.Y, mcl.Width, mcl.Height)];
             }
         }
 
@@ -132,7 +132,7 @@ namespace Server.Multis
 
         public void AddFixture(Item item)
         {
-            Fixtures ??= new List<Item>();
+            Fixtures ??= [];
 
             Fixtures.Add(item);
         }
@@ -177,7 +177,7 @@ namespace Server.Multis
                     }
                     else
                     {
-                        teleporters.Add(entry.ItemId, new List<MultiTileEntry> { entry });
+                        teleporters.Add(entry.ItemId, [entry]);
                     }
                 }
                 else
@@ -271,10 +271,10 @@ namespace Server.Multis
     public class TrinsicKeep : BaseContestHouse
     {
         public static Rectangle2D[] AreaArray =
-        {
+        [
             new(-11, -11, 23, 23), new(-10, 13, 6, 1),
             new(-2, 13, 6, 1), new(6, 13, 7, 1)
-        };
+        ];
 
         public TrinsicKeep(Mobile owner)
             : base(ContestHouseType.Keep, 0x147E, owner, 2113, 18)
@@ -304,12 +304,12 @@ namespace Server.Multis
     public class GothicRoseCastle : BaseContestHouse
     {
         public static Rectangle2D[] AreaArray =
-        {
+        [
             new(-15, -15, 31, 31),
             new(-14, 16, 11, 1),
             new(-2, 16, 6, 1),
             new(5, 16, 11, 1)
-        };
+        ];
 
         public GothicRoseCastle(Mobile owner)
             : base(ContestHouseType.Castle, 0x147F, owner, 3281, 28)
@@ -412,12 +412,12 @@ namespace Server.Multis
     public class FeudalCastle : BaseContestHouse
     {
         public static Rectangle2D[] AreaArray =
-        {
+        [
             new(-15, -15, 31, 31),
             new(5, 16, 1, 1),
             new(7, 16, 4, 1),
             new(12, 16, 1, 1)
-        };
+        ];
 
         public FeudalCastle(Mobile owner)
             : base(ContestHouseType.Castle, 0x1483, owner, 3281, 28)
@@ -472,12 +472,12 @@ namespace Server.Multis
     public class TraditionalKeep : BaseContestHouse
     {
         public static Rectangle2D[] AreaArray =
-        {
+        [
             new(-11, -11, 23, 23),
             new(-10, 13, 6, 1),
             new(-2, 13, 6, 1),
             new(6, 13, 7, 1)
-        };
+        ];
 
         public TraditionalKeep(Mobile owner)
             : base(ContestHouseType.Keep, 0x1485, owner, 2113, 18)
@@ -684,12 +684,12 @@ namespace Server.Multis
     public class OkinawaSweetDreamCastle : BaseContestHouse
     {
         public static Rectangle2D[] AreaArray =
-        {
+        [
             new(-15, -15, 31, 31),
             new(-14, 16, 6, 1),
             new(-7, 16, 8, 1),
             new(10, 16, 5, 1)
-        };
+        ];
 
         public OkinawaSweetDreamCastle(Mobile owner)
             : base(ContestHouseType.Castle, 0x148D, owner, 3281, 28)
@@ -744,12 +744,12 @@ namespace Server.Multis
     public class GrimswindSisters : BaseContestHouse
     {
         public static Rectangle2D[] AreaArray =
-        {
+        [
             new(-15, -15, 31, 31),
             new(-14, 16, 9, 1),
             new(-3, 16, 8, 1),
             new(7, 16, 9, 1)
-        };
+        ];
 
         public GrimswindSisters(Mobile owner)
             : base(ContestHouseType.Castle, 0x148F, owner, 3281, 28)

@@ -100,7 +100,7 @@ namespace Server.Mobiles
         private static bool m_NoRecursion;
 
         private static readonly Point3D[] m_TrammelDeathDestinations =
-        {
+        [
             new(1481, 1612, 20),
             new(2708, 2153, 0),
             new(2249, 1230, 0),
@@ -116,10 +116,10 @@ namespace Server.Mobiles
             new(2929, 854, 0),
             new(545, 967, 0),
             new(3665, 2587, 0)
-        };
+        ];
 
         private static readonly Point3D[] m_IlshenarDeathDestinations =
-        {
+        [
             new(1216, 468, -13),
             new(723, 1367, -60),
             new(745, 725, -28),
@@ -129,20 +129,20 @@ namespace Server.Mobiles
             new(1533, 1341, -3),
             new(529, 217, -44),
             new(1722, 219, 96)
-        };
+        ];
 
         private static readonly Point3D[] m_MalasDeathDestinations =
-        {
+        [
             new(2079, 1376, -70),
             new(944, 519, -71)
-        };
+        ];
 
         private static readonly Point3D[] m_TokunoDeathDestinations =
-        {
+        [
             new(1166, 801, 27),
             new(782, 1228, 25),
             new(268, 624, 15)
-        };
+        ];
 
         private HashSet<int> _acquiredRecipes;
 
@@ -200,8 +200,8 @@ namespace Server.Mobiles
 
         public PlayerMobile()
         {
-            VisibilityList = new List<Mobile>();
-            PermaFlags = new List<Mobile>();
+            VisibilityList = [];
+            PermaFlags = [];
 
             BOBFilter = new BOBFilter();
 
@@ -211,7 +211,7 @@ namespace Server.Mobiles
 
         public PlayerMobile(Serial s) : base(s)
         {
-            VisibilityList = new List<Mobile>();
+            VisibilityList = [];
         }
 
         public int StepsMax => 16;
@@ -255,12 +255,12 @@ namespace Server.Mobiles
         }
 
         public SkillName[] AnimalFormRestrictedSkills { get; } =
-        {
+        [
             SkillName.ArmsLore, SkillName.Begging, SkillName.Discordance, SkillName.Forensics,
             SkillName.Inscribe, SkillName.ItemID, SkillName.Meditation, SkillName.Peacemaking,
             SkillName.Provocation, SkillName.RemoveTrap, SkillName.SpiritSpeak, SkillName.Stealing,
             SkillName.TasteID
-        };
+        ];
 
         public override double RacialSkillBonus
         {
@@ -2400,7 +2400,7 @@ namespace Server.Mobiles
                 }
             }
 
-            EquipSnapshot = new List<Item>(Items);
+            EquipSnapshot = [..Items];
 
             m_NonAutoreinsuredItems = 0;
             m_InsuranceAward = FindMostRecentDamager(false);
@@ -2903,7 +2903,7 @@ namespace Server.Mobiles
 
                         if (recipeCount > 0)
                         {
-                            _acquiredRecipes = new HashSet<int>();
+                            _acquiredRecipes = [];
 
                             for (var i = 0; i < recipeCount; i++)
                             {
@@ -2989,7 +2989,7 @@ namespace Server.Mobiles
 
                         if (count > 0)
                         {
-                            DoneQuests = new List<QuestRestartInfo>();
+                            DoneQuests = [];
 
                             for (var i = 0; i < count; ++i)
                             {
@@ -3158,7 +3158,7 @@ namespace Server.Mobiles
                 Profession = 0;
             }
 
-            PermaFlags ??= new List<Mobile>();
+            PermaFlags ??= [];
             BOBFilter ??= new BOBFilter();
 
             // Default to member if going from older version to new version (only time it should be null)
@@ -3529,13 +3529,13 @@ namespace Server.Mobiles
 
         public void AddFollower(Mobile m)
         {
-            _allFollowers ??= new HashSet<Mobile>();
+            _allFollowers ??= [];
             _allFollowers.Add(m);
         }
 
         public void AddStabled(Mobile m)
         {
-            Stabled ??= new HashSet<Mobile>();
+            Stabled ??= [];
             Stabled.Add(m);
         }
 
@@ -3623,10 +3623,10 @@ namespace Server.Mobiles
 
                 pet.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully happy
 
-                Stabled ??= new HashSet<Mobile>();
+                Stabled ??= [];
                 Stabled.Add(pet);
 
-                AutoStabled ??= new HashSet<Mobile>();
+                AutoStabled ??= [];
                 AutoStabled.Add(pet);
             }
         }
@@ -4429,7 +4429,7 @@ namespace Server.Mobiles
             {
                 if (SpeechLog == null)
                 {
-                    SpeechLog = new SpeechLog();
+                    SpeechLog = [];
                 }
 
                 SpeechLog.Add(e.Mobile, e.Speech);
@@ -4472,7 +4472,7 @@ namespace Server.Mobiles
 
         public void AcquireRecipe(int recipeID)
         {
-            _acquiredRecipes ??= new HashSet<int>();
+            _acquiredRecipes ??= [];
             _acquiredRecipes.Add(recipeID);
         }
 

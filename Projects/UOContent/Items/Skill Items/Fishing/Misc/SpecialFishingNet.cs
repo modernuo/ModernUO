@@ -11,7 +11,7 @@ namespace Server.Items;
 public partial class SpecialFishingNet : Item
 {
     private static int[] _hues =
-    {
+    [
         0x09B,
         0x0CD,
         0x0D3,
@@ -26,18 +26,18 @@ public partial class SpecialFishingNet : Item
         0x492,
         0x4B5,
         0x8AA
-    };
+    ];
 
     private static int[] _waterTiles =
-    {
+    [
         0x00A8, 0x00AB,
         0x0136, 0x0137
-    };
+    ];
 
     private static int[] _shallowWaterTiles =
-    {
+    [
         0x1797, 0x179C
-    };
+    ];
 
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]

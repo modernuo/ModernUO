@@ -22,7 +22,7 @@ public static class AccountHandler
 
     private static Dictionary<IPAddress, int> m_IPTable;
 
-    private static char[] m_ForbiddenChars = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
+    private static char[] m_ForbiddenChars = ['<', '>', ':', '"', '/', '\\', '|', '?', '*'];
 
     public static AccessLevel LockdownLevel { get; set; }
 

@@ -7,12 +7,12 @@ namespace Server.Commands
 {
     public class LocationCommand : BaseCommand
     {
-        private static readonly List<int> m_DefaultGraphics = new() { 0x17AF, 0x17B0, 0x17B1, 0x17B2 };
+        private static readonly List<int> m_DefaultGraphics = [0x17AF, 0x17B0, 0x17B1, 0x17B2];
 
         public LocationCommand()
         {
             AccessLevel = AccessLevel.Counselor;
-            Commands = new[] { "Location", "Loc", "Pos" };
+            Commands = ["Location", "Loc", "Pos"];
             ObjectTypes = ObjectTypes.All;
             Supports = CommandSupport.Single | CommandSupport.Multi;
             Usage = "Location [itemIds ...]";
@@ -39,7 +39,7 @@ namespace Server.Commands
                 }
                 else
                 {
-                    graphics = new List<int>();
+                    graphics = [];
                     foreach (var arg in e.Arguments)
                     {
                         if (Utility.ToInt32(arg, out var result))

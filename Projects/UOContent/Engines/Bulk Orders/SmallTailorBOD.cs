@@ -9,12 +9,12 @@ namespace Server.Engines.BulkOrders
     public partial class SmallTailorBOD : SmallBOD
     {
         public static double[] m_TailoringMaterialChances =
-        {
+        [
             0.857421875, // None
             0.125000000, // Spined
             0.015625000, // Horned
             0.001953125  // Barbed
-        };
+        ];
 
         private SmallTailorBOD(SmallBulkEntry entry, BulkMaterialType mat, int amountMax, bool reqExceptional)
             : base(0x483, 0, amountMax, entry.Type, entry.Number, entry.Graphic, reqExceptional, mat)

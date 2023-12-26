@@ -97,9 +97,9 @@ namespace Server.Mobiles
                     if (Utility.RandomDouble() < .1)
                     {
                         int[][] coord =
-                        {
-                            new[] { -4, -6 }, new[] { 4, -6 }, new[] { 0, -8 }, new[] { -5, 5 }, new[] { 5, 5 }
-                        };
+                        [
+                            [-4, -6], [4, -6], [0, -8], [-5, 5], [5, 5]
+                        ];
 
                         for (var i = 0; i < 5; i++)
                         {

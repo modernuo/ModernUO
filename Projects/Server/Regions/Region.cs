@@ -192,7 +192,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     // Used during deserialization only
     public Expansion MaxExpansion { get; set; } = Expansion.EJ;
 
-    public static List<Region> Regions { get; } = new();
+    public static List<Region> Regions { get; } = [];
 
     public static TimeSpan StaffLogoutDelay { get; set; } = TimeSpan.Zero;
 
@@ -206,7 +206,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     [JsonConverter(typeof(RegionByNameConverter))]
     public Region Parent { get; private set; }
 
-    public List<Region> Children { get; } = new();
+    public List<Region> Children { get; } = [];
 
     public Rectangle3D[] Area { get; }
 

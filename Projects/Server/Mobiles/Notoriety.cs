@@ -15,7 +15,7 @@ public static class Notoriety
     public static NotorietyHandler Handler { get; set; }
 
     public static int[] Hues { get; set; } =
-    {
+    [
         0x000,
         0x059,
         0x03F,
@@ -24,7 +24,7 @@ public static class Notoriety
         0x090,
         0x022,
         0x035
-    };
+    ];
 
     public static int GetHue(int noto) => noto < 0 || noto >= Hues.Length ? 0 : Hues[noto];
 

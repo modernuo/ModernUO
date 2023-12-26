@@ -19,7 +19,7 @@ namespace Server.Spells.Fifth
         // NOTE: Creature list based on 1hr of summon/release on OSI.
 
         private static readonly Type[] m_Types =
-        {
+        [
             typeof(PolarBear),
             typeof(GrizzlyBear),
             typeof(BlackBear),
@@ -38,7 +38,7 @@ namespace Server.Spells.Fifth
             typeof(Pig),
             typeof(Hind),
             typeof(Rabbit)
-        };
+        ];
 
         public SummonCreatureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {

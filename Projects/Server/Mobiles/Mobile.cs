@@ -62,7 +62,7 @@ public enum StatLockType : byte
 }
 
 [Flags]
-[CustomEnum(new[] { "North", "Right", "East", "Down", "South", "Left", "West", "Up" })]
+[CustomEnum(["North", "Right", "East", "Down", "South", "Left", "West", "Up"])]
 public enum Direction : byte
 {
     North = 0x0,
@@ -196,11 +196,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private static readonly object m_GhostMutateContext = new();
 
-    private static readonly List<Mobile> m_Hears = new();
-    private static readonly List<IEntity> m_OnSpeech = new();
+    private static readonly List<Mobile> m_Hears = [];
+    private static readonly List<IEntity> m_OnSpeech = [];
 
     private static readonly string[] m_AccessLevelNames =
-    {
+    [
         "a player",
         "a counselor",
         "a game master",
@@ -208,25 +208,25 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         "an administrator",
         "a developer",
         "an owner"
-    };
+    ];
 
     private static readonly int[] m_InvalidBodies =
-    {
+    [
         32,
         95,
         156,
         197,
         198
-    };
+    ];
 
     private static readonly Queue<Mobile> m_DeltaQueue = new();
 
     private static readonly string[] m_GuildTypes =
-    {
+    [
         "",
         " (Chaos)",
         " (Order)"
-    };
+    ];
 
     private static bool _disableCastParalyze = true;
 
@@ -354,10 +354,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         m_Region = Map.Internal.DefaultRegion;
         Serial = serial;
-        Aggressors = new List<AggressorInfo>();
-        Aggressed = new List<AggressorInfo>();
+        Aggressors = [];
+        Aggressed = [];
         NextSkillTime = Core.TickCount;
-        DamageEntries = new List<DamageEntry>();
+        DamageEntries = [];
     }
 
     // Sectors
@@ -3037,7 +3037,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if (Resistances == null)
         {
-            Resistances = new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+            Resistances = [int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue];
         }
         else
         {
@@ -3084,7 +3084,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        _resistanceMods ??= new List<ResistanceMod>();
+        _resistanceMods ??= [];
         _resistanceMods.Add(mod);
 
         UpdateResistances();
@@ -3152,7 +3152,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual void ComputeResistances()
     {
-        Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+        Resistances ??= [int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue];
 
         for (var i = 0; i < Resistances.Length; ++i)
         {
@@ -3431,7 +3431,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         ValidateSkillMods();
-        _skillMods ??= new List<SkillMod>();
+        _skillMods ??= [];
         _skillMods.Add(mod);
         mod.Owner = this;
         Skills[mod.Skill]?.Update();
@@ -3570,7 +3570,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         if (_actions == null)
         {
-            _actions = new List<object> { toLock };
+            _actions = [toLock];
             return true;
         }
 
@@ -5854,7 +5854,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             if (list == null)
             {
-                de.Responsible = list = new List<DamageEntry>();
+                de.Responsible = list = [];
             }
 
             DamageEntry resp = null;
@@ -6409,8 +6409,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     m_DexLock = (StatLockType)reader.ReadByte();
                     m_IntLock = (StatLockType)reader.ReadByte();
 
-                    _statMods = new List<StatMod>();
-                    _skillMods = new List<SkillMod>();
+                    _statMods = [];
+                    _skillMods = [];
 
                     if (version < 32)
                     {
@@ -7725,14 +7725,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_StatCap = 225;
         m_FollowersMax = 5;
         Skills = new Skills(this);
-        Items = new List<Item>();
-        _statMods = new List<StatMod>();
-        _skillMods = new List<SkillMod>();
+        Items = [];
+        _statMods = [];
+        _skillMods = [];
         Map = Map.Internal;
         AutoPageNotify = true;
-        Aggressors = new List<AggressorInfo>();
-        Aggressed = new List<AggressorInfo>();
-        DamageEntries = new List<DamageEntry>();
+        Aggressors = [];
+        Aggressed = [];
+        DamageEntries = [];
 
         NextSkillTime = Core.TickCount;
     }
@@ -8017,7 +8017,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public static TimeSpan GetManaRegenRate(Mobile m) => ManaRegenRateHandler?.Invoke(m) ?? DefaultManaRate;
 
-    public static char[] DefaultGhostChars = { 'o', 'O' };
+    public static char[] DefaultGhostChars = ['o', 'O'];
 
     public Prompt BeginPrompt(PromptCallback callback, PromptCallback cancelCallback) =>
         Prompt = new SimplePrompt(callback, cancelCallback);
@@ -8496,7 +8496,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         mod.Owner = this;
 
-        _statMods ??= new List<StatMod>();
+        _statMods ??= [];
         _statMods.Add(mod);
         Delta(MobileDelta.Stat | GetStatDelta(mod.Type));
         CheckStatTimers();

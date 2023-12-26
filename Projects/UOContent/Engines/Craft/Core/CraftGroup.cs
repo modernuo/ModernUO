@@ -8,7 +8,7 @@ namespace Server.Engines.Craft
         {
             NameNumber = groupName;
             NameString = groupName;
-            CraftItems = new List<CraftItem>();
+            CraftItems = [];
         }
 
         public List<CraftItem> CraftItems { get; }

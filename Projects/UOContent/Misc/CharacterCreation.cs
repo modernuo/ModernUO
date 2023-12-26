@@ -15,8 +15,8 @@ public static class CharacterCreation
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(CharacterCreation));
 
     // Allowed skills that are not race or era specific
-    private static readonly HashSet<SkillName> _allowedStartingSkills = new()
-    {
+    private static readonly HashSet<SkillName> _allowedStartingSkills =
+    [
         SkillName.Alchemy,
         SkillName.Anatomy,
         SkillName.AnimalLore,
@@ -27,6 +27,7 @@ public static class CharacterCreation
         SkillName.Blacksmith,
         SkillName.Fletching,
         SkillName.Bushido,
+
         SkillName.Camping,
         SkillName.Carpentry,
         SkillName.Cartography,
@@ -37,6 +38,7 @@ public static class CharacterCreation
         SkillName.EvalInt,
         SkillName.Fencing,
         SkillName.Fishing,
+
         SkillName.Focus,
         SkillName.Forensics,
         SkillName.Healing,
@@ -47,6 +49,7 @@ public static class CharacterCreation
         SkillName.ItemID,
         SkillName.Lockpicking,
         SkillName.Lumberjacking,
+
         SkillName.Macing,
         SkillName.Magery,
         SkillName.Meditation,
@@ -57,6 +60,7 @@ public static class CharacterCreation
         SkillName.Ninjitsu,
         SkillName.Parry,
         SkillName.Peacemaking,
+
         SkillName.Poisoning,
         SkillName.Provocation,
         SkillName.MagicResist,
@@ -67,29 +71,30 @@ public static class CharacterCreation
         SkillName.Tactics,
         SkillName.Tailoring,
         SkillName.TasteID,
+
         SkillName.Throwing,
         SkillName.Tinkering,
         SkillName.Tracking,
         SkillName.Veterinary,
         SkillName.Wrestling
-    };
+    ];
 
     private static readonly TimeSpan BadStartMessageDelay = TimeSpan.FromSeconds(3.5);
 
     public static readonly CityInfo[] NewHavenInn =
-    {
+    [
         new("New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel)
-    };
+    ];
 
     // TODO: Verify this location (v5.0.8.3 client)
     public static readonly CityInfo[] OldHavenBank =
-    {
+    [
         new("Haven", "Haven bank", 3677, 2513, -1, Map.Trammel)
-    };
+    ];
 
     // Map property is not supported (Pre v6 clients)
     public static readonly CityInfo[] OldHavenStartingCities =
-    {
+    [
         new("Yew", "The Empath Abbey", 633, 858, 0),
         new("Minoc", "The Barnacle", 2476, 413, 15),
         new("Britain", "Sweet Dreams Inn", 1496, 1628, 10),
@@ -100,11 +105,11 @@ public static class CharacterCreation
         new("Skara Brae", "The Falconer's Inn", 618, 2234, 0),
         new("Vesper", "The Ironwood Inn", 2771, 976, 0),
         new("Occlo", "Buckler's Hideaway", 3667, 2625, 0)
-    };
+    ];
 
     // TODO: Move to JSON files
     public static readonly CityInfo[] FeluccaStartingCities =
-    {
+    [
         new("Yew", "The Empath Abbey", 633, 858, 0, Map.Felucca),
         new("Minoc", "The Barnacle", 2476, 413, 15, Map.Felucca),
         new("Britain", "Sweet Dreams Inn", 1496, 1628, 10, Map.Felucca),
@@ -114,12 +119,12 @@ public static class CharacterCreation
         new("Magincia", "The Great Horns Tavern", 3734, 2222, 20, Map.Felucca),
         new("Jhelom", "The Mercenary Inn", 1374, 3826, 0, Map.Felucca),
         new("Skara Brae", "The Falconer's Inn", 618, 2234, 0, Map.Felucca),
-        new("Vesper", "The Ironwood Inn", 2771, 976, 0, Map.Felucca),
-    };
+        new("Vesper", "The Ironwood Inn", 2771, 976, 0, Map.Felucca)
+    ];
 
     // TODO: Move to JSON files
     public static readonly CityInfo[] TrammelStartingCities =
-    {
+    [
         new("New Haven", "New Haven Bank", 1150168, 3667, 2625, 0, Map.Trammel),
         new("Yew", "The Empath Abbey", 1075072, 633, 858, 0, Map.Trammel),
         new("Minoc", "The Barnacle", 1075073, 2476, 413, 15, Map.Trammel),
@@ -130,7 +135,7 @@ public static class CharacterCreation
         new("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0, Map.Trammel),
         new("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0, Map.Trammel),
         new("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Trammel)
-    };
+    ];
 
     private static CityInfo[] _availableStartingCities;
 
@@ -645,7 +650,7 @@ public static class CharacterCreation
                 {
                     addSkillItems = false;
 
-                    int[] hues = { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89 };
+                    int[] hues = [0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89];
                     // TODO: Verify that's ALL the hues for that above.
 
                     if (elf)

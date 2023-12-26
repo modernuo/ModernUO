@@ -11,7 +11,7 @@ namespace Server.Commands.Generic
         {
             AccessLevel = AccessLevel.GameMaster;
             Supports = CommandSupport.Complex | CommandSupport.Simple;
-            Commands = new[] { "Interface" };
+            Commands = ["Interface"];
             ObjectTypes = ObjectTypes.Both;
             Usage = "Interface [view <properties ...>]";
             Description = "Opens an interface to interact with matched objects. Generally used with condition arguments.";

@@ -31,7 +31,7 @@ namespace Server.Engines.ConPVP
 
         public override string DefaultName => "arena controller";
 
-        public static List<ArenaController> Instances { get; set; } = new();
+        public static List<ArenaController> Instances { get; set; } = [];
 
         public override void OnDelete()
         {
@@ -175,7 +175,7 @@ namespace Server.Engines.ConPVP
     public class Arena : IComparable<Arena>
     {
         private static readonly Point2D[] m_EdgeOffsets =
-        {
+        [
             /*
              *        /\
              *       /\/\
@@ -194,11 +194,11 @@ namespace Server.Engines.ConPVP
             new(2, -1),
             new(2, +1),
             new(3, 0)
-        };
+        ];
 
         // nw corner
         private static readonly Point2D[] m_CornerOffsets =
-        {
+        [
             /*
              *         /\
              *        /\/\
@@ -216,10 +216,10 @@ namespace Server.Engines.ConPVP
             new(1, 2),
             new(0, 3),
             new(3, 0)
-        };
+        ];
 
         private static readonly int[][,] m_Rotate =
-        {
+        [
             new[,] { { +1, 0 }, { 0, +1 } }, // west
             new[,] { { -1, 0 }, { 0, -1 } }, // east
             new[,] { { 0, +1 }, { +1, 0 } }, // north
@@ -228,7 +228,7 @@ namespace Server.Engines.ConPVP
             new[,] { { -1, 0 }, { 0, -1 } }, // se
             new[,] { { 0, +1 }, { +1, 0 } }, // sw
             new[,] { { 0, -1 }, { -1, 0 } }  // ne
-        };
+        ];
 
         private bool m_Active;
         private Rectangle2D m_Bounds;
@@ -246,7 +246,7 @@ namespace Server.Engines.ConPVP
         public Arena()
         {
             Points = new ArenaStartPoints();
-            Players = new List<Mobile>();
+            Players = [];
         }
 
         public Arena(IGenericReader reader)
@@ -310,7 +310,7 @@ namespace Server.Engines.ConPVP
                         if (version == 0)
                         {
                             reader.ReadBool();
-                            Players = new List<Mobile>();
+                            Players = [];
                         }
 
                         m_Active = reader.ReadBool();
@@ -520,7 +520,7 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public static List<Arena> Arenas { get; } = new();
+        public static List<Arena> Arenas { get; } = [];
 
         public int CompareTo(Arena c) => string.CompareOrdinal(m_Name, c?.m_Name);
 

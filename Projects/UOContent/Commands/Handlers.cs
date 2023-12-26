@@ -919,7 +919,7 @@ namespace Server.Commands
 
                     public EquipDetailsMenu(Mobile m, Item item) : base(
                         $"{item.Layer}: {item.GetType().Name}",
-                        new[] { "Move", "Delete", "Props" }
+                        ["Move", "Delete", "Props"]
                     )
                     {
                         m_Mobile = m;

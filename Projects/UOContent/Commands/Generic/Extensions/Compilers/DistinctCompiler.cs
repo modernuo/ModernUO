@@ -49,7 +49,7 @@ namespace Server.Commands.Generic
                     /* return */
                     typeof(int),
                     /* params */
-                    new[] { typeof(T), typeof(T) }
+                    [typeof(T), typeof(T)]
                 );
 
                 var a = emitter.CreateLocal(objectType);
@@ -110,11 +110,10 @@ namespace Server.Commands.Generic
                     emitter.Method,
                     typeof(IComparer<T>).GetMethod(
                         "Compare",
-                        new[]
-                        {
+                        [
                             typeof(T),
                             typeof(T)
-                        }
+                        ]
                     ) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}")
                 );
 
@@ -132,7 +131,7 @@ namespace Server.Commands.Generic
                     /* return */
                     typeof(bool),
                     /* params */
-                    new[] { typeof(T), typeof(T) }
+                    [typeof(T), typeof(T)]
                 );
 
                 emitter.Generator.Emit(OpCodes.Ldarg_0);
@@ -151,11 +150,10 @@ namespace Server.Commands.Generic
                     emitter.Method,
                     typeof(IEqualityComparer<T>).GetMethod(
                         "Equals",
-                        new[]
-                        {
+                        [
                             typeof(T),
                             typeof(T)
-                        }
+                        ]
                     ) ?? throw new Exception($"No Equals method found for type {typeof(T).FullName}")
                 );
             }
@@ -170,7 +168,7 @@ namespace Server.Commands.Generic
                     /* return */
                     typeof(int),
                     /* params */
-                    new[] { typeof(T) }
+                    [typeof(T)]
                 );
 
                 var obj = emitter.CreateLocal(objectType);
@@ -237,10 +235,9 @@ namespace Server.Commands.Generic
                     emitter.Method,
                     typeof(IEqualityComparer<T>).GetMethod(
                         "GetHashCode",
-                        new[]
-                        {
+                        [
                             typeof(T)
-                        }
+                        ]
                     ) ?? throw new Exception($"No GetHashCode method found for type {typeof(T).FullName}")
                 );
             }

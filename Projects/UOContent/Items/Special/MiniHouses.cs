@@ -124,7 +124,7 @@ public enum MiniHouseType
 public class MiniHouseInfo
 {
     private static readonly MiniHouseInfo[] m_Info =
-    {
+    [
         /* Stone and plaster house           */ new(0x22C4, 1, 1011303),
         /* Field stone house                 */ new(0x22DE, 1, 1011304),
         /* Small brick house                 */ new(0x22DF, 1, 1011305),
@@ -166,7 +166,7 @@ public class MiniHouseInfo
         /* Small marble workshop             */ new(0x22F4, 1, 1011322),
         /* Malas Mountain Pass               */ new(1062692, 0x2316, 0x2315, 0x2314, 0x2313),
         /* Church At Night                   */ new(1072215, 0x2318, 0x2317, 0x2319, 0x1)
-    };
+    ];
 
     public MiniHouseInfo(int start, int count, int labelNumber)
     {

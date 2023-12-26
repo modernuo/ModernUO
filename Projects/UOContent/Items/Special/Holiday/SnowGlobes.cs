@@ -89,7 +89,7 @@ public partial class SnowGlobeTwo : SnowGlobe
 {
     /* Oddly, these are not localized. */
     private static readonly string[] _placeNames =
-    {
+    [
         /* AncientCitadel */ "Ancient Citadel",
         /* BlackthornesCastle */ "Blackthorne's Castle",
         /* CityofMontor */ "City of Montor",
@@ -109,7 +109,7 @@ public partial class SnowGlobeTwo : SnowGlobe
         /* ShrineofSpirituality */ "Shrine of Spirituality",
         /* ShrineofJustice */ "Shrine of Justice",
         /* ShrineofValor */ "Shrine of Valor"
-    };
+    ];
 
     [InvalidateProperties]
     [SerializableField(0)]

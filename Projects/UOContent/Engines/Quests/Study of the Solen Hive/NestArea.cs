@@ -3,7 +3,7 @@ namespace Server.Engines.Quests.Naturalist
     public class NestArea
     {
         private static readonly NestArea[] m_Areas =
-        {
+        [
             new(false, new Rectangle2D(5861, 1787, 26, 25)),
 
             new(
@@ -26,7 +26,7 @@ namespace Server.Engines.Quests.Naturalist
                 new Rectangle2D(5651, 1853, 21, 32),
                 new Rectangle2D(5672, 1857, 6, 20)
             )
-        };
+        ];
 
         private readonly Rectangle2D[] m_Rects;
 

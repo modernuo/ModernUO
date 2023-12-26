@@ -17,7 +17,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Rabbit) }, "rabbits"));
+            Objectives.Add(new KillObjective(10, [typeof(Rabbit)], "rabbits"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -37,7 +37,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Pig) }, "pigs"));
+            Objectives.Add(new KillObjective(10, [typeof(Pig)], "pigs"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -56,7 +56,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Walrus) }, "walruses"));
+            Objectives.Add(new KillObjective(10, [typeof(Walrus)], "walruses"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -75,7 +75,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Mongbat) }, "mongbats"));
+            Objectives.Add(new KillObjective(10, [typeof(Mongbat)], "mongbats"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -95,7 +95,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Bull) }, "bulls"));
+            Objectives.Add(new KillObjective(10, [typeof(Bull)], "bulls"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -114,7 +114,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Sheep) }, "sheep"));
+            Objectives.Add(new KillObjective(10, [typeof(Sheep)], "sheep"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -133,7 +133,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Bird) }, "birds"));
+            Objectives.Add(new KillObjective(10, [typeof(Bird)], "birds"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -152,7 +152,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(SewerRat) }, "sewer rats"));
+            Objectives.Add(new KillObjective(10, [typeof(SewerRat)], "sewer rats"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -171,8 +171,8 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(5, new[] { typeof(Zombie) }, "zombies"));
-            Objectives.Add(new KillObjective(5, new[] { typeof(Skeleton) }, "skeletons"));
+            Objectives.Add(new KillObjective(5, [typeof(Zombie)], "zombies"));
+            Objectives.Add(new KillObjective(5, [typeof(Skeleton)], "skeletons"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -191,7 +191,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(GrizzlyBear) }, "grizzly bears"));
+            Objectives.Add(new KillObjective(10, [typeof(GrizzlyBear)], "grizzly bears"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -213,8 +213,8 @@ namespace Server.Engines.MLQuests.Definitions
 
             ObjectiveType = ObjectiveType.Any;
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(RedSolenWorker) }, "red solen workers"));
-            Objectives.Add(new KillObjective(12, new[] { typeof(BlackSolenWorker) }, "black solen workers"));
+            Objectives.Add(new KillObjective(12, [typeof(RedSolenWorker)], "red solen workers"));
+            Objectives.Add(new KillObjective(12, [typeof(BlackSolenWorker)], "black solen workers"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -236,7 +236,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     15,
-                    new[] { typeof(Spectre), typeof(Shade), typeof(Wraith) },
+                    [typeof(Spectre), typeof(Shade), typeof(Wraith)],
                     "spectres or shades or wraiths"
                 )
             );
@@ -258,7 +258,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(8, new[] { typeof(PatchworkSkeleton) }, "patchwork skeletons"));
+            Objectives.Add(new KillObjective(8, [typeof(PatchworkSkeleton)], "patchwork skeletons"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -277,7 +277,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(Ghoul) }, "ghouls"));
+            Objectives.Add(new KillObjective(12, [typeof(Ghoul)], "ghouls"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -296,7 +296,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1074690; // Probably the wiser course of action.
             InProgressMessage = 1074691; // You still need to kill those troglodytes, remember?
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(Troglodyte) }, "troglodytes"));
+            Objectives.Add(new KillObjective(12, [typeof(Troglodyte)], "troglodytes"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -319,7 +319,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     16,
-                    new[] { typeof(BoneKnight), typeof(SkeletalKnight) },
+                    [typeof(BoneKnight), typeof(SkeletalKnight)],
                     "bone knights or skeletal knights"
                 )
             );
@@ -392,8 +392,8 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage = 1074682;
             CompletionMessage = 1074683; // Not half bad.  Here's your prize.
 
-            Objectives.Add(new KillObjective(1, new[] { typeof(Lurg) }, "Lurg"));
-            Objectives.Add(new KillObjective(1, new[] { typeof(Grobu) }, "Grobu"));
+            Objectives.Add(new KillObjective(1, [typeof(Lurg)], "Lurg"));
+            Objectives.Add(new KillObjective(1, [typeof(Grobu)], "Grobu"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -412,7 +412,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Hind) }, "hinds"));
+            Objectives.Add(new KillObjective(10, [typeof(Hind)], "hinds"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -431,7 +431,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Boar) }, "boars"));
+            Objectives.Add(new KillObjective(10, [typeof(Boar)], "boars"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -450,9 +450,9 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073599; // Four of each, that's all I ask. Water, earth and fire.
 
-            Objectives.Add(new KillObjective(4, new[] { typeof(FireElemental) }, "fire elementals"));
-            Objectives.Add(new KillObjective(4, new[] { typeof(WaterElemental) }, "water elementals"));
-            Objectives.Add(new KillObjective(4, new[] { typeof(EarthElemental) }, "earth elementals"));
+            Objectives.Add(new KillObjective(4, [typeof(FireElemental)], "fire elementals"));
+            Objectives.Add(new KillObjective(4, [typeof(WaterElemental)], "water elementals"));
+            Objectives.Add(new KillObjective(4, [typeof(EarthElemental)], "earth elementals"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -471,7 +471,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073736; // Continue to seek and kill the Bog Things.
 
-            Objectives.Add(new KillObjective(8, new[] { typeof(BogThing) }, "bog things"));
+            Objectives.Add(new KillObjective(8, [typeof(BogThing)], "bog things"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -488,7 +488,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073584; // You got rocks in your head? I said to kill 12 earth elementals, okay?
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(EarthElemental) }, "earth elementals"));
+            Objectives.Add(new KillObjective(12, [typeof(EarthElemental)], "earth elementals"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -505,7 +505,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(GiantSpider) }, "giant spiders"));
+            Objectives.Add(new KillObjective(12, [typeof(GiantSpider)], "giant spiders"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -522,8 +522,8 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(8, new[] { typeof(Corpser) }, "corpsers"));
-            Objectives.Add(new KillObjective(2, new[] { typeof(SwampTentacle) }, "swamp tentacles"));
+            Objectives.Add(new KillObjective(8, [typeof(Corpser)], "corpsers"));
+            Objectives.Add(new KillObjective(2, [typeof(SwampTentacle)], "swamp tentacles"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -540,7 +540,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Gibberling) }, "gibberlings"));
+            Objectives.Add(new KillObjective(10, [typeof(Gibberling)], "gibberlings"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -557,7 +557,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(FleshGolem) }, "flesh golems"));
+            Objectives.Add(new KillObjective(12, [typeof(FleshGolem)], "flesh golems"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -574,7 +574,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Harpy) }, "harpies"));
+            Objectives.Add(new KillObjective(10, [typeof(Harpy)], "harpies"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -591,7 +591,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(PlagueSpawn) }, "plague spawns"));
+            Objectives.Add(new KillObjective(10, [typeof(PlagueSpawn)], "plague spawns"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -608,7 +608,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(LavaLizard) }, "lava lizards"));
+            Objectives.Add(new KillObjective(10, [typeof(LavaLizard)], "lava lizards"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -625,7 +625,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(GoreFiend) }, "gore fiends"));
+            Objectives.Add(new KillObjective(10, [typeof(GoreFiend)], "gore fiends"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -642,7 +642,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073019; // Hahahaha!  I knew it!
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(VampireBat) }, "vampire bats"));
+            Objectives.Add(new KillObjective(10, [typeof(VampireBat)], "vampire bats"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -659,7 +659,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073583; // Uh, I don't think you're quite done killing Mummies yet.
 
-            Objectives.Add(new KillObjective(15, new[] { typeof(Mummy) }, "mummies"));
+            Objectives.Add(new KillObjective(15, [typeof(Mummy)], "mummies"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -679,7 +679,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(OphidianKnight) },
+                    [typeof(OphidianKnight)],
                     "ophidian avengers or ophidian knight-errants"
                 )
             );
@@ -700,7 +700,7 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage =
                 1073587; // Don't let the little devils scare you! You  kill 12 imps - then we'll talk reward.
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(Imp) }, "imps"));
+            Objectives.Add(new KillObjective(12, [typeof(Imp)], "imps"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -717,7 +717,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073740; // Those smoky devils, the Efreets, are still about.
 
-            Objectives.Add(new KillObjective(8, new[] { typeof(Efreet) }, "efreets"));
+            Objectives.Add(new KillObjective(8, [typeof(Efreet)], "efreets"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -734,7 +734,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073594; // Have you annihilated a dozen Gazers yet, kind traveler?
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(Gazer) }, "gazers"));
+            Objectives.Add(new KillObjective(12, [typeof(Gazer)], "gazers"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -751,7 +751,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073738; // I won't be able to pay you until you've gotten enough Gargoyle Enforcers.
 
-            Objectives.Add(new KillObjective(6, new[] { typeof(GargoyleEnforcer) }, "gargoyle enforcers"));
+            Objectives.Add(new KillObjective(6, [typeof(GargoyleEnforcer)], "gargoyle enforcers"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -771,7 +771,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(BoneMagi), typeof(SkeletalMage) },
+                    [typeof(BoneMagi), typeof(SkeletalMage)],
                     "bone mages or skeletal mages"
                 )
             );
@@ -791,7 +791,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073742; // Dread Spiders? I say keep exterminating the arachnid vermin.
 
-            Objectives.Add(new KillObjective(8, new[] { typeof(DreadSpider) }, "dread spiders"));
+            Objectives.Add(new KillObjective(8, [typeof(DreadSpider)], "dread spiders"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -808,8 +808,8 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Mongbat) }, "mongbats"));
-            Objectives.Add(new KillObjective(4, new[] { typeof(GreaterMongbat) }, "greater mongbats"));
+            Objectives.Add(new KillObjective(10, [typeof(Mongbat)], "mongbats"));
+            Objectives.Add(new KillObjective(4, [typeof(GreaterMongbat)], "greater mongbats"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -828,8 +828,8 @@ namespace Server.Engines.MLQuests.Definitions
 
             ObjectiveType = ObjectiveType.Any;
 
-            Objectives.Add(new KillObjective(3, new[] { typeof(RedSolenQueen) }, "red solen queens"));
-            Objectives.Add(new KillObjective(3, new[] { typeof(BlackSolenQueen) }, "black solen queens"));
+            Objectives.Add(new KillObjective(3, [typeof(RedSolenQueen)], "red solen queens"));
+            Objectives.Add(new KillObjective(3, [typeof(BlackSolenQueen)], "black solen queens"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -847,7 +847,7 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage =
                 1073588; // Unless you kill at least 10 Terathan Warriors, you won't have any impact on their hive.
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(TerathanWarrior) }, "terathan warriors"));
+            Objectives.Add(new KillObjective(10, [typeof(TerathanWarrior)], "terathan warriors"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -864,7 +864,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073598; // You wouldn't try and just pretend you murdered 10 Giant Ice Worms, would you?
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(IceSerpent) }, "giant ice serpents"));
+            Objectives.Add(new KillObjective(10, [typeof(IceSerpent)], "giant ice serpents"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -882,8 +882,8 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage =
                 1073591; // The only good orc is a dead orc - and 4 dead Captains and 6 dead Bombers is even better!
 
-            Objectives.Add(new KillObjective(6, new[] { typeof(OrcBomber) }, "orc bombers"));
-            Objectives.Add(new KillObjective(4, new[] { typeof(OrcCaptain) }, "orc captain"));
+            Objectives.Add(new KillObjective(6, [typeof(OrcBomber)], "orc bombers"));
+            Objectives.Add(new KillObjective(4, [typeof(OrcCaptain)], "orc captain"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -900,7 +900,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Goat) }, "goats"));
+            Objectives.Add(new KillObjective(10, [typeof(Goat)], "goats"));
 
             Rewards.Add(ItemReward.SmallBagOfTrinkets);
         }
@@ -917,7 +917,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(Slime) }, "slimes"));
+            Objectives.Add(new KillObjective(12, [typeof(Slime)], "slimes"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -934,9 +934,9 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(8, new[] { typeof(Orc) }, "orcs"));
+            Objectives.Add(new KillObjective(8, [typeof(Orc)], "orcs"));
             // TODO: This needs to be orc scouts but they aren't in the SVN
-            Objectives.Add(new KillObjective(4, new[] { typeof(OrcishLord) }, "orcish lords"));
+            Objectives.Add(new KillObjective(4, [typeof(OrcishLord)], "orcish lords"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -953,8 +953,8 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(5, new[] { typeof(Ogre) }, "ogres"));
-            Objectives.Add(new KillObjective(5, new[] { typeof(Ettin) }, "ettins"));
+            Objectives.Add(new KillObjective(5, [typeof(Ogre)], "ogres"));
+            Objectives.Add(new KillObjective(5, [typeof(Ettin)], "ettins"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -971,7 +971,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Troll) }, "trolls"));
+            Objectives.Add(new KillObjective(10, [typeof(Troll)], "trolls"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -988,8 +988,8 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(6, new[] { typeof(IceSerpent) }, "giant ice serpents"));
-            Objectives.Add(new KillObjective(6, new[] { typeof(FrostSpider) }, "frost spiders"));
+            Objectives.Add(new KillObjective(6, [typeof(IceSerpent)], "giant ice serpents"));
+            Objectives.Add(new KillObjective(6, [typeof(FrostSpider)], "frost spiders"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -1006,7 +1006,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1072270; // Well, okay. But if you decide you are up for it after all, c'mon back and see me.
             InProgressMessage = 1072271; // You're not quite done yet.  Get back to work!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Lizardman) }, "lizardmen"));
+            Objectives.Add(new KillObjective(10, [typeof(Lizardman)], "lizardmen"));
 
             Rewards.Add(ItemReward.BagOfTrinkets);
         }
@@ -1026,8 +1026,8 @@ namespace Server.Engines.MLQuests.Definitions
 
             ObjectiveType = ObjectiveType.Any;
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(RedSolenWarrior) }, "red solen warriors"));
-            Objectives.Add(new KillObjective(10, new[] { typeof(BlackSolenWarrior) }, "black solen warriors"));
+            Objectives.Add(new KillObjective(10, [typeof(RedSolenWarrior)], "red solen warriors"));
+            Objectives.Add(new KillObjective(10, [typeof(BlackSolenWarrior)], "black solen warriors"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -1045,7 +1045,7 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage =
                 1073589; // You've got a good start, but to stop the black-eyed fiends, you need to kill a dozen.
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(GiantBlackWidow) }, "giant black widows"));
+            Objectives.Add(new KillObjective(12, [typeof(GiantBlackWidow)], "giant black widows"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -1062,7 +1062,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073580; // I hope you'll reconsider. Until then, farwell.
             InProgressMessage = 1073582; // Go back and kill all 20 bogglings!
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(Bogling) }, "boglings"));
+            Objectives.Add(new KillObjective(12, [typeof(Bogling)], "boglings"));
 
             Rewards.Add(ItemReward.BagOfTreasure);
         }
@@ -1079,7 +1079,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073744; // How are farmers supposed to work with these Whipping Vines around?
 
-            Objectives.Add(new KillObjective(15, new[] { typeof(WhippingVine) }, "whipping vines"));
+            Objectives.Add(new KillObjective(15, [typeof(WhippingVine)], "whipping vines"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1096,7 +1096,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073745; // Please, rid us of the Ant Lion infestation.
 
-            Objectives.Add(new KillObjective(12, new[] { typeof(AntLion) }, "ant lions"));
+            Objectives.Add(new KillObjective(12, [typeof(AntLion)], "ant lions"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1114,7 +1114,7 @@ namespace Server.Engines.MLQuests.Definitions
             InProgressMessage = 1073746; // The unholy brutes, the Golems, must be smited!
             CompletionMessage = 1073787; // Reduced those Golems to component parts? Good, then -- you deserve this reward!
 
-            Objectives.Add(new KillObjective(10, new[] { typeof(Golem) }, "golems"));
+            Objectives.Add(new KillObjective(10, [typeof(Golem)], "golems"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1131,7 +1131,7 @@ namespace Server.Engines.MLQuests.Definitions
             RefusalMessage = 1073733; // Perhaps you'll change your mind and return at some point.
             InProgressMessage = 1073746; // The chill won't lift until you eradicate a few Ice Elemenals.
 
-            Objectives.Add(new KillObjective(15, new[] { typeof(IceElemental) }, "ice elementals"));
+            Objectives.Add(new KillObjective(15, [typeof(IceElemental)], "ice elementals"));
 
             Rewards.Add(ItemReward.LargeBagOfTreasure);
         }
@@ -1595,7 +1595,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     3,
-                    new[] { typeof(Succubus) },
+                    [typeof(Succubus)],
                     "succubi",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1620,7 +1620,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     3,
-                    new[] { typeof(Moloch) },
+                    [typeof(Moloch)],
                     "molochs",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1645,7 +1645,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(Daemon) },
+                    [typeof(Daemon)],
                     "daemons",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1670,7 +1670,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(ArcaneDaemon) },
+                    [typeof(ArcaneDaemon)],
                     "arcane daemons",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1696,7 +1696,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     3,
-                    new[] { typeof(PoisonElemental) },
+                    [typeof(PoisonElemental)],
                     "poison elementals",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1704,7 +1704,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     6,
-                    new[] { typeof(AcidElemental) },
+                    [typeof(AcidElemental)],
                     "acid elementals",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1730,7 +1730,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(PlagueSpawn) },
+                    [typeof(PlagueSpawn)],
                     "plague spawns",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1738,7 +1738,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     3,
-                    new[] { typeof(PlagueBeast) },
+                    [typeof(PlagueBeast)],
                     "plague beasts",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1746,7 +1746,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     1,
-                    new[] { typeof(PlagueBeastLord) },
+                    [typeof(PlagueBeastLord)],
                     "plague beast lord",
                     new QuestArea(1074806, "The Palace of Paroxysmus")
                 )
@@ -1774,7 +1774,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     5,
-                    new[] { typeof(CrystalLatticeSeeker) },
+                    [typeof(CrystalLatticeSeeker)],
                     "crystal lattice seekers",
                     new QuestArea(1074805, "The Prism of Light")
                 )
@@ -1802,7 +1802,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     3,
-                    new[] { typeof(CrystalDaemon) },
+                    [typeof(CrystalDaemon)],
                     "crystal daemons",
                     new QuestArea(1074805, "The Prism of Light")
                 )
@@ -1830,7 +1830,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     8,
-                    new[] { typeof(CrystalVortex) },
+                    [typeof(CrystalVortex)],
                     "crystal vortices",
                     new QuestArea(1074805, "The Prism of Light")
                 )
@@ -1952,7 +1952,7 @@ namespace Server.Engines.MLQuests.Definitions
             Objectives.Add(
                 new KillObjective(
                     10,
-                    new[] { typeof(EliteNinja) },
+                    [typeof(EliteNinja)],
                     "elite ninjas",
                     new QuestArea(1074804, "The Citadel")
                 )

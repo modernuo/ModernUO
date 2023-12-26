@@ -8,7 +8,7 @@ namespace Server.Items;
 public class CrystalRechargeInfo
 {
     private static CrystalRechargeInfo[] _table =
-    {
+    [
         new(typeof(Citrine), 500),
         new(typeof(Amber), 500),
         new(typeof(Tourmaline), 750),
@@ -17,7 +17,7 @@ public class CrystalRechargeInfo
         new(typeof(Amethyst), 1000),
         new(typeof(StarSapphire), 1250),
         new(typeof(Diamond), 2000)
-    };
+    ];
 
     private CrystalRechargeInfo(Type type, int amount)
     {
@@ -63,7 +63,7 @@ public partial class BroadcastCrystal : Item
     {
         Light = LightType.Circle150;
         _charges = charges;
-        _receivers = new List<ReceiverCrystal>();
+        _receivers = [];
     }
 
     public override int LabelNumber => 1060740; // communication crystal

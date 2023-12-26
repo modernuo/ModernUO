@@ -23,13 +23,13 @@ namespace Server.Engines.Craft
             MaxCraftEffect = maxCraftEffect;
             Delay = delay;
 
-            CraftItems = new List<CraftItem>();
-            CraftGroups = new List<CraftGroup>();
-            CraftSubRes = new CraftSubResCol();
-            CraftSubRes2 = new CraftSubResCol();
+            CraftItems = [];
+            CraftGroups = [];
+            CraftSubRes = [];
+            CraftSubRes2 = [];
 
-            m_Recipes = new List<int>();
-            m_RareRecipes = new List<int>();
+            m_Recipes = [];
+            m_RareRecipes = [];
 
             InitCraftList();
         }

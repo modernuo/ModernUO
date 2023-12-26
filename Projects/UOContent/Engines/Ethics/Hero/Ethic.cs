@@ -11,8 +11,7 @@ namespace Server.Ethics.Hero
                 "Hero",
                 "(Hero)",
                 "I will defend the virtues",
-                new Power[]
-                {
+                [
                     new HolySense(),
                     new HolyItem(),
                     new SummonFamiliar(),
@@ -21,7 +20,7 @@ namespace Server.Ethics.Hero
                     new HolyShield(),
                     new HolySteed(),
                     new HolyWord()
-                }
+                ]
             );
         }
 

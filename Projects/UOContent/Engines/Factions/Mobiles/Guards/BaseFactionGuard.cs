@@ -10,24 +10,24 @@ namespace Server.Factions
         private const int ListenRange = 12;
 
         private static readonly Type[] m_StrongPotions =
-        {
+        [
             typeof(GreaterHealPotion), typeof(GreaterHealPotion), typeof(GreaterHealPotion),
             typeof(GreaterCurePotion), typeof(GreaterCurePotion), typeof(GreaterCurePotion),
             typeof(GreaterStrengthPotion), typeof(GreaterStrengthPotion),
             typeof(GreaterAgilityPotion), typeof(GreaterAgilityPotion),
             typeof(TotalRefreshPotion), typeof(TotalRefreshPotion),
             typeof(GreaterExplosionPotion)
-        };
+        ];
 
         private static readonly Type[] m_WeakPotions =
-        {
+        [
             typeof(HealPotion), typeof(HealPotion), typeof(HealPotion),
             typeof(CurePotion), typeof(CurePotion), typeof(CurePotion),
             typeof(StrengthPotion), typeof(StrengthPotion),
             typeof(AgilityPotion), typeof(AgilityPotion),
             typeof(RefreshPotion), typeof(RefreshPotion),
             typeof(ExplosionPotion)
-        };
+        ];
 
         private Faction m_Faction;
 

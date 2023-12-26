@@ -16,7 +16,7 @@ public partial class KeyRing : Item
     public KeyRing() : base(0x1011)
     {
         Weight = 1.0; // They seem to have no weight on OSI ?!
-        _keys = new List<Key>();
+        _keys = [];
     }
 
     public override bool OnDragDrop(Mobile from, Item dropped)

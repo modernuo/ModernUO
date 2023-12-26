@@ -12,7 +12,7 @@ namespace Server.Mobiles;
 public partial class Harrower : BaseCreature
 {
     private static readonly SpawnEntry[] m_Entries =
-    {
+    [
         new(new Point3D(5242, 945, -40), new Point3D(1176, 2638, 0)),  // Destard
         new(new Point3D(5225, 798, 0), new Point3D(1176, 2638, 0)),    // Destard
         new(new Point3D(5556, 886, 30), new Point3D(1298, 1080, 0)),   // Despise
@@ -28,10 +28,10 @@ public partial class Harrower : BaseCreature
         new(new Point3D(6084, 66, 0), new Point3D(4721, 3822, 0)),     // Hythloth
         new(new Point3D(5499, 2003, 0), new Point3D(2499, 919, 0)),    // Covetous
         new(new Point3D(5579, 1858, 0), new Point3D(2499, 919, 0))     // Covetous
-    };
+    ];
 
     private static readonly double[] m_Offsets =
-    {
+    [
         Math.Cos(000.0 / 180.0 * Math.PI), Math.Sin(000.0 / 180.0 * Math.PI),
         Math.Cos(040.0 / 180.0 * Math.PI), Math.Sin(040.0 / 180.0 * Math.PI),
         Math.Cos(080.0 / 180.0 * Math.PI), Math.Sin(080.0 / 180.0 * Math.PI),
@@ -41,7 +41,7 @@ public partial class Harrower : BaseCreature
         Math.Cos(240.0 / 180.0 * Math.PI), Math.Sin(240.0 / 180.0 * Math.PI),
         Math.Cos(280.0 / 180.0 * Math.PI), Math.Sin(280.0 / 180.0 * Math.PI),
         Math.Cos(320.0 / 180.0 * Math.PI), Math.Sin(320.0 / 180.0 * Math.PI)
-    };
+    ];
 
     private Dictionary<Mobile, int> m_DamageEntries;
     private Timer m_Timer;
@@ -95,11 +95,11 @@ public partial class Harrower : BaseCreature
         Instances.Add(this);
     }
 
-    public static Type[] UniqueList => new[] { typeof(AcidProofRobe) };
-    public static Type[] SharedList => new[] { typeof(TheRobeOfBritanniaAri) };
-    public static Type[] DecorativeList => new[] { typeof(EvilIdolSkull), typeof(SkullPole) };
+    public static Type[] UniqueList => [typeof(AcidProofRobe)];
+    public static Type[] SharedList => [typeof(TheRobeOfBritanniaAri)];
+    public static Type[] DecorativeList => [typeof(EvilIdolSkull), typeof(SkullPole)];
 
-    public static List<Harrower> Instances { get; } = new();
+    public static List<Harrower> Instances { get; } = [];
 
     public static bool CanSpawn => Instances.Count == 0;
 
@@ -207,7 +207,7 @@ public partial class Harrower : BaseCreature
 
                 spawn.MoveToWorld(new Point3D(x, y, z), map);
 
-                _tentacles ??= new List<HarrowerTentacles>();
+                _tentacles ??= [];
                 _tentacles.Add(spawn);
             }
         }
@@ -490,7 +490,7 @@ public partial class Harrower : BaseCreature
     private class TeleportTimer : Timer
     {
         private static readonly int[] m_Offsets =
-        {
+        [
             -1, -1,
             -1, 0,
             -1, 1,
@@ -499,7 +499,7 @@ public partial class Harrower : BaseCreature
             1, -1,
             1, 0,
             1, 1
-        };
+        ];
 
         private readonly Mobile m_Owner;
 

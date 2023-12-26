@@ -8,13 +8,13 @@ namespace Server.Engines.ConPVP
     {
         public TourneyParticipant(Mobile owner)
         {
-            Log = new List<string>();
-            Players = new List<Mobile> { owner };
+            Log = [];
+            Players = [owner];
         }
 
         public TourneyParticipant(List<Mobile> players)
         {
-            Log = new List<string>();
+            Log = [];
             Players = players;
         }
 

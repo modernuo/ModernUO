@@ -7,17 +7,17 @@ namespace Server.Mobiles;
 public partial class SeekerOfAdventure : BaseEscortable
 {
     private static readonly string[] _dungeons =
-    {
+    [
         "Covetous", "Deceit", "Despise",
         "Destard", "Hythloth", "Shame", // Old Code for Pre-ML shards.
         "Wrong"
-    };
+    ];
 
     private static readonly string[] _mlDestinations =
-    {
+    [
         "Cove", "Serpent's Hold", "Jhelom", // ML List
         "Nujel'm"
-    };
+    ];
 
     [Constructible]
     public SeekerOfAdventure() => Title = "the seeker of adventure";

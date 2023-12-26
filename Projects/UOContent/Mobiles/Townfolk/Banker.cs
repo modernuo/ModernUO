@@ -12,7 +12,7 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public partial class Banker : BaseVendor
 {
-    private readonly List<SBInfo> m_SBInfos = new();
+    private readonly List<SBInfo> m_SBInfos = [];
 
     [Constructible]
     public Banker() : base("the banker")
@@ -84,7 +84,7 @@ public partial class Banker : BaseVendor
 
         if (bank != null)
         {
-            gold = new List<Gold>();
+            gold = [];
 
             foreach (var g in bank.FindItemsByType<Gold>())
             {
@@ -97,7 +97,7 @@ public partial class Banker : BaseVendor
                 return int.MaxValue;
             }
 
-            checks = new List<BankCheck>();
+            checks = [];
 
             foreach (var bc in bank.FindItemsByType<BankCheck>())
             {

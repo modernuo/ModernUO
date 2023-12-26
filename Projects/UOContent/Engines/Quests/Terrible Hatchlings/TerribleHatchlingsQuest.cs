@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Zento
     public class TerribleHatchlingsQuest : QuestSystem
     {
         private static readonly Type[] m_TypeReferenceTable =
-        {
+        [
             typeof(AcceptConversation),
             typeof(DirectionConversation),
             typeof(TakeCareConversation),
@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Zento
             typeof(SecondKillObjective),
             typeof(ThirdKillObjective),
             typeof(ReturnObjective)
-        };
+        ];
 
         public TerribleHatchlingsQuest(PlayerMobile from) : base(from)
         {

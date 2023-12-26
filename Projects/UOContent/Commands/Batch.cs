@@ -11,7 +11,7 @@ namespace Server.Commands
     {
         public Batch()
         {
-            Commands = new[] { "Batch" };
+            Commands = ["Batch"];
             ListOptimized = true;
         }
 
@@ -19,7 +19,7 @@ namespace Server.Commands
 
         public string Condition { get; set; } = "";
 
-        public List<BatchCommand> BatchCommands { get; } = new();
+        public List<BatchCommand> BatchCommands { get; } = [];
 
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {

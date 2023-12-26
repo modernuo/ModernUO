@@ -20,13 +20,12 @@ namespace Server.Spells.Necromancy
         );
 
         private static readonly CreatureGroup[] m_Groups =
-        {
+        [
             // Undead group--empty
             new(SlayerGroup.GetEntryByName(SlayerName.Silver).Types, Array.Empty<SummonEntry>()),
             // Insects
             new(
-                new[]
-                {
+                [
                     typeof(DreadSpider), typeof(FrostSpider), typeof(GiantSpider), typeof(GiantBlackWidow),
                     typeof(BlackSolenInfiltratorQueen), typeof(BlackSolenInfiltratorWarrior),
                     typeof(BlackSolenQueen), typeof(BlackSolenWarrior), typeof(BlackSolenWorker),
@@ -35,29 +34,25 @@ namespace Server.Spells.Necromancy
                     typeof(TerathanAvenger), typeof(TerathanDrone), typeof(TerathanMatriarch),
                     typeof(TerathanWarrior)
                     // TODO: Giant beetle? Ant lion? Ophidians?
-                },
-                new[]
-                {
+                ],
+                [
                     new SummonEntry(0, typeof(MoundOfMaggots))
-                }
+                ]
             ),
             // Mounts
             new(
-                new[]
-                {
+                [
                     typeof(Horse), typeof(Nightmare), typeof(FireSteed),
                     typeof(Kirin), typeof(Unicorn)
-                },
-                new[]
-                {
+                ],
+                [
                     new SummonEntry(10000, typeof(HellSteed)),
                     new SummonEntry(0, typeof(SkeletalMount))
-                }
+                ]
             ),
             // Elementals
             new(
-                new[]
-                {
+                [
                     typeof(BloodElemental), typeof(EarthElemental), typeof(SummonedEarthElemental),
                     typeof(AgapiteElemental), typeof(BronzeElemental), typeof(CopperElemental),
                     typeof(DullCopperElemental), typeof(GoldenElemental), typeof(ShadowIronElemental),
@@ -65,23 +60,20 @@ namespace Server.Spells.Necromancy
                     typeof(FireElemental), typeof(SummonedFireElemental), typeof(SnowElemental),
                     typeof(AirElemental), typeof(SummonedAirElemental), typeof(WaterElemental),
                     typeof(SummonedAirElemental), typeof(AcidElemental)
-                },
-                new[]
-                {
+                ],
+                [
                     new SummonEntry(5000, typeof(WailingBanshee)),
                     new SummonEntry(0, typeof(Wraith))
-                }
+                ]
             ),
             // Dragons
             new(
-                new[]
-                {
+                [
                     typeof(AncientWyrm), typeof(Dragon), typeof(GreaterDragon), typeof(SerpentineDragon),
                     typeof(ShadowWyrm), typeof(SkeletalDragon), typeof(WhiteWyrm),
                     typeof(Drake), typeof(Wyvern), typeof(LesserHiryu), typeof(Hiryu)
-                },
-                new[]
-                {
+                ],
+                [
                     new SummonEntry(18000, typeof(SkeletalDragon)),
                     new SummonEntry(10000, typeof(FleshGolem)),
                     new SummonEntry(5000, typeof(Lich)),
@@ -89,13 +81,12 @@ namespace Server.Spells.Necromancy
                     new SummonEntry(2000, typeof(Mummy)),
                     new SummonEntry(1000, typeof(SkeletalMage), typeof(BoneMagi)),
                     new SummonEntry(0, typeof(PatchworkSkeleton))
-                }
+                ]
             ),
             // Default group
             new(
                 Array.Empty<Type>(),
-                new[]
-                {
+                [
                     new SummonEntry(18000, typeof(LichLord)),
                     new SummonEntry(10000, typeof(FleshGolem)),
                     new SummonEntry(5000, typeof(Lich)),
@@ -103,9 +94,9 @@ namespace Server.Spells.Necromancy
                     new SummonEntry(2000, typeof(Mummy)),
                     new SummonEntry(1000, typeof(SkeletalMage), typeof(BoneMagi)),
                     new SummonEntry(0, typeof(PatchworkSkeleton))
-                }
+                ]
             )
-        };
+        ];
 
         private static readonly Dictionary<Mobile, List<Mobile>> _table = new();
 
@@ -254,7 +245,7 @@ namespace Server.Spells.Necromancy
 
             if (!_table.TryGetValue(master, out var list))
             {
-                _table[master] = list = new List<Mobile>();
+                _table[master] = list = [];
             }
 
             for (var i = list.Count - 1; i >= 0; --i)

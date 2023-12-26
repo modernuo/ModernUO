@@ -8,9 +8,9 @@ namespace Server
 {
     public static class Types
     {
-        public static readonly Type[] ParseStringParamTypes = { typeof(string), typeof(IFormatProvider) };
-        public static readonly Type[] ParseStringNumericParamTypes = { typeof(string), typeof(NumberStyles) };
-        private static object[] _parseParams = { null, null };
+        public static readonly Type[] ParseStringParamTypes = [typeof(string), typeof(IFormatProvider)];
+        public static readonly Type[] ParseStringNumericParamTypes = [typeof(string), typeof(NumberStyles)];
+        private static object[] _parseParams = [null, null];
 
         public static readonly Type OfByte = typeof(byte);
         public static readonly Type OfSByte = typeof(sbyte);
@@ -49,22 +49,22 @@ namespace Server
         public static readonly Type OfConstructible = typeof(ConstructibleAttribute);
         public static readonly Type OfGuid = typeof(Guid);
 
-        public static readonly string[] BoolNames = { "True", "False" };
-        public static readonly object[] BoolValues = { true, false };
+        public static readonly string[] BoolNames = ["True", "False"];
+        public static readonly object[] BoolValues = [true, false];
 
-        public static readonly string[] PoisonNames = { "None", "Lesser", "Regular", "Greater", "Deadly", "Lethal" };
+        public static readonly string[] PoisonNames = ["None", "Lesser", "Regular", "Greater", "Deadly", "Lethal"];
         public static readonly object[] PoisonValues =
-            { null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal };
+            [null, Poison.Lesser, Poison.Regular, Poison.Greater, Poison.Deadly, Poison.Lethal];
 
         public static readonly Type[] DecimalTypes =
-        {
+        [
             OfFloat,
             OfDouble,
             OfDecimal
-        };
+        ];
 
         public static readonly Type[] NumericTypes =
-        {
+        [
             OfByte,
             OfShort,
             OfInt,
@@ -73,7 +73,7 @@ namespace Server
             OfUShort,
             OfUInt,
             OfULong
-        };
+        ];
 
         private static Dictionary<Type, bool> _isParsable;
 

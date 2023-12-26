@@ -7,9 +7,9 @@ namespace Server.Engines.Quests.Necro
     public class AnimateMaabusCorpseObjective : QuestObjective
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1023643, 8787) // spellbook
-        };
+        ];
 
         public override object Message => 1060102;
 
@@ -98,9 +98,9 @@ namespace Server.Engines.Quests.Necro
     public class FindVaultOfSecretsObjective : QuestObjective
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1023676, 3679) // glowing rune
-        };
+        ];
 
         public override object Message => 1060109;
 
@@ -168,9 +168,9 @@ namespace Server.Engines.Quests.Necro
     public class ReturnToCrystalCaveObjective : QuestObjective
     {
         private static readonly QuestItemInfo[] m_Info =
-        {
+        [
             new(1026153, 6178) // teleporter
-        };
+        ];
 
         public override object Message => 1060115;
 

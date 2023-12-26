@@ -29,7 +29,7 @@ public partial class DeceitBrazier : Item
     }
 
     private static Type[] _creatures { get; } =
-    {
+    [
         typeof(FireSteed), // Set the tents up people!
 
         typeof(Skeleton), typeof(SkeletalKnight), typeof(SkeletalMage), typeof(Mummy),
@@ -55,7 +55,7 @@ public partial class DeceitBrazier : Item
         typeof(IceElemental), typeof(AcidElemental), typeof(WaterElemental), typeof(Efreet),
         typeof(AirElemental), typeof(Golem), typeof(SewerRat), typeof(GiantRat), typeof(DireWolf), typeof(TimberWolf),
         typeof(Cougar), typeof(Alligator)
-    };
+    ];
 
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime NextSpawn { get; private set; }

@@ -69,16 +69,16 @@ public partial class Neira : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Death;
 
-    public override Type[] UniqueList => new[] { typeof(ShroudOfDeciet) };
+    public override Type[] UniqueList => [typeof(ShroudOfDeciet)];
 
-    public override Type[] SharedList => new[]
-    {
+    public override Type[] SharedList =>
+    [
         typeof(ANecromancerShroud),
 
         typeof(CaptainJohnsHat)
-    };
+    ];
 
-    public override Type[] DecorativeList => new[] { typeof(WallBlood), typeof(TatteredAncientMummyWrapping) };
+    public override Type[] DecorativeList => [typeof(WallBlood), typeof(TatteredAncientMummyWrapping)];
 
     public override MonsterStatuetteType[] StatueTypes => Array.Empty<MonsterStatuetteType>();
 

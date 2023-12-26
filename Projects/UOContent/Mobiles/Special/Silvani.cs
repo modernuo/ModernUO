@@ -50,7 +50,7 @@ public partial class Silvani : BaseCreature
     public override Poison PoisonImmune => Poison.Regular;
     public override int TreasureMapLevel => 5;
 
-    private static MonsterAbility[] _abilities = { MonsterAbilities.SummonPixiesCounter };
+    private static MonsterAbility[] _abilities = [MonsterAbilities.SummonPixiesCounter];
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
     public override void GenerateLoot()

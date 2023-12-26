@@ -7,13 +7,13 @@ namespace Server.Gumps
     public class AddDoorGump : Gump
     {
         public static DoorInfo[] m_Types =
-        {
+        [
             new(typeof(MetalDoor), 0x675),
             new(typeof(RattanDoor), 0x695),
             new(typeof(DarkWoodDoor), 0x6A5),
             new(typeof(LightWoodDoor), 0x6D5),
             new(typeof(StrongWoodDoor), 0x6E5)
-        };
+        ];
 
         private readonly int m_Type;
 

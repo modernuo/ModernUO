@@ -7,13 +7,13 @@ namespace Server.Items.Holiday
     public partial class BasePaintedMask : Item
     {
         private static readonly string[] Staffers =
-        {
+        [
             "Owyn",
             "Luthius",
             "Kamron",
             "Jaedan",
             "Vorspire"
-        };
+        ];
 
         [InternString]
         [SerializableField(0, setter: "private")]

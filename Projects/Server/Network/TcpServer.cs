@@ -36,7 +36,7 @@ public static class TcpServer
     private static long _nextMaximumSocketsReachedMessage;
 
     // AccountLoginReject BadComm
-    private static readonly byte[] _socketRejected = { 0x82, 0xFF };
+    private static readonly byte[] _socketRejected = [0x82, 0xFF];
 
     public static IPEndPoint[] ListeningAddresses { get; private set; }
     public static Socket[] Listeners { get; private set; }
@@ -51,8 +51,8 @@ public static class TcpServer
 
     public static void Start()
     {
-        HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
-        List<Socket> listeners = new List<Socket>();
+        HashSet<IPEndPoint> listeningAddresses = [];
+        List<Socket> listeners = [];
 
         foreach (var ipep in ServerConfiguration.Listeners)
         {
