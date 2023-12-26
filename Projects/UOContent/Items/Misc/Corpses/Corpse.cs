@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Engines.Quests.Doom;
@@ -371,8 +372,8 @@ public partial class Corpse : Container, ICarvable
 
         _instancedItems ??= new Dictionary<Item, InstancedItemInfo>();
 
-        var m_Stackables = new List<Item>();
-        var m_Unstackables = new List<Item>();
+        using var stackables = PooledRefQueue<Item>.Create();
+        using var unstackables = PooledRefQueue<Item>.Create();
 
         for (var i = 0; i < Items.Count; i++)
         {
@@ -382,29 +383,23 @@ public partial class Corpse : Container, ICarvable
             {
                 if (item.Stackable)
                 {
-                    m_Stackables.Add(item);
+                    stackables.Enqueue(item);
                 }
                 else
                 {
-                    m_Unstackables.Add(item);
+                    unstackables.Enqueue(item);
                 }
             }
         }
 
-        var attackers = new List<Mobile>(_aggressors);
-
-        for (var i = 1; i < attackers.Count - 1; i++) // randomize
-        {
-            var rand = Utility.Random(i + 1);
-
-            (attackers[rand], attackers[i]) = (attackers[i], attackers[rand]);
-        }
+        using var attackers = PooledRefList<Mobile>.Create(_aggressors.Count);
+        attackers.AddRange(_aggressors);
+        attackers.Shuffle();
 
         // stackables first, for the remaining stackables, have those be randomly added after
-
-        for (var i = 0; i < m_Stackables.Count; i++)
+        while (stackables.Count > 0)
         {
-            var item = m_Stackables[i];
+            var item = stackables.Dequeue();
 
             if (item.Amount >= attackers.Count)
             {
@@ -426,20 +421,21 @@ public partial class Corpse : Container, ICarvable
                 }
                 else
                 {
-                    m_Unstackables.Add(item);
+                    unstackables.Enqueue(item);
                 }
             }
             else
             {
                 // What happens in this case?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
-                m_Unstackables.Add(item);
+                unstackables.Enqueue(item);
             }
         }
 
-        for (var i = 0; i < m_Unstackables.Count; i++)
+        var index = 0;
+        while (unstackables.Count > 0)
         {
-            var m = attackers[i % attackers.Count];
-            var item = m_Unstackables[i];
+            var m = attackers[index++ % attackers.Count];
+            var item = unstackables.Dequeue();
 
             _instancedItems.Add(item, new InstancedItemInfo(item, m));
         }
