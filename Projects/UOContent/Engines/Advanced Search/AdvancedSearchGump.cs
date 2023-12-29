@@ -679,7 +679,7 @@ public class AdvancedSearchGump : Gump
 
                     return;
                 }
-            case <= 3999: // Select
+            case <= 3999: // Props
                 {
                     var index = buttonId - 3000 + DisplayFrom;
 
@@ -691,7 +691,7 @@ public class AdvancedSearchGump : Gump
                     var entry = SearchResults[index];
                     var entity = entry.Entity;
 
-                    if (entity?.Deleted == false)
+                    if (entity?.Deleted != false)
                     {
                         break;
                     }
