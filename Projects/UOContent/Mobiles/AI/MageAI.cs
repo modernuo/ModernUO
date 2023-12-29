@@ -520,40 +520,34 @@ public class MageAI : BaseAI
                         }
                     default: // Set up a combo
                         {
-                            switch (m_Mobile.Mana)
+                            if (m_Mobile.Mana is > 15 and < 40)
                             {
-                                case > 15 and < 40:
+                                if (c.Paralyzed && !c.Poisoned && !m_Mobile.Meditating)
+                                {
+                                    if (m_Mobile.Debug)
                                     {
-                                        if (c.Paralyzed && !c.Poisoned && !m_Mobile.Meditating)
-                                        {
-                                            if (m_Mobile.Debug)
-                                            {
-                                                m_Mobile.DebugSay("I am going to meditate");
-                                            }
-
-                                            m_Mobile.UseSkill(SkillName.Meditation);
-                                        }
-                                        else if (!c.Poisoned)
-                                        {
-                                            spell = new ParalyzeSpell(m_Mobile);
-                                        }
-                                        break;
+                                        m_Mobile.DebugSay("I am going to meditate");
                                     }
-                                case > 60:
-                                    {
-                                        if (Utility.RandomBool() && !c.Paralyzed && !c.Frozen && !c.Poisoned)
-                                        {
-                                            m_Combo = 0;
-                                            spell = new ParalyzeSpell(m_Mobile);
-                                        }
-                                        else
-                                        {
-                                            m_Combo = 1;
-                                            spell = new ExplosionSpell(m_Mobile);
-                                        }
 
-                                        break;
-                                    }
+                                    m_Mobile.UseSkill(SkillName.Meditation);
+                                }
+                                else if (!c.Poisoned)
+                                {
+                                    spell = new ParalyzeSpell(m_Mobile);
+                                }
+                            }
+                            else if (m_Mobile.Mana > 60)
+                            {
+                                if (Utility.RandomBool() && !c.Paralyzed && !c.Frozen && !c.Poisoned)
+                                {
+                                    m_Combo = 0;
+                                    spell = new ParalyzeSpell(m_Mobile);
+                                }
+                                else
+                                {
+                                    m_Combo = 1;
+                                    spell = new ExplosionSpell(m_Mobile);
+                                }
                             }
 
                             break;
