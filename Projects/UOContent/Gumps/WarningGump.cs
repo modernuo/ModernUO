@@ -61,21 +61,6 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
-        {
-            if (m_Callback == null)
-            {
-                return;
-            }
-
-            if (info.ButtonID == 1)
-            {
-                m_Callback(true);
-            }
-            else
-            {
-                m_Callback(false);
-            }
-        }
+        public override void OnResponse(NetState sender, RelayInfo info) => m_Callback?.Invoke(info.ButtonID == 1);
     }
 }

@@ -28,8 +28,12 @@ public static class InsensitiveStringHelpers
     public static int InsensitiveCompare(this string a, string b) => string.Compare(a, b, StringComparison.OrdinalIgnoreCase);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InsensitiveEquals(this ReadOnlySpan<char> a, string b) =>
+    public static bool InsensitiveEquals(this ReadOnlySpan<char> a, ReadOnlySpan<char> b) =>
         a.Equals(b, StringComparison.OrdinalIgnoreCase);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool InsensitiveEquals(this string a, ReadOnlySpan<char> b) =>
+        a?.AsSpan().Equals(b, StringComparison.OrdinalIgnoreCase) ?? false;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InsensitiveEquals(this string a, string b) =>
