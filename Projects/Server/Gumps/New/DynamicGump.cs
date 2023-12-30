@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DynamicGump.cs                                             *
+ * File: DynamicGump.cs                                                  *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,26 +21,26 @@ namespace Server.Gumps
 {
     public abstract class DynamicGump : BaseGump
     {
-        private readonly int x;
-        private readonly int y;
-        private readonly GumpFlags flags;
+        private readonly int _x;
+        private readonly int _y;
+        private readonly GumpFlags _flags;
 
         protected DynamicGump(int x, int y, GumpFlags flags = GumpFlags.None)
         {
-            this.x = x;
-            this.y = y;
-            this.flags = flags;
+            _x = x;
+            _y = y;
+            _flags = flags;
         }
 
         public override void SendTo(NetState ns)
         {
-            GumpBuilder<StaticStringsHandler> builder = GumpBuilder.ForStaticStrings(flags);
+            GumpBuilder<StaticStringsHandler> builder = GumpBuilder.ForStaticStrings(_flags);
 
             try
             {
                 Build(ref builder);
                 ns.AddGump(this);
-                builder.Send(ns, Serial, TypeID, x, y, out _switches, out _textEntries);
+                builder.Send(ns, Serial, TypeID, _x, _y, out _switches, out _textEntries);
             }
             finally
             {

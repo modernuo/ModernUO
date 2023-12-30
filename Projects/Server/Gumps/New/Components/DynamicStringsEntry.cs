@@ -25,42 +25,42 @@ namespace Server.Gumps.Components
 {
     public readonly struct DynamicStringsEntry
     {
-        private static readonly byte[] buffer = GumpBuilder.StringsBuffer;
+        private static readonly byte[] _buffer = GumpBuilder.StringsBuffer;
 
-        private readonly int dynamicCounts;
-        private readonly BitVector32 dynamicEntries;
+        private readonly int _dynamicCounts;
+        private readonly BitVector32 _dynamicEntries;
         public readonly byte[] Data;
         public readonly int Count;
 
         public DynamicStringsEntry(byte[] data, BitVector32 dynamicEntries, int stringsCount, int dynamicCounts)
         {
             Data = data;
-            this.dynamicEntries = dynamicEntries;
+            _dynamicEntries = dynamicEntries;
             Count = stringsCount;
-            this.dynamicCounts = dynamicCounts;
+            _dynamicCounts = dynamicCounts;
         }
 
         public StringsEntry Build(params string[] strings)
         {
             int size = PrepareBuffer(strings);
-            return new(buffer[..size], Count, false, size);
+            return new(_buffer[..size], Count, false, size);
         }
 
         public StringsEntry BuildCompressed(params string[] strings)
         {
             int size = PrepareBuffer(strings);
 
-            SpanWriter writer = new(buffer.AsSpan(size));
-            OutgoingGumpPackets.WritePacked(buffer.AsSpan(..size), ref writer);
+            SpanWriter writer = new(_buffer.AsSpan(size));
+            OutgoingGumpPackets.WritePacked(_buffer.AsSpan(..size), ref writer);
 
             return new(writer.Span.ToArray(), Count, true, size);
         }
 
         private int PrepareBuffer(string[] strings)
         {
-            if (strings.Length != dynamicCounts)
+            if (strings.Length != _dynamicCounts)
             {
-                throw new ArgumentException($"String entries count mismatch. Expected: {dynamicCounts}, given: {strings.Length}");
+                throw new ArgumentException($"String entries count mismatch. Expected: {_dynamicCounts}, given: {strings.Length}");
             }
 
             int bufferPosition = 0;
@@ -69,21 +69,21 @@ namespace Server.Gumps.Components
 
             for (int i = 0; i < Count; i++)
             {
-                if (dynamicEntries[i])
+                if (_dynamicEntries[i])
                 {
                     string s = strings[stringIndex++];
 
-                    BinaryPrimitives.WriteUInt16BigEndian(buffer.AsSpan(bufferPosition), (ushort)s.Length);
+                    BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(bufferPosition), (ushort)s.Length);
                     bufferPosition += 2;
 
                     if (BitConverter.IsLittleEndian)
                     {
-                        bufferPosition += TextEncoding.Unicode.GetBytes(s.AsSpan(), buffer.AsSpan(bufferPosition));
+                        bufferPosition += TextEncoding.Unicode.GetBytes(s.AsSpan(), _buffer.AsSpan(bufferPosition));
                     }
                     else
                     {
                         ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(s.AsSpan());
-                        bytes.CopyTo(buffer.AsSpan(bufferPosition));
+                        bytes.CopyTo(_buffer.AsSpan(bufferPosition));
                         bufferPosition += bytes.Length;
                     }
                 }
@@ -92,11 +92,11 @@ namespace Server.Gumps.Components
                     ushort stringLength = BinaryPrimitives.ReadUInt16BigEndian(Data.AsSpan(dataPosition, 2));
                     dataPosition += 2;
 
-                    BinaryPrimitives.WriteUInt16BigEndian(buffer.AsSpan(bufferPosition), stringLength);
+                    BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(bufferPosition), stringLength);
                     bufferPosition += 2;
 
                     int bytesLength = stringLength * 2; // 2 bytes per char
-                    Data.AsSpan(dataPosition, bytesLength).CopyTo(buffer.AsSpan(bufferPosition));
+                    Data.AsSpan(dataPosition, bytesLength).CopyTo(_buffer.AsSpan(bufferPosition));
                     bufferPosition += bytesLength;
                 }
             }

@@ -49,15 +49,15 @@ namespace Server.Gumps.Components
     public ref struct GumpBuilder<T>
         where T : struct, IStringsHandler
     {
-        private static readonly byte[] layoutBuffer = GumpBuilder.LayoutBuffer;
+        private static readonly byte[] _layoutBuffer = GumpBuilder.LayoutBuffer;
 
-        internal T stringsWriter;
-        private int switches;
-        private int textEntries;
-        private int layoutPosition;
+        internal T StringsWriter;
+        private int _switches;
+        private int _textEntries;
+        private int _layoutPosition;
 
-        internal readonly ReadOnlySpan<byte> Layout => layoutBuffer.AsSpan(0, layoutPosition);
-        internal readonly int LayoutSize => layoutPosition;
+        internal readonly ReadOnlySpan<byte> Layout => _layoutBuffer.AsSpan(0, _layoutPosition);
+        internal readonly int LayoutSize => _layoutPosition;
 
         public GumpBuilder()
             : this(GumpFlags.None)
@@ -65,8 +65,8 @@ namespace Server.Gumps.Components
 
         internal GumpBuilder(GumpFlags flags)
         {
-            layoutPosition = 0;
-            stringsWriter = new();
+            _layoutPosition = 0;
+            StringsWriter = new();
 
             WriteProperty(Properties.NoMove, flags.HasFlag(GumpFlags.NoDraggable));
             WriteProperty(Properties.NoClose, flags.HasFlag(GumpFlags.NoClosable));
@@ -119,7 +119,7 @@ namespace Server.Gumps.Components
             WriteValue(switchId);
             WriteEnd();
 
-            switches++;
+            _switches++;
         }
 
         public void AddGroup(int groupId)
@@ -416,7 +416,7 @@ namespace Server.Gumps.Components
             WriteValue(switchId);
             WriteEnd();
 
-            switches++;
+            _switches++;
         }
 
         public void AddSpriteImage(int x, int y, int gumpId, int width, int height, int sx, int sy)
@@ -444,7 +444,7 @@ namespace Server.Gumps.Components
             WriteValueInternalized(initialText);
             WriteEnd();
 
-            textEntries++;
+            _textEntries++;
         }
 
         public void AddTextEntryLimited(int x, int y, int width, int height, int hue, int entryId, ReadOnlySpan<char> initialText = default, int size = 0)
@@ -460,7 +460,7 @@ namespace Server.Gumps.Components
             WriteValue(size);
             WriteEnd();
 
-            textEntries++;
+            _textEntries++;
         }
 
         public void AddTooltip(int number)
@@ -482,7 +482,7 @@ namespace Server.Gumps.Components
 
         internal void FinalizeLayout()
         {
-            layoutBuffer[layoutPosition++] = 0;
+            _layoutBuffer[_layoutPosition++] = 0;
         }
 
 
@@ -498,8 +498,8 @@ namespace Server.Gumps.Components
                 throw new Exception();
             }
 
-            OperationStatus result = Ascii.FromUtf16(buffer[..charsWritten], layoutBuffer.AsSpan(layoutPosition), out int bytesWritten);
-            layoutPosition += bytesWritten;
+            OperationStatus result = Ascii.FromUtf16(buffer[..charsWritten], _layoutBuffer.AsSpan(_layoutPosition), out int bytesWritten);
+            _layoutPosition += bytesWritten;
 
             Debug.Assert(result == OperationStatus.Done);
 
@@ -509,7 +509,7 @@ namespace Server.Gumps.Components
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteValue(char value)
         {
-            layoutBuffer[layoutPosition++] = (byte)value;
+            _layoutBuffer[_layoutPosition++] = (byte)value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -517,8 +517,8 @@ namespace Server.Gumps.Components
         {
             if (!value.IsEmpty)
             {
-                OperationStatus result = Ascii.FromUtf16(value, layoutBuffer.AsSpan(layoutPosition), out int bytesWritten);
-                layoutPosition += bytesWritten;
+                OperationStatus result = Ascii.FromUtf16(value, _layoutBuffer.AsSpan(_layoutPosition), out int bytesWritten);
+                _layoutPosition += bytesWritten;
 
                 Debug.Assert(result == OperationStatus.Done);
             }
@@ -529,7 +529,7 @@ namespace Server.Gumps.Components
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteValueInternalized(ReadOnlySpan<char> value)
         {
-            int index = stringsWriter.Internalize(value);
+            int index = StringsWriter.Internalize(value);
             WriteValue(index);
         }
 
@@ -542,7 +542,7 @@ namespace Server.Gumps.Components
                 throw new Exception("Cannot convert interpolated string for gump content");
             }
 
-            int index = stringsWriter.Internalize(handler.ToSpanAndClose());
+            int index = StringsWriter.Internalize(handler.ToSpanAndClose());
             WriteValue(index);
         }
 
@@ -582,19 +582,19 @@ namespace Server.Gumps.Components
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Write(ReadOnlySpan<byte> span)
         {
-            span.CopyTo(layoutBuffer.AsSpan(layoutPosition));
-            layoutPosition += span.Length;
+            span.CopyTo(_layoutBuffer.AsSpan(_layoutPosition));
+            _layoutPosition += span.Length;
         }
         #endregion Writers
 
 
         public void Send(NetState ns, Serial serial, int typeId, int x, int y, out int switches, out int textEntries)
         {
-            switches = this.switches;
-            textEntries = this.textEntries;
+            switches = this._switches;
+            textEntries = this._textEntries;
 
-            int worstLayoutLength = Zlib.MaxPackSize(layoutPosition);
-            int worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
+            int worstLayoutLength = Zlib.MaxPackSize(_layoutPosition);
+            int worstStringsLength = Zlib.MaxPackSize(StringsWriter.BytesWritten);
 
             int maxLength = 40 + worstLayoutLength + worstStringsLength;
 
@@ -608,10 +608,10 @@ namespace Server.Gumps.Components
             writer.Write(y);
 
             FinalizeLayout();
-            OutgoingGumpPackets.WritePacked(layoutBuffer.AsSpan(0, layoutPosition), ref writer);
+            OutgoingGumpPackets.WritePacked(_layoutBuffer.AsSpan(0, _layoutPosition), ref writer);
 
-            writer.Write(stringsWriter.Count);
-            stringsWriter.WriteCompressed(ref writer);
+            writer.Write(StringsWriter.Count);
+            StringsWriter.WriteCompressed(ref writer);
 
             writer.WritePacketLength();
 
@@ -622,14 +622,14 @@ namespace Server.Gumps.Components
 
         internal Span<byte> Reserve(int size)
         {
-            Span<byte> toRet = layoutBuffer.AsSpan(layoutPosition, size);
-            layoutPosition += size;
+            Span<byte> toRet = _layoutBuffer.AsSpan(_layoutPosition, size);
+            _layoutPosition += size;
             return toRet;
         }
 
         public void Dispose()
         {
-            stringsWriter.Dispose();
+            StringsWriter.Dispose();
         }
 
         private static class Properties
@@ -688,12 +688,12 @@ namespace Server.Gumps.Components
 
             compressedLayoutWriter.Dispose();
 
-            builder.stringsWriter.Finalize(out strings);
+            builder.StringsWriter.Finalize(out strings);
         }
 
         public static void CompileCompressed(this in GumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StringsEntry strings)
         {
-            ref readonly StaticStringsHandler stringsWriter = ref builder.stringsWriter;
+            ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
 
             builder.FinalizeLayout();
 
@@ -715,7 +715,7 @@ namespace Server.Gumps.Components
             builder.FinalizeLayout();
             layout = new(builder.Layout.ToArray(), false, builder.LayoutSize);
 
-            ref readonly StaticStringsHandler handler = ref builder.stringsWriter;
+            ref readonly StaticStringsHandler handler = ref builder.StringsWriter;
             strings = new(handler.ToArray(), handler.Count, false, handler.BytesWritten);
         }
     }

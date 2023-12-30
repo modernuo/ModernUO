@@ -30,9 +30,9 @@ namespace Server.Gumps
         protected const int ArrowRightWidth = 16;
         protected const int ArrowRightHeight = 16;
 
-        private readonly int x;
-        private readonly int y;
-        private readonly GumpFlags flags;
+        private readonly int _x;
+        private readonly int _y;
+        private readonly GumpFlags _flags;
 
         protected virtual ushort BorderSize => 10;
         protected virtual ushort OffsetSize => 1;
@@ -46,9 +46,9 @@ namespace Server.Gumps
 
         protected DynamicGridGump(int x, int y, GumpFlags flags = GumpFlags.None)
         {
-            this.x = x;
-            this.y = y;
-            this.flags = flags;
+            _x = x;
+            _y = y;
+            _flags = flags;
         }
 
         protected static int GetButtonID(int typeCount, int type, int index)
@@ -75,14 +75,14 @@ namespace Server.Gumps
 
         public override void SendTo(NetState ns)
         {
-            GridGumpBuilder<StaticStringsHandler> builder = new(flags, BorderSize, OffsetSize, EntryHeight,
+            GridGumpBuilder<StaticStringsHandler> builder = new(_flags, BorderSize, OffsetSize, EntryHeight,
                 OffsetGumpId, HeaderGumpId, EntryGumpId, BackGumpId, TextHue, TextOffsetX);
 
             try
             {
                 Build(ref builder);
                 ns.AddGump(this);
-                builder.Send(ns, Serial, TypeID, x, y, out _switches, out _textEntries);
+                builder.Send(ns, Serial, TypeID, _x, _y, out _switches, out _textEntries);
             }
             finally
             {
