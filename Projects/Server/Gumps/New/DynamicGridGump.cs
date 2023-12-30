@@ -16,6 +16,7 @@
 using Server.Gumps.Components;
 using Server.Gumps.Enums;
 using Server.Network;
+using System;
 
 namespace Server.Gumps
 {
@@ -66,9 +67,7 @@ namespace Server.Gumps
             }
 
             buttonID -= 1;
-
-            type = buttonID % typeCount;
-            index = buttonID / typeCount;
+            index = Math.DivRem(buttonID, typeCount, out type);
 
             return true;
         }
