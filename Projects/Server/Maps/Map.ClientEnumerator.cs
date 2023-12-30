@@ -87,7 +87,7 @@ public partial class Map
         {
             _started = false;
             _location = loc;
-            _linkList = ref map.GetRealSector(loc.m_X, loc.m_Y).Clients;
+            _linkList = ref map.GetSector(loc.m_X, loc.m_Y).Clients;
             _version = 0;
             _current = null;
         }

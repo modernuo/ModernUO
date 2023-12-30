@@ -119,7 +119,7 @@ public partial class Map
             }
             else
             {
-                _linkList = ref map.GetRealSector(loc.m_X, loc.m_Y).Items;
+                _linkList = ref map.GetSector(loc.m_X, loc.m_Y).Items;
             }
 
             _version = 0;
