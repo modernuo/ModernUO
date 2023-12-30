@@ -495,7 +495,7 @@ namespace Server.Gumps.Components
 
             if (!value.TryFormat(buffer, out int charsWritten, format, null))
             {
-                throw new Exception();
+                throw new Exception($"Failed to format '{value}' with the given format '{format}'");
             }
 
             OperationStatus result = Ascii.FromUtf16(buffer[..charsWritten], _layoutBuffer.AsSpan(_layoutPosition), out int bytesWritten);
@@ -554,22 +554,22 @@ namespace Server.Gumps.Components
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteProperty(Range name, bool condition)
+        private void WriteProperty(byte[] name, bool condition)
         {
             if (!condition)
             {
                 return;
             }
 
-            Write(Properties.Buffer[name]);
+            Write(name);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteStart(Range entryName)
+        private void WriteStart(byte[] entryName)
         {
             WriteValue('{');
             WriteValue(' ');
-            Write(Labels.Buffer[entryName]);
+            Write(entryName);
             WriteValue(' ');
         }
 
@@ -590,8 +590,8 @@ namespace Server.Gumps.Components
 
         public void Send(NetState ns, Serial serial, int typeId, int x, int y, out int switches, out int textEntries)
         {
-            switches = this._switches;
-            textEntries = this._textEntries;
+            switches = _switches;
+            textEntries = _textEntries;
 
             int worstLayoutLength = Zlib.MaxPackSize(_layoutPosition);
             int worstStringsLength = Zlib.MaxPackSize(StringsWriter.BytesWritten);
@@ -630,49 +630,6 @@ namespace Server.Gumps.Components
         public void Dispose()
         {
             StringsWriter.Dispose();
-        }
-
-        private static class Properties
-        {
-            public static readonly byte[] Buffer = Encoding.ASCII.GetBytes("{ nomove }{ noclose }{ nodispose }{ noresize }");
-
-            public static readonly Range NoMove = 0..10;
-            public static readonly Range NoClose = 10..21;
-            public static readonly Range NoDispose = 21..34;
-            public static readonly Range NoResize = 34..46;
-        }
-
-        private static class Labels
-        {
-            public static readonly byte[] Buffer = Encoding.ASCII.GetBytes(
-                "checkertrans|resizepic|button|checkbox|group|htmlgump|xmfhtmlgump|xmfhtmlgumpcolor|xmfhtmltok|gumppic|buttontileart|tooltip|" +
-                "gumppictiled|tilepic|tilepichue|itemproperty|text|croppedtext|mastergump|page|radio|picinpic|textentry|textentrylimited"
-            );
-
-            public static readonly Range Alpha = 0..12;
-            public static readonly Range Background = 13..22;
-            public static readonly Range Button = 23..29;
-            public static readonly Range Checkbox = 30..38;
-            public static readonly Range Group = 39..44;
-            public static readonly Range Html = 45..53;
-            public static readonly Range HtmlLocalized = 54..65;
-            public static readonly Range HtmlLocalizedWithColor = 66..82;
-            public static readonly Range HtmlLocalizedWithArgs = 83..93;
-            public static readonly Range Image = 94..101;
-            public static readonly Range ImageTileButton = 102..115;
-            public static readonly Range Tooltip = 116..123;
-            public static readonly Range ImageTiled = 124..136;
-            public static readonly Range Item = 137..144;
-            public static readonly Range ItemHued = 145..155;
-            public static readonly Range ItemProperty = 156..168;
-            public static readonly Range Label = 169..173;
-            public static readonly Range LabelCropped = 174..185;
-            public static readonly Range MasterGump = 186..196;
-            public static readonly Range Page = 197..201;
-            public static readonly Range Radio = 202..207;
-            public static readonly Range SpriteImage = 208..216;
-            public static readonly Range TextEntry = 217..226;
-            public static readonly Range TextEntryLimited = 227..243;
         }
     }
 
@@ -718,5 +675,43 @@ namespace Server.Gumps.Components
             ref readonly StaticStringsHandler handler = ref builder.StringsWriter;
             strings = new(handler.ToArray(), handler.Count, false, handler.BytesWritten);
         }
+    }
+
+    static file class Properties
+    {
+        public static readonly byte[] Buffer = Encoding.ASCII.GetBytes("{ nomove }{ noclose }{ nodispose }{ noresize }");
+
+        public static readonly byte[] NoMove = "{ nomove }"u8.ToArray();
+        public static readonly byte[] NoClose = "{ noclose }"u8.ToArray();
+        public static readonly byte[] NoDispose = "{ nodispose }"u8.ToArray();
+        public static readonly byte[] NoResize = "{ noresize }"u8.ToArray();
+    }
+
+    static file class Labels
+    {
+        public static readonly byte[] Alpha = "checkertrans"u8.ToArray();
+        public static readonly byte[] Background = "resizepic"u8.ToArray();
+        public static readonly byte[] Button = "button"u8.ToArray();
+        public static readonly byte[] Checkbox = "checkbox"u8.ToArray();
+        public static readonly byte[] Group = "group"u8.ToArray();
+        public static readonly byte[] Html = "htmlgump"u8.ToArray();
+        public static readonly byte[] HtmlLocalized = "xmfhtmlgump"u8.ToArray();
+        public static readonly byte[] HtmlLocalizedWithColor = "xmfhtmlgumpcolor"u8.ToArray();
+        public static readonly byte[] HtmlLocalizedWithArgs = "xmfhtmltok"u8.ToArray();
+        public static readonly byte[] Image = "gumppic"u8.ToArray();
+        public static readonly byte[] ImageTileButton = "buttontileart"u8.ToArray();
+        public static readonly byte[] Tooltip = "tooltip"u8.ToArray();
+        public static readonly byte[] ImageTiled = "gumppictiled"u8.ToArray();
+        public static readonly byte[] Item = "tilepic"u8.ToArray();
+        public static readonly byte[] ItemHued = "tilepichue"u8.ToArray();
+        public static readonly byte[] ItemProperty = "itemproperty"u8.ToArray();
+        public static readonly byte[] Label = "text"u8.ToArray();
+        public static readonly byte[] LabelCropped = "croppedtext"u8.ToArray();
+        public static readonly byte[] MasterGump = "mastergump"u8.ToArray();
+        public static readonly byte[] Page = "page"u8.ToArray();
+        public static readonly byte[] Radio = "radio"u8.ToArray();
+        public static readonly byte[] SpriteImage = "picinpic"u8.ToArray();
+        public static readonly byte[] TextEntry = "textentry"u8.ToArray();
+        public static readonly byte[] TextEntryLimited = "textentrylimited"u8.ToArray();
     }
 }
