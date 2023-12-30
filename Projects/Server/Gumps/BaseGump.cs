@@ -50,10 +50,12 @@ namespace Server.Gumps
         public abstract void SendTo(NetState ns);
 
         public virtual void OnResponse(NetState sender, in RelayInfo info)
-        { }
+        {
+        }
 
         public virtual void OnServerClose(NetState owner)
-        { }
+        {
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetTypeId(Type type)
