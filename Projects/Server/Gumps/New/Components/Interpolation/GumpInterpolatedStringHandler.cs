@@ -26,7 +26,7 @@ namespace Server.Gumps.Components.Interpolation
         where TStringHandler : struct, IStringsHandler
         where TFormatter : struct, IGumpInterpolationTextFormatter<TFormatter>
     {
-        private static readonly char[] _buffer = GC.AllocateUninitializedArray<char>(1024);
+        private static readonly char[] _buffer = HandlerFields.Buffer;
 
         [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "mutable struct")]
         private MemoryExtensions.TryWriteInterpolatedStringHandler _handler;
@@ -116,6 +116,8 @@ namespace Server.Gumps.Components.Interpolation
 
     static file class HandlerFields
     {
+        public static readonly char[] Buffer = GC.AllocateUninitializedArray<char>(1024);
+
         [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_pos")]
         public static extern ref int GetHandlerBufferPosition(in MemoryExtensions.TryWriteInterpolatedStringHandler @this);
 
