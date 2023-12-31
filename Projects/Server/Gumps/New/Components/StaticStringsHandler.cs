@@ -21,19 +21,19 @@ using System;
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.IO.Compression;
 using System.Runtime.InteropServices;
 
 namespace Server.Gumps.Components
 {
     public readonly struct StaticStringsHandler : IStringsHandler
     {
-        private static readonly byte[] _buffer = GumpBuilder.StringsBuffer;
+        private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
         private static readonly Dictionary<int, int> _stringHashes = [];
         private static int _position;
 
         public int BytesWritten => _position;
         public int Count => _stringHashes.Count;
+        public readonly ReadOnlySpan<byte> Span => _buffer.AsSpan(0, _position);
 
         public int Internalize(ReadOnlySpan<char> value)
         {
@@ -63,34 +63,14 @@ namespace Server.Gumps.Components
             return index;
         }
 
-        public void WriteCompressed(ref SpanWriter writer)
+        internal StaticStringsEntry Finalize(Span<byte> compressionBuffer)
         {
-            OutgoingGumpPackets.WritePacked(_buffer.AsSpan(.._position), ref writer);
-        }
-
-        public byte[] ToArray()
-        {
-            return _buffer[.._position];
-        }
-
-        public byte[] ToCompressedArray()
-        {
-            SpanWriter writer = new(Zlib.MaxPackSize(_position));
+            SpanWriter writer = new(compressionBuffer);
             OutgoingGumpPackets.WritePacked(_buffer.AsSpan(.._position), ref writer);
             byte[] toRet = writer.Span.ToArray();
             writer.Dispose();
 
-            return toRet;
-        }
-
-        internal static byte[] ToCompressedArray(Span<byte> compressedBuffer)
-        {
-            SpanWriter writer = new(compressedBuffer);
-            OutgoingGumpPackets.WritePacked(_buffer.AsSpan(.._position), ref writer);
-            byte[] toRet = writer.Span.ToArray();
-            writer.Dispose();
-
-            return toRet;
+            return new(toRet, _position, _stringHashes.Count);
         }
 
         public void Dispose()

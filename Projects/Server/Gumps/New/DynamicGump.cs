@@ -16,6 +16,9 @@
 using Server.Gumps.Components;
 using Server.Gumps.Enums;
 using Server.Network;
+using System.Buffers;
+using System.IO.Compression;
+using System.IO;
 
 namespace Server.Gumps
 {
@@ -34,13 +37,13 @@ namespace Server.Gumps
 
         public override void SendTo(NetState ns)
         {
-            GumpBuilder<StaticStringsHandler> builder = GumpBuilder.ForStaticStrings(_flags);
+            GumpBuilder<StaticStringsHandler> builder = new(_flags);
 
             try
             {
                 Build(ref builder);
                 ns.AddGump(this);
-                builder.Send(ns, Serial, TypeID, _x, _y, out _switches, out _textEntries);
+                Send(ns, in builder);
             }
             finally
             {
@@ -49,5 +52,36 @@ namespace Server.Gumps
         }
 
         protected abstract void Build(ref GumpBuilder<StaticStringsHandler> builder);
+
+        private void Send(NetState ns, in GumpBuilder<StaticStringsHandler> builder)
+        {
+            ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
+
+            int worstLayoutLength = Zlib.MaxPackSize(builder.LayoutSize);
+            int worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
+
+            int maxLength = 40 + worstLayoutLength + worstStringsLength;
+
+            SpanWriter writer = new(maxLength);
+            writer.Write((byte)0xDD); // Packet ID
+            writer.Seek(2, SeekOrigin.Current);
+
+            writer.Write(Serial);
+            writer.Write(TypeID);
+            writer.Write(_x);
+            writer.Write(_y);
+
+            builder.FinalizeLayout();
+            OutgoingGumpPackets.WritePacked(builder.Layout, ref writer);
+            
+            writer.Write(stringsWriter.Count);
+            OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
+
+            writer.WritePacketLength();
+
+            ns.Send(writer.Span);
+
+            writer.Dispose();
+        }
     }
 }

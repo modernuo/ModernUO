@@ -19,12 +19,12 @@ namespace Server.Gumps.Components
     {
         public readonly byte[] Data;
         public readonly int UncompressedLength;
-        public readonly bool Compressed;
 
-        public LayoutEntry(byte[] data, bool compressed, int uncompressedLength)
+        public bool IsEmpty => UncompressedLength == 0;
+
+        public LayoutEntry(byte[] data, int uncompressedLength)
         {
             Data = data;
-            Compressed = compressed;
             UncompressedLength = uncompressedLength;
         }
     }

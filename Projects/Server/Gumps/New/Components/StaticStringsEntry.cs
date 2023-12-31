@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: StringsEntry.cs                                                 *
+ * File: StaticStringsEntry.cs                                           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -15,19 +15,17 @@
 
 namespace Server.Gumps.Components
 {
-    public readonly struct StringsEntry
+    public readonly struct StaticStringsEntry
     {
         public readonly byte[] Data;
         public readonly int UncompressedLength;
         public readonly int Count;
-        public readonly bool Compressed;
 
-        public StringsEntry(byte[] data, int stringsCount, bool compressed, int uncompressedLength)
+        public StaticStringsEntry(byte[] data, int uncompressedLength, int count)
         {
             Data = data;
-            Count = stringsCount;
-            Compressed = compressed;
             UncompressedLength = uncompressedLength;
+            Count = count;
         }
     }
 }

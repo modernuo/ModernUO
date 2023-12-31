@@ -16,17 +16,18 @@
 using Server.Gumps.Components;
 using Server.Gumps.Enums;
 using Server.Network;
+using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 
 namespace Server.Gumps
 {
-    public abstract class StaticGump<TSelf> : BaseGump
-        where TSelf : StaticGump<TSelf>
+    public abstract class StaticLayoutGump<TSelf> : BaseGump
+        where TSelf : StaticLayoutGump<TSelf>
     {
         private static LayoutEntry _layout;
-        private static StaticStringsEntry _strings;
+        private static DynamicStringsEntry _strings;
 
         protected abstract int X { get; }
         protected abstract int Y { get; }
@@ -36,7 +37,7 @@ namespace Server.Gumps
         {
             if (_layout.IsEmpty)
             {
-                GumpBuilder<StaticStringsHandler> builder = new(Flags);
+                GumpBuilder<DynamicStringsHandler> builder = new(Flags);
 
                 try
                 {
@@ -49,16 +50,26 @@ namespace Server.Gumps
                 }
             }
 
+            DynamicStringsFiller filler = _strings.CreateFiller();
+            FillStrings(ref filler);
+
+            if (!filler.Finalize())
+            {
+                throw new Exception();
+            }
+
             ns.AddGump(this);
-            Send(ns);
+            Send(ns, in _layout, in filler);
         }
 
-        protected abstract void Build(ref GumpBuilder<StaticStringsHandler> builder);
+        protected abstract void Build(ref GumpBuilder<DynamicStringsHandler> builder);
 
-        private void Send(NetState ns)
+        protected abstract void FillStrings(ref DynamicStringsFiller strings);
+
+        private void Send(NetState ns, in LayoutEntry layout, in DynamicStringsFiller strings)
         {
-            int worstLayoutLength = Zlib.MaxPackSize(_layout.UncompressedLength);
-            int worstStringsLength = Zlib.MaxPackSize(_strings.UncompressedLength);
+            int worstLayoutLength = Zlib.MaxPackSize(layout.UncompressedLength);
+            int worstStringsLength = Zlib.MaxPackSize(strings.UncompressedLength);
 
             int maxLength = 40 + worstLayoutLength + worstStringsLength;
 
@@ -71,10 +82,10 @@ namespace Server.Gumps
             writer.Write(X);
             writer.Write(Y);
 
-            writer.Write(_layout.Data);
+            writer.Write(layout.Data);
 
-            writer.Write(_strings.Count);
-            writer.Write(_strings.Data);
+            writer.Write(strings.Count);
+            OutgoingGumpPackets.WritePacked(strings.Data, ref writer);
 
             writer.WritePacketLength();
 

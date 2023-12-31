@@ -16,10 +16,10 @@
 using Server.Gumps.Components.Interpolation;
 using Server.Gumps.Enums;
 using Server.Gumps.Interfaces;
-using Server.Network;
 using System;
 using System.Buffers;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using static Server.Gumps.Components.Interpolation.GumpInterpolatedStringHandler;
@@ -29,7 +29,7 @@ namespace Server.Gumps.Components
     public ref struct GridGumpBuilder<T>
         where T : struct, IStringsHandler
     {
-        internal GumpBuilder<T> builder;
+        private GumpBuilder<T> _builder;
 
         private readonly ushort _borderSize;
         private readonly ushort _offsetSize;
@@ -51,12 +51,15 @@ namespace Server.Gumps.Components
 
         public readonly int CurrentX => _currentX;
         public readonly int CurrentY => _currentY;
+        public readonly ReadOnlySpan<byte> Layout => _builder.Layout;
+        public readonly int LayoutSize => _builder.LayoutSize;
+        [UnscopedRef] public ref T StringsWriter => ref _builder.StringsWriter;
 
         public GridGumpBuilder(GumpFlags flags = GumpFlags.None, ushort borderSize = 10, ushort offsetSize = 1,
             ushort entryHeight = 20, ushort offsetGumpId = 0x0A40, ushort headerGumpId = 0x0E14, ushort entryGumpId = 0x0BBC,
             ushort backGumpId = 0x13BE, ushort textHue = 0, ushort textOffsetX = 2)
         {
-            builder = new(flags);
+            _builder = new(flags);
 
             _borderSize = borderSize;
             _offsetSize = offsetSize;
@@ -104,10 +107,10 @@ namespace Server.Gumps.Components
             _currentX = _borderSize + _offsetSize;
             _currentY = _borderSize + _offsetSize;
 
-            builder.AddPage(++_currentPage);
+            _builder.AddPage(++_currentPage);
 
-            _backgroundSpan = builder.Reserve(35);
-            _offsetSpan = builder.Reserve(46);
+            _backgroundSpan = _builder.Reserve(35);
+            _offsetSpan = _builder.Reserve(46);
         }
 
         public void AddNewLine()
@@ -118,32 +121,32 @@ namespace Server.Gumps.Components
 
         public void AddEntryLabel(int width, string text)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddLabelCropped(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, _textHue, text);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddLabelCropped(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, _textHue, text);
 
             IncreaseX(width);
         }
 
         public void AddEntryHtml(int width, string? text)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, text);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, text);
 
             IncreaseX(width);
         }
 
         public void AddEntryHtml(int width, ref GumpInterpolatedStringHandler<T, None> handler)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, ref handler);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, ref handler);
 
             IncreaseX(width);
         }
 
         public void AddEntryHtml(int width, int color, string? text)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, text);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, text);
 
             IncreaseX(width);
         }
@@ -151,32 +154,32 @@ namespace Server.Gumps.Components
         public void AddEntryHtml(int width, int color,
             [InterpolatedStringHandlerArgument(nameof(color))] scoped ref GumpInterpolatedStringHandler<T, Colored> handler)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, ref handler);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtml(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, ref handler);
 
             IncreaseX(width);
         }
 
         public void AddEntryHtmlCentered(int width, string? text)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, text);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, text);
 
             IncreaseX(width);
         }
 
         public void AddEntryHtmlCentered(int width, ref GumpInterpolatedStringHandler<T, Centered> handler)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, ref handler);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, ref handler);
 
             IncreaseX(width);
         }
 
         public void AddEntryHtmlCentered(int width, int color, string? text)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, text);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, text);
 
             IncreaseX(width);
         }
@@ -184,8 +187,8 @@ namespace Server.Gumps.Components
         public void AddEntryHtmlCentered(int width, int color,
             [InterpolatedStringHandlerArgument(nameof(color))] ref GumpInterpolatedStringHandler<T, Centered> handler)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, ref handler);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddHtmlCentered(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, color, ref handler);
 
             IncreaseX(width);
         }
@@ -197,7 +200,7 @@ namespace Server.Gumps.Components
 
         public void AddEntryHeader(int width, int spannedEntries)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight * spannedEntries + _offsetSize * (spannedEntries - 1), _headerGumpId);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight * spannedEntries + _offsetSize * (spannedEntries - 1), _headerGumpId);
             IncreaseX(width);
         }
 
@@ -205,7 +208,7 @@ namespace Server.Gumps.Components
         {
             if (_offsetWidth != 0)
             {
-                builder.AddImageTiled(0, _currentY, _offsetWidth, _entryHeight, _backGumpId + 4);
+                _builder.AddImageTiled(0, _currentY, _offsetWidth, _entryHeight, _backGumpId + 4);
             }
 
             AddNewLine();
@@ -218,9 +221,9 @@ namespace Server.Gumps.Components
 
         public void AddEntryButton(int width, int normalID, int pressedID, int buttonID, int buttonWidth, int buttonHeight, int spannedEntries)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight * spannedEntries + _offsetSize * (spannedEntries - 1), _headerGumpId);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight * spannedEntries + _offsetSize * (spannedEntries - 1), _headerGumpId);
 
-            builder.AddButton(_currentX + (width - buttonWidth) / 2, _currentY + (_entryHeight * spannedEntries +
+            _builder.AddButton(_currentX + (width - buttonWidth) / 2, _currentY + (_entryHeight * spannedEntries +
                 _offsetSize * (spannedEntries - 1) - buttonHeight) / 2, normalID, pressedID, buttonID);
 
             IncreaseX(width);
@@ -228,9 +231,9 @@ namespace Server.Gumps.Components
 
         public void AddEntryPageButton(int width, int normalID, int pressedID, int page, int buttonWidth, int buttonHeight)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _headerGumpId);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _headerGumpId);
 
-            builder.AddButton(_currentX + (width - buttonWidth) / 2, _currentY + (_entryHeight - buttonHeight) / 2, normalID,
+            _builder.AddButton(_currentX + (width - buttonWidth) / 2, _currentY + (_entryHeight - buttonHeight) / 2, normalID,
                 pressedID, 0, GumpButtonType.Page, page);
 
             IncreaseX(width);
@@ -238,20 +241,15 @@ namespace Server.Gumps.Components
 
         public void AddEntryText(int width, int entryID, string initialText)
         {
-            builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
-            builder.AddTextEntry(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, _textHue, entryID, initialText);
+            _builder.AddImageTiled(_currentX, _currentY, width, _entryHeight, _entryGumpId);
+            _builder.AddTextEntry(_currentX + _textOffsetX, _currentY, width - _textOffsetX, _entryHeight, _textHue, entryID, initialText);
 
             IncreaseX(width);
         }
 
         public void AddImageTiled(int x, int y, int width, int height, int gumpId)
         {
-            builder.AddImageTiled(x, y, width, height, gumpId);
-        }
-
-        public readonly void Send(NetState ns, Serial serial, int typeId, int x, int y, out int switches, out int textEntries)
-        {
-            builder.Send(ns, serial, typeId, x, y, out switches, out textEntries);
+            _builder.AddImageTiled(x, y, width, height, gumpId);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -273,27 +271,14 @@ namespace Server.Gumps.Components
             }
         }
 
+        internal void FinalizeLayout()
+        {
+            _builder.FinalizeLayout();
+        }
+
         public readonly void Dispose()
         {
-            builder.Dispose();
-        }
-    }
-
-    public static class GridGumpBuilderExtensions
-    {
-        public static void CompileCompressed(this in GridGumpBuilder<DynamicStringsHandler> builder, out LayoutEntry layout, out DynamicStringsEntry strings)
-        {
-            builder.builder.CompileCompressed(out layout, out strings);
-        }
-
-        public static void CompileCompressed(this in GridGumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StringsEntry strings)
-        {
-            builder.builder.CompileCompressed(out layout, out strings);
-        }
-
-        public static void Compile(this in GridGumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StringsEntry strings)
-        {
-            builder.builder.Compile(out layout, out strings);
+            _builder.Dispose();
         }
     }
 }

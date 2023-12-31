@@ -4,35 +4,8 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-    public class PetResurrectGump : StaticGump
+    public sealed class PetResurrectGump : StaticLayoutGump<PetResurrectGump>
     {
-        private static readonly LayoutEntry layout;
-        private static readonly DynamicStringsEntry strings;
-
-        static PetResurrectGump()
-        {
-            using var builder = GumpBuilder.ForDynamicStrings();
-
-            builder.AddPage();
-
-            builder.AddBackground(10, 10, 265, 140, 0x242C);
-
-            builder.AddItem(205, 40, 0x4);
-            builder.AddItem(227, 40, 0x5);
-
-            builder.AddItem(180, 78, 0xCAE);
-            builder.AddItem(195, 90, 0xCAD);
-            builder.AddItem(218, 95, 0xCB0);
-
-            builder.AddHtmlLocalized(30, 30, 150, 75, 1049665); // <div align=center>Wilt thou sanctify the resurrection of:</div>
-            builder.AddHtml(30, 70, 150, 25, GumpBuilder.Dynamic("petName"), true);
-
-            builder.AddButton(40, 105, 0x81A, 0x81B, 0x1);  // Okay
-            builder.AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel
-
-            builder.CompileCompressed(out layout, out strings);
-        }
-
         private readonly double _hitsScalar;
         private readonly BaseCreature _pet;
 
@@ -47,10 +20,29 @@ namespace Server.Gumps
             _hitsScalar = hitsScalar;
         }
 
-        protected override void GetGumpData(out LayoutEntry layout, out StringsEntry strings)
+        protected override void Build(ref GumpBuilder<DynamicStringsHandler> builder)
         {
-            layout = PetResurrectGump.layout;
-            strings = PetResurrectGump.strings.BuildCompressed(GumpText.Center(_pet.Name));
+            builder.AddPage();
+
+            builder.AddBackground(10, 10, 265, 140, 0x242C);
+
+            builder.AddItem(205, 40, 0x4);
+            builder.AddItem(227, 40, 0x5);
+
+            builder.AddItem(180, 78, 0xCAE);
+            builder.AddItem(195, 90, 0xCAD);
+            builder.AddItem(218, 95, 0xCB0);
+
+            builder.AddHtmlLocalized(30, 30, 150, 75, 1049665); // <div align=center>Wilt thou sanctify the resurrection of:</div>
+            builder.AddHtmlSlot(30, 70, 150, 25, "petName", true);
+
+            builder.AddButton(40, 105, 0x81A, 0x81B, 0x1);  // Okay
+            builder.AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel
+        }
+
+        protected override void FillStrings(ref DynamicStringsFiller strings)
+        {
+            strings.Add(GumpText.Center(_pet.Name));
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)

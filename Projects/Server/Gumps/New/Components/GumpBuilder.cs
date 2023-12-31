@@ -21,35 +21,18 @@ using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Text;
 using static Server.Gumps.Components.Interpolation.GumpInterpolatedStringHandler;
+using static Server.Gumps.Components.GumpBuilderExtensions;
 
 namespace Server.Gumps.Components
 {
-    public static class GumpBuilder
-    {
-        internal const string DynamicStringPlaceholder = "§";
-
-        internal static readonly byte[] HueAttr = Encoding.ASCII.GetBytes("hue=");
-        internal static readonly byte[] ClassAttr = Encoding.ASCII.GetBytes("class=");
-        internal static readonly byte[] LayoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
-        internal static readonly byte[] StringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
-
-        public static GumpBuilder<StaticStringsHandler> ForStaticStrings(GumpFlags flags = GumpFlags.None)
-            => new(flags);
-        public static GumpBuilder<DynamicStringsHandler> ForDynamicStrings(GumpFlags flags = GumpFlags.None)
-            => new(flags);
-        public static string Dynamic(string s)
-            => $"{DynamicStringPlaceholder}{s}";
-    }
-
     public ref struct GumpBuilder<T>
         where T : struct, IStringsHandler
     {
-        private static readonly byte[] _layoutBuffer = GumpBuilder.LayoutBuffer;
+        private static readonly byte[] _layoutBuffer = LayoutBuffer;
 
         internal T StringsWriter;
         private int _switches;
@@ -58,10 +41,6 @@ namespace Server.Gumps.Components
 
         internal readonly ReadOnlySpan<byte> Layout => _layoutBuffer.AsSpan(0, _layoutPosition);
         internal readonly int LayoutSize => _layoutPosition;
-
-        public GumpBuilder()
-            : this(GumpFlags.None)
-        { }
 
         internal GumpBuilder(GumpFlags flags)
         {
@@ -296,13 +275,13 @@ namespace Server.Gumps.Components
 
             if (hue != 0)
             {
-                Write(GumpBuilder.HueAttr);
+                Write(HueAttr);
                 WriteValue(hue);
             }
 
             if (!@class.IsEmpty)
             {
-                Write(GumpBuilder.ClassAttr);
+                Write(ClassAttr);
                 WriteValue(@class);
             }
 
@@ -588,38 +567,6 @@ namespace Server.Gumps.Components
         #endregion Writers
 
 
-        public void Send(NetState ns, Serial serial, int typeId, int x, int y, out int switches, out int textEntries)
-        {
-            switches = _switches;
-            textEntries = _textEntries;
-
-            int worstLayoutLength = Zlib.MaxPackSize(_layoutPosition);
-            int worstStringsLength = Zlib.MaxPackSize(StringsWriter.BytesWritten);
-
-            int maxLength = 40 + worstLayoutLength + worstStringsLength;
-
-            SpanWriter writer = new(maxLength);
-            writer.Write((byte)0xDD); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-
-            writer.Write(serial);
-            writer.Write(typeId);
-            writer.Write(x);
-            writer.Write(y);
-
-            FinalizeLayout();
-            OutgoingGumpPackets.WritePacked(_layoutBuffer.AsSpan(0, _layoutPosition), ref writer);
-
-            writer.Write(StringsWriter.Count);
-            StringsWriter.WriteCompressed(ref writer);
-
-            writer.WritePacketLength();
-
-            ns.Send(writer.Span);
-
-            writer.Dispose();
-        }
-
         internal Span<byte> Reserve(int size)
         {
             Span<byte> toRet = _layoutBuffer.AsSpan(_layoutPosition, size);
@@ -635,20 +582,25 @@ namespace Server.Gumps.Components
 
     public static class GumpBuilderExtensions
     {
-        public static void CompileCompressed(this in GumpBuilder<DynamicStringsHandler> builder, out LayoutEntry layout, out DynamicStringsEntry strings)
+        internal static readonly byte[] LayoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+        internal static readonly byte[] StringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+        internal static readonly byte[] HueAttr = "hue="u8.ToArray();
+        internal static readonly byte[] ClassAttr = "class="u8.ToArray();
+
+        internal static void CompileCompressed(this in GumpBuilder<DynamicStringsHandler> builder, out LayoutEntry layout, out DynamicStringsEntry strings)
         {
             builder.FinalizeLayout();
 
             SpanWriter compressedLayoutWriter = new(Zlib.MaxPackSize(builder.LayoutSize));
             OutgoingGumpPackets.WritePacked(builder.Layout, ref compressedLayoutWriter);
-            layout = new(compressedLayoutWriter.Span.ToArray(), true, builder.LayoutSize - 1);
+
+            layout = new(compressedLayoutWriter.Span.ToArray(), builder.LayoutSize - 1);
+            strings = builder.StringsWriter.Finalize();
 
             compressedLayoutWriter.Dispose();
-
-            builder.StringsWriter.Finalize(out strings);
         }
 
-        public static void CompileCompressed(this in GumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StringsEntry strings)
+        internal static void CompileCompressed(this in GumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StaticStringsEntry strings)
         {
             ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
 
@@ -660,20 +612,49 @@ namespace Server.Gumps.Components
             SpanWriter compressedLayoutWriter = new(int.Max(worstLayoutLength, worstStringsLength));
             OutgoingGumpPackets.WritePacked(builder.Layout, ref compressedLayoutWriter);
 
-            layout = new(compressedLayoutWriter.Span.ToArray(), true, builder.LayoutSize - 1);
-            strings = new(StaticStringsHandler.ToCompressedArray(compressedLayoutWriter.RawBuffer),
-                stringsWriter.Count, true, stringsWriter.BytesWritten);
+            layout = new(compressedLayoutWriter.Span.ToArray(), builder.LayoutSize - 1);
+            strings = builder.StringsWriter.Finalize(compressedLayoutWriter.RawBuffer);
 
             compressedLayoutWriter.Dispose();
         }
 
-        public static void Compile(this in GumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StringsEntry strings)
+        public static void AddHtmlSlot(this ref GumpBuilder<DynamicStringsHandler> builder, int x, int y, int width, int height,
+            string slotKey, bool background = false, bool scrollbar = false)
         {
-            builder.FinalizeLayout();
-            layout = new(builder.Layout.ToArray(), false, builder.LayoutSize);
+            DynamicStringsHandler.DynamicMode = true;
+            builder.AddHtml(x, y, width, height, $"key_{slotKey}", background, scrollbar);
+            DynamicStringsHandler.DynamicMode = false;
+        }
 
-            ref readonly StaticStringsHandler handler = ref builder.StringsWriter;
-            strings = new(handler.ToArray(), handler.Count, false, handler.BytesWritten);
+        public static void AddLabelSlot(this ref GumpBuilder<DynamicStringsHandler> builder, int x, int y, int hue, ReadOnlySpan<char> slotKey)
+        {
+            DynamicStringsHandler.DynamicMode = true;
+            builder.AddLabel(x, y, hue, $"key_{slotKey}");
+            DynamicStringsHandler.DynamicMode = false;
+        }
+
+        public static void AddLabelCroppedSlot(this ref GumpBuilder<DynamicStringsHandler> builder, int x, int y,
+            int width, int height, int hue, string slotKey)
+        {
+            DynamicStringsHandler.DynamicMode = true;
+            builder.AddLabelCropped(x, y, width, height, hue, $"key_{slotKey}");
+            DynamicStringsHandler.DynamicMode = false;
+        }
+
+        public static void AddTextEntrySlot(this ref GumpBuilder<DynamicStringsHandler> builder, int x, int y,
+            int width, int height, int hue, int entryId, string slotKey)
+        {
+            DynamicStringsHandler.DynamicMode = true;
+            builder.AddTextEntry(x, y, width, height, hue, entryId, $"key_{slotKey}");
+            DynamicStringsHandler.DynamicMode = false;
+        }
+
+        public static void AddTextEntryLimitedSlot(this ref GumpBuilder<DynamicStringsHandler> builder, int x, int y,
+            int width, int height, int hue, int entryId, ReadOnlySpan<char> slotKey, int size = 0)
+        {
+            DynamicStringsHandler.DynamicMode = true;
+            builder.AddTextEntryLimited(x, y, width, height, hue, entryId, $"key_{slotKey}", size);
+            DynamicStringsHandler.DynamicMode = false;
         }
     }
 

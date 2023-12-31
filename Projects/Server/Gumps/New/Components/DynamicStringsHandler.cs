@@ -14,25 +14,22 @@
  *************************************************************************/
 
 using Server.Gumps.Interfaces;
-using Server.Network;
 using Server.Text;
 using System;
-using System.Buffers;
 using System.Buffers.Binary;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO.Compression;
 using System.Runtime.InteropServices;
 
 namespace Server.Gumps.Components
 {
     public readonly struct DynamicStringsHandler : IStringsHandler
     {
-        private static readonly byte[] _buffer = GumpBuilder.StringsBuffer;
+        private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
         private static readonly Dictionary<int, int> _stringHashes = [];
-        private static BitVector32 _dynamicIndexes = new();
+        private static readonly List<int> _dynamicIndexes = [];
         private static int _position;
-        private static int _dynamicCount;
+        internal static bool DynamicMode;
 
         public int BytesWritten => _position;
         public int Count => _stringHashes.Count;
@@ -47,10 +44,9 @@ namespace Server.Gumps.Components
 
                 _stringHashes.Add(hash, index);
 
-                if (value.StartsWith(GumpBuilder.DynamicStringPlaceholder))
+                if (DynamicMode)
                 {
-                    _dynamicIndexes[index] = true;
-                    _dynamicCount++;
+                    _dynamicIndexes.Add(index);
                     return index;
                 }
 
@@ -72,37 +68,24 @@ namespace Server.Gumps.Components
             return index;
         }
 
-        public void WriteCompressed(ref SpanWriter writer)
+        internal DynamicStringsEntry Finalize()
         {
-            OutgoingGumpPackets.WritePacked(_buffer.AsSpan(.._position), ref writer);
-        }
+            BitArray entries = new(_stringHashes.Count);
 
-        public byte[] ToArray()
-        {
-            return _buffer[.._position];
-        }
+            for(int i = 0; i < _dynamicIndexes.Count; i++)
+            {
+                entries[_dynamicIndexes[i]] = true;
+            }
 
-        public byte[] ToCompressedArray()
-        {
-            SpanWriter writer = new(Zlib.MaxPackSize(_position));
-            OutgoingGumpPackets.WritePacked(_buffer.AsSpan(.._position), ref writer);
-            byte[] toRet = writer.Span.ToArray();
-            writer.Dispose();
-
-            return toRet;
-        }
-
-        public void Finalize(out DynamicStringsEntry entry)
-        {
-            entry = new([.. _buffer[.._position]], _dynamicIndexes, _stringHashes.Count, _dynamicCount);
+            return new([.. _buffer[.._position]], entries);
         }
 
         public void Dispose()
         {
             _position = 0;
             _stringHashes.Clear();
-            _dynamicIndexes = new();
-            _dynamicCount = 0;
+            _dynamicIndexes.Clear();
+            DynamicMode = false;
         }
     }
 }

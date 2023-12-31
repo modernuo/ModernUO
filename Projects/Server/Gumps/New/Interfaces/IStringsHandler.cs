@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 
 namespace Server.Gumps.Interfaces
 {
@@ -23,9 +22,6 @@ namespace Server.Gumps.Interfaces
         public int BytesWritten { get; }
         public int Count { get; }
 
-        public int Internalize(ReadOnlySpan<char> value);
-        public void WriteCompressed(ref SpanWriter writer);
-        public byte[] ToArray();
-        public byte[] ToCompressedArray();
+        internal int Internalize(ReadOnlySpan<char> value);
     }
 }
