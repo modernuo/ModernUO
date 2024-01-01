@@ -660,8 +660,6 @@ namespace Server.Gumps.Components
 
     static file class Properties
     {
-        public static readonly byte[] Buffer = Encoding.ASCII.GetBytes("{ nomove }{ noclose }{ nodispose }{ noresize }");
-
         public static readonly byte[] NoMove = "{ nomove }"u8.ToArray();
         public static readonly byte[] NoClose = "{ noclose }"u8.ToArray();
         public static readonly byte[] NoDispose = "{ nodispose }"u8.ToArray();

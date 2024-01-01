@@ -53,7 +53,8 @@ namespace Server.Gumps.Components
         public readonly int CurrentY => _currentY;
         public readonly ReadOnlySpan<byte> Layout => _builder.Layout;
         public readonly int LayoutSize => _builder.LayoutSize;
-        [UnscopedRef] public ref T StringsWriter => ref _builder.StringsWriter;
+        [UnscopedRef]
+        public ref T StringsWriter => ref _builder.StringsWriter;
 
         public GridGumpBuilder(GumpFlags flags = GumpFlags.None, ushort borderSize = 10, ushort offsetSize = 1,
             ushort entryHeight = 20, ushort offsetGumpId = 0x0A40, ushort headerGumpId = 0x0E14, ushort entryGumpId = 0x0BBC,
