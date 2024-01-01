@@ -24,8 +24,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Text;
-using static Server.Gumps.Components.Interpolation.GumpInterpolatedStringHandler;
 using static Server.Gumps.Components.GumpBuilderExtensions;
+using static Server.Gumps.Components.Interpolation.GumpInterpolationTextFormatters;
 
 namespace Server.Gumps.Components
 {

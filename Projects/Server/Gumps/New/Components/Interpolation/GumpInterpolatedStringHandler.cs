@@ -17,7 +17,6 @@ using Server.Gumps.Interfaces;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using static Server.Gumps.Components.Interpolation.GumpInterpolatedStringHandler;
 
 namespace Server.Gumps.Components.Interpolation
 {

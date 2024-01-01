@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpInterpolatedStringHandler.Formatters.cs                     *
+ * File: GumpInterpolationTextFormatters.cs                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -15,18 +15,8 @@
 
 namespace Server.Gumps.Components.Interpolation
 {
-    public static class GumpInterpolatedStringHandler
+    public static class GumpInterpolationTextFormatters
     {
-        public interface IGumpInterpolationTextFormatter<TSelf>
-            where TSelf : IGumpInterpolationTextFormatter<TSelf>
-        {
-            public string? Begin { get; }
-            public string? End { get; }
-
-            public abstract static TSelf Create();
-            public abstract static TSelf Create(int color);
-        }
-
         public readonly struct None : IGumpInterpolationTextFormatter<None>
         {
             public string? Begin => null;

@@ -22,7 +22,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
-using static Server.Gumps.Components.Interpolation.GumpInterpolatedStringHandler;
+using static Server.Gumps.Components.Interpolation.GumpInterpolationTextFormatters;
 
 namespace Server.Gumps.Components
 {
