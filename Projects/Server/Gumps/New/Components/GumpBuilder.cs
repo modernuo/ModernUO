@@ -40,6 +40,8 @@ public ref struct GumpBuilder<T> where T : struct, IStringsHandler
 
     internal readonly ReadOnlySpan<byte> Layout => _layoutBuffer.AsSpan(0, _layoutPosition);
     internal readonly int LayoutSize => _layoutPosition;
+    internal readonly int Switches => _switches;
+    internal readonly int TextEntries => _textEntries;
 
     internal GumpBuilder(GumpFlags flags)
     {
@@ -624,20 +626,20 @@ public static class GumpBuilderExtensions
     internal static readonly byte[] HueAttr = "hue="u8.ToArray();
     internal static readonly byte[] ClassAttr = "class="u8.ToArray();
 
-    internal static void CompileCompressed(this in GumpBuilder<DynamicStringsHandler> builder, out LayoutEntry layout, out DynamicStringsEntry strings)
+    internal static void CompileCompressed(this ref GumpBuilder<DynamicStringsHandler> builder, out LayoutEntry layout, out DynamicStringsEntry strings)
     {
         builder.FinalizeLayout();
 
         SpanWriter compressedLayoutWriter = new(Zlib.MaxPackSize(builder.LayoutSize));
         OutgoingGumpPackets.WritePacked(builder.Layout, ref compressedLayoutWriter);
 
-        layout = new(compressedLayoutWriter.Span.ToArray(), builder.LayoutSize - 1);
+        layout = new(compressedLayoutWriter.Span.ToArray(), builder.LayoutSize - 1, builder.Switches, builder.TextEntries);
         strings = builder.StringsWriter.Finalize();
 
         compressedLayoutWriter.Dispose();
     }
 
-    internal static void CompileCompressed(this in GumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StaticStringsEntry strings)
+    internal static void CompileCompressed(this ref GumpBuilder<StaticStringsHandler> builder, out LayoutEntry layout, out StaticStringsEntry strings)
     {
         ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
 
@@ -649,7 +651,7 @@ public static class GumpBuilderExtensions
         SpanWriter compressedLayoutWriter = new(int.Max(worstLayoutLength, worstStringsLength));
         OutgoingGumpPackets.WritePacked(builder.Layout, ref compressedLayoutWriter);
 
-        layout = new(compressedLayoutWriter.Span.ToArray(), builder.LayoutSize - 1);
+        layout = new(compressedLayoutWriter.Span.ToArray(), builder.LayoutSize - 1, builder.Switches, builder.TextEntries);
         strings = builder.StringsWriter.Finalize(compressedLayoutWriter.RawBuffer);
 
         compressedLayoutWriter.Dispose();

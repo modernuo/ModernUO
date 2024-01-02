@@ -19,12 +19,16 @@ public readonly struct LayoutEntry
 {
     public readonly byte[] Data;
     public readonly int UncompressedLength;
+    public readonly int Switches;
+    public readonly int TextEntries;
 
     public bool IsEmpty => UncompressedLength == 0;
 
-    public LayoutEntry(byte[] data, int uncompressedLength)
+    public LayoutEntry(byte[] data, int uncompressedLength, int switches, int textEntries)
     {
         Data = data;
         UncompressedLength = uncompressedLength;
+        Switches = switches;
+        TextEntries = textEntries;
     }
 }

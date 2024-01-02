@@ -27,6 +27,11 @@ public abstract class DynamicGump : BaseGump
     private readonly int _x;
     private readonly int _y;
     private readonly GumpFlags _flags;
+    private int _switches;
+    private int _textEntries;
+
+    public override int Switches => _switches;
+    public override int TextEntries => _textEntries;
 
     protected DynamicGump(int x, int y, GumpFlags flags = GumpFlags.None)
     {
@@ -42,8 +47,12 @@ public abstract class DynamicGump : BaseGump
         try
         {
             Build(ref builder);
+
+            _switches = builder.Switches;
+            _textEntries = builder.TextEntries;
+
             ns.AddGump(this);
-            Send(ns, in builder);
+            Send(ns, ref builder);
         }
         finally
         {
@@ -53,7 +62,7 @@ public abstract class DynamicGump : BaseGump
 
     protected abstract void Build(ref GumpBuilder<StaticStringsHandler> builder);
 
-    private void Send(NetState ns, in GumpBuilder<StaticStringsHandler> builder)
+    private void Send(NetState ns, ref GumpBuilder<StaticStringsHandler> builder)
     {
         ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
 

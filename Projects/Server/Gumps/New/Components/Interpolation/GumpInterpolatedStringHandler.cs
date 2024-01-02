@@ -15,7 +15,6 @@
 
 using Server.Gumps.Interfaces;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Server.Gumps.Components.Interpolation;
@@ -27,11 +26,10 @@ public ref struct GumpInterpolatedStringHandler<TStringHandler, TFormatter>
 {
     private static readonly char[] _buffer = HandlerFields.Buffer;
 
-    [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "mutable struct")]
     private MemoryExtensions.TryWriteInterpolatedStringHandler _handler;
     private readonly TFormatter _formatter;
 
-    public readonly bool Success => HandlerFields.GetHandlerSuccessStatus(in _handler);
+    public bool Success => HandlerFields.GetHandlerSuccessStatus(ref _handler);
 
     public GumpInterpolatedStringHandler(int literalLength, int formattedCount, out bool isEnabled)
     {
@@ -109,7 +107,7 @@ public ref struct GumpInterpolatedStringHandler<TStringHandler, TFormatter>
             _handler.AppendLiteral(suffix);
         }
 
-        return _buffer.AsSpan(..HandlerFields.GetHandlerBufferPosition(in _handler));
+        return _buffer.AsSpan(..HandlerFields.GetHandlerBufferPosition(ref _handler));
     }
 }
 
@@ -118,8 +116,8 @@ static file class HandlerFields
     public static readonly char[] Buffer = GC.AllocateUninitializedArray<char>(1024);
 
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_pos")]
-    public static extern ref int GetHandlerBufferPosition(in MemoryExtensions.TryWriteInterpolatedStringHandler @this);
+    public static extern ref int GetHandlerBufferPosition(ref MemoryExtensions.TryWriteInterpolatedStringHandler @this);
 
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_success")]
-    public static extern ref bool GetHandlerSuccessStatus(in MemoryExtensions.TryWriteInterpolatedStringHandler @this);
+    public static extern ref bool GetHandlerSuccessStatus(ref MemoryExtensions.TryWriteInterpolatedStringHandler @this);
 }

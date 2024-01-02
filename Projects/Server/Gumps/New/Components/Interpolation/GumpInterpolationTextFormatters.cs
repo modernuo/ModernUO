@@ -33,7 +33,7 @@ public static class GumpInterpolationTextFormatters
 
         public Centered()
         {
-            Begin = $"<CENTER>";
+            Begin = "<CENTER>";
             End = "</CENTER>";
         }
 

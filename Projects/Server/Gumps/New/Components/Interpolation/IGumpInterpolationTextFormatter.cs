@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IGumpInterpolationTextFormatter.cs                              *
  *                                                                       *
@@ -15,8 +15,7 @@
 
 namespace Server.Gumps.Components.Interpolation;
 
-public interface IGumpInterpolationTextFormatter<TSelf>
-    where TSelf : IGumpInterpolationTextFormatter<TSelf>
+public interface IGumpInterpolationTextFormatter<out TSelf> where TSelf : IGumpInterpolationTextFormatter<TSelf>
 {
     public string? Begin { get; }
     public string? End { get; }

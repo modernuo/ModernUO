@@ -37,6 +37,8 @@ public abstract class DynamicGridGump : BaseGump
     private readonly int _x;
     private readonly int _y;
     private readonly GumpFlags _flags;
+    private int _switches;
+    private int _textEntries;
 
     protected virtual ushort BorderSize => 10;
     protected virtual ushort OffsetSize => 1;
@@ -47,6 +49,8 @@ public abstract class DynamicGridGump : BaseGump
     protected virtual ushort BackGumpId => 0x13BE;
     protected virtual ushort TextHue => 0;
     protected virtual ushort TextOffsetX => 2;
+    public override int Switches => _switches;
+    public override int TextEntries => _textEntries;
 
     protected DynamicGridGump(int x, int y, GumpFlags flags = GumpFlags.None)
     {
@@ -83,8 +87,12 @@ public abstract class DynamicGridGump : BaseGump
         try
         {
             Build(ref builder);
+
+            _switches = builder.Switches;
+            _textEntries = builder.TextEntries;
+
             ns.AddGump(this);
-            Send(ns, in builder);
+            Send(ns, ref builder);
         }
         finally
         {
@@ -94,7 +102,7 @@ public abstract class DynamicGridGump : BaseGump
 
     protected abstract void Build(ref GridGumpBuilder<StaticStringsHandler> builder);
 
-    private void Send(NetState ns, in GridGumpBuilder<StaticStringsHandler> builder)
+    private void Send(NetState ns, ref GridGumpBuilder<StaticStringsHandler> builder)
     {
         ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
 

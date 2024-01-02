@@ -28,6 +28,9 @@ public partial class Gump : BaseGump
     public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
     public static readonly byte[] NoResize = StringToBuffer("{ noresize }");
 
+    private int _switches;
+    private int _textEntries;
+
     public Gump(int x, int y)
     {
         X = x;
@@ -52,6 +55,10 @@ public partial class Gump : BaseGump
     public bool Draggable { get; set; } = true;
 
     public bool Closable { get; set; } = true;
+
+    public override int Switches => _switches;
+
+    public override int TextEntries => _textEntries;
 
     public static int GetTypeID(Type type)
     {
@@ -259,6 +266,14 @@ public partial class Gump : BaseGump
     {
         state.AddGump(this);
         state.SendDisplayGump(this, out _switches, out _textEntries);
+    }
+
+    protected void Reset()
+    {
+        _switches = 0;
+        _textEntries = 0;
+        Entries.Clear();
+        Strings.Clear();
     }
 
     public static byte[] StringToBuffer(string str) => str.GetBytesAscii();

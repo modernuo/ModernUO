@@ -23,23 +23,10 @@ namespace Server.Gumps
     {
         private static Serial nextSerial = (Serial)1;
 
-        protected int _switches;
-        protected int _textEntries;
-
         public int TypeID { get; }
         public Serial Serial { get; protected set; }
-
-        public int Switches
-        {
-            get => _switches;
-            set => _switches = value;
-        }
-
-        public int TextEntries
-        {
-            get => _textEntries;
-            set => _textEntries = value;
-        }
+        public abstract int Switches { get; }
+        public abstract int TextEntries { get; }
 
         public BaseGump()
         {

@@ -23,7 +23,8 @@ using System.IO.Compression;
 
 namespace Server.Gumps;
 
-public abstract class StaticLayoutGump : BaseGump
+// StaticLayoutGump is a self referencing generic class, allowing the static variables to propagate for each concrete type.
+public abstract class StaticLayoutGump<TSelf> : BaseGump where TSelf : StaticLayoutGump<TSelf>
 {
     private static LayoutEntry _layout;
     private static DynamicStringsEntry _strings;
@@ -31,6 +32,8 @@ public abstract class StaticLayoutGump : BaseGump
     protected abstract int X { get; }
     protected abstract int Y { get; }
     protected virtual GumpFlags Flags => GumpFlags.None;
+    public override int Switches => _layout.Switches;
+    public override int TextEntries => _layout.TextEntries;
 
     public override void SendTo(NetState ns)
     {

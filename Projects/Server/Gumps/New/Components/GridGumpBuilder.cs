@@ -26,8 +26,7 @@ using static Server.Gumps.Components.Interpolation.GumpInterpolationTextFormatte
 
 namespace Server.Gumps.Components;
 
-public ref struct GridGumpBuilder<T>
-    where T : struct, IStringsHandler
+public ref struct GridGumpBuilder<T> where T : struct, IStringsHandler
 {
     private GumpBuilder<T> _builder;
 
@@ -53,6 +52,9 @@ public ref struct GridGumpBuilder<T>
     public readonly int CurrentY => _currentY;
     public readonly ReadOnlySpan<byte> Layout => _builder.Layout;
     public readonly int LayoutSize => _builder.LayoutSize;
+    internal readonly int Switches => _builder.Switches;
+    internal readonly int TextEntries => _builder.TextEntries;
+
     [UnscopedRef]
     public ref T StringsWriter => ref _builder.StringsWriter;
 
@@ -60,7 +62,7 @@ public ref struct GridGumpBuilder<T>
         ushort entryHeight = 20, ushort offsetGumpId = 0x0A40, ushort headerGumpId = 0x0E14, ushort entryGumpId = 0x0BBC,
         ushort backGumpId = 0x13BE, ushort textHue = 0, ushort textOffsetX = 2)
     {
-        _builder = new(flags);
+        _builder = new GumpBuilder<T>(flags);
 
         _borderSize = borderSize;
         _offsetSize = offsetSize;
@@ -83,15 +85,15 @@ public ref struct GridGumpBuilder<T>
         int backgroundHeight = _currentY + _entryHeight + _offsetSize + _borderSize;
         int offsetHeight = _currentY + _entryHeight + _offsetSize - _borderSize;
 
-        Span<char> buffer = stackalloc char[46 * 2];
+        Span<char> buffer = stackalloc char[46];
 
-        MemoryExtensions.TryWrite(buffer, $"{{ resizepic 0 0 {_backGumpId} {_backgroundWidth} {backgroundHeight} }}", out int charsWritten);
+        buffer.TryWrite($"{{ resizepic 0 0 {_backGumpId} {_backgroundWidth} {backgroundHeight} }}", out int charsWritten);
         OperationStatus result = Ascii.FromUtf16(buffer[..charsWritten], _backgroundSpan, out int bytesWritten);
         _backgroundSpan[bytesWritten..].Fill((byte)' ');
 
         Debug.Assert(result == OperationStatus.Done);
 
-        MemoryExtensions.TryWrite(buffer, $"{{ gumppictiled {_borderSize} {_borderSize} {_offsetWidth} {offsetHeight} {_offsetGumpId} }}", out charsWritten);
+        buffer.TryWrite($"{{ gumppictiled {_borderSize} {_borderSize} {_offsetWidth} {offsetHeight} {_offsetGumpId} }}", out charsWritten);
         result = Ascii.FromUtf16(buffer[..charsWritten], _offsetSpan, out bytesWritten);
         _offsetSpan[bytesWritten..].Fill((byte)' ');
 
