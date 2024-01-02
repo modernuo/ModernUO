@@ -15,15 +15,14 @@
 
 using System;
 
-namespace Server.Gumps.Enums
+namespace Server.Gumps.Enums;
+
+[Flags]
+public enum GumpFlags : byte
 {
-    [Flags]
-    public enum GumpFlags : byte
-    {
-        None = 0x0,
-        NoDisposable = 0x1,
-        NoResizable = 0x2,
-        NoDraggable = 0x4,
-        NoClosable = 0x8,
-    }
+    None = 0x0,
+    NoDisposable = 0x1,
+    NoResizable = 0x2,
+    NoDraggable = 0x4,
+    NoClosable = 0x8,
 }

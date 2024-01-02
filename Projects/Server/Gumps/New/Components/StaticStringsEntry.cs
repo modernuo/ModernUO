@@ -13,19 +13,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Gumps.Components
-{
-    public readonly struct StaticStringsEntry
-    {
-        public readonly byte[] Data;
-        public readonly int UncompressedLength;
-        public readonly int Count;
+namespace Server.Gumps.Components;
 
-        public StaticStringsEntry(byte[] data, int uncompressedLength, int count)
-        {
-            Data = data;
-            UncompressedLength = uncompressedLength;
-            Count = count;
-        }
+public readonly struct StaticStringsEntry
+{
+    public readonly byte[] Data;
+    public readonly int UncompressedLength;
+    public readonly int Count;
+
+    public StaticStringsEntry(byte[] data, int uncompressedLength, int count)
+    {
+        Data = data;
+        UncompressedLength = uncompressedLength;
+        Count = count;
     }
 }

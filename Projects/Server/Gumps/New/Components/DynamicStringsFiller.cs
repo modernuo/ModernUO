@@ -19,82 +19,81 @@ using System.Buffers.Binary;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-namespace Server.Gumps.Components
+namespace Server.Gumps.Components;
+
+public ref struct DynamicStringsFiller
 {
-    public ref struct DynamicStringsFiller
+    private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
+
+    private readonly BitArray _dynamicEntries;
+    private readonly byte[] _data;
+    private int _bufferPosition;
+    private int _dataPosition;
+    private int _index;
+
+    public readonly int UncompressedLength => _bufferPosition;
+    public readonly int Count => _dynamicEntries.Count;
+    public readonly ReadOnlySpan<byte> Data => _buffer.AsSpan(0, _bufferPosition);
+
+    public DynamicStringsFiller(BitArray dynamicEntries, byte[] data)
     {
-        private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
+        _dynamicEntries = dynamicEntries;
+        _data = data;
+        _bufferPosition = 0;
+        _dataPosition = 0;
+        _index = 0;
 
-        private readonly BitArray _dynamicEntries;
-        private readonly byte[] _data;
-        private int _bufferPosition;
-        private int _dataPosition;
-        private int _index;
+        WriteNextStaticStringsChunk();
+    }
 
-        public readonly int UncompressedLength => _bufferPosition;
-        public readonly int Count => _dynamicEntries.Count;
-        public readonly ReadOnlySpan<byte> Data => _buffer.AsSpan(0, _bufferPosition);
-
-        public DynamicStringsFiller(BitArray dynamicEntries, byte[] data)
+    public void Add(ReadOnlySpan<char> value)
+    {
+        if (_index >= _dynamicEntries.Count)
         {
-            _dynamicEntries = dynamicEntries;
-            _data = data;
-            _bufferPosition = 0;
-            _dataPosition = 0;
-            _index = 0;
-
-            WriteNextStaticStringsChunk();
+            throw new Exception();
         }
 
-        public void Add(ReadOnlySpan<char> value)
+        BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_bufferPosition), (ushort)value.Length);
+        _bufferPosition += 2;
+
+        if (BitConverter.IsLittleEndian)
         {
-            if (_index >= _dynamicEntries.Count)
+            _bufferPosition += TextEncoding.Unicode.GetBytes(value, _buffer.AsSpan(_bufferPosition));
+        }
+        else
+        {
+            ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(value);
+            bytes.CopyTo(_buffer.AsSpan(_bufferPosition));
+            _bufferPosition += bytes.Length;
+        }
+
+        _index++;
+        WriteNextStaticStringsChunk();
+    }
+
+    private void WriteNextStaticStringsChunk()
+    {
+        for (; _index < _dynamicEntries.Count; _index++)
+        {
+            if (_dynamicEntries[_index])
             {
-                throw new Exception();
+                break;
             }
 
-            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_bufferPosition), (ushort)value.Length);
+            ushort stringLength = BinaryPrimitives.ReadUInt16BigEndian(_data.AsSpan(_dataPosition, 2));
+            _dataPosition += 2;
+
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_bufferPosition), stringLength);
             _bufferPosition += 2;
 
-            if (BitConverter.IsLittleEndian)
-            {
-                _bufferPosition += TextEncoding.Unicode.GetBytes(value, _buffer.AsSpan(_bufferPosition));
-            }
-            else
-            {
-                ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(value);
-                bytes.CopyTo(_buffer.AsSpan(_bufferPosition));
-                _bufferPosition += bytes.Length;
-            }
-
-            _index++;
-            WriteNextStaticStringsChunk();
+            int bytesLength = stringLength * 2; // 2 bytes per char
+            _data.AsSpan(_dataPosition, bytesLength).CopyTo(_buffer.AsSpan(_bufferPosition));
+            _bufferPosition += bytesLength;
         }
+    }
 
-        private void WriteNextStaticStringsChunk()
-        {
-            for (; _index < _dynamicEntries.Count; _index++)
-            {
-                if (_dynamicEntries[_index])
-                {
-                    break;
-                }
-
-                ushort stringLength = BinaryPrimitives.ReadUInt16BigEndian(_data.AsSpan(_dataPosition, 2));
-                _dataPosition += 2;
-
-                BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_bufferPosition), stringLength);
-                _bufferPosition += 2;
-
-                int bytesLength = stringLength * 2; // 2 bytes per char
-                _data.AsSpan(_dataPosition, bytesLength).CopyTo(_buffer.AsSpan(_bufferPosition));
-                _bufferPosition += bytesLength;
-            }
-        }
-
-        internal readonly bool Finalize()
-        {
-            return _index >= _dynamicEntries.Count;
-        }
+    internal readonly bool Finalize()
+    {
+        return _index >= _dynamicEntries.Count;
     }
 }

@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-    public sealed class PetResurrectGump : StaticLayoutGump<PetResurrectGump>
+    public sealed class PetResurrectGump : StaticLayoutGump
     {
         private readonly double _hitsScalar;
         private readonly BaseCreature _pet;

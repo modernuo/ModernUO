@@ -15,13 +15,12 @@
 
 using System;
 
-namespace Server.Gumps.Interfaces
-{
-    public interface IStringsHandler : IDisposable
-    {
-        public int BytesWritten { get; }
-        public int Count { get; }
+namespace Server.Gumps.Interfaces;
 
-        internal int Internalize(ReadOnlySpan<char> value);
-    }
+public interface IStringsHandler : IDisposable
+{
+    public int BytesWritten { get; }
+    public int Count { get; }
+
+    internal int Internalize(ReadOnlySpan<char> value);
 }

@@ -13,15 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Gumps.Components.Interpolation
-{
-    public interface IGumpInterpolationTextFormatter<TSelf>
-        where TSelf : IGumpInterpolationTextFormatter<TSelf>
-    {
-        public string? Begin { get; }
-        public string? End { get; }
+namespace Server.Gumps.Components.Interpolation;
 
-        public abstract static TSelf Create();
-        public abstract static TSelf Create(int color);
-    }
+public interface IGumpInterpolationTextFormatter<TSelf>
+    where TSelf : IGumpInterpolationTextFormatter<TSelf>
+{
+    public string? Begin { get; }
+    public string? End { get; }
+
+    public abstract static TSelf Create();
+    public abstract static TSelf Create(int color);
 }

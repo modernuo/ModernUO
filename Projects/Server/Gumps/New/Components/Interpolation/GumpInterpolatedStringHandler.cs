@@ -18,109 +18,108 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace Server.Gumps.Components.Interpolation
+namespace Server.Gumps.Components.Interpolation;
+
+[InterpolatedStringHandler]
+public ref struct GumpInterpolatedStringHandler<TStringHandler, TFormatter>
+    where TStringHandler : struct, IStringsHandler
+    where TFormatter : struct, IGumpInterpolationTextFormatter<TFormatter>
 {
-    [InterpolatedStringHandler]
-    public ref struct GumpInterpolatedStringHandler<TStringHandler, TFormatter>
-        where TStringHandler : struct, IStringsHandler
-        where TFormatter : struct, IGumpInterpolationTextFormatter<TFormatter>
+    private static readonly char[] _buffer = HandlerFields.Buffer;
+
+    [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "mutable struct")]
+    private MemoryExtensions.TryWriteInterpolatedStringHandler _handler;
+    private readonly TFormatter _formatter;
+
+    public readonly bool Success => HandlerFields.GetHandlerSuccessStatus(in _handler);
+
+    public GumpInterpolatedStringHandler(int literalLength, int formattedCount, out bool isEnabled)
     {
-        private static readonly char[] _buffer = HandlerFields.Buffer;
+        _handler = new(literalLength, formattedCount, _buffer, out isEnabled);
+        _formatter = TFormatter.Create();
 
-        [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "mutable struct")]
-        private MemoryExtensions.TryWriteInterpolatedStringHandler _handler;
-        private readonly TFormatter _formatter;
+        string? prefix = _formatter.Begin;
 
-        public readonly bool Success => HandlerFields.GetHandlerSuccessStatus(in _handler);
-
-        public GumpInterpolatedStringHandler(int literalLength, int formattedCount, out bool isEnabled)
+        if (prefix is not null)
         {
-            _handler = new(literalLength, formattedCount, _buffer, out isEnabled);
-            _formatter = TFormatter.Create();
-
-            string? prefix = _formatter.Begin;
-
-            if (prefix is not null)
-            {
-                _handler.AppendLiteral(prefix);
-            }
-        }
-
-        public GumpInterpolatedStringHandler(int literalLength, int formattedCount, int color, out bool isEnabled)
-        {
-            _handler = new(literalLength, formattedCount, _buffer, out isEnabled);
-            _formatter = TFormatter.Create(color);
-
-            string? prefix = _formatter.Begin;
-
-            if (prefix is not null)
-            {
-                _handler.AppendLiteral(prefix);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendLiteral(string value)
-            => _handler.AppendLiteral(value);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted<T>(T value)
-            => _handler.AppendFormatted(value);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted<T>(T value, string? format)
-            => _handler.AppendFormatted(value, format);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted<T>(T value, int alignment)
-            => _handler.AppendFormatted(value, alignment);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted<T>(T value, int alignment, string? format)
-            => _handler.AppendFormatted(value, alignment, format);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted(scoped ReadOnlySpan<char> value)
-            => _handler.AppendFormatted(value);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted(scoped ReadOnlySpan<char> value, int alignment = 0, string? format = null)
-            => _handler.AppendFormatted(value, alignment, format);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted(string? value)
-            => _handler.AppendFormatted(value);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted(string? value, int alignment = 0, string? format = null)
-            => _handler.AppendFormatted(value, alignment, format);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool AppendFormatted(object? value, int alignment = 0, string? format = null)
-            => _handler.AppendFormatted(value, alignment, format);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<char> ToSpanAndClose()
-        {
-            string? suffix = _formatter.End;
-
-            if (suffix is not null)
-            {
-                _handler.AppendLiteral(suffix);
-            }
-
-            return _buffer.AsSpan(..HandlerFields.GetHandlerBufferPosition(in _handler));
+            _handler.AppendLiteral(prefix);
         }
     }
 
-    static file class HandlerFields
+    public GumpInterpolatedStringHandler(int literalLength, int formattedCount, int color, out bool isEnabled)
     {
-        public static readonly char[] Buffer = GC.AllocateUninitializedArray<char>(1024);
+        _handler = new(literalLength, formattedCount, _buffer, out isEnabled);
+        _formatter = TFormatter.Create(color);
 
-        [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_pos")]
-        public static extern ref int GetHandlerBufferPosition(in MemoryExtensions.TryWriteInterpolatedStringHandler @this);
+        string? prefix = _formatter.Begin;
 
-        [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_success")]
-        public static extern ref bool GetHandlerSuccessStatus(in MemoryExtensions.TryWriteInterpolatedStringHandler @this);
+        if (prefix is not null)
+        {
+            _handler.AppendLiteral(prefix);
+        }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendLiteral(string value)
+        => _handler.AppendLiteral(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted<T>(T value)
+        => _handler.AppendFormatted(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted<T>(T value, string? format)
+        => _handler.AppendFormatted(value, format);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted<T>(T value, int alignment)
+        => _handler.AppendFormatted(value, alignment);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted<T>(T value, int alignment, string? format)
+        => _handler.AppendFormatted(value, alignment, format);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted(scoped ReadOnlySpan<char> value)
+        => _handler.AppendFormatted(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted(scoped ReadOnlySpan<char> value, int alignment = 0, string? format = null)
+        => _handler.AppendFormatted(value, alignment, format);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted(string? value)
+        => _handler.AppendFormatted(value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted(string? value, int alignment = 0, string? format = null)
+        => _handler.AppendFormatted(value, alignment, format);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool AppendFormatted(object? value, int alignment = 0, string? format = null)
+        => _handler.AppendFormatted(value, alignment, format);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<char> ToSpanAndClose()
+    {
+        string? suffix = _formatter.End;
+
+        if (suffix is not null)
+        {
+            _handler.AppendLiteral(suffix);
+        }
+
+        return _buffer.AsSpan(..HandlerFields.GetHandlerBufferPosition(in _handler));
+    }
+}
+
+static file class HandlerFields
+{
+    public static readonly char[] Buffer = GC.AllocateUninitializedArray<char>(1024);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_pos")]
+    public static extern ref int GetHandlerBufferPosition(in MemoryExtensions.TryWriteInterpolatedStringHandler @this);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_success")]
+    public static extern ref bool GetHandlerSuccessStatus(in MemoryExtensions.TryWriteInterpolatedStringHandler @this);
 }

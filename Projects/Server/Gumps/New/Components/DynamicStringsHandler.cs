@@ -21,71 +21,71 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Server.Gumps.Components
+namespace Server.Gumps.Components;
+
+public readonly struct DynamicStringsHandler : IStringsHandler
 {
-    public readonly struct DynamicStringsHandler : IStringsHandler
+    private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
+    private static readonly Dictionary<int, int> _stringHashes = [];
+    private static readonly List<int> _dynamicIndexes = [];
+    private static int _position;
+    internal static bool DynamicMode;
+
+    public int BytesWritten => _position;
+    public int Count => _stringHashes.Count;
+
+    public int Internalize(ReadOnlySpan<char> value)
     {
-        private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
-        private static readonly Dictionary<int, int> _stringHashes = [];
-        private static readonly List<int> _dynamicIndexes = [];
-        private static int _position;
-        internal static bool DynamicMode;
+        int hash = string.GetHashCode(value);
 
-        public int BytesWritten => _position;
-        public int Count => _stringHashes.Count;
-
-        public int Internalize(ReadOnlySpan<char> value)
+        if (!_stringHashes.TryGetValue(hash, out int index))
         {
-            int hash = string.GetHashCode(value);
+            index = _stringHashes.Count;
 
-            if (!_stringHashes.TryGetValue(hash, out int index))
+            _stringHashes.Add(hash, index);
+
+            if (DynamicMode)
             {
-                index = _stringHashes.Count;
-
-                _stringHashes.Add(hash, index);
-
-                if (DynamicMode)
-                {
-                    _dynamicIndexes.Add(index);
-                    return index;
-                }
-
-                BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position), (ushort)value.Length);
-                _position += 2;
-
-                if (BitConverter.IsLittleEndian)
-                {
-                    _position += TextEncoding.Unicode.GetBytes(value, _buffer.AsSpan(_position));
-                }
-                else
-                {
-                    ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(value);
-                    bytes.CopyTo(_buffer.AsSpan(_position));
-                    _position += bytes.Length;
-                }
+                _dynamicIndexes.Add(index);
+                return index;
             }
 
-            return index;
-        }
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position), (ushort)value.Length);
+            _position += 2;
 
-        internal DynamicStringsEntry Finalize()
-        {
-            BitArray entries = new(_stringHashes.Count);
-
-            for(int i = 0; i < _dynamicIndexes.Count; i++)
+            if (BitConverter.IsLittleEndian)
             {
-                entries[_dynamicIndexes[i]] = true;
+                _position += TextEncoding.Unicode.GetBytes(value, _buffer.AsSpan(_position));
             }
-
-            return new([.. _buffer[.._position]], entries);
+            else
+            {
+                ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(value);
+                bytes.CopyTo(_buffer.AsSpan(_position));
+                _position += bytes.Length;
+            }
         }
 
-        public void Dispose()
+        return index;
+    }
+
+    internal DynamicStringsEntry Finalize()
+    {
+        BitArray entries = new(_stringHashes.Count);
+
+        for(int i = 0; i < _dynamicIndexes.Count; i++)
         {
-            _position = 0;
-            _stringHashes.Clear();
-            _dynamicIndexes.Clear();
-            DynamicMode = false;
+            entries[_dynamicIndexes[i]] = true;
         }
+
+        // Copies buffer
+        return new DynamicStringsEntry([.._buffer[.._position]], entries);
+    }
+
+    public void Dispose()
+    {
+        _position = 0;
+        _stringHashes.Clear();
+        _dynamicIndexes.Clear();
+        DynamicMode = false;
     }
 }

@@ -21,77 +21,75 @@ using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public abstract class StaticLayoutGump : BaseGump
 {
-    public abstract class StaticLayoutGump<TSelf> : BaseGump
-        where TSelf : StaticLayoutGump<TSelf>
+    private static LayoutEntry _layout;
+    private static DynamicStringsEntry _strings;
+
+    protected abstract int X { get; }
+    protected abstract int Y { get; }
+    protected virtual GumpFlags Flags => GumpFlags.None;
+
+    public override void SendTo(NetState ns)
     {
-        private static LayoutEntry _layout;
-        private static DynamicStringsEntry _strings;
-
-        protected abstract int X { get; }
-        protected abstract int Y { get; }
-        protected virtual GumpFlags Flags => GumpFlags.None;
-
-        public override void SendTo(NetState ns)
+        if (_layout.IsEmpty)
         {
-            if (_layout.IsEmpty)
+            GumpBuilder<DynamicStringsHandler> builder = new(Flags);
+
+            try
             {
-                GumpBuilder<DynamicStringsHandler> builder = new(Flags);
-
-                try
-                {
-                    Build(ref builder);
-                    builder.CompileCompressed(out _layout, out _strings);
-                }
-                finally
-                {
-                    builder.Dispose();
-                }
+                Build(ref builder);
+                builder.CompileCompressed(out _layout, out _strings);
             }
-
-            DynamicStringsFiller filler = _strings.CreateFiller();
-            FillStrings(ref filler);
-
-            if (!filler.Finalize())
+            finally
             {
-                throw new Exception();
+                builder.Dispose();
             }
-
-            ns.AddGump(this);
-            Send(ns, in _layout, in filler);
         }
 
-        protected abstract void Build(ref GumpBuilder<DynamicStringsHandler> builder);
+        DynamicStringsFiller filler = _strings.CreateFiller();
+        FillStrings(ref filler);
 
-        protected abstract void FillStrings(ref DynamicStringsFiller strings);
-
-        private void Send(NetState ns, in LayoutEntry layout, in DynamicStringsFiller strings)
+        if (!filler.Finalize())
         {
-            int worstLayoutLength = Zlib.MaxPackSize(layout.UncompressedLength);
-            int worstStringsLength = Zlib.MaxPackSize(strings.UncompressedLength);
-
-            int maxLength = 40 + worstLayoutLength + worstStringsLength;
-
-            SpanWriter writer = new(maxLength);
-            writer.Write((byte)0xDD); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
-
-            writer.Write(Serial);
-            writer.Write(TypeID);
-            writer.Write(X);
-            writer.Write(Y);
-
-            writer.Write(layout.Data);
-
-            writer.Write(strings.Count);
-            OutgoingGumpPackets.WritePacked(strings.Data, ref writer);
-
-            writer.WritePacketLength();
-
-            ns.Send(writer.Span);
-
-            writer.Dispose();
+            throw new Exception();
         }
+
+        ns.AddGump(this);
+        Send(ns, in _layout, in filler);
+    }
+
+    protected abstract void Build(ref GumpBuilder<DynamicStringsHandler> builder);
+
+    protected abstract void FillStrings(ref DynamicStringsFiller strings);
+
+    private void Send(NetState ns, in LayoutEntry layout, in DynamicStringsFiller strings)
+    {
+        int worstLayoutLength = Zlib.MaxPackSize(layout.UncompressedLength);
+        int worstStringsLength = Zlib.MaxPackSize(strings.UncompressedLength);
+
+        int maxLength = 40 + worstLayoutLength + worstStringsLength;
+
+        SpanWriter writer = new(maxLength);
+        writer.Write((byte)0xDD); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
+
+        writer.Write(Serial);
+        writer.Write(TypeID);
+        writer.Write(X);
+        writer.Write(Y);
+
+        writer.Write(layout.Data);
+
+        writer.Write(strings.Count);
+        OutgoingGumpPackets.WritePacked(strings.Data, ref writer);
+
+        writer.WritePacketLength();
+
+        ns.Send(writer.Span);
+
+        writer.Dispose();
     }
 }

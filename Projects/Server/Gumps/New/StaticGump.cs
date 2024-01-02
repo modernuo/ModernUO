@@ -20,67 +20,65 @@ using System.Buffers;
 using System.IO;
 using System.IO.Compression;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public abstract class StaticGump : BaseGump
 {
-    public abstract class StaticGump<TSelf> : BaseGump
-        where TSelf : StaticGump<TSelf>
+    private static LayoutEntry _layout;
+    private static StaticStringsEntry _strings;
+
+    protected abstract int X { get; }
+    protected abstract int Y { get; }
+    protected virtual GumpFlags Flags => GumpFlags.None;
+
+    public override void SendTo(NetState ns)
     {
-        private static LayoutEntry _layout;
-        private static StaticStringsEntry _strings;
-
-        protected abstract int X { get; }
-        protected abstract int Y { get; }
-        protected virtual GumpFlags Flags => GumpFlags.None;
-
-        public override void SendTo(NetState ns)
+        if (_layout.IsEmpty)
         {
-            if (_layout.IsEmpty)
+            GumpBuilder<StaticStringsHandler> builder = new(Flags);
+
+            try
             {
-                GumpBuilder<StaticStringsHandler> builder = new(Flags);
-
-                try
-                {
-                    Build(ref builder);
-                    builder.CompileCompressed(out _layout, out _strings);
-                }
-                finally
-                {
-                    builder.Dispose();
-                }
+                Build(ref builder);
+                builder.CompileCompressed(out _layout, out _strings);
             }
-
-            ns.AddGump(this);
-            Send(ns);
+            finally
+            {
+                builder.Dispose();
+            }
         }
 
-        protected abstract void Build(ref GumpBuilder<StaticStringsHandler> builder);
+        ns.AddGump(this);
+        Send(ns);
+    }
 
-        private void Send(NetState ns)
-        {
-            int worstLayoutLength = Zlib.MaxPackSize(_layout.UncompressedLength);
-            int worstStringsLength = Zlib.MaxPackSize(_strings.UncompressedLength);
+    protected abstract void Build(ref GumpBuilder<StaticStringsHandler> builder);
 
-            int maxLength = 40 + worstLayoutLength + worstStringsLength;
+    private void Send(NetState ns)
+    {
+        int worstLayoutLength = Zlib.MaxPackSize(_layout.UncompressedLength);
+        int worstStringsLength = Zlib.MaxPackSize(_strings.UncompressedLength);
 
-            SpanWriter writer = new(maxLength);
-            writer.Write((byte)0xDD); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+        int maxLength = 40 + worstLayoutLength + worstStringsLength;
 
-            writer.Write(Serial);
-            writer.Write(TypeID);
-            writer.Write(X);
-            writer.Write(Y);
+        SpanWriter writer = new(maxLength);
+        writer.Write((byte)0xDD); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
 
-            writer.Write(_layout.Data);
+        writer.Write(Serial);
+        writer.Write(TypeID);
+        writer.Write(X);
+        writer.Write(Y);
 
-            writer.Write(_strings.Count);
-            writer.Write(_strings.Data);
+        writer.Write(_layout.Data);
 
-            writer.WritePacketLength();
+        writer.Write(_strings.Count);
+        writer.Write(_strings.Data);
 
-            ns.Send(writer.Span);
+        writer.WritePacketLength();
 
-            writer.Dispose();
-        }
+        ns.Send(writer.Span);
+
+        writer.Dispose();
     }
 }

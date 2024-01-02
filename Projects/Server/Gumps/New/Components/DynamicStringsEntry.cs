@@ -15,22 +15,18 @@
 
 using System.Collections;
 
-namespace Server.Gumps.Components
+namespace Server.Gumps.Components;
+
+public readonly struct DynamicStringsEntry
 {
-    public readonly struct DynamicStringsEntry
+    private readonly byte[] _data;
+    private readonly BitArray _dynamicEntries;
+
+    public DynamicStringsEntry(byte[] data, BitArray dynamicEntries)
     {
-        private readonly byte[] _data;
-        private readonly BitArray _dynamicEntries;
-
-        public DynamicStringsEntry(byte[] data, BitArray dynamicEntries)
-        {
-            _data = data;
-            _dynamicEntries = dynamicEntries;
-        }
-
-        internal DynamicStringsFiller CreateFiller()
-        {
-            return new(_dynamicEntries, _data);
-        }
+        _data = data;
+        _dynamicEntries = dynamicEntries;
     }
+
+    internal DynamicStringsFiller CreateFiller() => new(_dynamicEntries, _data);
 }

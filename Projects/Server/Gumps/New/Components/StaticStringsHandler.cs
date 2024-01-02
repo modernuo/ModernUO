@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using CommunityToolkit.HighPerformance;
 using Server.Gumps.Interfaces;
 using Server.Network;
 using Server.Text;
@@ -23,60 +22,59 @@ using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Server.Gumps.Components
+namespace Server.Gumps.Components;
+
+public readonly struct StaticStringsHandler : IStringsHandler
 {
-    public readonly struct StaticStringsHandler : IStringsHandler
+    private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
+    private static readonly Dictionary<int, int> _stringHashes = [];
+    private static int _position;
+
+    public int BytesWritten => _position;
+    public int Count => _stringHashes.Count;
+    public ReadOnlySpan<byte> Span => _buffer.AsSpan(0, _position);
+
+    public int Internalize(ReadOnlySpan<char> value)
     {
-        private static readonly byte[] _buffer = GumpBuilderExtensions.StringsBuffer;
-        private static readonly Dictionary<int, int> _stringHashes = [];
-        private static int _position;
+        int hash = string.GetHashCode(value);
 
-        public int BytesWritten => _position;
-        public int Count => _stringHashes.Count;
-        public readonly ReadOnlySpan<byte> Span => _buffer.AsSpan(0, _position);
-
-        public int Internalize(ReadOnlySpan<char> value)
+        if (!_stringHashes.TryGetValue(hash, out int index))
         {
-            int hash = string.GetHashCode(value);
+            index = _stringHashes.Count;
 
-            if (!_stringHashes.TryGetValue(hash, out int index))
+            _stringHashes.Add(hash, index);
+
+            BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position), (ushort)value.Length);
+            _position += 2;
+
+            if (BitConverter.IsLittleEndian)
             {
-                index = _stringHashes.Count;
-
-                _stringHashes.Add(hash, index);
-
-                BinaryPrimitives.WriteUInt16BigEndian(_buffer.AsSpan(_position), (ushort)value.Length);
-                _position += 2;
-
-                if (BitConverter.IsLittleEndian)
-                {
-                    _position += TextEncoding.Unicode.GetBytes(value, _buffer.AsSpan(_position));
-                }
-                else
-                {
-                    ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(value);
-                    bytes.CopyTo(_buffer.AsSpan(_position));
-                    _position += bytes.Length;
-                }
+                _position += TextEncoding.Unicode.GetBytes(value, _buffer.AsSpan(_position));
             }
-
-            return index;
+            else
+            {
+                ReadOnlySpan<byte> bytes = MemoryMarshal.AsBytes(value);
+                bytes.CopyTo(_buffer.AsSpan(_position));
+                _position += bytes.Length;
+            }
         }
 
-        internal StaticStringsEntry Finalize(Span<byte> compressionBuffer)
-        {
-            SpanWriter writer = new(compressionBuffer);
-            OutgoingGumpPackets.WritePacked(_buffer.AsSpan(.._position), ref writer);
-            byte[] toRet = writer.Span.ToArray();
-            writer.Dispose();
+        return index;
+    }
 
-            return new(toRet, _position, _stringHashes.Count);
-        }
+    internal StaticStringsEntry Finalize(Span<byte> compressionBuffer)
+    {
+        SpanWriter writer = new(compressionBuffer);
+        OutgoingGumpPackets.WritePacked(_buffer.AsSpan(.._position), ref writer);
+        byte[] toRet = writer.Span.ToArray();
+        writer.Dispose();
 
-        public void Dispose()
-        {
-            _position = 0;
-            _stringHashes.Clear();
-        }
+        return new(toRet, _position, _stringHashes.Count);
+    }
+
+    public void Dispose()
+    {
+        _position = 0;
+        _stringHashes.Clear();
     }
 }

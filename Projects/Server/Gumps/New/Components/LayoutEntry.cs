@@ -13,19 +13,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Gumps.Components
+namespace Server.Gumps.Components;
+
+public readonly struct LayoutEntry
 {
-    public readonly struct LayoutEntry
+    public readonly byte[] Data;
+    public readonly int UncompressedLength;
+
+    public bool IsEmpty => UncompressedLength == 0;
+
+    public LayoutEntry(byte[] data, int uncompressedLength)
     {
-        public readonly byte[] Data;
-        public readonly int UncompressedLength;
-
-        public bool IsEmpty => UncompressedLength == 0;
-
-        public LayoutEntry(byte[] data, int uncompressedLength)
-        {
-            Data = data;
-            UncompressedLength = uncompressedLength;
-        }
+        Data = data;
+        UncompressedLength = uncompressedLength;
     }
 }

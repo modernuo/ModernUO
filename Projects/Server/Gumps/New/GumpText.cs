@@ -13,12 +13,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public static class GumpText
 {
-    public static class GumpText
-    {
-        public static string Color(string? text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-        public static string Center(string? text) => $"<CENTER>{text}</CENTER>";
-        public static string Center(string? text, int color) => $"<BASEFONT COLOR=#{color:X6}><CENTER>{text}</CENTER></BASEFONT>";
-    }
+    public static string Color(string? text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+    public static string Center(string? text) => $"<CENTER>{text}</CENTER>";
+    public static string Center(string? text, int color) => $"<BASEFONT COLOR=#{color:X6}><CENTER>{text}</CENTER></BASEFONT>";
 }

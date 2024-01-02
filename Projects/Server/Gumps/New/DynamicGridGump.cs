@@ -21,108 +21,107 @@ using System.Buffers;
 using System.IO.Compression;
 using System.IO;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public abstract class DynamicGridGump : BaseGump
 {
-    public abstract class DynamicGridGump : BaseGump
+    protected const int ArrowLeftID1 = 0x15E3;
+    protected const int ArrowLeftID2 = 0x15E7;
+    protected const int ArrowLeftWidth = 16;
+    protected const int ArrowLeftHeight = 16;
+    protected const int ArrowRightID1 = 0x15E1;
+    protected const int ArrowRightID2 = 0x15E5;
+    protected const int ArrowRightWidth = 16;
+    protected const int ArrowRightHeight = 16;
+
+    private readonly int _x;
+    private readonly int _y;
+    private readonly GumpFlags _flags;
+
+    protected virtual ushort BorderSize => 10;
+    protected virtual ushort OffsetSize => 1;
+    protected virtual ushort EntryHeight => 20;
+    protected virtual ushort OffsetGumpId => 0x0A40;
+    protected virtual ushort HeaderGumpId => 0x0E14;
+    protected virtual ushort EntryGumpId => 0x0BBC;
+    protected virtual ushort BackGumpId => 0x13BE;
+    protected virtual ushort TextHue => 0;
+    protected virtual ushort TextOffsetX => 2;
+
+    protected DynamicGridGump(int x, int y, GumpFlags flags = GumpFlags.None)
     {
-        protected const int ArrowLeftID1 = 0x15E3;
-        protected const int ArrowLeftID2 = 0x15E7;
-        protected const int ArrowLeftWidth = 16;
-        protected const int ArrowLeftHeight = 16;
-        protected const int ArrowRightID1 = 0x15E1;
-        protected const int ArrowRightID2 = 0x15E5;
-        protected const int ArrowRightWidth = 16;
-        protected const int ArrowRightHeight = 16;
+        _x = x;
+        _y = y;
+        _flags = flags;
+    }
 
-        private readonly int _x;
-        private readonly int _y;
-        private readonly GumpFlags _flags;
+    protected static int GetButtonID(int typeCount, int type, int index)
+    {
+        return 1 + index * typeCount + type;
+    }
 
-        protected virtual ushort BorderSize => 10;
-        protected virtual ushort OffsetSize => 1;
-        protected virtual ushort EntryHeight => 20;
-        protected virtual ushort OffsetGumpId => 0x0A40;
-        protected virtual ushort HeaderGumpId => 0x0E14;
-        protected virtual ushort EntryGumpId => 0x0BBC;
-        protected virtual ushort BackGumpId => 0x13BE;
-        protected virtual ushort TextHue => 0;
-        protected virtual ushort TextOffsetX => 2;
-
-        protected DynamicGridGump(int x, int y, GumpFlags flags = GumpFlags.None)
+    protected static bool SplitButtonID(int buttonID, int typeCount, out int type, out int index)
+    {
+        if (buttonID < 1)
         {
-            _x = x;
-            _y = y;
-            _flags = flags;
+            type = 0;
+            index = 0;
+            return false;
         }
 
-        protected static int GetButtonID(int typeCount, int type, int index)
+        buttonID -= 1;
+        index = Math.DivRem(buttonID, typeCount, out type);
+
+        return true;
+    }
+
+    public override void SendTo(NetState ns)
+    {
+        GridGumpBuilder<StaticStringsHandler> builder = new(_flags, BorderSize, OffsetSize, EntryHeight,
+            OffsetGumpId, HeaderGumpId, EntryGumpId, BackGumpId, TextHue, TextOffsetX);
+
+        try
         {
-            return 1 + index * typeCount + type;
+            Build(ref builder);
+            ns.AddGump(this);
+            Send(ns, in builder);
         }
-
-        protected static bool SplitButtonID(int buttonID, int typeCount, out int type, out int index)
+        finally
         {
-            if (buttonID < 1)
-            {
-                type = 0;
-                index = 0;
-                return false;
-            }
-
-            buttonID -= 1;
-            index = Math.DivRem(buttonID, typeCount, out type);
-
-            return true;
+            builder.Dispose();
         }
+    }
 
-        public override void SendTo(NetState ns)
-        {
-            GridGumpBuilder<StaticStringsHandler> builder = new(_flags, BorderSize, OffsetSize, EntryHeight,
-                OffsetGumpId, HeaderGumpId, EntryGumpId, BackGumpId, TextHue, TextOffsetX);
+    protected abstract void Build(ref GridGumpBuilder<StaticStringsHandler> builder);
 
-            try
-            {
-                Build(ref builder);
-                ns.AddGump(this);
-                Send(ns, in builder);
-            }
-            finally
-            {
-                builder.Dispose();
-            }
-        }
+    private void Send(NetState ns, in GridGumpBuilder<StaticStringsHandler> builder)
+    {
+        ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
 
-        protected abstract void Build(ref GridGumpBuilder<StaticStringsHandler> builder);
+        int worstLayoutLength = Zlib.MaxPackSize(builder.LayoutSize);
+        int worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
 
-        private void Send(NetState ns, in GridGumpBuilder<StaticStringsHandler> builder)
-        {
-            ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
+        int maxLength = 40 + worstLayoutLength + worstStringsLength;
 
-            int worstLayoutLength = Zlib.MaxPackSize(builder.LayoutSize);
-            int worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
+        SpanWriter writer = new(maxLength);
+        writer.Write((byte)0xDD); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
 
-            int maxLength = 40 + worstLayoutLength + worstStringsLength;
+        writer.Write(Serial);
+        writer.Write(TypeID);
+        writer.Write(_x);
+        writer.Write(_y);
 
-            SpanWriter writer = new(maxLength);
-            writer.Write((byte)0xDD); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+        builder.FinalizeLayout();
+        OutgoingGumpPackets.WritePacked(builder.Layout, ref writer);
 
-            writer.Write(Serial);
-            writer.Write(TypeID);
-            writer.Write(_x);
-            writer.Write(_y);
+        writer.Write(stringsWriter.Count);
+        OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
 
-            builder.FinalizeLayout();
-            OutgoingGumpPackets.WritePacked(builder.Layout, ref writer);
+        writer.WritePacketLength();
 
-            writer.Write(stringsWriter.Count);
-            OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
+        ns.Send(writer.Span);
 
-            writer.WritePacketLength();
-
-            ns.Send(writer.Span);
-
-            writer.Dispose();
-        }
+        writer.Dispose();
     }
 }

@@ -13,13 +13,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Gumps
-{
-    public static class GumpColors
-    {
-        public const int White = 0xFFFFFF;
-        public const int Black = 0x000008;
+namespace Server.Gumps;
 
-        public const short White16 = 0x7FFF;
-    }
+public static class GumpColors
+{
+    public const int White = 0xFFFFFF;
+    public const int Black = 0x000008;
+
+    public const short White16 = 0x7FFF;
 }

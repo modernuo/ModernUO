@@ -20,68 +20,67 @@ using System.Buffers;
 using System.IO.Compression;
 using System.IO;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public abstract class DynamicGump : BaseGump
 {
-    public abstract class DynamicGump : BaseGump
+    private readonly int _x;
+    private readonly int _y;
+    private readonly GumpFlags _flags;
+
+    protected DynamicGump(int x, int y, GumpFlags flags = GumpFlags.None)
     {
-        private readonly int _x;
-        private readonly int _y;
-        private readonly GumpFlags _flags;
+        _x = x;
+        _y = y;
+        _flags = flags;
+    }
 
-        protected DynamicGump(int x, int y, GumpFlags flags = GumpFlags.None)
+    public override void SendTo(NetState ns)
+    {
+        GumpBuilder<StaticStringsHandler> builder = new(_flags);
+
+        try
         {
-            _x = x;
-            _y = y;
-            _flags = flags;
+            Build(ref builder);
+            ns.AddGump(this);
+            Send(ns, in builder);
         }
-
-        public override void SendTo(NetState ns)
+        finally
         {
-            GumpBuilder<StaticStringsHandler> builder = new(_flags);
-
-            try
-            {
-                Build(ref builder);
-                ns.AddGump(this);
-                Send(ns, in builder);
-            }
-            finally
-            {
-                builder.Dispose();
-            }
+            builder.Dispose();
         }
+    }
 
-        protected abstract void Build(ref GumpBuilder<StaticStringsHandler> builder);
+    protected abstract void Build(ref GumpBuilder<StaticStringsHandler> builder);
 
-        private void Send(NetState ns, in GumpBuilder<StaticStringsHandler> builder)
-        {
-            ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
+    private void Send(NetState ns, in GumpBuilder<StaticStringsHandler> builder)
+    {
+        ref readonly StaticStringsHandler stringsWriter = ref builder.StringsWriter;
 
-            int worstLayoutLength = Zlib.MaxPackSize(builder.LayoutSize);
-            int worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
+        int worstLayoutLength = Zlib.MaxPackSize(builder.LayoutSize);
+        int worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
 
-            int maxLength = 40 + worstLayoutLength + worstStringsLength;
+        int maxLength = 40 + worstLayoutLength + worstStringsLength;
 
-            SpanWriter writer = new(maxLength);
-            writer.Write((byte)0xDD); // Packet ID
-            writer.Seek(2, SeekOrigin.Current);
+        SpanWriter writer = new(maxLength);
+        writer.Write((byte)0xDD); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
 
-            writer.Write(Serial);
-            writer.Write(TypeID);
-            writer.Write(_x);
-            writer.Write(_y);
+        writer.Write(Serial);
+        writer.Write(TypeID);
+        writer.Write(_x);
+        writer.Write(_y);
 
-            builder.FinalizeLayout();
-            OutgoingGumpPackets.WritePacked(builder.Layout, ref writer);
+        builder.FinalizeLayout();
+        OutgoingGumpPackets.WritePacked(builder.Layout, ref writer);
             
-            writer.Write(stringsWriter.Count);
-            OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
+        writer.Write(stringsWriter.Count);
+        OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
 
-            writer.WritePacketLength();
+        writer.WritePacketLength();
 
-            ns.Send(writer.Span);
+        ns.Send(writer.Span);
 
-            writer.Dispose();
-        }
+        writer.Dispose();
     }
 }
