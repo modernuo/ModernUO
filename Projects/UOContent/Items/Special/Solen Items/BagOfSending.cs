@@ -30,7 +30,7 @@ public partial class BagOfSending : Item, TranslocationItem
     {
         Weight = 2.0;
 
-        _bagOfSendingHue = hue;
+        BagOfSendingHue = hue;
         _charges = Utility.RandomMinMax(3, 9);
     }
 
