@@ -21,7 +21,7 @@ namespace Server.Misc
 
         public static void FoodDecay()
         {
-            foreach (var state in TcpServer.Instances)
+            foreach (var state in NetState.Instances)
             {
                 HungerDecay(state.Mobile);
                 ThirstDecay(state.Mobile);

@@ -171,10 +171,10 @@ namespace Server.Gumps
                         AddLabel(150, 150, LabelHue, banned.ToString());
 
                         AddLabel(20, 170, LabelHue, "Firewalled:");
-                        AddLabel(150, 170, LabelHue, Firewall.Set.Count.ToString());
+                        AddLabel(150, 170, LabelHue, AdminFirewall.Set.Count.ToString());
 
                         AddLabel(20, 190, LabelHue, "Clients:");
-                        AddLabel(150, 190, LabelHue, TcpServer.Instances.Count.ToString());
+                        AddLabel(150, 190, LabelHue, NetState.Instances.Count.ToString());
 
                         AddLabel(20, 210, LabelHue, "Mobiles:");
                         AddLabel(150, 210, LabelHue, World.Mobiles.Count.ToString());
@@ -437,7 +437,7 @@ namespace Server.Gumps
                     {
                         if (m_List == null)
                         {
-                            var states = TcpServer.Instances.ToList();
+                            var states = NetState.Instances.ToList();
                             states.Sort(NetStateComparer.Instance);
 
                             m_List = states.ToList<object>();
@@ -1225,7 +1225,7 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        m_List ??= Firewall.Set.ToList<object>();
+                        m_List ??= AdminFirewall.Set.ToList<object>();
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
@@ -1275,7 +1275,7 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        if (state is not Firewall.IFirewallEntry firewallEntry)
+                        if (state is not IFirewallEntry firewallEntry)
                         {
                             break;
                         }
@@ -1804,7 +1804,7 @@ namespace Server.Gumps
             {
                 for (var i = 0; i < a.LoginIPs.Length; ++i)
                 {
-                    Firewall.Add(a.LoginIPs[i]);
+                    AdminFirewall.Add(a.LoginIPs[i]);
                 }
 
                 notice = "All addresses in the list have been firewalled.";
@@ -1828,7 +1828,7 @@ namespace Server.Gumps
 
             if (okay)
             {
-                Firewall.Add(toFirewall);
+                AdminFirewall.Add(toFirewall);
 
                 notice = $"{toFirewall} : Added to firewall.";
             }
@@ -2427,7 +2427,7 @@ namespace Server.Gumps
                                     {
                                         var count = 0;
 
-                                        foreach (var ns in TcpServer.Instances)
+                                        foreach (var ns in NetState.Instances)
                                         {
                                             var a = ns.Account;
 
@@ -2533,7 +2533,7 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        foreach (var ns in TcpServer.Instances)
+                                        foreach (var ns in NetState.Instances)
                                         {
                                             bool isMatch;
 
@@ -3626,7 +3626,7 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        foreach (var check in Firewall.Set)
+                                        foreach (var check in AdminFirewall.Set)
                                         {
                                             var checkStr = check.ToString();
 
@@ -3692,42 +3692,47 @@ namespace Server.Gumps
                                                 m_PageType,
                                                 m_ListPage,
                                                 m_List,
-                                                "You must enter an address or pattern to add.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-                                    else if (!Utility.IsValidIP(text))
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                m_PageType,
-                                                m_ListPage,
-                                                m_List,
-                                                "That is not a valid address or pattern.",
+                                                "You must enter an address or CIDR to add.",
                                                 m_State
                                             )
                                         );
                                     }
                                     else
                                     {
-                                        object toAdd = Firewall.ToFirewallEntry(text);
+                                        IFirewallEntry firewallEntry;
+                                        try
+                                        {
+                                            firewallEntry = AdminFirewall.ToFirewallEntry(text);
+                                        }
+                                        catch
+                                        {
+                                            from.SendGump(
+                                                new AdminGump(
+                                                    from,
+                                                    m_PageType,
+                                                    m_ListPage,
+                                                    m_List,
+                                                    "That is not a valid address or CIDR.",
+                                                    m_State
+                                                )
+                                            );
+                                            break;
+                                        }
 
                                         CommandLogging.WriteLine(
                                             from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {toAdd}"
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {firewallEntry}"
                                         );
 
-                                        Firewall.Add(toAdd);
+                                        AdminFirewall.Add(firewallEntry);
                                         from.SendGump(
                                             new AdminGump(
                                                 from,
                                                 AdminGumpPage.FirewallInfo,
                                                 0,
                                                 null,
-                                                $"{toAdd} : Added to firewall.",
-                                                toAdd
+                                                $"{firewallEntry} : Added to firewall.",
+                                                firewallEntry
                                             )
                                         );
                                     }
@@ -3751,14 +3756,14 @@ namespace Server.Gumps
                                 }
                             case 3:
                                 {
-                                    if (m_State is Firewall.IFirewallEntry)
+                                    if (m_State is IFirewallEntry)
                                     {
                                         CommandLogging.WriteLine(
                                             from,
                                             $"{from.AccessLevel} {CommandLogging.Format(from)} removing {m_State} from firewall list"
                                         );
 
-                                        Firewall.Remove(m_State);
+                                        AdminFirewall.Remove(m_State);
                                         from.SendGump(
                                             new AdminGump(
                                                 from,

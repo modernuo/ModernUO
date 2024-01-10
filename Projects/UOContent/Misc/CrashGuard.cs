@@ -178,11 +178,11 @@ namespace Server.Misc
 
                     try
                     {
-                        var states = TcpServer.Instances;
+                        var states = NetState.Instances;
 
                         op.WriteLine($"- Count: {states.Count}");
 
-                        foreach (var ns in TcpServer.Instances)
+                        foreach (var ns in NetState.Instances)
                         {
                             op.Write($"+ {ns}:");
 

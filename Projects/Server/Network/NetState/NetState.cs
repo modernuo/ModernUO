@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -53,11 +54,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static readonly IPollGroup _pollGroup = PollGroup.Create();
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _flushedPartials = new(256);
-    private static readonly Queue<NetState> _disposed = new(256);
+    private static readonly ConcurrentQueue<NetState> _disposed = new();
     private static readonly Queue<NetState> _throttled = new(256);
     private static readonly Queue<NetState> _throttledPending = new(256);
 
     public static NetStateCreatedCallback CreatedCallback { get; set; }
+
+    private static readonly HashSet<NetState> _instances = new(2048);
+    public static IReadOnlySet<NetState> Instances => _instances;
 
     private readonly string _toString;
     private ClientVersion _version;
@@ -152,8 +156,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             TraceException(ex);
             Disconnect("Unable to add socket to poll group");
         }
-
-        CreatedCallback?.Invoke(this);
     }
 
     // Sectors
@@ -965,6 +967,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public static void Slice()
     {
+        const int maxEntriesPerLoop = 32;
+        var count = 0;
+        while (++count <= maxEntriesPerLoop && TcpServer.ConnectedQueue.TryDequeue(out var ns))
+        {
+            CreatedCallback?.Invoke(ns);
+
+            _instances.Add(ns);
+            ns.LogInfo($"Connected. [{Instances.Count} Online]");
+        }
+
         while (_throttled.Count > 0)
         {
             var ns = _throttled.Dequeue();
@@ -980,7 +992,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             _throttled.Enqueue(_throttledPending.Dequeue());
         }
 
-        int count = _pollGroup.Poll(_polledStates);
+        count = _pollGroup.Poll(_polledStates);
 
         if (count > 0)
         {
@@ -1037,7 +1049,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         {
             long curTicks = Core.TickCount;
 
-            foreach (var ns in TcpServer.Instances)
+            foreach (var ns in Instances)
             {
                 ns.CheckAlive(curTicks);
             }
@@ -1116,7 +1128,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public static void TraceDisconnect(string reason, string ip)
     {
-        if (reason == string.Empty)
+        if (string.IsNullOrWhiteSpace(reason))
         {
             return;
         }
@@ -1140,6 +1152,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     private void Dispose()
     {
+        // It's possible we could queue for dispose multiple times
+        if (Connection == null)
+        {
+            return;
+        }
+
         TraceDisconnect(_disconnectReason, _toString);
 
         if (_running)
@@ -1164,7 +1182,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             m.NetState = null;
         }
 
-        TcpServer.Instances.Remove(this);
+        _instances.Remove(this);
+
         try
         {
             _pollGroup.Remove(Connection, _handle);
@@ -1191,7 +1210,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         CityInfo = null;
         Connection = null;
 
-        var count = TcpServer.Instances.Count;
+        var count = Instances.Count;
 
         LogInfo(a != null ? $"Disconnected. [{count} Online] [{a}]" : $"Disconnected. [{count} Online]");
     }

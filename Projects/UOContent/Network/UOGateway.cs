@@ -37,7 +37,7 @@ namespace Server.Network
         {
             state.SendCompactShardStats(
                 (uint)(Core.Uptime / 1000),
-                TcpServer.Instances.Count - 1, // Shame if you modify this!
+                NetState.Instances.Count - 1, // Shame if you modify this!
                 World.Items.Count,
                 World.Mobiles.Count,
                 GC.GetTotalMemory(false)
@@ -50,7 +50,7 @@ namespace Server.Network
             state.SendExtendedShardStats(
                 ServerList.ServerName,
                 (int)(Core.Uptime / ticksInHour),
-                TcpServer.Instances.Count - 1, // Shame if you modify this!
+                NetState.Instances.Count - 1, // Shame if you modify this!
                 World.Items.Count,
                 World.Mobiles.Count,
                 (int)(GC.GetTotalMemory(false) / 1024)

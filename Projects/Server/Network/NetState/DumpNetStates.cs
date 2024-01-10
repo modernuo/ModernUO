@@ -30,7 +30,7 @@ public static class DumpNetStates
 
         file.WriteLine("NetState, RecvTask, SendTask, ProtocolState, ParserState");
 
-        foreach (var ns in TcpServer.Instances)
+        foreach (var ns in NetState.Instances)
         {
             file.WriteLine($"{ns}, {ns._protocolState}, {ns._parserState}");
         }

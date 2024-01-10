@@ -38,7 +38,7 @@ namespace Server.Commands.Generic
                 var list = new List<object>();
                 var addresses = new List<IPAddress>();
 
-                foreach (var ns in TcpServer.Instances)
+                foreach (var ns in NetState.Instances)
                 {
                     var mob = ns.Mobile;
 

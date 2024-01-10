@@ -21,7 +21,7 @@ namespace Server
             {
                 m_LevelOverride = value;
 
-                foreach (var ns in TcpServer.Instances)
+                foreach (var ns in NetState.Instances)
                 {
                     var m = ns.Mobile;
 
@@ -98,7 +98,7 @@ namespace Server
 
             protected override void OnTick()
             {
-                foreach (var ns in TcpServer.Instances)
+                foreach (var ns in NetState.Instances)
                 {
                     ns.Mobile?.CheckLightLevels(false);
                 }

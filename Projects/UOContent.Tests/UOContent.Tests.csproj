@@ -15,6 +15,9 @@
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Tests\Firewall\" />
+    </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />
     </Target>
