@@ -1013,6 +1013,12 @@ namespace Server.Spells
 
                 bcTarget?.AlterSpellDamageFrom(from, ref dmg);
 
+                if (Feint.GetDamageReduction(from, target, out int feintReduction))
+                {
+                    // example: 35 damage * 50 / 100 = 17 damage
+                    dmg -= dmg * feintReduction / 100;
+                }
+
                 StaminaSystem.DFA = dfa;
 
                 var damageGiven = AOS.Damage(target, from, dmg, phys, fire, cold, pois, nrgy, chaos);

@@ -1385,11 +1385,6 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
                 bonus += duelWield.BonusSwingSpeed;
             }
 
-            if (Feint.Registry.TryGetValue(m, out var feint))
-            {
-                bonus -= feint.SwingSpeedReduction;
-            }
-
             var context = TransformationSpellHelper.GetContext(m);
 
             if (context?.Spell is ReaperFormSpell spell)
@@ -1983,6 +1978,12 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         {
             SpecialMove.ClearCurrentMove(attacker);
             move = null;
+        }
+
+        if (Feint.GetDamageReduction(attacker, defender, out var feintReduction))
+        {
+            // example: 35 damage * 50 / 100 = 17 damage
+            damage -= damage * feintReduction / 100;
         }
 
         var ignoreArmor = a is ArmorIgnore ||
