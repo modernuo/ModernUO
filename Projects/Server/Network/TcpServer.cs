@@ -272,16 +272,6 @@ public static class TcpServer
                 TraceDisconnect("Firewalled", remoteIP);
                 logger.Debug("{Address} Firewalled", remoteIP);
 
-                try
-                {
-                    ReadOnlySpan<byte> badComm = [0x82, 0xFF];
-                    socket.Send(badComm, SocketFlags.None);
-                }
-                catch
-                {
-                    // ignored
-                }
-
                 CloseSocket(socket);
                 return;
             }
