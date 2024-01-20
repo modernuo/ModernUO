@@ -136,7 +136,7 @@ public static class AccountHandler
         {
             var ipAddress = ns.Address;
 
-            if (Utility.IPMatchClassC(accessList[0], ipAddress))
+            if (accessList[0].MatchClassC(ipAddress))
             {
                 acct.SetPassword(pass);
                 from.SendMessage("The password to your account has changed.");
@@ -302,19 +302,6 @@ public static class AccountHandler
 
     public static void EventSink_AccountLogin(AccountLoginEventArgs e)
     {
-        if (!IPLimiter.SocketBlock && !IPLimiter.Verify(e.State.Address))
-        {
-            e.Accepted = false;
-            e.RejectReason = ALRReason.InUse;
-
-            logger.Information("Login: {NetState}: Past IP limit threshold", e.State);
-
-            using var op = new StreamWriter("ipLimits.log", true);
-            op.WriteLine($"{e.State}\tPast IP limit threshold\t{Core.Now}");
-
-            return;
-        }
-
         var un = e.Username;
         var pw = e.Password;
 
@@ -371,18 +358,6 @@ public static class AccountHandler
 
     public static void EventSink_GameLogin(GameLoginEventArgs e)
     {
-        if (!IPLimiter.SocketBlock && !IPLimiter.Verify(e.State.Address))
-        {
-            e.Accepted = false;
-
-            logger.Warning("Login: {NetState} Past IP limit threshold", e.State);
-
-            using var op = new StreamWriter("ipLimits.log", true);
-            op.WriteLine($"{e.State}\tPast IP limit threshold\t{Core.Now}");
-
-            return;
-        }
-
         var un = e.Username;
         var pw = e.Password;
 

@@ -1,7 +1,23 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: PingServer.cs                                                   *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Server.Logging;
 
 namespace Server.Network;
@@ -10,14 +26,11 @@ public static class PingServer
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PingServer));
 
-    private const int MaxConnectionsPerLoop = 250;
+    private const int MaxConnectionsPerLoop = 128;
 
-    private const long _listenerErrorMessageDelay = 10000; // 10 seconds
-    private static long _nextMaximumSocketsReachedMessage;
+    public static int MaxQueued { get; set; }
 
-    public static int MaxConnections { get; set; }
-
-    private static ConcurrentQueue<(UdpClient, UdpReceiveResult)> _udpResponseQueue = new();
+    private static readonly ConcurrentQueue<(UdpClient, UdpReceiveResult)> _udpResponseQueue = new();
 
     public static UdpClient[] Listeners { get; private set; }
 
@@ -29,7 +42,7 @@ public static class PingServer
     {
         Enabled = ServerConfiguration.GetOrUpdateSetting("pingServer.enabled", true);
         Port = ServerConfiguration.GetSetting("pingServer.port", 12000);
-        MaxConnections = ServerConfiguration.GetSetting("pingServer.maxConnections", 2048);
+        MaxQueued = ServerConfiguration.GetSetting("pingServer.maxConnections", 2048);
     }
 
     public static void Start()
@@ -44,6 +57,7 @@ public static class PingServer
 
         foreach (var serverIpep in ServerConfiguration.Listeners)
         {
+            var cancellationToken = Core.ClosingTokenSource.Token;
             var ipep = new IPEndPoint(serverIpep.Address, Port);
 
             var listener = CreateListener(ipep);
@@ -62,7 +76,7 @@ public static class PingServer
             }
 
             listeners.Add(listener);
-            BeginAcceptingSockets(listener);
+            Task.Run(() => BeginAcceptingUdpRequest(listener), cancellationToken).ConfigureAwait(false);
         }
 
         foreach (var ipep in listeningAddresses)
@@ -126,36 +140,21 @@ public static class PingServer
         return null;
     }
 
-    private static async void BeginAcceptingSockets(UdpClient listener)
+    private static async void BeginAcceptingUdpRequest(UdpClient listener)
     {
-        while (true)
-        {
-            if (!Enabled || Core.Closing)
-            {
-                return;
-            }
+        var cancellationToken = Core.ClosingTokenSource.Token;
 
+        while (!cancellationToken.IsCancellationRequested)
+        {
             try
             {
-                var result = await listener.ReceiveAsync(Core.ClosingTokenSource.Token);
+                var result = await listener.ReceiveAsync(cancellationToken);
 
-                if (_udpResponseQueue.Count >= MaxConnections)
+                if (_udpResponseQueue.Count < MaxQueued)
                 {
-                    var ticks = Core.TickCount;
-
-                    if (ticks - _nextMaximumSocketsReachedMessage > 0)
-                    {
-                        if (listener.Client.RemoteEndPoint is IPEndPoint ipep)
-                        {
-                            var ip = ipep.Address.ToString();
-                            logger.Warning("Ping Listener {Address}: Failed (Maximum connections reached)", ip);
-                        }
-
-                        _nextMaximumSocketsReachedMessage = ticks + _listenerErrorMessageDelay;
-                    }
+                    _udpResponseQueue.Enqueue((listener, result));
                 }
 
-                _udpResponseQueue.Enqueue((listener, result));
             }
             catch
             {
@@ -164,7 +163,7 @@ public static class PingServer
         }
     }
 
-    private static async void SendResponse(UdpClient listener, byte[] data, IPEndPoint ipep)
+    private static async Task SendResponse(UdpClient listener, byte[] data, IPEndPoint ipep)
     {
         try
         {

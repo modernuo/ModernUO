@@ -564,7 +564,6 @@ public static class Core
                 Timer.Slice(_tickCount);
 
                 // Handle networking
-                TcpServer.Slice();
                 NetState.Slice();
                 PingServer.Slice();
 

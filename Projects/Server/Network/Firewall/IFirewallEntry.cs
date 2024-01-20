@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DumpNetStates.cs                                                *
+ * File: IFirewallEntry.cs                                               *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,26 +13,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.IO;
+using System;
+using System.Net;
 
 namespace Server.Network;
 
-public static class DumpNetStates
+public interface IFirewallEntry : IComparable<IFirewallEntry>
 {
-    public static void Initialize()
+    UInt128 MinIpAddress { get; }
+    UInt128 MaxIpAddress { get; }
+
+    int IComparable<IFirewallEntry>.CompareTo(IFirewallEntry? other)
     {
-        CommandSystem.Register("DumpNetStates", AccessLevel.Administrator, DumpNetStatesCommand);
-    }
-
-    public static void DumpNetStatesCommand(CommandEventArgs args)
-    {
-        using var file = new StreamWriter("netstatedump.csv");
-
-        file.WriteLine("NetState, RecvTask, SendTask, ProtocolState, ParserState");
-
-        foreach (var ns in NetState.Instances)
+        if (other == null)
         {
-            file.WriteLine($"{ns}, {ns._protocolState}, {ns._parserState}");
+            return 1;
         }
+
+        if (MinIpAddress < other.MinIpAddress)
+        {
+            return -1;
+        }
+
+        if (MinIpAddress > other.MinIpAddress)
+        {
+            return 1;
+        }
+
+        if (MaxIpAddress < other.MaxIpAddress)
+        {
+            return -1;
+        }
+
+        if (MaxIpAddress > other.MaxIpAddress)
+        {
+            return 1;
+        }
+
+        return 0; // Equal ranges
     }
+
+    bool IsBlocked(IPAddress address);
+
+    bool IsBlocked(UInt128 address);
 }

@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SocketConnectionEvent.cs                                        *
+ * File: SingleIpFirewallEntry.cs                                        *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -14,28 +14,17 @@
  *************************************************************************/
 
 using System;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
+using System.Net;
 
-namespace Server;
+namespace Server.Network;
 
-public class SocketConnectEventArgs
+public class SingleIpFirewallEntry : BaseFirewallEntry
 {
-    public SocketConnectEventArgs(Socket c)
-    {
-        Connection = c;
-        AllowConnection = true;
-    }
+    public override UInt128 MinIpAddress { get; }
 
-    public Socket Connection { get; }
+    public override UInt128 MaxIpAddress => MinIpAddress;
 
-    public bool AllowConnection { get; set; }
-}
+    public SingleIpFirewallEntry(string ipAddress) => MinIpAddress = IPAddress.Parse(ipAddress).ToUInt128();
 
-public static partial class EventSink
-{
-    public static event Action<SocketConnectEventArgs> SocketConnect;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
+    public SingleIpFirewallEntry(IPAddress ipAddress) => MinIpAddress = ipAddress.ToUInt128();
 }

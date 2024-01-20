@@ -103,7 +103,7 @@ public static class World
 
         Span<byte> buffer = stackalloc byte[length].InitializePacket();
 
-        foreach (var ns in TcpServer.Instances)
+        foreach (var ns in NetState.Instances)
         {
             if (ns.Mobile == null)
             {
@@ -131,7 +131,7 @@ public static class World
 
         Span<byte> buffer = stackalloc byte[length].InitializePacket();
 
-        foreach (var ns in TcpServer.Instances)
+        foreach (var ns in NetState.Instances)
         {
             if (ns.Mobile == null || ns.Mobile.AccessLevel < AccessLevel.GameMaster)
             {

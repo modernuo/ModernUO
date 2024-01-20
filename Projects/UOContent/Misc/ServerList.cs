@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using Server.Logging;
+using Server.Network;
 
 namespace Server.Misc
 {
@@ -153,18 +154,39 @@ namespace Server.Misc
             return false;
         }
 
-        // 10.0.0.0/8
-        // 172.16.0.0/12
-        // 192.168.0.0/16
-        // 169.254.0.0/16
-        // 100.64.0.0/10 RFC 6598
         private static bool IsPrivateNetwork(IPAddress ip) =>
-            ip.AddressFamily != AddressFamily.InterNetworkV6 &&
-            (Utility.IPMatch("192.168.*", ip) ||
-             Utility.IPMatch("10.*", ip) ||
-             Utility.IPMatch("172.16-31.*", ip) ||
-             Utility.IPMatch("169.254.*", ip) ||
-             Utility.IPMatch("100.64-127.*", ip));
+            ip.AddressFamily switch
+            {
+                AddressFamily.InterNetwork => IsPrivateNetworkV4(ip),
+                AddressFamily.InterNetworkV6 => IsPrivateNetworkV6(ip),
+                _ => false
+            };
+
+        private static readonly IFirewallEntry[] _privateNetworkV4 =
+        [
+            new CidrFirewallEntry("192.168.0.0/16"),
+            new CidrFirewallEntry("10.0.0.0/8"),
+            new CidrFirewallEntry("172.16.0.0/12"),
+            new CidrFirewallEntry("169.254.0.0/16"),
+            new CidrFirewallEntry("100.64.0.0/10")
+        ];
+
+        private static readonly IFirewallEntry[] _privateNetworkV6 =
+        [
+            new CidrFirewallEntry("fc00::/7"),
+            new CidrFirewallEntry("fe80::/10")
+        ];
+
+        private static bool IsPrivateNetworkV4(IPAddress ip) =>
+            _privateNetworkV4[0].IsBlocked(ip) ||
+            _privateNetworkV4[1].IsBlocked(ip) ||
+            _privateNetworkV4[2].IsBlocked(ip) ||
+            _privateNetworkV4[3].IsBlocked(ip) ||
+            _privateNetworkV4[4].IsBlocked(ip);
+
+        private static bool IsPrivateNetworkV6(IPAddress ip) =>
+            _privateNetworkV6[0].IsBlocked(ip) ||
+            _privateNetworkV6[1].IsBlocked(ip);
 
         private const string _ipifyUrl = "https://api.ipify.org";
 

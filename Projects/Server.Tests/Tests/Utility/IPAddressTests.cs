@@ -29,50 +29,25 @@ namespace Server.Tests
             var cidrAddress = IPAddress.Parse(cidr);
             var address = IPAddress.Parse(addr);
 
-            Assert.Equal(shouldMatch, Utility.IPMatchCIDR(cidrAddress, address, cidrLength));
+            Assert.Equal(shouldMatch, cidrAddress.MatchCidr(cidrLength, address));
         }
 
         [Theory]
-        [InlineData("192.168.1.*", "192.168.1.1", true, true)]
-        [InlineData("192.168.1.100", "192.168.1.1", false, true)]
-        [InlineData("192.168.*.100", "192.168.1.100", true, true)]
-        [InlineData("192.168.20-60.100", "192.168.37.100", true, true)]
-        [InlineData("192.168.20-60.100", "192.168.85.100", false, true)]
-        [InlineData("192.168.-.100", "192.168.85.100", false, false)]
-        [InlineData("192.168.x-.100", "192.168.85.100", false, false)]
-        [InlineData("192.168.x*.100", "192.168.85.100", false, false)]
-        [InlineData("192.168.**.100", "192.168.85.100", false, false)]
-        [InlineData("::1234:*", "::1234:5678", true, true)]
-        [InlineData("::1234-1238:1000", "::1236:1000", true, true)]
-        [InlineData("::1234-1238:1000", "::1239:1000", false, true)]
-        [InlineData("::10:*:1234-1238:1000", "::10:55A1:1235:1000", true, true)]
-        [InlineData("1024:*:1234::", "1024:8A13:1234::", true, true)]
-        [InlineData("::1024:*:1234::", "1024:8A13:1234::", false, false)]
-        [InlineData("::1024:*:1234:-", "::1024:8A13:1234", false, false)]
-        [InlineData("::1024:*1:1234", "::1024:8A13:1234", false, false)]
-        [InlineData("::1024:*-:1234", "::1024:8A13:1234", false, false)]
-        [InlineData("::1024:?1:1234", "::1024:8A13:1234", false, false)]
-        [InlineData("::1024:1_2:1234", "::1024:8A13:1234", false, false)]
-        [InlineData("172.16-31.*", "172.16.17.2", true, true)]
-        public void TestIPMatch(string val, string addr, bool shouldMatch, bool shouldBeValid)
+        [InlineData("::ffff:192.168.1.1", 0UL, 0xffffc0a80101UL)]
+        [InlineData("192.168.1.1", 0UL, 0xffffc0a80101UL)]
+        [InlineData("4cce:1490:4577:d72f:693e:b42e:3465:f3db", 0x4cce14904577d72fUL, 0x693eb42e3465f3db)]
+        public void TestIPAddressToUInt128(string ipString, ulong upper, ulong lower)
         {
-            var address = IPAddress.Parse(addr);
-            bool match = Utility.IPMatch(val, address, out var valid);
+            var ip = IPAddress.Parse(ipString);
+            if (ip.IsIPv4MappedToIPv6)
+            {
+                ip = ip.MapToIPv4();
+            }
 
-            Assert.Equal(shouldMatch, match);
-            Assert.Equal(shouldBeValid, valid);
-        }
-
-        [Fact]
-        public void TestMixedIPv4Address()
-        {
-            var ip = IPAddress.Parse("::ffff:192.168.1.1");
-            var expected = IPAddress.Parse("192.168.1.1");
-
-            Span<byte> integer = stackalloc byte[4];
-            expected.TryWriteBytes(integer, out _);
-
-            Assert.Equal(BinaryPrimitives.ReadUInt32BigEndian(integer), Utility.IPv4ToAddress(ip));
+            var actual = ip.ToUInt128();
+            Assert.Equal(new UInt128(upper, lower), actual);
+            var actual2 = actual.ToIpAddress();
+            Assert.Equal(ip, actual2);
         }
     }
 }

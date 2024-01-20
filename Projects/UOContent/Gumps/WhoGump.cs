@@ -60,7 +60,7 @@ namespace Server.Gumps
 
             var list = new List<Mobile>();
 
-            foreach (var ns in TcpServer.Instances)
+            foreach (var ns in NetState.Instances)
             {
                 var m = ns.Mobile;
 

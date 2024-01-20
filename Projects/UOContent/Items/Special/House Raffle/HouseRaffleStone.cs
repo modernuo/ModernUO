@@ -289,7 +289,7 @@ public partial class HouseRaffleStone : Item
 
         foreach (var entry in Entries)
         {
-            if (Utility.IPMatchClassC(entry.Address, address))
+            if (entry.Address.MatchClassC(address))
             {
                 if (++tickets >= EntryLimitPerIP)
                 {

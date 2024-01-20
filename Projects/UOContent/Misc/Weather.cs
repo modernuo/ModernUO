@@ -345,7 +345,7 @@ namespace Server.Misc
                     type = 2;
                 }
 
-                foreach (var ns in TcpServer.Instances)
+                foreach (var ns in NetState.Instances)
                 {
                     var mob = ns.Mobile;
 

@@ -1137,7 +1137,7 @@ namespace Server.Commands.Generic
 
                 try
                 {
-                    Firewall.Add(state.Address);
+                    AdminFirewall.Add(state.Address);
                     AddResponse("They have been firewalled.");
                 }
                 catch (Exception ex)
