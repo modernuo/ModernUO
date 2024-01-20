@@ -264,7 +264,7 @@ public static class Utility
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool MatchesClassC(this IPAddress ip1, IPAddress ip2) => ip1.MatchCidr(24, ip2);
+    public static bool MatchClassC(this IPAddress ip1, IPAddress ip2) => ip1.MatchCidr(24, ip2);
 
     public static bool MatchCidr(this IPAddress cidrAddress, int prefixLength, IPAddress address)
     {

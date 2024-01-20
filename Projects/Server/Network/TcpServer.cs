@@ -59,50 +59,6 @@ public static class TcpServer
 
     public static void Start()
     {
-        // HashSet<IPEndPoint> listeningAddresses = [];
-        // List<Socket> listeners = [];
-        // List<Thread> listenerThreads = [];
-        //
-        // foreach (var ipep in ServerConfiguration.Listeners)
-        // {
-        //     var listener = CreateListener(ipep);
-        //     if (listener == null)
-        //     {
-        //         continue;
-        //     }
-        //
-        //     bool added;
-        //
-        //     if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
-        //     {
-        //         var beforeCount = listeningAddresses.Count;
-        //         listeningAddresses.UnionWith(GetListeningAddresses(ipep));
-        //         added = listeningAddresses.Count > beforeCount;
-        //     }
-        //     else
-        //     {
-        //         added = listeningAddresses.Add(ipep);
-        //     }
-        //
-        //     if (added)
-        //     {
-        //         listeners.Add(listener);
-        //
-        //         var listenerThread = new Thread(() => BeginAcceptingSockets(listener));
-        //         listenerThreads.Add(listenerThread);
-        //         listenerThread.Start();
-        //     }
-        // }
-        //
-        // foreach (var ipep in listeningAddresses)
-        // {
-        //     logger.Information("Listening: {Address}:{Port}", ipep.Address, ipep.Port);
-        // }
-        //
-        // ListeningAddresses = listeningAddresses.ToArray();
-        // Listeners = listeners.ToArray();
-        // ListenerThreads = listenerThreads.ToArray();
-
         _processConnectionsThread = new Thread(ProcessConnections);
         _processConnectionsThread.Start();
     }

@@ -136,7 +136,7 @@ public static class AccountHandler
         {
             var ipAddress = ns.Address;
 
-            if (accessList[0].MatchesClassC(ipAddress))
+            if (accessList[0].MatchClassC(ipAddress))
             {
                 acct.SetPassword(pass);
                 from.SendMessage("The password to your account has changed.");

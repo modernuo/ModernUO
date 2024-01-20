@@ -319,7 +319,7 @@ namespace Server.Misc
 
             for (var i = 0; i < Voters.Length; ++i)
             {
-                if (Voters[i].MatchesClassC(ipAddress))
+                if (Voters[i].MatchClassC(ipAddress))
                 {
                     return true;
                 }
