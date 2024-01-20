@@ -280,13 +280,8 @@ public static class Utility
         ipAddress.TryWriteBytes(destination.Slice(12, 4), out _);
     }
 
-    public static bool IPMatchClassC(IPAddress ip1, IPAddress ip2)
-    {
-        var a = IPv4ToAddress(ip1);
-        var b = IPv4ToAddress(ip2);
-
-        return a == 0 || b == 0 ? ip1.Equals(ip2) : (a & 0xFFFFFF) == (b & 0xFFFFFF);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool MatchesClassC(this IPAddress ip1, IPAddress ip2) => ip1.MatchCidr(24, ip2);
 
     public static bool MatchCidr(this IPAddress cidrAddress, int prefixLength, IPAddress address)
     {
