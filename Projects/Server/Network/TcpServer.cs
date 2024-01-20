@@ -85,7 +85,7 @@ public static class TcpServer
         try
         {
             listener.Bind(ipep);
-            listener.Listen(128);
+            listener.Listen(256);
             return listener;
         }
         catch (SocketException se)
@@ -113,25 +113,29 @@ public static class TcpServer
     {
         var cancellationToken = Core.ClosingTokenSource.Token;
 
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            try
-            {
-                var socket = await listener.AcceptAsync(cancellationToken);
-                _connectingQueue.Enqueue(socket);
-                _queueSemaphore.Release();
-            }
-            catch(OperationCanceledException)
-            {
-                return;
-            }
+            var socket = await listener.AcceptAsync(cancellationToken);
+            _connectingQueue.Enqueue(socket);
+            _queueSemaphore.Release();
+        }
+        catch(OperationCanceledException)
+        {
+            return;
         }
 
-        listener.Close();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            listener.Close();
+            return;
+        }
+
+        Task.Run(() => BeginAcceptingSockets(listener), cancellationToken).ConfigureAwait(false);
     }
 
     private static void ProcessConnections()
     {
+        var cancellationToken = Core.ClosingTokenSource.Token;
         HashSet<IPEndPoint> listeningAddresses = [];
         List<Socket> listeners = [];
 
@@ -160,7 +164,7 @@ public static class TcpServer
             {
                 listeners.Add(listener);
 
-                Task.Run(() => BeginAcceptingSockets(listener));
+                Task.Run(() => BeginAcceptingSockets(listener), cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -174,8 +178,6 @@ public static class TcpServer
 
         while (true)
         {
-            var cancellationToken = Core.ClosingTokenSource.Token;
-
             try
             {
                 while (!cancellationToken.IsCancellationRequested)
