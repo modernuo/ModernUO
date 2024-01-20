@@ -19,10 +19,10 @@ using System.Net.Sockets;
 
 namespace Server.Network;
 
-public class CidrFirewallEntry : IFirewallEntry
+public class CidrFirewallEntry : BaseFirewallEntry
 {
-    public UInt128 MinIpAddress { get; }
-    public UInt128 MaxIpAddress { get; }
+    public override UInt128 MinIpAddress { get; }
+    public override UInt128 MaxIpAddress { get; }
 
     public CidrFirewallEntry(string ipAddressOrCidr)
         : this(ParseIPAddress(ipAddressOrCidr, out var prefixLength), prefixLength)

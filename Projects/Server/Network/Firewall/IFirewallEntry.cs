@@ -18,10 +18,10 @@ using System.Net;
 
 namespace Server.Network;
 
-public interface IFirewallEntry : IComparable<IFirewallEntry>, ISpanFormattable
+public interface IFirewallEntry : IComparable<IFirewallEntry>
 {
-    public UInt128 MinIpAddress { get; }
-    public UInt128 MaxIpAddress { get; }
+    UInt128 MinIpAddress { get; }
+    UInt128 MaxIpAddress { get; }
 
     int IComparable<IFirewallEntry>.CompareTo(IFirewallEntry? other)
     {
@@ -53,48 +53,7 @@ public interface IFirewallEntry : IComparable<IFirewallEntry>, ISpanFormattable
         return 0; // Equal ranges
     }
 
-    public bool IsBlocked(IPAddress address)
-    {
-        var v = address.ToUInt128();
-        return v >= MinIpAddress && v <= MaxIpAddress;
-    }
+    bool IsBlocked(IPAddress address);
 
-    public string ToString() =>
-        MinIpAddress == MaxIpAddress ? MinIpAddress.ToIpAddress().ToString()
-            : $"{MinIpAddress.ToIpAddress()}-{MaxIpAddress.ToIpAddress()}";
-
-    string IFormattable.ToString(string? format, IFormatProvider? formatProvider) =>
-        // format and provider are explicitly ignored
-        ToString();
-
-    bool ISpanFormattable.TryFormat(
-        Span<char> destination,
-        out int charsWritten,
-        ReadOnlySpan<char> format,
-        IFormatProvider? provider
-    )
-    {
-        if (!((ISpanFormattable)MinIpAddress.ToIpAddress()).TryFormat(destination, out charsWritten, format, provider))
-        {
-            return false;
-        }
-
-        if (MinIpAddress == MaxIpAddress)
-        {
-            return true;
-        }
-
-        // Range
-        destination[charsWritten++] = '-';
-
-        var total = charsWritten;
-
-        if (!((ISpanFormattable)MaxIpAddress.ToIpAddress()).TryFormat(destination[charsWritten..], out charsWritten, format, provider))
-        {
-            return false;
-        }
-
-        charsWritten += total;
-        return true;
-    }
+    bool IsBlocked(UInt128 address);
 }

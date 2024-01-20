@@ -236,23 +236,6 @@ public static class Utility
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint IPv4ToAddress(IPAddress ipAddress)
-    {
-        if (ipAddress.IsIPv4MappedToIPv6)
-        {
-            ipAddress = ipAddress.MapToIPv4();
-        }
-        else if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
-        {
-            return 0;
-        }
-
-        Span<byte> integer = stackalloc byte[4];
-        ipAddress.TryWriteBytes(integer, out var bytesWritten);
-        return bytesWritten != 4 ? 0 : BinaryPrimitives.ReadUInt32BigEndian(integer);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UInt128 CreateCidrAddress(ReadOnlySpan<byte> bytes, int prefixLength, bool isMax)
     {
         ulong high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);

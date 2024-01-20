@@ -13,13 +13,11 @@ public static class AdminFirewall
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(AdminFirewall));
 
-    private static readonly HashSet<IFirewallEntry> _firewallSet;
+    private static readonly HashSet<IFirewallEntry> _firewallSet = [];
     private const string firewallConfigPath = "firewall.cfg";
 
-    static AdminFirewall()
+    public static void Configure()
     {
-        _firewallSet = [];
-
         if (File.Exists(firewallConfigPath))
         {
             var searchValues = SearchValues.Create("*Xx?");
@@ -41,7 +39,7 @@ public static class AdminFirewall
                     continue;
                 }
 
-                Add(ToFirewallEntry(line));
+                Add(ToFirewallEntry(line), false);
             }
         }
     }

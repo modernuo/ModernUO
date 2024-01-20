@@ -32,18 +32,6 @@ namespace Server.Tests
             Assert.Equal(shouldMatch, cidrAddress.MatchCidr(cidrLength, address));
         }
 
-        [Fact]
-        public void TestMixedIPv4Address()
-        {
-            var ip = IPAddress.Parse("::ffff:192.168.1.1");
-            var expected = IPAddress.Parse("192.168.1.1");
-
-            Span<byte> integer = stackalloc byte[4];
-            expected.TryWriteBytes(integer, out _);
-
-            Assert.Equal(BinaryPrimitives.ReadUInt32BigEndian(integer), Utility.IPv4ToAddress(ip));
-        }
-
         [Theory]
         [InlineData("::ffff:192.168.1.1", 0UL, 0xffffc0a80101UL)]
         [InlineData("192.168.1.1", 0UL, 0xffffc0a80101UL)]

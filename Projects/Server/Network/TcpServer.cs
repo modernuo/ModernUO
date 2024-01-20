@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,9 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Server.Logging;
 using Server.Misc;
 
@@ -43,10 +46,9 @@ public static class TcpServer
 
     public static IPEndPoint[] ListeningAddresses { get; private set; }
     public static Socket[] Listeners { get; private set; }
-    public static Thread[] ListenerThreads { get; private set; }
 
     // By default should sort T1 then T2
-    public static readonly SortedSet<(long, NetState)> _socketsConnecting = [];
+    public static readonly SortedSet<(long ConnectedAt, NetState NetState)> _socketsConnecting = [];
 
     public static ConcurrentQueue<NetState> ConnectedQueue { get; } = [];
 
@@ -57,49 +59,49 @@ public static class TcpServer
 
     public static void Start()
     {
-        HashSet<IPEndPoint> listeningAddresses = [];
-        List<Socket> listeners = [];
-        List<Thread> listenerThreads = [];
-
-        foreach (var ipep in ServerConfiguration.Listeners)
-        {
-            var listener = CreateListener(ipep);
-            if (listener == null)
-            {
-                continue;
-            }
-
-            bool added;
-
-            if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
-            {
-                var beforeCount = listeningAddresses.Count;
-                listeningAddresses.UnionWith(GetListeningAddresses(ipep));
-                added = listeningAddresses.Count > beforeCount;
-            }
-            else
-            {
-                added = listeningAddresses.Add(ipep);
-            }
-
-            if (added)
-            {
-                listeners.Add(listener);
-
-                var listenerThread = new Thread(() => BeginAcceptingSockets(listener));
-                listenerThreads.Add(listenerThread);
-                listenerThread.Start();
-            }
-        }
-
-        foreach (var ipep in listeningAddresses)
-        {
-            logger.Information("Listening: {Address}:{Port}", ipep.Address, ipep.Port);
-        }
-
-        ListeningAddresses = listeningAddresses.ToArray();
-        Listeners = listeners.ToArray();
-        ListenerThreads = listenerThreads.ToArray();
+        // HashSet<IPEndPoint> listeningAddresses = [];
+        // List<Socket> listeners = [];
+        // List<Thread> listenerThreads = [];
+        //
+        // foreach (var ipep in ServerConfiguration.Listeners)
+        // {
+        //     var listener = CreateListener(ipep);
+        //     if (listener == null)
+        //     {
+        //         continue;
+        //     }
+        //
+        //     bool added;
+        //
+        //     if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+        //     {
+        //         var beforeCount = listeningAddresses.Count;
+        //         listeningAddresses.UnionWith(GetListeningAddresses(ipep));
+        //         added = listeningAddresses.Count > beforeCount;
+        //     }
+        //     else
+        //     {
+        //         added = listeningAddresses.Add(ipep);
+        //     }
+        //
+        //     if (added)
+        //     {
+        //         listeners.Add(listener);
+        //
+        //         var listenerThread = new Thread(() => BeginAcceptingSockets(listener));
+        //         listenerThreads.Add(listenerThread);
+        //         listenerThread.Start();
+        //     }
+        // }
+        //
+        // foreach (var ipep in listeningAddresses)
+        // {
+        //     logger.Information("Listening: {Address}:{Port}", ipep.Address, ipep.Port);
+        // }
+        //
+        // ListeningAddresses = listeningAddresses.ToArray();
+        // Listeners = listeners.ToArray();
+        // ListenerThreads = listenerThreads.ToArray();
 
         _processConnectionsThread = new Thread(ProcessConnections);
         _processConnectionsThread.Start();
@@ -151,7 +153,7 @@ public static class TcpServer
         return null;
     }
 
-    private static async void BeginAcceptingSockets(Socket listener)
+    private static async Task BeginAcceptingSockets(Socket listener)
     {
         var cancellationToken = Core.ClosingTokenSource.Token;
 
@@ -163,93 +165,178 @@ public static class TcpServer
                 _connectingQueue.Enqueue(socket);
                 _queueSemaphore.Release();
             }
-            catch
+            catch(OperationCanceledException)
             {
-                // ignored
+                return;
             }
         }
 
         listener.Close();
     }
 
-    private static async void ProcessConnections()
+    private static void ProcessConnections()
+    {
+        HashSet<IPEndPoint> listeningAddresses = [];
+        List<Socket> listeners = [];
+
+        foreach (var ipep in ServerConfiguration.Listeners)
+        {
+            var listener = CreateListener(ipep);
+            if (listener == null)
+            {
+                continue;
+            }
+
+            bool added;
+
+            if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+            {
+                var beforeCount = listeningAddresses.Count;
+                listeningAddresses.UnionWith(GetListeningAddresses(ipep));
+                added = listeningAddresses.Count > beforeCount;
+            }
+            else
+            {
+                added = listeningAddresses.Add(ipep);
+            }
+
+            if (added)
+            {
+                listeners.Add(listener);
+
+                Task.Run(() => BeginAcceptingSockets(listener));
+            }
+        }
+
+        foreach (var ipep in listeningAddresses)
+        {
+            logger.Information("Listening: {Address}:{Port}", ipep.Address, ipep.Port);
+        }
+
+        ListeningAddresses = listeningAddresses.ToArray();
+        Listeners = listeners.ToArray();
+
+        while (true)
+        {
+            var cancellationToken = Core.ClosingTokenSource.Token;
+
+            try
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    _queueSemaphore.Wait(cancellationToken);
+
+                    Firewall.ProcessQueue();
+
+                    if (_connectingQueue.TryDequeue(out var socket))
+                    {
+                        ProcessConnection(socket);
+                    }
+                }
+
+                return;
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void CloseSocket(Socket socket)
+    {
+        try
+        {
+            socket.Shutdown(SocketShutdown.Both);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        socket.Close();
+    }
+
+    private static void ProcessConnection(Socket socket)
     {
         var ipLimiter = IPLimiter.Enabled;
-        var cancellationToken = Core.ClosingTokenSource.Token;
-
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            await _queueSemaphore.WaitAsync(cancellationToken);
-
-            Firewall.ProcessQueue();
-
-            if (_connectingQueue.TryDequeue(out var socket))
+            // Clear out any sockets that have been connecting for too long
+            while (_socketsConnecting.Count > 0)
             {
+                var socketTime = _socketsConnecting.Min; // Earliest connected socket
+                if (Core.TickCount - socketTime.ConnectedAt <= MaximumSocketIdleDelay)
+                {
+                    break;
+                }
+
+                var socketToCheck = socketTime.NetState;
+                if (socketToCheck.Running && !socketToCheck.Seeded)
+                {
+                    socketToCheck.Disconnect(null);
+                }
+
+                _socketsConnecting.Remove(socketTime);
+            }
+
+            var remoteIP = ((IPEndPoint)socket.RemoteEndPoint)!.Address;
+
+            if (NetState.Instances.Count >= MaxConnections)
+            {
+                var ticks = Core.TickCount;
+
+                if (ticks - _nextMaximumSocketsReachedMessage > 0)
+                {
+                    if (socket.RemoteEndPoint is IPEndPoint ipep)
+                    {
+                        var ip = ipep.Address.ToString();
+                        logger.Warning("{Address} Failed (Maximum connections reached)", ip);
+                    }
+
+                    _nextMaximumSocketsReachedMessage = ticks + ListenerErrorMessageDelay;
+                }
+
+                CloseSocket(socket);
+                return;
+            }
+
+            if (ipLimiter && !IPLimiter.Verify(remoteIP))
+            {
+                TraceDisconnect("Past IP limit threshold", remoteIP);
+                logger.Debug("{Address} Past IP limit threshold", remoteIP);
+
+                CloseSocket(socket);
+                return;
+            }
+
+            if (Firewall.IsBlocked(remoteIP))
+            {
+                TraceDisconnect("Firewalled", remoteIP);
+                logger.Debug("{Address} Firewalled", remoteIP);
+
                 try
                 {
-                    // Clear out any sockets that have been connecting for too long
-                    while (_socketsConnecting.Count > 0)
-                    {
-                        var socketTime = _socketsConnecting.Max;
-                        if (Core.TickCount - socketTime.Item1 <= MaximumSocketIdleDelay)
-                        {
-                            break;
-                        }
-
-                        var socketToCheck = socketTime.Item2;
-                        if (socketToCheck.Running && !socketToCheck.Seeded)
-                        {
-                            socketToCheck.Disconnect(null);
-                        }
-
-                        _socketsConnecting.Remove(socketTime);
-                    }
-
-                    var remoteIP = ((IPEndPoint)socket.RemoteEndPoint).Address;
-
-                    if (NetState.Instances.Count >= MaxConnections)
-                    {
-                        var ticks = Core.TickCount;
-
-                        if (ticks - _nextMaximumSocketsReachedMessage > 0)
-                        {
-                            if (socket.RemoteEndPoint is IPEndPoint ipep)
-                            {
-                                var ip = ipep.Address.ToString();
-                                logger.Warning("{Address} Failed (Maximum connections reached)", ip);
-                            }
-
-                            _nextMaximumSocketsReachedMessage = ticks + ListenerErrorMessageDelay;
-                        }
-
-                        socket.Close();
-                        continue;
-                    }
-
-                    if (ipLimiter && !IPLimiter.Verify(remoteIP))
-                    {
-                        TraceDisconnect("Past IP limit threshold", remoteIP);
-                        logger.Debug("{Address} Past IP limit threshold", remoteIP);
-                        socket.Close();
-                        continue;
-                    }
-
-                    if (Firewall.IsBlocked(remoteIP))
-                    {
-                        TraceDisconnect("Firewalled", remoteIP);
-                        logger.Debug("{Address} Firewalled", remoteIP);
-                        socket.Close();
-                    }
-
-                    var ns = new NetState(socket);
-                    _socketsConnecting.Add((Core.TickCount, ns));
-                    ConnectedQueue.Enqueue(ns);
+                    ReadOnlySpan<byte> badComm = [0x82, 0xFF];
+                    socket.Send(badComm, SocketFlags.None);
                 }
                 catch
                 {
                     // ignored
                 }
+
+                CloseSocket(socket);
+                return;
             }
+
+            var ns = new NetState(socket);
+            _socketsConnecting.Add((Core.TickCount, ns));
+            ConnectedQueue.Enqueue(ns);
+        }
+        catch
+        {
+            // ignored
         }
     }
 

@@ -18,11 +18,11 @@ using System.Net;
 
 namespace Server.Network;
 
-public class SingleIpFirewallEntry : IFirewallEntry
+public class SingleIpFirewallEntry : BaseFirewallEntry
 {
-    public UInt128 MinIpAddress { get; }
+    public override UInt128 MinIpAddress { get; }
 
-    public UInt128 MaxIpAddress => MinIpAddress;
+    public override UInt128 MaxIpAddress => MinIpAddress;
 
     public SingleIpFirewallEntry(string ipAddress) => MinIpAddress = IPAddress.Parse(ipAddress).ToUInt128();
 
