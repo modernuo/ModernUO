@@ -220,10 +220,10 @@ public static class Utility
     }
 
     // Converts a UInt128 in IPv6 format to an IPAddress
-    public static IPAddress ToIpAddress(this UInt128 value)
+    public static IPAddress ToIpAddress(this UInt128 value, bool mapToIpv6 = false)
     {
         // IPv4 mapped IPv6 address
-        if (value >= 0xFFFF00000000UL && value <= 0xFFFFFFFFFFFFUL)
+        if (!mapToIpv6 && value >= 0xFFFF00000000UL && value <= 0xFFFFFFFFFFFFUL)
         {
             var newAddress = IPAddress.HostToNetworkOrder((int)value);
             return new IPAddress(unchecked((uint)newAddress));
