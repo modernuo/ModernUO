@@ -7,15 +7,15 @@ namespace Server.Tests;
 public class FirewallEntryTests
 {
     [Theory]
-    [InlineData("192.168.1.1")]
-    [InlineData("::ffff:192.168.1.1")]
-    [InlineData("ae45:c5c7:9372:2d3a:413c:6490:017d:2c18")]
-    public void TestSingleIpFirewallEntry(string ip)
+    [InlineData("192.168.1.1", "192.168.1.1")]
+    [InlineData("::ffff:192.168.1.1", "192.168.1.1")]
+    [InlineData("ae45:c5c7:9372:2d3a:413c:6490:017d:2c18", "ae45:c5c7:9372:2d3a:413c:6490:017d:2c18")]
+    public void TestSingleIpFirewallEntry(string ip, string startAndEndIp)
     {
         var entry = new SingleIpFirewallEntry(ip);
 
         Assert.Equal(entry.MaxIpAddress, entry.MinIpAddress);
-        Assert.Equal(IPAddress.Parse(ip).MapToIPv6(), entry.MinIpAddress.ToIpAddress());
+        Assert.Equal(IPAddress.Parse(startAndEndIp), entry.MinIpAddress.ToIpAddress());
     }
 
     [Theory]
