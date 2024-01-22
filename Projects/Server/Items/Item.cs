@@ -599,18 +599,16 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
             var oldParent = m_Parent;
 
+            if (m_Map != null && oldParent == null && value != null)
+            {
+                m_Map.OnLeave(this);
+            }
+
             m_Parent = value;
 
-            if (m_Map != null)
+            if (m_Map != null && oldParent != null && value == null)
             {
-                if (oldParent != null && m_Parent == null)
-                {
-                    m_Map.OnEnter(this);
-                }
-                else if (m_Parent != null)
-                {
-                    m_Map.OnLeave(this);
-                }
+                m_Map.OnEnter(this);
             }
         }
     }
@@ -1207,9 +1205,13 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             {
                 var old = m_Map;
 
-                if (m_Map != null && m_Parent == null)
+                if (m_Map != null)
                 {
-                    m_Map.OnLeave(this);
+                    if (m_Parent == null)
+                    {
+                        m_Map.OnLeave(this);
+                    }
+
                     SendRemovePacket();
                 }
 

@@ -32,13 +32,9 @@ public abstract partial class BaseMulti : Item
         {
             if (base.ItemID != value)
             {
-                var facet = Parent == null ? Map : null;
-
-                facet?.OnLeave(this);
-
+                Map?.OnLeave(this);
                 base.ItemID = value;
-
-                facet?.OnEnter(this);
+                Map?.OnEnter(this);
             }
         }
     }
@@ -68,21 +64,6 @@ public abstract partial class BaseMulti : Item
     public virtual bool AllowsRelativeDrop => false;
 
     public virtual MultiComponentList Components => MultiData.GetComponents(ItemID);
-
-    [Obsolete("Replace with calls to OnLeave and OnEnter surrounding component invalidation.", true)]
-    public virtual void RefreshComponents()
-    {
-        if (Parent == null)
-        {
-            var facet = Map;
-
-            if (facet != null)
-            {
-                facet.OnLeave(this);
-                facet.OnEnter(this);
-            }
-        }
-    }
 
     public override int GetMaxUpdateRange() => 22;
 
