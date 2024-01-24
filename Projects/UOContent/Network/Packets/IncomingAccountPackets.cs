@@ -348,8 +348,6 @@ public static class IncomingAccountPackets
 
     public static void GameLogin(NetState state, SpanReader reader)
     {
-        // TODO: Connection throttling
-
         if (state.SentFirstPacket)
         {
             state.Disconnect("Duplicate game login packet received.");
@@ -375,6 +373,7 @@ public static class IncomingAccountPackets
 
         _authIDWindow.Remove(authId);
         state.Version = ap.Version;
+        state.Seeded = true;
 
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);
