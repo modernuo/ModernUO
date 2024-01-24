@@ -3330,13 +3330,14 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    private static readonly HashSet<string> _excludedProperties = new()
-    {
+    private static readonly HashSet<string> _excludedProperties =
+    [
+        "SaveBuffer",
         "Parent",
         "Next",
         "Previous",
         "OnLinkList"
-    };
+    ];
 
     public virtual bool DupeExcludedProperty(string propertyName) => _excludedProperties.Contains(propertyName);
 

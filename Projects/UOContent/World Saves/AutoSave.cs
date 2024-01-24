@@ -40,11 +40,6 @@ namespace Server.Saves
             Warning = ServerConfiguration.GetOrUpdateSetting("autosave.warningDelay", TimeSpan.Zero);
         }
 
-        public static void Initialize()
-        {
-            SavesEnabled = true;
-        }
-
         public static void ResetAutoSave(TimeSpan saveDelay, TimeSpan warningDelay)
         {
             if (saveDelay != Delay || warningDelay != Warning)
