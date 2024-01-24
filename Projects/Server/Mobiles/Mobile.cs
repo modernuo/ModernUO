@@ -7272,6 +7272,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         m_Location = newLocation;
+        m_Map?.OnMove(oldLocation, this);
         UpdateRegion();
 
         var box = FindBankNoCreate();
@@ -7282,8 +7283,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         m_NetState?.ValidateAllTrades();
-
-        m_Map?.OnMove(oldLocation, this);
 
         if (isTeleport && m_NetState != null && (!m_NetState.HighSeas || !NoMoveHS))
         {
