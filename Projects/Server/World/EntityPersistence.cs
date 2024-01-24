@@ -246,7 +246,7 @@ public static class EntityPersistence
             }
             else
             {
-                Console.WriteLine($"***** Bad deserialize of {t.GetType()} *****");
+                Console.WriteLine($"***** Bad deserialize of {t.GetType()} ({t.Serial}) *****");
                 Console.WriteLine(error);
 
                 ConsoleKey pressedKey;
