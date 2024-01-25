@@ -20,12 +20,15 @@ namespace Server;
 
 public static class TimeZoneHandler
 {
-    public static TimeZoneInfo SystemTimeZone { get; private set; }
+    public static TimeZoneInfo SystemTimeZone { get; private set; } = TimeZoneInfo.Local;
 
     public static void Configure()
     {
         var tzId = ServerConfiguration.GetSetting("system.localTimeZone", TimeZoneInfo.Local.Id);
-        SystemTimeZone = FindTimeZoneById(tzId);
+        if (tzId != SystemTimeZone.Id)
+        {
+            SystemTimeZone = FindTimeZoneById(tzId);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
