@@ -655,6 +655,17 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
                 m_Amount = value;
 
+                if (m_Amount <= 0)
+                {
+                    logger.Error(
+                        new Exception("Item.Amount <= 0 error"),
+                        "Item {Type} ({Serial}) was changed to amount of {Amount}, but must be at least 1",
+                        GetType(),
+                        Serial,
+                        m_Amount
+                    );
+                }
+
                 var newPileWeight = PileWeight;
 
                 UpdateTotal(this, TotalType.Weight, newPileWeight - oldPileWeight);

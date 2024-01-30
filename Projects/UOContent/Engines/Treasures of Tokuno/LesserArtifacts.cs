@@ -479,7 +479,7 @@ public partial class ChestOfHeirlooms : LockableContainer
 
         for (var i = 0; i < 10; ++i)
         {
-            var item = Loot.ChestOfHeirloomsContains();
+            var item = Loot.RandomChestOfHeirloomsContent();
 
             var attributeCount = Utility.RandomMinMax(1, 5);
             var min = 20;
