@@ -64,22 +64,65 @@ public static class PathUtility
         return EnsureDirectory(Path.Combine(basePath, bytes.ToHexString()));
     }
 
-    public static void CopyDirectory(string sourcePath, string destinationPath, bool recursive = true)
+    public static void CopyDirectoryContents(string sourceDir, string destDir, bool recursive = true)
     {
-        var searchOptions = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-        foreach (var file in Directory.EnumerateFiles(sourcePath, "*", searchOptions))
+        var dir = new DirectoryInfo(sourceDir);
+
+        if (!dir.Exists)
         {
-            var fi = new FileInfo(file);
-            var relativePath = Path.GetRelativePath(sourcePath, fi.DirectoryName!);
-            var destFolder = Path.Combine(destinationPath, relativePath);
-            EnsureDirectory(destFolder);
-            fi.CopyTo(Path.Combine(destFolder, fi.Name));
+            throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+        }
+
+        Directory.CreateDirectory(destDir);
+
+        foreach (FileInfo file in dir.GetFiles())
+        {
+            string targetFilePath = Path.Combine(destDir, file.Name);
+            file.CopyTo(targetFilePath, true);
+        }
+
+        if (recursive)
+        {
+            foreach (DirectoryInfo subdir in dir.GetDirectories())
+            {
+                string destSubDir = Path.Combine(destDir, subdir.Name);
+                CopyDirectoryContents(subdir.FullName, destSubDir);
+            }
         }
     }
 
-    public static void MoveDirectory(string sourcePath, string destinationPath)
+    public static void MoveDirectoryContents(string sourceDir, string destDir, bool recursive = true)
     {
-        CopyDirectory(sourcePath, destinationPath);
-        Directory.Delete(sourcePath, true);
+        var dir = new DirectoryInfo(sourceDir);
+
+        if (!dir.Exists)
+        {
+            throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+        }
+
+        Directory.CreateDirectory(destDir);
+
+        foreach (FileInfo file in dir.GetFiles())
+        {
+            file.MoveTo(Path.Combine(destDir, file.Name));
+        }
+
+        if (recursive)
+        {
+            foreach (DirectoryInfo subdir in dir.GetDirectories())
+            {
+                string destSubDir = Path.Combine(destDir, subdir.Name);
+                MoveDirectoryContents(subdir.FullName, destSubDir);
+            }
+        }
+
+        try
+        {
+            dir.Delete(true);
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }

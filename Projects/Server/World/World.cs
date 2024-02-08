@@ -230,7 +230,7 @@ public static class World
             try
             {
                 EventSink.InvokeWorldSavePostSnapshot(SavePath, tempPath);
-                PathUtility.MoveDirectory(tempPath, SavePath);
+                PathUtility.MoveDirectoryContents(tempPath, SavePath);
                 Directory.SetLastWriteTimeUtc(SavePath, Core.Now);
             }
             catch (Exception ex)
