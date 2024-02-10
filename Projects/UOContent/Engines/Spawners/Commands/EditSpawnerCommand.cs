@@ -23,7 +23,7 @@ namespace Server.Engines.Spawners
 
     public class EditSpawnCommand : BaseCommand
     {
-        public static void Initialize()
+        public static void Configure()
         {
             TargetCommands.Register(new EditSpawnCommand());
         }

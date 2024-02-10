@@ -21,7 +21,7 @@ namespace Server.Engines.Spawners
 {
     public class RespawnCommand : BaseCommand
     {
-        public static void Initialize()
+        public static void Configure()
         {
             TargetCommands.Register(new RespawnCommand());
         }

@@ -3,6 +3,7 @@ using System.Text;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Commands
 {
@@ -12,10 +13,13 @@ namespace Server.Commands
 
         public static List<CommandInfo> SortedHelpInfo { get; private set; } = new();
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("HelpInfo", AccessLevel.Player, HelpInfo_OnCommand);
+        }
 
+        public static void Initialize()
+        {
             FillTable();
         }
 
@@ -136,7 +140,7 @@ namespace Server.Commands
 
                 if (command.Supports != CommandSupport.Single)
                 {
-                    var sb = new StringBuilder(50 + desc.Length);
+                    var sb = new ValueStringBuilder(50 + desc.Length);
 
                     sb.Append("Modifiers: ");
 

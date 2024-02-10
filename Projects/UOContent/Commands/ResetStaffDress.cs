@@ -6,7 +6,7 @@ namespace Server.Commands;
 
 public static class StaffDress
 {
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("ResetStaffDress", AccessLevel.Counselor, StaffDress_OnCommand);
     }

@@ -13,7 +13,7 @@ namespace Server.Commands
 {
     public static class Add
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Tile", AccessLevel.GameMaster, Tile_OnCommand);
             CommandSystem.Register("TileRXYZ", AccessLevel.GameMaster, TileRXYZ_OnCommand);

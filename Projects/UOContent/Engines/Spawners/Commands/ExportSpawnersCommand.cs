@@ -24,7 +24,7 @@ namespace Server.Engines.Spawners;
 
 public class ExportSpawnersCommand : BaseCommand
 {
-    public static void Initialize()
+    public static void Configure()
     {
         TargetCommands.Register(new ExportSpawnersCommand());
     }

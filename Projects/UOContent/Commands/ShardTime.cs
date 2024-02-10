@@ -4,7 +4,7 @@ namespace Server.Commands
 {
     public static class ShardTime
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Time", AccessLevel.Player, Time_OnCommand);
         }

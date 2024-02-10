@@ -18,7 +18,7 @@ namespace Server.Commands
 {
     public static class CommandHandlers
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Prefix = ServerConfiguration.GetOrUpdateSetting("commandsystem.prefix", "[");
 

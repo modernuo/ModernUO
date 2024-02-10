@@ -4,7 +4,7 @@ namespace Server.Commands;
 
 public class ResetRng
 {
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("ResetRng", AccessLevel.Administrator, ResetRng_OnCommand);
     }

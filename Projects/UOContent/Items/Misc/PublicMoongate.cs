@@ -95,7 +95,7 @@ public partial class PublicMoongate : Item
         return true;
     }
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("MoonGen", AccessLevel.Administrator, MoonGen_OnCommand);
     }

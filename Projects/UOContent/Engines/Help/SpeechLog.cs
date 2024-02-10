@@ -29,7 +29,7 @@ namespace Server.Engines.Help
 
         IEnumerator IEnumerable.GetEnumerator() => m_Queue.GetEnumerator();
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("SpeechLog", AccessLevel.Counselor, SpeechLog_OnCommand);
         }

@@ -26,7 +26,7 @@ namespace Server.Commands.Generic
             Description = "Inserts multiple targeted items into a customizable house's design.";
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             TargetCommands.Register(new DesignInsertCommand());
         }

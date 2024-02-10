@@ -16,7 +16,7 @@ namespace Server.Commands
             All = Items | Mobiles | Multis
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Wipe", AccessLevel.GameMaster, WipeAll_OnCommand);
             CommandSystem.Register("WipeItems", AccessLevel.GameMaster, WipeItems_OnCommand);

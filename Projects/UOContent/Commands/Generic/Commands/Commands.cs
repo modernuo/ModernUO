@@ -16,7 +16,7 @@ namespace Server.Commands.Generic
     {
         public static List<BaseCommand> AllCommands { get; } = new();
 
-        public static void Initialize()
+        public static void Configure()
         {
             Register(new KillCommand(true));
             Register(new KillCommand(false));

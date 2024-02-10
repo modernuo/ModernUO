@@ -13,7 +13,7 @@ public static class StaffAccess
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string AccountTag(Serial serial) => $"OriginalStaffAccess:{serial}";
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("StaffAccess", AccessLevel.Player, StaffAccess_OnCommand);
 

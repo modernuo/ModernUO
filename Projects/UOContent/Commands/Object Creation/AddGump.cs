@@ -87,7 +87,7 @@ namespace Server.Gumps
             );
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("AddMenu", AccessLevel.GameMaster, AddMenu_OnCommand);
         }

@@ -4,7 +4,7 @@ namespace Server.Factions
 {
     public static class Generator
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("GenerateFactions", AccessLevel.Administrator, GenerateFactions_OnCommand);
         }

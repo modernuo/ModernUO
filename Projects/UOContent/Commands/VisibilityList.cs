@@ -8,7 +8,7 @@ namespace Server.Commands
 {
     public static class VisibilityList
     {
-        public static void Initialize()
+        public static void Configure()
         {
             EventSink.Login += OnLogin;
 

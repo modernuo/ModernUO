@@ -8,7 +8,7 @@ namespace Server.Commands
     {
         private const string ExportFile = @"C:\Uo\WorldForge\items.wsc";
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("ExportWSC", AccessLevel.Administrator, Export_OnCommand);
         }

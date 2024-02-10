@@ -155,7 +155,7 @@ namespace Server.Gumps
             }
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("ViewHouses", AccessLevel.GameMaster, ViewHouses_OnCommand);
         }

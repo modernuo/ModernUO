@@ -29,7 +29,7 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public bool PlayersCanToggle { get; set; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             TargetCommands.Register(new ToggleCommand());
         }

@@ -7,7 +7,7 @@ namespace Server.Commands
 {
     public static class Dupe
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Dupe", AccessLevel.GameMaster, Dupe_OnCommand);
             CommandSystem.Register("DupeInBag", AccessLevel.GameMaster, DupeInBag_OnCommand);

@@ -100,7 +100,7 @@ namespace Server.Misc
             "origin"
         };
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("ValidateName", AccessLevel.Administrator, ValidateName_OnCommand);
         }

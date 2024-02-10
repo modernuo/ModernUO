@@ -180,7 +180,7 @@ namespace Server.Misc
             return $"Unknown code {code}";
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("LanguageStatistics", AccessLevel.Administrator, LanguageStatistics_OnCommand);
         }

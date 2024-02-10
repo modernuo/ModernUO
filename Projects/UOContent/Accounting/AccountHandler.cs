@@ -56,6 +56,11 @@ public static class AccountHandler
             "accountHandler.enablePlayerPasswordCommand",
             false
         );
+
+        if (PasswordCommandEnabled)
+        {
+            CommandSystem.Register("Password", AccessLevel.Player, Password_OnCommand);
+        }
     }
 
     public static void Initialize()
@@ -63,11 +68,6 @@ public static class AccountHandler
         EventSink.DeleteRequest += EventSink_DeleteRequest;
         EventSink.AccountLogin += EventSink_AccountLogin;
         EventSink.GameLogin += EventSink_GameLogin;
-
-        if (PasswordCommandEnabled)
-        {
-            CommandSystem.Register("Password", AccessLevel.Player, Password_OnCommand);
-        }
     }
 
     [Usage("Password <newPassword> <repeatPassword>")]

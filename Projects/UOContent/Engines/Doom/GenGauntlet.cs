@@ -6,7 +6,7 @@ namespace Server.Engines.Doom
 {
     public static class GenGauntlet
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("GenGauntlet", AccessLevel.Administrator, GenGauntlet_OnCommand);
             CommandSystem.Register("RemGauntlet", AccessLevel.Administrator, RemoveGauntlet);

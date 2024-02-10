@@ -7,7 +7,7 @@ namespace Server.Commands
     {
         private static int m_Count;
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("GenKhaldun", AccessLevel.Administrator, GenKhaldun_OnCommand);
         }

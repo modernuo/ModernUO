@@ -106,7 +106,7 @@ public partial class MarkContainer : LockableContainer
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime NextRelock => _relockTimer.Next;
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("SecretLocGen", AccessLevel.Administrator, SecretLocGen_OnCommand);
     }

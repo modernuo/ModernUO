@@ -5,7 +5,7 @@ namespace Server.Commands
 {
     public static class SkillsCommand
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("SetSkill", AccessLevel.GameMaster, SetSkill_OnCommand);
             CommandSystem.Register("GetSkill", AccessLevel.GameMaster, GetSkill_OnCommand);

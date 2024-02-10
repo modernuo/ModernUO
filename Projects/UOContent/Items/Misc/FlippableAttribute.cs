@@ -5,7 +5,7 @@ namespace Server.Items;
 
 public static class FlipCommandHandlers
 {
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("Flip", AccessLevel.GameMaster, Flip_OnCommand);
     }

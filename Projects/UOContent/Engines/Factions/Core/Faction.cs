@@ -639,19 +639,22 @@ namespace Server.Factions
             return true;
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             EventSink.Login += EventSink_Login;
             EventSink.Logout += EventSink_Logout;
-
-            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(10.0), HandleAtrophy);
-            Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), ProcessTick);
 
             CommandSystem.Register("FactionElection", AccessLevel.GameMaster, FactionElection_OnCommand);
             CommandSystem.Register("FactionCommander", AccessLevel.Administrator, FactionCommander_OnCommand);
             CommandSystem.Register("FactionItemReset", AccessLevel.Administrator, FactionItemReset_OnCommand);
             CommandSystem.Register("FactionReset", AccessLevel.Administrator, FactionReset_OnCommand);
             CommandSystem.Register("FactionTownReset", AccessLevel.Administrator, FactionTownReset_OnCommand);
+        }
+
+        public static void Initialize()
+        {
+            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(10.0), HandleAtrophy);
+            Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), ProcessTick);
         }
 
         public static void FactionTownReset_OnCommand(CommandEventArgs e)

@@ -41,7 +41,7 @@ namespace Server.Gumps
             Initialize(page);
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Who", AccessLevel.Counselor, WhoList_OnCommand);
             CommandSystem.Register("WhoList", AccessLevel.Counselor, WhoList_OnCommand);

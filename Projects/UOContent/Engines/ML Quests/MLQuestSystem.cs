@@ -144,6 +144,16 @@ namespace Server.Engines.MLQuests
         public static void Configure()
         {
             Enabled = ServerConfiguration.GetOrUpdateSetting("questSystem.enableMLQuests", Core.ML);
+
+            CommandSystem.Register("MLQuestsInfo", AccessLevel.Administrator, MLQuestsInfo_OnCommand);
+            CommandSystem.Register("SaveQuest", AccessLevel.Administrator, SaveQuest_OnCommand);
+            CommandSystem.Register("SaveAllQuests", AccessLevel.Administrator, SaveAllQuests_OnCommand);
+            CommandSystem.Register("InvalidQuestItems", AccessLevel.Administrator, InvalidQuestItems_OnCommand);
+
+            TargetCommands.Register(new ViewQuestsCommand());
+            TargetCommands.Register(new ViewContextCommand());
+
+            EventSink.QuestGumpRequest += EventSink_QuestGumpRequest;
         }
 
         public static void Initialize()
@@ -165,16 +175,6 @@ namespace Server.Engines.MLQuests
             }
 
             MLQuestPersistence.EnsureExistence();
-
-            CommandSystem.Register("MLQuestsInfo", AccessLevel.Administrator, MLQuestsInfo_OnCommand);
-            CommandSystem.Register("SaveQuest", AccessLevel.Administrator, SaveQuest_OnCommand);
-            CommandSystem.Register("SaveAllQuests", AccessLevel.Administrator, SaveAllQuests_OnCommand);
-            CommandSystem.Register("InvalidQuestItems", AccessLevel.Administrator, InvalidQuestItems_OnCommand);
-
-            TargetCommands.Register(new ViewQuestsCommand());
-            TargetCommands.Register(new ViewContextCommand());
-
-            EventSink.QuestGumpRequest += EventSink_QuestGumpRequest;
         }
 
         [Usage("MLQuestsInfo"),
