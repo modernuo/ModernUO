@@ -108,7 +108,7 @@ public partial class MarkContainer : LockableContainer
 
     public static void Configure()
     {
-        CommandSystem.Register("SecretLocGen", AccessLevel.Administrator, SecretLocGen_OnCommand);
+        CommandSystem.Register("SecretLocGen", AccessLevel.Developer, SecretLocGen_OnCommand);
     }
 
     [Usage("SecretLocGen")]

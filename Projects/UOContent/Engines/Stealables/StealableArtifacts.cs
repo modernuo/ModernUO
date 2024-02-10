@@ -22,8 +22,8 @@ public class StealableArtifacts : GenericPersistence
     {
         _stealableArtifactsPersistence = new StealableArtifacts();
 
-        CommandSystem.Register("GenStealArties", AccessLevel.Administrator, GenStealArties_OnCommand);
-        CommandSystem.Register("RemoveStealArties", AccessLevel.Administrator, RemoveStealArties_OnCommand);
+        CommandSystem.Register("GenStealArties", AccessLevel.Developer, GenStealArties_OnCommand);
+        CommandSystem.Register("RemoveStealArties", AccessLevel.Developer, RemoveStealArties_OnCommand);
     }
 
     public StealableArtifacts() : base("StealableArtifacts", 10)

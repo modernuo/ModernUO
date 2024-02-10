@@ -30,8 +30,8 @@ namespace Server.Commands
 
         public static void Configure()
         {
-            CommandSystem.Register("TelGen", AccessLevel.Administrator, GenTeleporter_OnCommand);
-            CommandSystem.Register("TelGenDelete", AccessLevel.Administrator, TelGenDelete_OnCommand);
+            CommandSystem.Register("TelGen", AccessLevel.Developer, GenTeleporter_OnCommand);
+            CommandSystem.Register("TelGenDelete", AccessLevel.Developer, TelGenDelete_OnCommand);
         }
 
         [Usage("TelGenDelete")]

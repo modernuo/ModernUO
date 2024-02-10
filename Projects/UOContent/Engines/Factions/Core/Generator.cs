@@ -6,7 +6,7 @@ namespace Server.Factions
     {
         public static void Configure()
         {
-            CommandSystem.Register("GenerateFactions", AccessLevel.Administrator, GenerateFactions_OnCommand);
+            CommandSystem.Register("GenerateFactions", AccessLevel.Developer, GenerateFactions_OnCommand);
         }
 
         public static void GenerateFactions_OnCommand(CommandEventArgs e)

@@ -165,7 +165,7 @@ namespace Server.Items
 
         public static void Configure()
         {
-            CommandSystem.Register("SHTelGen", AccessLevel.Administrator, SHTelGen_OnCommand);
+            CommandSystem.Register("SHTelGen", AccessLevel.Developer, SHTelGen_OnCommand);
         }
 
         [Usage("SHTelGen"), Description("Generates solen hives teleporters.")]

@@ -52,7 +52,7 @@ namespace Server.Commands.Generic
             {
                 if (m_Implementors == null)
                 {
-                    m_Implementors = new List<BaseCommandImplementor>();
+                    m_Implementors = [];
                     RegisterImplementors();
                 }
 

@@ -11,7 +11,7 @@ namespace Server.Commands
     {
         public static void Configure()
         {
-            CommandSystem.Register("SignGen", AccessLevel.Administrator, SignGen_OnCommand);
+            CommandSystem.Register("SignGen", AccessLevel.Developer, SignGen_OnCommand);
         }
 
         [Usage("SignGen")]

@@ -11,7 +11,7 @@ namespace Server.Commands
     {
         public static Dictionary<string, CommandInfo> HelpInfos { get; } = new();
 
-        public static List<CommandInfo> SortedHelpInfo { get; private set; } = new();
+        public static List<CommandInfo> SortedHelpInfo { get; private set; } = [];
 
         public static void Configure()
         {
@@ -92,25 +92,7 @@ namespace Server.Commands
                     .ReplaceOrdinal("<", "(")
                     .ReplaceOrdinal(">", ")");
 
-                if (aliases == null)
-                {
-                    list.Add(new CommandInfo(e.AccessLevel, e.Command, null, usage.Usage, descString));
-                }
-                else
-                {
-                    list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString));
-
-                    for (var j = 0; j < aliases.Aliases.Length; j++)
-                    {
-                        var newAliases = new string[aliases.Aliases.Length];
-
-                        aliases.Aliases.CopyTo(newAliases, 0);
-
-                        newAliases[j] = e.Command;
-
-                        list.Add(new CommandInfo(e.AccessLevel, aliases.Aliases[j], newAliases, usage.Usage, descString));
-                    }
-                }
+                list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases?.Aliases, usage.Usage, null, descString));
             }
 
             for (var i = 0; i < TargetCommands.AllCommands.Count; ++i)
@@ -138,66 +120,62 @@ namespace Server.Commands
                     .ReplaceOrdinal("<", "(")
                     .ReplaceOrdinal(">", ")");
 
-                if (command.Supports != CommandSupport.Single)
+                List<string> modsList = [];
+
+                if ((command.Supports & CommandSupport.Global) != 0)
                 {
-                    var sb = new ValueStringBuilder(50 + desc.Length);
-
-                    sb.Append("Modifiers: ");
-
-                    if ((command.Supports & CommandSupport.Global) != 0)
-                    {
-                        sb.Append("<i>Global</i>, ");
-                    }
-
-                    if ((command.Supports & CommandSupport.Online) != 0)
-                    {
-                        sb.Append("<i>Online</i>, ");
-                    }
-
-                    if ((command.Supports & CommandSupport.Region) != 0)
-                    {
-                        sb.Append("<i>Region</i>, ");
-                    }
-
-                    if ((command.Supports & CommandSupport.Contained) != 0)
-                    {
-                        sb.Append("<i>Contained</i>, ");
-                    }
-
-                    if ((command.Supports & CommandSupport.Multi) != 0)
-                    {
-                        sb.Append("<i>Multi</i>, ");
-                    }
-
-                    if ((command.Supports & CommandSupport.Area) != 0)
-                    {
-                        sb.Append("<i>Area</i>, ");
-                    }
-
-                    if ((command.Supports & CommandSupport.Self) != 0)
-                    {
-                        sb.Append("<i>Self</i>, ");
-                    }
-
-                    sb.Remove(sb.Length - 2, 2);
-                    sb.Append("<br>");
-                    sb.Append(desc);
-
-                    desc = sb.ToString();
+                    modsList.Add("Global");
                 }
 
-                list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, desc));
-
-                for (var j = 0; j < aliases.Length; j++)
+                if ((command.Supports & CommandSupport.Online) != 0)
                 {
-                    var newAliases = new string[aliases.Length];
-
-                    aliases.CopyTo(newAliases, 0);
-
-                    newAliases[j] = cmd;
-
-                    list.Add(new CommandInfo(command.AccessLevel, aliases[j], newAliases, usage, desc));
+                    modsList.Add("Online");
                 }
+
+                if ((command.Supports & CommandSupport.IPAddress) != 0)
+                {
+                    modsList.Add("IPAddress");
+                }
+
+                if ((command.Supports & CommandSupport.Region) != 0)
+                {
+                    modsList.Add("Region");
+                }
+
+                if ((command.Supports & CommandSupport.Area) != 0)
+                {
+                    modsList.Add("Area");
+                }
+
+                if ((command.Supports & CommandSupport.Contained) != 0)
+                {
+                    modsList.Add("Contained");
+                }
+
+                if ((command.Supports & CommandSupport.Multi) != 0)
+                {
+                    modsList.Add("Multi");
+                }
+
+                if ((command.Supports & CommandSupport.Self) != 0)
+                {
+                    modsList.Add("Self");
+                }
+
+                var modifiers = modsList.ToArray();
+
+                list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, modifiers, desc));
+
+                // for (var j = 0; j < aliases.Length; j++)
+                // {
+                //     var newAliases = new string[aliases.Length];
+                //
+                //     aliases.CopyTo(newAliases, 0);
+                //
+                //     newAliases[j] = cmd;
+                //
+                //     list.Add(new CommandInfo(command.AccessLevel, aliases[j], newAliases, usage, modifiers, desc));
+                // }
             }
 
             var commandImpls = BaseCommandImplementor.Implementors;
@@ -227,18 +205,18 @@ namespace Server.Commands
                     .ReplaceOrdinal("<", ")")
                     .ReplaceOrdinal(">", ")");
 
-                list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, desc));
+                list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, null, desc));
 
-                for (var j = 0; j < aliases.Length; j++)
-                {
-                    var newAliases = new string[aliases.Length];
-
-                    aliases.CopyTo(newAliases, 0);
-
-                    newAliases[j] = cmd;
-
-                    list.Add(new CommandInfo(command.AccessLevel, aliases[j], newAliases, usage, desc));
-                }
+                // for (var j = 0; j < aliases.Length; j++)
+                // {
+                //     var newAliases = new string[aliases.Length];
+                //
+                //     aliases.CopyTo(newAliases, 0);
+                //
+                //     newAliases[j] = cmd;
+                //
+                //     list.Add(new CommandInfo(command.AccessLevel, aliases[j], newAliases, usage, desc));
+                // }
             }
 
             list.Sort(new CommandInfoSorter());
@@ -254,35 +232,34 @@ namespace Server.Commands
         public class CommandListGump : BaseGridGump
         {
             private const int EntriesPerPage = 15;
-            private readonly List<CommandInfo> m_List;
+            private readonly List<CommandInfo> _list;
 
-            private readonly int m_Page;
+            private readonly int _page;
 
-            public CommandListGump(int page, Mobile from, List<CommandInfo> list)
-                : base(30, 30)
+            public CommandListGump(int page, Mobile from, List<CommandInfo> list) : base(30, 30)
             {
-                m_Page = page;
+                _page = page;
 
                 if (list == null)
                 {
-                    m_List = new List<CommandInfo>();
+                    _list = [];
 
                     foreach (var c in SortedHelpInfo)
                     {
                         if (from.AccessLevel >= c.AccessLevel)
                         {
-                            m_List.Add(c);
+                            _list.Add(c);
                         }
                     }
                 }
                 else
                 {
-                    m_List = list;
+                    _list = list;
                 }
 
                 AddNewPage();
 
-                if (m_Page > 0)
+                if (_page > 0)
                 {
                     AddEntryButton(20, ArrowLeftID1, ArrowLeftID2, 1, ArrowLeftWidth, ArrowLeftHeight);
                 }
@@ -292,13 +269,13 @@ namespace Server.Commands
                 }
 
                 AddEntryHtml(
-                    160,
+                    320,
                     Center(
-                        $"Page {m_Page + 1} of {(m_List.Count + EntriesPerPage - 1) / EntriesPerPage}"
+                        $"Page {_page + 1} of {(_list.Count + EntriesPerPage - 1) / EntriesPerPage}"
                     )
                 );
 
-                if ((m_Page + 1) * EntriesPerPage < m_List.Count)
+                if ((_page + 1) * EntriesPerPage < _list.Count)
                 {
                     AddEntryButton(20, ArrowRightID1, ArrowRightID2, 2, ArrowRightWidth, ArrowRightHeight);
                 }
@@ -309,15 +286,15 @@ namespace Server.Commands
 
                 var last = (int)AccessLevel.Player - 1;
 
-                for (int i = m_Page * EntriesPerPage, line = 0; line < EntriesPerPage && i < m_List.Count; ++i, ++line)
+                for (int i = _page * EntriesPerPage, line = 0; line < EntriesPerPage && i < _list.Count; ++i, ++line)
                 {
-                    var c = m_List[i];
+                    var c = _list[i];
                     if (from.AccessLevel >= c.AccessLevel)
                     {
                         if ((int)c.AccessLevel != last)
                         {
                             AddNewLine();
-                            AddEntryHtml(20 + OffsetSize + 160, Color(c.AccessLevel.ToString(), 0xFF0000));
+                            AddEntryHtml(20 + OffsetSize + 320, Color(c.AccessLevel.ToString(), 0xFF0000));
                             AddEntryHeader(20);
                             line++;
                         }
@@ -325,7 +302,30 @@ namespace Server.Commands
                         last = (int)c.AccessLevel;
 
                         AddNewLine();
-                        AddEntryHtml(20 + OffsetSize + 160, c.Name);
+                        string name;
+                        if (c.Aliases?.Length > 0)
+                        {
+                            using var sb = ValueStringBuilder.Create();
+                            sb.Append($"{c.Name} <i>(");
+                            for (var j = 0; j < c.Aliases.Length; ++j)
+                            {
+                                if (j != 0)
+                                {
+                                    sb.Append(", ");
+                                }
+
+                                sb.Append(c.Aliases[j]);
+                            }
+
+                            sb.Append(")</i>");
+                            name = sb.ToString();
+                        }
+                        else
+                        {
+                            name = c.Name;
+                        }
+
+                        AddEntryHtml(20 + OffsetSize + 320, name);
                         AddEntryButton(20, ArrowRightID1, ArrowRightID2, 3 + i, ArrowRightWidth, ArrowRightHeight);
                     }
                 }
@@ -345,18 +345,18 @@ namespace Server.Commands
                         }
                     case 1:
                         {
-                            if (m_Page > 0)
+                            if (_page > 0)
                             {
-                                m.SendGump(new CommandListGump(m_Page - 1, m, m_List));
+                                m.SendGump(new CommandListGump(_page - 1, m, _list));
                             }
 
                             break;
                         }
                     case 2:
                         {
-                            if ((m_Page + 1) * EntriesPerPage < SortedHelpInfo.Count)
+                            if ((_page + 1) * EntriesPerPage < SortedHelpInfo.Count)
                             {
-                                m.SendGump(new CommandListGump(m_Page + 1, m, m_List));
+                                m.SendGump(new CommandListGump(_page + 1, m, _list));
                             }
 
                             break;
@@ -365,19 +365,19 @@ namespace Server.Commands
                         {
                             var v = info.ButtonID - 3;
 
-                            if (v >= 0 && v < m_List.Count)
+                            if (v >= 0 && v < _list.Count)
                             {
-                                var c = m_List[v];
+                                var c = _list[v];
 
                                 if (m.AccessLevel >= c.AccessLevel)
                                 {
                                     m.SendGump(new CommandInfoGump(c));
-                                    m.SendGump(new CommandListGump(m_Page, m, m_List));
+                                    m.SendGump(new CommandListGump(_page, m, _list));
                                 }
                                 else
                                 {
                                     m.SendMessage("You no longer have access to that command.");
-                                    m.SendGump(new CommandListGump(m_Page, m, null));
+                                    m.SendGump(new CommandListGump(_page, m, null));
                                 }
                             }
 

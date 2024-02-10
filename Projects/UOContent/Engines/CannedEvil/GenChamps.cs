@@ -25,7 +25,7 @@ namespace Server.Engines.CannedEvil
 
         public static void Configure()
         {
-            CommandSystem.Register("GenChamps", AccessLevel.Owner, ChampGen_OnCommand);
+            CommandSystem.Register("GenChamps", AccessLevel.Developer, ChampGen_OnCommand);
         }
 
         private static readonly ChampionEntry[] LLLocations = {

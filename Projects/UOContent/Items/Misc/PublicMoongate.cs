@@ -97,7 +97,7 @@ public partial class PublicMoongate : Item
 
     public static void Configure()
     {
-        CommandSystem.Register("MoonGen", AccessLevel.Administrator, MoonGen_OnCommand);
+        CommandSystem.Register("MoonGen", AccessLevel.Developer, MoonGen_OnCommand);
     }
 
     [Usage("MoonGen"), Description("Generates public moongates. Removes all old moongates.")]

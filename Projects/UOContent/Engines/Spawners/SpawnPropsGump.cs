@@ -19,7 +19,6 @@ using Server.Engines.Spawners;
 using Server.Mobiles;
 using Server.Network;
 using Server.Text;
-using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Gumps
 {

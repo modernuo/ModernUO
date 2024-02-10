@@ -8,8 +8,8 @@ namespace Server.Engines.Doom
     {
         public static void Configure()
         {
-            CommandSystem.Register("GenGauntlet", AccessLevel.Administrator, GenGauntlet_OnCommand);
-            CommandSystem.Register("RemGauntlet", AccessLevel.Administrator, RemoveGauntlet);
+            CommandSystem.Register("GenGauntlet", AccessLevel.Developer, GenGauntlet_OnCommand);
+            CommandSystem.Register("RemGauntlet", AccessLevel.Developer, RemoveGauntlet);
         }
 
         public static void RemoveGauntlet(CommandEventArgs e)
