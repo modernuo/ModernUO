@@ -192,7 +192,7 @@ public partial class PowerScroll : SpecialScroll
              * a mythical scroll of ~1_type~ (115 Skill) OR
              * a legendary scroll of ~1_type~ (120 Skill)
              */
-            list.Add(1049639 + (int)level, AosSkillBonuses.GetLabel(Skill));
+            list.AddLocalized(1049639 + (int)level, AosSkillBonuses.GetLabel(Skill));
         }
         else
         {
