@@ -429,8 +429,8 @@
     tabData.forEach(item => {
       table += `
         <tr class="border-b border-gold-500">
-            <td class="px-4 py-4 text-sm font-medium text-gold-500 w-1/4"><p>${item.name}</p></td>
-            <td class="text-sm text-gold-900 px-6 py-4">
+            <td class="xs:px-2 py-4 text-sm font-medium text-gold-500 w-1/3 m-w-1/2"><p class="break-all">${item.name}</p></td>
+            <td class="text-sm text-gold-900 pl-4 py-4">
         `;
 
       const usageParts = (item.usage || item.name).split(" ");
