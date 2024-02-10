@@ -429,7 +429,7 @@
     tabData.forEach(item => {
       table += `
         <tr class="border-b">
-            <td class="px-4 py-4 text-sm font-medium text-gold-500 w-1/4 "><p>${item.name}</p></td>
+            <td class="px-4 py-4 text-sm font-medium text-gold-500 w-1/4"><p>${item.name}</p></td>
             <td class="text-sm text-gold-900 px-6 py-4">
         `;
 
@@ -508,21 +508,53 @@
 
   // Function to show the tooltip
   function showTooltip(event, content) {
-    const tooltip = document.getElementById("tooltip");
+    const tooltip = document.getElementById('tooltip');
     tooltip.innerHTML = content;
-    tooltip.style.left = `${event.pageX + 15}px`;
-    tooltip.style.top = `${event.pageY + 15}px`;
-    tooltip.classList.remove("hidden");
+
+    // Make it visible to the DOM so we can get size calculations
+    tooltip.style.visibility = 'hidden';
+    tooltip.classList.remove('hidden');
+
+    const srcRect = event.srcElement.getBoundingClientRect();
+
+    // Calculate the size of the tooltip for positioning
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const offset = 20; // Offset from the cursor for the tooltip
+
+    const startX = window.scrollX + srcRect.x;
+    const startY = window.scrollY + srcRect.y;
+
+    // Initial horizontal position (with viewport width check for side overflow)
+    let leftPosition = startX + offset;
+    if (leftPosition + tooltipRect.width > document.documentElement.clientWidth) {
+      leftPosition = document.documentElement.clientWidth - tooltipRect.width - offset;
+    }
+
+    // Determine vertical position based on available space
+    let topPosition;
+    const spaceAbove = startY - window.scrollY;
+    const spaceBelow = window.innerHeight - spaceAbove;
+
+    // Check if there's enough space below the cursor; otherwise, flip above
+    if (spaceBelow > tooltipRect.height + offset) {
+      topPosition = startY + offset;
+    } else if (spaceAbove > tooltipRect.height + offset) {
+      topPosition = startY - tooltipRect.height - offset;
+    } else {
+      // If neither above nor below has enough space, default to below and adjust to within viewport
+      topPosition = Math.max(window.scrollY + offset, startY - (tooltipRect.height / 2));
+    }
+
+    // Apply the calculated positions
+    tooltip.style.left = `${leftPosition}px`;
+    tooltip.style.top = `${topPosition}px`;
+    tooltip.style.visibility = 'visible';
   }
 
   // Function to hide the tooltip
   function hideTooltip() {
     const tooltip = document.getElementById("tooltip");
     tooltip.classList.add("hidden");
-  }
-
-  const escapeHtml = (unsafe) => {
-    return unsafe.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("'", "&#039;");
   }
 
   initTabs();
