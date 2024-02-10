@@ -8,8 +8,6 @@ using Server.Items;
 using Server.Json;
 using Server.Mobiles;
 using Server.Utilities;
-using CPA = Server.CommandPropertyAttribute;
-
 using static Server.Attributes;
 
 namespace Server.Engines.Spawners;

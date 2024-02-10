@@ -29,7 +29,7 @@ namespace Server.Engines.Spawners
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(ConvertPremiumSpawners));
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("ConvertPremiumSpawners", AccessLevel.Developer, ConvertPremiumSpawners_OnCommand);
         }

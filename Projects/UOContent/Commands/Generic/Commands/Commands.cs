@@ -16,7 +16,7 @@ namespace Server.Commands.Generic
     {
         public static List<BaseCommand> AllCommands { get; } = new();
 
-        public static void Initialize()
+        public static void Configure()
         {
             Register(new KillCommand(true));
             Register(new KillCommand(false));
@@ -408,13 +408,13 @@ namespace Server.Commands.Generic
             if (inGump)
             {
                 Commands = new[] { "Message", "Msg" };
-                Usage = "Message \"text\"";
+                Usage = "Message <text>";
                 Description = "Sends a message to a targeted player.";
             }
             else
             {
                 Commands = new[] { "Tell" };
-                Usage = "Tell \"text\"";
+                Usage = "Tell <text>";
                 Description = "Sends a system message to a targeted player.";
             }
         }

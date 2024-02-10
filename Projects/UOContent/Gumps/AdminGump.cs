@@ -1421,7 +1421,7 @@ namespace Server.Gumps
             };
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Admin", AccessLevel.Administrator, Admin_OnCommand);
         }

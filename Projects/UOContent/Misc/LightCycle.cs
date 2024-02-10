@@ -30,12 +30,15 @@ namespace Server
             }
         }
 
+        public static void Configure()
+        {
+            EventSink.Login += OnLogin;
+            CommandSystem.Register("GlobalLight", AccessLevel.GameMaster, Light_OnCommand);
+        }
+
         public static void Initialize()
         {
             new LightCycleTimer().Start();
-            EventSink.Login += OnLogin;
-
-            CommandSystem.Register("GlobalLight", AccessLevel.GameMaster, Light_OnCommand);
         }
 
         [Usage("GlobalLight <value>"), Description("Sets the current global light level.")]

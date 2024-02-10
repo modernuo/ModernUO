@@ -5,12 +5,7 @@ namespace Server.Commands
 {
     public static class SkillsMenu
     {
-        public static void Initialize()
-        {
-            Register();
-        }
-
-        public static void Register()
+        public static void Configure()
         {
             CommandSystem.Register("Skills", AccessLevel.Counselor, Skills_OnCommand);
         }

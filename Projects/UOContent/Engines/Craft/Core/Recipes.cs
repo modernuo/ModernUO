@@ -35,7 +35,7 @@ public class Recipe
 
     public TextDefinition TextDefinition => _td ??= TextDefinition.Of(CraftItem.NameNumber, CraftItem.NameString);
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("LearnAllRecipes", AccessLevel.GameMaster, LearnAllRecipes_OnCommand);
         CommandSystem.Register("ForgetAllRecipes", AccessLevel.GameMaster, ForgetAllRecipes_OnCommand);

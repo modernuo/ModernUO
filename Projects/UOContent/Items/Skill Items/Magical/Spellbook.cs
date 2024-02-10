@@ -213,7 +213,7 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         return quality;
     }
 
-    public static void Initialize()
+    public static void Configure()
     {
         EventSink.OpenSpellbookRequest += EventSink_OpenSpellbookRequest;
         EventSink.CastSpellRequest += EventSink_CastSpellRequest;

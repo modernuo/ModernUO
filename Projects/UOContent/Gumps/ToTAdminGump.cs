@@ -115,7 +115,7 @@ namespace Server.Gumps
             }
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("ToTAdmin", AccessLevel.Administrator, ToTAdmin_OnCommand);
         }

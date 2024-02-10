@@ -5,8 +5,6 @@ using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Targeting;
 using Server.Text;
-using CPA = Server.CommandPropertyAttribute;
-
 using static Server.Attributes;
 using static Server.Types;
 
@@ -23,7 +21,7 @@ namespace Server.Commands
     public static class Properties
     {
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Props", AccessLevel.Counselor, Props_OnCommand);
         }

@@ -4,7 +4,7 @@ namespace Server.Commands
 {
     public static class SaveCommands
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Save", AccessLevel.Administrator, Save_OnCommand);
             CommandSystem.Register("SetSaves", AccessLevel.Administrator, SetAutoSaves_OnCommand);

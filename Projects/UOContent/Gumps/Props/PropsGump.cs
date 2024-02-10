@@ -4,8 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Server.Commands.Generic;
 using Server.Network;
-using CPA = Server.CommandPropertyAttribute;
-
 using static Server.Types;
 using static Server.Attributes;
 using static Server.Gumps.PropsConfig;

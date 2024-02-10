@@ -8,7 +8,7 @@ namespace Server.Commands
 {
     public static class Profiling
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("DumpTimers", AccessLevel.Administrator, DumpTimers_OnCommand);
             CommandSystem.Register("CountObjects", AccessLevel.Administrator, CountObjects_OnCommand);

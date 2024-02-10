@@ -9,9 +9,9 @@ namespace Server.Commands
 {
     public static class SignParser
     {
-        public static void Initialize()
+        public static void Configure()
         {
-            CommandSystem.Register("SignGen", AccessLevel.Administrator, SignGen_OnCommand);
+            CommandSystem.Register("SignGen", AccessLevel.Developer, SignGen_OnCommand);
         }
 
         [Usage("SignGen")]

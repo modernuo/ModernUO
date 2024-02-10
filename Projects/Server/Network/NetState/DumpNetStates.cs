@@ -19,7 +19,7 @@ namespace Server.Network;
 
 public static class DumpNetStates
 {
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("DumpNetStates", AccessLevel.Administrator, DumpNetStatesCommand);
     }

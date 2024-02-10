@@ -57,7 +57,7 @@ namespace Server.Gumps
             }
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Comments", AccessLevel.Counselor, Comments_OnCommand);
         }

@@ -301,7 +301,7 @@ public partial class BaseTalisman : Item, IAosItem
     [SerializableFieldSaveFlag(10)]
     public bool ShouldSerializeCharges() => _charges != 0;
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("RandomTalisman", AccessLevel.GameMaster, RandomTalisman_OnCommand);
     }

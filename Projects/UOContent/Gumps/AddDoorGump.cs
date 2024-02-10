@@ -97,7 +97,7 @@ namespace Server.Gumps
             }
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("AddDoor", AccessLevel.GameMaster, AddDoor_OnCommand);
         }

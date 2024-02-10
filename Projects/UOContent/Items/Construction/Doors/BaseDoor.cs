@@ -123,7 +123,7 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         Use(from);
     }
 
-    public static void Initialize()
+    public static void Configure()
     {
         EventSink.OpenDoorMacroUsed += EventSink_OpenDoorMacroUsed;
 

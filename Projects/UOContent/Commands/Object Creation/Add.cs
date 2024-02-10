@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Server.Items;
-using CPA = Server.CommandPropertyAttribute;
-
 using static Server.Attributes;
 using static Server.Types;
 
@@ -13,7 +11,7 @@ namespace Server.Commands
 {
     public static class Add
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Tile", AccessLevel.GameMaster, Tile_OnCommand);
             CommandSystem.Register("TileRXYZ", AccessLevel.GameMaster, TileRXYZ_OnCommand);

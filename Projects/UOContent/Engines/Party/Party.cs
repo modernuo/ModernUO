@@ -96,7 +96,7 @@ namespace Server.Engines.PartySystem
             }
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             EventSink.Logout += EventSink_Logout;
             EventSink.Login += EventSink_Login;

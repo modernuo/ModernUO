@@ -13,7 +13,7 @@ public static class StaffAccess
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string AccountTag(Serial serial) => $"OriginalStaffAccess:{serial}";
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("StaffAccess", AccessLevel.Player, StaffAccess_OnCommand);
 
@@ -47,7 +47,7 @@ public static class StaffAccess
     }
 
     [Usage("StaffAccess <access level>")]
-    [Description("Overrides your access level.")]
+    [Description("Changes your access level. Only access levels at or below your current access level can be set. Use the same access level to reset.")]
     public static void StaffAccess_OnCommand(CommandEventArgs e)
     {
         var m = e.Mobile;

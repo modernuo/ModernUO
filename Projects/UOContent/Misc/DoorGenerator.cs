@@ -332,9 +332,9 @@ namespace Server
         private static Map m_Map;
         private static int m_Count;
 
-        public static void Initialize()
+        public static void Configure()
         {
-            CommandSystem.Register("DoorGen", AccessLevel.Administrator, DoorGen_OnCommand);
+            CommandSystem.Register("DoorGen", AccessLevel.Developer, DoorGen_OnCommand);
         }
 
         [Usage("DoorGen"), Description("Generates doors by analyzing the map. Slow.")]

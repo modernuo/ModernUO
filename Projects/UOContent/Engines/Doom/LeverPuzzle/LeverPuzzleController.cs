@@ -190,7 +190,7 @@ public partial class LeverPuzzleController : Item
         }
     }
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("GenLeverPuzzle", AccessLevel.Administrator, GenLampPuzzle_OnCommand);
     }

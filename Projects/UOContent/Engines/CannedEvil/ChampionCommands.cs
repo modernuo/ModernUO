@@ -19,7 +19,7 @@ namespace Server.Engines.CannedEvil
 {
     public static class ChampionCommands
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("ClearChampByTarget", AccessLevel.Administrator, KillByTarget_OnCommand);
             CommandSystem.Register("ClearChampByRegion", AccessLevel.Administrator, KillByRegion_OnCommand);

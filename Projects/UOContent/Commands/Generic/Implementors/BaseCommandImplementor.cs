@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Server.Text;
 
 namespace Server.Commands.Generic
@@ -28,7 +29,7 @@ namespace Server.Commands.Generic
 
     public abstract class BaseCommandImplementor
     {
-        private static List<BaseCommandImplementor> m_Implementors;
+        private static List<BaseCommandImplementor> _implementors;
 
         public BaseCommandImplementor() => Commands = new Dictionary<string, BaseCommand>(StringComparer.OrdinalIgnoreCase);
 
@@ -44,19 +45,20 @@ namespace Server.Commands.Generic
 
         public CommandSupport SupportRequirement { get; set; }
 
+        [JsonIgnore]
         public Dictionary<string, BaseCommand> Commands { get; }
 
         public static List<BaseCommandImplementor> Implementors
         {
             get
             {
-                if (m_Implementors == null)
+                if (_implementors == null)
                 {
-                    m_Implementors = new List<BaseCommandImplementor>();
+                    _implementors = [];
                     RegisterImplementors();
                 }
 
-                return m_Implementors;
+                return _implementors;
             }
         }
 
@@ -91,7 +93,7 @@ namespace Server.Commands.Generic
             }
         }
 
-        public bool CheckObjectTypes(Mobile from, BaseCommand command, Extensions ext, out bool items, out bool mobiles)
+        public static bool CheckObjectTypes(Mobile from, BaseCommand command, Extensions ext, out bool items, out bool mobiles)
         {
             items = mobiles = false;
 
@@ -314,7 +316,7 @@ namespace Server.Commands.Generic
 
         public static void Register(BaseCommandImplementor impl)
         {
-            m_Implementors.Add(impl);
+            _implementors.Add(impl);
             impl.Register();
         }
     }

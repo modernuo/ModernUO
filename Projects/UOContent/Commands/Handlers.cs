@@ -18,7 +18,7 @@ namespace Server.Commands
 {
     public static class CommandHandlers
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Prefix = ServerConfiguration.GetOrUpdateSetting("commandsystem.prefix", "[");
 
@@ -28,7 +28,7 @@ namespace Server.Commands
 
             Register("GetFollowers", AccessLevel.GameMaster, GetFollowers_OnCommand);
 
-            Register("ClearFacet", AccessLevel.Administrator, ClearFacet_OnCommand);
+            Register("ClearFacet", AccessLevel.Developer, ClearFacet_OnCommand);
 
             Register("Where", AccessLevel.Counselor, Where_OnCommand);
 

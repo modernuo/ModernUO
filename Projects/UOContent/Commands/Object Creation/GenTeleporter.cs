@@ -28,10 +28,10 @@ namespace Server.Commands
         private const int SuccessHue = 72, WarningHue = 53, ErrorHue = 33;
         private static readonly string TeleporterJsonDataPath = Path.Combine(Core.BaseDirectory, "Data/teleporters.json");
 
-        public static void Initialize()
+        public static void Configure()
         {
-            CommandSystem.Register("TelGen", AccessLevel.Administrator, GenTeleporter_OnCommand);
-            CommandSystem.Register("TelGenDelete", AccessLevel.Administrator, TelGenDelete_OnCommand);
+            CommandSystem.Register("TelGen", AccessLevel.Developer, GenTeleporter_OnCommand);
+            CommandSystem.Register("TelGenDelete", AccessLevel.Developer, TelGenDelete_OnCommand);
         }
 
         [Usage("TelGenDelete")]

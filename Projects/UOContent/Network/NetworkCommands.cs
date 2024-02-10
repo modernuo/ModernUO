@@ -6,7 +6,7 @@ namespace Server.Network
 {
     public class PacketLoggingCommand : BaseCommand
     {
-        public static void Initialize()
+        public static void Configure()
         {
             TargetCommands.Register(new PacketLoggingCommand());
         }

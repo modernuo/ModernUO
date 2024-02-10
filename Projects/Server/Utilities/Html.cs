@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Server.Utilities;
 
@@ -45,4 +46,14 @@ public static class Html
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Center(this string text, string color, int size) => $"<BASEFONT COLOR={color} SIZE={size}><CENTER>{text}</CENTER></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string EscapeHtml(this string input) =>
+        new StringBuilder(input.Length).Append(input)
+            .Replace("<", "&lt;")
+            .Replace(">", "&gt;")
+            .Replace("&", "&amp;")
+            .Replace("\"", "&quot;")
+            .Replace("'", "&#39;")
+            .ToString();
 }

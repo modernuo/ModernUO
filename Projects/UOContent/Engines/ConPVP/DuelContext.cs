@@ -1231,7 +1231,7 @@ namespace Server.Engines.ConPVP
             Timer.StartTimer(TimeSpan.FromSeconds(10.0), Unregister);
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             EventSink.Speech += EventSink_Speech;
             EventSink.Login += EventSink_Login;

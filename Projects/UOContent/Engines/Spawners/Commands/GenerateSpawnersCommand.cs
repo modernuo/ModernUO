@@ -32,7 +32,7 @@ namespace Server.Engines.Spawners
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(GenerateSpawnersCommand));
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("GenerateSpawners", AccessLevel.Developer, GenerateSpawners_OnCommand);
         }

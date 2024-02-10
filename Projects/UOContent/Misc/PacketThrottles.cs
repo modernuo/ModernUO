@@ -12,13 +12,15 @@ namespace Server.Network
         private static readonly int[] Delays = new int[0x100];
         private const string ThrottlesConfiguration = "Configuration/throttles.json";
 
-        public static unsafe void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("GetThrottle", AccessLevel.Administrator, GetThrottle);
             CommandSystem.Register("SetThrottle", AccessLevel.Administrator, SetThrottle);
+        }
 
-            var configPath = ThrottlesConfiguration;
-            var path = Path.Join(Core.BaseDirectory, configPath);
+        public static unsafe void Initialize()
+        {
+            var path = Path.Join(Core.BaseDirectory, ThrottlesConfiguration);
 
             if (File.Exists(path))
             {
@@ -28,7 +30,7 @@ namespace Server.Network
                     if (!Utility.ToInt32(k, out var packetId))
                     {
                         Utility.PushColor(ConsoleColor.DarkYellow);
-                        Console.WriteLine("Packet Throttles: Error deserializing {0} from {1}", k, configPath);
+                        Console.WriteLine("Packet Throttles: Error deserializing {0} from {1}", k, ThrottlesConfiguration);
                         Utility.PopColor();
                         continue;
                     }
@@ -38,8 +40,8 @@ namespace Server.Network
             }
             else
             {
-                Delays[0x03] = 25; // Speech
-                Delays[0xAD] = 25; // Speech
+                Delays[0x03] = 25;  // Speech
+                Delays[0xAD] = 25;  // Speech
                 Delays[0x75] = 500; // Rename request
             }
 

@@ -2,7 +2,7 @@ namespace Server.Commands
 {
     public static class DragEffects
     {
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("DragEffects", AccessLevel.Developer, DragEffects_OnCommand);
         }

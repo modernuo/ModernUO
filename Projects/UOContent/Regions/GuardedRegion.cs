@@ -49,7 +49,7 @@ public class GuardedRegion : BaseRegion
 
     public virtual bool IsDisabled() => GuardsDisabled;
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("CheckGuarded", AccessLevel.GameMaster, CheckGuarded_OnCommand);
         CommandSystem.Register("SetGuarded", AccessLevel.Administrator, SetGuarded_OnCommand);

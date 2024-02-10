@@ -54,10 +54,6 @@ namespace Server.Misc
         public static void Configure()
         {
             Enabled = ServerConfiguration.GetOrUpdateSetting("world.enableAutoRestart", false);
-        }
-
-        public static void Initialize()
-        {
             CommandSystem.Register("Restart", AccessLevel.Administrator, Restart_OnCommand);
         }
 

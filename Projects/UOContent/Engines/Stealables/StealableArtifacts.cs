@@ -21,6 +21,9 @@ public class StealableArtifacts : GenericPersistence
     public static void Configure()
     {
         _stealableArtifactsPersistence = new StealableArtifacts();
+
+        CommandSystem.Register("GenStealArties", AccessLevel.Developer, GenStealArties_OnCommand);
+        CommandSystem.Register("RemoveStealArties", AccessLevel.Developer, RemoveStealArties_OnCommand);
     }
 
     public StealableArtifacts() : base("StealableArtifacts", 10)
@@ -191,12 +194,6 @@ public class StealableArtifacts : GenericPersistence
 
     private static int GetLampPostHue() =>
         Utility.RandomDouble() < 0.9 ? 0 : Utility.RandomList(0x455, 0x47E, 0x482, 0x486, 0x48F, 0x4F2, 0x58C, 0x66C);
-
-    public static void Initialize()
-    {
-        CommandSystem.Register("GenStealArties", AccessLevel.Administrator, GenStealArties_OnCommand);
-        CommandSystem.Register("RemoveStealArties", AccessLevel.Administrator, RemoveStealArties_OnCommand);
-    }
 
     [Usage("GenStealArties"), Description("Generates the stealable artifacts spawner.")]
     private static void GenStealArties_OnCommand(CommandEventArgs args)

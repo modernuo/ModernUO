@@ -18,9 +18,9 @@ namespace Server.Commands
         private static Mobile m_Mobile;
         private static int m_Count;
 
-        public static void Initialize()
+        public static void Configure()
         {
-            CommandSystem.Register("DecorateMag", AccessLevel.Administrator, DecorateMag_OnCommand);
+            CommandSystem.Register("DecorateMag", AccessLevel.Developer, DecorateMag_OnCommand);
         }
 
         [Usage("DecorateMag")]

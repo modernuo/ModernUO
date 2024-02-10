@@ -48,7 +48,7 @@ namespace Server.Commands
                     if (command == null)
                     {
                         e.Mobile.SendMessage(
-                            $"That is either an invalid command name or one that does not support this modifier: {commandString}."                            
+                            $"That is either an invalid command name or one that does not support this modifier: {commandString}."
                         );
                         return;
                     }
@@ -171,7 +171,7 @@ namespace Server.Commands
             return true;
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Batch", AccessLevel.Counselor, Batch_OnCommand);
         }

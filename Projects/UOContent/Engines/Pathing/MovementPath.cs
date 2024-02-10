@@ -56,7 +56,7 @@ namespace Server
 
         public static PathAlgorithm OverrideAlgorithm { get; set; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             CommandSystem.Register("Path", AccessLevel.GameMaster, Path_OnCommand);
         }

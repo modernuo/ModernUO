@@ -80,7 +80,7 @@ public class GlobalTownCrierEntryList : ITownCrierEntryList
         }
     }
 
-    public static void Initialize()
+    public static void Configure()
     {
         CommandSystem.Register("TownCriers", AccessLevel.GameMaster, TownCriers_OnCommand);
     }
