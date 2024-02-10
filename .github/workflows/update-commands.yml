@@ -10,10 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Extract commands web file
+        run: |
+          7z x ./docs/commands/commands.7z -o./docs/commands
+          rm ./docs/commands/commands.7z
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: docs/commands
+          folder: ./docs/commands
           clean: false
           force: false
           git-config-name: Commands-Update-Action
