@@ -353,7 +353,7 @@
   </div>
 </div>
 <!-- Toolip -->
-<div id="tooltip" class="absolute p-2 bg-modern-black text-white rounded-md shadow-lg max-w-lg hidden"></div>
+<div id="tooltip" class="absolute p-2 bg-modern-black text-white rounded-md shadow-lg max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg hidden"></div>
 <span id="commands" style="display:none; visibility: hidden">
   <!-- COMMANDS -->
 </span>
@@ -515,7 +515,7 @@
     tooltip.style.visibility = 'hidden';
     tooltip.classList.remove('hidden');
 
-    const srcRect = event.srcElement.getBoundingClientRect();
+    const srcRect = event.target.getBoundingClientRect();
 
     // Calculate the size of the tooltip for positioning
     const tooltipRect = tooltip.getBoundingClientRect();
