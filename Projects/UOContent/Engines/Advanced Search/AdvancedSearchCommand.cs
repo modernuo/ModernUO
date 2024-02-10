@@ -4,12 +4,12 @@ public static class AdvancedSearchCommand
 {
     public static void Configure()
     {
-        CommandSystem.Register("XmlFind", AccessLevel.Administrator, OnCommand); // For those old school peeps!
+        CommandSystem.Register("AdvancedSearch", AccessLevel.Administrator, OnCommand); // For those old school peeps!
     }
 
     [Usage("AdvancedSearch")]
     [Description("Opens the advanced search gump.")]
-    [Aliases("AdvSrch", "AS")]
+    [Aliases("AdvSrch", "AS", "XmlFind")]
     private static void OnCommand(CommandEventArgs e)
     {
         var from = e.Mobile;
