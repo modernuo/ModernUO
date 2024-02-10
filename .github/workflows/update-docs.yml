@@ -1,8 +1,6 @@
 name: Updates Docs
 
 on:
-  pull_request:
-    types: [opened, synchronize]
   repository_dispatch:
     types: [docs]
   workflow_dispatch:

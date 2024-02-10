@@ -1,6 +1,8 @@
 name: Updates Commands
 
 on:
+  pull_request:
+    types: [opened, synchronize]
   repository_dispatch:
     types: [commands]
   workflow_dispatch:
