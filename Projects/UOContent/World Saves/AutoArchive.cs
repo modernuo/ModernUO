@@ -97,7 +97,7 @@ namespace Server.Saves
 
             Directory.CreateDirectory(AutomaticBackupPath);
             var backupPath = Path.Combine(AutomaticBackupPath, Utility.GetTimeStamp());
-            PathUtility.MoveDirectory(args.OldSavePath, backupPath);
+            PathUtility.MoveDirectoryContents(args.OldSavePath, backupPath);
 
             logger.Information("Created backup at {Path}", backupPath);
 
@@ -150,7 +150,7 @@ namespace Server.Saves
                 Directory.Delete(savePath, true);
                 var dirInfo = new DirectoryInfo(folder);
                 logger.Information("Restoring backup {Directory}", dirInfo.Name);
-                PathUtility.MoveDirectory(folder, savePath);
+                PathUtility.MoveDirectoryContents(folder, savePath);
                 break;
             }
 
