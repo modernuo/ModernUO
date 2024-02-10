@@ -22,6 +22,7 @@
 /Distribution/runtimes
 /Distribution/nohup.out
 /Distribution/ref
+/Distribution/web
 
 /Projects/*/obj
 /Projects/*/bin

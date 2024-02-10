@@ -14,7 +14,7 @@ public partial class StaffRobe : BaseSuit
             AccessLevel.Seer          => 0x1D3,
             AccessLevel.Administrator => 0x488,
             AccessLevel.Developer     => 11,
-            AccessLevel.Owner         => 0x496,
+            AccessLevel.Owner         => 0x54F,
         };
     }
 

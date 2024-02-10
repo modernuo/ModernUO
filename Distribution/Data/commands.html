@@ -15,6 +15,27 @@
           transparent: "transparent",
           black: "#000",
           white: "#fff",
+          counselor: "rgb(80, 80, 200)",
+          gamemaster: "rgb(200, 128, 112)",
+          seer: "rgb(128, 168, 128)",
+          administrator: "rgb(0, 152, 136)",
+          developer: "rgb(112, 88, 160)",
+          owner: "rgb(208, 144, 0)",
+          "modern-black": "#212121",
+          "modern-black-hover": "#2F2F2F",
+          "modern-dark-black": "#1A1A1A",
+          gold: {
+            50: "#fbf3ee",
+            100: "#f8e9dd",
+            200: "#f0d9bd",
+            300: "#e8cea1",
+            400: "#dfc688",
+            500: "#d5bf74",
+            600: "#cab664",
+            700: "#bdab58",
+            800: "#b09f4f",
+            900: "#a29147",
+          },
           slate: {
             50: "#f8fafc",
             100: "#f1f5f9",
@@ -300,28 +321,14 @@
             800: "#9f1239",
             900: "#881337",
             950: "#4c0519"
-          },
-          "modern-black": "#212121",
-          "modern-black-hover": "#2F2F2F",
-          gold: {
-            50: "#fbf3ee",
-            100: "#f8e9dd",
-            200: "#f0d9bd",
-            300: "#e8cea1",
-            400: "#dfc688",
-            500: "#d5bf74",
-            600: "#cab664",
-            700: "#bdab58",
-            800: "#b09f4f",
-            900: "#a29147",
-          },
+          }
         },
       },
     }
   </script>
 </head>
 
-<body class="bg-white text-gold-300 max-w-4xl">
+<body class="bg-modern-dark-black text-gold-300 max-w-4xl">
 <div id="app" class="min-h-screen p-2">
   <div class="max-w-4xl mx-auto">
     <div class="bg-modern-black p-6 rounded-lg shadow-lg">
@@ -345,43 +352,10 @@
 <!-- Toolip -->
 <div id="tooltip" class="absolute p-2 bg-modern-black text-white rounded-md shadow-lg max-w-lg hidden"></div>
 <span id="commands" style="display:none; visibility: hidden">
-    %%COMMANDS%%
-  </span>
+  <!-- COMMANDS -->
+</span>
 <span id="modifiers" style="display:none; visibility: hidden">
-    %%MODIFIERS%%
-  <!-- {
-    "area": {
-      "name": "Area",
-      "usage": "[area &lt;command&gt; [condition]",
-      "description": "Invokes the command on all appropriate objects in a targeted area. Optional condition arguments can further restrict the set of objects."
-    },
-    "global": {
-      "name": "Global",
-      "usage": "[global &lt;command&gt; [condition]",
-      "description": "Invokes the command on all appropriate objects in the world. Optional condition arguments can further restrict the set of objects."
-    },
-    "online": {
-      "name": "Online",
-      "usage": "[online &lt;command&gt; [condition]",
-      "description": "Invokes the command on all mobiles that are currently logged in. Optional condition arguments can further restrict the set of objects."
-    },
-    "region": {
-      "name": "Region",
-      "usage": "[region &lt;command&gt; [condition]",
-      "description": "Invokes the command on all appropriate mobiles in your current region. Optional condition arguments can further restrict the set of objects."
-    },
-    "multi": {
-      "name": "Multi",
-      "aliases": ["m"],
-      "usage": "[multi &lt;command&gt; [condition]",
-      "description": "Invokes the command on multiple targeted objects."
-    },
-    "self": {
-      "name": "Self",
-      "usage": "[self &lt;command&gt;",
-      "description": "Invokes the command on the commanding player."
-    }
-  } -->
+    <!-- MODIFIERS -->
   </span>
 <script>
   /*
@@ -450,35 +424,33 @@
   function createTable(tabData) {
     let table = `<table class="min-w-full border-collapse table-fixed"><tbody>`;
     tabData.forEach(item => {
-      let paddingNeeded = false;
       table += `
         <tr class="border-b">
-            <td class="px-4 py-4 text-sm font-medium text-gold-500 w-1/4 "><p>${item.command}</p></td>
+            <td class="px-4 py-4 text-sm font-medium text-gold-500 w-1/4 "><p>${item.name}</p></td>
             <td class="text-sm text-gold-900 px-6 py-4">
         `;
-      if (item.usage && item.usage !== item.command) {
-        paddingNeeded = true;
-        table += `<div class="text-white">Usage: <span class="font-bold text-gold-500">${item.usage}</span></div>`;
-      }
+
+      const usageParts = (item.usage || item.name).split(" ");
+      const usage = `${usageParts[0]} <span class='text-gold-700 font-light'>${usageParts.slice(1).join(" ")}</span>`;
+
+      table += `<div class="text-white">Usage: <span class="font-bold text-gold-500">${usage}</span></div>`;
 
       if (item.aliases && item.aliases.length > 0) {
-        paddingNeeded = true;
         table += `<div class="text-white">Aliases: <span class="text-gold-500">${item.aliases.join(", ")}</span></div>`;
       }
 
       if (item.modifiers && item.modifiers.length > 0) {
-        paddingNeeded = true;
         table += "<div>";
         item.modifiers.forEach((mod, index) => {
           table += `<span class="modifier cursor-pointer italic text-gold-300"
               data-modifier="${mod}"
-              data-command="${item.command}">${mod}</span>${index !== item.modifiers.length - 1 ? "," : ""}`;
+              data-command="${item.name}">${mod}</span>${index !== item.modifiers.length - 1 ? ", " : ""}`;
         });
         table += "</div>";
       }
 
       if (item.description) {
-        table += `<div class="text-white ${paddingNeeded ? "pt-2" : "pt-0"}">${item.description}</div>`;
+        table += `<div class="text-white pt-2">${item.description}</div>`;
       }
       table += "</td></tr>";
     });
@@ -494,19 +466,24 @@
     const modifiers = document.querySelectorAll(".modifier");
     modifiers.forEach(modNode => {
       modNode.addEventListener("mouseenter", (event) => {
-        const mod = allModifiers[modNode.dataset.modifier.toLowerCase()];
-        const command = modNode.dataset.command.toLowerCase();
+        const mod = allModifiers[modNode.dataset.modifier];
+        const command = modNode.dataset.command.toLowerCase()
 
         let aliases = "";
-        if (mod.aliases && mod.aliases.length > 0) {
-          aliases = `<p class="text-white">Aliases: <span class="text-gold-500">${escapeHtml(mod.aliases.join(", "))}</span></p>`;
+        if (mod.accessors.length > 1) {
+          aliases = `<p class="text-white">Aliases: <span class="text-gold-500">${mod.accessors.slice(1).join(", ")}</span></p>`;
         }
 
+        const usageParts = (mod.usage || mod.accessors[0]).split(" ");
+        const usage = `${usageParts[0]} <span class='text-gold-700 font-light'>${usageParts.slice(1).join(" ")}</span>`
+          .replace("<command>", command);
+
         const content = `
-          <p class="font-bold text-gold-500">${escapeHtml(mod.name)}</p>
+          <p class="font-bold text-gold-500">${mod.accessors[0]}</p>
+          <p class="text-white">Access Level: <span class="text-${mod.accessLevel.toLowerCase()}">${mod.accessLevel}</span></p>
           ${aliases}
-          <p class="text-gold-700">Usage: <span class="text-gold-300">${escapeHtml(mod.usage.replace("<command>", command))}</span></p>
-          <p class="italic text-white pt-2">${escapeHtml(mod.description)}</p>
+          <p class="text-white">Usage: <span class="font-bold text-gold-500">${usage}</span></p>
+          <p class="italic text-white pt-2">${mod.description}</p>
         `;
         showTooltip(event, content);
       });

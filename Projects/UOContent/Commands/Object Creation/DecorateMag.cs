@@ -20,7 +20,7 @@ namespace Server.Commands
 
         public static void Configure()
         {
-            CommandSystem.Register("DecorateMag", AccessLevel.Administrator, DecorateMag_OnCommand);
+            CommandSystem.Register("DecorateMag", AccessLevel.Developer, DecorateMag_OnCommand);
         }
 
         [Usage("DecorateMag")]

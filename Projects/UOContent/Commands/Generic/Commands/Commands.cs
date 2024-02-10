@@ -408,13 +408,13 @@ namespace Server.Commands.Generic
             if (inGump)
             {
                 Commands = new[] { "Message", "Msg" };
-                Usage = "Message \"text\"";
+                Usage = "Message <text>";
                 Description = "Sends a message to a targeted player.";
             }
             else
             {
                 Commands = new[] { "Tell" };
-                Usage = "Tell \"text\"";
+                Usage = "Tell <text>";
                 Description = "Sends a system message to a targeted player.";
             }
         }

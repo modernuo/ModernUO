@@ -20,7 +20,7 @@ namespace Server.Commands
 
         public static void Configure()
         {
-            CommandSystem.Register("Decorate", AccessLevel.Administrator, Decorate_OnCommand);
+            CommandSystem.Register("Decorate", AccessLevel.Developer, Decorate_OnCommand);
         }
 
         [Usage("Decorate")]
