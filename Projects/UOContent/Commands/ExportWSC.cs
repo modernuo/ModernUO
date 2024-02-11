@@ -6,20 +6,30 @@ namespace Server.Commands
 {
     public static class ExportCommand
     {
-        private const string ExportFile = @"C:\Uo\WorldForge\items.wsc";
-
         public static void Configure()
         {
-            CommandSystem.Register("ExportWSC", AccessLevel.Administrator, Export_OnCommand);
+            CommandSystem.Register("ExportWSC", AccessLevel.Developer, Export_OnCommand);
         }
 
+        [Usage("ExportWSC <file-path>")]
+        [Description("Exports all static items to a WSC file.  This will delete all static items in the world.  Please make a backup.")]
         public static void Export_OnCommand(CommandEventArgs e)
         {
-            var w = new StreamWriter(ExportFile);
+            if (e.Arguments.Length < 1)
+            {
+                e.Mobile.SendMessage("Usage: [ExportWSC <file-path>]");
+                return;
+            }
+
+            var exportFilePath = e.GetString(0);
+            var fi = new FileInfo(exportFilePath);
+            fi.Directory.EnsureDirectory();
+
+            var w = new StreamWriter(exportFilePath);
             var remove = new List<Item>();
             var count = 0;
 
-            e.Mobile.SendMessage($"Exporting all static items to \"{ExportFile}\"...");
+            e.Mobile.SendMessage($"Exporting all static items to \"{exportFilePath}\"...");
             e.Mobile.SendMessage("This will delete all static items in the world.  Please make a backup.");
 
             foreach (var item in World.Items.Values)
@@ -60,7 +70,7 @@ namespace Server.Commands
                 item.Delete();
             }
 
-            e.Mobile.SendMessage($"Export complete.  Exported {count} statics.");
+            e.Mobile.SendMessage($"Export complete. Exported {count} statics.");
         }
     }
 }

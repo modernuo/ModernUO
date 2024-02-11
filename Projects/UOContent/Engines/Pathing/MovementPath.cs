@@ -61,6 +61,8 @@ namespace Server
             CommandSystem.Register("Path", AccessLevel.GameMaster, Path_OnCommand);
         }
 
+        [Usage("Path")]
+        [Description("Draws a path from your current location to a targeted location.")]
         public static void Path_OnCommand(CommandEventArgs e)
         {
             e.Mobile.BeginTarget(-1, true, TargetFlags.None, Path_OnTarget);

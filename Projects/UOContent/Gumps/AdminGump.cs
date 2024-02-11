@@ -264,11 +264,22 @@ namespace Server.Gumps
                         AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
                         AddButtonLabeled(220, 175, GetButtonID(3, 102), "Moongates");
 
-                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Generate Spawns");
-                        AddButtonLabeled(220, 200, GetButtonID(3, 106), "Decoration");
+                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Spawners");
+                        AddButtonLabeled(220, 200, GetButtonID(3, 106), "Decorations");
 
                         AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
                         AddButtonLabeled(220, 225, GetButtonID(3, 105), "Signs");
+
+                        AddButtonLabeled(20, 250, GetButtonID(3, 107), "Champions");
+                        AddButtonLabeled(220, 250, GetButtonID(3, 108), "Magincia (AOS+)");
+
+                        AddButtonLabeled(20, 275, GetButtonID(3, 109), "Stealable Artifacts");
+                        AddButtonLabeled(220, 275, GetButtonID(3, 110), "SH Teleporters");
+
+                        AddButtonLabeled(20, 300, GetButtonID(3, 111), "Secret Locations");
+                        AddButtonLabeled(220, 300, GetButtonID(3, 112), "Doom");
+
+                        AddButtonLabeled(20, 325, GetButtonID(3, 113), "Khaldun Puzzles");
 
                         goto case AdminGumpPage.Administer;
                     }
@@ -399,9 +410,6 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 250, GetButtonID(3, 408), "Squelch");
                         AddButtonLabeled(220, 250, GetButtonID(3, 409), "Unsquelch");
-
-                        AddButtonLabeled(20, 270, GetButtonID(3, 410), "Freeze");
-                        AddButtonLabeled(220, 270, GetButtonID(3, 411), "Unfreeze");
 
                         AddButtonLabeled(20, 290, GetButtonID(3, 412), "Hide");
                         AddButtonLabeled(220, 290, GetButtonID(3, 413), "Unhide");
@@ -2135,20 +2143,50 @@ namespace Server.Gumps
                             case 106:
                                 {
                                     InvokeCommand("Decorate");
-                                    notice = "Decoration has been generated.";
+                                    notice = "Decorations have been generated.";
                                     break;
                                 }
-
+                            case 107:
+                                {
+                                    InvokeCommand("GenChamps");
+                                    notice = "Champions have been generated.";
+                                    break;
+                                }
+                            case 108:
+                                {
+                                    InvokeCommand("DecorateMag");
+                                    notice = "Magincia Ruins decorations have been generated.";
+                                    break;
+                                }
+                            case 109:
+                                {
+                                    InvokeCommand("GenStealArties");
+                                    notice = "Stealable Artifacts have been generated.";
+                                    break;
+                                }
                             case 110:
                                 {
-                                    InvokeCommand("Freeze");
-                                    notice = "Target bounding points.";
+                                    InvokeCommand("SHTelGen");
+                                    notice = "Solen Hive teleporters have been generated.";
                                     break;
                                 }
-                            case 120:
+                            case 111:
                                 {
-                                    InvokeCommand("Unfreeze");
-                                    notice = "Target bounding points.";
+                                    InvokeCommand("SecretLocGen");
+                                    notice = "Secret Locations have been generated.";
+                                    break;
+                                }
+                            case 112:
+                                {
+                                    InvokeCommand("GenLeverPuzzle");
+                                    InvokeCommand("GenGauntlet");
+                                    notice = "Doom  has been generated.";
+                                    break;
+                                }
+                            case 113:
+                                {
+                                    InvokeCommand("GenKhaldun");
+                                    notice = "Khaldun puzzles have been generated.";
                                     break;
                                 }
 
@@ -2487,26 +2525,6 @@ namespace Server.Gumps
                             case 400:
                                 {
                                     InvokeCommand("Add");
-                                    break;
-                                }
-                            case 111:
-                                {
-                                    InvokeCommand("FreezeWorld");
-                                    break;
-                                }
-                            case 112:
-                                {
-                                    InvokeCommand("FreezeMap");
-                                    break;
-                                }
-                            case 121:
-                                {
-                                    InvokeCommand("UnfreezeWorld");
-                                    break;
-                                }
-                            case 122:
-                                {
-                                    InvokeCommand("UnfreezeMap");
                                     break;
                                 }
                         }

@@ -657,6 +657,8 @@ namespace Server.Factions
             Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), ProcessTick);
         }
 
+        [Usage("FactionTownReset")]
+        [Description("Resets all faction town data in the world.")]
         public static void FactionTownReset_OnCommand(CommandEventArgs e)
         {
             var monoliths = BaseMonolith.Monoliths;
@@ -715,6 +717,8 @@ namespace Server.Factions
             }
         }
 
+        [Usage("FactionReset")]
+        [Description("Resets all faction data in the world.")]
         public static void FactionReset_OnCommand(CommandEventArgs e)
         {
             var monoliths = BaseMonolith.Monoliths;
@@ -787,6 +791,8 @@ namespace Server.Factions
             }
         }
 
+        [Usage("FactionItemReset")]
+        [Description("Resets all faction items in the world.")]
         public static void FactionItemReset_OnCommand(CommandEventArgs e)
         {
             var items = new List<Item>();
@@ -869,6 +875,8 @@ namespace Server.Factions
             }
         }
 
+        [Usage("FactionElection")]
+        [Description("Opens the election properties for the targeted faction stone.")]
         public static void FactionElection_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendMessage("Target a faction stone to open its election properties.");

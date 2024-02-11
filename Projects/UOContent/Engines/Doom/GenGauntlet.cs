@@ -12,6 +12,8 @@ namespace Server.Engines.Doom
             CommandSystem.Register("RemGauntlet", AccessLevel.Developer, RemoveGauntlet);
         }
 
+        [Usage("RemGauntlet")]
+        [Description("Removes the Gauntlet from Dungeon Doom.")]
         public static void RemoveGauntlet(CommandEventArgs e)
         {
             RemoveMobile<PricedHealer>(387, 400);
@@ -45,6 +47,8 @@ namespace Server.Engines.Doom
             RemoveItem<ConfirmationMoongate>(433, 326, 4);
         }
 
+        [Usage("GenGauntlet")]
+        [Description("Generates the Gauntlet in Dungeon Doom.")]
         public static void GenGauntlet_OnCommand(CommandEventArgs e)
         {
             RemoveGauntlet(e);

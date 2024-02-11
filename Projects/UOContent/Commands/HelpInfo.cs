@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Network;
@@ -87,36 +88,23 @@ public static class HelpInfo
 
             var mi = e.Handler.Method;
 
-            var attrs = mi.GetCustomAttributes(typeof(UsageAttribute), false);
+            var usageAttr = mi.GetCustomAttribute(typeof(UsageAttribute), false) as UsageAttribute;
+            var usage = usageAttr?.Usage;
 
-            if (attrs.Length == 0)
-            {
-                continue;
-            }
-
-            var usage = attrs[0] as UsageAttribute;
-
-            attrs = mi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
-            if (attrs.Length == 0)
-            {
-                continue;
-            }
-
-            if (usage == null || attrs[0] is not DescriptionAttribute desc)
-            {
-                continue;
-            }
-
-            attrs = mi.GetCustomAttributes(typeof(AliasesAttribute), false);
-
-            var aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
-
-            var descString = desc.Description
+            var descAttr = mi.GetCustomAttribute(typeof(DescriptionAttribute), false) as DescriptionAttribute;
+            var desc = descAttr?.Description
                 .ReplaceOrdinal("<", "(")
                 .ReplaceOrdinal(">", ")");
 
-            list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases?.Aliases, usage.Usage, null, descString));
+            if (e.Handler.Target == null && usage == null && desc == null)
+            {
+                continue;
+            }
+
+            var aliasesAttr = mi.GetCustomAttribute(typeof(AliasesAttribute), false) as AliasesAttribute;
+            var aliases = aliasesAttr?.Aliases;
+
+            list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases, usage, null, desc));
         }
 
         for (var i = 0; i < TargetCommands.AllCommands.Count; ++i)
@@ -165,16 +153,11 @@ public static class HelpInfo
         {
             var command = commandImpls[i];
 
-            var usage = command.Usage;
-            var desc = command.Description;
-
-            if (usage == null || desc == null)
-            {
-                continue;
-            }
-
             var cmds = command.Accessors;
             var cmd = cmds[0];
+
+            var desc = command.Description ?? "No description available.";
+            var usage = command.Usage ?? cmd;
             var aliases = new string[cmds.Length - 1];
 
             for (var j = 0; j < aliases.Length; ++j)

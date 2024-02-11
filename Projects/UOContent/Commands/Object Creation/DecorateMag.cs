@@ -24,7 +24,7 @@ namespace Server.Commands
         }
 
         [Usage("DecorateMag")]
-        [Description("Generates world decoration.")]
+        [Description("Generates world decoration for Magincia after it was ruined.")]
         private static void DecorateMag_OnCommand(CommandEventArgs e)
         {
             m_Mobile = e.Mobile;

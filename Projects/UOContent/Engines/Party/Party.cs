@@ -105,6 +105,8 @@ namespace Server.Engines.PartySystem
             CommandSystem.Register("ListenToParty", AccessLevel.GameMaster, ListenToParty_OnCommand);
         }
 
+        [Usage("ListenToParty")]
+        [Description("Listen to the targeted player's party chat.")]
         public static void ListenToParty_OnCommand(CommandEventArgs e)
         {
             e.Mobile.BeginTarget(-1, false, TargetFlags.None, ListenToParty_OnTarget);
