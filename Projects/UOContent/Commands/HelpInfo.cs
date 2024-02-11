@@ -96,7 +96,7 @@ public static class HelpInfo
                 .ReplaceOrdinal("<", "(")
                 .ReplaceOrdinal(">", ")");
 
-            if (e.Handler.Target == null && usage == null && desc == null)
+            if (e.Handler.Target != null && usage == null && desc == null)
             {
                 continue;
             }
@@ -104,7 +104,7 @@ public static class HelpInfo
             var aliasesAttr = mi.GetCustomAttribute(typeof(AliasesAttribute), false) as AliasesAttribute;
             var aliases = aliasesAttr?.Aliases;
 
-            list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases, usage, null, desc));
+            list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases, usage ?? e.Command, null, desc ?? "No description available."));
         }
 
         for (var i = 0; i < TargetCommands.AllCommands.Count; ++i)
@@ -130,7 +130,7 @@ public static class HelpInfo
 
             desc = desc
                 .ReplaceOrdinal("<", "(")
-                .ReplaceOrdinal(">", ")");
+                .ReplaceOrdinal(">", ")") ?? "No description available.";
 
             List<string> modsList = [];
 
