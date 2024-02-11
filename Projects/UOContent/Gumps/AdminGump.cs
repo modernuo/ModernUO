@@ -264,7 +264,7 @@ namespace Server.Gumps
                         AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
                         AddButtonLabeled(220, 175, GetButtonID(3, 102), "Moongates");
 
-                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Spawners");
+                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Generate Spawns");
                         AddButtonLabeled(220, 200, GetButtonID(3, 106), "Decoration");
 
                         AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
@@ -399,6 +399,9 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 250, GetButtonID(3, 408), "Squelch");
                         AddButtonLabeled(220, 250, GetButtonID(3, 409), "Unsquelch");
+
+                        AddButtonLabeled(20, 270, GetButtonID(3, 410), "Freeze");
+                        AddButtonLabeled(220, 270, GetButtonID(3, 411), "Unfreeze");
 
                         AddButtonLabeled(20, 290, GetButtonID(3, 412), "Hide");
                         AddButtonLabeled(220, 290, GetButtonID(3, 413), "Unhide");
@@ -2136,6 +2139,19 @@ namespace Server.Gumps
                                     break;
                                 }
 
+                            case 110:
+                                {
+                                    InvokeCommand("Freeze");
+                                    notice = "Target bounding points.";
+                                    break;
+                                }
+                            case 120:
+                                {
+                                    InvokeCommand("Unfreeze");
+                                    notice = "Target bounding points.";
+                                    break;
+                                }
+
                             case 200:
                                 {
                                     InvokeCommand("Save");
@@ -2471,6 +2487,26 @@ namespace Server.Gumps
                             case 400:
                                 {
                                     InvokeCommand("Add");
+                                    break;
+                                }
+                            case 111:
+                                {
+                                    InvokeCommand("FreezeWorld");
+                                    break;
+                                }
+                            case 112:
+                                {
+                                    InvokeCommand("FreezeMap");
+                                    break;
+                                }
+                            case 121:
+                                {
+                                    InvokeCommand("UnfreezeWorld");
+                                    break;
+                                }
+                            case 122:
+                                {
+                                    InvokeCommand("UnfreezeMap");
                                     break;
                                 }
                         }
