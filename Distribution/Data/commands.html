@@ -467,31 +467,17 @@
 
     // Add event listeners to modifiers
     const modifiers = document.querySelectorAll(".modifier");
-    modifiers.forEach(modNode => {
-      modNode.addEventListener("mouseenter", (event) => {
-        const mod = allModifiers[modNode.dataset.modifier];
-        const command = modNode.dataset.command.toLowerCase()
-
-        let aliases = "";
-        if (mod.accessors.length > 1) {
-          aliases = `<p class="text-white">Aliases: <span class="text-gold-500">${mod.accessors.slice(1).join(", ")}</span></p>`;
-        }
-
-        const usageParts = (mod.usage || mod.accessors[0]).split(" ");
-        const usage = `${usageParts[0]} <span class='text-gold-700 font-light'>${usageParts.slice(1).join(" ")}</span>`
-          .replace("<command>", command);
-
-        const content = `
-          <p class="font-bold text-gold-500">${mod.accessors[0]}</p>
-          <p class="text-white">Access Level: <span class="text-${mod.accessLevel.toLowerCase()}">${mod.accessLevel}</span></p>
-          ${aliases}
-          <p class="text-white">Usage: <span class="font-bold text-gold-500">${usage}</span></p>
-          <p class="italic text-white pt-2">${mod.description}</p>
-        `;
-        showTooltip(event, content);
+    modifiers.forEach(el => {
+      el.addEventListener("mouseenter", (event) => {
+        showTooltip(el, event);
       });
 
-      modNode.addEventListener("mouseleave", hideTooltip);
+      el.addEventListener("touchstart", (event) => {
+        showTooltip(el, event, true);
+      });
+
+      el.addEventListener("mouseleave", hideTooltip);
+      // el.addEventListener('touchend', hideTooltip);
     });
   }
 
@@ -506,13 +492,40 @@
     });
   }
 
+  let currentShownEl = null;
+
   // Function to show the tooltip
-  function showTooltip(event, content) {
+  function showTooltip(el, event, isTouchEvent) {
     const tooltip = document.getElementById('tooltip');
-    tooltip.innerHTML = content;
+
+    if (el === currentShownEl && (tooltip.classList.contains('invisible') || !tooltip.classList.contains('hidden'))) {
+      event.preventDefault();
+      return;
+    }
+
+    currentShownEl = el;
+    const mod = allModifiers[el.dataset.modifier];
+    const command = el.dataset.command.toLowerCase()
+
+    let aliases = "";
+    if (mod.accessors.length > 1) {
+      aliases = `<p class="text-white">Aliases: <span class="text-gold-500">${mod.accessors.slice(1).join(", ")}</span></p>`;
+    }
+
+    const usageParts = (mod.usage || mod.accessors[0]).split(" ");
+    const usage = `${usageParts[0]} <span class='text-gold-700 font-light'>${usageParts.slice(1).join(" ")}</span>`
+      .replace("<command>", command);
+
+    tooltip.innerHTML = `
+      <p class="font-bold text-gold-500">${mod.accessors[0]}</p>
+      <p class="text-white">Access Level: <span class="text-${mod.accessLevel.toLowerCase()}">${mod.accessLevel}</span></p>
+      ${aliases}
+      <p class="text-white">Usage: <span class="font-bold text-gold-500">${usage}</span></p>
+      <p class="italic text-white pt-2">${mod.description}</p>
+    `;
 
     // Make it visible to the DOM so we can get size calculations
-    tooltip.style.visibility = 'hidden';
+    tooltip.classList.add('invisible');
     tooltip.classList.remove('hidden');
 
     const srcRect = event.target.getBoundingClientRect();
@@ -548,13 +561,28 @@
     // Apply the calculated positions
     tooltip.style.left = `${leftPosition}px`;
     tooltip.style.top = `${topPosition}px`;
-    tooltip.style.visibility = 'visible';
+    tooltip.classList.remove('invisible');
+
+    if (isTouchEvent) {
+      // Delay hiding tooltip to allow it to be seen
+      setTimeout(() => {
+        document.addEventListener('touchstart', hideTooltipOnNextTouch, { passive: false });
+      }, 10);
+    }
   }
 
   // Function to hide the tooltip
   function hideTooltip() {
+    document.removeEventListener('touchstart', hideTooltipOnNextTouch);
     const tooltip = document.getElementById("tooltip");
     tooltip.classList.add("hidden");
+  }
+
+  function hideTooltipOnNextTouch(event) {
+    // Check if the touch is outside the tooltip, if so, hide the tooltip
+    if (event.target !== currentShownEl && !event.target.matches('#tooltip, #tooltip *')) {
+      hideTooltip();
+    } else { event.preventDefault(); }
   }
 
   initTabs();
