@@ -15,7 +15,7 @@ public static class GenCommands
         CommandSystem.Register("GenCommands", AccessLevel.Developer, GenCommandsWebpage_OnCommand);
     }
 
-    [Usage("GenCommands [<command>]")]
+    [Usage("GenCommands")]
     [Aliases("GenCmdWeb")]
     [Description("Generates a webpage to the web folder with a list of all commands.")]
     private static void GenCommandsWebpage_OnCommand(CommandEventArgs e)

@@ -171,19 +171,8 @@ namespace Server.Items
         [Usage("SHTelGen"), Description("Generates solen hives teleporters.")]
         public static void SHTelGen_OnCommand(CommandEventArgs e)
         {
-            World.Broadcast(0x35, true, "Solen hives teleporters are being generated, please wait.");
-
-            var startTime = Core.Now;
-
-            var count = new SHTeleporterCreator().CreateSHTeleporters();
-
-            var endTime = Core.Now;
-
-            World.Broadcast(
-                0x35,
-                true,
-                $"{count} solen hives teleporters have been created. The entire process took {(endTime - startTime).TotalSeconds:0.#} seconds."
-            );
+            CreateSHTeleporters();
+            e.Mobile.SendMessage("Solen Hive teleporters have been created.");
         }
 
         public void ChangeActive(bool active)
@@ -259,128 +248,115 @@ namespace Server.Items
             m_Changing = false;
         }
 
-        public class SHTeleporterCreator
+        public static SHTeleporter FindSHTeleporter(Map map, Point3D p)
         {
-            private int m_Count;
-
-            public SHTeleporterCreator() => m_Count = 0;
-
-            public static SHTeleporter FindSHTeleporter(Map map, Point3D p)
+            foreach (var teleporter in map.GetItemsAt<SHTeleporter>(p))
             {
-                foreach (var teleporter in map.GetItemsAt<SHTeleporter>(p))
+                if (teleporter.Z == p.Z)
                 {
-                    if (teleporter.Z == p.Z)
-                    {
-                        return teleporter;
-                    }
+                    return teleporter;
                 }
-
-                return null;
             }
 
-            public SHTeleporter AddSHT(Map map, bool ext, int x, int y, int z)
+            return null;
+        }
+
+        public static SHTeleporter AddSHT(Map map, bool ext, int x, int y, int z)
+        {
+            var p = new Point3D(x, y, z);
+            var tele = FindSHTeleporter(map, p);
+
+            if (tele == null)
             {
-                var p = new Point3D(x, y, z);
-                var tele = FindSHTeleporter(map, p);
-
-                if (tele == null)
-                {
-                    tele = new SHTeleporter(ext);
-                    tele.MoveToWorld(p, map);
-
-                    m_Count++;
-                }
-
-                return tele;
+                tele = new SHTeleporter(ext);
+                tele.MoveToWorld(p, map);
             }
 
-            public static void Link(SHTeleporter tele1, SHTeleporter tele2)
-            {
-                tele1.ChangeDest(tele2);
-                tele2.ChangeDest(tele1);
-            }
+            return tele;
+        }
 
-            public void AddSHTCouple(Map map, bool ext1, int x1, int y1, int z1, bool ext2, int x2, int y2, int z2)
-            {
-                var tele1 = AddSHT(map, ext1, x1, y1, z1);
-                var tele2 = AddSHT(map, ext2, x2, y2, z2);
+        public static void Link(SHTeleporter tele1, SHTeleporter tele2)
+        {
+            tele1.ChangeDest(tele2);
+            tele2.ChangeDest(tele1);
+        }
 
-                Link(tele1, tele2);
-            }
+        public static void AddSHTCouple(Map map, bool ext1, int x1, int y1, int z1, bool ext2, int x2, int y2, int z2)
+        {
+            var tele1 = AddSHT(map, ext1, x1, y1, z1);
+            var tele2 = AddSHT(map, ext2, x2, y2, z2);
 
-            public void AddSHTCouple(bool ext1, int x1, int y1, int z1, bool ext2, int x2, int y2, int z2)
-            {
-                AddSHTCouple(Map.Trammel, ext1, x1, y1, z1, ext2, x2, y2, z2);
-                AddSHTCouple(Map.Felucca, ext1, x1, y1, z1, ext2, x2, y2, z2);
-            }
+            Link(tele1, tele2);
+        }
 
-            public int CreateSHTeleporters()
-            {
-                SHTeleporter tele1, tele2;
+        public static void AddSHTCouple(bool ext1, int x1, int y1, int z1, bool ext2, int x2, int y2, int z2)
+        {
+            AddSHTCouple(Map.Trammel, ext1, x1, y1, z1, ext2, x2, y2, z2);
+            AddSHTCouple(Map.Felucca, ext1, x1, y1, z1, ext2, x2, y2, z2);
+        }
 
-                AddSHTCouple(true, 2608, 763, 0, false, 5918, 1794, 0);
-                AddSHTCouple(false, 5897, 1877, 0, false, 5871, 1867, 0);
-                AddSHTCouple(false, 5852, 1848, 0, false, 5771, 1867, 0);
+        public static void CreateSHTeleporters()
+        {
+            AddSHTCouple(true, 2608, 763, 0, false, 5918, 1794, 0);
+            AddSHTCouple(false, 5897, 1877, 0, false, 5871, 1867, 0);
+            AddSHTCouple(false, 5852, 1848, 0, false, 5771, 1867, 0);
 
-                tele1 = AddSHT(Map.Trammel, false, 5747, 1895, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Trammel, false, 5658, 1898, 0);
-                Link(tele1, tele2);
+            var tele1 = AddSHT(Map.Trammel, false, 5747, 1895, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            var tele2 = AddSHT(Map.Trammel, false, 5658, 1898, 0);
+            Link(tele1, tele2);
 
-                tele1 = AddSHT(Map.Felucca, false, 5747, 1895, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Felucca, false, 5658, 1898, 0);
-                Link(tele1, tele2);
+            tele1 = AddSHT(Map.Felucca, false, 5747, 1895, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            tele2 = AddSHT(Map.Felucca, false, 5658, 1898, 0);
+            Link(tele1, tele2);
 
-                AddSHTCouple(false, 5727, 1894, 0, false, 5756, 1794, 0);
-                AddSHTCouple(false, 5784, 1929, 0, false, 5700, 1929, 0);
+            AddSHTCouple(false, 5727, 1894, 0, false, 5756, 1794, 0);
+            AddSHTCouple(false, 5784, 1929, 0, false, 5700, 1929, 0);
 
-                tele1 = AddSHT(Map.Trammel, false, 5711, 1952, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Trammel, false, 5657, 1954, 0);
-                Link(tele1, tele2);
+            tele1 = AddSHT(Map.Trammel, false, 5711, 1952, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            tele2 = AddSHT(Map.Trammel, false, 5657, 1954, 0);
+            Link(tele1, tele2);
 
-                tele1 = AddSHT(Map.Felucca, false, 5711, 1952, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Felucca, false, 5657, 1954, 0);
-                Link(tele1, tele2);
+            tele1 = AddSHT(Map.Felucca, false, 5711, 1952, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            tele2 = AddSHT(Map.Felucca, false, 5657, 1954, 0);
+            Link(tele1, tele2);
 
-                tele1 = AddSHT(Map.Trammel, false, 5655, 2018, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Trammel, true, 1690, 2789, 0);
-                Link(tele1, tele2);
+            tele1 = AddSHT(Map.Trammel, false, 5655, 2018, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            tele2 = AddSHT(Map.Trammel, true, 1690, 2789, 0);
+            Link(tele1, tele2);
 
-                tele1 = AddSHT(Map.Felucca, false, 5655, 2018, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Felucca, true, 1690, 2789, 0);
-                Link(tele1, tele2);
+            tele1 = AddSHT(Map.Felucca, false, 5655, 2018, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            tele2 = AddSHT(Map.Felucca, true, 1690, 2789, 0);
+            Link(tele1, tele2);
 
-                AddSHTCouple(false, 5809, 1905, 0, false, 5876, 1891, 0);
+            AddSHTCouple(false, 5809, 1905, 0, false, 5876, 1891, 0);
 
-                tele1 = AddSHT(Map.Trammel, false, 5814, 2015, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Trammel, false, 5913, 1893, 0);
-                Link(tele1, tele2);
+            tele1 = AddSHT(Map.Trammel, false, 5814, 2015, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            tele2 = AddSHT(Map.Trammel, false, 5913, 1893, 0);
+            Link(tele1, tele2);
 
-                tele1 = AddSHT(Map.Felucca, false, 5814, 2015, 0);
-                tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
-                tele2 = AddSHT(Map.Felucca, false, 5913, 1893, 0);
-                Link(tele1, tele2);
+            tele1 = AddSHT(Map.Felucca, false, 5814, 2015, 0);
+            tele1.LeftTele.TeleOffset = new Point3D(-1, 3, 0);
+            tele2 = AddSHT(Map.Felucca, false, 5913, 1893, 0);
+            Link(tele1, tele2);
 
-                AddSHTCouple(false, 5919, 2021, 0, true, 1724, 814, 0);
+            AddSHTCouple(false, 5919, 2021, 0, true, 1724, 814, 0);
 
-                tele1 = AddSHT(Map.Trammel, false, 5654, 1791, 0);
-                tele2 = AddSHT(Map.Trammel, true, 730, 1451, 0);
-                Link(tele1, tele2);
-                AddSHT(Map.Trammel, false, 5734, 1859, 0).ChangeDest(tele2);
+            tele1 = AddSHT(Map.Trammel, false, 5654, 1791, 0);
+            tele2 = AddSHT(Map.Trammel, true, 730, 1451, 0);
+            Link(tele1, tele2);
+            AddSHT(Map.Trammel, false, 5734, 1859, 0).ChangeDest(tele2);
 
-                tele1 = AddSHT(Map.Felucca, false, 5654, 1791, 0);
-                tele2 = AddSHT(Map.Felucca, true, 730, 1451, 0);
-                Link(tele1, tele2);
-                AddSHT(Map.Felucca, false, 5734, 1859, 0).ChangeDest(tele2);
-
-                return m_Count;
-            }
+            tele1 = AddSHT(Map.Felucca, false, 5654, 1791, 0);
+            tele2 = AddSHT(Map.Felucca, true, 730, 1451, 0);
+            Link(tele1, tele2);
+            AddSHT(Map.Felucca, false, 5734, 1859, 0).ChangeDest(tele2);
         }
     }
 }

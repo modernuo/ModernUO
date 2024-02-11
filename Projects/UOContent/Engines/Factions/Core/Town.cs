@@ -544,6 +544,8 @@ namespace Server.Factions
             return null;
         }
 
+        [Usage("GrantTownSilver <amount>")]
+        [Description("Grants silver to the town of the current region.")]
         public static void GrantTownSilver_OnCommand(CommandEventArgs e)
         {
             var town = FromRegion(e.Mobile.Region);

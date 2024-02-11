@@ -34,9 +34,12 @@ public class SpawnerControllerGump : GumpGrid
 
     public static void Configure()
     {
-        CommandSystem.Register("Spawn", AccessLevel.GameMaster, OpenSpawnGump_OnCommand);
+        CommandSystem.Register("SpawnAdmin", AccessLevel.GameMaster, OpenSpawnGump_OnCommand);
     }
 
+    [Usage("Spawn")]
+    [Aliases("Spawn")]
+    [Description("Opens the spawn administration gump.")]
     public static void OpenSpawnGump_OnCommand(CommandEventArgs e)
     {
         e.Mobile.SendGump(new SpawnerControllerGump(e.Mobile));

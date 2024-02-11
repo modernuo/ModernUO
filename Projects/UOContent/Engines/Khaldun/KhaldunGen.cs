@@ -113,6 +113,8 @@ namespace Server.Commands
             m_Count++;
         }
 
+        [Usage("GenKhaldun")]
+        [Description("Generates Khaldun Puzzles")]
         public static void GenKhaldun_OnCommand(CommandEventArgs e)
         {
             m_Count = 0;

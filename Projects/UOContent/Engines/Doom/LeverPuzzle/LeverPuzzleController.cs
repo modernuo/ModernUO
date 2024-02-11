@@ -192,10 +192,11 @@ public partial class LeverPuzzleController : Item
 
     public static void Configure()
     {
-        CommandSystem.Register("GenLeverPuzzle", AccessLevel.Administrator, GenLampPuzzle_OnCommand);
+        CommandSystem.Register("GenLeverPuzzle", AccessLevel.Developer, GenLampPuzzle_OnCommand);
     }
 
-    [Usage("GenLeverPuzzle"), Description("Generates lamp room and lever puzzle in doom.")]
+    [Usage("GenLeverPuzzle")]
+    [Description("Generates lamp room and lever puzzle in doom.")]
     public static void GenLampPuzzle_OnCommand(CommandEventArgs e)
     {
         foreach (var item in Map.Malas.GetItemsAt(lp_Center))

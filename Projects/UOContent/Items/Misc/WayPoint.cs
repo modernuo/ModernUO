@@ -31,6 +31,8 @@ public partial class WayPoint : Item
         CommandSystem.Register("WayPointSeq", AccessLevel.GameMaster, WayPointSeq_OnCommand);
     }
 
+    [Usage("WayPointSeq")]
+    [Description("Creates a sequence of way points.")]
     public static void WayPointSeq_OnCommand(CommandEventArgs arg)
     {
         arg.Mobile.SendMessage("Target the position of the first way point.");

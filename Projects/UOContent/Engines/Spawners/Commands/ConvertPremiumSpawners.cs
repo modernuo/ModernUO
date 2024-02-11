@@ -34,6 +34,8 @@ namespace Server.Engines.Spawners
             CommandSystem.Register("ConvertPremiumSpawners", AccessLevel.Developer, ConvertPremiumSpawners_OnCommand);
         }
 
+        [Usage("ConvertPremiumSpawners <relative search pattern to distribution> <output directory relative to distribution>")]
+        [Description("Converts Nerun's Premium Spawners to JSON.")]
         private static void ConvertPremiumSpawners_OnCommand(CommandEventArgs args)
         {
             var from = args.Mobile;
