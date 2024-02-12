@@ -846,6 +846,8 @@ namespace Server.Factions
             e.Mobile.SendMessage($"{count} items reset");
         }
 
+        [Usage("FactionCommander")]
+        [Description("Sets the targeted player as the faction commander.")]
         public static void FactionCommander_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendMessage("Target a player to make them the faction commander.");
