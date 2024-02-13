@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "type": "Server.Engines.Spawners.SpawnerEntry",
+  "properties": [
+    {
+      "name": "SpawnedName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SpawnedProbability",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SpawnedMaxCount",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Properties",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Parameters",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Spawned",
+      "type": "System.Collections.Generic.List\u003CServer.ISpawnable\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.ISpawnable",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

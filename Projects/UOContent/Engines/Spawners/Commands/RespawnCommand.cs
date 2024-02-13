@@ -17,47 +17,46 @@ using System.Collections.Generic;
 using Server.Commands.Generic;
 using Server.Network;
 
-namespace Server.Engines.Spawners
+namespace Server.Engines.Spawners;
+
+public class RespawnCommand : BaseCommand
 {
-    public class RespawnCommand : BaseCommand
+    public static void Configure()
     {
-        public static void Configure()
+        TargetCommands.Register(new RespawnCommand());
+    }
+
+    public RespawnCommand()
+    {
+        AccessLevel = AccessLevel.GameMaster;
+        Supports = CommandSupport.Complex | CommandSupport.Simple;
+        Commands = ["Respawn"];
+        ObjectTypes = ObjectTypes.Items;
+        Usage = "Respawn";
+        Description = "Respawns the given the spawners.";
+        ListOptimized = true;
+    }
+
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
+    {
+        if (list.Count == 0)
         {
-            TargetCommands.Register(new RespawnCommand());
+            LogFailure("No matching objects found.");
+            return;
         }
 
-        public RespawnCommand()
-        {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.Complex | CommandSupport.Simple;
-            Commands = new[] { "Respawn" };
-            ObjectTypes = ObjectTypes.Items;
-            Usage = "Respawn";
-            Description = "Respawns the given the spawners.";
-            ListOptimized = true;
-        }
+        e.Mobile.SendMessage("Respawning...");
 
-        public override void ExecuteList(CommandEventArgs e, List<object> list)
+        NetState.FlushAll();
+
+        foreach (var obj in list)
         {
-            if (list.Count == 0)
+            if (obj is ISpawner spawner)
             {
-                LogFailure("No matching objects found.");
-                return;
+                spawner.Respawn();
             }
-
-            e.Mobile.SendMessage("Respawning...");
-
-            NetState.FlushAll();
-
-            foreach (var obj in list)
-            {
-                if (obj is ISpawner spawner)
-                {
-                    spawner.Respawn();
-                }
-            }
-
-            e.Mobile.SendMessage("Respawn completed.");
         }
+
+        e.Mobile.SendMessage("Respawn completed.");
     }
 }

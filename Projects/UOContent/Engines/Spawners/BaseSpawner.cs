@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using ModernUO.Serialization;
 using Server.Commands;
 using Server.Items;
 using Server.Json;
@@ -12,21 +13,59 @@ using static Server.Attributes;
 
 namespace Server.Engines.Spawners;
 
-public abstract class BaseSpawner : Item, ISpawner
+[SerializationGenerator(10, false)]
+public abstract partial class BaseSpawner : Item, ISpawner
 {
-    private static WarnTimer m_WarnTimer;
-
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
     private Guid _guid;
-    private int m_Count;
-    private bool m_Group;
-    private int m_HomeRange;
-    private TimeSpan m_MaxDelay;
-    private TimeSpan m_MinDelay;
-    private bool m_Running;
-    private int m_Team;
 
-    private InternalTimer m_Timer;
-    private int m_WalkingRange = -1;
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private bool _returnOnDeactivate;
+
+    [SerializableField(2, setter: "private")]
+    private List<SpawnerEntry> _entries;
+
+    [InvalidateProperties]
+    [SerializableField(3)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private int _walkingRange = -1;
+
+    [SerializableField(4)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private WayPoint _wayPoint;
+
+    [InvalidateProperties]
+    [SerializableField(5)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private bool _group;
+
+    [InvalidateProperties]
+    [SerializableField(6)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private TimeSpan _minDelay;
+
+    [InvalidateProperties]
+    [SerializableField(7)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private TimeSpan _maxDelay;
+
+    [InvalidateProperties]
+    [SerializableField(9)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private int _team;
+
+    [InvalidateProperties]
+    [SerializableField(10)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private int _homeRange;
+
+    [SerializableField(12)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private DateTime _end;
+
+    private InternalTimer _timer;
 
     public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, 4)
     {
@@ -88,7 +127,7 @@ public abstract class BaseSpawner : Item, ISpawner
         json.GetProperty("team", options, out int team);
         json.GetProperty("homeRange", options, out int homeRange);
         json.GetProperty("walkingRange", options, out int walkingRange);
-        m_WalkingRange = walkingRange;
+        _walkingRange = walkingRange;
 
         InitSpawn(amount, minDelay, maxDelay, team, homeRange);
 
@@ -100,54 +139,40 @@ public abstract class BaseSpawner : Item, ISpawner
         }
     }
 
-    public BaseSpawner(Serial serial) : base(serial)
-    {
-    }
-
     public override string DefaultName => "Spawner";
-    public bool IsFull => Spawned?.Count >= m_Count;
+    public bool IsFull => Spawned?.Count >= _count;
     public bool IsEmpty => Spawned?.Count == 0;
-    public DateTime End { get; set; }
-
-    public List<SpawnerEntry> Entries { get; private set; }
 
     public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
 
-    [CommandProperty(AccessLevel.Developer)]
-    public Guid Guid
-    {
-        get => _guid;
-        set => _guid = value;
-    }
-
+    [SerializableProperty(8)]
     [CommandProperty(AccessLevel.Developer)]
     public int Count
     {
-        get => m_Count;
+        get => _count;
         set
         {
-            m_Count = value;
+            _count = value;
 
             if (IsFull)
             {
-                m_Timer?.Stop();
+                _timer?.Stop();
             }
-            else if (m_Timer?.Running != true)
+            else if (_timer?.Running != true)
             {
                 DoTimer();
             }
 
             InvalidateProperties();
+            this.MarkDirty();
         }
     }
 
-    [CommandProperty(AccessLevel.Developer)]
-    public virtual WayPoint WayPoint { get; set; }
-
+    [SerializableProperty(11)]
     [CommandProperty(AccessLevel.Developer)]
     public bool Running
     {
-        get => m_Running;
+        get => _running;
         set
         {
             if (value)
@@ -160,57 +185,14 @@ public abstract class BaseSpawner : Item, ISpawner
             }
 
             InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.Developer)]
-    public int WalkingRange
-    {
-        get => m_WalkingRange;
-        set
-        {
-            m_WalkingRange = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.Developer)]
-    public int Team
-    {
-        get => m_Team;
-        set
-        {
-            m_Team = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.Developer)]
-    public TimeSpan MinDelay
-    {
-        get => m_MinDelay;
-        set
-        {
-            m_MinDelay = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.Developer)]
-    public TimeSpan MaxDelay
-    {
-        get => m_MaxDelay;
-        set
-        {
-            m_MaxDelay = value;
-            InvalidateProperties();
+            this.MarkDirty();
         }
     }
 
     [CommandProperty(AccessLevel.Developer)]
     public TimeSpan NextSpawn
     {
-        get => m_Running && m_Timer?.Running == true ? End - Core.Now : TimeSpan.Zero;
+        get => _running && _timer?.Running == true ? End - Core.Now : TimeSpan.Zero;
         set
         {
             Start();
@@ -218,33 +200,8 @@ public abstract class BaseSpawner : Item, ISpawner
         }
     }
 
-    [CommandProperty(AccessLevel.Developer)]
-    public bool Group
-    {
-        get => m_Group;
-        set
-        {
-            m_Group = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.Developer)]
-    public bool ReturnOnDeactivate { get; set; }
-
     public virtual Point3D HomeLocation => Location;
     public bool UnlinkOnTaming => true;
-
-    [CommandProperty(AccessLevel.Developer)]
-    public int HomeRange
-    {
-        get => m_HomeRange;
-        set
-        {
-            m_HomeRange = value;
-            InvalidateProperties();
-        }
-    }
 
     Region ISpawner.Region => Region.Find(Location, Map);
 
@@ -266,7 +223,7 @@ public abstract class BaseSpawner : Item, ISpawner
             Spawned.Remove(spawn);
         }
 
-        if (m_Running && !IsFull && m_Timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running == false)
         {
             DoTimer();
         }
@@ -276,7 +233,7 @@ public abstract class BaseSpawner : Item, ISpawner
     {
         RemoveSpawns();
 
-        for (var i = 0; i < m_Count; i++)
+        for (var i = 0; i < _count; i++)
         {
             Spawn();
         }
@@ -339,7 +296,7 @@ public abstract class BaseSpawner : Item, ISpawner
         string parameters = null
     )
     {
-        var entry = new SpawnerEntry(creaturename, probability, amount, properties, parameters);
+        var entry = new SpawnerEntry(this, creaturename, probability, amount, properties, parameters);
         Entries.Add(entry);
         if (dotimer)
         {
@@ -353,13 +310,13 @@ public abstract class BaseSpawner : Item, ISpawner
     {
         Visible = false;
         Movable = false;
-        m_Running = true;
-        m_Group = false;
-        m_MinDelay = minDelay;
-        m_MaxDelay = maxDelay;
-        m_Count = amount;
-        m_Team = team;
-        m_HomeRange = homeRange;
+        _running = true;
+        _group = false;
+        _minDelay = minDelay;
+        _maxDelay = maxDelay;
+        _count = amount;
+        _team = team;
+        _homeRange = homeRange;
         Entries = new List<SpawnerEntry>();
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
@@ -383,16 +340,16 @@ public abstract class BaseSpawner : Item, ISpawner
     {
         base.GetProperties(list);
 
-        if (m_Running)
+        if (_running)
         {
             list.Add(1060742); // active
 
-            list.Add(1060656, m_Count);                                     // amount to make: ~1_val~
-            list.Add(1061169, m_HomeRange);                                 // range ~1_val~
-            list.Add(1050039, $"{"walking range:"}\t{m_WalkingRange}");     // ~1_NUMBER~ ~2_ITEMNAME~
-            list.Add(1053099, $"{"group:"}\t{m_Group}");                    // ~1_oretype~: ~2_armortype~
-            list.Add(1060847, $"{"team:"}\t{m_Team}");                      // ~1_val~ ~2_val~
-            list.Add(1063483, $"{"delay:"}\t{m_MinDelay} to {m_MaxDelay}"); // ~1_MATERIAL~: ~2_ITEMNAME~
+            list.Add(1060656, _count);                                     // amount to make: ~1_val~
+            list.Add(1061169, _homeRange);                                 // range ~1_val~
+            list.Add(1050039, $"{"walking range:"}\t{_walkingRange}");     // ~1_NUMBER~ ~2_ITEMNAME~
+            list.Add(1053099, $"{"group:"}\t{_group}");                    // ~1_oretype~: ~2_armortype~
+            list.Add(1060847, $"{"team:"}\t{_team}");                      // ~1_val~ ~2_val~
+            list.Add(1063483, $"{"delay:"}\t{_minDelay} to {_maxDelay}"); // ~1_MATERIAL~: ~2_ITEMNAME~
 
             GetSpawnerProperties(list);
 
@@ -412,7 +369,7 @@ public abstract class BaseSpawner : Item, ISpawner
     {
         base.OnSingleClick(from);
 
-        if (m_Running)
+        if (_running)
         {
             LabelTo(from, "[Running]");
         }
@@ -424,11 +381,11 @@ public abstract class BaseSpawner : Item, ISpawner
 
     public void Start()
     {
-        if (!m_Running)
+        if (!_running)
         {
             if (Entries.Count > 0)
             {
-                m_Running = true;
+                _running = true;
                 DoTimer();
             }
         }
@@ -436,8 +393,8 @@ public abstract class BaseSpawner : Item, ISpawner
 
     public void Stop()
     {
-        m_Timer?.Stop();
-        m_Running = false;
+        _timer?.Stop();
+        _running = false;
     }
 
     public void Defrag()
@@ -472,7 +429,7 @@ public abstract class BaseSpawner : Item, ISpawner
 
     public void OnTick()
     {
-        if (m_Group)
+        if (_group)
         {
             Defrag();
 
@@ -737,12 +694,12 @@ public abstract class BaseSpawner : Item, ISpawner
                 {
                     var walkrange = GetWalkingRange();
 
-                    c.RangeHome = walkrange >= 0 ? walkrange : m_HomeRange;
+                    c.RangeHome = walkrange >= 0 ? walkrange : _homeRange;
                     c.CurrentWayPoint = WayPoint;
 
-                    if (m_Team > 0)
+                    if (_team > 0)
                     {
-                        c.Team = m_Team;
+                        c.Team = _team;
                     }
 
                     c.Home = Location;
@@ -784,19 +741,19 @@ public abstract class BaseSpawner : Item, ISpawner
         return true;
     }
 
-    public virtual int GetWalkingRange() => m_WalkingRange;
+    public virtual int GetWalkingRange() => _walkingRange;
 
     public virtual Map GetSpawnMap() => Map;
 
     public void DoTimer()
     {
-        if (!m_Running)
+        if (!_running)
         {
             return;
         }
 
-        var min = (long)m_MinDelay.TotalMilliseconds;
-        var max = (long)m_MaxDelay.TotalMilliseconds;
+        var min = (long)_minDelay.TotalMilliseconds;
+        var max = (long)_maxDelay.TotalMilliseconds;
 
         var delay = TimeSpan.FromMilliseconds(Utility.RandomMinMax(min, max));
         DoTimer(delay);
@@ -804,26 +761,26 @@ public abstract class BaseSpawner : Item, ISpawner
 
     public virtual void DoTimer(TimeSpan delay)
     {
-        if (!m_Running)
+        if (!_running)
         {
             return;
         }
 
         End = Core.Now + delay;
 
-        if (m_Timer == null)
+        if (_timer == null)
         {
-            m_Timer = new InternalTimer(this, delay);
+            _timer = new InternalTimer(this, delay);
         }
         else
         {
-            m_Timer.Stop();
-            m_Timer.Delay = delay;
+            _timer.Stop();
+            _timer.Delay = delay;
         }
 
         if (!IsFull)
         {
-            m_Timer.Start();
+            _timer.Start();
         }
     }
 
@@ -847,7 +804,7 @@ public abstract class BaseSpawner : Item, ISpawner
 
         Entries.Remove(entry);
 
-        if (m_Running && !IsFull && m_Timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running == false)
         {
             DoTimer();
         }
@@ -899,7 +856,7 @@ public abstract class BaseSpawner : Item, ISpawner
             }
         }
 
-        if (m_Running && !IsFull && m_Timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running == false)
         {
             DoTimer();
         }
@@ -925,294 +882,54 @@ public abstract class BaseSpawner : Item, ISpawner
         RemoveSpawns();
     }
 
-    public override void Serialize(IGenericWriter writer)
+    private void Deserialize(IGenericReader reader, int version)
     {
-        base.Serialize(writer);
-
-        writer.Write(9); // version
-
-        writer.Write(_guid);
-
-        writer.Write(ReturnOnDeactivate);
-
-        writer.Write(Entries.Count);
-
-        for (var i = 0; i < Entries.Count; ++i)
-        {
-            Entries[i].Serialize(writer);
-        }
-
-        writer.Write(m_WalkingRange);
-
-        writer.Write(WayPoint);
-
-        writer.Write(m_Group);
-
-        writer.Write(m_MinDelay);
-        writer.Write(m_MaxDelay);
-        writer.Write(m_Count);
-        writer.Write(m_Team);
-        writer.Write(m_HomeRange);
-        writer.Write(m_Running);
-
-        if (m_Running)
-        {
-            writer.WriteDeltaTime(End);
-        }
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
-        if (version < 7)
+        _guid = reader.ReadGuid();
+        _returnOnDeactivate = reader.ReadBool();
+        _entries = new List<SpawnerEntry>(reader.ReadInt());
+
+        for (var i = 0; i < _entries.Count; ++i)
         {
-            Entries = new List<SpawnerEntry>();
+            var entry = new SpawnerEntry(this);
+            entry.Deserialize(reader);
+            _entries.Add(entry);
         }
 
-        switch (version)
+        _walkingRange = reader.ReadInt();
+        _wayPoint = reader.ReadEntity<WayPoint>();
+        _group = reader.ReadBool();
+        _minDelay = reader.ReadTimeSpan();
+        _maxDelay = reader.ReadTimeSpan();
+        _count = reader.ReadInt();
+        _team = reader.ReadInt();
+        _homeRange = reader.ReadInt();
+        _running = reader.ReadBool();
+
+        _end = _running ? reader.ReadDeltaTime() : Core.Now;
+    }
+
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        if (_running && _end > Core.Now)
         {
-            case 9:
-                {
-                    _guid = reader.ReadGuid();
-                    goto case 8;
-                }
-            case 8:
-                {
-                    ReturnOnDeactivate = reader.ReadBool();
-                    goto case 7;
-                }
-            case 7:
-                {
-                    var size = reader.ReadInt();
-
-                    Entries = new List<SpawnerEntry>(size);
-
-                    for (var i = 0; i < size; ++i)
-                    {
-                        Entries.Add(new SpawnerEntry(this, reader));
-                    }
-
-                    goto case 4; // Skip the other crap
-                }
-            case 6:
-                {
-                    var size = reader.ReadInt();
-
-                    var addentries = Entries.Count == 0;
-
-                    for (var i = 0; i < size; ++i)
-                    {
-                        if (addentries)
-                        {
-                            Entries.Add(new SpawnerEntry(string.Empty, 100, reader.ReadInt()));
-                        }
-                        else
-                        {
-                            Entries[i].SpawnedMaxCount = reader.ReadInt();
-                        }
-                    }
-
-                    goto case 5;
-                }
-            case 5:
-                {
-                    var size = reader.ReadInt();
-
-                    var addentries = Entries.Count == 0;
-
-                    for (var i = 0; i < size; ++i)
-                    {
-                        if (addentries)
-                        {
-                            Entries.Add(new SpawnerEntry(string.Empty, reader.ReadInt(), 1));
-                        }
-                        else
-                        {
-                            Entries[i].SpawnedProbability = reader.ReadInt();
-                        }
-                    }
-
-                    goto case 4;
-                }
-            case 4:
-                {
-                    m_WalkingRange = reader.ReadInt();
-
-                    goto case 3;
-                }
-            case 3:
-            case 2:
-                {
-                    WayPoint = reader.ReadEntity<WayPoint>();
-
-                    goto case 1;
-                }
-
-            case 1:
-                {
-                    m_Group = reader.ReadBool();
-
-                    goto case 0;
-                }
-
-            case 0:
-                {
-                    m_MinDelay = reader.ReadTimeSpan();
-                    m_MaxDelay = reader.ReadTimeSpan();
-                    m_Count = reader.ReadInt();
-                    m_Team = reader.ReadInt();
-                    m_HomeRange = reader.ReadInt();
-                    m_Running = reader.ReadBool();
-
-                    var ts = m_Running ? reader.ReadDeltaTime() - Core.Now : TimeSpan.Zero;
-
-                    if (version < 7)
-                    {
-                        var size = reader.ReadInt();
-
-                        var addentries = Entries.Count == 0;
-
-                        for (var i = 0; i < size; ++i)
-                        {
-                            var typeName = reader.ReadString();
-
-                            if (addentries)
-                            {
-                                Entries.Add(new SpawnerEntry(typeName, 100, 1));
-                            }
-                            else
-                            {
-                                Entries[i].SpawnedName = typeName;
-                            }
-
-                            if (AssemblyHandler.FindTypeByName(typeName) == null)
-                            {
-                                m_WarnTimer ??= new WarnTimer();
-
-                                m_WarnTimer.Add(Location, Map, typeName);
-                            }
-                        }
-
-                        var count = reader.ReadInt();
-
-                        for (var i = 0; i < count; ++i)
-                        {
-                            var e = reader.ReadEntity<ISpawnable>();
-
-                            if (e == null)
-                            {
-                                continue;
-                            }
-
-                            if (e is BaseCreature creature)
-                            {
-                                creature.RemoveIfUntamed = true;
-                            }
-
-                            e.Spawner = this;
-
-                            for (var j = 0; j < Entries.Count; j++)
-                            {
-                                if (AssemblyHandler.FindTypeByName(Entries[j].SpawnedName) == e.GetType())
-                                {
-                                    Entries[j].Spawned.Add(e);
-                                    Spawned.Add(e, Entries[j]);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    DoTimer(ts);
-
-                    break;
-                }
-        }
-
-        if (version < 4)
-        {
-            m_WalkingRange = m_HomeRange;
+            DoTimer(_end - Core.Now);
         }
     }
 
     private class InternalTimer : Timer
     {
-        private readonly BaseSpawner m_Spawner;
+        private readonly BaseSpawner _spawner;
 
-        public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay) => m_Spawner = spawner;
-
-        protected override void OnTick()
-        {
-            if (m_Spawner?.Deleted == false)
-            {
-                m_Spawner.OnTick();
-            }
-        }
-    }
-
-    private class WarnTimer : Timer
-    {
-        private readonly List<WarnEntry> m_List;
-
-        public WarnTimer() : base(TimeSpan.FromSeconds(1.0))
-        {
-            m_List = new List<WarnEntry>();
-            Start();
-        }
-
-        public void Add(Point3D p, Map map, string name)
-        {
-            m_List.Add(new WarnEntry(p, map, name));
-        }
+        public InternalTimer(BaseSpawner spawner, TimeSpan delay) : base(delay) => _spawner = spawner;
 
         protected override void OnTick()
         {
-            try
+            if (_spawner?.Deleted == false)
             {
-                Console.WriteLine("Warning: {0} bad spawns detected, logged: 'badspawn.log'", m_List.Count);
-
-                using var op = new StreamWriter("badspawn.log", true);
-                op.WriteLine("# Bad spawns : {0}", DateTime.Now);
-                op.WriteLine("# Format: X Y Z F Name");
-                op.WriteLine();
-
-                foreach (var e in m_List)
-                {
-                    op.WriteLine(
-                        "{0}\t{1}\t{2}\t{3}\t{4}",
-                        e.m_Point.X,
-                        e.m_Point.Y,
-                        e.m_Point.Z,
-                        e.m_Map,
-                        e.m_Name
-                    );
-                }
-
-                op.WriteLine();
-                op.WriteLine();
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        private class WarnEntry
-        {
-            public readonly Map m_Map;
-            public readonly string m_Name;
-            public Point3D m_Point;
-
-            public WarnEntry(Point3D p, Map map, string name)
-            {
-                m_Point = p;
-                m_Map = map;
-                m_Name = name;
+                _spawner.OnTick();
             }
         }
     }
