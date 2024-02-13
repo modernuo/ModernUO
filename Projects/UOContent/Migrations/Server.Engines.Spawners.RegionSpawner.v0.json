@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Spawners.RegionSpawner",
+  "properties": [
+    {
+      "name": "SpawnRegionName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

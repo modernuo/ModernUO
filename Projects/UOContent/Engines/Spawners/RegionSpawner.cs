@@ -15,184 +15,172 @@
 
 using System;
 using System.Text.Json;
+using ModernUO.Serialization;
 using Server.Json;
 using Server.Regions;
 
-namespace Server.Engines.Spawners
+namespace Server.Engines.Spawners;
+
+[SerializationGenerator(0)]
+public partial class RegionSpawner : Spawner
 {
-    public class RegionSpawner : Spawner
+    [SerializableField(0, getter: "private", setter: "private")]
+    private string _spawnRegionName;
+
+    private BaseRegion _spawnRegion;
+
+    [Constructible(AccessLevel.Developer)]
+    public RegionSpawner()
     {
-        private BaseRegion m_SpawnRegion;
+    }
 
-        [Constructible(AccessLevel.Developer)]
-        public RegionSpawner()
+    [Constructible(AccessLevel.Developer)]
+    public RegionSpawner(string spawnedName) : base(spawnedName)
+    {
+    }
+
+    [Constructible(AccessLevel.Developer)]
+    public RegionSpawner(
+        int amount, int minDelay, int maxDelay, int team, int homeRange,
+        params string[] spawnedNames
+    ) : this(
+        amount,
+        TimeSpan.FromMinutes(minDelay),
+        TimeSpan.FromMinutes(maxDelay),
+        team,
+        homeRange,
+        spawnedNames
+    )
+    {
+    }
+
+    [Constructible(AccessLevel.Developer)]
+    public RegionSpawner(
+        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
+        params string[] spawnedNames
+    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+    {
+    }
+
+    public RegionSpawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
+    {
+        json.GetProperty("map", options, out Map map);
+        json.GetProperty("region", options, out string spawnRegion);
+
+        _spawnRegion = Region.Find(spawnRegion, map) as BaseRegion;
+        _spawnRegion?.InitRectangles();
+    }
+
+    [CommandProperty(AccessLevel.Developer)]
+    public BaseRegion SpawnRegion
+    {
+        get => _spawnRegion;
+        set
         {
+            _spawnRegion = value;
+            SpawnRegionName = _spawnRegion?.Name;
+            _spawnRegion?.InitRectangles();
+            InvalidateProperties();
+        }
+    }
+
+    public override void ToJson(DynamicJson json, JsonSerializerOptions options)
+    {
+        json.SetProperty("region", options, SpawnRegion.Name);
+    }
+
+    public override void GetSpawnerProperties(IPropertyList list)
+    {
+        base.GetSpawnerProperties(list);
+
+        if (Running && _spawnRegion != null)
+        {
+            list.Add(1076228, $"{"region:"}\t{_spawnRegion.Name}"); // ~1_DUMMY~ ~2_DUMMY~
+        }
+    }
+
+    public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
+    {
+        if (_spawnRegion == null || map == null || map == Map.Internal || map != _spawnRegion.Map ||
+            _spawnRegion.TotalWeight <= 0)
+        {
+            return Location;
         }
 
-        [Constructible(AccessLevel.Developer)]
-        public RegionSpawner(string spawnedName) : base(spawnedName)
+        bool waterMob, waterOnlyMob;
+
+        if (spawned is Mobile mob)
         {
+            waterMob = mob.CanSwim;
+            waterOnlyMob = mob.CanSwim && mob.CantWalk;
+        }
+        else
+        {
+            waterMob = false;
+            waterOnlyMob = false;
         }
 
-        [Constructible(AccessLevel.Developer)]
-        public RegionSpawner(
-            int amount, int minDelay, int maxDelay, int team, int homeRange,
-            params string[] spawnedNames
-        ) : this(
-            amount,
-            TimeSpan.FromMinutes(minDelay),
-            TimeSpan.FromMinutes(maxDelay),
-            team,
-            homeRange,
-            spawnedNames
-        )
+        // Try 10 times to find a valid location.
+        for (var i = 0; i < 10; i++)
         {
-        }
+            var rand = Utility.Random(_spawnRegion.TotalWeight);
 
-        [Constructible(AccessLevel.Developer)]
-        public RegionSpawner(
-            int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-            params string[] spawnedNames
-        ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
-        {
-        }
+            var x = int.MinValue;
+            var y = int.MinValue;
 
-        public RegionSpawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-        {
-            json.GetProperty("map", options, out Map map);
-            json.GetProperty("region", options, out string spawnRegion);
-
-            m_SpawnRegion = Region.Find(spawnRegion, map) as BaseRegion;
-            m_SpawnRegion?.InitRectangles();
-        }
-
-        public RegionSpawner(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.Developer)]
-        public BaseRegion SpawnRegion
-        {
-            get => m_SpawnRegion;
-            set
+            for (var j = 0; j < _spawnRegion.RectangleWeights.Length; j++)
             {
-                m_SpawnRegion = value;
-                m_SpawnRegion?.InitRectangles();
+                var curWeight = _spawnRegion.RectangleWeights[j];
 
-                InvalidateProperties();
-            }
-        }
-
-        public override void ToJson(DynamicJson json, JsonSerializerOptions options)
-        {
-            json.SetProperty("region", options, SpawnRegion.Name);
-        }
-
-        public override void GetSpawnerProperties(IPropertyList list)
-        {
-            base.GetSpawnerProperties(list);
-
-            if (Running && m_SpawnRegion != null)
-            {
-                list.Add(1076228, $"{"region:"}\t{m_SpawnRegion.Name}"); // ~1_DUMMY~ ~2_DUMMY~
-            }
-        }
-
-        public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
-        {
-            if (m_SpawnRegion == null || map == null || map == Map.Internal || map != m_SpawnRegion.Map ||
-                m_SpawnRegion.TotalWeight <= 0)
-            {
-                return Location;
-            }
-
-            bool waterMob, waterOnlyMob;
-
-            if (spawned is Mobile mob)
-            {
-                waterMob = mob.CanSwim;
-                waterOnlyMob = mob.CanSwim && mob.CantWalk;
-            }
-            else
-            {
-                waterMob = false;
-                waterOnlyMob = false;
-            }
-
-            // Try 10 times to find a valid location.
-            for (var i = 0; i < 10; i++)
-            {
-                var rand = Utility.Random(m_SpawnRegion.TotalWeight);
-
-                var x = int.MinValue;
-                var y = int.MinValue;
-
-                for (var j = 0; j < m_SpawnRegion.RectangleWeights.Length; j++)
+                if (rand < curWeight)
                 {
-                    var curWeight = m_SpawnRegion.RectangleWeights[j];
+                    var rect = _spawnRegion.Rectangles[j];
 
-                    if (rand < curWeight)
-                    {
-                        var rect = m_SpawnRegion.Rectangles[j];
+                    x = rect.Start.X + rand % rect.Width;
+                    y = rect.Start.Y + rand / rect.Width;
 
-                        x = rect.Start.X + rand % rect.Width;
-                        y = rect.Start.Y + rand / rect.Width;
-
-                        break;
-                    }
-
-                    rand -= curWeight;
+                    break;
                 }
 
-                var mapZ = map.GetAverageZ(x, y);
+                rand -= curWeight;
+            }
 
-                if (waterMob)
+            var mapZ = map.GetAverageZ(x, y);
+
+            if (waterMob)
+            {
+                if (IsValidWater(map, x, y, Z))
                 {
-                    if (IsValidWater(map, x, y, Z))
-                    {
-                        return new Point3D(x, y, Z);
-                    }
-
-                    if (IsValidWater(map, x, y, mapZ))
-                    {
-                        return new Point3D(x, y, mapZ);
-                    }
+                    return new Point3D(x, y, Z);
                 }
 
-                if (!waterOnlyMob)
+                if (IsValidWater(map, x, y, mapZ))
                 {
-                    if (map.CanSpawnMobile(x, y, Z))
-                    {
-                        return new Point3D(x, y, Z);
-                    }
-
-                    if (map.CanSpawnMobile(x, y, mapZ))
-                    {
-                        return new Point3D(x, y, mapZ);
-                    }
+                    return new Point3D(x, y, mapZ);
                 }
             }
 
-            return HomeLocation;
+            if (!waterOnlyMob)
+            {
+                if (map.CanSpawnMobile(x, y, Z))
+                {
+                    return new Point3D(x, y, Z);
+                }
+
+                if (map.CanSpawnMobile(x, y, mapZ))
+                {
+                    return new Point3D(x, y, mapZ);
+                }
+            }
         }
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+        return HomeLocation;
+    }
 
-            var version = reader.ReadEncodedInt();
-
-            m_SpawnRegion = Region.Find(reader.ReadString(), Map) as BaseRegion;
-            m_SpawnRegion?.InitRectangles();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.Write(m_SpawnRegion?.Name);
-        }
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        _spawnRegion = Region.Find(_spawnRegionName, Map) as BaseRegion;
+        _spawnRegion?.InitRectangles();
     }
 }

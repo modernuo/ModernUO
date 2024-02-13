@@ -53,7 +53,7 @@ namespace Server.Engines.Spawners
                 .Execute(new DirectoryInfoWrapper(inputDi))
                 .Files;
 
-            List<(FileInfo, string)> files = new List<(FileInfo, string)>();
+            List<(FileInfo, string)> files = [];
             foreach (var match in patternMatches)
             {
                 files.Add((new FileInfo(match.Path), match.Stem));
@@ -169,7 +169,7 @@ namespace Server.Engines.Spawners
         {
             var spawnersList = new List<Spawner>();
             var mapId = mapIdOverride != -1 ? mapIdOverride : int.Parse(parts[10]);
-            Map[] maps = mapId == 0 ? new[] { Map.Felucca, Map.Trammel } : new[] { Map.Maps[mapId - 1] };
+            Map[] maps = mapId == 0 ? [Map.Felucca, Map.Trammel] : [Map.Maps[mapId - 1]];
 
             foreach (var map in maps)
             {
@@ -193,7 +193,7 @@ namespace Server.Engines.Spawners
                 {
                     var count = int.Parse(parts[i + 16]);
                     totalCount += count;
-                    spawner.Entries.AddRange(CreateSpawnerEntries(parts[i + 1], count));
+                    spawner.Entries.AddRange(CreateSpawnerEntries(spawner, parts[i + 1], count));
                 }
 
                 if (spawner.Entries.Count == 0)
@@ -209,7 +209,7 @@ namespace Server.Engines.Spawners
             return spawnersList;
         }
 
-        private static List<SpawnerEntry> CreateSpawnerEntries(string typeList, int maxCount)
+        private static List<SpawnerEntry> CreateSpawnerEntries(BaseSpawner spawner, string typeList, int maxCount)
         {
             var list = new List<SpawnerEntry>();
             if (string.IsNullOrWhiteSpace(typeList))
@@ -220,7 +220,7 @@ namespace Server.Engines.Spawners
             foreach (var spawnType in typeList.Split(':'))
             {
                 var actualType = AssemblyHandler.FindTypeByName(ConvertType(spawnType))?.Name ?? spawnType;
-                list.Add(new SpawnerEntry(actualType, 100, maxCount));
+                list.Add(new SpawnerEntry(spawner, actualType, 100, maxCount));
             }
 
             return list;

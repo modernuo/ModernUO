@@ -1,0 +1,100 @@
+{
+  "version": 10,
+  "type": "Server.Engines.Spawners.BaseSpawner",
+  "properties": [
+    {
+      "name": "Guid",
+      "type": "System.Guid",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "ReturnOnDeactivate",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Entries",
+      "type": "System.Collections.Generic.List\u003CServer.Engines.Spawners.SpawnerEntry\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Engines.Spawners.SpawnerEntry",
+        "RawSerializableMigrationRule",
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "WalkingRange",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "WayPoint",
+      "type": "Server.Items.WayPoint",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Group",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MinDelay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "MaxDelay",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "Count",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Team",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "HomeRange",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Running",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "End",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
