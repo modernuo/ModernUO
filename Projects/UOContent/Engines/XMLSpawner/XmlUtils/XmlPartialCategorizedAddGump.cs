@@ -55,17 +55,17 @@ public class XmlPartialCategorizedAddGump : Gump
 
         if (searchResults.Count > 0)
         {
-            for (int i = page * 10; i < (page + 1) * 10 && i < searchResults.Count; ++i)
+            for (var i = page * 10; i < (page + 1) * 10 && i < searchResults.Count; ++i)
             {
-                int index = i % 10;
+                var index = i % 10;
 
-                SearchEntry se = (SearchEntry)searchResults[i];
+                var se = (SearchEntry)searchResults[i];
 
-                string labelstr = se.EntryType.Name;
+                var labelstr = se.EntryType.Name;
 
                 if (se.Parameters.Length > 0)
                 {
-                    for (int j = 0; j < se.Parameters.Length; j++)
+                    for (var j = 0; j < se.Parameters.Length; j++)
                     {
                         labelstr += $", {se.Parameters[j].Name}";
                     }
@@ -122,19 +122,19 @@ public class XmlPartialCategorizedAddGump : Gump
 
         match = match.ToLower();
 
-        for (int i = 0; i < types.Count; ++i)
+        for (var i = 0; i < types.Count; ++i)
         {
-            Type t = types[i];
+            var t = types[i];
 
             if ((typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) && t.Name.ToLower().IndexOf(match) >= 0 && !results.Contains(t))
             {
-                ConstructorInfo[] ctors = t.GetConstructors();
+                var ctors = t.GetConstructors();
 
-                for (int j = 0; j < ctors.Length; ++j)
+                for (var j = 0; j < ctors.Length; ++j)
                 {
                     if (/*ctors[j].GetParameters().Length == 0 && */ ctors[j].IsDefined(typeof(ConstructibleAttribute), false))
                     {
-                        SearchEntry s = new SearchEntry
+                        var s = new SearchEntry
                         {
                             EntryType = t,
                             Parameters = ctors[j].GetParameters()
@@ -150,12 +150,12 @@ public class XmlPartialCategorizedAddGump : Gump
 
     public static ArrayList Match(string match)
     {
-        ArrayList results = new ArrayList();
+        var results = new ArrayList();
         Type[] types;
 
-        Assembly[] asms = AssemblyHandler.Assemblies;
+        var asms = AssemblyHandler.Assemblies;
 
-        for (int i = 0; i < asms.Length; ++i)
+        for (var i = 0; i < asms.Length; ++i)
         {
             types = AssemblyHandler.GetTypeCache(asms[i]).Types;
             Match(match, types, results);
@@ -173,8 +173,8 @@ public class XmlPartialCategorizedAddGump : Gump
     {
         public int Compare(object x, object y)
         {
-            SearchEntry a = x as SearchEntry;
-            SearchEntry b = y as SearchEntry;
+            var a = x as SearchEntry;
+            var b = y as SearchEntry;
 
             return a.EntryType.Name.CompareTo(b.EntryType.Name);
         }
@@ -183,14 +183,14 @@ public class XmlPartialCategorizedAddGump : Gump
 
     public override void OnResponse(Network.NetState sender, RelayInfo info)
     {
-        Mobile from = sender.Mobile;
+        var from = sender.Mobile;
 
         switch (info.ButtonID)
         {
             case 1: // Search
                 {
-                    TextRelay te = info.GetTextEntry(0);
-                    string match = te == null ? "" : te.Text.Trim();
+                    var te = info.GetTextEntry(0);
+                    var match = te == null ? "" : te.Text.Trim();
 
                     if (match.Length < 3)
                     {
@@ -224,11 +224,11 @@ public class XmlPartialCategorizedAddGump : Gump
                 }
             default:
                 {
-                    int index = info.ButtonID - 4;
+                    var index = info.ButtonID - 4;
 
                     if (index >= 0 && index < m_SearchResults.Count)
                     {
-                        Type type = ((SearchEntry)m_SearchResults[index]).EntryType;
+                        var type = ((SearchEntry)m_SearchResults[index]).EntryType;
 
                         if (m_Gump is XmlAddGump mXmlAddGump && type != null)
                         {
@@ -240,7 +240,7 @@ public class XmlPartialCategorizedAddGump : Gump
                         }
                         else if (m_Spawner != null && type != null)
                         {
-                            XmlSpawnerGump xg = m_Spawner.SpawnerGump;
+                            var xg = m_Spawner.SpawnerGump;
 
                             if (xg != null)
                             {

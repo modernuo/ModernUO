@@ -83,9 +83,9 @@ public class XmlSpawnerDefaults
         // find the default entry corresponding to the account and username
         if (DefaultEntryList != null)
         {
-            for (int i = 0; i < DefaultEntryList.Count; i++)
+            for (var i = 0; i < DefaultEntryList.Count; i++)
             {
-                DefaultEntry entry = (DefaultEntry)DefaultEntryList[i];
+                var entry = (DefaultEntry)DefaultEntryList[i];
                 if (entry != null && string.Compare(entry.PlayerName, name, true) == 0 && string.Compare(entry.AccountName, account, true) == 0)
                 {
                     return entry;
@@ -93,7 +93,7 @@ public class XmlSpawnerDefaults
             }
         }
         // if not found then add one
-        DefaultEntry newentry = new DefaultEntry
+        var newentry = new DefaultEntry
         {
             PlayerName = name,
             AccountName = account
@@ -187,9 +187,9 @@ public class XmlAddGump : Gump
             return "0";
         }
 
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        var sb = new System.Text.StringBuilder();
         sb.AppendFormat("{0}", defs.NameList.Length);
-        for (int i = 0; i < defs.NameList.Length; i++)
+        for (var i = 0; i < defs.NameList.Length; i++)
         {
             sb.AppendFormat(":{0}", defs.NameList[i]);
         }
@@ -203,9 +203,9 @@ public class XmlAddGump : Gump
             return "0";
         }
 
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        var sb = new System.Text.StringBuilder();
         sb.AppendFormat("{0}", defs.SelectionList.Length);
-        for (int i = 0; i < defs.SelectionList.Length; i++)
+        for (var i = 0; i < defs.SelectionList.Length; i++)
         {
             sb.AppendFormat(":{0}", defs.SelectionList[i] ? 1 : 0);
         }
@@ -214,9 +214,9 @@ public class XmlAddGump : Gump
 
     private static string[] StringToNameList(string namelist)
     {
-        string[] newlist = new string[MaxEntries];
-        string[] tmplist = namelist.Split(':');
-        for (int i = 1; i < tmplist.Length; i++)
+        var newlist = new string[MaxEntries];
+        var tmplist = namelist.Split(':');
+        for (var i = 1; i < tmplist.Length; i++)
         {
             if (i - 1 >= newlist.Length)
             {
@@ -230,9 +230,9 @@ public class XmlAddGump : Gump
 
     private static bool[] StringToSelectionList(string selectionlist)
     {
-        bool[] newlist = new bool[MaxEntries];
-        string[] tmplist = selectionlist.Split(':');
-        for (int i = 1; i < tmplist.Length; i++)
+        var newlist = new bool[MaxEntries];
+        var tmplist = selectionlist.Split(':');
+        for (var i = 1; i < tmplist.Length; i++)
         {
             if (i - 1 >= newlist.Length)
             {
@@ -259,7 +259,7 @@ public class XmlAddGump : Gump
         }
 
         // Create the data set
-        DataSet ds = new DataSet(DefsDataSetName);
+        var ds = new DataSet(DefsDataSetName);
 
         // Load the data set up
         ds.Tables.Add(DefsTablePointName);
@@ -312,7 +312,7 @@ public class XmlAddGump : Gump
         ds.Tables[DefsTablePointName].Columns.Add("AutoNumberValue");
 
         // Create a new data row
-        DataRow dr = ds.Tables[DefsTablePointName].NewRow();
+        var dr = ds.Tables[DefsTablePointName].NewRow();
 
         // Populate the data
         //dr["AccountName"] = (string)defs.AccountName;
@@ -364,7 +364,7 @@ public class XmlAddGump : Gump
         ds.Tables[DefsTablePointName].Rows.Add(dr);
 
         // Write out the file
-        bool file_error = false;
+        var file_error = false;
 
         var dirname = Directory.Exists(DefsDir) ? $"{DefsDir}/{filename}.defs" : $"{filename}.defs";
 
@@ -431,11 +431,11 @@ public class XmlAddGump : Gump
             }
 
             // Create the data set
-            DataSet ds = new DataSet(DefsDataSetName);
+            var ds = new DataSet(DefsDataSetName);
 
             // Read in the file
             //ds.ReadXml(e.Arguments[0].ToString());
-            bool fileerror = false;
+            var fileerror = false;
             try
             {
                 ds.ReadXml(fs);
@@ -460,17 +460,17 @@ public class XmlAddGump : Gump
                 if (ds.Tables[DefsTablePointName] != null && ds.Tables[DefsTablePointName].Rows.Count > 0)
                 {
                     //foreach(DataRow dr in ds.Tables[DefsTablePointName].Rows){
-                    DataRow dr = ds.Tables[DefsTablePointName].Rows[0];
+                    var dr = ds.Tables[DefsTablePointName].Rows[0];
 
                     try { defs.SpawnerName = (string)dr["SpawnerName"]; }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
 
-                    double mindelay = defs.MinDelay.TotalMinutes;
+                    var mindelay = defs.MinDelay.TotalMinutes;
                     try { mindelay = double.Parse((string)dr["MinDelay"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.MinDelay = TimeSpan.FromMinutes(mindelay);
 
-                    double maxdelay = defs.MaxDelay.TotalMinutes;
+                    var maxdelay = defs.MaxDelay.TotalMinutes;
                     try { maxdelay = double.Parse((string)dr["MaxDelay"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.MaxDelay = TimeSpan.FromMinutes(maxdelay);
@@ -486,22 +486,22 @@ public class XmlAddGump : Gump
                     try { defs.Team = int.Parse((string)dr["Team"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
 
-                    double minrefract = defs.RefractMin.TotalMinutes;
+                    var minrefract = defs.RefractMin.TotalMinutes;
                     try { minrefract = double.Parse((string)dr["MinRefractory"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.RefractMin = TimeSpan.FromMinutes(minrefract);
 
-                    double maxrefract = defs.RefractMax.TotalMinutes;
+                    var maxrefract = defs.RefractMax.TotalMinutes;
                     try { maxrefract = double.Parse((string)dr["MaxRefractory"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.RefractMax = TimeSpan.FromMinutes(maxrefract);
 
-                    double todstart = defs.TODStart.TotalMinutes;
+                    var todstart = defs.TODStart.TotalMinutes;
                     try { todstart = double.Parse((string)dr["TODStart"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.TODStart = TimeSpan.FromMinutes(todstart);
 
-                    double todend = defs.TODEnd.TotalMinutes;
+                    var todend = defs.TODEnd.TotalMinutes;
                     try { todend = double.Parse((string)dr["TODEnd"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.TODEnd = TimeSpan.FromMinutes(todend);
@@ -522,12 +522,12 @@ public class XmlAddGump : Gump
                         }
                     }
 
-                    double duration = defs.Duration.TotalMinutes;
+                    var duration = defs.Duration.TotalMinutes;
                     try { duration = double.Parse((string)dr["Duration"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.Duration = TimeSpan.FromMinutes(duration);
 
-                    double despawnTime = defs.DespawnTime.TotalHours;
+                    var despawnTime = defs.DespawnTime.TotalHours;
                     try { despawnTime = double.Parse((string)dr["DespawnTime"]); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     defs.DespawnTime = TimeSpan.FromHours(despawnTime);
@@ -613,9 +613,9 @@ public class XmlAddGump : Gump
     [Description("Opens a gump that can add Xmlspawners with specified default settings")]
     public static void XmlAdd_OnCommand(CommandEventArgs e)
     {
-        Account acct = e.Mobile.Account as Account;
-        int x = 440;
-        int y = 0;
+        var acct = e.Mobile.Account as Account;
+        var x = 440;
+        var y = 0;
         XmlSpawnerDefaults.DefaultEntry defs = null;
         if (acct != null)
         {
@@ -631,7 +631,7 @@ public class XmlAddGump : Gump
         try
         {
             // Check if there is an argument provided (load criteria)
-            for (int nxtarg = 0; nxtarg < e.Arguments.Length; nxtarg++)
+            for (var nxtarg = 0; nxtarg < e.Arguments.Length; nxtarg++)
             {
                 // is it a defaults option?
                 if (e.Arguments[nxtarg].ToLower() == "-defaults")
@@ -663,7 +663,7 @@ public class XmlAddGump : Gump
         m_From = from;
 
         // read the text entries for default values
-        Account acct = from.Account as Account;
+        var acct = from.Account as Account;
         if (acct != null)
         {
             defs = XmlSpawnerDefaults.GetDefaults(acct.ToString(), from.Name);
@@ -943,10 +943,10 @@ public class XmlAddGump : Gump
             // display the clear all toggle
             AddButton(475, 5, 0xD2, 0xD3, 3999);
             // display the selection entries
-            for (int i = 0; i < MaxEntries; i++)
+            for (var i = 0; i < MaxEntries; i++)
             {
-                int xpos = i / MaxEntriesPerColumn * 155;
-                int ypos = i % MaxEntriesPerColumn * 22 + 30;
+                var xpos = i / MaxEntriesPerColumn * 155;
+                var ypos = i % MaxEntriesPerColumn * 22 + 30;
 
                 // background for search results area
                 AddImageTiled(xpos + 205, ypos, 116, 23, 0x52);
@@ -954,13 +954,13 @@ public class XmlAddGump : Gump
                 // has this been selected for category info specification?
                 AddImageTiled(xpos + 206, ypos + 1, 114, 21, i == defs.CategorySelectionIndex ? 0x1436 : 0xBBC);
 
-                bool sel = false;
+                var sel = false;
                 if (defs.SelectionList != null && i < defs.SelectionList.Length)
                 {
                     sel = defs.SelectionList[i];
                 }
 
-                int texthue = 0;
+                var texthue = 0;
                 if (sel)
                 {
                     texthue = 68;
@@ -1059,7 +1059,7 @@ public class XmlAddGump : Gump
         // read the text entries for default values
         XmlSpawnerDefaults.DefaultEntry defs = null;
 
-        Account acct = from.Account as Account;
+        var acct = from.Account as Account;
         if (acct != null)
         {
             defs = XmlSpawnerDefaults.GetDefaults(acct.ToString(), from.Name);
@@ -1070,8 +1070,8 @@ public class XmlAddGump : Gump
             return;
         }
 
-        int x = defs.AddGumpX;
-        int y = defs.AddGumpY;
+        var x = defs.AddGumpX;
+        var y = defs.AddGumpY;
         if (defs.ShowExtension)
         {
             // shift the starting point
@@ -1101,7 +1101,7 @@ public class XmlAddGump : Gump
             // read the text entries for default values
             defs = null;
 
-            Account acct = state.Mobile.Account as Account;
+            var acct = state.Mobile.Account as Account;
             if (acct != null)
             {
                 defs = XmlSpawnerDefaults.GetDefaults(acct.ToString(), state.Mobile.Name);
@@ -1123,10 +1123,10 @@ public class XmlAddGump : Gump
             }
 
             // assign it a unique id
-            Guid SpawnId = Guid.NewGuid();
+            var SpawnId = Guid.NewGuid();
             // count the number of entries to be added for maxcount
-            int maxcount = 0;
-            for (int i = 0; i < MaxEntries; i++)
+            var maxcount = 0;
+            for (var i = 0; i < MaxEntries; i++)
             {
                 if (defs.SelectionList != null && i < defs.SelectionList.Length && defs.SelectionList[i] &&
                     defs.NameList != null && i < defs.NameList.Length && defs.NameList[i] != null && defs.NameList[i].Length > 0)
@@ -1136,13 +1136,13 @@ public class XmlAddGump : Gump
             }
 
             // if autonumbering is enabled, name the spawner with the name+number
-            string sname = defs.SpawnerName;
+            var sname = defs.SpawnerName;
             if (defs.AutoNumber)
             {
                 sname = $"{defs.SpawnerName}#{defs.AutoNumberValue}";
             }
 
-            XmlSpawner spawner = new XmlSpawner(SpawnId, from.Location.X, from.Location.Y, 0, 0, sname, maxcount,
+            var spawner = new XmlSpawner(SpawnId, from.Location.X, from.Location.Y, 0, 0, sname, maxcount,
                 defs.MinDelay, defs.MaxDelay, defs.Duration, defs.ProximityRange, defs.ProximitySound, 1,
                 defs.Team, defs.HomeRange, defs.HomeRangeIsRelative, new XmlSpawner.SpawnObject[0], defs.RefractMin, defs.RefractMax,
                 defs.TODStart, defs.TODEnd, null, defs.TriggerObjectProp, defs.ProximityMsg, defs.TriggerOnCarried, defs.NoTriggerOnCarried,
@@ -1160,7 +1160,7 @@ public class XmlAddGump : Gump
             else
             {
                 // place the spawner at the targeted location
-                IPoint3D p = targeted as IPoint3D;
+                var p = targeted as IPoint3D;
                 if (p == null)
                 {
                     spawner.Delete();
@@ -1176,7 +1176,7 @@ public class XmlAddGump : Gump
 
             spawner.SpawnRange = defs.SpawnRange;
             // add entries from the name list
-            for (int i = 0; i < MaxEntries; i++)
+            for (var i = 0; i < MaxEntries; i++)
             {
                 if (defs.SelectionList != null && i < defs.SelectionList.Length && defs.SelectionList[i] &&
                     defs.NameList != null && i < defs.NameList.Length && defs.NameList[i] != null && defs.NameList[i].Length > 0)
@@ -1209,13 +1209,13 @@ public class XmlAddGump : Gump
         }
 
         // read the text entries for default values
-        XmlSpawnerDefaults.DefaultEntry defaults = XmlSpawnerDefaults.GetDefaults(state.Account.ToString(), state.Mobile.Name);
+        var defaults = XmlSpawnerDefaults.GetDefaults(state.Account.ToString(), state.Mobile.Name);
         if (defaults.IgnoreUpdate)
         {
             return;
         }
 
-        TextRelay tr = info.GetTextEntry(100); // mindelay
+        var tr = info.GetTextEntry(100); // mindelay
         if (tr?.Text != null && tr.Text.Length > 0)
         {
             try { defaults.MinDelay = TimeSpan.FromMinutes(double.Parse(tr.Text)); }
@@ -1259,7 +1259,7 @@ public class XmlAddGump : Gump
         tr = info.GetTextEntry(106); // Speech trigger
         if (tr != null)
         {
-            string txt = tr.Text;
+            var txt = tr.Text;
             if (txt != null && txt.Length == 0)
             {
                 txt = null;
@@ -1333,7 +1333,7 @@ public class XmlAddGump : Gump
         tr = info.GetTextEntry(117); // trigger on carried
         if (tr != null)
         {
-            string txt = tr.Text;
+            var txt = tr.Text;
             if (txt != null && txt.Length == 0)
             {
                 txt = null;
@@ -1345,7 +1345,7 @@ public class XmlAddGump : Gump
         tr = info.GetTextEntry(118); // no trigger on carried
         if (tr != null)
         {
-            string txt = tr.Text;
+            var txt = tr.Text;
             if (txt != null && txt.Length == 0)
             {
                 txt = null;
@@ -1357,7 +1357,7 @@ public class XmlAddGump : Gump
         tr = info.GetTextEntry(119); // proximity message
         if (tr != null)
         {
-            string txt = tr.Text;
+            var txt = tr.Text;
             if (txt != null && txt.Length == 0)
             {
                 txt = null;
@@ -1369,7 +1369,7 @@ public class XmlAddGump : Gump
         tr = info.GetTextEntry(120); // player trig prop
         if (tr != null)
         {
-            string txt = tr.Text;
+            var txt = tr.Text;
             if (txt != null && txt.Length == 0)
             {
                 txt = null;
@@ -1388,7 +1388,7 @@ public class XmlAddGump : Gump
         tr = info.GetTextEntry(122); // trig object prop
         if (tr != null)
         {
-            string txt = tr.Text;
+            var txt = tr.Text;
             if (txt != null && txt.Length == 0)
             {
                 txt = null;
@@ -1407,7 +1407,7 @@ public class XmlAddGump : Gump
         tr = info.GetTextEntry(124); // Skill trigger
         if (tr != null)
         {
-            string txt = tr.Text;
+            var txt = tr.Text;
             if (txt != null && txt.Length == 0)
             {
                 txt = null;
@@ -1426,7 +1426,7 @@ public class XmlAddGump : Gump
         // fill the NameList from the text entries
         if (defaults.ShowExtension)
         {
-            for (int i = 0; i < MaxEntries; i++)
+            for (var i = 0; i < MaxEntries; i++)
             {
                 tr = info.GetTextEntry(1000 + i);
                 if (defaults.NameList != null && i < defaults.NameList.Length && tr != null)
@@ -1579,7 +1579,7 @@ public class XmlAddGump : Gump
                 {
                     if (info.ButtonID >= 4000 && info.ButtonID < 4000 + MaxEntries)
                     {
-                        int i = info.ButtonID - 4000;
+                        var i = info.ButtonID - 4000;
                         if (defaults.SelectionList != null && i >= 0 && i < defaults.SelectionList.Length)
                         {
                             defaults.SelectionList[i] = !defaults.SelectionList[i];
@@ -1587,10 +1587,10 @@ public class XmlAddGump : Gump
                     }
                     if (info.ButtonID >= 5000 && info.ButtonID < 5000 + MaxEntries)
                     {
-                        int i = info.ButtonID - 5000;
+                        var i = info.ButtonID - 5000;
 
                         defaults.CategorySelectionIndex = i;
-                        XmlAddGump newg = new XmlAddGump(state.Mobile, defaults.StartingLoc, defaults.StartingMap, false, defaults.ShowExtension, 0, 0);
+                        var newg = new XmlAddGump(state.Mobile, defaults.StartingLoc, defaults.StartingMap, false, defaults.ShowExtension, 0, 0);
 
                         state.Mobile.SendGump(newg);
 
@@ -1606,7 +1606,7 @@ public class XmlAddGump : Gump
                             state.Mobile.CloseGump<XmlPartialCategorizedAddGump>();
 
                             //Type [] types = (Type[])XmlPartialCategorizedAddGump.Match(defs.NameList[i]).ToArray(typeof(Type));
-                            ArrayList types = XmlPartialCategorizedAddGump.Match(defaults.NameList[i]);
+                            var types = XmlPartialCategorizedAddGump.Match(defaults.NameList[i]);
                             state.Mobile.SendGump(new XmlPartialCategorizedAddGump(state.Mobile, defaults.NameList[i], 0, types, true, i, newg));
                         }
 
@@ -1625,7 +1625,7 @@ public class XmlAddGump : Gump
         public XmlAddOptionsGump(Mobile from) : base(0, 0)
         {
             // read the text entries for default values
-            Account acct = from.Account as Account;
+            var acct = from.Account as Account;
             XmlSpawnerDefaults.DefaultEntry defs = null;
 
             if (acct != null)
@@ -1680,13 +1680,13 @@ public class XmlAddGump : Gump
             }
 
             // read the text entries for default values
-            XmlSpawnerDefaults.DefaultEntry defs = XmlSpawnerDefaults.GetDefaults(state.Account.ToString(), state.Mobile.Name);
+            var defs = XmlSpawnerDefaults.GetDefaults(state.Account.ToString(), state.Mobile.Name);
             if (defs == null)
             {
                 return;
             }
 
-            TextRelay tr = info.GetTextEntry(100); // AddGumpX
+            var tr = info.GetTextEntry(100); // AddGumpX
             if (tr?.Text != null && tr.Text.Length > 0)
             {
                 try { defs.AddGumpX = int.Parse(tr.Text); }
@@ -1752,7 +1752,7 @@ public class XmlAddGump : Gump
                 return;
             }
 
-            int radiostate = -1;
+            var radiostate = -1;
             if (info.Switches.Length > 0)
             {
                 radiostate = info.Switches[0];

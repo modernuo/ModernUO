@@ -57,15 +57,15 @@ public class XmlSetPoint2DGump : Gump
         m_Page = page;
         m_List = list;
 
-        Point2D p = (Point2D)prop.GetValue(o, null);
+        var p = (Point2D)prop.GetValue(o, null);
 
         AddPage(0);
 
         AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
         AddImageTiled(BorderSize, BorderSize, TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0), TotalHeight, OffsetGumpID);
 
-        int x = BorderSize + OffsetSize;
-        int y = BorderSize + OffsetSize;
+        var x = BorderSize + OffsetSize;
+        var y = BorderSize + OffsetSize;
 
         AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
         AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop.Name);
@@ -146,7 +146,7 @@ public class XmlSetPoint2DGump : Gump
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            IPoint3D p = targeted as IPoint3D;
+            var p = targeted as IPoint3D;
 
             if (p != null)
             {
@@ -195,8 +195,8 @@ public class XmlSetPoint2DGump : Gump
                 }
             case 3: // Use values
                 {
-                    TextRelay x = info.GetTextEntry(0);
-                    TextRelay y = info.GetTextEntry(1);
+                    var x = info.GetTextEntry(0);
+                    var y = info.GetTextEntry(1);
 
                     toSet = new Point2D(x == null ? 0 : Utility.ToInt32(x.Text), y == null ? 0 : Utility.ToInt32(y.Text));
                     shouldSet = true;

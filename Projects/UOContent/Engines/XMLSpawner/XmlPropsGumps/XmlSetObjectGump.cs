@@ -60,15 +60,15 @@ public class XmlSetObjectGump : Gump
         m_Page = page;
         m_List = list;
 
-        string initialText = XmlPropertiesGump.ValueToString(o, prop);
+        var initialText = XmlPropertiesGump.ValueToString(o, prop);
 
         AddPage(0);
 
         AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
         AddImageTiled(BorderSize, BorderSize, TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0), TotalHeight, OffsetGumpID);
 
-        int x = BorderSize + OffsetSize;
-        int y = BorderSize + OffsetSize;
+        var x = BorderSize + OffsetSize;
+        var y = BorderSize + OffsetSize;
 
         AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
         AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop.Name);
@@ -252,7 +252,7 @@ public class XmlSetObjectGump : Gump
                 {
                     shouldSet = false;
 
-                    object obj = m_Property.GetValue(m_Object, null);
+                    var obj = m_Property.GetValue(m_Object, null);
 
                     if (obj == null)
                     {

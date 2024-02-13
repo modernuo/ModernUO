@@ -1382,25 +1382,23 @@ public class BaseXmlSpawner
                             // count nearby players
                             if (refobject is Item item)
                             {
-                                foreach (Mobile p in item.GetMobilesInRange(range))
+                                foreach (var p in item.GetMobilesInRange(range))
                                 {
                                     if (p.Player && p.AccessLevel == AccessLevel.Player)
                                     {
                                         nplayers++;
                                     }
                                 }
-                                ie.Free();
                             }
                             else if (refobject is Mobile mobile)
                             {
-                                foreach (Mobile p in mobile.GetMobilesInRange(range))
+                                foreach (var p in mobile.GetMobilesInRange(range))
                                 {
                                     if (p.Player && p.AccessLevel == AccessLevel.Player)
                                     {
                                         nplayers++;
                                     }
                                 }
-                                ie.Free();
                             }
 
                             var result = SetPropertyValue(spawner, o, arglist[0], nplayers.ToString());
@@ -1664,7 +1662,7 @@ public class BaseXmlSpawner
                 }
                 else if (o is Item item)
                 {
-                    foreach (Mobile p in item.GetMobilesInRange(range))
+                    foreach (var p in item.GetMobilesInRange(range))
                     {
                         if (p.Player && p.AccessLevel == AccessLevel.Player)
                         {
@@ -1674,7 +1672,7 @@ public class BaseXmlSpawner
                 }
                 else if (o is Mobile mobile)
                 {
-                    foreach (Mobile p in mobile.GetMobilesInRange(range))
+                    foreach (var p in mobile.GetMobilesInRange(range))
                     {
                         if (p.Player && p.AccessLevel == AccessLevel.Player)
                         {

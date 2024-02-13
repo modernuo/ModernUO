@@ -95,7 +95,7 @@ public class XmlPropertiesGump : Gump
     {
         m_Page = page;
 
-        int count = m_List.Count - page * EntryCount;
+        var count = m_List.Count - page * EntryCount;
 
         if (count < 0)
         {
@@ -106,33 +106,33 @@ public class XmlPropertiesGump : Gump
             count = EntryCount;
         }
 
-        int lastIndex = page * EntryCount + count - 1;
+        var lastIndex = page * EntryCount + count - 1;
 
         if (lastIndex >= 0 && lastIndex < m_List.Count && m_List[lastIndex] == null)
         {
             --count;
         }
 
-        int totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (ColumnEntryCount + 1);
+        var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (ColumnEntryCount + 1);
 
         AddPage(0);
 
         AddBackground(0, 0, TotalWidth * 3 + BorderSize * 2, BorderSize + totalHeight + BorderSize, BackGumpID);
         AddImageTiled(BorderSize, BorderSize + EntryHeight, (TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0)) * 3, totalHeight - EntryHeight, OffsetGumpID);
 
-        int x = BorderSize + OffsetSize;
-        int y = BorderSize;
+        var x = BorderSize + OffsetSize;
+        var y = BorderSize;
 
         if (m_Object is Item item)
         {
             AddLabelCropped(x + TextOffsetX, y, TypeWidth - TextOffsetX, EntryHeight, TextHue, item.Name);
         }
 
-        int propcount = 0;
+        var propcount = 0;
         for (int i = 0, index = page * EntryCount; i <= count && index < m_List.Count; ++i, ++index)
         {
             // do the multi column display
-            int column = propcount / ColumnEntryCount;
+            var column = propcount / ColumnEntryCount;
             if (propcount % ColumnEntryCount == 0)
             {
                 y = BorderSize;
@@ -141,7 +141,7 @@ public class XmlPropertiesGump : Gump
             x = BorderSize + OffsetSize + column * (ValueWidth + NameWidth + OffsetSize * 2 + SetOffsetX + SetWidth);
             y += EntryHeight + OffsetSize;
 
-            object o = m_List[index];
+            var o = m_List[index];
 
             if (o == null)
             {
@@ -154,9 +154,9 @@ public class XmlPropertiesGump : Gump
 
                 // look for the default value of the equivalent property in the XmlSpawnerDefaults.DefaultEntry class
 
-                int huemodifier = TextHue;
-                Mobiles.XmlSpawnerDefaults.DefaultEntry de = new Mobiles.XmlSpawnerDefaults.DefaultEntry();
-                Type ftype = de.GetType();
+                var huemodifier = TextHue;
+                var de = new Mobiles.XmlSpawnerDefaults.DefaultEntry();
+                var ftype = de.GetType();
 
                 var finfo = ftype.GetField(prop.Name);
 
@@ -182,7 +182,7 @@ public class XmlPropertiesGump : Gump
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
                 }
 
-                CPA cpa = GetCPA(prop);
+                var cpa = GetCPA(prop);
 
                 if (prop.CanWrite && cpa != null && m_Mobile.AccessLevel >= cpa.WriteLevel)
                 {
@@ -200,7 +200,7 @@ public class XmlPropertiesGump : Gump
 
     public override void OnResponse(NetState state, RelayInfo info)
     {
-        Mobile from = state.Mobile;
+        var from = state.Mobile;
 
         if (!BaseCommand.IsAccessible(from, m_Object))
         {
@@ -214,7 +214,7 @@ public class XmlPropertiesGump : Gump
                 {
                     if (m_Stack != null && m_Stack.Count > 0)
                     {
-                        StackEntry entry = m_Stack.Pop();
+                        var entry = m_Stack.Pop();
                         from.SendGump(new XmlPropertiesGump(from, entry.m_Object, m_Stack, null));
                     }
 
@@ -240,25 +240,25 @@ public class XmlPropertiesGump : Gump
                 }
             default:
                 {
-                    int index = m_Page * EntryCount + (info.ButtonID - 3);
+                    var index = m_Page * EntryCount + (info.ButtonID - 3);
 
                     if (index >= 0 && index < m_List.Count)
                     {
-                        PropertyInfo prop = m_List[index] as PropertyInfo;
+                        var prop = m_List[index] as PropertyInfo;
 
                         if (prop == null)
                         {
                             return;
                         }
 
-                        CPA attr = GetCPA(prop);
+                        var attr = GetCPA(prop);
 
                         if (!prop.CanWrite || attr == null || from.AccessLevel < attr.WriteLevel)
                         {
                             return;
                         }
 
-                        Type type = prop.PropertyType;
+                        var type = prop.PropertyType;
 
                         if (IsType(type, typeofMobile) || IsType(type, typeofItem))
                         {
@@ -311,7 +311,7 @@ public class XmlPropertiesGump : Gump
                         }
                         else if (HasAttribute(type, typeofPropertyObject, true))
                         {
-                            object obj = prop.GetValue(m_Object, null);
+                            var obj = prop.GetValue(m_Object, null);
 
                             from.SendGump(obj != null
                                 ? new XmlPropertiesGump(from, obj, m_Stack,
@@ -327,9 +327,9 @@ public class XmlPropertiesGump : Gump
 
     private static object[] GetObjects(Array a)
     {
-        object[] list = new object[a.Length];
+        var list = new object[a.Length];
 
-        for (int i = 0; i < list.Length; ++i)
+        for (var i = 0; i < list.Length; ++i)
         {
             list[i] = a.GetValue(i);
         }
@@ -341,14 +341,14 @@ public class XmlPropertiesGump : Gump
 
     private static string[] GetCustomEnumNames(Type type)
     {
-        object[] attrs = type.GetCustomAttributes(typeofCustomEnum, false);
+        var attrs = type.GetCustomAttributes(typeofCustomEnum, false);
 
         if (attrs.Length == 0)
         {
             return new string[0];
         }
 
-        CustomEnumAttribute ce = attrs[0] as CustomEnumAttribute;
+        var ce = attrs[0] as CustomEnumAttribute;
 
         if (ce == null)
         {
@@ -360,7 +360,7 @@ public class XmlPropertiesGump : Gump
 
     private static bool HasAttribute(Type type, Type check, bool inherit)
     {
-        object[] objs = type.GetCustomAttributes(check, inherit);
+        var objs = type.GetCustomAttributes(check, inherit);
 
         return objs.Length > 0;
     }
@@ -369,7 +369,7 @@ public class XmlPropertiesGump : Gump
 
     private static bool IsType(Type type, Type[] check)
     {
-        for (int i = 0; i < check.Length; ++i)
+        for (var i = 0; i < check.Length; ++i)
         {
             if (IsType(type, check[i]))
             {
@@ -497,17 +497,17 @@ public class XmlPropertiesGump : Gump
 
     private ArrayList BuildList()
     {
-        Type type = m_Object.GetType();
+        var type = m_Object.GetType();
 
-        PropertyInfo[] props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
+        var props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
-        ArrayList groups = GetGroups(type, props);
-        ArrayList list = new ArrayList();
+        var groups = GetGroups(type, props);
+        var list = new ArrayList();
 
-        for (int i = 0; i < groups.Count; ++i)
+        for (var i = 0; i < groups.Count; ++i)
         {
-            DictionaryEntry de = (DictionaryEntry)groups[i];
-            ArrayList groupList = (ArrayList)de.Value;
+            var de = (DictionaryEntry)groups[i];
+            var groupList = (ArrayList)de.Value;
 
             if (!HasAttribute((Type)de.Key, typeofNoSort, false))
             {
@@ -531,7 +531,7 @@ public class XmlPropertiesGump : Gump
 
     private static CPA GetCPA(PropertyInfo prop)
     {
-        object[] attrs = prop.GetCustomAttributes(typeofCPA, false);
+        var attrs = prop.GetCustomAttributes(typeofCPA, false);
 
         if (attrs.Length > 0)
         {
@@ -543,23 +543,23 @@ public class XmlPropertiesGump : Gump
 
     private ArrayList GetGroups(Type objectType, PropertyInfo[] props)
     {
-        Hashtable groups = new Hashtable();
+        var groups = new Hashtable();
 
-        for (int i = 0; i < props.Length; ++i)
+        for (var i = 0; i < props.Length; ++i)
         {
-            PropertyInfo prop = props[i];
+            var prop = props[i];
 
             if (prop.CanRead)
             {
-                CPA attr = GetCPA(prop);
+                var attr = GetCPA(prop);
 
                 if (attr != null && m_Mobile.AccessLevel >= attr.ReadLevel)
                 {
-                    Type type = prop.DeclaringType;
+                    var type = prop.DeclaringType;
 
                     while (true)
                     {
-                        Type baseType = type.BaseType;
+                        var baseType = type.BaseType;
 
                         if (baseType == null || baseType == typeofObject)
                         {
@@ -576,7 +576,7 @@ public class XmlPropertiesGump : Gump
                         }
                     }
 
-                    ArrayList list = (ArrayList)groups[type];
+                    var list = (ArrayList)groups[type];
 
                     if (list == null)
                     {
@@ -588,7 +588,7 @@ public class XmlPropertiesGump : Gump
             }
         }
 
-        ArrayList sorted = new ArrayList(groups);
+        var sorted = new ArrayList(groups);
 
         sorted.Sort(new GroupComparer(objectType));
 
@@ -650,8 +650,8 @@ public class XmlPropertiesGump : Gump
                 return 1;
             }
 
-            PropertyInfo a = x as PropertyInfo;
-            PropertyInfo b = y as PropertyInfo;
+            var a = x as PropertyInfo;
+            var b = y as PropertyInfo;
 
             if (a == null || b == null)
             {
@@ -672,7 +672,7 @@ public class XmlPropertiesGump : Gump
 
         private int GetDistance(Type type)
         {
-            Type current = m_Start;
+            var current = m_Start;
 
             int dist;
 
@@ -706,8 +706,8 @@ public class XmlPropertiesGump : Gump
                 throw new ArgumentException();
             }
 
-            Type a = (Type)de1.Key;
-            Type b = (Type)de2.Key;
+            var a = (Type)de1.Key;
+            var b = (Type)de2.Key;
 
             return GetDistance(a).CompareTo(GetDistance(b));
         }

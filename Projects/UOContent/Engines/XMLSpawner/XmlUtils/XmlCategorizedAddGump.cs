@@ -42,11 +42,11 @@ public class XmlAddCAGObject : XmlAddCAGNode
             }
             else if (gump is XmlSpawnerGump spawnerGump)
             {
-                XmlSpawner m_Spawner = spawnerGump.m_Spawner;
+                var m_Spawner = spawnerGump.m_Spawner;
 
                 if (m_Spawner != null)
                 {
-                    XmlSpawnerGump xg = m_Spawner.SpawnerGump;
+                    var xg = m_Spawner.SpawnerGump;
 
                     if (xg != null)
                     {
@@ -130,7 +130,7 @@ public class XmlAddCAGCategory : XmlAddCAGNode
         }
         else
         {
-            ArrayList nodes = new ArrayList();
+            var nodes = new ArrayList();
 
             try
             {
@@ -170,7 +170,7 @@ public class XmlAddCAGCategory : XmlAddCAGNode
     {
         if (File.Exists(path))
         {
-            XmlTextReader xml = new XmlTextReader(path)
+            var xml = new XmlTextReader(path)
             {
                 WhitespaceHandling = WhitespaceHandling.None
             };
@@ -179,7 +179,7 @@ public class XmlAddCAGCategory : XmlAddCAGNode
             {
                 if (xml.Name == "category" && xml.NodeType == XmlNodeType.Element)
                 {
-                    XmlAddCAGCategory cat = new XmlAddCAGCategory(null, xml);
+                    var cat = new XmlAddCAGCategory(null, xml);
 
                     xml.Close();
 
@@ -285,9 +285,9 @@ public class XmlCategorizedAddGump : Gump
     {
         m_Page = page;
 
-        XmlAddCAGNode[] nodes = m_Category.Nodes;
+        var nodes = m_Category.Nodes;
 
-        int count = nodes.Length - page * EntryCount;
+        var count = nodes.Length - page * EntryCount;
 
         if (count < 0)
         {
@@ -298,15 +298,15 @@ public class XmlCategorizedAddGump : Gump
             count = EntryCount;
         }
 
-        int totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
+        var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
 
         AddPage(0);
 
         AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
         AddImageTiled(BorderSize, BorderSize, TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0), totalHeight, OffsetGumpID);
 
-        int x = BorderSize + OffsetSize;
-        int y = BorderSize + OffsetSize;
+        var x = BorderSize + OffsetSize;
+        var y = BorderSize + OffsetSize;
 
         if (OldStyle)
         {
@@ -329,7 +329,7 @@ public class XmlCategorizedAddGump : Gump
 
         x += PrevWidth + OffsetSize;
 
-        int emptyWidth = TotalWidth - PrevWidth * 2 - NextWidth - OffsetSize * 5 - (OldStyle ? SetWidth + OffsetSize : 0);
+        var emptyWidth = TotalWidth - PrevWidth * 2 - NextWidth - OffsetSize * 5 - (OldStyle ? SetWidth + OffsetSize : 0);
 
         if (!OldStyle)
         {
@@ -382,7 +382,7 @@ public class XmlCategorizedAddGump : Gump
             x = BorderSize + OffsetSize;
             y += EntryHeight + OffsetSize;
 
-            XmlAddCAGNode node = nodes[index];
+            var node = nodes[index];
 
             AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
             AddLabelCropped(x + TextOffsetX, y + (EntryHeight - 20) / 2, EntryWidth - TextOffsetX, EntryHeight, TextHue, node.Caption);
@@ -398,9 +398,9 @@ public class XmlCategorizedAddGump : Gump
 
             if (node is XmlAddCAGObject obj)
             {
-                int itemID = obj.ItemID;
+                var itemID = obj.ItemID;
 
-                Rectangle2D bounds = ItemBounds.Table[itemID];
+                var bounds = ItemBounds.Table[itemID];
 
                 if (itemID != 1 && bounds.Height < EntryHeight * 2)
                 {
@@ -419,7 +419,7 @@ public class XmlCategorizedAddGump : Gump
 
     public override void OnResponse(NetState state, RelayInfo info)
     {
-        Mobile from = m_Owner;
+        var from = m_Owner;
 
         switch (info.ButtonID)
         {
@@ -431,7 +431,7 @@ public class XmlCategorizedAddGump : Gump
                 {
                     if (m_Category.Parent != null)
                     {
-                        int index = Array.IndexOf(m_Category.Parent.Nodes, m_Category) / EntryCount;
+                        var index = Array.IndexOf(m_Category.Parent.Nodes, m_Category) / EntryCount;
 
                         if (index < 0)
                         {
@@ -463,7 +463,7 @@ public class XmlCategorizedAddGump : Gump
                 }
             default:
                 {
-                    int index = m_Page * EntryCount + (info.ButtonID - 4);
+                    var index = m_Page * EntryCount + (info.ButtonID - 4);
 
                     if (index >= 0 && index < m_Category.Nodes.Length)
                     {

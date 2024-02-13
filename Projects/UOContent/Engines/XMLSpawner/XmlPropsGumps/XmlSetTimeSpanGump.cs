@@ -56,7 +56,7 @@ public class XmlSetTimeSpanGump : Gump
         m_Page = page;
         m_List = list;
 
-        TimeSpan ts = (TimeSpan)prop.GetValue(o, null);
+        var ts = (TimeSpan)prop.GetValue(o, null);
 
         AddPage(0);
 
@@ -74,8 +74,8 @@ public class XmlSetTimeSpanGump : Gump
 
     private void AddRect(int index, string str, int button, int text)
     {
-        int x = BorderSize + OffsetSize;
-        int y = BorderSize + OffsetSize + index * (EntryHeight + OffsetSize);
+        var x = BorderSize + OffsetSize;
+        var y = BorderSize + OffsetSize + index * (EntryHeight + OffsetSize);
 
         AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
         AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, str);
@@ -103,9 +103,9 @@ public class XmlSetTimeSpanGump : Gump
         TimeSpan toSet;
         bool shouldSet, shouldSend;
 
-        TextRelay h = info.GetTextEntry(0);
-        TextRelay m = info.GetTextEntry(1);
-        TextRelay s = info.GetTextEntry(2);
+        var h = info.GetTextEntry(0);
+        var m = info.GetTextEntry(1);
+        var s = info.GetTextEntry(2);
 
         switch (info.ButtonID)
         {

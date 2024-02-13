@@ -43,15 +43,15 @@ public class SpawnerExporter
 
         public override void ExecuteList(CommandEventArgs e, List<object> list)
         {
-            string filename = e.GetString(0);
+            var filename = e.GetString(0);
 
-            ArrayList spawners = new ArrayList();
+            var spawners = new ArrayList();
 
-            for (int i = 0; i < list.Count; ++i)
+            for (var i = 0; i < list.Count; ++i)
             {
                 if (list[i] is Spawner)
                 {
-                    Spawner spawner = (Spawner)list[i];
+                    var spawner = (Spawner)list[i];
                     if (!spawner.Deleted && spawner.Map != Map.Internal && spawner.Parent == null)
                     {
                         spawners.Add(spawner);
@@ -87,11 +87,11 @@ public class SpawnerExporter
                 Directory.CreateDirectory("Saves/Spawners");
             }
 
-            string filePath = Path.Combine("Saves/Spawners", filename);
+            var filePath = Path.Combine("Saves/Spawners", filename);
 
-            using (StreamWriter op = new StreamWriter(filePath))
+            using (var op = new StreamWriter(filePath))
             {
-                XmlTextWriter xml = new XmlTextWriter(op)
+                var xml = new XmlTextWriter(op)
                 {
                     Formatting = Formatting.Indented,
                     IndentChar = '\t',
@@ -180,15 +180,15 @@ public class SpawnerExporter
     {
         if (e.Arguments.Length >= 1)
         {
-            string filename = e.GetString(0);
-            string filePath = Path.Combine("Saves/Spawners", filename);
+            var filename = e.GetString(0);
+            var filePath = Path.Combine("Saves/Spawners", filename);
 
             if (File.Exists(filePath))
             {
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(filePath);
 
-                XmlElement root = doc["spawners"];
+                var root = doc["spawners"];
 
                 int successes = 0, failures = 0;
 
@@ -231,23 +231,23 @@ public class SpawnerExporter
 
     private static void ImportSpawner(XmlNode node)
     {
-        int count = int.Parse(GetText(node["count"], "1"));
-        int homeRange = int.Parse(GetText(node["homerange"], "4"));
+        var count = int.Parse(GetText(node["count"], "1"));
+        var homeRange = int.Parse(GetText(node["homerange"], "4"));
 
-        int walkingRange = int.Parse(GetText(node["walkingrange"], "-1"));
+        var walkingRange = int.Parse(GetText(node["walkingrange"], "-1"));
 
-        int team = int.Parse(GetText(node["team"], "0"));
+        var team = int.Parse(GetText(node["team"], "0"));
 
-        bool group = bool.Parse(GetText(node["group"], "False"));
-        TimeSpan maxDelay = TimeSpan.Parse(GetText(node["maxdelay"], "10:00"));
-        TimeSpan minDelay = TimeSpan.Parse(GetText(node["mindelay"], "05:00"));
-        IEnumerable<string> creaturesName = LoadCreaturesName(node["creaturesname"]);
+        var group = bool.Parse(GetText(node["group"], "False"));
+        var maxDelay = TimeSpan.Parse(GetText(node["maxdelay"], "10:00"));
+        var minDelay = TimeSpan.Parse(GetText(node["mindelay"], "05:00"));
+        var creaturesName = LoadCreaturesName(node["creaturesname"]);
 
-        string name = GetText(node["name"], "Spawner");
-        Point3D location = Point3D.Parse(GetText(node["location"], "Error"));
-        Map map = Map.Parse(GetText(node["map"], "Error"));
+        var name = GetText(node["name"], "Spawner");
+        var location = Point3D.Parse(GetText(node["location"], "Error"));
+        var map = Map.Parse(GetText(node["map"], "Error"));
 
-        Spawner spawner = new Spawner(count, minDelay, maxDelay, team, homeRange, creaturesName.ToArray());
+        var spawner = new Spawner(count, minDelay, maxDelay, team, homeRange, creaturesName.ToArray());
         if (walkingRange >= 0)
         {
             spawner.WalkingRange = walkingRange;
@@ -265,7 +265,7 @@ public class SpawnerExporter
 
     private static IEnumerable<string> LoadCreaturesName(XmlElement node)
     {
-        List<string> names = new List<string>();
+        var names = new List<string>();
 
         if (node != null)
         {

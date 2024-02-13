@@ -35,7 +35,7 @@ public class TextEntryGump : Gump
         AddImageTiled(23, 5, 214, 270, 0x52);
         AddImageTiled(24, 6, 213, 261, 0xBBC);
 
-        string label = $"{spawner.Name} entry {index}";
+        var label = $"{spawner.Name} entry {index}";
         AddLabel(28, 10, 0x384, label);
 
         // OK button
@@ -75,8 +75,8 @@ public class TextEntryGump : Gump
             return;
         }
 
-        bool update_entry = false;
-        bool edit_entry = false;
+        var update_entry = false;
+        var edit_entry = false;
 
         switch (info.ButtonID)
         {
@@ -103,26 +103,26 @@ public class TextEntryGump : Gump
         if (edit_entry)
         {
             // get the old text
-            TextRelay entry = info.GetTextEntry(1);
-            string oldtext = entry.Text;
+            var entry = info.GetTextEntry(1);
+            var oldtext = entry.Text;
             // get the new text
             entry = info.GetTextEntry(2);
-            string newtext = entry.Text;
+            var newtext = entry.Text;
             // make the substitution
             entry = info.GetTextEntry(0);
-            string origtext = entry.Text;
+            var origtext = entry.Text;
             if (origtext != null && oldtext != null && newtext != null)
             {
                 try
                 {
-                    int firstindex = origtext.IndexOf(oldtext);
+                    var firstindex = origtext.IndexOf(oldtext);
                     if (firstindex >= 0)
                     {
 
 
-                        int secondindex = firstindex + oldtext.Length;
+                        var secondindex = firstindex + oldtext.Length;
 
-                        int lastindex = origtext.Length - 1;
+                        var lastindex = origtext.Length - 1;
 
                         string editedtext;
                         if (firstindex > 0)
@@ -154,7 +154,7 @@ public class TextEntryGump : Gump
         }
         if (update_entry)
         {
-            TextRelay entry = info.GetTextEntry(0);
+            var entry = info.GetTextEntry(0);
             if (m_index < m_Spawner.SpawnObjects.Length)
             {
                 m_Spawner.SpawnObjects[m_index].TypeName = entry.Text;
@@ -341,7 +341,7 @@ public class XmlSpawnerGump : Gump
         // add the status string
         AddTextEntry(38, 384, 235, 33, 33, 900, m_Spawner.status_str);
         // add the page buttons
-        for (int i = 0; i < MaxSpawnEntries / MaxEntriesPerPage; i++)
+        for (var i = 0; i < MaxSpawnEntries / MaxEntriesPerPage; i++)
         {
             //AddButton(38+i*30, 365, 2206, 2206, 0, GumpButtonType.Page, 1+i);
             AddButton(38 + i * 25, 365, 0x8B1 + i, 0x8B1 + i, 4000 + i);
@@ -373,16 +373,16 @@ public class XmlSpawnerGump : Gump
         }
 
 
-        for (int i = 0; i < MaxSpawnEntries; i++)
+        for (var i = 0; i < MaxSpawnEntries; i++)
         {
             if (page != i / MaxEntriesPerPage)
             {
                 continue;
             }
 
-            string str = string.Empty;
-            int texthue = 0;
-            int background = 0xBBC;
+            var str = string.Empty;
+            var texthue = 0;
+            var background = 0xBBC;
 
             if (i % MaxEntriesPerPage == 0)
             {
@@ -408,7 +408,7 @@ public class XmlSpawnerGump : Gump
                 }
             }
 
-            bool hasreplacement = false;
+            var hasreplacement = false;
 
             // check for replacement entries
             if (Rentry != null && Rentry.Index == i)
@@ -444,10 +444,10 @@ public class XmlSpawnerGump : Gump
                     str = m_Spawner.SpawnObjects[i].TypeName;
                 }
 
-                int count = m_Spawner.SpawnObjects[i].SpawnedObjects.Count;
-                int max = m_Spawner.SpawnObjects[i].ActualMaxCount;
-                int subgrp = m_Spawner.SpawnObjects[i].SubGroup;
-                int spawnsper = m_Spawner.SpawnObjects[i].SpawnsPerTick;
+                var count = m_Spawner.SpawnObjects[i].SpawnedObjects.Count;
+                var max = m_Spawner.SpawnObjects[i].ActualMaxCount;
+                var subgrp = m_Spawner.SpawnObjects[i].SubGroup;
+                var spawnsper = m_Spawner.SpawnObjects[i].SpawnsPerTick;
 
                 texthue = subgrp * 11;
                 if (texthue < 0)
@@ -482,7 +482,7 @@ public class XmlSpawnerGump : Gump
                     string strmind = null;
                     string strmaxd = null;
                     string strpackrange = null;
-                    string strspawnsper = spawnsper.ToString();
+                    var strspawnsper = spawnsper.ToString();
 
                     if (m_Spawner.SpawnObjects[i].SequentialResetTime > 0 && m_Spawner.SpawnObjects[i].SubGroup > 0)
                     {
@@ -529,7 +529,7 @@ public class XmlSpawnerGump : Gump
                         strnext = m_Spawner.NextSpawn.ToString();
                     }
 
-                    int yoff = 22 * (i % MaxEntriesPerPage) + 30;
+                    var yoff = 22 * (i % MaxEntriesPerPage) + 30;
 
                     // spawns per tick
                     AddImageTiled(303 + xoffset, yoff, 30, 23, 0x52);
@@ -585,15 +585,15 @@ public class XmlSpawnerGump : Gump
 
     public XmlSpawner.SpawnObject[] CreateArray(RelayInfo info, Mobile from)
     {
-        ArrayList SpawnObjects = new ArrayList();
+        var SpawnObjects = new ArrayList();
 
-        for (int i = 0; i < MaxSpawnEntries; i++)
+        for (var i = 0; i < MaxSpawnEntries; i++)
         {
-            TextRelay te = info.GetTextEntry(i);
+            var te = info.GetTextEntry(i);
 
             if (te != null)
             {
-                string str = te.Text;
+                var str = te.Text;
 
                 if (str.Length > 0)
                 {
@@ -601,16 +601,16 @@ public class XmlSpawnerGump : Gump
 #if (BOOKTEXTENTRY)
                     if (i < m_Spawner.SpawnObjects.Length)
                     {
-                        string currenttext = m_Spawner.SpawnObjects[i].TypeName;
+                        var currenttext = m_Spawner.SpawnObjects[i].TypeName;
                         if (currenttext != null && currenttext.Length >= 230)
                         {
                             str = currenttext;
                         }
                     }
 #endif
-                    string typestr = BaseXmlSpawner.ParseObjectType(str);
+                    var typestr = BaseXmlSpawner.ParseObjectType(str);
 
-                    Type type = AssemblyHandler.FindTypeByName(typestr);
+                    var type = AssemblyHandler.FindTypeByName(typestr);
 
                     if (type != null)
                     {
@@ -639,13 +639,13 @@ public class XmlSpawnerGump : Gump
 
     public void UpdateTypeNames(Mobile from, RelayInfo info)
     {
-        for (int i = 0; i < MaxSpawnEntries; i++)
+        for (var i = 0; i < MaxSpawnEntries; i++)
         {
-            TextRelay te = info.GetTextEntry(i);
+            var te = info.GetTextEntry(i);
 
             if (te != null)
             {
-                string str = te.Text;
+                var str = te.Text;
 
                 if (str.Length > 0)
                 {
@@ -657,7 +657,7 @@ public class XmlSpawnerGump : Gump
                         // that could be longer than the buffer if booktextentry is used
 
 #if (BOOKTEXTENTRY)
-                        string currentstr = m_Spawner.SpawnObjects[i].TypeName;
+                        var currentstr = m_Spawner.SpawnObjects[i].TypeName;
                         if (currentstr != null && currentstr.Length < 230)
 #endif
                         {
@@ -685,13 +685,13 @@ public class XmlSpawnerGump : Gump
             return;
         }
 
-        NetState ns = from.NetState;
+        var ns = from.NetState;
 
         if (ns?.Gumps != null)
         {
-            ArrayList refresh = new ArrayList();
+            var refresh = new ArrayList();
 
-            foreach (Gump g in ns.Gumps)
+            foreach (var g in ns.Gumps)
             {
                 // clear the gump status on the spawner associated with the gump
                 if (g is XmlSpawnerGump xg && xg.m_Spawner != null)
@@ -712,7 +712,7 @@ public class XmlSpawnerGump : Gump
                     // flag the current gump on the spawner as closed
                     g.m_Spawner.GumpReset = true;
 
-                    XmlSpawnerGump xg = new XmlSpawnerGump(g.m_Spawner, g.X, g.Y, g.m_ShowGump, g.xoffset, g.page, g.Rentry);
+                    var xg = new XmlSpawnerGump(g.m_Spawner, g.X, g.Y, g.m_ShowGump, g.xoffset, g.page, g.Rentry);
 
                     from.SendGump(xg);
                 }
@@ -763,7 +763,7 @@ public class XmlSpawnerGump : Gump
         }
 
         // Get the current name
-        TextRelay tr = info.GetTextEntry(999);
+        var tr = info.GetTextEntry(999);
         if (tr != null)
         {
             m_Spawner.Name = tr.Text;
@@ -781,7 +781,7 @@ public class XmlSpawnerGump : Gump
             return;
         }
 
-        for (int i = 0; i < m_Spawner.SpawnObjects.Length; i++)
+        for (var i = 0; i < m_Spawner.SpawnObjects.Length; i++)
         {
             if (page != i / MaxEntriesPerPage)
             {
@@ -789,10 +789,10 @@ public class XmlSpawnerGump : Gump
             }
 
             // check the max count entry
-            TextRelay temcnt = info.GetTextEntry(500 + i);
+            var temcnt = info.GetTextEntry(500 + i);
             if (temcnt != null)
             {
-                int maxval = 0;
+                var maxval = 0;
                 try { maxval = Convert.ToInt32(temcnt.Text, 10); }
                 catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                 if (maxval < 0)
@@ -806,10 +806,10 @@ public class XmlSpawnerGump : Gump
             if (m_ShowGump > 0)
             {
                 // check the subgroup entry
-                TextRelay tegrp = info.GetTextEntry(600 + i);
+                var tegrp = info.GetTextEntry(600 + i);
                 if (tegrp != null)
                 {
-                    int grpval = 0;
+                    var grpval = 0;
                     try { grpval = Convert.ToInt32(tegrp.Text, 10); }
                     catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                     if (grpval < 0)
@@ -824,7 +824,7 @@ public class XmlSpawnerGump : Gump
             if (m_ShowGump > 1)
             {
                 // note, while these values can be entered in any spawn entry, they will only be assigned to the subgroup leader
-                int subgroupindex = m_Spawner.GetCurrentSequentialSpawnIndex(m_Spawner.SpawnObjects[i].SubGroup);
+                var subgroupindex = m_Spawner.GetCurrentSequentialSpawnIndex(m_Spawner.SpawnObjects[i].SubGroup);
                 TextRelay tegrp;
 
                 if (subgroupindex >= 0 && subgroupindex < m_Spawner.SpawnObjects.Length)
@@ -849,7 +849,7 @@ public class XmlSpawnerGump : Gump
                     tegrp = info.GetTextEntry(1100 + i);
                     if (tegrp?.Text != null && tegrp.Text.Length > 0)
                     {
-                        int grpval = 0;
+                        var grpval = 0;
                         try { grpval = Convert.ToInt32(tegrp.Text, 10); }
                         catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                         if (grpval < 0)
@@ -863,7 +863,7 @@ public class XmlSpawnerGump : Gump
                     tegrp = info.GetTextEntry(1200 + i);
                     if (tegrp?.Text != null && tegrp.Text.Length > 0)
                     {
-                        int grpval = 0;
+                        var grpval = 0;
                         try { grpval = Convert.ToInt32(tegrp.Text, 10); }
                         catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                         if (grpval < 0)
@@ -939,7 +939,7 @@ public class XmlSpawnerGump : Gump
                 {
                     if (!string.IsNullOrEmpty(tegrp.Text))
                     {
-                        int grpval = 1;
+                        var grpval = 1;
                         try { grpval = int.Parse(tegrp.Text); }
                         catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                         if (grpval < 0)
@@ -965,7 +965,7 @@ public class XmlSpawnerGump : Gump
                 {
                     if (!string.IsNullOrEmpty(tegrp.Text))
                     {
-                        int grpval = 1;
+                        var grpval = 1;
                         try { grpval = int.Parse(tegrp.Text); }
                         catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
                         if (grpval < 0)
@@ -988,10 +988,10 @@ public class XmlSpawnerGump : Gump
         }
 
         // Update the maxcount
-        TextRelay temax = info.GetTextEntry(300);
+        var temax = info.GetTextEntry(300);
         if (temax != null)
         {
-            int maxval = 0;
+            var maxval = 0;
             try { maxval = Convert.ToInt32(temax.Text, 10); }
             catch (Exception e) { Diagnostics.ExceptionLogging.LogException(e); }
             if (maxval < 0)
@@ -1097,7 +1097,7 @@ public class XmlSpawnerGump : Gump
                     // check the restrict kills flag
                     if (info.ButtonID >= 300 && info.ButtonID < 300 + MaxSpawnEntries)
                     {
-                        int index = info.ButtonID - 300;
+                        var index = info.ButtonID - 300;
                         if (index < m_Spawner.SpawnObjects.Length)
                         {
                             m_Spawner.SpawnObjects[index].RestrictKillsToSubgroup = !m_Spawner.SpawnObjects[index].RestrictKillsToSubgroup;
@@ -1105,7 +1105,7 @@ public class XmlSpawnerGump : Gump
                     }
                     else if (info.ButtonID >= 400 && info.ButtonID < 400 + MaxSpawnEntries)
                     {
-                        int index = info.ButtonID - 400;
+                        var index = info.ButtonID - 400;
                         if (index < m_Spawner.SpawnObjects.Length)
                         {
                             m_Spawner.SpawnObjects[index].ClearOnAdvance = !m_Spawner.SpawnObjects[index].ClearOnAdvance;
@@ -1114,11 +1114,11 @@ public class XmlSpawnerGump : Gump
                     else if (info.ButtonID >= 800 && info.ButtonID < 800 + MaxSpawnEntries)
                     {
                         // open the text entry gump
-                        int index = info.ButtonID - 800;
+                        var index = info.ButtonID - 800;
                         // open a text entry gump
 #if (BOOKTEXTENTRY)
                         // display a new gump
-                        XmlSpawnerGump newgump = new XmlSpawnerGump(m_Spawner, X, Y, m_ShowGump, xoffset, page);
+                        var newgump = new XmlSpawnerGump(m_Spawner, X, Y, m_ShowGump, xoffset, page);
                         state.Mobile.SendGump(newgump);
 
                         // is there an existing book associated with the gump?
@@ -1127,7 +1127,7 @@ public class XmlSpawnerGump : Gump
                             m_Spawner.m_TextEntryBook = new List<XmlTextEntryBook>();
                         }
 
-                        object[] args = new object[6];
+                        var args = new object[6];
 
                         args[0] = m_Spawner;
                         args[1] = index;
@@ -1136,7 +1136,7 @@ public class XmlSpawnerGump : Gump
                         args[4] = m_ShowGump;
                         args[5] = page;
 
-                        XmlTextEntryBook book = new XmlTextEntryBook(0, string.Empty, m_Spawner.Name, 20, true);
+                        var book = new XmlTextEntryBook(0, string.Empty, m_Spawner.Name, 20, true);
 
                         m_Spawner.m_TextEntryBook.Add(book);
 
@@ -1144,7 +1144,7 @@ public class XmlSpawnerGump : Gump
                         book.Author = m_Spawner.Name;
 
                         // fill the contents of the book with the current text entry data
-                        string text = string.Empty;
+                        var text = string.Empty;
                         if (m_Spawner.SpawnObjects != null && index < m_Spawner.SpawnObjects.Length)
                         {
                             text = m_Spawner.SpawnObjects[index].TypeName;
@@ -1168,21 +1168,21 @@ public class XmlSpawnerGump : Gump
                     {
                         nclicks++;
                         // find the location of the spawn at the specified index
-                        int index = info.ButtonID - 1300;
+                        var index = info.ButtonID - 1300;
                         if (index < m_Spawner.SpawnObjects.Length)
                         {
-                            int scount = m_Spawner.SpawnObjects[index].SpawnedObjects.Count;
+                            var scount = m_Spawner.SpawnObjects[index].SpawnedObjects.Count;
                             if (scount > 0)
                             {
-                                object so = m_Spawner.SpawnObjects[index].SpawnedObjects[nclicks % scount];
+                                var so = m_Spawner.SpawnObjects[index].SpawnedObjects[nclicks % scount];
 
                                 if (ValidGotoObject(state.Mobile, so))
                                 {
-                                    IPoint3D o = so as IPoint3D;
+                                    var o = so as IPoint3D;
 
                                     if (o != null)
                                     {
-                                        Map m = m_Spawner.Map;
+                                        var m = m_Spawner.Map;
 
                                         if (o is Item item)
                                         {
@@ -1209,7 +1209,7 @@ public class XmlSpawnerGump : Gump
                     }
                     else if (info.ButtonID >= 6000 && info.ButtonID < 6000 + MaxSpawnEntries)
                     {
-                        int index = info.ButtonID - 6000;
+                        var index = info.ButtonID - 6000;
 
                         if (index < m_Spawner.SpawnObjects.Length)
                         {
@@ -1224,18 +1224,18 @@ public class XmlSpawnerGump : Gump
                     }
                     else if (info.ButtonID >= 5000 && info.ButtonID < 5000 + MaxSpawnEntries)
                     {
-                        int i = info.ButtonID - 5000;
+                        var i = info.ButtonID - 5000;
 
                         string categorystring = null;
                         string entrystring = null;
 
-                        TextRelay te = info.GetTextEntry(i);
+                        var te = info.GetTextEntry(i);
 
                         if (te?.Text != null)
                         {
                             // get the string
 
-                            string[] cargs = te.Text.Split(',');
+                            var cargs = te.Text.Split(',');
 
                             // parse out any comma separated args
                             categorystring = cargs[0];
@@ -1246,7 +1246,7 @@ public class XmlSpawnerGump : Gump
                         if (string.IsNullOrEmpty(categorystring))
                         {
 
-                            XmlSpawnerGump newg = new XmlSpawnerGump(m_Spawner, X, Y, m_ShowGump, xoffset, page);
+                            var newg = new XmlSpawnerGump(m_Spawner, X, Y, m_ShowGump, xoffset, page);
                             state.Mobile.SendGump(newg);
 
                             // if no string has been entered then just use the full categorized add gump
@@ -1259,17 +1259,17 @@ public class XmlSpawnerGump : Gump
                             state.Mobile.CloseGump<XmlPartialCategorizedAddGump>();
 
                             //Type [] types = (Type[])XmlPartialCategorizedAddGump.Match(categorystring).ToArray(typeof(Type));
-                            ArrayList types = XmlPartialCategorizedAddGump.Match(categorystring);
+                            var types = XmlPartialCategorizedAddGump.Match(categorystring);
 
 
-                            ReplacementEntry re = new ReplacementEntry
+                            var re = new ReplacementEntry
                             {
                                 Typename = entrystring,
                                 Index = i,
                                 Color = 0x1436
                             };
 
-                            XmlSpawnerGump newg = new XmlSpawnerGump(m_Spawner, X, Y, m_ShowGump, xoffset, page, re);
+                            var newg = new XmlSpawnerGump(m_Spawner, X, Y, m_ShowGump, xoffset, page, re);
 
                             state.Mobile.SendGump(new XmlPartialCategorizedAddGump(state.Mobile, categorystring, 0, types, true, i, newg));
 
@@ -1281,20 +1281,20 @@ public class XmlSpawnerGump : Gump
                     else
                     {
                         // up and down arrows
-                        int buttonID = info.ButtonID - 6;
-                        int index = buttonID / 2;
-                        int type = buttonID % 2;
+                        var buttonID = info.ButtonID - 6;
+                        var index = buttonID / 2;
+                        var type = buttonID % 2;
 
-                        TextRelay entry = info.GetTextEntry(index);
+                        var entry = info.GetTextEntry(index);
 
                         if (entry != null && entry.Text.Length > 0)
                         {
-                            string entrystr = entry.Text;
+                            var entrystr = entry.Text;
 
 #if (BOOKTEXTENTRY)
                             if (index < m_Spawner.SpawnObjects.Length)
                             {
-                                string str = m_Spawner.SpawnObjects[index].TypeName;
+                                var str = m_Spawner.SpawnObjects[index].TypeName;
 
                                 if (str != null && str.Length >= 230)
                                 {

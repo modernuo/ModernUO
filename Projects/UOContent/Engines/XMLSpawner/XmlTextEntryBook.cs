@@ -12,22 +12,22 @@ public class XmlTextEntryBook : BaseBook
 
     public void FillTextEntryBook(string text)
     {
-        int pagenum = 0;
-        int current = 0;
+        var pagenum = 0;
+        var current = 0;
 
         // break up the text into single line length pieces
         while (text != null && current < text.Length)
         {
-            int lineCount = 10;
-            string[] lines = new string[lineCount];
+            var lineCount = 10;
+            var lines = new string[lineCount];
 
             // place the line on the page
-            for (int i = 0; i < lineCount; i++)
+            for (var i = 0; i < lineCount; i++)
             {
                 if (current < text.Length)
                 {
                     // make each line 25 chars long
-                    int length = text.Length - current;
+                    var length = text.Length - current;
                     if (length > 20)
                     {
                         length = 20;
@@ -52,11 +52,11 @@ public class XmlTextEntryBook : BaseBook
             pagenum++;
         }
         // empty the remaining contents
-        for (int j = pagenum; j < PagesCount; j++)
+        for (var j = pagenum; j < PagesCount; j++)
         {
             if (Pages[j].Lines.Length > 0)
             {
-                for (int i = 0; i < Pages[j].Lines.Length; i++)
+                for (var i = 0; i < Pages[j].Lines.Length; i++)
                 {
                     Pages[j].Lines[i] = string.Empty;
                 }

@@ -10,7 +10,7 @@ public class XmlSpawnerSkillCheck
     // alternate skillcheck hooks to replace those in SkillCheck.cs
     public static bool Mobile_SkillCheckLocation(Mobile from, SkillName skillName, double minSkill, double maxSkill)
     {
-        Skill skill = from.Skills[skillName];
+        var skill = from.Skills[skillName];
 
         if (skill == null)
         {
@@ -18,7 +18,7 @@ public class XmlSpawnerSkillCheck
         }
 
         // call the default skillcheck handler
-        bool success = SkillCheck.Mobile_SkillCheckLocation( from,  skillName,  minSkill,  maxSkill);
+        var success = SkillCheck.Mobile_SkillCheckLocation( from,  skillName,  minSkill,  maxSkill);
 
         // call the xmlspawner skillcheck handler
         CheckSkillUse(from, skill, success);
@@ -28,7 +28,7 @@ public class XmlSpawnerSkillCheck
 
     public static bool Mobile_SkillCheckDirectLocation(Mobile from, SkillName skillName, double chance)
     {
-        Skill skill = from.Skills[skillName];
+        var skill = from.Skills[skillName];
 
         if (skill == null)
         {
@@ -36,7 +36,7 @@ public class XmlSpawnerSkillCheck
         }
 
         // call the default skillcheck handler
-        bool success = SkillCheck.Mobile_SkillCheckDirectLocation( from,  skillName,  chance);
+        var success = SkillCheck.Mobile_SkillCheckDirectLocation( from,  skillName,  chance);
 
         // call the xmlspawner skillcheck handler
         CheckSkillUse(from, skill, success);
@@ -46,7 +46,7 @@ public class XmlSpawnerSkillCheck
 
     public static bool Mobile_SkillCheckTarget(Mobile from, SkillName skillName, object target, double minSkill, double maxSkill)
     {
-        Skill skill = from.Skills[skillName];
+        var skill = from.Skills[skillName];
 
         if (skill == null)
         {
@@ -54,7 +54,7 @@ public class XmlSpawnerSkillCheck
         }
 
         // call the default skillcheck handler
-        bool success = SkillCheck.Mobile_SkillCheckTarget( from,  skillName,  target,  minSkill,  maxSkill);
+        var success = SkillCheck.Mobile_SkillCheckTarget( from,  skillName,  target,  minSkill,  maxSkill);
 
         // call the xmlspawner skillcheck handler
         CheckSkillUse(from, skill, success);
@@ -64,7 +64,7 @@ public class XmlSpawnerSkillCheck
 
     public static bool Mobile_SkillCheckDirectTarget(Mobile from, SkillName skillName, object target, double chance)
     {
-        Skill skill = from.Skills[skillName];
+        var skill = from.Skills[skillName];
 
         if (skill == null)
         {
@@ -72,7 +72,7 @@ public class XmlSpawnerSkillCheck
         }
 
         // call the default skillcheck handler
-        bool success = SkillCheck.Mobile_SkillCheckDirectTarget( from,  skillName,  target,  chance);
+        var success = SkillCheck.Mobile_SkillCheckDirectTarget( from,  skillName,  target,  chance);
 
         // call the xmlspawner skillcheck handler
         CheckSkillUse(from, skill, success);
@@ -153,9 +153,9 @@ public class XmlSpawnerSkillCheck
         }
 
         // go through the list and if the spawner is not on it yet, then add it
-        bool found = false;
+        var found = false;
 
-        ArrayList skilllist = RegisteredSkill.TriggerList(s, map);
+        var skilllist = RegisteredSkill.TriggerList(s, map);
 
         if (skilllist == null)
         {
@@ -175,7 +175,7 @@ public class XmlSpawnerSkillCheck
         // if it hasnt already been added to the list, then add it
         if (!found)
         {
-            RegisteredSkill newrs = new RegisteredSkill();
+            var newrs = new RegisteredSkill();
             newrs.target = o;
             newrs.sid = s;
 
@@ -194,9 +194,9 @@ public class XmlSpawnerSkillCheck
         // go through the list and if the spawner is on it regardless of the skill registered, then remove it
         if (all)
         {
-            for(int i = 0;i<RegisteredSkill.MaxSkills+1;i++)
+            for(var i = 0;i<RegisteredSkill.MaxSkills+1;i++)
             {
-                ArrayList skilllist = RegisteredSkill.TriggerList((SkillName)i, map);
+                var skilllist = RegisteredSkill.TriggerList((SkillName)i, map);
 
                 if (skilllist == null)
                 {
@@ -216,7 +216,7 @@ public class XmlSpawnerSkillCheck
         }
         else
         {
-            ArrayList skilllist = RegisteredSkill.TriggerList(s, map);
+            var skilllist = RegisteredSkill.TriggerList(s, map);
 
             if (skilllist == null)
             {
@@ -260,7 +260,7 @@ public class XmlSpawnerSkillCheck
         */
 
         // then check for registered skills
-        ArrayList skilllist = RegisteredSkill.TriggerList(skill.SkillName, m.Map);
+        var skilllist = RegisteredSkill.TriggerList(skill.SkillName, m.Map);
 
         if (skilllist == null)
         {

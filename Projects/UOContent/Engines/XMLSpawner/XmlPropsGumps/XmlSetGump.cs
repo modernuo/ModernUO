@@ -56,16 +56,16 @@ public class XmlSetGump : Gump
         m_Page = page;
         m_List = list;
 
-        bool canNull = !prop.PropertyType.IsValueType;
-        bool canDye = prop.IsDefined(typeof(HueAttribute), false);
+        var canNull = !prop.PropertyType.IsValueType;
+        var canDye = prop.IsDefined(typeof(HueAttribute), false);
 
-        int xextend = 0;
+        var xextend = 0;
         if (prop.PropertyType == typeof(string))
         {
             xextend = 300;
         }
 
-        object val = prop.GetValue(m_Object, null);
+        var val = prop.GetValue(m_Object, null);
 
         var initialText = val == null ? "" : val.ToString();
 
@@ -74,8 +74,8 @@ public class XmlSetGump : Gump
         AddBackground(0, 0, BackWidth + xextend, BackHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0), BackGumpID);
         AddImageTiled(BorderSize, BorderSize, TotalWidth + xextend - (OldStyle ? SetWidth + OffsetSize : 0), TotalHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0), OffsetGumpID);
 
-        int x = BorderSize + OffsetSize;
-        int y = BorderSize + OffsetSize;
+        var x = BorderSize + OffsetSize;
+        var y = BorderSize + OffsetSize;
 
         AddImageTiled(x, y, EntryWidth + xextend, EntryHeight, EntryGumpID);
         AddLabelCropped(x + TextOffsetX, y, EntryWidth + xextend - TextOffsetX, EntryHeight, TextHue, prop.Name);
@@ -179,7 +179,7 @@ public class XmlSetGump : Gump
         {
             case 1:
                 {
-                    TextRelay text = info.GetTextEntry(0);
+                    var text = info.GetTextEntry(0);
 
                     if (text != null)
                     {

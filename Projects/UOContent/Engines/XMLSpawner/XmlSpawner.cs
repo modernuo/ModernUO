@@ -224,7 +224,7 @@ public class XmlSpawner : Item, ISpawner
             var count = 0;
             if (ProximityRange >= 0)
             {
-                foreach (Mobile m in GetMobilesInRange(ProximityRange))
+                foreach (var m in GetMobilesInRange(ProximityRange))
                 {
                     if (m?.Player == true)
                     {
@@ -7995,7 +7995,7 @@ public class XmlSpawner : Item, ISpawner
             if (m_ProximityRange >= 0 && CanSpawn)
             {
                 // check all nearby players
-                foreach (Mobile p in GetMobilesInRange(m_ProximityRange))
+                foreach (var p in GetMobilesInRange(m_ProximityRange))
                 {
                     if (ValidPlayerTrig(p))
                     {
@@ -9531,7 +9531,7 @@ public class XmlSpawner : Item, ISpawner
                 if (checkitems)
                 {
                     // check the itemsid
-                    foreach (Item i in map.GetItemsAt(x, y))
+                    foreach (var i in map.GetItemsAt(x, y))
                     {
                         if (i.ItemData.Impassable)
                         {
@@ -11900,7 +11900,7 @@ public class XmlSpawner : Item, ISpawner
                                 parmstr = GetParm(s, ":CA=");
                                 // if kills needed is zero, then set CA to false by default.  This maintains consistency with the
                                 // previous default behavior for old spawn specs that haven't specified CA
-                                bool clearAdvance = killsNeeded != 0;
+                                var clearAdvance = killsNeeded != 0;
                                 if (parmstr != null)
                                 {
                                     try { clearAdvance = int.Parse(parmstr) == 1; }

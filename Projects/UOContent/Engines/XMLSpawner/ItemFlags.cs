@@ -24,8 +24,8 @@ public partial class ItemFlags
     [Description("Gets the state of the specified SavedFlag on any item")]
     public static void GetFlag_OnCommand(CommandEventArgs e)
     {
-        int flag=0;
-        bool error = false;
+        var flag=0;
+        var error = false;
         if (e.Arguments.Length > 0)
         {
             if (e.Arguments[0].StartsWith("0x"))
@@ -62,7 +62,7 @@ public partial class ItemFlags
         {
             if (targeted is Item item)
             {
-                bool state = item.GetSavedFlag(m_flag);
+                var state = item.GetSavedFlag(m_flag);
 
                 from.SendMessage($"Flag (0x{m_flag:X}) = {state}");
             } else
@@ -77,8 +77,8 @@ public partial class ItemFlags
     [Description("Sets/gets the stealable flag on any item")]
     public static void SetStealable_OnCommand(CommandEventArgs e)
     {
-        bool state = false;
-        bool error = false;
+        var state = false;
+        var error = false;
         if (e.Arguments.Length > 0)
         {
             try
@@ -121,7 +121,7 @@ public partial class ItemFlags
                     SetStealable(item, m_state);
                 }
 
-                bool state = GetStealable(item);
+                var state = GetStealable(item);
 
                 from.SendMessage($"Stealable = {state}");
 

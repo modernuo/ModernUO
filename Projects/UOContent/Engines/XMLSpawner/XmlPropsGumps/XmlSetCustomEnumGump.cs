@@ -17,13 +17,13 @@ public class XmlSetCustomEnumGump : XmlSetListOptionGump
 
     public override void OnResponse(NetState sender, RelayInfo relayInfo)
     {
-        int index = relayInfo.ButtonID - 1;
+        var index = relayInfo.ButtonID - 1;
 
         if (index >= 0 && index < m_Names.Length)
         {
             try
             {
-                MethodInfo info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
+                var info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
 
                 CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, m_Names[index]);
 
