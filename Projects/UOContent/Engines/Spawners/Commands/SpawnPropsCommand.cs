@@ -20,54 +20,53 @@ using Server.Targeting;
 
 using static Server.Types;
 
-namespace Server.Engines.Spawners
+namespace Server.Engines.Spawners;
+
+public class SpawnPropsCommand : BaseCommand
 {
-    public class SpawnPropsCommand : BaseCommand
+    public static void Configure()
     {
-        public static void Configure()
+        TargetCommands.Register(new SpawnPropsCommand());
+    }
+
+    public SpawnPropsCommand()
+    {
+        AccessLevel = AccessLevel.GameMaster;
+        Supports = CommandSupport.Complex | CommandSupport.Simple;
+        Commands = ["SpawnProps"];
+        ObjectTypes = ObjectTypes.Items;
+        Usage = "SpawnProps";
+        Description = "Shows a props gump that will modify the properties of spawn entries related to the chosen entity";
+        ListOptimized = true;
+    }
+
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
+    {
+        if (list.Count == 0)
         {
-            TargetCommands.Register(new SpawnPropsCommand());
+            LogFailure("No matching objects found.");
+            return;
         }
 
-        public SpawnPropsCommand()
-        {
-            AccessLevel = AccessLevel.GameMaster;
-            Supports = CommandSupport.Complex | CommandSupport.Simple;
-            Commands = new[] { "SpawnProps" };
-            ObjectTypes = ObjectTypes.Items;
-            Usage = "SpawnProps";
-            Description = "Shows a props gump that will modify the properties of spawn entries related to the chosen entity";
-            ListOptimized = true;
-        }
+        e.Mobile.SendMessage("Target the object you want to use as a template for modifying the spawner properties.");
+        e.Mobile.Target = new InternalTarget(list);
+    }
 
-        public override void ExecuteList(CommandEventArgs e, List<object> list)
+    private class InternalTarget : Target
+    {
+        private readonly List<object> _list;
+
+        public InternalTarget(List<object> list) : base(-1, false, TargetFlags.None) => _list = list;
+
+        protected override void OnTarget(Mobile from, object targeted)
         {
-            if (list.Count == 0)
+            var type = targeted.GetType();
+            if (!IsEntity(type))
             {
-                LogFailure("No matching objects found.");
-                return;
+                from.SendMessage("No type with that name was found.");
             }
 
-            e.Mobile.SendMessage("Target the object you want to use as a template for modifying the spawner properties.");
-            e.Mobile.Target = new InternalTarget(list);
-        }
-
-        private class InternalTarget : Target
-        {
-            private readonly List<object> _list;
-
-            public InternalTarget(List<object> list) : base(-1, false, TargetFlags.None) => _list = list;
-
-            protected override void OnTarget(Mobile from, object targeted)
-            {
-                var type = targeted.GetType();
-                if (!IsEntity(type))
-                {
-                    from.SendMessage("No type with that name was found.");
-                }
-
-                from.SendGump(new SpawnPropsGump(from, targeted, _list));
-            }
+            from.SendGump(new SpawnPropsGump(from, targeted, _list));
         }
     }
 }
