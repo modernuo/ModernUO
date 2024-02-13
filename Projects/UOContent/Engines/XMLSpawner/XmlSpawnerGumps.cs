@@ -893,14 +893,14 @@ public class XmlSpawnerGump : Gump
                         if (grpval != m_Spawner.SpawnObjects[i].MinDelay)
                         {
                             m_Spawner.SpawnObjects[i].MinDelay = grpval;
-                            m_Spawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
+                            XmlSpawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
                         }
                     }
                     else
                     {
                         m_Spawner.SpawnObjects[i].MinDelay = -1;
                         m_Spawner.SpawnObjects[i].MaxDelay = -1;
-                        m_Spawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
+                        XmlSpawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
                     }
                 }
 
@@ -922,14 +922,14 @@ public class XmlSpawnerGump : Gump
                         if (grpval != m_Spawner.SpawnObjects[i].MaxDelay)
                         {
                             m_Spawner.SpawnObjects[i].MaxDelay = grpval;
-                            m_Spawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
+                            XmlSpawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
                         }
                     }
                     else
                     {
                         m_Spawner.SpawnObjects[i].MinDelay = -1;
                         m_Spawner.SpawnObjects[i].MaxDelay = -1;
-                        m_Spawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
+                        XmlSpawner.RefreshNextSpawnTime(m_Spawner.SpawnObjects[i]);
                     }
                 }
 
@@ -1031,7 +1031,7 @@ public class XmlSpawnerGump : Gump
                 {
                     m_Spawner.TryRespawn();
                     //m_Spawner.AdvanceSequential();
-                    m_Spawner.m_killcount = 0;
+                    m_Spawner.KillCount = 0;
                     break;
                 }
             case 4: // Goto

@@ -1382,8 +1382,7 @@ public class BaseXmlSpawner
                             // count nearby players
                             if (refobject is Item item)
                             {
-                                IPooledEnumerable ie = item.GetMobilesInRange(range);
-                                foreach (Mobile p in ie)
+                                foreach (Mobile p in item.GetMobilesInRange(range))
                                 {
                                     if (p.Player && p.AccessLevel == AccessLevel.Player)
                                     {
@@ -1394,8 +1393,7 @@ public class BaseXmlSpawner
                             }
                             else if (refobject is Mobile mobile)
                             {
-                                IPooledEnumerable ie = mobile.GetMobilesInRange(range);
-                                foreach (Mobile p in ie)
+                                foreach (Mobile p in mobile.GetMobilesInRange(range))
                                 {
                                     if (p.Player && p.AccessLevel == AccessLevel.Player)
                                     {
@@ -1666,27 +1664,23 @@ public class BaseXmlSpawner
                 }
                 else if (o is Item item)
                 {
-                    IPooledEnumerable ie = item.GetMobilesInRange(range);
-                    foreach (Mobile p in ie)
+                    foreach (Mobile p in item.GetMobilesInRange(range))
                     {
                         if (p.Player && p.AccessLevel == AccessLevel.Player)
                         {
                             nplayers++;
                         }
                     }
-                    ie.Free();
                 }
                 else if (o is Mobile mobile)
                 {
-                    IPooledEnumerable ie = mobile.GetMobilesInRange(range);
-                    foreach (Mobile p in ie)
+                    foreach (Mobile p in mobile.GetMobilesInRange(range))
                     {
                         if (p.Player && p.AccessLevel == AccessLevel.Player)
                         {
                             nplayers++;
                         }
                     }
-                    ie.Free();
                 }
 
                 return nplayers.ToString();
