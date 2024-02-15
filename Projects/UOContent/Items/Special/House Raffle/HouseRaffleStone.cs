@@ -361,7 +361,7 @@ public partial class HouseRaffleStone : Item
                 }
             case HouseRaffleState.Completed:
                 {
-                    list.Add(1060658, $"winner\t{_winner?.Name ?? "Unknown"}"); // ~1_val~: ~2_val~
+                    list.Add(1060658, $"{"winner"}\t{_winner?.Name ?? "Unknown"}"); // ~1_val~: ~2_val~
                     break;
                 }
         }
@@ -375,7 +375,7 @@ public partial class HouseRaffleStone : Item
         {
             case HouseRaffleState.Active:
                 {
-                    LabelTo(from, 1060658, $"Ends\t{_started + _duration}"); // ~1_val~: ~2_val~
+                    LabelTo(from, 1060658, $"{"Ends"}\t{_started + _duration}"); // ~1_val~: ~2_val~
                     break;
                 }
             case HouseRaffleState.Completed:
@@ -383,7 +383,7 @@ public partial class HouseRaffleStone : Item
                     LabelTo(
                         from,
                         1060658, // ~1_val~: ~2_val~
-                        $"Winner\t{_winner?.Name ?? "Unknown"}"
+                        $"{"Winner"}\t{_winner?.Name ?? "Unknown"}"
                     );
                     break;
                 }

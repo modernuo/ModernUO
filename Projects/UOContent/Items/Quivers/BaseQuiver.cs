@@ -233,7 +233,7 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
 
         if (ammo == null)
         {
-            list.Add(1075265, $"0\t{Capacity}"); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ arrows
+            list.Add(1075265, $"{"0"}\t{Capacity}"); // Ammo: ~1_QUANTITY~/~2_CAPACITY~ arrows
         }
         else if (ammo is Arrow)
         {

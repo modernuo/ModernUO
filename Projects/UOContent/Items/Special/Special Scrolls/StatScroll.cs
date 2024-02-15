@@ -52,7 +52,7 @@ public partial class StatCapScroll : SpecialScroll
              * a legendary scroll of ~1_type~ (+20 Maximum Stats) OR
              * an ultimate scroll of ~1_type~ (+25 Maximum Stats)
              */
-            list.Add(1049463 + level, 1049476);
+            list.AddLocalized(1049463 + level, 1049476);
         }
         else
         {

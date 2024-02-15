@@ -140,7 +140,7 @@ public static class TextDefinitionExtensions
 
         if (def.Number > 0)
         {
-            list.Add(number, $"{def.Number:#}");
+            list.AddLocalized(number, def.Number);
         }
         else if (def.String != null)
         {
