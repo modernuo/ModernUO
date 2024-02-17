@@ -76,11 +76,17 @@ public partial class SpawnerEntry
 
             if (e != null)
             {
-                e.Spawner = _parent;
-
                 Spawned.Add(e);
-                _parent.Spawned.TryAdd(e, this);
             }
+        }
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        foreach (var e in Spawned)
+        {
+            e.Spawner = _parent;
         }
     }
 
@@ -99,6 +105,7 @@ public partial class SpawnerEntry
             if (parent.OnDefragSpawn(spawned, false))
             {
                 Spawned.RemoveAt(i--);
+                _parent.MarkDirty();
             }
         }
     }

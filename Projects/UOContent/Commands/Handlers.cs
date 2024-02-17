@@ -33,7 +33,6 @@ namespace Server.Commands
             Register("Where", AccessLevel.Counselor, Where_OnCommand);
 
             Register("AutoPageNotify", AccessLevel.Counselor, APN_OnCommand);
-            Register("APN", AccessLevel.Counselor, APN_OnCommand);
 
             Register("Animate", AccessLevel.GameMaster, Animate_OnCommand);
 
@@ -47,12 +46,8 @@ namespace Server.Commands
             Register("Client", AccessLevel.Counselor, Client_OnCommand);
 
             Register("SMsg", AccessLevel.Counselor, StaffMessage_OnCommand);
-            Register("SM", AccessLevel.Counselor, StaffMessage_OnCommand);
-            Register("S", AccessLevel.Counselor, StaffMessage_OnCommand);
 
             Register("BCast", AccessLevel.GameMaster, BroadcastMessage_OnCommand);
-            Register("BC", AccessLevel.GameMaster, BroadcastMessage_OnCommand);
-            Register("B", AccessLevel.GameMaster, BroadcastMessage_OnCommand);
 
             Register("Bank", AccessLevel.GameMaster, Bank_OnCommand);
 
@@ -736,14 +731,16 @@ namespace Server.Commands
             }
         }
 
-        [Usage("SMsg <text>"), Aliases("S", "SM")]
+        [Usage("SMsg <text>")]
+        [Aliases("S", "SM")]
         [Description("Broadcasts a message to all online staff.")]
         public static void StaffMessage_OnCommand(CommandEventArgs e)
         {
             BroadcastMessage(AccessLevel.Counselor, e.Mobile.SpeechHue, $"[{e.Mobile.Name}] {e.ArgString}");
         }
 
-        [Usage("BCast <text>"), Aliases("B", "BC")]
+        [Usage("BCast <text>")]
+        [Aliases("B", "BC")]
         [Description("Broadcasts a message to everyone online.")]
         public static void BroadcastMessage_OnCommand(CommandEventArgs e)
         {
@@ -764,7 +761,8 @@ namespace Server.Commands
             }
         }
 
-        [Usage("AutoPageNotify"), Aliases("APN")]
+        [Usage("AutoPageNotify")]
+        [Aliases("APN")]
         [Description("Toggles your auto-page-notify status.")]
         public static void APN_OnCommand(CommandEventArgs e)
         {
@@ -782,8 +780,8 @@ namespace Server.Commands
             }
         }
 
-        [Usage("Animate <action> <frameCount> <repeatCount> <forward> <repeat> <delay>"),
-         Description("Makes your character do a specified animation.")]
+        [Usage("Animate <action> <frameCount> <repeatCount> <forward> <repeat> <delay>")]
+        [Description("Makes your character do a specified animation.")]
         public static void Animate_OnCommand(CommandEventArgs e)
         {
             if (e.Length == 6)

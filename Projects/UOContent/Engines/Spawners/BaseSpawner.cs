@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using ModernUO.Serialization;
@@ -216,11 +215,8 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         if (spawn != null)
         {
-            Spawned.TryGetValue(spawn, out var entry);
-
-            entry?.Spawned.Remove(spawn);
-
-            Spawned.Remove(spawn);
+            Spawned.Remove(spawn, out var entry);
+            entry?.RemoveFromSpawned(spawn);
         }
 
         if (_running && !IsFull && _timer?.Running == false)
@@ -419,12 +415,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             };
         }
 
-        if (remove)
-        {
-            Spawned.Remove(spawned);
-        }
-
-        return remove;
+        return remove && Spawned.Remove(spawned);
     }
 
     public void OnTick()
@@ -683,7 +674,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             if (entity is Mobile m)
             {
                 Spawned.Add(m, entry);
-                entry.Spawned.Add(m);
+                entry.AddToSpawned(m);
 
                 var loc = m is BaseVendor ? Location : GetSpawnPosition(m, map);
 
@@ -712,7 +703,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             else if (entity is Item item)
             {
                 Spawned.Add(item, entry);
-                entry.Spawned.Add(item);
+                entry.AddToSpawned(item);
 
                 var loc = GetSpawnPosition(item, map);
 
@@ -884,8 +875,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
-
         _guid = reader.ReadGuid();
         _returnOnDeactivate = reader.ReadBool();
         _entries = new List<SpawnerEntry>(reader.ReadInt());
@@ -910,9 +899,19 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _end = _running ? reader.ReadDeltaTime() : Core.Now;
     }
 
-    [AfterDeserialization(false)]
+    [AfterDeserialization]
     private void AfterDeserialization()
     {
+        Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
+
+        foreach (var entry in Entries)
+        {
+            foreach (var spawned in entry.Spawned)
+            {
+                Spawned.Add(spawned, entry);
+            }
+        }
+
         if (_running && _end > Core.Now)
         {
             DoTimer(_end - Core.Now);
