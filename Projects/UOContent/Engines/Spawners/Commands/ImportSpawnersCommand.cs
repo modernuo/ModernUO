@@ -24,8 +24,8 @@ public static class ImportSpawnersCommand
         CommandSystem.Register("ImportSpawners", AccessLevel.Developer, GenerateSpawners_OnCommand);
     }
 
-    [Usage("GenerateSpawners <relative search pattern to distribution>")]
-    [Aliases("ImportSpawner", "GenerateSpawners", "GenSpawners", "GenSpawns")]
+    [Usage("ImportSpawners <relative search pattern to distribution>")]
+    [Aliases("ImportSpawner", "GenerateSpawners", "GenSpawners")]
     [Description("Imports JSON, Nerun Premium, and RunUO spawner files. Supports basic globbing.")]
     private static void GenerateSpawners_OnCommand(CommandEventArgs e)
     {
