@@ -43,12 +43,12 @@ namespace Server.Gumps
 
         public static void Configure()
         {
-            CommandSystem.Register("Who", AccessLevel.Counselor, WhoList_OnCommand);
             CommandSystem.Register("WhoList", AccessLevel.Counselor, WhoList_OnCommand);
         }
 
-        [Usage("WhoList [filter]"), Aliases("Who"),
-         Description("Lists all connected clients. Optionally filters results by name.")]
+        [Usage("WhoList [filter]")]
+        [Aliases("Who")]
+        [Description("Lists all connected clients. Optionally filters results by name.")]
         private static void WhoList_OnCommand(CommandEventArgs e)
         {
             e.Mobile.SendGump(new WhoGump(e.Mobile, e.ArgString));

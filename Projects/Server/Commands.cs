@@ -15,6 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Server.Logging;
 
 namespace Server;
 
@@ -125,6 +128,8 @@ public class CommandInfoSorter : IComparer<CommandInfo>
 
 public static class CommandSystem
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(CommandSystem));
+
     public static string Prefix { get; set; } = "[";
 
     public static Dictionary<string, CommandEntry> Entries { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -194,7 +199,38 @@ public static class CommandSystem
 
     public static void Register(string command, AccessLevel access, CommandEventHandler handler)
     {
-        Entries[command] = new CommandEntry(command, handler, access);
+        DoRegister(command, access, handler);
+
+        var mi = handler.Method;
+        var aliasesAttr = mi.GetCustomAttribute(typeof(AliasesAttribute), false) as AliasesAttribute;
+        var aliases = aliasesAttr?.Aliases;
+
+        if (aliases == null)
+        {
+            return;
+        }
+
+        foreach (var alias in aliases)
+        {
+            DoRegister(alias, access, handler);
+        }
+    }
+
+    private static void DoRegister(string command, AccessLevel accessLevel, CommandEventHandler handler)
+    {
+        ref var commandEntry = ref CollectionsMarshal.GetValueRefOrAddDefault(Entries, command, out var exists);
+        if (exists)
+        {
+            if (commandEntry.AccessLevel == accessLevel && commandEntry.Handler == handler)
+            {
+                return;
+            }
+
+            logger.Warning("Command {Command} already registered to {Handler}.", command, commandEntry.Handler.Method.Name);
+            return;
+        }
+
+        commandEntry = new CommandEntry(command, handler, accessLevel);
     }
 
     public static bool Handle(Mobile from, string text, MessageType type = MessageType.Regular)

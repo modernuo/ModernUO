@@ -52,7 +52,7 @@ public static class ImportSpawnersCommand
 
         if (files.Count == 0)
         {
-            from.SendMessage("GenerateSpawners: No files found matching the pattern");
+            from.SendMessage("GenerateSpawners: No files found matching the pattern.");
             return;
         }
 
@@ -364,6 +364,7 @@ public static class ImportSpawnersCommand
                                 map
                             );
 
+                            spawner.Respawn();
                             allSpawners.Add(spawner.Guid, spawner);
                             totalGenerated++;
                         }
