@@ -365,10 +365,11 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
                 {
                     var sector = Map.GetRealSector(x, y);
 
-                    sector.OnEnter(this, rect);
-
+                    // Region Areas are approximate and will overlap
+                    // Don't add them multiple times!
                     if (!sectors.Contains(sector))
                     {
+                        sector.OnEnter(this, rect);
                         sectors.Add(sector);
                     }
                 }
