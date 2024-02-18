@@ -1450,6 +1450,11 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public void OnEnter(Region region, Rectangle3D rect)
         {
+            if (_regions?.Contains(region) == true)
+            {
+                return;
+            }
+
             Utility.Add(ref _regions, region);
 
             _regions.Sort();

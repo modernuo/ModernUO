@@ -67,7 +67,7 @@ namespace Server.Multis
 
             m_RelativeBanLocation = BaseBanLocation;
 
-            UpdateRegion();
+            // UpdateRegion();
 
             if (owner != null)
             {

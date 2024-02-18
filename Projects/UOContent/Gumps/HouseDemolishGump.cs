@@ -75,25 +75,22 @@ namespace Server.Gumps
                     }*/
                     if (m_House.HasRentedVendors && m_House.VendorInventories.Count > 0)
                     {
-                        m_Mobile.SendLocalizedMessage(
-                            1062679
-                        ); // You cannot do that that while you still have contract vendors or unclaimed contract vendor inventory in your house.
+                        // You cannot do that that while you still have contract vendors or unclaimed contract vendor inventory in your house.
+                        m_Mobile.SendLocalizedMessage(1062679);
                         return;
                     }
 
                     if (m_House.HasRentedVendors)
                     {
-                        m_Mobile.SendLocalizedMessage(
-                            1062680
-                        ); // You cannot do that that while you still have contract vendors in your house.
+                        // You cannot do that that while you still have contract vendors in your house.
+                        m_Mobile.SendLocalizedMessage(1062680);
                         return;
                     }
 
                     if (m_House.VendorInventories.Count > 0)
                     {
-                        m_Mobile.SendLocalizedMessage(
-                            1062681
-                        ); // You cannot do that that while you still have unclaimed contract vendor inventory in your house.
+                        // You cannot do that that while you still have unclaimed contract vendor inventory in your house.
+                        m_Mobile.SendLocalizedMessage(1062681);
                         return;
                     }
 
@@ -105,7 +102,7 @@ namespace Server.Gumps
                     }
                     else
                     {
-                        Item toGive = null;
+                        Item toGive;
 
                         if (m_House.IsAosRules)
                         {
@@ -155,10 +152,8 @@ namespace Server.Gumps
                             {
                                 if (check != null)
                                 {
-                                    m_Mobile.SendLocalizedMessage(
-                                        1060397,
-                                        check.Worth.ToString()
-                                    ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+                                    // ~1_AMOUNT~ gold has been deposited into your bank box.
+                                    m_Mobile.SendLocalizedMessage(1060397, check.Worth.ToString());
                                 }
 
                                 m_House.RemoveKeys(m_Mobile);
