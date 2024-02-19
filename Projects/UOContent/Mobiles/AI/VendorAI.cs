@@ -5,7 +5,7 @@ namespace Server.Mobiles;
 public class VendorAI : BaseAI
 {
     // Guards! A villan attacks me!
-     // Guards! Help!
+    // Guards! Help!
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetRandomGuardMessage() => Utility.RandomBool() ? 1005305 : 501603;
 
