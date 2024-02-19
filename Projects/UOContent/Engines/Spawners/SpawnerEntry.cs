@@ -38,21 +38,32 @@ public partial class SpawnerEntry
     public SpawnerEntry(BaseSpawner parent)
     {
         _parent = parent;
-        _spawned = new List<ISpawnable>();
+        _spawned = [];
+    }
+
+    [JsonConstructor]
+    public SpawnerEntry(
+        string spawnedName,
+        int spawnedProbability = 100,
+        int spawnedMaxCount = 1,
+        string properties = null,
+        string parameters = null
+    ) : this(null, spawnedName, spawnedProbability, spawnedMaxCount, properties, parameters)
+    {
     }
 
     public SpawnerEntry(
         BaseSpawner parent,
         string name,
-        int probability,
-        int maxcount,
+        int probability = 100,
+        int maxCount = 1,
         string properties = null,
         string parameters = null
     ) : this(parent)
     {
         SpawnedName = name;
         SpawnedProbability = probability;
-        SpawnedMaxCount = maxcount;
+        SpawnedMaxCount = maxCount;
         Properties = properties;
         Parameters = parameters;
     }
