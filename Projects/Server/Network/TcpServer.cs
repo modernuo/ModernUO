@@ -272,9 +272,9 @@ public static class TcpServer
             var firewalled = Firewall.IsBlocked(remoteIP);
             if (!firewalled)
             {
-                var socketConnectedEventContext = new SocketConnectedEventContext(socket);
-                EventSink.InvokeSocketConnected(socketConnectedEventContext);
-                firewalled = !socketConnectedEventContext.ConnectionAllowed;
+                var socketConnectedArgs = new SocketConnectedEventArgs(socket);
+                EventSink.InvokeSocketConnected(socketConnectedArgs);
+                firewalled = !socketConnectedArgs.ConnectionAllowed;
             }
 
             if (firewalled)
@@ -318,19 +318,19 @@ public static class TcpServer
     public static class EventSink
     {
         // IMPORTANT: This is executed asynchronously! Do not run any game thread code on these delegates!
-        public static event Action<SocketConnectedEventContext> SocketConnected;
+        public static event Action<SocketConnectedEventArgs> SocketConnected;
 
-        internal static void InvokeSocketConnected(SocketConnectedEventContext context) =>
+        internal static void InvokeSocketConnected(SocketConnectedEventArgs context) =>
             SocketConnected?.Invoke(context);
     }
 
-    public class SocketConnectedEventContext
+    public class SocketConnectedEventArgs
     {
         public Socket Socket { get; }
 
         public bool ConnectionAllowed { get; set; } = true;
 
-        internal SocketConnectedEventContext(Socket socket) => Socket = socket;
+        internal SocketConnectedEventArgs(Socket socket) => Socket = socket;
 
         public void FirewallConnection()
         {
