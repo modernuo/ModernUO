@@ -331,11 +331,5 @@ public static class TcpServer
         public bool ConnectionAllowed { get; set; } = true;
 
         internal SocketConnectedEventArgs(Socket socket) => Socket = socket;
-
-        public void FirewallConnection()
-        {
-            Firewall.RequestAddSingleIPEntry(((IPEndPoint)Socket.RemoteEndPoint)!.Address.ToString());
-            ConnectionAllowed = false;
-        }
     }
 }
