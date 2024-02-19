@@ -45,110 +45,9 @@ public partial class ElwoodMcCarrin : BaseQuester
 
         var qs = player.Quest;
 
-        if (qs is CollectorQuest)
+        if (qs is not CollectorQuest)
         {
-            if (qs.IsObjectiveInProgress(typeof(FishPearlsObjective)))
-            {
-                qs.AddConversation(new ElwoodDuringFishConversation());
-            }
-            else
-            {
-                QuestObjective obj = qs.FindObjective<ReturnPearlsObjective>();
-
-                if (obj?.Completed == false)
-                {
-                    obj.Complete();
-                }
-                else if (qs.IsObjectiveInProgress(typeof(FindAlbertaObjective)))
-                {
-                    qs.AddConversation(new ElwoodDuringPainting1Conversation());
-                }
-                else if (qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective)))
-                {
-                    qs.AddConversation(new ElwoodDuringPainting2Conversation());
-                }
-                else
-                {
-                    obj = qs.FindObjective<ReturnPaintingObjective>();
-
-                    if (obj?.Completed == false)
-                    {
-                        obj.Complete();
-                    }
-                    else if (qs.IsObjectiveInProgress(typeof(FindGabrielObjective)))
-                    {
-                        qs.AddConversation(new ElwoodDuringAutograph1Conversation());
-                    }
-                    else if (qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective)))
-                    {
-                        qs.AddConversation(new ElwoodDuringAutograph2Conversation());
-                    }
-                    else if (qs.IsObjectiveInProgress(typeof(ReturnSheetMusicObjective)))
-                    {
-                        qs.AddConversation(new ElwoodDuringAutograph3Conversation());
-                    }
-                    else
-                    {
-                        obj = qs.FindObjective<ReturnAutographObjective>();
-
-                        if (obj?.Completed == false)
-                        {
-                            obj.Complete();
-                        }
-                        else if (qs.IsObjectiveInProgress(typeof(FindTomasObjective)))
-                        {
-                            qs.AddConversation(new ElwoodDuringToys1Conversation());
-                        }
-                        else if (qs.IsObjectiveInProgress(typeof(CaptureImagesObjective)))
-                        {
-                            qs.AddConversation(new ElwoodDuringToys2Conversation());
-                        }
-                        else if (qs.IsObjectiveInProgress(typeof(ReturnImagesObjective)))
-                        {
-                            qs.AddConversation(new ElwoodDuringToys3Conversation());
-                        }
-                        else
-                        {
-                            obj = qs.FindObjective<ReturnToysObjective>();
-
-                            if (obj?.Completed == false)
-                            {
-                                obj.Complete();
-
-                                if (GiveReward(player))
-                                {
-                                    qs.AddConversation(new EndConversation());
-                                }
-                                else
-                                {
-                                    qs.AddConversation(new FullEndConversation(true));
-                                }
-                            }
-                            else
-                            {
-                                obj = qs.FindObjective<MakeRoomObjective>();
-
-                                if (obj?.Completed == false)
-                                {
-                                    if (GiveReward(player))
-                                    {
-                                        obj.Complete();
-                                        qs.AddConversation(new EndConversation());
-                                    }
-                                    else
-                                    {
-                                        qs.AddConversation(new FullEndConversation(false));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            QuestSystem newQuest = new CollectorQuest(player);
+            var newQuest = new CollectorQuest(player);
 
             if (qs == null && QuestSystem.CanOfferQuest(player, typeof(CollectorQuest)))
             {
@@ -158,10 +57,113 @@ public partial class ElwoodMcCarrin : BaseQuester
             {
                 newQuest.AddConversation(new DontOfferConversation());
             }
+
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(FishPearlsObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringFishConversation());
+            return;
+        }
+
+        if (qs.FindObjective<ReturnPearlsObjective>() is { Completed: false } obj1)
+        {
+            obj1.Complete();
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(FindAlbertaObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringPainting1Conversation());
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringPainting2Conversation());
+            return;
+        }
+
+        if (qs.FindObjective<ReturnPaintingObjective>() is { Completed: false } obj2)
+        {
+            obj2.Complete();
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(FindGabrielObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringAutograph1Conversation());
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringAutograph2Conversation());
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(ReturnSheetMusicObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringAutograph3Conversation());
+            return;
+        }
+
+        if (qs.FindObjective<ReturnAutographObjective>() is { Completed: false } obj3)
+        {
+            obj3.Complete();
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(FindTomasObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringToys1Conversation());
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(CaptureImagesObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringToys2Conversation());
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(ReturnImagesObjective)))
+        {
+            qs.AddConversation(new ElwoodDuringToys3Conversation());
+            return;
+        }
+
+        if (qs.FindObjective<ReturnToysObjective>() is { Completed: false } obj4)
+        {
+            obj4.Complete();
+
+            if (GiveReward(player))
+            {
+                qs.AddConversation(new EndConversation());
+            }
+            else
+            {
+                qs.AddConversation(new FullEndConversation(true));
+            }
+
+            return;
+        }
+
+        if (qs.FindObjective<MakeRoomObjective>() is { Completed: false } obj5)
+        {
+            if (GiveReward(player))
+            {
+                obj5.Complete();
+                qs.AddConversation(new EndConversation());
+            }
+            else
+            {
+                qs.AddConversation(new FullEndConversation(false));
+            }
         }
     }
 
-    public bool GiveReward(Mobile to)
+    public static bool GiveReward(Mobile to)
     {
         var bag = new Bag();
 

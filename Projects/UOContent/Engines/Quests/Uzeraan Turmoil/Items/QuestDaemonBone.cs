@@ -1,30 +1,13 @@
+using ModernUO.Serialization;
 using Server.Mobiles;
 
-namespace Server.Engines.Quests.Haven
+namespace Server.Engines.Quests.Haven;
+
+[SerializationGenerator(0, false)]
+public partial class QuestDaemonBone : QuestItem
 {
-    public class QuestDaemonBone : QuestItem
-    {
-        [Constructible]
-        public QuestDaemonBone() : base(0xF80) => Weight = 1.0;
+    [Constructible]
+    public QuestDaemonBone() : base(0xF80) => Weight = 1.0;
 
-        public QuestDaemonBone(Serial serial) : base(serial)
-        {
-        }
-
-        public override bool CanDrop(PlayerMobile player) => player.Quest is not UzeraanTurmoilQuest;
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-    }
+    public override bool CanDrop(PlayerMobile player) => player.Quest is not UzeraanTurmoilQuest;
 }

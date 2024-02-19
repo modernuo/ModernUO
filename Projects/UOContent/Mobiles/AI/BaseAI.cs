@@ -1373,7 +1373,7 @@ public abstract class BaseAI
 
                 if (qs is DarkTidesQuest)
                 {
-                    QuestObjective obj = qs.FindObjective<FetchAbraxusScrollObjective>();
+                    var obj = qs.FindObjective<FetchAbraxusScrollObjective>();
 
                     if (obj?.Completed == false)
                     {

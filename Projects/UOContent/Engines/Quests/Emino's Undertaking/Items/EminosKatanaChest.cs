@@ -60,7 +60,7 @@ public partial class EminosKatanaChest : WoodenChest
                 }
                 else
                 {
-                    QuestObjective obj = qs.FindObjective<HallwayWalkObjective>();
+                    var obj = qs.FindObjective<HallwayWalkObjective>();
 
                     if (obj?.Completed == false)
                     {

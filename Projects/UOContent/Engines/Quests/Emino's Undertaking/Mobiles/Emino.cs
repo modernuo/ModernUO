@@ -80,23 +80,19 @@ public partial class Emino : BaseQuester
             return;
         }
 
-        QuestObjective obj = qs.FindObjective<FindEminoBeginObjective>();
-
-        if (obj?.Completed == false)
+        if (qs.FindObjective<FindEminoBeginObjective>() is { Completed: false } obj1)
         {
-            obj.Complete();
+            obj1.Complete();
             return;
         }
 
-        obj = qs.FindObjective<UseTeleporterObjective>();
-
-        if (obj?.Completed == false)
+        if (qs.FindObjective<UseTeleporterObjective>() is { Completed: false } obj2)
         {
-            Item note = new NoteForZoel();
+            var note = new NoteForZoel();
 
             if (player.PlaceInBackpack(note))
             {
-                obj.Complete();
+                obj2.Complete();
 
                 player.AddToBackpack(new LeatherNinjaPants());
                 player.AddToBackpack(new LeatherNinjaMitts());
@@ -111,9 +107,7 @@ public partial class Emino : BaseQuester
             return;
         }
 
-        obj = qs.FindObjective<ReturnFromInnObjective>();
-
-        if (obj?.Completed == false)
+        if (qs.FindObjective<ReturnFromInnObjective>() is { Completed: false } obj3)
         {
             var cont = GetNewContainer();
 
@@ -127,7 +121,7 @@ public partial class Emino : BaseQuester
 
             if (player.PlaceInBackpack(cont))
             {
-                obj.Complete();
+                obj3.Complete();
             }
             else
             {
@@ -145,59 +139,46 @@ public partial class Emino : BaseQuester
             return;
         }
 
-        obj = qs.FindObjective<GiveEminoSwordObjective>();
-
-        if (obj?.Completed == false)
+        if (qs.FindObjective<GiveEminoSwordObjective>() is { Completed: false } obj4)
         {
-            Item katana = null;
+            var katana = player.Backpack?.FindItemByType<EminosKatana>();
 
-            if (player.Backpack != null)
+            if (katana == null)
             {
-                katana = player.Backpack.FindItemByType<EminosKatana>();
+                return;
             }
 
-            if (katana != null)
+            var stolenTreasure = false;
+
+            var walk = qs.FindObjective<HallwayWalkObjective>();
+
+            if (walk != null)
             {
-                var stolenTreasure = false;
+                stolenTreasure = walk.StolenTreasure;
+            }
 
-                var walk = qs.FindObjective<HallwayWalkObjective>();
+            var kama = new Kama();
+            BaseRunicTool.ApplyAttributesTo(kama, 1, 10, stolenTreasure ? 20 : 30);
 
-                if (walk != null)
-                {
-                    stolenTreasure = walk.StolenTreasure;
-                }
-
-                var kama = new Kama();
+            if (player.PlaceInBackpack(kama))
+            {
+                katana.Delete();
+                obj4.Complete();
 
                 if (stolenTreasure)
                 {
-                    BaseRunicTool.ApplyAttributesTo(kama, 1, 10, 20);
+                    qs.AddConversation(new EarnLessGiftsConversation());
                 }
                 else
                 {
-                    BaseRunicTool.ApplyAttributesTo(kama, 1, 10, 30);
+                    qs.AddConversation(new EarnGiftsConversation());
                 }
-
-                if (player.PlaceInBackpack(kama))
-                {
-                    katana.Delete();
-                    obj.Complete();
-
-                    if (stolenTreasure)
-                    {
-                        qs.AddConversation(new EarnLessGiftsConversation());
-                    }
-                    else
-                    {
-                        qs.AddConversation(new EarnGiftsConversation());
-                    }
-                }
-                else
-                {
-                    kama.Delete();
-                    // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-                    player.SendLocalizedMessage(1046260);
-                }
+            }
+            else
+            {
+                kama.Delete();
+                // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+                player.SendLocalizedMessage(1046260);
             }
         }
     }
@@ -206,22 +187,24 @@ public partial class Emino : BaseQuester
     {
         base.OnMovement(m, oldLocation);
 
-        if (!m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+        if (m.Frozen || m.Alive || !InRange(m, 4) || InRange(oldLocation, 4) || !InLOS(m))
         {
-            if (m.Map?.CanFit(m.Location, 16, false, false) != true)
-            {
-                m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
-            }
-            else
-            {
-                Direction = GetDirectionTo(m);
+            return;
+        }
 
-                m.PlaySound(0x214);
-                m.FixedEffect(0x376A, 10, 16);
+        if (m.Map?.CanFit(m.Location, 16, false, false) != true)
+        {
+            m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+        }
+        else
+        {
+            Direction = GetDirectionTo(m);
 
-                m.CloseGump<ResurrectGump>();
-                m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
-            }
+            m.PlaySound(0x214);
+            m.FixedEffect(0x376A, 10, 16);
+
+            m.CloseGump<ResurrectGump>();
+            m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
         }
     }
 }

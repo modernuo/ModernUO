@@ -47,115 +47,95 @@ public partial class Haochi : BaseQuester
     {
         var qs = player.Quest;
 
-        if (qs is HaochisTrialsQuest)
+        if (qs is not HaochisTrialsQuest)
         {
-            if (HaochisTrialsQuest.HasLostHaochisKatana(player))
+            return;
+        }
+
+        if (HaochisTrialsQuest.HasLostHaochisKatana(player))
+        {
+            qs.AddConversation(new LostSwordConversation());
+            return;
+        }
+
+        if (qs.FindObjective<FindHaochiObjective>() is { Completed: false } obj1)
+        {
+            obj1.Complete();
+            return;
+        }
+
+        if (qs.FindObjective<FirstTrialReturnObjective>() is { Completed: false } obj2)
+        {
+            player.AddToBackpack(new LeatherDo());
+            obj2.Complete();
+            return;
+        }
+
+        if (qs.FindObjective<SecondTrialReturnObjective>() is { Completed: false } obj3)
+        {
+            if (obj3.Dragon)
             {
-                qs.AddConversation(new LostSwordConversation());
+                player.AddToBackpack(new LeatherSuneate());
+            }
+
+            obj3.Complete();
+            return;
+        }
+
+        if (qs.FindObjective<ThirdTrialReturnObjective>() is { Completed: false } obj4)
+        {
+            player.AddToBackpack(new LeatherHaidate());
+            obj4.Complete();
+            return;
+        }
+
+        if (qs.FindObjective<FourthTrialReturnObjective>() is { Completed: false } obj5)
+        {
+            if (!obj5.KilledCat)
+            {
+                var cont = GetNewContainer();
+                cont.DropItem(new LeatherHiroSode());
+                cont.DropItem(new JinBaori());
+                player.AddToBackpack(cont);
+            }
+
+            obj5.Complete();
+            return;
+        }
+
+        if (qs.FindObjective<FifthTrialReturnObjective>() is { Completed: false } obj6)
+        {
+            var katana = player.Backpack?.FindItemByType<HaochisKatana>();
+            if (katana == null)
+            {
                 return;
             }
 
-            QuestObjective obj = qs.FindObjective<FindHaochiObjective>();
+            katana.Delete();
+            obj6.Complete();
 
-            if (obj?.Completed == false)
-            {
-                obj.Complete();
-                return;
-            }
+            qs.AddConversation(
+                new SixthTrialIntroConversation(qs.FindObjective<FifthTrialIntroObjective>()?.StolenTreasure == true)
+            );
+        }
 
-            obj = qs.FindObjective<FirstTrialReturnObjective>();
+        if (qs.FindObjective<SixthTrialReturnObjective>() is { Completed: false } obj7)
+        {
+            obj7.Complete();
+            return;
+        }
 
-            if (obj?.Completed == false)
-            {
-                player.AddToBackpack(new LeatherDo());
-                obj.Complete();
-                return;
-            }
+        if (qs.FindObjective<SeventhTrialReturnObjective>() is { Completed: false } obj8)
+        {
+            BaseWeapon weapon = new Daisho();
+            BaseRunicTool.ApplyAttributesTo(weapon, Utility.Random(1, 3), 10, 30);
+            player.AddToBackpack(weapon);
 
-            obj = qs.FindObjective<SecondTrialReturnObjective>();
+            BaseArmor armor = new LeatherDo();
+            BaseRunicTool.ApplyAttributesTo(armor, Utility.Random(1, 3), 10, 20);
+            player.AddToBackpack(armor);
 
-            if (obj?.Completed == false)
-            {
-                if (((SecondTrialReturnObjective)obj).Dragon)
-                {
-                    player.AddToBackpack(new LeatherSuneate());
-                }
-
-                obj.Complete();
-                return;
-            }
-
-            obj = qs.FindObjective<ThirdTrialReturnObjective>();
-
-            if (obj?.Completed == false)
-            {
-                player.AddToBackpack(new LeatherHiroSode());
-                obj.Complete();
-                return;
-            }
-
-            obj = qs.FindObjective<FourthTrialReturnObjective>();
-
-            if (obj?.Completed == false)
-            {
-                if (!((FourthTrialReturnObjective)obj).KilledCat)
-                {
-                    var cont = GetNewContainer();
-                    cont.DropItem(new LeatherHiroSode());
-                    cont.DropItem(new JinBaori());
-                    player.AddToBackpack(cont);
-                }
-
-                obj.Complete();
-                return;
-            }
-
-            obj = qs.FindObjective<FifthTrialReturnObjective>();
-
-            if (obj?.Completed == false)
-            {
-                var katana = player.Backpack?.FindItemByType<HaochisKatana>();
-                if (katana == null)
-                {
-                    return;
-                }
-
-                katana.Delete();
-                obj.Complete();
-
-                obj = qs.FindObjective<FifthTrialIntroObjective>();
-                if (((FifthTrialIntroObjective)obj)?.StolenTreasure == true)
-                {
-                    qs.AddConversation(new SixthTrialIntroConversation(true));
-                }
-                else
-                {
-                    qs.AddConversation(new SixthTrialIntroConversation(false));
-                }
-            }
-
-            obj = qs.FindObjective<SixthTrialReturnObjective>();
-
-            if (obj?.Completed == false)
-            {
-                obj.Complete();
-                return;
-            }
-
-            obj = qs.FindObjective<SeventhTrialReturnObjective>();
-
-            if (obj?.Completed == false)
-            {
-                BaseWeapon weapon = new Daisho();
-                BaseRunicTool.ApplyAttributesTo(weapon, Utility.Random(1, 3), 10, 30);
-                player.AddToBackpack(weapon);
-
-                BaseArmor armor = new LeatherDo();
-                BaseRunicTool.ApplyAttributesTo(armor, Utility.Random(1, 3), 10, 20);
-                player.AddToBackpack(armor);
-
-                obj.Complete();
-            }
+            obj8.Complete();
         }
     }
 }

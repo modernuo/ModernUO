@@ -89,86 +89,80 @@ public partial class Mardoth : BaseQuester
     {
         var qs = player.Quest;
 
-        if (qs is DarkTidesQuest)
+        if (qs == null && QuestSystem.CanOfferQuest(player, typeof(DarkTidesQuest)))
         {
-            if (DarkTidesQuest.HasLostCallingScroll(player))
+            new DarkTidesQuest(player).SendOffer();
+            return;
+        }
+
+        if (qs is not DarkTidesQuest)
+        {
+            return;
+        }
+
+        if (DarkTidesQuest.HasLostCallingScroll(player))
+        {
+            qs.AddConversation(new LostCallingScrollConversation(true));
+            return;
+        }
+
+        if (qs.FindObjective<FindMardothAboutVaultObjective>() is { Completed: false } obj1)
+        {
+            obj1.Complete();
+            return;
+        }
+
+        if (qs.FindObjective<FindMardothAboutKronusObjective>() is { Completed: false } obj2)
+        {
+            obj2.Complete();
+            return;
+        }
+
+        if (qs.FindObjective<FindMardothEndObjective>() is { Completed: false } obj3)
+        {
+            var cont = GetNewContainer();
+
+            cont.DropItem(new PigIron(20));
+            cont.DropItem(new NoxCrystal(20));
+            cont.DropItem(new BatWing(25));
+            cont.DropItem(new DaemonBlood(20));
+            cont.DropItem(new GraveDust(20));
+
+            BaseWeapon weapon = new BoneHarvester();
+
+            weapon.Slayer = SlayerName.OrcSlaying;
+
+            if (Core.AOS)
             {
-                qs.AddConversation(new LostCallingScrollConversation(true));
+                BaseRunicTool.ApplyAttributesTo(weapon, 3, 20, 40);
             }
             else
             {
-                QuestObjective obj = qs.FindObjective<FindMardothAboutVaultObjective>();
+                weapon.DamageLevel = (WeaponDamageLevel)RandomMinMaxScaled(2, 4);
+                weapon.AccuracyLevel = (WeaponAccuracyLevel)RandomMinMaxScaled(2, 4);
+                weapon.DurabilityLevel = (WeaponDurabilityLevel)RandomMinMaxScaled(2, 4);
+            }
 
-                if (obj?.Completed == false)
-                {
-                    obj.Complete();
-                }
-                else
-                {
-                    obj = qs.FindObjective<FindMardothAboutKronusObjective>();
+            cont.DropItem(weapon);
 
-                    if (obj?.Completed == false)
-                    {
-                        obj.Complete();
-                    }
-                    else
-                    {
-                        obj = qs.FindObjective<FindMardothEndObjective>();
+            cont.DropItem(new BankCheck(2000));
+            cont.DropItem(new EnchantedSextant());
 
-                        if (obj?.Completed == false)
-                        {
-                            var cont = GetNewContainer();
-
-                            cont.DropItem(new PigIron(20));
-                            cont.DropItem(new NoxCrystal(20));
-                            cont.DropItem(new BatWing(25));
-                            cont.DropItem(new DaemonBlood(20));
-                            cont.DropItem(new GraveDust(20));
-
-                            BaseWeapon weapon = new BoneHarvester();
-
-                            weapon.Slayer = SlayerName.OrcSlaying;
-
-                            if (Core.AOS)
-                            {
-                                BaseRunicTool.ApplyAttributesTo(weapon, 3, 20, 40);
-                            }
-                            else
-                            {
-                                weapon.DamageLevel = (WeaponDamageLevel)RandomMinMaxScaled(2, 4);
-                                weapon.AccuracyLevel = (WeaponAccuracyLevel)RandomMinMaxScaled(2, 4);
-                                weapon.DurabilityLevel = (WeaponDurabilityLevel)RandomMinMaxScaled(2, 4);
-                            }
-
-                            cont.DropItem(weapon);
-
-                            cont.DropItem(new BankCheck(2000));
-                            cont.DropItem(new EnchantedSextant());
-
-                            if (!player.PlaceInBackpack(cont))
-                            {
-                                cont.Delete();
-                                player.SendLocalizedMessage(
-                                    1046260
-                                ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-                            }
-                            else
-                            {
-                                obj.Complete();
-                            }
-                        }
-                        else if (contextMenu)
-                        {
-                            FocusTo(player);
-                            player.SendLocalizedMessage(1061821); // Mardoth has nothing more for you at this time.
-                        }
-                    }
-                }
+            if (!player.PlaceInBackpack(cont))
+            {
+                cont.Delete();
+                // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+                player.SendLocalizedMessage(1046260);
+            }
+            else
+            {
+                obj3.Complete();
             }
         }
-        else if (qs == null && QuestSystem.CanOfferQuest(player, typeof(DarkTidesQuest)))
+        else if (contextMenu)
         {
-            new DarkTidesQuest(player).SendOffer();
+            FocusTo(player);
+            player.SendLocalizedMessage(1061821); // Mardoth has nothing more for you at this time.
         }
     }
 
@@ -176,22 +170,24 @@ public partial class Mardoth : BaseQuester
     {
         base.OnMovement(m, oldLocation);
 
-        if (m is PlayerMobile && !m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+        if (m is not PlayerMobile || m.Frozen || m.Alive || !InRange(m, 4) || InRange(oldLocation, 4) || !InLOS(m))
         {
-            if (m.Map?.CanFit(m.Location, 16, false, false) != true)
-            {
-                m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
-            }
-            else
-            {
-                Direction = GetDirectionTo(m);
+            return;
+        }
 
-                m.PlaySound(0x214);
-                m.FixedEffect(0x376A, 10, 16);
+        if (m.Map?.CanFit(m.Location, 16, false, false) != true)
+        {
+            m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+        }
+        else
+        {
+            Direction = GetDirectionTo(m);
 
-                m.CloseGump<ResurrectGump>();
-                m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
-            }
+            m.PlaySound(0x214);
+            m.FixedEffect(0x376A, 10, 16);
+
+            m.CloseGump<ResurrectGump>();
+            m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
         }
     }
 }

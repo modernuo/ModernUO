@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Hag.HangoverCure",
+  "properties": [
+    {
+      "name": "Uses",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    }
+  ]
+}

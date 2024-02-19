@@ -82,7 +82,7 @@ namespace Server.Engines.Quests.Doom
         {
             base.Cancel();
 
-            QuestObjective obj = FindObjective<CollectBonesObjective>();
+            var obj = FindObjective<CollectBonesObjective>();
 
             if (obj?.CurProgress > 0)
             {

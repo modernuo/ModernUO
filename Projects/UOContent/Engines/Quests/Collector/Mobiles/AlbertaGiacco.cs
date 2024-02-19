@@ -58,7 +58,7 @@ public partial class AlbertaGiacco : BaseQuester
         {
             Direction = GetDirectionTo(player);
 
-            QuestObjective obj = qs.FindObjective<FindAlbertaObjective>();
+            var obj = qs.FindObjective<FindAlbertaObjective>();
 
             if (obj?.Completed == false)
             {

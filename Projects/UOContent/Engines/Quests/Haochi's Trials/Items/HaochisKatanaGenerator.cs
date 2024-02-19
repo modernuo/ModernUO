@@ -42,7 +42,7 @@ public partial class HaochisKatanaGenerator : Item
         }
         else
         {
-            QuestObjective obj = qs.FindObjective<FifthTrialIntroObjective>();
+            var obj = qs.FindObjective<FifthTrialIntroObjective>();
 
             if (obj?.Completed == false)
             {

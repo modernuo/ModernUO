@@ -32,7 +32,7 @@ public partial class CrystalCaveBarrier : Item
 
         if (qs is DarkTidesQuest)
         {
-            QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
+            var obj = qs.FindObjective<SpeakCavePasswordObjective>();
 
             if (obj?.Completed == true)
             {

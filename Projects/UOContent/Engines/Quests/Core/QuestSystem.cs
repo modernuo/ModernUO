@@ -446,8 +446,8 @@ namespace Server.Engines.Quests
                 return false;
             }
 
-            if (questType == typeof(UzeraanTurmoilQuest) && pm.Profession != 1 && pm.Profession != 2 && pm.Profession != 5
-            ) // warrior / magician / paladin
+            // warrior / magician / paladin
+            if (questType == typeof(UzeraanTurmoilQuest) && pm.Profession != 1 && pm.Profession != 2 && pm.Profession != 5)
             {
                 return false;
             }

@@ -24,7 +24,7 @@ public partial class ScrollOfAbraxus : QuestItem
 
             if (qs is DarkTidesQuest)
             {
-                QuestObjective obj = qs.FindObjective<RetrieveAbraxusScrollObjective>();
+                var obj = qs.FindObjective<RetrieveAbraxusScrollObjective>();
 
                 if (obj?.Completed == false)
                 {
@@ -46,7 +46,7 @@ public partial class ScrollOfAbraxus : QuestItem
 
                 if (qs is DarkTidesQuest)
                 {
-                    QuestObjective obj = qs.FindObjective<ReadAbraxusScrollObjective>();
+                    var obj = qs.FindObjective<ReadAbraxusScrollObjective>();
 
                     if (obj?.Completed == false)
                     {

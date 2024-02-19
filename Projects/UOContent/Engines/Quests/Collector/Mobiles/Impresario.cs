@@ -119,34 +119,38 @@ public class SheetMusicOfferGump : BaseQuestGump
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-        if (info.ButtonID == 1 && info.IsSwitched(1))
+        if (info.ButtonID != 1 || !info.IsSwitched(1))
         {
-            if (sender.Mobile is PlayerMobile player)
-            {
-                var qs = player.Quest;
+            return;
+        }
 
-                if (qs is not CollectorQuest)
-                {
-                    return;
-                }
+        if (sender.Mobile is not PlayerMobile player)
+        {
+            return;
+        }
 
-                var obj = qs.FindObjective<FindSheetMusicObjective>();
+        var qs = player.Quest;
 
-                if (obj?.Completed != false)
-                {
-                    return;
-                }
+        if (qs is not CollectorQuest)
+        {
+            return;
+        }
 
-                if (player.Backpack?.ConsumeTotal(typeof(Gold), 10) == true || Banker.Withdraw(player, 10))
-                {
-                    obj.Complete();
-                }
-                else
-                {
-                    // You don't have enough gold to buy the sheet music.
-                    player.SendLocalizedMessage(1055108);
-                }
-            }
+        var obj = qs.FindObjective<FindSheetMusicObjective>();
+
+        if (obj?.Completed != false)
+        {
+            return;
+        }
+
+        if (player.Backpack?.ConsumeTotal(typeof(Gold), 10) == true || Banker.Withdraw(player, 10))
+        {
+            obj.Complete();
+        }
+        else
+        {
+            // You don't have enough gold to buy the sheet music.
+            player.SendLocalizedMessage(1055108);
         }
     }
 }

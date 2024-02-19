@@ -21,7 +21,7 @@ public partial class WhiteNinjaQuestTeleporter : DynamicTeleporter
 
         if (qs is EminosUndertakingQuest)
         {
-            QuestObjective obj = qs.FindObjective<SearchForSwordObjective>();
+            var obj = qs.FindObjective<SearchForSwordObjective>();
 
             if (obj != null)
             {
