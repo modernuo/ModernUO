@@ -269,7 +269,15 @@ public static class TcpServer
                 return;
             }
 
-            if (Firewall.IsBlocked(remoteIP))
+            var firewalled = Firewall.IsBlocked(remoteIP);
+            if (!firewalled)
+            {
+                var socketConnectedEventContext = new SocketConnectedEventContext(socket);
+                EventSink.InvokeSocketConnected(socketConnectedEventContext);
+                firewalled = !socketConnectedEventContext.ConnectionAllowed;
+            }
+
+            if (firewalled)
             {
                 TraceDisconnect("Firewalled", remoteIP);
                 logger.Debug("{Address} Firewalled", remoteIP);
@@ -304,6 +312,30 @@ public static class TcpServer
         catch
         {
             // ignored
+        }
+    }
+
+    public static class EventSink
+    {
+        // IMPORTANT: This is executed asynchronously! Do not run any game thread code on these delegates!
+        public static event Action<SocketConnectedEventContext> SocketConnected;
+
+        internal static void InvokeSocketConnected(SocketConnectedEventContext context) =>
+            SocketConnected?.Invoke(context);
+    }
+
+    public class SocketConnectedEventContext
+    {
+        public Socket Socket { get; }
+
+        public bool ConnectionAllowed { get; set; } = true;
+
+        internal SocketConnectedEventContext(Socket socket) => Socket = socket;
+
+        public void FirewallConnection()
+        {
+            Firewall.RequestAddSingleIPEntry(((IPEndPoint)Socket.RemoteEndPoint)!.Address.ToString());
+            ConnectionAllowed = false;
         }
     }
 }
