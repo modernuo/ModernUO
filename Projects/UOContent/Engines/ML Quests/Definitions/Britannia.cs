@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
 using Server.Items;
@@ -105,7 +106,8 @@ namespace Server.Engines.MLQuests.Definitions
         }
     }
 
-    public class Aurelia : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Aurelia : BaseCreature
     {
         [Constructible]
         public Aurelia() : base(AIType.AI_Vendor, FightMode.None, 2)
@@ -136,31 +138,13 @@ namespace Server.Engines.MLQuests.Definitions
             AddItem(new FancyShirt(Utility.RandomRedHue()));
         }
 
-        public Aurelia(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override bool IsInvulnerable => true;
         public override string DefaultName => "Aurelia";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 
     [QuesterName("Szandor")]
-    public class SkeletonOfSzandor : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class SkeletonOfSzandor : BaseCreature
     {
         [Constructible]
         public SkeletonOfSzandor() : base(AIType.AI_Vendor, FightMode.None, 2)
@@ -173,26 +157,7 @@ namespace Server.Engines.MLQuests.Definitions
             InitStats(100, 100, 25);
         }
 
-        public SkeletonOfSzandor(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override bool IsInvulnerable => true;
         public override string DefaultName => "Skeleton of Szandor";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
     }
 }

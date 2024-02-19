@@ -88,11 +88,5 @@ public abstract partial class BaseQuester : BaseVendor
         QuestSystem.FocusTo(this, to);
     }
 
-    public static Container GetNewContainer()
-    {
-        return new Bag
-        {
-            Hue = QuestSystem.RandomBrightHue()
-        };
-    }
+    public static Container GetNewContainer() => new Bag { Hue = QuestSystem.RandomBrightHue() };
 }
