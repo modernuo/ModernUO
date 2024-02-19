@@ -1,7 +1,14 @@
+using System.Runtime.CompilerServices;
+
 namespace Server.Mobiles;
 
 public class VendorAI : BaseAI
 {
+    // Guards! A villan attacks me!
+    // Guards! Help!
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int GetRandomGuardMessage() => Utility.RandomBool() ? 1005305 : 501603;
+
     public VendorAI(BaseCreature m) : base(m)
     {
     }
@@ -20,7 +27,7 @@ public class VendorAI : BaseAI
                 m_Mobile.DebugSay($"{m_Mobile.Combatant.Name} is attacking me");
             }
 
-            m_Mobile.Say(Utility.RandomBool() ? 1005305 : 501603);
+            m_Mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
         }
         else
@@ -56,7 +63,7 @@ public class VendorAI : BaseAI
                 m_Mobile.DebugSay($"{m_Mobile.Combatant.Name} is attacking me");
             }
 
-            m_Mobile.Say(Utility.RandomList(1005305, 501603));
+            m_Mobile.Say(GetRandomGuardMessage());
 
             Action = ActionType.Flee;
 

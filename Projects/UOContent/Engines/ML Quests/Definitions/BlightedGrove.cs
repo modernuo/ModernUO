@@ -1,4 +1,5 @@
 ﻿using System;
+using ModernUO.Serialization;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
 using Server.Items;
@@ -176,11 +177,11 @@ namespace Server.Engines.MLQuests.Definitions
     }
 
     [QuesterName("Jamal (near Blighted Grove)")]
-    public class Jamal : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Jamal : BaseCreature
     {
         [Constructible]
-        public Jamal()
-            : base(AIType.AI_Vendor, FightMode.None, 2)
+        public Jamal() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Fisherman";
             Body = 400;
@@ -196,35 +197,17 @@ namespace Server.Engines.MLQuests.Definitions
             AddItem(new Backpack());
         }
 
-        public Jamal(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override bool IsInvulnerable => true;
         public override string DefaultName => "Jamal";
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            reader.ReadInt();
-        }
     }
 
     [QuesterName("Iosep (Jhelom)")]
-    public class Iosep : BaseCreature
+    [SerializationGenerator(0, false)]
+    public partial class Iosep : BaseCreature
     {
+
         [Constructible]
-        public Iosep()
-            : base(AIType.AI_Vendor, FightMode.None, 2)
+        public Iosep() : base(AIType.AI_Vendor, FightMode.None, 2)
         {
             Title = "the Exporter";
             Body = 400;
@@ -237,11 +220,6 @@ namespace Server.Engines.MLQuests.Definitions
             AddItem(new Backpack());
         }
 
-        public Iosep(Serial serial)
-            : base(serial)
-        {
-        }
-
         public override bool IsInvulnerable => true;
         public override string DefaultName => "Iosep";
 
@@ -249,28 +227,9 @@ namespace Server.Engines.MLQuests.Definitions
 
         public override void Shout(PlayerMobile pm)
         {
-            MLQuestSystem.Tell(
-                this,
-                pm,
-                Utility.RandomList(
-                    1074209, // Hey, could you help me out with something?
-                    1074215  // Don’t test my patience you sniveling worm!
-                )
-            );
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            reader.ReadInt();
+            // Hey, could you help me out with something?
+            // Don’t test my patience you sniveling worm!
+            MLQuestSystem.Tell(this, pm, Utility.RandomBool() ? 1074209 : 1074215 );
         }
     }
 }
