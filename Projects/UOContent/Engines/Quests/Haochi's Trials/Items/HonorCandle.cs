@@ -37,7 +37,7 @@ public partial class HonorCandle : CandleLong
 
             if (qs is HaochisTrialsQuest)
             {
-                QuestObjective obj = qs.FindObjective<SixthTrialIntroObjective>();
+                var obj = qs.FindObjective<SixthTrialIntroObjective>();
 
                 if (obj?.Completed == false)
                 {

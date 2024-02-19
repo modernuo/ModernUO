@@ -36,19 +36,10 @@ public partial class AlbertaGiacco : BaseQuester
         HairHue = 0x457;
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-        QuestSystem qs = to.Quest as CollectorQuest;
-
-        if (qs == null)
-        {
-            return false;
-        }
-
-        return qs.IsObjectiveInProgress(typeof(FindAlbertaObjective))
-               || qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective))
-               || qs.IsObjectiveInProgress(typeof(ReturnPaintingObjective));
-    }
+    public override bool CanTalkTo(PlayerMobile to) =>
+        to.Quest is CollectorQuest qs && (qs.IsObjectiveInProgress(typeof(FindAlbertaObjective))
+                                          || qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective))
+                                          || qs.IsObjectiveInProgress(typeof(ReturnPaintingObjective)));
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {
@@ -58,7 +49,7 @@ public partial class AlbertaGiacco : BaseQuester
         {
             Direction = GetDirectionTo(player);
 
-            QuestObjective obj = qs.FindObjective<FindAlbertaObjective>();
+            var obj = qs.FindObjective<FindAlbertaObjective>();
 
             if (obj?.Completed == false)
             {

@@ -52,7 +52,7 @@ public partial class KronusScroll : QuestItem
             {
                 if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm.Location))
                 {
-                    QuestObjective obj = qs.FindObjective<UseCallingScrollObjective>();
+                    var obj = qs.FindObjective<UseCallingScrollObjective>();
 
                     if (obj?.Completed == false)
                     {

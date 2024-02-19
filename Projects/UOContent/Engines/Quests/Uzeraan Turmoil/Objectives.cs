@@ -190,14 +190,14 @@ namespace Server.Engines.Quests.Haven
                 {
                     case KillHordeMinionsStep.First:
                         {
-                            QuestObjective obj = new KillHordeMinionsObjective(KillHordeMinionsStep.LearnKarma);
+                            var obj = new KillHordeMinionsObjective(KillHordeMinionsStep.LearnKarma);
                             System.AddObjective(obj);
                             obj.CurProgress = CurProgress;
                             break;
                         }
                     case KillHordeMinionsStep.LearnKarma:
                         {
-                            QuestObjective obj = new KillHordeMinionsObjective(KillHordeMinionsStep.Others);
+                            var obj = new KillHordeMinionsObjective(KillHordeMinionsStep.Others);
                             System.AddObjective(obj);
                             obj.CurProgress = CurProgress;
                             break;

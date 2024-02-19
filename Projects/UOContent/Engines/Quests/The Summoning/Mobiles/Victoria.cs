@@ -84,7 +84,7 @@ public partial class Victoria : BaseQuester
             return base.OnDragDrop(from, dropped);
         }
 
-        QuestObjective obj = qs.FindObjective<CollectBonesObjective>();
+        var obj = qs.FindObjective<CollectBonesObjective>();
 
         if (obj?.Completed == false)
         {

@@ -29,7 +29,7 @@ public partial class KronusScrollBox : MetalBox
 
             if (qs is DarkTidesQuest)
             {
-                QuestObjective obj = qs.FindObjective<FindCallingScrollObjective>();
+                var obj = qs.FindObjective<FindCallingScrollObjective>();
 
                 if (obj?.Completed == false || DarkTidesQuest.HasLostCallingScroll(from))
                 {

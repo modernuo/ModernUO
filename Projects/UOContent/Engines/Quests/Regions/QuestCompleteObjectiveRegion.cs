@@ -25,7 +25,7 @@ public class QuestCompleteObjectiveRegion : BaseRegion
         {
             if (m is PlayerMobile player && player?.Quest != null && player.Quest.GetType() == Quest)
             {
-                QuestObjective obj = player.Quest.FindObjective(Objective);
+                var obj = player.Quest.FindObjective(Objective);
 
                 if (obj is { Completed: false })
                 {

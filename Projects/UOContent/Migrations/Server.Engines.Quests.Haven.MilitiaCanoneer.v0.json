@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Haven.MilitiaCanoneer",
+  "properties": [
+    {
+      "name": "Active",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

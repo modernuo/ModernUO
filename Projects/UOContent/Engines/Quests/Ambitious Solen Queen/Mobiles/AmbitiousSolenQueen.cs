@@ -41,7 +41,7 @@ public abstract partial class BaseAmbitiousSolenQueen : BaseQuester
             }
             else
             {
-                QuestObjective obj = qs.FindObjective<ReturnAfterKillsObjective>();
+                var obj = qs.FindObjective<ReturnAfterKillsObjective>();
 
                 if (obj?.Completed == false)
                 {
@@ -88,7 +88,7 @@ public abstract partial class BaseAmbitiousSolenQueen : BaseQuester
         }
         else
         {
-            QuestSystem newQuest = new AmbitiousQueenQuest(player, RedSolen);
+            var newQuest = new AmbitiousQueenQuest(player, RedSolen);
 
             if (player.Quest == null && QuestSystem.CanOfferQuest(player, typeof(AmbitiousQueenQuest)))
             {
@@ -110,7 +110,7 @@ public abstract partial class BaseAmbitiousSolenQueen : BaseQuester
             return base.OnDragDrop(from, dropped);
         }
 
-        QuestObjective obj = qs.FindObjective<GatherFungiObjective>();
+        var obj = qs.FindObjective<GatherFungiObjective>();
 
         if (obj?.Completed != false || dropped is not ZoogiFungus fungi)
         {

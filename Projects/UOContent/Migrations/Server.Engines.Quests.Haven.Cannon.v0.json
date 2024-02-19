@@ -1,0 +1,16 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Haven.Cannon",
+  "properties": [
+    {
+      "name": "CannonDirection",
+      "type": "Server.Engines.Quests.Haven.CannonDirection",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Canoneer",
+      "type": "Server.Engines.Quests.Haven.MilitiaCanoneer",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

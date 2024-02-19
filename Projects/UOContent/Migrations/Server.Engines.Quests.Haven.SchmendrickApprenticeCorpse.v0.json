@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.Quests.Haven.SchmendrickApprenticeCorpse",
+  "properties": [
+    {
+      "name": "Lantern",
+      "type": "Server.Items.Lantern",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

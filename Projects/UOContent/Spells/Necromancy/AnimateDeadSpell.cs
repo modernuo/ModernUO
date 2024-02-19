@@ -148,12 +148,7 @@ namespace Server.Spells.Necromancy
             }
             else
             {
-                Type type = null;
-
-                if (c.Owner != null)
-                {
-                    type = c.Owner.GetType();
-                }
+                Type type = c.Owner?.GetType();
 
                 if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
                     c.Owner?.Fame < 100 ||

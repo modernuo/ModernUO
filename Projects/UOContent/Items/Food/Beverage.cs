@@ -608,7 +608,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         {
             if (from is PlayerMobile { Quest: SolenMatriarchQuest qs })
             {
-                QuestObjective obj = qs.FindObjective<GatherWaterObjective>();
+                var obj = qs.FindObjective<GatherWaterObjective>();
 
                 if (obj?.Completed == false)
                 {

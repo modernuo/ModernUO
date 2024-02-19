@@ -61,7 +61,7 @@ namespace Server.Engines.Quests.Hag
             Timer.StartTimer(TimeSpan.FromSeconds(3.0), () => DeleteImp(imp));
         }
 
-        private void DeleteImp(Mobile m)
+        private static void DeleteImp(Mobile m)
         {
             if (m?.Deleted == false)
             {

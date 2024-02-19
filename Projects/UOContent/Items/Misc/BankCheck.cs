@@ -183,7 +183,7 @@ public partial class BankCheck : Item
 
                 if (qs is DarkTidesQuest)
                 {
-                    QuestObjective obj = qs.FindObjective<CashBankCheckObjective>();
+                    var obj = qs.FindObjective<CashBankCheckObjective>();
 
                     if (obj?.Completed == false)
                     {

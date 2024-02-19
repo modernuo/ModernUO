@@ -37,52 +37,44 @@ public partial class GabrielPiete : BaseQuester
         FacialHairHue = 0x460;
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-        QuestSystem qs = to.Quest as CollectorQuest;
-
-        if (qs == null)
-        {
-            return false;
-        }
-
-        return qs.IsObjectiveInProgress(typeof(FindGabrielObjective))
-               || qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective))
-               || qs.IsObjectiveInProgress(typeof(ReturnSheetMusicObjective))
-               || qs.IsObjectiveInProgress(typeof(ReturnAutographObjective));
-    }
+    public override bool CanTalkTo(PlayerMobile to) =>
+        to.Quest is CollectorQuest qs && (qs.IsObjectiveInProgress(typeof(FindGabrielObjective))
+                                          || qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective))
+                                          || qs.IsObjectiveInProgress(typeof(ReturnSheetMusicObjective))
+                                          || qs.IsObjectiveInProgress(typeof(ReturnAutographObjective)));
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {
         var qs = player.Quest;
 
-        if (qs is CollectorQuest)
+        if (qs is not CollectorQuest)
         {
-            Direction = GetDirectionTo(player);
+            return;
+        }
 
-            QuestObjective obj = qs.FindObjective<FindGabrielObjective>();
+        Direction = GetDirectionTo(player);
 
-            if (obj?.Completed == false)
-            {
-                obj.Complete();
-            }
-            else if (qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective)))
-            {
-                qs.AddConversation(new GabrielNoSheetMusicConversation());
-            }
-            else
-            {
-                obj = qs.FindObjective<ReturnSheetMusicObjective>();
+        if (qs.FindObjective<FindGabrielObjective>() is { Completed: false } obj1)
+        {
+            obj1.Complete();
+            return;
+        }
 
-                if (obj?.Completed == false)
-                {
-                    obj.Complete();
-                }
-                else if (qs.IsObjectiveInProgress(typeof(ReturnAutographObjective)))
-                {
-                    qs.AddConversation(new GabrielIgnoreConversation());
-                }
-            }
+        if (qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective)))
+        {
+            qs.AddConversation(new GabrielNoSheetMusicConversation());
+            return;
+        }
+
+        if (qs.FindObjective<ReturnSheetMusicObjective>() is { Completed: false } obj2)
+        {
+            obj2.Complete();
+            return;
+        }
+
+        if (qs.IsObjectiveInProgress(typeof(ReturnAutographObjective)))
+        {
+            qs.AddConversation(new GabrielIgnoreConversation());
         }
     }
 }

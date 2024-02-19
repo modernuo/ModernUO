@@ -49,7 +49,7 @@ public partial class Relnia : BaseQuester
 
             if (qs is HaochisTrialsQuest)
             {
-                QuestObjective obj = qs.FindObjective<FourthTrialCatsObjective>();
+                var obj = qs.FindObjective<FourthTrialCatsObjective>();
 
                 if (obj?.Completed == false)
                 {

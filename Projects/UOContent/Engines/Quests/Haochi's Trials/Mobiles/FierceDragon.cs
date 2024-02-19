@@ -57,7 +57,7 @@ public partial class FierceDragon : BaseCreature
             var qs = player.Quest;
             if (qs is HaochisTrialsQuest)
             {
-                QuestObjective obj = qs.FindObjective<SecondTrialAttackObjective>();
+                var obj = qs.FindObjective<SecondTrialAttackObjective>();
                 if (obj?.Completed == false)
                 {
                     obj.Complete();
