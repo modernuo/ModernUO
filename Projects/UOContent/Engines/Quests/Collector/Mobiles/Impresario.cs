@@ -35,17 +35,8 @@ public partial class Impresario : BaseQuester
         Utility.AssignRandomFacialHair(this);
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-        QuestSystem qs = to.Quest as CollectorQuest;
-
-        if (qs == null)
-        {
-            return false;
-        }
-
-        return qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective));
-    }
+    public override bool CanTalkTo(PlayerMobile to) =>
+        to.Quest is CollectorQuest qs && qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective));
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

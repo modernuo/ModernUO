@@ -35,19 +35,10 @@ public partial class TomasONeerlan : BaseQuester
         HairHue = 0x455;
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-        QuestSystem qs = to.Quest as CollectorQuest;
-
-        if (qs == null)
-        {
-            return false;
-        }
-
-        return qs.IsObjectiveInProgress(typeof(FindTomasObjective))
-               || qs.IsObjectiveInProgress(typeof(CaptureImagesObjective))
-               || qs.IsObjectiveInProgress(typeof(ReturnImagesObjective));
-    }
+    public override bool CanTalkTo(PlayerMobile to) =>
+        to.Quest is CollectorQuest qs && (qs.IsObjectiveInProgress(typeof(FindTomasObjective))
+                                          || qs.IsObjectiveInProgress(typeof(CaptureImagesObjective))
+                                          || qs.IsObjectiveInProgress(typeof(ReturnImagesObjective)));
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

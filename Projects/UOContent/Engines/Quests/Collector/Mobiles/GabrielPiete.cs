@@ -37,20 +37,11 @@ public partial class GabrielPiete : BaseQuester
         FacialHairHue = 0x460;
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-        QuestSystem qs = to.Quest as CollectorQuest;
-
-        if (qs == null)
-        {
-            return false;
-        }
-
-        return qs.IsObjectiveInProgress(typeof(FindGabrielObjective))
-               || qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective))
-               || qs.IsObjectiveInProgress(typeof(ReturnSheetMusicObjective))
-               || qs.IsObjectiveInProgress(typeof(ReturnAutographObjective));
-    }
+    public override bool CanTalkTo(PlayerMobile to) =>
+        to.Quest is CollectorQuest qs && (qs.IsObjectiveInProgress(typeof(FindGabrielObjective))
+                                          || qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective))
+                                          || qs.IsObjectiveInProgress(typeof(ReturnSheetMusicObjective))
+                                          || qs.IsObjectiveInProgress(typeof(ReturnAutographObjective)));
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {
