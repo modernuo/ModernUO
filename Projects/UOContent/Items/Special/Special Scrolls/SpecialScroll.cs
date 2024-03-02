@@ -7,10 +7,12 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public abstract partial class SpecialScroll : Item
 {
+    [InvalidateProperties]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SkillName _skill;
 
+    [InvalidateProperties]
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private double _value;
@@ -28,9 +30,9 @@ public abstract partial class SpecialScroll : Item
     public virtual int Title => 0;
     public abstract string DefaultTitle { get; }
 
-    public virtual string GetNameLocalized() => $"#{AosSkillBonuses.GetLabel(Skill)}";
+    public virtual int SkillLabel => AosSkillBonuses.GetLabel(Skill);
 
-    public virtual string GetName()
+    public virtual string GetSkillName()
     {
         var index = (int)Skill;
         var table = SkillInfo.Table;
@@ -110,8 +112,12 @@ public abstract partial class SpecialScroll : Item
                 AddHtml(40, 20, 260, 20, _scroll.DefaultTitle);
             }
 
-            var skillLabel = _scroll is StatCapScroll ? 1038019 : AosSkillBonuses.GetLabel(_scroll.Skill);
-            AddHtmlLocalized(310, 20, 120, 20, skillLabel, 0xFFFFFF); // Power
+            var skillLabel = _scroll.SkillLabel;
+
+            if (skillLabel > 0)
+            {
+                AddHtmlLocalized(310, 20, 120, 20, skillLabel, 0xFFFFFF);
+            }
         }
 
         public override void OnResponse(NetState state, RelayInfo info)

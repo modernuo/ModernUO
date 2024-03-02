@@ -1085,6 +1085,27 @@ namespace Server
             };
         }
 
+        public static int GetLowercaseLabel(SkillName skill)
+        {
+            return skill switch
+            {
+                SkillName.Provocation  => 1049473, // provocation
+                SkillName.MagicResist  => 1049471, // resisting spells
+                SkillName.AnimalTaming => 1049472, // animal taming
+                SkillName.Macing       => 1049470, // mace fighting
+                SkillName.Necromancy   => 1060842, // necromancy
+                SkillName.Focus        => 1061616, // focus
+                SkillName.Chivalry     => 1061615, // chivalry
+                SkillName.Bushido      => 1062935, // bushido
+                SkillName.Ninjitsu     => 1062936, // ninjitsu
+                SkillName.Spellweaving => 1074397, // spellweaving
+                SkillName.Mysticism    => 1112544, // mysticism
+                SkillName.Imbuing      => 1112545, // imbuing
+                SkillName.Throwing     => 1112553, // throwing
+                _                      => 1042347 + (int)skill
+            };
+        }
+
         public void AddTo(Mobile m)
         {
             Remove();
