@@ -18,9 +18,9 @@ public partial class ScrollofAlacrity : SpecialScroll
 
     public override int LabelNumber => 1078604; // Scroll of Alacrity
 
-    /* Using a Scroll of Transcendence for a given skill will permanently increase your current
-     * level in that skill by the amount of points displayed on the scroll.
-     * As you may not gain skills beyond your maximum skill cap, any excess points will be lost.
+    /*
+     * Using a Scroll of Alacrity for a given skill will increase the amount of skillgain you receive for that skill.
+     * Once the Scroll of Alacrity duration has expired, skillgain will return to normal for that skill.
      */
     public override int Message => 1078602;
 
@@ -30,7 +30,7 @@ public partial class ScrollofAlacrity : SpecialScroll
     {
         base.GetProperties(list);
 
-        list.Add(1071345, GetName()); // Skill: ~1_val~
+        list.AddLocalized(1071345, SkillLabel); // Skill: ~1_val~
         list.Add(1071346, 15); // Duration: ~1_val~ minutes
     }
 
@@ -75,10 +75,11 @@ public partial class ScrollofAlacrity : SpecialScroll
             return;
         }
 
-        var tskill = from.Skills[Skill].Base;
-        var tcap = from.Skills[Skill].Cap;
+        var skill = from.Skills[Skill];
+        var skillBase = skill.Base;
+        var skillCap = skill.Cap;
 
-        if (tskill >= tcap || from.Skills[Skill].Lock != SkillLock.Up)
+        if (skillBase >= skillCap || skill.Lock != SkillLock.Up)
         {
             /* You cannot increase this skill at this time. The skill may be locked or set to lower in your skill menu.
              * If you are at your total skill cap, you must use a Powerscroll to increase your current skill cap.

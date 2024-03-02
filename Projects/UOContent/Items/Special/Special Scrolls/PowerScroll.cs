@@ -74,7 +74,7 @@ public partial class PowerScroll : SpecialScroll
     {
         Hue = 0x481;
 
-        if (Value == 105.0 || skill is SkillName.Blacksmith or SkillName.Tailoring)
+        if (Value - 105.0 < 0.1 || skill is SkillName.Blacksmith or SkillName.Tailoring)
         {
             LootType = LootType.Regular;
         }
@@ -91,23 +91,26 @@ public partial class PowerScroll : SpecialScroll
     {
         get
         {
-            var level = (Value - 105.0) / 5.0;
-
-            /* Wondrous Scroll (105 Skill): OR
-             * Exalted Scroll (110 Skill): OR
-             * Mythical Scroll (115 Skill): OR
-             * Legendary Scroll (120 Skill):
-             */
-            if (level is >= 0.0 and <= 3.0 && Value % 5.0 == 0.0)
+            var skillValue = Value;
+            if (skillValue is >= 105 and <= 120)
             {
-                return 1049635 + (int)level;
+                var truncValue = Math.Floor(skillValue);
+                if (skillValue - truncValue < 0.1)
+                {
+                    /* Wondrous Scroll (105 Skill): OR
+                     * Exalted Scroll (110 Skill): OR
+                     * Mythical Scroll (115 Skill): OR
+                     * Legendary Scroll (120 Skill):
+                     */
+                    return 1049635 + ((int)truncValue - 105) / 5;
+                }
             }
 
             return 0;
         }
     }
 
-    public override string DefaultTitle => $"<basefont color=#FFFFFF>Power Scroll ({Value} Skill):</basefont>";
+    public override string DefaultTitle => $"<basefont color=#FFFFFF>Power Scroll ({Math.Floor(Value * 10) / 10:0.#} Skill):</basefont>";
 
     public static SkillName[] Skills
     {
@@ -183,35 +186,53 @@ public partial class PowerScroll : SpecialScroll
 
     public override void AddNameProperty(IPropertyList list)
     {
-        var level = (Value - 105.0) / 5.0;
+        var skillValue = Value;
+        // Truncate to 1 decimal by multiplying by 10 and flooring.
+        var truncValue = Math.Floor(skillValue * 10) / 10.0;
 
-        if (level is >= 0.0 and <= 3.0 && Value % 5.0 == 0.0)
+        // If the scroll is a 105-120 skill scroll and the value is a whole multiple of 5.
+        if (skillValue is >= 105 and <= 120 && skillValue - truncValue < 0.1)
         {
-            /* a wondrous scroll of ~1_type~ (105 Skill) OR
-             * an exalted scroll of ~1_type~ (110 Skill) OR
-             * a mythical scroll of ~1_type~ (115 Skill) OR
-             * a legendary scroll of ~1_type~ (120 Skill)
-             */
-            list.AddLocalized(1049639 + (int)level, AosSkillBonuses.GetLabel(Skill));
+            var level = Math.DivRem((int)truncValue - 105, 5, out var rem);
+            if (rem == 0)
+            {
+                /* a wondrous scroll of ~1_type~ (105 Skill) OR
+                 * an exalted scroll of ~1_type~ (110 Skill) OR
+                 * a mythical scroll of ~1_type~ (115 Skill) OR
+                 * a legendary scroll of ~1_type~ (120 Skill)
+                 */
+                list.AddLocalized(1049639 + level, AosSkillBonuses.GetLowercaseLabel(Skill));
+                return;
+            }
         }
-        else
-        {
-            list.Add($"a power scroll of {GetName()} ({Value} Skill)");
-        }
+
+        list.Add($"a power scroll of {GetSkillName()} ({truncValue:0.#} Skill)");
     }
 
     public override void OnSingleClick(Mobile from)
     {
-        var level = (Value - 105.0) / 5.0;
+        var skillValue = Value;
+        // Truncate to 1 decimal by multiplying by 10 and flooring.
+        // This will need to be divided by 10 to get the actual value.
+        var truncValue = Math.Floor(skillValue * 10) / 10.0;
 
-        if (level is >= 0.0 and <= 3.0 && Value % 5.0 == 0.0)
+        // If the scroll is a 105-120 skill scroll and the value is a whole multiple of 5.
+        if (skillValue is >= 105 and <= 120 && skillValue - truncValue < 0.1)
         {
-            LabelTo(from, 1049639 + (int)level, GetNameLocalized());
+            var level = Math.DivRem((int)truncValue - 105, 5, out var rem);
+            if (rem == 0)
+            {
+                /* a wondrous scroll of ~1_type~ (105 Skill) OR
+                 * an exalted scroll of ~1_type~ (110 Skill) OR
+                 * a mythical scroll of ~1_type~ (115 Skill) OR
+                 * a legendary scroll of ~1_type~ (120 Skill)
+                 */
+                LabelTo(from, 1049639 + level, $"#{AosSkillBonuses.GetLowercaseLabel(Skill)}");
+                return;
+            }
         }
-        else
-        {
-            LabelTo(from, $"a power scroll of {GetName()} ({Value} Skill)");
-        }
+
+        LabelTo(from, $"a power scroll of {GetSkillName()} ({truncValue:0.#} Skill)");
     }
 
     public override bool CanUse(Mobile from)
@@ -231,7 +252,7 @@ public partial class PowerScroll : SpecialScroll
         if (skill.Cap >= Value)
         {
             // Your ~1_type~ is too high for this power scroll.
-            from.SendLocalizedMessage(1049511, GetNameLocalized());
+            from.SendLocalizedMessage(1049511, $"#{AosSkillBonuses.GetLowercaseLabel(Skill)}");
             return false;
         }
 
@@ -246,7 +267,7 @@ public partial class PowerScroll : SpecialScroll
         }
 
         // You feel a surge of magic as the scroll enhances your ~1_type~!
-        from.SendLocalizedMessage(1049513, GetNameLocalized());
+        from.SendLocalizedMessage(1049513, $"#{AosSkillBonuses.GetLowercaseLabel(Skill)}");
 
         from.Skills[Skill].Cap = Value;
 

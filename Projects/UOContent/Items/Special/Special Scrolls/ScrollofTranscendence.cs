@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Objectives;
@@ -24,7 +25,7 @@ public partial class ScrollofTranscendence : SpecialScroll
     public override int Message => 1094933;
 
     public override string DefaultTitle =>
-        $"<basefont color=#FFFFFF>Scroll of Transcendence ({Value} Skill):</basefont>";
+        $"<basefont color=#FFFFFF>Scroll of Transcendence ({Math.Floor(Value * 10) / 10:0.#} Skill):</basefont>";
 
     public static ScrollofTranscendence CreateRandom(int min, int max) =>
         new(Utility.RandomSkill(), Utility.RandomMinMax(min, max) * 0.1);
@@ -32,7 +33,7 @@ public partial class ScrollofTranscendence : SpecialScroll
     public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
-        list.Add(1076759, $"{GetName()}\t{Value:0.#} Skill Points");
+        list.Add(1151930, $"{SkillLabel:#}\t{Math.Floor(Value * 10) / 10:0.#}\t{1151931:#}");
     }
 
     public override bool CanUse(Mobile from)
@@ -76,18 +77,19 @@ public partial class ScrollofTranscendence : SpecialScroll
             return;
         }
 
-        var tskill = from.Skills[Skill].Base; // value of skill without item bonuses etc
-        var tcap = from.Skills[Skill].Cap;    // maximum value permitted
+        var skill = from.Skills[Skill];
+        var skillBase = skill.Base;
+        var skillCap = skill.Cap;
         var canGain = false;
 
         var newValue = Value;
 
-        if (tskill + newValue > tcap)
+        if (skillBase + newValue > skillCap)
         {
-            newValue = tcap - tskill;
+            newValue = skillCap - skillBase;
         }
 
-        if (tskill < tcap && from.Skills[Skill].Lock == SkillLock.Up)
+        if (skillBase < skillCap && skill.Lock == SkillLock.Up)
         {
             if (from.SkillsTotal + newValue * 10 > from.SkillsCap)
             {
@@ -95,10 +97,11 @@ public partial class ScrollofTranscendence : SpecialScroll
 
                 for (var i = 0; i < ns; i++)
                 {
+                    var sk = from.Skills[i];
                     // skill must point down and its value must be enough
-                    if (from.Skills[i].Lock == SkillLock.Down && from.Skills[i].Base >= newValue)
+                    if (sk.Lock == SkillLock.Down && sk.Base >= newValue)
                     {
-                        from.Skills[i].Base -= newValue;
+                        sk.Base -= newValue;
                         canGain = true;
                         break;
                     }
@@ -120,7 +123,7 @@ public partial class ScrollofTranscendence : SpecialScroll
         }
 
         // You feel a surge of magic as the scroll enhances your ~1_type~!
-        from.SendLocalizedMessage(1049513, GetNameLocalized());
+        from.SendLocalizedMessage(1049513, $"#{AosSkillBonuses.GetLowercaseLabel(Skill)}");
 
         from.Skills[Skill].Base += newValue;
 

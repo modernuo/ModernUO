@@ -1,13 +1,17 @@
+using System;
 using ModernUO.Serialization;
 using Server.Mobiles;
 
 namespace Server.Items;
 
 [SerializationGenerator(0, false)]
+[TypeAlias("Server.Items.StatScroll")]
 public partial class StatCapScroll : SpecialScroll
 {
     [Constructible]
-    public StatCapScroll(int value = 105) : base(SkillName.Alchemy, value) => Hue = 0x481;
+    public StatCapScroll(int value = 230) : base(SkillName.Alchemy, value) => Hue = 0x481;
+
+    public override int SkillLabel => 0;
 
     /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
      * When used, the effect is not immediately seen without a gain of points with that skill or statistics.
@@ -20,7 +24,7 @@ public partial class StatCapScroll : SpecialScroll
     {
         get
         {
-            var level = ((int)Value - 230) / 5;
+            var level = Math.DivRem((int)Value - 230, 5, out var rem);
 
             /* Wondrous Scroll (+5 Maximum Stats): OR
              * Exalted Scroll (+10 Maximum Stats): OR
@@ -28,7 +32,7 @@ public partial class StatCapScroll : SpecialScroll
              * Legendary Scroll (+20 Maximum Stats): OR
              * Ultimate Scroll (+25 Maximum Stats):
              */
-            if (level is >= 0 and <= 4 && Value % 5 == 0)
+            if (level is >= 0 and <= 4 && rem == 0)
             {
                 return 1049458 + level;
             }
@@ -42,9 +46,10 @@ public partial class StatCapScroll : SpecialScroll
 
     public override void AddNameProperty(IPropertyList list)
     {
-        var level = ((int)Value - 230) / 5;
+        var truncValue = (int)Value;
+        var level = Math.DivRem(truncValue - 230, 5, out var rem);
 
-        if (level is >= 0 and <= 4 && (int)Value % 5 == 0)
+        if (level is >= 0 and <= 4 && rem == 0)
         {
             /* a wondrous scroll of ~1_type~ (+5 Maximum Stats) OR
              * an exalted scroll of ~1_type~ (+10 Maximum Stats) OR
@@ -56,22 +61,23 @@ public partial class StatCapScroll : SpecialScroll
         }
         else
         {
-            var diff = Value - 225;
+            var diff = truncValue - 225;
             list.Add($"a scroll of power ({(diff >= 0 ? "+" : "")}{diff} Maximum Stats)");
         }
     }
 
     public override void OnSingleClick(Mobile from)
     {
-        var level = ((int)Value - 230) / 5;
+        var truncValue = (int)Value;
+        var level = (truncValue - 230) / 5;
 
-        if (level is >= 0 and <= 4 && (int)Value % 5 == 0)
+        if (level is >= 0 and <= 4)
         {
             LabelTo(from, 1049463 + level, "#1049476");
         }
         else
         {
-            var diff = Value - 225;
+            var diff = truncValue - 225;
             LabelTo(from, $"a scroll of power ({(diff >= 0 ? "+" : "")}{diff} Maximum Stats)");
         }
     }
