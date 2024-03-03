@@ -31,6 +31,7 @@ public partial class SpawnerEntry
     [SerializedJsonPropertyName("parameters")]
     private string _parameters;
 
+    [Tidy]
     [SerializedJsonIgnore]
     [SerializableField(5)]
     private List<ISpawnable> _spawned;
@@ -95,10 +96,21 @@ public partial class SpawnerEntry
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        foreach (var e in Spawned)
+        // This wasn't tidy in the original code, but it is after generating the code.
+        for (var i = Spawned.Count - 1; i >= 0; i--)
         {
-            e.Spawner = _parent;
+            var e = Spawned[i];
+            if (e == null)
+            {
+                Spawned.RemoveAt(i);
+            }
+            else
+            {
+                e.Spawner = _parent;
+            }
         }
+
+        Spawned.TrimExcess();
     }
 
     [JsonIgnore]
