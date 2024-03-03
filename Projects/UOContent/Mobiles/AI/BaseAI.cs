@@ -2051,7 +2051,8 @@ public abstract class BaseAI
         var isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
 
         /*
-         * Movement Speed Table from RunUO
+         * Movement Speed Table based on RunUO
+         * <0.075 -> 0.0375
          * 0.075 -> 0.05
          * 0.1 -> 0.125
          * 0.2 -> 0.3
@@ -2059,13 +2060,16 @@ public abstract class BaseAI
          * 0.3 -> 0.6
          * 0.4 -> 0.85
          * 0.5 -> 1.05
-         * 0.6 -> 1.2
-         * Above 0.6 is 0.15 per 0.1
+         * 0.6 -> 1.2,
+         * 0.8 -> 1.5
+         * 1.0 -> 1.8
+         * Above 1.0 is linear
          */
 
         // Linear interpolated
         var movementSpeed = thinkingSpeed switch
         {
+            >= 1.0   => 1.8 * thinkingSpeed,
             >= 0.5   => 1.05 + (thinkingSpeed - 0.5) * 1.5,
             >= 0.4   => 0.85 + (thinkingSpeed - 0.4) * 2,
             >= 0.3   => 0.6 + (thinkingSpeed - 0.3) * 2.5,
@@ -2073,7 +2077,7 @@ public abstract class BaseAI
             >= 0.2   => 0.3 + (thinkingSpeed - 0.2) * 3,
             >= 0.1   => 0.125 + (thinkingSpeed - 0.1) * 1.75,
             >= 0.075 => 0.05 + (thinkingSpeed - 0.075) * 3,
-            _        => thinkingSpeed
+            _        => 0.0375 // 30 ticks, 37.5ms
         };
 
         // Is Passive
