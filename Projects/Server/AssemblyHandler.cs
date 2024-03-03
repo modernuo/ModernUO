@@ -231,7 +231,9 @@ public static class AssemblyHandler
 
 public class TypeCache
 {
+#if DEBUG_TYPES
     private static ILogger logger = LogFactory.GetLogger(typeof(TypeCache));
+#endif
 
     private Dictionary<ulong, Type[]> _nameMap = new();
     private Dictionary<ulong, Type[]> _nameMapInsensitive = new();
@@ -285,15 +287,15 @@ public class TypeCache
         foreach (var (key, value) in fullNameMap)
         {
             var values = value.ToArray();
-            _fullNameMap[HashUtility.ComputeHash64(key)] = value.ToArray();
-#if DEBUG
+            _fullNameMap[HashUtility.ComputeHash64(key)] = values;
+#if DEBUG_TYPES
             if (values.Length > 1)
             {
                 for (var i = 0; i < values.Length; i++)
                 {
                     var type = values[i];
                     logger.Warning(
-                        "Duplicate type {Type1} for {Name}.",
+                        "Duplicate type {Type} for {Name}.",
                         type,
                         key
                     );
@@ -304,7 +306,22 @@ public class TypeCache
 
         foreach (var (key, value) in fullNameMapInsensitive)
         {
-            _fullNameMapInsensitive[HashUtility.ComputeHash64(key)] = value.ToArray();
+            var values = value.ToArray();
+            _fullNameMapInsensitive[HashUtility.ComputeHash64(key)] = values;
+#if DEBUG_TYPES
+            if (values.Length > 1)
+            {
+                for (var i = 0; i < values.Length; i++)
+                {
+                    var type = values[i];
+                    logger.Warning(
+                        "Duplicate type {Type} for {Name}.",
+                        type,
+                        key
+                    );
+                }
+            }
+#endif
         }
     }
 
@@ -337,7 +354,7 @@ public class TypeCache
 
     public ref struct TypeEnumerator
     {
-        private Type[] _values;
+        private readonly Type[] _values;
         private int _index;
         private Type _current;
 

@@ -58,7 +58,7 @@ namespace Server.Misc
                     var created = logEntry.Created;
                     var speech = logEntry.Speech;
                     writer.WriteLine(
-                        @$"{created.Hour}:{created.Minute:00}:{created.Second:00} - {fromName} ({fromAccount}): '{speech}'"
+                        $"{created.Hour}:{created.Minute:00}:{created.Second:00} - {fromName} ({fromAccount}): '{speech}'"
                     );
                 }
 
