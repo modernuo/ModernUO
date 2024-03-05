@@ -47,6 +47,7 @@
       "type": "System.Collections.Generic.List\u003CServer.ISpawnable\u003E",
       "rule": "ListMigrationRule",
       "ruleArguments": [
+        "@Tidy",
         "Server.ISpawnable",
         "SerializableInterfaceMigrationRule"
       ]
