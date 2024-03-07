@@ -137,7 +137,7 @@ public class VirtueGump : Gump
         return _table[index * 3 + vl];
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState state, in RelayInfo info)
     {
         if (info.ButtonID == 1 && _beholder == _beheld)
         {

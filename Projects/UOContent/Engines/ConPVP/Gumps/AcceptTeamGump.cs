@@ -301,7 +301,7 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = m_From;
             var mob = m_Requested;

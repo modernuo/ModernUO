@@ -477,7 +477,7 @@ public partial class TreasureMapChest : LockableContainer
             AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF); // Cancel
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {

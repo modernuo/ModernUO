@@ -401,7 +401,7 @@ public class AdvancedSearchGump : Gump
         }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState state, in RelayInfo info)
     {
         var from = state.Mobile;
         if (from == null)
@@ -430,21 +430,21 @@ public class AdvancedSearchGump : Gump
         Filter.FilterRegion = info.IsSwitched(319);
         Filter.FilterTerMur = info.IsSwitched(320);
 
-        var rangeText = info.GetTextEntry(100)?.Text;
+        var rangeText = info.GetTextEntry(100);
         Filter.Range = rangeText != null ? Utility.ToInt32(rangeText) : null;
 
-        var filterText = info.GetTextEntry(101)?.Text;
+        var filterText = info.GetTextEntry(101);
         Filter.Type = filterText != null ? AssemblyHandler.FindTypeByName(filterText) : null;
 
-        Filter.Name = info.GetTextEntry(102)?.Text;
-        Filter.PropertyTest = info.GetTextEntry(104)?.Text;
+        Filter.Name = info.GetTextEntry(102);
+        Filter.PropertyTest = info.GetTextEntry(104);
 
-        var ageText = info.GetTextEntry(105)?.Text;
+        var ageText = info.GetTextEntry(105);
         Filter.Age = ageText != null ? Utility.ToTimeSpan(ageText) : null;
 
-        Filter.RegionName = info.GetTextEntry(106)?.Text;
+        Filter.RegionName = info.GetTextEntry(106);
 
-        CommandString = info.GetTextEntry(301)?.Text;
+        CommandString = info.GetTextEntry(301);
 
         var buttonId = info.ButtonID;
 

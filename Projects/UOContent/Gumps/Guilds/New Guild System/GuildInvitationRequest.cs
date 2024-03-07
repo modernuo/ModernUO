@@ -36,7 +36,7 @@ namespace Server.Guilds
             AddHtmlLocalized(45, 130, 150, 30, 1062943, 0x0); // <i>Ignore Guild Invites</i>
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (guild.Disbanded || player.Guild != null)
             {

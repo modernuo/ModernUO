@@ -287,7 +287,7 @@ public static class HelpInfo
             FinishPage();
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var m = sender.Mobile;
             switch (info.ButtonID)

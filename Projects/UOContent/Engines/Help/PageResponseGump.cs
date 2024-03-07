@@ -31,7 +31,7 @@ namespace Server.Engines.Help
             AddButton(475, 417, 2073, 2072, 0); // CANCEL
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID != 1)
             {

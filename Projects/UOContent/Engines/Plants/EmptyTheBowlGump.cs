@@ -49,7 +49,7 @@ namespace Server.Engines.Plants
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 

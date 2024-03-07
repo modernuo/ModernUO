@@ -463,7 +463,7 @@ namespace Server.Spells.Ninjitsu
                 }
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 var entryID = info.ButtonID - 1;
 

@@ -69,7 +69,7 @@ namespace Server.Engines.BulkOrders
             AddHtmlLocalized(310, 240, 120, 20, 1011012, 0x7FFF); // CANCEL
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1) // Ok
             {

@@ -41,7 +41,7 @@ namespace Server.Gumps
             AddHtmlLocalized(152, 130, 100, 24, 1011036); // OKAY
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             var from = state.Mobile;
 
@@ -147,7 +147,7 @@ namespace Server.Gumps
             AddLabel(300, 48, 0, ((int)(days / 12.0)).ToString());
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             var from = state.Mobile;
 
@@ -256,7 +256,7 @@ namespace Server.Gumps
             AddHtmlLocalized(408, 161, 120, 20, 1011012, 0x7FFF); // CANCEL
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 
@@ -555,7 +555,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (m_Vendor.Deleted)
             {
@@ -1003,7 +1003,7 @@ namespace Server.Gumps
             AddHtmlLocalized(45, 342, 305, 18, 1060675, 0x7FFF); // CLOSE
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 

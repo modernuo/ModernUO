@@ -107,7 +107,7 @@ public partial class PottedCactusDeed : Item, IRewardItem
             AddButton(355, 50, 0x845, 0x846, 0x1E13);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed?.Deleted != false || info.ButtonID is < 0x1E0F or > 0x1E14)
             {

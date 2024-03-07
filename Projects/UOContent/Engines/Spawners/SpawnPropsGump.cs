@@ -76,7 +76,7 @@ public class SpawnPropsGump : PropertiesGump
     public static object GetPropValue(object src, string propName) =>
         src.GetType().GetProperty(propName)?.GetValue(src, null);
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState state, in RelayInfo info)
     {
         var from = state.Mobile;
 

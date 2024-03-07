@@ -1910,7 +1910,7 @@ namespace Server.Gumps
             from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var val = info.ButtonID - 1;
 
@@ -2219,7 +2219,7 @@ namespace Server.Gumps
                             case 210:
                             case 211:
                                 {
-                                    var text = info.GetTextEntry(0)?.Text.Trim();
+                                    var text = info.GetTextEntry(0)?.Trim();
 
                                     if (string.IsNullOrEmpty(text))
                                     {
@@ -2542,7 +2542,7 @@ namespace Server.Gumps
 
                                     var results = new List<NetState>();
 
-                                    var match = info.GetTextEntry(0)?.Text.Trim().ToLower();
+                                    var match = info.GetTextEntry(0)?.Trim().ToLower();
                                     string notice = null;
 
                                     if (string.IsNullOrEmpty(match))
@@ -2777,8 +2777,8 @@ namespace Server.Gumps
                                 }
                             case 6:
                                 {
-                                    var un = info.GetTextEntry(0)?.Text.Trim();
-                                    var pw = info.GetTextEntry(1)?.Text.Trim();
+                                    var un = info.GetTextEntry(0)?.Trim();
+                                    var pw = info.GetTextEntry(1)?.Trim();
 
                                     Account dispAccount = null;
                                     string notice;
@@ -2826,8 +2826,7 @@ namespace Server.Gumps
                                 {
                                     List<IAccount> results;
 
-                                    var matchEntry = info.GetTextEntry(0);
-                                    var match = matchEntry?.Text.Trim().ToLower();
+                                    var match = info.GetTextEntry(0)?.Trim().ToLower();
 
                                     if (string.IsNullOrEmpty(match))
                                     {
@@ -2944,11 +2943,8 @@ namespace Server.Gumps
                                         break;
                                     }
 
-                                    var passwordEntry = info.GetTextEntry(0);
-                                    var confirmEntry = info.GetTextEntry(1);
-
-                                    var password = passwordEntry?.Text.Trim();
-                                    var confirm = confirmEntry?.Text.Trim();
+                                    var password = info.GetTextEntry(0)?.Trim();
+                                    var confirm = info.GetTextEntry(1)?.Trim();
 
                                     string notice;
                                     var page = AdminGumpPage.AccountDetails_ChangePassword;
@@ -3136,8 +3132,7 @@ namespace Server.Gumps
                                         break;
                                     }
 
-                                    var entry = info.GetTextEntry(0);
-                                    var ip = entry?.Text.Trim();
+                                    var ip = info.GetTextEntry(0)?.Trim();
 
                                     string notice;
 
@@ -3632,8 +3627,7 @@ namespace Server.Gumps
                         {
                             case 0:
                                 {
-                                    var matchEntry = info.GetTextEntry(0);
-                                    var match = matchEntry?.Text.Trim();
+                                    var match = info.GetTextEntry(0)?.Trim();
 
                                     string notice = null;
                                     var results = new List<object>();
@@ -3699,8 +3693,7 @@ namespace Server.Gumps
                                 }
                             case 1:
                                 {
-                                    var relay = info.GetTextEntry(0);
-                                    var text = relay?.Text.Trim();
+                                    var text = info.GetTextEntry(0)?.Trim();
 
                                     if (string.IsNullOrEmpty(text))
                                     {

@@ -164,7 +164,7 @@ public class HouseRaffleManagementGump : Gump
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState sender, in RelayInfo info)
     {
         var from = sender.Mobile;
         var buttonId = info.ButtonID;

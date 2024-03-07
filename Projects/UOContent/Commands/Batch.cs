@@ -307,37 +307,21 @@ namespace Server.Commands
             FinishPage();
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!SplitButtonID(info.ButtonID, 1, out var type, out var index))
             {
                 return;
             }
 
-            var entry = info.GetTextEntry(0);
-
-            if (entry != null)
-            {
-                m_Batch.Condition = entry.Text;
-            }
+            m_Batch.Condition = info.GetTextEntry(0) ?? "";
 
             for (var i = m_Batch.BatchCommands.Count - 1; i >= 0; --i)
             {
                 var sc = m_Batch.BatchCommands[i];
 
-                entry = info.GetTextEntry(1 + i * 2);
-
-                if (entry != null)
-                {
-                    sc.Command = entry.Text;
-                }
-
-                entry = info.GetTextEntry(2 + i * 2);
-
-                if (entry != null)
-                {
-                    sc.Object = entry.Text;
-                }
+                sc.Command = info.GetTextEntry(1 + i * 2);
+                sc.Object = info.GetTextEntry(2 + i * 2);
 
                 if (sc.Command.Length == 0 && sc.Object.Length == 0)
                 {
@@ -417,7 +401,7 @@ namespace Server.Commands
             FinishPage();
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (SplitButtonID(info.ButtonID, 1, out var type, out var index))
             {

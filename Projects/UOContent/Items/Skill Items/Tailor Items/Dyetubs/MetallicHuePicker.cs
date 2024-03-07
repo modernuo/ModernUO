@@ -56,7 +56,7 @@ namespace Server.Items
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             switch (info.ButtonID)
             {

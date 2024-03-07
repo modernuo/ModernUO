@@ -73,7 +73,7 @@ public class NameChangeDeedGump : Gump
         AddHtml(x + 35, y, 240, 20, Color(text, 0xFFFFFF));
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState sender, in RelayInfo info)
     {
         if (m_Sender?.Deleted != false || info.ButtonID != 1 || m_Sender.RootParent != sender.Mobile)
         {
@@ -81,9 +81,8 @@ public class NameChangeDeedGump : Gump
         }
 
         var m = sender.Mobile;
-        var nameEntry = info.GetTextEntry(0);
 
-        var newName = nameEntry?.Text.Trim();
+        var newName = info.GetTextEntry(0)?.Trim();
 
         if (!NameVerification.Validate(newName, 2, 16, true, false, true, 1, NameVerification.SpaceDashPeriodQuote))
         {

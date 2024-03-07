@@ -154,7 +154,7 @@ namespace Server.Engines.BulkOrders
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var f = m_From.UseOwnFilter ? m_From.BOBFilter : m_Book.Filter;
 

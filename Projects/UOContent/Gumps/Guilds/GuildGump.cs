@@ -139,7 +139,7 @@ namespace Server.Gumps
             return stone?.Deleted != false || !m.InRange(stone.GetWorldLocation(), 2);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (BadMember(m_Mobile, m_Guild))
             {

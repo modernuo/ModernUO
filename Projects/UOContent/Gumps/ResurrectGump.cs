@@ -122,7 +122,7 @@ namespace Server.Gumps
             AddImageTiled(0, 0, 1, 217, 9155);
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             var from = state.Mobile;
 

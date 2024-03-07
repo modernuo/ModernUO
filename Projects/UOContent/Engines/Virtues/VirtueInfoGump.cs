@@ -107,7 +107,7 @@ public class VirtueInfoGump : Gump
         AddHtmlLocalized(83, 275, 400, 40, webPage == null ? 1052055 : 1052052);
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState state, in RelayInfo info)
     {
         switch (info.ButtonID)
         {

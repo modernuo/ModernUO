@@ -449,7 +449,8 @@ public static class IncomingPlayerPackets
 
             prof?.Start();
 
-            gump.OnResponse(state, new RelayInfo(buttonID, switches, textEntries));
+            var relayInfo = new RelayInfo(buttonID, switches, textEntries);
+            gump.OnResponse(state, relayInfo);
 
             prof?.Finish();
 

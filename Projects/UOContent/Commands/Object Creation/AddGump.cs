@@ -194,7 +194,7 @@ namespace Server.Gumps
             return finalResults;
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 
@@ -202,8 +202,7 @@ namespace Server.Gumps
             {
                 case 1: // Search
                     {
-                        var te = info.GetTextEntry(0);
-                        var match = te?.Text.Trim() ?? "";
+                        var match = info.GetTextEntry(0)?.Trim() ?? "";
 
                         if (match.Length < 3)
                         {

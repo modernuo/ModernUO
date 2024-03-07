@@ -399,7 +399,7 @@ public class SpawnerControllerGump : GumpGrid
         }
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState sender, in RelayInfo info)
     {
         var buttonID = info.ButtonID - 1;
         var type = buttonID % TypeCount;
@@ -427,9 +427,9 @@ public class SpawnerControllerGump : GumpGrid
                     {
                         var entry = info.GetTextEntry(0xFFFF);
 
-                        if (entry?.Text?.Length > 0)
+                        if (entry?.Length > 0)
                         {
-                            _search.SearchPattern = entry.Text;
+                            _search.SearchPattern = entry;
                         }
                     }
                     else if (index == 5 && _copy != null && _spawners?.Length > 0)
@@ -500,27 +500,27 @@ public class SpawnerControllerGump : GumpGrid
                         var indexEntry = index >= _lineCount ? (index - _lineCount * _page) * EntryCount : index * EntryCount;
 
                         var name = info.GetTextEntry(indexEntry);
-                        if (name?.Text.Length > 0)
+                        if (name?.Length > 0)
                         {
-                            spawner.Name = name.Text;
+                            spawner.Name = name;
                         }
 
-                        if (int.TryParse(info.GetTextEntry(indexEntry + 1)?.Text, out var walkRange))
+                        if (int.TryParse(info.GetTextEntry(indexEntry + 1), out var walkRange))
                         {
                             spawner.WalkingRange = walkRange;
                         }
 
-                        if (int.TryParse(info.GetTextEntry(indexEntry + 2)?.Text, out var homeHange))
+                        if (int.TryParse(info.GetTextEntry(indexEntry + 2), out var homeHange))
                         {
                             spawner.HomeRange = homeHange;
                         }
 
-                        if (TimeSpan.TryParse(info.GetTextEntry(indexEntry + 3)?.Text, out var minDelay))
+                        if (TimeSpan.TryParse(info.GetTextEntry(indexEntry + 3), out var minDelay))
                         {
                             spawner.MinDelay = minDelay;
                         }
 
-                        if (TimeSpan.TryParse(info.GetTextEntry(indexEntry + 4)?.Text, out var maxDelay))
+                        if (TimeSpan.TryParse(info.GetTextEntry(indexEntry + 4), out var maxDelay))
                         {
                             spawner.MaxDelay = maxDelay;
                         }

@@ -121,7 +121,7 @@ namespace Server.Gumps
         protected virtual int XItems => 2;
         protected virtual int YItems => 5;
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var adjustedID = info.ButtonID - 100;
 

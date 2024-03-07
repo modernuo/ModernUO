@@ -36,7 +36,7 @@ namespace Server.Engines.Plants
             AddItem(227, 118, 0xCF0);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 

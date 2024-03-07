@@ -200,7 +200,7 @@ namespace Server.Engines.ConPVP
             AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!m_Context.Registered || !m_Context.ReadyWait)
             {

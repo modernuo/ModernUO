@@ -112,7 +112,7 @@ namespace Server.Gumps
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             Point3D toSet;
             bool shouldSet, shouldSend;
@@ -139,14 +139,10 @@ namespace Server.Gumps
                     }
                 case 3: // Use values
                     {
-                        var x = info.GetTextEntry(0);
-                        var y = info.GetTextEntry(1);
-                        var z = info.GetTextEntry(2);
-
                         toSet = new Point3D(
-                            x == null ? 0 : Utility.ToInt32(x.Text),
-                            y == null ? 0 : Utility.ToInt32(y.Text),
-                            z == null ? 0 : Utility.ToInt32(z.Text)
+                            Utility.ToInt32(info.GetTextEntry(0)),
+                            Utility.ToInt32(info.GetTextEntry(1)),
+                            Utility.ToInt32(info.GetTextEntry(2))
                         );
                         shouldSet = true;
                         shouldSend = true;

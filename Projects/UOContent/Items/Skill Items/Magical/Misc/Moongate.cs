@@ -387,7 +387,7 @@ public class MoongateConfirmGump : Gump
         }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState state, in RelayInfo info)
     {
         if (info.ButtonID == 1)
         {

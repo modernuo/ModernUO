@@ -228,7 +228,7 @@ namespace Server.Gumps
 
         public static bool HasSpell(Mobile from, int spellID) => Spellbook.Find(from, spellID)?.HasSpell(spellID) == true;
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             var from = state.Mobile;
 

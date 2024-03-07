@@ -106,7 +106,7 @@ public partial class SnowStatueDeed : Item
             AddButton(275, 50, 0x845, 0x846, 4);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed?.Deleted != false)
             {

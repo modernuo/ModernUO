@@ -458,7 +458,7 @@ namespace Server.Engines.Craft
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID <= 0)
             {

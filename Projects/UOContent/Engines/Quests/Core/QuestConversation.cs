@@ -121,7 +121,7 @@ namespace Server.Engines.Quests
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             for (var i = m_Conversations.Count - 1; i >= 0; --i)
             {

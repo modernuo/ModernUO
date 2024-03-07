@@ -61,6 +61,6 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info) => m_Callback?.Invoke(info.ButtonID == 1);
+        public override void OnResponse(NetState sender, in RelayInfo info) => m_Callback?.Invoke(info.ButtonID == 1);
     }
 }

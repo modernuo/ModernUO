@@ -291,7 +291,7 @@ public partial class Gump
 
     public static byte[] StringToBuffer(string str) => str.GetBytesAscii();
 
-    public virtual void OnResponse(NetState sender, RelayInfo info)
+    public virtual void OnResponse(NetState sender, in RelayInfo info)
     {
     }
 

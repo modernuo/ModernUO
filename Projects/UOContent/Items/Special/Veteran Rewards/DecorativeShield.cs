@@ -191,7 +191,7 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_shield?.Deleted != false ||
                 info.ButtonID is < Start or > End ||
@@ -316,7 +316,7 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
                 AddButton(145, 35, 0x867, 0x869, (int)Buttons.South);
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (_shield?.Deleted != false || _house == null)
                 {

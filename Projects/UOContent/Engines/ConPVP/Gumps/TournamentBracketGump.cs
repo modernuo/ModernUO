@@ -767,7 +767,7 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!FromButtonID(info.ButtonID, out var type, out var index))
             {

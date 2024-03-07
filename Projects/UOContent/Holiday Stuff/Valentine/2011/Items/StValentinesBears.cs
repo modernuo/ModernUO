@@ -141,7 +141,7 @@ namespace Server.Items
                 AddButton(335, 285, 247, 248, 1);
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 var from = sender.Mobile;
 
@@ -182,12 +182,7 @@ namespace Server.Items
                 from.SendMessage("You add the personalized greeting to your St. Valentine Bear.");
             }
 
-            private static string GetLine(RelayInfo info, int idx)
-            {
-                var tr = info.GetTextEntry(idx);
-
-                return tr?.Text;
-            }
+            private static string GetLine(RelayInfo info, int idx) => info.GetTextEntry(idx);
         }
     }
 

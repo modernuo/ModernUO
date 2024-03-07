@@ -42,7 +42,7 @@ namespace Server.Guilds
             AddHtmlLocalized(45, 260, 200, 30, 1062943, 0x0); // <i>Ignore Guild Invites</i>
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (sender.Mobile is not PlayerMobile { Guild: null } pm)
             {
@@ -53,14 +53,8 @@ namespace Server.Guilds
             {
                 case 1:
                     {
-                        var tName = info.GetTextEntry(5);
-                        var tAbbrev = info.GetTextEntry(6);
-
-                        var guildName = tName?.Text?.Trim() ?? "";
-                        var guildAbbrev = tAbbrev?.Text?.Trim() ?? "";
-
-                        guildName = Utility.FixHtml(guildName);
-                        guildAbbrev = Utility.FixHtml(guildAbbrev);
+                        var guildName = Utility.FixHtml(info.GetTextEntry(5) ?? "");
+                        var guildAbbrev = Utility.FixHtml(info.GetTextEntry(6) ?? "");
 
                         if (guildName.Length <= 0)
                         {

@@ -28,7 +28,7 @@ namespace Server.Gumps
             AddHtmlLocalized(40, 75, 100, 20, 1060051, 0x7FFF); // CANCEL
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Token?.Deleted != false)
             {

@@ -56,7 +56,7 @@ namespace Server.Engines.MLQuests.Gumps
             AddButton(90, 95, 0xF2, 0xF1, 0);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             switch (info.ButtonID)
             {

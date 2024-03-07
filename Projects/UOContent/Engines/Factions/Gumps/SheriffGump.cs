@@ -122,7 +122,7 @@ namespace Server.Factions
             AddItem(x + (w - rc.Width) / 2 - rc.X, y + (h - rc.Height) / 2 - rc.Y, itemID);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!m_Town.IsSheriff(m_From) || m_Town.Owner != m_Faction)
             {

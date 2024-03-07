@@ -193,7 +193,7 @@ public partial class BannerDeed : Item, IRewardItem
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_banner?.Deleted != false)
             {
@@ -324,7 +324,7 @@ public partial class BannerDeed : Item, IRewardItem
                 AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (m_Banner?.Deleted != false || m_House == null)
                 {

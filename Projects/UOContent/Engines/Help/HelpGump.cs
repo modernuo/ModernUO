@@ -333,7 +333,7 @@ namespace Server.Engines.Help
             return false;
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             var from = state.Mobile;
 

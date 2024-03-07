@@ -73,7 +73,7 @@ namespace Server.Gumps
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {
@@ -81,11 +81,11 @@ namespace Server.Gumps
                 {
                     if (m_From.AccessLevel >= AccessLevel.GameMaster)
                     {
-                        var text = info.GetTextEntry(0);
+                        var text = info.GetTextEntry(0)?.Trim();
 
-                        if (text != null)
+                        if (text?.Length > 0)
                         {
-                            m_Skill.Base = Convert.ToDouble(text.Text);
+                            m_Skill.Base = Convert.ToDouble(text);
                             CommandLogging.LogChangeProperty(m_From, m_Target, $"{m_Skill}.Base", m_Skill.Base.ToString());
                         }
                     }
@@ -340,7 +340,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var buttonID = info.ButtonID - 1;
 

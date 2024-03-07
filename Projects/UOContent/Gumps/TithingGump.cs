@@ -56,7 +56,7 @@ namespace Server.Gumps
             AddButton(217, 272, 4023, 4024, 5);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             switch (info.ButtonID)
             {

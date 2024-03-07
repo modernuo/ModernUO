@@ -133,7 +133,7 @@ public partial class CurtainsDeed : BaseAddonDeed
             AddHtmlLocalized(44, 71, 213, 20, 1075387, 0x7FFF); // East
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed?.Deleted != false || info.ButtonID == 0)
             {

@@ -911,7 +911,7 @@ namespace Server.Gumps
             from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_House.Deleted)
             {

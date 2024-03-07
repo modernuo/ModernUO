@@ -187,7 +187,7 @@ namespace Server.Guilds
             AddImageTiled(20, 245, 480, 2, 0x2711);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!(sender.Mobile is PlayerMobile pm && IsMember(pm, guild)))
             {

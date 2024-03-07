@@ -161,7 +161,7 @@ namespace Server.Factions
         public static string FormatTimeSpan(TimeSpan ts) =>
             $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
             var bid = info.ButtonID;

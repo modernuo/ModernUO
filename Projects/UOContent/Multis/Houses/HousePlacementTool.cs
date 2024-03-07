@@ -92,7 +92,7 @@ namespace Server.Items
             AddHtmlLocalized(45, 80, 200, 20, 1060392, LabelColor); // 3-Story Customizable Houses
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType<HousePlacementTool>() == null)
             {
@@ -203,7 +203,7 @@ namespace Server.Items
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType<HousePlacementTool>() == null)
             {

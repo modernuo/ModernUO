@@ -314,7 +314,7 @@ namespace Server.Engines.ConPVP
             AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1 && info.IsSwitched(1))
             {

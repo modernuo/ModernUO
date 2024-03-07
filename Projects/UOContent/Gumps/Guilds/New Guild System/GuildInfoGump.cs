@@ -84,7 +84,7 @@ namespace Server.Guilds
             AddHtmlLocalized(480, 373, 60, 26, 3006115, m_IsResigning ? 0x5000 : 0); // Resign
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             base.OnResponse(sender, info);
 

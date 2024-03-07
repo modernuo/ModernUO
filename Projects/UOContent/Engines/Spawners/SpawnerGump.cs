@@ -246,7 +246,7 @@ public class SpawnerGump : Gump
                 continue;
             }
 
-            var str = cte.Text.Trim().ToLower();
+            var str = cte.Trim().ToLower();
 
             if (str.Length > 0)
             {
@@ -267,12 +267,12 @@ public class SpawnerGump : Gump
 
                     if (mte != null)
                     {
-                        entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
+                        entry.SpawnedMaxCount = Utility.ToInt32(mte.Trim());
                     }
 
                     if (poste != null)
                     {
-                        entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
+                        entry.SpawnedProbability = Utility.ToInt32(poste.Trim());
                     }
                 }
                 else
@@ -282,12 +282,12 @@ public class SpawnerGump : Gump
 
                     if (mte != null)
                     {
-                        maxcount = Utility.ToInt32(mte.Text.Trim());
+                        maxcount = Utility.ToInt32(mte.Trim());
                     }
 
                     if (poste != null)
                     {
-                        probcount = Utility.ToInt32(poste.Text.Trim());
+                        probcount = Utility.ToInt32(poste.Trim());
                     }
 
                     entry = spawner.AddEntry(str, probcount, maxcount);
@@ -295,12 +295,12 @@ public class SpawnerGump : Gump
 
                 if (parmte != null)
                 {
-                    entry.Parameters = parmte.Text.Trim();
+                    entry.Parameters = parmte.Trim();
                 }
 
                 if (propte != null)
                 {
-                    entry.Properties = propte.Text.Trim();
+                    entry.Properties = propte.Trim();
                 }
             }
             else if (entryindex < ocount && spawner.Entries[entryindex] != null)
@@ -320,7 +320,7 @@ public class SpawnerGump : Gump
         }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState state, in RelayInfo info)
     {
         if (_spawner.Deleted)
         {

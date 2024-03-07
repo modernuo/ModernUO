@@ -63,7 +63,7 @@ namespace Server.Gumps
             AddAlphaRegion(15, 14, width - 29, height - 29);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
             var button = info.ButtonID - 1;

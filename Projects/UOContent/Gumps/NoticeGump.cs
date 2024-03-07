@@ -54,7 +54,7 @@ namespace Server.Gumps
             AddHtmlLocalized(40, height - 30, 120, 20, 1011036, 32767); // OKAY
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {

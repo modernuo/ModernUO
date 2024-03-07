@@ -386,7 +386,7 @@ namespace Server.Guilds
             ) =>
                 new AllianceRosterGump(pm, g, m_Alliance, comparer, ascending, filter, startNumber);
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (info.ButtonID != 8) // So that they can't get to the AdvancedSearch button
                 {

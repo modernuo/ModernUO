@@ -141,7 +141,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 
@@ -642,7 +642,7 @@ namespace Server.Gumps
             AddHtmlLocalized(45, 288, 350, 20, 1062512, 0x7FFF); // No, I want to <strong>keep my vendor</strong>
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 

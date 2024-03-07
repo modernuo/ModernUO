@@ -788,7 +788,7 @@ namespace Server.Mobiles
             AddHtml(290, 440, 35, 40, "Back");
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var buttonID = info.ButtonID;
 
@@ -1064,7 +1064,7 @@ namespace Server.Mobiles
             AddItem(580, 44, 4033);
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (!m_Barkeeper.IsOwner(m_From))
             {

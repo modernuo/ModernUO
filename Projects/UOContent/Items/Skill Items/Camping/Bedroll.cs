@@ -88,7 +88,7 @@ public partial class Bedroll : Item
             AddHtmlLocalized(235, 300, 110, 35, 1011012); // CANCEL
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var pm = _entry.Player;
 

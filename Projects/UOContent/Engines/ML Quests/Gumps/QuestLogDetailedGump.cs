@@ -44,7 +44,7 @@ namespace Server.Engines.MLQuests.Gumps
             AddRewardsPage(quest);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Instance.Removed)
             {

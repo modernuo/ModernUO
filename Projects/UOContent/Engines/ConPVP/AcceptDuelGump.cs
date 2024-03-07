@@ -170,7 +170,7 @@ namespace Server.Engines.ConPVP
             return false;
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID != 1 || !m_Active || !m_Context.Registered)
             {
