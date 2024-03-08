@@ -165,19 +165,12 @@ public ref struct SpanReader
         return value;
     }
 
-    /// <summary>
-    /// Check the string in the buffer without converting it with the provided encoding.
-    /// </summary>
-    /// <param name="encoding">Text encoding used for char size calculation</param>
-    /// <param name="fixedLength">Max buffer length to check</param>
-    /// <returns>Byte length of the found string</returns>
-    /// <exception cref="OutOfMemoryException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int SkipString(Encoding encoding, int fixedLength = -1)
+    public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
     {
         if (fixedLength == 0)
         {
-            return 0;
+            return "";
         }
 
         int byteLength = encoding.GetByteLengthForEncoding();
@@ -202,26 +195,11 @@ public ref struct SpanReader
 
         var span = _buffer.Slice(Position, size);
         var index = span.IndexOfTerminator(byteLength);
-        var length = index < 0 ? size : index;
 
-        Position += isFixedLength ? size : length;
-
-        return length;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadString(Encoding encoding, bool safeString = false, int fixedLength = -1)
-    {
-        var start = Position;
-        var byteLength = SkipString(encoding, fixedLength);
-
-        if (byteLength == 0)
-        {
-            return default;
-        }
+        Position += isFixedLength || index < 0  ? size : index;
 
         // The string is either as long as the first terminator character, remaining buffer size, or fixed length.
-        return TextEncoding.GetString(Buffer.Slice(start, byteLength), encoding, safeString);
+        return TextEncoding.GetString(span[..(index < 0 ? size : index)], encoding, safeString);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -305,8 +283,8 @@ public ref struct SpanReader
         return Position = Math.Max(0, origin switch
         {
             SeekOrigin.Current => Position + offset,
-            SeekOrigin.End => _buffer.Length + offset,
-            _ => offset // Begin
+            SeekOrigin.End     => _buffer.Length + offset,
+            _                  => offset // Begin
         });
     }
 
