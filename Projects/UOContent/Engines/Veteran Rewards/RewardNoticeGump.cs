@@ -29,7 +29,7 @@ namespace Server.Engines.VeteranRewards
             AddHtmlLocalized(320, 96, 150, 35, 1006045); // Cancel
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {

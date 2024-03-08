@@ -217,7 +217,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
             AddTextEntry(75, 245, 350, 40, 0x0, (int)Buttons.Text, "");
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (_tool?.Deleted != false || _target?.Deleted != false)
             {
@@ -237,7 +237,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
                 return;
             }
 
-            if (string.IsNullOrEmpty(relay.Text))
+            if (string.IsNullOrEmpty(relay))
             {
                 _target.EngravedText = null;
                 state.Mobile.SendLocalizedMessage(1072362); // You remove the engraving from the object.
@@ -245,7 +245,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
             else
             {
                 _target.EngravedText =
-                    Utility.FixHtml(relay.Text.Length > 64 ? relay.Text[..64] : relay.Text);
+                    Utility.FixHtml(relay.Length > 64 ? relay[..64] : relay);
                 state.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
                 _target.InvalidateProperties();
                 _tool.UsesRemaining -= 1;
@@ -299,7 +299,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
             AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (_engraver?.Deleted != false || info.ButtonID != (int)Buttons.Confirm)
             {

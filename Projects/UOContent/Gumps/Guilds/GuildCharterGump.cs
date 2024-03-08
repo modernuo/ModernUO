@@ -47,7 +47,7 @@ namespace Server.Gumps
             AddHtml(55, 220, 300, 20, website);
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (GuildGump.BadMember(m_Mobile, m_Guild))
             {

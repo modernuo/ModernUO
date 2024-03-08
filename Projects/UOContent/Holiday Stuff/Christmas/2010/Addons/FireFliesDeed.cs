@@ -126,7 +126,7 @@ namespace Server.Items
                 AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 int m_ItemID;
 

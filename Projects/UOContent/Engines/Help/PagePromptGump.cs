@@ -30,7 +30,7 @@ namespace Server.Engines.Help
             AddButton(405, 355, 2073, 2072, 0); // Cancel
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 0)
             {
@@ -38,8 +38,7 @@ namespace Server.Engines.Help
             }
             else
             {
-                var entry = info.GetTextEntry(0);
-                var text = entry?.Text.Trim() ?? "";
+                var text = info.GetTextEntry(0)?.Trim() ?? "";
 
                 if (text.Length == 0)
                 {

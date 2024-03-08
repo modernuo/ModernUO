@@ -119,7 +119,7 @@ public partial class HairRestylingDeed : Item
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_From?.Alive != true)
             {

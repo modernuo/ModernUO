@@ -127,7 +127,7 @@ public partial class WreathAddon : Item, IDyable, IAddon
             AddButton(20, 125, 0xFA5, 0xFA7, 0);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_addon.Deleted)
             {
@@ -286,7 +286,7 @@ public partial class WreathDeed : Item
             AddButton(145, 35, 0x868, 0x869, 2);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed.Deleted)
             {

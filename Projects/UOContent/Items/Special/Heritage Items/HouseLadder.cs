@@ -135,7 +135,7 @@ public partial class HouseLadderDeed : BaseAddonDeed
             AddHtmlLocalized(44, 215, 213, 20, 1075390, 0x7FFF); // West
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed?.Deleted != false || info.ButtonID is 0 or < 1 or > 8)
             {

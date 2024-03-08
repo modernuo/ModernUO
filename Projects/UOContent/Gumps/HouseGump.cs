@@ -71,7 +71,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (m_House.Deleted)
             {
@@ -162,7 +162,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (m_House.Deleted)
             {
@@ -421,7 +421,7 @@ namespace Server.Gumps
             return name;
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_House.Deleted)
             {

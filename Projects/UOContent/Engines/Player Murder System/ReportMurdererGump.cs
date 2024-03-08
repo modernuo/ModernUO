@@ -133,7 +133,7 @@ public class ReportMurdererGump : Gump
         AddHtmlLocalized(400, 300, 300, 50, 1046363); // No
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState state, in RelayInfo info)
     {
         var from = (PlayerMobile)state.Mobile;
 

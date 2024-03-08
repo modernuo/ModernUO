@@ -303,7 +303,7 @@ public sealed partial class VirtualCheck : Item
             AddButton(305, 128, 12000, 12002, (int)Buttons.Accept);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (Check?.Deleted != false || sender.Mobile != User)
             {
@@ -324,8 +324,8 @@ public sealed partial class VirtualCheck : Item
                     }
                 case Buttons.Accept:
                     {
-                        var platText = info.GetTextEntry(0).Text;
-                        var goldText = info.GetTextEntry(1).Text;
+                        var platText = info.GetTextEntry(0);
+                        var goldText = info.GetTextEntry(1);
 
                         if (!int.TryParse(platText, out _plat))
                         {

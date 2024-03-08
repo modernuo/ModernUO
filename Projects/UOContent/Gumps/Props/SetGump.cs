@@ -117,7 +117,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             object toSet = null;
             bool shouldSet, shouldSend = true;
@@ -126,13 +126,13 @@ namespace Server.Gumps
             {
                 case 1:
                     {
-                        var text = info.GetTextEntry(0);
+                        var text = info.GetTextEntry(0)?.Trim();
 
-                        if (text != null)
+                        if (text?.Length > 0)
                         {
                             try
                             {
-                                Types.TryParse(m_Property.PropertyType, text.Text, out toSet);
+                                Types.TryParse(m_Property.PropertyType, text, out toSet);
                                 shouldSet = true;
                             }
                             catch

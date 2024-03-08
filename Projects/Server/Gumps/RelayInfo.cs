@@ -1,19 +1,36 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: RelayInfo.cs                                                    *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
+using System;
+
 namespace Server.Gumps;
 
-public class TextRelay
+public readonly struct TextRelay
 {
-    public TextRelay(int entryID, string text)
+    public TextRelay(int entryId, string text)
     {
-        EntryID = entryID;
+        EntryId = entryId;
         Text = text;
     }
 
-    public int EntryID { get; }
+    public int EntryId { get; }
 
     public string Text { get; }
 }
 
-public class RelayInfo
+public ref struct RelayInfo
 {
     public RelayInfo(int buttonID, int[] switches, TextRelay[] textEntries)
     {
@@ -24,9 +41,9 @@ public class RelayInfo
 
     public int ButtonID { get; }
 
-    public int[] Switches { get; }
+    public ReadOnlySpan<int> Switches { get; }
 
-    public TextRelay[] TextEntries { get; }
+    public ReadOnlySpan<TextRelay> TextEntries { get; }
 
     public bool IsSwitched(int switchID)
     {
@@ -41,16 +58,16 @@ public class RelayInfo
         return false;
     }
 
-    public TextRelay GetTextEntry(int entryID)
+    public string GetTextEntry(int entryId)
     {
         for (var i = 0; i < TextEntries.Length; ++i)
         {
-            if (TextEntries[i].EntryID == entryID)
+            if (TextEntries[i].EntryId == entryId)
             {
-                return TextEntries[i];
+                return TextEntries[i].Text;
             }
         }
 
-        return null;
+        return default;
     }
 }

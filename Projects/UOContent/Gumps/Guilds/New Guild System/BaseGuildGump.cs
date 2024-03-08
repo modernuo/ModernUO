@@ -38,7 +38,7 @@ namespace Server.Guilds
             AddPage(1);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (sender.Mobile is not PlayerMobile pm)
             {

@@ -108,7 +108,7 @@ public class SheetMusicOfferGump : BaseQuestGump
         AddButton(340, 390, 0xF7, 0xF8, 1);
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState sender, in RelayInfo info)
     {
         if (info.ButtonID != 1 || !info.IsSwitched(1))
         {

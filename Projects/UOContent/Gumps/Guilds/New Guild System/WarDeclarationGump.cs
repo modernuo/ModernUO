@@ -36,7 +36,7 @@ namespace Server.Guilds
             AddHtmlLocalized(360, 273, 90, 26, 1062989, 0x5000); // Declare War!
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var pm = sender.Mobile as PlayerMobile;
 
@@ -95,11 +95,11 @@ namespace Server.Guilds
 
                                 var maxKills = tKills == null
                                     ? 0
-                                    : Math.Clamp(Utility.ToInt32(info.GetTextEntry(11).Text), 0, 0xFFFF);
+                                    : Math.Clamp(Utility.ToInt32(tKills), 0, 0xFFFF);
                                 var warLength = TimeSpan.FromHours(
                                     tWarLength == null
                                         ? 0
-                                        : Math.Clamp(Utility.ToInt32(info.GetTextEntry(10).Text), 0, 0xFFFF)
+                                        : Math.Clamp(Utility.ToInt32(tWarLength), 0, 0xFFFF)
                                 );
 
                                 if (war != null)

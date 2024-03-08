@@ -49,7 +49,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Option != null && Contains(info.ButtonID))
             {

@@ -144,7 +144,7 @@ namespace Server.Spells.Necromancy
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var index = info.ButtonID - 1;
 

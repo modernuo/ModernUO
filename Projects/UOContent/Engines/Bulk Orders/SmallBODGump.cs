@@ -69,7 +69,7 @@ namespace Server.Engines.BulkOrders
             AddHtmlLocalized(160, 216, 120, 20, 1011441, 0x7FFF); // EXIT
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Deed.Deleted || !m_Deed.IsChildOf(m_From.Backpack))
             {

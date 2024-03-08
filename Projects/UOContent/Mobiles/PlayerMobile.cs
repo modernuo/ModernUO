@@ -4639,7 +4639,7 @@ namespace Server.Mobiles
                 AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF); // DISABLE IT!
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (!m_Player.CheckAlive())
                 {
@@ -4790,7 +4790,7 @@ namespace Server.Mobiles
 
             public ItemInsuranceMenuGump NewInstance() => new(m_From, m_Items, m_Insure, m_Page);
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (info.ButtonID == 0 || !m_From.CheckAlive())
                 {
@@ -4886,7 +4886,7 @@ namespace Server.Mobiles
                 AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF); // ACCEPT
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (!m_From.CheckAlive())
                 {

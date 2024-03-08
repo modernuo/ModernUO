@@ -40,7 +40,7 @@ namespace Server.Engines.Help
             AddHtmlLocalized(34, 28, 65, 24, 3001002, 0xFFFFFF); // Message
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             m_Mobile.SendGump(new PageResponseGump(m_Mobile, m_Name, m_Text));
 
@@ -112,7 +112,7 @@ namespace Server.Engines.Help
             }
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (info.ButtonID >= 1 && info.ButtonID <= m_List.Length)
             {
@@ -350,7 +350,7 @@ namespace Server.Engines.Help
             AddTextEntry(x + 3, y + 1, w - 4, h - 2, 0x480, id, def);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_From.AccessLevel < AccessLevel.Administrator)
             {
@@ -436,12 +436,7 @@ namespace Server.Engines.Help
                         }
                     case 2:
                         {
-                            var te = info.GetTextEntry(0);
-
-                            if (te != null)
-                            {
-                                m_Response.Title = te.Text;
-                            }
+                            m_Response.Title = info.GetTextEntry(0);
 
                             PredefinedResponse.Save();
                             m_From.SendGump(new PredefGump(m_From, m_Response));
@@ -450,12 +445,7 @@ namespace Server.Engines.Help
                         }
                     case 3:
                         {
-                            var te = info.GetTextEntry(1);
-
-                            if (te != null)
-                            {
-                                m_Response.Message = te.Text;
-                            }
+                            m_Response.Message = info.GetTextEntry(1);
 
                             PredefinedResponse.Save();
                             m_From.SendGump(new PredefGump(m_From, m_Response));
@@ -612,7 +602,7 @@ namespace Server.Engines.Help
             g.SendTo(state);
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (info.ButtonID != 0 && PageQueue.List.IndexOf(m_Entry) < 0)
             {
@@ -799,7 +789,7 @@ namespace Server.Engines.Help
                         if (text != null)
                             // m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
                         {
-                            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name, text.Text));
+                            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name, text));
                         }
                         // m_Entry.Sender.SendMessage( 0x482, "{0} tells you:", state.Mobile.Name );
                         // m_Entry.Sender.SendMessage( 0x482, text.Text );

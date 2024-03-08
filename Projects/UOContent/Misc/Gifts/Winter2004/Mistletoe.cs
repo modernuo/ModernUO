@@ -144,7 +144,7 @@ namespace Server.Items
                 AddButton(20, 125, 0xFA5, 0xFA7, 0);
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (m_Addon.Deleted || info.ButtonID != 1)
                 {
@@ -326,7 +326,7 @@ namespace Server.Items
                 AddButton(145, 35, 0x868, 0x869, 2);
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (m_Deed.Deleted)
                 {

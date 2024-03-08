@@ -172,7 +172,7 @@ public partial class StoneAnkhDeed : BaseAddonDeed, IRewardItem
             AddButton(145, 35, 0x867, 0x869, (int)Buttons.East); // East
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed?.Deleted != false || info.ButtonID == (int)Buttons.Cancel)
             {

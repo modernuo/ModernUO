@@ -178,7 +178,7 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
             AddButton(390, 50, 0x845, 0x846, 0x1B7F);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed?.Deleted != false || info.ButtonID != 0x1A03 && info.ButtonID != 0x1A05 &&
                 info.ButtonID != 0x1A09 && info.ButtonID != 0x1B1E && info.ButtonID != 0x1B7F)
@@ -303,7 +303,7 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
                 AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
             }
 
-            public override void OnResponse(NetState sender, RelayInfo info)
+            public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 if (_skeleton?.Deleted != false || _house == null)
                 {

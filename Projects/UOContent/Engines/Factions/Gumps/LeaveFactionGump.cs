@@ -44,7 +44,7 @@ namespace Server.Factions
             AddButton(135, 80, 4005, 4007, 2);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             switch (info.ButtonID)
             {

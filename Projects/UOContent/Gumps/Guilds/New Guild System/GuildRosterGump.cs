@@ -95,7 +95,7 @@ namespace Server.Guilds
         public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, PlayerMobile o) =>
             new GuildMemberInfoGump(pm, g, o, false, false);
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             base.OnResponse(sender, info);
 

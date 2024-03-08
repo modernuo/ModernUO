@@ -139,12 +139,10 @@ namespace Server.Gumps
 
         private void Resend(Mobile to, RelayInfo info)
         {
-            var te = info.GetTextEntry(0);
-
-            to.SendGump(new ClientGump(to, m_State, te == null ? "" : te.Text));
+            to.SendGump(new ClientGump(to, m_State, info.GetTextEntry(0) ?? ""));
         }
 
-        public override void OnResponse(NetState state, RelayInfo info)
+        public override void OnResponse(NetState state, in RelayInfo info)
         {
             if (m_State == null)
             {
@@ -177,16 +175,16 @@ namespace Server.Gumps
             {
                 case 1: // Tell
                     {
-                        var text = info.GetTextEntry(0);
+                        var text = info.GetTextEntry(0)?.Trim();
 
-                        if (text != null)
+                        if (text?.Length > 0)
                         {
                             focus.SendMessage(0x482, $"{from.Name} tells you:");
-                            focus.SendMessage(0x482, text.Text);
+                            focus.SendMessage(0x482, text);
 
                             CommandLogging.WriteLine(
                                 from,
-                                $"{from.AccessLevel} {CommandLogging.Format(from)} telling {CommandLogging.Format(focus)} \"{text.Text}\""
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} telling {CommandLogging.Format(focus)} \"{text}\""
                             );
                         }
 

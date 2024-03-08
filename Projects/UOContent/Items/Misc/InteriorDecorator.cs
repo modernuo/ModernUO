@@ -98,7 +98,7 @@ public partial class InteriorDecorator : Item
             AddHtmlLocalized(90, 150, 70, 40, 1018325); // Down
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var command = info.ButtonID switch
             {

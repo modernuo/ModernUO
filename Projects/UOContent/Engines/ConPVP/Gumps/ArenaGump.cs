@@ -207,7 +207,7 @@ namespace Server.Engines.ConPVP
             sb.Append(le.Mobile.Name);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID != 1)
             {

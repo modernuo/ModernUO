@@ -130,7 +130,7 @@ public class HolidayTreeChoiceGump : Gump
         AddHtmlLocalized(55, 65, 145, 25, 1018321); // Modern
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState sender, in RelayInfo info)
     {
         if (m_Deed.Deleted)
         {

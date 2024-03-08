@@ -80,7 +80,7 @@ namespace Server.Engines.ConPVP
             AddHtml(x + 25, y, 200, 20, text);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!Context.Registered)
             {

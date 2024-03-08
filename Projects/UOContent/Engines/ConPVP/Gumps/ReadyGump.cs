@@ -102,7 +102,7 @@ namespace Server.Engines.ConPVP
 
         public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
         }
     }

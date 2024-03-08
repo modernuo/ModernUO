@@ -176,7 +176,7 @@ namespace Server.Engines.VeteranRewards
             page += 1;
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var buttonID = info.ButtonID - 1;
 

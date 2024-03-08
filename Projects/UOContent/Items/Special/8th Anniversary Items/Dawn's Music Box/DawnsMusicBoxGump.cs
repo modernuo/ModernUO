@@ -66,7 +66,7 @@ public class DawnsMusicBoxGump : Gump
         AddHtmlLocalized(44, y - 2, 213, 20, 1075207, 0x7FFF); // Stop Song
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState sender, in RelayInfo info)
     {
         if (m_Box?.Deleted != false)
         {

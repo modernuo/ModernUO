@@ -160,7 +160,7 @@ namespace Server.Guilds
         protected abstract TextDefinition[] GetValuesFor(T o, int aryLength);
         protected abstract bool IsFiltered(T o, string filter);
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             base.OnResponse(sender, info);
 
@@ -176,7 +176,7 @@ namespace Server.Guilds
                 case 5: // Filter
                     {
                         var t = info.GetTextEntry(1);
-                        pm.SendGump(GetResentGump(player, guild, m_Comparer, m_Ascending, t == null ? "" : t.Text, 0));
+                        pm.SendGump(GetResentGump(player, guild, m_Comparer, m_Ascending, t ?? "", 0));
                         break;
                     }
                 case 6: // Back

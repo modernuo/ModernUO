@@ -165,7 +165,7 @@ namespace Server.Factions
 
         public override int ButtonTypes => 2;
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!m_Town.IsFinance(m_From) || m_Town.Owner != m_Faction)
             {

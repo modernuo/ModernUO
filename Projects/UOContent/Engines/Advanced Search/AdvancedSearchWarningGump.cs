@@ -51,7 +51,7 @@ public abstract class AdvancedSearchWarningGump : Gump
         AddHtmlLocalized(40 + (width - 20) / 2, height - 30, 170, 20, 1011012, 32767); // CANCEL
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info) => OnClickResponse(sender, info.ButtonID == 1);
+    public override void OnResponse(NetState sender, in RelayInfo info) => OnClickResponse(sender, info.ButtonID == 1);
 
     protected abstract void OnClickResponse(NetState sender, bool okay);
 }

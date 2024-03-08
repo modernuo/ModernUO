@@ -42,7 +42,7 @@ namespace Server.Engines.Craft
             AddButton(20, 125, 4005, 4007, 0);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var makersMark = info.ButtonID == 1;
 

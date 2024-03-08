@@ -116,7 +116,7 @@ namespace Server.Gumps
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var shouldSend = true;
             object viewProps = null;

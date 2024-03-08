@@ -15,7 +15,7 @@ namespace Server.Gumps
         ) : base(prop, mobile, o, propertiesGump, names, null) =>
             m_Names = names;
 
-        public override void OnResponse(NetState sender, RelayInfo relayInfo)
+        public override void OnResponse(NetState sender, in RelayInfo relayInfo)
         {
             var from = sender.Mobile;
 

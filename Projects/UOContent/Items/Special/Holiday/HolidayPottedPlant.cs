@@ -77,7 +77,7 @@ public partial class PottedPlantDeed : Item
             AddButton(295, 50, 0x845, 0x846, 5);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed?.Deleted != false)
             {

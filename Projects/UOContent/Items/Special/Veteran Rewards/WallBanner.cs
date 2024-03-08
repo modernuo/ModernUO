@@ -466,7 +466,7 @@ public partial class WallBannerDeed : BaseAddonDeed, IRewardItem
             AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 4);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_wallBanner?.Deleted != false || info.ButtonID is <= 0 or >= 31)
             {

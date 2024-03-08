@@ -79,7 +79,7 @@ namespace Server.Gumps
             }
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             TimeSpan toSet;
             bool shouldSet, shouldSend;
@@ -103,7 +103,7 @@ namespace Server.Gumps
                         var successfulParse = false;
                         if (h != null && m != null && s != null)
                         {
-                            successfulParse = TimeSpan.TryParse($"{h.Text}:{m.Text}:{s.Text}", out toSet);
+                            successfulParse = TimeSpan.TryParse($"{h}:{m}:{s}", out toSet);
                         }
                         else
                         {
@@ -120,7 +120,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                toSet = TimeSpan.FromHours(Utility.ToDouble(h.Text));
+                                toSet = TimeSpan.FromHours(Utility.ToDouble(h));
                                 shouldSet = true;
                                 shouldSend = true;
 
@@ -144,7 +144,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                toSet = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
+                                toSet = TimeSpan.FromMinutes(Utility.ToDouble(m));
                                 shouldSet = true;
                                 shouldSend = true;
 
@@ -168,7 +168,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                toSet = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
+                                toSet = TimeSpan.FromSeconds(Utility.ToDouble(s));
                                 shouldSet = true;
                                 shouldSend = true;
 

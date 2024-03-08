@@ -270,7 +270,7 @@ namespace Server.Gumps
             AddHtmlLocalized(98, 236, 250, 60, 1076786, 0x7FFF); // Peach Trunk
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Token?.Deleted != false || info.ButtonID == 0)
             {

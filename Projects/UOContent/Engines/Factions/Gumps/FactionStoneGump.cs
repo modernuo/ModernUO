@@ -259,7 +259,7 @@ namespace Server.Factions
 
         public override int ButtonTypes => 4;
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (!FromButtonID(info.ButtonID, out var type, out var index))
             {

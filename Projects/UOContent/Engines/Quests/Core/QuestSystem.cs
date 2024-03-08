@@ -591,7 +591,7 @@ namespace Server.Engines.Quests
             AddButton(265, 220, 247, 248, 1);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {
@@ -654,7 +654,7 @@ namespace Server.Engines.Quests
             AddImage(379, 60, system.Picture);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {

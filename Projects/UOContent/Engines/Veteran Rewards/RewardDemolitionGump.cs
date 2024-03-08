@@ -29,7 +29,7 @@ namespace Server.Gumps
             AddButton(20, 125, 0xFA5, 0xFA7, (int)Buttons.Cancel);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Addon is not Item item || item.Deleted)
             {

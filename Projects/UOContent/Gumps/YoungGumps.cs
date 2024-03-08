@@ -81,7 +81,7 @@ namespace Server.Gumps
             AddHtmlLocalized(211, 300, 100, 35, 1011012); // CANCEL
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 

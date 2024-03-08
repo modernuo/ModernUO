@@ -81,7 +81,7 @@ public class HairDyeGump : Gump
         }
     }
 
-    public override void OnResponse(NetState from, RelayInfo info)
+    public override void OnResponse(NetState from, in RelayInfo info)
     {
         if (_hairDye.Deleted)
         {

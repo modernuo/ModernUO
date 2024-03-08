@@ -124,7 +124,7 @@ namespace Server.Gumps
 
         public RewardPickedHandler OnPicked { get; }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var choice = info.ButtonID;
 
@@ -198,7 +198,7 @@ namespace Server.Gumps
             AddButton(265, 220, 0xF7, 0xF8, 7);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 7 && info.IsSwitched(1))
             {

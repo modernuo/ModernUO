@@ -236,7 +236,7 @@ namespace Server.Guilds
             return new OtherGuildInfo(pm, g, o);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             base.OnResponse(sender, info);
 

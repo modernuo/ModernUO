@@ -64,7 +64,7 @@ namespace Server.Gumps
             AddTextField(x + 35, y + 20, 100, 20, idx);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 
@@ -110,10 +110,10 @@ namespace Server.Gumps
                             try
                             {
                                 duration = new TimeSpan(
-                                    Utility.ToInt32(d.Text),
-                                    Utility.ToInt32(h.Text),
-                                    Utility.ToInt32(m.Text),
-                                    Utility.ToInt32(s.Text)
+                                    Utility.ToInt32(d),
+                                    Utility.ToInt32(h),
+                                    Utility.ToInt32(m),
+                                    Utility.ToInt32(s)
                                 );
                                 shouldSet = true;
 
@@ -136,7 +136,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                duration = TimeSpan.FromDays(Utility.ToDouble(d.Text));
+                                duration = TimeSpan.FromDays(Utility.ToDouble(d));
                                 shouldSet = true;
 
                                 break;
@@ -158,7 +158,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                duration = TimeSpan.FromHours(Utility.ToDouble(h.Text));
+                                duration = TimeSpan.FromHours(Utility.ToDouble(h));
                                 shouldSet = true;
 
                                 break;
@@ -180,7 +180,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                duration = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
+                                duration = TimeSpan.FromMinutes(Utility.ToDouble(m));
                                 shouldSet = true;
 
                                 break;
@@ -202,7 +202,7 @@ namespace Server.Gumps
                         {
                             try
                             {
-                                duration = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
+                                duration = TimeSpan.FromSeconds(Utility.ToDouble(s));
                                 shouldSet = true;
 
                                 break;
@@ -223,7 +223,7 @@ namespace Server.Gumps
 
             if (shouldSet)
             {
-                var comment = c?.Text.Trim().DefaultIfNullOrEmpty(null);
+                var comment = c?.Trim().DefaultIfNullOrEmpty(null);
 
                 for (var i = 0; i < m_List.Count; ++i)
                 {

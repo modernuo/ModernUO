@@ -80,7 +80,7 @@ public partial class HearthOfHomeFireDeed : BaseAddonDeed
             AddButton(185, 35, 0x868, 0x869, 2); // East
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_deed.Deleted || info.ButtonID == 0)
             {

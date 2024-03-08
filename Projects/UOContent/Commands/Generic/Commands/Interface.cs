@@ -232,7 +232,7 @@ namespace Server.Commands.Generic
             FinishPage();
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             switch (info.ButtonID)
             {
@@ -349,7 +349,7 @@ namespace Server.Commands.Generic
             CommandSystem.Handle(m_From, $"{CommandSystem.Prefix}{ip}");
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Item.Deleted)
             {
@@ -515,7 +515,7 @@ namespace Server.Commands.Generic
             CommandSystem.Handle(m_From, $"{CommandSystem.Prefix}{ip}");
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (m_Mobile.Deleted)
             {

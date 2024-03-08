@@ -106,7 +106,7 @@ namespace Server.Gumps
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             Point2D toSet;
             bool shouldSet, shouldSend;
@@ -133,12 +133,9 @@ namespace Server.Gumps
                     }
                 case 3: // Use values
                     {
-                        var x = info.GetTextEntry(0);
-                        var y = info.GetTextEntry(1);
-
                         toSet = new Point2D(
-                            x == null ? 0 : Utility.ToInt32(x.Text),
-                            y == null ? 0 : Utility.ToInt32(y.Text)
+                            Utility.ToInt32(info.GetTextEntry(0)),
+                            Utility.ToInt32(info.GetTextEntry(1))
                         );
                         shouldSet = true;
                         shouldSend = true;

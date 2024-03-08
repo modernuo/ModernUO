@@ -86,7 +86,7 @@ public abstract partial class PromotionalToken : Item
             AddButton(90, 95, 0xF2, 0xF1, 0);  // Cancel
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID != 1)
             {

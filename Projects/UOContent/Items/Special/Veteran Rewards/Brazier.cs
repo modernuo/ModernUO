@@ -176,7 +176,7 @@ public partial class RewardBrazierDeed : Item, IRewardItem
             AddButton(115, 50, 0x845, 0x846, 0x19BB);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (_brazier?.Deleted != false)
             {

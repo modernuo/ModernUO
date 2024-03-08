@@ -42,7 +42,7 @@ namespace Server.Factions
             AddHtmlLocalized(335, 400, 200, 20, 1011012); // CANCEL
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {

@@ -28,7 +28,7 @@ namespace Server.Engines.MLQuests.Gumps
             AddConversation(quest.CompletionMessage);
         }
 
-        public override void OnResponse(NetState sender, RelayInfo info)
+        public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 4)
             {
