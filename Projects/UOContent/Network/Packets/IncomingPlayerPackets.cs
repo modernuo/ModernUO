@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
 using System.Diagnostics;
 using CommunityToolkit.HighPerformance;
@@ -21,6 +22,7 @@ using Server.Engines.Virtues;
 using Server.Exceptions;
 using Server.Gumps;
 using Server.Mobiles;
+using Server.Text;
 
 namespace Server.Network;
 
@@ -420,27 +422,40 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            var textEntries = new TextRelay[textCount];
+            scoped Span<ushort> textIds = default;
+            scoped Span<Range> textRanges = default;
+            ReadOnlySpan<byte> rawTextData = default;
 
-            for (var i = 0; i < textEntries.Length; ++i)
+            if (textCount > 0)
             {
-                int entryID = reader.ReadUInt16();
-                int textLength = reader.ReadUInt16();
+                int positionOffset = reader.Position;
 
-                if (textLength > 239)
+                textIds = stackalloc ushort[textCount];
+                textRanges = stackalloc Range[textCount];
+                rawTextData = reader.Buffer[positionOffset..];
+
+                for (var i = 0; i < textCount; ++i)
                 {
-                    state.LogInfo("Invalid gump response, disconnecting...");
-                    var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
-                    exception.SetStackTrace(new StackTrace());
-                    NetState.TraceException(exception);
-                    state.Mobile?.SendMessage("Invalid gump response.");
+                    textIds[i] = reader.ReadUInt16();
+                    int textLength = reader.ReadUInt16();
 
-                    // state.Disconnect("Invalid gump response.");
-                    return;
+                    if (textLength > 239)
+                    {
+                        state.LogInfo("Invalid gump response, disconnecting...");
+                        var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
+                        exception.SetStackTrace(new StackTrace());
+                        NetState.TraceException(exception);
+                        state.Mobile?.SendMessage("Invalid gump response.");
+
+                        // state.Disconnect("Invalid gump response.");
+                        return;
+                    }
+
+                    int textStart = reader.Position - positionOffset;
+                    textLength = reader.SkipString(TextEncoding.Unicode, textLength);
+
+                    textRanges[i] = textStart..(textStart + textLength);
                 }
-
-                var text = reader.ReadBigUniSafe(textLength);
-                textEntries[i] = new TextRelay(entryID, text);
             }
 
             state.RemoveGump(gump);
@@ -449,7 +464,7 @@ public static class IncomingPlayerPackets
 
             prof?.Start();
 
-            var relayInfo = new RelayInfo(buttonID, switches, textEntries);
+            var relayInfo = new RelayInfo(buttonID, switches, textIds, textRanges, rawTextData);
             gump.OnResponse(state, relayInfo);
 
             prof?.Finish();

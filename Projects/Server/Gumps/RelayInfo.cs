@@ -13,61 +13,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Text;
 using System;
 
 namespace Server.Gumps;
 
-public readonly struct TextRelay
+public readonly ref struct RelayInfo
 {
-    public TextRelay(int entryId, string text)
-    {
-        EntryId = entryId;
-        Text = text;
-    }
+    private readonly ReadOnlySpan<ushort> textIds;
+    private readonly ReadOnlySpan<Range> textRanges;
+    private readonly ReadOnlySpan<byte> rawTextData;
 
-    public int EntryId { get; }
-
-    public string Text { get; }
-}
-
-public ref struct RelayInfo
-{
-    public RelayInfo(int buttonID, int[] switches, TextRelay[] textEntries)
+    public RelayInfo(
+        int buttonID,
+        int[] switches,
+        ReadOnlySpan<ushort> textIds,
+        ReadOnlySpan<Range> textRanges,
+        ReadOnlySpan<byte> rawTextData
+        )
     {
         ButtonID = buttonID;
         Switches = switches;
-        TextEntries = textEntries;
+        this.textIds = textIds;
+        this.textRanges = textRanges;
+        this.rawTextData = rawTextData;
     }
 
     public int ButtonID { get; }
 
     public ReadOnlySpan<int> Switches { get; }
 
-    public ReadOnlySpan<TextRelay> TextEntries { get; }
-
     public bool IsSwitched(int switchID)
     {
-        for (var i = 0; i < Switches.Length; ++i)
-        {
-            if (Switches[i] == switchID)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return Switches.Contains(switchID);
     }
 
     public string GetTextEntry(int entryId)
     {
-        for (var i = 0; i < TextEntries.Length; ++i)
+        int index = textIds.IndexOf((ushort)entryId);
+
+        if (index == -1)
         {
-            if (TextEntries[i].EntryId == entryId)
-            {
-                return TextEntries[i].Text;
-            }
+            return default;
         }
 
-        return default;
+        return TextEncoding.GetString(rawTextData[textRanges[index]], TextEncoding.Unicode, true);
     }
 }
