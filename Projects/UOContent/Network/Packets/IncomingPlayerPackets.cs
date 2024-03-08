@@ -15,17 +15,15 @@
 
 using System;
 using System.Buffers;
-using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
+using Server.Buffers;
 using Server.Diagnostics;
 using Server.Engines.Virtues;
 using Server.Exceptions;
 using Server.Gumps;
 using Server.Mobiles;
-using Server.Text;
 
 namespace Server.Network;
 
@@ -348,29 +346,29 @@ public static class IncomingPlayerPackets
     public static void DisplayGumpResponse(NetState state, SpanReader reader)
     {
         var serial = (Serial)reader.ReadUInt32();
-        var typeID = reader.ReadInt32();
-        var buttonID = reader.ReadInt32();
+        var typeId = reader.ReadInt32();
+        var buttonId = reader.ReadInt32();
 
         foreach (var gump in state.Gumps)
         {
-            if (gump.Serial != serial || gump.TypeID != typeID)
+            if (gump.Serial != serial || gump.TypeID != typeId)
             {
                 continue;
             }
 
-            var buttonExists = buttonID == 0; // 0 is always 'close'
+            var buttonExists = buttonId == 0; // 0 is always 'close'
 
             if (!buttonExists)
             {
                 foreach (var e in gump.Entries)
                 {
-                    if (e is GumpButton button && button.ButtonID == buttonID)
+                    if (e is GumpButton button && button.ButtonID == buttonId)
                     {
                         buttonExists = true;
                         break;
                     }
 
-                    if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonID)
+                    if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonId)
                     {
                         buttonExists = true;
                         break;
@@ -381,7 +379,7 @@ public static class IncomingPlayerPackets
             if (!buttonExists)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
-                var exception = new InvalidGumpResponseException($"Button {buttonID} doesn't exist");
+                var exception = new InvalidGumpResponseException($"Button {buttonId} doesn't exist");
                 exception.SetStackTrace(new StackTrace());
                 NetState.TraceException(exception);
                 state.Mobile?.SendMessage("Invalid gump response.");
@@ -404,21 +402,10 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            scoped ReadOnlySpan<int> switches = default;
-
-            if (switchCount > 0)
+            var switches = switchCount <= 0 ? Array.Empty<int>() : STArrayPool<int>.Shared.Rent(switchCount);
+            for (var i = 0; i < switchCount; i++)
             {
-                int byteCount = switchCount * 4;
-
-                switches = MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, byteCount));
-                reader.Seek(byteCount, SeekOrigin.Current);
-
-                if (BitConverter.IsLittleEndian)
-                {
-                    Span<int> reverseSwitches = stackalloc int[switchCount];
-                    BinaryPrimitives.ReverseEndianness(switches, reverseSwitches);
-                    switches = reverseSwitches;
-                }
+                switches[i] = reader.ReadInt32();
             }
 
             var textCount = reader.ReadInt32();
@@ -435,41 +422,44 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            scoped Span<ushort> textIds = default;
-            scoped Span<Range> textRanges = default;
-            ReadOnlySpan<byte> rawTextData = default;
+            ushort[] textIds;
+            Range[] textFields;
 
-            if (textCount > 0)
+            if (textCount <= 0)
             {
-                int positionOffset = reader.Position;
-
-                textIds = stackalloc ushort[textCount];
-                textRanges = stackalloc Range[textCount];
-                rawTextData = reader.Buffer[positionOffset..];
-
-                for (var i = 0; i < textCount; ++i)
-                {
-                    textIds[i] = reader.ReadUInt16();
-                    int textLength = reader.ReadUInt16();
-
-                    if (textLength > 239)
-                    {
-                        state.LogInfo("Invalid gump response, disconnecting...");
-                        var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
-                        exception.SetStackTrace(new StackTrace());
-                        NetState.TraceException(exception);
-                        state.Mobile?.SendMessage("Invalid gump response.");
-
-                        // state.Disconnect("Invalid gump response.");
-                        return;
-                    }
-
-                    int textStart = reader.Position - positionOffset;
-                    textLength = reader.SkipString(TextEncoding.Unicode, textLength);
-
-                    textRanges[i] = textStart..(textStart + textLength);
-                }
+                textIds = Array.Empty<ushort>();
+                textFields = Array.Empty<Range>();
             }
+            else
+            {
+                textIds = STArrayPool<ushort>.Shared.Rent(textCount);
+                textFields = STArrayPool<Range>.Shared.Rent(textCount);
+            }
+
+            var textOffset = reader.Position;
+            for (var i = 0; i < textCount; ++i)
+            {
+                var textId = reader.ReadUInt16();
+                var textLength = reader.ReadUInt16();
+
+                if (textLength > 239)
+                {
+                    state.LogInfo("Invalid gump response, disconnecting...");
+                    var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
+                    exception.SetStackTrace(new StackTrace());
+                    NetState.TraceException(exception);
+                    state.Mobile?.SendMessage("Invalid gump response.");
+
+                    // state.Disconnect("Invalid gump response.");
+                    return;
+                }
+
+                textIds[i] = textId;
+                textFields[i] = (reader.Position - textOffset)..textLength;
+                reader.Seek(textLength, SeekOrigin.Current);
+            }
+
+            var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
 
             state.RemoveGump(gump);
 
@@ -477,20 +467,41 @@ public static class IncomingPlayerPackets
 
             prof?.Start();
 
-            var relayInfo = new RelayInfo(buttonID, switches, textIds, textRanges, rawTextData);
+            var relayInfo = new RelayInfo(
+                buttonId,
+                switches.AsSpan(0, switchCount),
+                textIds.AsSpan(0, textCount),
+                textFields.AsSpan(0, textCount),
+                textBlock
+            );
             gump.OnResponse(state, relayInfo);
 
             prof?.Finish();
 
+            if (switches.Length > 0)
+            {
+                STArrayPool<int>.Shared.Return(switches);
+            }
+
+            if (textIds.Length > 0)
+            {
+                STArrayPool<ushort>.Shared.Return(textIds);
+            }
+
+            if (textFields.Length > 0)
+            {
+                STArrayPool<Range>.Shared.Return(textFields);
+            }
+
             return;
         }
 
-        if (typeID == 461)
+        if (typeId == 461)
         {
             // Virtue gump
             var switchCount = reader.Remaining >= 4 ? reader.ReadInt32() : 0;
 
-            if (buttonID == 1 && switchCount > 0)
+            if (buttonId == 1 && switchCount > 0)
             {
                 var beheld = World.FindEntity<PlayerMobile>((Serial)reader.ReadUInt32());
 
@@ -505,7 +516,7 @@ public static class IncomingPlayerPackets
 
                 if (beheld != null)
                 {
-                    VirtueGump.RequestVirtueItem((PlayerMobile)state.Mobile, beheld, buttonID);
+                    VirtueGump.RequestVirtueItem((PlayerMobile)state.Mobile, beheld, buttonId);
                 }
             }
         }

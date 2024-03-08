@@ -20,43 +20,36 @@ namespace Server.Gumps;
 
 public readonly ref struct RelayInfo
 {
+    private readonly ReadOnlySpan<byte> _textBlock;
     private readonly ReadOnlySpan<ushort> _textIds;
     private readonly ReadOnlySpan<Range> _textRanges;
-    private readonly ReadOnlySpan<byte> _rawTextData;
 
     public RelayInfo(
-        int buttonID,
+        int buttonId,
         ReadOnlySpan<int> switches,
         ReadOnlySpan<ushort> textIds,
         ReadOnlySpan<Range> textRanges,
-        ReadOnlySpan<byte> rawTextData
-        )
+        ReadOnlySpan<byte> textBlock
+    )
     {
-        ButtonID = buttonID;
+        ButtonID = buttonId;
         Switches = switches;
         _textIds = textIds;
         _textRanges = textRanges;
-        _rawTextData = rawTextData;
+        _textBlock = textBlock;
     }
 
     public int ButtonID { get; }
 
     public ReadOnlySpan<int> Switches { get; }
 
-    public bool IsSwitched(int switchID)
-    {
-        return Switches.Contains(switchID);
-    }
+    public bool IsSwitched(int switchId) => Switches.Contains(switchId);
 
     public string GetTextEntry(int entryId)
     {
         int index = _textIds.IndexOf((ushort)entryId);
-
-        if (index == -1)
-        {
-            return default;
-        }
-
-        return TextEncoding.GetString(_rawTextData[_textRanges[index]], TextEncoding.Unicode, true);
+        return index == -1
+            ? default
+            : TextEncoding.GetString(_textBlock[_textRanges[index]], TextEncoding.Unicode, true);
     }
 }
