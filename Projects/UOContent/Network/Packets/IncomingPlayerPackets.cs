@@ -15,7 +15,10 @@
 
 using System;
 using System.Buffers;
+using System.Buffers.Binary;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Server.Diagnostics;
 using Server.Engines.Virtues;
@@ -401,11 +404,21 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            var switches = new int[switchCount];
+            scoped ReadOnlySpan<int> switches = default;
 
-            for (var i = 0; i < switches.Length; ++i)
+            if (switchCount > 0)
             {
-                switches[i] = reader.ReadInt32();
+                int byteCount = switchCount * 4;
+
+                switches = MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, byteCount));
+                reader.Seek(byteCount, SeekOrigin.Current);
+
+                if (BitConverter.IsLittleEndian)
+                {
+                    Span<int> reverseSwitches = stackalloc int[switchCount];
+                    BinaryPrimitives.ReverseEndianness(switches, reverseSwitches);
+                    switches = reverseSwitches;
+                }
             }
 
             var textCount = reader.ReadInt32();
