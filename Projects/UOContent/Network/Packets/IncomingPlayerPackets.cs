@@ -452,8 +452,10 @@ public static class IncomingPlayerPackets
                 }
 
                 textIds[i] = textId;
-                textFields[i] = (reader.Position - textOffset)..textLength;
-                reader.Seek(textLength, SeekOrigin.Current);
+                var offset = reader.Position - textOffset;
+                var length = textLength * 2;
+                textFields[i] = offset..(offset + length);
+                reader.Seek(length, SeekOrigin.Current);
             }
 
             var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
