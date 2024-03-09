@@ -1,0 +1,55 @@
+{% extends "main.html" %}
+{% block extrahead %}
+<!-- Extra stylesheets -->
+<link
+  rel="stylesheet"
+  href="{{ 'assets/stylesheets/home_overrides.css' | url }}"
+/>
+{% endblock %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+{{ super() }}
+
+<!-- Hero for landing page -->
+<section class="tx-container">
+  <div class="md-grid md-typeset">
+    <div class="tx-hero">
+      <div class="tx-hero__image">
+        <img
+          src="/branding/logo.svg"
+          alt=""
+          draggable="false"
+        >
+      </div>
+
+      <!-- Hero content -->
+      <div class="tx-hero__content">
+        <h1>Ultima Online Server Emulator for the modern era!</h1>
+        <a
+          href="{{ page.next_page.url | url }}"
+          title="{{ page.next_page.title | striptags }}"
+          class="md-button md-button--primary"
+        >
+          Get started
+        </a>
+        <a
+          href="{{ config.repo_url }}"
+          title="{{ lang.t('source.link.title') }}"
+          class="md-button"
+        >
+          Go to GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}
+{% include "partials/footer.html" %}
+{% endblock %}
