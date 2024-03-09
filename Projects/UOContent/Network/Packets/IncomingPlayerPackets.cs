@@ -412,8 +412,11 @@ public static class IncomingPlayerPackets
             }
 
             // Read in all of the integers
+            var switchBlockLength = switchCount * 4;
             ReadOnlySpan<int> switchBlock =
-                MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchCount * 4));
+                MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchBlockLength));
+
+            reader.Seek(switchBlockLength, SeekOrigin.Current);
 
             scoped ReadOnlySpan<int> switches;
 
