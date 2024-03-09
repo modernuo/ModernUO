@@ -446,7 +446,7 @@ public static class IncomingPlayerPackets
             Span<Range> textFields = stackalloc Range[textCount];
 
             var textOffset = reader.Position;
-            for (var i = 0; i < textCount; ++i)
+            for (var i = 0; i < textCount; i++)
             {
                 var textId = reader.ReadUInt16();
                 var textLength = reader.ReadUInt16();
