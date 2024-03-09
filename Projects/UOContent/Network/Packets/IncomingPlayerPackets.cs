@@ -13,8 +13,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
+using System.Buffers.Binary;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Server.Diagnostics;
 using Server.Engines.Virtues;
@@ -343,29 +347,37 @@ public static class IncomingPlayerPackets
     public static void DisplayGumpResponse(NetState state, SpanReader reader)
     {
         var serial = (Serial)reader.ReadUInt32();
-        var typeID = reader.ReadInt32();
-        var buttonID = reader.ReadInt32();
+        var typeId = reader.ReadInt32();
+        var buttonId = reader.ReadInt32();
 
-        foreach (var gump in state.Gumps)
+        Gump gump = null;
+
+        foreach (var g in state.Gumps)
         {
-            if (gump.Serial != serial || gump.TypeID != typeID)
+            if (g.Serial != serial || g.TypeID != typeId)
             {
                 continue;
             }
 
-            var buttonExists = buttonID == 0; // 0 is always 'close'
+            gump = g;
+            break;
+        }
+
+        if (gump != null)
+        {
+            var buttonExists = buttonId == 0; // 0 is always 'close'
 
             if (!buttonExists)
             {
                 foreach (var e in gump.Entries)
                 {
-                    if (e is GumpButton button && button.ButtonID == buttonID)
+                    if (e is GumpButton button && button.ButtonID == buttonId)
                     {
                         buttonExists = true;
                         break;
                     }
 
-                    if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonID)
+                    if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonId)
                     {
                         buttonExists = true;
                         break;
@@ -376,7 +388,7 @@ public static class IncomingPlayerPackets
             if (!buttonExists)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
-                var exception = new InvalidGumpResponseException($"Button {buttonID} doesn't exist");
+                var exception = new InvalidGumpResponseException($"Button {buttonId} doesn't exist");
                 exception.SetStackTrace(new StackTrace());
                 NetState.TraceException(exception);
                 state.Mobile?.SendMessage("Invalid gump response.");
@@ -399,15 +411,25 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            var switches = new int[switchCount];
+            // Read in all of the integers
+            ReadOnlySpan<int> switchBlock =
+                MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchCount * 4));
 
-            for (var i = 0; i < switches.Length; ++i)
+            scoped ReadOnlySpan<int> switches;
+
+            // Swap the endianness if necessary
+            if (BitConverter.IsLittleEndian)
             {
-                switches[i] = reader.ReadInt32();
+                Span<int> reversedSwitches = stackalloc int[switchCount];
+                BinaryPrimitives.ReverseEndianness(switchBlock, reversedSwitches);
+                switches = reversedSwitches;
+            }
+            else
+            {
+                switches = switchBlock;
             }
 
             var textCount = reader.ReadInt32();
-
             if (textCount < 0 || textCount > gump.TextEntries)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
@@ -420,12 +442,14 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            var textEntries = new TextRelay[textCount];
+            Span<ushort> textIds = stackalloc ushort[textCount];
+            Span<Range> textFields = stackalloc Range[textCount];
 
-            for (var i = 0; i < textEntries.Length; ++i)
+            var textOffset = reader.Position;
+            for (var i = 0; i < textCount; i++)
             {
-                int entryID = reader.ReadUInt16();
-                int textLength = reader.ReadUInt16();
+                var textId = reader.ReadUInt16();
+                var textLength = reader.ReadUInt16();
 
                 if (textLength > 239)
                 {
@@ -439,9 +463,14 @@ public static class IncomingPlayerPackets
                     return;
                 }
 
-                var text = reader.ReadBigUniSafe(textLength);
-                textEntries[i] = new TextRelay(entryID, text);
+                textIds[i] = textId;
+                var offset = reader.Position - textOffset;
+                var length = textLength * 2;
+                textFields[i] = offset..(offset + length);
+                reader.Seek(length, SeekOrigin.Current);
             }
+
+            var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
 
             state.RemoveGump(gump);
 
@@ -449,20 +478,24 @@ public static class IncomingPlayerPackets
 
             prof?.Start();
 
-            var relayInfo = new RelayInfo(buttonID, switches, textEntries);
+            var relayInfo = new RelayInfo(
+                buttonId,
+                switches,
+                textIds,
+                textFields,
+                textBlock
+            );
             gump.OnResponse(state, relayInfo);
 
             prof?.Finish();
-
-            return;
         }
 
-        if (typeID == 461)
+        if (typeId == 461)
         {
             // Virtue gump
             var switchCount = reader.Remaining >= 4 ? reader.ReadInt32() : 0;
 
-            if (buttonID == 1 && switchCount > 0)
+            if (buttonId == 1 && switchCount > 0)
             {
                 var beheld = World.FindEntity<PlayerMobile>((Serial)reader.ReadUInt32());
 
@@ -477,7 +510,7 @@ public static class IncomingPlayerPackets
 
                 if (beheld != null)
                 {
-                    VirtueGump.RequestVirtueItem((PlayerMobile)state.Mobile, beheld, buttonID);
+                    VirtueGump.RequestVirtueItem((PlayerMobile)state.Mobile, beheld, buttonId);
                 }
             }
         }

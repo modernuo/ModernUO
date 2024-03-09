@@ -13,61 +13,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Text;
 using System;
 
 namespace Server.Gumps;
 
-public readonly struct TextRelay
+public readonly ref struct RelayInfo
 {
-    public TextRelay(int entryId, string text)
+    private readonly ReadOnlySpan<byte> _textBlock;
+    private readonly ReadOnlySpan<ushort> _textIds;
+    private readonly ReadOnlySpan<Range> _textRanges;
+
+    public RelayInfo(
+        int buttonId,
+        ReadOnlySpan<int> switches,
+        ReadOnlySpan<ushort> textIds,
+        ReadOnlySpan<Range> textRanges,
+        ReadOnlySpan<byte> textBlock
+    )
     {
-        EntryId = entryId;
-        Text = text;
-    }
-
-    public int EntryId { get; }
-
-    public string Text { get; }
-}
-
-public ref struct RelayInfo
-{
-    public RelayInfo(int buttonID, int[] switches, TextRelay[] textEntries)
-    {
-        ButtonID = buttonID;
+        ButtonID = buttonId;
         Switches = switches;
-        TextEntries = textEntries;
+        _textIds = textIds;
+        _textRanges = textRanges;
+        _textBlock = textBlock;
     }
 
     public int ButtonID { get; }
 
     public ReadOnlySpan<int> Switches { get; }
 
-    public ReadOnlySpan<TextRelay> TextEntries { get; }
-
-    public bool IsSwitched(int switchID)
-    {
-        for (var i = 0; i < Switches.Length; ++i)
-        {
-            if (Switches[i] == switchID)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    public bool IsSwitched(int switchId) => Switches.Contains(switchId);
 
     public string GetTextEntry(int entryId)
     {
-        for (var i = 0; i < TextEntries.Length; ++i)
-        {
-            if (TextEntries[i].EntryId == entryId)
-            {
-                return TextEntries[i].Text;
-            }
-        }
-
-        return default;
+        int index = _textIds.IndexOf((ushort)entryId);
+        return index == -1
+            ? default
+            : TextEncoding.GetString(_textBlock[_textRanges[index]], TextEncoding.Unicode, true);
     }
 }
