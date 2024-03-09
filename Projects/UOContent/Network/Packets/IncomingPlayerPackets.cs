@@ -349,13 +349,21 @@ public static class IncomingPlayerPackets
         var typeId = reader.ReadInt32();
         var buttonId = reader.ReadInt32();
 
-        foreach (var gump in state.Gumps)
+        Gump gump = null;
+
+        foreach (var g in state.Gumps)
         {
-            if (gump.Serial != serial || gump.TypeID != typeId)
+            if (g.Serial != serial || g.TypeID != typeId)
             {
                 continue;
             }
 
+            gump = g;
+            break;
+        }
+
+        if (gump != null)
+        {
             var buttonExists = buttonId == 0; // 0 is always 'close'
 
             if (!buttonExists)
@@ -402,7 +410,7 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            var switches = switchCount <= 0 ? Array.Empty<int>() : STArrayPool<int>.Shared.Rent(switchCount);
+            Span<int> switches = stackalloc int[switchCount];
             for (var i = 0; i < switchCount; i++)
             {
                 switches[i] = reader.ReadInt32();
@@ -422,19 +430,8 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            ushort[] textIds;
-            Range[] textFields;
-
-            if (textCount <= 0)
-            {
-                textIds = Array.Empty<ushort>();
-                textFields = Array.Empty<Range>();
-            }
-            else
-            {
-                textIds = STArrayPool<ushort>.Shared.Rent(textCount);
-                textFields = STArrayPool<Range>.Shared.Rent(textCount);
-            }
+            Span<ushort> textIds = stackalloc ushort[textCount];
+            Span<Range> textFields = stackalloc Range[textCount];
 
             var textOffset = reader.Position;
             for (var i = 0; i < textCount; ++i)
@@ -461,39 +458,22 @@ public static class IncomingPlayerPackets
 
             var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
 
-            state.RemoveGump(gump);
+            state.RemoveGump(g);
 
-            var prof = GumpProfile.Acquire(gump.GetType());
+            var prof = GumpProfile.Acquire(g.GetType());
 
             prof?.Start();
 
             var relayInfo = new RelayInfo(
                 buttonId,
-                switches.AsSpan(0, switchCount),
-                textIds.AsSpan(0, textCount),
-                textFields.AsSpan(0, textCount),
+                switches,
+                textIds,
+                textFields,
                 textBlock
             );
-            gump.OnResponse(state, relayInfo);
+            g.OnResponse(state, relayInfo);
 
             prof?.Finish();
-
-            if (switches.Length > 0)
-            {
-                STArrayPool<int>.Shared.Return(switches);
-            }
-
-            if (textIds.Length > 0)
-            {
-                STArrayPool<ushort>.Shared.Return(textIds);
-            }
-
-            if (textFields.Length > 0)
-            {
-                STArrayPool<Range>.Shared.Return(textFields);
-            }
-
-            return;
         }
 
         if (typeId == 461)
