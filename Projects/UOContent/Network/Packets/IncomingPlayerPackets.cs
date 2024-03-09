@@ -458,9 +458,9 @@ public static class IncomingPlayerPackets
 
             var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
 
-            state.RemoveGump(g);
+            state.RemoveGump(gump);
 
-            var prof = GumpProfile.Acquire(g.GetType());
+            var prof = GumpProfile.Acquire(gump.GetType());
 
             prof?.Start();
 
@@ -471,7 +471,7 @@ public static class IncomingPlayerPackets
                 textFields,
                 textBlock
             );
-            g.OnResponse(state, relayInfo);
+            gump.OnResponse(state, relayInfo);
 
             prof?.Finish();
         }
