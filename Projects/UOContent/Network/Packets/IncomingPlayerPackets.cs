@@ -15,10 +15,11 @@
 
 using System;
 using System.Buffers;
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
-using Server.Buffers;
 using Server.Diagnostics;
 using Server.Engines.Virtues;
 using Server.Exceptions;
@@ -410,14 +411,25 @@ public static class IncomingPlayerPackets
                 return;
             }
 
-            Span<int> switches = stackalloc int[switchCount];
-            for (var i = 0; i < switchCount; i++)
+            // Read in all of the integers
+            ReadOnlySpan<int> switchBlock =
+                MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchCount * 4));
+
+            scoped ReadOnlySpan<int> switches;
+
+            // Swap the endianness if necessary
+            if (BitConverter.IsLittleEndian)
             {
-                switches[i] = reader.ReadInt32();
+                Span<int> reversedSwitches = stackalloc int[switchCount];
+                BinaryPrimitives.ReverseEndianness(switchBlock, reversedSwitches);
+                switches = reversedSwitches;
+            }
+            else
+            {
+                switches = switchBlock;
             }
 
             var textCount = reader.ReadInt32();
-
             if (textCount < 0 || textCount > gump.TextEntries)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
