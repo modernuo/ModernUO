@@ -85,7 +85,7 @@ public partial class Map
             ref var multis = ref _multis;
             ref readonly var p = ref _point;
 
-            if (multis.MoveNext())
+            while (multis.MoveNext())
             {
                 var multi = multis.Current;
                 _currentMulti = multi;
