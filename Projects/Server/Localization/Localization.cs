@@ -28,7 +28,7 @@ public static class Localization
     public const string FallbackLanguage = "enu";
 
     private static Dictionary<int, LocalizationEntry> _fallbackEntries;
-    private static Dictionary<string, Dictionary<int, LocalizationEntry>> _localizations = new();
+    private static readonly Dictionary<string, Dictionary<int, LocalizationEntry>> _localizations = new();
 
     public static void Configure()
     {
@@ -44,6 +44,7 @@ public static class Localization
 
     public static void Add(string lang, int number, string text)
     {
+        lang = lang.ToLower();
         var entry = new LocalizationEntry(lang, number, text);
         if (!_localizations.TryGetValue(lang, out var entries))
         {
@@ -60,6 +61,7 @@ public static class Localization
 
     public static bool Remove(string lang, int number)
     {
+        lang = lang.ToLower();
         if (!_localizations.TryGetValue(lang, out var entries) || !entries.Remove(number))
         {
             return false;
@@ -73,11 +75,18 @@ public static class Localization
         return true;
     }
 
+    public static void Clear()
+    {
+        _localizations.Clear();
+        _fallbackEntries = null;
+    }
+
     public static Dictionary<int, LocalizationEntry> LoadClilocs(string lang) =>
         LoadClilocs(lang, Core.FindDataFile($"cliloc.{lang}", false));
 
     private static Dictionary<int, LocalizationEntry> LoadClilocs(string lang, string file)
     {
+        lang = lang.ToLower();
         Dictionary<int, LocalizationEntry> entries = _localizations[lang] = new Dictionary<int, LocalizationEntry>();
         if (lang == FallbackLanguage)
         {
@@ -145,6 +154,7 @@ public static class Localization
     /// <returns>True if the entry exists, otherwise false.</returns>
     public static bool TryGetLocalization(string lang, int number, out LocalizationEntry entry)
     {
+        lang = lang.ToLower();
         if (lang != FallbackLanguage)
         {
             if (!_localizations.TryGetValue(lang, out var entries))
