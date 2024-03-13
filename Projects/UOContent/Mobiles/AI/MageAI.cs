@@ -769,7 +769,6 @@ public class MageAI : BaseAI
             }
         }
 
-        m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, c))
         {
             if (m_Mobile.Debug)
@@ -838,6 +837,11 @@ public class MageAI : BaseAI
         else if (m_Mobile.Spell?.IsCasting != true)
         {
             RunTo(c);
+        }
+
+        if (m_Mobile.Spell != null || !m_Mobile.InRange(c, 1) || Core.TickCount - m_Mobile.LastMoveTime > 800)
+        {
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
         }
 
         m_LastTarget = c;

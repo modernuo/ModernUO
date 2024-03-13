@@ -30,7 +30,7 @@ namespace Server
         }
 
         public MoveResult Move(Direction d) =>
-            Mover?.Invoke(d) ?? (m_From.Move(d) ? MoveResult.Success : MoveResult.Blocked);
+            Mover?.Invoke(d, true) ?? (m_From.Move(d) ? MoveResult.Success : MoveResult.Blocked);
 
         public Point3D GetGoalLocation() => (Goal as Item)?.GetWorldLocation() ?? new Point3D(Goal);
 
@@ -102,14 +102,14 @@ namespace Server
 
             if (!(Enabled && m_Path.Success))
             {
-                d = m_From.GetDirectionTo(goal);
+                d = m_From.GetDirectionTo(goal, run);
                 m_From.SetDirection(d);
-                Move(d);
 
-                return Check(m_From.Location, goal, range);
+                return Move(d) is MoveResult.Success or MoveResult.SuccessAutoTurn
+                       && Check(m_From.Location, goal, range);
             }
 
-            d = m_From.GetDirectionTo(m_Next);
+            d = m_From.GetDirectionTo(m_Next, run);
             m_From.SetDirection(d);
             var res = Move(d);
 
@@ -127,9 +127,9 @@ namespace Server
                 {
                     d = m_From.GetDirectionTo(goal);
                     m_From.SetDirection(d);
-                    Move(d);
 
-                    return Check(m_From.Location, goal, range);
+                    return Move(d) is MoveResult.Success or MoveResult.SuccessAutoTurn
+                           && Check(m_From.Location, goal, range);
                 }
 
                 d = m_From.GetDirectionTo(m_Next);

@@ -50,9 +50,8 @@ public class ArcherAI : BaseAI
             return true;
         }
 
-        if (Core.TickCount - m_Mobile.LastMoveTime > 1000 &&
-            !WalkMobileRange(
-                m_Mobile.Combatant,
+        if (Core.TickCount - m_Mobile.LastMoveTime > 1000 && !WalkMobileRange(
+                combatant,
                 1,
                 true,
                 m_Mobile.RangeFight,
@@ -76,8 +75,11 @@ public class ArcherAI : BaseAI
                 return true;
             }
         }
+        else if (Core.TickCount - m_Mobile.LastMoveTime > 400)
+        {
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+        }
 
-        m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             if (m_Mobile.Debug)

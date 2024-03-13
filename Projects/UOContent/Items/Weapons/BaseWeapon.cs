@@ -888,6 +888,8 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
             if (attacker is BaseCreature bc)
             {
+                // Only change direction if they are not a player.
+                attacker.Direction = attacker.GetDirectionTo(defender);
                 var ab = bc.GetWeaponAbility();
 
                 if (ab != null)

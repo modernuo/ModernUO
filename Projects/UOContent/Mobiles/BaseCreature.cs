@@ -261,7 +261,14 @@ namespace Server.Mobiles
 
         private AIType m_CurrentAI; // The current AI
 
-        private double m_CurrentSpeed; // The current speed, lets say it could be changed by something;
+        private double _activeSpeed;
+        private double _passiveSpeed;
+        private double _currentSpeed;
+
+        // Herding - Overrides the AI to force the mob to move to a specific location
+        // Thinking: 0.3s, Movement: 0.6s.
+        private IPoint2D _targetLocation;
+
         private int m_DamageMax = -1;
 
         private int m_DamageMin = -1;
@@ -541,9 +548,6 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public WayPoint CurrentWayPoint { get; set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public IPoint2D TargetLocation { get; set; }
-
         public virtual Mobile ConstantFocus => null;
 
         public virtual bool DisallowAllMoves => false;
@@ -660,31 +664,59 @@ namespace Server.Mobiles
         public int RangeHome { get; set; } = 10;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public double ActiveSpeed { get; set; }
+        public virtual double ActiveSpeed
+        {
+            get => _activeSpeed;
+            set
+            {
+                if (Math.Abs(_activeSpeed - value) > .0001)
+                {
+                    _activeSpeed = value;
+                }
+            }
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public double PassiveSpeed { get; set; }
+        public virtual double PassiveSpeed
+        {
+            get => _passiveSpeed;
+            set
+            {
+                _passiveSpeed = value;
+                if (Math.Abs(_passiveSpeed - value) > .0001)
+                {
+                    _passiveSpeed = value;
+                }
+            }
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public double SpeedMod { get; set; }
+        public IPoint2D TargetLocation
+        {
+            get => _targetLocation;
+            set
+            {
+                _targetLocation = value;
+                AIObject?.OnCurrentSpeedChanged();
+            }
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentSpeed
         {
-            get => TargetLocation != null ? 0.3 : SpeedMod <= 0 ? m_CurrentSpeed : SpeedMod;
+            get => _targetLocation != null ? 0.3 : _currentSpeed;
             set
             {
-                if (m_CurrentSpeed != value)
+                if (Math.Abs(_currentSpeed - value) > 0.0001)
                 {
-                    m_CurrentSpeed = value;
-
-                    if (SpeedMod <= 0)
-                    {
-                        AIObject?.OnCurrentSpeedChanged();
-                    }
+                    _currentSpeed = value;
+                    AIObject?.OnCurrentSpeedChanged();
                 }
             }
         }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public double MoveSpeedMod { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public Point3D Home
@@ -1795,9 +1827,9 @@ namespace Server.Mobiles
 
             writer.Write(m_Team);
 
-            writer.Write(ActiveSpeed);
-            writer.Write(PassiveSpeed);
-            writer.Write(m_CurrentSpeed);
+            writer.Write(_activeSpeed);
+            writer.Write(_passiveSpeed);
+            writer.Write(_currentSpeed);
 
             writer.Write(m_Home.X);
             writer.Write(m_Home.Y);
@@ -1921,9 +1953,9 @@ namespace Server.Mobiles
 
             m_Team = reader.ReadInt();
 
-            ActiveSpeed = reader.ReadDouble();
-            PassiveSpeed = reader.ReadDouble();
-            m_CurrentSpeed = reader.ReadDouble();
+            _activeSpeed = reader.ReadDouble();
+            _passiveSpeed = reader.ReadDouble();
+            _currentSpeed = reader.ReadDouble();
 
             if (RangePerception == OldRangePerception)
             {
@@ -4478,12 +4510,18 @@ namespace Server.Mobiles
             return false;
         }
 
-        public void SetSpeed(double active, double passive)
+        public void SetSpeed(double active, double passive, bool isPassive = true)
         {
             ActiveSpeed = active;
             PassiveSpeed = passive;
-            CurrentSpeed = PassiveSpeed;
+            CurrentSpeed = isPassive ? PassiveSpeed : ActiveSpeed;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetCurrentSpeedToActive() => CurrentSpeed = ActiveSpeed;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetCurrentSpeedToPassive() => CurrentSpeed = PassiveSpeed;
 
         public void SetDamage(int val)
         {

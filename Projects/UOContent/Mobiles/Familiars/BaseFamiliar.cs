@@ -97,7 +97,7 @@ public abstract partial class BaseFamiliar : BaseCreature
             Warmode = master.Warmode;
             Combatant = master.Combatant;
 
-            CurrentSpeed = 0.10;
+            CurrentSpeed = 0.1;
         }
         else
         {
