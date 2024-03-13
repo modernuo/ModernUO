@@ -478,6 +478,7 @@ public static class IncomingAccountPackets
         }
         else
         {
+            state.Account = null;
             AccountLogin_ReplyRej(state, accountLoginEventArgs.RejectReason);
         }
     }

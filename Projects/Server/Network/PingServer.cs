@@ -96,10 +96,12 @@ public static class PingServer
 
         int count = 0;
 
+        var cancellationToken = Core.ClosingTokenSource.Token;
+
         while (++count <= MaxConnectionsPerLoop && _udpResponseQueue.TryDequeue(out var udpTuple))
         {
             var (listener, result) = udpTuple;
-            SendResponse(listener, result.Buffer, result.RemoteEndPoint);
+            Task.Run(async () => await listener.SendAsync(result.Buffer, result.RemoteEndPoint, cancellationToken), cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -154,24 +156,11 @@ public static class PingServer
                 {
                     _udpResponseQueue.Enqueue((listener, result));
                 }
-
             }
             catch
             {
                 // ignored
             }
-        }
-    }
-
-    private static async Task SendResponse(UdpClient listener, byte[] data, IPEndPoint ipep)
-    {
-        try
-        {
-            await listener.SendAsync(data, ipep, Core.ClosingTokenSource.Token);
-        }
-        catch
-        {
-            // ignored
         }
     }
 }
