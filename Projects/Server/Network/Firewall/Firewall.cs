@@ -134,13 +134,16 @@ public static class Firewall
         _isBlockedCache.Clear();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void RemoveEntry(IFirewallEntry entry)
     {
-        if (entry != null)
+        if (entry == null)
         {
-            _firewallSet.Remove(entry);
-            _isBlockedCache.Clear();
+            return;
         }
+
+        _firewallSet.Remove(entry);
+        _isBlockedCache.Clear();
     }
 
     private class InternalValidationEntry : BaseFirewallEntry

@@ -442,8 +442,6 @@ public static class IncomingAccountPackets
 
     public static void AccountLogin(NetState state, SpanReader reader)
     {
-        // TODO: Throttle Connection
-
         if (state.SentFirstPacket)
         {
             state.Disconnect("Duplicate account login packet sent.");
