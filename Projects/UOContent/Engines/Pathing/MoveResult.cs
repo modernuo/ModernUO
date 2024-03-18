@@ -1,6 +1,6 @@
 namespace Server
 {
-    public delegate MoveResult MoveMethod(Direction d);
+    public delegate MoveResult MoveMethod(Direction d, bool badStateOk);
 
     public enum MoveResult
     {

@@ -82,6 +82,10 @@ public class AnimalAI : BaseAI
                 m_Mobile.DebugSay($"I should be closer to {combatant.Name}");
             }
         }
+        else if (Core.TickCount - m_Mobile.LastMoveTime > 400)
+        {
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+        }
 
         if (!m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee)
         {
@@ -99,7 +103,6 @@ public class AnimalAI : BaseAI
             }
         }
 
-        m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             if (m_Mobile.Debug)

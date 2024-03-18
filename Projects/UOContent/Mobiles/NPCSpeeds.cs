@@ -9,6 +9,7 @@ namespace Server.Mobiles;
 public enum SpeedLevel
 {
     None,
+    VerySlow,
     Slow,
     Medium,
     Fast,
@@ -18,8 +19,8 @@ public enum SpeedLevel
 public static class NPCSpeeds
 {
     private const string _tablePath = "Data/npc-speeds.json";
-    private static Dictionary<Type, SpeedClassEntry> _speedsByType = new();
-    private static Dictionary<SpeedLevel, SpeedClassEntry> _speedsByLevel = new();
+    private static readonly Dictionary<Type, SpeedClassEntry> _speedsByType = new();
+    private static readonly Dictionary<SpeedLevel, SpeedClassEntry> _speedsByLevel = new();
 
     // Enabled for pets on HS+
     public static bool ScaleSpeedByDex { get; private set; }

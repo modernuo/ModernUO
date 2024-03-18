@@ -4339,9 +4339,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         if (m_NetState != null)
         {
             m_NetState._nextMovementTime += ComputeMovementSpeed(d);
+            m_NetState.SendMovementAck(m_NetState.Sequence, this);
         }
-
-        m_NetState?.SendMovementAck(m_NetState.Sequence, this);
 
         SetLocation(newLocation, false);
         SetDirection(d);
@@ -7282,12 +7281,15 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             box.Close();
         }
 
-        m_NetState?.ValidateAllTrades();
-
-        if (isTeleport && m_NetState != null && (!m_NetState.HighSeas || !NoMoveHS))
+        if (m_NetState != null)
         {
-            m_NetState.Sequence = 0;
-            m_NetState.SendMobileUpdate(this);
+            m_NetState.ValidateAllTrades();
+
+            if (isTeleport && (!m_NetState.HighSeas || !NoMoveHS))
+            {
+                m_NetState.Sequence = 0;
+                m_NetState.SendMobileUpdate(this);
+            }
         }
 
         var map = m_Map;
@@ -7367,6 +7369,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                     m.SendOPLPacketTo(ourState);
                 }
+
                 foreach (var item in map.GetItemsInRange(newLocation, Core.GlobalMaxUpdateRange))
                 {
                     var range = item.GetUpdateRange(this);
@@ -8916,7 +8919,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             };
         }
 
-        return ret | (run ? Direction.Running : 0);
+        if (run)
+        {
+            ret |= Direction.Running;
+        }
+
+        return ret;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

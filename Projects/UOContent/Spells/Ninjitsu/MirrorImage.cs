@@ -223,7 +223,7 @@ namespace Server.Mobiles
 {
     public class CloneAI : BaseAI
     {
-        public CloneAI(Clone m) : base(m) => m.CurrentSpeed = m.ActiveSpeed;
+        public CloneAI(Clone m) : base(m) => m.SetCurrentSpeedToActive();
 
         public override bool CanDetectHidden => false;
 
