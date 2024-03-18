@@ -2120,7 +2120,7 @@ public abstract class BaseAI
             // When bad state is ok, we can still move if the time until move is less than the fuzzy time
             if (badStateOk)
             {
-                new AIMovementTimer(this, d, TimeSpan.FromMilliseconds(timeUntilMove)).Start();
+                AIMovementTimerPool.GetTimer(TimeSpan.FromMilliseconds(timeUntilMove), this, d).Start();
             }
 
             return MoveResult.BadState;
@@ -3265,20 +3265,63 @@ public abstract class BaseAI
         }
     }
 
-    public class AIMovementTimer : Timer
+    public static class AIMovementTimerPool
     {
-        public BaseAI AI { get; }
-        public Direction Direction { get; }
+        private const int _poolSize = 1024;
+        private static readonly Queue<AIMovementTimer> _pool = new (_poolSize);
 
-        public AIMovementTimer(BaseAI ai, Direction d, TimeSpan delay) : base(delay)
+        public static void Configure()
         {
-            AI = ai;
-            Direction = d;
+            var i = 0;
+            while (i++ < _poolSize)
+            {
+                _pool.Enqueue(new AIMovementTimer());
+            }
         }
 
-        protected override void OnTick()
+        public static AIMovementTimer GetTimer(TimeSpan delay, BaseAI ai, Direction direction)
         {
-            AI?.DoMove(Direction);
+            AIMovementTimer timer;
+            if (_pool.Count > 0)
+            {
+                timer = _pool.Dequeue();
+            }
+            else
+            {
+                timer = new AIMovementTimer();
+            }
+
+            timer.Set(delay, ai, direction);
+            return timer;
+        }
+
+        public class AIMovementTimer : Timer
+        {
+            public BaseAI AI { get; private set; }
+            public Direction Direction { get; private set; }
+
+            public AIMovementTimer() : base(TimeSpan.Zero)
+            {
+            }
+
+            public void Set(TimeSpan delay, BaseAI ai, Direction direction)
+            {
+                if (Running)
+                {
+                    return;
+                }
+
+                Delay = delay;
+                AI = ai;
+                Direction = direction;
+            }
+
+            protected override void OnTick()
+            {
+                AI?.DoMove(Direction);
+                AI = null;
+                _pool.Enqueue(this);
+            }
         }
     }
 }
