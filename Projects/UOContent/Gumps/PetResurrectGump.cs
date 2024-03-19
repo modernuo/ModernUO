@@ -1,41 +1,53 @@
+using Server.Gumps.Components;
 using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Gumps
 {
-    public class PetResurrectGump : Gump
+    public sealed class PetResurrectGump : StaticLayoutGump<PetResurrectGump>
     {
-        private readonly double m_HitsScalar;
-        private readonly BaseCreature m_Pet;
+        private readonly double _hitsScalar;
+        private readonly BaseCreature _pet;
 
-        public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar = 0.0) : base(50, 50)
+        protected override int X => 50;
+        protected override int Y => 50;
+
+        public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar = 0.0)
         {
             from.CloseGump<PetResurrectGump>();
 
-            m_Pet = pet;
-            m_HitsScalar = hitsScalar;
+            _pet = pet;
+            _hitsScalar = hitsScalar;
+        }
 
-            AddPage(0);
+        protected override void Build(ref GumpBuilder<DynamicStringsHandler> builder)
+        {
+            builder.AddPage();
 
-            AddBackground(10, 10, 265, 140, 0x242C);
+            builder.AddBackground(10, 10, 265, 140, 0x242C);
 
-            AddItem(205, 40, 0x4);
-            AddItem(227, 40, 0x5);
+            builder.AddItem(205, 40, 0x4);
+            builder.AddItem(227, 40, 0x5);
 
-            AddItem(180, 78, 0xCAE);
-            AddItem(195, 90, 0xCAD);
-            AddItem(218, 95, 0xCB0);
+            builder.AddItem(180, 78, 0xCAE);
+            builder.AddItem(195, 90, 0xCAD);
+            builder.AddItem(218, 95, 0xCB0);
 
-            AddHtmlLocalized(30, 30, 150, 75, 1049665); // <div align=center>Wilt thou sanctify the resurrection of:</div>
-            AddHtml(30, 70, 150, 25, $"<div align=CENTER>{pet.Name}</div>", true);
+            builder.AddHtmlLocalized(30, 30, 150, 75, 1049665); // <div align=center>Wilt thou sanctify the resurrection of:</div>
+            builder.AddHtmlSlot(30, 70, 150, 25, "petName", true);
 
-            AddButton(40, 105, 0x81A, 0x81B, 0x1);  // Okay
-            AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel
+            builder.AddButton(40, 105, 0x81A, 0x81B, 0x1);  // Okay
+            builder.AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel
+        }
+
+        protected override void FillStrings(ref DynamicStringsFiller strings)
+        {
+            strings.Add(GumpText.Center(_pet.Name));
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (m_Pet.Deleted || !m_Pet.IsBonded || !m_Pet.IsDeadPet)
+            if (_pet.Deleted || !_pet.IsBonded || !_pet.IsDeadPet)
             {
                 return;
             }
@@ -44,13 +56,13 @@ namespace Server.Gumps
 
             if (info.ButtonID == 1)
             {
-                if (m_Pet.Map?.CanFit(m_Pet.Location, 16, false, false) != true)
+                if (_pet.Map?.CanFit(_pet.Location, 16, false, false) != true)
                 {
                     from.SendLocalizedMessage(503256); // You fail to resurrect the creature.
                     return;
                 }
 
-                if (m_Pet.Region?.IsPartOf("Khaldun") == true) // TODO: Confirm for pets, as per Bandage's script.
+                if (_pet.Region?.IsPartOf("Khaldun") == true) // TODO: Confirm for pets, as per Bandage's script.
                 {
                     from.SendLocalizedMessage(
                         1010395
@@ -58,13 +70,13 @@ namespace Server.Gumps
                     return;
                 }
 
-                m_Pet.PlaySound(0x214);
-                m_Pet.FixedEffect(0x376A, 10, 16);
-                m_Pet.ResurrectPet();
+                _pet.PlaySound(0x214);
+                _pet.FixedEffect(0x376A, 10, 16);
+                _pet.ResurrectPet();
 
                 double decreaseAmount;
 
-                if (from == m_Pet.ControlMaster)
+                if (from == _pet.ControlMaster)
                 {
                     decreaseAmount = 0.1;
                 }
@@ -73,14 +85,14 @@ namespace Server.Gumps
                     decreaseAmount = 0.2;
                 }
 
-                for (var i = 0; i < m_Pet.Skills.Length; ++i) // Decrease all skills on pet.
+                for (var i = 0; i < _pet.Skills.Length; ++i) // Decrease all skills on pet.
                 {
-                    m_Pet.Skills[i].Base -= decreaseAmount;
+                    _pet.Skills[i].Base -= decreaseAmount;
                 }
 
-                if (!m_Pet.IsDeadPet && m_HitsScalar > 0)
+                if (!_pet.IsDeadPet && _hitsScalar > 0)
                 {
-                    m_Pet.Hits = (int)(m_Pet.HitsMax * m_HitsScalar);
+                    _pet.Hits = (int)(_pet.HitsMax * _hitsScalar);
                 }
             }
         }

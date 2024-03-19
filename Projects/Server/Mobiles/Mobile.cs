@@ -8169,9 +8169,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return false;
     }
 
-    public Gump FindGump<T>() where T : Gump => m_NetState?.Gumps.Find(g => g is T);
+    public BaseGump FindGump<T>() where T : BaseGump => m_NetState?.Gumps.Find(g => g is T);
 
-    public bool CloseGump<T>() where T : Gump
+    public bool CloseGump<T>() where T : BaseGump
     {
         if (m_NetState == null)
         {
@@ -8199,7 +8199,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return false;
         }
 
-        var gumps = new List<Gump>(ns.Gumps);
+        var gumps = new List<BaseGump>(ns.Gumps);
 
         ns.ClearGumps();
 
@@ -8213,9 +8213,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return true;
     }
 
-    public bool HasGump<T>() where T : Gump => FindGump<T>() != null;
+    public bool HasGump<T>() where T : BaseGump => FindGump<T>() != null;
 
-    public bool SendGump(Gump g)
+    public bool SendGump(BaseGump g)
     {
         if (m_NetState == null)
         {
