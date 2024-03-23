@@ -87,6 +87,28 @@ apt-get install -y libicu-dev libz-dev zstd libargon2-dev tzdata
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-builds) instructions
 - Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory on the
 
+## Running with Docker
+
+- Download a game client: https://uo.com/client-download/
+- Install the downloaded game client and run it to download the game assets
+- Copy game assets into the `uo-client` directory in the project. This folder gets mounted into the Docker container under the `/app/uo-client` path.
+
+Once that's done, run the following command to make a build
+
+```
+docker-compose run --build --rm compile [debug]
+```
+
+
+Finally, run the command below to start the server.
+If this is your first run, you'll need to specify the game assets path, which is `/app/uo-client`.
+If you plan connecting from the host machine, you'll also need to specify the private IP (e.g. `127.0.0.1`) when prompted during the first run (or change it later in the `modernuo.json`).
+
+```
+docker-compose run --service-ports --rm server
+```
+
+
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)
 
