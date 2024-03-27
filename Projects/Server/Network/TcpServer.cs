@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TcpServer.cs                                                    *
  *                                                                       *
@@ -23,7 +23,6 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Server.Logging;
 using Server.Misc;
 
@@ -33,7 +32,6 @@ public static class TcpServer
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(TcpServer));
 
-    private const long MaximumSocketIdleDelay = 2000; // 2 seconds
     private const long ListenerErrorMessageDelay = 10000; // 10 seconds
 
     private static long _nextMaximumSocketsReachedMessage;
@@ -46,9 +44,6 @@ public static class TcpServer
 
     public static IPEndPoint[] ListeningAddresses { get; private set; }
     public static Socket[] Listeners { get; private set; }
-
-    // By default should sort T1 then T2
-    public static readonly SortedSet<(long ConnectedAt, NetState NetState)> _socketsConnecting = [];
 
     public static ConcurrentQueue<NetState> ConnectedQueue { get; } = [];
 
@@ -109,28 +104,34 @@ public static class TcpServer
         return null;
     }
 
-    private static async Task BeginAcceptingSockets(Socket listener)
+    private static async void BeginAcceptingSockets(object state)
     {
+        if (state is not Socket listener)
+        {
+            return;
+        }
+
         var cancellationToken = Core.ClosingTokenSource.Token;
 
-        try
+        while (!cancellationToken.IsCancellationRequested)
         {
-            var socket = await listener.AcceptAsync(cancellationToken);
-            _connectingQueue.Enqueue(socket);
-            _queueSemaphore.Release();
-        }
-        catch(OperationCanceledException)
-        {
-            return;
+            try
+            {
+                var socket = await listener.AcceptAsync(cancellationToken);
+                _connectingQueue.Enqueue(socket);
+                _queueSemaphore.Release();
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
-        if (cancellationToken.IsCancellationRequested)
-        {
-            listener.Close();
-            return;
-        }
-
-        Task.Run(() => BeginAcceptingSockets(listener), cancellationToken).ConfigureAwait(false);
+        listener.Close();
     }
 
     private static void ProcessConnections()
@@ -164,7 +165,7 @@ public static class TcpServer
             {
                 listeners.Add(listener);
 
-                Task.Run(() => BeginAcceptingSockets(listener), cancellationToken).ConfigureAwait(false);
+                new Thread(BeginAcceptingSockets).Start(listener);
             }
         }
 
@@ -198,6 +199,10 @@ public static class TcpServer
             {
                 return;
             }
+            catch (Exception e)
+            {
+                logger.Error(e, "Error occurred in ProcessConnections");
+            }
         }
     }
 
@@ -221,24 +226,6 @@ public static class TcpServer
         var ipLimiter = IPLimiter.Enabled;
         try
         {
-            // Clear out any sockets that have been connecting for too long
-            while (_socketsConnecting.Count > 0)
-            {
-                var socketTime = _socketsConnecting.Min; // Earliest connected socket
-                if (Core.TickCount - socketTime.ConnectedAt <= MaximumSocketIdleDelay)
-                {
-                    break;
-                }
-
-                var socketToCheck = socketTime.NetState;
-                if (socketToCheck.Running && !socketToCheck.Seeded)
-                {
-                    socketToCheck.Disconnect(null);
-                }
-
-                _socketsConnecting.Remove(socketTime);
-            }
-
             var remoteIP = ((IPEndPoint)socket.RemoteEndPoint)!.Address;
 
             if (NetState.Instances.Count >= MaxConnections)
@@ -279,7 +266,6 @@ public static class TcpServer
             }
 
             var ns = new NetState(socket);
-            _socketsConnecting.Add((Core.TickCount, ns));
             ConnectedQueue.Enqueue(ns);
         }
         catch

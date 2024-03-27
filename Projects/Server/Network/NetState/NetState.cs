@@ -43,6 +43,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
+    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(2000); // 2 seconds
     private const int RecvPipeSize = 1024 * 64;
     private const int SendPipeSize = 1024 * 256;
     private const int GumpCap = 512;
@@ -60,6 +61,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public static NetStateCreatedCallback CreatedCallback { get; set; }
 
+    private static readonly SortedSet<NetState> _connecting = new(NetStateConnectingComparer.Instance);
     private static readonly HashSet<NetState> _instances = new(2048);
     public static IReadOnlySet<NetState> Instances => _instances;
 
@@ -84,6 +86,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     // Speed Hack Prevention
     internal long _movementCredit;
     internal long _nextMovementTime;
+    private IAccount _account;
 
     internal enum ParserState
     {
@@ -234,7 +237,19 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public ServerInfo[] ServerInfo { get; set; }
 
-    public IAccount Account { get; set; }
+    public IAccount Account
+    {
+        get => _account;
+        set
+        {
+            if (_account != null)
+            {
+                _connecting.Remove(this);
+            }
+
+            _account = value;
+        }
+    }
 
     public string Assistant { get; set; }
 
@@ -690,7 +705,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                         case ProtocolState.LoginServer_ServerSelectAck:
                             {
 #if STRICT_UO_PROTOCOL
-                                    HandleError(packetId, packetLength);
+                                HandleError(packetId, packetLength);
 #else
                                 // Reset the state because CUO/Orion do not reconnect
                                 _parserState = ParserState.AwaitingNextPacket;
@@ -867,6 +882,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         _flushQueued = false;
 
+        // We don't have a running check since we need to send the last bits of data even after a disconnect, but before a dispose.
         if (Connection == null)
         {
             return true;
@@ -892,12 +908,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             {
                 logger.Debug(ex, "Disconnected due to a socket exception");
                 Disconnect(string.Empty);
+                return true;
             }
         }
         catch (Exception ex)
         {
             Disconnect($"Disconnected with error: {ex}");
             TraceException(ex);
+            return true;
         }
 
         if (bytesWritten > 0)
@@ -957,6 +975,33 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         _nextActivityCheck = Core.TickCount + 90000;
     }
 
+    private static void DisconnectUnattachedSockets()
+    {
+        var now = Core.Now;
+
+        // Clear out any sockets that have been connecting for too long
+        while (_connecting.Count > 0)
+        {
+            var ns = _connecting.Min;
+            var socketTime = ns.ConnectedOn;
+
+            // If the socket has been connected for less than 2 seconds, we can stop checking
+            if (now - socketTime < ConnectingSocketIdleLimit)
+            {
+                break;
+            }
+
+            // Socket must have finished the entire authentication process or be forcibly disconnected.
+            if (!ns.Running || !ns.SentFirstPacket || !ns.Seeded || ns.Account == null)
+            {
+                // Not sending a message because it will fill up the logs.
+                ns.Disconnect(null);
+            }
+
+            _connecting.Remove(ns);
+        }
+    }
+
     public static void FlushAll()
     {
         while (_flushPending.Count != 0)
@@ -967,6 +1012,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public static void Slice()
     {
+        DisconnectUnattachedSockets();
+
         const int maxEntriesPerLoop = 32;
         var count = 0;
         while (++count <= maxEntriesPerLoop && TcpServer.ConnectedQueue.TryDequeue(out var ns))
@@ -974,6 +1021,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             CreatedCallback?.Invoke(ns);
 
             _instances.Add(ns);
+            _connecting.Add(ns); // Add to the connecting set, and remove them when they authenticated.
             ns.LogInfo($"Connected. [{Instances.Count} Online]");
         }
 
@@ -1111,17 +1159,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         _running = false;
 
-#if THREADGUARD
-            if (Thread.CurrentThread != Core.Thread)
-            {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("Attempting to disconnect a netstate from an invalid thread!");
-                Console.WriteLine(new StackTrace());
-                Utility.PopColor();
-                return;
-            }
-#endif
-
         _disconnectReason = reason;
         _disposed.Enqueue(this);
     }
@@ -1165,17 +1202,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             throw new Exception("Disconnected a NetState that is still running.");
         }
 
-#if THREADGUARD
-            if (Thread.CurrentThread != Core.Thread)
-            {
-                Utility.PushColor(ConsoleColor.Red);
-                Console.WriteLine("Attempting to dispose a netstate from an invalid thread!");
-                Console.WriteLine(new StackTrace());
-                Utility.PopColor();
-                return;
-            }
-#endif
-
         var m = Mobile;
         if (m?.NetState == this)
         {
@@ -1183,6 +1209,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         _instances.Remove(this);
+        _connecting.Remove(this);
 
         try
         {
@@ -1210,8 +1237,44 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         CityInfo = null;
         Connection = null;
 
-        var count = Instances.Count;
+        var count = _instances.Count;
 
         LogInfo(a != null ? $"Disconnected. [{count} Online] [{a}]" : $"Disconnected. [{count} Online]");
+    }
+
+    private class NetStateConnectingComparer : IComparer<NetState>
+    {
+        public static readonly IComparer<NetState> Instance = new NetStateConnectingComparer();
+
+        public int Compare(NetState x, NetState y)
+        {
+            if (x == null && y == null)
+            {
+                return 0;
+            }
+
+            if (x == null)
+            {
+                return -1;
+            }
+
+            if (y == null)
+            {
+                return 1;
+            }
+
+            if (ReferenceEquals(x, y))
+            {
+                return 0;
+            }
+
+            var connectedOn = x.ConnectedOn.CompareTo(y.ConnectedOn);
+            if (connectedOn != 0)
+            {
+                return connectedOn;
+            }
+
+            return x.CompareTo(y);
+        }
     }
 }
