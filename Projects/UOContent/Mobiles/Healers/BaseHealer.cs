@@ -19,8 +19,7 @@ public abstract partial class BaseHealer : BaseVendor
         if (!IsInvulnerable)
         {
             AI = AIType.AI_Mage;
-            ActiveSpeed = 0.2;
-            PassiveSpeed = 0.8;
+            SetSpeed(0.2, 0.8);
             RangePerception = DefaultRangePerception;
             FightMode = FightMode.Aggressor;
         }
@@ -148,8 +147,7 @@ public abstract partial class BaseHealer : BaseVendor
         if (!IsInvulnerable)
         {
             AI = AIType.AI_Mage;
-            ActiveSpeed = 0.2;
-            PassiveSpeed = 0.8;
+            SetSpeed(0.2, 0.8);
             RangePerception = DefaultRangePerception;
             FightMode = FightMode.Aggressor;
         }

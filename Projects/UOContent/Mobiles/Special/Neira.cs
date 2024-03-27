@@ -136,6 +136,9 @@ public partial class Neira : BaseChampion
             PassiveSpeed *= SpeedBoostScalar;
             _speedBoost = false;
         }
+
+        // Assume active
+        CurrentSpeed = ActiveSpeed;
     }
 
     public override void OnGaveMeleeAttack(Mobile defender, int damage)

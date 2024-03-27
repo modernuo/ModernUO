@@ -509,9 +509,6 @@ public partial class BaseEscortable : BaseCreature
             return;
         }
 
-        ActiveSpeed = 0.1;
-        PassiveSpeed = 0.2;
-
         ControlOrder = OrderType.Follow;
         ControlTarget = escorter;
 
@@ -520,18 +517,15 @@ public partial class BaseEscortable : BaseCreature
             CantWalk = false;
         }
 
-        CurrentSpeed = 0.1;
+        SetSpeed(0.1, 0.2, false);
     }
 
     public virtual void StopFollow()
     {
-        ActiveSpeed = 0.2;
-        PassiveSpeed = 1.0;
-
         ControlOrder = OrderType.None;
         ControlTarget = null;
 
-        CurrentSpeed = 1.0;
+        SetSpeed(0.2, 1.0);
     }
 
     public virtual Mobile GetEscorter()
