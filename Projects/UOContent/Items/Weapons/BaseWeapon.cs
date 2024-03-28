@@ -362,6 +362,9 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
     [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializeQuality() => _quality != WeaponQuality.Regular;
 
+    [SerializableFieldDefault(3)]
+    private WeaponQuality QualityDefaultValue() => WeaponQuality.Regular;
+
     [SerializableProperty(4)]
     [CommandProperty(AccessLevel.GameMaster)]
     public int HitPoints
