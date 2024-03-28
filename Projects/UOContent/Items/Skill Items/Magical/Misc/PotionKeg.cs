@@ -12,9 +12,7 @@ public partial class PotionKeg : Item
         TileData.ItemTable[0x1940].Height = 4;
     }
 
-    [InvalidateProperties]
-    [SerializableField(0)]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties] [SerializableField(0)] [SerializedCommandProperty(AccessLevel.GameMaster)]
     private PotionEffect _type;
 
     [Constructible]
@@ -115,7 +113,7 @@ public partial class PotionKeg : Item
         {
             from.SendLocalizedMessage(502242); // You pour some of the keg's contents into an empty bottle...
 
-            var pot = FillBottle();
+            var pot = FillBottle(_type);
 
             if (pack.TryDropItem(from, pot, false))
             {
@@ -184,9 +182,8 @@ public partial class PotionKeg : Item
 
         if (pot.PotionEffect != _type)
         {
-            from.SendLocalizedMessage(
-                502236
-            ); // You decide that it would be a bad idea to mix different types of potions.
+            // You decide that it would be a bad idea to mix different types of potions.
+            from.SendLocalizedMessage(502236);
             return false;
         }
 
@@ -227,10 +224,9 @@ public partial class PotionKeg : Item
         return true;
     }
 
-    public BasePotion FillBottle() =>
-        _type switch
+    public static BasePotion FillBottle(PotionEffect effect) =>
+        effect switch
         {
-            PotionEffect.Nightsight            => new NightSightPotion(),
             PotionEffect.CureLesser            => new LesserCurePotion(),
             PotionEffect.Cure                  => new CurePotion(),
             PotionEffect.CureGreater           => new GreaterCurePotion(),
@@ -255,5 +251,35 @@ public partial class PotionKeg : Item
             PotionEffect.ConfusionBlast        => new ConfusionBlastPotion(),
             PotionEffect.ConfusionBlastGreater => new GreaterConfusionBlastPotion(),
             _                                  => new NightSightPotion()
+        };
+
+    // Function to convert potion type to potion effect enum
+    public static PotionEffect GetPotionEffect(Type type) =>
+        type switch
+        {
+            _ when type == typeof(LesserCurePotion)            => PotionEffect.CureLesser,
+            _ when type == typeof(CurePotion)                  => PotionEffect.Cure,
+            _ when type == typeof(GreaterCurePotion)           => PotionEffect.CureGreater,
+            _ when type == typeof(AgilityPotion)               => PotionEffect.Agility,
+            _ when type == typeof(GreaterAgilityPotion)        => PotionEffect.AgilityGreater,
+            _ when type == typeof(StrengthPotion)              => PotionEffect.Strength,
+            _ when type == typeof(GreaterStrengthPotion)       => PotionEffect.StrengthGreater,
+            _ when type == typeof(LesserPoisonPotion)          => PotionEffect.PoisonLesser,
+            _ when type == typeof(PoisonPotion)                => PotionEffect.Poison,
+            _ when type == typeof(GreaterPoisonPotion)         => PotionEffect.PoisonGreater,
+            _ when type == typeof(DeadlyPoisonPotion)          => PotionEffect.PoisonDeadly,
+            _ when type == typeof(RefreshPotion)               => PotionEffect.Refresh,
+            _ when type == typeof(TotalRefreshPotion)          => PotionEffect.RefreshTotal,
+            _ when type == typeof(LesserHealPotion)            => PotionEffect.HealLesser,
+            _ when type == typeof(HealPotion)                  => PotionEffect.Heal,
+            _ when type == typeof(GreaterHealPotion)           => PotionEffect.HealGreater,
+            _ when type == typeof(LesserExplosionPotion)       => PotionEffect.ExplosionLesser,
+            _ when type == typeof(ExplosionPotion)             => PotionEffect.Explosion,
+            _ when type == typeof(GreaterExplosionPotion)      => PotionEffect.ExplosionGreater,
+            _ when type == typeof(ConflagrationPotion)         => PotionEffect.Conflagration,
+            _ when type == typeof(GreaterConflagrationPotion)  => PotionEffect.ConflagrationGreater,
+            _ when type == typeof(ConfusionBlastPotion)        => PotionEffect.ConfusionBlast,
+            _ when type == typeof(GreaterConfusionBlastPotion) => PotionEffect.ConfusionBlastGreater,
+            _ /* when type == typeof(NightSightPotion) */      => PotionEffect.Nightsight
         };
 }

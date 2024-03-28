@@ -194,8 +194,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
         get => _running && _timer?.Running == true ? End - Core.Now : TimeSpan.Zero;
         set
         {
-            Start();
-            DoTimer(value);
+            if (!_running && Entries.Count > 0)
+            {
+                _running = true;
+                DoTimer(value);
+            }
         }
     }
 
@@ -219,7 +222,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             entry?.RemoveFromSpawned(spawn);
         }
 
-        if (_running && !IsFull && _timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running != true)
         {
             DoTimer();
         }
@@ -377,13 +380,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     public void Start()
     {
-        if (!_running)
+        if (!_running && Entries.Count > 0)
         {
-            if (Entries.Count > 0)
-            {
-                _running = true;
-                DoTimer();
-            }
+            _running = true;
+            DoTimer();
         }
     }
 
@@ -757,7 +757,14 @@ public abstract partial class BaseSpawner : Item, ISpawner
             return;
         }
 
-        End = Core.Now + delay;
+        if (delay <= TimeSpan.Zero)
+        {
+            End = Core.Now;
+        }
+        else
+        {
+            End = Core.Now + delay;
+        }
 
         if (_timer == null)
         {
@@ -795,7 +802,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         Entries.Remove(entry);
 
-        if (_running && !IsFull && _timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running != true)
         {
             DoTimer();
         }
@@ -847,7 +854,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             }
         }
 
-        if (_running && !IsFull && _timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running != true)
         {
             DoTimer();
         }
@@ -912,10 +919,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             }
         }
 
-        if (_running && _end > Core.Now)
-        {
-            DoTimer(_end - Core.Now);
-        }
+        DoTimer(_end - Core.Now);
     }
 
     private class InternalTimer : Timer
