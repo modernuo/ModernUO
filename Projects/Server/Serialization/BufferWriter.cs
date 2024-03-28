@@ -19,6 +19,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using Server.Text;
 
@@ -288,6 +289,15 @@ public class BufferWriter : IGenericWriter
             Write(AssemblyHandler.GetTypeHash(type));
             _types?.Enqueue(type);
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(decimal value)
+    {
+        Span<int> buffer = stackalloc int[sizeof(decimal) / 4];
+        decimal.GetBits(value, buffer);
+
+        Write(MemoryMarshal.Cast<int, byte>(buffer));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

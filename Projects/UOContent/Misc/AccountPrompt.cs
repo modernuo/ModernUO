@@ -1,5 +1,6 @@
 using System;
 using Server.Accounting;
+using Server.Collections;
 using Server.Logging;
 
 namespace Server.Misc;

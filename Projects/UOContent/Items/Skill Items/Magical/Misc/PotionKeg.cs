@@ -184,9 +184,8 @@ public partial class PotionKeg : Item
 
         if (pot.PotionEffect != _type)
         {
-            from.SendLocalizedMessage(
-                502236
-            ); // You decide that it would be a bad idea to mix different types of potions.
+            // You decide that it would be a bad idea to mix different types of potions.
+            from.SendLocalizedMessage(502236);
             return false;
         }
 
