@@ -102,9 +102,6 @@ namespace Server.Items
         [SerializableFieldSaveFlag(10)]
         private bool ShouldSerializeCrafter() => _crafter != null;
 
-        // Field 11
-        private ArmorQuality _quality = ArmorQuality.Regular;
-
         [SerializableFieldSaveFlag(14)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
 
@@ -155,6 +152,7 @@ namespace Server.Items
         {
             _crafter = null;
 
+            _quality = ArmorQuality.Regular;
             _resource = DefaultResource;
             Hue = CraftResources.GetHue(_resource);
 
@@ -193,7 +191,7 @@ namespace Server.Items
         public virtual int OldDexReq => 0;
         public virtual int OldIntReq => 0;
 
-        [SerializableProperty(11, useField: nameof(_quality))]
+        [SerializableProperty(11)]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorQuality Quality
         {
@@ -208,6 +206,9 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(11)]
         private bool ShouldSerializeArmorQuality() => _quality != ArmorQuality.Regular;
+
+        [SerializableFieldDefault(11)]
+        private ArmorQuality QualityDefaultValue() => ArmorQuality.Regular;
 
         [SerializableProperty(12)]
         [CommandProperty(AccessLevel.GameMaster)]
