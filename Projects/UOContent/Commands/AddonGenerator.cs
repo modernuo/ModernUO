@@ -223,10 +223,8 @@ public class AddonGenerator
         center.X = x1 + (x2 - x1) / 2;
         center.Y = y1 + (y2 - y1) / 2;
 
-        // Build items
         using var sb = ValueStringBuilder.Create();
 
-        // Statics
         foreach (Point2D p in tiles.Keys)
         {
             List<StaticTile> list = tiles[p];
