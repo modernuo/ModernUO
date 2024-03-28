@@ -194,8 +194,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
         get => _running && _timer?.Running == true ? End - Core.Now : TimeSpan.Zero;
         set
         {
-            Start();
-            DoTimer(value);
+            if (!_running && Entries.Count > 0)
+            {
+                _running = true;
+                DoTimer(value);
+            }
         }
     }
 
@@ -219,7 +222,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             entry?.RemoveFromSpawned(spawn);
         }
 
-        if (_running && !IsFull && _timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running != true)
         {
             DoTimer();
         }
@@ -754,7 +757,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
             return;
         }
 
-
         if (delay <= TimeSpan.Zero)
         {
             End = Core.Now;
@@ -800,7 +802,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         Entries.Remove(entry);
 
-        if (_running && !IsFull && _timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running != true)
         {
             DoTimer();
         }
@@ -852,7 +854,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             }
         }
 
-        if (_running && !IsFull && _timer?.Running == false)
+        if (_running && !IsFull && _timer?.Running != true)
         {
             DoTimer();
         }
