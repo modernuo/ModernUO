@@ -30,11 +30,10 @@ public partial class VirtualMountItem : Item, IMountItem, IMount
         }
     }
 
-    public int Steps { get; set; }
-
-    public int StepsMax => 400;
+    // If this is ever equipped by a player, steps are treated the same as Ethereal mounts
+    public int StepsMax => 3840;
     public int StepsGainedPerIdleTime => 1;
-    public TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(10);
+    public TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(1);
 
     public void OnRiderDamaged(int amount, Mobile from, bool willKill)
     {
