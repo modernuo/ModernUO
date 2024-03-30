@@ -4121,17 +4121,10 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem)
-    {
-        ScissorHelper(from, newItem, amountPerOldItem, true);
-    }
-
-    public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem, bool carryHue)
+    public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem, bool carryHue = true)
     {
         // let's not go over 60000
         var amount = Math.Min(Amount, 60000 / amountPerOldItem);
-
-        Amount -= amount;
 
         var ourHue = Hue;
         var thisMap = Map;
@@ -4139,10 +4132,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         var worldLoc = GetWorldLocation();
         var type = LootType;
 
-        if (Amount == 0)
-        {
-            Delete();
-        }
+        Consume(amount);
 
         newItem.Amount = amount * amountPerOldItem;
 
