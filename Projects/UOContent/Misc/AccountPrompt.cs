@@ -16,7 +16,7 @@ public static class AccountPrompt
             Console.Write("Do you want to create the owner account now? (y/n): ");
 
             var answer = Console.ReadLine();
-            if (answer is "y" or "Y")
+            if (answer.InsensitiveEquals("y"))
             {
                 Console.WriteLine();
 
