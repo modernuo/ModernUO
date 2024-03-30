@@ -249,18 +249,16 @@ public static class EntityPersistence
                 Console.WriteLine($"***** Bad deserialize of {t.GetType()} ({t.Serial}) *****");
                 Console.WriteLine(error);
 
-                ConsoleKey pressedKey;
-
                 if (!deleteAllFailures)
                 {
-                    Console.WriteLine("Delete the object and continue? (y/n/a)");
-                    pressedKey = Console.ReadKey(true).Key;
+                    Console.Write("Delete the object and continue? (y/n/a): ");
+                    var pressedKey = Console.ReadLine();
 
-                    if (pressedKey == ConsoleKey.A)
+                    if (pressedKey.InsensitiveEquals("a"))
                     {
                         deleteAllFailures = true;
                     }
-                    else if (pressedKey != ConsoleKey.Y)
+                    else if (pressedKey.InsensitiveEquals("y"))
                     {
                         throw new Exception("Deserialization failed.");
                     }
@@ -279,9 +277,9 @@ public static class EntityPersistence
 
             var issue = t?.IsAbstract == true ? "marked abstract" : "not found";
 
-            Console.WriteLine($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n)");
+            Console.Write($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n): ");
 
-            if (Console.ReadKey(true).Key == ConsoleKey.Y)
+            if (Console.ReadLine().InsensitiveEquals("y"))
             {
                 Console.WriteLine("Loading...");
                 return null;

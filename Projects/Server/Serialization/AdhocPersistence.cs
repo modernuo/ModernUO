@@ -117,11 +117,9 @@ public static class AdhocPersistence
             Console.WriteLine($"***** Bad deserialize of {file.FullName} *****");
             Console.WriteLine(error);
 
-            Console.WriteLine("Skip this file and continue? (y/n)");
+            Console.Write("Skip this file and continue? (y/n): ");
 
-            var pressedKey = Console.ReadKey(true).Key;
-
-            if (pressedKey != ConsoleKey.Y)
+            if (!ConsoleInputHandler.ReadLine().InsensitiveEquals("y"))
             {
                 throw new Exception("Deserialization failed.");
             }
