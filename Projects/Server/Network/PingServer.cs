@@ -13,11 +13,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
+using System.Threading;
 using Server.Logging;
 
 namespace Server.Network;
@@ -26,11 +25,7 @@ public static class PingServer
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PingServer));
 
-    private const int MaxConnectionsPerLoop = 128;
-
     public static int MaxQueued { get; set; }
-
-    private static readonly ConcurrentQueue<(UdpClient, UdpReceiveResult)> _udpResponseQueue = new();
 
     public static UdpClient[] Listeners { get; private set; }
 
@@ -57,7 +52,6 @@ public static class PingServer
 
         foreach (var serverIpep in ServerConfiguration.Listeners)
         {
-            var cancellationToken = Core.ClosingTokenSource.Token;
             var ipep = new IPEndPoint(serverIpep.Address, Port);
 
             var listener = CreateListener(ipep);
@@ -76,7 +70,7 @@ public static class PingServer
             }
 
             listeners.Add(listener);
-            Task.Run(() => BeginAcceptingUdpRequest(listener), cancellationToken).ConfigureAwait(false);
+            new Thread(BeginAcceptingUdpRequest).Start(listener);
         }
 
         foreach (var ipep in listeningAddresses)
@@ -85,22 +79,6 @@ public static class PingServer
         }
 
         Listeners = listeners.ToArray();
-    }
-
-    public static void Slice()
-    {
-        if (!Enabled)
-        {
-            return;
-        }
-
-        int count = 0;
-
-        while (++count <= MaxConnectionsPerLoop && _udpResponseQueue.TryDequeue(out var udpTuple))
-        {
-            var (listener, result) = udpTuple;
-            SendResponse(listener, result.Buffer, result.RemoteEndPoint);
-        }
     }
 
     public static UdpClient CreateListener(IPEndPoint ipep)
@@ -140,8 +118,13 @@ public static class PingServer
         return null;
     }
 
-    private static async void BeginAcceptingUdpRequest(UdpClient listener)
+    private static async void BeginAcceptingUdpRequest(object state)
     {
+        if (state is not UdpClient listener)
+        {
+            return;
+        }
+
         var cancellationToken = Core.ClosingTokenSource.Token;
 
         while (!cancellationToken.IsCancellationRequested)
@@ -149,29 +132,12 @@ public static class PingServer
             try
             {
                 var result = await listener.ReceiveAsync(cancellationToken);
-
-                if (_udpResponseQueue.Count < MaxQueued)
-                {
-                    _udpResponseQueue.Enqueue((listener, result));
-                }
-
+                await listener.SendAsync(result.Buffer, result.RemoteEndPoint, cancellationToken);
             }
             catch
             {
                 // ignored
             }
-        }
-    }
-
-    private static async Task SendResponse(UdpClient listener, byte[] data, IPEndPoint ipep)
-    {
-        try
-        {
-            await listener.SendAsync(data, ipep, Core.ClosingTokenSource.Token);
-        }
-        catch
-        {
-            // ignored
         }
     }
 }

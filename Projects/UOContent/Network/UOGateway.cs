@@ -88,13 +88,12 @@ namespace Server.Network
             }
 
             var str =
-                $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}K, Ver=2";
+                $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}K, Ver=2\0";
 
-            var length = Encoding.UTF8.GetMaxByteCount(str.Length);
+            var length = Encoding.UTF8.GetByteCount(str);
 
-            Span<byte> span = stackalloc byte[length + 1];
+            Span<byte> span = stackalloc byte[length];
             Encoding.UTF8.GetBytes(str, span);
-            span[^1] = 0; // Terminator
 
             ns.Send(span);
         }
