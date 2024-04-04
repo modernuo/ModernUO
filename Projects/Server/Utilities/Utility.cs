@@ -12,7 +12,6 @@ using System.Text;
 using System.Xml;
 using Server.Buffers;
 using Server.Collections;
-using Server.Logging;
 using Server.Random;
 using Server.Text;
 
@@ -20,8 +19,6 @@ namespace Server;
 
 public static class Utility
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(Utility));
-
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
     private static SkillName[] _allSkills =
@@ -679,6 +676,50 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, 18);
 
+    // Optimized method for handling 50% random chances in succession up to a maximum
+    public static int CoinFlips(int amount, int maximum)
+    {
+        var heads = 0;
+        while (amount > 0)
+        {
+            // Range is 2^amount exclusively, maximum of 62 bits can be used
+            ulong num = amount >= 62
+                ? (ulong)BuiltInRng.NextLong()
+                : (ulong)BuiltInRng.Next(1L << amount);
+
+            heads += BitOperations.PopCount(num);
+
+            if (heads >= maximum)
+            {
+                return maximum;
+            }
+
+            // 64 bits minus sign bit and exclusive maximum leaves 62 bits
+            amount -= 62;
+        }
+
+        return heads;
+    }
+
+    public static int CoinFlips(int amount)
+    {
+        var heads = 0;
+        while (amount > 0)
+        {
+            // Range is 2^amount exclusively, maximum of 62 bits can be used
+            ulong num = amount >= 62
+                ? (ulong)BuiltInRng.NextLong()
+                : (ulong)BuiltInRng.Next(1L << amount);
+
+            heads += BitOperations.PopCount(num);
+
+            // 64 bits minus sign bit and exclusive maximum leaves 62 bits
+            amount -= 62;
+        }
+
+        return heads;
+    }
+
     public static int Dice(int amount, int sides, int bonus)
     {
         if (amount <= 0 || sides <= 0)
@@ -686,11 +727,19 @@ public static class Utility
             return 0;
         }
 
-        var total = 0;
+        int total;
 
-        for (var i = 0; i < amount; ++i)
+        if (sides == 2)
         {
-            total += BuiltInRng.Next(1, sides);
+            total = CoinFlips(amount);
+        }
+        else
+        {
+            total = 0;
+            for (var i = 0; i < amount; ++i)
+            {
+                total += BuiltInRng.Next(1, sides);
+            }
         }
 
         return total + bonus;
@@ -730,8 +779,9 @@ public static class Utility
         do
         {
             var rand = Random(length);
-            if (!(list[rand] && (list[rand] = true)))
+            if (!list[rand])
             {
+                list[rand] = true;
                 sampleList[i++] = source[rand];
             }
         } while (i < count);
@@ -756,8 +806,9 @@ public static class Utility
         do
         {
             var rand = Random(length);
-            if (!(list[rand] && (list[rand] = true)))
+            if (!list[rand])
             {
+                list[rand] = true;
                 sampleList[i++] = source[rand];
             }
         } while (i < count);
@@ -780,8 +831,9 @@ public static class Utility
         do
         {
             var rand = Random(length);
-            if (!(list[rand] && (list[rand] = true)))
+            if (!list[rand])
             {
+                list[rand] = true;
                 dest.Add(source[rand]);
             }
         } while (++i < count);

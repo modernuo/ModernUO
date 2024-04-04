@@ -40,6 +40,9 @@ public static class BuiltInRng
     public static long Next(long minValue, long count) => minValue + Generator.NextInt64(count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long NextLong() => Generator.NextInt64();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double NextDouble() => Generator.NextDouble();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
