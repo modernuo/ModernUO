@@ -4194,7 +4194,7 @@ namespace Server.Mobiles
             // Goat special case
             if (type == FoodType.Leather)
             {
-                if (fed is BaseLeather or Pouch or Server.Items.Backpack or StrongBackpack)
+                if (fed is BaseLeather or Bag or Pouch or Server.Items.Backpack or StrongBackpack)
                 {
                     return true;
                 }
