@@ -4268,7 +4268,7 @@ namespace Server.Mobiles
 
         public virtual bool CheckFeed(Mobile from, Item dropped)
         {
-            if (IsDeadPet || !Controlled || (ControlMaster != from && !IsPetFriend(from)))
+            if (IsDeadPet || !Controlled || ControlMaster != from && !IsPetFriend(from))
             {
                 return false;
             }
@@ -4306,7 +4306,6 @@ namespace Server.Mobiles
                     m_Loyalty = Math.Min(MaxLoyalty, Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10);
                 }
 
-                /* if (happier )*/
                 // looks like in OSI pets say they are happier even if they are at maximum loyalty
                 SayTo(from, 502060); // Your pet looks happier.
 
