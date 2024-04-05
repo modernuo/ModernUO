@@ -4181,6 +4181,7 @@ namespace Server.Mobiles
             CheckFoodPreference(f, FoodType.Meat) ||
             CheckFoodPreference(f, FoodType.FruitsAndVeggies) ||
             CheckFoodPreference(f, FoodType.Gold) ||
+            CheckFoodPreference(f, FoodType.Metal) ||
             CheckFoodPreference(f, FoodType.Leather);
 
         private bool CheckFoodPreference(Item fed, FoodType type)
