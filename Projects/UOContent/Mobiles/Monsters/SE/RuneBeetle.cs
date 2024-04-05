@@ -68,7 +68,7 @@ namespace Server.Mobiles
 
         public override Poison PoisonImmune => Poison.Greater;
         public override Poison HitPoison => Poison.Greater;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
         public override bool CanAngerOnTame => true;
 
         public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;

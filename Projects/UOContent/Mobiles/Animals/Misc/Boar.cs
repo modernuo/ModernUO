@@ -44,6 +44,6 @@ namespace Server.Mobiles
         public override string DefaultName => "a boar";
 
         public override int Meat => 2;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
     }
 }

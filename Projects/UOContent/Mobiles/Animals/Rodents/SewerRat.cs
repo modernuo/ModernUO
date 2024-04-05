@@ -45,7 +45,7 @@ namespace Server.Mobiles
         public override string DefaultName => "a sewer rat";
 
         public override int Meat => 1;
-        public override FoodType FavoriteFood => FoodType.Meat | FoodType.Eggs | FoodType.FruitsAndVegies;
+        public override FoodType FavoriteFood => FoodType.Meat | FoodType.Eggs | FoodType.FruitsAndVeggies;
 
         public override void GenerateLoot()
         {

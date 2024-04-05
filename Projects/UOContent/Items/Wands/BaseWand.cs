@@ -43,6 +43,7 @@ public abstract partial class BaseWand : BaseBashing
         Attributes.SpellChanneling = 1;
         Attributes.CastSpeed = -1;
         WeaponAttributes.MageWeapon = Utility.RandomMinMax(1, 10);
+        Resource = CraftResource.None;
     }
 
     public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;

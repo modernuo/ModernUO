@@ -65,7 +65,7 @@ namespace Server.Factions
             }
         }
 
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
 
         public override void OnDoubleClick(Mobile from)
         {

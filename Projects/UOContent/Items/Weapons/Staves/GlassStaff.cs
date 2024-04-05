@@ -7,8 +7,11 @@ namespace Server.Items
     public partial class GlassStaff : BaseStaff
     {
         [Constructible]
-        public GlassStaff() : base(0x905) =>
+        public GlassStaff() : base(0x905)
+        {
             Weight = 4.0;
+            Resource = CraftResource.None;
+        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;

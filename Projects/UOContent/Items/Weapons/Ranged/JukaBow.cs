@@ -10,6 +10,7 @@ namespace Server.Items
         [Constructible]
         public JukaBow()
         {
+            Resource = CraftResource.RegularWood;
         }
 
         public override int AosStrengthReq => 80;

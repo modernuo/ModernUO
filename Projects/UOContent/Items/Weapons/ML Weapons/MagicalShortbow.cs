@@ -8,7 +8,11 @@ namespace Server.Items
     public partial class MagicalShortbow : BaseRanged
     {
         [Constructible]
-        public MagicalShortbow() : base(0x2D2B) => Weight = 6.0;
+        public MagicalShortbow() : base(0x2D2B)
+        {
+            Weight = 6.0;
+            Resource = CraftResource.RegularWood;
+        }
 
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);

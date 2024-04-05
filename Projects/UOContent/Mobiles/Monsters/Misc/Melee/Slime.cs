@@ -47,7 +47,7 @@ namespace Server.Mobiles
         public override Poison PoisonImmune => Poison.Lesser;
         public override Poison HitPoison => Poison.Lesser;
 
-        public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish | FoodType.FruitsAndVegies |
+        public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish | FoodType.FruitsAndVeggies |
                                                  FoodType.GrainsAndHay | FoodType.Eggs;
 
         public override void GenerateLoot()

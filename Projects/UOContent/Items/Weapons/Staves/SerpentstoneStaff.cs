@@ -10,6 +10,7 @@ namespace Server.Items
         [Constructible]
         public SerpentstoneStaff() : base(0x906)
         {
+            Resource = CraftResource.RegularWood;
         }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;

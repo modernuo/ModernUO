@@ -12,6 +12,7 @@ namespace Server.Items
         {
             Weight = 6.0;
             Layer = Layer.TwoHanded;
+            Resource = CraftResource.RegularWood;
         }
 
         public override int EffectID => 0xF42;

@@ -55,6 +55,6 @@ namespace Server.Mobiles
         public override int StepsMax => 6400;
         public override string CorpseName => "a war horse corpse";
 
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
     }
 }

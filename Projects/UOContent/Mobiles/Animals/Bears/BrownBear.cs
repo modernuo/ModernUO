@@ -45,7 +45,7 @@ namespace Server.Mobiles
 
         public override int Meat => 1;
         public override int Hides => 12;
-        public override FoodType FavoriteFood => FoodType.Fish | FoodType.FruitsAndVegies | FoodType.Meat;
+        public override FoodType FavoriteFood => FoodType.Fish | FoodType.FruitsAndVeggies | FoodType.Meat;
         public override PackInstinct PackInstinct => PackInstinct.Bear;
     }
 }

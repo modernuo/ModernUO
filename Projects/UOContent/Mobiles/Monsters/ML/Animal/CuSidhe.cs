@@ -73,7 +73,7 @@ namespace Server.Mobiles
 
         public override bool CanHeal => true;
         public override bool CanHealOwner => true;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies;
         public override bool CanAngerOnTame => true;
         public override bool StatLossAfterTame => true;
         public override int Hides => 10;

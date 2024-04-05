@@ -20,4 +20,6 @@ public partial class WoodenKiteShield : BaseShield
     public override int AosStrReq => 20;
 
     public override int ArmorBase => 12;
+
+    public override ArmorMaterialType MaterialType => ArmorMaterialType.Wood;
 }

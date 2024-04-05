@@ -47,7 +47,7 @@ namespace Server.Mobiles
         public override int Meat => 1;
         public override int Hides => 12;
         public override HideType HideType => HideType.Spined;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
 
         public override bool OverrideBondingReqs() => true;
 
