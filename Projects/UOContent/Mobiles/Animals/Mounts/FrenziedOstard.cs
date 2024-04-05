@@ -46,7 +46,7 @@ namespace Server.Mobiles
         public override string CorpseName => "an ostard corpse";
 
         public override int Meat => 3;
-        public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish | FoodType.Eggs | FoodType.FruitsAndVegies;
+        public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish | FoodType.Eggs | FoodType.FruitsAndVeggies;
         public override PackInstinct PackInstinct => PackInstinct.Ostard;
     }
 }

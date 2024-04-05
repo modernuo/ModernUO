@@ -34,47 +34,36 @@ namespace Server.SkillHandlers
                 {
                     from.SendLocalizedMessage(500331); // The spirits of the dead are not the province of animal lore.
                 }
-                else if (targeted is BaseCreature c)
+                else if (targeted is not BaseCreature c)
                 {
-                    if (!c.IsDeadPet)
-                    {
-                        if (c.Body.IsAnimal || c.Body.IsMonster || c.Body.IsSea)
-                        {
-                            if (!c.Controlled && from.Skills.AnimalLore.Value < 100.0)
-                            {
-                                from.SendLocalizedMessage(
-                                    1049674
-                                ); // At your skill level, you can only lore tamed creatures.
-                            }
-                            else if (!c.Controlled && !c.Tamable && from.Skills.AnimalLore.Value < 110.0)
-                            {
-                                from.SendLocalizedMessage(
-                                    1049675
-                                ); // At your skill level, you can only lore tamed or tameable creatures.
-                            }
-                            else if (!from.CheckTargetSkill(SkillName.AnimalLore, c, 0.0, 120.0))
-                            {
-                                from.SendLocalizedMessage(500334); // You can't think of anything you know offhand.
-                            }
-                            else
-                            {
-                                from.CloseGump<AnimalLoreGump>();
-                                from.SendGump(new AnimalLoreGump(c));
-                            }
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(500329); // That's not an animal!
-                        }
-                    }
-                    else
-                    {
-                        from.SendLocalizedMessage(500331); // The spirits of the dead are not the province of animal lore.
-                    }
+                    from.SendLocalizedMessage(500329); // That's not an animal!
+                }
+                else if (c.IsDeadPet)
+                {
+                    from.SendLocalizedMessage(500331); // The spirits of the dead are not the province of animal lore.
+                }
+                else if (!c.Body.IsAnimal && c.Body is { IsMonster: false, IsSea: false })
+                {
+                    from.SendLocalizedMessage(500329); // That's not an animal!
+                }
+                else if (!c.Controlled && from.Skills.AnimalLore.Value < 100.0)
+                {
+                    // At your skill level, you can only lore tamed creatures.
+                    from.SendLocalizedMessage(1049674);
+                }
+                else if (!c.Controlled && !c.Tamable && from.Skills.AnimalLore.Value < 110.0)
+                {
+                    // At your skill level, you can only lore tamed or tameable creatures.
+                    from.SendLocalizedMessage(1049675);
+                }
+                else if (!from.CheckTargetSkill(SkillName.AnimalLore, c, 0.0, 120.0))
+                {
+                    from.SendLocalizedMessage(500334); // You can't think of anything you know offhand.
                 }
                 else
                 {
-                    from.SendLocalizedMessage(500329); // That's not an animal!
+                    from.CloseGump<AnimalLoreGump>();
+                    from.SendGump(new AnimalLoreGump(c));
                 }
             }
         }
@@ -181,23 +170,20 @@ namespace Server.SkillHandlers
                 AddHtml(320, 168, 35, 18, FormatElement(c.PhysicalResistance));
 
                 AddHtmlLocalized(153, 186, 160, 18, 1061647, LabelColor); // Fire
-                AddHtml(320, 186, 35, 18, FormatElement(c.FireResistance));
+                AddHtml(320, 186, 35, 18, FormatElement(c.FireResistance, "#FF0000"));
 
                 AddHtmlLocalized(153, 204, 160, 18, 1061648, LabelColor); // Cold
-                AddHtml(320, 204, 35, 18, FormatElement(c.ColdResistance));
+                AddHtml(320, 204, 35, 18, FormatElement(c.ColdResistance, "#000080"));
 
                 AddHtmlLocalized(153, 222, 160, 18, 1061649, LabelColor); // Poison
-                AddHtml(320, 222, 35, 18, FormatElement(c.PoisonResistance));
+                AddHtml(320, 222, 35, 18, FormatElement(c.PoisonResistance, "#008000"));
 
                 AddHtmlLocalized(153, 240, 160, 18, 1061650, LabelColor); // Energy
-                AddHtml(320, 240, 35, 18, FormatElement(c.EnergyResistance));
+                AddHtml(320, 240, 35, 18, FormatElement(c.EnergyResistance, "#BF80FF"));
 
                 AddButton(340, 358, 5601, 5605, 0, GumpButtonType.Page, page + 1);
                 AddButton(317, 358, 5603, 5607, 0, GumpButtonType.Page, page - 1);
-            }
 
-            if (Core.AOS)
-            {
                 AddPage(++page);
 
                 AddImage(128, 152, 2086);
@@ -207,16 +193,16 @@ namespace Server.SkillHandlers
                 AddHtml(320, 168, 35, 18, FormatElement(c.PhysicalDamage));
 
                 AddHtmlLocalized(153, 186, 160, 18, 1061647, LabelColor); // Fire
-                AddHtml(320, 186, 35, 18, FormatElement(c.FireDamage));
+                AddHtml(320, 186, 35, 18, FormatElement(c.FireDamage, "#FF0000"));
 
                 AddHtmlLocalized(153, 204, 160, 18, 1061648, LabelColor); // Cold
-                AddHtml(320, 204, 35, 18, FormatElement(c.ColdDamage));
+                AddHtml(320, 204, 35, 18, FormatElement(c.ColdDamage, "#000080"));
 
                 AddHtmlLocalized(153, 222, 160, 18, 1061649, LabelColor); // Poison
-                AddHtml(320, 222, 35, 18, FormatElement(c.PoisonDamage));
+                AddHtml(320, 222, 35, 18, FormatElement(c.PoisonDamage, "#008000"));
 
                 AddHtmlLocalized(153, 240, 160, 18, 1061650, LabelColor); // Energy
-                AddHtml(320, 240, 35, 18, FormatElement(c.EnergyDamage));
+                AddHtml(320, 240, 35, 18, FormatElement(c.EnergyDamage, "#BF80FF"));
 
                 if (Core.ML)
                 {
@@ -256,6 +242,8 @@ namespace Server.SkillHandlers
                 AddHtml(320, 240, 35, 18, FormatSkill(c, SkillName.Poisoning));
             }
 
+            // TODO: Add remaining combat skills
+
             AddImage(128, 260, 2086);
             AddHtmlLocalized(147, 258, 160, 18, 3001032, 200); // Lore & Knowledge
 
@@ -268,6 +256,8 @@ namespace Server.SkillHandlers
             AddHtmlLocalized(153, 312, 160, 18, 1044106, LabelColor); // Meditation
             AddHtml(320, 312, 35, 18, FormatSkill(c, SkillName.Meditation));
 
+            // TODO: Add remaining skills
+
             AddButton(340, 358, 5601, 5605, 0, GumpButtonType.Page, page + 1);
             AddButton(317, 358, 5603, 5607, 0, GumpButtonType.Page, page - 1);
 
@@ -278,7 +268,11 @@ namespace Server.SkillHandlers
 
             var foodPref = 3000340;
 
-            if ((c.FavoriteFood & FoodType.FruitsAndVegies) != 0)
+            if ((c.FavoriteFood & FoodType.Meat) != 0)
+            {
+                foodPref = 1049564; // Meat
+            }
+            else if ((c.FavoriteFood & FoodType.FruitsAndVeggies) != 0)
             {
                 foodPref = 1049565; // Fruits and Vegetables
             }
@@ -290,14 +284,16 @@ namespace Server.SkillHandlers
             {
                 foodPref = 1049568; // Fish
             }
-            else if ((c.FavoriteFood & FoodType.Meat) != 0)
+            else if ((c.FavoriteFood & FoodType.Metal) != 0)
             {
-                foodPref = 1049564; // Meat
+                foodPref = 1049567; // Metal
             }
             else if ((c.FavoriteFood & FoodType.Eggs) != 0)
             {
                 foodPref = 1044477; // Eggs
             }
+
+            // TODO: Add 1115752 "Blackrock Stew" as a food type
 
             AddHtmlLocalized(153, 168, 160, 18, foodPref, LabelColor);
 
@@ -340,6 +336,10 @@ namespace Server.SkillHandlers
             }
 
             AddHtmlLocalized(153, 204, 160, 18, packInstinct, LabelColor);
+
+            // TODO: Add Pet Slots
+
+            // TODO: Add Abilities
 
             if (!Core.AOS)
             {
@@ -402,14 +402,16 @@ namespace Server.SkillHandlers
             return $"<div align=right>{val:F1}</div>";
         }
 
-        private static string FormatElement(int val)
+        private static string FormatElement(int val, string color = null)
         {
-            if (val <= 0)
+            if (color == null)
             {
-                return "<div align=right>---</div>";
+                return val == 0 ? "<div align=right>---</div>" : $"<div align=right>{val}%</div>";
             }
 
-            return $"<div align=right>{val}%</div>";
+            return val == 0
+                ? $"<BASEFONT COLOR={color}><div align=right>---</div>"
+                : $"<BASEFONT COLOR={color}><div align=right>{val}%</div>";
         }
 
         private static string FormatDamage(int min, int max)

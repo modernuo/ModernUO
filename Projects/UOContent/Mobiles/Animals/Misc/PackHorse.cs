@@ -60,7 +60,7 @@ namespace Server.Mobiles
 
         public override int Meat => 3;
         public override int Hides => 10;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
 
         public override bool OnBeforeDeath()
         {

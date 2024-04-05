@@ -47,7 +47,7 @@ namespace Server.Mobiles
 
         public override int Meat => 1;
         public override int Hides => 1;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies;
 
         public override int GetAttackSound() => 0xC9;
 

@@ -56,7 +56,7 @@ namespace Server.Mobiles
         public override MeatType MeatType => MeatType.Bird;
         public override int Meat => 1;
         public override int Feathers => 25;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
     }
 
     [SerializationGenerator(0, false)]
@@ -98,6 +98,6 @@ namespace Server.Mobiles
         public override MeatType MeatType => MeatType.Bird;
         public override int Meat => 1;
         public override int Feathers => 25;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
     }
 }

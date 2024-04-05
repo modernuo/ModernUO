@@ -48,7 +48,7 @@ namespace Server.Mobiles
         public override string CorpseName => "an unholy corpse";
         public override bool IsDispellable => false;
         public override bool IsBondable => false;
-        public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        public override FoodType FavoriteFood => FoodType.FruitsAndVeggies | FoodType.GrainsAndHay;
 
         private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
         public override MonsterAbility[] GetMonsterAbilities() => _abilities;
