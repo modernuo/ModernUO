@@ -24,16 +24,159 @@ public class StaminaSystem : GenericPersistence
     private static readonly Dictionary<IHasSteps, StepsTaken> _stepsTaken = new();
     private static readonly OrderedHashSet<IHasSteps> _resetHash = new();
 
-    // TODO: This exploits single thread processing and is not thread safe!
-    public static DFAlgorithm DFA { get; set; }
+    private static readonly object _lock = new object();
 
-    public static int StonesOverweightAllowance { get; set; }
-    public static bool CannotMoveWhenFatigued { get; set; }
-    public static int StonesPerOverweightLoss { get; set; }
-    public static int BaseOverweightLoss { get; set; }
-    public static double AdditionalLossWhenBelow { get; set; }
-    public static bool EnableMountStamina { get; set; }
-    public static bool UseMountStaminaOnlyWhenOverloaded { get; set; }
+    private static DFAlgorithm _dfa;
+    public static DFAlgorithm DFA
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _dfa;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _dfa = value;
+            }
+        }
+    }
+
+    private static int _stonesOverweightAllowance;
+    public static int StonesOverweightAllowance
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _stonesOverweightAllowance;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _stonesOverweightAllowance = value;
+            }
+        }
+    }
+
+    private static bool _cannotMoveWhenFatigued;
+    public static bool CannotMoveWhenFatigued
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _cannotMoveWhenFatigued;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _cannotMoveWhenFatigued = value;
+            }
+        }
+    }
+
+    private static int _stonesPerOverweightLoss;
+    public static int StonesPerOverweightLoss
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _stonesPerOverweightLoss;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _stonesPerOverweightLoss = value;
+            }
+        }
+    }
+
+    private static int _baseOverweightLoss;
+    public static int BaseOverweightLoss
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _baseOverweightLoss;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _baseOverweightLoss = value;
+            }
+        }
+    }
+
+    private static double _additionalLossWhenBelow;
+    public static double AdditionalLossWhenBelow
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _additionalLossWhenBelow;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _additionalLossWhenBelow = value;
+            }
+        }
+    }
+
+    private static bool _enableMountStamina;
+    public static bool EnableMountStamina
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _enableMountStamina;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _enableMountStamina = value;
+            }
+        }
+    }
+
+    private static bool _useMountStaminaOnlyWhenOverloaded;
+    public static bool UseMountStaminaOnlyWhenOverloaded
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _useMountStaminaOnlyWhenOverloaded;
+            }
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _useMountStaminaOnlyWhenOverloaded = value;
+            }
+        }
+    }
 
     public static void Configure()
     {
