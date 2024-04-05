@@ -25,6 +25,7 @@ public static class ConsoleInputHandler
 {
     private static readonly AutoResetEvent _receivedUserInput = new(false);
     private static readonly AutoResetEvent _endUserInput = new(false);
+    private static bool _initialized;
     private static bool _expectUserInput;
     private static readonly Dictionary<string, ConsoleCommand> _inputCommands = new();
     private static string[] _commandDescriptions;
@@ -81,8 +82,11 @@ public static class ConsoleInputHandler
         RegisterCommand(["help", "?"], "Displays this help screen.", DisplayHelp);
     }
 
+    [CallPriority(0)]
     public static void Initialize()
     {
+        _initialized = true;
+
         new Thread(ProcessConsoleInput)
         {
             IsBackground = true,
@@ -179,6 +183,11 @@ public static class ConsoleInputHandler
 
     public static string ReadLine()
     {
+        if (!_initialized)
+        {
+            return Console.ReadLine();
+        }
+
         Volatile.Write(ref _expectUserInput, true);
         _receivedUserInput.WaitOne();
         var line = _input;
