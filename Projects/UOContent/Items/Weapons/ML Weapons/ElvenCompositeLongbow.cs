@@ -8,7 +8,11 @@ namespace Server.Items
     public partial class ElvenCompositeLongbow : BaseRanged
     {
         [Constructible]
-        public ElvenCompositeLongbow() : base(0x2D1E) => Weight = 8.0;
+        public ElvenCompositeLongbow() : base(0x2D1E)
+        {
+            Weight = 8.0;
+            Resource = CraftResource.RegularWood;
+        }
 
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);

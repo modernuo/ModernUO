@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class GnarledStaff : BaseStaff
     {
         [Constructible]
-        public GnarledStaff() : base(0x13F8) => Weight = 3.0;
+        public GnarledStaff() : base(0x13F8)
+        {
+            Weight = 3.0;
+            Resource = CraftResource.RegularWood;
+        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ForceOfNature;

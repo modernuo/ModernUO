@@ -11,7 +11,11 @@ namespace Server.Items
     public partial class ShepherdsCrook : BaseStaff
     {
         [Constructible]
-        public ShepherdsCrook() : base(0xE81) => Weight = 4.0;
+        public ShepherdsCrook() : base(0xE81)
+        {
+            Weight = 4.0;
+            Resource = CraftResource.RegularWood;
+        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

@@ -8,7 +8,11 @@ namespace Server.Items
     public partial class CompositeBow : BaseRanged
     {
         [Constructible]
-        public CompositeBow() : base(0x26C2) => Weight = 5.0;
+        public CompositeBow() : base(0x26C2)
+        {
+            Weight = 5.0;
+            Resource = CraftResource.RegularWood;
+        }
 
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);

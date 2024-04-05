@@ -269,7 +269,8 @@ namespace Server.Mobiles
             typeof(SpoonLeft), typeof(SpoonRight), typeof(Knife), typeof(KnifeLeft),
             typeof(KnifeRight), typeof(DrawKnife), typeof(Hammer), typeof(Froe), typeof(Inshave),
             typeof(Nails), typeof(RunicDovetailSaw), typeof(RunicHammer), typeof(Skillet),
-            typeof(SledgeHammer), typeof(Tongs), typeof(TinkerTools)
+            typeof(SledgeHammer), typeof(Tongs), typeof(TinkerTools), typeof(SmithHammer),
+            typeof(AncientSmithyHammer), typeof(Scorp)
         };
 
         private bool _summoned;

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class QuarterStaff : BaseStaff
     {
         [Constructible]
-        public QuarterStaff() : base(0xE89) => Weight = 4.0;
+        public QuarterStaff() : base(0xE89)
+        {
+            Weight = 4.0;
+            Resource = CraftResource.RegularWood;
+        }
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
