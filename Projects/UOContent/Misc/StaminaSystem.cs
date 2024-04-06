@@ -21,9 +21,9 @@ public static class StaminaSystem
 
     private static readonly TimeSpan ResetDuration = TimeSpan.FromHours(4);
 
-    private static readonly Dictionary<PlayerMobile, IHasSteps> _etherealMountStepCounters = new();
-    private static readonly Dictionary<IHasSteps, StepsTaken> _stepsTaken = new();
-    private static readonly OrderedHashSet<IHasSteps> _resetHash = new();
+    private static readonly Dictionary<PlayerMobile, IHasSteps> _etherealMountStepCounters = [];
+    private static readonly Dictionary<IHasSteps, StepsTaken> _stepsTaken = [];
+    private static readonly HashSet<IHasSteps> _resetHash = [];
 
     // TODO: This exploits single thread processing and is not thread safe!
     public static DFAlgorithm DFA { get; set; }
@@ -471,27 +471,30 @@ public static class StaminaSystem
                 return;
             }
 
-            using var queue = PooledRefQueue<IHasSteps>.Create();
-
-            ref StepsTaken stepsTaken = ref Unsafe.NullRef<StepsTaken>();
-            foreach (var m in _resetHash)
+            if (_resetHash.Count > 0)
             {
-                stepsTaken = ref GetStepsTaken(m, out var exists);
-                if (!exists || Core.Now >= stepsTaken.IdleStartTime + ResetDuration)
+                using var queue = PooledRefQueue<IHasSteps>.Create();
+
+                ref StepsTaken stepsTaken = ref Unsafe.NullRef<StepsTaken>();
+                foreach (var m in _resetHash)
                 {
-                    queue.Enqueue(m);
+                    stepsTaken = ref GetStepsTaken(m, out var exists);
+                    if (!exists || Core.Now >= stepsTaken.IdleStartTime + ResetDuration)
+                    {
+                        queue.Enqueue(m);
+                    }
                 }
-            }
 
-            if (_resetHash.Count == queue.Count)
-            {
-                _resetHash.Clear();
-            }
-            else
-            {
-                while (queue.Count > 0)
+                if (_resetHash.Count == queue.Count)
                 {
-                    _resetHash.Remove(queue.Dequeue());
+                    _resetHash.Clear();
+                }
+                else
+                {
+                    while (queue.Count > 0)
+                    {
+                        _resetHash.Remove(queue.Dequeue());
+                    }
                 }
             }
 
