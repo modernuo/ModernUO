@@ -48,9 +48,9 @@ public class CreateFoodSpell : MagerySpell
 
                 if (Caster.NetState != null)
                 {
-                    var foodName = Localization.GetText(food.LabelNumber, Caster.Language);
+                    // Not translated to the casters language because affixes are ascii only
+                    var foodName = Localization.GetText(food.LabelNumber);
 
-                    // Note: On OSI, the food name is not localized.
                     // You magically create food in your backpack:
                     Caster.SendLocalizedMessage(1042695, true, $" {foodName}");
                 }
