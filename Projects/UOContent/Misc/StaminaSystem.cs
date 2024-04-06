@@ -15,14 +15,15 @@ public enum DFAlgorithm
     PainSpike
 }
 
-public class StaminaSystem : GenericPersistence
+public static class StaminaSystem
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(StaminaSystem));
 
-    private static TimeSpan ResetDuration = TimeSpan.FromHours(24);
+    private static readonly TimeSpan ResetDuration = TimeSpan.FromHours(4);
 
-    private static readonly Dictionary<IHasSteps, StepsTaken> _stepsTaken = new();
-    private static readonly OrderedHashSet<IHasSteps> _resetHash = new();
+    private static readonly Dictionary<PlayerMobile, IHasSteps> _etherealMountStepCounters = [];
+    private static readonly Dictionary<IHasSteps, StepsTaken> _stepsTaken = [];
+    private static readonly HashSet<IHasSteps> _resetHash = [];
 
     // TODO: This exploits single thread processing and is not thread safe!
     public static DFAlgorithm DFA { get; set; }
@@ -35,6 +36,9 @@ public class StaminaSystem : GenericPersistence
     public static bool EnableMountStamina { get; set; }
     public static bool UseMountStaminaOnlyWhenOverloaded { get; set; }
 
+    // Pub 46 (UOML+)
+    public static bool GlobalEtherealMountStamina { get; set; }
+
     public static void Configure()
     {
         CannotMoveWhenFatigued = ServerConfiguration.GetOrUpdateSetting("stamina.cannotMoveWhenFatigued", !Core.AOS);
@@ -44,56 +48,7 @@ public class StaminaSystem : GenericPersistence
         AdditionalLossWhenBelow = ServerConfiguration.GetOrUpdateSetting("stamina.additionalLossWhenBelow", 0.10);
         EnableMountStamina = ServerConfiguration.GetOrUpdateSetting("stamina.enableMountStamina", true);
         UseMountStaminaOnlyWhenOverloaded = ServerConfiguration.GetSetting("stamina.useMountStaminaOnlyWhenOverloaded", Core.SA);
-    }
-
-    public StaminaSystem() : base("StaminaSystem", 10)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        writer.WriteEncodedInt(0); // version
-
-        writer.WriteEncodedInt(_stepsTaken.Count);
-        foreach (var (m, stepsTaken) in _stepsTaken)
-        {
-            writer.Write(m as ISerializable); // To serialize all IHasSteps must be an ISerializable
-            stepsTaken.Serialize(writer);
-        }
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        var version = reader.ReadEncodedInt();
-
-        var count = reader.ReadEncodedInt();
-        _stepsTaken.EnsureCapacity(count);
-
-        var now = Core.Now;
-
-        for (var i = 0; i < count; i++)
-        {
-            var m = reader.ReadEntity<ISerializable>() as IHasSteps;
-            var stepsTaken = new StepsTaken();
-            stepsTaken.Deserialize(reader);
-
-            if (m == null)
-            {
-                continue;
-            }
-
-            RegenSteps(m, ref stepsTaken, false);
-
-            if (stepsTaken.Steps > 0)
-            {
-                _stepsTaken.Add(m, stepsTaken);
-
-                if (m is IMount && now < stepsTaken.IdleStartTime + ResetDuration)
-                {
-                    _resetHash.Add(m);
-                }
-            }
-        }
+        GlobalEtherealMountStamina = ServerConfiguration.GetSetting("stamina.globalEtherealMountStamina", Core.ML);
     }
 
     public static void Initialize()
@@ -107,14 +62,12 @@ public class StaminaSystem : GenericPersistence
         using var queue = PooledRefQueue<IHasSteps>.Create();
         foreach (var m in _stepsTaken.Keys)
         {
-            ref var stepsTaken = ref CollectionsMarshal.GetValueRefOrNullRef(_stepsTaken, m);
-            if (!Unsafe.IsNullRef(ref stepsTaken))
+            // We cannot remove since we are iterating.
+            ref var stepsTaken = ref RegenSteps(m, out var exists, removeOnInvalidation: false);
+
+            if (exists && stepsTaken.Steps <= 0)
             {
-                RegenSteps(m, ref stepsTaken, false);
-                if (stepsTaken.Steps <= 0)
-                {
-                    queue.Enqueue(m);
-                }
+                queue.Enqueue(m);
             }
         }
 
@@ -134,7 +87,7 @@ public class StaminaSystem : GenericPersistence
         if (EnableMountStamina)
         {
             // Start idle for mount
-            ref var stepsTaken = ref GetMountStepsTaken(m.Mount, out var exists);
+            ref var stepsTaken = ref GetStepsTaken(m.Mount, out var exists);
             if (exists)
             {
                 if (stepsTaken.Steps <= 0 || Core.Now >= stepsTaken.IdleStartTime + ResetDuration)
@@ -152,8 +105,8 @@ public class StaminaSystem : GenericPersistence
 
         if (m is PlayerMobile pm)
         {
-            ref var stepsTaken = ref CollectionsMarshal.GetValueRefOrNullRef(_stepsTaken, pm);
-            if (!Unsafe.IsNullRef(ref stepsTaken) && RegenSteps(pm, ref stepsTaken))
+            ref var stepsTaken = ref RegenSteps(pm, out var exists);
+            if (exists)
             {
                 stepsTaken.IdleStartTime = Core.Now;
             }
@@ -170,45 +123,59 @@ public class StaminaSystem : GenericPersistence
         if (EnableMountStamina)
         {
             // Regain mount idle time
-            ref var stepsTaken = ref GetMountStepsTaken(m.Mount, out var exists);
+            ref var stepsTaken = ref RegenSteps(m.Mount, out var exists);
             if (exists)
             {
-                if (RegenSteps(m.Mount, ref stepsTaken))
-                {
-                    stepsTaken.IdleStartTime = Core.Now;
-                    _resetHash.Add(m.Mount);
-                }
+                stepsTaken.IdleStartTime = Core.Now;
+                _resetHash.Add(m.Mount);
             }
         }
 
         if (m is PlayerMobile pm)
         {
-            ref var stepsTaken = ref CollectionsMarshal.GetValueRefOrNullRef(_stepsTaken, pm);
-
-            if (!Unsafe.IsNullRef(ref stepsTaken) && RegenSteps(pm, ref stepsTaken))
+            ref var stepsTaken = ref RegenSteps(pm, out var exists);
+            if (exists)
             {
                 stepsTaken.IdleStartTime = Core.Now;
             }
         }
     }
 
-    public static void RemoveEntry(IHasSteps m)
+    private static bool IsEthereal(IHasSteps m, out PlayerMobile pm)
     {
-        if (m != null)
+        if (m is not EtherealMount and not VirtualMountItem)
         {
-            _stepsTaken.Remove(m);
+            pm = null;
+            return false;
         }
+
+        pm = ((IMount)m).Rider as PlayerMobile;
+        return pm != null;
     }
 
-    public static void OnDismount(IHasSteps mount)
+    public static void RemoveEntry(IHasSteps m)
+    {
+        if (m == null)
+        {
+            return;
+        }
+
+        if (GlobalEtherealMountStamina && IsEthereal(m, out var pm))
+        {
+            _etherealMountStepCounters.Remove(pm);
+        }
+
+        _stepsTaken.Remove(m);
+    }
+
+    public static void OnDismount(IMount mount)
     {
         if (!EnableMountStamina)
         {
             return;
         }
 
-        ref var stepsTaken = ref GetMountStepsTaken(mount, out var exists);
-        if (exists && RegenSteps(mount, ref stepsTaken))
+        if (RegenSteps(mount))
         {
             _resetHash.Add(mount);
             return;
@@ -217,12 +184,24 @@ public class StaminaSystem : GenericPersistence
         _resetHash.Remove(mount);
     }
 
-    private static ref StepsTaken GetMountStepsTaken(IHasSteps m, out bool exists)
+    private static ref StepsTaken GetStepsTaken(IHasSteps m, out bool exists)
     {
         if (m == null)
         {
             exists = false;
             return ref Unsafe.NullRef<StepsTaken>();
+        }
+
+        if (GlobalEtherealMountStamina && IsEthereal(m, out var pm))
+        {
+            ref var stepsCounter = ref CollectionsMarshal.GetValueRefOrNullRef(_etherealMountStepCounters, pm);
+            if (Unsafe.IsNullRef(ref stepsCounter))
+            {
+                exists = false;
+                return ref Unsafe.NullRef<StepsTaken>();
+            }
+
+            m = stepsCounter;
         }
 
         ref var stepsTaken = ref CollectionsMarshal.GetValueRefOrNullRef(_stepsTaken, m);
@@ -232,43 +211,65 @@ public class StaminaSystem : GenericPersistence
 
     private static ref StepsTaken GetOrCreateStepsTaken(IHasSteps m, out bool created)
     {
+        if (GlobalEtherealMountStamina && IsEthereal(m, out var pm))
+        {
+            ref var stepsCounter = ref CollectionsMarshal.GetValueRefOrAddDefault(_etherealMountStepCounters, pm, out var stepsCounterExists);
+            if (!stepsCounterExists)
+            {
+                stepsCounter = new EtherealMountStepCounter();
+            }
+
+            m = stepsCounter;
+        }
+
         ref var stepsTaken = ref CollectionsMarshal.GetValueRefOrAddDefault(_stepsTaken, m, out var exists);
         created = !exists;
+        if (created)
+        {
+            stepsTaken.Entity = m;
+        }
 
         return ref stepsTaken;
     }
 
-    public static void RegenSteps(IHasSteps m, int amount, bool removeOnInvalidation = true)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool RegenSteps(IHasSteps m, int amount = 0, bool removeOnInvalidation = true)
     {
-        ref var stepsTaken = ref GetMountStepsTaken(m, out var exists);
-        if (exists)
-        {
-            RegenSteps(m, ref stepsTaken, removeOnInvalidation);
-        }
+        RegenSteps(m, out var exists, amount, removeOnInvalidation);
+        return exists;
     }
 
     // Triggered on logout, dismount, and world load
-    private static bool RegenSteps(IHasSteps m, ref StepsTaken stepsTaken, bool removeOnInvalidation = true)
+    private static ref StepsTaken RegenSteps(IHasSteps m, out bool exists, int amount = 0, bool removeOnInvalidation = true)
     {
-        var stepsGained = (int)((Core.Now - stepsTaken.IdleStartTime) / m.IdleTimePerStepsGain * m.StepsGainedPerIdleTime);
-        return RegenSteps(m, stepsGained, ref stepsTaken, removeOnInvalidation);
-    }
-
-    private static bool RegenSteps(IHasSteps m, int amount, ref StepsTaken stepsTaken, bool removeOnInvalidation = true)
-    {
-        if (m == null || Unsafe.IsNullRef(ref stepsTaken))
+        if (m == null)
         {
-            return false;
+            exists = false;
+            return ref Unsafe.NullRef<StepsTaken>();
         }
 
-        stepsTaken.Steps -= amount;
+        ref var stepsTaken = ref GetStepsTaken(m, out exists);
+        if (!exists)
+        {
+            return ref Unsafe.NullRef<StepsTaken>();
+        }
+
+        exists = RegenSteps(ref stepsTaken, amount, removeOnInvalidation);
+        return ref stepsTaken;
+    }
+
+    private static bool RegenSteps(ref StepsTaken stepsTaken, int amount = 0, bool removeOnInvalidation = true)
+    {
+        var entity = stepsTaken.Entity;
+        var stepsGained = (int)((Core.Now - stepsTaken.IdleStartTime) / entity.IdleTimePerStepsGain * entity.StepsGainedPerIdleTime);
+
+        stepsTaken.Steps -= stepsGained + amount;
 
         if (stepsTaken.Steps <= 0)
         {
             if (removeOnInvalidation)
             {
-                _stepsTaken.Remove(m);
-                stepsTaken = ref Unsafe.NullRef<StepsTaken>();
+                RemoveEntry(entity);
                 return false;
             }
 
@@ -330,7 +331,7 @@ public class StaminaSystem : GenericPersistence
 
             from.Stam -= stamLoss;
 
-            if (from.Stam == 0)
+            if (from.Stam <= 0)
             {
                 // You are too fatigued to move, because you are carrying too much weight!
                 from.SendLocalizedMessage(500109);
@@ -339,24 +340,29 @@ public class StaminaSystem : GenericPersistence
             }
         }
 
+        if (!running)
+        {
+            return;
+        }
+
         if (AdditionalLossWhenBelow > 0 && from.Stam / Math.Max(from.StamMax, 1.0) < AdditionalLossWhenBelow)
         {
             --from.Stam;
         }
 
-        if (CannotMoveWhenFatigued && from.Stam == 0)
+        if (CannotMoveWhenFatigued && from.Stam <= 0)
         {
             from.SendLocalizedMessage(500110); // You are too fatigued to move.
             e.Blocked = true;
             return;
         }
 
-        if (running && from is PlayerMobile pm)
+        if (from is PlayerMobile pm)
         {
             ref StepsTaken stepsTaken = ref GetOrCreateStepsTaken(pm, out var created);
             if (!created)
             {
-                RegenSteps(pm, ref stepsTaken, false);
+                RegenSteps(ref stepsTaken, removeOnInvalidation: false);
             }
 
             var steps = ++stepsTaken.Steps;
@@ -378,44 +384,25 @@ public class StaminaSystem : GenericPersistence
     {
         var from = e.Mobile;
 
+        var maxSteps = mount.StepsMax;
         var running = (e.Direction & Direction.Running) != 0;
+
         var stamLoss = overweight > 0 ? GetStamLoss(from, overweight, running) : 0;
+
+        if (stamLoss <= 0 && (!running || UseMountStaminaOnlyWhenOverloaded))
+        {
+            return;
+        }
 
         ref var stepsTaken = ref GetOrCreateStepsTaken(mount, out var created);
 
-        // Gain any idle steps
         if (!created)
         {
-            RegenSteps(mount, ref stepsTaken, false); // Don't delete the entry if it's reset
+            RegenSteps(ref stepsTaken, removeOnInvalidation: false);
         }
 
-        if (mount is Mobile m && AdditionalLossWhenBelow > 0 && m.Stam / Math.Max(m.StamMax, 1.0) < AdditionalLossWhenBelow)
-        {
-            stamLoss++;
-        }
-
-        var maxSteps = mount.StepsMax;
-
-        if (stepsTaken.Steps <= maxSteps)
-        {
-            // Pre-SA mounts would lose stamina while running even when they were not overweight
-            if (running && !UseMountStaminaOnlyWhenOverloaded)
-            {
-                stamLoss++;
-            }
-
-            if (stamLoss > 0)
-            {
-                stepsTaken.Steps += stamLoss;
-                stepsTaken.IdleStartTime = Core.Now;
-
-                // This only executes when mounted, so we have the player say it since the actual mount is internalized
-                if ((mount as BaseCreature)?.Debug == true && stepsTaken.Steps % 20 == 0)
-                {
-                    from.PublicOverheadMessage(MessageType.Regular, 41, false, $"Steps {stepsTaken.Steps}/{mount.StepsMax}");
-                }
-            }
-        }
+        stepsTaken.Steps += stamLoss + 1;
+        stepsTaken.IdleStartTime = Core.Now;
 
         if (stepsTaken.Steps > maxSteps)
         {
@@ -454,29 +441,14 @@ public class StaminaSystem : GenericPersistence
 
     private struct StepsTaken
     {
+        public IHasSteps Entity;
         public int Steps;
         public DateTime IdleStartTime;
-
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.WriteEncodedInt(0); // version
-
-            writer.WriteEncodedInt(Steps);
-            writer.WriteDeltaTime(IdleStartTime);
-        }
-
-        public void Deserialize(IGenericReader reader)
-        {
-            reader.ReadEncodedInt(); // version
-
-            Steps = reader.ReadEncodedInt();
-            IdleStartTime = reader.ReadDeltaTime();
-        }
     }
 
     private class ResetTimer : Timer
     {
-        private static TimeSpan CheckDuration = TimeSpan.FromHours(1);
+        private static readonly TimeSpan _checkDuration = TimeSpan.FromHours(1);
 
         private DateTime _nextCheck;
 
@@ -499,31 +471,43 @@ public class StaminaSystem : GenericPersistence
                 return;
             }
 
-            using var queue = PooledRefQueue<IHasSteps>.Create();
-
-            ref StepsTaken stepsTaken = ref Unsafe.NullRef<StepsTaken>();
-            foreach (var m in _resetHash)
+            if (_resetHash.Count > 0)
             {
-                stepsTaken = ref GetMountStepsTaken(m, out var exists);
-                if (!exists || Core.Now >= stepsTaken.IdleStartTime + ResetDuration)
+                using var queue = PooledRefQueue<IHasSteps>.Create();
+
+                ref StepsTaken stepsTaken = ref Unsafe.NullRef<StepsTaken>();
+                foreach (var m in _resetHash)
                 {
-                    queue.Enqueue(m);
+                    stepsTaken = ref GetStepsTaken(m, out var exists);
+                    if (!exists || Core.Now >= stepsTaken.IdleStartTime + ResetDuration)
+                    {
+                        queue.Enqueue(m);
+                    }
+                }
+
+                if (_resetHash.Count == queue.Count)
+                {
+                    _resetHash.Clear();
+                }
+                else
+                {
+                    while (queue.Count > 0)
+                    {
+                        _resetHash.Remove(queue.Dequeue());
+                    }
                 }
             }
 
-            if (_resetHash.Count == queue.Count)
-            {
-                _resetHash.Clear();
-            }
-            else
-            {
-                while (queue.Count > 0)
-                {
-                    _resetHash.Remove(queue.Dequeue());
-                }
-            }
-
-            _nextCheck = Core.Now + CheckDuration;
+            _nextCheck = Core.Now + _checkDuration;
         }
+    }
+
+    // Placeholder for a special case where Ethereal mount steps are global to the player
+    private class EtherealMountStepCounter : IHasSteps
+    {
+        // The properties are not actually used
+        public int StepsMax => 3840;
+        public int StepsGainedPerIdleTime => 1;
+        public TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(1);
     }
 }

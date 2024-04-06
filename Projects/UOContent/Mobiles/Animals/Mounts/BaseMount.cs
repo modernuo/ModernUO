@@ -37,10 +37,10 @@ public abstract partial class BaseMount : BaseCreature, IMount
     public virtual bool AllowMaleRider => true;
     public virtual bool AllowFemaleRider => true;
 
-    // Stamina System - 1 step per 10 seconds and 3840 steps max = 9.667 hours
+    // Stamina System - 1 step per 1 second and 3840 steps max = 64 minutes
     public virtual int StepsMax => 3840;
     public virtual int StepsGainedPerIdleTime => 1;
-    public virtual TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(10);
+    public virtual TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(1);
 
     [Hue]
     [CommandProperty(AccessLevel.GameMaster)]

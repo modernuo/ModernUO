@@ -145,7 +145,7 @@ namespace Server.Mobiles
         public virtual int StepsMax => 3840; // Should be same as horse
 
         public virtual int StepsGainedPerIdleTime => 1;
-        public virtual TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(10);
+        public virtual TimeSpan IdleTimePerStepsGain => TimeSpan.FromSeconds(1);
 
         public void OnRiderDamaged(int amount, Mobile from, bool willKill)
         {

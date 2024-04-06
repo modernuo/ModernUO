@@ -4293,7 +4293,8 @@ namespace Server.Mobiles
                 if (stamGain > 0)
                 {
                     Stam += stamGain;
-                    // 64 food = 3,640 steps
+
+                    // 61 food = 3,840 steps
                     StaminaSystem.RegenSteps(this as IHasSteps, stamGain * 4);
                 }
 
