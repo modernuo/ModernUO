@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Localization.cs                                                 *
  *                                                                       *
@@ -44,7 +44,7 @@ public static class Localization
 
     public static void Add(string lang, int number, string text)
     {
-        lang = lang.ToLower();
+        lang = lang?.ToLower() ?? FallbackLanguage;
         var entry = new LocalizationEntry(lang, number, text);
         if (!_localizations.TryGetValue(lang, out var entries))
         {
@@ -61,7 +61,7 @@ public static class Localization
 
     public static bool Remove(string lang, int number)
     {
-        lang = lang.ToLower();
+        lang = lang?.ToLower() ?? FallbackLanguage;
         if (!_localizations.TryGetValue(lang, out var entries) || !entries.Remove(number))
         {
             return false;
@@ -86,7 +86,7 @@ public static class Localization
 
     private static Dictionary<int, LocalizationEntry> LoadClilocs(string lang, string file)
     {
-        lang = lang.ToLower();
+        lang = lang?.ToLower() ?? FallbackLanguage;
         Dictionary<int, LocalizationEntry> entries = _localizations[lang] = new Dictionary<int, LocalizationEntry>();
         if (lang == FallbackLanguage)
         {
@@ -132,7 +132,7 @@ public static class Localization
     /// </summary>
     /// <param name="number">Localization number</param>
     /// <param name="lang">Language in ISO 639‑2 format</param>
-    /// <returns>Original text for the localizaton entry</returns>
+    /// <returns>Original text for the localization entry</returns>
     public static string GetText(int number, string lang = FallbackLanguage) =>
         TryGetLocalization(lang, number, out var entry) ? entry.Text : null;
 
@@ -154,7 +154,7 @@ public static class Localization
     /// <returns>True if the entry exists, otherwise false.</returns>
     public static bool TryGetLocalization(string lang, int number, out LocalizationEntry entry)
     {
-        lang = lang.ToLower();
+        lang = lang?.ToLower() ?? FallbackLanguage;
         if (lang != FallbackLanguage)
         {
             if (!_localizations.TryGetValue(lang, out var entries))
