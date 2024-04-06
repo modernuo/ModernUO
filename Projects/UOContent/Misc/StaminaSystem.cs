@@ -224,6 +224,11 @@ public static class StaminaSystem
 
         ref var stepsTaken = ref CollectionsMarshal.GetValueRefOrAddDefault(_stepsTaken, m, out var exists);
         created = !exists;
+        if (created)
+        {
+            stepsTaken.Entity = m;
+        }
+
         return ref stepsTaken;
     }
 
@@ -249,13 +254,14 @@ public static class StaminaSystem
             return ref Unsafe.NullRef<StepsTaken>();
         }
 
-        exists = RegenSteps(m, ref stepsTaken, amount, removeOnInvalidation);
+        exists = RegenSteps(ref stepsTaken, amount, removeOnInvalidation);
         return ref stepsTaken;
     }
 
-    private static bool RegenSteps(IHasSteps m, ref StepsTaken stepsTaken, int amount = 0, bool removeOnInvalidation = true)
+    private static bool RegenSteps(ref StepsTaken stepsTaken, int amount = 0, bool removeOnInvalidation = true)
     {
-        var stepsGained = (int)((Core.Now - stepsTaken.IdleStartTime) / m.IdleTimePerStepsGain * m.StepsGainedPerIdleTime);
+        var entity = stepsTaken.Entity;
+        var stepsGained = (int)((Core.Now - stepsTaken.IdleStartTime) / entity.IdleTimePerStepsGain * entity.StepsGainedPerIdleTime);
 
         stepsTaken.Steps -= stepsGained + amount;
 
@@ -263,7 +269,7 @@ public static class StaminaSystem
         {
             if (removeOnInvalidation)
             {
-                RemoveEntry(m);
+                RemoveEntry(entity);
                 return false;
             }
 
@@ -356,7 +362,7 @@ public static class StaminaSystem
             ref StepsTaken stepsTaken = ref GetOrCreateStepsTaken(pm, out var created);
             if (!created)
             {
-                RegenSteps(pm, ref stepsTaken, removeOnInvalidation: false);
+                RegenSteps(ref stepsTaken, removeOnInvalidation: false);
             }
 
             var steps = ++stepsTaken.Steps;
@@ -392,7 +398,7 @@ public static class StaminaSystem
 
         if (!created)
         {
-            RegenSteps(mount, ref stepsTaken, removeOnInvalidation: false);
+            RegenSteps(ref stepsTaken, removeOnInvalidation: false);
         }
 
         stepsTaken.Steps += stamLoss + 1;
@@ -435,6 +441,7 @@ public static class StaminaSystem
 
     private struct StepsTaken
     {
+        public IHasSteps Entity;
         public int Steps;
         public DateTime IdleStartTime;
     }
