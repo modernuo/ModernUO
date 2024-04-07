@@ -1118,12 +1118,9 @@ namespace Server.Commands
                         }
                     }
                 }
-                else
+                else if (item.Z == z && item.ItemID == itemID)
                 {
-                    if (item.Z == z && item.ItemID == itemID)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 
