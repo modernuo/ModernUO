@@ -880,7 +880,7 @@ public class EscortDestinationInfo
         if (!validTown)
         {
             BaseEscortable.Initialized = false;
-            logger.Error( "No valid pre-ML escort destinations found. Please check {TownNames}.", townNamesVariable);
+            logger.Error( "No valid escort destinations found. Please check {TownNames}.", townNamesVariable);
         }
     }
 
