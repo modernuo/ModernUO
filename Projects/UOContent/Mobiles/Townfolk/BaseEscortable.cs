@@ -877,9 +877,10 @@ public class EscortDestinationInfo
             }
         }
 
+        BaseEscortable.Initialized = validTown;
+
         if (!validTown)
         {
-            BaseEscortable.Initialized = false;
             logger.Error( "No valid escort destinations found. Please check {TownNames}.", townNamesVariable);
         }
     }
