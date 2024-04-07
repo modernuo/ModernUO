@@ -685,6 +685,7 @@
     "Map": "Felucca",
     "Name": "Buccaneer's Den",
     "Priority": 50,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 2612, "y1": 2057, "x2": 2776, "y2": 2267},
       {"x1": 2604, "y1": 2065, "z1": 0, "x2": 2612, "y2": 2254, "z2": 128}
@@ -2334,6 +2335,7 @@
     "Map": "Trammel",
     "Name": "Buccaneer's Den",
     "Priority": 50,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 2612, "y1": 2057, "x2": 2776, "y2": 2267},
       {"x1": 2604, "y1": 2065, "z1": 0, "x2": 2612, "y2": 2254, "z2": 128}
@@ -2993,6 +2995,7 @@
     "Map": "Ilshenar",
     "Name": "Montor",
     "Priority": 41,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 1576, "y1": 272, "x2": 1720, "y2": 368},
       {"x1": 1616, "y1": 200, "x2": 1696, "y2": 272},
@@ -3018,6 +3021,7 @@
     "Map": "Ilshenar",
     "Name": "Ancient Citadel",
     "Priority": 11,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1448, "y1": 496, "x2": 1552, "y2": 600}],
     "GoLocation": {"x": 1516, "y": 542, "z": 85}
   },
@@ -3026,6 +3030,7 @@
     "Map": "Ilshenar",
     "Name": "Alexandretta's Bowl",
     "Priority": 41,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1272, "y1": 352, "x2": 1440, "y2": 592}],
     "GoLocation": {"x": 1396, "y": 432, "z": -17}
   },
@@ -3054,6 +3059,7 @@
     "Map": "Ilshenar",
     "Name": "Lenmir Anfinmotas",
     "Priority": 5,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1560, "y1": 792, "x2": 1792, "y2": 912}],
     "GoLocation": {"x": 1673, "y": 876, "z": -25}
   },
@@ -3098,6 +3104,7 @@
     "Map": "Ilshenar",
     "Name": "Reg Volon",
     "Priority": 50,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1328, "y1": 1008, "x2": 1408, "y2": 1120}],
     "GoLocation": {"x": 1363, "y": 1055, "z": -13}
   },
@@ -3156,6 +3163,7 @@
     "Map": "Ilshenar",
     "Name": "Lake Shire",
     "Priority": 48,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1144, "y1": 1072, "x2": 1264, "y2": 1200}],
     "GoLocation": {"x": 1212, "y": 1144, "z": -25}
   },
@@ -3191,6 +3199,7 @@
     "Map": "Ilshenar",
     "Name": "Bet-Lem Reg",
     "Priority": 48,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1232, "y1": 936, "x2": 1272, "y2": 984}],
     "GoLocation": {"x": 1238, "y": 974, "z": -34}
   },
@@ -3199,6 +3208,7 @@
     "Map": "Ilshenar",
     "Name": "Mistas",
     "Priority": 48,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 744, "y1": 984, "x2": 912, "y2": 1152},
       {"x1": 744, "y1": 1152, "x2": 792, "y2": 1176}
