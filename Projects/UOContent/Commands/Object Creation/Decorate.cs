@@ -1045,7 +1045,7 @@ namespace Server.Commands
 
             using var queue = PooledRefQueue<Item>.Create();
 
-            foreach (var item in map.GetItemsInRange(new Point3D(x, y, z), 1))
+            foreach (var item in map.GetItemsAt(x, y))
             {
                 if (srcItem is BaseDoor)
                 {
