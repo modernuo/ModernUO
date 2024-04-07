@@ -685,6 +685,7 @@
     "Map": "Felucca",
     "Name": "Buccaneer's Den",
     "Priority": 50,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 2612, "y1": 2057, "x2": 2776, "y2": 2267},
       {"x1": 2604, "y1": 2065, "z1": 0, "x2": 2612, "y2": 2254, "z2": 128}
@@ -2334,6 +2335,7 @@
     "Map": "Trammel",
     "Name": "Buccaneer's Den",
     "Priority": 50,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 2612, "y1": 2057, "x2": 2776, "y2": 2267},
       {"x1": 2604, "y1": 2065, "z1": 0, "x2": 2612, "y2": 2254, "z2": 128}
@@ -2993,6 +2995,7 @@
     "Map": "Ilshenar",
     "Name": "Montor",
     "Priority": 41,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 1576, "y1": 272, "x2": 1720, "y2": 368},
       {"x1": 1616, "y1": 200, "x2": 1696, "y2": 272},
@@ -3018,6 +3021,7 @@
     "Map": "Ilshenar",
     "Name": "Ancient Citadel",
     "Priority": 11,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1448, "y1": 496, "x2": 1552, "y2": 600}],
     "GoLocation": {"x": 1516, "y": 542, "z": 85}
   },
@@ -3026,6 +3030,7 @@
     "Map": "Ilshenar",
     "Name": "Alexandretta's Bowl",
     "Priority": 41,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1272, "y1": 352, "x2": 1440, "y2": 592}],
     "GoLocation": {"x": 1396, "y": 432, "z": -17}
   },
@@ -3054,6 +3059,7 @@
     "Map": "Ilshenar",
     "Name": "Lenmir Anfinmotas",
     "Priority": 5,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1560, "y1": 792, "x2": 1792, "y2": 912}],
     "GoLocation": {"x": 1673, "y": 876, "z": -25}
   },
@@ -3098,6 +3104,7 @@
     "Map": "Ilshenar",
     "Name": "Reg Volon",
     "Priority": 50,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1328, "y1": 1008, "x2": 1408, "y2": 1120}],
     "GoLocation": {"x": 1363, "y": 1055, "z": -13}
   },
@@ -3156,6 +3163,7 @@
     "Map": "Ilshenar",
     "Name": "Lake Shire",
     "Priority": 48,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1144, "y1": 1072, "x2": 1264, "y2": 1200}],
     "GoLocation": {"x": 1212, "y": 1144, "z": -25}
   },
@@ -3191,6 +3199,7 @@
     "Map": "Ilshenar",
     "Name": "Bet-Lem Reg",
     "Priority": 48,
+    "GuardsDisabled": true,
     "Area": [{"x1": 1232, "y1": 936, "x2": 1272, "y2": 984}],
     "GoLocation": {"x": 1238, "y": 974, "z": -34}
   },
@@ -3199,6 +3208,7 @@
     "Map": "Ilshenar",
     "Name": "Mistas",
     "Priority": 48,
+    "GuardsDisabled": true,
     "Area": [
       {"x1": 744, "y1": 984, "x2": 912, "y2": 1152},
       {"x1": 744, "y1": 1152, "x2": 792, "y2": 1176}
@@ -3697,7 +3707,496 @@
     "Map": "Tokuno",
     "Name": "Bushido Dojo",
     "Priority": 50,
-    "Area": [{"x1": 283, "y1": 361, "x2": 351, "y2": 463}],
-    "GoLocation": {"x": 320, "y": 408, "z": 32}
+    "Area": [{ "x1": 283, "y1": 361, "x2": 351, "y2": 463 }],
+    "GoLocation": { "x": 320, "y": 408, "z": 32 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Abyss",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Music": "StygianAbyss",
+    "Area": [
+      { "x1": 301, "y1": 328, "x2": 1076, "y2": 802 },
+      { "x1": 780, "y1": 32, "x2": 1076, "y2": 328 },
+      { "x1": 436, "y1": 802, "x2": 740, "y2": 980 },
+      { "x1": 754, "y1": 881, "x2": 862, "y2": 974 },
+      { "x1": 756, "y1": 1049, "x2": 860, "y2": 1142 },
+      { "x1": 756, "y1": 1214, "x2": 861, "y2": 1313 },
+      { "x1": 0, "y1": 684, "x2": 134, "y2": 860 },
+      { "x1": 0, "y1": 485, "x2": 134, "y2": 647 },
+      { "x1": 0, "y1": 286, "x2": 137, "y2": 445 },
+      { "x1": 254, "y1": 70, "x2": 500, "y2": 253 }
+    ],
+    "GoLocation": { "x": 946, "y": 72, "z": 72 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Abyssal Lair",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 931, "y1": 314, "x2": 1031, "y2": 454 }],
+    "GoLocation": { "x": 985, "y": 366, "z": -11 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Medusas Lair",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 100,
+    "Area": [
+      { "x1": 764, "y1": 894, "x2": 833, "y2": 983 },
+      { "x1": 816, "y1": 749, "x2": 829, "y2": 765 }
+    ],
+    "GoLocation": { "x": 771, "y": 928, "z": 0 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "NPC Encampment",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 100,
+    "LogoutDelay": false,
+    "GuardsDisabled": true,
+    "Area": [{ "x1": 1087, "y1": 1127, "z1": -42, "x2": 1096, "y2": 1133, "z2": 128 }],
+    "GoLocation": { "x": 1090, "y": 1130, "z": -42 },
+    "Entrance": { "x": 1090, "y": 1132 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Cavern of the Discarded",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [
+      { "x1": 887, "y1": 475, "x2": 1000, "y2": 575 },
+      { "x1": 926, "y1": 533, "x2": 971, "y2": 553 },
+      { "x1": 928, "y1": 543, "x2": 970, "y2": 573 },
+      { "x1": 929, "y1": 536, "x2": 970, "y2": 564 },
+      { "x1": 936, "y1": 559, "x2": 972, "y2": 573 },
+      { "x1": 938, "y1": 541, "x2": 958, "y2": 572 },
+      { "x1": 961, "y1": 527, "x2": 983, "y2": 559 }
+    ],
+    "GoLocation": { "x": 912, "y": 501, "z": -12 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Chamber of Virtue",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 739, "y1": 465, "x2": 760, "y2": 486 }],
+    "GoLocation": { "x": 747, "y": 474, "z": -17 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Crimson Veins",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 931, "y1": 135, "x2": 996, "y2": 200 }],
+    "GoLocation": { "x": 974, "y": 164, "z": -11 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Enslaved Goblins",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [
+      { "x1": 538, "y1": 806, "x2": 613, "y2": 856 },
+      { "x1": 539, "y1": 790, "x2": 614, "y2": 840 },
+      { "x1": 553, "y1": 791, "x2": 613, "y2": 841 },
+      { "x1": 560, "y1": 796, "x2": 581, "y2": 817 },
+      { "x1": 570, "y1": 773, "x2": 613, "y2": 857 },
+      { "x1": 571, "y1": 788, "x2": 596, "y2": 813 }
+    ],
+    "GoLocation": { "x": 581, "y": 815, "z": -45 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Fairy Dragon Lair",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 849, "y1": 254, "x2": 916, "y2": 297 }],
+    "GoLocation": { "x": 888, "y": 277, "z": 3 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Fire Temple Ruins",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [
+      { "x1": 474, "y1": 766, "x2": 563, "y2": 789 },
+      { "x1": 485, "y1": 760, "x2": 553, "y2": 789 },
+      { "x1": 495, "y1": 750, "x2": 560, "y2": 779 },
+      { "x1": 506, "y1": 750, "x2": 572, "y2": 782 },
+      { "x1": 520, "y1": 739, "x2": 584, "y2": 771 }
+    ],
+    "GoLocation": { "x": 519, "y": 765, "z": -92 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Fractured City",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [
+      { "x1": 664, "y1": 439, "x2": 731, "y2": 527 },
+      { "x1": 726, "y1": 505, "x2": 771, "y2": 527 },
+      { "x1": 712, "y1": 402, "x2": 820, "y2": 460 },
+      { "x1": 720, "y1": 504, "x2": 746, "y2": 527 },
+      { "x1": 771, "y1": 460, "x2": 810, "y2": 518 },
+      { "x1": 808, "y1": 480, "x2": 820, "y2": 512 }
+    ],
+    "GoLocation": { "x": 780, "y": 445, "z": -15 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Lands of the Lich",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [
+      { "x1": 499, "y1": 575, "x2": 570, "y2": 695 },
+      { "x1": 554, "y1": 600, "x2": 628, "y2": 642 }
+    ],
+    "GoLocation": { "x": 538, "y": 656, "z": 8 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Lava Caldera",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 553, "y1": 860, "x2": 639, "y2": 948 }],
+    "GoLocation": { "x": 587, "y": 895, "z": -73 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Passage of Tears",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 638, "y1": 530, "x2": 738, "y2": 635 }],
+    "GoLocation": { "x": 685, "y": 579, "z": -15 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Secret Garden",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 413, "y1": 678, "x2": 489, "y2": 749 }],
+    "GoLocation": { "x": 462, "y": 719, "z": 22 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Serpents Lair",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [
+      { "x1": 681, "y1": 679, "x2": 849, "y2": 790 },
+      { "x1": 703, "y1": 656, "x2": 850, "y2": 789 },
+      { "x1": 785, "y1": 640, "x2": 850, "y2": 775 }
+    ],
+    "GoLocation": { "x": 711, "y": 720, "z": -11 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Silver Sapling",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 311, "y1": 582, "x2": 379, "y2": 650 }],
+    "GoLocation": { "x": 341, "y": 619, "z": 26 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Skeletal Dragon",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 643, "y1": 809, "x2": 698, "y2": 872 }],
+    "GoLocation": { "x": 675, "y": 828, "z": -109 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Sutek the Mage",
+    "Map": "TerMur",
+    "Parent": { "Name": "Abyss", "Map": "TerMur" },
+    "Priority": 50,
+    "Area": [{ "x1": 901, "y1": 574, "x2": 954, "y2": 614 }],
+    "GoLocation": { "x": 924, "y": 595, "z": -14 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Underworld",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Music": "HumanLevel",
+    "Area": [{ "x1": 898, "y1": 808, "x2": 1280, "y2": 1231 }],
+    "GoLocation": { "x": 1128, "y": 1207, "z": -2 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Atoll Bend",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 1027, "y1": 3311, "x2": 1224, "y2": 3514 }],
+    "GoLocation": { "x": 1118, "y": 3408, "z": -42 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Chicken Chase",
+    "Map": "TerMur",
+    "Priority": 50,
+    "rune": "Chicken Chase",
+    "Area": [{ "x1": 448, "y1": 3352, "x2": 613, "y2": 3480 }],
+    "GoLocation": { "x": 560, "y": 3412, "z": 37 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Fishermans Reach",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 547, "y1": 2835, "x2": 745, "y2": 3102 }],
+    "GoLocation": { "x": 631, "y": 3035, "z": 36 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Gated Isle",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 603, "y1": 3836, "x2": 815, "y2": 4043 }],
+    "GoLocation": { "x": 703, "y": 3934, "z": -31 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "High Plain",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 748, "y1": 2843, "x2": 981, "y2": 3050 }],
+    "GoLocation": { "x": 863, "y": 2931, "z": 38 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Holy City",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Music": "Holycity",
+    "Area": [{ "x1": 922, "y1": 3838, "x2": 1071, "y2": 3965 }],
+    "GoLocation": { "x": 997, "y": 3869, "z": -42 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Kepetch Waste",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 356, "y1": 3143, "x2": 523, "y2": 3224 }],
+    "GoLocation": { "x": 447, "y": 3188, "z": 20 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Lost Settlement",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 454, "y1": 3708, "x2": 648, "y2": 3957 }],
+    "GoLocation": { "x": 526, "y": 3822, "z": -44 }
+  },
+  {
+    "$type": "GuardedRegion",
+    "Name": "Moongates",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [
+      { "x1": 852, "y1": 3525, "x2": 867, "y2": 3540 },
+      { "x1": 925, "y1": 3988, "x2": 940, "y2": 4003 }
+    ]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Northern Steppes",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 694, "y1": 3020, "x2": 954, "y2": 3148 }],
+    "GoLocation": { "x": 822, "y": 3063, "z": 61 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Raptor Island",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [
+      { "x1": 712, "y1": 3765, "x2": 879, "y2": 3829 },
+      { "x1": 728, "y1": 3809, "x2": 839, "y2": 3923 },
+      { "x1": 769, "y1": 3721, "x2": 972, "y2": 3768 },
+      { "x1": 808, "y1": 3692, "x2": 930, "y2": 3732 }
+    ],
+    "GoLocation": { "x": 816, "y": 3778, "z": -42 }
+  },
+  {
+    "$type": "TownRegion",
+    "Name": "Royal City",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Music": "RoyalCity",
+    "Area": [{ "x1": 624, "y1": 3296, "x2": 927, "y2": 3583 }],
+    "GoLocation": { "x": 750, "y": 3440, "z": -20 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Queen's Palace",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Music": "QueenPalace",
+    "Area": [{ "x1": 717, "y1": 3339, "x2": 785, "y2": 3412 }],
+    "GoLocation": { "x": 748, "y": 3357, "z": 55 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Royal City Inn",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "LogoutDelay": false,
+    "Area": [
+      { "x1": 724, "y1": 3463, "x2": 761, "y2": 3483 },
+      { "x1": 747, "y1": 3480, "x2": 760, "y2": 3493 }
+    ]
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Royal Park",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [
+      { "x1": 632, "y1": 3233, "x2": 808, "y2": 3268 },
+      { "x1": 753, "y1": 3161, "x2": 990, "y2": 3292 }
+    ],
+    "GoLocation": { "x": 711, "y": 3255, "z": -42 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Slith Valley",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 1028, "y1": 3263, "x2": 1221, "y2": 3404 }],
+    "GoLocation": { "x": 1078, "y": 3331, "z": -42 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Spider Island",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 1063, "y1": 3695, "x2": 1181, "y2": 3779 }],
+    "GoLocation": { "x": 1115, "y": 3730, "z": -42 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Stygian Dragon Lair",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Music": "StygianDragon",
+    "Area": [{ "x1": 258, "y1": 90, "x2": 489, "y2": 245 }],
+    "GoLocation": { "x": 367, "y": 155, "z": 0 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Talon Point",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [
+      { "x1": 632, "y1": 3830, "x2": 730, "y2": 3885 },
+      { "x1": 629, "y1": 3786, "x2": 705, "y2": 3826 },
+      { "x1": 656, "y1": 3750, "x2": 707, "y2": 3791 }
+    ],
+    "GoLocation": { "x": 676, "y": 3831, "z": -39 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Toxic Desert",
+    "Map": "TerMur",
+    "Priority": 50,
+    "rune": "Toxic Desert",
+    "Area": [{ "x1": 1010, "y1": 2929, "z1": 37, "x2": 1156, "y2": 3049, "z2": 128 }],
+    "GoLocation": { "x": 1047, "y": 2980, "z": 62 },
+    "Entrance": { "x": 1051, "y": 3022 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Void Island",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 314, "y1": 3473, "x2": 581, "y2": 3699 }],
+    "GoLocation": { "x": 440, "y": 3577, "z": 38 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Volcano",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 298, "y1": 2895, "x2": 499, "y2": 3117 }],
+    "GoLocation": { "x": 407, "y": 3010, "z": -24 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Walled Circus",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 291, "y1": 3207, "x2": 445, "y2": 3354 }],
+    "GoLocation": { "x": 370, "y": 3273, "z": 0 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Waterfall Point",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 635, "y1": 2862, "x2": 731, "y2": 2926 }],
+    "GoLocation": { "x": 661, "y": 2894, "z": 39 }
+  },
+  {
+    "$type": "BaseRegion",
+    "Name": "Shrine of Singularity",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Music": "CodexShrine",
+    "Area": [{ "x1": 978, "y1": 3786, "x2": 1018, "y2": 3838 }],
+    "GoLocation": { "x": 995, "y": 3806, "z": 0 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Great Ape Lair",
+    "Map": "TerMur",
+    "Priority": 100,
+    "Area": [{ "x1": 832, "y1": 1363, "z1": -25, "x2": 938, "y2": 1474, "z2": 128 }],
+    "GoLocation": { "x": 926, "y": 1464, "z": 0 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Zipactriotl Lair",
+    "Map": "TerMur",
+    "Priority": 100,
+    "Area": [{ "x1": 831, "y1": 2239, "z1": -25, "x2": 959, "y2": 2367, "z2": 128 }],
+    "GoLocation": { "x": 896, "y": 2304, "z": -19 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Myrmidex Queen Lair",
+    "Map": "TerMur",
+    "Priority": 100,
+    "Area": [{ "x1": 704, "y1": 2248, "z1": -25, "x2": 828, "y2": 2363, "z2": 128 }],
+    "GoLocation": { "x": 766, "y": 2306, "z": 0 }
+  },
+  {
+    "$type": "DungeonRegion",
+    "Name": "Kotl City",
+    "Map": "TerMur",
+    "Priority": 50,
+    "Area": [{ "x1": 435, "y1": 2270, "z1": -25, "x2": 675, "y2": 2490, "z2": 128 }],
+    "GoLocation": { "x": 542, "y": 2473, "z": 0 }
   }
 ]
