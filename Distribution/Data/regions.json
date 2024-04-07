@@ -3741,7 +3741,7 @@
   },
   {
     "$type": "BaseRegion",
-    "Name": "MedusasLair",
+    "Name": "Medusas Lair",
     "Map": "TerMur",
     "Parent": { "Name": "Abyss", "Map": "TerMur" },
     "Priority": 100,
@@ -4097,7 +4097,7 @@
   },
   {
     "$type": "DungeonRegion",
-    "Name": "StygianDragonLair",
+    "Name": "Stygian Dragon Lair",
     "Map": "TerMur",
     "Priority": 50,
     "Music": "StygianDragon",
@@ -4169,7 +4169,7 @@
   },
   {
     "$type": "DungeonRegion",
-    "Name": "GreatApeLair",
+    "Name": "Great Ape Lair",
     "Map": "TerMur",
     "Priority": 100,
     "Area": [{ "x1": 832, "y1": 1363, "z1": -25, "x2": 938, "y2": 1474, "z2": 128 }],
@@ -4177,7 +4177,7 @@
   },
   {
     "$type": "DungeonRegion",
-    "Name": "ZipactriotlLair",
+    "Name": "Zipactriotl Lair",
     "Map": "TerMur",
     "Priority": 100,
     "Area": [{ "x1": 831, "y1": 2239, "z1": -25, "x2": 959, "y2": 2367, "z2": 128 }],
@@ -4185,7 +4185,7 @@
   },
   {
     "$type": "DungeonRegion",
-    "Name": "MyrmidexQueenLair",
+    "Name": "Myrmidex Queen Lair",
     "Map": "TerMur",
     "Priority": 100,
     "Area": [{ "x1": 704, "y1": 2248, "z1": -25, "x2": 828, "y2": 2363, "z2": 128 }],
@@ -4193,7 +4193,7 @@
   },
   {
     "$type": "DungeonRegion",
-    "Name": "KotlCity",
+    "Name": "Kotl City",
     "Map": "TerMur",
     "Priority": 50,
     "Area": [{ "x1": 435, "y1": 2270, "z1": -25, "x2": 675, "y2": 2490, "z2": 128 }],
