@@ -819,6 +819,8 @@ public partial class BaseEscortable : BaseCreature
                 _destinationString = null;
                 return null;
             }
+
+            return _destination;
         }
 
         // Destination is invalid, so set it to null and return.
@@ -881,7 +883,7 @@ public class EscortDestinationInfo
 
         if (!validTown)
         {
-            logger.Error( "No valid escort destinations found. Please check {TownNames}.", townNamesVariable);
+            logger.Error("No valid escort destinations found. Please check {TownNames}.", townNamesVariable);
         }
     }
 
