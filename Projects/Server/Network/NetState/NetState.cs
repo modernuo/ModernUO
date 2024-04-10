@@ -1172,7 +1172,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            using StreamWriter op = new("network-disconnects.log", true);
+            using var op = new StreamWriter("network-disconnects.log", true);
             op.WriteLine($"# {Core.Now}");
 
             op.WriteLine($"NetState: {ip}");

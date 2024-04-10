@@ -13,14 +13,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using Server.Network;
 using Server.Utilities;
 
 namespace Server.Gumps;
 
-public partial class Gump : BaseGump
+public class Gump : BaseGump
 {
     private int _switches;
     private int _textEntries;
@@ -38,10 +37,6 @@ public partial class Gump : BaseGump
 
     public List<GumpEntry> Entries { get; }
 
-    public int X { get; set; }
-
-    public int Y { get; set; }
-
     public bool Disposable { get; set; } = true;
 
     public bool Resizable { get; set; } = true;
@@ -53,16 +48,6 @@ public partial class Gump : BaseGump
     public override int Switches => _switches;
 
     public override int TextEntries => _textEntries;
-
-    public static int GetTypeID(Type type)
-    {
-        unchecked
-        {
-            // To use the original .NET Framework deterministic hash code (with really bad performance)
-            // change the next line to use HashUtility.GetNetFrameworkHashCode
-            return (int)HashUtility.ComputeHash32(type?.FullName);
-        }
-    }
 
     public void AddPage(int page)
     {

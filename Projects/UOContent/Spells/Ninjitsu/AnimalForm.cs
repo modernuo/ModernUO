@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Server.Gumps;
-using Server.Gumps.Components;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
@@ -388,17 +387,16 @@ namespace Server.Spells.Ninjitsu
             private readonly AnimalForm _spell;
             private readonly AnimalFormEntry[] _entries;
 
-            public AnimalFormGump(Mobile caster, AnimalFormEntry[] entries, AnimalForm spell)
-                : base(50, 50)
+            public AnimalFormGump(Mobile caster, AnimalFormEntry[] entries, AnimalForm spell) : base(50, 50)
             {
                 _caster = caster;
                 _spell = spell;
                 _entries = entries;
             }
 
-            protected override void Build(ref GumpBuilder<StaticStringsHandler> builder)
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
             {
-                builder.AddPage(0);
+                builder.AddPage();
 
                 builder.AddBackground(0, 0, 520, 404, 0x13BE);
                 builder.AddImageTiled(10, 10, 500, 20, 0xA40);
@@ -462,13 +460,13 @@ namespace Server.Spells.Ninjitsu
             {
                 var entryID = info.ButtonID - 1;
 
-                if (entryID < 0 || entryID >= AnimalForm.Entries.Length)
+                if (entryID < 0 || entryID >= Entries.Length)
                 {
                     return;
                 }
 
                 var mana = _spell.ScaleMana(_spell.RequiredMana);
-                var entry = AnimalForm.Entries[entryID];
+                var entry = Entries[entryID];
 
                 if (mana > _caster.Mana)
                 {
