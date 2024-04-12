@@ -83,6 +83,9 @@ public partial class Container : Item
     [SerializableFieldSaveFlag(0)]
     private bool ShouldSerializeMaxItems() => _maxItems != -1;
 
+    [SerializableFieldDefault(0)]
+    private int MaxItemsDefaultValue() => -1;
+
     [EncodedInt]
     [SerializableProperty(1)]
     [CommandProperty(AccessLevel.GameMaster)]
