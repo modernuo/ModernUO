@@ -599,7 +599,7 @@ public partial class ChampionSpawn : Item
                     {
                         mapChance = 0.0015;
                     }
-                    else // Nothing drops in Trammel or TerMur
+                    else // Nothing drops in Trammel, Malas or TerMur
                     {
                         continue;
                     }
