@@ -409,40 +409,44 @@ public partial class ChampionSpawn : Item
         ReadyToActivate = true;
     }
 
-    private ScrollofTranscendence CreateRandomTramSoT()
+    private static ScrollofTranscendence CreateRandomSoT(bool isFel)
     {
-        int level = Utility.Random(5) + 1;
-        return ScrollofTranscendence.CreateRandom(level, level);
+        var min = isFel ? 1 : 6;
+        var max = isFel ? 5 : 10;
+        return ScrollofTranscendence.CreateRandom(min, max);
     }
 
-    private ScrollofTranscendence CreateRandomFelSoT()
-    {
-        int level = Utility.Random(5) + 1;
-        return ScrollofTranscendence.CreateRandom(level, level);
-    }
+    private static PowerScroll CreateRandomPS() => PowerScroll.CreateRandomNoCraft(5, 5);
 
-    private static PowerScroll CreateRandomFelPS() => PowerScroll.CreateRandomNoCraft(5, 5);
-
-    public static void GiveScrollOfTranscendenceFelTo(Mobile killer, ScrollofTranscendence SoTF)
+    public static void GiveScrollTo(Mobile killer, SpecialScroll scroll, bool isFelucca = true)
     {
-        if (SoTF == null || killer == null) //sanity
+        if (scroll == null || killer == null) // sanity
         {
             return;
         }
 
-        killer.SendLocalizedMessage(1094936); // You have received a Scroll of Transcendence!
-
-        if (killer.Alive)
+        if (scroll is ScrollofTranscendence)
         {
-            killer.AddToBackpack(SoTF);
-        }
-        else if (killer.Corpse is { Deleted: false })
-        {
-            killer.Corpse.DropItem(SoTF);
+            killer.SendLocalizedMessage(1094936); // You have received a Scroll of Transcendence!
         }
         else
         {
-            killer.AddToBackpack(SoTF);
+            killer.SendLocalizedMessage(1049524); // You have received a scroll of power!
+        }
+
+        if (!isFelucca)
+        {
+            killer.AddToBackpack(scroll);
+            return;
+        }
+
+        if (killer.Alive || killer.Corpse is not { Deleted: false })
+        {
+            killer.AddToBackpack(scroll);
+        }
+        else
+        {
+            killer.Corpse.DropItem(scroll);
         }
 
         // Justice reward
@@ -464,55 +468,22 @@ public partial class ChampionSpawn : Item
 
         if (chance > 0 && chance > Utility.Random(100))
         {
-            prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
-            ScrollofTranscendence SoTFduplicate = new ScrollofTranscendence (SoTF.Skill, SoTF.Value);
-            prot.AddToBackpack(SoTFduplicate);
-        }
-    }
+            try
+            {
+                var scrollDupe = scroll.GetType().CreateEntityInstance<SpecialScroll>();
 
-    public static void GivePowerScrollFelTo (Mobile killer, PowerScroll PS)
-    {
-        if (PS == null || killer == null) //sanity
-        {
-            return;
-        }
-
-        killer.SendLocalizedMessage(1049524); // You have received a scroll of power!
-
-        if (killer.Alive)
-        {
-            killer.AddToBackpack(PS);
-        }
-        else if (killer.Corpse is { Deleted: false })
-        {
-            killer.Corpse.DropItem(PS);
-        }
-        else
-        {
-            killer.AddToBackpack(PS);
-        }
-
-        // Justice reward
-        var pm = (PlayerMobile)killer;
-        var prot = JusticeVirtue.GetProtector(pm);
-        if (prot == null || prot.Map != killer.Map || prot.Kills >= 5 || prot.Criminal ||
-            !JusticeVirtue.CheckMapRegion(killer, prot))
-        {
-            return;
-        }
-
-        var chance = VirtueSystem.GetLevel(prot, VirtueName.Justice) switch
-        {
-            VirtueLevel.Seeker   => 60,
-            VirtueLevel.Follower => 80,
-            VirtueLevel.Knight   => 100,
-            _                    => 0
-        };
-
-        if (chance > 0 && chance > Utility.Random(100))
-        {
-            prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
-            prot.AddToBackpack(CreateRandomFelPS());
+                if (scrollDupe != null)
+                {
+                    prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
+                    scrollDupe.Skill = scroll.Skill;
+                    scrollDupe.Value = scroll.Value;
+                    prot.AddToBackpack(scrollDupe);
+                }
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 
@@ -583,55 +554,68 @@ public partial class ChampionSpawn : Item
                         killer = creature.GetMaster();
                     }
 
-                    if (killer is PlayerMobile pm)
+                    if (killer is not PlayerMobile pm)
                     {
-                        if (Core.ML)
+                        continue;
+                    }
+
+                    int mobSubLevel = GetSubLevelfor(m) + 1;
+
+                    if (mobSubLevel >= 0)
+                    {
+                        bool gainedPath = false;
+
+                        int pointsToGain = mobSubLevel * 40;
+
+                        if (VirtueSystem.Award(pm, VirtueName.Valor, pointsToGain, ref gainedPath))
                         {
-                            if (Map == Map.Felucca)
+                            if (gainedPath)
                             {
-                                // 1 in 1000 you get either a scroll of transcendence or a powerscroll
-                                var random = Utility.Random(2000);
-                                if (random == 0)
-                                {
-                                    GiveScrollOfTranscendenceFelTo(pm, CreateRandomFelSoT());
-                                }
-                                else if (random == 1)
-                                {
-                                    GivePowerScrollFelTo(pm, CreateRandomFelPS());
-                                }
+                                pm.SendLocalizedMessage(1054032); // You have gained a path in Valor!
+                            }
+                            else
+                            {
+                                pm.SendLocalizedMessage(1054030); // You have gained in Valor!
                             }
 
-                            if ((Map == Map.Ilshenar || Map == Map.Tokuno) && Utility.Random(10000) < 15)
-                            {
-                                pm.SendLocalizedMessage(1094936); // You have received a Scroll of Transcendence!
-                                pm.AddToBackpack(CreateRandomTramSoT());
-                            }
+                            // No delay on Valor gains
                         }
 
-                        int mobSubLevel = GetSubLevelfor(m) + 1;
+                        pm.ChampionTitles.Award(_type, mobSubLevel);
+                    }
 
-                        if (mobSubLevel >= 0)
-                        {
-                            bool gainedPath = false;
+                    if (!Core.ML)
+                    {
+                        continue;
+                    }
 
-                            int pointsToGain = mobSubLevel * 40;
+                    var isFel = Map == Map.Felucca;
+                    double mapChance;
+                    if (isFel)
+                    {
+                        mapChance = 0.001;
+                    }
+                    else if (Map == Map.Ilshenar || Map == Map.Tokuno)
+                    {
+                        mapChance = 0.0015;
+                    }
+                    else // Nothing drops in Trammel, Malas or TerMur
+                    {
+                        continue;
+                    }
 
-                            if (VirtueSystem.Award(pm, VirtueName.Valor, pointsToGain, ref gainedPath))
-                            {
-                                if (gainedPath)
-                                {
-                                    pm.SendLocalizedMessage(1054032); // You have gained a path in Valor!
-                                }
-                                else
-                                {
-                                    pm.SendLocalizedMessage(1054030); // You have gained in Valor!
-                                }
+                    if (Utility.RandomDouble() >= mapChance)
+                    {
+                        continue;
+                    }
 
-                                // No delay on Valor gains
-                            }
-
-                            pm.ChampionTitles.Award(_type, mobSubLevel);
-                        }
+                    if (!isFel || Utility.RandomBool())
+                    {
+                        GiveScrollTo(pm, CreateRandomSoT(isFel), isFel);
+                    }
+                    else
+                    {
+                        GiveScrollTo(pm, CreateRandomPS());
                     }
                 }
             }
