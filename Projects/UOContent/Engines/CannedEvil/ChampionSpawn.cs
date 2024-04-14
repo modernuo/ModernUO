@@ -409,10 +409,11 @@ public partial class ChampionSpawn : Item
         ReadyToActivate = true;
     }
 
-    private static ScrollofTranscendence CreateRandomSoT()
+    private static ScrollofTranscendence CreateRandomSoT(bool isFel)
     {
-        int level = Utility.Random(5) + 1;
-        return ScrollofTranscendence.CreateRandom(level, level);
+        var min = isFel ? 1 : 6;
+        var max = isFel ? 5 : 10;
+        return ScrollofTranscendence.CreateRandom(min, max);
     }
 
     private static PowerScroll CreateRandomPS() => PowerScroll.CreateRandomNoCraft(5, 5);
@@ -594,25 +595,27 @@ public partial class ChampionSpawn : Item
                     {
                         mapChance = 0.001;
                     }
-                    else if (Map == Map.Ilshenar || Map == Map.Tokuno || Map == Map.Malas)
+                    else if (Map == Map.Ilshenar || Map == Map.Tokuno)
                     {
                         mapChance = 0.0015;
                     }
-                    else
+                    else // Nothing drops in Trammel or TerMur
                     {
                         continue;
                     }
 
-                    if (Utility.RandomDouble() < mapChance)
+                    if (Utility.RandomDouble() >= mapChance)
                     {
-                        if (!isFel || Utility.RandomBool())
-                        {
-                            GiveScrollTo(pm, CreateRandomSoT(), isFel);
-                        }
-                        else
-                        {
-                            GiveScrollTo(pm, CreateRandomPS());
-                        }
+                        continue;
+                    }
+
+                    if (!isFel || Utility.RandomBool())
+                    {
+                        GiveScrollTo(pm, CreateRandomSoT(isFel), isFel);
+                    }
+                    else
+                    {
+                        GiveScrollTo(pm, CreateRandomPS());
                     }
                 }
             }
