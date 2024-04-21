@@ -218,7 +218,7 @@ namespace Server.Saves
             }
         }
 
-        public static async void AutoArchiveLocally()
+        public static void AutoArchiveLocally()
         {
             var date = Core.Now;
 
