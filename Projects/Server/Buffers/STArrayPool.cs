@@ -15,7 +15,7 @@ namespace Server.Buffers;
  */
 public class STArrayPool<T> : ArrayPool<T>
 {
-    private const int StackArraySize = 8;
+    private const int StackArraySize = 32;
     private const int BucketCount = 27; // SelectBucketIndex(1024 * 1024 * 1024 + 1)
     private static readonly STArrayPool<T> _shared = new();
 
