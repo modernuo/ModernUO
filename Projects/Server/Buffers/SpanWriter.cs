@@ -438,7 +438,7 @@ public ref struct SpanWriter
             _                  => offset // Begin
         });
 
-        if (newPosition >= _buffer.Length)
+        if (newPosition > _buffer.Length)
         {
             Grow(newPosition - _buffer.Length + 1);
         }
