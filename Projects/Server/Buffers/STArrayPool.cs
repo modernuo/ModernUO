@@ -62,7 +62,7 @@ public class STArrayPool<T> : ArrayPool<T>
         if (minimumLength == 0)
         {
             // We aren't renting.
-            return Array.Empty<T>();
+            return [];
         }
 
         if (minimumLength < 0)
@@ -74,7 +74,7 @@ public class STArrayPool<T> : ArrayPool<T>
         return buffer;
     }
 
-    public override void Return(T[] array, bool clearArray = false)
+    public override void Return(T[]? array, bool clearArray = false)
     {
         if (array is null)
         {
@@ -231,7 +231,7 @@ public class STArrayPool<T> : ArrayPool<T>
     private sealed class STArrayStack
     {
         // Maximum buffers we will store in our stack
-        private readonly T[][] _arrays = new T[StackArraySize * Environment.ProcessorCount][];
+        private readonly T[][] _arrays = new T[StackArraySize][];
         private int _count;
         private long _ticks;
 
