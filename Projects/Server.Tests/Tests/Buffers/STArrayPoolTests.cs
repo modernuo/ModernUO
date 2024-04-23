@@ -36,12 +36,11 @@ public class STArrayPoolTests
     {
         STArrayPool<byte>.Shared.ResetForTesting();
 
-        var cores = Environment.ProcessorCount;
-        var arrays1 = new byte[cores * 8 + 2][]; // 1 for the cache, and 8 * CPU for the stacks
-        var weakReferences1 = new WeakReference[cores * 8 + 2];
+        var arrays1 = new byte[32 + 2][]; // 1 for the cache, 32 for the cores, and 1 for overflow
+        var weakReferences1 = new WeakReference[32 + 2];
 
-        var arrays2 = new byte[cores * 8 + 2][]; // 1 for the cache, and 8 * CPU for the stacks
-        var weakReferences2 = new WeakReference[cores * 8 + 2];
+        var arrays2 = new byte[32 + 2][];
+        var weakReferences2 = new WeakReference[32 + 2];
 
         for (var i = 0; i < arrays1.Length; i++)
         {
