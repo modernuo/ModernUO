@@ -549,7 +549,7 @@ namespace Server.Engines.Craft
                 {
                     amount += item.Amount;
                 }
-                else if ((hq as BaseBeverage)?.Content == RequiredBeverage)
+                else if (hq is not BaseBeverage bev || bev.Content == RequiredBeverage)
                 {
                     amount += hq.Quantity;
                 }
@@ -561,8 +561,7 @@ namespace Server.Engines.Craft
         public bool ConsumeRes(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
             ConsumeType consumeType, ref TextDefinition message
-        ) =>
-            ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, false);
+        ) => ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, false);
 
         public bool ConsumeRes(
             Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
@@ -630,7 +629,7 @@ namespace Server.Engines.Craft
                     }
                 }
 
-                types[i] ??= new[] { baseType };
+                types[i] ??= [baseType];
                 amounts[i] = craftRes.Amount;
 
                 // For stackable items that can be crafted more than one at a time
@@ -733,12 +732,7 @@ namespace Server.Engines.Craft
                 {
                     for (var i = 0; i < amounts.Length; i++)
                     {
-                        amounts[i] /= 2;
-
-                        if (amounts[i] < 1)
-                        {
-                            amounts[i] = 1;
-                        }
+                        amounts[i] = Math.Max(1, amounts[i] / 2);
                     }
                 }
 
