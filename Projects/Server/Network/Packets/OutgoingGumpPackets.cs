@@ -105,28 +105,26 @@ public static class OutgoingGumpPackets
             return;
         }
 
-        var packed = ns.Unpack;
-
         var layoutWriter = new SpanWriter(_layoutBuffer);
 
         if (!gump.Draggable)
         {
-            layoutWriter.Write(Gump.NoMove);
+            layoutWriter.Write("{ nomove }"u8);
         }
 
         if (!gump.Closable)
         {
-            layoutWriter.Write(Gump.NoClose);
+            layoutWriter.Write("{ noclose }"u8);
         }
 
         if (!gump.Disposable)
         {
-            layoutWriter.Write(Gump.NoDispose);
+            layoutWriter.Write("{ nodispose }"u8);
         }
 
         if (!gump.Resizable)
         {
-            layoutWriter.Write(Gump.NoResize);
+            layoutWriter.Write("{ noresize }"u8);
         }
 
         foreach (var entry in gump.Entries)
@@ -143,20 +141,12 @@ public static class OutgoingGumpPackets
             stringsWriter.WriteBigUni(s);
         }
 
-        int maxLength;
-        if (packed)
-        {
-            var worstLayoutLength = Zlib.MaxPackSize(layoutWriter.BytesWritten);
-            var worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
-            maxLength = 40 + worstLayoutLength + worstStringsLength;
-        }
-        else
-        {
-            maxLength = 23 + layoutWriter.BytesWritten + stringsWriter.BytesWritten;
-        }
+        var worstLayoutLength = Zlib.MaxPackSize(layoutWriter.BytesWritten);
+        var worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
+        var maxLength = 40 + worstLayoutLength + worstStringsLength;
 
         var writer = new SpanWriter(maxLength);
-        writer.Write((byte)(packed ? 0xDD : 0xB0)); // Packet ID
+        writer.Write((byte)0xDD); // Packet ID
         writer.Seek(2, SeekOrigin.Current);
 
         writer.Write(gump.Serial);
@@ -164,22 +154,11 @@ public static class OutgoingGumpPackets
         writer.Write(gump.X);
         writer.Write(gump.Y);
 
-        if (packed)
-        {
-            layoutWriter.Write((byte)0); // Layout text terminator
-            WritePacked(layoutWriter.Span, ref writer);
+        layoutWriter.Write((byte)0); // Layout text terminator
+        WritePacked(layoutWriter.Span, ref writer);
 
-            writer.Write(_stringsList.Count);
-            WritePacked(stringsWriter.Span, ref writer);
-        }
-        else
-        {
-            writer.Write((ushort)layoutWriter.BytesWritten);
-            writer.Write(layoutWriter.Span);
-
-            writer.Write((ushort)_stringsList.Count);
-            writer.Write(stringsWriter.Span);
-        }
+        writer.Write(_stringsList.Count);
+        WritePacked(stringsWriter.Span, ref writer);
 
         writer.WritePacketLength();
 

@@ -148,6 +148,14 @@ namespace Server.Network
         }
 
         /// <summary>
+        ///     Writes a sequence of bytes to the underlying stream
+        /// </summary>
+        public void Write(ReadOnlySpan<byte> buffer)
+        {
+            UnderlyingStream.Write(buffer);
+        }
+
+        /// <summary>
         ///     Writes a fixed-length ASCII-encoded string value to the underlying stream. To fit (size), the string content is either
         ///     truncated or padded with null characters.
         /// </summary>

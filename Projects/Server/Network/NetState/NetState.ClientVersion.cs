@@ -36,7 +36,6 @@ public partial class NetState
 
     public bool NewSpellbook => HasProtocolChanges(ProtocolChanges.NewSpellbook);
     public bool DamagePacket => HasProtocolChanges(ProtocolChanges.DamagePacket);
-    public bool Unpack => HasProtocolChanges(ProtocolChanges.Unpack);
     public bool BuffIcon => HasProtocolChanges(ProtocolChanges.BuffIcon);
     public bool NewHaven => HasProtocolChanges(ProtocolChanges.NewHaven);
     public bool ContainerGridLines => HasProtocolChanges(ProtocolChanges.ContainerGridLines);

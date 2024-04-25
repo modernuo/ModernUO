@@ -282,10 +282,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
             var v when v >= Version6017                               => ProtocolChanges.Version6017,
             var v when v >= Version6000                               => ProtocolChanges.Version6000,
             var v when v >= Version502b                               => ProtocolChanges.Version502b,
-            var v when v >= Version500a                               => ProtocolChanges.Version500a,
-            var v when v >= Version407a                               => ProtocolChanges.Version407a,
-            var v when v >= Version400a                               => ProtocolChanges.Version400a,
-            _                                                         => ProtocolChanges.None
+            _                               => ProtocolChanges.Version500a, // We do not support versions lower than 5.0.0a
         };
     }
 

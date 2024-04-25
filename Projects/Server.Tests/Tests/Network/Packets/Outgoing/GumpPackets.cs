@@ -1,6 +1,6 @@
+using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
 using System.Text;
 using Server.Gumps;
@@ -20,7 +20,7 @@ namespace Server.Tests
         void AppendLayoutNS(int val);
         void AppendLayout(string text);
         void AppendLayoutNS(string text);
-        void AppendLayout(byte[] buffer);
+        void AppendLayout(ReadOnlySpan<byte> buffer);
         void WriteStrings(List<string> strings);
         void Flush();
     }
@@ -39,12 +39,6 @@ namespace Server.Tests
 
     public sealed class DisplayGumpPacked : Packet, IGumpWriter
     {
-        private static readonly byte[] m_True = Gump.StringToBuffer(" 1");
-        private static readonly byte[] m_False = Gump.StringToBuffer(" 0");
-
-        private static readonly byte[] m_BeginTextSeparator = Gump.StringToBuffer(" @");
-        private static readonly byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
-
         private static readonly byte[] m_Buffer = new byte[48];
 
         private readonly Gump m_Gump;
@@ -71,7 +65,7 @@ namespace Server.Tests
 
         public void AppendLayout(bool val)
         {
-            AppendLayout(val ? m_True : m_False);
+            AppendLayout(val ? " 1"u8 : " 0"u8);
         }
 
         public void AppendLayout(int val)
@@ -107,16 +101,16 @@ namespace Server.Tests
 
         public void AppendLayout(string text)
         {
-            AppendLayout(m_BeginTextSeparator);
+            AppendLayout(" @"u8);
 
             m_Layout.WriteAsciiFixed(text, text.Length);
 
-            AppendLayout(m_EndTextSeparator);
+            AppendLayout("@"u8);
         }
 
-        public void AppendLayout(byte[] buffer)
+        public void AppendLayout(ReadOnlySpan<byte> buffer)
         {
-            m_Layout.Write(buffer, 0, buffer.Length);
+            m_Layout.Write(buffer);
         }
 
         public void WriteStrings(List<string> strings)
@@ -181,117 +175,6 @@ namespace Server.Tests
             Stream.Write(packBuffer, 0, packLength);
 
             ArrayPool<byte>.Shared.Return(packBuffer);
-        }
-    }
-
-    public sealed class DisplayGumpFast : Packet, IGumpWriter
-    {
-        private static readonly byte[] m_True = Gump.StringToBuffer(" 1");
-        private static readonly byte[] m_False = Gump.StringToBuffer(" 0");
-
-        private static readonly byte[] m_BeginTextSeparator = Gump.StringToBuffer(" @");
-        private static readonly byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
-
-        private readonly byte[] m_Buffer = new byte[48];
-        private int m_LayoutLength;
-
-        public DisplayGumpFast(Gump g) : base(0xB0)
-        {
-            m_Buffer[0] = (byte)' ';
-
-            EnsureCapacity(4096);
-
-            Stream.Write(g.Serial);
-            Stream.Write(g.TypeID);
-            Stream.Write(g.X);
-            Stream.Write(g.Y);
-            Stream.Write((ushort)0xFFFF);
-        }
-
-        public int TextEntries { get; set; }
-
-        public int Switches { get; set; }
-
-        public void AppendLayout(bool val)
-        {
-            AppendLayout(val ? m_True : m_False);
-        }
-
-        public void AppendLayout(int val)
-        {
-            var toString = val.ToString();
-            var bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
-
-            Stream.Write(m_Buffer, 0, bytes);
-            m_LayoutLength += bytes;
-        }
-
-        public void AppendLayout(uint val)
-        {
-            var toString = val.ToString();
-            var bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
-
-            Stream.Write(m_Buffer, 0, bytes);
-            m_LayoutLength += bytes;
-        }
-
-        public void AppendLayout(Serial serial) => AppendLayout(serial.Value);
-
-        public void AppendLayoutNS(int val)
-        {
-            var toString = val.ToString();
-            var bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1);
-
-            Stream.Write(m_Buffer, 1, bytes);
-            m_LayoutLength += bytes;
-        }
-
-        public void AppendLayoutNS(string text)
-        {
-            var length = text.Length;
-            Stream.WriteAsciiFixed(text, length);
-            m_LayoutLength += length;
-        }
-
-        public void AppendLayout(string text)
-        {
-            AppendLayout(m_BeginTextSeparator);
-
-            var length = text.Length;
-            Stream.WriteAsciiFixed(text, length);
-            m_LayoutLength += length;
-
-            AppendLayout(m_EndTextSeparator);
-        }
-
-        public void AppendLayout(byte[] buffer)
-        {
-            var length = buffer.Length;
-            Stream.Write(buffer, 0, length);
-            m_LayoutLength += length;
-        }
-
-        public void WriteStrings(List<string> text)
-        {
-            Stream.Seek(19, SeekOrigin.Begin);
-            Stream.Write((ushort)m_LayoutLength);
-            Stream.Seek(0, SeekOrigin.End);
-
-            Stream.Write((ushort)text.Count);
-
-            for (var i = 0; i < text.Count; ++i)
-            {
-                var v = text[i] ?? "";
-
-                int length = (ushort)v.Length;
-
-                Stream.Write((ushort)length);
-                Stream.WriteBigUniFixed(v, length);
-            }
-        }
-
-        public void Flush()
-        {
         }
     }
 

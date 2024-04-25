@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using Server.Network;
-using Server.Text;
 using Server.Utilities;
 
 namespace Server.Gumps;
@@ -25,10 +24,6 @@ public partial class Gump
 {
     private static Serial _nextSerial = (Serial)1;
 
-    public static readonly byte[] NoMove = StringToBuffer("{ nomove }");
-    public static readonly byte[] NoClose = StringToBuffer("{ noclose }");
-    public static readonly byte[] NoDispose = StringToBuffer("{ nodispose }");
-    public static readonly byte[] NoResize = StringToBuffer("{ noresize }");
 
     private int _switches;
     private int _textEntries;
@@ -288,8 +283,6 @@ public partial class Gump
         state.AddGump(this);
         state.SendDisplayGump(this, out _switches, out _textEntries);
     }
-
-    public static byte[] StringToBuffer(string str) => str.GetBytesAscii();
 
     public virtual void OnResponse(NetState sender, in RelayInfo info)
     {

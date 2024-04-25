@@ -20,8 +20,6 @@ namespace Server.Gumps;
 
 public class GumpPage : GumpEntry
 {
-    private static byte[] _page0 = Gump.StringToBuffer("{ page 0 }");
-
     public GumpPage(int page) => Page = page;
 
     public int Page { get; set; }
@@ -30,7 +28,7 @@ public class GumpPage : GumpEntry
     {
         if (Page == 0)
         {
-            writer.Write(_page0);
+            writer.Write("{ page 0 }"u8);
         }
         else
         {

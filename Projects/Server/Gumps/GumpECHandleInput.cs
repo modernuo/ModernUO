@@ -20,10 +20,8 @@ namespace Server.Gumps;
 
 public class GumpECHandleInput : GumpEntry
 {
-    private static byte[] _layout = Gump.StringToBuffer("{ echandleinput }");
-
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        writer.Write(_layout);
+        writer.Write("{ echandleinput }"u8);
     }
 }
