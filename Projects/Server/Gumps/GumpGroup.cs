@@ -20,8 +20,6 @@ namespace Server.Gumps;
 
 public class GumpGroup : GumpEntry
 {
-    private static byte[] _group1 = Gump.StringToBuffer("{ group 1 }");
-
     public GumpGroup(int group) => Group = group;
 
     public int Group { get; set; }
@@ -30,7 +28,7 @@ public class GumpGroup : GumpEntry
     {
         if (Group == 1)
         {
-            writer.Write(_group1);
+            writer.Write("{ group 1 }"u8);
         }
         else
         {
