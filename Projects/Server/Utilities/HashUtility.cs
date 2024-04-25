@@ -16,6 +16,7 @@
 using System;
 using System.IO.Hashing;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace Server;
 
@@ -33,19 +34,15 @@ public static class HashUtility
     [ThreadStatic]
     private static XxHash32 _xxHash32;
 
-    public static unsafe ulong ComputeHash64(string? str)
+    public static ulong ComputeHash64(ReadOnlySpan<char> str)
     {
-        if (str == null)
+        if (str.Length == 0)
         {
             return 0;
         }
 
         var hasher = _xxHash3 ??= new XxHash3(unchecked((long)xxHash3Seed));
-
-        fixed (char* src = &str.GetPinnableReference())
-        {
-            hasher.Append(new ReadOnlySpan<byte>(src, str.Length * 2));
-        }
+        hasher.Append(MemoryMarshal.Cast<char, byte>(str));
 
         var result = hasher.GetCurrentHashAsUInt64();
         hasher.Reset();
@@ -53,7 +50,7 @@ public static class HashUtility
         return result;
     }
 
-    public static unsafe uint ComputeHash32(string? str)
+    public static uint ComputeHash32(ReadOnlySpan<char> str)
     {
         if (str == null)
         {
@@ -61,11 +58,7 @@ public static class HashUtility
         }
 
         var hasher = _xxHash32 ??= new XxHash32(unchecked((int)xxHash1Seed));
-
-        fixed (char* src = &str.GetPinnableReference())
-        {
-            hasher.Append(new ReadOnlySpan<byte>(src, str.Length * 2));
-        }
+        hasher.Append(MemoryMarshal.Cast<char, byte>(str));
 
         var result = hasher.GetCurrentHashAsUInt32();
         hasher.Reset();
