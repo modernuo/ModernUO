@@ -8,6 +8,7 @@ using Xunit;
 
 namespace Server.Tests.Gumps;
 
+[Collection("Sequential Tests")]
 public class TestLayoutGumps
 {
     [Fact]
