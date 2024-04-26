@@ -147,7 +147,9 @@ public static class AssistantHandler
     private class AssistantFailureWarningGump : StaticWarningGump<AssistantFailureWarningGump>
     {
         private static readonly TextDefinition _warningMessage = AssistantConfiguration.Settings.WarningMessage;
-        public override TextDefinition Content => _warningMessage;
+
+        public override int StaticLocalizedContent => _warningMessage?.Number ?? 0;
+        public override string Content => _warningMessage.String;
         public override int Width => 420;
         public override int Height => 250;
         public override bool CancelButton => false;
