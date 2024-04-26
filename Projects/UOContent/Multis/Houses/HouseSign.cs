@@ -178,9 +178,17 @@ namespace Server.Multis
 
         private class ClaimHouseWarningGump : StaticWarningGump<ClaimHouseWarningGump>
         {
-            public override int Header => 501036;
+            public override int Header => 501036; // Claim house
             public override int HeaderColor => 32512;
-            public override TextDefinition Content => 1049719;
+
+            /*
+             * You do not currently own any house on any shard with this account, and this house currently does not have an owner.
+             * If you wish, you may choose to claim this house and become its rightful owner.
+             * If you do this, it will become your Primary house and automatically refresh.
+             * If you claim this house, you will be unable to place another house or have another house transferred to you for the next 7 days.
+             * Do you wish to claim this house?
+             */
+            public override TextDefinition Content => 1049719; //
             public override int ContentColor => 32512;
             public override int Width => 420;
             public override int Height => 280;
