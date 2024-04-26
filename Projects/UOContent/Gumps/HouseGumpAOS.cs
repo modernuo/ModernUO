@@ -1654,8 +1654,6 @@ namespace Server.Gumps
             public override int Width => 420;
             public override int Height => 280;
 
-            public override int ContentColor => 0x7F00;
-
             // You are about to remove ALL co-owners from your house.  Are you certain you wish to clear the co-owner list?
             public override int StaticLocalizedContent => 1060736;
 
@@ -1668,8 +1666,6 @@ namespace Server.Gumps
         {
             public override int Width => 420;
             public override int Height => 280;
-
-            public override int ContentColor => 0x7F00;
 
             /*
              * If you go ahead with this option, all of the current friendships will be removed from the house,
@@ -1687,8 +1683,6 @@ namespace Server.Gumps
             public override int Width => 420;
             public override int Height => 280;
 
-            public override int ContentColor => 0x7F00;
-
             // You are about to lift all bans for this house.  Are you sure you wish to do this?
             public override int StaticLocalizedContent => 1060753;
 
@@ -1701,8 +1695,6 @@ namespace Server.Gumps
         {
             public override int Width => 420;
             public override int Height => 280;
-
-            public override int ContentColor => 0x7F00;
 
             /*
              * This will revoke access from everyone on this list and immediately eject them from the house.
@@ -1720,8 +1712,6 @@ namespace Server.Gumps
         {
             public override int Width => 420;
             public override int Height => 280;
-
-            public override int ContentColor => 0x7F00;
 
             /*
              * You are about to turn your house into a customizable house.
@@ -1744,8 +1734,6 @@ namespace Server.Gumps
             public override int Width => 320;
             public override int Height => 180;
 
-            public override int ContentColor => 0x7F00;
-
             // You cannot perform this action while you still have vendors rented out in this house.
             public override int StaticLocalizedContent => 1062395;
 
@@ -1758,8 +1746,6 @@ namespace Server.Gumps
         {
             public override int Width => 320;
             public override int Height => 180;
-
-            public override int ContentColor => 0x7F00;
 
             /*
              * You cannot currently take this action because you have vendor contracts locked down in your home.
@@ -1777,8 +1763,6 @@ namespace Server.Gumps
             public override int Width => 320;
             public override int Height => 180;
 
-            public override int ContentColor => 0x7F00;
-
             /*
              * The house cannot be customized when certain special house add-ons including aquariums, raised garden beds,
              * and special temporary add-ons are present in the house.
@@ -1795,8 +1779,6 @@ namespace Server.Gumps
         {
             public override int Width => 420;
             public override int Height => 280;
-
-            public override int ContentColor => 0x7F00;
 
             /*
              * You have successfully replaced your original house with a new house.
@@ -1816,8 +1798,6 @@ namespace Server.Gumps
             public override int Width => 320;
             public override int Height => 180;
 
-            public override int ContentColor => 0x7F00;
-
             // This house is now public. The owner may now place vendors and vendor rental contracts.
             public override int StaticLocalizedContent => 501886;
 
@@ -1830,8 +1810,6 @@ namespace Server.Gumps
         {
             public override int Width => 320;
             public override int Height => 180;
-
-            public override int ContentColor => 0x7F00;
 
             /*
              * You have vendors working out of this building.
@@ -1849,8 +1827,6 @@ namespace Server.Gumps
             public override int Width => 320;
             public override int Height => 180;
 
-            public override int ContentColor => 0x7F00;
-
             public override int StaticLocalizedContent => 501888; // This house is now private.
 
             public HouseConvertedPrivateNoticeGump(Action callback) : base(callback)
@@ -1862,8 +1838,6 @@ namespace Server.Gumps
         {
             public override int Width => 320;
             public override int Height => 180;
-
-            public override int ContentColor => 0xF8C000;
 
             public override string Content { get; }
 

@@ -189,7 +189,7 @@ namespace Server.Multis
              * Do you wish to claim this house?
              */
             public override int StaticLocalizedContent => 1049719;
-            public override int ContentColor => 0x7F00;
+
             public override int Width => 420;
             public override int Height => 280;
 

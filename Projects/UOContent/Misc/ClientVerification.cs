@@ -253,7 +253,6 @@ namespace Server.Misc
 
         private class AnnoyGump : StaticNoticeGump<AnnoyGump>
         {
-            public override int ContentColor => 0xFFC000;
             public override int Width => 480;
             public override int Height => 360;
 
