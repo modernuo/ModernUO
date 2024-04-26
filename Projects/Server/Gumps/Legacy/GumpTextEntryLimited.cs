@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpMasterGump.cs                                               *
+ * File: GumpTextEntryLimited.cs                                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,14 +18,42 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpMasterGump : GumpEntry
+public class GumpTextEntryLimited : GumpEntry
 {
-    public GumpMasterGump(int gumpID) => GumpID = gumpID;
+    public GumpTextEntryLimited(
+        int x, int y, int width, int height, int hue, int entryID, string initialText, int size = 0
+    )
+    {
+        X = x;
+        Y = y;
+        Width = width;
+        Height = height;
+        Hue = hue;
+        EntryID = entryID;
+        InitialText = initialText;
+        Size = size;
+    }
 
-    public int GumpID { get; set; }
+    public int X { get; set; }
+
+    public int Y { get; set; }
+
+    public int Width { get; set; }
+
+    public int Height { get; set; }
+
+    public int Hue { get; set; }
+
+    public int EntryID { get; set; }
+
+    public string InitialText { get; set; }
+
+    public int Size { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        writer.WriteAscii($"{{ mastergump {GumpID} }}");
+        var textIndex = strings.GetOrAdd(InitialText ?? "");
+        writer.WriteAscii($"{{ textentrylimited {X} {Y} {Width} {Height} {Hue} {EntryID} {textIndex} {Size} }}");
+        entries++;
     }
 }

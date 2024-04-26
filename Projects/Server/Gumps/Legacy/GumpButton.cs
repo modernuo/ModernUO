@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpGroup.cs                                                    *
+ * File: GumpButton.cs                                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,21 +18,44 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpGroup : GumpEntry
+public enum GumpButtonType
 {
-    public GumpGroup(int group) => Group = group;
+    Page = 0,
+    Reply = 1
+}
 
-    public int Group { get; set; }
+public class GumpButton : GumpEntry
+{
+    public GumpButton(
+        int x, int y, int normalID, int pressedID, int buttonID,
+        GumpButtonType type = GumpButtonType.Reply, int param = 0
+    )
+    {
+        X = x;
+        Y = y;
+        NormalID = normalID;
+        PressedID = pressedID;
+        ButtonID = buttonID;
+        Type = type;
+        Param = param;
+    }
+
+    public int X { get; set; }
+
+    public int Y { get; set; }
+
+    public int NormalID { get; set; }
+
+    public int PressedID { get; set; }
+
+    public int ButtonID { get; set; }
+
+    public GumpButtonType Type { get; set; }
+
+    public int Param { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        if (Group == 1)
-        {
-            writer.Write("{ group 1 }"u8);
-        }
-        else
-        {
-            writer.WriteAscii($"{{ group {Group} }}");
-        }
+        writer.WriteAscii($"{{ button {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} }}");
     }
 }

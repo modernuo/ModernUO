@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpBackground.cs                                               *
+ * File: GumpItem.cs                                                     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,29 +18,26 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpBackground : GumpEntry
+public class GumpItem : GumpEntry
 {
-    public GumpBackground(int x, int y, int width, int height, int gumpID)
+    public GumpItem(int x, int y, int itemID, int hue = 0)
     {
         X = x;
         Y = y;
-        Width = width;
-        Height = height;
-        GumpID = gumpID;
+        ItemID = itemID;
+        Hue = hue;
     }
 
     public int X { get; set; }
 
     public int Y { get; set; }
 
-    public int Width { get; set; }
+    public int ItemID { get; set; }
 
-    public int Height { get; set; }
-
-    public int GumpID { get; set; }
+    public int Hue { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        writer.WriteAscii($"{{ resizepic {X} {Y} {GumpID} {Width} {Height} }}");
+        writer.WriteAscii(Hue == 0 ? $"{{ tilepic {X} {Y} {ItemID} }}" : $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}");
     }
 }

@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpTextEntry.cs                                                *
+ * File: GumpItemProperty.cs                                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,37 +18,14 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpTextEntry : GumpEntry
+public class GumpItemProperty : GumpEntry
 {
-    public GumpTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText)
-    {
-        X = x;
-        Y = y;
-        Width = width;
-        Height = height;
-        Hue = hue;
-        EntryID = entryID;
-        InitialText = initialText;
-    }
+    public GumpItemProperty(Serial serial) => Serial = serial;
 
-    public int X { get; set; }
-
-    public int Y { get; set; }
-
-    public int Width { get; set; }
-
-    public int Height { get; set; }
-
-    public int Hue { get; set; }
-
-    public int EntryID { get; set; }
-
-    public string InitialText { get; set; }
+    public Serial Serial { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        var textIndex = strings.GetOrAdd(InitialText ?? "");
-        writer.WriteAscii($"{{ textentry {X} {Y} {Width} {Height} {Hue} {EntryID} {textIndex} }}");
-        entries++;
+        writer.WriteAscii($"{{ itemproperty {Serial.Value} }}");
     }
 }

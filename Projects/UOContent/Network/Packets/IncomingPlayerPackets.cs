@@ -350,7 +350,7 @@ public static class IncomingPlayerPackets
         var typeId = reader.ReadInt32();
         var buttonId = reader.ReadInt32();
 
-        Gump gump = null;
+        BaseGump baseGump = null;
 
         foreach (var g in state.Gumps)
         {
@@ -359,61 +359,58 @@ public static class IncomingPlayerPackets
                 continue;
             }
 
-            gump = g;
+            baseGump = g;
             break;
         }
 
-        if (gump != null)
+        if (baseGump != null)
         {
-            var buttonExists = buttonId == 0; // 0 is always 'close'
-
-            if (!buttonExists)
+            if (baseGump is Gump gump)
             {
-                foreach (var e in gump.Entries)
-                {
-                    if (e is GumpButton button && button.ButtonID == buttonId)
-                    {
-                        buttonExists = true;
-                        break;
-                    }
+                var buttonExists = buttonId == 0; // 0 is always 'close'
 
-                    if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonId)
+                if (!buttonExists)
+                {
+                    foreach (var e in gump.Entries)
                     {
-                        buttonExists = true;
-                        break;
+                        if ((e as GumpButton)?.ButtonID == buttonId)
+                        {
+                            buttonExists = true;
+                            break;
+                        }
+
+                        if ((e as GumpImageTileButton)?.ButtonID == buttonId)
+                        {
+                            buttonExists = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (!buttonExists)
-            {
-                state.LogInfo("Invalid gump response, disconnecting...");
-                var exception = new InvalidGumpResponseException($"Button {buttonId} doesn't exist");
-                exception.SetStackTrace(new StackTrace());
-                NetState.TraceException(exception);
-                state.Mobile?.SendMessage("Invalid gump response.");
-
-                // state.Disconnect("Invalid gump response.");
-                return;
+                if (!buttonExists)
+                {
+                    state.LogInfo("Invalid gump response, disconnecting...");
+                    var exception = new InvalidGumpResponseException($"Button {buttonId} doesn't exist");
+                    exception.SetStackTrace(new StackTrace());
+                    NetState.TraceException(exception);
+                    return;
+                }
             }
 
             var switchCount = reader.ReadInt32();
 
-            if (switchCount < 0 || switchCount > gump.Switches)
+            if (switchCount < 0 || switchCount > baseGump.Switches)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
                 var exception = new InvalidGumpResponseException($"Bad switch count {switchCount}");
                 exception.SetStackTrace(new StackTrace());
                 NetState.TraceException(exception);
-                state.Mobile?.SendMessage("Invalid gump response.");
-
-                // state.Disconnect("Invalid gump response.");
                 return;
             }
 
             int switchByteCount = switchCount * 4;
 
-            // Read in all of the integers
+            // Read all the integers
             ReadOnlySpan<int> switchBlock =
                 MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchByteCount));
 
@@ -434,15 +431,12 @@ public static class IncomingPlayerPackets
             }
 
             var textCount = reader.ReadInt32();
-            if (textCount < 0 || textCount > gump.TextEntries)
+            if (textCount < 0 || textCount > baseGump.TextEntries)
             {
                 state.LogInfo("Invalid gump response, disconnecting...");
                 var exception = new InvalidGumpResponseException($"Bad text entry count {textCount}");
                 exception.SetStackTrace(new StackTrace());
                 NetState.TraceException(exception);
-                state.Mobile?.SendMessage("Invalid gump response.");
-
-                // state.Disconnect("Invalid gump response.");
                 return;
             }
 
@@ -461,9 +455,6 @@ public static class IncomingPlayerPackets
                     var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
                     exception.SetStackTrace(new StackTrace());
                     NetState.TraceException(exception);
-                    state.Mobile?.SendMessage("Invalid gump response.");
-
-                    // state.Disconnect("Invalid gump response.");
                     return;
                 }
 
@@ -476,9 +467,9 @@ public static class IncomingPlayerPackets
 
             var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
 
-            state.RemoveGump(gump);
+            state.RemoveGump(baseGump);
 
-            var prof = GumpProfile.Acquire(gump.GetType());
+            var prof = GumpProfile.Acquire(baseGump.GetType());
 
             prof?.Start();
 
@@ -489,7 +480,7 @@ public static class IncomingPlayerPackets
                 textFields,
                 textBlock
             );
-            gump.OnResponse(state, relayInfo);
+            baseGump.OnResponse(state, relayInfo);
 
             prof?.Finish();
         }

@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Server.Buffers;
 
-/// <summary>Provides a handler to interpolate strings which UNSAFELY exposes it's internal character span.</summary>
+/// <summary>Provides a handler to interpolate strings which UNSAFELY exposes its internal character span.</summary>
 [InterpolatedStringHandler]
 public ref struct RawInterpolatedStringHandler
 {

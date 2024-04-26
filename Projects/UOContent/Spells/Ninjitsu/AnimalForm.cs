@@ -380,56 +380,59 @@ namespace Server.Spells.Ninjitsu
             public bool StealingBonus { get; }
         }
 
-        public class AnimalFormGump : Gump
+        public class AnimalFormGump : DynamicGump
         {
             // TODO: Convert this for ML to the BaseImageTileButtonsGump
-            private readonly Mobile m_Caster;
-            private readonly AnimalForm m_Spell;
+            private readonly Mobile _caster;
+            private readonly AnimalForm _spell;
+            private readonly AnimalFormEntry[] _entries;
 
-            public AnimalFormGump(Mobile caster, AnimalFormEntry[] entries, AnimalForm spell)
-                : base(50, 50)
+            public AnimalFormGump(Mobile caster, AnimalFormEntry[] entries, AnimalForm spell) : base(50, 50)
             {
-                m_Caster = caster;
-                m_Spell = spell;
+                _caster = caster;
+                _spell = spell;
+                _entries = entries;
+            }
 
-                AddPage(0);
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
+            {
+                builder.AddPage();
 
-                AddBackground(0, 0, 520, 404, 0x13BE);
-                AddImageTiled(10, 10, 500, 20, 0xA40);
-                AddImageTiled(10, 40, 500, 324, 0xA40);
-                AddImageTiled(10, 374, 500, 20, 0xA40);
-                AddAlphaRegion(10, 10, 500, 384);
+                builder.AddBackground(0, 0, 520, 404, 0x13BE);
+                builder.AddImageTiled(10, 10, 500, 20, 0xA40);
+                builder.AddImageTiled(10, 40, 500, 324, 0xA40);
+                builder.AddImageTiled(10, 374, 500, 20, 0xA40);
+                builder.AddAlphaRegion(10, 10, 500, 384);
 
-                AddHtmlLocalized(14, 12, 500, 20, 1063394, 0x7FFF); // <center>Polymorph Selection Menu</center>
+                builder.AddHtmlLocalized(14, 12, 500, 20, 1063394, 0x7FFF); // <center>Polymorph Selection Menu</center>
 
-                AddButton(10, 374, 0xFB1, 0xFB2, 0);
-                AddHtmlLocalized(45, 376, 450, 20, 1011012, 0x7FFF); // CANCEL
+                builder.AddButton(10, 374, 0xFB1, 0xFB2, 0);
+                builder.AddHtmlLocalized(45, 376, 450, 20, 1011012, 0x7FFF); // CANCEL
 
-                var ninjitsu = caster.Skills.Ninjitsu.Value;
+                int ninjitsu = _caster.Skills[SkillName.Ninjitsu].Fixed;
+                int current = 0;
 
-                var current = 0;
-
-                for (var i = 0; i < entries.Length; ++i)
+                for (int i = 0; i < _entries.Length; ++i)
                 {
-                    var enabled = ninjitsu >= entries[i].ReqSkill && BaseFormTalisman.EntryEnabled(caster, entries[i].Type);
+                    bool enabled = ninjitsu >= _entries[i].ReqSkill && BaseFormTalisman.EntryEnabled(_caster, _entries[i].Type);
 
-                    var page = current / 10 + 1;
-                    var pos = current % 10;
+                    int page = current / 10 + 1;
+                    int pos = current % 10;
 
                     if (pos == 0)
                     {
                         if (page > 1)
                         {
-                            AddButton(400, 374, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page);
-                            AddHtmlLocalized(440, 376, 60, 20, 1043353, 0x7FFF); // Next
+                            builder.AddButton(400, 374, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page);
+                            builder.AddHtmlLocalized(440, 376, 60, 20, 1043353, 0x7FFF); // Next
                         }
 
-                        AddPage(page);
+                        builder.AddPage(page);
 
                         if (page > 1)
                         {
-                            AddButton(300, 374, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 1);
-                            AddHtmlLocalized(340, 376, 60, 20, 1011393, 0x7FFF); // Back
+                            builder.AddButton(300, 374, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 1);
+                            builder.AddHtmlLocalized(340, 376, 60, 20, 1011393, 0x7FFF); // Back
                         }
                     }
 
@@ -438,26 +441,16 @@ namespace Server.Spells.Ninjitsu
                         continue;
                     }
 
-                    var x = pos % 2 == 0 ? 14 : 264;
-                    var y = pos / 2 * 64 + 44;
+                    AnimalFormEntry entry = _entries[i];
 
-                    var b = ItemBounds.Table[entries[i].ItemID];
+                    int y = Math.DivRem(pos, 2, out var rem) * 64 + 44;
+                    int x = rem == 0 ? 14 : 264;
+                    Rectangle2D b = ItemBounds.Table[entry.ItemID];
 
-                    AddImageTiledButton(
-                        x,
-                        y,
-                        0x918,
-                        0x919,
-                        i + 1,
-                        GumpButtonType.Reply,
-                        0,
-                        entries[i].ItemID,
-                        entries[i].Hue,
-                        40 - b.Width / 2 - b.X,
-                        30 - b.Height / 2 - b.Y
-                    );
-                    AddTooltip(entries[i].Tooltip);
-                    AddHtmlLocalized(x + 84, y, 250, 60, entries[i].Name, 0x7FFF);
+                    builder.AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entry.ItemID,
+                        entry.Hue, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y, entry.Tooltip);
+
+                    builder.AddHtmlLocalized(x + 84, y, 250, 60, entry.Name, 0x7FFF);
 
                     current++;
                 }
@@ -467,39 +460,40 @@ namespace Server.Spells.Ninjitsu
             {
                 var entryID = info.ButtonID - 1;
 
-                if (entryID < 0 || entryID >= AnimalForm.Entries.Length)
+                if (entryID < 0 || entryID >= Entries.Length)
                 {
                     return;
                 }
 
-                var mana = m_Spell.ScaleMana(m_Spell.RequiredMana);
-                var entry = AnimalForm.Entries[entryID];
+                var mana = _spell.ScaleMana(_spell.RequiredMana);
+                var entry = Entries[entryID];
 
-                if (mana > m_Caster.Mana)
+                if (!BaseFormTalisman.EntryEnabled(sender.Mobile, entry.Type))
+                {
+                    return;
+                }
+
+                if (mana > _caster.Mana)
                 {
                     // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
-                    m_Caster.SendLocalizedMessage(1060174, mana.ToString());
+                    _caster.SendLocalizedMessage(1060174, mana.ToString());
                 }
-                else if (m_Caster is PlayerMobile mobile && mobile.MountBlockReason != BlockMountType.None)
+                else if (_caster is PlayerMobile mobile
+                         && (mobile.MountBlockReason != BlockMountType.None
+                             || mobile.DuelContext?.AllowSpellCast(_caster, _spell) == false))
                 {
-                    mobile.SendLocalizedMessage(1063108); // You cannot use this ability right now.
+                    _caster.SendLocalizedMessage(1063108); // You cannot use this ability right now.
                 }
-                else if (BaseFormTalisman.EntryEnabled(sender.Mobile, entry.Type))
+                else if (Morph(_caster, entryID) == MorphResult.Fail)
                 {
-                    if ((m_Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(m_Caster, m_Spell) == false)
-                    {
-                    }
-                    else if (Morph(m_Caster, entryID) == MorphResult.Fail)
-                    {
-                        m_Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.
-                        m_Caster.FixedParticles(0x3735, 1, 30, 9503, EffectLayer.Waist);
-                        m_Caster.PlaySound(0x5C);
-                    }
-                    else
-                    {
-                        m_Caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
-                        m_Caster.Mana -= mana;
-                    }
+                    _caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.
+                    _caster.FixedParticles(0x3735, 1, 30, 9503, EffectLayer.Waist);
+                    _caster.PlaySound(0x5C);
+                }
+                else
+                {
+                    _caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
+                    _caster.Mana -= mana;
                 }
             }
         }

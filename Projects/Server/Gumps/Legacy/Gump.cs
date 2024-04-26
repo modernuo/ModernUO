@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Gump.cs                                                         *
  *                                                                       *
@@ -13,60 +13,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using Server.Network;
 using Server.Utilities;
 
 namespace Server.Gumps;
 
-public partial class Gump
+public class Gump : BaseGump
 {
-    private static Serial _nextSerial = (Serial)1;
-
-
     private int _switches;
     private int _textEntries;
 
-    public int Switches
-    {
-        get => _switches;
-        set => _switches = value;
-    }
-
-    public int TextEntries
-    {
-        get => _textEntries;
-        set => _textEntries = value;
-    }
-
     public Gump(int x, int y)
     {
-        do
-        {
-            Serial = _nextSerial++;
-        } while (Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
-
         X = x;
         Y = y;
 
-        TypeID = GetTypeID(GetType());
-
-        Entries = new List<GumpEntry>();
-        Strings = new List<string>();
+        Entries = [];
+        Strings = [];
     }
 
     public List<string> Strings { get; }
 
-    public int TypeID { get; }
-
     public List<GumpEntry> Entries { get; }
-
-    public Serial Serial { get; set; }
-
-    public int X { get; set; }
-
-    public int Y { get; set; }
 
     public bool Disposable { get; set; } = true;
 
@@ -76,15 +45,9 @@ public partial class Gump
 
     public bool Closable { get; set; } = true;
 
-    public static int GetTypeID(Type type)
-    {
-        unchecked
-        {
-            // To use the original .NET Framework deterministic hash code (with really bad performance)
-            // change the next line to use HashUtility.GetNetFrameworkHashCode
-            return (int)HashUtility.ComputeHash32(type?.FullName);
-        }
-    }
+    public override int Switches => _switches;
+
+    public override int TextEntries => _textEntries;
 
     public void AddPage(int page)
     {
@@ -278,17 +241,17 @@ public partial class Gump
         return Strings.Count - 1;
     }
 
-    public void SendTo(NetState state)
+    public override void SendTo(NetState state)
     {
         state.AddGump(this);
         state.SendDisplayGump(this, out _switches, out _textEntries);
     }
 
-    public virtual void OnResponse(NetState sender, in RelayInfo info)
+    protected void Reset()
     {
-    }
-
-    public virtual void OnServerClose(NetState owner)
-    {
+        _switches = 0;
+        _textEntries = 0;
+        Entries.Clear();
+        Strings.Clear();
     }
 }

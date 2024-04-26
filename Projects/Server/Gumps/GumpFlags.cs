@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpImageTiled.cs                                               *
+ * File: GumpFlags.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,34 +13,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Buffers;
-using Server.Collections;
+using System;
 
 namespace Server.Gumps;
 
-public class GumpImageTiled : GumpEntry
+[Flags]
+public enum GumpFlags
 {
-    public GumpImageTiled(int x, int y, int width, int height, int gumpID)
-    {
-        X = x;
-        Y = y;
-        Width = width;
-        Height = height;
-        GumpID = gumpID;
-    }
-
-    public int X { get; set; }
-
-    public int Y { get; set; }
-
-    public int Width { get; set; }
-
-    public int Height { get; set; }
-
-    public int GumpID { get; set; }
-
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
-    {
-        writer.WriteAscii($"{{ gumppictiled {X} {Y} {Width} {Height} {GumpID} }}");
-    }
+    NoDispose = 0x1,
+    NoResize = 0x2,
+    NoMove = 0x4,
+    NoClose = 0x8
 }

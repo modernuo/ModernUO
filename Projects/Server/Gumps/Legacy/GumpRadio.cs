@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpTextEntryLimited.cs                                         *
+ * File: GumpRadio.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,42 +18,34 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpTextEntryLimited : GumpEntry
+public class GumpRadio : GumpEntry
 {
-    public GumpTextEntryLimited(
-        int x, int y, int width, int height, int hue, int entryID, string initialText, int size = 0
-    )
+    public GumpRadio(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
     {
         X = x;
         Y = y;
-        Width = width;
-        Height = height;
-        Hue = hue;
-        EntryID = entryID;
-        InitialText = initialText;
-        Size = size;
+        InactiveID = inactiveID;
+        ActiveID = activeID;
+        InitialState = initialState;
+        SwitchID = switchID;
     }
 
     public int X { get; set; }
 
     public int Y { get; set; }
 
-    public int Width { get; set; }
+    public int InactiveID { get; set; }
 
-    public int Height { get; set; }
+    public int ActiveID { get; set; }
 
-    public int Hue { get; set; }
+    public bool InitialState { get; set; }
 
-    public int EntryID { get; set; }
-
-    public string InitialText { get; set; }
-
-    public int Size { get; set; }
+    public int SwitchID { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        var textIndex = strings.GetOrAdd(InitialText ?? "");
-        writer.WriteAscii($"{{ textentrylimited {X} {Y} {Width} {Height} {Hue} {EntryID} {textIndex} {Size} }}");
-        entries++;
+        var initialState = InitialState ? "1" : "0";
+        writer.WriteAscii($"{{ radio {X} {Y} {InactiveID} {ActiveID} {initialState} {SwitchID} }}");
+        switches++;
     }
 }

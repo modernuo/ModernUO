@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpButton.cs                                                   *
+ * File: GumpAlphaRegion.cs                                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,44 +18,26 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public enum GumpButtonType
+public class GumpAlphaRegion : GumpEntry
 {
-    Page = 0,
-    Reply = 1
-}
-
-public class GumpButton : GumpEntry
-{
-    public GumpButton(
-        int x, int y, int normalID, int pressedID, int buttonID,
-        GumpButtonType type = GumpButtonType.Reply, int param = 0
-    )
+    public GumpAlphaRegion(int x, int y, int width, int height)
     {
         X = x;
         Y = y;
-        NormalID = normalID;
-        PressedID = pressedID;
-        ButtonID = buttonID;
-        Type = type;
-        Param = param;
+        Width = width;
+        Height = height;
     }
 
     public int X { get; set; }
 
     public int Y { get; set; }
 
-    public int NormalID { get; set; }
+    public int Width { get; set; }
 
-    public int PressedID { get; set; }
-
-    public int ButtonID { get; set; }
-
-    public GumpButtonType Type { get; set; }
-
-    public int Param { get; set; }
+    public int Height { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        writer.WriteAscii($"{{ button {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} }}");
+        writer.WriteAscii($"{{ checkertrans {X} {Y} {Width} {Height} }}");
     }
 }

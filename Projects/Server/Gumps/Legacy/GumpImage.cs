@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpItemProperty.cs                                             *
+ * File: GumpImage.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,14 +18,39 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpItemProperty : GumpEntry
+public class GumpImage : GumpEntry
 {
-    public GumpItemProperty(Serial serial) => Serial = serial;
+    public GumpImage(int x, int y, int gumpID, int hue = 0, string cls = null)
+    {
+        X = x;
+        Y = y;
+        GumpID = gumpID;
+        Hue = hue;
+        Class = cls;
+    }
 
-    public Serial Serial { get; set; }
+    public int X { get; set; }
+
+    public int Y { get; set; }
+
+    public int GumpID { get; set; }
+
+    public int Hue { get; set; }
+
+    public string Class { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        writer.WriteAscii($"{{ itemproperty {Serial.Value} }}");
+        var hasHue = Hue != 0;
+        var hasClass = !string.IsNullOrEmpty(Class);
+        writer.WriteAscii(
+            hasHue switch
+            {
+                true when hasClass  => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class={Class} }}",
+                true                => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} }}",
+                false when hasClass => $"{{ gumppic {X} {Y} {GumpID} class={Class} }}",
+                false               => $"{{ gumppic {X} {Y} {GumpID} }}",
+            }
+        );
     }
 }

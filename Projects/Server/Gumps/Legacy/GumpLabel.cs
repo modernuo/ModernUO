@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpSpriteImage.cs                                              *
+ * File: GumpLabel.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,35 +18,27 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpSpriteImage : GumpEntry
+public class GumpLabel : GumpEntry
 {
-    public GumpSpriteImage(int x, int y, int gumpID, int width, int height, int sx, int sy)
+    public GumpLabel(int x, int y, int hue, string text)
     {
         X = x;
         Y = y;
-        GumpID = gumpID;
-        Width = width;
-        Height = height;
-        SX = sx;
-        SY = sy;
+        Hue = hue;
+        Text = text;
     }
 
     public int X { get; set; }
 
     public int Y { get; set; }
 
-    public int Width { get; set; }
+    public int Hue { get; set; }
 
-    public int Height { get; set; }
-
-    public int GumpID { get; set; }
-
-    public int SX { get; set; }
-
-    public int SY { get; set; }
+    public string Text { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        writer.WriteAscii($"{{ picinpic {X} {Y} {GumpID} {Width} {Height} {SX} {SY} }}");
+        var textIndex = strings.GetOrAdd(Text ?? "");
+        writer.WriteAscii($"{{ text {X} {Y} {Hue} {textIndex} }}");
     }
 }

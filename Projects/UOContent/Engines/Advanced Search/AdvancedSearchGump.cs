@@ -952,10 +952,7 @@ public class AdvancedSearchGump : Gump
 
     public void Resend(Mobile m)
     {
-        TextEntries = 0;
-        Switches = 0;
-        Entries.Clear();
-        Strings.Clear();
+        Reset();
         Build(m);
         m.SendGump(this);
     }

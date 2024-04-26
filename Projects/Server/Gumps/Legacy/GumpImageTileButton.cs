@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpCheck.cs                                                    *
+ * File: GumpImageTileButton.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,34 +18,53 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpCheck : GumpEntry
+public class GumpImageTileButton : GumpEntry
 {
-    public GumpCheck(int x, int y, int inactiveID, int activeID, bool initialState, int switchID)
+    public GumpImageTileButton(
+        int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param,
+        int itemID, int hue, int width, int height
+    )
     {
         X = x;
         Y = y;
-        InactiveID = inactiveID;
-        ActiveID = activeID;
-        InitialState = initialState;
-        SwitchID = switchID;
+        NormalID = normalID;
+        PressedID = pressedID;
+        ButtonID = buttonID;
+        Type = type;
+        Param = param;
+
+        ItemID = itemID;
+        Hue = hue;
+        Width = width;
+        Height = height;
     }
 
     public int X { get; set; }
 
     public int Y { get; set; }
 
-    public int InactiveID { get; set; }
+    public int NormalID { get; set; }
 
-    public int ActiveID { get; set; }
+    public int PressedID { get; set; }
 
-    public bool InitialState { get; set; }
+    public int ButtonID { get; set; }
 
-    public int SwitchID { get; set; }
+    public GumpButtonType Type { get; set; }
+
+    public int Param { get; set; }
+
+    public int ItemID { get; set; }
+
+    public int Hue { get; set; }
+
+    public int Width { get; set; }
+
+    public int Height { get; set; }
 
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        var initialState = InitialState ? "1" : "0";
-        writer.WriteAscii($"{{ checkbox {X} {Y} {InactiveID} {ActiveID} {initialState} {SwitchID} }}");
-        switches++;
+        writer.WriteAscii(
+            $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}"
+        );
     }
 }

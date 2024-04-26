@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpHtml.cs                                                     *
+ * File: GumpECHandleInput.cs                                            *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,38 +18,10 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpHtml : GumpEntry
+public class GumpECHandleInput : GumpEntry
 {
-    public GumpHtml(int x, int y, int width, int height, string text, bool background, bool scrollbar)
-    {
-        X = x;
-        Y = y;
-        Width = width;
-        Height = height;
-        Text = text;
-        Background = background;
-        Scrollbar = scrollbar;
-    }
-
-    public int X { get; set; }
-
-    public int Y { get; set; }
-
-    public int Width { get; set; }
-
-    public int Height { get; set; }
-
-    public string Text { get; set; }
-
-    public bool Background { get; set; }
-
-    public bool Scrollbar { get; set; }
-
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        var textIndex = strings.GetOrAdd(Text ?? "");
-        var background = Background ? "1" : "0";
-        var scrollbar = Scrollbar ? "1" : "0";
-        writer.WriteAscii($"{{ htmlgump {X} {Y} {Width} {Height} {textIndex} {background} {scrollbar} }}");
+        writer.Write("{ echandleinput }"u8);
     }
 }

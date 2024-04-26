@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: GumpECHandleInput.cs                                            *
+ * File: GumpGroup.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,10 +18,21 @@ using Server.Collections;
 
 namespace Server.Gumps;
 
-public class GumpECHandleInput : GumpEntry
+public class GumpGroup : GumpEntry
 {
+    public GumpGroup(int group) => Group = group;
+
+    public int Group { get; set; }
+
     public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
     {
-        writer.Write("{ echandleinput }"u8);
+        if (Group == 1)
+        {
+            writer.Write("{ group 1 }"u8);
+        }
+        else
+        {
+            writer.WriteAscii($"{{ group {Group} }}");
+        }
     }
 }
