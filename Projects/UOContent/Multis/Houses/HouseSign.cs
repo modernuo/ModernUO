@@ -192,7 +192,6 @@ namespace Server.Multis
             public override int ContentColor => 32512;
             public override int Width => 420;
             public override int Height => 280;
-            public override bool CancelButton => false;
 
             public ClaimHouseWarningGump(Action<bool> callback) : base(callback)
             {
