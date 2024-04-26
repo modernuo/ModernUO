@@ -179,7 +179,7 @@ namespace Server.Multis
         private class ClaimHouseWarningGump : StaticWarningGump<ClaimHouseWarningGump>
         {
             public override int Header => 501036; // Claim house
-            public override int HeaderColor => 32512;
+            public override int HeaderColor => 0x7F00;
 
             /*
              * You do not currently own any house on any shard with this account, and this house currently does not have an owner.
@@ -188,8 +188,8 @@ namespace Server.Multis
              * If you claim this house, you will be unable to place another house or have another house transferred to you for the next 7 days.
              * Do you wish to claim this house?
              */
-            public override TextDefinition Content => 1049719; //
-            public override int ContentColor => 32512;
+            public override int StaticLocalizedContent => 1049719;
+            public override int ContentColor => 0x7F00;
             public override int Width => 420;
             public override int Height => 280;
 

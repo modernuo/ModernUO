@@ -251,13 +251,8 @@ namespace Server.Commands
                 );
 
                 from.SendGump(
-                    new WarningGump(
-                        1060635,
-                        30720,
-                        $"You are about to delete {list.Count} object{(list.Count == 1 ? "" : "s")} from this facet.  Do you really wish to continue?",
-                        0xFFC000,
-                        360,
-                        260,
+                    new DeleteObjectsNoticeGump(
+                        list.Count,
                         okay => DeleteList_Callback(from, okay, list)
                     )
                 );
@@ -266,6 +261,17 @@ namespace Server.Commands
             {
                 from.SendMessage("There were no objects found to delete.");
             }
+        }
+
+        private class DeleteObjectsNoticeGump : StaticWarningGump<DeleteObjectsNoticeGump>
+        {
+            public override int Header => 1060635; // <CENTER>WARNING</CENTER>
+            public override int Width => 360;
+            public override int Height => 260;
+            public override string Content { get; }
+
+            public DeleteObjectsNoticeGump(int count, Action<bool> callback) : base(callback) =>
+                Content = $"You are about to delete {count} object{(count == 1 ? "" : "s")} from this facet.  Do you really wish to continue?";
         }
 
         [Usage("GetFollowers")]

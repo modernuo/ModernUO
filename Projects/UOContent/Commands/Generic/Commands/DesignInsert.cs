@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Gumps;
 using Server.Items;
@@ -87,17 +88,22 @@ namespace Server.Commands.Generic
         {
             var from = e.Mobile;
             from.SendGump(
-                new WarningGump(
-                    1060637,
-                    30720,
-                    $"You are about to insert {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?",
-                    0xFFC000,
-                    420,
-                    280,
+                new InsertObjectsNoticeGump(
+                    list.Count,
                     okay => OnConfirmCallback(from, okay, list, e.Length < 1 || !e.GetBoolean(0))
                 )
             );
             AddResponse("Awaiting confirmation...");
+        }
+
+        private class InsertObjectsNoticeGump : StaticWarningGump<InsertObjectsNoticeGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+            public override string Content { get; }
+
+            public InsertObjectsNoticeGump(int count, Action<bool> callback) : base(callback) =>
+                Content = $"You are about to insert {count} objects. This cannot be undone without a full server revert.<br><br>Continue?";
         }
 
         private void OnConfirmCallback(Mobile from, bool okay, List<object> list, bool staticsOnly)

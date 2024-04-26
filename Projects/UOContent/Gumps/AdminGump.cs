@@ -1767,13 +1767,8 @@ namespace Server.Gumps
                 }
 
                 from.SendGump(
-                    new NoticeGump(
-                        1060637,
-                        30720,
+                    new AdminNoticeGump(
                         $"You have {(ban ? "banned" : "deleted")} the account{(rads.Count == 1 ? "" : "s")}.",
-                        0xFFC000,
-                        420,
-                        280,
                         () => ResendGump_Callback(from, list, rads, ban ? page : 0)
                     )
                 );
@@ -1786,13 +1781,8 @@ namespace Server.Gumps
             else
             {
                 from.SendGump(
-                    new NoticeGump(
-                        1060637,
-                        30720,
+                    new AdminNoticeGump(
                         $"You have chosen not to {(ban ? "ban" : "delete")} the account{(rads.Count == 1 ? "" : "s")}.",
-                        0xFFC000,
-                        420,
-                        280,
                         () => ResendGump_Callback(from, list, rads, page)
                     )
                 );
@@ -3049,10 +3039,7 @@ namespace Server.Gumps
 
                                         from.SendGump(
                                             new WarningGump(
-                                                1060635,
-                                                30720,
                                                 sb.ToString(),
-                                                0xFFC000,
                                                 420,
                                                 400,
                                                 okay => BanShared_Callback(from, okay, a)
@@ -3099,10 +3086,7 @@ namespace Server.Gumps
                                     {
                                         from.SendGump(
                                             new WarningGump(
-                                                1060635,
-                                                30720,
                                                 $"You are about to firewall {a.LoginIPs.Length} address{(a.LoginIPs.Length != 1 ? "s" : "")}. Do you wish to continue?",
-                                                0xFFC000,
                                                 420,
                                                 400,
                                                 okay => FirewallShared_Callback(from, okay, a)
@@ -3237,10 +3221,7 @@ namespace Server.Gumps
 
                                     from.SendGump(
                                         new WarningGump(
-                                            1060635,
-                                            30720,
                                             $"<center>Account of {a.Username}</center><br>You are about to <em><basefont color=red>permanently delete</basefont></em> the account. Likewise, all characters on the account will be deleted, including equipped, inventory, and banked items. Any houses tied to the account will be demolished.<br><br>Do you wish to continue?",
-                                            0xFFC000,
                                             420,
                                             280,
                                             okay => AccountDelete_Callback(from, okay, a)
@@ -3266,10 +3247,7 @@ namespace Server.Gumps
                                     {
                                         from.SendGump(
                                             new WarningGump(
-                                                1060635,
-                                                30720,
                                                 $"You are about to ban {rads.Count} marked account{(rads.Count == 1 ? "" : "s")}. Be cautioned, the only way to reverse this is by hand--manually unbanning each account.<br><br>Do you wish to continue?",
-                                                0xFFC000,
                                                 420,
                                                 280,
                                                 okay => Marked_Callback(from, okay, true, list, rads, m_ListPage)
@@ -3279,13 +3257,8 @@ namespace Server.Gumps
                                     else
                                     {
                                         from.SendGump(
-                                            new NoticeGump(
-                                                1060637,
-                                                30720,
+                                            new AdminNoticeGump(
                                                 "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
-                                                0xFFC000,
-                                                420,
-                                                280,
                                                 () => ResendGump_Callback(from, list, rads, m_ListPage)
                                             )
                                         );
@@ -3306,14 +3279,7 @@ namespace Server.Gumps
                                     {
                                         from.SendGump(
                                             new WarningGump(
-                                                1060635,
-                                                30720,
-                                                string.Format(
-                                                    "You are about to <em><basefont color=red>permanently delete</basefont></em> {0} marked account{1}. Likewise, all characters on the account{1} will be deleted, including equipped, inventory, and banked items. Any houses tied to the account{1} will be demolished.<br><br>Do you wish to continue?",
-                                                    rads.Count,
-                                                    rads.Count == 1 ? "" : "s"
-                                                ),
-                                                0xFFC000,
+                                                $"You are about to <em><basefont color=red>permanently delete</basefont></em> {rads.Count} marked account{(rads.Count == 1 ? "" : "s")}. Likewise, all characters on the account{(rads.Count == 1 ? "" : "s")} will be deleted, including equipped, inventory, and banked items. Any houses tied to the account{(rads.Count == 1 ? "" : "s")} will be demolished.<br><br>Do you wish to continue?",
                                                 420,
                                                 280,
                                                 okay => Marked_Callback(from, okay, false, list, rads, m_ListPage)
@@ -3323,13 +3289,8 @@ namespace Server.Gumps
                                     else
                                     {
                                         from.SendGump(
-                                            new NoticeGump(
-                                                1060637,
-                                                30720,
+                                            new AdminNoticeGump(
                                                 "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
-                                                0xFFC000,
-                                                420,
-                                                280,
                                                 () => ResendGump_Callback(from, list, rads, m_ListPage)
                                             )
                                         );
@@ -3554,10 +3515,7 @@ namespace Server.Gumps
                                     {
                                         from.SendGump(
                                             new WarningGump(
-                                                1060635,
-                                                30720,
                                                 $"You are about to clear the address list for account {a} containing {ips.Length} {(ips.Length == 1 ? "entry" : "entries")}. Do you wish to continue?",
-                                                0xFFC000,
                                                 420,
                                                 280,
                                                 okay => RemoveLoginIPs_Callback(from, okay, a)
@@ -3998,10 +3956,7 @@ namespace Server.Gumps
                             {
                                 from.SendGump(
                                     new WarningGump(
-                                        1060635,
-                                        30720,
                                         $"You are about to firewall {m_List[index]}. All connection attempts from a matching IP will be refused. Are you sure?",
-                                        0xFFC000,
                                         420,
                                         280,
                                         okay => Firewall_Callback(from, okay, a, m_List[index])
@@ -4100,10 +4055,7 @@ namespace Server.Gumps
 
                                 from.SendGump(
                                     new WarningGump(
-                                        1060635,
-                                        30720,
                                         $"You are about to remove address {ip} from account {a}. Do you wish to continue?",
-                                        0xFFC000,
                                         420,
                                         280,
                                         okay => RemoveLoginIP_Callback(from, okay, a, ip)
@@ -4394,6 +4346,16 @@ namespace Server.Gumps
 
                 return aLevel < bLevel ? 1 : x.Username.InsensitiveCompare(y.Username);
             }
+        }
+
+        private class AdminNoticeGump : StaticNoticeGump<AdminNoticeGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+
+            public override string Content { get; }
+
+            public AdminNoticeGump(string content, Action callback) : base(callback) => Content = content;
         }
     }
 }

@@ -5,14 +5,17 @@ namespace Server.Gumps;
 
 public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarningGump<T>
 {
-    public abstract int Header { get; }
-    public abstract int HeaderColor { get; }
-    public abstract TextDefinition Content { get; }
-    public abstract int ContentColor { get; }
+    public virtual int Header => 1060635; // <CENTER>WARNING</CENTER>
+    public virtual int HeaderColor => 0x7800;
+    public virtual int ContentColor => 0xFFC000;
     public abstract int Width { get; }
     public abstract int Height { get; }
+    public virtual bool CancelButton => true;
 
-    public virtual bool CancelButton => false;
+    // If this is overridden, then the content will be localized and cached.
+    public virtual int StaticLocalizedContent => 0;
+
+    public virtual string Content => null;
 
     private readonly Action<bool> _callback;
 
@@ -23,12 +26,10 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
         Y = (480 - Height) / 2;
     }
 
-    protected sealed override void BuildLayout(ref StaticGumpBuilder builder)
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
         var width = Width;
         var height = Height;
-        var content = Content;
-        var contentColor = ContentColor;
         var header = Header;
         var headerColor = HeaderColor;
         var cancelButton = CancelButton;
@@ -46,24 +47,30 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
         builder.AddImageTiled(10, 40, width - 20, height - 80, 2624);
         builder.AddAlphaRegion(10, 40, width - 20, height - 80);
 
-        if (content != null)
+        if (StaticLocalizedContent > 0)
         {
-            if (content.Number > 0)
-            {
-                builder.AddHtmlLocalized(10, 40, width - 20, height - 80, content.Number, (short)contentColor, false, true);
-            }
-            else
-            {
-                builder.AddHtml(
-                    10,
-                    40,
-                    width - 20,
-                    height - 80,
-                    $"<BASEFONT COLOR=#{contentColor:X6}>{content.String}</BASEFONT>",
-                    false,
-                    true
-                );
-            }
+            builder.AddHtmlLocalized(
+                10,
+                40,
+                width - 20,
+                height - 80,
+                StaticLocalizedContent,
+                (short)ContentColor,
+                false,
+                true
+            );
+        }
+        else
+        {
+            builder.AddHtmlPlaceholder(
+                10,
+                40,
+                width - 20,
+                height - 80,
+                "content",
+                false,
+                true
+            );
         }
 
         builder.AddImageTiled(10, height - 30, width - 20, 20, 2624);
@@ -81,6 +88,7 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
 
     protected sealed override void BuildStrings(ref GumpStringsBuilder builder)
     {
+        builder.SetStringSlot("content", $"<BASEFONT COLOR=#{ContentColor:X6}>{Content}</BASEFONT>");
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info) => _callback?.Invoke(info.ButtonID == 1);
