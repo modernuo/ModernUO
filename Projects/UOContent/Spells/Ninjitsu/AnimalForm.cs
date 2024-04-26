@@ -443,8 +443,8 @@ namespace Server.Spells.Ninjitsu
 
                     AnimalFormEntry entry = _entries[i];
 
-                    int x = pos % 2 == 0 ? 14 : 264;
-                    int y = pos / 2 * 64 + 44;
+                    int y = Math.DivRem(pos, 2, out var rem) * 64 + 44;
+                    int x = rem == 0 ? 14 : 264;
                     Rectangle2D b = ItemBounds.Table[entry.ItemID];
 
                     builder.AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entry.ItemID,
