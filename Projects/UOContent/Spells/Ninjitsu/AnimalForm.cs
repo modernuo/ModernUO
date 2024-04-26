@@ -468,31 +468,32 @@ namespace Server.Spells.Ninjitsu
                 var mana = _spell.ScaleMana(_spell.RequiredMana);
                 var entry = Entries[entryID];
 
+                if (!BaseFormTalisman.EntryEnabled(sender.Mobile, entry.Type))
+                {
+                    return;
+                }
+
                 if (mana > _caster.Mana)
                 {
                     // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
                     _caster.SendLocalizedMessage(1060174, mana.ToString());
                 }
-                else if (_caster is PlayerMobile mobile && mobile.MountBlockReason != BlockMountType.None)
+                else if (_caster is PlayerMobile mobile
+                         && (mobile.MountBlockReason != BlockMountType.None
+                             || mobile.DuelContext?.AllowSpellCast(_caster, _spell) == false))
                 {
-                    mobile.SendLocalizedMessage(1063108); // You cannot use this ability right now.
+                    _caster.SendLocalizedMessage(1063108); // You cannot use this ability right now.
                 }
-                else if (BaseFormTalisman.EntryEnabled(sender.Mobile, entry.Type))
+                else if (Morph(_caster, entryID) == MorphResult.Fail)
                 {
-                    if ((_caster as PlayerMobile)?.DuelContext?.AllowSpellCast(_caster, _spell) == false)
-                    {
-                    }
-                    else if (Morph(_caster, entryID) == MorphResult.Fail)
-                    {
-                        _caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.
-                        _caster.FixedParticles(0x3735, 1, 30, 9503, EffectLayer.Waist);
-                        _caster.PlaySound(0x5C);
-                    }
-                    else
-                    {
-                        _caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
-                        _caster.Mana -= mana;
-                    }
+                    _caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.
+                    _caster.FixedParticles(0x3735, 1, 30, 9503, EffectLayer.Waist);
+                    _caster.PlaySound(0x5C);
+                }
+                else
+                {
+                    _caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
+                    _caster.Mana -= mana;
                 }
             }
         }
