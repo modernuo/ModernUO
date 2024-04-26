@@ -168,12 +168,27 @@ namespace Server.Multis
                 if (canClaim && !BaseHouse.HasAccountHouse(m))
                 {
                     m.SendGump(
-                        new WarningGump(501036, 32512, 1049719, 32512, 420, 280, okay => ClaimGump_Callback(m, okay))
+                        new ClaimHouseWarningGump(okay => ClaimGump_Callback(m, okay))
                     );
                 }
             }
 
             ShowSign(m);
+        }
+
+        private class ClaimHouseWarningGump : StaticWarningGump<ClaimHouseWarningGump>
+        {
+            public override int Header => 501036;
+            public override int HeaderColor => 32512;
+            public override TextDefinition Content => 1049719;
+            public override int ContentColor => 32512;
+            public override int Width => 420;
+            public override int Height => 280;
+            public override bool CancelButton => false;
+
+            public ClaimHouseWarningGump(Action<bool> callback) : base(callback)
+            {
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
