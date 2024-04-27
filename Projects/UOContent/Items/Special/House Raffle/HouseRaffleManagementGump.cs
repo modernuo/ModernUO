@@ -63,10 +63,10 @@ public class HouseRaffleManagementGump : Gump
         AddHtml(10, 10, 598, 20, Color(Center("Raffle Management"), LabelColor));
 
         AddHtml(45, 35, 100, 20, Color("Location:", LabelColor));
-        AddHtml(145, 35, 250, 20, Color(_stone.FormatLocation(), LabelColor));
+        AddHtml(145, 35, 250, 20, Color(HouseRaffleStone.FormatLocation(stone.PlotBounds, stone.GetPlotCenter(), stone.PlotFacet), LabelColor));
 
         AddHtml(45, 55, 100, 20, Color("Ticket Price:", LabelColor));
-        AddHtml(145, 55, 250, 20, Color(_stone.FormatPrice(), LabelColor));
+        AddHtml(145, 55, 250, 20, Color(HouseRaffleStone.FormatPrice(stone.TicketPrice), LabelColor));
 
         AddHtml(45, 75, 100, 20, Color("Total Entries:", LabelColor));
         AddHtml(145, 75, 250, 20, Color(_stone.Entries.Count.ToString(), LabelColor));

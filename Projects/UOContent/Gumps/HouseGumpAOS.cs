@@ -903,7 +903,7 @@ namespace Server.Gumps
                      * These containers can be used to re-create the vendor in a new location.
                      * Any barkeepers have been converted into deeds.
                      */
-                    from.SendGump(new NoticeGump(1060637, 30720, 1060012, 32512, 420, 280));
+                    from.SendGump(new ReplaceHouseNoticeGump());
                     return;
                 }
             }
@@ -1107,13 +1107,7 @@ namespace Server.Gumps
                                     if (isOwner)
                                     {
                                         from.SendGump(
-                                            new WarningGump(
-                                                1060635,
-                                                30720,
-                                                1060736,
-                                                32512,
-                                                420,
-                                                280,
+                                            new RemoveAllCoOwnersWarningGump(
                                                 okay => ClearCoOwners_Callback(from, okay, m_House)
                                             )
                                         );
@@ -1153,13 +1147,7 @@ namespace Server.Gumps
                                     if (isCoOwner)
                                     {
                                         from.SendGump(
-                                            new WarningGump(
-                                                1060635,
-                                                30720,
-                                                1018039,
-                                                32512,
-                                                420,
-                                                280,
+                                            new RemoveAllFriendsWarningGump(
                                                 okay => ClearFriends_Callback(from, okay, m_House)
                                             )
                                         );
@@ -1176,15 +1164,7 @@ namespace Server.Gumps
                             case 9: // Clear Ban List
                                 {
                                     from.SendGump(
-                                        new WarningGump(
-                                            1060635,
-                                            30720,
-                                            1060753,
-                                            32512,
-                                            420,
-                                            280,
-                                            okay => ClearBans_Callback(from, okay, m_House)
-                                        )
+                                        new LifeAllBansWarningGump(okay => ClearBans_Callback(from, okay, m_House))
                                     );
 
                                     break;
@@ -1198,15 +1178,7 @@ namespace Server.Gumps
                             case 11: // Clear Access List
                                 {
                                     from.SendGump(
-                                        new WarningGump(
-                                            1060635,
-                                            30720,
-                                            1061842,
-                                            32512,
-                                            420,
-                                            280,
-                                            okay => ClearAccess_Callback(from, okay, m_House)
-                                        )
+                                        new RevokeAccessWarning(okay => ClearAccess_Callback(from, okay, m_House))
                                     );
 
                                     break;
@@ -1217,15 +1189,8 @@ namespace Server.Gumps
                                     {
                                         if (m_House.PlayerVendors.Count > 0)
                                         {
-                                            // You have vendors working out of this building. It cannot be declared private until there are no vendors in place.
                                             from.SendGump(
-                                                new NoticeGump(
-                                                    1060637,
-                                                    30720,
-                                                    501887,
-                                                    32512,
-                                                    320,
-                                                    180,
+                                                new CannotConvertPrivateNoticeGump(
                                                     () => PublicPrivateNotice_Callback(from, m_House)
                                                 )
                                             );
@@ -1234,15 +1199,8 @@ namespace Server.Gumps
 
                                         if (m_House.VendorRentalContracts.Count > 0)
                                         {
-                                            // You cannot currently take this action because you have vendor contracts locked down in your home.  You must remove them first.
                                             from.SendGump(
-                                                new NoticeGump(
-                                                    1060637,
-                                                    30720,
-                                                    1062351,
-                                                    32512,
-                                                    320,
-                                                    180,
+                                                new CannotPerformActionContractsNoticeGump(
                                                     () => PublicPrivateNotice_Callback(from, m_House)
                                                 )
                                             );
@@ -1253,15 +1211,8 @@ namespace Server.Gumps
 
                                         m_House.ChangeLocks(from);
 
-                                        // This house is now private.
                                         from.SendGump(
-                                            new NoticeGump(
-                                                1060637,
-                                                30720,
-                                                501888,
-                                                32512,
-                                                320,
-                                                180,
+                                            new HouseConvertedPrivateNoticeGump(
                                                 () => PublicPrivateNotice_Callback(from, m_House)
                                             )
                                         );
@@ -1294,13 +1245,7 @@ namespace Server.Gumps
                                         if (BaseHouse.NewVendorSystem)
                                         {
                                             from.SendGump(
-                                                new NoticeGump(
-                                                    1060637,
-                                                    30720,
-                                                    501886,
-                                                    32512,
-                                                    320,
-                                                    180,
+                                                new HouseConvertedPublicNoticeGump(
                                                     () => PublicPrivateNotice_Callback(from, m_House)
                                                 )
                                             );
@@ -1308,13 +1253,7 @@ namespace Server.Gumps
                                         else
                                         {
                                             from.SendGump(
-                                                new NoticeGump(
-                                                    1060637,
-                                                    30720,
-                                                    "This house is now public. Friends of the house may now have vendors working out of this building.",
-                                                    0xF8C000,
-                                                    320,
-                                                    180,
+                                                new HouseConvertedPublicOldSystemNoticeGump(
                                                     () => PublicPrivateNotice_Callback(from, m_House)
                                                 )
                                             );
@@ -1350,37 +1289,19 @@ namespace Server.Gumps
                                     {
                                         if (m_House.HasRentedVendors)
                                         {
-                                            // You cannot perform this action while you still have vendors rented out in this house.
                                             from.SendGump(
-                                                new NoticeGump(
-                                                    1060637,
-                                                    30720,
-                                                    1062395,
-                                                    32512,
-                                                    320,
-                                                    180,
+                                                new CannotPerformActionVendorsNoticeGump(
                                                     () => CustomizeNotice_Callback(from, m_House)
                                                 )
                                             );
                                         }
-                                        else
+                                        else if (m_House.ConvertEntry != null)
                                         {
-                                            var e = m_House.ConvertEntry;
-
-                                            if (e != null)
-                                            {
-                                                from.SendGump(
-                                                    new WarningGump(
-                                                        1060635,
-                                                        30720,
-                                                        1060013,
-                                                        32512,
-                                                        420,
-                                                        280,
-                                                        okay => ConvertHouse_Callback(from, okay, m_House)
-                                                    )
-                                                );
-                                            }
+                                            from.SendGump(
+                                                new ConvertToCustomHouseWarningGump(
+                                                    okay => ConvertHouse_Callback(from, okay, m_House)
+                                                )
+                                            );
                                         }
                                     }
 
@@ -1393,13 +1314,7 @@ namespace Server.Gumps
                                         if (m_House.HasRentedVendors)
                                         {
                                             from.SendGump(
-                                                new NoticeGump(
-                                                    1060637,
-                                                    30720,
-                                                    1062395,
-                                                    32512,
-                                                    320,
-                                                    180,
+                                                new CannotPerformActionVendorsNoticeGump(
                                                     () => CustomizeNotice_Callback(from, m_House)
                                                 )
                                             );
@@ -1407,13 +1322,7 @@ namespace Server.Gumps
                                         else if (m_House.HasAddonContainers)
                                         {
                                             from.SendGump(
-                                                new NoticeGump(
-                                                    1060637,
-                                                    30720,
-                                                    1074863,
-                                                    32512,
-                                                    320,
-                                                    180,
+                                                new CannotCustomizeAddonsNoticeGump(
                                                     () => CustomizeNotice_Callback(from, m_House)
                                                 )
                                             );
@@ -1738,6 +1647,203 @@ namespace Server.Gumps
                         break;
                     }
             }
+        }
+
+        private class RemoveAllCoOwnersWarningGump : StaticWarningGump<RemoveAllCoOwnersWarningGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+
+            // You are about to remove ALL co-owners from your house.  Are you certain you wish to clear the co-owner list?
+            public override int StaticLocalizedContent => 1060736;
+
+            public RemoveAllCoOwnersWarningGump(Action<bool> callback) : base(callback)
+            {
+            }
+        }
+
+        private class RemoveAllFriendsWarningGump : StaticWarningGump<RemoveAllFriendsWarningGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+
+            /*
+             * If you go ahead with this option, all of the current friendships will be removed from the house,
+             * and any vendors associated with said friends will be made unwelcome. Are you sure you want to do this?
+             */
+            public override int StaticLocalizedContent => 1018039;
+
+            public RemoveAllFriendsWarningGump(Action<bool> callback) : base(callback)
+            {
+            }
+        }
+
+        private class LifeAllBansWarningGump : StaticWarningGump<LifeAllBansWarningGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+
+            // You are about to lift all bans for this house.  Are you sure you wish to do this?
+            public override int StaticLocalizedContent => 1060753;
+
+            public LifeAllBansWarningGump(Action<bool> callback) : base(callback)
+            {
+            }
+        }
+
+        private class RevokeAccessWarning : StaticWarningGump<RevokeAccessWarning>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+
+            /*
+             * This will revoke access from everyone on this list and immediately eject them from the house.
+             * Those players will no longer be able to enter the house.
+             * Are you sure you wish to clear the house access list?
+             */
+            public override int StaticLocalizedContent => 1061842;
+
+            public RevokeAccessWarning(Action<bool> callback) : base(callback)
+            {
+            }
+        }
+
+        private class ConvertToCustomHouseWarningGump : StaticWarningGump<ConvertToCustomHouseWarningGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+
+            /*
+             * You are about to turn your house into a customizable house.
+             * You will be refunded or charged the value of this house minus the cost of the equivalent customizable dirt lot.
+             * All of your possessions in the house will be transported to a Moving Crate.
+             * Deed-based house add-ons will be converted back into deeds.
+             * Vendors and barkeeps will also be stored in the Moving Crate.
+             * Your house will be leveled to its foundation, and you will be able to build new walls, windows, doors, and stairs.
+             * Are you sure you wish to continue?
+             */
+            public override int StaticLocalizedContent => 1060013;
+
+            public ConvertToCustomHouseWarningGump(Action<bool> callback) : base(callback)
+            {
+            }
+        }
+
+        private class CannotPerformActionVendorsNoticeGump : StaticNoticeGump<CannotPerformActionVendorsNoticeGump>
+        {
+            public override int Width => 320;
+            public override int Height => 180;
+
+            // You cannot perform this action while you still have vendors rented out in this house.
+            public override int StaticLocalizedContent => 1062395;
+
+            public CannotPerformActionVendorsNoticeGump(Action callback) : base(callback)
+            {
+            }
+        }
+
+        private class CannotPerformActionContractsNoticeGump : StaticNoticeGump<CannotPerformActionContractsNoticeGump>
+        {
+            public override int Width => 320;
+            public override int Height => 180;
+
+            /*
+             * You cannot currently take this action because you have vendor contracts locked down in your home.
+             * You must remove them first.
+             */
+            public override int StaticLocalizedContent => 1062351;
+
+            public CannotPerformActionContractsNoticeGump(Action callback) : base(callback)
+            {
+            }
+        }
+
+        private class CannotCustomizeAddonsNoticeGump : StaticNoticeGump<CannotCustomizeAddonsNoticeGump>
+        {
+            public override int Width => 320;
+            public override int Height => 180;
+
+            /*
+             * The house cannot be customized when certain special house add-ons including aquariums, raised garden beds,
+             * and special temporary add-ons are present in the house.
+             * Please re-deed the special add-ons before customizing the house.
+             */
+            public override int StaticLocalizedContent => 1074863;
+
+            public CannotCustomizeAddonsNoticeGump(Action callback) : base(callback)
+            {
+            }
+        }
+
+        private class ReplaceHouseNoticeGump : StaticNoticeGump<ReplaceHouseNoticeGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+
+            /*
+             * You have successfully replaced your original house with a new house.
+             * The value of the replaced house has been deposited into your bank box.
+             * All of the items in your original house have been relocated to a Moving Crate in the new house.
+             *  Any deed-based house add-ons have been converted back into deeds.
+             * Vendors and barkeeps in the house, if any, have been stored in the Moving Crate as well.
+             * Use the <B>Get Vendor</B> context-sensitive menu option on your character to retrieve them.
+             * These containers can be used to re-create the vendor in a new location.
+             * Any barkeepers have been converted into deeds.
+             */
+            public override int StaticLocalizedContent => 1060012;
+        }
+
+        private class HouseConvertedPublicNoticeGump : StaticNoticeGump<HouseConvertedPublicNoticeGump>
+        {
+            public override int Width => 320;
+            public override int Height => 180;
+
+            // This house is now public. The owner may now place vendors and vendor rental contracts.
+            public override int StaticLocalizedContent => 501886;
+
+            public HouseConvertedPublicNoticeGump(Action callback) : base(callback)
+            {
+            }
+        }
+
+        private class CannotConvertPrivateNoticeGump : StaticNoticeGump<CannotConvertPrivateNoticeGump>
+        {
+            public override int Width => 320;
+            public override int Height => 180;
+
+            /*
+             * You have vendors working out of this building.
+             * It cannot be declared private until there are no vendors in place.
+             */
+            public override int StaticLocalizedContent => 501887;
+
+            public CannotConvertPrivateNoticeGump(Action callback) : base(callback)
+            {
+            }
+        }
+
+        private class HouseConvertedPrivateNoticeGump : StaticNoticeGump<HouseConvertedPrivateNoticeGump>
+        {
+            public override int Width => 320;
+            public override int Height => 180;
+
+            public override int StaticLocalizedContent => 501888; // This house is now private.
+
+            public HouseConvertedPrivateNoticeGump(Action callback) : base(callback)
+            {
+            }
+        }
+
+        private class HouseConvertedPublicOldSystemNoticeGump : StaticNoticeGump<HouseConvertedPublicOldSystemNoticeGump>
+        {
+            public override int Width => 320;
+            public override int Height => 180;
+
+            public override string Content { get; }
+
+            public HouseConvertedPublicOldSystemNoticeGump(Action callback) : base(callback) =>
+                Content =
+                    "This house is now public. Friends of the house may now have vendors working out of this building.";
         }
     }
 }

@@ -1996,11 +1996,7 @@ namespace Server.Items
 
             if (prevHouse.Deleted)
             {
-                /* Too much time has passed and the test house you created has been deleted.
-                 * Please try again!
-                 */
-                from.SendGump(new NoticeGump(1060637, 30720, 1060647, 32512, 320, 180));
-
+                from.SendGump(new HousePlacementTimeoutNoticeGump());
                 return;
             }
 
@@ -2040,18 +2036,15 @@ namespace Server.Items
                             {
                                 if (Banker.Withdraw(from, Cost))
                                 {
-                                    from.SendLocalizedMessage(
-                                        1060398,
-                                        Cost.ToString()
-                                    ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                                    // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                                    from.SendLocalizedMessage(1060398, Cost.ToString());
                                 }
                                 else
                                 {
                                     house.RemoveKeys(from);
                                     house.Delete();
-                                    from.SendLocalizedMessage(
-                                        1060646
-                                    ); // You do not have the funds available in your bank box to purchase this house.  Try placing a smaller house, or adding gold or checks to your bank box.
+                                    // You do not have the funds available in your bank box to purchase this house.  Try placing a smaller house, or adding gold or checks to your bank box.
+                                    from.SendLocalizedMessage(1060646);
                                     return;
                                 }
                             }
@@ -2081,9 +2074,8 @@ namespace Server.Items
                 case HousePlacementResult.BadRegionHidden:
                 case HousePlacementResult.NoSurface:
                     {
-                        from.SendLocalizedMessage(
-                            1043287
-                        ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                        // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                        from.SendLocalizedMessage(1043287);
                         break;
                     }
                 case HousePlacementResult.BadRegion:
@@ -2093,16 +2085,14 @@ namespace Server.Items
                     }
                 case HousePlacementResult.BadRegionTemp:
                     {
-                        from.SendLocalizedMessage(
-                            501270
-                        ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                        // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                        from.SendLocalizedMessage(501270);
                         break;
                     }
                 case HousePlacementResult.BadRegionRaffle:
                     {
-                        from.SendLocalizedMessage(
-                            1150493
-                        ); // You must have a deed for this plot of land in order to build here.
+                        // You must have a deed for this plot of land in order to build here.
+                        from.SendLocalizedMessage(1150493);
                         break;
                     }
                 case HousePlacementResult.InvalidCastleKeep:
@@ -2170,28 +2160,8 @@ namespace Server.Items
 
                             prev.MoveToWorld(center, from.Map);
 
-                            /* You are about to place a new house.
-                             * Placing this house will condemn any and all of your other houses that you may have.
-                             * All of your houses on all shards will be affected.
-                             *
-                             * In addition, you will not be able to place another house or have one transferred to you for one (1) real-life week.
-                             *
-                             * Once you accept these terms, these effects cannot be reversed.
-                             * Re-deeding or transferring your new house will not uncondemn your other house(s) nor will the one week timer be removed.
-                             *
-                             * If you are absolutely certain you wish to proceed, click the button next to OKAY below.
-                             * If you do not wish to trade for this house, click CANCEL.
-                             */
                             from.SendGump(
-                                new WarningGump(
-                                    1060635,
-                                    30720,
-                                    1049583,
-                                    32512,
-                                    420,
-                                    280,
-                                    okay => PlacementWarning_Callback(from, okay, prev)
-                                )
+                                new CondemnWarningGump(okay => PlacementWarning_Callback(from, okay, prev))
                             );
 
                             return true;
@@ -2205,9 +2175,8 @@ namespace Server.Items
                 case HousePlacementResult.BadRegionHidden:
                 case HousePlacementResult.NoSurface:
                     {
-                        from.SendLocalizedMessage(
-                            1043287
-                        ); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                        // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+                        from.SendLocalizedMessage(1043287);
                         break;
                     }
                 case HousePlacementResult.BadRegion:
@@ -2217,16 +2186,14 @@ namespace Server.Items
                     }
                 case HousePlacementResult.BadRegionTemp:
                     {
-                        from.SendLocalizedMessage(
-                            501270
-                        ); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                        // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+                        from.SendLocalizedMessage(501270);
                         break;
                     }
                 case HousePlacementResult.BadRegionRaffle:
                     {
-                        from.SendLocalizedMessage(
-                            1150493
-                        ); // You must have a deed for this plot of land in order to build here.
+                        // You must have a deed for this plot of land in order to build here.
+                        from.SendLocalizedMessage(1150493);
                         break;
                     }
                 case HousePlacementResult.InvalidCastleKeep:
@@ -2310,6 +2277,36 @@ namespace Server.Items
                     table[e.MultiID] = e;
                 }
             }
+        }
+
+        private class CondemnWarningGump : StaticWarningGump<CondemnWarningGump>
+        {
+            /*
+             * You are about to place a new house.
+             * Placing this house will <a href = "?ForceTopic97">condemn</a> any and all of your other houses that you may have.
+             * All of your houses on <U>all shards</U> will be affected.<BR><BR>In addition, you will not be able to place
+             * another house or have one transferred to you for one (1) real-life week.<BR><BR>
+             * Once you accept these terms, these effects cannot be reversed.
+             * Re-deeding or transferring your new house will <U>not</U> uncondemn your other house(s) nor will the one
+             * week timer be removed.<BR><BR>If you are absolutely certain you wish to proceed, click the button next to OKAY below.
+             * If you do not wish to trade for this house, click CANCEL.
+             */
+
+            public override int StaticLocalizedContent => 1049583;
+            public override int Width => 420;
+            public override int Height => 280;
+
+            public CondemnWarningGump(Action<bool> callback) : base(callback)
+            {
+            }
+        }
+
+        private class HousePlacementTimeoutNoticeGump : StaticWarningGump<HousePlacementTimeoutNoticeGump>
+        {
+            // Too much time has passed and the test house you created has been deleted.  Please try again!
+            public override int StaticLocalizedContent => 1060647;
+            public override int Width => 320;
+            public override int Height => 180;
         }
     }
 }

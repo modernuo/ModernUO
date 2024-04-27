@@ -2240,22 +2240,8 @@ namespace Server.Multis
 
                 if (HasRentedVendors)
                 {
-                    /* You are about to be traded a home that has active vendor contracts.
-                     * While there are active vendor contracts in this house, you
-                     * <strong>cannot</strong> demolish <strong>OR</strong> customize the home.
-                     * When you accept this house, you also accept landlordship for every
-                     * contract vendor in the house.
-                     */
                     to.SendGump(
-                        new WarningGump(
-                            1060635,
-                            30720,
-                            1062487,
-                            32512,
-                            420,
-                            280,
-                            okay => ConfirmTransfer_Callback(to, okay, from)
-                        )
+                        new TradeHouseWarningGump(okay => ConfirmTransfer_Callback(to, okay, from))
                     );
                 }
                 else
@@ -2263,6 +2249,24 @@ namespace Server.Multis
                     to.CloseGump<HouseTransferGump>();
                     to.SendGump(new HouseTransferGump(from, to, this));
                 }
+            }
+        }
+
+        private class TradeHouseWarningGump : StaticWarningGump<TradeHouseWarningGump>
+        {
+            /*
+             * You are about to be traded a home that has active vendor contracts.
+             * While there are active vendor contracts in this house, you
+             * <strong>cannot</strong> demolish <strong>OR</strong> customize the home.
+             * When you accept this house, you also accept landlordship for every contract vendor in the house.
+             */
+            public override int StaticLocalizedContent => 1062487;
+
+            public override int Width => 420;
+            public override int Height => 280;
+
+            public TradeHouseWarningGump(Action<bool> callback) : base(callback)
+            {
             }
         }
 

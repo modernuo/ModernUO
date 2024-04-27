@@ -36,18 +36,7 @@ public static class AssistantHandler
 
         if (AssistantConfiguration.Settings.WarnOnFailure)
         {
-            var warningGump = new WarningGump(
-                1060635,
-                30720,
-                AssistantConfiguration.Settings.WarningMessage,
-                0xFFC000,
-                420,
-                250,
-                null,
-                false
-            );
-
-            m.SendGump(warningGump);
+            m.SendGump(new AssistantFailureWarningGump());
         }
 
         if (isPlayer)
@@ -153,5 +142,16 @@ public static class AssistantHandler
         writer.Write((ulong)AssistantConfiguration.Settings.DisallowedFeatures);
 
         ns.Send(writer.Span);
+    }
+
+    private class AssistantFailureWarningGump : StaticWarningGump<AssistantFailureWarningGump>
+    {
+        private static readonly TextDefinition _warningMessage = AssistantConfiguration.Settings.WarningMessage;
+
+        public override int StaticLocalizedContent => _warningMessage?.Number ?? 0;
+        public override string Content => _warningMessage.String;
+        public override int Width => 420;
+        public override int Height => 250;
+        public override bool CancelButton => false;
     }
 }

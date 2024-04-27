@@ -121,7 +121,7 @@ public partial class HordeMinionFamiliar : BaseFamiliar
         if (Backpack?.Items.Count > 0)
         {
             from.SendGump(
-                new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(from, okay))
+                new ReleaseFamiliarWarningGump(okay => ConfirmRelease_Callback(from, okay))
             );
         }
         else
@@ -184,5 +184,21 @@ public partial class HordeMinionFamiliar : BaseFamiliar
         base.GetContextMenuEntries(from, list);
 
         PackAnimal.GetContextMenuEntries(this, from, list);
+    }
+
+    private class ReleaseFamiliarWarningGump : StaticWarningGump<ReleaseFamiliarWarningGump>
+    {
+        /*
+         * If you release your familiar, everything in its backpack will be destroyed!
+         * Are you sure you want to release your familiar?
+         */
+        public override int StaticLocalizedContent => 1061672;
+
+        public override int Width => 420;
+        public override int Height => 280;
+
+        public ReleaseFamiliarWarningGump(Action<bool> callback) : base(callback)
+        {
+        }
     }
 }

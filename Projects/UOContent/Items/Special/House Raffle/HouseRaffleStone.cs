@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Accounting;
 using Server.ContextMenus;
@@ -234,10 +235,11 @@ public partial class HouseRaffleStone : Item
         }
     }
 
-    public bool ValidLocation() =>
-        _plotBounds.Start != Point2D.Zero &&
-        _plotBounds.End != Point2D.Zero &&
-        _plotFacet != null && _plotFacet != Map.Internal;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool ValidLocation(Rectangle2D bounds, Map map) =>
+        bounds.Start != Point2D.Zero &&
+        bounds.End != Point2D.Zero &&
+        map != null && map != Map.Internal;
 
     private void InvalidateRegion()
     {
@@ -247,7 +249,7 @@ public partial class HouseRaffleStone : Item
             _region = null;
         }
 
-        if (ValidLocation())
+        if (ValidLocation(_plotBounds, _plotFacet))
         {
             _region = new HouseRaffleRegion(this);
             _region.Register();
@@ -337,25 +339,27 @@ public partial class HouseRaffleStone : Item
         return new Point3D(x, y, z);
     }
 
-    public string FormatLocation() =>
-        !ValidLocation() ? "no location set" : FormatLocation(GetPlotCenter(), _plotFacet, true);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string FormatLocation(Rectangle2D bounds, Point3D center, Map map) =>
+        !ValidLocation(bounds, map) ? "no location set" : FormatLocation(center, map, true);
 
-    public string FormatPrice() => _ticketPrice == 0 ? "FREE" : $"{_ticketPrice} gold";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string FormatPrice(int price) => price == 0 ? "FREE" : $"{price} gold";
 
     public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 
-        if (ValidLocation())
+        if (ValidLocation(_plotBounds, _plotFacet))
         {
-            list.Add(FormatLocation());
+            list.Add(FormatLocation(_plotBounds, GetPlotCenter(), _plotFacet));
         }
 
         switch (_currentState)
         {
             case HouseRaffleState.Active:
                 {
-                    list.Add(1060658, $"{"ticket price"}\t{FormatPrice()}");  // ~1_val~: ~2_val~
+                    list.Add(1060658, $"{"ticket price"}\t{FormatPrice(_ticketPrice)}");  // ~1_val~: ~2_val~
                     list.Add(1060659, $"{"ends"}\t{_started + _duration}"); // ~1_val~: ~2_val~
                     break;
                 }
@@ -433,13 +437,11 @@ public partial class HouseRaffleStone : Item
         else
         {
             from.SendGump(
-                new WarningGump(
-                    1150470, // CONFIRM TICKET PURCHASE
-                    0x7F00,
-                    $"You are about to purchase a raffle ticket for the house plot located at {FormatLocation()}.  The ticket price is {FormatPrice()}.  Tickets are non-refundable and you can only purchase one ticket per account.  Do you wish to continue?",
-                    0xFFFFFF,
-                    420,
-                    280,
+                new ConfirmTicketPurchaseGump(
+                    _plotBounds,
+                    GetPlotCenter(),
+                    _plotFacet,
+                    _ticketPrice,
                     okay => Purchase_Callback(from, okay)
                 )
             );
@@ -471,7 +473,7 @@ public partial class HouseRaffleStone : Item
             }
             else
             {
-                from.SendMessage(MessageHue, $"You do not have the {FormatPrice()} required to enter the raffle.");
+                from.SendMessage(MessageHue, $"You do not have the {FormatPrice(_ticketPrice)} required to enter the raffle.");
             }
         }
         else
@@ -499,7 +501,7 @@ public partial class HouseRaffleStone : Item
 
                 _winner.SendMessage(
                     MessageHue,
-                    $"Congratulations, {_winner.Name}! You have won the raffle for the plot located at {FormatLocation()}."
+                    $"Congratulations, {_winner.Name}! You have won the raffle for the plot located at {FormatLocation(_plotBounds, GetPlotCenter(), _plotFacet)}."
                 );
 
                 if (_winner.AddToBackpack(Deed))
@@ -628,7 +630,7 @@ public partial class HouseRaffleStone : Item
     {
         public ActivateEntry(Mobile from, HouseRaffleStone stone) : base(from, stone, 5113) // Start
         {
-            if (!stone.ValidLocation())
+            if (!ValidLocation(stone._plotBounds, stone._plotFacet))
             {
                 Flags |= CMEFlags.Disabled;
             }
@@ -636,7 +638,7 @@ public partial class HouseRaffleStone : Item
 
         public override void OnClick()
         {
-            if (_stone.Deleted || _from.AccessLevel < AccessLevel.Seer || !_stone.ValidLocation())
+            if (_stone.Deleted || _from.AccessLevel < AccessLevel.Seer || !ValidLocation(_stone._plotBounds, _stone._plotFacet))
             {
                 return;
             }
@@ -659,6 +661,23 @@ public partial class HouseRaffleStone : Item
             }
 
             _from.SendGump(new HouseRaffleManagementGump(_stone));
+        }
+    }
+
+    private class ConfirmTicketPurchaseGump : StaticWarningGump<ConfirmTicketPurchaseGump>
+    {
+        public override int Header => 1150470; // CONFIRM TICKET PURCHASE
+        public override int HeaderColor => 0x7F00;
+        public override int ContentColor => 0xFFFFFF;
+        public override int Width => 420;
+        public override int Height => 280;
+
+        public override string Content { get; }
+
+        public ConfirmTicketPurchaseGump(Rectangle2D bounds, Point3D center, Map map, int price, Action<bool> callback) : base(callback)
+        {
+            Content =
+                $"You are about to purchase a raffle ticket for the house plot located at {FormatLocation(bounds, center, map)}.  The ticket price is {FormatPrice(price)}.  Tickets are non-refundable and you can only purchase one ticket per account.  Do you wish to continue?";
         }
     }
 }

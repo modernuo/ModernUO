@@ -284,13 +284,8 @@ namespace Server.Commands.Generic
                         }
 
                         mob.SendGump(
-                            new WarningGump(
-                                1060637,
-                                30720,
-                                $"A game master is requesting to open your web browser to the following URL:<br>{url}",
-                                0xFFC000,
-                                320,
-                                240,
+                            new OpenBrowserWarningGump(
+                                url,
                                 okay => OpenBrowser_Callback(mob, okay, from, url, echo)
                             )
                         );
@@ -305,6 +300,16 @@ namespace Server.Commands.Generic
             {
                 LogFailure("Format: OpenBrowser <url>");
             }
+        }
+
+        private class OpenBrowserWarningGump : StaticWarningGump<OpenBrowserWarningGump>
+        {
+            public override string Content { get; }
+            public override int Width => 320;
+            public override int Height => 240;
+
+            public OpenBrowserWarningGump(string url, Action<bool> callback) : base(callback) =>
+                Content = $"A game master is requesting to open your web browser to the following URL:<br>{url}";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
@@ -912,15 +917,7 @@ namespace Server.Commands.Generic
             {
                 var from = e.Mobile;
                 from.SendGump(
-                    new WarningGump(
-                        1060637,
-                        30720,
-                        $"You are about to delete {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?",
-                        0xFFC000,
-                        420,
-                        280,
-                        okay => OnConfirmCallback(from, okay, e, list)
-                    )
+                    new DeleteObjectsNoticeGump(list.Count, okay => OnConfirmCallback(from, okay, e, list))
                 );
                 AddResponse("Awaiting confirmation...");
             }
@@ -928,6 +925,16 @@ namespace Server.Commands.Generic
             {
                 base.ExecuteList(e, list);
             }
+        }
+
+        private class DeleteObjectsNoticeGump : StaticWarningGump<DeleteObjectsNoticeGump>
+        {
+            public override int Width => 420;
+            public override int Height => 280;
+            public override string Content { get; }
+
+            public DeleteObjectsNoticeGump(int count, Action<bool> callback) : base(callback) =>
+                Content = $"You are about to delete {count} objects. This cannot be undone without a full server revert.<br><br>Continue?";
         }
 
         public override void Execute(CommandEventArgs e, object obj)
