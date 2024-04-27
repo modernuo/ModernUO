@@ -42,6 +42,7 @@ namespace Server.Network
             {
                 Delays[0x03] = 25;  // Speech
                 Delays[0xAD] = 25;  // Speech
+                Delays[0x12] = 25;  // Text Commands
                 Delays[0x75] = 500; // Rename request
             }
 
@@ -107,10 +108,12 @@ namespace Server.Network
             if (oldDelay == 0 && delay > 0)
             {
                 IncomingPackets.RegisterThrottler(packetID, &Throttle);
+                e.Mobile.SendMessage($"Set throttle for packet 0x{packetID:X2} to {delay}ms.");
             }
             else if (oldDelay > 0 && delay == 0)
             {
                 IncomingPackets.RegisterThrottler(packetID, null);
+                e.Mobile.SendMessage($"Removed throttle for packet 0x{packetID:X2}");
             }
 
             Delays[packetID] = delay;
@@ -130,27 +133,16 @@ namespace Server.Network
                 }
             }
 
-            var configPath = ThrottlesConfiguration;
-            var path = Path.Join(Core.BaseDirectory, configPath);
+            var path = Path.Join(Core.BaseDirectory, ThrottlesConfiguration);
             JsonConfig.Serialize(path, table);
         }
 
         public static bool Throttle(int packetID, NetState ns, out bool drop)
         {
-            if (ns.Mobile is not PlayerMobile player || player.AccessLevel >= AccessLevel.Counselor)
-            {
-                drop = false;
-                return true;
-            }
+            drop = ns.Mobile is PlayerMobile { AccessLevel: < AccessLevel.Counselor }
+                   && Core.TickCount - ns.GetPacketTime(packetID) < Delays[packetID];
 
-            if (Core.TickCount - ns.GetPacketTime(packetID) < Delays[packetID])
-            {
-                drop = true;
-                return false;
-            }
-
-            drop = false;
-            return true;
+            return !drop;
         }
     }
 }

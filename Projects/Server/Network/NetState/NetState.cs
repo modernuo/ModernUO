@@ -845,7 +845,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         {
             if (!throttler(packetId, this, out bool drop))
             {
-                return drop ? ParserState.AwaitingNextPacket : ParserState.Throttled;
+                return drop ? ParserState.Throttled : ParserState.AwaitingNextPacket;
             }
 
             SetPacketTime(packetId);
