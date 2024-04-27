@@ -7,7 +7,7 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
 {
     public virtual int Header => 1060635; // <CENTER>WARNING</CENTER>
     public virtual int HeaderColor => 0x7800;
-    public virtual int ContentColor => StaticLocalizedContent > 0 ? 0x7F00 : 0xF8C000;
+    public virtual int ContentColor => StaticLocalizedContent > 0 ? 0x7F00 : 0xFFC000;
     public abstract int Width { get; }
     public abstract int Height { get; }
     public virtual bool CancelButton => true;

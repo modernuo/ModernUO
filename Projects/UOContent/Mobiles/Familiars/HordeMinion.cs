@@ -121,7 +121,7 @@ public partial class HordeMinionFamiliar : BaseFamiliar
         if (Backpack?.Items.Count > 0)
         {
             from.SendGump(
-                new ReleaseFamiliarWarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(from, okay))
+                new ReleaseFamiliarWarningGump(okay => ConfirmRelease_Callback(from, okay))
             );
         }
         else

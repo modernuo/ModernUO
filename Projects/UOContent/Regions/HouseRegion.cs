@@ -125,9 +125,9 @@ public class HouseRegion : BaseRegion
         }
 
         if (House.InternalizedVendors.Count > 0 && House.IsInside(m) && !House.IsInside(oldLocation, 16) &&
-            House.IsOwner(m) && m.Alive && !m.HasGump<NoticeGump>())
+            House.IsOwner(m) && m.Alive && !m.HasGump<RecentlyCustomizedWarningGump>())
         {
-            m.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180));
+            m.SendGump(new RecentlyCustomizedWarningGump());
         }
 
         m_Recursion = false;
@@ -193,9 +193,9 @@ public class HouseRegion : BaseRegion
 
         if (House.InternalizedVendors.Count > 0 && House.IsInside(from) && !House.IsInside(oldLocation, 16) &&
             House.IsOwner(from) && from.Alive &&
-            !from.HasGump<NoticeGump>())
+            !from.HasGump<RecentlyCustomizedWarningGump>())
         {
-            from.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180));
+            from.SendGump(new RecentlyCustomizedWarningGump());
         }
 
         return true;
@@ -401,5 +401,19 @@ public class HouseRegion : BaseRegion
         }
 
         return base.OnSingleClick(from, o);
+    }
+
+    // TODO: Should this be a notice gump instead?
+    private class RecentlyCustomizedWarningGump : StaticWarningGump<RecentlyCustomizedWarningGump>
+    {
+        /*
+         * This house has been customized recently, and vendors that work out of this house have been temporarily relocated.
+         * You must now put your vendors back to work.
+         * To do this, walk to a location inside the house where you wish to station your vendor, then activate the context-sensitive menu on your avatar and select "Get Vendor".
+         */
+        public override int StaticLocalizedContent => 1061826;
+        public override int Width => 320;
+        public override int Height => 180;
+        public override bool CancelButton => false;
     }
 }

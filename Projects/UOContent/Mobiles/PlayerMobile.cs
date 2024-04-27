@@ -1246,7 +1246,7 @@ namespace Server.Mobiles
                     notice = "The server is currently under lockdown. You have sufficient access level to connect.";
                 }
 
-                from.SendGump(new NoticeGump(1060637, 30720, notice, 0xFFC000, 300, 140));
+                from.SendGump(new ServerLockdownNoticeGump(notice));
                 return;
             }
 
@@ -1255,6 +1255,15 @@ namespace Server.Mobiles
                 VirtueSystem.CheckAtrophies(mobile);
                 mobile.ClaimAutoStabledPets();
             }
+        }
+
+        private class ServerLockdownNoticeGump : StaticNoticeGump<ServerLockdownNoticeGump>
+        {
+            public override int Width => 300;
+            public override int Height => 140;
+            public override string Content { get; }
+
+            public ServerLockdownNoticeGump(string content) => Content = content;
         }
 
         public void ValidateEquipment()
