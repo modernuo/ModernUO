@@ -2,65 +2,88 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Server
+namespace Server;
+
+public class ProfessionInfo
 {
-    public class ProfessionInfo
+    public static ProfessionInfo[] Professions { get; }
+
+    private static bool TryGetSkillName(string name, out SkillName skillName)
     {
-        public static ProfessionInfo[] Professions { get; }
-
-        private static bool TryGetSkillName(string name, out SkillName skillName)
+        if (Enum.TryParse(name, out skillName))
         {
-            if (Enum.TryParse(name, out skillName))
-            {
-                return true;
-            }
-
-            var lowerName = name?.ToLowerInvariant().RemoveOrdinal(" ");
-
-            if (!string.IsNullOrEmpty(lowerName))
-            {
-                foreach (var so in SkillInfo.Table)
-                {
-                    if (lowerName == so.ProfessionSkillName.ToLowerInvariant())
-                    {
-                        skillName = (SkillName)so.SkillID;
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return true;
         }
 
-        static ProfessionInfo()
+        var lowerName = name?.ToLowerInvariant().RemoveOrdinal(" ");
+
+        if (!string.IsNullOrEmpty(lowerName))
         {
-            var profs = new List<ProfessionInfo>
+            foreach (var so in SkillInfo.Table)
             {
-                new()
+                if (lowerName == so.ProfessionSkillName.ToLowerInvariant())
                 {
-                    ID = 0, // Custom
-                    Name = "Advanced",
-                    TopLevel = false,
-                    GumpID = 5571
+                    skillName = (SkillName)so.SkillID;
+                    return true;
                 }
-            };
-
-            var file = Core.FindDataFile("prof.txt", false);
-            if (!File.Exists(file))
-            {
-                var parent = Path.Combine(Core.BaseDirectory, "Data/Professions");
-                file = Path.Combine(ExpansionInfo.GetEraFolder(parent), "prof.txt");
             }
+        }
 
-            var maxProf = 0;
+        return false;
+    }
 
-            if (File.Exists(file))
+    static ProfessionInfo()
+    {
+        var profs = new List<ProfessionInfo>
+        {
+            new()
             {
-                using var s = File.OpenText(file);
+                ID = 0, // Custom
+                Name = "Advanced",
+                TopLevel = false,
+                GumpID = 5571
+            }
+        };
+
+        var file = Core.FindDataFile("prof.txt", false);
+        if (!File.Exists(file))
+        {
+            var parent = Path.Combine(Core.BaseDirectory, "Data/Professions");
+            file = Path.Combine(ExpansionInfo.GetEraFolder(parent), "prof.txt");
+        }
+
+        var maxProf = 0;
+
+        if (File.Exists(file))
+        {
+            using var s = File.OpenText(file);
+
+            while (!s.EndOfStream)
+            {
+                var line = s.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                line = line.Trim();
+
+                if (!line.InsensitiveStartsWith("Begin"))
+                {
+                    continue;
+                }
+
+                var prof = new ProfessionInfo();
+
+                var statIndex = 0;
+                var totalStats = 0;
+                var skillIndex = 0;
+                var totalSkill = 0;
 
                 while (!s.EndOfStream)
                 {
-                    var line = s.ReadLine();
+                    line = s.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(line))
                     {
@@ -69,139 +92,135 @@ namespace Server
 
                     line = line.Trim();
 
-                    if (!line.InsensitiveStartsWith("Begin"))
+                    if (line.InsensitiveStartsWith("End"))
                     {
-                        continue;
+                        if (prof.ID > 0 && totalStats >= 80 && totalSkill >= 100)
+                        {
+                            prof.FixSkills(); // Adjust skills array in case there are fewer skills than the default 4
+                            profs.Add(prof);
+                        }
+
+                        break;
                     }
 
-                    var prof = new ProfessionInfo();
+                    var cols = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
+                    var key = cols[0].ToLowerInvariant();
+                    var value = cols[1].Trim('"');
 
-                    int stats;
-                    int valid;
-                    var skills = stats = valid = 0;
-
-                    while (!s.EndOfStream)
+                    if (key == "type" && !value.InsensitiveEquals("profession"))
                     {
-                        line = s.ReadLine();
+                        break;
+                    }
 
-                        if (string.IsNullOrWhiteSpace(line))
-                        {
-                            continue;
-                        }
-
-                        line = line.Trim();
-
-                        if (line.InsensitiveStartsWith("End"))
-                        {
-                            if (valid >= 4)
+                    switch (key)
+                    {
+                        case "truename":
                             {
-                                profs.Add(prof);
+                                prof.Name = value;
                             }
-
                             break;
-                        }
-
-                        var cols = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
-                        var key = cols[0].ToLowerInvariant();
-                        var value = cols[1].Trim('"');
-
-                        if (key == "type" && !value.InsensitiveEquals("profession"))
-                        {
-                            break;
-                        }
-
-                        switch (key)
-                        {
-                            case "truename":
-                                {
-                                    prof.Name = value;
-                                    ++valid;
-                                }
-                                break;
-                            case "nameid":
+                        case "nameid":
+                            {
                                 prof.NameID = Utility.ToInt32(value);
                                 break;
-                            case "descid":
+                            }
+                        case "descid":
+                            {
                                 prof.DescID = Utility.ToInt32(value);
                                 break;
-                            case "desc":
+                            }
+                        case "desc":
+                            {
+                                prof.ID = Utility.ToInt32(value);
+                                if (prof.ID > maxProf)
                                 {
-                                    prof.ID = Utility.ToInt32(value);
-                                    if (prof.ID > maxProf)
-                                    {
-                                        maxProf = prof.ID;
-                                    }
-
-                                    ++valid;
+                                    maxProf = prof.ID;
                                 }
-                                break;
-                            case "toplevel":
+                            }
+                            break;
+                        case "toplevel":
+                            {
                                 prof.TopLevel = Utility.ToBoolean(value);
                                 break;
-                            case "gump":
+                            }
+                        case "gump":
+                            {
                                 prof.GumpID = Utility.ToInt32(value);
                                 break;
-                            case "skill":
+                            }
+                        case "skill":
+                            {
+                                if (!TryGetSkillName(value, out var skillName))
                                 {
-                                    if (!TryGetSkillName(value, out var skillName))
-                                    {
-                                        break;
-                                    }
-
-                                    prof.Skills[skills++] = new SkillNameValue(skillName, Utility.ToInt32(cols[2]));
-
-                                    if (skills == prof.Skills.Length)
-                                    {
-                                        ++valid;
-                                    }
+                                    break;
                                 }
-                                break;
-                            case "stat":
+
+                                var skillValue = Utility.ToInt32(cols[2]);
+                                prof.Skills[skillIndex++] = new SkillNameValue(skillName, skillValue);
+                                totalSkill += skillValue;
+                            }
+                            break;
+                        case "stat":
+                            {
+                                if (!Enum.TryParse(value, out StatType stat))
                                 {
-                                    if (!Enum.TryParse(value, out StatType stat))
-                                    {
-                                        break;
-                                    }
-
-                                    prof.Stats[stats++] = new StatNameValue(stat, Utility.ToInt32(cols[2]));
-
-                                    if (stats == prof.Stats.Length)
-                                    {
-                                        ++valid;
-                                    }
+                                    break;
                                 }
-                                break;
-                        }
+
+                                var statValue = Utility.ToInt32(cols[2]);
+                                prof.Stats[statIndex++] = new StatNameValue(stat, statValue);
+                                totalStats += statValue;
+                            }
+                            break;
                     }
                 }
             }
+        }
 
-            Professions = new ProfessionInfo[1 + maxProf];
+        Professions = new ProfessionInfo[1 + maxProf];
 
-            foreach (var p in profs)
+        foreach (var p in profs)
+        {
+            Professions[p.ID] = p;
+        }
+
+        profs.Clear();
+        profs.TrimExcess();
+    }
+
+    private SkillNameValue[] _skills;
+
+    private ProfessionInfo()
+    {
+        Name = string.Empty;
+
+        _skills = new SkillNameValue[4];
+        Stats = new StatNameValue[3];
+    }
+
+    public int ID { get; private set; }
+    public string Name { get; private set; }
+    public int NameID { get; private set; }
+    public int DescID { get; private set; }
+    public bool TopLevel { get; private set; }
+    public int GumpID { get; private set; }
+    public SkillNameValue[] Skills => _skills;
+    public StatNameValue[] Stats { get; }
+
+    public void FixSkills()
+    {
+        var index = _skills.Length - 1;
+        while (index >= 0)
+        {
+            var skill = _skills[index];
+            if (skill is not { Name: SkillName.Alchemy, Value: 0 })
             {
-                Professions[p.ID] = p;
+                break;
             }
 
-            profs.Clear();
-            profs.TrimExcess();
+            index--;
         }
 
-        private ProfessionInfo()
-        {
-            Name = string.Empty;
-
-            Skills = new SkillNameValue[4];
-            Stats = new StatNameValue[3];
-        }
-
-        public int ID { get; private set; }
-        public string Name { get; private set; }
-        public int NameID { get; private set; }
-        public int DescID { get; private set; }
-        public bool TopLevel { get; private set; }
-        public int GumpID { get; private set; }
-        public SkillNameValue[] Skills { get; }
-        public StatNameValue[] Stats { get; }
+        Array.Resize(ref _skills, index + 1);
     }
 }
