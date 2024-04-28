@@ -18,6 +18,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using Server.Buffers;
 
 namespace Server;
 
@@ -50,114 +51,80 @@ public static class MultiData
     private static void LoadUOP(string path)
     {
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var streamReader = new BinaryReader(stream);
 
-        // Head Information Start
-        if (streamReader.ReadInt32() != 0x0050594D) // Not a UOP File
+        // TODO: Find out if housing.bin is needed and read that.
+        var uopEntries = UOPFiles.ReadUOPIndexes(stream, ".bin", 0x10000, 4);
+
+        byte[] compressionBuffer = null;
+        var buffer = STArrayPool<byte>.Shared.Rent(0x10000);
+
+        foreach (var (i, entry) in uopEntries)
         {
-            return;
-        }
+            stream.Seek(entry.Offset, SeekOrigin.Begin);
 
-        if (streamReader.ReadInt32() > 5) // Bad Version
-        {
-            return;
-        }
+            Span<byte> data;
 
-        UOPHash.BuildChunkIDs(out var chunkIds);
-
-        streamReader.ReadUInt32(); // format timestamp? 0xFD23EC43
-        var startAddress = streamReader.ReadInt64();
-
-        stream.Seek(startAddress, SeekOrigin.Begin); // End of head block
-
-        long nextBlock;
-
-        do
-        {
-            var blockFileCount = streamReader.ReadInt32();
-            nextBlock = streamReader.ReadInt64();
-
-            var index = 0;
-
-            do
+            if (entry.Compressed)
             {
-                var offset = streamReader.ReadInt64();
-
-                var headerSize = streamReader.ReadInt32();       // header length
-                var compressedSize = streamReader.ReadInt32();   // compressed size
-                var decompressedSize = streamReader.ReadInt32(); // decompressed size
-
-                var filehash = streamReader.ReadUInt64(); // filename hash (HashLittle2)
-                streamReader.ReadUInt32();
-                var compressionMethod = streamReader.ReadInt16(); // compression method (0 = none, 1 = zlib)
-
-                index++;
-
-                if (offset == 0 || decompressedSize == 0 || filehash == 0x126D1E99DDEDEE0A) // Exclude housing.bin
+                if (stream.Read(buffer) != entry.CompressedSize)
                 {
-                    continue;
+                    throw new FileLoadException($"Error loading file {stream.Name}.");
                 }
 
-                chunkIds.TryGetValue(filehash, out var chunkID);
-
-                var position = stream.Position; // save current position
-
-                stream.Seek(offset + headerSize, SeekOrigin.Begin);
-
-                Span<byte> sourceData = GC.AllocateUninitializedArray<byte>(compressedSize);
-
-                if (stream.Read(sourceData) != compressedSize)
+                // Generally shouldn't be bigger than that.
+                compressionBuffer ??= STArrayPool<byte>.Shared.Rent(0x10000);
+                var decompressedSize = entry.Size;
+                if (Zlib.Unpack(compressionBuffer, ref decompressedSize, buffer, entry.CompressedSize) != ZlibError.Okay
+                    || decompressedSize != entry.Size)
                 {
-                    continue;
+                    throw new FileLoadException($"Error loading file {stream.Name}. Failed to unpack entry {i}.");
                 }
 
-                Span<byte> data;
+                data = compressionBuffer.AsSpan(0, decompressedSize);
+            }
+            else
+            {
+                data = buffer.AsSpan(0, entry.Size);
+            }
 
-                if (compressionMethod == 1)
+            var tileList = new List<MultiTileEntry>();
+
+            var reader = new SpanReader(data);
+
+            reader.Seek(4, SeekOrigin.Begin); // Skip the first 4 bytes
+            var count = reader.ReadUInt32LE();
+
+            for (uint t = 0; t < count; t++)
+            {
+                var itemId = reader.ReadUInt16LE();
+                var x = reader.ReadInt16LE();
+                var y = reader.ReadInt16LE();
+                var z = reader.ReadInt16LE();
+                var flagValue = reader.ReadUInt16LE();
+
+                var tileFlag = flagValue switch
                 {
-                    data = GC.AllocateUninitializedArray<byte>(decompressedSize);
-                    Zlib.Unpack(data, ref decompressedSize, sourceData, compressedSize);
-                }
-                else
-                {
-                    data = sourceData;
-                }
+                    1   => TileFlag.None,
+                    257 => TileFlag.Generic,
+                    _   => TileFlag.Background // 0
+                };
 
-                var tileList = new List<MultiTileEntry>();
+                var clilocsCount = reader.ReadUInt32LE();
+                var skip = (int)Math.Min(clilocsCount, int.MaxValue) * 4; // bypass binary block
+                reader.Seek(skip, SeekOrigin.Current);
 
-                var reader = new SpanReader(data);
-                reader.Seek(4, SeekOrigin.Begin);
-                var count = reader.ReadUInt32LE();
+                tileList.Add(new MultiTileEntry(itemId, x, y, z, tileFlag));
+            }
 
-                for (uint i = 0; i < count; i++)
-                {
-                    var itemId = reader.ReadUInt16LE();
-                    var x = reader.ReadInt16LE();
-                    var y = reader.ReadInt16LE();
-                    var z = reader.ReadInt16LE();
-                    var flagValue = reader.ReadUInt16LE();
+            _components[i] = new MultiComponentList(tileList);
+        }
 
-                    var tileFlag = flagValue switch
-                    {
-                        1   => TileFlag.None,
-                        257 => TileFlag.Generic,
-                        _   => TileFlag.Background // 0
-                    };
+        STArrayPool<byte>.Shared.Return(buffer);
 
-                    var clilocsCount = reader.ReadUInt32LE();
-                    var skip = (int)Math.Min(clilocsCount, int.MaxValue) * 4; // bypass binary block
-                    reader.Seek(skip, SeekOrigin.Current);
-
-                    tileList.Add(new MultiTileEntry(itemId, x, y, z, tileFlag));
-                }
-
-                _components[chunkID] = new MultiComponentList(tileList);
-
-                stream.Seek(position, SeekOrigin.Begin); // back to position
-            } while (index < blockFileCount);
-        } while (stream.Seek(nextBlock, SeekOrigin.Begin) != 0);
-
-        streamReader.Close();
+        if (compressionBuffer != null)
+        {
+            STArrayPool<byte>.Shared.Return(compressionBuffer);
+        }
     }
 
     private static void LoadMul(bool postHSMulFormat)

@@ -22,24 +22,61 @@ namespace Server;
 public static class ItemBounds
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(ItemBounds));
+    private static readonly string _pathToBounds = Path.Combine(Core.BaseDirectory, "Data", "Binary", "Bounds.bin");
 
     static ItemBounds()
     {
         Table = new Rectangle2D[TileData.ItemTable.Length];
 
-        if (!File.Exists("Data/Binary/Bounds.bin"))
+        if (!File.Exists(_pathToBounds))
         {
-            logger.Error("Data/Binary/Bounds.bin does not exist");
+            logger.Information("Generating {BoundsFilePath}...", "bounds.bin");
+            try
+            {
+                GenerateBoundsFile();
+                logger.Information("Generated {BoundsFilePath} successfully.", "bounds.bin");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Failed to generate {BoundsFilePath}", "bounds.bin");
+            }
+
             return;
         }
 
-        using var fs = new FileStream(
-            "Data/Binary/Bounds.bin",
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.Read
-        );
-        var bin = new BinaryReader(fs);
+        GenerateTable();
+    }
+
+    public static Rectangle2D[] Table { get; }
+
+    public static void GenerateBoundsFile()
+    {
+        using var artData = new ArtData();
+        if (!artData.IsInitialized)
+        {
+            throw new FileNotFoundException("Unable to load art.mul/artidx.mul or artLegacyMUL.uop");
+        }
+
+        using var fs = new FileStream(_pathToBounds, FileMode.Create, FileAccess.Write);
+        using var bw = new BinaryWriter(fs);
+
+        for (var i = 0; i < Table.Length; i++)
+        {
+            var bounds = artData.GetStaticBounds(i);
+
+            bw.Write((short)bounds.X);
+            bw.Write((short)bounds.Y);
+            bw.Write((short)(bounds.X + bounds.Width + 1));
+            bw.Write((short)(bounds.Y + bounds.Height + 1));
+
+            Table[i] = bounds;
+        }
+    }
+
+    public static void GenerateTable()
+    {
+        using var fs = new FileStream(_pathToBounds, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var bin = new BinaryReader(fs);
 
         var count = Math.Min(Table.Length, (int)(fs.Length / 8));
 
@@ -50,11 +87,7 @@ public static class ItemBounds
             int xMax = bin.ReadInt16();
             int yMax = bin.ReadInt16();
 
-            Table[i].Set(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
+            Table[i].Set(xMin, yMin, xMax - xMin, yMax - yMin);
         }
-
-        bin.Close();
     }
-
-    public static Rectangle2D[] Table { get; }
 }
