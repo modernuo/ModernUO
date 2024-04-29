@@ -6,7 +6,7 @@ namespace Server.Items;
 public partial class DragonsBlood : BaseReagent
 {
     [Constructible]
-    public DragonsBlood(int amount = 1) : base(0x4077, amount)
+    public DragonsBlood(int amount = 1) : base(0xF82, amount)
     {
     }
 
