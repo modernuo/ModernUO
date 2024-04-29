@@ -11,7 +11,7 @@ public partial class Nails : BaseTool
     public Nails() : base(0x102E) => Weight = 2.0;
 
     [Constructible]
-    public Nails(int uses) : base(uses, 0x102C) => Weight = 2.0;
+    public Nails(int uses) : base(uses, 0x102E) => Weight = 2.0;
 
     public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 }
