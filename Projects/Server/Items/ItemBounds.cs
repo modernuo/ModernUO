@@ -30,15 +30,15 @@ public static class ItemBounds
 
         if (!File.Exists(_pathToBounds))
         {
-            logger.Information("Generating {BoundsFilePath}...", "bounds.bin");
+            logger.Information("Generating {BoundsFilePath}...", "Bounds.bin");
             try
             {
                 GenerateBoundsFile();
-                logger.Information("Generated {BoundsFilePath} successfully.", "bounds.bin");
+                logger.Information("Generated {BoundsFilePath} successfully.", "Bounds.bin");
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Failed to generate {BoundsFilePath}", "bounds.bin");
+                logger.Error(ex, "Failed to generate {BoundsFilePath}", "Bounds.bin");
             }
 
             return;
