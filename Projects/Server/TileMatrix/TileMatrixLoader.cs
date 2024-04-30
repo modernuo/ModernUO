@@ -30,8 +30,6 @@ internal static class TileMatrixLoader
         var stopwatch = Stopwatch.StartNew();
         Exception exception = null;
 
-
-
         try
         {
             TileMatrix.Force(); // Forces the tile matrix file stream references to load
