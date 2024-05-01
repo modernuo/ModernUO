@@ -7,7 +7,7 @@ namespace Server.Mobiles;
 public abstract class StunAttack : MonsterAbility
 {
     // Prevents infinite loop
-    private HashSet<BaseCreature> _stunning;
+    private static readonly HashSet<BaseCreature> _stunning = [];
 
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveMeleeDamage;
     public override MonsterAbilityType AbilityType => MonsterAbilityType.Stun;
@@ -21,7 +21,6 @@ public abstract class StunAttack : MonsterAbility
     {
         if (source.Weapon is BaseWeapon weapon)
         {
-            _stunning ??= new HashSet<BaseCreature>();
             _stunning.Add(source);
             weapon.OnHit(source, target);
             _stunning.Remove(source);
