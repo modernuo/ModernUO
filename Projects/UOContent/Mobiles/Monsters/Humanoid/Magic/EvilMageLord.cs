@@ -11,7 +11,11 @@ namespace Server.Mobiles
         {
             Name = NameList.RandomName("evil mage lord");
             Body = Core.UOR ? Utility.Random(125, 2) : 0x190;
-            Hue = Core.UOR ? 0 : Race.Human.RandomSkinHue();
+            
+            if (Core.UOR)
+            {
+                Hue = Race.Human.RandomSkinHue();
+            }
 
             SetStr(81, 105);
             SetDex(191, 215);
@@ -42,16 +46,17 @@ namespace Server.Mobiles
             VirtualArmor = 16;
             PackReg(23);
 
-            PackItem(new Robe(Utility.RandomMetalHue()));
-            PackItem(new WizardsHat(Utility.RandomMetalHue()));
-
-            if (Utility.RandomBool())
+            if (Core.UOR)
             {
-                PackItem(new Shoes());
+                PackItem(new Robe(Utility.RandomNeutralHue()));
+                PackItem(new WizardsHat(Utility.RandomNeutralHue()));
+                PackItem(new Sandals());
             }
             else
             {
-                PackItem(new Sandals());
+                EquipItem(new Robe(Utility.RandomNeutralHue()));
+                EquipItem(new WizardsHat(Utility.RandomNeutralHue()));
+                EquipItem(new Sandals());
             }
         }
 
