@@ -42,8 +42,9 @@ namespace Server.Mobiles
             VirtualArmor = 16;
             PackReg(23);
 
-            PackItem(new Robe(Utility.RandomMetalHue()));
-            PackItem(new WizardsHat(Utility.RandomMetalHue()));
+            EquipItem(new Robe(Utility.RandomMetalHue()));
+            EquipItem(new WizardsHat(Utility.RandomMetalHue()));
+            EquipItem(new Sandals());
 
             if (Utility.RandomBool())
             {
