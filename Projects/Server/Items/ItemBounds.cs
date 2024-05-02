@@ -24,6 +24,7 @@ public static class ItemBounds
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(ItemBounds));
     private static readonly string _pathToBounds = Path.Combine(Core.BaseDirectory, "Data", "Binary", "Bounds.bin");
+    private static bool _isGenerating;
 
     public static void Configure()
     {
@@ -64,6 +65,13 @@ public static class ItemBounds
 
     private static void GenerateBoundsFileAsync(Mobile m)
     {
+        if (_isGenerating)
+        {
+            m?.SendMessage("Bounds file is already being generated.");
+            return;
+        }
+
+        _isGenerating = true;
         ThreadPool.QueueUserWorkItem(
             state =>
             {
@@ -105,6 +113,7 @@ public static class ItemBounds
                 }
 
                 logger.Information("Generated {BoundsFilePath} successfully.", "Bounds.bin");
+                _isGenerating = false;
             },
             m
         );
