@@ -43,7 +43,7 @@ public static class MultiData
         LoadMul(postHSMulFormat);
     }
 
-    private static Dictionary<int, MultiComponentList> _components = new();
+    private static readonly Dictionary<int, MultiComponentList> _components = new();
 
     public static MultiComponentList GetComponents(int multiID) =>
         _components.TryGetValue(multiID & 0x3FFF, out var mcl) ? mcl : MultiComponentList.Empty;
@@ -53,9 +53,9 @@ public static class MultiData
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
         // TODO: Find out if housing.bin is needed and read that.
-        var uopEntries = UOPFiles.ReadUOPIndexes(stream, ".bin", 0x10000, 4);
+        var uopEntries = UOPFiles.ReadUOPIndexes(stream, ".bin", 0x10000, 4, 6);
 
-        byte[] compressionBuffer = null;
+        byte[] compressionBuffer = STArrayPool<byte>.Shared.Rent(0x10000);
         var buffer = STArrayPool<byte>.Shared.Rent(0x10000);
 
         foreach (var (i, entry) in uopEntries)
@@ -66,13 +66,11 @@ public static class MultiData
 
             if (entry.Compressed)
             {
-                if (stream.Read(buffer) != entry.CompressedSize)
+                if (stream.Read(buffer.AsSpan( 0, entry.CompressedSize)) != entry.CompressedSize)
                 {
                     throw new FileLoadException($"Error loading file {stream.Name}.");
                 }
 
-                // Generally shouldn't be bigger than that.
-                compressionBuffer ??= STArrayPool<byte>.Shared.Rent(0x10000);
                 var decompressedSize = entry.Size;
                 if (Zlib.Unpack(compressionBuffer, ref decompressedSize, buffer, entry.CompressedSize) != ZlibError.Okay
                     || decompressedSize != entry.Size)

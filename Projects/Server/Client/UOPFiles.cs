@@ -22,7 +22,7 @@ namespace Server;
 public static class UOPFiles
 {
     public static Dictionary<int, UOPEntry> ReadUOPIndexes(
-        FileStream stream, string fileExt, int entryCount = 0x14000, int expectedVersion = -1
+        FileStream stream, string fileExt, int entryCount = 0x14000, int expectedVersion = -1, int precision = 8
     )
     {
         var reader = new BinaryReader(stream);
@@ -46,7 +46,7 @@ public static class UOPFiles
             throw new FileLoadException($"Error loading file {stream.Name}. Invalid signature.");
         }
 
-        var hashes = GenerateHashes(stream.Name, fileExt, entryCount);
+        var hashes = GenerateHashes(stream.Name, fileExt, entryCount, precision);
 
         var nextBlock = reader.ReadInt64();
 
@@ -87,15 +87,18 @@ public static class UOPFiles
         return entries;
     }
 
-    private static Dictionary<ulong, int> GenerateHashes(string filePath, string ext, int entryCount)
+    private static Dictionary<ulong, int> GenerateHashes(string filePath, string ext, int entryCount, int precision = 8)
     {
         var hashes = new Dictionary<ulong, int>();
+        Span<char> buffer = stackalloc char[precision];
+        var formatter = $"D{precision}".AsSpan();
 
         var root = $"build/{Path.GetFileNameWithoutExtension(filePath).ToLowerInvariant()}";
 
         for (var i = 0; i < entryCount; i++)
         {
-            hashes[HashLittle2($"{root}/{i:D8}{ext}")] = i;
+            i.TryFormat(buffer, out _, formatter);
+            hashes[HashLittle2($"{root}/{buffer}{ext}")] = i;
         }
 
         return hashes;
