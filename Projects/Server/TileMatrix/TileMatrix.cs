@@ -33,7 +33,7 @@ public class TileMatrix
     private readonly LandTile[][][] _landTiles;
     private readonly LandTile[] _invalidLandBlock;
     private readonly StaticTile[][][] _emptyStaticBlock;
-    private readonly UOPIndex _mapIndex;
+    private readonly UOPEntry[] _uopMapEntries;
     private readonly int _fileIndex;
     private readonly Map _map;
     private readonly int[][] _staticPatches;
@@ -104,7 +104,13 @@ public class TileMatrix
                 if (mapPath != null)
                 {
                     MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    _mapIndex = new UOPIndex(MapStream);
+
+                    var uopEntries = UOPFiles.ReadUOPIndexes(MapStream, ".dat", 0x14000, 5);
+
+                    _uopMapEntries = GC.AllocateUninitializedArray<UOPEntry>(uopEntries.Count);
+                    uopEntries.Values.CopyTo(_uopMapEntries, 0);
+
+                    ConvertToMapEntries(MapStream);
                 }
                 else
                 {
@@ -390,7 +396,7 @@ public class TileMatrix
     private DateTime m_NextStaticWarning;
     private DateTime m_NextLandWarning;
 
-    public void Force()
+    public static void Force()
     {
         if (AssemblyHandler.Assemblies?.Length > 0)
         {
@@ -404,11 +410,11 @@ public class TileMatrix
     {
         try
         {
-            var offset = (x * BlockHeight + y) * 196 + 4;
+            long offset = (x * BlockHeight + y) * 196 + 4;
 
-            if (_mapIndex != null)
+            if (_uopMapEntries != null)
             {
-                offset = _mapIndex.Lookup(offset);
+                offset = FindOffset(offset);
             }
 
             MapStream.Seek(offset, SeekOrigin.Begin);
@@ -434,9 +440,45 @@ public class TileMatrix
         }
     }
 
+    public long FindOffset(long offset)
+    {
+        var total = 0;
+
+        for (var i = 0; i < _uopMapEntries.Length; ++i)
+        {
+            var entry = _uopMapEntries[i];
+            var newTotal = total + entry.Size;
+
+            if (offset < newTotal)
+            {
+                return entry.Offset + (offset - total);
+            }
+
+            total = newTotal;
+        }
+
+        return -1;
+    }
+
+    private void ConvertToMapEntries(FileStream stream)
+    {
+        // Sorting by offset to make seeking faster
+        Array.Sort(_uopMapEntries, (a, b) => a.Offset.CompareTo(b.Offset));
+
+        var reader = new BinaryReader(stream);
+
+        for (var i = 0; i < _uopMapEntries.Length; ++i)
+        {
+            var entry = _uopMapEntries[i];
+            stream.Seek(entry.Offset, SeekOrigin.Begin);
+            _uopMapEntries[i].Extra = reader.ReadInt32(); // order
+        }
+
+        Array.Sort(_uopMapEntries, (a, b) => a.Extra.CompareTo(b.Extra));
+    }
+
     public void Dispose()
     {
-        _mapIndex?.Close();
         MapStream?.Close();
         DataStream?.Close();
         IndexReader?.Close();
@@ -523,124 +565,5 @@ public struct StaticTile
         m_Y = y;
         m_Z = z;
         m_Hue = hue;
-    }
-}
-
-public class UOPIndex
-{
-    private class UOPEntry : IComparable<UOPEntry>
-    {
-        public int m_Offset;
-        public readonly int m_Length;
-        public int m_Order;
-
-        public UOPEntry(int offset, int length)
-        {
-            m_Offset = offset;
-            m_Length = length;
-            m_Order = 0;
-        }
-
-        public int CompareTo(UOPEntry other)
-        {
-            return m_Order.CompareTo(other.m_Order);
-        }
-    }
-
-    private class OffsetComparer : IComparer<UOPEntry>
-    {
-        public static readonly IComparer<UOPEntry> Instance = new OffsetComparer();
-
-        public int Compare(UOPEntry x, UOPEntry y) => x!.m_Offset.CompareTo(y!.m_Offset);
-    }
-
-    private readonly BinaryReader m_Reader;
-    private readonly int m_Length;
-    private readonly UOPEntry[] m_Entries;
-
-    public int Version { get; }
-
-    public UOPIndex(FileStream stream)
-    {
-        m_Reader = new BinaryReader(stream);
-        m_Length = (int)stream.Length;
-
-        if (m_Reader.ReadInt32() != 0x50594D)
-        {
-            throw new ArgumentException("Invalid UOP file.");
-        }
-
-        Version = m_Reader.ReadInt32();
-        m_Reader.ReadInt32();
-        var nextTable = m_Reader.ReadInt32();
-
-        var entries = new List<UOPEntry>();
-
-        do
-        {
-            stream.Seek(nextTable, SeekOrigin.Begin);
-            var count = m_Reader.ReadInt32();
-            nextTable = m_Reader.ReadInt32();
-            m_Reader.ReadInt32();
-
-            for (var i = 0; i < count; ++i)
-            {
-                var offset = m_Reader.ReadInt32();
-
-                if (offset == 0)
-                {
-                    stream.Seek(30, SeekOrigin.Current);
-                    continue;
-                }
-
-                m_Reader.ReadInt64();
-                var length = m_Reader.ReadInt32();
-
-                entries.Add(new UOPEntry(offset, length));
-
-                stream.Seek(18, SeekOrigin.Current);
-            }
-        }
-        while (nextTable != 0 && nextTable < m_Length);
-
-        entries.Sort(OffsetComparer.Instance);
-
-        for (var i = 0; i < entries.Count; ++i)
-        {
-            stream.Seek(entries[i].m_Offset + 2, SeekOrigin.Begin);
-
-            int dataOffset = m_Reader.ReadInt16();
-            entries[i].m_Offset += 4 + dataOffset;
-
-            stream.Seek(dataOffset, SeekOrigin.Current);
-            entries[i].m_Order = m_Reader.ReadInt32();
-        }
-
-        entries.Sort();
-        m_Entries = entries.ToArray();
-    }
-
-    public int Lookup(int offset)
-    {
-        var total = 0;
-
-        for (var i = 0; i < m_Entries.Length; ++i)
-        {
-            var newTotal = total + m_Entries[i].m_Length;
-
-            if (offset < newTotal)
-            {
-                return m_Entries[i].m_Offset + (offset - total);
-            }
-
-            total = newTotal;
-        }
-
-        return m_Length;
-    }
-
-    public void Close()
-    {
-        m_Reader.Close();
     }
 }
