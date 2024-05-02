@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using Server.Logging;
 
 namespace Server;
@@ -23,6 +24,18 @@ public static class ItemBounds
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(ItemBounds));
     private static readonly string _pathToBounds = Path.Combine(Core.BaseDirectory, "Data", "Binary", "Bounds.bin");
+
+    public static void Configure()
+    {
+        CommandSystem.Register("GenBounds", AccessLevel.Developer, GenBounds_OnCommand);
+    }
+
+    [Usage("GenBounds")]
+    [Description("Asynchronously generates the bounds.bin file from art.mul/artidx.mul or artLegacyMUL.uop to determine container boundaries.")]
+    private static void GenBounds_OnCommand(CommandEventArgs e)
+    {
+        GenerateBoundsFileAsync(e.Mobile);
+    }
 
     static ItemBounds()
     {
@@ -47,10 +60,59 @@ public static class ItemBounds
         GenerateTable();
     }
 
-    public static Rectangle2D[] Table { get; }
+    public static Rectangle2D[] Table { get; private set; }
 
-    public static void GenerateBoundsFile()
+    private static void GenerateBoundsFileAsync(Mobile m)
     {
+        ThreadPool.QueueUserWorkItem(
+            state =>
+            {
+                var from = state as Mobile;
+                logger.Information("Generating {BoundsFilePath}...", "Bounds.bin");
+                if (from != null)
+                {
+                    Core.LoopContext.Post(() => from?.SendMessage("Generating bounds file..."));
+                }
+
+                try
+                {
+                    var table = GenerateBoundsFile();
+                    Core.LoopContext.Post(() => Table = table);
+                }
+                catch (Exception ex)
+                {
+                    if (from != null)
+                    {
+                        Core.LoopContext.Post(() =>
+                            {
+                                from?.SendMessage("Failed to generate bounds file:");
+                                from?.SendMessage(ex.Message);
+                            }
+                        );
+                    }
+
+                    logger.Error(ex, "Failed to generate {BoundsFilePath}", "Bounds.bin");
+                    return;
+                }
+
+                if (from != null)
+                {
+                    Core.LoopContext.Post(
+                        () => from?.SendMessage(
+                            $"Bounds file saved to {Path.GetRelativePath(Core.BaseDirectory, _pathToBounds)}."
+                        )
+                    );
+                }
+
+                logger.Information("Generated {BoundsFilePath} successfully.", "Bounds.bin");
+            },
+            m
+        );
+    }
+
+    private static Rectangle2D[] GenerateBoundsFile()
+    {
+        var table = new Rectangle2D[TileData.ItemTable.Length];
         using var artData = new ArtData();
         if (!artData.IsInitialized)
         {
@@ -60,7 +122,7 @@ public static class ItemBounds
         using var fs = new FileStream(_pathToBounds, FileMode.Create, FileAccess.Write);
         using var bw = new BinaryWriter(fs);
 
-        for (var i = 0; i < Table.Length; i++)
+        for (var i = 0; i < table.Length; i++)
         {
             var bounds = artData.GetStaticBounds(i);
 
@@ -69,11 +131,13 @@ public static class ItemBounds
             bw.Write((short)(bounds.X + bounds.Width + 1));
             bw.Write((short)(bounds.Y + bounds.Height + 1));
 
-            Table[i] = bounds;
+            table[i] = bounds;
         }
+
+        return table;
     }
 
-    public static void GenerateTable()
+    private static void GenerateTable()
     {
         using var fs = new FileStream(_pathToBounds, FileMode.Open, FileAccess.Read, FileShare.Read);
         using var bin = new BinaryReader(fs);
