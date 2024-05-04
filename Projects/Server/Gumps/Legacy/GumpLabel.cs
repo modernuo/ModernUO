@@ -36,9 +36,9 @@ public class GumpLabel : GumpEntry
 
     public string Text { get; set; }
 
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
-        var textIndex = strings.GetOrAdd(Text ?? "");
+        var textIndex = strings.Add(Text ?? "");
         writer.WriteAscii($"{{ text {X} {Y} {Hue} {textIndex} }}");
     }
 }

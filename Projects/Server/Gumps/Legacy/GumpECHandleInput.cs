@@ -20,7 +20,7 @@ namespace Server.Gumps;
 
 public class GumpECHandleInput : GumpEntry
 {
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
         writer.Write("{ echandleinput }"u8);
     }

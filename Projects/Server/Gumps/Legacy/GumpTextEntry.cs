@@ -45,9 +45,9 @@ public class GumpTextEntry : GumpEntry
 
     public string InitialText { get; set; }
 
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
-        var textIndex = strings.GetOrAdd(InitialText ?? "");
+        var textIndex = strings.Add(InitialText ?? "");
         writer.WriteAscii($"{{ textentry {X} {Y} {Width} {Height} {Hue} {EntryID} {textIndex} }}");
         entries++;
     }

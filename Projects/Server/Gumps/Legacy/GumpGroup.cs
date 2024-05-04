@@ -24,7 +24,7 @@ public class GumpGroup : GumpEntry
 
     public int Group { get; set; }
 
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
         if (Group == 1)
         {

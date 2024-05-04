@@ -45,9 +45,9 @@ public class GumpHtml : GumpEntry
 
     public bool Scrollbar { get; set; }
 
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
-        var textIndex = strings.GetOrAdd(Text ?? "");
+        var textIndex = strings.Add(Text ?? "");
         var background = Background ? "1" : "0";
         var scrollbar = Scrollbar ? "1" : "0";
         writer.WriteAscii($"{{ htmlgump {X} {Y} {Width} {Height} {textIndex} {background} {scrollbar} }}");

@@ -101,7 +101,7 @@ public class GumpHtmlLocalized : GumpEntry
     public GumpHtmlLocalizedType Type { get; set; }
 
 
-    public override void AppendTo(ref SpanWriter writer, OrderedHashSet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
         var background = Background ? "1" : "0";
         var scrollbar = Scrollbar ? "1" : "0";

@@ -50,7 +50,7 @@ public static class OutgoingGumpPackets
     private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
     private static readonly byte[] _stringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
     private static readonly byte[] _packBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
-    private static readonly OrderedHashSet<string> _stringsList = new(32);
+    private static readonly OrderedSet<string> _stringsList = new();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WritePacked(ReadOnlySpan<byte> span, ref SpanWriter writer)
