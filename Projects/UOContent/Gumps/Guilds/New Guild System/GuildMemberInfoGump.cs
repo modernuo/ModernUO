@@ -265,7 +265,7 @@ namespace Server.Guilds
                 return;
             }
 
-            var title = Utility.FixHtml(text.Trim());
+            var title = text.Trim().FixHtml();
 
             if (title.Length > 20)
             {

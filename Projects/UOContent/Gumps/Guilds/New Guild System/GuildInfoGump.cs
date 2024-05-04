@@ -173,7 +173,7 @@ namespace Server.Guilds
                 return;
             }
 
-            var charter = Utility.FixHtml(text.Trim());
+            var charter = text.Trim().FixHtml();
 
             if (charter.Length > 50)
             {
@@ -193,7 +193,7 @@ namespace Server.Guilds
                 return;
             }
 
-            var site = Utility.FixHtml(text.Trim());
+            var site = text.Trim().FixHtml();
 
             if (site.Length > 50)
             {

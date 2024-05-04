@@ -22,7 +22,7 @@ public static class Utility
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
     private static SkillName[] _allSkills =
-    {
+    [
         SkillName.Alchemy,
         SkillName.Anatomy,
         SkillName.AnimalLore,
@@ -82,19 +82,19 @@ public static class Utility
         // SkillName.Mysticism,
         // SkillName.Imbuing,
         SkillName.Throwing
-    };
+    ];
 
     private static readonly SkillName[] m_CombatSkills =
-    {
+    [
         SkillName.Archery,
         SkillName.Swords,
         SkillName.Macing,
         SkillName.Fencing,
         SkillName.Wrestling
-    };
+    ];
 
     private static readonly SkillName[] m_CraftSkills =
-    {
+    [
         SkillName.Alchemy,
         SkillName.Blacksmith,
         SkillName.Fletching,
@@ -104,7 +104,7 @@ public static class Utility
         SkillName.Inscribe,
         SkillName.Tailoring,
         SkillName.Tinkering
-    };
+    ];
 
     private static readonly Stack<ConsoleColor> m_ConsoleColors = new();
 
@@ -280,50 +280,57 @@ public static class Utility
         return ip >= min && ip <= max;
     }
 
-    public static string FixHtml(string str)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string FixHtml(this string str) => ((ReadOnlySpan<char>)str).FixHtml();
+
+    public static string FixHtml(this ReadOnlySpan<char> str)
     {
-        if (string.IsNullOrEmpty(str))
+        if (str.IsNullOrWhiteSpace())
         {
-            return str;
+            return str.ToString();
         }
 
-        var chars = str.ToPooledArray();
+        var chars = STArrayPool<char>.Shared.Rent(str.Length);
         var span = chars.AsSpan(0, str.Length);
+        str.CopyTo(span);
+
         FixHtml(span);
 
-        return span.ToString();
+        var fixedStr = span.ToString();
+        STArrayPool<char>.Shared.Return(chars);
+        return fixedStr;
     }
 
-    public static void FixHtml(Span<char> chars)
+    public static void FixHtml(this Span<char> chars)
     {
         if (chars.Length == 0)
         {
             return;
         }
 
-        ReadOnlySpan<char> invalid = stackalloc []{ '<', '>', '#' };
-        ReadOnlySpan<char> replacement = stackalloc []{ '(', ')', '-' };
+        ReadOnlySpan<char> invalid = ['<', '>', '#'];
+        ReadOnlySpan<char> replacement = ['(', ')', '-'];
 
         chars.ReplaceAny(invalid, replacement);
     }
 
-    public static PooledArraySpanFormattable FixHtmlFormattable(string str)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static PooledArraySpanFormattable FixHtmlFormattable(this string str) =>
+        ((ReadOnlySpan<char>)str).FixHtmlFormattable();
+
+    public static PooledArraySpanFormattable FixHtmlFormattable(this ReadOnlySpan<char> str)
     {
-        var chars = str.ToPooledArray();
+        var chars = STArrayPool<char>.Shared.Rent(str.Length);
         var span = chars.AsSpan(0, str.Length);
         var formattable = new PooledArraySpanFormattable(chars, str.Length);
 
-        if (!string.IsNullOrEmpty(str))
+        if (!str.IsNullOrWhiteSpace())
         {
             FixHtml(span);
         }
 
         return formattable;
     }
-
-    public static int InsensitiveCompare(string first, string second) => first.InsensitiveCompare(second);
-
-    public static bool InsensitiveStartsWith(string first, string second) => first.InsensitiveStartsWith(second);
 
     public static Direction GetDirection(Point3D from, Point3D to) => GetDirection(from.X, from.Y, to.X, to.Y);
 
@@ -793,7 +800,7 @@ public static class Utility
     {
         if (count <= 0)
         {
-            return new List<T>();
+            return [];
         }
 
         var length = source.Count;
@@ -1225,14 +1232,14 @@ public static class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Add<T>(ref List<T> list, T value)
     {
-        list ??= new List<T>();
+        list ??= [];
         list.Add(value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Add<T>(ref HashSet<T> set, T value)
     {
-        set ??= new HashSet<T>();
+        set ??= [];
         set.Add(value);
     }
 
@@ -1504,8 +1511,7 @@ public static class Utility
         };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNullOrWhiteSpace(this ReadOnlySpan<char> span) =>
-        span == default || span.IsEmpty || span.IsWhiteSpace();
+    public static bool IsNullOrWhiteSpace(this ReadOnlySpan<char> span) => span.IsEmpty || span.IsWhiteSpace();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InTypeList<T>(this T obj, Type[] types) => obj.GetType().InTypeList(types);

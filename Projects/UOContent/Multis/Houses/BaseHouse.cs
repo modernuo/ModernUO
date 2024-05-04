@@ -3739,7 +3739,7 @@ namespace Server.Multis
                     ref ySouth
                 );
 
-                list.Add(1061112, Utility.FixHtml(houseName)); // House Name: ~1_val~
+                list.Add(1061112, houseName.FixHtml()); // House Name: ~1_val~
                 list.Add(1061113, owner);                      // Owner: ~1_val~
                 if (valid)
                 {

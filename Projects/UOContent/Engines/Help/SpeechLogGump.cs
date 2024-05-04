@@ -46,7 +46,7 @@ namespace Server.Engines.Help
                 10,
                 280,
                 20,
-                $"<basefont color=#A0A0FF><center>SPEECH LOG - {playerName} (<i>{Utility.FixHtmlFormattable(playerAccount)}</i>)</center></basefont>"
+                $"<basefont color=#A0A0FF><center>SPEECH LOG - {playerName} (<i>{playerAccount.FixHtmlFormattable()}</i>)</center></basefont>"
             );
 
             var lastPage = (log.Count - 1) / MaxEntriesPerPage;
@@ -82,8 +82,8 @@ namespace Server.Engines.Help
                     builder.AppendFormat(
                         "<u>{0}</u> (<i>{1}</i>): {2}",
                         name,
-                        Utility.FixHtml(account),
-                        Utility.FixHtml(speech)
+                        account.FixHtml(),
+                        speech.FixHtml()
                     );
                 }
 

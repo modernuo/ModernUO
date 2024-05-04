@@ -34,7 +34,7 @@ namespace Server.Engines.Help
         {
             Sender = sender;
             Sent = Core.Now;
-            Message = Utility.FixHtml(message);
+            Message = message.FixHtml();
             Type = type;
             PageLocation = sender.Location;
             PageMap = sender.Map;

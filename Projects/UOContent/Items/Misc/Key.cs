@@ -234,7 +234,7 @@ public partial class Key : Item
                 return;
             }
 
-            _key.Description = Utility.FixHtml(text);
+            _key.Description = text.FixHtml();
         }
     }
 
