@@ -23,8 +23,11 @@ public class GrowOnlySet<T>
     private readonly SortedSet<(T Value, int Order)> _set;
     private int _next;
 
-    public GrowOnlySet(OrderedSetComparer<T> comparer = null) =>
-        _set = new SortedSet<(T, int)>(comparer ?? OrderedSetComparer<T>.Default);
+    public GrowOnlySet(IComparer<T> comparer = null)
+    {
+        var orderedComparer = comparer == null ? OrderedSetComparer<T>.Default : new OrderedSetComparer<T>(comparer);
+        _set = new SortedSet<(T, int)>(orderedComparer);
+    }
 
     public int Count => _set.Count;
 
