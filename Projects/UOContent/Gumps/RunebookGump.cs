@@ -1,3 +1,4 @@
+using System;
 using Server.Items;
 using Server.Multis;
 using Server.Network;
@@ -480,7 +481,7 @@ namespace Server.Gumps
 
                 if (m_Book.CheckAccess(from))
                 {
-                    m_Book.Description = text.Trim().FixHtml();
+                    m_Book.Description = text.AsSpan().Trim().FixHtml();
 
                     from.CloseGump<RunebookGump>();
                     from.SendGump(new RunebookGump(from, m_Book));

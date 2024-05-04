@@ -784,7 +784,8 @@ namespace Server.Multis
 
             if (e.Speech.Length > 8)
             {
-                Rename(e.Speech[8..].Trim().DefaultIfNullOrEmpty(null));
+                var newName = e.Speech.AsSpan(8).Trim();
+                Rename(newName.Length == 0 ? null : newName.ToString());
             }
         }
 

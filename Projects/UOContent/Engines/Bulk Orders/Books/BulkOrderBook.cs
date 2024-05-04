@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.ContextMenus;
@@ -287,7 +288,7 @@ public partial class BulkOrderBook : Item, ISecurable
 
             if (from.CheckAlive() && m_Book.IsChildOf(from.Backpack))
             {
-                m_Book.BookName = text.Trim().FixHtml();
+                m_Book.BookName = text.AsSpan().Trim().FixHtml();
 
                 from.SendLocalizedMessage(1062480); // The bulk order book's name has been changed.
             }

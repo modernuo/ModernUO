@@ -309,7 +309,7 @@ public static class AccountHandler
         if (Accounts.GetAccount(un) is not Account acct)
         {
             // To prevent someone from making an account of just '' or a bunch of meaningless spaces
-            if (AutoAccountCreation && un.Trim().Length > 0)
+            if (AutoAccountCreation && !string.IsNullOrWhiteSpace(un))
             {
                 e.State.Account = acct = CreateAccount(e.State, un, pw);
                 e.Accepted = acct?.CheckAccess(e.State) ?? false;

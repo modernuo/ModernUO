@@ -677,7 +677,7 @@ namespace Server.Guilds
             }
             else
             {
-                var name = text.Trim().FixHtml();
+                var name = text.AsSpan().Trim().FixHtml();
 
                 if (!CheckProfanity(name))
                 {
