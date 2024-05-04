@@ -50,13 +50,7 @@ namespace Server.Gumps
 
                 var g = m_List[i];
 
-                string name;
-
-                if ((name = g.Name) != null && (name = name.Trim()).Length <= 0)
-                {
-                    name = "(empty)";
-                }
-
+                string name = g.Name?.Trim().DefaultIfNullOrEmpty("(empty)");
                 AddLabel(radio ? 55 : 20, 35 + i % 11 * 30, 0, name);
             }
         }
