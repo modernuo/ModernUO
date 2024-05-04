@@ -30,13 +30,14 @@ public class GrowOnlySet<T>
 
     public int Add(T value)
     {
-        if (_set.TryGetValue((value, _next), out var entry))
+        (T value, int Order) newEntry = (value, _next++);
+        if (_set.TryGetValue(newEntry, out var actualEntry))
         {
-            return entry.Order;
+            return actualEntry.Order;
         }
 
-        _set.Add((value, _next));
-        return _next++;
+        _set.Add(newEntry);
+        return newEntry.Order;
     }
 
     public bool Contains(T value) => _set.Contains((value, 0));
