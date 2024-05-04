@@ -49,14 +49,6 @@ public class OrderedSet<T>
         return order = _list.Count - 1;
     }
 
-    public void Remove(T value)
-    {
-        if (_dictionary.Remove(value, out var index))
-        {
-            _list.RemoveAt(index);
-        }
-    }
-
     public bool Contains(T value) => _dictionary.ContainsKey(value);
 
     public void Clear()
