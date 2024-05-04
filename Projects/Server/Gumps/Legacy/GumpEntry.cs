@@ -23,5 +23,5 @@ public abstract class GumpEntry
         }
     }
 
-    public abstract void AppendTo(ref SpanWriter writer, GrowOnlySet<string> strings, ref int entries, ref int switches);
+    public abstract void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches);
 }

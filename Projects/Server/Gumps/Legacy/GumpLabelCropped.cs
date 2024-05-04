@@ -42,7 +42,7 @@ public class GumpLabelCropped : GumpEntry
 
     public string Text { get; set; }
 
-    public override void AppendTo(ref SpanWriter writer, GrowOnlySet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
         var textIndex = strings.Add(Text ?? "");
         writer.WriteAscii($"{{ croppedtext {X} {Y} {Width} {Height} {Hue} {textIndex} }}");
