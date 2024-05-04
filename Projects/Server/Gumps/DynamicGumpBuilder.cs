@@ -184,7 +184,7 @@ public ref struct DynamicGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlLocalized(
-        int x, int y, int width, int height, int number, short color, bool background = false, bool scrollbar = false
+        int x, int y, int width, int height, int number, int color, bool background = false, bool scrollbar = false
     ) => _gumpBuilder.AddHtmlLocalized(x, y, width, height, number, color, background, scrollbar);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

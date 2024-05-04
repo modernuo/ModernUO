@@ -201,7 +201,7 @@ public ref struct GumpLayoutBuilder
     }
 
     public void AddHtmlLocalized(
-        int x, int y, int width, int height, int number, short color, bool background = false, bool scrollbar = false
+        int x, int y, int width, int height, int number, int color, bool background = false, bool scrollbar = false
     )
     {
         GrowIfNeeded(12 + 16 + 45 + 5 + 4);
