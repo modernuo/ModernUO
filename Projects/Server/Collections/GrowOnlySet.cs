@@ -18,6 +18,11 @@ using System.Runtime.CompilerServices;
 
 namespace Server.Collections;
 
+/// <summary>
+/// A sorted set data structure designed for scenarios where the order of insertion is important and
+/// elements are only added, not removed.
+/// </summary>
+/// <typeparam name="T">The type of elements in the set.</typeparam>
 public class GrowOnlySet<T>
 {
     private readonly SortedSet<(T Value, int Order)> _set;
