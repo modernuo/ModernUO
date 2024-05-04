@@ -11,7 +11,17 @@ namespace Server.Mobiles
         {
             Name = NameList.RandomName("evil mage");
             Title = "the evil mage";
-            Body = Core.UOR ? 124 : 0x190;
+            if (Core.UOR)
+            {
+                Body = 124;
+            }
+            else
+            {
+                Body = 0x190;
+                Hue = Race.Human.RandomSkinHue();
+                Utility.AssignRandomHair(this);
+                Utility.AssignRandomFacialHair(this, HairHue);
+            }
 
             SetStr(81, 105);
             SetDex(91, 115);
@@ -39,8 +49,9 @@ namespace Server.Mobiles
 
             VirtualArmor = 16;
             PackReg(6);
-            PackItem(new Robe(Utility.RandomNeutralHue()));
-            PackItem(new Sandals());
+
+            EquipItem(new Robe(Utility.RandomNeutralHue()));
+            EquipItem(new Sandals());
         }
 
         public override string CorpseName => "an evil mage corpse";
@@ -63,22 +74,20 @@ namespace Server.Mobiles
             {
                 if (Body == 0x190)
                 {
-                    Body = 124;
-                }
-
-                if (Hue != 0)
-                {
+                    Body = Utility.Random(125, 2);
+                    HairItemID = 0;
+                    HairHue = 0;
+                    FacialHairItemID = 0;
+                    FacialHairItemID = 0;
                     Hue = 0;
                 }
             }
-            else if (Body == 124)
+            else if (Body.BodyID is 125 or 126)
             {
                 Body = 0x190;
-
-                if (Hue == 0)
-                {
-                    Hue = Race.Human.RandomSkinHue();
-                }
+                Hue = Race.Human.RandomSkinHue();
+                Utility.AssignRandomHair(this);
+                Utility.AssignRandomFacialHair(this, HairHue);
             }
         }
     }
