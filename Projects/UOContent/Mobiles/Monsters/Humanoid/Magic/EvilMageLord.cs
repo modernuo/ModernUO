@@ -10,11 +10,16 @@ namespace Server.Mobiles
         public EvilMageLord() : base(AIType.AI_Mage)
         {
             Name = NameList.RandomName("evil mage lord");
-            Body = Core.UOR ? Utility.Random(125, 2) : 0x190;
-            
             if (Core.UOR)
             {
+                Body = Utility.Random(125, 2);
+            }
+            else
+            {
+                Body = 0x190;
                 Hue = Race.Human.RandomSkinHue();
+                Utility.AssignRandomHair(this);
+                Utility.AssignRandomFacialHair(this, HairHue);
             }
 
             SetStr(81, 105);
@@ -46,18 +51,10 @@ namespace Server.Mobiles
             VirtualArmor = 16;
             PackReg(23);
 
-            if (Core.UOR)
-            {
-                PackItem(new Robe(Utility.RandomNeutralHue()));
-                PackItem(new WizardsHat(Utility.RandomNeutralHue()));
-                PackItem(new Sandals());
-            }
-            else
-            {
-                EquipItem(new Robe(Utility.RandomNeutralHue()));
-                EquipItem(new WizardsHat(Utility.RandomNeutralHue()));
-                EquipItem(new Sandals());
-            }
+            var hue = Utility.RandomNeutralHue();
+            EquipItem(new Robe(hue));
+            EquipItem(new WizardsHat(hue));
+            EquipItem(new Sandals());
         }
 
         public override string CorpseName => "an evil mage lord corpse";
@@ -82,21 +79,19 @@ namespace Server.Mobiles
                 if (Body == 0x190)
                 {
                     Body = Utility.Random(125, 2);
-                }
-
-                if (Hue != 0)
-                {
+                    HairItemID = 0;
+                    HairHue = 0;
+                    FacialHairItemID = 0;
+                    FacialHairItemID = 0;
                     Hue = 0;
                 }
             }
             else if (Body.BodyID is 125 or 126)
             {
                 Body = 0x190;
-
-                if (Hue == 0)
-                {
-                    Hue = Race.Human.RandomSkinHue();
-                }
+                Hue = Race.Human.RandomSkinHue();
+                Utility.AssignRandomHair(this);
+                Utility.AssignRandomFacialHair(this, HairHue);
             }
         }
     }
