@@ -61,7 +61,7 @@ namespace Server.Multis
         {
             base.GetProperties(list);
 
-            list.Add(1061639, Utility.FixHtml(GetName()));                         // Name: ~1_NAME~
+            list.Add(1061639, GetName().FixHtml());                         // Name: ~1_NAME~
             list.Add(1061640, Owner?.Owner == null ? "nobody" : Owner.Owner.Name); // Owner: ~1_OWNER~
 
             if (Owner != null)

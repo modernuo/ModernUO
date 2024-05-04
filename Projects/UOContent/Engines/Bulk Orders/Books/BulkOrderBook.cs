@@ -287,7 +287,7 @@ public partial class BulkOrderBook : Item, ISecurable
 
             if (from.CheckAlive() && m_Book.IsChildOf(from.Backpack))
             {
-                m_Book.BookName = Utility.FixHtml(text.Trim());
+                m_Book.BookName = text.Trim().FixHtml();
 
                 from.SendLocalizedMessage(1062480); // The bulk order book's name has been changed.
             }

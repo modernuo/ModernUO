@@ -519,7 +519,7 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    vi.Description = Utility.FixHtml(vi.Description);
+                    vi.Description = vi.Description.FixHtml();
                 }
             }
 
@@ -1451,7 +1451,7 @@ namespace Server.Mobiles
                     description = text.Trim();
                 }
 
-                SetInfo(from, price, Utility.FixHtml(description));
+                SetInfo(from, price, description.FixHtml());
             }
 
             public override void OnCancel(Mobile from)
@@ -1590,7 +1590,7 @@ namespace Server.Mobiles
                     return;
                 }
 
-                m_Vendor.Name = Utility.FixHtml(name);
+                m_Vendor.Name = name.FixHtml();
 
                 from.SendLocalizedMessage(1062496); // Your vendor has been renamed.
 
@@ -1619,7 +1619,7 @@ namespace Server.Mobiles
                     return;
                 }
 
-                m_Vendor.ShopName = Utility.FixHtml(name);
+                m_Vendor.ShopName = name.FixHtml();
 
                 from.SendGump(new NewPlayerVendorOwnerGump(m_Vendor));
             }

@@ -53,8 +53,8 @@ namespace Server.Guilds
             {
                 case 1:
                     {
-                        var guildName = Utility.FixHtml(info.GetTextEntry(5) ?? "");
-                        var guildAbbrev = Utility.FixHtml(info.GetTextEntry(6) ?? "");
+                        var guildName = (info.GetTextEntry(5) ?? "").FixHtml();
+                        var guildAbbrev = (info.GetTextEntry(6) ?? "").FixHtml();
 
                         if (guildName.Length <= 0)
                         {

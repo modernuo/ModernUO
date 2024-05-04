@@ -245,7 +245,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
             else
             {
                 _target.EngravedText =
-                    Utility.FixHtml(relay.Length > 64 ? relay[..64] : relay);
+                    (relay.Length > 64 ? relay[..64] : relay).FixHtml();
                 state.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
                 _target.InvalidateProperties();
                 _tool.UsesRemaining -= 1;

@@ -158,7 +158,7 @@ namespace Server.Commands
                 return false;
             }
 
-            if (Condition.Length > 0 && !Utility.InsensitiveStartsWith(Condition, "where"))
+            if (Condition.Length > 0 && !Condition.InsensitiveStartsWith("where"))
             {
                 from.SendMessage("The condition field must start with \"where\".");
                 return false;
