@@ -258,7 +258,7 @@ public static class EntityPersistence
                     {
                         deleteAllFailures = true;
                     }
-                    else if (pressedKey.InsensitiveEquals("y"))
+                    else if (!pressedKey.InsensitiveEquals("y"))
                     {
                         throw new Exception("Deserialization failed.");
                     }
