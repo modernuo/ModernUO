@@ -16,7 +16,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Server.Utilities;
+namespace Server;
 
 public static class Html
 {
@@ -46,6 +46,21 @@ public static class Html
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Center(this string text, string color, int size) => $"<BASEFONT COLOR={color} SIZE={size}><CENTER>{text}</CENTER></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text) => $"<RIGHT>{text}</RIGHT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, int color) => $"<BASEFONT COLOR=#{color:X6}><RIGHT>{text}</RIGHT></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, int color, int size) => $"<BASEFONT COLOR=#{color:X6} SIZE={size}><RIGHT>{text}</RIGHT></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, string color) => $"<BASEFONT COLOR={color}><RIGHT>{text}</RIGHT></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, string color, int size) => $"<BASEFONT COLOR={color} SIZE={size}><RIGHT>{text}</RIGHT></BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string EscapeHtml(this string input) =>

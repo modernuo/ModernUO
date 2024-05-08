@@ -5,7 +5,6 @@ using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
 using Server.Network;
-using Server.Utilities;
 
 namespace Server.Items
 {

@@ -399,7 +399,7 @@ namespace Server.Engines.ConPVP
             AddImage(215, -45, 0xEE40);
             // AddImage( 330, 141, 0x8BA );
 
-            AddBorderedText(22, 22, 294, 20, Center("King of the Hill Scoreboard"), LabelColor32, BlackColor32);
+            AddBorderedText(22, 22, 294, 20, "King of the Hill Scoreboard".Center(), LabelColor32, BlackColor32);
 
             AddImageTiled(32, 50, 264, 1, 9107);
             AddImageTiled(42, 52, 264, 1, 9157);
@@ -415,40 +415,18 @@ namespace Server.Engines.ConPVP
 
                 AddImage(24, 60 + i * 75, teamInfo == ourTeam ? 9730 : 9727, teamInfo.Color - 1);
 
-                var nameColor = LabelColor32;
-                var borderColor = BlackColor32;
-
-                switch (teamInfo.Color)
+                var borderColor = teamInfo.Color == 0x455 ? LabelColor32 : BlackColor32;
+                var nameColor = teamInfo.Color switch
                 {
-                    case 0x47E:
-                        nameColor = 0xFFFFFF;
-                        break;
-
-                    case 0x4F2:
-                        nameColor = 0x3399FF;
-                        break;
-
-                    case 0x4F7:
-                        nameColor = 0x33FF33;
-                        break;
-
-                    case 0x4FC:
-                        nameColor = 0xFF00FF;
-                        break;
-
-                    case 0x021:
-                        nameColor = 0xFF3333;
-                        break;
-
-                    case 0x01A:
-                        nameColor = 0xFF66FF;
-                        break;
-
-                    case 0x455:
-                        nameColor = 0x333333;
-                        borderColor = 0xFFFFFF;
-                        break;
-                }
+                    0x47E => 0xFFFFFF,
+                    0x4F2 => 0x3399FF,
+                    0x4F7 => 0x33FF33,
+                    0x4FC => 0xFF00FF,
+                    0x021 => 0xFF3333,
+                    0x01A => 0xFF66FF,
+                    0x455 => 0x333333,
+                    _     => LabelColor32
+                };
 
                 AddBorderedText(
                     60,
@@ -478,10 +456,6 @@ namespace Server.Engines.ConPVP
             AddButton(314, height - 42, 247, 248, 1);
         }
 
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
         private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
         {
             AddColoredText(x - 1, y - 1, width, height, text, borderColor);
@@ -493,14 +467,7 @@ namespace Server.Engines.ConPVP
 
         private void AddColoredText(int x, int y, int width, int height, string text, int color)
         {
-            if (color == 0)
-            {
-                AddHtml(x, y, width, height, text);
-            }
-            else
-            {
-                AddHtml(x, y, width, height, Color(text, color));
-            }
+            AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
         }
     }
 

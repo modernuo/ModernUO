@@ -57,7 +57,7 @@ namespace Server.Items
             AddItem(150, 80, item.ItemID, item.Hue);
 
             // item number / all items
-            AddHtml(20, 195, 250, 20, $"<BASEFONT COLOR=#FFFFFF>{page}/{m_Aquarium.Items.Count}</BASEFONT>");
+            AddHtml(20, 195, 250, 20, $"{page}/{m_Aquarium.Items.Count}".Color(0xFFFFFF));
 
             // remove item
             if (edit)

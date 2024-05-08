@@ -247,7 +247,7 @@ namespace Server.Engines.Help
                     AddAlphaRegion(1, 1, 408, 446);
                 }
 
-                AddHtml(10, 10, 390, 20, Color(Center("Predefined Responses"), LabelColor32));
+                AddHtml(10, 10, 390, 20, "Predefined Responses".Center(LabelColor32));
 
                 var list = PredefinedResponse.List;
 
@@ -308,7 +308,7 @@ namespace Server.Engines.Help
                     }
 
                     AddButton(12, 44 + i % 5 * 80, 0xFAB, 0xFAD, 1);
-                    AddHtml(45, 44 + i % 5 * 80, 200, 20, Color("New Response", LabelColor32));
+                    AddHtml(45, 44 + i % 5 * 80, 200, 20, "New Response".Color(LabelColor32));
                 }
             }
             else if (canEdit)
@@ -324,24 +324,20 @@ namespace Server.Engines.Help
                     AddAlphaRegion(1, 1, 408, 248);
                 }
 
-                AddHtml(10, 10, 390, 20, Color(Center("Predefined Response Editor"), LabelColor32));
+                AddHtml(10, 10, 390, 20, "Predefined Response Editor".Center(LabelColor32));
 
                 AddButton(10, 40, 0xFB1, 0xFB3, 1);
-                AddHtml(45, 40, 200, 20, Color("Remove", LabelColor32));
+                AddHtml(45, 40, 200, 20, "Remove".Color(LabelColor32));
 
                 AddButton(10, 70, 0xFA5, 0xFA7, 2);
-                AddHtml(45, 70, 200, 20, Color("Title:", LabelColor32));
+                AddHtml(45, 70, 200, 20, "Title:".Color(LabelColor32));
                 AddTextInput(10, 90, 300, 20, 0, response.Title);
 
                 AddButton(10, 120, 0xFA5, 0xFA7, 3);
-                AddHtml(45, 120, 200, 20, Color("Message:", LabelColor32));
+                AddHtml(45, 120, 200, 20, "Message:".Color(LabelColor32));
                 AddTextInput(10, 140, 390, 100, 1, response.Message);
             }
         }
-
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
         public void AddTextInput(int x, int y, int w, int h, int id, string def)
         {

@@ -706,8 +706,6 @@ namespace Server.Engines.Quests
             return (r << 10) | (g << 5) | b;
         }
 
-        public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
         public void AddHtmlObject(int x, int y, int width, int height, object message, int color, bool back, bool scroll)
         {
             if (message is int html)
@@ -716,7 +714,7 @@ namespace Server.Engines.Quests
             }
             else
             {
-                AddHtml(x, y, width, height, Color(message.ToString(), C16232(color)), back, scroll);
+                AddHtml(x, y, width, height, message.ToString().Color(C16232(color)), back, scroll);
             }
         }
     }

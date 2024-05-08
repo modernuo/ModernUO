@@ -35,7 +35,6 @@ using Server.Spells.Seventh;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
-using Server.Utilities;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
 using CalcMoves = Server.Movement.Movement;
 using QuestOfferGump = Server.Engines.MLQuests.Gumps.QuestOfferGump;

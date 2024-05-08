@@ -349,7 +349,7 @@ public static class HelpInfo
 
             AddBackground(0, 0, width, height, 5054);
 
-            AddHtml(10, 10, width - 20, 20, Color(Center(info.Name), 0xFF0000));
+            AddHtml(10, 10, width - 20, 20, info.Name.Center(0xFF0000));
 
             using var sb = ValueStringBuilder.Create();
 
@@ -402,9 +402,5 @@ public static class HelpInfo
 
             AddHtml(10, 40, width - 20, height - 80, sb.ToString(), false, true);
         }
-
-        public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
-        public static string Center(string text) => $"<CENTER>{text}</CENTER>";
     }
 }

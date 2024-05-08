@@ -445,15 +445,15 @@ namespace Server.Misc
                 title = "Shard Poll";
             }
 
-            AddHtml(22, 22, 294, 20, Color(Center(title), LabelColor32));
+            AddHtml(22, 22, 294, 20, title.Center(LabelColor32));
 
             if (editing)
             {
-                AddHtml(22, 22, 294, 20, Color($"{totalVotes} total", LabelColor32));
+                AddHtml(22, 22, 294, 20, $"{totalVotes} total".Color(LabelColor32));
                 AddButton(287, 23, 0x2622, 0x2623, 2);
             }
 
-            AddHtml(22, 50, 294, 40, Color(poller.Title, 0x99CC66));
+            AddHtml(22, 50, 294, 40, poller.Title.Color(0x99CC66));
 
             AddImageTiled(32, 88, 264, 1, 9107);
             AddImageTiled(42, 90, 264, 1, 9157);
@@ -485,7 +485,7 @@ namespace Server.Misc
                     AddRadio(24, y - 15, 0x25F9, 0x25FC, false, 1 + i);
                 }
 
-                AddHtml(60, y - 9 * option.LineBreaks, 250, 18 * option.LineBreaks, Color(text, LabelColor32));
+                AddHtml(60, y - 9 * option.LineBreaks, 250, 18 * option.LineBreaks, text.Color(LabelColor32));
 
                 y += optHeight / 2;
                 y += 5;
@@ -494,7 +494,7 @@ namespace Server.Misc
             if (editing && !isViewingResults)
             {
                 AddRadio(24, y + 15 - 15, 0x25F9, 0x25FC, false, 1 + poller.Options.Length);
-                AddHtml(60, y + 15 - 9, 250, 18, Color("Create new option.", 0x99CC66));
+                AddHtml(60, y + 15 - 9, 250, 18, "Create new option.".Color(0x99CC66));
             }
 
             AddButton(314, height - 73, 247, 248, 1);
@@ -509,10 +509,6 @@ namespace Server.Misc
 
             m_Polls.Enqueue(poller);
         }
-
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
