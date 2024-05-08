@@ -112,34 +112,34 @@ namespace Server.Gumps
                 AddHtml(10, 15, 220, 20, "House Properties".Center(White));
 
                 AddHtml(15, 40, 210, 20, "Facet:".Color(White));
-                AddHtml(15, 40, 210, 20, Right(map == null ? "(null)" : map.Name).Color(White));
+                AddHtml(15, 40, 210, 20, (map == null ? "(null)" : map.Name).Right(White));
 
                 AddHtml(15, 60, 210, 20, "Location:".Color(White));
-                AddHtml(15, 60, 210, 20, Right(sel.Location.ToString()).Color(White));
+                AddHtml(15, 60, 210, 20, sel.Location.ToString().Right(White));
 
                 AddHtml(15, 80, 210, 20, "Sextant:".Color(White));
-                AddHtml(15, 80, 210, 20, Right(location).Color(White));
+                AddHtml(15, 80, 210, 20, location.Right(White));
 
                 AddHtml(15, 100, 210, 20, "Owner:".Color(White));
-                AddHtml(15, 100, 210, 20, Right(owner).Color(White));
+                AddHtml(15, 100, 210, 20, owner.Right(White));
 
                 AddHtml(15, 120, 210, 20, "Name:".Color(White));
-                AddHtml(15, 120, 210, 20, Right(houseName).Color(White));
+                AddHtml(15, 120, 210, 20, houseName.Right(White));
 
                 AddHtml(15, 140, 210, 20, "Friends:".Color(White));
-                AddHtml(15, 140, 210, 20, Right(sel.Friends.Count.ToString()).Color(White));
+                AddHtml(15, 140, 210, 20, sel.Friends.Count.ToString().Right(White));
 
                 AddHtml(15, 160, 210, 20, "Co-Owners:".Color(White));
-                AddHtml(15, 160, 210, 20, Right(sel.CoOwners.Count.ToString()).Color(White));
+                AddHtml(15, 160, 210, 20, sel.CoOwners.Count.ToString().Right(White));
 
                 AddHtml(15, 180, 210, 20, "Bans:".Color(White));
-                AddHtml(15, 180, 210, 20, Right(sel.Bans.Count.ToString()).Color(White));
+                AddHtml(15, 180, 210, 20, sel.Bans.Count.ToString().Right(White));
 
                 AddHtml(15, 200, 210, 20, "Decays:".Color(White));
-                AddHtml(15, 200, 210, 20, Right(sel.CanDecay ? "Yes" : "No").Color(White));
+                AddHtml(15, 200, 210, 20, (sel.CanDecay ? "Yes" : "No").Right(White));
 
                 AddHtml(15, 220, 210, 20, "Decay Level:".Color(White));
-                AddHtml(15, 220, 210, 20, Right(sel.DecayLevel.ToString()).Color(White));
+                AddHtml(15, 220, 210, 20, sel.DecayLevel.ToString().Right(White));
 
                 AddButton(15, 245, 4005, 4007, 1);
                 AddHtml(50, 245, 120, 20, "Go to house".Color(White));
@@ -301,8 +301,6 @@ namespace Server.Gumps
 
             return house.GetType().Name;
         }
-
-        public string Right(string text) => $"<div align=right>{text}</div>";
 
         public void AddBlackAlpha(int x, int y, int width, int height)
         {
