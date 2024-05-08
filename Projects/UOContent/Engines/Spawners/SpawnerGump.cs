@@ -167,8 +167,8 @@ public class SpawnerGump : Gump
             totalWeight += spawnerEntry.SpawnedProbability;
         }
 
-        AddHtml(270, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalSpawns}</CENTER></BASEFONT>");
-        AddHtml(308, 308 + offset, 35, 20, $"<BASEFONT COLOR=#F4F4F4><CENTER>{totalWeight}</CENTER></BASEFONT>");
+        AddHtml(270, 308 + offset, 35, 20, totalSpawns.ToString().Center(0xF4F4F4));
+        AddHtml(308, 308 + offset, 35, 20, totalWeight.ToString().Center(0xF4F4F4));
 
         AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT><BASEFONT COLOR={GetCountColor(totalSpawned, spawner.Count)}> ({totalSpawned}/{spawner.Count})</BASEFONT>");
 

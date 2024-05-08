@@ -22,7 +22,7 @@ public abstract class AdvancedSearchWarningGump : Gump
             10,
             width - 20,
             20,
-            $"<BASEFONT COLOR=#{headerColor:X6}>{header}</BASEFONT>"
+            header.Color(headerColor)
         );
 
         AddImageTiled(10, 40, width - 20, height - 80, 2624);
@@ -35,9 +35,8 @@ public abstract class AdvancedSearchWarningGump : Gump
                 40,
                 width - 20,
                 height - 80,
-                $"<BASEFONT COLOR=#{contentColor:X6}>{content}</BASEFONT>",
-                false,
-                true
+                content.Color(contentColor),
+                scrollbar: true
             );
         }
 

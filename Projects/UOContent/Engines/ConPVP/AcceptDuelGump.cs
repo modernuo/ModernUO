@@ -49,61 +49,59 @@ namespace Server.Engines.ConPVP
             AddImage(215, -43, 0xEE40);
             // AddImage( 330, 141, 0x8BA );
 
-            AddHtml(22 - 1, 22, 294, 20, Color(Center("Duel Challenge"), BlackColor32));
-            AddHtml(22 + 1, 22, 294, 20, Color(Center("Duel Challenge"), BlackColor32));
-            AddHtml(22, 22 - 1, 294, 20, Color(Center("Duel Challenge"), BlackColor32));
-            AddHtml(22, 22 + 1, 294, 20, Color(Center("Duel Challenge"), BlackColor32));
-            AddHtml(22, 22, 294, 20, Color(Center("Duel Challenge"), LabelColor32));
+            var duelChallengeBlack = "Duel Challenge".Center(BlackColor32);
+            AddHtml(22 - 1, 22, 294, 20, duelChallengeBlack);
+            AddHtml(22 + 1, 22, 294, 20, duelChallengeBlack);
+            AddHtml(22, 22 - 1, 294, 20, duelChallengeBlack);
+            AddHtml(22, 22 + 1, 294, 20, duelChallengeBlack);
+            AddHtml(22, 22, 294, 20, "Duel Challenge".Center(LabelColor32));
 
-            string fmt;
+            var accept = p.Contains(challenger)
+                ? $"You have been asked to join sides with {challenger.Name} in a duel. Do you accept?"
+                : $"You have been challenged to a duel from {challenger.Name}. Do you accept?";
 
-            if (p.Contains(challenger))
-            {
-                fmt = "You have been asked to join sides with {0} in a duel. Do you accept?";
-            }
-            else
-            {
-                fmt = "You have been challenged to a duel from {0}. Do you accept?";
-            }
+            var acceptBlack = accept.Color(BlackColor32);
 
-            AddHtml(22 - 1, 50, 294, 40, Color(string.Format(fmt, challenger.Name), BlackColor32));
-            AddHtml(22 + 1, 50, 294, 40, Color(string.Format(fmt, challenger.Name), BlackColor32));
-            AddHtml(22, 50 - 1, 294, 40, Color(string.Format(fmt, challenger.Name), BlackColor32));
-            AddHtml(22, 50 + 1, 294, 40, Color(string.Format(fmt, challenger.Name), BlackColor32));
-            AddHtml(22, 50, 294, 40, Color(string.Format(fmt, challenger.Name), 0xB0C868));
+            AddHtml(22 - 1, 50, 294, 40, acceptBlack);
+            AddHtml(22 + 1, 50, 294, 40, acceptBlack);
+            AddHtml(22, 50 - 1, 294, 40, acceptBlack);
+            AddHtml(22, 50 + 1, 294, 40, acceptBlack);
+            AddHtml(22, 50, 294, 40, accept.Color(0xB0C868));
 
             AddImageTiled(32, 88, 264, 1, 9107);
             AddImageTiled(42, 90, 264, 1, 9157);
 
+            var yesBlack = "Yes, I will fight this duel.".Color(BlackColor32);
+
             AddRadio(24, 100, 9727, 9730, true, 1);
-            AddHtml(60 - 1, 105, 250, 20, Color("Yes, I will fight this duel.", BlackColor32));
-            AddHtml(60 + 1, 105, 250, 20, Color("Yes, I will fight this duel.", BlackColor32));
-            AddHtml(60, 105 - 1, 250, 20, Color("Yes, I will fight this duel.", BlackColor32));
-            AddHtml(60, 105 + 1, 250, 20, Color("Yes, I will fight this duel.", BlackColor32));
-            AddHtml(60, 105, 250, 20, Color("Yes, I will fight this duel.", LabelColor32));
+            AddHtml(60 - 1, 105, 250, 20, yesBlack);
+            AddHtml(60 + 1, 105, 250, 20, yesBlack);
+            AddHtml(60, 105 - 1, 250, 20, yesBlack);
+            AddHtml(60, 105 + 1, 250, 20, yesBlack);
+            AddHtml(60, 105, 250, 20, "Yes, I will fight this duel.".Color(LabelColor32));
+
+            var noBlack = "No, I do not wish to fight.".Color(BlackColor32);
 
             AddRadio(24, 135, 9727, 9730, false, 2);
-            AddHtml(60 - 1, 140, 250, 20, Color("No, I do not wish to fight.", BlackColor32));
-            AddHtml(60 + 1, 140, 250, 20, Color("No, I do not wish to fight.", BlackColor32));
-            AddHtml(60, 140 - 1, 250, 20, Color("No, I do not wish to fight.", BlackColor32));
-            AddHtml(60, 140 + 1, 250, 20, Color("No, I do not wish to fight.", BlackColor32));
-            AddHtml(60, 140, 250, 20, Color("No, I do not wish to fight.", LabelColor32));
+            AddHtml(60 - 1, 140, 250, 20, noBlack);
+            AddHtml(60 + 1, 140, 250, 20, noBlack);
+            AddHtml(60, 140 - 1, 250, 20, noBlack);
+            AddHtml(60, 140 + 1, 250, 20, noBlack);
+            AddHtml(60, 140, 250, 20, "No, I do not wish to fight.".Color(LabelColor32));
+
+            var noAskBlack = "No, knave. Do not ask again.".Color(BlackColor32);
 
             AddRadio(24, 170, 9727, 9730, false, 3);
-            AddHtml(60 - 1, 175, 250, 20, Color("No, knave. Do not ask again.", BlackColor32));
-            AddHtml(60 + 1, 175, 250, 20, Color("No, knave. Do not ask again.", BlackColor32));
-            AddHtml(60, 175 - 1, 250, 20, Color("No, knave. Do not ask again.", BlackColor32));
-            AddHtml(60, 175 + 1, 250, 20, Color("No, knave. Do not ask again.", BlackColor32));
-            AddHtml(60, 175, 250, 20, Color("No, knave. Do not ask again.", LabelColor32));
+            AddHtml(60 - 1, 175, 250, 20, noAskBlack);
+            AddHtml(60 + 1, 175, 250, 20, noAskBlack);
+            AddHtml(60, 175 - 1, 250, 20, noAskBlack);
+            AddHtml(60, 175 + 1, 250, 20, noAskBlack);
+            AddHtml(60, 175, 250, 20, "No, knave. Do not ask again.".Color(LabelColor32));
 
             AddButton(314, 173, 247, 248, 1);
 
             Timer.StartTimer(TimeSpan.FromSeconds(15.0), AutoReject);
         }
-
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
         public void AutoReject()
         {

@@ -1,7 +1,6 @@
 using Server.Ethics;
 using Server.Items;
 using Server.Targeting;
-using Server.Utilities;
 
 namespace Server.Engines.Craft
 {

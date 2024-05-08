@@ -188,7 +188,7 @@ namespace Server.Engines.ConPVP
                 AddBorderedText(x + 5, y + 5, 325 - 5, sb.ToString(), color, 0);
                 x += 325;
 
-                AddBorderedText(x, y + 5, 40, Center(ar.Spectators.ToString()), color, 0);
+                AddBorderedText(x, y + 5, 40, ar.Spectators.ToString().Center(), color, 0);
             }
         }
 
@@ -263,10 +263,6 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
         private void AddBorderedText(int x, int y, int width, string text, int color, int borderColor)
         {
             /*AddColoredText( x - 1, y, width, text, borderColor );
@@ -280,14 +276,7 @@ namespace Server.Engines.ConPVP
 
         private void AddColoredText(int x, int y, int width, string text, int color)
         {
-            if (color == 0)
-            {
-                AddHtml(x, y, width, 20, text);
-            }
-            else
-            {
-                AddHtml(x, y, width, 20, Color(text, color));
-            }
+            AddHtml(x, y, width, 20, color == 0 ? text : text.Color(color));
         }
 
         private void AddColumnHeader(int width, string name)
@@ -297,7 +286,7 @@ namespace Server.Engines.ConPVP
 
             if (name != null)
             {
-                AddBorderedText(m_ColumnX, 13, width, Center(name), 0xFFFFFF, 0);
+                AddBorderedText(m_ColumnX, 13, width, name.Center(), 0xFFFFFF, 0);
             }
 
             m_ColumnX += width;

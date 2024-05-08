@@ -25,7 +25,7 @@ public partial class ScrollofTranscendence : SpecialScroll
     public override int Message => 1094933;
 
     public override string DefaultTitle =>
-        $"<basefont color=#FFFFFF>Scroll of Transcendence ({Math.Floor(Value * 10) / 10:0.#} Skill):</basefont>";
+        $"Scroll of Transcendence ({Math.Floor(Value * 10) / 10:0.#} Skill):".Color(0xFFFFFF);
 
     public static ScrollofTranscendence CreateRandom(int min, int max) =>
         new(Utility.RandomSkill(), Utility.RandomMinMax(min, max) / 10.0);

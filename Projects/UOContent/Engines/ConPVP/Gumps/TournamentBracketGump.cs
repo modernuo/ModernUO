@@ -91,7 +91,7 @@ namespace Server.Engines.ConPVP
 
                         sb.Append(" Tournament Bracket");
 
-                        AddHtml(25, 35, 250, 20, Center(sb.ToString()));
+                        AddHtml(25, 35, 250, 20, sb.ToString().Center());
 
                         AddRightArrow(25, 53, ToButtonID(0, 4), "Rules");
                         AddRightArrow(25, 71, ToButtonID(0, 1), "Participants");
@@ -181,7 +181,7 @@ namespace Server.Engines.ConPVP
                         );
 
                         AddLeftArrow(25, 11, ToButtonID(0, 0));
-                        AddHtml(25, 35, 250, 20, Center("Rules"));
+                        AddHtml(25, 35, 250, 20, "Rules".Center());
 
                         var y = 53;
 
@@ -278,7 +278,7 @@ namespace Server.Engines.ConPVP
                                     ?? new List<TourneyParticipant>(tourney.Participants);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 0));
-                        AddHtml(25, 35, 250, 20, Center($"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}"));
+                        AddHtml(25, 35, 250, 20, $"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}".Center());
 
                         StartPage(out var index, out var count, out var y, 12);
 
@@ -291,7 +291,7 @@ namespace Server.Engines.ConPVP
                             {
                                 if (part.Players[0] is PlayerMobile pm && pm.DuelPlayer != null)
                                 {
-                                    name = Color(name, pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
+                                    name = name.Color(pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
                                 }
                             }
 
@@ -311,7 +311,7 @@ namespace Server.Engines.ConPVP
                         AddBackground(0, 0, 300, 60 + 18 + 20 + part.Players.Count * 18 + 20 + 20 + 160, 9380);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 1));
-                        AddHtml(25, 35, 250, 20, Center("Participants"));
+                        AddHtml(25, 35, 250, 20, "Participants".Center());
 
                         var y = 53;
 
@@ -327,7 +327,7 @@ namespace Server.Engines.ConPVP
                             {
                                 if (mob is PlayerMobile pm && pm.DuelPlayer != null)
                                 {
-                                    name = Color(name, pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
+                                    name = name.Color(pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
                                 }
                             }
 
@@ -364,7 +364,7 @@ namespace Server.Engines.ConPVP
                             sb.Append("Nothing logged yet.");
                         }
 
-                        AddHtml(25, y, 250, 150, Color(sb.ToString(), BlackColor32), false, true);
+                        AddHtml(25, y, 250, 150, sb.ToString().Color(BlackColor32), false, true);
 
                         break;
                     }
@@ -374,7 +374,7 @@ namespace Server.Engines.ConPVP
                         AddBackground(0, 0, 300, 300, 9380);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 3));
-                        AddHtml(25, 35, 250, 20, Center("Participants"));
+                        AddHtml(25, 35, 250, 20, "Participants".Center());
 
                         if (obj is not Mobile mob)
                         {
@@ -405,7 +405,7 @@ namespace Server.Engines.ConPVP
                         AddBackground(0, 0, 300, 300, 9380);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 0));
-                        AddHtml(25, 35, 250, 20, Center("Rounds"));
+                        AddHtml(25, 35, 250, 20, "Rounds".Center());
 
                         StartPage(out var index, out var count, out var y, 12);
 
@@ -422,7 +422,7 @@ namespace Server.Engines.ConPVP
                         AddBackground(0, 0, 300, 300, 9380);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 2));
-                        AddHtml(25, 35, 250, 20, Center("Rounds"));
+                        AddHtml(25, 35, 250, 20, "Rounds".Center());
 
                         if (m_Object is not PyramidLevel level)
                         {
@@ -475,11 +475,11 @@ namespace Server.Engines.ConPVP
 
                                     if (color == -1 && match.Context != null && match.Winner == part)
                                     {
-                                        txt = Color(txt, 0x336633);
+                                        txt = txt.Color(0x336633);
                                     }
                                     else if (color == -1 && match.Context != null)
                                     {
-                                        txt = Color(txt, 0x663333);
+                                        txt = txt.Color(0x663333);
                                     }
 
                                     sb.Append(txt);
@@ -537,11 +537,11 @@ namespace Server.Engines.ConPVP
 
                                     if (color == -1 && match.Context != null && match.Winner == part)
                                     {
-                                        txt = Color(txt, 0x336633);
+                                        txt = txt.Color(0x336633);
                                     }
                                     else if (color == -1 && match.Context != null)
                                     {
-                                        txt = Color(txt, 0x663333);
+                                        txt = txt.Color(0x663333);
                                     }
 
                                     sb.Append(txt);
@@ -556,7 +556,7 @@ namespace Server.Engines.ConPVP
 
                             if (color >= 0)
                             {
-                                str = Color(str, color);
+                                str = str.Color(color);
                             }
 
                             AddRightArrow(25, y, ToButtonID(5, index + i + 1), str);
@@ -577,7 +577,7 @@ namespace Server.Engines.ConPVP
                         AddBackground(0, 0, 300, 60 + 18 + 20 + 20 + 20 + ct * 18 + 6, 9380);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 5));
-                        AddHtml(25, 35, 250, 20, Center("Rounds"));
+                        AddHtml(25, 35, 250, 20, "Rounds".Center());
 
                         AddHtml(25, 53, 250, 20, $"Winner: {(match.Winner == null ? "N/A" : match.Winner.NameList)}");
                         AddHtml(
@@ -683,10 +683,6 @@ namespace Server.Engines.ConPVP
             }
         }
 
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
         private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
         {
             AddColoredText(x - 1, y - 1, width, height, text, borderColor);
@@ -704,7 +700,7 @@ namespace Server.Engines.ConPVP
             }
             else
             {
-                AddHtml(x, y, width, height, Color(text, color));
+                AddHtml(x, y, width, height, text.Color(color));
             }
         }
 

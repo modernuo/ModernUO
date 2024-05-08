@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Drawing;
 using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Network;
@@ -268,10 +269,7 @@ public sealed partial class VirtualCheck : Item
             AddImage(10, 8, 113);
             AddImage(360, 8, 113);
 
-            var title =
-                $"<BASEFONT COLOR=#FF2F4F4F><CENTER>BANK OF {User.RawName.ToUpper()}</CENTER>";
-
-            AddHtml(40, 15, 320, 20, title);
+            AddHtml(40, 15, 320, 20, $"BANK OF {User.RawName.ToUpper()}".Center(0x2F4F4F));
 
             // Platinum Row
             AddBackground(15, 60, 175, 20, 9300);

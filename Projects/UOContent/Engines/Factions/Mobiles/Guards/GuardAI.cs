@@ -12,7 +12,6 @@ using Server.Spells.Seventh;
 using Server.Spells.Sixth;
 using Server.Spells.Third;
 using Server.Targeting;
-using Server.Utilities;
 
 namespace Server.Factions
 {

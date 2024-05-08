@@ -21,6 +21,106 @@ public static class TextDefinitionExtensions
 {
     public static void AddHtmlText(
         this TextDefinition def,
+        ref DynamicGumpBuilder builder,
+        int x,
+        int y,
+        int width,
+        int height,
+        bool back = false,
+        bool scroll = false,
+        int numberColor = -1,
+        int stringColor = -1
+    )
+    {
+        if (def == null)
+        {
+            return;
+        }
+
+        if (def.Number > 0)
+        {
+            if (numberColor >= 0) // 5 bits per RGB component (15 bit RGB)
+            {
+                builder.AddHtmlLocalized(x, y, width, height, def.Number, numberColor, back, scroll);
+            }
+            else
+            {
+                builder.AddHtmlLocalized(x, y, width, height, def.Number, back, scroll);
+            }
+        }
+        else if (def.String != null)
+        {
+            if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
+            {
+                builder.AddHtml(
+                    x,
+                    y,
+                    width,
+                    height,
+                    def.String.Color(stringColor),
+                    back,
+                    scroll
+                );
+            }
+            else
+            {
+                builder.AddHtml(x, y, width, height, def.String, back, scroll);
+            }
+        }
+    }
+
+    public static void AddHtmlText(
+        this TextDefinition def,
+        ref StaticGumpBuilder builder,
+        int x,
+        int y,
+        int width,
+        int height,
+        bool back = false,
+        bool scroll = false,
+        int numberColor = -1,
+        int stringColor = -1
+    )
+    {
+        if (def == null)
+        {
+            return;
+        }
+
+        if (def.Number > 0)
+        {
+            if (numberColor >= 0) // 5 bits per RGB component (15 bit RGB)
+            {
+                builder.AddHtmlLocalized(x, y, width, height, def.Number, numberColor, back, scroll);
+            }
+            else
+            {
+                builder.AddHtmlLocalized(x, y, width, height, def.Number, back, scroll);
+            }
+        }
+        else if (def.String != null)
+        {
+            if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
+            {
+                builder.AddHtml(
+                    x,
+                    y,
+                    width,
+                    height,
+                    def.String.Color(stringColor),
+                    back,
+                    scroll
+                );
+            }
+            else
+            {
+                builder.AddHtml(x, y, width, height, def.String, back, scroll);
+            }
+        }
+    }
+
+    public static void AddHtmlText(
+        this TextDefinition def,
         Gump g,
         int x,
         int y,
@@ -57,7 +157,7 @@ public static class TextDefinitionExtensions
                     y,
                     width,
                     height,
-                    $"<BASEFONT COLOR=#{stringColor:X6}>{def.String}</BASEFONT>",
+                    def.String.Color(stringColor),
                     back,
                     scroll
                 );
@@ -102,7 +202,7 @@ public static class TextDefinitionExtensions
                     y,
                     width,
                     height,
-                    $"<BASEFONT COLOR=#{stringColor:X6}>{string.Format(def.String, args)}</BASEFONT>",
+                    string.Format(def.String, args).Color(stringColor),
                     back,
                     scroll
                 );

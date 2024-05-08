@@ -16,7 +16,7 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Server.Utilities;
+namespace Server;
 
 public static class Html
 {

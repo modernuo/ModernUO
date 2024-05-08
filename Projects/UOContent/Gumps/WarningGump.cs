@@ -60,25 +60,16 @@ public class WarningGump : DynamicGump
         builder.AddImageTiled(10, 40, _width - 20, _height - 80, 2624);
         builder.AddAlphaRegion(10, 40, _width - 20, _height - 80);
 
-        if (_content != null)
-        {
-            if (_content.Number > 0)
-            {
-                builder.AddHtmlLocalized(10, 40, _width - 20, _height - 80, _content.Number, (short)_contentColor, false, true);
-            }
-            else
-            {
-                builder.AddHtml(
-                    10,
-                    40,
-                    _width - 20,
-                    _height - 80,
-                    $"<BASEFONT COLOR=#{_contentColor:X6}>{_content.String}</BASEFONT>",
-                    false,
-                    true
-                );
-            }
-        }
+        _content.AddHtmlText(
+            ref builder,
+            10,
+            40,
+            _width - 20,
+            _height - 80,
+            scroll: true,
+            numberColor: _contentColor,
+            stringColor: _contentColor
+        );
 
         builder.AddImageTiled(10, _height - 30, _width - 20, 20, 2624);
         builder.AddAlphaRegion(10, _height - 30, _width - 20, 20);

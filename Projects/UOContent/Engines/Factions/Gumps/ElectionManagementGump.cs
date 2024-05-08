@@ -26,22 +26,22 @@ namespace Server.Factions
                 AddBackground(0, 0, 448, 354, 9270);
                 AddAlphaRegion(10, 10, 428, 334);
 
-                AddHtml(10, 10, 428, 20, Color(Center("Candidate Management"), LabelColor));
+                AddHtml(10, 10, 428, 20, "Candidate Management".Center(LabelColor));
 
-                AddHtml(45, 35, 100, 20, Color("Player Name:", LabelColor));
-                AddHtml(145, 35, 100, 20, Color(candidate.Mobile == null ? "null" : candidate.Mobile.Name, LabelColor));
+                AddHtml(45, 35, 100, 20, "Player Name:".Color(LabelColor));
+                AddHtml(145, 35, 100, 20, (candidate.Mobile == null ? "null" : candidate.Mobile.Name).Color(LabelColor));
 
-                AddHtml(45, 55, 100, 20, Color("Vote Count:", LabelColor));
-                AddHtml(145, 55, 100, 20, Color(candidate.Votes.ToString(), LabelColor));
+                AddHtml(45, 55, 100, 20, "Vote Count:".Color(LabelColor));
+                AddHtml(145, 55, 100, 20, candidate.Votes.ToString().Color(LabelColor));
 
                 AddButton(12, 73, 4005, 4007, 1);
-                AddHtml(45, 75, 100, 20, Color("Drop Candidate", LabelColor));
+                AddHtml(45, 75, 100, 20, "Drop Candidate".Color(LabelColor));
 
                 AddImageTiled(13, 99, 422, 242, 9264);
                 AddImageTiled(14, 100, 420, 240, 9274);
                 AddAlphaRegion(14, 100, 420, 240);
 
-                AddHtml(14, 100, 420, 20, Color(Center("Voters"), LabelColor));
+                AddHtml(14, 100, 420, 20, "Voters".Center(LabelColor));
 
                 if (page > 0)
                 {
@@ -61,11 +61,11 @@ namespace Server.Factions
                     AddImage(414, 104, 0x25E6);
                 }
 
-                AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor));
-                AddHtml(47, 120, 150, 20, Color("Name", LabelColor));
-                AddHtml(195, 120, 100, 20, Color(Center("Address"), LabelColor));
-                AddHtml(295, 120, 80, 20, Color(Center("Time"), LabelColor));
-                AddHtml(355, 120, 60, 20, Color(Center("Legit"), LabelColor));
+                AddHtml(14, 120, 30, 20, "DEL".Center(LabelColor));
+                AddHtml(47, 120, 150, 20, "Name".Color(LabelColor));
+                AddHtml(195, 120, 100, 20, "Address".Center(LabelColor));
+                AddHtml(295, 120, 80, 20, "Time".Center(LabelColor));
+                AddHtml(355, 120, 60, 20, "Legit".Center(LabelColor));
 
                 var idx = 0;
 
@@ -85,12 +85,12 @@ namespace Server.Factions
 
                         if (obj is Mobile mobile)
                         {
-                            AddHtml(x + 2, 140 + idx * 20, 150, 20, Color(mobile.Name, LabelColor));
+                            AddHtml(x + 2, 140 + idx * 20, 150, 20, mobile.Name.Color(LabelColor));
                             x += 150;
                         }
                         else if (obj is IPAddress)
                         {
-                            AddHtml(x, 140 + idx * 20, 100, 20, Color(Center(obj.ToString()), LabelColor));
+                            AddHtml(x, 140 + idx * 20, 100, 20, obj.ToString().Center(LabelColor));
                             x += 100;
                         }
                         else if (obj is DateTime time)
@@ -100,13 +100,13 @@ namespace Server.Factions
                                 140 + idx * 20,
                                 80,
                                 20,
-                                Color(Center(FormatTimeSpan(time - election.LastStateTime)), LabelColor)
+                                FormatTimeSpan(time - election.LastStateTime).Center(LabelColor)
                             );
                             x += 80;
                         }
                         else if (obj is int i1)
                         {
-                            AddHtml(x, 140 + idx * 20, 60, 20, Color(Center($"{i1}%"), LabelColor));
+                            AddHtml(x, 140 + idx * 20, 60, 20, $"{i1}%".Center(LabelColor));
                             x += 60;
                         }
                     }
@@ -117,23 +117,23 @@ namespace Server.Factions
                 AddBackground(0, 0, 288, 334, 9270);
                 AddAlphaRegion(10, 10, 268, 314);
 
-                AddHtml(10, 10, 268, 20, Color(Center("Election Management"), LabelColor));
+                AddHtml(10, 10, 268, 20, "Election Management".Center(LabelColor));
 
-                AddHtml(45, 35, 100, 20, Color("Current State:", LabelColor));
-                AddHtml(145, 35, 100, 20, Color(election.State.ToString(), LabelColor));
+                AddHtml(45, 35, 100, 20, "Current State:".Color(LabelColor));
+                AddHtml(145, 35, 100, 20, election.State.ToString().Color(LabelColor));
 
                 AddButton(12, 53, 4005, 4007, 1);
-                AddHtml(45, 55, 100, 20, Color("Transition Time:", LabelColor));
-                AddHtml(145, 55, 100, 20, Color(FormatTimeSpan(election.NextStateTime), LabelColor));
+                AddHtml(45, 55, 100, 20, "Transition Time:".Color(LabelColor));
+                AddHtml(145, 55, 100, 20, FormatTimeSpan(election.NextStateTime).Color(LabelColor));
 
                 AddImageTiled(13, 79, 262, 242, 9264);
                 AddImageTiled(14, 80, 260, 240, 9274);
                 AddAlphaRegion(14, 80, 260, 240);
 
-                AddHtml(14, 80, 260, 20, Color(Center("Candidates"), LabelColor));
-                AddHtml(14, 100, 30, 20, Color(Center("-->"), LabelColor));
-                AddHtml(47, 100, 150, 20, Color("Name", LabelColor));
-                AddHtml(195, 100, 80, 20, Color(Center("Votes"), LabelColor));
+                AddHtml(14, 80, 260, 20, "Candidates".Center(LabelColor));
+                AddHtml(14, 100, 30, 20, "-->".Center(LabelColor));
+                AddHtml(47, 100, 150, 20, "Name".Color(LabelColor));
+                AddHtml(195, 100, 80, 20, "Votes".Center(LabelColor));
 
                 for (var i = 0; i < election.Candidates.Count; ++i)
                 {
@@ -146,17 +146,11 @@ namespace Server.Factions
                     }
 
                     AddButton(13, 118 + i * 20, 4005, 4007, 2 + i);
-                    AddHtml(47, 120 + i * 20, 150, 20, Color(mob.Name, LabelColor));
-                    AddHtml(195, 120 + i * 20, 80, 20, Color(Center(cd.Votes.ToString()), LabelColor));
+                    AddHtml(47, 120 + i * 20, 150, 20, mob.Name.Color(LabelColor));
+                    AddHtml(195, 120 + i * 20, 80, 20, cd.Votes.ToString().Center(LabelColor));
                 }
             }
         }
-
-        public string Right(string text) => $"<DIV ALIGN=RIGHT>{text}</DIV>";
-
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
         public static string FormatTimeSpan(TimeSpan ts) =>
             $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
@@ -168,50 +162,41 @@ namespace Server.Factions
 
             if (m_Candidate == null)
             {
-                if (bid == 0)
-                {
-                }
-                else if (bid == 1)
-                {
-                }
-                else
+                if (bid > 1)
                 {
                     bid -= 2;
 
-                    if (bid >= 0 && bid < m_Election.Candidates.Count)
+                    if (bid < m_Election.Candidates.Count)
                     {
                         from.SendGump(new ElectionManagementGump(m_Election, m_Election.Candidates[bid]));
                     }
                 }
             }
+            else if (bid == 0)
+            {
+                from.SendGump(new ElectionManagementGump(m_Election));
+            }
+            else if (bid == 1)
+            {
+                m_Election.RemoveCandidate(m_Candidate.Mobile);
+                from.SendGump(new ElectionManagementGump(m_Election));
+            }
+            else if (bid == 2 && m_Page > 0)
+            {
+                from.SendGump(new ElectionManagementGump(m_Election, m_Candidate, m_Page - 1));
+            }
+            else if (bid == 3 && (m_Page + 1) * 10 < m_Candidate.Voters.Count)
+            {
+                from.SendGump(new ElectionManagementGump(m_Election, m_Candidate, m_Page + 1));
+            }
             else
             {
-                if (bid == 0)
-                {
-                    from.SendGump(new ElectionManagementGump(m_Election));
-                }
-                else if (bid == 1)
-                {
-                    m_Election.RemoveCandidate(m_Candidate.Mobile);
-                    from.SendGump(new ElectionManagementGump(m_Election));
-                }
-                else if (bid == 2 && m_Page > 0)
-                {
-                    from.SendGump(new ElectionManagementGump(m_Election, m_Candidate, m_Page - 1));
-                }
-                else if (bid == 3 && (m_Page + 1) * 10 < m_Candidate.Voters.Count)
-                {
-                    from.SendGump(new ElectionManagementGump(m_Election, m_Candidate, m_Page + 1));
-                }
-                else
-                {
-                    bid -= 4;
+                bid -= 4;
 
-                    if (bid >= 0 && bid < m_Candidate.Voters.Count)
-                    {
-                        m_Candidate.Voters.RemoveAt(bid);
-                        from.SendGump(new ElectionManagementGump(m_Election, m_Candidate, m_Page));
-                    }
+                if (bid >= 0 && bid < m_Candidate.Voters.Count)
+                {
+                    m_Candidate.Voters.RemoveAt(bid);
+                    from.SendGump(new ElectionManagementGump(m_Election, m_Candidate, m_Page));
                 }
             }
         }

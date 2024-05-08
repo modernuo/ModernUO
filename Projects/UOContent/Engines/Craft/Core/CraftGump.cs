@@ -106,17 +106,7 @@ namespace Server.Engines.Craft
             }
             // ****************************************
 
-            if (notice != null)
-            {
-                if (notice.Number > 0)
-                {
-                    AddHtmlLocalized(170, 295, 350, 40, notice.Number, LabelColor);
-                }
-                else
-                {
-                    AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice.String}</BASEFONT>");
-                }
-            }
+            notice.AddHtmlText(this, 170, 295, 350, 40, numberColor: LabelColor, stringColor: FontColor);
 
             // If the system has more than one resource
             if (craftSystem.CraftSubRes.Init)

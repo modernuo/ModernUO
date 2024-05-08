@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Items;
 using Server.Network;
@@ -60,31 +59,31 @@ public class HouseRaffleManagementGump : Gump
         AddBackground(0, 0, 618, 354, 9270);
         AddAlphaRegion(10, 10, 598, 334);
 
-        AddHtml(10, 10, 598, 20, Color(Center("Raffle Management"), LabelColor));
+        AddHtml(10, 10, 598, 20, "Raffle Management".Center(LabelColor));
 
-        AddHtml(45, 35, 100, 20, Color("Location:", LabelColor));
-        AddHtml(145, 35, 250, 20, Color(HouseRaffleStone.FormatLocation(stone.PlotBounds, stone.GetPlotCenter(), stone.PlotFacet), LabelColor));
+        AddHtml(45, 35, 100, 20, "Location:".Color(LabelColor));
+        AddHtml(145, 35, 250, 20, HouseRaffleStone.FormatLocation(stone.PlotBounds, stone.GetPlotCenter(), stone.PlotFacet).Color(LabelColor));
 
-        AddHtml(45, 55, 100, 20, Color("Ticket Price:", LabelColor));
-        AddHtml(145, 55, 250, 20, Color(HouseRaffleStone.FormatPrice(stone.TicketPrice), LabelColor));
+        AddHtml(45, 55, 100, 20, "Ticket Price:".Color(LabelColor));
+        AddHtml(145, 55, 250, 20, HouseRaffleStone.FormatPrice(stone.TicketPrice).Color(LabelColor));
 
-        AddHtml(45, 75, 100, 20, Color("Total Entries:", LabelColor));
-        AddHtml(145, 75, 250, 20, Color(_stone.Entries.Count.ToString(), LabelColor));
+        AddHtml(45, 75, 100, 20, "Total Entries:".Color(LabelColor));
+        AddHtml(145, 75, 250, 20, _stone.Entries.Count.ToString().Color(LabelColor));
 
         AddButton(440, 33, 0xFA5, 0xFA7, 3);
-        AddHtml(474, 35, 120, 20, Color("Sort by name", LabelColor));
+        AddHtml(474, 35, 120, 20, "Sort by name".Color(LabelColor));
 
         AddButton(440, 53, 0xFA5, 0xFA7, 4);
-        AddHtml(474, 55, 120, 20, Color("Sort by account", LabelColor));
+        AddHtml(474, 55, 120, 20, "Sort by account".Color(LabelColor));
 
         AddButton(440, 73, 0xFA5, 0xFA7, 5);
-        AddHtml(474, 75, 120, 20, Color("Sort by address", LabelColor));
+        AddHtml(474, 75, 120, 20, "Sort by address".Color(LabelColor));
 
         AddImageTiled(13, 99, 592, 242, 9264);
         AddImageTiled(14, 100, 590, 240, 9274);
         AddAlphaRegion(14, 100, 590, 240);
 
-        AddHtml(14, 100, 590, 20, Color(Center("Entries"), LabelColor));
+        AddHtml(14, 100, 590, 20, "Entries".Center(LabelColor));
 
         if (page > 0)
         {
@@ -104,11 +103,11 @@ public class HouseRaffleManagementGump : Gump
             AddImage(584, 104, 0x25E6);
         }
 
-        AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor));
-        AddHtml(47, 120, 250, 20, Color("Name", LabelColor));
-        AddHtml(295, 120, 100, 20, Color(Center("Address"), LabelColor));
-        AddHtml(395, 120, 150, 20, Color(Center("Date"), LabelColor));
-        AddHtml(545, 120, 60, 20, Color(Center("Num"), LabelColor));
+        AddHtml(14, 120, 30, 20, "DEL".Center(LabelColor));
+        AddHtml(47, 120, 250, 20, "Name".Color(LabelColor));
+        AddHtml(295, 120, 100, 20, "Address".Center(LabelColor));
+        AddHtml(395, 120, 150, 20, "Date".Center(LabelColor));
+        AddHtml(545, 120, 60, 20, "Num".Center(LabelColor));
 
         var idx = 0;
         var winner = _stone.Winner;
@@ -131,11 +130,11 @@ public class HouseRaffleManagementGump : Gump
             {
                 if (entry.From.Account is Account acc)
                 {
-                    AddHtml(x + 2, 140 + idx * 20, 250, 20, Color($"{entry.From.RawName} ({acc})", color));
+                    AddHtml(x + 2, 140 + idx * 20, 250, 20, $"{entry.From.RawName} ({acc})".Color(color));
                 }
                 else
                 {
-                    AddHtml(x + 2, 140 + idx * 20, 250, 20, Color(entry.From.RawName, color));
+                    AddHtml(x + 2, 140 + idx * 20, 250, 20, entry.From.RawName.Color(color));
                 }
             }
 
@@ -143,26 +142,17 @@ public class HouseRaffleManagementGump : Gump
 
             if (entry.Address != null)
             {
-                AddHtml(x, 140 + idx * 20, 100, 20, Color(Center(entry.Address.ToString()), color));
+                AddHtml(x, 140 + idx * 20, 100, 20, entry.Address.ToString().Center(color));
             }
 
             x += 100;
 
-            AddHtml(x, 140 + idx * 20, 150, 20, Color(Center(entry.Date.ToString()), color));
+            AddHtml(x, 140 + idx * 20, 150, 20, entry.Date.ToString().Center(color));
             x += 150;
 
-            AddHtml(x, 140 + idx * 20, 60, 20, Color(Center("1"), color));
+            AddHtml(x, 140 + idx * 20, 60, 20, "1".Center(color));
         }
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string Right(string text) => $"<DIV ALIGN=RIGHT>{text}</DIV>";
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {

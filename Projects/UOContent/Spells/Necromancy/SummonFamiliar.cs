@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
-using Server.Utilities;
 
 namespace Server.Spells.Necromancy
 {
@@ -138,7 +137,7 @@ namespace Server.Spells.Necromancy
                         51 + i * 21,
                         150,
                         20,
-                        $"<BASEFONT COLOR=#{(enabled ? EnabledColor32 : DisabledColor32):X6}>{strName}</BASEFONT>"
+                        strName.Color(enabled ? EnabledColor32 : DisabledColor32)
                     );
                 }
             }

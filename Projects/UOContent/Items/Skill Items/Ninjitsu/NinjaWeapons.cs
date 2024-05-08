@@ -6,7 +6,6 @@ using Server.Spells.Chivalry;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Targeting;
-using Server.Utilities;
 
 /*
  * There really was no prettier way to do this,  other than the one
