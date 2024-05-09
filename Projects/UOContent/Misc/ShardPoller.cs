@@ -608,6 +608,6 @@ public partial class ShardPollPrompt : Prompt
         from.SendGump(new ShardPollGump(from, _poller, true, null));
     }
 
-    [GeneratedRegex(@"\[url(?:=(.*?))?\](.*?)\[/url\]", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    [GeneratedRegex(@"\[url(?:=(.*?))?\](.*?)\[/url\]", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
     private static partial Regex UrlHrefRegex();
 }
