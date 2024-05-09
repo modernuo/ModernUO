@@ -290,8 +290,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return;
         }
 
-        var p = new Point3D(x, y, 0);
-        foreach (var item in map.GetItemsInRange(p, 0))
+        foreach (var item in map.GetItemsAt(x, y))
         {
             if (item is not BaseMulti && item.ItemID <= TileData.MaxItemValue)
             {
