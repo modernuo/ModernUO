@@ -105,10 +105,6 @@ namespace Server.Items
             }
         }
 
-        private void Deserialize(IGenericReader reader, int version)
-        {
-        }
-
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
         {
             base.OnHit(attacker, defender, damageBonus);
