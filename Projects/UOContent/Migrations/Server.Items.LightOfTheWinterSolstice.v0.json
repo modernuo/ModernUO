@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.LightOfTheWinterSolstice",
+  "properties": [
+    {
+      "name": "Dipper",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "InternString"
+      ]
+    }
+  ]
+}
