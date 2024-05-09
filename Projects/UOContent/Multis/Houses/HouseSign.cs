@@ -1,311 +1,274 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Gumps;
 
-namespace Server.Multis
+namespace Server.Multis;
+
+[SerializationGenerator(0, false)]
+public partial class HouseSign : Item
 {
-    public class HouseSign : Item
+    [SerializableField(0, setter: "private")]
+    private BaseHouse _owner;
+
+    [SerializableField(1, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Mobile _originalOwner;
+
+    public HouseSign(BaseHouse owner) : base(0xBD2)
     {
-        public HouseSign(BaseHouse owner) : base(0xBD2)
-        {
-            Owner = owner;
-            OriginalOwner = Owner.Owner;
-            Movable = false;
-        }
+        Owner = owner;
+        OriginalOwner = Owner.Owner;
+        Movable = false;
+    }
 
-        public HouseSign(Serial serial) : base(serial)
-        {
-        }
-
-        public BaseHouse Owner { get; private set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool RestrictDecay
-        {
-            get => Owner?.RestrictDecay == true;
-            set
-            {
-                if (Owner != null)
-                {
-                    Owner.RestrictDecay = value;
-                }
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile OriginalOwner { get; private set; }
-
-        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-        public bool GettingProperties { get; private set; }
-
-        public string GetName() => Name ?? "An Unnamed House";
-
-        public override void OnAfterDelete()
-        {
-            base.OnAfterDelete();
-
-            if (Owner?.Deleted == false)
-            {
-                Owner.Delete();
-            }
-        }
-
-        public override void AddNameProperty(IPropertyList list)
-        {
-            list.Add(1061638); // A House Sign
-        }
-
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
-
-            list.Add(1061639, GetName().FixHtml());                         // Name: ~1_NAME~
-            list.Add(1061640, Owner?.Owner == null ? "nobody" : Owner.Owner.Name); // Owner: ~1_OWNER~
-
-            if (Owner != null)
-            {
-                list.Add(Owner.Public ? 1061641 : 1061642); // This House is Open to the Public : This is a Private Home
-
-                GettingProperties = true;
-                var level = Owner.DecayLevel;
-                GettingProperties = false;
-
-                if (level == DecayLevel.DemolitionPending)
-                {
-                    list.Add(1062497); // Demolition Pending
-                }
-                else if (level != DecayLevel.Ageless)
-                {
-                    if (level == DecayLevel.Collapsed)
-                    {
-                        level = DecayLevel.IDOC;
-                    }
-
-                    list.AddLocalized(1062028, 1043009 + (int)level); // Condition: This structure is ...
-                }
-            }
-        }
-
-        public override void OnSingleClick(Mobile from)
-        {
-            if (BaseHouse.DecayEnabled && Owner != null && Owner.DecayPeriod != TimeSpan.Zero)
-            {
-                var message = Owner.DecayLevel switch
-                {
-                    DecayLevel.Ageless  => "ageless",
-                    DecayLevel.Fairly   => "fairly worn",
-                    DecayLevel.Greatly  => "greatly worn",
-                    DecayLevel.LikeNew  => "like new",
-                    DecayLevel.Slightly => "slightly worn",
-                    DecayLevel.Somewhat => "somewhat worn",
-                    _                   => "in danger of collapsing"
-                };
-
-                LabelTo(from, $"This house is {message}.");
-            }
-
-            base.OnSingleClick(from);
-        }
-
-        public void ShowSign(Mobile m)
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool RestrictDecay
+    {
+        get => Owner?.RestrictDecay == true;
+        set
         {
             if (Owner != null)
             {
-                if (Owner.IsFriend(m) && m.AccessLevel < AccessLevel.GameMaster)
-                {
-                    if (Core.ML && Owner.IsOwner(m) || !Core.ML)
-                    {
-                        Owner.RefreshDecay();
-                    }
-
-                    if (!Core.AOS)
-                    {
-                        m.SendLocalizedMessage(501293); // Welcome back to the house, friend!
-                    }
-                }
-
-                if (Owner.IsAosRules)
-                {
-                    m.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Information, m, Owner));
-                }
-                else
-                {
-                    m.SendGump(new HouseGump(m, Owner));
-                }
+                Owner.RestrictDecay = value;
             }
         }
+    }
 
-        public void ClaimGump_Callback(Mobile from, bool okay)
+    public int LabelNumber => 1061638; // A House Sign
+
+    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+    public bool GettingProperties { get; private set; }
+
+    public string GetName() => Name ?? "An Unnamed House";
+
+    public override void OnAfterDelete()
+    {
+        base.OnAfterDelete();
+
+        if (Owner?.Deleted == false)
         {
-            if (okay && Owner != null && Owner.Owner == null && Owner.DecayLevel != DecayLevel.DemolitionPending)
+            Owner.Delete();
+        }
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        list.Add(1061639, GetName().FixHtml());            // Name: ~1_NAME~
+        list.Add(1061640, Owner?.Owner?.Name ?? "nobody"); // Owner: ~1_OWNER~
+
+        if (Owner != null)
+        {
+            list.Add(Owner.Public ? 1061641 : 1061642); // This House is Open to the Public : This is a Private Home
+
+            GettingProperties = true;
+            var level = Owner.DecayLevel;
+            GettingProperties = false;
+
+            if (level == DecayLevel.DemolitionPending)
             {
-                var canClaim = Owner.CoOwners?.Count > 0 && Owner.IsCoOwner(from) || Owner.IsFriend(from);
-
-                if (canClaim && !BaseHouse.HasAccountHouse(from))
-                {
-                    Owner.Owner = from;
-                    Owner.LastTraded = Core.Now;
-                }
+                list.Add(1062497); // Demolition Pending
             }
+            else if (level != DecayLevel.Ageless)
+            {
+                if (level == DecayLevel.Collapsed)
+                {
+                    level = DecayLevel.IDOC;
+                }
 
-            ShowSign(from);
+                list.AddLocalized(1062028, 1043009 + (int)level); // Condition: This structure is ...
+            }
+        }
+    }
+
+    public override void OnSingleClick(Mobile from)
+    {
+        if (BaseHouse.DecayEnabled && Owner != null && Owner.DecayPeriod != TimeSpan.Zero)
+        {
+            var message = Owner.DecayLevel switch
+            {
+                DecayLevel.Ageless  => "ageless",
+                DecayLevel.Fairly   => "fairly worn",
+                DecayLevel.Greatly  => "greatly worn",
+                DecayLevel.LikeNew  => "like new",
+                DecayLevel.Slightly => "slightly worn",
+                DecayLevel.Somewhat => "somewhat worn",
+                _                   => "in danger of collapsing"
+            };
+
+            LabelTo(from, $"This house is {message}.");
         }
 
-        public override void OnDoubleClick(Mobile m)
+        base.OnSingleClick(from);
+    }
+
+    public void ShowSign(Mobile m)
+    {
+        if (Owner == null)
         {
-            if (Owner == null)
+            return;
+        }
+
+        if (Owner.IsFriend(m) && m.AccessLevel < AccessLevel.GameMaster)
+        {
+            if (Core.ML && Owner.IsOwner(m) || !Core.ML)
+            {
+                Owner.RefreshDecay();
+            }
+
+            if (!Core.AOS)
+            {
+                m.SendLocalizedMessage(501293); // Welcome back to the house, friend!
+            }
+        }
+
+        if (Owner.IsAosRules)
+        {
+            m.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Information, m, Owner));
+        }
+        else
+        {
+            m.SendGump(new HouseGump(m, Owner));
+        }
+    }
+
+    public void ClaimGump_Callback(Mobile from, bool okay)
+    {
+        if (okay && Owner != null && Owner.Owner == null && Owner.DecayLevel != DecayLevel.DemolitionPending)
+        {
+            var canClaim = Owner.CoOwners?.Count > 0 && Owner.IsCoOwner(from) || Owner.IsFriend(from);
+
+            if (canClaim && !BaseHouse.HasAccountHouse(from))
+            {
+                Owner.Owner = from;
+                Owner.LastTraded = Core.Now;
+            }
+        }
+
+        ShowSign(from);
+    }
+
+    public override void OnDoubleClick(Mobile m)
+    {
+        if (Owner == null)
+        {
+            return;
+        }
+
+        if (m.AccessLevel < AccessLevel.GameMaster && Owner.Owner == null &&
+            Owner.DecayLevel != DecayLevel.DemolitionPending)
+        {
+            var canClaim = Owner.IsCoOwner(m) || Owner.IsFriend(m);
+
+            if (canClaim && !BaseHouse.HasAccountHouse(m))
+            {
+                m.SendGump(
+                    new ClaimHouseWarningGump(okay => ClaimGump_Callback(m, okay))
+                );
+            }
+        }
+
+        ShowSign(m);
+    }
+
+    private class ClaimHouseWarningGump : StaticWarningGump<ClaimHouseWarningGump>
+    {
+        public override int Header => 501036; // Claim house
+        public override int HeaderColor => 0x7F00;
+
+        /*
+         * You do not currently own any house on any shard with this account, and this house currently does not have an owner.
+         * If you wish, you may choose to claim this house and become its rightful owner.
+         * If you do this, it will become your Primary house and automatically refresh.
+         * If you claim this house, you will be unable to place another house or have another house transferred to you for the next 7 days.
+         * Do you wish to claim this house?
+         */
+        public override int StaticLocalizedContent => 1049719;
+
+        public override int Width => 420;
+        public override int Height => 280;
+
+        public ClaimHouseWarningGump(Action<bool> callback) : base(callback)
+        {
+        }
+    }
+
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+        base.GetContextMenuEntries(from, list);
+
+        if (!BaseHouse.NewVendorSystem || !from.Alive || Owner?.IsAosRules != true)
+        {
+            return;
+        }
+
+        if (Owner.AreThereAvailableVendorsFor(from))
+        {
+            list.Add(new VendorsEntry(this));
+        }
+
+        if (Owner.VendorInventories.Count > 0)
+        {
+            list.Add(new ReclaimVendorInventoryEntry(this));
+        }
+    }
+
+    private class VendorsEntry : ContextMenuEntry
+    {
+        private readonly HouseSign m_Sign;
+
+        public VendorsEntry(HouseSign sign) : base(6211) => m_Sign = sign;
+
+        public override void OnClick()
+        {
+            var from = Owner.From;
+
+            if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(from) != true)
             {
                 return;
             }
 
-            if (m.AccessLevel < AccessLevel.GameMaster && Owner.Owner == null &&
-                Owner.DecayLevel != DecayLevel.DemolitionPending)
+            if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
             {
-                var canClaim = Owner.IsCoOwner(m) || Owner.IsFriend(m);
-
-                if (canClaim && !BaseHouse.HasAccountHouse(m))
-                {
-                    m.SendGump(
-                        new ClaimHouseWarningGump(okay => ClaimGump_Callback(m, okay))
-                    );
-                }
+                // You must be within five paces of the house sign to use this option.
+                from.SendLocalizedMessage(1062429);
             }
-
-            ShowSign(m);
-        }
-
-        private class ClaimHouseWarningGump : StaticWarningGump<ClaimHouseWarningGump>
-        {
-            public override int Header => 501036; // Claim house
-            public override int HeaderColor => 0x7F00;
-
-            /*
-             * You do not currently own any house on any shard with this account, and this house currently does not have an owner.
-             * If you wish, you may choose to claim this house and become its rightful owner.
-             * If you do this, it will become your Primary house and automatically refresh.
-             * If you claim this house, you will be unable to place another house or have another house transferred to you for the next 7 days.
-             * Do you wish to claim this house?
-             */
-            public override int StaticLocalizedContent => 1049719;
-
-            public override int Width => 420;
-            public override int Height => 280;
-
-            public ClaimHouseWarningGump(Action<bool> callback) : base(callback)
+            else
             {
+                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, from, m_Sign.Owner));
             }
         }
+    }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    private class ReclaimVendorInventoryEntry : ContextMenuEntry
+    {
+        private readonly HouseSign m_Sign;
+
+        public ReclaimVendorInventoryEntry(HouseSign sign) : base(6213) => m_Sign = sign;
+
+        public override void OnClick()
         {
-            base.GetContextMenuEntries(from, list);
+            var from = Owner.From;
 
-            if (!BaseHouse.NewVendorSystem || !from.Alive || Owner?.IsAosRules != true)
+            if (m_Sign.Deleted || m_Sign.Owner == null || m_Sign.Owner.VendorInventories.Count == 0 ||
+                !from.CheckAlive())
             {
                 return;
             }
 
-            if (Owner.AreThereAvailableVendorsFor(from))
+            if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
             {
-                list.Add(new VendorsEntry(this));
+                // You must be within five paces of the house sign to use this option.
+                from.SendLocalizedMessage(1062429);
             }
-
-            if (Owner.VendorInventories.Count > 0)
+            else
             {
-                list.Add(new ReclaimVendorInventoryEntry(this));
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(Owner);
-            writer.Write(OriginalOwner);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        Owner = reader.ReadEntity<BaseHouse>();
-                        OriginalOwner = reader.ReadEntity<Mobile>();
-
-                        break;
-                    }
-            }
-
-            if (Name == "a house sign")
-            {
-                Name = null;
-            }
-        }
-
-        private class VendorsEntry : ContextMenuEntry
-        {
-            private readonly HouseSign m_Sign;
-
-            public VendorsEntry(HouseSign sign) : base(6211) => m_Sign = sign;
-
-            public override void OnClick()
-            {
-                var from = Owner.From;
-
-                if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(from) != true)
-                {
-                    return;
-                }
-
-                if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
-                {
-                    from.SendLocalizedMessage(
-                        1062429
-                    ); // You must be within five paces of the house sign to use this option.
-                }
-                else
-                {
-                    from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, from, m_Sign.Owner));
-                }
-            }
-        }
-
-        private class ReclaimVendorInventoryEntry : ContextMenuEntry
-        {
-            private readonly HouseSign m_Sign;
-
-            public ReclaimVendorInventoryEntry(HouseSign sign) : base(6213) => m_Sign = sign;
-
-            public override void OnClick()
-            {
-                var from = Owner.From;
-
-                if (m_Sign.Deleted || m_Sign.Owner == null || m_Sign.Owner.VendorInventories.Count == 0 ||
-                    !from.CheckAlive())
-                {
-                    return;
-                }
-
-                if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
-                {
-                    from.SendLocalizedMessage(
-                        1062429
-                    ); // You must be within five paces of the house sign to use this option.
-                }
-                else
-                {
-                    from.CloseGump<VendorInventoryGump>();
-                    from.SendGump(new VendorInventoryGump(m_Sign.Owner, from));
-                }
+                from.CloseGump<VendorInventoryGump>();
+                from.SendGump(new VendorInventoryGump(m_Sign.Owner, from));
             }
         }
     }

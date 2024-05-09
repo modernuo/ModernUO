@@ -1,198 +1,163 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Multis;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(2, false)]
+public partial class HouseTeleporter : Item, ISecurable
 {
-    public class HouseTeleporter : Item, ISecurable
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private SecureLevel _level;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Item _target;
+
+    public HouseTeleporter(int itemID, Item target = null) : base(itemID)
     {
-        public HouseTeleporter(int itemID, Item target = null) : base(itemID)
+        Movable = false;
+        _level = SecureLevel.Anyone;
+        _target = target;
+    }
+
+    public bool CheckAccess(Mobile m)
+    {
+        var house = BaseHouse.FindHouseAt(this);
+
+        return (house == null || house.Public && !house.IsBanned(m) || house.HasAccess(m)) &&
+               house?.HasSecureAccess(m, Level) == true;
+    }
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (Target?.Deleted != false)
         {
-            Movable = false;
-
-            Level = SecureLevel.Anyone;
-
-            Target = target;
-        }
-
-        public HouseTeleporter(Serial serial) : base(serial)
-        {
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Item Target { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public SecureLevel Level { get; set; }
-
-        public bool CheckAccess(Mobile m)
-        {
-            var house = BaseHouse.FindHouseAt(this);
-
-            return (house == null || house.Public && !house.IsBanned(m) || house.HasAccess(m)) &&
-                   house?.HasSecureAccess(m, Level) == true;
-        }
-
-        public override bool OnMoveOver(Mobile m)
-        {
-            if (Target?.Deleted == false)
-            {
-                if (CheckAccess(m))
-                {
-                    if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
-                    {
-                        new EffectTimer(Location, Map, 2023, 0x1F0, TimeSpan.FromSeconds(0.4)).Start();
-                    }
-
-                    new DelayTimer(this, m).Start();
-                }
-                else
-                {
-                    m.SendLocalizedMessage(1061637); // You are not allowed to access this.
-                }
-            }
-
             return true;
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        if (!CheckAccess(m))
         {
-            base.GetContextMenuEntries(from, list);
-            SetSecureLevelEntry.AddTo(from, this, list);
+            m.SendLocalizedMessage(1061637); // You are not allowed to access this.
+            return false;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            writer.Write((int)Level);
-
-            writer.Write(Target);
+            new EffectTimer(Location, Map, 2023, 0x1F0, TimeSpan.FromSeconds(0.4)).Start();
         }
 
-        public override void Deserialize(IGenericReader reader)
+        new DelayTimer(this, m).Start();
+        return true;
+    }
+
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+        base.GetContextMenuEntries(from, list);
+        SetSecureLevelEntry.AddTo(from, this, list);
+    }
+
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        Level = (SecureLevel)reader.ReadInt();
+        Target = reader.ReadEntity<Item>();
+    }
+
+    private class EffectTimer : Timer
+    {
+        private readonly int _effectId;
+        private readonly Point3D _location;
+        private readonly Map _map;
+        private readonly int _soundId;
+
+        public EffectTimer(Point3D p, Map map, int effectID, int soundID, TimeSpan delay) : base(delay)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        Level = (SecureLevel)reader.ReadInt();
-                        goto case 0;
-                    }
-                case 0:
-                    {
-                        Target = reader.ReadEntity<Item>();
-
-                        if (version < 1)
-                        {
-                            Level = SecureLevel.Anyone;
-                        }
-
-                        break;
-                    }
-            }
+            _location = p;
+            _map = map;
+            _effectId = effectID;
+            _soundId = soundID;
         }
 
-        private class EffectTimer : Timer
+        protected override void OnTick()
         {
-            private readonly int m_EffectID;
-            private readonly Point3D m_Location;
-            private readonly Map m_Map;
-            private readonly int m_SoundID;
+            Effects.SendLocationParticles(
+                EffectItem.Create(_location, _map, EffectItem.DefaultDuration),
+                0x3728,
+                10,
+                10,
+                _effectId,
+                0
+            );
 
-            public EffectTimer(Point3D p, Map map, int effectID, int soundID, TimeSpan delay) : base(delay)
+            if (_soundId != -1)
             {
-                m_Location = p;
-                m_Map = map;
-                m_EffectID = effectID;
-                m_SoundID = soundID;
-            }
-
-            protected override void OnTick()
-            {
-                Effects.SendLocationParticles(
-                    EffectItem.Create(m_Location, m_Map, EffectItem.DefaultDuration),
-                    0x3728,
-                    10,
-                    10,
-                    m_EffectID,
-                    0
-                );
-
-                if (m_SoundID != -1)
-                {
-                    Effects.PlaySound(m_Location, m_Map, m_SoundID);
-                }
+                Effects.PlaySound(_location, _map, _soundId);
             }
         }
+    }
 
-        private class DelayTimer : Timer
+    private class DelayTimer : Timer
+    {
+        private readonly Mobile _mobile;
+        private readonly HouseTeleporter _teleporter;
+
+        public DelayTimer(HouseTeleporter tp, Mobile m) : base(TimeSpan.FromSeconds(1.0))
         {
-            private readonly Mobile m_Mobile;
-            private readonly HouseTeleporter m_Teleporter;
+            _teleporter = tp;
+            _mobile = m;
+        }
 
-            public DelayTimer(HouseTeleporter tp, Mobile m) : base(TimeSpan.FromSeconds(1.0))
+        protected override void OnTick()
+        {
+            var target = _teleporter.Target;
+
+            if (target?.Deleted != false)
             {
-                m_Teleporter = tp;
-                m_Mobile = m;
+                return;
             }
 
-            protected override void OnTick()
+            if (_mobile.Location != _teleporter.Location || _mobile.Map != _teleporter.Map)
             {
-                var target = m_Teleporter.Target;
-
-                if (target?.Deleted != false)
-                {
-                    return;
-                }
-
-                if (m_Mobile.Location != m_Teleporter.Location || m_Mobile.Map != m_Teleporter.Map)
-                {
-                    return;
-                }
-
-                var p = target.GetWorldTop();
-                var map = target.Map;
-
-                BaseCreature.TeleportPets(m_Mobile, p, map);
-
-                m_Mobile.MoveToWorld(p, map);
-
-                if (m_Mobile.Hidden && m_Mobile.AccessLevel != AccessLevel.Player)
-                {
-                    return;
-                }
-
-                Effects.PlaySound(target.Location, target.Map, 0x1FE);
-
-                Effects.SendLocationParticles(
-                    EffectItem.Create(m_Teleporter.Location, m_Teleporter.Map, EffectItem.DefaultDuration),
-                    0x3728,
-                    10,
-                    10,
-                    2023,
-                    0
-                );
-                Effects.SendLocationParticles(
-                    EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration),
-                    0x3728,
-                    10,
-                    10,
-                    5023,
-                    0
-                );
-
-                new EffectTimer(target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds(0.4)).Start();
+                return;
             }
+
+            var p = target.GetWorldTop();
+            var map = target.Map;
+
+            BaseCreature.TeleportPets(_mobile, p, map);
+
+            _mobile.MoveToWorld(p, map);
+
+            if (_mobile.Hidden && _mobile.AccessLevel != AccessLevel.Player)
+            {
+                return;
+            }
+
+            Effects.PlaySound(target.Location, target.Map, 0x1FE);
+
+            Effects.SendLocationParticles(
+                EffectItem.Create(_teleporter.Location, _teleporter.Map, EffectItem.DefaultDuration),
+                0x3728,
+                10,
+                10,
+                2023,
+                0
+            );
+            Effects.SendLocationParticles(
+                EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration),
+                0x3728,
+                10,
+                10,
+                5023,
+                0
+            );
+
+            new EffectTimer(target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds(0.4)).Start();
         }
     }
 }
