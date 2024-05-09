@@ -36,6 +36,8 @@ public partial class HouseSign : Item
         }
     }
 
+    public int LabelNumber => 1061638; // A House Sign
+
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
     public bool GettingProperties { get; private set; }
@@ -52,17 +54,12 @@ public partial class HouseSign : Item
         }
     }
 
-    public override void AddNameProperty(IPropertyList list)
-    {
-        list.Add(1061638); // A House Sign
-    }
-
     public override void GetProperties(IPropertyList list)
     {
         base.GetProperties(list);
 
-        list.Add(1061639, GetName().FixHtml());                                // Name: ~1_NAME~
-        list.Add(1061640, Owner?.Owner == null ? "nobody" : Owner.Owner.Name); // Owner: ~1_OWNER~
+        list.Add(1061639, GetName().FixHtml());            // Name: ~1_NAME~
+        list.Add(1061640, Owner?.Owner?.Name ?? "nobody"); // Owner: ~1_OWNER~
 
         if (Owner != null)
         {
@@ -237,9 +234,8 @@ public partial class HouseSign : Item
 
             if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
             {
-                from.SendLocalizedMessage(
-                    1062429
-                ); // You must be within five paces of the house sign to use this option.
+                // You must be within five paces of the house sign to use this option.
+                from.SendLocalizedMessage(1062429);
             }
             else
             {
@@ -266,9 +262,8 @@ public partial class HouseSign : Item
 
             if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
             {
-                from.SendLocalizedMessage(
-                    1062429
-                ); // You must be within five paces of the house sign to use this option.
+                // You must be within five paces of the house sign to use this option.
+                from.SendLocalizedMessage(1062429);
             }
             else
             {
