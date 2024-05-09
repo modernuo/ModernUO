@@ -401,11 +401,7 @@ public partial class PlayerVendor : Mobile
         }
     }
 
-    public VendorItem GetVendorItem(Item item)
-    {
-        _sellItems.TryGetValue(item, out var v);
-        return v;
-    }
+    public VendorItem GetVendorItem(Item item) => _sellItems.GetValueOrDefault(item);
 
     private VendorItem SetVendorItem(Item item, int price, string description) =>
         SetVendorItem(item, price, description, Core.Now);
@@ -415,7 +411,7 @@ public partial class PlayerVendor : Mobile
         RemoveVendorItem(item);
 
         var vi = new VendorItem(item, price, description, created);
-        _sellItems[item] = vi;
+        ReplaceInSellItems(item, vi);
 
         item.InvalidateProperties();
 
@@ -429,7 +425,7 @@ public partial class PlayerVendor : Mobile
         if (vi != null)
         {
             vi.Invalidate();
-            _sellItems.Remove(item);
+            RemoveFromSellItems(item);
 
             foreach (var subItem in item.Items)
             {
