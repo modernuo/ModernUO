@@ -7,6 +7,7 @@ public static class StaffInfo
         // ModernUO Sponsors
         "Prayer",
         "Arch Lich Oro",
+        "Tamashii",
 
         // ModernUO Contributors
         "nibbio",
