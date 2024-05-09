@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Factions.FactionTrapRemovalKit",
+  "properties": [
+    {
+      "name": "Charges",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    }
+  ]
+}
