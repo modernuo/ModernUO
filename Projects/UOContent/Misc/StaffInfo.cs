@@ -6,7 +6,7 @@ public static class StaffInfo
     {
         // ModernUO Sponsors
         "Prayer",
-        "oroechi",
+        "Arch Lich Oro",
 
         // ModernUO Contributors
         "nibbio",
