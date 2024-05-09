@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.ArcaneFocus",
+  "properties": [
+    {
+      "name": "StrengthBonus",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

@@ -147,7 +147,7 @@ public partial class Firebomb : Item
                         for (var i = -2; i <= 2; ++i)
                         {
                             var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
-                            new FireFieldSpell.FireFieldItem(itemID, targetLoc, m_LitBy, Map, TimeSpan.FromSeconds(9), i);
+                            new FireFieldItem(itemID, targetLoc, m_LitBy, Map, TimeSpan.FromSeconds(9), i);
                         }
                     }
 
