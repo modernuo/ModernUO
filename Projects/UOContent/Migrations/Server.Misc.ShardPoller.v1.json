@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "type": "Server.Misc.ShardPoller",
+  "properties": [
+    {
+      "name": "Title",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Duration",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "StartTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Active",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Options",
+      "type": "Server.Misc.ShardPollOption[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Misc.ShardPollOption",
+        "RawSerializableMigrationRule",
+        ""
+      ]
+    }
+  ]
+}

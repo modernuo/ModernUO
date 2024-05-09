@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.PlayerVendorPlaceholder",
+  "properties": [
+    {
+      "name": "Vendor",
+      "type": "Server.Mobiles.PlayerVendor",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
