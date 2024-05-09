@@ -16,7 +16,7 @@ public partial class LightOfTheWinterSolstice : Item
     [Constructible]
     public LightOfTheWinterSolstice(string dipper = null) : base(0x236E)
     {
-        _dipper = dipper ?? StaffInfo.GetRandomStaff();
+        _dipper = dipper?.Intern() ?? StaffInfo.GetRandomStaff();
 
         Weight = 1.0;
         LootType = LootType.Blessed;
