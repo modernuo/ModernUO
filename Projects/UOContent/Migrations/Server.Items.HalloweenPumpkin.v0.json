@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.HalloweenPumpkin",
+  "properties": [
+    {
+      "name": "Staffer",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "InternString"
+      ]
+    }
+  ]
+}
