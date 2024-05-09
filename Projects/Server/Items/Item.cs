@@ -3549,7 +3549,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
 
         using var items = PooledRefList<Item>.Create();
-        foreach (var item in map.GetItemsInRange(p, 0))
+        foreach (var item in map.GetItemsAt(p))
         {
             if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
             {
