@@ -2,7 +2,7 @@ using ModernUO.Serialization;
 
 namespace Server.Factions;
 
-[SerializationGenerator(0)]
+[SerializationGenerator(0, false)]
 public partial class Silver : Item
 {
     [Constructible]
