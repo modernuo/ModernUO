@@ -65,11 +65,11 @@ namespace Server.Engines.MLQuests.Objectives
 
         public override void WriteToGump(Gump g, ref int y)
         {
-            g.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x15F90); // Escort to
+            g.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x5F90); // Escort to
 
             if (Destination.Name.Number > 0)
             {
-                g.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0xFFFFFF);
+                g.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0x7FFF);
             }
             else if (Destination.Name.String != null)
             {

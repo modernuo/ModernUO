@@ -40,17 +40,17 @@ namespace Server.Items
             // item name
             if (item.LabelNumber != 0)
             {
-                AddHtmlLocalized(20, 217, 250, 20, item.LabelNumber, 0xFFFFFF); // Name
+                AddHtmlLocalized(20, 217, 250, 20, item.LabelNumber, 0x7FFF); // Name
             }
 
             // item details
             if (item is BaseFish fish)
             {
-                AddHtmlLocalized(20, 239, 315, 20, fish.GetDescription(), 0xFFFFFF);
+                AddHtmlLocalized(20, 239, 315, 20, fish.GetDescription(), 0x7FFF);
             }
             else
             {
-                AddHtmlLocalized(20, 239, 315, 20, 1073634, 0xFFFFFF); // An aquarium decoration
+                AddHtmlLocalized(20, 239, 315, 20, 1073634, 0x7FFF); // An aquarium decoration
             }
 
             // item image
@@ -71,14 +71,14 @@ namespace Server.Items
             if (page < m_Aquarium.Items.Count)
             {
                 AddButton(195, 280, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page + 1);
-                AddHtmlLocalized(230, 283, 100, 18, 1044045, 0xFFFFFF); // NEXT PAGE
+                AddHtmlLocalized(230, 283, 100, 18, 1044045, 0x7FFF); // NEXT PAGE
             }
 
             // previous page
             if (page > 1)
             {
                 AddButton(45, 280, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page - 1);
-                AddHtmlLocalized(80, 283, 100, 18, 1044044, 0xFFFFFF); // PREV PAGE
+                AddHtmlLocalized(80, 283, 100, 18, 1044044, 0x7FFF); // PREV PAGE
             }
         }
 

@@ -91,8 +91,10 @@ public ref struct GumpStringsBuilder
 
         if (_finalizeLayout)
         {
-            _hashes[hash] = _stringsCount++;
+            _hashes[hash] = _stringsCount;
         }
+
+        _stringsCount++;
     }
 
     public void FinalizeStrings(ref StaticGumpBuilder builder)

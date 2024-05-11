@@ -50,22 +50,15 @@ public static class TextDefinitionExtensions
         }
         else if (def.String != null)
         {
-            if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
-            {
-                builder.AddHtml(
-                    x,
-                    y,
-                    width,
-                    height,
-                    def.String.Color(stringColor),
-                    back,
-                    scroll
-                );
-            }
-            else
-            {
-                builder.AddHtml(x, y, width, height, def.String, back, scroll);
-            }
+            builder.AddHtml(
+                x,
+                y,
+                width,
+                height,
+                stringColor >= 0 ? def.String.Color(stringColor) : def.String, // 8 bits per RGB component (24 bit RGB)
+                back,
+                scroll
+            );
         }
     }
 
@@ -100,22 +93,15 @@ public static class TextDefinitionExtensions
         }
         else if (def.String != null)
         {
-            if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
-            {
-                builder.AddHtml(
-                    x,
-                    y,
-                    width,
-                    height,
-                    def.String.Color(stringColor),
-                    back,
-                    scroll
-                );
-            }
-            else
-            {
-                builder.AddHtml(x, y, width, height, def.String, back, scroll);
-            }
+            builder.AddHtml(
+                x,
+                y,
+                width,
+                height,
+                stringColor >= 0 ? def.String.Color(stringColor) : def.String, // 8 bits per RGB component (24 bit RGB)
+                back,
+                scroll
+            );
         }
     }
 
@@ -150,22 +136,15 @@ public static class TextDefinitionExtensions
         }
         else if (def.String != null)
         {
-            if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
-            {
-                g.AddHtml(
-                    x,
-                    y,
-                    width,
-                    height,
-                    def.String.Color(stringColor),
-                    back,
-                    scroll
-                );
-            }
-            else
-            {
-                g.AddHtml(x, y, width, height, def.String, back, scroll);
-            }
+            g.AddHtml(
+                x,
+                y,
+                width,
+                height,
+                stringColor >= 0 ? def.String.Color(stringColor) : def.String, // 8 bits per RGB component (24 bit RGB)
+                back,
+                scroll
+            );
         }
     }
 
@@ -195,22 +174,15 @@ public static class TextDefinitionExtensions
         }
         else if (def.String != null)
         {
-            if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
-            {
-                g.AddHtml(
-                    x,
-                    y,
-                    width,
-                    height,
-                    string.Format(def.String, args).Color(stringColor),
-                    back,
-                    scroll
-                );
-            }
-            else
-            {
-                g.AddHtml(x, y, width, height, string.Format(def.String, args), back, scroll);
-            }
+            g.AddHtml(
+                x,
+                y,
+                width,
+                height,
+                stringColor >= 0 ? string.Format(def.String, args).Color(stringColor) : string.Format(def.String, args), // 8 bits per RGB component (24 bit RGB)
+                back,
+                scroll
+            );
         }
     }
 

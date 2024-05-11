@@ -42,7 +42,7 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
 
         builder.AddImageTiled(10, 10, width - 20, 20, 2624);
         builder.AddAlphaRegion(10, 10, width - 20, 20);
-        builder.AddHtmlLocalized(10, 10, width - 20, 20, header, (short)headerColor);
+        builder.AddHtmlLocalized(10, 10, width - 20, 20, header, headerColor);
 
         builder.AddImageTiled(10, 40, width - 20, height - 80, 2624);
         builder.AddAlphaRegion(10, 40, width - 20, height - 80);

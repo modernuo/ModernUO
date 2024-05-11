@@ -73,7 +73,7 @@ namespace Server.Engines.MLQuests.Objectives
             var skillLabel = AosSkillBonuses.GetLabel(Skill);
             var args = $"#{skillLabel}\t{ThresholdFixed / 10.0:0.#}";
 
-            g.AddHtmlLocalized(98, y, 312, 16, 1077485, args, 0x15F90); // Increase ~1_SKILL~ to ~2_VALUE~
+            g.AddHtmlLocalized(98, y, 312, 16, 1077485, args, 0x5F90); // Increase ~1_SKILL~ to ~2_VALUE~
             y += 16;
         }
 
@@ -158,7 +158,7 @@ namespace Server.Engines.MLQuests.Objectives
 
             if (IsCompleted())
             {
-                g.AddHtmlLocalized(113, y, 312, 20, 1055121, 0xFFFFFF); // Complete
+                g.AddHtmlLocalized(113, y, 312, 20, 1055121, 0x7FFF); // Complete
                 y += 16;
             }
         }

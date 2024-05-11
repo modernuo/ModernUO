@@ -12,7 +12,7 @@ namespace Server.Engines.Quests.Zento
             if (!Completed)
             {
                 // Deathwatch Beetle Hatchlings killed:
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0x12DC6BF);
+                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
 
                 gump.AddLabel(70, 280, 0x64, "0");
                 gump.AddLabel(100, 280, 0x64, "/");
@@ -47,7 +47,7 @@ namespace Server.Engines.Quests.Zento
             if (!Completed)
             {
                 // Deathwatch Beetle Hatchlings killed:
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0x12DC6BF);
+                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
 
                 gump.AddLabel(70, 280, 0x64, "1");
                 gump.AddLabel(100, 280, 0x64, "/");
@@ -95,7 +95,7 @@ namespace Server.Engines.Quests.Zento
             if (!Completed)
             {
                 // Deathwatch Beetle Hatchlings killed:
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0x12DC6BF);
+                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
 
                 gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
                 gump.AddLabel(100, 280, 0x64, "/");
