@@ -154,7 +154,11 @@ public ref struct StaticGumpBuilder
         ReadOnlySpan<char> text,
         bool background = false,
         bool scrollbar = false
-    ) => AddHtml(x, y, width, height, color, $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>", background, scrollbar);
+    )
+    {
+        var handler = text.Color(color);
+        AddHtml(x, y, width, height, ref handler, background, scrollbar);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtml(
@@ -175,7 +179,11 @@ public ref struct StaticGumpBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlCentered(
         int x, int y, int width, int height, ReadOnlySpan<char> text, bool background = false, bool scrollbar = false
-    ) => AddHtml(x, y, width, height, $"<CENTER>{text}</CENTER>", background, scrollbar);
+    )
+    {
+        var handler = text.Center();
+        AddHtml(x, y, width, height, ref handler, background, scrollbar);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlCentered(
@@ -188,7 +196,8 @@ public ref struct StaticGumpBuilder
         bool scrollbar = false
     )
     {
-        AddHtml(x, y, width, height, $"<CENTER>{handler.Text}</CENTER>", background, scrollbar);
+        var centerHandler = handler.Text.Center();
+        AddHtml(x, y, width, height, ref centerHandler, background, scrollbar);
         handler.Clear();
     }
 
@@ -202,7 +211,11 @@ public ref struct StaticGumpBuilder
         ReadOnlySpan<char> text,
         bool background = false,
         bool scrollbar = false
-    ) => AddHtml(x, y, width, height, color, $"<CENTER>{text}</CENTER>", background, scrollbar);
+    )
+    {
+        var handler = text.Center(color);
+        AddHtml(x, y, width, height,  ref handler, background, scrollbar);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlCentered(

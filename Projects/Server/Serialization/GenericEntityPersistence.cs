@@ -166,7 +166,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                         if (entityEntry == entity)
                         {
                             logger.Error(
-                                $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
+                                $"Attempted to add '{{Entity}}' ({{Serial}}) but it already exists in the collection.{Environment.NewLine}{{StackTrace}}",
                                 entity.GetType().FullName,
                                 entity.Serial,
                                 new StackTrace()
@@ -175,7 +175,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                         else
                         {
                             logger.Error(
-                                $"Attempted to add '{{Entity}}' ({{Serial}}) to World.Items but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
+                                $"Attempted to add '{{Entity}}' ({{Serial}}) but found '{{ExistingEntity}}' ({{ExistingSerial}}).{Environment.NewLine}{{StackTrace}}",
                                 entity.GetType().FullName,
                                 entity.Serial,
                                 entityEntry.GetType().FullName,
