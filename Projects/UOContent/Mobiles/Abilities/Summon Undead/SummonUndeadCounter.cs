@@ -51,6 +51,8 @@ public abstract class SummonUndeadCounter : MonsterAbility
                 summon.SummonMaster = source;
                 summon.FightMode = FightMode.Closest;
                 summon.Combatant = target;
+                summon.Home = source.Home;
+                summon.RangeHome = source.RangeHome;
             }
 
             summon.MoveToWorld(loc, source.Map);

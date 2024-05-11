@@ -1060,11 +1060,20 @@ namespace Server.Mobiles
         {
             foreach (var m in World.Mobiles.Values)
             {
-                if (m is PlayerMobile pm &&
-                    ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers?.Count > pm.AutoStabled?.Count ||
-                     pm.Mounted && pm.AllFollowers?.Count > (pm.AutoStabled?.Count ?? 0) + 1))
+                if (m is not PlayerMobile pm || pm.AllFollowers == null || pm.AllFollowers.Count == 0)
                 {
-                    pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
+                    continue;
+                }
+
+                var autoStabledCount = pm.AutoStabled?.Count ?? 0;
+                if (pm.Mounted && pm.Mount is not EtherealMount)
+                {
+                    autoStabledCount++;
+                }
+
+                if (pm.AllFollowers.Count > autoStabledCount)
+                {
+                    pm.AutoStablePets();
                 }
             }
         }
