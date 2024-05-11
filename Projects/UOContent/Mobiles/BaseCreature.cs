@@ -3582,7 +3582,6 @@ namespace Server.Mobiles
 
             creature.RangeHome = 10;
             creature.Summoned = true;
-
             creature.SummonMaster = caster;
 
             var pack = creature.Backpack;

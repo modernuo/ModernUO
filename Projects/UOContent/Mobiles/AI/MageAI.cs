@@ -1066,8 +1066,8 @@ public class MageAI : BaseAI
     }
 
     public bool CanDispel(Mobile m) =>
-        m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful(creature, false) &&
-        !creature.IsAnimatedDead;
+        m is BaseCreature creature && creature.Summoned && creature.SummonMaster != m_Mobile &&
+        m_Mobile.CanBeHarmful(creature, false) && !creature.IsAnimatedDead;
 
     private bool ProcessTarget()
     {
