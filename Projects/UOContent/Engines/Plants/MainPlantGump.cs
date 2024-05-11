@@ -155,7 +155,7 @@ namespace Server.Engines.Plants
                             AddItem(92, 167, 0x1B9D);
                             AddItem(161, 167, 0x1B9D);
 
-                            AddHtmlLocalized(136, 167, 42, 20, message, 0x00FC00);
+                            AddHtmlLocalized(136, 167, 42, 20, message, 0xFC00);
 
                             break;
                         }
@@ -164,7 +164,7 @@ namespace Server.Engines.Plants
                             AddItem(91, 164, 0x18E6);
                             AddItem(161, 164, 0x18E6);
 
-                            AddHtmlLocalized(132, 167, 42, 20, message, 0x00C207);
+                            AddHtmlLocalized(132, 167, 42, 20, message, 0xC207);
 
                             break;
                         }
@@ -173,7 +173,7 @@ namespace Server.Engines.Plants
                             AddItem(96, 168, 0xC61);
                             AddItem(162, 168, 0xC61);
 
-                            AddHtmlLocalized(129, 167, 42, 20, message, 0x008200);
+                            AddHtmlLocalized(129, 167, 42, 20, message, 0x8200);
 
                             break;
                         }
@@ -182,7 +182,7 @@ namespace Server.Engines.Plants
                             AddItem(93, 162, 0x1A99);
                             AddItem(162, 162, 0x1A99);
 
-                            AddHtmlLocalized(129, 167, 42, 20, message, 0x0083E0);
+                            AddHtmlLocalized(129, 167, 42, 20, message, 0x83E0);
 
                             break;
                         }

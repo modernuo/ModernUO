@@ -291,7 +291,7 @@ namespace Server.Engines.ConPVP
                             {
                                 if (part.Players[0] is PlayerMobile pm && pm.DuelPlayer != null)
                                 {
-                                    name = name.Color(pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
+                                    name = name.Color(pm.DuelPlayer.Eliminated ? 0x663333 : 0x336666);
                                 }
                             }
 
@@ -327,7 +327,7 @@ namespace Server.Engines.ConPVP
                             {
                                 if (mob is PlayerMobile pm && pm.DuelPlayer != null)
                                 {
-                                    name = name.Color(pm.DuelPlayer.Eliminated ? 0x6633333 : 0x336666);
+                                    name = name.Color(pm.DuelPlayer.Eliminated ? 0x663333 : 0x336666);
                                 }
                             }
 

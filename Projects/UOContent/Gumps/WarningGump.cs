@@ -55,7 +55,7 @@ public class WarningGump : DynamicGump
 
         builder.AddImageTiled(10, 10, _width - 20, 20, 2624);
         builder.AddAlphaRegion(10, 10, _width - 20, 20);
-        builder.AddHtmlLocalized(10, 10, _width - 20, 20, _header, (short)_headerColor);
+        builder.AddHtmlLocalized(10, 10, _width - 20, 20, _header, _headerColor);
 
         builder.AddImageTiled(10, 40, _width - 20, _height - 80, 2624);
         builder.AddAlphaRegion(10, 40, _width - 20, _height - 80);

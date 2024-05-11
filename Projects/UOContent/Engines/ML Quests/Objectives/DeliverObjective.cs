@@ -74,7 +74,7 @@ namespace Server.Engines.MLQuests.Objectives
         {
             var amount = Amount.ToString();
 
-            g.AddHtmlLocalized(98, y, 312, 16, 1072207, 0x15F90); // Deliver
+            g.AddHtmlLocalized(98, y, 312, 16, 1072207, 0x5F90); // Deliver
             g.AddLabel(143, y, 0x481, amount);
 
             if (Name.Number > 0)
@@ -89,7 +89,7 @@ namespace Server.Engines.MLQuests.Objectives
 
             y += 32;
 
-            g.AddHtmlLocalized(103, y, 120, 16, 1072379, 0x15F90); // Deliver to
+            g.AddHtmlLocalized(103, y, 120, 16, 1072379, 0x5F90); // Deliver to
             g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Destination));
 
             y += 16;

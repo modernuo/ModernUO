@@ -1528,4 +1528,28 @@ public static class Utility
 
         return false;
     }
+
+    public static int C16232(this int c16)
+    {
+        c16 &= 0x7FFF;
+
+        var r = ((c16 >> 10) & 0x1F) << 3;
+        var g = ((c16 >> 05) & 0x1F) << 3;
+        var b = (c16 & 0x1F) << 3;
+
+        return (r << 16) | (g << 8) | b;
+    }
+
+    public static int C16216(this int c16) => c16 & 0x7FFF;
+
+    public static int C32216(this int c32)
+    {
+        c32 &= 0xFFFFFF;
+
+        var r = ((c32 >> 16) & 0xFF) >> 3;
+        var g = ((c32 >> 08) & 0xFF) >> 3;
+        var b = (c32 & 0xFF) >> 3;
+
+        return (r << 10) | (g << 5) | b;
+    }
 }
