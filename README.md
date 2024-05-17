@@ -62,7 +62,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 - Run `./publish.cmd [release|debug (default: release)] [os] [arch (default: x64)]`
   - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md)
     - `win` - Windows 10/11/2019/2022
-    - `osx` - MacOS 11/12/13 (Big Sur, Monterey, Ventura)
+    - `osx` - MacOS 12/13/14 (Sonoma, Big Sur, Monterey)
     - `linux` - Linux
   - `arch`
     - `x64` - Intel 64-bit
