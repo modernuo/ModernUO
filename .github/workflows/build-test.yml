@@ -19,8 +19,6 @@ jobs:
           - os: macos-14
             name: MacOS 14
 
-    env:
-      LDFLAGS: -L/opt/homebrew/lib
     steps:
     - uses: actions/checkout@v4
       with:
@@ -30,7 +28,11 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Install Prerequisites
-      run: brew install icu4c libdeflate zstd argon2
+      run: |
+        brew update
+        brew install icu4c libdeflate zstd argon2
+    - name: Set Library Path
+      run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:\$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Build
       run: ./publish.cmd Release
     - name: Migration Changes
