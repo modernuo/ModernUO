@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Text;
+using Server.Compression;
 using Server.Gumps;
 using Server.Network;
 
@@ -165,14 +166,11 @@ namespace Server.Tests
             wantLength &= ~4095;
 
             var packBuffer = ArrayPool<byte>.Shared.Rent(wantLength);
+            var bytesPacked = Deflate.Standard.Pack(packBuffer, buffer.AsSpan(0, length));
 
-            var packLength = wantLength;
-
-            Zlib.Pack(packBuffer, ref packLength, buffer, length, ZlibQuality.Default);
-
-            Stream.Write(4 + packLength);
+            Stream.Write(4 + bytesPacked);
             Stream.Write(length);
-            Stream.Write(packBuffer, 0, packLength);
+            Stream.Write(packBuffer, 0, bytesPacked);
 
             ArrayPool<byte>.Shared.Return(packBuffer);
         }

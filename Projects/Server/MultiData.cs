@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using Server.Buffers;
+using Server.Compression;
 
 namespace Server;
 
@@ -72,8 +73,8 @@ public static class MultiData
                 }
 
                 var decompressedSize = entry.Size;
-                if (Zlib.Unpack(compressionBuffer, ref decompressedSize, buffer, entry.CompressedSize) != ZlibError.Okay
-                    || decompressedSize != entry.Size)
+                if (Deflate.Standard.Unpack(compressionBuffer, buffer, out var bytesDecompressed) != LibDeflateResult.Success
+                    || decompressedSize != bytesDecompressed)
                 {
                     throw new FileLoadException($"Error loading file {stream.Name}. Failed to unpack entry {i}.");
                 }
@@ -118,11 +119,7 @@ public static class MultiData
         }
 
         STArrayPool<byte>.Shared.Return(buffer);
-
-        if (compressionBuffer != null)
-        {
-            STArrayPool<byte>.Shared.Return(compressionBuffer);
-        }
+        STArrayPool<byte>.Shared.Return(compressionBuffer);
     }
 
     private static void LoadMul(bool postHSMulFormat)
