@@ -62,7 +62,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 - Run `./publish.cmd [release|debug (default: release)] [os] [arch (default: x64)]`
   - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md)
     - `win` - Windows 10/11/2019/2022
-    - `osx` - MacOS 11/12/13 (Big Sur, Monterey, Ventura)
+    - `osx` - MacOS 12/13/14 (Sonoma, Big Sur, Monterey)
     - `linux` - Linux
   - `arch`
     - `x64` - Intel 64-bit
@@ -74,13 +74,18 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 dnf upgrade --refresh -y
 # CentOS does not come with EPEL enabled
 dnf install -y epel-release epel-next-release
-dnf install -y findutils libicu zlib-devel zstd libargon2-devel tzdata
+dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
 ```
 
 ### Ubuntu, Debian, etc
 ```shell
 apt-get update -y
-apt-get install -y libicu-dev libz-dev zstd libargon2-dev tzdata
+apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev
+```
+
+## OSX Requirements
+```shell
+brew install icu4c libdeflate zstd argon2
 ```
 
 ## Running the Server

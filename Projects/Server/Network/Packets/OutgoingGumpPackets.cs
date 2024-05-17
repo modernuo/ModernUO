@@ -16,10 +16,9 @@
 using System;
 using System.Buffers;
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.CompilerServices;
-using Server.Buffers;
 using Server.Collections;
+using Server.Compression;
 using Server.Gumps;
 using Server.Logging;
 
@@ -49,7 +48,6 @@ public static class OutgoingGumpPackets
 
     private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
     private static readonly byte[] _stringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
-    private static readonly byte[] _packBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
     private static readonly OrderedSet<string> _stringsList = new();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,36 +61,21 @@ public static class OutgoingGumpPackets
             return;
         }
 
-        var wantLength = Zlib.MaxPackSize(length);
-        var packBuffer = _packBuffer;
-        byte[] rentedBuffer = null;
+        var dest = writer.RawBuffer[(writer.Position + 8)..];
 
-        if (wantLength > packBuffer.Length)
+        var bytesPacked = Deflate.Standard.Pack(dest, span);
+        if (bytesPacked == 0)
         {
-            packBuffer = rentedBuffer = STArrayPool<byte>.Shared.Rent(wantLength);
-        }
-
-        var packLength = wantLength;
-
-        var error = Zlib.Pack(packBuffer, ref packLength, span, length, ZlibQuality.Default);
-
-        if (error != ZlibError.Okay)
-        {
-            logger.Warning("Gump compression failed: {Error}", error);
+            logger.Warning("Gump compression failed");
 
             writer.Write(4);
             writer.Write(0);
             return;
         }
 
-        writer.Write(4 + packLength);
+        writer.Write(4 + bytesPacked);
         writer.Write(length);
-        writer.Write(packBuffer.AsSpan(0, packLength));
-
-        if (rentedBuffer != null)
-        {
-            STArrayPool<byte>.Shared.Return(rentedBuffer);
-        }
+        writer.Seek(bytesPacked, SeekOrigin.Current);
     }
 
     public static void SendDisplayGump(this NetState ns, Gump gump, out int switches, out int entries)
@@ -141,11 +124,8 @@ public static class OutgoingGumpPackets
             stringsWriter.WriteBigUni(s);
         }
 
-        var worstLayoutLength = Zlib.MaxPackSize(layoutWriter.BytesWritten);
-        var worstStringsLength = Zlib.MaxPackSize(stringsWriter.BytesWritten);
-        var maxLength = 40 + worstLayoutLength + worstStringsLength;
 
-        var writer = new SpanWriter(maxLength);
+        var writer = new SpanWriter(0x10000);
         writer.Write((byte)0xDD); // Packet ID
         writer.Seek(2, SeekOrigin.Current);
 
@@ -171,6 +151,8 @@ public static class OutgoingGumpPackets
         {
             _stringsList.Clear();
         }
+
+        writer.Dispose();
     }
 
     public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
