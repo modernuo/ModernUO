@@ -297,7 +297,7 @@ public abstract class WeaponAbility
 
     public virtual bool CheckMana(Mobile from, bool consume)
     {
-        if (from is BaseCreature { HasManaOveride: true })
+        if (from is BaseCreature { HasManaOverride: true })
         {
             return true;
         }
