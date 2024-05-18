@@ -486,7 +486,7 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual bool HasManaOveride => false;
+        public virtual bool HasManaOverride => false;
 
         public virtual FoodType FavoriteFood => FoodType.Meat;
         public virtual PackInstinct PackInstinct => PackInstinct.None;
