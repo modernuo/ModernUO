@@ -38,9 +38,6 @@ namespace Server.Items
         public static void Initialize()
         {
             Mobile.DefaultWeapon = new Fists();
-
-            EventSink.DisarmRequest += EventSink_DisarmRequest;
-            EventSink.StunRequest += EventSink_StunRequest;
         }
 
         public override double GetDefendSkillValue(Mobile attacker, Mobile defender)
@@ -195,7 +192,7 @@ namespace Server.Items
             return item is null or Spellbook && m.FindItemOnLayer(Layer.TwoHanded) == null;
         }
 
-        private static void EventSink_DisarmRequest(Mobile m)
+        public static void DisarmRequest(Mobile m)
         {
             if (Core.AOS)
             {
@@ -228,7 +225,7 @@ namespace Server.Items
             }
         }
 
-        private static void EventSink_StunRequest(Mobile m)
+        public static void StunRequest(Mobile m)
         {
             if (Core.AOS || !DuelContext.AllowSpecialAbility(m, "Stun", true))
             {

@@ -15,6 +15,7 @@
 
 using System.Buffers;
 using Server.ContextMenus;
+using Server.Items;
 
 namespace Server.Network;
 
@@ -267,7 +268,7 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        EventSink.InvokeStunRequest(from);
+        Fists.StunRequest(from);
     }
 
     public static void DisarmRequest(NetState state, SpanReader reader)
@@ -279,7 +280,7 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        EventSink.InvokeDisarmRequest(from);
+        Fists.DisarmRequest(from);
     }
 
     public static void StatLockChange(NetState state, SpanReader reader)

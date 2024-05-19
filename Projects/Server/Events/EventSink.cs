@@ -36,12 +36,6 @@ public static partial class EventSink
     public static event Action<Mobile> HelpRequest;
     public static void InvokeHelpRequest(Mobile m) => HelpRequest?.Invoke(m);
 
-    public static event Action<Mobile> DisarmRequest;
-    public static void InvokeDisarmRequest(Mobile m) => DisarmRequest?.Invoke(m);
-
-    public static event Action<Mobile> StunRequest;
-    public static void InvokeStunRequest(Mobile m) => StunRequest?.Invoke(m);
-
     public static event Action<Mobile, int> OpenSpellbookRequest;
     public static void InvokeOpenSpellbookRequest(Mobile m, int type) => OpenSpellbookRequest?.Invoke(m, type);
 

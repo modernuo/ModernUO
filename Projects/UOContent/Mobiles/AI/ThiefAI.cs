@@ -69,7 +69,7 @@ public class ThiefAI : BaseAI
             if (!Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
                 m_Mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
             {
-                EventSink.InvokeDisarmRequest(m_Mobile);
+                Fists.DisarmRequest(m_Mobile);
             }
 
             if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&

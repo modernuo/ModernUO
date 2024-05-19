@@ -1,4 +1,5 @@
 using System;
+using Server.Items;
 using Server.Spells;
 using Server.Spells.Fifth;
 using Server.Spells.First;
@@ -720,7 +721,7 @@ public class MageAI : BaseAI
         if (!Core.AOS && SmartAI && !m_Mobile.StunReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
             m_Mobile.Skills.Anatomy.Value >= 80.0)
         {
-            EventSink.InvokeStunRequest(m_Mobile);
+            Fists.StunRequest(m_Mobile);
         }
 
         if (!m_Mobile.InRange(c, m_Mobile.RangePerception))
