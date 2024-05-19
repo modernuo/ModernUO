@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Items;
@@ -108,7 +108,39 @@ public partial class FletchingSatchel : BaseCraftmansSatchel
             AddRecipe(DefBowFletching.CraftSystem);
         }
 
-        // TODO: runic fletching kit
+        Item runic = FletcherRunic();
+
+        if (runic != null)
+        {
+            DropItem(runic);
+        }
+    }
+
+    public static Item FletcherRunic()
+    {
+        double ran = Utility.RandomDouble();
+
+        if (ran <= 0.0001)
+        {
+            return new RunicFletcherTool(CraftResource.Heartwood, 15);
+        }
+
+        if (ran <= 0.0005)
+        {
+            return new RunicFletcherTool(CraftResource.YewWood, 25);
+        }
+
+        if (ran <= 0.0025)
+        {
+            return new RunicFletcherTool(CraftResource.AshWood, 35);
+        }
+
+        if (ran <= 0.005)
+        {
+            return new RunicFletcherTool(CraftResource.OakWood, 45);
+        }
+
+        return null;
     }
 }
 
@@ -125,6 +157,37 @@ public partial class CarpentrySatchel : BaseCraftmansSatchel
             AddRecipe(DefCarpentry.CraftSystem);
         }
 
-        // TODO: Add runic dovetail saw
+        Item runic = CarpenterRunic();
+
+        if (runic != null)
+        {
+            DropItem(runic);
+        }
+    }
+
+    public static Item CarpenterRunic()
+    {
+        double ran = Utility.RandomDouble();
+
+        if (ran <= 0.0001)
+        {
+            return new RunicDovetailSaw(CraftResource.Heartwood, 15);
+        }
+
+        if (ran <= 0.0005)
+        {
+            return new RunicDovetailSaw(CraftResource.YewWood, 25);
+        }
+        if (ran <= 0.0025)
+        {
+            return new RunicDovetailSaw(CraftResource.AshWood, 35);
+        }
+
+        if (ran <= 0.005)
+        {
+            return new RunicDovetailSaw(CraftResource.OakWood, 45);
+        }
+
+        return null;
     }
 }
