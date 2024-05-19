@@ -1,0 +1,3791 @@
+[
+  {
+    "type": "Spawner",
+    "guid": "4c455d30-907e-4fe3-a0f8-c148f0619fcf",
+    "name": "Spawner",
+    "location": [
+      3527,
+      2516,
+      45
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Aelorn",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "eded87d5-31e3-4066-8346-d116760edffb",
+    "name": "Spawner",
+    "location": [
+      7064,
+      351,
+      4
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Aeluva",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8720d455-0e95-44be-aa7c-4065c3864cd4",
+    "name": "Spawner",
+    "location": [
+      7064,
+      351,
+      4
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Aeluva",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8025c3da-7283-4fd0-85fe-859531efff45",
+    "name": "Spawner",
+    "location": [
+      2103,
+      1376,
+      -90
+    ],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      {
+        "name": "Aernya",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "97121940-625d-4c98-bee3-4442c3e99bd6",
+    "name": "Spawner",
+    "location": [
+      7034,
+      439,
+      1
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Ahie",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8445e9b6-c050-4227-85af-61b68330c7a1",
+    "name": "Spawner",
+    "location": [
+      7034,
+      439,
+      1
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Ahie",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "88b07521-4b1a-4fa3-9a23-1889f7708618",
+    "name": "Spawner",
+    "location": [
+      3535,
+      2537,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "AldenArmstrong",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9333f62f-03f0-41aa-8ee1-bea00fa82038",
+    "name": "Spawner",
+    "location": [
+      3478,
+      2494,
+      71
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Alefian",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f347216c-3913-425b-8500-6110e9c1c671",
+    "name": "Spawner",
+    "location": [
+      7046,
+      390,
+      6
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Alejaha",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9d6e22e3-781c-4981-b796-bd68d2598830",
+    "name": "Spawner",
+    "location": [
+      7046,
+      390,
+      0
+    ],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Acob",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Caelas",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Abbein",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Alejaha",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Taellia",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Mallew",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c3144edc-ab88-4b6d-9ecc-893314d6712f",
+    "name": "Spawner",
+    "location": [
+      3458,
+      2549,
+      35
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "AndreasVesalius",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e5eec882-ed16-474f-a60c-49367a0f4c10",
+    "name": "Spawner",
+    "location": [
+      3742,
+      2581,
+      40
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Andric",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5476a8a8-b153-4ed8-881c-d9afff5978e4",
+    "name": "Spawner",
+    "location": [
+      2533,
+      581,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Andros",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8011db94-d028-47b3-8822-a2888809bf6c",
+    "name": "Spawner",
+    "location": [
+      2533,
+      581,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Andros",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b2920218-f127-4d2e-9372-e293f1b566ba",
+    "name": "Spawner",
+    "location": [
+      7034,
+      409,
+      12
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Aniel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3b521ad1-ee09-46b6-b1fd-fd81895cc488",
+    "name": "Spawner",
+    "location": [
+      7034,
+      409,
+      12
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Aniel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b63a8cb8-d4d8-4b66-924d-3d7582e2e73f",
+    "name": "Spawner",
+    "location": [
+      7010,
+      389,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Anolly",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a903fc1c-cab5-4a93-b716-d4fd70062e3f",
+    "name": "Spawner",
+    "location": [
+      7010,
+      389,
+      0
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Anolly",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Unoelil",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4eea8891-4678-476f-88a2-d6d7d120e2d7",
+    "name": "Spawner",
+    "location": [
+      3363,
+      289,
+      9
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Arielle",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fdb61cfb-2cf2-42c7-bae0-1ce5d7c8f1fb",
+    "name": "Spawner",
+    "location": [
+      3506,
+      2514,
+      27
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Asandos",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f2483447-d57e-42ed-84d1-a4837e64635d",
+    "name": "Spawner",
+    "location": [
+      7001,
+      354,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Aulan",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fb400066-9690-4484-8534-f23220877fae",
+    "name": "Spawner",
+    "location": [
+      7001,
+      354,
+      0
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Aulan",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cloorne",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "587c5695-ccd1-4fa9-b1c6-5faa840bdc59",
+    "name": "Spawner",
+    "location": [
+      1459,
+      3796,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 3,
+    "walkingRange": 3,
+    "entries": [
+      {
+        "name": "Aurelia",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3598eded-ba85-4c9e-b079-47d020253e09",
+    "name": "Spawner",
+    "location": [
+      1459,
+      3796,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 3,
+    "walkingRange": 3,
+    "entries": [
+      {
+        "name": "Aurelia",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5eaa1059-a39e-4aa8-85e3-daa669719854",
+    "name": "Spawner",
+    "location": [
+      3464,
+      2558,
+      35
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      {
+        "name": "Avicenna",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9aa63de8-214b-476e-b9ed-e15b0bb64496",
+    "name": "fel belulah/tailor/weaver/guildmaster 4",
+    "location": [
+      3774,
+      1264,
+      0
+    ],
+    "map": "Felucca",
+    "count": 4,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      {
+        "name": "Belulah",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "tailor",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "weaver",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "tailorguildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3de3472e-543a-4fa0-be03-09c551b6a701",
+    "name": "Spawner",
+    "location": [
+      3773,
+      1264,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Belulah",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e0ef8ba5-834a-4c6b-8358-03b9b2c698ce",
+    "name": "Spawner",
+    "location": [
+      3773,
+      1264,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Belulah",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8fc816d9-bc3e-4efb-a32b-b81cfe460ad3",
+    "name": "Spawner",
+    "location": [
+      2468,
+      403,
+      15
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Ben",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6d31a376-aa18-4e34-b277-29adcb4410b2",
+    "name": "Spawner",
+    "location": [
+      2468,
+      403,
+      15
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Ben",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5223305e-9318-46c9-a58f-ae1b5e457b32",
+    "name": "Spawner",
+    "location": [
+      6285,
+      114,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Beotham",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bdd85b68-2988-4921-b053-53bfa9cb8041",
+    "name": "Spawner",
+    "location": [
+      6285,
+      114,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Beotham",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "db5b4c2f-8b8a-4d7a-b390-66ee89bdbb32",
+    "name": "Spawner",
+    "location": [
+      7083,
+      366,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Braen",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "691755e4-81a9-4f13-824a-65df082cf4ef",
+    "name": "Spawner",
+    "location": [
+      7083,
+      366,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Braen",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "401dfbe6-883e-41f9-b782-f6e1f04fb713",
+    "name": "Spawner",
+    "location": [
+      1193,
+      2469,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Bravehorn",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c91d1e99-7597-4747-865c-7bb8c5f5acc4",
+    "name": "bravehorn",
+    "location": [
+      1244,
+      2483,
+      5
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      {
+        "name": "Bravehorn",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "dc3a1590-f1ab-4ead-a495-9ebc07c5a8fa",
+    "name": "Spawner",
+    "location": [
+      1193,
+      2469,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Bravehorn",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a32ac0a6-582c-44a6-a71b-1c3bb17ff471",
+    "name": "Spawner",
+    "location": [
+      7008,
+      379,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Brinnae",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bb27ce39-8223-41bc-9655-92fd7ff188f8",
+    "name": "Spawner",
+    "location": [
+      7008,
+      379,
+      0
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Athialon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Brinnae",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8c884a3d-cb79-4f68-9ee9-c3a5ccc37e9f",
+    "name": "Spawner",
+    "location": [
+      7046,
+      390,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Caelas",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e25096bb-f864-4a69-98f2-d92fba71436c",
+    "name": "Spawner",
+    "location": [
+      7046,
+      390,
+      0
+    ],
+    "map": "Trammel",
+    "count": 6,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Acob",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Caelas",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Abbein",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Alejaha",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Taellia",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Mallew",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "cdab6e8b-5063-4e04-aebf-e0e00d982f18",
+    "name": "Spawner",
+    "location": [
+      7076,
+      379,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Cailla",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3cd79073-d50c-4ea3-872f-d6b900d54756",
+    "name": "Spawner",
+    "location": [
+      7076,
+      379,
+      0
+    ],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Saril",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cailla",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Tamm",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "37cc274f-6400-4871-ac03-f6a1f4a58a67",
+    "name": "Spawner",
+    "location": [
+      6274,
+      131,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Canir",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "848eb392-879b-4d47-b323-f9addd128dc4",
+    "name": "Spawner",
+    "location": [
+      6274,
+      131,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Canir",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e734ccbd-3884-4323-9161-c0dcfa111de5",
+    "name": "Spawner",
+    "location": [
+      3420,
+      2516,
+      21
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Chiyo",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f9dd14cb-d701-4d03-9d02-0a39f68be782",
+    "name": "Spawner",
+    "location": [
+      3531,
+      2531,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Churchill",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "836048f1-7c42-43b6-aeec-af23806221cc",
+    "name": "Spawner",
+    "location": [
+      7034,
+      409,
+      14
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Ciala",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a80c4f4f-13fb-4a99-9892-9ebe4f752c7c",
+    "name": "Spawner",
+    "location": [
+      7034,
+      409,
+      14
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Ciala",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8c5cc112-aab6-41ba-9599-a0af4b67134c",
+    "name": "Spawner",
+    "location": [
+      7044,
+      377,
+      4
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Cillitha",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "cbb317c0-51c5-4f58-9908-5e39cbd0772b",
+    "name": "Spawner",
+    "location": [
+      7044,
+      377,
+      2
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Jusae",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cillitha",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c4d76b24-51ad-4a10-8c35-82f6a3f6e5ef",
+    "name": "Spawner",
+    "location": [
+      3498,
+      2551,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Clairesse",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "af452b3b-00c8-4625-bd81-090e46cef314",
+    "name": "Spawner",
+    "location": [
+      7092,
+      390,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Clehin",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "46830686-575a-4257-a731-eb9eaa9d2304",
+    "name": "Spawner",
+    "location": [
+      7092,
+      390,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Clehin",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "eccfc76b-3236-4ca3-9b5d-a962185e12d3",
+    "name": "Spawner",
+    "location": [
+      6276,
+      105,
+      -10
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Dallid",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "064a3eb8-0bdf-49f1-8593-4fbcf1d5b093",
+    "name": "Spawner",
+    "location": [
+      6276,
+      105,
+      -10
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Dallid",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0b1e802e-188a-4477-bd1f-2574d82c0df3",
+    "name": "Spawner",
+    "location": [
+      6282,
+      118,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Danoel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c4b1e652-efe1-4cfd-b52c-692b35269b30",
+    "name": "Spawner",
+    "location": [
+      6282,
+      118,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Danoel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8e604683-1c6b-49a8-9dfc-617e0e79be70",
+    "name": "Spawner",
+    "location": [
+      3528,
+      2518,
+      25
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Dimethro",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d6d61009-4e2e-4b9b-a4c7-de15bee970b2",
+    "name": "Spawner",
+    "location": [
+      1984,
+      1364,
+      -80
+    ],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      {
+        "name": "Drithen",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "df217bc8-fe21-428f-bb38-3869f9c0ebf4",
+    "name": "Bedlam Quest Emerillo",
+    "location": [
+      89,
+      1639,
+      0
+    ],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 2,
+    "entries": [
+      {
+        "name": "Emerillo",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fe886b8b-a999-4089-b594-2a869df9e60b",
+    "name": "Artist Guild Quest",
+    "location": [
+      1448,
+      1664,
+      10
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Emilio",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4b6640cf-6972-4e74-9217-a505ec77de74",
+    "name": "Artist Guild Quest",
+    "location": [
+      1448,
+      1664,
+      10
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Emilio",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "36dd2bc2-7e0d-453a-94af-1690367cfb74",
+    "name": "Enigma Quest",
+    "location": [
+      1828,
+      960,
+      7
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Enigma",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c8ad2124-5c2a-4209-9b95-4edc584491aa",
+    "name": "Enigma Quest",
+    "location": [
+      1828,
+      960,
+      7
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 20,
+    "walkingRange": 20,
+    "entries": [
+      {
+        "name": "Enigma",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4a62a721-7487-4b18-9e6c-1d97e8f7428c",
+    "name": "Spawner",
+    "location": [
+      1481,
+      1705,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Evan",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "04d46d31-6db9-4851-b7cd-3e6ddf2b392c",
+    "name": "Spawner",
+    "location": [
+      1481,
+      1705,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Evan",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bc739fda-6f45-4111-959f-c886790c9272",
+    "name": "Frederic Quest",
+    "location": [
+      2416,
+      887,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Frederic",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fef87702-89c4-40f3-a197-d5003e376e0d",
+    "name": "Frederic Quest",
+    "location": [
+      2416,
+      887,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Frederic",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4b49d850-ceb6-4b0f-aecf-4a4be8cf43e1",
+    "name": "Spawner",
+    "location": [
+      3471,
+      2542,
+      36
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "GeorgeHephaestus",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bbffba6c-449c-4e12-b334-3d005523b1e3",
+    "name": "Spawner",
+    "location": [
+      3505,
+      2749,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Gervis",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6b33508f-ee25-457a-9059-a8ca8f7e669f",
+    "name": "Spawner",
+    "location": [
+      989,
+      519,
+      -50
+    ],
+    "map": "Malas",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Gorrow",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Banker",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Minter",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a464fa43-cd1b-4381-bb0b-9cedac50f731",
+    "name": "Spawner",
+    "location": [
+      3474,
+      2492,
+      91
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Gustar",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "afc3f07c-39f6-4dbd-8a2c-992d4f5684a5",
+    "name": "Spawner",
+    "location": [
+      3494,
+      2414,
+      55
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Hamato",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1934f65f-0bd6-440a-a28f-3d7184ef3cee",
+    "name": "Spawner",
+    "location": [
+      3444,
+      2637,
+      28
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 3,
+    "walkingRange": 3,
+    "entries": [
+      {
+        "name": "Hargrove",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Carpenter",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "af0530c1-7443-47e2-a574-b554b66f7575",
+    "name": "Spawner",
+    "location": [
+      1674,
+      593,
+      16
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Huntsman",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "60a4f2fb-4ae4-4832-ad9b-0575712b5e20",
+    "name": "Spawner",
+    "location": [
+      1674,
+      593,
+      16
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Huntsman",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "203916f6-4e55-43f9-bf73-18390783d683",
+    "name": "Blighted Grove Quest",
+    "location": [
+      559,
+      1651,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Jamal",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e68087b7-cd6c-492c-bcf9-919cdd08ff17",
+    "name": "Blighted Grove Quest",
+    "location": [
+      559,
+      1651,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Jamal",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b6e96e2c-ec7c-4ed5-982e-824c3b84d619",
+    "name": "Spawner",
+    "location": [
+      1178,
+      1194,
+      -25
+    ],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Jelrice",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ce4e8b4e-57f0-483b-96ff-4abe9b37fedf",
+    "name": "Spawner",
+    "location": [
+      3465,
+      2491,
+      71
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Jillian",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0c48c520-00b2-40ec-8cd4-d44c90e8a06c",
+    "name": "Spawner",
+    "location": [
+      3535,
+      2544,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Jockles",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "622ed0e5-312e-4dd0-80b7-ba08d71ceb79",
+    "name": "Spawner",
+    "location": [
+      3422,
+      2516,
+      21
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Jun",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c99c7246-6fef-4530-9e3e-6c1c5d9b31c7",
+    "name": "Spawner",
+    "location": [
+      7044,
+      377,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Jusae",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "9715fc9a-5690-4f68-a5c8-945207f0969b",
+    "name": "Spawner",
+    "location": [
+      7044,
+      377,
+      2
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Jusae",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cillitha",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "87ff6af8-886e-42f9-b3d0-5ad954e72f91",
+    "name": "Spawner",
+    "location": [
+      3485,
+      2491,
+      52
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Kaelynna",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ad6819ff-20c3-4995-9ba2-16bdb1e3492d",
+    "name": "Spawner",
+    "location": [
+      3745,
+      2587,
+      40
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Kashiel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "55660ec8-5327-4c67-a715-05722d10ddbf",
+    "name": "Bedlam Quest Kia",
+    "location": [
+      118,
+      1666,
+      0
+    ],
+    "map": "Malas",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Kia",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8c337c39-e0c2-43fc-b6e8-4140d3842923",
+    "name": "Spawner",
+    "location": [
+      6253,
+      112,
+      -9
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Koole",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "65599468-af00-4c1d-a4da-e69d50eac22e",
+    "name": "Spawner",
+    "location": [
+      6253,
+      112,
+      -9
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Koole",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "aed01df2-47e6-4207-9b37-6e333391976c",
+    "name": "Spawner",
+    "location": [
+      7092,
+      390,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Landy",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "79e2f382-6682-45fc-90e8-ceeaee75bc5a",
+    "name": "Spawner",
+    "location": [
+      7092,
+      390,
+      2
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Landy",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "c6227cb0-7ac3-4c6e-817a-e0db32288b99",
+    "name": "fel leon/healer/guildmaster",
+    "location": [
+      2920,
+      854,
+      0
+    ],
+    "map": "Felucca",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      {
+        "name": "Leon",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "healer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "healerguildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "36194a90-c6cf-4107-8e26-e01e3211080e",
+    "name": "Spawner",
+    "location": [
+      2922,
+      854,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Leon",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "3a813c5a-91fd-4797-9c6f-1c9efe7ad446",
+    "name": "Spawner",
+    "location": [
+      2922,
+      854,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Leon",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "1aab1ed1-df91-409e-8722-97e04c894d49",
+    "name": "Spawner",
+    "location": [
+      7063,
+      409,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Lohn",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "0ebd380b-14e8-4632-95a3-57acb608913e",
+    "name": "Spawner",
+    "location": [
+      7063,
+      409,
+      2
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Lohn",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7df8f1e9-1fd7-4768-b252-c48933a677a2",
+    "name": "Spawner",
+    "location": [
+      3440,
+      2645,
+      27
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Lowel",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "aa564091-ca4b-4956-8e1b-b5aa428bdd6e",
+    "name": "Spawner",
+    "location": [
+      7064,
+      351,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Mielan",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "880efaad-194e-4af6-be47-2dcb481a513a",
+    "name": "Spawner",
+    "location": [
+      7064,
+      351,
+      2
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Mielan",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e453ec2f-9a34-4f44-9093-50fd5c1a8f4c",
+    "name": "Spawner",
+    "location": [
+      3485,
+      2492,
+      71
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Mithneral",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "26a48253-0ddc-448a-98e6-58837939a4c2",
+    "name": "Spawner",
+    "location": [
+      3547,
+      2462,
+      15
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Morganna",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b4a754ac-fc86-4377-ad1e-110266aee6fa",
+    "name": "Spawner",
+    "location": [
+      3507,
+      2747,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Mugg",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a62b10a6-f3a4-43b8-84be-d9d88856d6c2",
+    "name": "Spawner",
+    "location": [
+      3555,
+      2457,
+      15
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Mulcivikh",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7b0f6e3c-d9ce-43ce-8434-488fdbd0df11",
+    "name": "Spawner",
+    "location": [
+      3458,
+      2524,
+      53
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Nibbet",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "39156b52-c7fa-44ea-a93c-802ea6e47893",
+    "name": "Spawner",
+    "location": [
+      3502,
+      2600,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Norton",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a99e50ba-c7a2-4adf-9edf-80a72f2f8ea4",
+    "name": "Spawner",
+    "location": [
+      7063,
+      409,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Olla",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "fe02ae2d-df47-459f-bf0f-7e15ae88afcd",
+    "name": "Spawner",
+    "location": [
+      7063,
+      409,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Olla",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b8c2ea1e-e810-4216-9294-589766d86c1b",
+    "name": "Spawner",
+    "location": [
+      3011,
+      826,
+      -3
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Patricus",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b05f728a-b161-4fd1-98d5-a6a3e9519a6e",
+    "name": "Patricus Quest",
+    "location": [
+      3011,
+      826,
+      -3
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Patricus",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "505717fb-b308-42f3-b641-13c4d43086cc",
+    "name": "Spawner",
+    "location": [
+      3535,
+      2534,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Recaro",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "bb98de5d-abdc-4156-863a-702012f6dc67",
+    "name": "Regina Quest",
+    "location": [
+      1367,
+      1615,
+      50
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Regina",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "45d9146d-153c-41c3-9018-4a01d94bdea9",
+    "name": "Regina Quest",
+    "location": [
+      1367,
+      1615,
+      50
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Regina",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b6bba683-fc55-438d-b02b-34a8494af0ac",
+    "name": "Spawner",
+    "location": [
+      3535,
+      2531,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Robyn",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b31cf318-4a63-4fc8-bae0-07f64d0a33d9",
+    "name": "Spawner",
+    "location": [
+      3422,
+      2520,
+      21
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Ryuichi",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "df7e5330-e125-49e6-bfb9-e602076fa711",
+    "name": "Spawner",
+    "location": [
+      6990,
+      344,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Salaenih",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e9e11207-18f9-4aa8-a145-f53215fe2341",
+    "name": "Spawner",
+    "location": [
+      6990,
+      344,
+      0
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Salaenih",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Tyleelor",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ca456949-8952-47b1-b15e-423c693d5a9e",
+    "name": "Spawner",
+    "location": [
+      7076,
+      379,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Saril",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5b725f7f-3188-4810-947e-54b29b826fba",
+    "name": "Spawner",
+    "location": [
+      7076,
+      379,
+      0
+    ],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Saril",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cailla",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Tamm",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "391ff438-1b78-473c-8008-95aa4337cb75",
+    "name": "Spawner",
+    "location": [
+      3492,
+      2577,
+      15
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "SarsmeaSmythe",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d95fe719-df1c-42c9-b34d-b172a223455a",
+    "name": "Sledge Quest",
+    "location": [
+      2678,
+      2130,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Sledge",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "95bb7952-e100-4e8b-b3b5-3282398520ef",
+    "name": "Sledge Quest",
+    "location": [
+      2678,
+      2130,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Sledge",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "7e20c72c-f6ee-4caf-917d-44e048d50f80",
+    "name": "Spawner",
+    "location": [
+      6996,
+      381,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 3,
+    "walkingRange": 3,
+    "entries": [
+      {
+        "name": "Sleen",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4310c18f-4cb2-4f22-8614-574415e3f0d1",
+    "name": "Spawner",
+    "location": [
+      6996,
+      381,
+      0
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 3,
+    "walkingRange": 3,
+    "entries": [
+      {
+        "name": "Waelian",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Sleen",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "09f970d6-a740-4b72-bba4-261352ae033d",
+    "name": "Spawner",
+    "location": [
+      608,
+      1702,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Strongroot",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "634175e6-0eda-42eb-a933-e08cfa535d09",
+    "name": "Spawner",
+    "location": [
+      608,
+      1702,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Strongroot",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f4a07482-e52a-454e-8c43-6f891cffc8ea",
+    "name": "Spawner",
+    "location": [
+      7064,
+      351,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Synaeva",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5a7aacc3-7a23-4b19-8cbe-861c6616d13e",
+    "name": "Spawner",
+    "location": [
+      7064,
+      351,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Synaeva",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "456d959c-35f9-4133-a078-1f83c6c642e8",
+    "name": "Spawner",
+    "location": [
+      6281,
+      121,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Tallinin",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d4f86499-99eb-41c3-9f1f-f73e1b4d4ad8",
+    "name": "Spawner",
+    "location": [
+      6281,
+      121,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Tallinin",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "a5793b0d-e53e-494b-8efe-cc830160fdc4",
+    "name": "Spawner",
+    "location": [
+      7076,
+      379,
+      4
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Tamm",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "95c5d470-4262-4688-b316-9b32c25a1f4b",
+    "name": "Spawner",
+    "location": [
+      7076,
+      379,
+      0
+    ],
+    "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Saril",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cailla",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Tamm",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "dd07e1b3-0af6-4e96-9b52-618d4a0e03cb",
+    "name": "Spawner",
+    "location": [
+      3676,
+      1323,
+      20
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Thalia",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "56cb9993-77fe-4493-8890-868698b8327b",
+    "name": "Spawner",
+    "location": [
+      3676,
+      1323,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Thalia",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "20bfbb62-c9b2-4f55-92e2-e7b21cd59f8b",
+    "name": "Spawner",
+    "location": [
+      7034,
+      439,
+      3
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Thallary",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "129fc34d-9a26-421d-9c65-07e5486d8488",
+    "name": "Spawner",
+    "location": [
+      7034,
+      439,
+      3
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Thallary",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "f8a52163-3403-4365-8108-99a84b1675c9",
+    "name": "Spawner",
+    "location": [
+      6982,
+      388,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 2,
+    "entries": [
+      {
+        "name": "Tholef",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "6b7d4a70-e986-44d5-be02-7a3a2f7c90cc",
+    "name": "Spawner",
+    "location": [
+      6982,
+      388,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 2,
+    "walkingRange": 2,
+    "entries": [
+      {
+        "name": "Tholef",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b673deba-1394-4379-ba14-367f3e91e35a",
+    "name": "Spawner",
+    "location": [
+      6257,
+      101,
+      -10
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Tiana",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "22f47637-b9ce-4881-9f57-af959e9c50d6",
+    "name": "Spawner",
+    "location": [
+      6257,
+      101,
+      -10
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Tiana",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ea177018-e1a6-478f-882b-2075a502d7a8",
+    "name": "Spawner",
+    "location": [
+      6984,
+      378,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Tillanil",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "012bf2cc-953a-4d18-aa7a-fcbbfec1fce3",
+    "name": "Spawner",
+    "location": [
+      6984,
+      378,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Tillanil",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "79e5dc55-2fbd-404a-a5bc-9b3cc0ba816b",
+    "name": "Spawner",
+    "location": [
+      3525,
+      2556,
+      20
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "TylAriadne",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "87acf62f-5749-4031-b399-9ce37a1fe267",
+    "name": "Spawner",
+    "location": [
+      7010,
+      389,
+      2
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Unoelil",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "4b160fa8-ff09-41d2-ae60-c3fe9a74e38a",
+    "name": "Spawner",
+    "location": [
+      7010,
+      389,
+      0
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      {
+        "name": "Anolly",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Unoelil",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5d5a4702-ab54-4201-910d-1f312b476ba9",
+    "name": "Spawner",
+    "location": [
+      7029,
+      378,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Vilo",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "93151394-63fc-4b73-8db2-a6465bd1eadf",
+    "name": "Spawner",
+    "location": [
+      7029,
+      378,
+      0
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Vilo",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "ee923f09-e76d-4f16-a64e-0d3e24926cfd",
+    "name": "Spawner",
+    "location": [
+      6996,
+      381,
+      0
+    ],
+    "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 3,
+    "walkingRange": 3,
+    "entries": [
+      {
+        "name": "Waelian",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "5382df58-6a0e-48e9-8916-8c16ece5dd8b",
+    "name": "Spawner",
+    "location": [
+      6996,
+      381,
+      0
+    ],
+    "map": "Trammel",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 3,
+    "walkingRange": 3,
+    "entries": [
+      {
+        "name": "Waelian",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Sleen",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "b1a20fce-95f1-4aa8-987a-978864885088",
+    "name": "Spawner",
+    "location": [
+      3429,
+      2518,
+      19
+    ],
+    "map": "Trammel",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 0,
+    "walkingRange": 0,
+    "entries": [
+      {
+        "name": "Walker",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "30a7f4ee-6103-4244-b2ba-d999d9955c6b",
+    "name": "Spawner",
+    "location": [
+      1390,
+      423,
+      -24
+    ],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 4,
+    "walkingRange": 4,
+    "entries": [
+      {
+        "name": "Yorus",
+        "maxCount": 1,
+        "probability": 100
+      }
+    ]
+  }
+]
