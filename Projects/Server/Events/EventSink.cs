@@ -27,9 +27,6 @@ public static partial class EventSink
     public static event Action<Mobile> Login;
     public static void InvokeLogin(Mobile m) => Login?.Invoke(m);
 
-    public static event Action<Mobile, int> HungerChanged;
-    public static void InvokeHungerChanged(Mobile mobile, int oldValue) => HungerChanged?.Invoke(mobile, oldValue);
-
     public static event Action Shutdown;
     public static void InvokeShutdown() => Shutdown?.Invoke();
 

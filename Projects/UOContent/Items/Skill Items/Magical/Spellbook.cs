@@ -215,8 +215,6 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
     public static void Configure()
     {
-        EventSink.OpenSpellbookRequest += EventSink_OpenSpellbookRequest;
-        EventSink.CastSpellRequest += EventSink_CastSpellRequest;
         EventSink.TargetedSpell += EventSink_TargetedSpell;
 
         CommandSystem.Register("AllSpells", AccessLevel.GameMaster, AllSpells_OnCommand);
@@ -249,7 +247,7 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         }
     }
 
-    private static void EventSink_OpenSpellbookRequest(Mobile from, int typeID)
+    public static void OpenSpellbookRequest(Mobile from, int typeID)
     {
         if (!DesignContext.Check(from))
         {
@@ -300,7 +298,7 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         }
     }
 
-    private static void EventSink_CastSpellRequest(Mobile from, int spellID, Item item)
+    public static void CastSpellRequest(Mobile from, int spellID, Item item)
     {
         if (!DesignContext.Check(from))
         {

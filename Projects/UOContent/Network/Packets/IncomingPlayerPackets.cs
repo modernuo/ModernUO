@@ -24,6 +24,7 @@ using Server.Diagnostics;
 using Server.Engines.Virtues;
 using Server.Exceptions;
 using Server.Gumps;
+using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Network;
@@ -159,7 +160,7 @@ public static class IncomingPlayerPackets
                         booktype = 1;
                     }
 
-                    EventSink.InvokeOpenSpellbookRequest(from, booktype);
+                    Spellbook.OpenSpellbookRequest(from, booktype);
 
                     break;
                 }
@@ -169,7 +170,7 @@ public static class IncomingPlayerPackets
                     var spellID = (tokenizer.MoveNext() ? Utility.ToInt32(tokenizer.Current) : 0) - 1;
                     var serial = tokenizer.MoveNext() ? (Serial)Utility.ToUInt32(tokenizer.Current) : Serial.MinusOne;
 
-                    EventSink.InvokeCastSpellRequest(from, spellID, World.FindItem(serial));
+                    Spellbook.CastSpellRequest(from, spellID, World.FindItem(serial));
 
                     break;
                 }
@@ -183,7 +184,7 @@ public static class IncomingPlayerPackets
                 {
                     var spellID = Utility.ToInt32(command) - 1;
 
-                    EventSink.InvokeCastSpellRequest(from, spellID, null);
+                    Spellbook.CastSpellRequest(from, spellID, null);
 
                     break;
                 }

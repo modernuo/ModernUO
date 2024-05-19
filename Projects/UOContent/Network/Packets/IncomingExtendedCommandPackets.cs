@@ -251,7 +251,7 @@ public static class IncomingExtendedCommandPackets
         Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
 
         var spellID = reader.ReadInt16() - 1;
-        EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
+        Spellbook.CastSpellRequest(from, spellID, spellbook);
     }
 
     public static void ToggleFlying(NetState state, SpanReader reader)
