@@ -323,8 +323,8 @@ public static class IncomingAccountPackets
 
         state.SendPlayMusic(m.Region.Music);
 
-        StaminaSystem.Login(m);
-        DuelContext.Login(m);
+        StaminaSystem.OnLogin(m);
+        DuelContext.OnLogin(m);
         LightCycle.OnLogin(m);
         LoginStats.OnLogin(m);
         AnimalForm.OnLogin(m);

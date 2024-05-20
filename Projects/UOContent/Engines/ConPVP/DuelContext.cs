@@ -1287,7 +1287,7 @@ namespace Server.Engines.ConPVP
             return false;
         }
 
-        public static void Login(Mobile m)
+        public static void OnLogin(Mobile m)
         {
             if (m is not PlayerMobile pm)
             {

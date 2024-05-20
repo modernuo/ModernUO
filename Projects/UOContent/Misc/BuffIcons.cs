@@ -115,6 +115,8 @@ namespace Server
 
         public static void ResendBuffsOnClientVersionReceived(NetState ns, ClientVersion cv)
         {
+            if (!Enabled) return;
+
             if (ns.Mobile is PlayerMobile pm)
             {
                 Timer.StartTimer(pm.ResendBuffs);

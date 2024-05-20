@@ -80,7 +80,7 @@ public static class StaminaSystem
         RemoveEntry(m as IHasSteps);
     }
 
-    public static void Login(Mobile m)
+    public static void OnLogin(Mobile m)
     {
         if (EnableMountStamina)
         {
