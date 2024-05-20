@@ -274,6 +274,7 @@ namespace Server.Engines.Craft
                         if (item is BaseWeapon w)
                         {
                             w.Resource = resource;
+                            w.DistributeMaterialBonus(attributes);
 
                             var hue = w.GetElementalDamageHue();
                             if (hue > 0)

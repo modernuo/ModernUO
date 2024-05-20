@@ -1,859 +1,1016 @@
 using System;
 using System.Collections.Generic;
 
-namespace Server.Items
+namespace Server.Items;
+
+public enum CraftResource
 {
-    public enum CraftResource
+    None = 0,
+    Iron = 1,
+    DullCopper,
+    ShadowIron,
+    Copper,
+    Bronze,
+    Gold,
+    Agapite,
+    Verite,
+    Valorite,
+
+    RegularLeather = 101,
+    SpinedLeather,
+    HornedLeather,
+    BarbedLeather,
+
+    RedScales = 201,
+    YellowScales,
+    BlackScales,
+    GreenScales,
+    WhiteScales,
+    BlueScales,
+
+    RegularWood = 301,
+    OakWood,
+    AshWood,
+    YewWood,
+    Heartwood,
+    Bloodwood,
+    Frostwood
+}
+
+public enum CraftResourceType
+{
+    None,
+    Metal,
+    Leather,
+    Scales,
+    Wood
+}
+
+public class CraftAttributeInfo
+{
+    public static readonly CraftAttributeInfo Blank;
+    public static readonly CraftAttributeInfo DullCopper, ShadowIron, Copper, Bronze, Golden, Agapite, Verite, Valorite;
+    public static readonly CraftAttributeInfo Spined, Horned, Barbed;
+    public static readonly CraftAttributeInfo RedScales, YellowScales, BlackScales, GreenScales, WhiteScales, BlueScales;
+    public static readonly CraftAttributeInfo OakWood, AshWood, YewWood, Heartwood, Bloodwood, Frostwood;
+
+    static CraftAttributeInfo()
     {
-        None = 0,
-        Iron = 1,
-        DullCopper,
-        ShadowIron,
-        Copper,
-        Bronze,
-        Gold,
-        Agapite,
-        Verite,
-        Valorite,
+        Blank = new CraftAttributeInfo();
 
-        RegularLeather = 101,
-        SpinedLeather,
-        HornedLeather,
-        BarbedLeather,
+        var dullCopper = DullCopper = new CraftAttributeInfo();
 
-        RedScales = 201,
-        YellowScales,
-        BlackScales,
-        GreenScales,
-        WhiteScales,
-        BlueScales,
-
-        RegularWood = 301,
-        OakWood,
-        AshWood,
-        YewWood,
-        Heartwood,
-        Bloodwood,
-        Frostwood
-    }
-
-    public enum CraftResourceType
-    {
-        None,
-        Metal,
-        Leather,
-        Scales,
-        Wood
-    }
-
-    public class CraftAttributeInfo
-    {
-        public static readonly CraftAttributeInfo Blank;
-        public static readonly CraftAttributeInfo DullCopper, ShadowIron, Copper, Bronze, Golden, Agapite, Verite, Valorite;
-        public static readonly CraftAttributeInfo Spined, Horned, Barbed;
-        public static readonly CraftAttributeInfo RedScales, YellowScales, BlackScales, GreenScales, WhiteScales, BlueScales;
-        public static readonly CraftAttributeInfo OakWood, AshWood, YewWood, Heartwood, Bloodwood, Frostwood;
-
-        static CraftAttributeInfo()
+        dullCopper.ArmorPhysicalResist = 6;
+        dullCopper.ArmorDurability = 50;
+        dullCopper.ArmorLowerRequirements = 20;
+        dullCopper.WeaponDurability = 100;
+        dullCopper.WeaponLowerRequirements = 50;
+        dullCopper.RunicMinAttributes = 1;
+        dullCopper.RunicMaxAttributes = 2;
+        if ( Core.ML )
         {
-            Blank = new CraftAttributeInfo();
-
-            var dullCopper = DullCopper = new CraftAttributeInfo();
-
-            dullCopper.ArmorPhysicalResist = 6;
-            dullCopper.ArmorDurability = 50;
-            dullCopper.ArmorLowerRequirements = 20;
-            dullCopper.WeaponDurability = 100;
-            dullCopper.WeaponLowerRequirements = 50;
-            dullCopper.RunicMinAttributes = 1;
-            dullCopper.RunicMaxAttributes = 2;
-            if (Core.ML)
-            {
-                dullCopper.RunicMinIntensity = 40;
-                dullCopper.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                dullCopper.RunicMinIntensity = 10;
-                dullCopper.RunicMaxIntensity = 35;
-            }
-
-            var shadowIron = ShadowIron = new CraftAttributeInfo();
-
-            shadowIron.ArmorPhysicalResist = 2;
-            shadowIron.ArmorFireResist = 1;
-            shadowIron.ArmorEnergyResist = 5;
-            shadowIron.ArmorDurability = 100;
-            shadowIron.WeaponColdDamage = 20;
-            shadowIron.WeaponDurability = 50;
-            shadowIron.RunicMinAttributes = 2;
-            shadowIron.RunicMaxAttributes = 2;
-            if (Core.ML)
-            {
-                shadowIron.RunicMinIntensity = 45;
-                shadowIron.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                shadowIron.RunicMinIntensity = 20;
-                shadowIron.RunicMaxIntensity = 45;
-            }
-
-            var copper = Copper = new CraftAttributeInfo();
-
-            copper.ArmorPhysicalResist = 1;
-            copper.ArmorFireResist = 1;
-            copper.ArmorPoisonResist = 5;
-            copper.ArmorEnergyResist = 2;
-            copper.WeaponPoisonDamage = 10;
-            copper.WeaponEnergyDamage = 20;
-            copper.RunicMinAttributes = 2;
-            copper.RunicMaxAttributes = 3;
-            if (Core.ML)
-            {
-                copper.RunicMinIntensity = 50;
-                copper.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                copper.RunicMinIntensity = 25;
-                copper.RunicMaxIntensity = 50;
-            }
-
-            var bronze = Bronze = new CraftAttributeInfo();
-
-            bronze.ArmorPhysicalResist = 3;
-            bronze.ArmorColdResist = 5;
-            bronze.ArmorPoisonResist = 1;
-            bronze.ArmorEnergyResist = 1;
-            bronze.WeaponFireDamage = 40;
-            bronze.RunicMinAttributes = 3;
-            bronze.RunicMaxAttributes = 3;
-            if (Core.ML)
-            {
-                bronze.RunicMinIntensity = 55;
-                bronze.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                bronze.RunicMinIntensity = 30;
-                bronze.RunicMaxIntensity = 65;
-            }
-
-            var golden = Golden = new CraftAttributeInfo();
-
-            golden.ArmorPhysicalResist = 1;
-            golden.ArmorFireResist = 1;
-            golden.ArmorColdResist = 2;
-            golden.ArmorEnergyResist = 2;
-            golden.ArmorLuck = 40;
-            golden.ArmorLowerRequirements = 30;
-            golden.WeaponLuck = 40;
-            golden.WeaponLowerRequirements = 50;
-            golden.RunicMinAttributes = 3;
-            golden.RunicMaxAttributes = 4;
-            if (Core.ML)
-            {
-                golden.RunicMinIntensity = 60;
-                golden.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                golden.RunicMinIntensity = 35;
-                golden.RunicMaxIntensity = 75;
-            }
-
-            var agapite = Agapite = new CraftAttributeInfo();
-
-            agapite.ArmorPhysicalResist = 2;
-            agapite.ArmorFireResist = 3;
-            agapite.ArmorColdResist = 2;
-            agapite.ArmorPoisonResist = 2;
-            agapite.ArmorEnergyResist = 2;
-            agapite.WeaponColdDamage = 30;
-            agapite.WeaponEnergyDamage = 20;
-            agapite.RunicMinAttributes = 4;
-            agapite.RunicMaxAttributes = 4;
-            if (Core.ML)
-            {
-                agapite.RunicMinIntensity = 65;
-                agapite.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                agapite.RunicMinIntensity = 40;
-                agapite.RunicMaxIntensity = 80;
-            }
-
-            var verite = Verite = new CraftAttributeInfo();
-
-            verite.ArmorPhysicalResist = 3;
-            verite.ArmorFireResist = 3;
-            verite.ArmorColdResist = 2;
-            verite.ArmorPoisonResist = 3;
-            verite.ArmorEnergyResist = 1;
-            verite.WeaponPoisonDamage = 40;
-            verite.WeaponEnergyDamage = 20;
-            verite.RunicMinAttributes = 4;
-            verite.RunicMaxAttributes = 5;
-            if (Core.ML)
-            {
-                verite.RunicMinIntensity = 70;
-                verite.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                verite.RunicMinIntensity = 45;
-                verite.RunicMaxIntensity = 90;
-            }
-
-            var valorite = Valorite = new CraftAttributeInfo();
-
-            valorite.ArmorPhysicalResist = 4;
-            valorite.ArmorColdResist = 3;
-            valorite.ArmorPoisonResist = 3;
-            valorite.ArmorEnergyResist = 3;
-            valorite.ArmorDurability = 50;
-            valorite.WeaponFireDamage = 10;
-            valorite.WeaponColdDamage = 20;
-            valorite.WeaponPoisonDamage = 10;
-            valorite.WeaponEnergyDamage = 20;
-            valorite.RunicMinAttributes = 5;
-            valorite.RunicMaxAttributes = 5;
-            if (Core.ML)
-            {
-                valorite.RunicMinIntensity = 85;
-                valorite.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                valorite.RunicMinIntensity = 50;
-                valorite.RunicMaxIntensity = 100;
-            }
-
-            var spined = Spined = new CraftAttributeInfo();
-
-            spined.ArmorPhysicalResist = 5;
-            spined.ArmorLuck = 40;
-            spined.RunicMinAttributes = 1;
-            spined.RunicMaxAttributes = 3;
-            if (Core.ML)
-            {
-                spined.RunicMinIntensity = 40;
-                spined.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                spined.RunicMinIntensity = 20;
-                spined.RunicMaxIntensity = 40;
-            }
-
-            var horned = Horned = new CraftAttributeInfo();
-
-            horned.ArmorPhysicalResist = 2;
-            horned.ArmorFireResist = 3;
-            horned.ArmorColdResist = 2;
-            horned.ArmorPoisonResist = 2;
-            horned.ArmorEnergyResist = 2;
-            horned.RunicMinAttributes = 3;
-            horned.RunicMaxAttributes = 4;
-            if (Core.ML)
-            {
-                horned.RunicMinIntensity = 45;
-                horned.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                horned.RunicMinIntensity = 30;
-                horned.RunicMaxIntensity = 70;
-            }
-
-            var barbed = Barbed = new CraftAttributeInfo();
-
-            barbed.ArmorPhysicalResist = 2;
-            barbed.ArmorFireResist = 1;
-            barbed.ArmorColdResist = 2;
-            barbed.ArmorPoisonResist = 3;
-            barbed.ArmorEnergyResist = 4;
-            barbed.RunicMinAttributes = 4;
-            barbed.RunicMaxAttributes = 5;
-            if (Core.ML)
-            {
-                barbed.RunicMinIntensity = 50;
-                barbed.RunicMaxIntensity = 100;
-            }
-            else
-            {
-                barbed.RunicMinIntensity = 40;
-                barbed.RunicMaxIntensity = 100;
-            }
-
-            var red = RedScales = new CraftAttributeInfo();
-
-            red.ArmorFireResist = 10;
-            red.ArmorColdResist = -3;
-
-            var yellow = YellowScales = new CraftAttributeInfo();
-
-            yellow.ArmorPhysicalResist = -3;
-            yellow.ArmorLuck = 20;
-
-            var black = BlackScales = new CraftAttributeInfo();
-
-            black.ArmorPhysicalResist = 10;
-            black.ArmorEnergyResist = -3;
-
-            var green = GreenScales = new CraftAttributeInfo();
-
-            green.ArmorFireResist = -3;
-            green.ArmorPoisonResist = 10;
-
-            var white = WhiteScales = new CraftAttributeInfo();
-
-            white.ArmorPhysicalResist = -3;
-            white.ArmorColdResist = 10;
-
-            var blue = BlueScales = new CraftAttributeInfo();
-
-            blue.ArmorPoisonResist = -3;
-            blue.ArmorEnergyResist = 10;
-
-            // public static readonly CraftAttributeInfo OakWood, AshWood, YewWood, Heartwood, Bloodwood, Frostwood;
-
-            var oak = OakWood = new CraftAttributeInfo();
-
-            var ash = AshWood = new CraftAttributeInfo();
-
-            var yew = YewWood = new CraftAttributeInfo();
-
-            var heart = Heartwood = new CraftAttributeInfo();
-
-            var blood = Bloodwood = new CraftAttributeInfo();
-
-            var frost = Frostwood = new CraftAttributeInfo();
+            dullCopper.RunicMinIntensity = 40;
+            dullCopper.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            dullCopper.RunicMinIntensity = 10;
+            dullCopper.RunicMaxIntensity = 35;
         }
 
-        public int WeaponFireDamage { get; set; }
+        var shadowIron = ShadowIron = new CraftAttributeInfo();
 
-        public int WeaponColdDamage { get; set; }
+        shadowIron.ArmorPhysicalResist = 2;
+        shadowIron.ArmorFireResist = 1;
+        shadowIron.ArmorEnergyResist = 5;
+        shadowIron.ArmorDurability = 100;
+        shadowIron.WeaponColdDamage = 20;
+        shadowIron.WeaponDurability = 50;
+        shadowIron.RunicMinAttributes = 2;
+        shadowIron.RunicMaxAttributes = 2;
+        if ( Core.ML )
+        {
+            shadowIron.RunicMinIntensity = 45;
+            shadowIron.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            shadowIron.RunicMinIntensity = 20;
+            shadowIron.RunicMaxIntensity = 45;
+        }
 
-        public int WeaponPoisonDamage { get; set; }
+        var copper = Copper = new CraftAttributeInfo();
 
-        public int WeaponEnergyDamage { get; set; }
+        copper.ArmorPhysicalResist = 1;
+        copper.ArmorFireResist = 1;
+        copper.ArmorPoisonResist = 5;
+        copper.ArmorEnergyResist = 2;
+        copper.WeaponPoisonDamage = 10;
+        copper.WeaponEnergyDamage = 20;
+        copper.RunicMinAttributes = 2;
+        copper.RunicMaxAttributes = 3;
+        if ( Core.ML )
+        {
+            copper.RunicMinIntensity = 50;
+            copper.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            copper.RunicMinIntensity = 25;
+            copper.RunicMaxIntensity = 50;
+        }
 
-        public int WeaponChaosDamage { get; set; }
+        var bronze = Bronze = new CraftAttributeInfo();
 
-        public int WeaponDirectDamage { get; set; }
+        bronze.ArmorPhysicalResist = 3;
+        bronze.ArmorColdResist = 5;
+        bronze.ArmorPoisonResist = 1;
+        bronze.ArmorEnergyResist = 1;
+        bronze.WeaponFireDamage = 40;
+        bronze.RunicMinAttributes = 3;
+        bronze.RunicMaxAttributes = 3;
+        if ( Core.ML )
+        {
+            bronze.RunicMinIntensity = 55;
+            bronze.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            bronze.RunicMinIntensity = 30;
+            bronze.RunicMaxIntensity = 65;
+        }
 
-        public int WeaponDurability { get; set; }
+        var golden = Golden = new CraftAttributeInfo();
 
-        public int WeaponLuck { get; set; }
+        golden.ArmorPhysicalResist = 1;
+        golden.ArmorFireResist = 1;
+        golden.ArmorColdResist = 2;
+        golden.ArmorEnergyResist = 2;
+        golden.ArmorLuck = 40;
+        golden.ArmorLowerRequirements = 30;
+        golden.WeaponLuck = 40;
+        golden.WeaponLowerRequirements = 50;
+        golden.RunicMinAttributes = 3;
+        golden.RunicMaxAttributes = 4;
+        if ( Core.ML )
+        {
+            golden.RunicMinIntensity = 60;
+            golden.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            golden.RunicMinIntensity = 35;
+            golden.RunicMaxIntensity = 75;
+        }
 
-        public int WeaponGoldIncrease { get; set; }
+        var agapite = Agapite = new CraftAttributeInfo();
 
-        public int WeaponLowerRequirements { get; set; }
+        agapite.ArmorPhysicalResist = 2;
+        agapite.ArmorFireResist = 3;
+        agapite.ArmorColdResist = 2;
+        agapite.ArmorPoisonResist = 2;
+        agapite.ArmorEnergyResist = 2;
+        agapite.WeaponColdDamage = 30;
+        agapite.WeaponEnergyDamage = 20;
+        agapite.RunicMinAttributes = 4;
+        agapite.RunicMaxAttributes = 4;
+        if ( Core.ML )
+        {
+            agapite.RunicMinIntensity = 65;
+            agapite.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            agapite.RunicMinIntensity = 40;
+            agapite.RunicMaxIntensity = 80;
+        }
 
-        public int ArmorPhysicalResist { get; set; }
+        var verite = Verite = new CraftAttributeInfo();
 
-        public int ArmorFireResist { get; set; }
+        verite.ArmorPhysicalResist = 3;
+        verite.ArmorFireResist = 3;
+        verite.ArmorColdResist = 2;
+        verite.ArmorPoisonResist = 3;
+        verite.ArmorEnergyResist = 1;
+        verite.WeaponPoisonDamage = 40;
+        verite.WeaponEnergyDamage = 20;
+        verite.RunicMinAttributes = 4;
+        verite.RunicMaxAttributes = 5;
+        if ( Core.ML )
+        {
+            verite.RunicMinIntensity = 70;
+            verite.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            verite.RunicMinIntensity = 45;
+            verite.RunicMaxIntensity = 90;
+        }
 
-        public int ArmorColdResist { get; set; }
+        var valorite = Valorite = new CraftAttributeInfo();
 
-        public int ArmorPoisonResist { get; set; }
+        valorite.ArmorPhysicalResist = 4;
+        valorite.ArmorColdResist = 3;
+        valorite.ArmorPoisonResist = 3;
+        valorite.ArmorEnergyResist = 3;
+        valorite.ArmorDurability = 50;
+        valorite.WeaponFireDamage = 10;
+        valorite.WeaponColdDamage = 20;
+        valorite.WeaponPoisonDamage = 10;
+        valorite.WeaponEnergyDamage = 20;
+        valorite.RunicMinAttributes = 5;
+        valorite.RunicMaxAttributes = 5;
+        if ( Core.ML )
+        {
+            valorite.RunicMinIntensity = 85;
+            valorite.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            valorite.RunicMinIntensity = 50;
+            valorite.RunicMaxIntensity = 100;
+        }
 
-        public int ArmorEnergyResist { get; set; }
+        var spined = Spined = new CraftAttributeInfo();
 
-        public int ArmorDurability { get; set; }
+        spined.ArmorPhysicalResist = 5;
+        spined.ArmorLuck = 40;
+        spined.RunicMinAttributes = 1;
+        spined.RunicMaxAttributes = 3;
+        if ( Core.ML )
+        {
+            spined.RunicMinIntensity = 40;
+            spined.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            spined.RunicMinIntensity = 20;
+            spined.RunicMaxIntensity = 40;
+        }
 
-        public int ArmorLuck { get; set; }
+        var horned = Horned = new CraftAttributeInfo();
 
-        public int ArmorGoldIncrease { get; set; }
+        horned.ArmorPhysicalResist = 2;
+        horned.ArmorFireResist = 3;
+        horned.ArmorColdResist = 2;
+        horned.ArmorPoisonResist = 2;
+        horned.ArmorEnergyResist = 2;
+        horned.RunicMinAttributes = 3;
+        horned.RunicMaxAttributes = 4;
+        if ( Core.ML )
+        {
+            horned.RunicMinIntensity = 45;
+            horned.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            horned.RunicMinIntensity = 30;
+            horned.RunicMaxIntensity = 70;
+        }
 
-        public int ArmorLowerRequirements { get; set; }
+        var barbed = Barbed = new CraftAttributeInfo();
 
-        public int RunicMinAttributes { get; set; }
+        barbed.ArmorPhysicalResist = 2;
+        barbed.ArmorFireResist = 1;
+        barbed.ArmorColdResist = 2;
+        barbed.ArmorPoisonResist = 3;
+        barbed.ArmorEnergyResist = 4;
+        barbed.RunicMinAttributes = 4;
+        barbed.RunicMaxAttributes = 5;
+        if ( Core.ML )
+        {
+            barbed.RunicMinIntensity = 50;
+            barbed.RunicMaxIntensity = 100;
+        }
+        else
+        {
+            barbed.RunicMinIntensity = 40;
+            barbed.RunicMaxIntensity = 100;
+        }
 
-        public int RunicMaxAttributes { get; set; }
+        var red = RedScales = new CraftAttributeInfo();
 
-        public int RunicMinIntensity { get; set; }
+        red.ArmorFireResist = 10;
+        red.ArmorColdResist = -3;
 
-        public int RunicMaxIntensity { get; set; }
+        var yellow = YellowScales = new CraftAttributeInfo();
+
+        yellow.ArmorPhysicalResist = -3;
+        yellow.ArmorLuck = 20;
+
+        var black = BlackScales = new CraftAttributeInfo();
+
+        black.ArmorPhysicalResist = 10;
+        black.ArmorEnergyResist = -3;
+
+        var green = GreenScales = new CraftAttributeInfo();
+
+        green.ArmorFireResist = -3;
+        green.ArmorPoisonResist = 10;
+
+        var white = WhiteScales = new CraftAttributeInfo();
+
+        white.ArmorPhysicalResist = -3;
+        white.ArmorColdResist = 10;
+
+        var blue = BlueScales = new CraftAttributeInfo();
+
+        blue.ArmorPoisonResist = -3;
+        blue.ArmorEnergyResist = 10;
+
+        // public static readonly CraftAttributeInfo OakWood, AshWood, YewWood, Heartwood, Bloodwood, Frostwood;
+
+        var oak = OakWood = new CraftAttributeInfo();
+
+        oak.ArmorPhysicalResist = 3;
+        oak.ArmorFireResist = 3;
+        oak.ArmorPoisonResist = 2;
+        oak.ArmorEnergyResist = 3;
+        oak.ArmorLuck = 40;
+
+        oak.ShieldPhysicalResist = 1;
+        oak.ShieldFireResist = 1;
+        oak.ShieldColdResist = 1;
+        oak.ShieldPoisonResist = 1;
+        oak.ShieldEnergyResist = 1;
+
+        oak.WeaponLuck = 40;
+        oak.WeaponDamage = 5;
+
+        oak.RunicMinAttributes = 1;
+        oak.RunicMaxAttributes = 2;
+        oak.RunicMinIntensity = 1;
+        oak.RunicMaxIntensity = 50;
+
+        var ash = AshWood = new CraftAttributeInfo();
+
+        ash.ArmorPhysicalResist = 2;
+        ash.ArmorColdResist = 4;
+        ash.ArmorPoisonResist = 1;
+        ash.ArmorEnergyResist = 6;
+        ash.ArmorLowerRequirements = 20;
+
+        ash.ShieldEnergyResist = 3;
+        ash.ShieldLowerRequirements = 3;
+
+        ash.WeaponSwingSpeed = 10;
+        ash.WeaponLowerRequirements = 20;
+
+        ash.OtherLowerRequirements = 20;
+
+        ash.RunicMinAttributes = 2;
+        ash.RunicMaxAttributes = 3;
+        ash.RunicMinIntensity = 35;
+        ash.RunicMaxIntensity = 75;
+
+        var yew = YewWood = new CraftAttributeInfo();
+
+        yew.ArmorPhysicalResist = 6;
+        yew.ArmorFireResist = 3;
+        yew.ArmorColdResist = 3;
+        yew.ArmorEnergyResist = 3;
+        yew.ArmorRegenHits = 1;
+
+        yew.ShieldPhysicalResist = 3;
+        yew.ShieldRegenHits = 1;
+
+        yew.WeaponHitChance = 5;
+        yew.WeaponDamage = 10;
+
+        yew.OtherRegenHits = 2;
+
+        yew.RunicMinAttributes = 3;
+        yew.RunicMaxAttributes = 3;
+        yew.RunicMinIntensity = 40;
+        yew.RunicMaxIntensity = 90;
+
+        var heartwood = Heartwood = new CraftAttributeInfo();
+
+        heartwood.ArmorPhysicalResist = 2;
+        heartwood.ArmorFireResist = 3;
+        heartwood.ArmorColdResist = 2;
+        heartwood.ArmorPoisonResist = 7;
+        heartwood.ArmorEnergyResist = 2;
+
+        // one of below
+        heartwood.ArmorDamage = 10;
+        heartwood.ArmorHitChance = 5;
+        heartwood.ArmorLuck = 40;
+        heartwood.ArmorLowerRequirements = 20;
+        heartwood.ArmorMage = 1;
+
+        // one of below
+        heartwood.WeaponDamage = 10;
+        heartwood.WeaponHitChance = 5;
+        heartwood.WeaponHitLifeLeech = 13;
+        heartwood.WeaponLuck = 40;
+        heartwood.WeaponLowerRequirements = 20;
+        heartwood.WeaponSwingSpeed = 10;
+
+        heartwood.ShieldBonusDex = 2;
+        heartwood.ShieldBonusStr = 2;
+        heartwood.ShieldPhysicalRandom = 5;
+        heartwood.ShieldReflectPhys = 5;
+        heartwood.ShieldSelfRepair = 2;
+        heartwood.ShieldColdRandom = 3;
+        heartwood.ShieldSpellChanneling = 1;
+
+        heartwood.RunicMinAttributes = 4;
+        heartwood.RunicMaxAttributes = 4;
+        heartwood.RunicMinIntensity = 50;
+        heartwood.RunicMaxIntensity = 100;
+
+        var bloodwood = Bloodwood = new CraftAttributeInfo();
+
+        bloodwood.ArmorPhysicalResist = 3;
+        bloodwood.ArmorFireResist = 8;
+        bloodwood.ArmorColdResist = 1;
+        bloodwood.ArmorPoisonResist = 3;
+        bloodwood.ArmorEnergyResist = 3;
+        bloodwood.ArmorRegenHits = 2;
+
+        bloodwood.ShieldFireResist = 3;
+        bloodwood.ShieldLuck = 40;
+        bloodwood.ShieldRegenHits = 2;
+
+        bloodwood.WeaponRegenHits = 2;
+        bloodwood.WeaponHitLifeLeech = 16;
+
+        bloodwood.OtherLuck = 20;
+        bloodwood.OtherRegenHits = 2;
+
+        var frostwood = Frostwood = new CraftAttributeInfo();
+
+        frostwood.ArmorPhysicalResist = 2;
+        frostwood.ArmorFireResist = 1;
+        frostwood.ArmorColdResist = 8;
+        frostwood.ArmorPoisonResist = 3;
+        frostwood.ArmorEnergyResist = 4;
+
+        frostwood.ShieldColdResist = 3;
+        frostwood.ShieldSpellChanneling = 1;
+
+        frostwood.WeaponColdDamage = 40;
+        frostwood.WeaponDamage = 12;
+
+        frostwood.OtherSpellChanneling = 1;
     }
 
-    public class CraftResourceInfo
+    public int OtherRegenHits { get; set; }
+
+    public int OtherLuck { get; set; }
+
+    public int ShieldLuck { get; set; }
+
+    public int OtherLowerRequirements { get; set; }
+
+    public int OtherSpellChanneling { get; set; }
+
+    public int ArmorMage { get; set; }
+
+    public int ShieldPhysicalResist { get; set; }
+
+    public int WeaponFireDamage { get; set; }
+
+    public int WeaponColdDamage { get; set; }
+
+    public int WeaponPoisonDamage { get; set; }
+
+    public int WeaponEnergyDamage { get; set; }
+
+    public int WeaponChaosDamage { get; set; }
+
+    public int WeaponDirectDamage { get; set; }
+
+    public int WeaponDurability { get; set; }
+
+    public int WeaponLuck { get; set; }
+
+    public int WeaponGoldIncrease { get; set; }
+
+    public int WeaponLowerRequirements { get; set; }
+
+    public int ArmorPhysicalResist { get; set; }
+
+    public int ArmorFireResist { get; set; }
+
+    public int ArmorColdResist { get; set; }
+
+    public int ArmorPoisonResist { get; set; }
+
+    public int ArmorEnergyResist { get; set; }
+
+    public int ArmorDurability { get; set; }
+
+    public int ArmorLuck { get; set; }
+
+    public int ArmorGoldIncrease { get; set; }
+
+    public int ArmorLowerRequirements { get; set; }
+
+    public int RunicMinAttributes { get; set; }
+
+    public int RunicMaxAttributes { get; set; }
+
+    public int RunicMinIntensity { get; set; }
+
+    public int RunicMaxIntensity { get; set; }
+    public int ShieldFireResist { get; set; }
+    public int ShieldColdResist { get; set; }
+    public int ShieldPoisonResist { get; set; }
+    public int ShieldEnergyResist { get; set; }
+    public int WeaponDamage { get; set; }
+    public int WeaponSwingSpeed { get; set; }
+    public int WeaponHitChance { get; set; }
+    public int WeaponRegenHits { get; set; }
+    public int WeaponHitLifeLeech { get; set; }
+    public int ShieldSpellChanneling { get; set; }
+    public int ShieldLowerRequirements { get; set; }
+    public int ShieldRegenHits { get; set; }
+    public int ShieldBonusDex { get; set; }
+    public int ShieldBonusStr { get; set; }
+    public int ShieldPhysicalRandom { get; set; }
+    public int ShieldReflectPhys { get; set; }
+    public int ShieldSelfRepair { get; set; }
+    public int ShieldColdRandom { get; set; }
+    public int ArmorDamage { get; set; }
+    public int ArmorHitChance { get; set; }
+    public int ArmorRegenHits { get; set; }
+}
+
+public class CraftResourceInfo
+{
+    public CraftResourceInfo(
+        int hue, int number, string name, CraftAttributeInfo attributeInfo, CraftResource resource,
+        params Type[] resourceTypes
+    )
     {
-        public CraftResourceInfo(
-            int hue, int number, string name, CraftAttributeInfo attributeInfo, CraftResource resource,
-            params Type[] resourceTypes
+        Hue = hue;
+        Number = number;
+        Name = name;
+        AttributeInfo = attributeInfo;
+        Resource = resource;
+        ResourceTypes = resourceTypes;
+
+        for ( var i = 0; i < resourceTypes.Length; ++i )
+        {
+            CraftResources.RegisterType( resourceTypes[i], resource );
+        }
+    }
+
+    public int Hue { get; }
+
+    public int Number { get; }
+
+    public string Name { get; }
+
+    public CraftAttributeInfo AttributeInfo { get; }
+
+    public CraftResource Resource { get; }
+
+    public Type[] ResourceTypes { get; }
+}
+
+public static class CraftResources
+{
+    private static readonly CraftResourceInfo[] m_MetalInfo =
+    {
+        new(
+            0x000,
+            1053109,
+            "Iron",
+            CraftAttributeInfo.Blank,
+            CraftResource.Iron,
+            typeof( IronIngot ),
+            typeof( IronOre ),
+            typeof( Granite )
+        ),
+        new(
+            0x973,
+            1053108,
+            "Dull Copper",
+            CraftAttributeInfo.DullCopper,
+            CraftResource.DullCopper,
+            typeof( DullCopperIngot ),
+            typeof( DullCopperOre ),
+            typeof( DullCopperGranite )
+        ),
+        new(
+            0x966,
+            1053107,
+            "Shadow Iron",
+            CraftAttributeInfo.ShadowIron,
+            CraftResource.ShadowIron,
+            typeof( ShadowIronIngot ),
+            typeof( ShadowIronOre ),
+            typeof( ShadowIronGranite )
+        ),
+        new(
+            0x96D,
+            1053106,
+            "Copper",
+            CraftAttributeInfo.Copper,
+            CraftResource.Copper,
+            typeof( CopperIngot ),
+            typeof( CopperOre ),
+            typeof( CopperGranite )
+        ),
+        new(
+            0x972,
+            1053105,
+            "Bronze",
+            CraftAttributeInfo.Bronze,
+            CraftResource.Bronze,
+            typeof( BronzeIngot ),
+            typeof( BronzeOre ),
+            typeof( BronzeGranite )
+        ),
+        new(
+            0x8A5,
+            1053104,
+            "Gold",
+            CraftAttributeInfo.Golden,
+            CraftResource.Gold,
+            typeof( GoldIngot ),
+            typeof( GoldOre ),
+            typeof( GoldGranite )
+        ),
+        new(
+            0x979,
+            1053103,
+            "Agapite",
+            CraftAttributeInfo.Agapite,
+            CraftResource.Agapite,
+            typeof( AgapiteIngot ),
+            typeof( AgapiteOre ),
+            typeof( AgapiteGranite )
+        ),
+        new(
+            0x89F,
+            1053102,
+            "Verite",
+            CraftAttributeInfo.Verite,
+            CraftResource.Verite,
+            typeof( VeriteIngot ),
+            typeof( VeriteOre ),
+            typeof( VeriteGranite )
+        ),
+        new(
+            0x8AB,
+            1053101,
+            "Valorite",
+            CraftAttributeInfo.Valorite,
+            CraftResource.Valorite,
+            typeof( ValoriteIngot ),
+            typeof( ValoriteOre ),
+            typeof( ValoriteGranite )
         )
-        {
-            Hue = hue;
-            Number = number;
-            Name = name;
-            AttributeInfo = attributeInfo;
-            Resource = resource;
-            ResourceTypes = resourceTypes;
+    };
 
-            for (var i = 0; i < resourceTypes.Length; ++i)
-            {
-                CraftResources.RegisterType(resourceTypes[i], resource);
-            }
+    private static readonly CraftResourceInfo[] m_ScaleInfo =
+    {
+        new(
+            0x66D,
+            1053129,
+            "Red Scales",
+            CraftAttributeInfo.RedScales,
+            CraftResource.RedScales,
+            typeof( RedScales )
+        ),
+        new(
+            0x8A8,
+            1053130,
+            "Yellow Scales",
+            CraftAttributeInfo.YellowScales,
+            CraftResource.YellowScales,
+            typeof( YellowScales )
+        ),
+        new(
+            0x455,
+            1053131,
+            "Black Scales",
+            CraftAttributeInfo.BlackScales,
+            CraftResource.BlackScales,
+            typeof( BlackScales )
+        ),
+        new(
+            0x851,
+            1053132,
+            "Green Scales",
+            CraftAttributeInfo.GreenScales,
+            CraftResource.GreenScales,
+            typeof( GreenScales )
+        ),
+        new(
+            0x8FD,
+            1053133,
+            "White Scales",
+            CraftAttributeInfo.WhiteScales,
+            CraftResource.WhiteScales,
+            typeof( WhiteScales )
+        ),
+        new(
+            0x8B0,
+            1053134,
+            "Blue Scales",
+            CraftAttributeInfo.BlueScales,
+            CraftResource.BlueScales,
+            typeof( BlueScales )
+        )
+    };
+
+    private static readonly CraftResourceInfo[] m_LeatherInfo =
+    {
+        new(
+            0x000,
+            1049353,
+            "Normal",
+            CraftAttributeInfo.Blank,
+            CraftResource.RegularLeather,
+            typeof( Leather ),
+            typeof( Hides )
+        ),
+        new(
+            0x283,
+            1049354,
+            "Spined",
+            CraftAttributeInfo.Spined,
+            CraftResource.SpinedLeather,
+            typeof( SpinedLeather ),
+            typeof( SpinedHides )
+        ),
+        new(
+            0x227,
+            1049355,
+            "Horned",
+            CraftAttributeInfo.Horned,
+            CraftResource.HornedLeather,
+            typeof( HornedLeather ),
+            typeof( HornedHides )
+        ),
+        new(
+            0x1C1,
+            1049356,
+            "Barbed",
+            CraftAttributeInfo.Barbed,
+            CraftResource.BarbedLeather,
+            typeof( BarbedLeather ),
+            typeof( BarbedHides )
+        )
+    };
+
+    private static readonly CraftResourceInfo[] m_AOSLeatherInfo =
+    {
+        new(
+            0x000,
+            1049353,
+            "Normal",
+            CraftAttributeInfo.Blank,
+            CraftResource.RegularLeather,
+            typeof( Leather ),
+            typeof( Hides )
+        ),
+        new(
+            0x8AC,
+            1049354,
+            "Spined",
+            CraftAttributeInfo.Spined,
+            CraftResource.SpinedLeather,
+            typeof( SpinedLeather ),
+            typeof( SpinedHides )
+        ),
+        new(
+            0x845,
+            1049355,
+            "Horned",
+            CraftAttributeInfo.Horned,
+            CraftResource.HornedLeather,
+            typeof( HornedLeather ),
+            typeof( HornedHides )
+        ),
+        new(
+            0x851,
+            1049356,
+            "Barbed",
+            CraftAttributeInfo.Barbed,
+            CraftResource.BarbedLeather,
+            typeof( BarbedLeather ),
+            typeof( BarbedHides )
+        )
+    };
+
+    private static readonly CraftResourceInfo[] m_WoodInfo =
+    {
+        new(
+            0x000,
+            1011542,
+            "Normal",
+            CraftAttributeInfo.Blank,
+            CraftResource.RegularWood,
+            typeof( Log ),
+            typeof( Board )
+        ),
+        new(
+            0x7DA,
+            1072533,
+            "Oak",
+            CraftAttributeInfo.OakWood,
+            CraftResource.OakWood,
+            typeof( OakLog ),
+            typeof( OakBoard )
+        ),
+        new(
+            0x4A7,
+            1072534,
+            "Ash",
+            CraftAttributeInfo.AshWood,
+            CraftResource.AshWood,
+            typeof( AshLog ),
+            typeof( AshBoard )
+        ),
+        new(
+            0x4A8,
+            1072535,
+            "Yew",
+            CraftAttributeInfo.YewWood,
+            CraftResource.YewWood,
+            typeof( YewLog ),
+            typeof( YewBoard )
+        ),
+        new(
+            0x4A9,
+            1072536,
+            "Heartwood",
+            CraftAttributeInfo.Heartwood,
+            CraftResource.Heartwood,
+            typeof( HeartwoodLog ),
+            typeof( HeartwoodBoard )
+        ),
+        new(
+            0x4AA,
+            1072538,
+            "Bloodwood",
+            CraftAttributeInfo.Bloodwood,
+            CraftResource.Bloodwood,
+            typeof( BloodwoodLog ),
+            typeof( BloodwoodBoard )
+        ),
+        new(
+            0x47F,
+            1072539,
+            "Frostwood",
+            CraftAttributeInfo.Frostwood,
+            CraftResource.Frostwood,
+            typeof( FrostwoodLog ),
+            typeof( FrostwoodBoard )
+        )
+    };
+
+    private static Dictionary<Type, CraftResource> m_TypeTable;
+
+    /// <summary>
+    ///     Returns true if '<paramref name="resource" />' is None, Iron, RegularLeather or RegularWood. False if otherwise.
+    /// </summary>
+    public static bool IsStandard( CraftResource resource ) =>
+        resource is CraftResource.None or CraftResource.Iron or CraftResource.RegularLeather or CraftResource.RegularWood;
+
+    /// <summary>
+    ///     Registers that '<paramref name="resourceType" />' uses '<paramref name="resource" />' so that it can later be queried by
+    ///     <see cref="CraftResources.GetFromType" />
+    /// </summary>
+    public static void RegisterType( Type resourceType, CraftResource resource )
+    {
+        if ( m_TypeTable == null )
+        {
+            m_TypeTable = new Dictionary<Type, CraftResource>();
         }
 
-        public int Hue { get; }
-
-        public int Number { get; }
-
-        public string Name { get; }
-
-        public CraftAttributeInfo AttributeInfo { get; }
-
-        public CraftResource Resource { get; }
-
-        public Type[] ResourceTypes { get; }
+        m_TypeTable[resourceType] = resource;
     }
 
-    public static class CraftResources
+    /// <summary>
+    ///     Returns the <see cref="CraftResource" /> value for which '<paramref name="resourceType" />' uses -or- CraftResource.None
+    ///     if an unregistered type was specified.
+    /// </summary>
+    public static CraftResource GetFromType( Type resourceType )
     {
-        private static readonly CraftResourceInfo[] m_MetalInfo =
+        if ( m_TypeTable == null )
         {
-            new(
-                0x000,
-                1053109,
-                "Iron",
-                CraftAttributeInfo.Blank,
-                CraftResource.Iron,
-                typeof(IronIngot),
-                typeof(IronOre),
-                typeof(Granite)
-            ),
-            new(
-                0x973,
-                1053108,
-                "Dull Copper",
-                CraftAttributeInfo.DullCopper,
-                CraftResource.DullCopper,
-                typeof(DullCopperIngot),
-                typeof(DullCopperOre),
-                typeof(DullCopperGranite)
-            ),
-            new(
-                0x966,
-                1053107,
-                "Shadow Iron",
-                CraftAttributeInfo.ShadowIron,
-                CraftResource.ShadowIron,
-                typeof(ShadowIronIngot),
-                typeof(ShadowIronOre),
-                typeof(ShadowIronGranite)
-            ),
-            new(
-                0x96D,
-                1053106,
-                "Copper",
-                CraftAttributeInfo.Copper,
-                CraftResource.Copper,
-                typeof(CopperIngot),
-                typeof(CopperOre),
-                typeof(CopperGranite)
-            ),
-            new(
-                0x972,
-                1053105,
-                "Bronze",
-                CraftAttributeInfo.Bronze,
-                CraftResource.Bronze,
-                typeof(BronzeIngot),
-                typeof(BronzeOre),
-                typeof(BronzeGranite)
-            ),
-            new(
-                0x8A5,
-                1053104,
-                "Gold",
-                CraftAttributeInfo.Golden,
-                CraftResource.Gold,
-                typeof(GoldIngot),
-                typeof(GoldOre),
-                typeof(GoldGranite)
-            ),
-            new(
-                0x979,
-                1053103,
-                "Agapite",
-                CraftAttributeInfo.Agapite,
-                CraftResource.Agapite,
-                typeof(AgapiteIngot),
-                typeof(AgapiteOre),
-                typeof(AgapiteGranite)
-            ),
-            new(
-                0x89F,
-                1053102,
-                "Verite",
-                CraftAttributeInfo.Verite,
-                CraftResource.Verite,
-                typeof(VeriteIngot),
-                typeof(VeriteOre),
-                typeof(VeriteGranite)
-            ),
-            new(
-                0x8AB,
-                1053101,
-                "Valorite",
-                CraftAttributeInfo.Valorite,
-                CraftResource.Valorite,
-                typeof(ValoriteIngot),
-                typeof(ValoriteOre),
-                typeof(ValoriteGranite)
-            )
+            return CraftResource.None;
+        }
+
+        return m_TypeTable.TryGetValue( resourceType, out var res ) ? res : CraftResource.None;
+    }
+
+    /// <summary>
+    ///     Returns a <see cref="CraftResourceInfo" /> instance describing '<paramref name="resource" />' -or- null if an invalid
+    ///     resource was specified.
+    /// </summary>
+    public static CraftResourceInfo GetInfo( CraftResource resource )
+    {
+        var list = GetType( resource ) switch
+        {
+            CraftResourceType.Metal   => m_MetalInfo,
+            CraftResourceType.Leather => Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo,
+            CraftResourceType.Scales  => m_ScaleInfo,
+            CraftResourceType.Wood    => m_WoodInfo,
+            _                         => null
         };
 
-        private static readonly CraftResourceInfo[] m_ScaleInfo =
+        if ( list != null )
         {
-            new(
-                0x66D,
-                1053129,
-                "Red Scales",
-                CraftAttributeInfo.RedScales,
-                CraftResource.RedScales,
-                typeof(RedScales)
-            ),
-            new(
-                0x8A8,
-                1053130,
-                "Yellow Scales",
-                CraftAttributeInfo.YellowScales,
-                CraftResource.YellowScales,
-                typeof(YellowScales)
-            ),
-            new(
-                0x455,
-                1053131,
-                "Black Scales",
-                CraftAttributeInfo.BlackScales,
-                CraftResource.BlackScales,
-                typeof(BlackScales)
-            ),
-            new(
-                0x851,
-                1053132,
-                "Green Scales",
-                CraftAttributeInfo.GreenScales,
-                CraftResource.GreenScales,
-                typeof(GreenScales)
-            ),
-            new(
-                0x8FD,
-                1053133,
-                "White Scales",
-                CraftAttributeInfo.WhiteScales,
-                CraftResource.WhiteScales,
-                typeof(WhiteScales)
-            ),
-            new(
-                0x8B0,
-                1053134,
-                "Blue Scales",
-                CraftAttributeInfo.BlueScales,
-                CraftResource.BlueScales,
-                typeof(BlueScales)
-            )
-        };
+            var index = GetIndex( resource );
 
-        private static readonly CraftResourceInfo[] m_LeatherInfo =
-        {
-            new(
-                0x000,
-                1049353,
-                "Normal",
-                CraftAttributeInfo.Blank,
-                CraftResource.RegularLeather,
-                typeof(Leather),
-                typeof(Hides)
-            ),
-            new(
-                0x283,
-                1049354,
-                "Spined",
-                CraftAttributeInfo.Spined,
-                CraftResource.SpinedLeather,
-                typeof(SpinedLeather),
-                typeof(SpinedHides)
-            ),
-            new(
-                0x227,
-                1049355,
-                "Horned",
-                CraftAttributeInfo.Horned,
-                CraftResource.HornedLeather,
-                typeof(HornedLeather),
-                typeof(HornedHides)
-            ),
-            new(
-                0x1C1,
-                1049356,
-                "Barbed",
-                CraftAttributeInfo.Barbed,
-                CraftResource.BarbedLeather,
-                typeof(BarbedLeather),
-                typeof(BarbedHides)
-            )
-        };
-
-        private static readonly CraftResourceInfo[] m_AOSLeatherInfo =
-        {
-            new(
-                0x000,
-                1049353,
-                "Normal",
-                CraftAttributeInfo.Blank,
-                CraftResource.RegularLeather,
-                typeof(Leather),
-                typeof(Hides)
-            ),
-            new(
-                0x8AC,
-                1049354,
-                "Spined",
-                CraftAttributeInfo.Spined,
-                CraftResource.SpinedLeather,
-                typeof(SpinedLeather),
-                typeof(SpinedHides)
-            ),
-            new(
-                0x845,
-                1049355,
-                "Horned",
-                CraftAttributeInfo.Horned,
-                CraftResource.HornedLeather,
-                typeof(HornedLeather),
-                typeof(HornedHides)
-            ),
-            new(
-                0x851,
-                1049356,
-                "Barbed",
-                CraftAttributeInfo.Barbed,
-                CraftResource.BarbedLeather,
-                typeof(BarbedLeather),
-                typeof(BarbedHides)
-            )
-        };
-
-        private static readonly CraftResourceInfo[] m_WoodInfo =
-        {
-            new(
-                0x000,
-                1011542,
-                "Normal",
-                CraftAttributeInfo.Blank,
-                CraftResource.RegularWood,
-                typeof(Log),
-                typeof(Board)
-            ),
-            new(
-                0x7DA,
-                1072533,
-                "Oak",
-                CraftAttributeInfo.OakWood,
-                CraftResource.OakWood,
-                typeof(OakLog),
-                typeof(OakBoard)
-            ),
-            new(
-                0x4A7,
-                1072534,
-                "Ash",
-                CraftAttributeInfo.AshWood,
-                CraftResource.AshWood,
-                typeof(AshLog),
-                typeof(AshBoard)
-            ),
-            new(
-                0x4A8,
-                1072535,
-                "Yew",
-                CraftAttributeInfo.YewWood,
-                CraftResource.YewWood,
-                typeof(YewLog),
-                typeof(YewBoard)
-            ),
-            new(
-                0x4A9,
-                1072536,
-                "Heartwood",
-                CraftAttributeInfo.Heartwood,
-                CraftResource.Heartwood,
-                typeof(HeartwoodLog),
-                typeof(HeartwoodBoard)
-            ),
-            new(
-                0x4AA,
-                1072538,
-                "Bloodwood",
-                CraftAttributeInfo.Bloodwood,
-                CraftResource.Bloodwood,
-                typeof(BloodwoodLog),
-                typeof(BloodwoodBoard)
-            ),
-            new(
-                0x47F,
-                1072539,
-                "Frostwood",
-                CraftAttributeInfo.Frostwood,
-                CraftResource.Frostwood,
-                typeof(FrostwoodLog),
-                typeof(FrostwoodBoard)
-            )
-        };
-
-        private static Dictionary<Type, CraftResource> m_TypeTable;
-
-        /// <summary>
-        ///     Returns true if '<paramref name="resource" />' is None, Iron, RegularLeather or RegularWood. False if otherwise.
-        /// </summary>
-        public static bool IsStandard(CraftResource resource) =>
-            resource is CraftResource.None or CraftResource.Iron or CraftResource.RegularLeather or CraftResource.RegularWood;
-
-        /// <summary>
-        ///     Registers that '<paramref name="resourceType" />' uses '<paramref name="resource" />' so that it can later be queried by
-        ///     <see cref="CraftResources.GetFromType" />
-        /// </summary>
-        public static void RegisterType(Type resourceType, CraftResource resource)
-        {
-            if (m_TypeTable == null)
+            if ( index >= 0 && index < list.Length )
             {
-                m_TypeTable = new Dictionary<Type, CraftResource>();
+                return list[index];
             }
-
-            m_TypeTable[resourceType] = resource;
         }
 
-        /// <summary>
-        ///     Returns the <see cref="CraftResource" /> value for which '<paramref name="resourceType" />' uses -or- CraftResource.None
-        ///     if an unregistered type was specified.
-        /// </summary>
-        public static CraftResource GetFromType(Type resourceType)
+        return null;
+    }
+
+    /// <summary>
+    ///     Returns a <see cref="CraftResourceType" /> value indicating the type of '<paramref name="resource" />'.
+    /// </summary>
+    public static CraftResourceType GetType( CraftResource resource ) =>
+        resource switch
         {
-            if (m_TypeTable == null)
-            {
-                return CraftResource.None;
-            }
+            >= CraftResource.Iron and <= CraftResource.Valorite                => CraftResourceType.Metal,
+            >= CraftResource.RegularLeather and <= CraftResource.BarbedLeather => CraftResourceType.Leather,
+            >= CraftResource.RedScales and <= CraftResource.BlueScales         => CraftResourceType.Scales,
+            >= CraftResource.RegularWood and <= CraftResource.Frostwood        => CraftResourceType.Wood,
+            _                                                                  => CraftResourceType.None
+        };
 
-            return m_TypeTable.TryGetValue(resourceType, out var res) ? res : CraftResource.None;
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="CraftResourceInfo" /> instance describing '<paramref name="resource" />' -or- null if an invalid
-        ///     resource was specified.
-        /// </summary>
-        public static CraftResourceInfo GetInfo(CraftResource resource)
+    /// <summary>
+    ///     Returns the first <see cref="CraftResource" /> in the series of resources for which '<paramref name="resource" />'
+    ///     belongs.
+    /// </summary>
+    public static CraftResource GetStart( CraftResource resource ) =>
+        GetType( resource ) switch
         {
-            var list = GetType(resource) switch
-            {
-                CraftResourceType.Metal   => m_MetalInfo,
-                CraftResourceType.Leather => Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo,
-                CraftResourceType.Scales  => m_ScaleInfo,
-                CraftResourceType.Wood    => m_WoodInfo,
-                _                         => null
-            };
+            CraftResourceType.Metal   => CraftResource.Iron,
+            CraftResourceType.Leather => CraftResource.RegularLeather,
+            CraftResourceType.Scales  => CraftResource.RedScales,
+            CraftResourceType.Wood    => CraftResource.RegularWood,
+            _                         => CraftResource.None
+        };
 
-            if (list != null)
-            {
-                var index = GetIndex(resource);
+    /// <summary>
+    ///     Returns the index of '<paramref name="resource" />' in the seriest of resources for which it belongs.
+    /// </summary>
+    public static int GetIndex( CraftResource resource )
+    {
+        var start = GetStart( resource );
 
-                if (index >= 0 && index < list.Length)
-                {
-                    return list[index];
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        ///     Returns a <see cref="CraftResourceType" /> value indicating the type of '<paramref name="resource" />'.
-        /// </summary>
-        public static CraftResourceType GetType(CraftResource resource) =>
-            resource switch
-            {
-                >= CraftResource.Iron and <= CraftResource.Valorite                => CraftResourceType.Metal,
-                >= CraftResource.RegularLeather and <= CraftResource.BarbedLeather => CraftResourceType.Leather,
-                >= CraftResource.RedScales and <= CraftResource.BlueScales         => CraftResourceType.Scales,
-                >= CraftResource.RegularWood and <= CraftResource.Frostwood        => CraftResourceType.Wood,
-                _                                                                  => CraftResourceType.None
-            };
-
-        /// <summary>
-        ///     Returns the first <see cref="CraftResource" /> in the series of resources for which '<paramref name="resource" />'
-        ///     belongs.
-        /// </summary>
-        public static CraftResource GetStart(CraftResource resource) =>
-            GetType(resource) switch
-            {
-                CraftResourceType.Metal   => CraftResource.Iron,
-                CraftResourceType.Leather => CraftResource.RegularLeather,
-                CraftResourceType.Scales  => CraftResource.RedScales,
-                CraftResourceType.Wood    => CraftResource.RegularWood,
-                _                         => CraftResource.None
-            };
-
-        /// <summary>
-        ///     Returns the index of '<paramref name="resource" />' in the seriest of resources for which it belongs.
-        /// </summary>
-        public static int GetIndex(CraftResource resource)
+        if ( start == CraftResource.None )
         {
-            var start = GetStart(resource);
-
-            if (start == CraftResource.None)
-            {
-                return 0;
-            }
-
-            return resource - start;
+            return 0;
         }
 
-        /// <summary>
-        ///     Returns the <see cref="CraftResourceInfo.Number" /> property of '<paramref name="resource" />' -or- 0 if an invalid
-        ///     resource was specified.
-        /// </summary>
-        public static int GetLocalizationNumber(CraftResource resource)
-        {
-            var info = GetInfo(resource);
+        return resource - start;
+    }
 
-            return info?.Number ?? 0;
-        }
+    /// <summary>
+    ///     Returns the <see cref="CraftResourceInfo.Number" /> property of '<paramref name="resource" />' -or- 0 if an invalid
+    ///     resource was specified.
+    /// </summary>
+    public static int GetLocalizationNumber( CraftResource resource )
+    {
+        var info = GetInfo( resource );
 
-        /// <summary>
-        ///     Returns the <see cref="CraftResourceInfo.Hue" /> property of '<paramref name="resource" />' -or- 0 if an invalid
-        ///     resource was specified.
-        /// </summary>
-        public static int GetHue(CraftResource resource)
-        {
-            var info = GetInfo(resource);
+        return info?.Number ?? 0;
+    }
 
-            return info?.Hue ?? 0;
-        }
+    /// <summary>
+    ///     Returns the <see cref="CraftResourceInfo.Hue" /> property of '<paramref name="resource" />' -or- 0 if an invalid
+    ///     resource was specified.
+    /// </summary>
+    public static int GetHue( CraftResource resource )
+    {
+        var info = GetInfo( resource );
 
-        /// <summary>
-        ///     Returns the <see cref="CraftResourceInfo" /> of a random '<paramref name="resource" />' -or- null if an invalid
-        ///     resource was specified.
-        /// </summary>
-        public static CraftResourceInfo GetRandomResource(CraftResource startResource, CraftResource endResource) =>
-            GetInfo(
-                (CraftResource)Utility.RandomMinMax((int)startResource, (int)endResource)
-            );
+        return info?.Hue ?? 0;
+    }
 
-        /// <summary>
-        ///     Returns the <see cref="CraftResourceInfo.Name" /> property of '<paramref name="resource" />' -or- an empty string if the
-        ///     resource specified was invalid.
-        /// </summary>
-        public static string GetName(CraftResource resource)
-        {
-            var info = GetInfo(resource);
+    /// <summary>
+    ///     Returns the <see cref="CraftResourceInfo" /> of a random '<paramref name="resource" />' -or- null if an invalid
+    ///     resource was specified.
+    /// </summary>
+    public static CraftResourceInfo GetRandomResource( CraftResource startResource, CraftResource endResource ) =>
+        GetInfo(
+            ( CraftResource )Utility.RandomMinMax( ( int )startResource, ( int )endResource )
+        );
 
-            return info == null ? string.Empty : info.Name;
-        }
+    /// <summary>
+    ///     Returns the <see cref="CraftResourceInfo.Name" /> property of '<paramref name="resource" />' -or- an empty string if the
+    ///     resource specified was invalid.
+    /// </summary>
+    public static string GetName( CraftResource resource )
+    {
+        var info = GetInfo( resource );
+
+        return info == null ? string.Empty : info.Name;
     }
 }

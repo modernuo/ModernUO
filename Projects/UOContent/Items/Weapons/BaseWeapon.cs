@@ -704,6 +704,25 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
                     from.CheckSkill(SkillName.ArmsLore, 0, 100);
                 }
             }
+
+            if (craftItem is { ForceNonExceptional: false })
+            {
+                CraftResourceInfo resInfo = CraftResources.GetInfo(_resource);
+
+                if (resInfo == null)
+                {
+                    return quality;
+                }
+
+                CraftAttributeInfo attrInfo = resInfo.AttributeInfo;
+
+                if (attrInfo == null)
+                {
+                    return quality;
+                }
+
+                DistributeMaterialBonus(attrInfo);
+            }
         }
         else if (tool is BaseRunicTool runicTool)
         {
@@ -789,6 +808,30 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         }
 
         return quality;
+    }
+
+    public virtual void DistributeMaterialBonus(CraftAttributeInfo attrInfo)
+    {
+        if (_resource != CraftResource.Heartwood)
+        {
+            Attributes.WeaponDamage += attrInfo.WeaponDamage;
+            Attributes.WeaponSpeed += attrInfo.WeaponSwingSpeed;
+            Attributes.AttackChance += attrInfo.WeaponHitChance;
+            Attributes.RegenHits += attrInfo.WeaponRegenHits;
+            WeaponAttributes.HitLeechHits += attrInfo.WeaponHitLifeLeech;
+        }
+        else
+        {
+            switch (Utility.Random(6))
+            {
+                case 0: Attributes.WeaponDamage += attrInfo.WeaponDamage; break;
+                case 1: Attributes.WeaponSpeed += attrInfo.WeaponSwingSpeed; break;
+                case 2: Attributes.AttackChance += attrInfo.WeaponHitChance; break;
+                case 3: Attributes.Luck += attrInfo.WeaponLuck; break;
+                case 4: WeaponAttributes.LowerStatReq += attrInfo.WeaponLowerRequirements; break;
+                case 5: WeaponAttributes.HitLeechHits += attrInfo.WeaponHitLifeLeech; break;
+            }
+        }
     }
 
     public virtual void UnscaleDurability()

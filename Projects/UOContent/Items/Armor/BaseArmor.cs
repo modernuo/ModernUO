@@ -255,11 +255,14 @@ namespace Server.Items
             get => _resource;
             set
             {
-                if (_resource != value)
+                if (_resource != value || _resource == DefaultResource)
                 {
                     UnscaleDurability();
+                    CraftResource old = _resource;
 
                     _resource = value;
+
+                    ApplyResourceResistances(old);
 
                     if (CraftItem.RetainsColor(GetType()))
                     {
@@ -267,12 +270,72 @@ namespace Server.Items
                     }
 
                     Invalidate();
+                    InvalidateProperties();
                     (Parent as Mobile)?.UpdateResistances();
 
                     ScaleDurability();
                 }
             }
         }
+
+        protected virtual void ApplyResourceResistances(CraftResource oldResource)
+        {
+            CraftAttributeInfo info;
+
+            if (oldResource > CraftResource.None)
+            {
+                info = GetResourceAttrs(oldResource);
+
+                // Remove old bonus
+                _physicalBonus = Math.Max(0, _physicalBonus - info.ArmorPhysicalResist);
+                _fireBonus = Math.Max(0, _fireBonus - info.ArmorFireResist);
+                _coldBonus = Math.Max(0, _coldBonus - info.ArmorColdResist);
+                _poisonBonus = Math.Max(0, _poisonBonus - info.ArmorPoisonResist);
+                _energyBonus = Math.Max(0, _energyBonus - info.ArmorEnergyResist);
+
+                //m_PhysNonImbuing = Math.Max(0, PhysNonImbuing - info.ArmorPhysicalResist);
+                //m_FireNonImbuing = Math.Max(0, m_FireNonImbuing - info.ArmorFireResist);
+                //m_ColdNonImbuing = Math.Max(0, m_ColdNonImbuing - info.ArmorColdResist);
+                //m_PoisonNonImbuing = Math.Max(0, m_PoisonNonImbuing - info.ArmorPoisonResist);
+                //m_EnergyNonImbuing = Math.Max(0, m_EnergyNonImbuing - info.ArmorEnergyResist);
+            }
+
+            info = GetResourceAttrs(_resource);
+
+            // add new bonus
+            _physicalBonus += info.ArmorPhysicalResist;
+            _fireBonus += info.ArmorFireResist;
+            _coldBonus += info.ArmorColdResist;
+            _poisonBonus += info.ArmorPoisonResist;
+            _energyBonus += info.ArmorEnergyResist;
+
+            //m_PhysNonImbuing += info.ArmorPhysicalResist;
+            //m_FireNonImbuing += info.ArmorFireResist;
+            //m_ColdNonImbuing += info.ArmorColdResist;
+            //m_PoisonNonImbuing += info.ArmorPoisonResist;
+            //m_EnergyNonImbuing += info.ArmorEnergyResist;
+        }
+
+        public virtual void DistributeMaterialBonus(CraftAttributeInfo attrInfo)
+        {
+            if (_resource != CraftResource.Heartwood)
+            {
+                Attributes.WeaponDamage += attrInfo.ArmorDamage;
+                Attributes.AttackChance += attrInfo.ArmorHitChance;
+                Attributes.RegenHits += attrInfo.ArmorRegenHits;
+            }
+            else
+            {
+                switch (Utility.Random(4))
+                {
+                    case 0: Attributes.WeaponDamage += attrInfo.ArmorDamage; break;
+                    case 1: Attributes.AttackChance += attrInfo.ArmorHitChance; break;
+                    case 2: Attributes.Luck += attrInfo.ArmorLuck; break;
+                    case 3: ArmorAttributes.LowerStatReq += attrInfo.ArmorLowerRequirements; break;
+                }
+            }
+        }
+
 
         [SerializableFieldDefault(14)]
         private CraftResource ResourceDefaultValue() => DefaultResource;
@@ -610,6 +673,21 @@ namespace Server.Items
                 (tool as BaseRunicTool)?.ApplyAttributesTo(this);
             }
 
+            if (!craftItem.ForceNonExceptional)
+            {
+                CraftResourceInfo resInfo = CraftResources.GetInfo(_resource);
+
+                if (resInfo == null)
+                    return quality;
+
+                CraftAttributeInfo attrInfo = resInfo.AttributeInfo;
+
+                if (attrInfo == null)
+                    return quality;
+
+                DistributeMaterialBonus(attrInfo);
+            }
+
             return quality;
         }
 
@@ -841,6 +919,9 @@ namespace Server.Items
 
         public CraftAttributeInfo GetResourceAttrs() =>
             CraftResources.GetInfo(_resource)?.AttributeInfo ?? CraftAttributeInfo.Blank;
+
+        public CraftAttributeInfo GetResourceAttrs(CraftResource resource) =>
+            CraftResources.GetInfo(resource)?.AttributeInfo ?? CraftAttributeInfo.Blank;
 
         public int GetProtOffset()
         {
