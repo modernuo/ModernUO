@@ -352,7 +352,7 @@ public class DefBlacksmithy : CraftSystem
                 AddRes(index, typeof(DreadHornMane), 1032682, 1, 1053098);
                 AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
                 AddRes(index, typeof(Muculent), 1032680, 10, 1053098);
-                AddRareRecipe(index, 0);
+                AddRareRecipe(index, 350);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
@@ -360,7 +360,7 @@ public class DefBlacksmithy : CraftSystem
                 AddRes(index, typeof(GrizzledBones), 1032684, 1, 1053098);
                 AddRes(index, typeof(Taint), 1032684, 10, 1053098);
                 AddRes(index, typeof(Blight), 1032675, 10, 1053098);
-                AddRareRecipe(index, 1);
+                AddRareRecipe(index, 351);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
@@ -368,7 +368,7 @@ public class DefBlacksmithy : CraftSystem
                 AddRes(index, typeof(GrizzledBones), 1032684, 1, 1053098);
                 AddRes(index, typeof(Blight), 1032675, 10, 1053098);
                 AddRes(index, typeof(Scourge), 1032677, 10, 1053098);
-                AddRareRecipe(index, 2);
+                AddRareRecipe(index, 352);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
@@ -376,7 +376,7 @@ public class DefBlacksmithy : CraftSystem
                 AddRes(index, typeof(GrizzledBones), 1032684, 1, 1053098);
                 AddRes(index, typeof(Corruption), 1032676, 10, 1053098);
                 AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
-                AddRareRecipe(index, 3);
+                AddRareRecipe(index, 353);
                 ForceNonExceptional(index);
                 SetNeededExpansion(index, Expansion.ML);
 
@@ -627,7 +627,7 @@ public class DefBlacksmithy : CraftSystem
             AddRes(index, typeof(EyeOfTheTravesty), 1073126, 1, 1042081);
             AddRes(index, typeof(Muculent), 1072139, 10, 1042081);
             AddRes(index, typeof(Corruption), 1072135, 10, 1042081);
-            AddRareRecipe(index, 37);
+            AddRareRecipe(index, 354);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 

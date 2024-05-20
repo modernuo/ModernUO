@@ -145,19 +145,16 @@ public class DefBowFletching : CraftSystem
             AddRes(index, typeof(LardOfParoxysmus), 1032681, 1, 1053098);
             AddRes(index, typeof(Blight), 1032675, 10, 1053098);
             AddRes(index, typeof(Corruption), 1032676, 10, 1053098);
-            AddRareRecipe(index, 200);
+            AddRareRecipe(index, 250);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 
-            /* TODO
-            index = AddCraft( typeof( FaerieFire ), 1044566, 1072908, 75.0, 125.0, typeof( Log ), 1044041, 20, 1044351 );
-            AddRes( index, typeof( LardOfParoxysmus ), 1032681, 1, 1053098 );
-            AddRes( index, typeof( Putrefication ), 1032678, 10, 1053098 );
-            AddRes( index, typeof( Taint ), 1032679, 10, 1053098 );
-            AddRareRecipe( index, 201 );
-            ForceNonExceptional( index );
-            SetNeededExpansion( index, Expansion.ML );
-            */
+            index = AddCraft(typeof(FaerieFire), 1044566, 1072908, 75.0, 125.0, typeof(Board), 1044041, 20, 1044351);
+            AddRes(index, typeof(LardOfParoxysmus), 1032681, 1, 1053098);
+            AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
+            AddRes(index, typeof(Taint), 1032679, 10, 1053098);
+            AddRareRecipe(index, 251);
+            ForceNonExceptional(index);
 
             index = AddCraft(
                 typeof(SilvanisFeywoodBow),
@@ -173,25 +170,23 @@ public class DefBowFletching : CraftSystem
             AddRes(index, typeof(LardOfParoxysmus), 1032681, 1, 1053098);
             AddRes(index, typeof(Scourge), 1032677, 10, 1053098);
             AddRes(index, typeof(Muculent), 1032680, 10, 1053098);
-            AddRareRecipe(index, 202);
+            AddRareRecipe(index, 252);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 
-            /* TODO
-            index = AddCraft( typeof( MischiefMaker ), 1044566, 1072910, 75.0, 125.0, typeof( Log ), 1044041, 15, 1044351 );
-            AddRes( index, typeof( DreadHornMane ), 1032682, 1, 1053098 );
-            AddRes( index, typeof( Corruption ), 1032676, 10, 1053098 );
-            AddRes( index, typeof( Putrefication ), 1032678, 10, 1053098 );
-            AddRareRecipe( index, 203 );
-            ForceNonExceptional( index );
-            SetNeededExpansion( index, Expansion.ML );
-            */
+            index = AddCraft(typeof(MischiefMaker), 1044566, 1072910, 75.0, 125.0, typeof(Board), 1044041, 15, 1044351);
+            AddRes(index, typeof(DreadHornMane), 1032682, 1, 1053098);
+            AddRes(index, typeof(Corruption), 1032676, 10, 1053098);
+            AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
+            AddRareRecipe(index, 253);
+            ForceNonExceptional(index);
+            SetNeededExpansion(index, Expansion.ML);
 
             index = AddCraft(typeof(TheNightReaper), 1044566, 1072912, 75.0, 125.0, typeof(Log), 1044041, 10, 1044351);
             AddRes(index, typeof(DreadHornMane), 1032682, 1, 1053098);
             AddRes(index, typeof(Blight), 1032675, 10, 1053098);
             AddRes(index, typeof(Scourge), 1032677, 10, 1053098);
-            AddRareRecipe(index, 204);
+            AddRareRecipe(index, 254);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 

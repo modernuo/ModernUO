@@ -385,7 +385,7 @@ public class DefTailoring : CraftSystem
             AddRes(index, typeof(EyeOfTheTravesty), 1032685, 1, 1044253);
             AddRes(index, typeof(Putrefication), 1032678, 10, 1044253);
             AddRes(index, typeof(Scourge), 1032677, 10, 1044253);
-            AddRareRecipe(index, 506);
+            AddRareRecipe(index, 551);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 
@@ -403,7 +403,7 @@ public class DefTailoring : CraftSystem
             AddRes(index, typeof(EyeOfTheTravesty), 1032685, 1, 1044253);
             AddRes(index, typeof(Blight), 1032675, 10, 1044253);
             AddRes(index, typeof(Muculent), 1032680, 10, 1044253);
-            AddRareRecipe(index, 507);
+            AddRareRecipe(index, 550);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 
@@ -421,7 +421,7 @@ public class DefTailoring : CraftSystem
             AddRes(index, typeof(CapturedEssence), 1032686, 1, 1044253);
             AddRes(index, typeof(Corruption), 1032676, 10, 1044253);
             AddRes(index, typeof(Taint), 1032679, 10, 1044253);
-            AddRareRecipe(index, 508);
+            AddRareRecipe(index, 552);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
         }

@@ -110,6 +110,11 @@ namespace Server.Engines.Craft
                 return -1;
             }
 
+            if ( m_RareRecipes.Count > 0 && Utility.RandomDouble() < 0.05 )
+            {
+                return RandomRareRecipe();
+            }
+
             return m_Recipes.RandomElement();
         }
 

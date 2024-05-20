@@ -524,7 +524,7 @@ public class DefTinkering : CraftSystem
             AddRes(index, typeof(CapturedEssence), 1032686, 1, 1044253);
             AddRes(index, typeof(BlueDiamond), 1032696, 10, 1044253);
             AddRes(index, typeof(Diamond), 1062608, 50, 1044253);
-            AddRareRecipe(index, 600);
+            AddRareRecipe(index, 452);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 
@@ -542,7 +542,7 @@ public class DefTinkering : CraftSystem
             AddRes(index, typeof(CapturedEssence), 1032686, 1, 1044253);
             AddRes(index, typeof(FireRuby), 1032695, 10, 1044253);
             AddRes(index, typeof(Ruby), 1062603, 50, 1044253);
-            AddRareRecipe(index, 601);
+            AddRareRecipe(index, 450);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 
@@ -560,7 +560,7 @@ public class DefTinkering : CraftSystem
             AddRes(index, typeof(EyeOfTheTravesty), 1032685, 1, 1044253);
             AddRes(index, typeof(WhitePearl), 1032694, 10, 1044253);
             AddRes(index, typeof(StarSapphire), 1062600, 50, 1044253);
-            AddRareRecipe(index, 602);
+            AddRareRecipe(index, 451);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
         }

@@ -165,7 +165,7 @@ public class DefCarpentry : CraftSystem
             index = AddCraft(typeof(AcidProofRope), 1044294, 1074886, 80, 130.0, typeof(GreaterStrengthPotion), 1073466, 2, 1044253);
             AddRes(index, typeof(ProtectionScroll), 1044395, 1, 1053098);
             AddRes(index, typeof(SwitchItem), 1032127, 1, 1053098);
-            AddRareRecipe(index, 304);
+            AddRareRecipe(index, 104);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
         }
@@ -331,7 +331,7 @@ public class DefCarpentry : CraftSystem
             AddRes(index, typeof(DiseasedBark), 1032683, 1, 1053098);
             AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
             AddRes(index, typeof(Taint), 1032679, 10, 1053098);
-            AddRareRecipe(index, 313);
+            AddRareRecipe(index, 150);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
             index = AddCraft(typeof(ArcanistsWildStaff), 1044566, 1073549, 63.8, 113.8, typeof(Log), 1044041, 16, 1044351);
@@ -388,14 +388,14 @@ public class DefCarpentry : CraftSystem
             AddRes(index, typeof(DiseasedBark), 1032683, 1, 1053098);
             AddRes(index, typeof(Corruption), 1032676, 10, 1053098);
             AddRes(index, typeof(Putrefication), 1032678, 10, 1053098);
-            AddRareRecipe(index, 318);
+            AddRareRecipe(index, 151);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
             index = AddCraft(typeof(BrambleCoat), 1062760, 1072925, 85.0, 120.0, typeof(Log), 1044041, 10, 1044351);
             AddRes(index, typeof(DiseasedBark), 1032683, 1, 1053098);
             AddRes(index, typeof(Taint), 1032679, 10, 1053098);
             AddRes(index, typeof(Scourge), 1032677, 10, 1053098);
-            AddRareRecipe(index, 319);
+            AddRareRecipe(index, 152);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
         }

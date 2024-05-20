@@ -112,7 +112,7 @@ public partial class FletchingSatchel : BaseCraftmansSatchel
 
         if (runic != null)
         {
-            DropItem(runic);
+            base.DropItem(runic);
         }
     }
 
