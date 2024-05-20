@@ -82,10 +82,9 @@ public class JusticeVirtue
     public static void Initialize()
     {
         VirtueGump.Register(109, OnVirtueUsed);
-        EventSink.PlayerDeleted += OnPlayerDeleted;
     }
 
-    private static void OnPlayerDeleted(Mobile m)
+    public static void OnPlayerDeleted(Mobile m)
     {
         if (m is PlayerMobile pm)
         {

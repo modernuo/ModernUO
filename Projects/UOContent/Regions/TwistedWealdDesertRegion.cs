@@ -24,7 +24,6 @@ public class TwistedWealdDesertRegion : MondainRegion
 
     public static void Initialize()
     {
-        EventSink.Login += Desert_OnLogin;
     }
 
     public override void OnEnter(Mobile m)
@@ -46,7 +45,7 @@ public class TwistedWealdDesertRegion : MondainRegion
         }
     }
 
-    private static void Desert_OnLogin(Mobile m)
+    public static void OnLogin(Mobile m)
     {
         if (m.Region.IsPartOf<TwistedWealdDesertRegion>() && m.AccessLevel == AccessLevel.Player)
         {

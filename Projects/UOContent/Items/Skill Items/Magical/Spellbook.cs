@@ -215,8 +215,6 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
     public static void Configure()
     {
-        EventSink.TargetedSpell += EventSink_TargetedSpell;
-
         CommandSystem.Register("AllSpells", AccessLevel.GameMaster, AllSpells_OnCommand);
     }
 
@@ -271,7 +269,7 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         book?.DisplayTo(from);
     }
 
-    private static void EventSink_TargetedSpell(Mobile from, IEntity target, int spellId)
+    public static void TargetedSpell(Mobile from, IEntity target, int spellId)
     {
         if (!DesignContext.Check(from))
         {

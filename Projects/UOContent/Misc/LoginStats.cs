@@ -6,11 +6,9 @@ namespace Server.Misc
     {
         public static void Initialize()
         {
-            // Register our event handler
-            EventSink.Login += EventSink_Login;
         }
 
-        private static void EventSink_Login(Mobile m)
+        public static void OnLogin(Mobile m)
         {
             var userCount = NetState.Instances.Count;
             var itemCount = World.Items.Count;

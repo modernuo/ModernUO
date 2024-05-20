@@ -16,7 +16,6 @@ namespace Server.Engines.Doom
 
         public static void Initialize()
         {
-            EventSink.Login += OnLogin;
         }
 
         public static void OnLogin(Mobile m)

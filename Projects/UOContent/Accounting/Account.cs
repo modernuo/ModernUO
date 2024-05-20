@@ -732,7 +732,6 @@ namespace Server.Accounting
         {
             EventSink.Connected += EventSink_Connected;
             EventSink.Disconnected += EventSink_Disconnected;
-            EventSink.Login += EventSink_Login;
         }
 
         private static void EventSink_Connected(Mobile m)
@@ -770,7 +769,7 @@ namespace Server.Accounting
             acc.TotalGameTime += Core.Now - pm.SessionStart;
         }
 
-        private static void EventSink_Login(Mobile m)
+        public static void OnLogin(Mobile m)
         {
             if (m is not PlayerMobile pm)
             {

@@ -37,7 +37,6 @@ public partial class Bandage : Item, IDyable
 
     public static void Initialize()
     {
-        EventSink.BandageTargetRequest += EventSink_BandageTargetRequest;
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -56,7 +55,7 @@ public partial class Bandage : Item, IDyable
         }
     }
 
-    private static void EventSink_BandageTargetRequest(Mobile from, Item item, Mobile target)
+    public static void BandageTargetRequest(Mobile from, Item item, Mobile target)
     {
         if (item is not Bandage b || b.Deleted)
         {

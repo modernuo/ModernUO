@@ -16,8 +16,6 @@ public static class AssistantHandler
     {
         Enabled = ServerConfiguration.GetOrUpdateSetting("assistants.enableNegotiation", false);
 
-        EventSink.Login += OnLogin;
-
         IncomingPackets.Register(0xBE, 0, false, &AssistVersion);
         AssistantProtocol.Register(0xFF, false, &HandshakeResponse);
     }
@@ -47,7 +45,7 @@ public static class AssistantHandler
         m.NetState.LogInfo("Failed to negotiate assistant features.");
     }
 
-    private static void OnLogin(Mobile m)
+    public static void OnLogin(Mobile m)
     {
         if (m?.NetState?.Running != true || !Enabled)
         {

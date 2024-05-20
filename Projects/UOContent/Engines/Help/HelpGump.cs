@@ -288,10 +288,9 @@ namespace Server.Engines.Help
 
         public static void Initialize()
         {
-            EventSink.HelpRequest += EventSink_HelpRequest;
         }
 
-        private static void EventSink_HelpRequest(Mobile m)
+        public static void HelpRequest(Mobile m)
         {
             foreach (var gump in m.NetState.Gumps)
             {

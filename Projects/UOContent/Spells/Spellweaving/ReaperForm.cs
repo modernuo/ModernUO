@@ -29,7 +29,6 @@ namespace Server.Spells.Spellweaving
 
         public static void Initialize()
         {
-            EventSink.Login += OnLogin;
         }
 
         public static void OnLogin(Mobile m)

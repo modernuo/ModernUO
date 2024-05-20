@@ -17,6 +17,22 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using Server.Accounting;
+using Server.Assistants;
+using Server.Commands;
+using Server.Engines.ConPVP;
+using Server.Engines.Doom;
+using Server.Engines.PartySystem;
+using Server.Engines.Plants;
+using Server.Engines.PlayerMurderSystem;
+using Server.Engines.VeteranRewards;
+using Server.Factions;
+using Server.Items;
+using Server.Misc;
+using Server.Mobiles;
+using Server.Regions;
+using Server.Spells.Ninjitsu;
+using Server.Spells.Spellweaving;
 using CV = Server.ClientVersion;
 
 namespace Server.Network;
@@ -190,7 +206,7 @@ public static class IncomingAccountPackets
         reader.Seek(30, SeekOrigin.Current);
         var index = reader.ReadInt32();
 
-        EventSink.InvokeDeleteRequest(state, index);
+        AccountHandler.DeleteRequest(state, index);
     }
 
     public static void AccountID(NetState state, SpanReader reader)
@@ -201,7 +217,7 @@ public static class IncomingAccountPackets
     {
         var version = state.Version = new CV(reader.ReadAscii());
 
-        EventSink.InvokeClientVersionReceived(state, version);
+        ClientVerification.ClientVersionReceived(state, version);
     }
 
     public static void ClientType(NetState state, SpanReader reader)
@@ -211,7 +227,7 @@ public static class IncomingAccountPackets
         int type = reader.ReadUInt16();
         var version = state.Version = new CV(reader.ReadAscii());
 
-        EventSink.InvokeClientVersionReceived(state, version);
+        ClientVerification.ClientVersionReceived(state, version);
     }
 
     public static void PlayCharacter(NetState state, SpanReader reader)
@@ -307,7 +323,30 @@ public static class IncomingAccountPackets
 
         state.SendPlayMusic(m.Region.Music);
 
-        EventSink.InvokeLogin(m);
+        StaminaSystem.Login(m);
+        DuelContext.Login(m);
+        LightCycle.OnLogin(m);
+        LoginStats.OnLogin(m);
+        AnimalForm.OnLogin(m);
+        BaseBeverage.OnLogin(m);
+        AntiMacroSystem.OnLogin(m);
+        Strandedness.OnLogin(m);
+        ShardPoller.OnLogin(m);
+        ReaperFormSpell.OnLogin(m);
+        Party.OnLogin(m);
+        PlantSystem.OnLogin(m);
+        LampRoomRegion.OnLogin(m);
+        HouseRegion.OnLogin(m);
+        Faction.OnLogin(m);
+        PlayerMurderSystem.OnLogin(m);
+        AssistantHandler.OnLogin(m);
+        VisibilityList.OnLogin(m);
+        PlayerMobile.OnLogin(m);
+        Account.OnLogin(m);
+        GiftGiving.OnLogin(m);
+        PreventInaccess.OnLogin(m);
+        TwistedWealdDesertRegion.OnLogin(m);
+        RewardSystem.OnLogin(m);
     }
 
     private static int GenerateAuthID(this NetState state)

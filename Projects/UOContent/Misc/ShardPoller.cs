@@ -127,10 +127,9 @@ public partial class ShardPoller : Item
 
     public static void Initialize()
     {
-        EventSink.Login += EventSink_Login;
     }
 
-    private static void EventSink_Login(Mobile m)
+    public static void OnLogin(Mobile m)
     {
         if (_activePollers.Count == 0)
         {

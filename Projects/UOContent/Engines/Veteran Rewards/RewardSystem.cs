@@ -563,14 +563,12 @@ namespace Server.Engines.VeteranRewards
 
         public static void Initialize()
         {
-            if (Enabled)
-            {
-                EventSink.Login += EventSink_Login;
-            }
         }
 
-        private static void EventSink_Login(Mobile m)
+        public static void OnLogin(Mobile m)
         {
+            if (!Enabled) return;
+
             if (!m.Alive)
             {
                 return;

@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using Server.Accounting;
+using Server.Engines.CannedEvil;
 using Server.Engines.Help;
+using Server.Engines.PlayerMurderSystem;
+using Server.Engines.Virtues;
 using Server.Logging;
 using Server.Network;
 using Server.Regions;
@@ -64,7 +67,6 @@ public static class AccountHandler
 
     public static void Initialize()
     {
-        EventSink.DeleteRequest += EventSink_DeleteRequest;
         EventSink.AccountLogin += EventSink_AccountLogin;
         EventSink.GameLogin += EventSink_GameLogin;
     }
@@ -182,7 +184,7 @@ public static class AccountHandler
         }
     }
 
-    private static void EventSink_DeleteRequest(NetState state, int index)
+    public static void DeleteRequest(NetState state, int index)
     {
         if (state.Account is not Account acct)
         {
@@ -228,7 +230,11 @@ public static class AccountHandler
 
                 m.Delete();
 
-                EventSink.InvokePlayerDeleted(m);
+                StaminaSystem.OnPlayerDeleted(m);
+                JusticeVirtue.OnPlayerDeleted(m);
+                PlayerMurderSystem.OnPlayerDeleted(m);
+                ChampionTitleSystem.OnPlayerDeleted(m);
+
                 state.SendCharacterListUpdate(acct);
                 return;
             }

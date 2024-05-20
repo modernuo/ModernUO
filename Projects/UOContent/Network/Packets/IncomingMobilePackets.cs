@@ -15,6 +15,7 @@
 
 using System.Buffers;
 using Server.Items;
+using Server.Misc;
 
 namespace Server.Network;
 
@@ -35,7 +36,7 @@ public static class IncomingMobilePackets
 
         if (targ != null)
         {
-            EventSink.InvokeRenameRequest(from, targ, reader.ReadAsciiSafe());
+            RenameRequests.RenameRequest(from, targ, reader.ReadAsciiSafe());
         }
     }
 
@@ -66,7 +67,7 @@ public static class IncomingMobilePackets
         {
             case 0x00: // display request
                 {
-                    EventSink.InvokeProfileRequest(beholder, beheld);
+                    Profile.ProfileRequest(beholder, beheld);
 
                     break;
                 }
@@ -82,7 +83,7 @@ public static class IncomingMobilePackets
 
                     var text = reader.ReadBigUni(length);
 
-                    EventSink.InvokeChangeProfileRequest(beholder, beheld, text);
+                    Profile.ChangeProfileRequest(beholder, beheld, text);
 
                     break;
                 }

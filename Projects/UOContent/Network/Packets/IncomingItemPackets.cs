@@ -17,6 +17,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -117,7 +118,7 @@ public static class IncomingItemPackets
             serialList.Add((Serial)reader.ReadUInt32());
         }
 
-        EventSink.InvokeEquipMacro(state.Mobile, serialList);
+        PlayerMobile.EquipMacro(state.Mobile, serialList);
     }
 
     public static void UnequipMacro(NetState state, SpanReader reader)
@@ -129,6 +130,6 @@ public static class IncomingItemPackets
             layers.Add((Layer)reader.ReadUInt16());
         }
 
-        EventSink.InvokeUnequipMacro(state.Mobile, layers);
+        PlayerMobile.UnequipMacro(state.Mobile, layers);
     }
 }

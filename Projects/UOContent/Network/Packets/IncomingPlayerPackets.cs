@@ -21,10 +21,14 @@ using System.IO;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Server.Diagnostics;
+using Server.Engines.Help;
+using Server.Engines.MLQuests;
 using Server.Engines.Virtues;
 using Server.Exceptions;
+using Server.Guilds;
 using Server.Gumps;
 using Server.Items;
+using Server.Misc;
 using Server.Mobiles;
 
 namespace Server.Network;
@@ -137,7 +141,7 @@ public static class IncomingPlayerPackets
         {
             case 0xC7: // Animate
                 {
-                    EventSink.InvokeAnimateRequest(from, command);
+                    Animations.AnimateRequest(from, command);
 
                     break;
                 }
@@ -176,7 +180,7 @@ public static class IncomingPlayerPackets
                 }
             case 0x58: // Open door
                 {
-                    EventSink.InvokeOpenDoorMacroUsed(from);
+                    BaseDoor.OpenDoorMacroUsed(from);
 
                     break;
                 }
@@ -342,7 +346,7 @@ public static class IncomingPlayerPackets
 
     public static void HelpRequest(NetState state, SpanReader reader)
     {
-        EventSink.InvokeHelpRequest(state.Mobile);
+        HelpGump.HelpRequest(state.Mobile);
     }
 
     public static void DisplayGumpResponse(NetState state, SpanReader reader)
@@ -618,12 +622,12 @@ public static class IncomingPlayerPackets
 
     public static void GuildGumpRequest(NetState state, IEntity e, EncodedReader reader)
     {
-        EventSink.InvokeGuildGumpRequest(state.Mobile);
+        Guild.GuildGumpRequest(state.Mobile);
     }
 
     public static void QuestGumpRequest(NetState state, IEntity e, EncodedReader reader)
     {
-        EventSink.InvokeQuestGumpRequest(state.Mobile);
+        MLQuestSystem.QuestGumpRequest(state.Mobile);
     }
 
     public static unsafe void EncodedCommand(NetState state, SpanReader reader)

@@ -111,10 +111,6 @@ namespace Server
 
         public static void Initialize()
         {
-            if (Enabled)
-            {
-                EventSink.ClientVersionReceived += ResendBuffsOnClientVersionReceived;
-            }
         }
 
         public static void ResendBuffsOnClientVersionReceived(NetState ns, ClientVersion cv)

@@ -85,7 +85,6 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            EventSink.Login += EventSink_Login;
         }
 
         private static bool IsStranded(Mobile from)
@@ -117,7 +116,7 @@ namespace Server.Misc
             return false;
         }
 
-        public static void EventSink_Login(Mobile from)
+        public static void OnLogin(Mobile from)
         {
             if (!IsStranded(from))
             {
