@@ -4524,8 +4524,13 @@ namespace Server.Mobiles
                 {
                     Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), (buffInfo, pm) =>
                     {
+                        if (buffInfo == null || pm?.m_BuffTable == null || pm.NetState == null)
+                        {
+                            return;
+                        }
+
                         // They are still online, we still have the buff icon in the table, and it is the same buff icon
-                        if (pm.NetState != null && pm.m_BuffTable.TryGetValue(buffInfo.ID, out var checkBuff) && checkBuff == buffInfo)
+                        if (pm.m_BuffTable.TryGetValue(buffInfo.ID, out var checkBuff) && checkBuff == buffInfo)
                         {
                             buffInfo.SendAddBuffPacket(pm.NetState, pm.Serial);
                         }
