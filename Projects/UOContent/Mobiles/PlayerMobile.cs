@@ -4492,13 +4492,32 @@ namespace Server.Mobiles
 
         public void ResetRecipes() => _acquiredRecipes = null;
 
+        public void SendAddBuffPacket(BuffInfo buffInfo)
+        {
+            if (buffInfo == null)
+            {
+                return;
+            }
+
+            NetState.SendAddBuffPacket(
+                Serial,
+                buffInfo.ID,
+                buffInfo.TitleCliloc,
+                buffInfo.SecondaryCliloc,
+                buffInfo.Args,
+                buffInfo.TimeStart == 0
+                    ? 0
+                    : Math.Max(buffInfo.TimeStart + (long)buffInfo.TimeLength.TotalMilliseconds - Core.TickCount, 0)
+            );
+        }
+
         public void ResendBuffs()
         {
             if (BuffInfo.Enabled && m_BuffTable != null && NetState?.BuffIcon == true)
             {
                 foreach (var info in m_BuffTable.Values)
                 {
-                    info.SendAddBuffPacket(NetState, Serial);
+                    SendAddBuffPacket(info);
                 }
             }
         }
@@ -4524,21 +4543,16 @@ namespace Server.Mobiles
                 {
                     Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), (buffInfo, pm) =>
                     {
-                        if (buffInfo == null || pm?.m_BuffTable == null || pm.NetState == null)
-                        {
-                            return;
-                        }
-
                         // They are still online, we still have the buff icon in the table, and it is the same buff icon
-                        if (pm.m_BuffTable.TryGetValue(buffInfo.ID, out var checkBuff) && checkBuff == buffInfo)
+                        if (pm.NetState != null && pm.m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
                         {
-                            buffInfo.SendAddBuffPacket(pm.NetState, pm.Serial);
+                            pm.SendAddBuffPacket(buffInfo);
                         }
                     }, b, this);
                 }
                 else
                 {
-                    b.SendAddBuffPacket(NetState, Serial);
+                    SendAddBuffPacket(b);
                 }
             }
         }
@@ -4562,7 +4576,7 @@ namespace Server.Mobiles
 
             if (NetState?.BuffIcon == true)
             {
-                BuffInfo.SendRemoveBuffPacket(NetState, Serial, b);
+                NetState.SendRemoveBuffPacket(Serial, b);
             }
 
             if (m_BuffTable.Count <= 0)
