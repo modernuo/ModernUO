@@ -20,7 +20,7 @@ namespace UOContent.Tests
             ).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            BuffInfo.SendAddBuffPacket(ns, (Serial)mob, iconID, titleCliloc, secondaryCliloc, args, (int)timeSpan.TotalMilliseconds);
+            ns.SendAddBuffPacket((Serial)mob, iconID, titleCliloc, secondaryCliloc, args, (int)timeSpan.TotalMilliseconds);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
@@ -34,7 +34,7 @@ namespace UOContent.Tests
             var expected = new RemoveBuffPacket(m, buffIcon).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            BuffInfo.SendRemoveBuffPacket(ns, m, buffIcon);
+            ns.SendRemoveBuffPacket(m, buffIcon);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
