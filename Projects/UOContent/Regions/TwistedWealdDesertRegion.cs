@@ -22,10 +22,6 @@ public class TwistedWealdDesertRegion : MondainRegion
     {
     }
 
-    public static void Initialize()
-    {
-    }
-
     public override void OnEnter(Mobile m)
     {
         var ns = m.NetState;

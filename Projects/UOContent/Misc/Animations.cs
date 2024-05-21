@@ -2,10 +2,6 @@ namespace Server.Misc
 {
     public static class Animations
     {
-        public static void Initialize()
-        {
-        }
-
         public static void AnimateRequest(Mobile from, string actionName)
         {
             var action = actionName switch

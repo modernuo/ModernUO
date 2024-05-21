@@ -711,10 +711,6 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         _quantity = reader.ReadInt();
     }
 
-    public static void Initialize()
-    {
-    }
-
     public static void OnLogin(Mobile m)
     {
         CheckHeaveTimer(m);

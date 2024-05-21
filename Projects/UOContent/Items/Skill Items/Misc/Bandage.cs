@@ -35,10 +35,6 @@ public partial class Bandage : Item, IDyable
         return true;
     }
 
-    public static void Initialize()
-    {
-    }
-
     public override void OnDoubleClick(Mobile from)
     {
         if (from.InRange(GetWorldLocation(), Range))

@@ -83,10 +83,6 @@ namespace Server.Misc
             new(1240, 1003)
         };
 
-        public static void Initialize()
-        {
-        }
-
         private static bool IsStranded(Mobile from)
         {
             var map = from.Map;

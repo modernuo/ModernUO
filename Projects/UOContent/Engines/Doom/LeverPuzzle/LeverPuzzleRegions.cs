@@ -14,10 +14,6 @@ namespace Server.Engines.Doom
             Register();
         }
 
-        public static void Initialize()
-        {
-        }
-
         public static void OnLogin(Mobile m)
         {
             var rect = LeverPuzzleController.lr_Rect;

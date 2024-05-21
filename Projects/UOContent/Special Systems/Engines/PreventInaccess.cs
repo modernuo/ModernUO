@@ -36,7 +36,10 @@ namespace Server.Misc
 
         public static void OnLogin(Mobile from)
         {
-            if (!Enabled) return;
+            if (!Enabled)
+            {
+                return;
+            }
 
             if (from == null || from.AccessLevel < AccessLevel.Counselor)
             {

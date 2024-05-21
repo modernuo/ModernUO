@@ -5,10 +5,6 @@ namespace Server.Misc
 {
     public static class Profile
     {
-        public static void Initialize()
-        {
-        }
-
         public static void ChangeProfileRequest(Mobile beholder, Mobile beheld, string text)
         {
             if (beholder.ProfileLocked)

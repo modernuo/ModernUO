@@ -125,10 +125,6 @@ public partial class ShardPoller : Item
         Options[^1] = option;
     }
 
-    public static void Initialize()
-    {
-    }
-
     public static void OnLogin(Mobile m)
     {
         if (_activePollers.Count == 0)

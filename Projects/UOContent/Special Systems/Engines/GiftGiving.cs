@@ -19,10 +19,6 @@ namespace Server.Misc
             m_Givers.Add(giver);
         }
 
-        public static void Initialize()
-        {
-        }
-
         public static void OnLogin(Mobile m)
         {
             if (m.Account is not Account acct)
