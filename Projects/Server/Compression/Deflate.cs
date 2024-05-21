@@ -20,10 +20,11 @@ namespace Server.Compression;
 
 public static class Deflate
 {
-    public static LibDeflateBinding Standard { get; } = new();
+    public static LibDeflateBinding Standard { get; }
 
     static Deflate()
     {
+        Standard = new LibDeflateBinding();
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
     }
 
