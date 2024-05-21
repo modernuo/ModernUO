@@ -1,4 +1,4 @@
-﻿/*************************************************************************
+/*************************************************************************
  * ModernUO                                                              *
  * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.IO.Compression;
 
 namespace Server.Compression;
@@ -20,4 +21,14 @@ namespace Server.Compression;
 public static class Deflate
 {
     public static LibDeflateBinding Standard { get; } = new();
+
+    static Deflate()
+    {
+        AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+    }
+
+    private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+    {
+        Standard.Dispose();
+    }
 }
