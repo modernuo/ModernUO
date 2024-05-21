@@ -51,8 +51,6 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            EventSink.ClientVersionReceived += EventSink_ClientVersionReceived;
-
             if (MinRequired == null && MaxRequired == null)
             {
                 MinRequired = UOClient.ServerClientVersion;
@@ -117,7 +115,7 @@ namespace Server.Misc
             return builder.ToString();
         }
 
-        private static void EventSink_ClientVersionReceived(NetState state, ClientVersion version)
+        public static void ClientVersionReceived(NetState state, ClientVersion version)
         {
             var sb = ValueStringBuilder.Create();
 

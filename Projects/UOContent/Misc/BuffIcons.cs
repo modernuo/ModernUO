@@ -109,16 +109,13 @@ namespace Server
             Enabled = ServerConfiguration.GetOrUpdateSetting("buffIcons.enable", Core.ML);
         }
 
-        public static void Initialize()
-        {
-            if (Enabled)
-            {
-                EventSink.ClientVersionReceived += ResendBuffsOnClientVersionReceived;
-            }
-        }
-
         public static void ResendBuffsOnClientVersionReceived(NetState ns, ClientVersion cv)
         {
+            if (!Enabled)
+            {
+                return;
+            }
+
             if (ns.Mobile is PlayerMobile pm)
             {
                 Timer.StartTimer(pm.ResendBuffs);

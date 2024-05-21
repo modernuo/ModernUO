@@ -490,8 +490,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             if (oldValue != value)
             {
                 m_Hunger = value;
-
-                EventSink.InvokeHungerChanged(this, oldValue);
+                OnHungerChanged(oldValue);
             }
         }
     }
@@ -3695,6 +3694,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     ///     <seealso cref="Combatant" />
     /// </summary>
     public virtual void OnCombatantChange()
+    {
+    }
+
+    /// <summary>
+    ///     Overridable. Virtual event invoked after the <see cref="Hunger" /> property has changed.
+    ///     <seealso cref="Hunger" />
+    /// </summary>
+    public virtual void OnHungerChanged(int oldValue)
     {
     }
 

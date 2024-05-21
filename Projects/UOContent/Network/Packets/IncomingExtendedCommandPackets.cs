@@ -16,6 +16,7 @@
 using System.Buffers;
 using Server.ContextMenus;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -251,7 +252,7 @@ public static class IncomingExtendedCommandPackets
         Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
 
         var spellID = reader.ReadInt16() - 1;
-        EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
+        Spellbook.CastSpellRequest(from, spellID, spellbook);
     }
 
     public static void ToggleFlying(NetState state, SpanReader reader)
@@ -490,7 +491,7 @@ public static class IncomingExtendedCommandPackets
                 return;
             }
 
-            EventSink.InvokeBandageTargetRequest(from, bandage, target);
+            Bandage.BandageTargetRequest(from, bandage, target);
 
             from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
         }
@@ -504,14 +505,14 @@ public static class IncomingExtendedCommandPackets
     {
         var spellId = (short)(reader.ReadInt16() - 1); // zero based;
 
-        EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
+        Spellbook.TargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
     }
 
     public static void TargetedSkillUse(NetState state, SpanReader reader)
     {
         var skillId = reader.ReadInt16();
 
-        EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
+        PlayerMobile.TargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
     }
 
     public static void TargetByResourceMacro(NetState state, SpanReader reader)

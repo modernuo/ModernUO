@@ -151,8 +151,6 @@ namespace Server.Engines.MLQuests
 
             TargetCommands.Register(new ViewQuestsCommand());
             TargetCommands.Register(new ViewContextCommand());
-
-            EventSink.QuestGumpRequest += EventSink_QuestGumpRequest;
         }
 
         public static void Initialize()
@@ -649,7 +647,7 @@ namespace Server.Engines.MLQuests
             }
         }
 
-        public static void EventSink_QuestGumpRequest(Mobile m)
+        public static void QuestGumpRequest(Mobile m)
         {
             if (!Enabled || m is not PlayerMobile pm)
             {

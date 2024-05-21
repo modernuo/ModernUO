@@ -641,7 +641,6 @@ namespace Server.Factions
 
         public static void Configure()
         {
-            EventSink.Login += EventSink_Login;
             EventSink.Logout += EventSink_Logout;
 
             CommandSystem.Register("FactionElection", AccessLevel.GameMaster, FactionElection_OnCommand);
@@ -1278,7 +1277,7 @@ namespace Server.Factions
             }
         }
 
-        private static void EventSink_Login(Mobile m) => CheckLeaveTimer(m);
+        public static void OnLogin(Mobile m) => CheckLeaveTimer(m);
 
         public static void WriteReference(IGenericWriter writer, Faction fact)
         {

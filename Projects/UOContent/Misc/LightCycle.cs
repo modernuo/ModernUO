@@ -32,7 +32,6 @@ namespace Server
 
         public static void Configure()
         {
-            EventSink.Login += OnLogin;
             CommandSystem.Register("GlobalLight", AccessLevel.GameMaster, Light_OnCommand);
         }
 

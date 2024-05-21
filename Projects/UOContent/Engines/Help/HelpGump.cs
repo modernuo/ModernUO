@@ -286,12 +286,7 @@ namespace Server.Engines.Help
             AddHtmlLocalized(180, 390, 335, 40, 1001015); // NO  - I meant to ask for help with another matter.
         }
 
-        public static void Initialize()
-        {
-            EventSink.HelpRequest += EventSink_HelpRequest;
-        }
-
-        private static void EventSink_HelpRequest(Mobile m)
+        public static void HelpRequest(Mobile m)
         {
             foreach (var gump in m.NetState.Gumps)
             {

@@ -397,11 +397,9 @@ namespace Server.Engines.Plants
             {
                 EventSink.WorldSave += EventSink_WorldSave;
             }
-
-            EventSink.Login += EventSink_Login;
         }
 
-        private static void EventSink_Login(Mobile from)
+        public static void OnLogin(Mobile from)
         {
             Container cont = from.Backpack;
             if (cont != null)

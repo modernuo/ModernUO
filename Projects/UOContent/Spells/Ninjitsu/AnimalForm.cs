@@ -62,11 +62,6 @@ namespace Server.Spells.Ninjitsu
             new(typeof(Reptalon), 1075202, 11669, 0, 1075222, 90.0, 0x114, 0, 0, false, false)
         };
 
-        public static void Initialize()
-        {
-            EventSink.Login += OnLogin;
-        }
-
         public static void OnLogin(Mobile m)
         {
             if (GetContext(m)?.SpeedBoost == true)

@@ -935,14 +935,9 @@ namespace Server.Mobiles
 
         public static void Initialize()
         {
-            EventSink.Login += OnLogin;
             EventSink.Logout += OnLogout;
             EventSink.Connected += EventSink_Connected;
             EventSink.Disconnected += EventSink_Disconnected;
-
-            EventSink.TargetedSkillUse += TargetedSkillUse;
-            EventSink.EquipMacro += EquipMacro;
-            EventSink.UnequipMacro += UnequipMacro;
 
             if (Core.SE)
             {
@@ -962,7 +957,7 @@ namespace Server.Mobiles
             }
         }
 
-        private static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
+        public static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
         {
             if (from == null || target == null)
             {
@@ -1221,7 +1216,7 @@ namespace Server.Mobiles
             }
         }
 
-        private static void OnLogin(Mobile from)
+        public static void OnLogin(Mobile from)
         {
             if (AccountHandler.LockdownLevel > AccessLevel.Player)
             {
