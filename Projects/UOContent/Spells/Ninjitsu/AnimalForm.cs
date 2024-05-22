@@ -539,18 +539,30 @@ public class AnimalFormTimer : Timer
                     b.Consume();
                 }
             }
+            else if (_mobile.Map == null || _mobile.Map == Map.Internal) // Logged out
+            {
+                Stop();
+            }
 
             _counter = 0;
         }
         else if (_body == 0x114) // Reptalon
         {
+            // Logged out
+            if (_mobile.Map == null || _mobile.Map == Map.Internal)
+            {
+                Stop();
+                _counter = 0;
+                return;
+            }
+
             if (_mobile.Combatant != null && _mobile.Combatant != _lastTarget)
             {
                 _counter = 1;
                 _lastTarget = _mobile.Combatant;
             }
-
-            if (_mobile.Warmode && _lastTarget is { Alive: true, Deleted: false } && _counter-- <= 0)
+            else if (_mobile.Warmode && _lastTarget is { Alive: true, Deleted: false } && _lastTarget.Map == _mobile.Map &&
+                     _counter-- <= 0)
             {
                 if (_mobile.CanBeHarmful(_lastTarget) && _lastTarget.Map == _mobile.Map &&
                     _lastTarget.InRange(_mobile.Location, BaseCreature.DefaultRangePerception) &&

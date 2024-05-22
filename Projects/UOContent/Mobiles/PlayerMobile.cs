@@ -1519,9 +1519,6 @@ namespace Server.Mobiles
         private static void OnLogout(Mobile m)
         {
             (m as PlayerMobile)?.AutoStablePets();
-
-            // Stop the timer, but don't delete it
-            AnimalForm.GetContext(m)?.Timer.Stop();
         }
 
         private static void EventSink_Connected(Mobile m)
