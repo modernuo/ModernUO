@@ -9,6 +9,12 @@ using Server.Engines.Virtues;
 using Server.Logging;
 using Server.Network;
 using Server.Regions;
+using Server.Spells.Fifth;
+using Server.Spells.First;
+using Server.Spells.Mysticism;
+using Server.Spells.Necromancy;
+using Server.Spells.Ninjitsu;
+using Server.Spells.Second;
 
 namespace Server.Misc;
 
@@ -234,6 +240,15 @@ public static class AccountHandler
                 JusticeVirtue.OnPlayerDeleted(m);
                 PlayerMurderSystem.OnPlayerDeleted(m);
                 ChampionTitleSystem.OnPlayerDeleted(m);
+
+                // Spells
+                MagicReflectSpell.EndReflect(m);
+                ReactiveArmorSpell.EndArmor(m);
+                ProtectionSpell.EndProtection(m);
+                StoneFormSpell.RemoveEffects(m);
+                AnimateDeadSpell.RemoveEffects(m);
+                SummonFamiliarSpell.RemoveEffects(m);
+                AnimalForm.RemoveLastAnimalForm(m);
 
                 state.SendCharacterListUpdate(acct);
                 return;

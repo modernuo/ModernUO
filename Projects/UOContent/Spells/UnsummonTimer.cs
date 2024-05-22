@@ -9,8 +9,8 @@ public class UnsummonTimer : Timer
 {
     // Track timers since some of them are really long and might hold references to long dead/deleted mobs
     private static readonly Dictionary<BaseCreature, UnsummonTimer> _timers = new();
-    private BaseCreature _creature;
-    private Action _onUnsummon;
+    private readonly BaseCreature _creature;
+    private readonly Action _onUnsummon;
 
     public static void StopTimer(BaseCreature creature)
     {

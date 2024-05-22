@@ -82,7 +82,7 @@ namespace Server.Spells.Fourth
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
         }
 
-        private void AosDelay_Callback(Mobile m, int mana)
+        private static void AosDelay_Callback(Mobile m, int mana)
         {
             if (m.Alive && !m.IsDeadBondedPet)
             {

@@ -1022,6 +1022,7 @@ namespace Server.Spells
                 StaminaSystem.DFA = dfa;
 
                 var damageGiven = AOS.Damage(target, from, dmg, phys, fire, cold, pois, nrgy, chaos);
+                Mysticism.SpellPlagueSpell.OnMobileDamaged(target);
 
                 StaminaSystem.DFA = DFAlgorithm.Standard;
 

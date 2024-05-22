@@ -1216,7 +1216,7 @@ namespace Server
 
         public override string ToString() => "...";
 
-        public void CheckCancelMorph(Mobile m)
+        public static void CheckCancelMorph(Mobile m)
         {
             if (m == null)
             {
