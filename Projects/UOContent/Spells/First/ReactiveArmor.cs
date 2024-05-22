@@ -60,46 +60,44 @@ namespace Server.Spells.First
 
                 if (CheckSequence())
                 {
-                    var targ = Caster;
-
-                    if (_table.Remove(targ, out var mods))
+                    if (_table.Remove(Caster, out var mods))
                     {
-                        targ.PlaySound(0x1ED);
-                        targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
+                        Caster.PlaySound(0x1ED);
+                        Caster.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
-                            targ.RemoveResistanceMod(mods[i]);
+                            Caster.RemoveResistanceMod(mods[i]);
                         }
 
                         BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
                     }
                     else
                     {
-                        targ.PlaySound(0x1E9);
-                        targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
+                        Caster.PlaySound(0x1E9);
+                        Caster.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-                        mods = new[]
-                        {
+                        mods =
+                        [
                             new ResistanceMod(
                                 ResistanceType.Physical,
                                 "PhysicalResistReactiveArmorSpell",
-                                15 + (int)(targ.Skills.Inscribe.Value / 20)
+                                15 + (int)(Caster.Skills.Inscribe.Value / 20)
                             ),
                             new ResistanceMod(ResistanceType.Fire, "FireResistReactiveArmorSpell", -5),
                             new ResistanceMod(ResistanceType.Cold, "ColdResistReactiveArmorSpell", -5),
                             new ResistanceMod(ResistanceType.Poison, "PoisonResistReactiveArmorSpell", -5),
                             new ResistanceMod(ResistanceType.Energy, "EnergyResistReactiveArmorSpell", -5)
-                        };
+                        ];
 
-                        _table[targ] = mods;
+                        _table[Caster] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
-                            targ.AddResistanceMod(mods[i]);
+                            Caster.AddResistanceMod(mods[i]);
                         }
 
-                        var physresist = 15 + (int)(targ.Skills.Inscribe.Value / 20);
+                        var physresist = 15 + (int)(Caster.Skills.Inscribe.Value / 20);
                         var args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
 
                         BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args));

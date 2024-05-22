@@ -1,36 +1,36 @@
 using Server.Targeting;
 using System;
 
-namespace Server.Spells.Mysticism
-{
-    public class BombardSpell : MysticSpell, ISpellTargetingMobile
-    {
-        private static readonly SpellInfo _info = new(
-            "Bombard", "Corp Por Ylem",
-            230,
-            9022,
-            Reagent.Bloodmoss,
-            Reagent.Garlic,
-            Reagent.SulfurousAsh,
-            Reagent.DragonsBlood
-        );
+namespace Server.Spells.Mysticism;
 
-        public BombardSpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
-        {
+public class BombardSpell : MysticSpell, ISpellTargetingMobile
+{
+    private static readonly SpellInfo _info = new(
+        "Bombard", "Corp Por Ylem",
+        230,
+        9022,
+        Reagent.Bloodmoss,
+        Reagent.Garlic,
+        Reagent.SulfurousAsh,
+        Reagent.DragonsBlood
+    );
+
+    public BombardSpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
+    {
         }
 
-        public override SpellCircle Circle => SpellCircle.Sixth;
-        public override bool DelayedDamage => true;
+    public override SpellCircle Circle => SpellCircle.Sixth;
+    public override bool DelayedDamage => true;
 
-        public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
+    public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
 
-        public override void OnCast()
-        {
+    public override void OnCast()
+    {
             Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful);
         }
 
-        public void Target(Mobile m)
-        {
+    public void Target(Mobile m)
+    {
             if (CheckHSequence(m))
             {
                 SpellHelper.Turn(Caster, m);
@@ -85,5 +85,4 @@ namespace Server.Spells.Mysticism
 
             FinishSequence();
         }
-    }
 }

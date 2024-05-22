@@ -15,8 +15,8 @@ namespace Server.Spells.Second
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table =
-            new();
+        // TODO: Cleanup periodically if players have logged out for a while
+        private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table = new();
 
         public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
