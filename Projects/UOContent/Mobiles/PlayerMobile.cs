@@ -1216,7 +1216,7 @@ namespace Server.Mobiles
             }
         }
 
-        public static void OnLogin(Mobile from)
+        public static void OnLogin(PlayerMobile from)
         {
             if (AccountHandler.LockdownLevel > AccessLevel.Player)
             {
@@ -1253,11 +1253,9 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (from is PlayerMobile mobile)
-            {
-                VirtueSystem.CheckAtrophies(mobile);
-                mobile.ClaimAutoStabledPets();
-            }
+            VirtueSystem.CheckAtrophies(from);
+            from.ClaimAutoStabledPets();
+            AnimalForm.GetContext(from)?.Timer.Start();
         }
 
         private class ServerLockdownNoticeGump : StaticNoticeGump<ServerLockdownNoticeGump>
@@ -1521,6 +1519,9 @@ namespace Server.Mobiles
         private static void OnLogout(Mobile m)
         {
             (m as PlayerMobile)?.AutoStablePets();
+
+            // Stop the timer, but don't delete it
+            AnimalForm.GetContext(m)?.Timer.Stop();
         }
 
         private static void EventSink_Connected(Mobile m)
@@ -2561,6 +2562,7 @@ namespace Server.Mobiles
             PolymorphSpell.StopTimer(this);
             IncognitoSpell.StopTimer(this);
             DisguisePersistence.RemoveTimer(this);
+            AnimalForm.RemoveContext(this, true);
 
             EndAction<PolymorphSpell>();
             EndAction<IncognitoSpell>();

@@ -341,7 +341,11 @@ public static class IncomingAccountPackets
         PlayerMurderSystem.OnLogin(m);
         AssistantHandler.OnLogin(m);
         VisibilityList.OnLogin(m);
-        PlayerMobile.OnLogin(m);
+
+        if (m is PlayerMobile pm)
+        {
+            PlayerMobile.OnLogin(pm);
+        }
         Account.OnLogin(m);
         GiftGiving.OnLogin(m);
         PreventInaccess.OnLogin(m);

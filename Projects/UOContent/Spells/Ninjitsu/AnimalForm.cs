@@ -523,21 +523,24 @@ public class AnimalFormTimer : Timer
 
         if (_body == 0x115) // Cu Sidhe
         {
-            if (_counter++ >= 8)
+            // Once every 8 seconds
+            if (_counter++ < 8)
             {
-                if (_mobile.Hits < _mobile.HitsMax && _mobile.Backpack != null)
-                {
-                    var b = _mobile.Backpack.FindItemByType<Bandage>();
-
-                    if (b != null)
-                    {
-                        _mobile.Hits += Utility.RandomMinMax(20, 50);
-                        b.Consume();
-                    }
-                }
-
-                _counter = 0;
+                return;
             }
+
+            if (_mobile.Hits < _mobile.HitsMax)
+            {
+                var b = _mobile.Backpack?.FindItemByType<Bandage>();
+
+                if (b != null)
+                {
+                    _mobile.Hits += Utility.RandomMinMax(20, 50);
+                    b.Consume();
+                }
+            }
+
+            _counter = 0;
         }
         else if (_body == 0x114) // Reptalon
         {
