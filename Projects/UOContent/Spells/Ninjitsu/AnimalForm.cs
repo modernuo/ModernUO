@@ -141,7 +141,7 @@ public class AnimalForm : NinjaSpell
             else
             {
                 var lastAnimalForm = GetLastAnimalForm(Caster);
-                if (Caster is PlayerMobile && lastAnimalForm == -1 && _wasMoving || CasterIsMoving())
+                if (Caster is PlayerMobile && lastAnimalForm == -1 && !_wasMoving && !CasterIsMoving())
                 {
                     Caster.CloseGump<AnimalFormGump>();
                     Caster.SendGump(new AnimalFormGump(Caster, Entries, this));
