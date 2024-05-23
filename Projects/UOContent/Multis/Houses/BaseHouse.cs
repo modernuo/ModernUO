@@ -716,7 +716,9 @@ namespace Server.Multis
             return fromSecures + fromVendors + fromLockdowns + fromMovingCrate;
         }
 
-        public bool InRange(Point2D from, int range)
+        public override bool InRange(Point3D from, int range) => InRange(new Point2D(from), range);
+
+        public override bool InRange(Point2D from, int range)
         {
             if (Region == null)
             {
@@ -725,7 +727,6 @@ namespace Server.Multis
 
             foreach (var rect in Region.Area)
             {
-                // TODO: Convert this to 3D - https://github.com/modernuo/ModernUO/issues/29
                 if (from.X >= rect.Start.X - range && from.Y >= rect.Start.Y - range && from.X < rect.End.X + range && from.Y < rect.End.Y + range)
                 {
                     return true;

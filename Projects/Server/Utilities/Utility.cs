@@ -674,14 +674,14 @@ public static class Utility
         InRange(p1.m_X, p1.m_Y, p2.m_X, p2.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InUpdateRange(Point2D p1, Point2D p2) => InRange(p1, p2, 18);
+    public static bool InUpdateRange(Point2D p1, Point2D p2) => InRange(p1, p2, Core.GlobalUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InRange(Point3D p1, Point3D p2, int range) =>
         InRange(p1.m_X, p1.m_Y, p2.m_X, p2.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, 18);
+    public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, Core.GlobalUpdateRange);
 
     // Optimized method for handling 50% random chances in succession up to a maximum
     public static int CoinFlips(int amount, int maximum)

@@ -19,8 +19,7 @@ public abstract partial class QuestGiverItem : Item, IQuestGiver
 
     public override bool Nontransferable => true;
 
-    public List<MLQuest> MLQuests => m_MLQuests ??
-                                     (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
+    public List<MLQuest> MLQuests => m_MLQuests ??= MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList;
 
     public override void AddNameProperties(IPropertyList list)
     {
@@ -75,8 +74,7 @@ public abstract partial class TransientQuestGiverItem : TransientItem, IQuestGiv
 
     public override bool Nontransferable => true;
 
-    public List<MLQuest> MLQuests => m_MLQuests ??
-                                     (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
+    public List<MLQuest> MLQuests => m_MLQuests ??= MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList;
 
     public override void HandleInvalidTransfer(Mobile from)
     {
