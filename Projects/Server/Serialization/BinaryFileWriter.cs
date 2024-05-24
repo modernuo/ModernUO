@@ -47,6 +47,10 @@ public class BinaryFileWriter : BufferWriter, IDisposable
             _file.Write(Buffer, 0, (int)Index);
             Index = 0;
         }
+        else
+        {
+            base.Flush(); // Increase buffer size
+        }
     }
 
     public override void Close()
@@ -61,7 +65,10 @@ public class BinaryFileWriter : BufferWriter, IDisposable
 
     public override long Seek(long offset, SeekOrigin origin)
     {
-        Flush();
+        if (Index > 0)
+        {
+            Flush();
+        }
 
         return _position = _file.Seek(offset, origin);
     }
