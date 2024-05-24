@@ -63,6 +63,7 @@ public class BinaryFileWriter : BufferWriter, IDisposable
         }
 
         _file.Write(bytes, offset, count);
+        _position += count;
     }
 
     public override void Write(ReadOnlySpan<byte> bytes)
@@ -73,6 +74,7 @@ public class BinaryFileWriter : BufferWriter, IDisposable
         }
 
         _file.Write(bytes);
+        _position += bytes.Length;
     }
 
     public override void Close()
