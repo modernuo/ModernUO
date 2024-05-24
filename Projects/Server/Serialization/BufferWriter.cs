@@ -122,7 +122,7 @@ public class BufferWriter : IGenericWriter
         }
     }
 
-    public void Write(ReadOnlySpan<byte> bytes)
+    public virtual void Write(ReadOnlySpan<byte> bytes)
     {
         var length = bytes.Length;
 
