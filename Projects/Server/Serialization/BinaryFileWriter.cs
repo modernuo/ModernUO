@@ -53,6 +53,16 @@ public class BinaryFileWriter : BufferWriter, IDisposable
         }
     }
 
+    public virtual void Write(byte[] bytes, int offset, int count)
+    {
+        if (Index > 0)
+        {
+            Flush();
+        }
+
+        _file.Write(bytes, offset, count);
+    }
+
     public override void Write(ReadOnlySpan<byte> bytes)
     {
         if (Index > 0)
