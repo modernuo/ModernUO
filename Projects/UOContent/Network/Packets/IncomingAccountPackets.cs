@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Server.Accounting;
 using Server.Assistants;
 using Server.Commands;
@@ -496,11 +497,45 @@ public static class IncomingAccountPackets
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);
 
-        var accountLoginEventArgs = new AccountLoginEventArgs(state, username, password);
+        var loginEventArgs = new AccountLoginEventArgs(state, username, password);
 
-        EventSink.InvokeAccountLogin(accountLoginEventArgs);
+        if (AccountHandler.AsyncAccountLogin)
+        {
+            // Fire and forget the async login
+            AccountLoginAsync(loginEventArgs).ConfigureAwait(false);
+        }
+        else
+        {
+            AccountHandler.AccountLogin(loginEventArgs);
+            ServerAccess.ResetProtectedAccount(loginEventArgs);
 
-        if (accountLoginEventArgs.Accepted)
+            SendLoginResponse(loginEventArgs);
+        }
+    }
+
+    private static async Task AccountLoginAsync(AccountLoginEventArgs e)
+    {
+        // Replace with your async/await logic
+        Core.LoopContext.Send(
+            o =>
+            {
+                var loginEventArgs = (AccountLoginEventArgs)o;
+                AccountHandler.AccountLogin(loginEventArgs);
+                ServerAccess.ResetProtectedAccount(loginEventArgs);
+            }, e);
+
+        // Keep this to ensure the response is sent on the correct thread at the end of the async work
+        Core.LoopContext.Post(
+            o =>
+            {
+                SendLoginResponse((AccountLoginEventArgs)o);
+            }, e);
+    }
+
+    private static void SendLoginResponse(AccountLoginEventArgs e)
+    {
+        var state = e.State;
+        if (e.Accepted)
         {
             var serverListEventArgs = new ServerListEventArgs(state, state.Account);
 
@@ -520,7 +555,7 @@ public static class IncomingAccountPackets
         else
         {
             state.Account = null;
-            AccountLogin_ReplyRej(state, accountLoginEventArgs.RejectReason);
+            AccountLogin_ReplyRej(state, e.RejectReason);
         }
     }
 

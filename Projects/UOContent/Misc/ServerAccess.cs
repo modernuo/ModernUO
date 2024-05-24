@@ -63,21 +63,21 @@ public static class ServerAccess
         }
     }
 
-    public static void Initialize()
+    public static void ResetProtectedAccount(AccountLoginEventArgs e)
     {
-        EventSink.AccountLogin += EventSink_ResetProtectedAccount;
-    }
+        var username = e.Username;
+        if (Accounts.GetAccount(username) is not Account acct)
+        {
+            return;
+        }
 
-    public static void EventSink_ResetProtectedAccount(AccountLoginEventArgs e)
-    {
-        var username = e.Username.ToLower();
         if (!ServerAccessConfiguration.ProtectedAccounts.Contains(username))
         {
             return;
         }
 
-        if (Accounts.GetAccount(username) is not Account acct
-            || !acct.Banned && acct.AccessLevel >= AccessLevel.Owner || !acct.CheckPassword(e.Password))
+        var password = e.Password;
+        if (!acct.Banned && acct.AccessLevel >= AccessLevel.Owner || !acct.CheckPassword(password))
         {
             return;
         }
@@ -87,7 +87,7 @@ public static class ServerAccess
 
         logger.Warning("Protected account \"{Username}\" has been reset.", username);
 
-        if (e.RejectReason is ALRReason.Blocked or ALRReason.BadPass or ALRReason.BadComm)
+        if (!e.Accepted && e.RejectReason is ALRReason.Blocked or ALRReason.BadPass or ALRReason.BadComm)
         {
             e.Accepted = true;
         }
