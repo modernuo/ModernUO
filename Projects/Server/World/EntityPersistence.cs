@@ -28,12 +28,9 @@ public static class EntityPersistence
         IIndexInfo<I> indexInfo,
         Dictionary<I, T> entities,
         string savePath,
-        ConcurrentQueue<Type> types,
-        out Dictionary<string, int> counts
+        ConcurrentQueue<Type> types
     ) where T : class, ISerializable
     {
-        counts = new Dictionary<string, int>();
-
         var typeName = indexInfo.TypeName;
 
         var path = Path.Combine(savePath, typeName);
@@ -61,12 +58,6 @@ public static class EntityPersistence
             e.SerializeTo(bin);
 
             idx.Write((int)(bin.Position - start));
-
-            var type = e.GetType().FullName;
-            if (type != null)
-            {
-                counts[type] = (counts.TryGetValue(type, out var count) ? count : 0) + 1;
-            }
         }
     }
 

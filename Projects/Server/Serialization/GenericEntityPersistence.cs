@@ -64,7 +64,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
     public override void WriteSnapshot(string basePath)
     {
         IIndexInfo<Serial> indexInfo = new EntityTypeIndex(_name);
-        EntityPersistence.WriteEntities(indexInfo, EntitiesBySerial, basePath,World.SerializedTypes, out _);
+        EntityPersistence.WriteEntities(indexInfo, EntitiesBySerial, basePath,World.SerializedTypes);
     }
 
     public virtual void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb)
