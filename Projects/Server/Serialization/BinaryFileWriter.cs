@@ -53,7 +53,9 @@ public class BinaryFileWriter : BufferWriter, IDisposable
         }
     }
 
-    public virtual void Write(byte[] bytes, int offset, int count)
+    public override void Write(byte[] bytes) => Write(bytes, 0, bytes.Length);
+
+    public override void Write(byte[] bytes, int offset, int count)
     {
         if (Index > 0)
         {

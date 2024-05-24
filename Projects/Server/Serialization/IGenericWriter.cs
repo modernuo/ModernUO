@@ -121,6 +121,8 @@ public interface IGenericWriter
     }
     void Write(Map value) => Write((byte)(value?.MapIndex ?? 0xFF));
     void Write(Race value) => Write((byte)(value?.RaceIndex ?? 0xFF));
+    void Write(byte[] bytes);
+    void Write(byte[] bytes, int offset, int count);
     void Write(ReadOnlySpan<byte> bytes);
     unsafe void WriteEnum<T>(T value) where T : unmanaged, Enum
     {
