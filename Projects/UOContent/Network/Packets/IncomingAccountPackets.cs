@@ -17,6 +17,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Server.Accounting;
 using Server.Assistants;
@@ -499,21 +500,15 @@ public static class IncomingAccountPackets
 
         var loginEventArgs = new AccountLoginEventArgs(state, username, password);
 
-        if (AccountHandler.AsyncAccountLogin)
-        {
-            // Fire and forget the async login
-            AccountLoginAsync(loginEventArgs).ConfigureAwait(false);
-        }
-        else
-        {
-            AccountHandler.AccountLogin(loginEventArgs);
-            ServerAccess.ResetProtectedAccount(loginEventArgs);
-
-            SendLoginResponse(loginEventArgs);
-        }
+        // Fire and forget the async login
+        Task.Run(() =>
+            {
+                AccountLoginAsync(loginEventArgs);
+            }
+        ).ConfigureAwait(false);
     }
 
-    private static async Task AccountLoginAsync(AccountLoginEventArgs e)
+    private static void AccountLoginAsync(AccountLoginEventArgs e)
     {
         // Replace with your async/await logic
         Core.LoopContext.Send(
