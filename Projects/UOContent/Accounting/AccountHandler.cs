@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Net;
 using Server.Accounting;
@@ -24,13 +25,28 @@ public static class AccountHandler
 
     private static int MaxAccountsPerIP;
     private static bool AutoAccountCreation;
-    private static bool RestrictDeletion = !TestCenter.Enabled;
-    private static TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
+    private static readonly bool RestrictDeletion = !TestCenter.Enabled;
+    private static readonly TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
     private static bool PasswordCommandEnabled;
+    public static bool AsyncAccountLogin { get; private set; }
 
     private static Dictionary<IPAddress, int> m_IPTable;
 
-    private static char[] m_ForbiddenChars = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
+    private static readonly SearchValues<char> _forbiddenAccountChars = SearchValues.Create([
+        '\0', '\x1', '\x2', '\x3', '\x4', '\x5', '\x6', '\a', '\b', '\t', '\n', '\v', '\f', '\r', '\x7', '\x8', '\x9',
+        '\xA', '\xB', '\xC', '\xD', '\xE', '\xF', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18',
+        '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F',
+
+        '<', '>', ':', '"', '/', '\\', '|', '?', '*',
+
+        '\x7F', '\xFF',
+    ]);
+
+    private static readonly SearchValues<char> _forbiddenPasswordChars = SearchValues.Create([
+        '\0', '\x1', '\x2', '\x3', '\x4', '\x5', '\x6', '\a', '\b', '\t', '\n', '\v', '\f', '\r', '\x7', '\x8', '\x9',
+        '\xA', '\xB', '\xC', '\xD', '\xE', '\xF', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18',
+        '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F', '\x7F', '\xFF'
+    ]);
 
     public static AccessLevel LockdownLevel { get; set; }
 
@@ -47,7 +63,7 @@ public static class AccountHandler
                     if (a.LoginIPs.Length > 0)
                     {
                         var ip = a.LoginIPs[0];
-                        m_IPTable[ip] = (m_IPTable.TryGetValue(ip, out var value) ? value : 0) + 1;
+                        m_IPTable[ip] = (m_IPTable.GetValueOrDefault(ip, 0)) + 1;
                     }
                 }
             }
@@ -58,6 +74,7 @@ public static class AccountHandler
 
     public static void Configure()
     {
+        AsyncAccountLogin = ServerConfiguration.GetSetting("accountHandler.useAsyncAccountLogin", false);
         MaxAccountsPerIP = ServerConfiguration.GetOrUpdateSetting("accountHandler.maxAccountsPerIP", 1);
         AutoAccountCreation = ServerConfiguration.GetOrUpdateSetting("accountHandler.enableAutoAccountCreation", true);
         PasswordCommandEnabled = ServerConfiguration.GetOrUpdateSetting(
@@ -73,7 +90,6 @@ public static class AccountHandler
 
     public static void Initialize()
     {
-        EventSink.AccountLogin += EventSink_AccountLogin;
         EventSink.GameLogin += EventSink_GameLogin;
     }
 
@@ -262,19 +278,6 @@ public static class AccountHandler
     public static bool CanCreate(IPAddress ip) =>
         !IPTable.TryGetValue(ip, out var result) || result < MaxAccountsPerIP;
 
-    private static bool IsForbiddenChar(char c)
-    {
-        for (var i = 0; i < m_ForbiddenChars.Length; ++i)
-        {
-            if (c == m_ForbiddenChars[i])
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static Account CreateAccount(NetState state, string un, string pw)
     {
         if (un.Length == 0 || pw.Length == 0)
@@ -282,21 +285,19 @@ public static class AccountHandler
             return null;
         }
 
-        var isSafe = !(un.StartsWithOrdinal(" ") ||
-                       un.EndsWithOrdinal(" ") ||
-                       un.EndsWithOrdinal("."));
+        var unSpan = un.AsSpan();
 
-        for (var i = 0; isSafe && i < un.Length; ++i)
+        if (unSpan[0] == ' ' || unSpan[^1] is ' ' or '.')
         {
-            isSafe = un[i] >= 0x20 && un[i] < 0x7F && !IsForbiddenChar(un[i]);
+            return null;
         }
 
-        for (var i = 0; isSafe && i < pw.Length; ++i)
+        if (unSpan.ContainsAny(_forbiddenAccountChars))
         {
-            isSafe = pw[i] >= 0x20 && pw[i] < 0x7F;
+            return null;
         }
 
-        if (!isSafe)
+        if (pw.AsSpan().ContainsAny(_forbiddenPasswordChars))
         {
             return null;
         }
@@ -320,20 +321,18 @@ public static class AccountHandler
         return a;
     }
 
-    public static void EventSink_AccountLogin(AccountLoginEventArgs e)
+    public static void AccountLogin(AccountLoginEventArgs e)
     {
-        var un = e.Username;
-        var pw = e.Password;
-
-        e.Accepted = false;
-
-        if (Accounts.GetAccount(un) is not Account acct)
+        var state = e.State;
+        var username = e.Username;
+        var password = e.Password;
+        if (Accounts.GetAccount(username) is not Account acct)
         {
             // To prevent someone from making an account of just '' or a bunch of meaningless spaces
-            if (AutoAccountCreation && !string.IsNullOrWhiteSpace(un))
+            if (AutoAccountCreation && !string.IsNullOrWhiteSpace(username))
             {
-                e.State.Account = acct = CreateAccount(e.State, un, pw);
-                e.Accepted = acct?.CheckAccess(e.State) ?? false;
+                state.Account = acct = CreateAccount(state, username, password);
+                e.Accepted = acct?.CheckAccess(state) ?? false;
 
                 if (!e.Accepted)
                 {
@@ -342,37 +341,37 @@ public static class AccountHandler
             }
             else
             {
-                logger.Information("Login: {NetState} Invalid username '{Username}'", e.State, un);
+                logger.Information("Login: {NetState} Invalid username '{Username}'", state, username);
                 e.RejectReason = ALRReason.Invalid;
             }
         }
-        else if (!acct.HasAccess(e.State))
+        else if (!acct.HasAccess(state))
         {
-            logger.Information("Login: {NetState} Access denied for '{Username}'", e.State, un);
+            logger.Information("Login: {NetState} Access denied for '{Username}'", state, username);
             e.RejectReason = LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass;
         }
-        else if (!acct.CheckPassword(pw))
+        else if (!acct.CheckPassword(password))
         {
-            logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, un);
+            logger.Information("Login: {NetState} Invalid password for '{Username}'", state, username);
             e.RejectReason = ALRReason.BadPass;
         }
         else if (acct.Banned)
         {
-            logger.Information("Login: {NetState} Banned account '{Username}'", e.State, un);
+            logger.Information("Login: {NetState} Banned account '{Username}'", state, username);
             e.RejectReason = ALRReason.Blocked;
         }
         else
         {
-            logger.Information("Login: {NetState} Valid credentials for '{Username}'", e.State, un);
-            e.State.Account = acct;
+            logger.Information("Login: {NetState} Valid credentials for '{Username}'", state, username);
+            state.Account = acct;
             e.Accepted = true;
 
-            acct.LogAccess(e.State);
+            acct.LogAccess(state);
         }
 
         if (!e.Accepted)
         {
-            AccountAttackLimiter.RegisterInvalidAccess(e.State);
+            AccountAttackLimiter.RegisterInvalidAccess(state);
         }
     }
 
