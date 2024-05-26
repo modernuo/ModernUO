@@ -54,11 +54,10 @@ public abstract class BaseGuild : ISerializable
 
     public BufferWriter SaveBuffer { get; set; }
 
-    public int TypeRef { get; private set; }
-
     public abstract void Serialize(IGenericWriter writer);
 
     public abstract void Deserialize(IGenericReader reader);
+
     public abstract void OnDelete(Mobile mob);
 
     public static BaseGuild FindByName(string name)
