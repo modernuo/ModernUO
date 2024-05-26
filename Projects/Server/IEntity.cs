@@ -55,8 +55,6 @@ public class Entity : IEntity
 
     public BufferWriter SaveBuffer { get; set; }
 
-    public int TypeRef => -1;
-
     public Serial Serial { get; }
 
     public Point3D Location { get; private set; }
