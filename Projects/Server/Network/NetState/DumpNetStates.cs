@@ -26,9 +26,7 @@ public static class DumpNetStates
 
     public static void DumpNetStatesCommand(CommandEventArgs args)
     {
-        var now = Core.Now;
-        var tickCount = Core.TickCount;
-        using var file = new StreamWriter($"netstatedump-{now:yyyy-M-d}_{tickCount}.csv");
+        using var file = new StreamWriter($"netstatedump-{Core.Now:yyyy-M-d-HH-mm-ss}_{Core.TickCount}.csv");
 
         file.WriteLine("NetState, ConnectedOn, NextActivityCheck, SocketConnected, ProtocolState, ParserState");
 
