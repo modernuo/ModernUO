@@ -332,10 +332,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         {
             var trade = Trades[i];
 
-            if (
-                trade.From.Mobile == Mobile && trade.To.Mobile == m ||
-                trade.From.Mobile == m && trade.To.Mobile == Mobile
-            )
+            if (trade.From.Mobile == m || trade.To.Mobile == m)
             {
                 return trade;
             }
