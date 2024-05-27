@@ -67,7 +67,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     private readonly string _toString;
     private ClientVersion _version;
-    private long _nextActivityCheck;
     private bool _running = true;
     private volatile DecodePacket _packetDecoder;
     private volatile EncodePacket _packetEncoder;
@@ -133,7 +132,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Trades = [];
         RecvPipe = new Pipe(RecvPipeSize);
         SendPipe = new Pipe(SendPipeSize);
-        _nextActivityCheck = Core.TickCount + 30000;
+        NextActivityCheck = Core.TickCount + 30000;
         ConnectedOn = Core.Now;
 
         try
@@ -165,6 +164,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public NetState Next { get; set; }
     public NetState Previous { get; set; }
     public bool OnLinkList { get; set; }
+
+    public long NextActivityCheck { get; private set; }
 
     // Only use this for debugging. This will make your server very slow!
     public bool PacketLogging
@@ -331,7 +332,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         {
             var trade = Trades[i];
 
-            if (trade.From.Mobile == m || trade.To.Mobile == m)
+            if (
+                trade.From.Mobile == Mobile && trade.To.Mobile == m ||
+                trade.From.Mobile == m && trade.To.Mobile == Mobile
+            )
             {
                 return trade;
             }
@@ -340,28 +344,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return null;
     }
 
-    public SecureTradeContainer FindTradeContainer(Mobile m)
-    {
-        for (var i = 0; i < Trades.Count; ++i)
-        {
-            var trade = Trades[i];
-
-            var from = trade.From;
-            var to = trade.To;
-
-            if (from.Mobile == Mobile && to.Mobile == m)
-            {
-                return from.Container;
-            }
-
-            if (from.Mobile == m && to.Mobile == Mobile)
-            {
-                return to.Container;
-            }
-        }
-
-        return null;
-    }
+    public SecureTradeContainer FindTradeContainer(Mobile m) => FindTrade(m)?.From.Container;
 
     public SecureTradeContainer AddTrade(NetState state)
     {
@@ -920,7 +903,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         if (bytesWritten > 0)
         {
-            _nextActivityCheck = Core.TickCount + 90000;
+            NextActivityCheck = Core.TickCount + 90000;
             reader.Advance((uint)bytesWritten);
         }
 
@@ -972,7 +955,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         DecodePacket(buffer, ref bytesWritten);
 
         writer.Advance((uint)bytesWritten);
-        _nextActivityCheck = Core.TickCount + 90000;
+        NextActivityCheck = Core.TickCount + 90000;
     }
 
     private static void DisconnectUnattachedSockets()
@@ -1084,7 +1067,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void CheckAlive(long curTicks)
     {
-        if (Connection != null && _nextActivityCheck - curTicks < 0)
+        if (Connection != null && NextActivityCheck - curTicks < 0)
         {
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
