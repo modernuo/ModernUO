@@ -57,7 +57,7 @@ public static class IncomingPackets
         }
     }
 
-    public static unsafe void RegisterThrottler(int packetID, delegate*<int, NetState, out bool, bool> t)
+    public static unsafe void RegisterThrottler(int packetID, delegate*<int, NetState, bool> t)
     {
         var ph = GetHandler(packetID);
 

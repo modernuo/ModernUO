@@ -35,7 +35,7 @@ public unsafe class PacketHandler
 
     public delegate*<NetState, SpanReader, void> OnReceive { get; }
 
-    public delegate*<int, NetState, out bool, bool> ThrottleCallback { get; set; }
+    public delegate*<int, NetState, bool> ThrottleCallback { get; set; }
 
     public bool Ingame { get; }
 }
