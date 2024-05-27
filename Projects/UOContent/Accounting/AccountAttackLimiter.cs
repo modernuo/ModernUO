@@ -99,7 +99,6 @@ public static class AccountAttackLimiter
             >= 10 => TimeSpan.FromMinutes(1.0),
             >= 5  => TimeSpan.FromSeconds(20.0),
             >= 3  => TimeSpan.FromSeconds(10.0),
-            >= 1  => TimeSpan.FromSeconds(2.0),
             _     => TimeSpan.Zero
         };
 }
