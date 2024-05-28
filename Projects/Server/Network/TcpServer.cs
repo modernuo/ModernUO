@@ -246,15 +246,6 @@ public static class TcpServer
                 return;
             }
 
-            if (!IPLimiter.Verify(remoteIP))
-            {
-                TraceDisconnect("Past IP limit threshold", remoteIP);
-                logger.Debug("{Address} Past IP limit threshold", remoteIP);
-
-                CloseSocket(socket);
-                return;
-            }
-
             var firewalled = Firewall.IsBlocked(remoteIP);
             if (!firewalled)
             {
@@ -267,6 +258,15 @@ public static class TcpServer
             {
                 TraceDisconnect("Firewalled", remoteIP);
                 logger.Debug("{Address} Firewalled", remoteIP);
+
+                CloseSocket(socket);
+                return;
+            }
+
+            if (!IPLimiter.Verify(remoteIP))
+            {
+                TraceDisconnect("Past IP limit threshold", remoteIP);
+                logger.Debug("{Address} Past IP limit threshold", remoteIP);
 
                 CloseSocket(socket);
                 return;
