@@ -369,11 +369,6 @@ public static class AccountHandler
 
             acct.LogAccess(e.State);
         }
-
-        if (!e.Accepted)
-        {
-            AccountAttackLimiter.RegisterInvalidAccess(e.State);
-        }
     }
 
     public static void EventSink_GameLogin(GameLoginEventArgs e)
@@ -408,11 +403,6 @@ public static class AccountHandler
             e.State.Account = acct;
             e.Accepted = true;
             e.CityInfo = CharacterCreation.GetStartingCities(acct.Young);
-        }
-
-        if (!e.Accepted)
-        {
-            AccountAttackLimiter.RegisterInvalidAccess(e.State);
         }
     }
 

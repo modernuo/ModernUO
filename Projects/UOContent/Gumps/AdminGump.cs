@@ -36,7 +36,6 @@ namespace Server.Gumps
         AccountDetails_Characters,
         AccountDetails_Access,
         AccountDetails_Access_ClientIPs,
-        AccountDetails_Access_Restrictions,
         AccountDetails_Comments,
         AccountDetails_Tags,
         AccountDetails_ChangePassword,
@@ -132,7 +131,6 @@ namespace Server.Gumps
                 AdminGumpPage.AccountDetails_Characters,
                 AdminGumpPage.AccountDetails_Access,
                 AdminGumpPage.AccountDetails_Access_ClientIPs,
-                AdminGumpPage.AccountDetails_Access_Restrictions,
                 AdminGumpPage.AccountDetails_Comments,
                 AdminGumpPage.AccountDetails_Tags,
                 AdminGumpPage.AccountDetails_ChangeAccess,
@@ -801,8 +799,7 @@ namespace Server.Gumps
                             GetButtonID(5, 13),
                             "Access",
                             AdminGumpPage.AccountDetails_Access,
-                            AdminGumpPage.AccountDetails_Access_ClientIPs,
-                            AdminGumpPage.AccountDetails_Access_Restrictions
+                            AdminGumpPage.AccountDetails_Access_ClientIPs
                         );
                         AddPageButton(190, 70, GetButtonID(5, 2), "Comments", AdminGumpPage.AccountDetails_Comments);
                         AddPageButton(190, 90, GetButtonID(5, 3), "Tags", AdminGumpPage.AccountDetails_Tags);
@@ -968,13 +965,6 @@ namespace Server.Gumps
                             "View client addresses",
                             AdminGumpPage.AccountDetails_Access_ClientIPs
                         );
-                        AddPageButton(
-                            20,
-                            170,
-                            GetButtonID(5, 15),
-                            "Manage restrictions",
-                            AdminGumpPage.AccountDetails_Access_Restrictions
-                        );
 
                         goto case AdminGumpPage.AccountDetails;
                     }
@@ -1036,67 +1026,6 @@ namespace Server.Gumps
                             AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
                             AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
                             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
-                        }
-
-                        goto case AdminGumpPage.AccountDetails_Access;
-                    }
-                case AdminGumpPage.AccountDetails_Access_Restrictions:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        m_List ??= a.IpRestrictions.ToList<object>();
-
-                        AddHtml(10, 195, 400, 20, "Address Restrictions".Center(LabelColor32));
-
-                        AddTextField(227, 225, 120, 20, 0);
-
-                        AddButtonLabeled(352, 225, GetButtonID(5, 19), "Add");
-
-                        AddHtml(
-                            225,
-                            255,
-                            180,
-                            120,
-                            "Any clients connecting from an address not in this list will be rejected. Or, if the list is empty, any client may connect.".Color(
-                                LabelColor32
-                            )
-                        );
-
-                        AddImageTiled(15, 219, 206, 156, 0xBBC);
-                        AddBlackAlpha(16, 220, 204, 154);
-
-                        AddHtml(18, 221, 114, 20, "IP Address".Color(LabelColor32));
-
-                        if (listPage > 0)
-                        {
-                            AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0));
-                        }
-                        else
-                        {
-                            AddImage(184, 223, 0x25EA);
-                        }
-
-                        if ((listPage + 1) * 6 < m_List.Count)
-                        {
-                            AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1));
-                        }
-                        else
-                        {
-                            AddImage(201, 223, 0x25E6);
-                        }
-
-                        if (m_List.Count == 0)
-                        {
-                            AddHtml(18, 243, 200, 60, "There are no addresses in this list.".Color(LabelColor32));
-                        }
-
-                        for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
-                        {
-                            AddHtml(18, 243 + i * 22, 114, 20, ((string)m_List[index]).Color(LabelColor32));
-                            AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(8, index));
                         }
 
                         goto case AdminGumpPage.AccountDetails_Access;
@@ -2733,20 +2662,6 @@ namespace Server.Gumps
                                     );
                                     break;
                                 }
-                            case 15:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_Access_Restrictions,
-                                            0,
-                                            null,
-                                            null,
-                                            m_State
-                                        )
-                                    );
-                                    break;
-                                }
                             case 4:
                                 {
                                     from.Prompt = new AddCommentPrompt(m_State as Account);
@@ -3100,65 +3015,6 @@ namespace Server.Gumps
                                             )
                                         );
                                     }
-
-                                    break;
-                                }
-                            case 19: // add
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    var ip = info.GetTextEntry(0)?.Trim();
-
-                                    string notice;
-
-                                    if (string.IsNullOrEmpty(ip))
-                                    {
-                                        notice = "You must enter an address to add.";
-                                    }
-                                    else
-                                    {
-                                        var list = a.IpRestrictions;
-
-                                        var contains = false;
-                                        for (var i = 0; !contains && i < list.Length; ++i)
-                                        {
-                                            contains = list[i] == ip;
-                                        }
-
-                                        if (contains)
-                                        {
-                                            notice = "That address is already contained in the list.";
-                                        }
-                                        else
-                                        {
-                                            var newList = new string[list.Length + 1];
-
-                                            for (var i = 0; i < list.Length; ++i)
-                                            {
-                                                newList[i] = list[i];
-                                            }
-
-                                            newList[list.Length] = ip;
-
-                                            a.IpRestrictions = newList;
-
-                                            notice = $"{ip} : Added to restriction list.";
-                                        }
-                                    }
-
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_Access_Restrictions,
-                                            0,
-                                            null,
-                                            notice,
-                                            m_State
-                                        )
-                                    );
 
                                     break;
                                 }
@@ -3954,23 +3810,6 @@ namespace Server.Gumps
                                         420,
                                         280,
                                         okay => Firewall_Callback(from, okay, a, m_List[index])
-                                    )
-                                );
-                            }
-                            else if (m_PageType == AdminGumpPage.AccountDetails_Access_Restrictions)
-                            {
-                                var list = a.IpRestrictions.ToList();
-                                list.Remove(m_List[index] as string);
-                                a.IpRestrictions = list.ToArray();
-
-                                from.SendGump(
-                                    new AdminGump(
-                                        from,
-                                        AdminGumpPage.AccountDetails_Access_Restrictions,
-                                        0,
-                                        null,
-                                        $"{m_List[index]} : Removed from list.",
-                                        a
                                     )
                                 );
                             }
