@@ -16,15 +16,13 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Server.Network;
 
 namespace Server.Misc;
 
 public static class IPLimiter
 {
     private static readonly SortedSet<IPAccessLog> _connectionAttempts = [];
-    private static readonly SortedSet<(IFirewallEntry entry, DateTime Expiration)> _throttledAddresses
-        = new(FirewallEntryComparer.Instance);
+    private static readonly SortedSet<IPAccessLog> _throttledAddresses = [];
 
     private static readonly IPAddress _localHost = IPAddress.Parse("127.0.0.1");
 
@@ -39,7 +37,7 @@ public static class IPLimiter
         Enabled = ServerConfiguration.GetOrUpdateSetting("ipLimiter.enable", true);
         MaxConnections = ServerConfiguration.GetOrUpdateSetting("ipLimiter.maxConnectionsPerIP", 5);
         ConnectionAttemptsDuration = ServerConfiguration.GetOrUpdateSetting("ipLimiter.clearConnectionAttemptsDuration", TimeSpan.FromSeconds(10));
-        ConnectionThrottleDuration = ServerConfiguration.GetOrUpdateSetting("ipLimiter.connectionThrottleDuration", TimeSpan.FromMinutes(2));
+        ConnectionThrottleDuration = ServerConfiguration.GetOrUpdateSetting("ipLimiter.connectionThrottleDuration", TimeSpan.FromMinutes(5));
     }
 
     private static readonly IPAccessLog _accessCheck = new(IPAddress.None, DateTime.MinValue);
@@ -64,7 +62,7 @@ public static class IPLimiter
 
             if (now <= accessLog.Expiration && accessLog.Count >= MaxConnections)
             {
-                BlockConnection(now, ourAddress);
+                BlockConnection(now, accessLog);
                 return false;
             }
 
@@ -81,29 +79,23 @@ public static class IPLimiter
         return true;
     }
 
-    private static void BlockConnection(DateTime now, IPAddress address)
+    private static void BlockConnection(DateTime now, IPAccessLog accessLog)
     {
-        var fwEntry = new SingleIpFirewallEntry(address);
-        _throttledAddresses.Add((fwEntry, now));
-
-        Firewall.RequestAddEntry(fwEntry);
-    }
-
-    private static void UnblockConnection(IFirewallEntry firewallEntry)
-    {
-        _throttledAddresses.Remove((firewallEntry, DateTime.MinValue));
-        Firewall.RequestRemoveEntry(firewallEntry);
+        accessLog.Expiration = now + ConnectionAttemptsDuration;
+        _throttledAddresses.Add(accessLog);
     }
 
     private static void CheckThrottledAddresses(DateTime now)
     {
         while (_throttledAddresses.Count > 0)
         {
-            var (entry, expiration) = _throttledAddresses.Min;
-            if (now > expiration)
+            var accessLog = _throttledAddresses.Min;
+            if (now <= accessLog.Expiration)
             {
-                UnblockConnection(entry);
+                break;
             }
+
+            _throttledAddresses.Remove(accessLog);
         }
     }
 
@@ -122,13 +114,5 @@ public static class IPLimiter
 
         public int CompareTo(IPAccessLog other) =>
             IPAddress.Equals(other.IPAddress) ? 0 : Expiration.CompareTo(other.Expiration);
-    }
-
-    private class FirewallEntryComparer : IComparer<(IFirewallEntry Entry, DateTime Expiration)>
-    {
-        public static readonly FirewallEntryComparer Instance = new();
-
-        public int Compare((IFirewallEntry Entry, DateTime Expiration) x, (IFirewallEntry Entry, DateTime Expiration) y) =>
-            x.Entry.MaxIpAddress == y.Entry.MaxIpAddress ? 0 : x.Expiration.CompareTo(y.Expiration);
     }
 }
