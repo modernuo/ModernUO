@@ -33,15 +33,13 @@ public static class MovementThrottle
         IncomingPackets.RegisterThrottler(0x02, &Throttle);
     }
 
-    public static bool Throttle(int packetId, NetState ns, out bool drop)
+    public static bool Throttle(int packetId, NetState ns)
     {
-        drop = false;
-
         var from = ns.Mobile;
 
         if (from?.Deleted != false || from.AccessLevel > AccessLevel.Player)
         {
-            return true;
+            return false;
         }
 
         long now = Core.TickCount;
@@ -53,7 +51,7 @@ public static class MovementThrottle
         {
             ns._movementCredit = 0;
             ns._nextMovementTime = now;
-            return true;
+            return false;
         }
 
         long cost = nextMove - now;
@@ -61,11 +59,11 @@ public static class MovementThrottle
         if (credit < cost)
         {
             // Not enough credit, therefore throttled
-            return false;
+            return true;
         }
 
         // On the next event loop, the player receives up to 400ms in grace latency
         ns._movementCredit = Math.Min(_throttleThreshold, credit - cost);
-        return true;
+        return false;
     }
 }

@@ -823,9 +823,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         var throttler = handler.ThrottleCallback;
         if (throttler != null)
         {
-            if (!throttler(packetId, this, out bool drop))
+            if (throttler(packetId, this))
             {
-                return drop ? ParserState.Throttled : ParserState.AwaitingNextPacket;
+                return ParserState.Throttled;
             }
 
             SetPacketTime(packetId);
