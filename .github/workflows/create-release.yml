@@ -43,7 +43,7 @@ jobs:
         tags: true
     - name: Conventional Changelog
       id: changelog
-      uses: TriPSs/conventional-changelog-action@v4
+      uses: TriPSs/conventional-changelog-action@v5.3.0
       with:
         github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         output-file: false
@@ -51,22 +51,20 @@ jobs:
         skip-commit: true
         release-count: 1
     - name: Delete v${{ steps.changelog.outputs.version }} Tag
-      uses: dev-drprasad/delete-tag-and-release@v0.2.1
+      uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
         delete_release: true
         tag_name: v${{ steps.changelog.outputs.version }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Delete v0.1.0 Tag
-      uses: dev-drprasad/delete-tag-and-release@v0.2.1
+      uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
         delete_release: true
         tag_name: v0.1.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Create Release
       id: create_release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2.0.5
       with:
         body: ${{ steps.changelog.outputs.clean_changelog }}
         tag_name: ${{ steps.nbgv.outputs.Version }}
