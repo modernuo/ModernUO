@@ -16,100 +16,119 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Runtime.InteropServices;
+using Server.Network;
 
 namespace Server.Misc;
 
 public static class IPLimiter
 {
-    private static readonly Dictionary<IPAddress, int> _connectionAttempts = new(128);
-    private static readonly HashSet<IPAddress> _throttledAddresses = new();
+    private static readonly SortedSet<IPAccessLog> _connectionAttempts = [];
+    private static readonly SortedSet<(IFirewallEntry entry, DateTime Expiration)> _throttledAddresses
+        = new(FirewallEntryComparer.Instance);
 
-    private static long _lastClearedThrottles;
-    private static long _lastClearedAttempts;
+    private static readonly IPAddress _localHost = IPAddress.Parse("127.0.0.1");
 
-    public static readonly IPAddress[] Exemptions =
-    {
-        IPAddress.Parse( "127.0.0.1" )
-    };
-
-    public static TimeSpan ClearConnectionAttemptsDuration { get; private set; }
-
-    public static TimeSpan ClearThrottledDuration { get; private set; }
+    public static TimeSpan ConnectionAttemptsDuration { get; private set; }
+    public static TimeSpan ConnectionThrottleDuration { get; private set; }
 
     public static bool Enabled { get; private set; }
-    public static int MaxAddresses { get; private set; }
+    public static int MaxConnections { get; private set; }
 
     public static void Configure()
     {
         Enabled = ServerConfiguration.GetOrUpdateSetting("ipLimiter.enable", true);
-        MaxAddresses = ServerConfiguration.GetOrUpdateSetting("ipLimiter.maxConnectionsPerIP", 10);
-        ClearConnectionAttemptsDuration = ServerConfiguration.GetOrUpdateSetting("ipLimiter.clearConnectionAttemptsDuration", TimeSpan.FromSeconds(10));
-        ClearThrottledDuration = ServerConfiguration.GetOrUpdateSetting("ipLimiter.clearThrottledDuration", TimeSpan.FromMinutes(2));
+        MaxConnections = ServerConfiguration.GetOrUpdateSetting("ipLimiter.maxConnectionsPerIP", 5);
+        ConnectionAttemptsDuration = ServerConfiguration.GetOrUpdateSetting("ipLimiter.clearConnectionAttemptsDuration", TimeSpan.FromSeconds(10));
+        ConnectionThrottleDuration = ServerConfiguration.GetOrUpdateSetting("ipLimiter.connectionThrottleDuration", TimeSpan.FromMinutes(2));
     }
 
-    public static bool IsExempt(IPAddress ip)
-    {
-        for (int i = 0; i < Exemptions.Length; i++)
-        {
-            if (ip.Equals(Exemptions[i]))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    private static readonly IPAccessLog _accessCheck = new(IPAddress.None, DateTime.MinValue);
 
     public static bool Verify(IPAddress ourAddress)
     {
-        if (!Enabled || IsExempt(ourAddress))
+        if (!Enabled || ourAddress.Equals(_localHost))
         {
             return true;
         }
 
-        var now = Core.TickCount;
+        var now = Core.Now;
 
-        if (_throttledAddresses.Count > 0)
+        CheckThrottledAddresses(now);
+
+        _accessCheck.IPAddress = ourAddress;
+
+        if (_connectionAttempts.TryGetValue(_accessCheck, out var accessLog))
         {
-            if (now - _lastClearedThrottles > ClearThrottledDuration.TotalMilliseconds)
+            _connectionAttempts.Remove(accessLog);
+            accessLog.Count++;
+
+            if (now <= accessLog.Expiration && accessLog.Count >= MaxConnections)
             {
-                _lastClearedThrottles = now;
-                ClearThrottledAddresses();
-            }
-            else if (_throttledAddresses.Contains(ourAddress))
-            {
+                BlockConnection(now, ourAddress);
                 return false;
             }
-        }
 
-        if (_connectionAttempts.Count > 0 && now - _lastClearedAttempts > ClearConnectionAttemptsDuration.TotalMilliseconds)
+            accessLog.Expiration = now + ConnectionAttemptsDuration;
+        }
+        else
         {
-            _lastClearedAttempts = now;
-            ClearConnectionAttempts();
+            accessLog = new IPAccessLog(ourAddress, now + ConnectionAttemptsDuration);
         }
 
-        ref var count = ref CollectionsMarshal.GetValueRefOrAddDefault(_connectionAttempts, ourAddress, out _);
-        count++;
-
-        if (count > MaxAddresses)
-        {
-            _connectionAttempts.Remove(ourAddress);
-            _throttledAddresses.Add(ourAddress);
-            return false;
-        }
+        // Add it back so it is sorted properly
+        _connectionAttempts.Add(accessLog);
 
         return true;
     }
 
-    private static void ClearThrottledAddresses()
+    private static void BlockConnection(DateTime now, IPAddress address)
     {
-        _throttledAddresses.Clear();
+        var fwEntry = new SingleIpFirewallEntry(address);
+        _throttledAddresses.Add((fwEntry, now));
+
+        Firewall.RequestAddEntry(fwEntry);
     }
 
-    private static void ClearConnectionAttempts()
+    private static void UnblockConnection(IFirewallEntry firewallEntry)
     {
-        _connectionAttempts.Clear();
-        _connectionAttempts.TrimExcess(128);
+        _throttledAddresses.Remove((firewallEntry, DateTime.MinValue));
+        Firewall.RequestRemoveEntry(firewallEntry);
+    }
+
+    private static void CheckThrottledAddresses(DateTime now)
+    {
+        while (_throttledAddresses.Count > 0)
+        {
+            var (entry, expiration) = _throttledAddresses.Min;
+            if (now > expiration)
+            {
+                UnblockConnection(entry);
+            }
+        }
+    }
+
+    private class IPAccessLog : IComparable<IPAccessLog>
+    {
+        public IPAddress IPAddress;
+        public DateTime Expiration;
+        public int Count;
+
+        public IPAccessLog(IPAddress ipAddress, DateTime expiration)
+        {
+            IPAddress = ipAddress;
+            Expiration = expiration;
+            Count = 1;
+        }
+
+        public int CompareTo(IPAccessLog other) =>
+            IPAddress.Equals(other.IPAddress) ? 0 : Expiration.CompareTo(other.Expiration);
+    }
+
+    private class FirewallEntryComparer : IComparer<(IFirewallEntry Entry, DateTime Expiration)>
+    {
+        public static readonly FirewallEntryComparer Instance = new();
+
+        public int Compare((IFirewallEntry Entry, DateTime Expiration) x, (IFirewallEntry Entry, DateTime Expiration) y) =>
+            x.Entry.MaxIpAddress == y.Entry.MaxIpAddress ? 0 : x.Expiration.CompareTo(y.Expiration);
     }
 }

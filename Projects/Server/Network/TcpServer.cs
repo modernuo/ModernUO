@@ -223,7 +223,6 @@ public static class TcpServer
 
     private static void ProcessConnection(Socket socket)
     {
-        var ipLimiter = IPLimiter.Enabled;
         try
         {
             var remoteIP = ((IPEndPoint)socket.RemoteEndPoint)!.Address;
@@ -247,7 +246,7 @@ public static class TcpServer
                 return;
             }
 
-            if (ipLimiter && !IPLimiter.Verify(remoteIP))
+            if (!IPLimiter.Verify(remoteIP))
             {
                 TraceDisconnect("Past IP limit threshold", remoteIP);
                 logger.Debug("{Address} Past IP limit threshold", remoteIP);
