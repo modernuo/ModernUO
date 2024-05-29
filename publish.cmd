@@ -6,7 +6,7 @@ GOTO :CMDSCRIPT
 path=$(dirname "$0")
 cd $path
 ./publish.sh
-exit 1
+exit $?
 
 :CMDSCRIPT
 IF "%~1" == "" (
