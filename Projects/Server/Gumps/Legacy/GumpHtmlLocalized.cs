@@ -103,18 +103,30 @@ public class GumpHtmlLocalized : GumpEntry
 
     public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
-        var background = Background ? "1" : "0";
-        var scrollbar = Scrollbar ? "1" : "0";
-        writer.WriteAscii(
-            Type switch
-            {
-                GumpHtmlLocalizedType.Plain =>
-                    $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {background} {scrollbar} }}",
-                GumpHtmlLocalizedType.Color =>
-                    $"{{ xmfhtmlgumpcolor {X} {Y} {Width} {Height} {Number} {background} {scrollbar} {Color} }}",
-                _ =>
-                    $"{{ xmfhtmltok {X} {Y} {Width} {Height} {background} {scrollbar} {Color} {Number} @{Args}@ }}"
-            }
-        );
+        switch (Type)
+        {
+            default:
+            case GumpHtmlLocalizedType.Plain:
+                {
+                    writer.WriteAscii(
+                        $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {(Background ? "1" : "0")} {(Scrollbar ? "1" : "0")} }}"
+                    );
+                    break;
+                }
+            case GumpHtmlLocalizedType.Color:
+                {
+                    writer.WriteAscii(
+                        $"{{ xmfhtmlgumpcolor {X} {Y} {Width} {Height} {Number} {(Background ? "1" : "0")} {(Scrollbar ? "1" : "0")} {Color} }}"
+                    );
+                    break;
+                }
+            case GumpHtmlLocalizedType.Args:
+                {
+                    writer.WriteAscii(
+                        $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? "1" : "0")} {(Scrollbar ? "1" : "0")} {Color} {Number} @{Args}@ }}"
+                    );
+                    break;
+                }
+        }
     }
 }
