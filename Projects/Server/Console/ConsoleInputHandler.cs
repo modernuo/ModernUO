@@ -183,8 +183,8 @@ public static class ConsoleInputHandler
 
                 action?.Invoke(splitInput.Length > 1 ? splitInput[1] : string.Empty);
             }
-            catch {
-                logger.Warning("Failed to process console input");
+            catch ( Exception e ) {
+                logger.Warning(e, "Failed to process console input");
             }
         }
     }
