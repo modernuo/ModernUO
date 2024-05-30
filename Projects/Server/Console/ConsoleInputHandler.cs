@@ -156,7 +156,8 @@ public static class ConsoleInputHandler
 
         while (!token.IsCancellationRequested)
         {
-            try {
+            try
+            {
                 var input = Console.ReadLine()?.Trim();
 
                 if (Volatile.Read(ref _expectUserInput))
@@ -183,7 +184,8 @@ public static class ConsoleInputHandler
 
                 action?.Invoke(splitInput.Length > 1 ? splitInput[1] : string.Empty);
             }
-            catch ( Exception e ) {
+            catch (Exception e)
+            {
                 logger.Warning(e, "Failed to process console input");
             }
         }
