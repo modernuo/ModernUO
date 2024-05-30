@@ -7,12 +7,12 @@ namespace Server.Gumps
 {
     public class GoGump : Gump
     {
-        private static LocationTree Felucca;
-        private static LocationTree Trammel;
-        private static LocationTree Ilshenar;
-        private static LocationTree Malas;
-        private static LocationTree Tokuno;
-        private static LocationTree TerMur;
+        public static readonly LocationTree Felucca;
+        public static readonly LocationTree Trammel;
+        public static readonly LocationTree Ilshenar;
+        public static readonly LocationTree Malas;
+        public static readonly LocationTree Tokuno;
+        public static readonly LocationTree TerMur;
 
         private static readonly int PrevLabelOffsetX = PrevWidth + 1;
         private static readonly int PrevLabelOffsetY = 0;
@@ -31,6 +31,16 @@ namespace Server.Gumps
         private readonly int m_Page;
 
         private readonly LocationTree m_Tree;
+
+        static GoGump()
+        {
+            Felucca = new LocationTree("felucca", Map.Felucca);
+            Trammel = new LocationTree("trammel", Map.Trammel);
+            Ilshenar = new LocationTree("ilshenar", Map.Ilshenar);
+            Malas = new LocationTree("malas", Map.Malas);
+            Tokuno = new LocationTree("tokuno", Map.Tokuno);
+            TerMur = new LocationTree("termur", Map.TerMur);
+        }
 
         private GoGump(int page, Mobile from, LocationTree tree, GoCategory node) : base(50, 50)
         {
@@ -173,27 +183,27 @@ namespace Server.Gumps
 
             if (from.Map == Map.Ilshenar)
             {
-                tree = Ilshenar ??= new LocationTree("ilshenar", Map.Ilshenar);
+                tree = Ilshenar;
             }
             else if (from.Map == Map.Felucca)
             {
-                tree = Felucca ??= new LocationTree("felucca", Map.Felucca);
+                tree = Felucca;
             }
             else if (from.Map == Map.Trammel)
             {
-                tree = Trammel ??= new LocationTree("trammel", Map.Trammel);
+                tree = Trammel;
             }
             else if (from.Map == Map.Malas)
             {
-                tree = Malas ??= new LocationTree("malas", Map.Malas);
+                tree = Malas;
             }
             else if (from.Map == Map.Tokuno)
             {
-                tree = Tokuno ??= new LocationTree("tokuno", Map.Tokuno);
+                tree = Tokuno;
             }
             else
             {
-                tree = TerMur ??= new LocationTree("termur", Map.TerMur);
+                tree = TerMur;
             }
 
             if (!tree.LastBranch.TryGetValue(from, out var branch))
