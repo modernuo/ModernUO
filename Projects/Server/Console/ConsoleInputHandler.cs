@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Server.Logging;
 
 namespace Server;
 
@@ -147,37 +148,44 @@ public static class ConsoleInputHandler
         }
     }
 
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(ConsoleInputHandler));
+
     private static async void ProcessConsoleInput()
     {
         var token = Core.ClosingTokenSource.Token;
 
         while (!token.IsCancellationRequested)
         {
-            var input = Console.ReadLine()?.Trim();
+            try {
+                var input = Console.ReadLine()?.Trim();
 
-            if (Volatile.Read(ref _expectUserInput))
-            {
-                _input = input;
-                _receivedUserInput.Set();
-                _endUserInput.WaitOne();
-                continue;
+                if (Volatile.Read(ref _expectUserInput))
+                {
+                    _input = input;
+                    _receivedUserInput.Set();
+                    _endUserInput.WaitOne();
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(input))
+                {
+                    continue;
+                }
+
+                var splitInput = input.Split(' ', 2);
+                var command = splitInput[0].ToLower();
+
+                Action<string> action;
+                lock (_inputCommands)
+                {
+                    action = _inputCommands.GetValueOrDefault(command)?.Function;
+                }
+
+                action?.Invoke(splitInput.Length > 1 ? splitInput[1] : string.Empty);
             }
-
-            if (string.IsNullOrEmpty(input))
-            {
-                continue;
+            catch {
+                logger.Warning("Failed to process console input");
             }
-
-            var splitInput = input.Split(' ', 2);
-            var command = splitInput[0].ToLower();
-
-            Action<string> action;
-            lock (_inputCommands)
-            {
-                action = _inputCommands.GetValueOrDefault(command)?.Function;
-            }
-
-            action?.Invoke(splitInput.Length > 1 ? splitInput[1] : string.Empty);
         }
     }
 
