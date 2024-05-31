@@ -7,12 +7,12 @@ namespace Server.Gumps
 {
     public class GoGump : Gump
     {
-        public static readonly LocationTree Felucca;
-        public static readonly LocationTree Trammel;
-        public static readonly LocationTree Ilshenar;
-        public static readonly LocationTree Malas;
-        public static readonly LocationTree Tokuno;
-        public static readonly LocationTree TerMur;
+        public static readonly LocationTree Felucca = new LocationTree("felucca", Map.Felucca);
+        public static readonly LocationTree Trammel = new LocationTree("trammel", Map.Trammel);
+        public static readonly LocationTree Ilshenar = new LocationTree("ilshenar", Map.Ilshenar);
+        public static readonly LocationTree Malas = new LocationTree("malas", Map.Malas);
+        public static readonly LocationTree Tokuno = new LocationTree("tokuno", Map.Tokuno);
+        public static readonly LocationTree TerMur = new LocationTree("termur", Map.TerMur);
 
         private static readonly int PrevLabelOffsetX = PrevWidth + 1;
         private static readonly int PrevLabelOffsetY = 0;
@@ -31,16 +31,6 @@ namespace Server.Gumps
         private readonly int m_Page;
 
         private readonly LocationTree m_Tree;
-
-        static GoGump()
-        {
-            Felucca = new LocationTree("felucca", Map.Felucca);
-            Trammel = new LocationTree("trammel", Map.Trammel);
-            Ilshenar = new LocationTree("ilshenar", Map.Ilshenar);
-            Malas = new LocationTree("malas", Map.Malas);
-            Tokuno = new LocationTree("tokuno", Map.Tokuno);
-            TerMur = new LocationTree("termur", Map.TerMur);
-        }
 
         private GoGump(int page, Mobile from, LocationTree tree, GoCategory node) : base(50, 50)
         {
