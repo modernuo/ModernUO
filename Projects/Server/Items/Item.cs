@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.ContextMenus;
@@ -254,8 +255,13 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     // Sectors
+    [IgnoreDupe]
     public Item Next { get; set; }
+
+    [IgnoreDupe]
     public Item Previous { get; set; }
+
+    [IgnoreDupe]
     public bool OnLinkList { get; set; }
 
     /// <summary>
@@ -768,13 +774,17 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         AddNameProperties(list);
     }
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
+    [IgnoreDupe]
     public long SavePosition { get; set; } = -1;
 
+    [IgnoreDupe]
     public BufferWriter SaveBuffer { get; set; }
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
 
@@ -1445,6 +1455,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         ClearProperties();
     }
 
+    [IgnoreDupe]
     public ISpawner Spawner
     {
         get => LookupCompactInfo()?.m_Spawner;
@@ -3341,19 +3352,39 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    private static readonly HashSet<string> _excludedProperties =
-    [
-        "SaveBuffer",
-        "Parent",
-        "Next",
-        "Previous",
-        "OnLinkList"
-    ];
-
-    public virtual bool DupeExcludedProperty(string propertyName) => _excludedProperties.Contains(propertyName);
-
     public virtual void OnAfterDuped(Item newItem)
     {
+    }
+
+    // Warning: This uses reflection and is slow!
+    public virtual void Dupe(Item newItem)
+    {
+        CopyProperties(this, newItem);
+        newItem.OnAfterDuped(newItem);
+    }
+
+    // Warning: This uses reflection and is slow!
+    public static void CopyProperties(Item src, Item dest)
+    {
+        var props = src.GetType().GetProperties();
+
+        for (var i = 0; i < props.Length; i++)
+        {
+            var p = props[i];
+            if (p.GetCustomAttribute(typeof(IgnoreDupeAttribute), true) != null || !p.CanRead || !p.CanWrite)
+            {
+                continue;
+            }
+
+            try
+            {
+                p.SetValue(dest, p.GetValue(src, null), null);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
     }
 
     public virtual bool OnDragLift(Mobile from) => true;

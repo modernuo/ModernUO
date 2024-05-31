@@ -44,14 +44,18 @@ public abstract class BaseGuild : ISerializable
 
     public bool Deleted => Disbanded;
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
+    [IgnoreDupe]
     public long SavePosition { get; set; } = -1;
 
+    [IgnoreDupe]
     public BufferWriter SaveBuffer { get; set; }
 
     public abstract void Serialize(IGenericWriter writer);

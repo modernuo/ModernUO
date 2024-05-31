@@ -13,6 +13,7 @@ namespace Server.Items
     [SerializationGenerator(9, false)]
     public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem
     {
+        [SerializedIgnoreDupe]
         [SerializableField(0, setter: "private")]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosAttributes _attributes;
@@ -23,6 +24,7 @@ namespace Server.Items
         [SerializableFieldDefault(0)]
         private AosAttributes AttributesDefaultValue() => new(this);
 
+        [SerializedIgnoreDupe]
         [SerializableField(1, setter: "private")]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosArmorAttributes _armorAttributes;
@@ -128,6 +130,7 @@ namespace Server.Items
         // Field 22
         private AMA _meditate = (AMA)(-1);
 
+        [SerializedIgnoreDupe]
         [SerializableField(23, setter: "private")]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses _skillBonuses;
@@ -788,6 +791,12 @@ namespace Server.Items
             armor.Attributes = new AosAttributes(newItem, Attributes);
             armor.ArmorAttributes = new AosArmorAttributes(newItem, ArmorAttributes);
             armor.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
+
+            // Set hue again because of resource
+            armor.Hue = Hue;
+            // Set HP/Max again because of durability
+            armor.HitPoints = HitPoints;
+            armor.MaxHitPoints = MaxHitPoints;
         }
 
         public int ComputeStatReq(StatType type)

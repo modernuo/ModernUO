@@ -99,6 +99,7 @@ public partial class DawnsMusicBox : Item, ISecurable
         MusicName.SelimsBar, MusicName.SerpentIsleCombat_U7, MusicName.ValoriaShips
     };
 
+    [SerializedIgnoreDupe]
     [SerializableField(0, setter: "private")]
     private List<MusicName> _tracks;
 
