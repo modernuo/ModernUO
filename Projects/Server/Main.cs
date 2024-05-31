@@ -45,9 +45,7 @@ public static class Core
     private static bool _profiling;
     private static long _profileStart;
     private static long _profileTime;
-#nullable enable
     private static bool? _isRunningFromXUnit;
-#nullable restore
 
     private static int _itemCount;
     private static int _mobileCount;
@@ -114,6 +112,7 @@ public static class Core
     public static TimeSpan ProfileTime =>
         TimeSpan.FromTicks(_profileStart > 0 ? _profileTime + (Stopwatch.GetTimestamp() - _profileStart) : _profileTime);
 
+    public static Assembly ApplicationAssembly { get; set; }
     public static Assembly Assembly { get; set; }
 
     // Assembly file version
@@ -177,10 +176,6 @@ public static class Core
 
     public static double AverageCPS => _cyclesPerSecond.Average();
 
-    public static bool MultiProcessor { get; private set; }
-
-    public static int ProcessorCount { get; private set; }
-
     public static string BaseDirectory
     {
         get
@@ -189,7 +184,7 @@ public static class Core
             {
                 try
                 {
-                    _baseDirectory = Assembly.Location;
+                    _baseDirectory = ApplicationAssembly.Location;
 
                     if (_baseDirectory.Length > 0)
                     {
@@ -206,7 +201,7 @@ public static class Core
         }
     }
 
-    public static CancellationTokenSource ClosingTokenSource { get; } = new();
+    public static CancellationTokenSource ClosingTokenSource { get; private set; }
 
     public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 
@@ -312,7 +307,7 @@ public static class Core
         _restartOnKill = restart;
     }
 
-    private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         Console.WriteLine(e.IsTerminating ? "Error:" : "Warning:");
         Console.WriteLine(e.ExceptionObject);
@@ -378,23 +373,32 @@ public static class Core
 
         if (restart)
         {
-            if (IsWindows)
+            try
             {
-                Process.Start("dotnet", Assembly.Location);
-            }
-            else
-            {
-                var process = new Process
+                logger.Information("Restarting");
+                if (IsWindows)
                 {
-                    StartInfo = new ProcessStartInfo
+                    Process.Start("dotnet", ApplicationAssembly.Location);
+                }
+                else
+                {
+                    var process = new Process
                     {
-                        FileName = "dotnet",
-                        Arguments = Assembly.Location,
-                        UseShellExecute = true
-                    }
-                };
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "dotnet",
+                            Arguments = ApplicationAssembly.Location,
+                            UseShellExecute = true
+                        }
+                    };
 
-                process.Start();
+                    process.Start();
+                }
+                logger.Information("Restart done");
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Restart failed");
             }
         }
 
@@ -417,39 +421,23 @@ public static class Core
         }
     }
 
-    public static void Main(string[] args)
+    public static void Setup(bool profiling, Assembly applicationAssembly, Process process, CancellationTokenSource tokenSource)
     {
-        Console.OutputEncoding = Encoding.UTF8;
+        Process = process;
+        ApplicationAssembly = applicationAssembly;
+        Assembly = Assembly.GetAssembly(typeof(Core));
+        ClosingTokenSource = tokenSource;
+        Thread = Thread.CurrentThread;
+        LoopContext = new EventLoopContext();
+        SynchronizationContext.SetSynchronizationContext(LoopContext);
+        Profiling = profiling;
 
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
         AppDomain.CurrentDomain.AssemblyResolve += AssemblyHandler.AssemblyResolver;
 
-        LoopContext = new EventLoopContext();
-
-        SynchronizationContext.SetSynchronizationContext(LoopContext);
-
-        foreach (var a in args)
-        {
-            if (a.InsensitiveEquals("-profile"))
-            {
-                Profiling = true;
-            }
-        }
-
-        Thread = Thread.CurrentThread;
-        Process = Process.GetCurrentProcess();
-        Assembly = Assembly.GetEntryAssembly();
-
-        if (Assembly == null)
-        {
-            throw new Exception("Assembly entry is missing.");
-        }
-
-        if (Thread != null)
-        {
-            Thread.Name = "Core Thread";
-        }
+        Console.OutputEncoding = Encoding.UTF8;
+        Thread.Name = "Core Thread";
 
         if (BaseDirectory.Length > 0)
         {
@@ -476,13 +464,6 @@ public static class Core
             ".TrimMultiline());
         Utility.PopColor();
 
-        ProcessorCount = Environment.ProcessorCount;
-
-        if (ProcessorCount > 1)
-        {
-            MultiProcessor = true;
-        }
-
         Console.CancelKeyPress += Console_CancelKeyPressed;
 
         ServerConfiguration.Load();
@@ -494,11 +475,6 @@ public static class Core
         if (s.Length > 0)
         {
             logger.Information("Running with arguments: {Args}", s);
-        }
-
-        if (MultiProcessor)
-        {
-            logger.Information($"Optimizing for {{ProcessorCount}} processor{(ProcessorCount == 1 ? "" : "s")}", ProcessorCount);
         }
 
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
