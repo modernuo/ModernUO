@@ -54,13 +54,13 @@ jobs:
         skip-commit: true
         release-count: 1
     - name: Delete v${{ steps.changelog.outputs.version }} Tag
-      uses: dev-drprasad/delete-tag-and-release@v1
+      uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
         delete_release: true
         tag_name: v${{ steps.changelog.outputs.version }}
         github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Delete v0.1.0 Tag
-      uses: dev-drprasad/delete-tag-and-release@v1
+      uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
         delete_release: true
         tag_name: v0.1.0
