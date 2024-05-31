@@ -304,8 +304,8 @@ public static class Core
 
     public static void Kill(bool restart = false)
     {
-        _performProcessKill = true;
         _restartOnKill = restart;
+        _performProcessKill = true;
     }
 
     public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -338,7 +338,7 @@ public static class Core
                 ConsoleInputHandler.ReadLine();
             }
 
-            Kill();
+            DoKill();
         }
     }
 
@@ -379,18 +379,16 @@ public static class Core
                 logger.Information("Restarting");
                 if (IsWindows)
                 {
-                    Process.Start("dotnet", ApplicationAssembly.Location);
+                    using var process = Process.Start("dotnet", $"{ApplicationAssembly.Location} {Arguments}");
                 }
                 else
                 {
-                    var process = new Process
+                    using var process = new Process();
+                    process.StartInfo = new ProcessStartInfo
                     {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = "dotnet",
-                            Arguments = ApplicationAssembly.Location,
-                            UseShellExecute = true
-                        }
+                        FileName = "dotnet",
+                        Arguments = $"{ApplicationAssembly.Location} {Arguments}",
+                        UseShellExecute = true
                     };
 
                     process.Start();
@@ -403,7 +401,7 @@ public static class Core
             }
         }
 
-        Process.Kill();
+        Environment.Exit(0);
     }
 
     private static void HandleClosed()
@@ -561,7 +559,7 @@ public static class Core
 
                 if (_performProcessKill)
                 {
-                    DoKill(_restartOnKill);
+                    break;
                 }
 
                 _tickCount = 0;
@@ -590,11 +588,10 @@ public static class Core
         catch (Exception e)
         {
             CurrentDomain_UnhandledException(null, new UnhandledExceptionEventArgs(e, true));
+            return;
         }
-        finally
-        {
-            World.ExitSerializationThreads();
-        }
+
+        DoKill(_restartOnKill);
     }
 
     internal static void RequestSnapshot() => _performSnapshot = true;
