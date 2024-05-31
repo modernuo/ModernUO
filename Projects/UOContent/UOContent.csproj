@@ -5,10 +5,11 @@
         <AssemblyName>UOContent</AssemblyName>
         <Product>ModernUO Content</Product>
         <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <Configurations>Debug;Release;Analyze</Configurations>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
-        <Message Text="Removing distribution assemblies..." />
+        <Message Text="UOContent: Removing distribution assemblies..." />
         <Delete Files="..\..\Distribution\Assemblies\Argon2.Bindings.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libargon2.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Cryptography.dll" ContinueOnError="true" />
