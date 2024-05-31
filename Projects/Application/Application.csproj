@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <ApplicationIcon>MUO.ico</ApplicationIcon>
+        <StartupObject>Server.Application</StartupObject>
+        <AssemblyName>ModernUO</AssemblyName>
+        <Win32Resource />
+        <Product>ModernUO Server</Product>
+        <OutDir>..\..\Distribution</OutDir>
+        <Version>0.0.0</Version>
+        <Configurations>Debug;Release;Analyze</Configurations>
+        <RootNamespace>Server</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Server\Server.csproj" />
+      <ProjectReference Include="..\UOContent\UOContent.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
+          <IncludeInPackage>false</IncludeInPackage>
+      </ProjectReference>
+    </ItemGroup>
+</Project>

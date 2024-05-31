@@ -4,13 +4,13 @@ using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
 
-namespace UOContent.Tests
+namespace UOContent.Tests;
+
+public class PartyPacketTests : IClassFixture<ServerFixture>
 {
-    public class PartyPacketTests : IClassFixture<ServerFixture>
+    [Fact]
+    public void TestPartyEmptyList()
     {
-        [Fact]
-        public void TestPartyEmptyList()
-        {
             Serial m = (Serial)0x1024u;
 
             var expected = new PartyEmptyList(m).Compile();
@@ -22,9 +22,9 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Fact]
-        public void TestPartyRemoveMember()
-        {
+    [Fact]
+    public void TestPartyRemoveMember()
+    {
             var leader = new Mobile((Serial)0x1024u);
             leader.DefaultMobileInit();
 
@@ -43,9 +43,9 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Fact]
-        public void TestPartyMemberList()
-        {
+    [Fact]
+    public void TestPartyMemberList()
+    {
             var leader = new Mobile((Serial)0x1024u);
             leader.DefaultMobileInit();
 
@@ -64,11 +64,11 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void TestPartyTextMessage(bool toAll)
-        {
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void TestPartyTextMessage(bool toAll)
+    {
             Serial serial = (Serial)0x1024u;
             var text = "[Party] Stuff Happens";
 
@@ -81,9 +81,9 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Fact]
-        public void TestPartyInvitation()
-        {
+    [Fact]
+    public void TestPartyInvitation()
+    {
             Serial m = (Serial)0x1024u;
 
             var expected = new PartyInvitation(m).Compile();
@@ -94,5 +94,4 @@ namespace UOContent.Tests
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
         }
-    }
 }

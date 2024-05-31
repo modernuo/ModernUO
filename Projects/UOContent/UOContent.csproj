@@ -10,7 +10,8 @@
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
         <Delete Files="..\..\Distribution\Assemblies\Argon2.Bindings.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\libargon2.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Cryptography.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\MailKit.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\MimeKit.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\Microsoft.Toolkit.HighPerformance.dll" ContinueOnError="true" />
@@ -24,10 +25,11 @@
         <Delete Files="..\..\Distribution\Assemblies\ref\$(AssemblyName).dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\LibDeflate.Bindings.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\libdeflate.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\libdeflate.dylib" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\LibDeflate.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\libdeflate.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\libdeflate.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\Zstd.Binaries.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\zstd.exe" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>

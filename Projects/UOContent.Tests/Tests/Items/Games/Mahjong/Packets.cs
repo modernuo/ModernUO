@@ -1,24 +1,24 @@
 using System.IO;
 using Server.Network;
 
-namespace Server.Engines.Mahjong
+namespace Server.Engines.Mahjong;
+
+public sealed class MahjongJoinGame : Packet
 {
-    public sealed class MahjongJoinGame : Packet
+    public MahjongJoinGame(Serial game) : base(0xDA)
     {
-        public MahjongJoinGame(Serial game) : base(0xDA)
-        {
             EnsureCapacity(9);
 
             Stream.Write(game);
             Stream.Write((byte)0);
             Stream.Write((byte)0x19);
         }
-    }
+}
 
-    public sealed class MahjongPlayersInfo : Packet
+public sealed class MahjongPlayersInfo : Packet
+{
+    public MahjongPlayersInfo(MahjongGame game, Mobile to) : base(0xDA)
     {
-        public MahjongPlayersInfo(MahjongGame game, Mobile to) : base(0xDA)
-        {
             var players = game.Players;
 
             EnsureCapacity(11 + 45 * players.Seats);
@@ -86,12 +86,12 @@ namespace Server.Engines.Mahjong
                 Stream.Write((byte)n);
             }
         }
-    }
+}
 
-    public sealed class MahjongGeneralInfo : Packet
+public sealed class MahjongGeneralInfo : Packet
+{
+    public MahjongGeneralInfo(MahjongGame game) : base(0xDA)
     {
-        public MahjongGeneralInfo(MahjongGame game) : base(0xDA)
-        {
             EnsureCapacity(13);
 
             Stream.Write(game.Serial);
@@ -114,12 +114,12 @@ namespace Server.Engines.Mahjong
             Stream.Write((short)game.WallBreakIndicator.Position.Y);
             Stream.Write((short)game.WallBreakIndicator.Position.X);
         }
-    }
+}
 
-    public sealed class MahjongTilesInfo : Packet
+public sealed class MahjongTilesInfo : Packet
+{
+    public MahjongTilesInfo(MahjongGame game, Mobile to) : base(0xDA)
     {
-        public MahjongTilesInfo(MahjongGame game, Mobile to) : base(0xDA)
-        {
             var tiles = game.Tiles;
             var players = game.Players;
 
@@ -162,12 +162,12 @@ namespace Server.Engines.Mahjong
                 Stream.Write(tile.Flipped ? (byte)0x10 : (byte)0x0);
             }
         }
-    }
+}
 
-    public sealed class MahjongTileInfo : Packet
+public sealed class MahjongTileInfo : Packet
+{
+    public MahjongTileInfo(MahjongTile tile, Mobile to) : base(0xDA)
     {
-        public MahjongTileInfo(MahjongTile tile, Mobile to) : base(0xDA)
-        {
             var game = tile.Game;
             var players = game.Players;
 
@@ -205,17 +205,16 @@ namespace Server.Engines.Mahjong
 
             Stream.Write(tile.Flipped ? (byte)0x10 : (byte)0x0);
         }
-    }
+}
 
-    public sealed class MahjongRelieve : Packet
+public sealed class MahjongRelieve : Packet
+{
+    public MahjongRelieve(Serial game) : base(0xDA)
     {
-        public MahjongRelieve(Serial game) : base(0xDA)
-        {
             EnsureCapacity(9);
 
             Stream.Write(game);
             Stream.Write((byte)0);
             Stream.Write((byte)0x1A);
         }
-    }
 }
