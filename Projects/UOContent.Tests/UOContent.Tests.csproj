@@ -10,9 +10,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <ProjectReference Include="..\Server\Server.csproj" />
+        <ProjectReference Include="..\Application\Application.csproj" />
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />
-        <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">

@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Tests", "Projects\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent.Tests", "Projects\UOContent.Tests\UOContent.Tests.csproj", "{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Projects\Application\Application.csproj", "{E9849FA1-D4F5-4D68-A36B-249F4CB4E374}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analyze|Any CPU = Analyze|Any CPU
@@ -41,6 +43,12 @@ Global
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9849FA1-D4F5-4D68-A36B-249F4CB4E374}.Analyze|Any CPU.ActiveCfg = Analyze|Any CPU
+		{E9849FA1-D4F5-4D68-A36B-249F4CB4E374}.Analyze|Any CPU.Build.0 = Analyze|Any CPU
+		{E9849FA1-D4F5-4D68-A36B-249F4CB4E374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9849FA1-D4F5-4D68-A36B-249F4CB4E374}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9849FA1-D4F5-4D68-A36B-249F4CB4E374}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9849FA1-D4F5-4D68-A36B-249F4CB4E374}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
