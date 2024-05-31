@@ -5,16 +5,16 @@ using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
 
-namespace UOContent.Tests
+namespace UOContent.Tests;
+
+[Collection("Sequential Tests")]
+public class TestMapItemPackets : IClassFixture<ServerFixture>
 {
-    [Collection("Sequential Tests")]
-    public class TestMapItemPackets : IClassFixture<ServerFixture>
+    [Theory]
+    [InlineData(ProtocolChanges.NewCharacterList)]
+    [InlineData(ProtocolChanges.None)]
+    public void TestSendMapDetails(ProtocolChanges changes)
     {
-        [Theory]
-        [InlineData(ProtocolChanges.NewCharacterList)]
-        [InlineData(ProtocolChanges.None)]
-        public void TestSendMapDetails(ProtocolChanges changes)
-        {
             var mapItem = new MapItem(Map.Trammel);
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -28,13 +28,13 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Theory]
-        [InlineData(5, 0, 0, 0)]
-        [InlineData(1, 0, 100, 200)]
-        [InlineData(7, 1, 0, 0)]
-        [InlineData(7, 0, 0, 0)]
-        public void TestSendMapCommand(int command, int number, int x, int y)
-        {
+    [Theory]
+    [InlineData(5, 0, 0, 0)]
+    [InlineData(1, 0, 100, 200)]
+    [InlineData(7, 1, 0, 0)]
+    [InlineData(7, 0, 0, 0)]
+    public void TestSendMapCommand(int command, int number, int x, int y)
+    {
             var mapItem = new MapItem(Map.Trammel);
 
             var expected = new MapCommand(mapItem, command, number, x, y).Compile();
@@ -45,5 +45,4 @@ namespace UOContent.Tests
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
         }
-    }
 }

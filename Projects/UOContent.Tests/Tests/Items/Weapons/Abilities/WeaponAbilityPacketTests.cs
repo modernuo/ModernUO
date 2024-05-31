@@ -3,17 +3,17 @@ using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
 
-namespace UOContent.Tests
+namespace UOContent.Tests;
+
+public class WeaponAbilityPacketTests
 {
-    public class WeaponAbilityPacketTests
+    [Theory]
+    [InlineData(0, true)]
+    [InlineData(0, false)]
+    [InlineData(100, true)]
+    [InlineData(1000, false)]
+    public void TestSpecialAbility(int abilityId, bool active)
     {
-        [Theory]
-        [InlineData(0, true)]
-        [InlineData(0, false)]
-        [InlineData(100, true)]
-        [InlineData(1000, false)]
-        public void TestSpecialAbility(int abilityId, bool active)
-        {
             var expected = new ToggleSpecialAbility(abilityId, active).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -23,9 +23,9 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Fact]
-        public void TestClearAbility()
-        {
+    [Fact]
+    public void TestClearAbility()
+    {
             var expected = new ClearWeaponAbility().Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -34,5 +34,4 @@ namespace UOContent.Tests
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
         }
-    }
 }

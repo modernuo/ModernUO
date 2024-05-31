@@ -6,14 +6,14 @@ using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
 
-namespace UOContent.Tests
+namespace UOContent.Tests;
+
+public class HousePacketTests
 {
-    public class HousePacketTests
+    [Theory]
+    [InlineData(0x1001u)]
+    public void TestBeginHouseCustomization(uint serial)
     {
-        [Theory]
-        [InlineData(0x1001u)]
-        public void TestBeginHouseCustomization(uint serial)
-        {
             var expected = new BeginHouseCustomization((Serial)serial).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -23,10 +23,10 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Theory]
-        [InlineData(0x1001u)]
-        public void TestEndHouseCustomization(uint serial)
-        {
+    [Theory]
+    [InlineData(0x1001u)]
+    public void TestEndHouseCustomization(uint serial)
+    {
             var expected = new EndHouseCustomization((Serial)serial).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -36,11 +36,11 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Theory]
-        [InlineData(0x1001u, 0)]
-        [InlineData(0x1001u, 100)]
-        public void TestDesignStateGeneral(uint serial, int revision)
-        {
+    [Theory]
+    [InlineData(0x1001u, 0)]
+    [InlineData(0x1001u, 100)]
+    public void TestDesignStateGeneral(uint serial, int revision)
+    {
             var expected = new DesignStateGeneral((Serial)serial, revision).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -50,9 +50,9 @@ namespace UOContent.Tests
         AssertThat.Equal(result, expected);
         }
 
-        [Fact]
-        public void TestHouseDesignStateDetailed()
-        {
+    [Fact]
+    public void TestHouseDesignStateDetailed()
+    {
             Serial serial = (Serial)0x40000001;
             var revision = 10;
             var tiles = new MultiTileEntry[250];
@@ -76,5 +76,4 @@ namespace UOContent.Tests
 
             AssertThat.Equal(actual, expected);
         }
-    }
 }

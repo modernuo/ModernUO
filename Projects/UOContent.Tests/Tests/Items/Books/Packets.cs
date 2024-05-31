@@ -1,12 +1,12 @@
 using Server.Items;
 using Server.Text;
 
-namespace Server.Network
+namespace Server.Network;
+
+public sealed class BookPageDetails : Packet
 {
-    public sealed class BookPageDetails : Packet
+    public BookPageDetails(BaseBook book) : base(0x66)
     {
-        public BookPageDetails(BaseBook book) : base(0x66)
-        {
             EnsureCapacity(256);
 
             Stream.Write(book.Serial);
@@ -28,12 +28,12 @@ namespace Server.Network
                 }
             }
         }
-    }
+}
 
-    public sealed class BookHeader : Packet
+public sealed class BookHeader : Packet
+{
+    public BookHeader(Mobile from, BaseBook book) : base(0xD4)
     {
-        public BookHeader(Mobile from, BaseBook book) : base(0xD4)
-        {
             var title = book.Title ?? "";
             var author = book.Author ?? "";
 
@@ -55,5 +55,4 @@ namespace Server.Network
             Stream.Write(authorBuffer, 0, authorBuffer.Length);
             Stream.Write((byte)0); // terminate
         }
-    }
 }

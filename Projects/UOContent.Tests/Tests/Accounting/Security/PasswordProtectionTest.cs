@@ -3,20 +3,20 @@ using Server.Accounting;
 using Server.Accounting.Security;
 using Xunit;
 
-namespace Server.Tests.Accounting.Security
-{
-    public class PasswordProtectionTest
-    {
-        private const string plainPassword = "hello-good-sir";
+namespace Server.Tests.Accounting.Security;
 
-        [Theory]
-        [InlineData(typeof(Argon2PasswordProtection), null)]
-        [InlineData(typeof(PBKDF2PasswordProtection), null)]
-        [InlineData(typeof(HashAlgorithmPasswordProtection), "MD5")]
-        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA1")]
-        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA2")]
-        public void TestValidates(Type protectionType, string algorithmType)
-        {
+public class PasswordProtectionTest
+{
+    private const string plainPassword = "hello-good-sir";
+
+    [Theory]
+    [InlineData(typeof(Argon2PasswordProtection), null)]
+    [InlineData(typeof(PBKDF2PasswordProtection), null)]
+    [InlineData(typeof(HashAlgorithmPasswordProtection), "MD5")]
+    [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA1")]
+    [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA2")]
+    public void TestValidates(Type protectionType, string algorithmType)
+    {
             IPasswordProtection passwordProtection;
             if (protectionType == typeof(HashAlgorithmPasswordProtection))
             {
@@ -42,14 +42,14 @@ namespace Server.Tests.Accounting.Security
             Assert.True(passwordProtection.ValidatePassword(encryptedPassword, plainPassword));
         }
 
-        [Theory]
-        [InlineData(typeof(Argon2PasswordProtection), null)]
-        [InlineData(typeof(PBKDF2PasswordProtection), null)]
-        [InlineData(typeof(HashAlgorithmPasswordProtection), "MD5")]
-        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA1")]
-        [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA2")]
-        public void TestPasswordDoesNotValidate(Type protectionType, string algorithmType)
-        {
+    [Theory]
+    [InlineData(typeof(Argon2PasswordProtection), null)]
+    [InlineData(typeof(PBKDF2PasswordProtection), null)]
+    [InlineData(typeof(HashAlgorithmPasswordProtection), "MD5")]
+    [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA1")]
+    [InlineData(typeof(HashAlgorithmPasswordProtection), "SHA2")]
+    public void TestPasswordDoesNotValidate(Type protectionType, string algorithmType)
+    {
             IPasswordProtection passwordProtection;
             if (protectionType == typeof(HashAlgorithmPasswordProtection))
             {
@@ -74,5 +74,4 @@ namespace Server.Tests.Accounting.Security
 
             Assert.False(passwordProtection.ValidatePassword(encryptedPassword, "Not the same password"));
         }
-    }
 }

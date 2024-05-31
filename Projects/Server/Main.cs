@@ -201,7 +201,7 @@ public static class Core
         }
     }
 
-    public static CancellationTokenSource ClosingTokenSource { get; private set; }
+    public static CancellationTokenSource ClosingTokenSource { get; } = new();
 
     public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 
@@ -421,12 +421,11 @@ public static class Core
         }
     }
 
-    public static void Setup(bool profiling, Assembly applicationAssembly, Process process, CancellationTokenSource tokenSource)
+    public static void Setup(bool profiling, Assembly applicationAssembly, Process process)
     {
         Process = process;
         ApplicationAssembly = applicationAssembly;
         Assembly = Assembly.GetAssembly(typeof(Core));
-        ClosingTokenSource = tokenSource;
         Thread = Thread.CurrentThread;
         LoopContext = new EventLoopContext();
         SynchronizationContext.SetSynchronizationContext(LoopContext);

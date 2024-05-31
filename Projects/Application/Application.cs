@@ -6,10 +6,6 @@ namespace Server;
 
 public class Application
 {
-    public static CancellationTokenSource ClosingTokenSource { get; } = new();
-
-    public static bool Closing => ClosingTokenSource.IsCancellationRequested;
-
     public static void Main(string[] args)
     {
         bool profiling = false;
@@ -22,6 +18,6 @@ public class Application
             }
         }
 
-        Core.Setup(profiling, Assembly.GetEntryAssembly(), Process.GetCurrentProcess(), ClosingTokenSource);
+        Core.Setup(profiling, Assembly.GetEntryAssembly(), Process.GetCurrentProcess());
     }
 }

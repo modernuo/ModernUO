@@ -1,9 +1,9 @@
-namespace Server.Network
+namespace Server.Network;
+
+public class DisplayHelpTopic : Packet
 {
-    public class DisplayHelpTopic : Packet
+    public DisplayHelpTopic(int topicID, bool display) : base(0xBF)
     {
-        public DisplayHelpTopic(int topicID, bool display) : base(0xBF)
-        {
             EnsureCapacity(11);
 
             Stream.Write((short)0x17);
@@ -11,5 +11,4 @@ namespace Server.Network
             Stream.Write(topicID);
             Stream.Write(display);
         }
-    }
 }

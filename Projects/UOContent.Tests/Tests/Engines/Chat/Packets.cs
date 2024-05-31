@@ -1,11 +1,11 @@
 using Server.Network;
 
-namespace Server.Engines.Chat
+namespace Server.Engines.Chat;
+
+public sealed class ChatMessagePacket : Packet
 {
-    public sealed class ChatMessagePacket : Packet
+    public ChatMessagePacket(string lang, int number, string param1, string param2) : base(0xB2)
     {
-        public ChatMessagePacket(string lang, int number, string param1, string param2) : base(0xB2)
-        {
             param1 ??= string.Empty;
             param2 ??= string.Empty;
 
@@ -25,5 +25,4 @@ namespace Server.Engines.Chat
             Stream.WriteBigUniNull(param1);
             Stream.WriteBigUniNull(param2);
         }
-    }
 }

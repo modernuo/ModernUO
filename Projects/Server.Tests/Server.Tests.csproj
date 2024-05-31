@@ -11,9 +11,9 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <ProjectReference Include="..\Server\Server.csproj" />
-        <ProjectReference Include="..\UOContent\UOContent.csproj" />
+        <ProjectReference Include="..\Application\Application.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
+        <ProjectReference Include="..\UOContent\UOContent.csproj" />
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />
