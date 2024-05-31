@@ -29,6 +29,7 @@
         <Delete Files="..\..\Distribution\LibDeflate.Bindings.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libdeflate.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libdeflate.dylib" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\System.IO.Hashing.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
