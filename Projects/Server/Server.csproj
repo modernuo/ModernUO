@@ -3,13 +3,14 @@
     <PropertyGroup>
         <Product>ModernUO Core</Product>
         <OutDir>..\..\Distribution</OutDir>
+        <PublishDir>..\..\Distribution</PublishDir>
         <Version>0.0.0</Version>
         <Configurations>Debug;Release;Analyze</Configurations>
         <RootNamespace>Server</RootNamespace>
         <PackageId>Server</PackageId>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
-        <Message Text="Removing distribution files..." />
+        <Message Text="Server: Removing distribution files..." />
         <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
