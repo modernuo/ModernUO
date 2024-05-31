@@ -36,8 +36,8 @@ dotnet clean --verbosity quiet
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 
-echo dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false -o Distribution Projects/Application/Application.csproj
-dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false -o Distribution Projects/Application/Application.csproj
+echo dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false
+dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false
 
 echo Generating serialization migration schema...
 dotnet tool run ModernUOSchemaGenerator -- ModernUO.sln
