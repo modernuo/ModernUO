@@ -3360,7 +3360,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     public virtual void Dupe(Item newItem)
     {
         CopyProperties(this, newItem);
-        newItem.OnAfterDuped(newItem);
+        OnAfterDuped(newItem);
     }
 
     // Warning: This uses reflection and is slow!

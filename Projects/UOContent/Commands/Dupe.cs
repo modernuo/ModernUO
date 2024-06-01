@@ -55,7 +55,7 @@ public static class Dupe
         protected override void OnTarget(Mobile from, object targ)
         {
             var done = false;
-            if (!(targ is Item))
+            if (targ is not Item copy)
             {
                 from.SendMessage("You can only dupe items.");
                 return;
@@ -63,10 +63,9 @@ public static class Dupe
 
             CommandLogging.WriteLine(
                 from,
-                $"{from.AccessLevel} {CommandLogging.Format(from)} duping {CommandLogging.Format(targ)} (inBag={m_InBag}; amount={m_Amount})"
+                $"{from.AccessLevel} {CommandLogging.Format(from)} duping {CommandLogging.Format(copy)} (inBag={m_InBag}; amount={m_Amount})"
             );
 
-            var copy = (Item)targ;
             Container pack = null;
 
             if (m_InBag)
@@ -75,7 +74,7 @@ public static class Dupe
                 {
                     Container cont => cont,
                     Mobile m       => m.Backpack,
-                    _              => pack
+                    _              => null
                 };
             }
             else
@@ -116,7 +115,7 @@ public static class Dupe
 
                             CommandLogging.WriteLine(
                                 from,
-                                $"{from.AccessLevel} {CommandLogging.Format(from)} duped {CommandLogging.Format(targ)} creating {CommandLogging.Format(newItem)}"
+                                $"{from.AccessLevel} {CommandLogging.Format(from)} duped {CommandLogging.Format(copy)} creating {CommandLogging.Format(newItem)}"
                             );
                         }
                     }
