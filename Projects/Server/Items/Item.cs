@@ -267,6 +267,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     /// <summary>
     ///     The <see cref="Mobile" /> who is currently <see cref="Mobile.Holding">holding</see> this item.
     /// </summary>
+    [IgnoreDupe]
     public Mobile HeldBy
     {
         get => LookupCompactInfo()?.m_HeldBy;
@@ -379,6 +380,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public static int SecureFlag { get; set; }
 
+    [IgnoreDupe]
     public bool IsLockedDown
     {
         get => GetTempFlag(LockedDownFlag);
@@ -389,6 +391,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
+    [IgnoreDupe]
     public bool IsSecure
     {
         get => GetTempFlag(SecureFlag);
