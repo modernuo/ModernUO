@@ -865,10 +865,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
+    [IgnoreDupe]
     public bool Pushing { get; set; }
 
     public virtual bool IsDeadBondedPet => false;
 
+    [IgnoreDupe]
     public ISpell Spell
     {
         get => m_Spell;
