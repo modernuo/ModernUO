@@ -40,7 +40,7 @@ namespace Server.Items
                 if (_state != value)
                 {
                     _state = Math.Clamp(value, 0, 4);
-                    this.MarkDirty();
+                    MarkDirty();
                 }
             }
         }
