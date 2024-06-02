@@ -11,6 +11,7 @@ namespace Server.Items;
 [SerializationGenerator(2, false)]
 public abstract partial class BaseBoard : Container, ISecurable
 {
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;

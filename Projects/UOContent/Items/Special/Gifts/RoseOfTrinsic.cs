@@ -18,6 +18,7 @@ public partial class RoseOfTrinsic : Item, ISecurable
     [SerializableField(1, setter: "private")]
     private DateTime _nextSpawnTime;
 
+    [SerializedIgnoreDupe]
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
@@ -33,6 +34,16 @@ public partial class RoseOfTrinsic : Item, ISecurable
     }
 
     public override int LabelNumber => 1062913; // Rose of Trinsic
+
+    public override void OnAfterDuped(Item newItem)
+    {
+        if (newItem is not RoseOfTrinsic rose)
+        {
+            return;
+        }
+
+        rose.NextSpawnTime = NextSpawnTime;
+    }
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

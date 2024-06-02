@@ -11,7 +11,7 @@ public class TestBook : BaseBook
 {
     public TestBook(int itemID, int pageCount = 20, bool writable = true) : base(itemID, pageCount, writable)
     {
-        }
+    }
 
     public TestBook(int itemID, string title, string author, int pageCount, bool writable) : base(itemID, title, author, pageCount, writable)
     {

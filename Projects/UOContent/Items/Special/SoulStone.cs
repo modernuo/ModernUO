@@ -17,6 +17,7 @@ public partial class SoulStone : Item, ISecurable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _lastUserName;
 
+    [SerializedIgnoreDupe]
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;

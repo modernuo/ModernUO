@@ -13,22 +13,28 @@ public partial class MahjongGame : Item, ISecurable
     public const int MaxPlayers = 4;
     public const int BaseScore = 30000;
 
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
 
+    [SerializedIgnoreDupe]
     [SerializableField(1, setter: "private")]
     private MahjongTile[] _tiles;
 
+    [SerializedIgnoreDupe]
     [SerializableField(2, setter: "private")]
     private MahjongDealerIndicator _dealerIndicator;
 
+    [SerializedIgnoreDupe]
     [SerializableField(3, setter: "private")]
     private MahjongWallBreakIndicator _wallBreakIndicator;
 
+    [SerializedIgnoreDupe]
     [SerializableField(4, setter: "private")]
     private MahjongDices _dices;
 
+    [SerializedIgnoreDupe]
     [SerializableField(5, setter: "private")]
     private MahjongPlayers _players;
 
