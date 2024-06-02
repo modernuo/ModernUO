@@ -25,6 +25,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Server.Compression;
 using Server.Json;
 using Server.Logging;
 using Server.Network;
@@ -464,6 +465,10 @@ public static class Core
         Utility.PopColor();
 
         Console.CancelKeyPress += Console_CancelKeyPressed;
+
+        // LibDeflate is not thread safe, so we need to create a new instance for each thread
+        var standard = Deflate.Standard;
+        AppDomain.CurrentDomain.ProcessExit += (_, _) => standard.Dispose();
 
         ServerConfiguration.Load();
 
