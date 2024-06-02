@@ -592,6 +592,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     // Note: Setting the parent via command/props causes problems.
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public IEntity Parent
     {
