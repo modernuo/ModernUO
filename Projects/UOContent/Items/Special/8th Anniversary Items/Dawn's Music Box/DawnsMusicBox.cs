@@ -103,6 +103,7 @@ public partial class DawnsMusicBox : Item, ISecurable
     [SerializableField(0, setter: "private")]
     private List<MusicName> _tracks;
 
+    [SerializedIgnoreDupe]
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;

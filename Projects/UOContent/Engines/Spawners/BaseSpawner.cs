@@ -299,7 +299,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     )
     {
         var entry = new SpawnerEntry(this, creaturename, probability, amount, properties, parameters);
-        Entries.Add(entry);
+        AddToEntries(entry);
         if (dotimer)
         {
             DoTimer(TimeSpan.FromSeconds(1));

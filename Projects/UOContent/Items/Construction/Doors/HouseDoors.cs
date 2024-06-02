@@ -58,6 +58,7 @@ public partial class GenericHouseDoor : BaseHouseDoor
 [SerializationGenerator(2, false)]
 public abstract partial class BaseHouseDoor : BaseDoor, ISecurable
 {
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;

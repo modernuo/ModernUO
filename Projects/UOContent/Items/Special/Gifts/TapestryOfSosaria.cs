@@ -10,6 +10,7 @@ namespace Server.Items;
 [SerializationGenerator(1)]
 public partial class TapestryOfSosaria : Item, ISecurable
 {
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;

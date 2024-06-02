@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Gumps;
-using Server.Items;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Prompts;
@@ -16,6 +15,7 @@ public partial class BulkOrderBook : Item, ISecurable
     [SerializableField(0)]
     private int _itemCount;
 
+    [SerializedIgnoreDupe]
     [InvalidateProperties]
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
@@ -26,10 +26,12 @@ public partial class BulkOrderBook : Item, ISecurable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _bookName;
 
+    [SerializedIgnoreDupe]
     [SerializableField(3)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private BOBFilter _filter;
 
+    [SerializedIgnoreDupe]
     [SerializableField(4)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<IBOBEntry> _entries;
@@ -40,10 +42,37 @@ public partial class BulkOrderBook : Item, ISecurable
         Weight = 1.0;
         LootType = LootType.Blessed;
 
-        _entries = new List<IBOBEntry>();
+        _entries = [];
         _filter = new BOBFilter();
 
         _level = SecureLevel.CoOwners;
+    }
+
+    public override void OnAfterDuped(Item newItem)
+    {
+        if (newItem is not BulkOrderBook book)
+        {
+            return;
+        }
+
+        var filter = book._filter;
+        filter.Material = Filter.Material;
+        filter.Quality = Filter.Quality;
+        filter.Quantity = Filter.Quantity;
+        filter.Type = Filter.Type;
+
+        for (var i = 0; i < Entries.Count; i++)
+        {
+            // Recreate the BOD
+            var bod = Entries[i].Reconstruct();
+
+            // Recreate the entry
+            IBOBEntry newEntry = bod is LargeBOD largeBod ? new BOBLargeEntry(largeBod) : new BOBSmallEntry((SmallBOD)bod);
+            book.AddToEntries(newEntry);
+
+            // Delete the new BOD
+            bod.Delete();
+        }
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -169,13 +198,21 @@ public partial class BulkOrderBook : Item, ISecurable
         }
     }
 
-    public void InvalidateContainers(IEntity parent)
+    public static void InvalidateContainers(IEntity parent)
     {
-        if (parent is Container c)
+        do
         {
-            c.InvalidateProperties();
-            InvalidateContainers(c.Parent);
-        }
+            if (parent is Item item)
+            {
+                item.InvalidateProperties();
+                parent = item.Parent;
+            }
+            else if (parent is Mobile m)
+            {
+                m.InvalidateProperties();
+                return;
+            }
+        } while (parent != null);
     }
 
     private void Deserialize(IGenericReader reader, int version)

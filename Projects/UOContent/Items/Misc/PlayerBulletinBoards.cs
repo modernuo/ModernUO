@@ -31,6 +31,7 @@ public partial class PlayerBBEast : BasePlayerBB
 [SerializationGenerator(0, false)]
 public abstract partial class BasePlayerBB : Item, ISecurable
 {
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
@@ -40,10 +41,12 @@ public abstract partial class BasePlayerBB : Item, ISecurable
     private string _title;
 
     [CanBeNull]
+    [SerializedIgnoreDupe]
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private PlayerBBMessage _greeting;
 
+    [SerializedIgnoreDupe]
     [SerializableField(3)]
     private List<PlayerBBMessage> _messages;
 
@@ -51,6 +54,25 @@ public abstract partial class BasePlayerBB : Item, ISecurable
     {
         _messages = new List<PlayerBBMessage>();
         _level = SecureLevel.Anyone;
+    }
+
+    public override void OnAfterDuped(Item newItem)
+    {
+        if (newItem is not BasePlayerBB board)
+        {
+            return;
+        }
+
+        if (_greeting != null)
+        {
+            board.Greeting = new PlayerBBMessage(_greeting.Time, _greeting.Poster, _greeting.Message);
+        }
+
+        for (var i = 0; i < _messages.Count; i++)
+        {
+            var message = _messages[i];
+            board.AddToMessages(new PlayerBBMessage(message.Time, message.Poster, message.Message));
+        }
     }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
