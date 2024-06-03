@@ -48,6 +48,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - container: ubuntu:noble
+            name: Ubuntu 22
+            packageManager: apt
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
@@ -63,14 +66,8 @@ jobs:
           - container: fedora:39
             name: Fedora 39
             packageManager: dnf
-          - container: fedora:38
-            name: Fedora 38
-            packageManager: dnf
-          - container: fedora:37
-            name: Fedora 37
-            packageManager: dnf
-          - container: quay.io/centos/centos:stream8
-            name: CentOS 8 Stream
+          - container: fedora:40
+            name: Fedora 40
             packageManager: dnf
           - container: quay.io/centos/centos:stream9
             name: CentOS 9 Stream
