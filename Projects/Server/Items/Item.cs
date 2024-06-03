@@ -3381,9 +3381,15 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                 continue;
             }
 
+            var setMethod = p.GetSetMethod(false);
+
             try
             {
-                p.SetValue(dest, p.GetValue(src, null), null);
+                // Do not copy private properties
+                if (setMethod != null)
+                {
+                    p.SetValue(dest, p.GetValue(src, null), null);
+                }
             }
             catch
             {

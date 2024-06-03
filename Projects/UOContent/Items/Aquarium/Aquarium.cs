@@ -492,10 +492,7 @@ namespace Server.Items
             aquarium.Water.Maintain = Water.Maintain;
             aquarium.Water.State = Water.State;
 
-            for (var i = 0; i < _events.Count; i++)
-            {
-                aquarium.AddToEvents(_events[i]);
-            }
+            aquarium.Events = [..Events];
         }
 
         private void Deserialize(IGenericReader reader, int version)

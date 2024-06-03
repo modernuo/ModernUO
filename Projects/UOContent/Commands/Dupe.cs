@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Server.Items;
 using Server.Targeting;
 
@@ -40,21 +41,110 @@ public static class Dupe
         e.Mobile.SendMessage("What do you wish to dupe?");
     }
 
+    public static bool DoDupe(Item src, int amount, Mobile from = null, Container pack = null)
+    {
+        from?.SendMessage($"Duping {amount}...");
+        var c = src.GetType().GetConstructor(out var paramCount);
+        if (c == null)
+        {
+            from?.SendMessage("Unable to dupe. Item must have a constructor with zero required parameters.");
+            return false;
+        }
+
+        var args = paramCount == 0 ? null : new object[paramCount];
+        if (args != null)
+        {
+            Array.Fill(args, Type.Missing);
+        }
+
+        try
+        {
+
+            for (var i = 0; i < amount; i++)
+            {
+                var newItem = DoDupe(src, c, args, from);
+                if (newItem != null)
+                {
+                    if (pack != null)
+                    {
+                        pack.DropItem(newItem);
+                    }
+                    else if (from != null)
+                    {
+                        newItem.MoveToWorld(from.Location, from.Map);
+                    }
+                }
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static Item DoDupe(Item src, ConstructorInfo c, object[] args, Mobile from = null)
+    {
+        try
+        {
+            if (c.Invoke(args) is not Item newItem)
+            {
+                return null;
+            }
+
+            src.Dupe(newItem);
+
+            newItem.UpdateTotals();
+            newItem.InvalidateProperties();
+            newItem.Delta(ItemDelta.Update);
+
+            if (from != null)
+            {
+                CommandLogging.WriteLine(
+                    from,
+                    $"{from.AccessLevel} {CommandLogging.Format(from)} duped {CommandLogging.Format(src)} creating {CommandLogging.Format(newItem)}"
+                );
+            }
+
+            // Recurse for items that have items
+            if (newItem.Items.Count > 0)
+            {
+                for (var j = newItem.Items.Count - 1; j >= 0; j--)
+                {
+                    var itemToDelete = newItem.Items[j];
+                    newItem.RemoveItem(itemToDelete);
+                    itemToDelete.Delete();
+                }
+            }
+
+            for (var j = 0; j < src.Items.Count; j++)
+            {
+                var subItem = DoDupe(src.Items[j], c, args, from);
+                newItem.AddItem(subItem);
+            }
+
+            return newItem;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private class DupeTarget : Target
     {
-        private readonly int m_Amount;
-        private readonly bool m_InBag;
+        private readonly int _amount;
+        private readonly bool _inBag;
 
-        public DupeTarget(bool inbag, int amount)
-            : base(15, false, TargetFlags.None)
+        public DupeTarget(bool inbag, int amount) : base(15, false, TargetFlags.None)
         {
-            m_InBag = inbag;
-            m_Amount = amount;
+            _inBag = inbag;
+            _amount = amount;
         }
 
         protected override void OnTarget(Mobile from, object targ)
         {
-            var done = false;
             if (targ is not Item copy)
             {
                 from.SendMessage("You can only dupe items.");
@@ -63,12 +153,12 @@ public static class Dupe
 
             CommandLogging.WriteLine(
                 from,
-                $"{from.AccessLevel} {CommandLogging.Format(from)} duping {CommandLogging.Format(copy)} (inBag={m_InBag}; amount={m_Amount})"
+                $"{from.AccessLevel} {CommandLogging.Format(from)} duping {CommandLogging.Format(copy)} (inBag={_inBag}; amount={_amount})"
             );
 
-            Container pack = null;
+            Container pack;
 
-            if (m_InBag)
+            if (_inBag)
             {
                 pack = copy.Parent switch
                 {
@@ -82,57 +172,13 @@ public static class Dupe
                 pack = from.Backpack;
             }
 
-            var c = copy.GetType().GetConstructor(out var paramCount);
-            if (c != null)
+            if (DoDupe(copy, _amount, from, pack))
             {
-                var args = paramCount == 0 ? null : new object[paramCount];
-                if (args != null)
-                {
-                    Array.Fill(args, Type.Missing);
-                }
-
-                try
-                {
-                    from.SendMessage($"Duping {m_Amount}...");
-                    for (var i = 0; i < m_Amount; i++)
-                    {
-                        if (c.Invoke(args) is Item newItem)
-                        {
-                            copy.Dupe(newItem);
-
-                            if (pack != null)
-                            {
-                                pack.DropItem(newItem);
-                            }
-                            else
-                            {
-                                newItem.MoveToWorld(from.Location, from.Map);
-                            }
-
-                            newItem.UpdateTotals();
-                            newItem.InvalidateProperties();
-                            newItem.Delta(ItemDelta.Update);
-
-                            CommandLogging.WriteLine(
-                                from,
-                                $"{from.AccessLevel} {CommandLogging.Format(from)} duped {CommandLogging.Format(copy)} creating {CommandLogging.Format(newItem)}"
-                            );
-                        }
-                    }
-
-                    from.SendMessage("Done");
-                    done = true;
-                }
-                catch
-                {
-                    from.SendMessage("Error!");
-                    return;
-                }
+                from.SendMessage("Duping done.");
             }
-
-            if (!done)
+            else
             {
-                from.SendMessage("Unable to dupe. Item must have a constructor with zero required parameters.");
+                from.SendMessage("Duping Error!");
             }
         }
     }
