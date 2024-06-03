@@ -49,7 +49,7 @@ jobs:
       matrix:
         include:
           - container: ubuntu:noble
-            name: Ubuntu 22
+            name: Ubuntu 24
             packageManager: apt
           - container: ubuntu:jammy
             name: Ubuntu 22
