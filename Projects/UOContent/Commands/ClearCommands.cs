@@ -1,18 +1,3 @@
-/*************************************************************************
- * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
- * Email: hi@modernuo.com                                                *
- * File: ClearCommand.cs                                                 *
- *                                                                       *
- * This program is free software: you can redistribute it and/or modify  *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * You should have received a copy of the GNU General Public License     *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
- *************************************************************************/
-
 using Server.Gumps;
 using Server.Network;
 using System;
@@ -34,8 +19,9 @@ public static class ClearCommands
     {
         var from = e.Mobile;
         var map = from.Map;
-        
-        FinalStage(GetObjects(entity => entity.Map == map), from, $"the {map} facet");
+        var list = GetObjects(entity => entity.Map == map);
+
+        DeleteObjects(list, from, map.Name);
     }
 
     [Usage( "ClearAll" )]
@@ -43,16 +29,14 @@ public static class ClearCommands
     public static void ClearAll_OnCommand(CommandEventArgs e)
     {
         var from = e.Mobile;
-        var map = from.Map;
+        var list = GetObjects();
 
-        FinalStage(GetObjects(), from, "all facets");
+        DeleteObjects(list, from, "globally");
     }
-
-// COMMON METHODS //////////////////////////////////////////////////////////////
 
     private static List<IEntity> GetObjects(Predicate<IEntity> predicate = null)
     {
-        var list = new List<IEntity>();
+        List<IEntity> list = [];
 
         foreach (var item in World.Items.Values)
         {
@@ -73,7 +57,7 @@ public static class ClearCommands
         return list;
     }
 
-    private static void FinalStage(List<IEntity> list, Mobile from, string facets)
+    private static void DeleteObjects(List<IEntity> list, Mobile from, string facets)
     {
         if (list.Count <= 0)
         {
@@ -99,10 +83,12 @@ public static class ClearCommands
     {
         public override int Width => 360;
         public override int Height => 260;
+
         public override string Content { get; }
 
         public DeleteObjectsNoticeGump(int count, string facets, Action<bool> callback) : base(callback) =>
-            Content = $"You are about to delete {count} object{(count == 1 ? "" : "s")} from {facets}. Do you really wish to continue?";
+            Content =
+                $"You are about to delete {count} object{(count == 1 ? "" : "s")} from {facets}. Do you really wish to continue?";
     }
 
     public static void DeleteList_Callback(Mobile from, bool okay, List<IEntity> list)

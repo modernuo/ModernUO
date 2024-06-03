@@ -130,6 +130,10 @@ namespace Server.Commands.Generic
             {
                 Value = Enum.Parse(Type, toParse, true);
             }
+            else if (Type == typeof(bool))
+            {
+                Value = bool.Parse(toParse);
+            }
             else
             {
                 MethodInfo parseMethod;
