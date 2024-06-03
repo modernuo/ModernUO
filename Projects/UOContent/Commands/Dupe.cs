@@ -112,7 +112,9 @@ public static class Dupe
             {
                 for (var j = newItem.Items.Count - 1; j >= 0; j--)
                 {
-                    newItem.RemoveItem(newItem.Items[j]);
+                    var itemToDelete = newItem.Items[j];
+                    newItem.RemoveItem(itemToDelete);
+                    itemToDelete.Delete();
                 }
             }
 
