@@ -195,7 +195,11 @@ public ref struct SpanReader
 
         var span = _buffer.Slice(Position, size);
         var index = span.IndexOfTerminator(byteLength);
-        span = _buffer.Slice(Position, index);
+
+        if (index > -1)
+        {
+            span = _buffer.Slice(Position, index);
+        }
 
         Position += isFixedLength || index < 0 ? size : index + 1;
 
