@@ -3,7 +3,7 @@ namespace Server.Ethics.Hero;
 public sealed class HolyBlade : Power
 {
     public HolyBlade() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             10,
             "Holy Blade",
             "Erstok Reyam",

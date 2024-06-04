@@ -1,10 +1,13 @@
+using ModernUO.Serialization;
 using Server.Ethics;
 
 namespace Server.Mobiles;
 
-public class HolySteed : BaseMount
+[SerializationGenerator(0, false)]
+public partial class HolySteed : BaseMount
 {
     public override string DefaultName => "a silver steed";
+
     [Constructible]
     public HolySteed() : base(0x75, 0x3EA8, AIType.AI_Melee, FightMode.Aggressor)
     {
@@ -39,10 +42,6 @@ public class HolySteed : BaseMount
         ControlSlots = 1;
     }
 
-    public HolySteed(Serial serial) : base(serial)
-    {
-    }
-
     public override int StepsMax => 6400;
     public override string CorpseName => "a holy corpse";
     public override bool IsDispellable => false;
@@ -72,19 +71,5 @@ public class HolySteed : BaseMount
         {
             base.OnDoubleClick(from);
         }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }

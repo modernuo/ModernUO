@@ -2,9 +2,7 @@ namespace Server.Ethics;
 
 public abstract class Power
 {
-    protected PowerDefinition m_Definition;
-
-    public PowerDefinition Definition => m_Definition;
+    public PowerDefinition Definition { get; protected set; }
 
     public virtual bool CheckInvoke(Player from)
     {
@@ -13,7 +11,7 @@ public abstract class Power
             return false;
         }
 
-        if (from.Power < m_Definition.Power)
+        if (from.Power < Definition.Power)
         {
             from.Mobile.LocalOverheadMessage(
                 MessageType.Regular,
@@ -29,8 +27,5 @@ public abstract class Power
 
     public abstract void BeginInvoke(Player from);
 
-    public virtual void FinishInvoke(Player from)
-    {
-        from.Power -= m_Definition.Power;
-    }
+    public virtual void FinishInvoke(Player from) => from.Power -= Definition.Power;
 }

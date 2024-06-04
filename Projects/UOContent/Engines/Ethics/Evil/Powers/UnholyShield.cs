@@ -3,7 +3,7 @@ namespace Server.Ethics.Evil;
 public sealed class UnholyShield : Power
 {
     public UnholyShield() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             20,
             "Unholy Shield",
             "Velgo K'blac",

@@ -6,7 +6,7 @@ namespace Server.Ethics.Hero;
 public sealed class HolySteed : Power
 {
     public HolySteed() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             30,
             "Holy Steed",
             "Trubechs Yeliab",

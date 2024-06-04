@@ -7,7 +7,7 @@ namespace Server.Ethics.Hero;
 public sealed class Bless : Power
 {
     public Bless() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             15,
             "Bless",
             "Erstok Ontawl",

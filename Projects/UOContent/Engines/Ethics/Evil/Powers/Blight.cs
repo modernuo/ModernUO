@@ -7,7 +7,7 @@ namespace Server.Ethics.Evil;
 public sealed class Blight : Power
 {
     public Blight() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             15,
             "Blight",
             "Velgo Ontawl",

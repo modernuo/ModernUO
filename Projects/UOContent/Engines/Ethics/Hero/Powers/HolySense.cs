@@ -6,7 +6,7 @@ namespace Server.Ethics.Hero;
 public sealed class HolySense : Power
 {
     public HolySense() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             0,
             "Holy Sense",
             "Drewrok Erstok",

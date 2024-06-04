@@ -1,8 +1,10 @@
+using ModernUO.Serialization;
 using Server.Ethics;
 
 namespace Server.Mobiles;
 
-public class UnholySteed : BaseMount
+[SerializationGenerator(0, false)]
+public partial class UnholySteed : BaseMount
 {
     public override string DefaultName => "a dark steed";
 
@@ -40,10 +42,6 @@ public class UnholySteed : BaseMount
         ControlSlots = 1;
     }
 
-    public UnholySteed(Serial serial) : base(serial)
-    {
-    }
-
     public override int StepsMax => 6400;
     public override string CorpseName => "an unholy corpse";
     public override bool IsDispellable => false;
@@ -73,19 +71,5 @@ public class UnholySteed : BaseMount
         {
             base.OnDoubleClick(from);
         }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }

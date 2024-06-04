@@ -6,7 +6,7 @@ namespace Server.Ethics.Evil;
 public sealed class UnholyItem : Power
 {
     public UnholyItem() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             5,
             "Unholy Item",
             "Vidda K'balc",

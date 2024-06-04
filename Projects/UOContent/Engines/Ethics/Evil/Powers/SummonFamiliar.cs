@@ -6,7 +6,7 @@ namespace Server.Ethics.Evil;
 public sealed class SummonFamiliar : Power
 {
     public SummonFamiliar() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             5,
             "Summon Familiar",
             "Trubechs Vingir",

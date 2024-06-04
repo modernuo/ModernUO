@@ -6,7 +6,7 @@ namespace Server.Ethics.Hero;
 public sealed class HolyItem : Power
 {
     public HolyItem() =>
-        m_Definition = new PowerDefinition(
+        Definition = new PowerDefinition(
             5,
             "Holy Item",
             "Vidda K'balc",
