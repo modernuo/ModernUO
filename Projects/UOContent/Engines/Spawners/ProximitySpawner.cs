@@ -99,6 +99,7 @@ public partial class ProximitySpawner : Spawner
 
     public override void ToJson(DynamicJson json, JsonSerializerOptions options)
     {
+        base.ToJson(json, options);
         json.SetProperty("triggerRange", options, TriggerRange);
         json.SetProperty("spawnMessage", options, SpawnMessage);
         json.SetProperty("instant", options, InstantFlag);
