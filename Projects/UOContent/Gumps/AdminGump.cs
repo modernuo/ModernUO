@@ -2012,39 +2012,7 @@ namespace Server.Gumps
                                 }
                             case 103:
                                 {
-                                    var folder = Core.SA ? "post-uoml" : "uoml";
-
-                                    var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-                                    if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Malas))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Tokuno))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Trammel))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Felucca))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
-                                    }
-
+                                    GenerateSpawners();
                                     notice = "Spawners have been generated.";
                                     break;
                                 }
@@ -2103,52 +2071,21 @@ namespace Server.Gumps
                                     notice = "Khaldun puzzles have been generated.";
                                     break;
                                 }
-                            
+
                             case 114:
                                 {
                                     // 101
                                     InvokeCommand("TelGen");
-                                    
+
                                     // 102
                                     InvokeCommand("MoonGen");
-                                    
+
                                     // 103
                                     InvokeCommand("DoorGen");
-                                    
+
                                     // 104
-                                    var folder = Core.SA ? "post-uoml" : "uoml";
+                                    GenerateSpawners();
 
-                                    var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-                                    if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Malas))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Tokuno))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Trammel))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Felucca))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
-                                    }
-                                    
                                     // 105
                                     InvokeCommand("SignGen");
 
@@ -2176,7 +2113,7 @@ namespace Server.Gumps
 
                                     // 113
                                     InvokeCommand("GenKhaldun");
-                                    
+
                                     notice = "All the above options have been generated at once.";
                                     break;
                                 }
@@ -3977,6 +3914,42 @@ namespace Server.Gumps
 
                         break;
                     }
+            }
+        }
+
+        private void GenerateSpawners()
+        {
+            var folder = Core.SA ? "post-uoml" : "uoml";
+
+            var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+            if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
+            {
+                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Malas))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Tokuno))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Trammel))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Felucca))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
             }
         }
 
