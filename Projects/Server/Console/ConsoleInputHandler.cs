@@ -152,30 +152,38 @@ public static class ConsoleInputHandler
 
     private static async void ProcessConsoleInput()
     {
-        var token = Core.ClosingTokenSource.Token;
-
-        while (!token.IsCancellationRequested)
+        while (!Core.Closing)
         {
+            string input;
             try
             {
-                var input = Console.ReadLine()?.Trim();
+                input = Console.ReadLine()?.Trim();
+            }
+            catch
+            {
+                logger.Warning("Console commands have been disabled due to an error.");
+                _initialized = false;
+                return;
+            }
 
-                if (Volatile.Read(ref _expectUserInput))
-                {
-                    _input = input;
-                    _receivedUserInput.Set();
-                    _endUserInput.WaitOne();
-                    continue;
-                }
+            if (Volatile.Read(ref _expectUserInput))
+            {
+                _input = input;
+                _receivedUserInput.Set();
+                _endUserInput.WaitOne();
+                continue;
+            }
 
-                if (string.IsNullOrEmpty(input))
-                {
-                    continue;
-                }
+            if (string.IsNullOrEmpty(input))
+            {
+                continue;
+            }
 
-                var splitInput = input.Split(' ', 2);
-                var command = splitInput[0].ToLower();
+            var splitInput = input.Split(' ', 2);
+            var command = splitInput[0].ToLower();
 
+            try
+            {
                 Action<string> action;
                 lock (_inputCommands)
                 {
@@ -186,7 +194,7 @@ public static class ConsoleInputHandler
             }
             catch (Exception e)
             {
-                logger.Warning(e, "Failed to process console input");
+                logger.Error(e, "Failed to execute console command: {Command}", input);
             }
         }
     }
