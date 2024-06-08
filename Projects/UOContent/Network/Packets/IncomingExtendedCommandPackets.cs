@@ -109,21 +109,30 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        if (ph.InGameOnly && state.Mobile?.Deleted != false)
+        var from = state.Mobile;
+
+        if (ph.InGameOnly)
         {
-            if (state.Mobile == null)
+            if (from == null)
             {
-                state.LogInfo(
-                    $"Sent in-game packet (0xBFx{packetId:X2}) before having been attached to a mobile"
-                );
+                state.Disconnect($"Received packet 0x{packetId:X2} before having been attached to a mobile.");
+                return;
             }
 
-            state.Disconnect($"Sent in-game packet(0xBFx{packetId:X2}) but mobile is deleted.");
+            if (from.Deleted)
+            {
+                state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a deleted mobile.");
+                return;
+            }
         }
-        else
+
+        if (ph.OutOfGameOnly && from?.Deleted == false)
         {
-            ph.OnReceive(state, reader);
+            state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a mobile.");
+            return;
         }
+
+        ph.OnReceive(state, reader);
     }
 
     public static void ScreenSize(NetState state, SpanReader reader)
