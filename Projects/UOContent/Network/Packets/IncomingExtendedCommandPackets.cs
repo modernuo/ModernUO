@@ -102,7 +102,7 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        if (ph.Ingame && state.Mobile?.Deleted != false)
+        if (ph.InGameOnly && state.Mobile?.Deleted != false)
         {
             if (state.Mobile == null)
             {
