@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Mobiles;
@@ -70,12 +71,18 @@ public static class IncomingExtendedCommandPackets
     {
     }
 
-    public static unsafe void RegisterExtended(int packetID, bool ingame,
-        delegate*<NetState, SpanReader, void> onReceive)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, delegate*<NetState, SpanReader, void> onReceive
+    ) => RegisterExtended(packetID, ingame, false, onReceive);
+
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, bool outgame, delegate*<NetState, SpanReader, void> onReceive
+    )
     {
         if (packetID is >= 0 and < 0x100)
         {
-            _extendedHandlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+            _extendedHandlers[packetID] = new PacketHandler(packetID, onReceive, inGameOnly: ingame, outGameOnly: outgame);
         }
     }
 

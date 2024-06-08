@@ -26,7 +26,7 @@ public static class IncomingItemPackets
     public static unsafe void Configure()
     {
         IncomingPackets.Register(0x07, 7, true, &LiftReq);
-        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, true, &DropReq));
+        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, &DropReq));
         IncomingPackets.Register(0x13, 10, true, &EquipReq);
         IncomingPackets.Register(0xEC, 0, false, &EquipMacro);
         IncomingPackets.Register(0xED, 0, false, &UnequipMacro);
