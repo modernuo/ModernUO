@@ -25,9 +25,20 @@ public static class IncomingPackets
     public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void Register(int packetID, int length, bool ingame,
-        delegate*<NetState, SpanReader, void> onReceive) =>
-        Register(new PacketHandler(packetID, length, ingame, onReceive));
+    public static unsafe void Register(
+        int packetID, delegate*<NetState, SpanReader, void> onReceive, int length = 0, bool ingameOnly = false,
+        bool outgameOnly = false
+    ) => Register(packetID, length, ingameOnly, outgameOnly, onReceive);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void Register(
+        int packetID, int length, bool ingame, delegate*<NetState, SpanReader, void> onReceive
+    ) => Register(packetID, length, ingame, false, onReceive);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void Register(
+        int packetID, int length, bool ingame, bool outgame, delegate*<NetState, SpanReader, void> onReceive
+    ) => Register(new PacketHandler(packetID, length, ingame, outgame, onReceive));
 
     public static void Register(PacketHandler packetHandler)
     {

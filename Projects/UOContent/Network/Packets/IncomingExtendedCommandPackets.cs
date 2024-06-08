@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Mobiles;
@@ -70,12 +71,18 @@ public static class IncomingExtendedCommandPackets
     {
     }
 
-    public static unsafe void RegisterExtended(int packetID, bool ingame,
-        delegate*<NetState, SpanReader, void> onReceive)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, delegate*<NetState, SpanReader, void> onReceive
+    ) => RegisterExtended(packetID, ingame, false, onReceive);
+
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, bool outgame, delegate*<NetState, SpanReader, void> onReceive
+    )
     {
         if (packetID is >= 0 and < 0x100)
         {
-            _extendedHandlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+            _extendedHandlers[packetID] = new PacketHandler(packetID, onReceive, inGameOnly: ingame, outGameOnly: outgame);
         }
     }
 
@@ -102,21 +109,30 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        if (ph.Ingame && state.Mobile?.Deleted != false)
+        var from = state.Mobile;
+
+        if (ph.InGameOnly)
         {
-            if (state.Mobile == null)
+            if (from == null)
             {
-                state.LogInfo(
-                    $"Sent in-game packet (0xBFx{packetId:X2}) before having been attached to a mobile"
-                );
+                state.Disconnect($"Received packet 0x{packetId:X2} before having been attached to a mobile.");
+                return;
             }
 
-            state.Disconnect($"Sent in-game packet(0xBFx{packetId:X2}) but mobile is deleted.");
+            if (from.Deleted)
+            {
+                state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a deleted mobile.");
+                return;
+            }
         }
-        else
+
+        if (ph.OutOfGameOnly && from?.Deleted == false)
         {
-            ph.OnReceive(state, reader);
+            state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a mobile.");
+            return;
         }
+
+        ph.OnReceive(state, reader);
     }
 
     public static void ScreenSize(NetState state, SpanReader reader)

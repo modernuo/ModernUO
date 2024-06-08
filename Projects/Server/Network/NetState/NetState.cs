@@ -806,18 +806,25 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return ParserState.AwaitingPartialPacket;
         }
 
-        if (handler.Ingame)
+        if (handler.InGameOnly)
         {
             if (Mobile == null)
             {
-                LogInfo($"received packet 0x{packetId:X2} before having been attached to a mobile");
+                LogInfo($"Received packet 0x{packetId:X2} before having been attached to a mobile.");
                 return ParserState.Error;
             }
 
             if (Mobile.Deleted)
             {
+                LogInfo($"Received packet 0x{packetId:X2} after having been attached to a deleted mobile.");
                 return ParserState.Error;
             }
+        }
+
+        if (handler.OutOfGameOnly && Mobile?.Deleted == false)
+        {
+            LogInfo($"Received packet 0x{packetId:X2} after having been attached to a mobile.");
+            return ParserState.Error;
         }
 
         var throttler = handler.ThrottleCallback;
