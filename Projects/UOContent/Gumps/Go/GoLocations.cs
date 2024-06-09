@@ -54,12 +54,6 @@ public static class GoLocations
 
         var path = Path.Combine($"Data/Locations/{fileName}.json");
 
-        if (!File.Exists(path))
-        {
-            logger.Warning("Could not find file {Path}.", path);
-            return new LocationTree(map, [], null);
-        }
-
         try
         {
             var root = JsonConfig.Deserialize<GoCategory>(path);
