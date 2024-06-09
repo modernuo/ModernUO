@@ -278,6 +278,7 @@ namespace Server.Gumps
                         AddButtonLabeled(220, 300, GetButtonID(3, 112), "Doom");
 
                         AddButtonLabeled(20, 325, GetButtonID(3, 113), "Khaldun Puzzles");
+                        AddButtonLabeled(220, 325, GetButtonID(3, 114), "Do everything");
 
                         goto case AdminGumpPage.Administer;
                     }
@@ -2011,39 +2012,7 @@ namespace Server.Gumps
                                 }
                             case 103:
                                 {
-                                    var folder = Core.SA ? "post-uoml" : "uoml";
-
-                                    var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-                                    if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Malas))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Tokuno))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Trammel))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
-                                    }
-
-                                    if (availableMaps.Includes(MapSelectionFlags.Felucca))
-                                    {
-                                        InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
-                                    }
-
+                                    GenerateSpawners();
                                     notice = "Spawners have been generated.";
                                     break;
                                 }
@@ -2100,6 +2069,52 @@ namespace Server.Gumps
                                 {
                                     InvokeCommand("GenKhaldun");
                                     notice = "Khaldun puzzles have been generated.";
+                                    break;
+                                }
+
+                            case 114:
+                                {
+                                    // 101
+                                    InvokeCommand("TelGen");
+
+                                    // 102
+                                    InvokeCommand("MoonGen");
+
+                                    // 103
+                                    InvokeCommand("DoorGen");
+
+                                    // 104
+                                    GenerateSpawners();
+
+                                    // 105
+                                    InvokeCommand("SignGen");
+
+                                    // 106
+                                    InvokeCommand("Decorate");
+
+                                    // 107
+                                    InvokeCommand("GenChamps");
+
+                                    // 108
+                                    InvokeCommand("DecorateMag");
+
+                                    // 109
+                                    InvokeCommand("GenStealArties");
+
+                                    // 110
+                                    InvokeCommand("SHTelGen");
+
+                                    // 111
+                                    InvokeCommand("SecretLocGen");
+
+                                    // 112
+                                    InvokeCommand("GenLeverPuzzle");
+                                    InvokeCommand("GenGauntlet");
+
+                                    // 113
+                                    InvokeCommand("GenKhaldun");
+
+                                    notice = "All the above options have been generated at once.";
                                     break;
                                 }
 
@@ -3899,6 +3914,42 @@ namespace Server.Gumps
 
                         break;
                     }
+            }
+        }
+
+        private void GenerateSpawners()
+        {
+            var folder = Core.SA ? "post-uoml" : "uoml";
+
+            var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+            if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
+            {
+                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Malas))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Tokuno))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Trammel))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
+            }
+
+            if (availableMaps.Includes(MapSelectionFlags.Felucca))
+            {
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
             }
         }
 
