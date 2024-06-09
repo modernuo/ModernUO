@@ -224,53 +224,66 @@ public static class CharacterCreation
         newChar.Player = true;
         newChar.AccessLevel = args.Account.AccessLevel;
         newChar.Female = args.Female;
-        newChar.Race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
         newChar.Hue = newChar.Race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
         newChar.Hunger = 20;
 
-        var young = false;
-
-        if (newChar is PlayerMobile pm)
-        {
-            pm.Profession = args.Profession;
-
-            if (pm.AccessLevel == AccessLevel.Player && ((Account)pm.Account).Young)
-            {
-                young = pm.Young = true;
-            }
-        }
-
         SetName(newChar, args.Name);
-
         newChar.AddBackpack();
 
-        SetStats(newChar, state, args.Stats, args.Profession);
-        SetSkills(newChar, args.Skills, args.Profession, args.ShirtHue, args.PantsHue);
-
-        var race = newChar.Race;
-
-        if (race.ValidateHair(newChar, args.HairID))
+        if (newChar.AccessLevel == AccessLevel.Player)
         {
-            newChar.HairItemID = args.HairID;
-            newChar.HairHue = race.ClipHairHue(args.HairHue & 0x3FFF);
+            var race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
+            newChar.Race = race;
+
+            if (newChar is PlayerMobile pm)
+            {
+                pm.Profession = args.Profession;
+
+                if (((Account)pm.Account).Young)
+                {
+                    pm.Young = true;
+
+                    newChar.BankBox.DropItem(new NewPlayerTicket
+                    {
+                        Owner = newChar
+                    });
+                }
+            }
+
+            SetStats(newChar, state, args.Stats, args.Profession);
+            SetSkills(newChar, args.Skills, args.Profession, args.ShirtHue, args.PantsHue);
+
+            if (race.ValidateHair(newChar, args.HairID))
+            {
+                newChar.HairItemID = args.HairID;
+                newChar.HairHue = race.ClipHairHue(args.HairHue & 0x3FFF);
+            }
+
+            if (race.ValidateFacialHair(newChar, args.BeardID))
+            {
+                newChar.FacialHairItemID = args.BeardID;
+                newChar.FacialHairHue = race.ClipHairHue(args.BeardHue & 0x3FFF);
+            }
+
+            if (TestCenter.Enabled)
+            {
+                TestCenter.FillBankbox(newChar);
+            }
         }
-
-        if (race.ValidateFacialHair(newChar, args.BeardID))
+        else
         {
-            newChar.FacialHairItemID = args.BeardID;
-            newChar.FacialHairHue = race.ClipHairHue(args.BeardHue & 0x3FFF);
-        }
+            newChar.Str = 100;
+            newChar.Int = 100;
+            newChar.Dex = 100;
 
-        if (TestCenter.Enabled)
-        {
-            TestCenter.FillBankbox(newChar);
-        }
+            for (var i = 0; i < newChar.Skills.Length; i++)
+            {
+                newChar.Skills[i].BaseFixedPoint = 1000;
+            }
 
-        if (young)
-        {
-            var ticket = new NewPlayerTicket();
-            ticket.Owner = newChar;
-            newChar.BankBox.DropItem(ticket);
+            newChar.Race = Race.Human;
+            newChar.Blessed = true;
+            newChar.AddItem(new StaffRobe(newChar.AccessLevel));
         }
 
         var city = GetStartLocation(args);
