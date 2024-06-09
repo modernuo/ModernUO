@@ -1,39 +1,18 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-using Server.Json;
 
 namespace Server.Gumps;
 
 public class LocationTree
 {
-    public LocationTree(string fileName, Map map)
+    public LocationTree(Map map, Dictionary<Mobile, GoCategory> lastBranch, GoCategory root)
     {
-        LastBranch = new Dictionary<Mobile, GoCategory>();
+        LastBranch = lastBranch;
         Map = map;
+        Root = root;
 
-        var path = Path.Combine($"Data/Locations/{fileName}.json");
-
-        if (!File.Exists(path))
+        if (root != null)
         {
-            Console.WriteLine("Go Locations: {0} does not exist", path);
-            return;
-        }
-
-        try
-        {
-            Root = JsonConfig.Deserialize<GoCategory>(path);
-            if (Root == null)
-            {
-                throw new JsonException($"Failed to deserialize {path}.");
-            }
-            SetParents(Root);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Go Locations: Error in deserializing {0}", path);
-            Console.WriteLine(e);
+            SetParents(root);
         }
     }
 
