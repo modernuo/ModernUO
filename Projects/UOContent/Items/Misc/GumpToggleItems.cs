@@ -39,9 +39,9 @@ public sealed class TurnOffGump : TurnOnOffGump<TurnOffGump>
 
 public abstract class TurnOnOffGump<T> : StaticGump<T> where T : TurnOnOffGump<T>
 {
-    protected readonly IGumpToggleItem Item;
+    protected readonly IGumpToggleItem _item;
 
-    public TurnOnOffGump(IGumpToggleItem item) : base(150, 200) => Item = item;
+    public TurnOnOffGump(IGumpToggleItem item) : base(150, 200) => _item = item;
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
@@ -58,19 +58,18 @@ public abstract class TurnOnOffGump<T> : StaticGump<T> where T : TurnOnOffGump<T
     {
         var from = sender.Mobile;
 
-        if (info.ButtonID == 1)
-        {
-            var newValue = !Item.TurnedOn;
-            Item.TurnedOn = newValue;
-
-            if (newValue && !Item.IsLockedDown)
-            {
-                from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
-            }
-        }
-        else
+        if (info.ButtonID != 1)
         {
             from.SendLocalizedMessage(502694); // Cancelled action.
+            return;
+        }
+
+        var newValue = !_item.TurnedOn;
+        _item.TurnedOn = newValue;
+
+        if (newValue && !_item.IsLockedDown)
+        {
+            from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
         }
     }
 }
