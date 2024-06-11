@@ -1,7 +1,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.IO.Compression;
 using System.Text;
 using Server.Compression;
 using Server.Gumps;

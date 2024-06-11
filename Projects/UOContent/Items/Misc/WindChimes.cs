@@ -1,12 +1,10 @@
 using ModernUO.Serialization;
-using Server.Gumps;
 using Server.Multis;
-using Server.Network;
 
 namespace Server.Items;
 
 [SerializationGenerator(0, false)]
-public abstract partial class BaseWindChimes : Item
+public abstract partial class BaseWindChimes : Item, IGumpToggleItem
 {
     [InvalidateProperties]
     [SerializableField(0)]
@@ -46,55 +44,22 @@ public abstract partial class BaseWindChimes : Item
         }
     }
 
-    public bool IsOwner(Mobile mob) => BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
+    public bool HasAccess(Mobile mob) => mob.AccessLevel >= AccessLevel.GameMaster ||
+                                         BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (IsOwner(from))
-        {
-            from.SendGump(new OnOffGump(this));
-        }
-        else
+        if (!HasAccess(from))
         {
             from.SendLocalizedMessage(502691); // You must be the owner to use this.
         }
-    }
-
-    private class OnOffGump : Gump
-    {
-        private readonly BaseWindChimes m_Chimes;
-
-        public OnOffGump(BaseWindChimes chimes) : base(150, 200)
+        else if (TurnedOn)
         {
-            m_Chimes = chimes;
-
-            AddBackground(0, 0, 300, 150, 0xA28);
-            AddHtmlLocalized(45, 20, 300, 35, chimes.TurnedOn ? 1011035 : 1011034); // [De]Activate this item
-            AddButton(40, 53, 0xFA5, 0xFA7, 1);
-            AddHtmlLocalized(80, 55, 65, 35, 1011036); // OKAY
-            AddButton(150, 53, 0xFA5, 0xFA7, 0);
-            AddHtmlLocalized(190, 55, 100, 35, 1011012); // CANCEL
+            from.SendGump(new TurnOffGump(this));
         }
-
-        public override void OnResponse(NetState sender, in RelayInfo info)
+        else
         {
-            var from = sender.Mobile;
-
-            if (info.ButtonID == 1)
-            {
-                var newValue = !m_Chimes.TurnedOn;
-
-                m_Chimes.TurnedOn = newValue;
-
-                if (newValue && !m_Chimes.IsLockedDown)
-                {
-                    from.SendLocalizedMessage(502693); // Remember, this only works when locked down.
-                }
-            }
-            else
-            {
-                from.SendLocalizedMessage(502694); // Cancelled action.
-            }
+            from.SendGump(new TurnOnGump(this));
         }
     }
 }
