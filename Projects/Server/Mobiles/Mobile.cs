@@ -1001,7 +1001,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public static IWeapon DefaultWeapon { get; set; }
 
-    [CommandProperty(AccessLevel.Counselor)]
+    [CommandProperty(AccessLevel.Counselor, canModify: true)]
     public Skills Skills { get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
