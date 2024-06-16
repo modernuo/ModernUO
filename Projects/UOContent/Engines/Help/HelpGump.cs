@@ -51,23 +51,30 @@ public class ContainedMenu : QuestionMenu
     }
 }
 
-public class HelpGump : Gump
+public sealed class HelpGump : DynamicGump
 {
+    private Mobile _from;
+
     public HelpGump(Mobile from) : base(0, 0)
     {
-        from.CloseGump<HelpGump>();
+        _from = from;
+    }
 
-        var isYoung = IsYoung(from);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        _from.CloseGump<HelpGump>();
+
+        var isYoung = IsYoung(_from);
         var totalHeight = 110 + (isYoung ? 64 : 0) + 4 * 80;
 
-        AddBackground(50, 25, 540, totalHeight, 2600);
+        builder.AddBackground(50, 25, 540, totalHeight, 2600);
 
-        AddPage(0);
+        builder.AddPage();
 
-        AddHtmlLocalized(150, 50, 360, 40, 1001002); // <CENTER><U>Ultima Online Help Menu</U></CENTER>
-        AddButton(425, totalHeight - 15, 2073, 2072, 0);          // Close
+        builder.AddHtmlLocalized(150, 50, 360, 40, 1001002);     // <CENTER><U>Ultima Online Help Menu</U></CENTER>
+        builder.AddButton(425, totalHeight - 15, 2073, 2072, 0); // Close
 
-        AddPage(1);
+        builder.AddPage(1);
 
         var delta = 80;
         int y;
@@ -76,7 +83,7 @@ public class HelpGump : Gump
         if (isYoung)
         {
             // <U>Young player haven transport</U>: Select this option if you want to be transported to Haven.
-            AddOption(90, 48, 9, 1041525, page: 2);
+            AddOption(ref builder, 90, 48, 9, 1041525, page: 2);
             y = 90 + 54;
         }
         else
@@ -88,13 +95,13 @@ public class HelpGump : Gump
          * Select this option if you are having difficulties learning to use a skill,
          * if you have a general gameplay question, or you would like to search the UO Knowledge Base.
          */
-        AddOption(y, height, 1, 1001003, page: 2);
+        AddOption(ref builder, y, height, 1, 1001003, page: 2);
 
         /*
          * <U>My character is physically stuck</U>:
          * This choice only covers cases where your character is physically stuck in a location they cannot move out of.
          */
-        AddOption(y += delta, height, 2, 1001004);
+        AddOption(ref builder, y += delta, height, 2, 1001004);
 
         /*
          * <U>Another player is harassing me</U>:
@@ -103,7 +110,7 @@ public class HelpGump : Gump
          * <A HREF="https://help.ea.com/article/how-do-i-report-someone-for-harassment-in-uo">
          * - How do I report someone for Harassment in UO? -</A>.
          */
-        AddOption(y += delta, height, 0, 1001005, GumpButtonType.Page, 3);
+        AddOption(ref builder, y += delta, height, 0, 1001005, GumpButtonType.Page, 3);
 
         /*
          * <U>Other</U>: If you are experiencing a problem in the game that does not fall into one of the other categories
@@ -111,9 +118,9 @@ public class HelpGump : Gump
          * (located at <A HREF="https://help.ea.com/en/ultima-online/">https://help.ea.com/en/ultima-online/</A>) and
          * requires in-game assistance please use this option.
          */
-        AddOption(y + delta, height, 0, 1001006, GumpButtonType.Page, 2);
+        AddOption(ref builder, y + delta, height, 0, 1001006, GumpButtonType.Page, 2);
 
-        AddPage(2);
+        builder.AddPage(2);
 
         y = 90;
 
@@ -123,7 +130,7 @@ public class HelpGump : Gump
          * Your report will be read by our Quality Assurance staff
          * We apologize for not being able to reply to individual bug reports.
          */
-        AddOption(y, 3, 1001009);
+        AddOption(ref builder, y, 3, 1001009);
 
         /*
          * <U>Suggestion for the Game</U>:
@@ -131,14 +138,14 @@ public class HelpGump : Gump
          * participate in the discussion forums.
          * Choosing this option will take you to the discussion forums.
          */
-        AddOption(y += delta, 4, 1074795);
+        AddOption(ref builder, y += delta, 4, 1074795);
 
         /*
          * <U>Visit the Ultima Online Knowledge Base</U>:
          * You can find detailed answers to many of the most frequently asked questions in our Knowledge Base.
          * This selection will launch your web browser and take you to those answers.
          */
-        AddOption(y += delta, 5, 1074796);
+        AddOption(ref builder, y += delta, 5, 1074796);
 
         /*
          * <U>Other</U>: If you are experiencing a problem in the game that does not fall into one of the other categories
@@ -146,9 +153,9 @@ public class HelpGump : Gump
          * (located at <A HREF="https://help.ea.com/en/ultima-online/">https://help.ea.com/en/ultima-online/</A>) and
          * requires in-game assistance please use this option.
          */
-        AddOption(y + delta, 6, 1001006);
+        AddOption(ref builder, y + delta, 6, 1001006);
 
-        AddPage(3);
+        builder.AddPage(3);
 
         y = 90;
         delta = 150;
@@ -174,7 +181,7 @@ public class HelpGump : Gump
          * Use this option to report someone who may be exploiting or cheating.
          * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=41">- What constitutes an exploit?</a>
          */
-        AddOption(y, 145, 7, 1062572);
+        AddOption(ref builder, y, 145, 7, 1062572);
 
         /* <U><CENTER>Another player is harassing me using game mechanics.</CENTER></U><BR>
          * <BR>
@@ -195,20 +202,25 @@ public class HelpGump : Gump
          * **This issue will be reviewed by a GM to assess the validity of this complaint.
          * Abuse of this system is a violation of the Rules of Conduct.
          */
-        AddOption(y += delta, 145, 8, 1062573);
+        AddOption(ref builder, y += delta, 145, 8, 1062573);
 
-        AddButton(150, y + 150, 5540, 5541, 0, GumpButtonType.Page, 1);
-        AddHtmlLocalized(180, y + 150, 335, 40, 1001015); // NO  - I meant to ask for help with another matter.
+        builder.AddButton(150, y + 150, 5540, 5541, 0, GumpButtonType.Page, 1);
+        builder.AddHtmlLocalized(180, y + 150, 335, 40, 1001015); // NO  - I meant to ask for help with another matter.
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void AddOption(int y, int buttonId, int localizedName, GumpButtonType type = GumpButtonType.Reply, int page = 0) =>
-        AddOption(y, 74, buttonId, localizedName, type, page);
+    private static void AddOption(
+        ref DynamicGumpBuilder builder, int y, int buttonId, int localizedName, GumpButtonType type = GumpButtonType.Reply,
+        int page = 0
+    ) => AddOption(ref builder, y, 74, buttonId, localizedName, type, page);
 
-    private void AddOption(int y, int height, int buttonId, int localizedName, GumpButtonType type = GumpButtonType.Reply, int page = 0)
+    private static void AddOption(
+        ref DynamicGumpBuilder builder, int y, int height, int buttonId, int localizedName,
+        GumpButtonType type = GumpButtonType.Reply, int page = 0
+    )
     {
-        AddButton(80, y, 5540, 5541, buttonId, type, page);
-        AddHtmlLocalized(
+        builder.AddButton(80, y, 5540, 5541, buttonId, type, page);
+        builder.AddHtmlLocalized(
             110,
             y,
             450,
