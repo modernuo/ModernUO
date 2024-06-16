@@ -341,26 +341,36 @@ public static class HelpInfo
         }
     }
 
-    public class CommandInfoGump : Gump
+    public class CommandInfoGump : DynamicGump
     {
+        private readonly int _width;
+        private readonly int _height;
+        private readonly CommandInfo _info;
+
         public CommandInfoGump(CommandInfo info, int width = 320, int height = 200) : base(300, 50)
         {
-            AddPage(0);
+            _width = width;
+            _height = height;
+            _info = info;
+        }
 
-            AddBackground(0, 0, width, height, 5054);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtml(10, 10, width - 20, 20, info.Name.Center(0xFF0000));
+            builder.AddBackground(0, 0, _width, _height, 5054);
+            builder.AddHtml(10, 10, _width - 20, 20, _info.Name.Center(0xFF0000));
 
             using var sb = ValueStringBuilder.Create();
 
             sb.Append("Usage: ");
-            var usage = info.Usage
+            var usage = _info.Usage
                 .ReplaceOrdinal("<", "(")
                 .ReplaceOrdinal(">", ")");
             sb.Append(usage);
             sb.Append("<BR>");
 
-            var aliases = info.Aliases;
+            var aliases = _info.Aliases;
 
             if (aliases?.Length > 0)
             {
@@ -380,27 +390,27 @@ public static class HelpInfo
             }
 
             sb.Append("AccessLevel: ");
-            sb.Append(info.AccessLevel.ToString());
+            sb.Append(_info.AccessLevel.ToString());
             sb.Append("<BR>");
 
-            if (info.Modifiers?.Length > 0)
+            if (_info.Modifiers?.Length > 0)
             {
                 sb.Append("Modifiers: ");
-                for (var i = 0; i < info.Modifiers.Length; ++i)
+                for (var i = 0; i < _info.Modifiers.Length; ++i)
                 {
                     if (i != 0)
                     {
                         sb.Append(", ");
                     }
 
-                    sb.Append(info.Modifiers[i]);
+                    sb.Append(_info.Modifiers[i]);
                 }
                 sb.Append("<BR>");
                 sb.Append("<BR>");
             }
-            sb.Append(info.Description);
+            sb.Append(_info.Description);
 
-            AddHtml(10, 40, width - 20, height - 80, sb.ToString(), false, true);
+            builder.AddHtml(10, 40, _width - 20, _height - 80, sb.ToString(), false, true);
         }
     }
 }
