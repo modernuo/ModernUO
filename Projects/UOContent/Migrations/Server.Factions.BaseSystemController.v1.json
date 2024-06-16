@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Factions.BaseSystemController",
+  "properties": [
+    {
+      "name": "LabelNumber",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

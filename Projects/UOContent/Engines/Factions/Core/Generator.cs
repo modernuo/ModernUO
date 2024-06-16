@@ -1,100 +1,99 @@
 using System;
 
-namespace Server.Factions
+namespace Server.Factions;
+
+public static class Generator
 {
-    public static class Generator
+    public static void Configure()
     {
-        public static void Configure()
+        CommandSystem.Register("GenerateFactions", AccessLevel.Developer, GenerateFactions_OnCommand);
+    }
+
+    [Usage("GenerateFactions")]
+    [Aliases("FactionGen", "GenFactions")]
+    [Description("Enables and generates factions.")]
+    public static void GenerateFactions_OnCommand(CommandEventArgs e)
+    {
+        var from = e.Mobile;
+        FactionSystem.Enable();
+
+        var factions = Faction.Factions;
+
+        foreach (var faction in factions)
         {
-            CommandSystem.Register("GenerateFactions", AccessLevel.Developer, GenerateFactions_OnCommand);
+            Generate(faction);
+            from.SendMessage($"Generated {faction}");
         }
 
-        [Usage("GenerateFactions")]
-        [Aliases("FactionGen", "GenFactions")]
-        [Description("Enables and generates factions.")]
-        public static void GenerateFactions_OnCommand(CommandEventArgs e)
+        var towns = Town.Towns;
+
+        foreach (var town in towns)
         {
-            var from = e.Mobile;
-            FactionSystem.Enable();
-
-            var factions = Faction.Factions;
-
-            foreach (var faction in factions)
-            {
-                Generate(faction);
-                from.SendMessage($"Generated {faction}");
-            }
-
-            var towns = Town.Towns;
-
-            foreach (var town in towns)
-            {
-                Generate(town);
-                from.SendMessage($"Generated {town}");
-            }
-
-            from.SendMessage("Faction generation completed.");
+            Generate(town);
+            from.SendMessage($"Generated {town}");
         }
 
-        public static void Generate(Town town)
+        from.SendMessage("Faction generation completed.");
+    }
+
+    public static void Generate(Town town)
+    {
+        var facet = Faction.Facet;
+
+        var def = town.Definition;
+
+        if (!CheckExistence(def.Monolith, facet, typeof(TownMonolith)))
         {
-            var facet = Faction.Facet;
-
-            var def = town.Definition;
-
-            if (!CheckExistence(def.Monolith, facet, typeof(TownMonolith)))
-            {
-                var mono = new TownMonolith(town);
-                mono.MoveToWorld(def.Monolith, facet);
-                mono.Sigil = new Sigil(town);
-            }
-
-            if (!CheckExistence(def.TownStone, facet, typeof(TownStone)))
-            {
-                new TownStone(town).MoveToWorld(def.TownStone, facet);
-            }
+            var mono = new TownMonolith(town);
+            mono.MoveToWorld(def.Monolith, facet);
+            mono.Sigil = new Sigil(town);
         }
 
-        public static void Generate(Faction faction)
+        if (!CheckExistence(def.TownStone, facet, typeof(TownStone)))
         {
-            var facet = Faction.Facet;
+            new TownStone(town).MoveToWorld(def.TownStone, facet);
+        }
+    }
 
-            var towns = Town.Towns;
+    public static void Generate(Faction faction)
+    {
+        var facet = Faction.Facet;
 
-            var stronghold = faction.Definition.Stronghold;
+        var towns = Town.Towns;
 
-            if (!CheckExistence(stronghold.JoinStone, facet, typeof(JoinStone)))
+        var stronghold = faction.Definition.Stronghold;
+
+        if (!CheckExistence(stronghold.JoinStone, facet, typeof(JoinStone)))
+        {
+            new JoinStone(faction).MoveToWorld(stronghold.JoinStone, facet);
+        }
+
+        if (!CheckExistence(stronghold.FactionStone, facet, typeof(FactionStone)))
+        {
+            new FactionStone(faction).MoveToWorld(stronghold.FactionStone, facet);
+        }
+
+        for (var i = 0; i < stronghold.Monoliths.Length; ++i)
+        {
+            var monolith = stronghold.Monoliths[i];
+
+            if (!CheckExistence(monolith, facet, typeof(StrongholdMonolith)))
             {
-                new JoinStone(faction).MoveToWorld(stronghold.JoinStone, facet);
+                new StrongholdMonolith(towns[i], faction).MoveToWorld(monolith, facet);
             }
+        }
+    }
 
-            if (!CheckExistence(stronghold.FactionStone, facet, typeof(FactionStone)))
+    private static bool CheckExistence(Point3D loc, Map facet, Type type)
+    {
+        foreach (var item in facet.GetItemsAt(loc))
+        {
+            if (type.IsInstanceOfType(item))
             {
-                new FactionStone(faction).MoveToWorld(stronghold.FactionStone, facet);
-            }
-
-            for (var i = 0; i < stronghold.Monoliths.Length; ++i)
-            {
-                var monolith = stronghold.Monoliths[i];
-
-                if (!CheckExistence(monolith, facet, typeof(StrongholdMonolith)))
-                {
-                    new StrongholdMonolith(towns[i], faction).MoveToWorld(monolith, facet);
-                }
+                return true;
             }
         }
 
-        private static bool CheckExistence(Point3D loc, Map facet, Type type)
-        {
-            foreach (var item in facet.GetItemsAt(loc))
-            {
-                if (type.IsInstanceOfType(item))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+        return false;
     }
 }
