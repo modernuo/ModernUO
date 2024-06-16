@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "type": "Server.Ethics.Player",
+  "properties": [
+    {
+      "name": "Mobile",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Power",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "History",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Steed",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Familiar",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Shield",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "Ethic",
+      "type": "Server.Ethics.Ethic",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}
