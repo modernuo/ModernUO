@@ -1,29 +1,28 @@
 using System.Collections.Generic;
 
-namespace Server.Factions
+namespace Server.Factions;
+
+public class GuardList
 {
-    public class GuardList
+    public GuardList(GuardDefinition definition)
     {
-        public GuardList(GuardDefinition definition)
+        Definition = definition;
+        Guards = [];
+    }
+
+    public GuardDefinition Definition { get; }
+
+    public List<BaseFactionGuard> Guards { get; }
+
+    public BaseFactionGuard Construct()
+    {
+        try
         {
-            Definition = definition;
-            Guards = new List<BaseFactionGuard>();
+            return Definition.Type.CreateInstance<BaseFactionGuard>();
         }
-
-        public GuardDefinition Definition { get; }
-
-        public List<BaseFactionGuard> Guards { get; }
-
-        public BaseFactionGuard Construct()
+        catch
         {
-            try
-            {
-                return Definition.Type.CreateInstance<BaseFactionGuard>();
-            }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

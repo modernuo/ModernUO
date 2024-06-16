@@ -1,66 +1,44 @@
-namespace Server.Factions
+using ModernUO.Serialization;
+
+namespace Server.Factions;
+
+[SerializationGenerator(1, false)]
+public abstract partial class BaseSystemController : Item
 {
-    public abstract class BaseSystemController : Item
+    private int _labelNumber;
+
+    public BaseSystemController(int itemID) : base(itemID)
     {
-        private int m_LabelNumber;
+    }
 
-        public BaseSystemController(int itemID) : base(itemID)
+    public virtual int DefaultLabelNumber => 0;
+
+    [SerializableProperty(0, useField: nameof(_labelNumber))]
+    public override int LabelNumber => _labelNumber > 0 ? _labelNumber : DefaultLabelNumber;
+
+    public virtual void AssignName(TextDefinition name)
+    {
+        if (name?.Number > 0)
         {
+            _labelNumber = name.Number;
+            Name = null;
+        }
+        else if (name?.String != null)
+        {
+            _labelNumber = 0;
+            Name = name.String;
+        }
+        else
+        {
+            _labelNumber = 0;
+            Name = null;
         }
 
-        public BaseSystemController(Serial serial) : base(serial)
-        {
-        }
+        InvalidateProperties();
+    }
 
-        public virtual int DefaultLabelNumber => base.LabelNumber;
-        public new virtual string DefaultName => null;
-
-        public override int LabelNumber
-        {
-            get
-            {
-                if (m_LabelNumber > 0)
-                {
-                    return m_LabelNumber;
-                }
-
-                return DefaultLabelNumber;
-            }
-        }
-
-        public virtual void AssignName(TextDefinition name)
-        {
-            if (name?.Number > 0)
-            {
-                m_LabelNumber = name.Number;
-                Name = null;
-            }
-            else if (name?.String != null)
-            {
-                m_LabelNumber = 0;
-                Name = name.String;
-            }
-            else
-            {
-                m_LabelNumber = 0;
-                Name = DefaultName;
-            }
-
-            InvalidateProperties();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        // Do nothing
     }
 }

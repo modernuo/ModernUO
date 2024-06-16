@@ -25,37 +25,17 @@ namespace Server.Factions
 
         public static FactionItemDefinition Identify(Item item)
         {
-            if (item is BaseArmor armor)
+            return item switch
             {
-                if (CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
-                {
-                    return m_LeatherArmor;
-                }
-
-                return m_MetalArmor;
-            }
-
-            if (item is BaseRanged)
-            {
-                return m_RangedWeapon;
-            }
-
-            if (item is BaseWeapon)
-            {
-                return m_Weapon;
-            }
-
-            if (item is BaseClothing)
-            {
-                return m_Clothing;
-            }
-
-            if (item is SpellScroll)
-            {
-                return m_Scroll;
-            }
-
-            return null;
+                BaseArmor armor => CraftResources.GetType(armor.Resource) == CraftResourceType.Leather
+                    ? m_LeatherArmor
+                    : m_MetalArmor,
+                BaseRanged => m_RangedWeapon,
+                BaseWeapon => m_Weapon,
+                BaseClothing => m_Clothing,
+                SpellScroll => m_Scroll,
+                _ => null
+            };
         }
     }
 }
