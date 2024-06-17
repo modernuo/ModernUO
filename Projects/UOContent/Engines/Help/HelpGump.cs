@@ -13,7 +13,10 @@ namespace Server.Engines.Help;
 
 public class ContainedMenu : QuestionMenu
 {
-    private static string[] _options = ["Leave my old help request like it is.", "Remove my help request from the queue."];
+    private static readonly string[] _options = [
+        "Leave my old help request like it is.",
+        "Remove my help request from the queue."
+    ];
 
     private readonly Mobile _from;
 
