@@ -79,12 +79,7 @@ namespace Server.Engines.Help
                         builder.Append("<br>");
                     }
 
-                    builder.AppendFormat(
-                        "<u>{0}</u> (<i>{1}</i>): {2}",
-                        name,
-                        account.FixHtml(),
-                        speech.FixHtml()
-                    );
+                    builder.Append($"<u>{name}</u> (<i>{account.FixHtml()}</i>): {speech.FixHtml()}");
                 }
 
                 sLog = builder.ToString();
