@@ -201,7 +201,7 @@ public abstract class Target
         {
             OnTargetUntargetable(from, targeted);
         }
-        else if (mobile?.CheckTarget(from, this, mobile) == false)
+        else if (mobile?.CheckTarget(from, this, targeted) == false)
         {
             OnTargetUntargetable(from, mobile);
         }
