@@ -95,8 +95,6 @@ namespace Server.Spells.Third
 
                 HarmfulSpell(m);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

@@ -67,8 +67,6 @@ namespace Server.Spells.Sixth
 
                 _table[m] = timerToken;
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

@@ -55,8 +55,6 @@ namespace Server.Spells.Third
 
                 SpellHelper.Damage(this, m, damage, 0, 100, 0, 0, 0);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

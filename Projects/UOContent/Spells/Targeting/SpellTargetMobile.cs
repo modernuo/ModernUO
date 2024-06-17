@@ -4,7 +4,7 @@ namespace Server.Spells
 {
     public interface ISpellTargetingMobile : ISpell
     {
-        void Target(Mobile from);
+        void Target(Mobile m);
     }
 
     public class SpellTargetMobile : Target, ISpellTarget

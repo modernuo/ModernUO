@@ -142,8 +142,6 @@ public class PoisonStrikeSpell : NecromancerSpell, ISpellTargetingMobile
                 }
             }
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

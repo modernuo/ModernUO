@@ -5,5 +5,6 @@ public enum TargetCancelType
     Overridden,
     Canceled,
     Disconnected,
-    Timeout
+    Timeout,
+    InvalidTarget
 }

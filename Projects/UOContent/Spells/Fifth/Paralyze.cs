@@ -78,8 +78,6 @@ namespace Server.Spells.Fifth
 
                 HarmfulSpell(m);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

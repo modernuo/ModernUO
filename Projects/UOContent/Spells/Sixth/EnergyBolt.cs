@@ -59,8 +59,6 @@ namespace Server.Spells.Sixth
                 // Deal the damage
                 SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 100);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

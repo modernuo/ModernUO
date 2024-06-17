@@ -68,8 +68,6 @@ namespace Server.Spells.Spellweaving
 
                 SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

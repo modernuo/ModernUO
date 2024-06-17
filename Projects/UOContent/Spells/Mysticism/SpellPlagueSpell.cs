@@ -35,13 +35,13 @@ public class SpellPlagueSpell : MysticSpell, ISpellTargetingMobile
         Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful);
     }
 
-    public void Target(Mobile targeted)
+    public void Target(Mobile m)
     {
-        if (CheckHSequence(targeted))
+        if (CheckHSequence(m))
         {
-            SpellHelper.Turn(Caster, targeted);
+            SpellHelper.Turn(Caster, m);
 
-            SpellHelper.CheckReflect(6, Caster, ref targeted);
+            SpellHelper.CheckReflect(6, Caster, ref m);
 
             /* The target is hit with an explosion of chaos damage and then inflicted
              * with the spell plague curse. Each time the target is damaged while under
@@ -53,26 +53,24 @@ public class SpellPlagueSpell : MysticSpell, ISpellTargetingMobile
              * plagues so that they are applied one after the other.
              */
 
-            VisualEffect(targeted);
+            VisualEffect(m);
 
             // Before Time of Legends, SDI was not applied to initial damage.
-            var damage = GetNewAosDamage(33, 1, 5, Core.TOL, targeted);
-            SpellHelper.Damage(this, targeted, damage, 0, 0, 0, 0, 0);
+            var damage = GetNewAosDamage(33, 1, 5, Core.TOL, m);
+            SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0);
 
-            var timer = new SpellPlagueTimer(this, targeted);
+            var timer = new SpellPlagueTimer(this, m);
 
-            if (_table.TryGetValue(targeted, out var oldtimer))
+            if (_table.TryGetValue(m, out var oldtimer))
             {
                 oldtimer.SetNext(timer);
             }
             else
             {
-                _table[targeted] = timer;
+                _table[m] = timer;
                 timer.StartPlague();
             }
         }
-
-        FinishSequence();
     }
 
     public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);

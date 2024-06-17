@@ -36,8 +36,6 @@ namespace Server.Spells.Second
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Agility, 1075841, length, m, percentage.ToString()));
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

@@ -91,8 +91,6 @@ namespace Server.Spells.Fourth
                     }
                 }
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

@@ -38,7 +38,7 @@ public abstract class Target
     public static void Cancel(Mobile m)
     {
         m.NetState.SendCancelTarget();
-        m.Target?.OnTargetCancel(m, TargetCancelType.Canceled);
+        m.Target?.Cancel(m, TargetCancelType.Canceled);
     }
 
     public void BeginTimeout(Mobile from, long delay)
@@ -57,15 +57,14 @@ public abstract class Target
         m_TimeoutTimer = null;
     }
 
-    public void Timeout(Mobile from)
+    public void Timeout(Mobile m)
     {
+        m.NetState.SendCancelTarget();
         CancelTimeout();
-        from.ClearTarget();
+        m.ClearTarget();
 
-        Cancel(from);
-
-        OnTargetCancel(from, TargetCancelType.Timeout);
-        OnTargetFinish(from);
+        OnTargetCancel(m, TargetCancelType.Timeout);
+        OnTargetFinish(m);
     }
 
     public virtual void SendTargetTo(NetState ns) => ns.SendTargetReq(this);
@@ -84,7 +83,6 @@ public abstract class Target
         if (!AllowGround)
         {
             // We should actually never get here. If we do, it's probably a misbehaving client/macro.
-            OnTargetCancel(from, TargetCancelType.Canceled);
             return false;
         }
 
@@ -161,7 +159,6 @@ public abstract class Target
         Map map = null;
         Item item = null;
         Mobile mobile = null;
-        bool isValidTargetType = true;
 
         bool valid = targeted switch
         {
@@ -169,20 +166,14 @@ public abstract class Target
             StaticTarget staticTarget => CanTarget(from, staticTarget, ref loc, ref map),
             Item i                    => CanTarget(from, item = i, ref loc, ref map),
             Mobile m                  => CanTarget(from, mobile = m, ref loc, ref map),
-            _                         => isValidTargetType = false
+            _                         => false
         };
 
         if (!valid)
         {
-            if (!isValidTargetType)
-            {
-                OnTargetCancel(from, TargetCancelType.Canceled);
-            }
-
-            OnTargetFinish(from);
+            OnTargetCancel(from, TargetCancelType.InvalidTarget);
         }
-
-        if (map == null || map != from.Map || Range >= 0 && !from.InRange(loc, Range))
+        else if (map == null || map != from.Map || Range >= 0 && !from.InRange(loc, Range))
         {
             OnTargetOutOfRange(from, targeted);
         }
@@ -271,20 +262,20 @@ public abstract class Target
 
     private class TimeoutTimer : Timer
     {
-        private readonly Mobile m_Mobile;
-        private readonly Target m_Target;
+        private readonly Mobile _mobile;
+        private readonly Target _target;
 
         public TimeoutTimer(Target target, Mobile m, TimeSpan delay) : base(delay)
         {
-            m_Target = target;
-            m_Mobile = m;
+            _target = target;
+            _mobile = m;
         }
 
         protected override void OnTick()
         {
-            if (m_Mobile.Target == m_Target)
+            if (_mobile.Target == _target)
             {
-                m_Target.Timeout(m_Mobile);
+                _target.Timeout(_mobile);
             }
         }
     }

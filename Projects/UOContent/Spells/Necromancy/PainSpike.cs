@@ -81,8 +81,6 @@ public class PainSpikeSpell : NecromancerSpell, ISpellTargetingMobile
             // SpellHelper.Damage( this, m, damage, 100, 0, 0, 0, 0, Misc.DFAlgorithm.PainSpike );
             HarmfulSpell(m);
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

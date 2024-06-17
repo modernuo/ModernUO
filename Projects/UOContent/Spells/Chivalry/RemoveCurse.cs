@@ -124,8 +124,6 @@ namespace Server.Spells.Chivalry
                     m.PlaySound(0x1DF);
                 }
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

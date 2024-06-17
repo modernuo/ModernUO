@@ -71,8 +71,6 @@ namespace Server.Spells.Second
 
                 SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

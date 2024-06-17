@@ -62,8 +62,6 @@ public class VengefulSpiritSpell : NecromancerSpell, ISpellTargetingMobile
                 rev.FixedParticles(0x373A, 1, 15, 9909, EffectLayer.Waist);
             }
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

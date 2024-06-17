@@ -59,8 +59,6 @@ public class MindRotSpell : NecromancerSpell, ISpellTargetingMobile
 
             HarmfulSpell(m);
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

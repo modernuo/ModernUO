@@ -53,8 +53,6 @@ public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
                 new PoisonField(itemID, targetLoc, Caster, Caster.Map, duration, i);
             }
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

@@ -107,8 +107,6 @@ public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
 
         var t_Duration = TimeSpan.FromSeconds(length);
         BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, t_Duration, m, args));
-
-        FinishSequence();
     }
 
     public override void OnCast()

@@ -37,8 +37,6 @@ namespace Server.Spells.Fifth
                 var duration = TimeSpan.FromSeconds(Core.AOS ? 120 : Utility.Random(80, 40));
                 BaseCreature.Summon(new BladeSpirits(), false, Caster, new Point3D(p), 0x212, duration);
             }
-
-            FinishSequence();
         }
 
         public override TimeSpan GetCastDelay()

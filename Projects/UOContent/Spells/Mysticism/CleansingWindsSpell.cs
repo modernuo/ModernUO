@@ -129,8 +129,6 @@ public class CleansingWindsSpell : MysticSpell, ISpellTargetingMobile
                 }
             }
         }
-
-        FinishSequence();
     }
 
     public static int RemoveCurses(Mobile m)

@@ -69,8 +69,6 @@ public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
                 }
             }
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()
