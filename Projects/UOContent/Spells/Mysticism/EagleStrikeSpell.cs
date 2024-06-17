@@ -51,8 +51,6 @@ public class EagleStrikeSpell : MysticSpell, ISpellTargetingMobile
 
             Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => Damage(m));
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

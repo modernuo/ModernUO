@@ -106,8 +106,6 @@ namespace Server.Spells.Fifth
 
                 SpellHelper.Damage(this, target, damage, 0, 0, 100, 0, 0);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

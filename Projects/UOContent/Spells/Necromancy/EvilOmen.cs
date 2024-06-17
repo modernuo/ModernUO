@@ -66,8 +66,6 @@ public class EvilOmenSpell : NecromancerSpell, ISpellTargetingMobile
 
             BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EvilOmen, 1075647, 1075648, duration, m));
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

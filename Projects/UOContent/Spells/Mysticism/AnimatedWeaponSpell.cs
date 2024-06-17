@@ -51,8 +51,6 @@ public class AnimatedWeaponSpell : MysticSpell, ISpellTargetingPoint3D
 
             Effects.SendTargetParticles(summon, 0x3728, 10, 10, 0x13AA, (EffectLayer)255);
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

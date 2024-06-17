@@ -99,8 +99,6 @@ namespace Server.Spells.Fifth
                         BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
                     }
                 }
-
-                FinishSequence();
             }
             else
             {
@@ -129,9 +127,9 @@ namespace Server.Spells.Fifth
                         Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
                     }
                 }
-
-                FinishSequence();
             }
+
+            FinishSequence();
         }
 
         public static void EndReflect(Mobile m)

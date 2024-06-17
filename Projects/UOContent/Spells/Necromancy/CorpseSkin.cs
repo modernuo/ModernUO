@@ -91,8 +91,6 @@ public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
 
             HarmfulSpell(m);
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

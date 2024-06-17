@@ -55,8 +55,6 @@ namespace Server.Spells.Sixth
                 Caster.PlaySound(0x1FA);
                 Effects.SendLocationEffect(Caster, 14201, 16);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

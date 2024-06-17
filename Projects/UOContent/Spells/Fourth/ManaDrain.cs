@@ -73,8 +73,6 @@ namespace Server.Spells.Fourth
 
                 HarmfulSpell(m);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

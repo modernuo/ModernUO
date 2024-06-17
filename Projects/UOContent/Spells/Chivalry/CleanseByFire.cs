@@ -98,8 +98,6 @@ namespace Server.Spells.Chivalry
 
                 AOS.Damage(Caster, Caster, damage, 0, 100, 0, 0, 0, true);
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

@@ -29,10 +29,14 @@ namespace Server.Spells.Fourth
 
         public void Target(IPoint3D p)
         {
+            if (Caster.Map == null)
+            {
+                return;
+            }
+
             if (CheckSequence())
             {
                 SpellHelper.Turn(Caster, p);
-
                 SpellHelper.GetSurfaceTop(ref p);
 
                 var loc = new Point3D(p);
@@ -40,12 +44,6 @@ namespace Server.Spells.Fourth
                 if (!Core.AOS)
                 {
                     Effects.PlaySound(loc, Caster.Map, 0x299);
-                }
-
-                if (Caster.Map == null)
-                {
-                    FinishSequence();
-                    return;
                 }
 
                 using var targets = PooledRefQueue<Mobile>.Create();
@@ -92,8 +90,6 @@ namespace Server.Spells.Fourth
                     }
                 }
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

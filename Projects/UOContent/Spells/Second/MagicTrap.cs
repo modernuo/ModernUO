@@ -78,8 +78,6 @@ namespace Server.Spells.Second
 
                 Effects.PlaySound(loc, item.Map, 0x1EF);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

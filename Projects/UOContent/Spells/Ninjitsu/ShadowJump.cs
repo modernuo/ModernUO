@@ -92,8 +92,6 @@ public class Shadowjump : NinjaSpell, ISpellTargetingPoint3D
 
             Stealth.OnUse(m); // stealth check after the shadow jump
         }
-
-        FinishSequence();
     }
 
     public override bool CheckCast()

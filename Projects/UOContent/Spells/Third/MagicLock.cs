@@ -58,8 +58,6 @@ namespace Server.Spells.Third
                 cont.LockLevel = ILockpickable.MagicLock; // signal magic lock
                 cont.Locked = true;
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

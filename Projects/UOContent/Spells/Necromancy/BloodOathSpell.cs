@@ -92,8 +92,6 @@ public class BloodOathSpell : NecromancerSpell, ISpellTargetingMobile
             _table[m] = timer;
             HarmfulSpell(m);
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

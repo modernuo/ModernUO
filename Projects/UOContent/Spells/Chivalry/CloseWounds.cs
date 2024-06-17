@@ -78,8 +78,6 @@ namespace Server.Spells.Chivalry
                 m.FixedParticles(0x376A, 1, 62, 9923, 3, 3, EffectLayer.Waist);
                 m.FixedParticles(0x3779, 1, 46, 9502, 5, 3, EffectLayer.Waist);
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

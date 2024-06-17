@@ -94,8 +94,6 @@ public class GateTravelSpell : MagerySpell, IRecallSpell
             firstGate.LinkedGate = secondGate;
             secondGate.LinkedGate = firstGate;
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()
@@ -107,6 +105,7 @@ public class GateTravelSpell : MagerySpell, IRecallSpell
         else
         {
             Effect(m_Entry.Location, m_Entry.Map, true);
+            FinishSequence();
         }
     }
 
