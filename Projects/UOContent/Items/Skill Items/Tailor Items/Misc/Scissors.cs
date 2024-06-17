@@ -59,19 +59,9 @@ public partial class Scissors : Item
                 // Didn't your parents ever tell you not to run with scissors in your hand?!
                 from.SendLocalizedMessage(1063305);
             }
-            else if (targeted is Item item && !item.Movable)
+            else if (targeted is Item item and IScissorable scissorable && (targeted is PlagueBeastInnard or PlagueBeastMutationCore || item.Movable))
             {
-                if (item is IScissorable obj && obj is PlagueBeastInnard or PlagueBeastMutationCore)
-                {
-                    if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
-                    {
-                        from.PlaySound(0x248);
-                    }
-                }
-            }
-            else if (targeted is IScissorable obj)
-            {
-                if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
+                if (CanScissor(from, scissorable) && scissorable.Scissor(from, m_Item))
                 {
                     from.PlaySound(0x248);
                 }
@@ -84,13 +74,15 @@ public partial class Scissors : Item
 
         protected override void OnNonlocalTarget(Mobile from, object targeted)
         {
-            if (targeted is not (IScissorable obj and (PlagueBeastInnard or PlagueBeastMutationCore)))
+            if (targeted is not PlagueBeastInnard and not PlagueBeastMutationCore)
             {
                 base.OnNonlocalTarget(from, targeted);
                 return;
             }
 
-            if (CanScissor(from, obj) && obj.Scissor(from, m_Item))
+            var scissorable = (IScissorable)targeted;
+
+            if (CanScissor(from, scissorable) && scissorable.Scissor(from, m_Item))
             {
                 from.PlaySound(0x248);
             }
