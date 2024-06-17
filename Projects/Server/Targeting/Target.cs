@@ -159,6 +159,7 @@ public abstract class Target
         Map map = null;
         Item item = null;
         Mobile mobile = null;
+        var isValidTargetType = true;
 
         bool valid = targeted switch
         {
@@ -166,12 +167,15 @@ public abstract class Target
             StaticTarget staticTarget => CanTarget(from, staticTarget, ref loc, ref map),
             Item i                    => CanTarget(from, item = i, ref loc, ref map),
             Mobile m                  => CanTarget(from, mobile = m, ref loc, ref map),
-            _                         => false
+            _                         => isValidTargetType = false
         };
 
         if (!valid)
         {
-            OnTargetCancel(from, TargetCancelType.InvalidTarget);
+            if (!isValidTargetType)
+            {
+                OnTargetUntargetable(from, targeted);
+            }
         }
         else if (map == null || map != from.Map || Range >= 0 && !from.InRange(loc, Range))
         {
