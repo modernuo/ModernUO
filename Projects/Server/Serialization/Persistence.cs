@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Persistence.cs                                                  *
  *                                                                       *
@@ -78,35 +78,23 @@ public abstract class Persistence
         return db;
     }
 
-    internal static void SerializeAll()
+    // Note: This is strictly on a background thread
+    internal static void PreSerializeAll(string path, ConcurrentQueue<Type> types)
     {
         foreach (var p in _registry)
         {
-            p.Serialize();
+            p.Preserialize(path, types);
         }
     }
 
-    internal static void PostSerializeAll()
+    private static readonly HashSet<Type> _typesSet = [];
+
+    // Note: This is strictly on a background thread
+    internal static void WriteSnapshotAll(string path, ConcurrentQueue<Type> types)
     {
         foreach (var p in _registry)
         {
-            p.PostSerialize();
-        }
-    }
-
-    internal static void PostDeserializeAll()
-    {
-        foreach (var p in _registry)
-        {
-            p.PostDeserialize();
-        }
-    }
-
-    public static void WriteSnapshot(string path, ConcurrentQueue<Type> types)
-    {
-        foreach (var entry in _registry)
-        {
-            entry.WriteSnapshot(path);
+            p.WriteSnapshot();
         }
 
         // Dedupe the queue.
@@ -119,32 +107,62 @@ public abstract class Persistence
         _typesSet.Clear();
     }
 
-    private static HashSet<Type> _typesSet = new();
+    internal static void SerializeAll()
+    {
+        foreach (var p in _registry)
+        {
+            p.Serialize();
+        }
+    }
+
+    internal static void PostWorldSaveAll()
+    {
+        foreach (var p in _registry)
+        {
+            p.PostWorldSave();
+        }
+    }
+
+    internal static void PostDeserializeAll()
+    {
+        foreach (var p in _registry)
+        {
+            p.PostDeserialize();
+        }
+    }
 
     public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
     {
         string tdbPath = Path.Combine(path, "SerializedTypes.db");
-        using var tdb = new BinaryFileWriter(tdbPath, false);
+        using var fs = new FileStream(tdbPath, FileMode.Create);
+        using var writer = new MemoryMapFileWriter(fs, 1024 * 1024 * 4);
 
-        tdb.Write(0); // version
-        tdb.Write(types.Count);
+        writer.Write(0); // version
+        writer.Write(types.Count);
 
         foreach (var type in types)
         {
             var fullName = type.FullName;
-            tdb.Write(HashUtility.ComputeHash64(fullName));
-            tdb.Write(fullName);
+            writer.Write(HashUtility.ComputeHash64(fullName));
+            writer.Write(fullName);
         }
     }
 
-    // Serializes to memory buffers and run in parallel
-    public abstract void Serialize();
+    // Open file streams, MMFs, prepare data structures
+    // Note: This should only be run on a background thread
+    public abstract void Preserialize(string savePath, ConcurrentQueue<Type> types);
 
-    public abstract void WriteSnapshot(string savePath);
+    // Note: This should only be run on a background thread
+    public abstract void Serialize(IGenericSerializable e, int threadIndex);
+
+    // Note: This should only be run on a background thread
+    public abstract void WriteSnapshot();
+
+    public abstract void Serialize();
 
     public abstract void Deserialize(string savePath, Dictionary<ulong, string> typesDb);
 
-    public virtual void PostSerialize()
+    public virtual void PostWorldSave()
     {
     }
 

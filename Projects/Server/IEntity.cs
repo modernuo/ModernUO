@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IEntity.cs                                                      *
  *                                                                       *
@@ -50,10 +50,6 @@ public class Entity : IEntity
     public Entity(Serial serial) => Serial = serial;
 
     public DateTime Created { get; set; } = Core.Now;
-
-    public long SavePosition { get; set; } = -1;
-
-    public BufferWriter SaveBuffer { get; set; }
 
     public Serial Serial { get; }
 

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Main.cs                                                         *
  *                                                                       *
@@ -40,6 +40,7 @@ public static class Core
     private static bool _performProcessKill;
     private static bool _restartOnKill;
     private static bool _performSnapshot;
+    private static string _snapshotPath;
     private static bool _crashed;
     private static string _baseDirectory;
 
@@ -411,7 +412,6 @@ public static class Core
         logger.Information("Shutting down");
 
         World.WaitForWriteCompletion();
-
         World.ExitSerializationThreads();
 
         if (!_crashed)
@@ -553,12 +553,13 @@ public static class Core
                 if (_performSnapshot)
                 {
                     // Return value is the offset that can be used to fix timers that should drift
-                    World.Snapshot();
+                    World.Snapshot(_snapshotPath);
                     _performSnapshot = false;
                 }
 
                 if (_performProcessKill)
                 {
+                    World.WaitForWriteCompletion();
                     break;
                 }
 
@@ -594,7 +595,11 @@ public static class Core
         DoKill(_restartOnKill);
     }
 
-    internal static void RequestSnapshot() => _performSnapshot = true;
+    internal static void RequestSnapshot(string snapshotPath)
+    {
+        _performSnapshot = true;
+        _snapshotPath = snapshotPath;
+    }
 
     public static void VerifySerialization()
     {
