@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: AdhocPersistence.cs                                             *
  *                                                                       *
@@ -25,11 +25,9 @@ namespace Server;
 public static class AdhocPersistence
 {
     /**
-     * Serializes to memory synchronously. Optional buffer can be provided.
-     * Note: The buffer may not be the same after returning from the function if more data is written
-     * than the initial buffer can handle.
+     * Serializes to memory.
      */
-    public static BufferWriter Serialize(Action<IGenericWriter> serializer, ConcurrentQueue<Type> types)
+    public static IGenericWriter SerializeToBuffer(Action<IGenericWriter> serializer, ConcurrentQueue<Type> types = null)
     {
         var saveBuffer = new BufferWriter(true, types);
         serializer(saveBuffer);
@@ -37,36 +35,39 @@ public static class AdhocPersistence
     }
 
     /**
-     * Writes a buffer to disk. This function should be called asynchronously.
-     * Writes the filePath for the binary data, and an accompanying SerializedTypes.db file of all possible types.
+     * Deserializes from a buffer.
      */
-    public static void WriteSnapshot(FileInfo file, Span<byte> buffer)
+    public static IGenericReader DeserializeFromBuffer(
+        byte[] buffer, Action<IGenericReader> deserializer, Dictionary<ulong, string> typesDb = null
+    )
     {
-        var dirPath = file.DirectoryName;
-        PathUtility.EnsureDirectory(dirPath);
-
-        using var fs = new FileStream(file.FullName, FileMode.Create, FileAccess.Write);
-        fs.Write(buffer);
+        var reader = new BufferReader(buffer, typesDb);
+        deserializer(reader);
+        return reader;
     }
 
     /**
-     * Serializes to a memory buffer synchronously, then flushes to the path asynchronously.
-     * See WriteSnapshot for more info about how to snapshot.
+     * Serializes to a Memory Mapped file synchronously, then flushes to the file asynchronously.
      */
-    public static void SerializeAndSnapshot(string filePath, Action<IGenericWriter> serializer, ConcurrentQueue<Type> types = null)
+    public static void SerializeAndSnapshot(
+        string filePath, Action<IGenericWriter> serializer, long sizeHint = 1024 * 1024 * 32
+    )
     {
-        types ??= new ConcurrentQueue<Type>();
-        var saveBuffer = Serialize(serializer, types);
+        var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
+        PathUtility.EnsureDirectory(Path.GetDirectoryName(fullPath));
+        ConcurrentQueue<Type> types = [];
+        var writer = new MemoryMapFileWriter(new FileStream(filePath, FileMode.Create), sizeHint, types);
+        serializer(writer);
+
         Task.Run(
             () =>
             {
-                var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
-                var file = new FileInfo(fullPath);
+                var fs = writer.FileStream;
 
-                WriteSnapshot(file, saveBuffer.Buffer.AsSpan(0, (int)saveBuffer.Position));
+                writer.Dispose();
+                fs.Dispose();
 
-                // TODO: Create a PooledHashSet if performance becomes an issue.
-                var typesSet = new HashSet<Type>();
+                HashSet<Type> typesSet = [];
 
                 // Dedupe the queue.
                 foreach (var type in types)
@@ -74,38 +75,41 @@ public static class AdhocPersistence
                     typesSet.Add(type);
                 }
 
-                Persistence.WriteSerializedTypesSnapshot(file.DirectoryName, typesSet);
-            });
+                Persistence.WriteSerializedTypesSnapshot(Path.GetDirectoryName(fullPath), typesSet);
+            },
+            Core.ClosingTokenSource.Token
+        );
     }
 
-    public static void Deserialize(string filePath, Action<IGenericReader> deserializer)
+    public static unsafe void Deserialize(string filePath, Action<IGenericReader> deserializer)
     {
         var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
         var file = new FileInfo(fullPath);
 
-        if (!file.Exists)
+        if (!file.Exists || file.Length == 0)
         {
             return;
         }
 
         var fileLength = file.Length;
-        if (fileLength == 0)
-        {
-            return;
-        }
 
         string error;
 
         try
         {
             using var mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open);
-            using var stream = mmf.CreateViewStream();
-            using var br = new BinaryFileReader(stream);
-            deserializer(br);
+            using var accessor = mmf.CreateViewStream();
 
-            error = br.Position != fileLength
-                ? $"Serialized {fileLength} bytes, but {br.Position} bytes deserialized"
+            byte* ptr = null;
+            accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+            UnmanagedDataReader dataReader = new UnmanagedDataReader(ptr, accessor.Length);
+            deserializer(dataReader);
+
+            error = dataReader.Position != fileLength
+                ? $"Serialized {fileLength} bytes, but {dataReader.Position} bytes deserialized"
                 : null;
+
+            accessor.SafeMemoryMappedViewHandle.ReleasePointer();
         }
         catch (Exception e)
         {

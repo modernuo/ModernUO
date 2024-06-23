@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BufferReader.cs                                                 *
+ * File: UnmanagedDataReader.cs                                          *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -25,23 +25,25 @@ using Server.Text;
 
 namespace Server;
 
-public class BufferReader : IGenericReader
+public unsafe class UnmanagedDataReader : IGenericReader
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(BufferReader));
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(UnmanagedDataReader));
+
+    private readonly byte* _ptr;
+    private long _position;
+    private readonly long _size;
 
     private readonly Dictionary<ulong, string> _typesDb;
     private readonly Encoding _encoding;
-    private readonly byte[] _buffer;
-    private int _position;
 
     public long Position => _position;
-    public long BufferSize => _buffer.Length;
 
-    public BufferReader(byte[] buffer, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
+    public UnmanagedDataReader(byte* ptr, long size, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {
-        _buffer = buffer;
         _encoding = encoding ?? TextEncoding.UTF8;
         _typesDb = typesDb;
+        _ptr = ptr;
+        _size = size;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49,13 +51,24 @@ public class BufferReader : IGenericReader
 
     public string ReadStringRaw(bool intern = false)
     {
-        var length = ((IGenericReader)this).ReadEncodedInt();
+        // ReadEncodedInt
+        int length = 0, shift = 0;
+        byte b;
+
+        do
+        {
+            b = *(_ptr + _position++);
+            length |= (b & 0x7F) << shift;
+            shift += 7;
+        }
+        while (b >= 0x80);
+
         if (length <= 0)
         {
             return "".Intern();
         }
 
-        var str = TextEncoding.GetString(_buffer.AsSpan(_position, length), _encoding);
+        var str = TextEncoding.GetString(new ReadOnlySpan<byte>(_ptr + _position, length), _encoding);
         _position += length;
         return intern ? str.Intern() : str;
     }
@@ -63,75 +76,75 @@ public class BufferReader : IGenericReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long ReadLong()
     {
-        var v = BinaryPrimitives.ReadInt64LittleEndian(_buffer.AsSpan(_position, 8));
-        _position += 8;
+        var v = BinaryPrimitives.ReadInt64LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(long)));
+        _position += sizeof(long);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong ReadULong()
     {
-        var v = BinaryPrimitives.ReadUInt64LittleEndian(_buffer.AsSpan(_position, 8));
-        _position += 8;
+        var v = BinaryPrimitives.ReadUInt64LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(ulong)));
+        _position += sizeof(ulong);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int ReadInt()
     {
-        var v = BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(_position, 4));
-        _position += 4;
+        var v = BinaryPrimitives.ReadInt32LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(int)));
+        _position += sizeof(int);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint ReadUInt()
     {
-        var v = BinaryPrimitives.ReadUInt32LittleEndian(_buffer.AsSpan(_position, 4));
-        _position += 4;
+        var v = BinaryPrimitives.ReadUInt32LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(uint)));
+        _position += sizeof(uint);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public short ReadShort()
     {
-        var v = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(_position, 2));
-        _position += 2;
+        var v = BinaryPrimitives.ReadInt16LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(short)));
+        _position += sizeof(short);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ushort ReadUShort()
     {
-        var v = BinaryPrimitives.ReadUInt16LittleEndian(_buffer.AsSpan(_position, 2));
-        _position += 2;
+        var v = BinaryPrimitives.ReadUInt16LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(ushort)));
+        _position += sizeof(ushort);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public double ReadDouble()
     {
-        var v = BinaryPrimitives.ReadDoubleLittleEndian(_buffer.AsSpan(_position, 8));
-        _position += 8;
+        var v = BinaryPrimitives.ReadDoubleLittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(double)));
+        _position += sizeof(double);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public float ReadFloat()
     {
-        var v = BinaryPrimitives.ReadSingleLittleEndian(_buffer.AsSpan(_position, 4));
-        _position += 4;
+        var v = BinaryPrimitives.ReadSingleLittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(float)));
+        _position += sizeof(float);
         return v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public byte ReadByte() => _buffer[_position++];
+    public byte ReadByte() => *(_ptr + _position++);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public sbyte ReadSByte() => (sbyte)_buffer[_position++];
+    public sbyte ReadSByte() => (sbyte)ReadByte();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool ReadBool() => _buffer[_position++] != 0;
+    public bool ReadBool() => ReadByte() != 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)ReadUInt();
@@ -195,12 +208,12 @@ public class BufferReader : IGenericReader
     public int Read(Span<byte> buffer)
     {
         var length = buffer.Length;
-        if (length > _buffer.Length - _position)
+        if (length > _size - _position)
         {
             throw new OutOfMemoryException();
         }
 
-        _buffer.AsSpan(_position, length).CopyTo(buffer);
+        new ReadOnlySpan<byte>(_ptr + _position, length).CopyTo(buffer);
         _position += length;
         return length;
     }
@@ -208,32 +221,26 @@ public class BufferReader : IGenericReader
     public virtual long Seek(long offset, SeekOrigin origin)
     {
         Debug.Assert(
-            origin != SeekOrigin.End || offset <= 0 && offset > -_buffer.Length,
+            origin != SeekOrigin.End || offset <= 0 && offset > _size,
             "Attempting to seek to an invalid position using SeekOrigin.End"
         );
         Debug.Assert(
-            origin != SeekOrigin.Begin || offset >= 0 && offset < _buffer.Length,
+            origin != SeekOrigin.Begin || offset >= 0 && offset < _size,
             "Attempting to seek to an invalid position using SeekOrigin.Begin"
         );
         Debug.Assert(
-            origin != SeekOrigin.Current || _position + offset >= 0 && _position + offset < _buffer.Length,
+            origin != SeekOrigin.Current || _position + offset >= 0 && _position + offset < _size,
             "Attempting to seek to an invalid position using SeekOrigin.Current"
         );
 
         var position = Math.Max(0L, origin switch
         {
             SeekOrigin.Current => _position + offset,
-            SeekOrigin.End     => _buffer.Length + offset,
+            SeekOrigin.End     => _size + offset,
             _                  => offset // Begin
         });
 
-        if (position > int.MaxValue)
-        {
-            throw new ArgumentException($"BufferReader does not support {nameof(offset)} beyond Int32.MaxValue");
-        }
-
-        _position = (int)position;
-
+        _position = position;
         return _position;
     }
 }

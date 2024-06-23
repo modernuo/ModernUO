@@ -39,8 +39,6 @@ namespace Server.Misc
                 GenerateCrashReport(e);
             }
 
-            World.WaitForWriteCompletion();
-
             if (SaveBackup)
             {
                 Backup();
@@ -50,6 +48,10 @@ namespace Server.Misc
             {
                 e.Close = true;
                 Core.Kill(true);
+            }
+            else
+            {
+                World.WaitForWriteCompletion();
             }
         }
 

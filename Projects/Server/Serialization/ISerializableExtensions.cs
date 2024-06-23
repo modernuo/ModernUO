@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ISerializableExtensions.cs                                      *
  *                                                                       *
@@ -24,10 +24,7 @@ public static class ISerializableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarkDirty(this ISerializable entity)
     {
-        if (entity != null)
-        {
-            entity.SavePosition = -1;
-        }
+        // TODO: Add dirty tracking back
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
