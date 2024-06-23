@@ -78,14 +78,14 @@ public partial class CurtainsAddon : BaseAddon
 }
 
 [SerializationGenerator(0)]
-public partial class CurtainsDeed : BaseAddonDeed
+public partial class CurtainsDeed : BaseAddonDeed, IDirectionAddonDeed
 {
-    private bool _east;
+    public bool East { get; set; }
 
     [Constructible]
     public CurtainsDeed() => LootType = LootType.Blessed;
 
-    public override BaseAddon Addon => new CurtainsAddon(_east);
+    public override BaseAddon Addon => new CurtainsAddon(East);
     public override int LabelNumber => 1076280; // Curtains
 
     public override void OnDoubleClick(Mobile from)
@@ -101,47 +101,17 @@ public partial class CurtainsDeed : BaseAddonDeed
         }
     }
 
-    private void SendTarget(Mobile m)
+    public void SendTarget(Mobile m)
     {
         base.OnDoubleClick(m);
     }
 
-    private class InternalGump : Gump
+    private class InternalGump : SelectAddonDirectionGump<InternalGump>
     {
-        private readonly CurtainsDeed _deed;
-
-        public InternalGump(CurtainsDeed deed) : base(60, 36)
+        public InternalGump(IDirectionAddonDeed deed) : base(deed)
         {
-            _deed = deed;
-
-            AddPage(0);
-
-            AddBackground(0, 0, 273, 324, 0x13BE);
-            AddImageTiled(10, 10, 253, 20, 0xA40);
-            AddImageTiled(10, 40, 253, 244, 0xA40);
-            AddImageTiled(10, 294, 253, 20, 0xA40);
-            AddAlphaRegion(10, 10, 253, 304);
-            AddButton(10, 294, 0xFB1, 0xFB2, 0);
-            AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF); // CANCEL
-            AddHtmlLocalized(14, 12, 273, 20, 1076581, 0x7FFF);  // Please select your curtain position
-
-            AddPage(1);
-
-            AddButton(19, 49, 0x845, 0x846, 1);
-            AddHtmlLocalized(44, 47, 213, 20, 1075386, 0x7FFF); // South
-            AddButton(19, 73, 0x845, 0x846, 2);
-            AddHtmlLocalized(44, 71, 213, 20, 1075387, 0x7FFF); // East
         }
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
-        {
-            if (_deed?.Deleted != false || info.ButtonID == 0)
-            {
-                return;
-            }
-
-            _deed._east = info.ButtonID != 1;
-            _deed.SendTarget(sender.Mobile);
-        }
+        public override int SelectionNumber => 1076581; // Please select your curtain position
     }
 }
