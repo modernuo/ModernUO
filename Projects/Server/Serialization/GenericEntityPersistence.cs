@@ -225,7 +225,8 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
         for (var i = 0; i < count; ++i)
         {
-            var typeName = dataReader.ReadString();
+            // Legacy didn't have the null flag check
+            var typeName = dataReader.ReadStringRaw();
             types.Add(i, GetConstructorFor(typeName, AssemblyHandler.FindTypeByName(typeName), ctorArguments));
         }
 

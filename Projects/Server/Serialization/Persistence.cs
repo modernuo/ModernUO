@@ -17,6 +17,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 
 namespace Server;
 
@@ -52,29 +53,34 @@ public abstract class Persistence
         }
     }
 
-    private static Dictionary<ulong, string> LoadTypes(string path)
+    private unsafe static Dictionary<ulong, string> LoadTypes(string path)
     {
         var db = new Dictionary<ulong, string>();
 
-        string tdbPath = Path.Combine(path, "SerializedTypes.db");
-        if (!File.Exists(tdbPath))
+        string typesPath = Path.Combine(path, "SerializedTypes.db");
+        if (!File.Exists(typesPath))
         {
             return db;
         }
 
-        using FileStream tdb = new FileStream(tdbPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        BinaryReader tdbReader = new BinaryReader(tdb);
+        using var mmf = MemoryMappedFile.CreateFromFile(typesPath, FileMode.Open);
+        using var accessor = mmf.CreateViewStream();
 
-        var version = tdbReader.ReadInt32();
-        var count = tdbReader.ReadInt32();
+        byte* ptr = null;
+        accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+        var dataReader = new UnmanagedDataReader(ptr, accessor.Length);
+
+        var version = dataReader.ReadInt();
+        var count = dataReader.ReadInt();
 
         for (var i = 0; i < count; ++i)
         {
-            var hash = tdbReader.ReadUInt64();
-            var typeName = tdbReader.ReadString();
+            var hash = dataReader.ReadULong();
+            var typeName = dataReader.ReadStringRaw();
             db[hash] = typeName;
         }
 
+        accessor.SafeMemoryMappedViewHandle.ReleasePointer();
         return db;
     }
 
@@ -133,8 +139,8 @@ public abstract class Persistence
 
     public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
     {
-        string tdbPath = Path.Combine(path, "SerializedTypes.db");
-        using var fs = new FileStream(tdbPath, FileMode.Create);
+        string typesPath = Path.Combine(path, "SerializedTypes.db");
+        using var fs = new FileStream(typesPath, FileMode.Create);
         using var writer = new MemoryMapFileWriter(fs, 1024 * 1024 * 4);
 
         writer.Write(0); // version
@@ -144,7 +150,7 @@ public abstract class Persistence
         {
             var fullName = type.FullName;
             writer.Write(HashUtility.ComputeHash64(fullName));
-            writer.Write(fullName);
+            writer.WriteStringRaw(fullName);
         }
     }
 

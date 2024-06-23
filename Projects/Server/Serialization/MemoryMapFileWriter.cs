@@ -149,7 +149,7 @@ public unsafe class MemoryMapFileWriter : IGenericWriter, IDisposable
         else
         {
             Write(true);
-            InternalWriteString(value);
+            WriteStringRaw(value);
         }
     }
 
@@ -258,7 +258,7 @@ public unsafe class MemoryMapFileWriter : IGenericWriter, IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal void InternalWriteString(ReadOnlySpan<char> value)
+    public void WriteStringRaw(ReadOnlySpan<char> value)
     {
         var length = _encoding.GetByteCount(value);
 
