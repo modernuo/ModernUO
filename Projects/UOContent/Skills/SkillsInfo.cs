@@ -19,7 +19,7 @@ public static class SkillsInfo
         return (SkillName)Utility.Random(exclusiveMaxIndex);
     }
 
-    private static readonly SkillName[] _combatSkills =
+    public static readonly SkillName[] CombatSkills =
     [
         SkillName.Parry,
         SkillName.Tactics,
@@ -50,10 +50,10 @@ public static class SkillsInfo
             _               => 7
         };
 
-        return _combatSkills[Utility.Random(exclusiveMaxIndex)];
+        return CombatSkills[Utility.Random(exclusiveMaxIndex)];
     }
 
-    private static readonly SkillName[] _craftSkills =
+    public static readonly SkillName[] CraftSkills =
     [
         SkillName.Alchemy,
         SkillName.Blacksmith,
@@ -77,10 +77,10 @@ public static class SkillsInfo
             _               => 9
         };
 
-        return _craftSkills[Utility.Random(exclusiveMaxIndex)];
+        return CraftSkills[Utility.Random(exclusiveMaxIndex)];
     }
 
-    private static readonly SkillName[] _randomMagicSkill =
+    public static readonly SkillName[] MagicSkills =
     [
         SkillName.EvalInt,
         SkillName.Magery,
@@ -108,17 +108,27 @@ public static class SkillsInfo
             _               => 4
         };
 
-        return _randomMagicSkill[Utility.Random(exclusiveMaxIndex)];
+        return MagicSkills[Utility.Random(exclusiveMaxIndex)];
     }
 
-    private static readonly SkillName[] _gatheringSkills =
+    public static readonly SkillName[] GatheringSkills =
     {
         SkillName.Fishing,
         SkillName.Mining,
         SkillName.Lumberjacking
     };
 
-    public static SkillName RandomGatheringSkill() => _gatheringSkills.RandomElement();
+    public static SkillName RandomGatheringSkill() => GatheringSkills.RandomElement();
+
+    public static readonly SkillName[] BardSkills =
+    {
+        SkillName.Peacemaking,
+        SkillName.Discordance,
+        SkillName.Provocation,
+        SkillName.Musicianship,
+    };
+
+    public static SkillName RandomBardSkill() => BardSkills.RandomElement();
 
     public static void Configure()
     {
