@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BufferWriter.cs                                                 *
  *                                                                       *
@@ -27,9 +27,9 @@ namespace Server;
 
 public class BufferWriter : IGenericWriter
 {
-    private ConcurrentQueue<Type> _types;
-    private Encoding _encoding;
-    private bool _prefixStrings;
+    private readonly ConcurrentQueue<Type> _types;
+    private readonly Encoding _encoding;
+    private readonly bool _prefixStrings;
     private long _bytesWritten;
     private long _index;
 

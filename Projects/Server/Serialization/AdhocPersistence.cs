@@ -18,6 +18,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Server;
@@ -25,7 +26,7 @@ namespace Server;
 public static class AdhocPersistence
 {
     /**
-     * Serializes to memory synchronously.
+     * Serializes to memory.
      */
     public static IGenericWriter SerializeToBuffer(Action<IGenericWriter> serializer, ConcurrentQueue<Type> types = null)
     {
@@ -35,19 +36,23 @@ public static class AdhocPersistence
     }
 
     /**
-     * Writes a buffer to disk. This function should be called asynchronously.
-     * Writes the filePath for the binary data, and an accompanying SerializedTypes.db file of all possible types.
+     * Deserializes from a buffer.
      */
-    public static void WriteSnapshot(string fileName, Span<byte> buffer)
+    public static IGenericReader DeserializeFromBuffer(
+        byte[] buffer, Action<IGenericReader> deserializer, Dictionary<ulong, string> typesDb = null
+    )
     {
-        using var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-        fs.Write(buffer);
+        var reader = new BufferReader(buffer, typesDb);
+        deserializer(reader);
+        return reader;
     }
 
     /**
      * Serializes to a Memory Mapped file synchronously, then flushes to the file asynchronously.
      */
-    public static void SerializeAndSnapshot(string filePath, Action<IGenericWriter> serializer, long sizeHint = 1024 * 1024 * 32)
+    public static void SerializeAndSnapshot(
+        string filePath, Action<IGenericWriter> serializer, long sizeHint = 1024 * 1024 * 32
+    )
     {
         var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
         PathUtility.EnsureDirectory(Path.GetDirectoryName(fullPath));
