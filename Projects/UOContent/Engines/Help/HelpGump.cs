@@ -56,17 +56,12 @@ public class ContainedMenu : QuestionMenu
 
 public sealed class HelpGump : DynamicGump
 {
-    private Mobile _from;
+    private readonly Mobile _from;
 
-    public HelpGump(Mobile from) : base(0, 0)
-    {
-        _from = from;
-    }
+    public HelpGump(Mobile from) : base(0, 0) => _from = from;
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
-        _from.CloseGump<HelpGump>();
-
         var isYoung = IsYoung(_from);
         var totalHeight = 110 + (isYoung ? 64 : 0) + 4 * 80;
 
@@ -209,6 +204,12 @@ public sealed class HelpGump : DynamicGump
 
         builder.AddButton(150, y + 150, 5540, 5541, 0, GumpButtonType.Page, 1);
         builder.AddHtmlLocalized(180, y + 150, 335, 40, 1001015); // NO  - I meant to ask for help with another matter.
+    }
+
+    public override void SendTo(NetState ns)
+    {
+        _from.CloseGump<HelpGump>();
+        base.SendTo(ns);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
