@@ -1,6 +1,5 @@
 using System;
 using ModernUO.Serialization;
-using Server.Engines.ConPVP;
 
 namespace Server.Items;
 
@@ -49,11 +48,6 @@ public abstract partial class BaseHealPotion : BasePotion
         DoHeal(from);
 
         PlayDrinkEffect(from);
-
-        if (!DuelContext.IsFreeConsume(from))
-        {
-            Consume();
-        }
 
         Timer.StartTimer(TimeSpan.FromSeconds(Delay), from.EndAction<BaseHealPotion>);
     }

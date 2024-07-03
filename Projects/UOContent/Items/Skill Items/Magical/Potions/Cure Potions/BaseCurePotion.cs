@@ -1,5 +1,4 @@
 using ModernUO.Serialization;
-using Server.Engines.ConPVP;
 using Server.Spells;
 using Server.Spells.Necromancy;
 
@@ -71,11 +70,6 @@ public abstract partial class BaseCurePotion : BasePotion
 
             from.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
             from.PlaySound(0x1E0);
-
-            if (!DuelContext.IsFreeConsume(from))
-            {
-                Consume();
-            }
         }
         else
         {

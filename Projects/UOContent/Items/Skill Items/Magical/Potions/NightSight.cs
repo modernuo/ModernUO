@@ -1,5 +1,4 @@
 using ModernUO.Serialization;
-using Server.Engines.ConPVP;
 
 namespace Server.Items;
 
@@ -22,11 +21,6 @@ public partial class NightSightPotion : BasePotion
             from.PlaySound(0x1E3);
 
             PlayDrinkEffect(from);
-
-            if (!DuelContext.IsFreeConsume(from))
-            {
-                Consume();
-            }
         }
         else
         {
