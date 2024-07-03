@@ -174,7 +174,7 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
 
     public abstract void Drink(Mobile from);
 
-    public static void PlayDrinkEffect(Mobile m)
+    public void PlayDrinkEffect(Mobile m)
     {
         m.RevealingAction();
 
@@ -182,6 +182,7 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
 
         if (!DuelContext.IsFreeConsume(m))
         {
+            Consume();
             m.AddToBackpack(new Bottle());
         }
 

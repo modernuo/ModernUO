@@ -28,7 +28,6 @@ public partial class InvisibilityPotion : BasePotion
             return;
         }
 
-        Consume();
         Timer.StartTimer(TimeSpan.FromSeconds(2), () => Hide(from), out var timerToken);
         m_Table[from] = timerToken;
         PlayDrinkEffect(from);
