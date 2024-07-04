@@ -27,6 +27,8 @@ public abstract partial class BaseExplosionPotion : BasePotion
 
     public override bool RequireFreeHand => false;
 
+    public override bool IsThrowablePotion => true;
+
     private HashSet<Mobile> _users;
 
     public virtual IEntity FindParent(Mobile from)
@@ -67,7 +69,7 @@ public abstract partial class BaseExplosionPotion : BasePotion
 
         from.RevealingAction();
 
-        _users ??= new HashSet<Mobile>();
+        _users ??= [];
         _users.Add(from);
 
         from.Target = new ThrowTarget(this);
@@ -115,17 +117,23 @@ public abstract partial class BaseExplosionPotion : BasePotion
 
         Consume();
 
-        if (_users != null)
+        if (_users is { Count: > 0 })
         {
+            using var usersQueue = PooledRefQueue<Mobile>.Create();
             foreach (var user in _users)
             {
                 if ((user.Target as ThrowTarget)?.Potion == this)
                 {
-                    Target.Cancel(user);
+                    usersQueue.Enqueue(user);
                 }
             }
 
             _users.Clear();
+
+            while (usersQueue.Count > 0)
+            {
+                Target.Cancel(usersQueue.Dequeue());
+            }
         }
 
         if (map == null)
@@ -259,6 +267,8 @@ public abstract partial class BaseExplosionPotion : BasePotion
 
             Timer.StartTimer(delay, () => Potion.Reposition_OnTick(from, loc, map));
         }
+
+        protected override void OnTargetFinish(Mobile from) => Potion._users.Remove(from);
     }
 
     private class DetonateTimer : Timer

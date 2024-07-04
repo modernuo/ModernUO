@@ -57,6 +57,8 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
 
     public virtual bool RequireFreeHand => true;
 
+    public virtual bool IsThrowablePotion => false;
+
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
 
@@ -144,9 +146,11 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
             return;
         }
 
-        if (this is BaseExplosionPotion && Amount > 1)
+        var pot = this;
+
+        if (IsThrowablePotion && Amount > 1)
         {
-            var pot = GetType().CreateInstance<BaseExplosionPotion>();
+            pot = GetType().CreateInstance<BasePotion>();
 
             Amount--;
 
@@ -158,13 +162,9 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
             {
                 pot.MoveToWorld(from.Location, from.Map);
             }
+        }
 
-            pot.Drink(from);
-        }
-        else
-        {
-            Drink(from);
-        }
+        pot.Drink(from);
     }
 
     private void Deserialize(IGenericReader reader, int version)
