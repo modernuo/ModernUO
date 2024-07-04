@@ -107,6 +107,7 @@ public class TithingGump : StaticGump<TithingGump>
 
                     var pack = _from.Backpack;
 
+                    // TODO: At some point this was changed on OSI to only work from bank/account funds
                     if (pack?.ConsumeTotal(typeof(Gold), _offer) == true)
                     {
                         // You tithe gold to the shrine as a sign of devotion.
