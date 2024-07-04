@@ -51,62 +51,62 @@ namespace Server.Items
 
         private class ResurrectEntry : ContextMenuEntry
         {
-            private readonly Item m_Item;
-            private readonly Mobile m_Mobile;
+            private readonly Item _item;
+            private readonly Mobile _mobile;
 
             public ResurrectEntry(Mobile mobile, Item item) : base(6195, ResurrectRange)
             {
-                m_Mobile = mobile;
-                m_Item = item;
+                _mobile = mobile;
+                _item = item;
 
-                Enabled = !m_Mobile.Alive;
+                Enabled = !_mobile.Alive;
             }
 
             public override void OnClick()
             {
-                Resurrect(m_Mobile, m_Item);
+                Resurrect(_mobile, _item);
             }
         }
 
         private class LockKarmaEntry : ContextMenuEntry
         {
-            private readonly PlayerMobile m_Mobile;
+            private readonly PlayerMobile _mobile;
 
             public LockKarmaEntry(PlayerMobile mobile) : base(mobile.KarmaLocked ? 6197 : 6196, LockRange) =>
-                m_Mobile = mobile;
+                _mobile = mobile;
 
             public override void OnClick()
             {
-                m_Mobile.KarmaLocked = !m_Mobile.KarmaLocked;
+                _mobile.KarmaLocked = !_mobile.KarmaLocked;
 
-                if (m_Mobile.KarmaLocked)
+                if (_mobile.KarmaLocked)
                 {
                     // Your karma has been locked. Your karma can no longer be raised.
-                    m_Mobile.SendLocalizedMessage(1060192);
+                    _mobile.SendLocalizedMessage(1060192);
                 }
                 else
                 {
-                    m_Mobile.SendLocalizedMessage(1060191); // Your karma has been unlocked. Your karma can be raised again.
+                    _mobile.SendLocalizedMessage(1060191); // Your karma has been unlocked. Your karma can be raised again.
                 }
             }
         }
 
         private class TitheEntry : ContextMenuEntry
         {
-            private readonly Mobile m_Mobile;
+            private readonly Mobile _mobile;
 
             public TitheEntry(Mobile mobile) : base(6198, TitheRange)
             {
-                m_Mobile = mobile;
+                _mobile = mobile;
 
-                Enabled = m_Mobile.Alive;
+                Enabled = _mobile.Alive;
             }
 
             public override void OnClick()
             {
-                if (m_Mobile.CheckAlive())
+                if (_mobile.CheckAlive())
                 {
-                    m_Mobile.SendGump(new TithingGump(m_Mobile, 0));
+                    _mobile.SendGump(new TithingGump(_mobile));
                 }
             }
         }
