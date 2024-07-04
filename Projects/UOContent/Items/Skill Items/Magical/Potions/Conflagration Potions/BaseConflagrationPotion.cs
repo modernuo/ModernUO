@@ -10,8 +10,8 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public abstract partial class BaseConflagrationPotion : BasePotion
 {
-    private static readonly Dictionary<Mobile, TimerExecutionToken> m_Delay = new();
-    private readonly List<Mobile> m_Users = new();
+    private static readonly Dictionary<Mobile, TimerExecutionToken> _delay = [];
+    private HashSet<Mobile> _users;
 
     public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x489;
 
@@ -19,6 +19,8 @@ public abstract partial class BaseConflagrationPotion : BasePotion
     public abstract int MaxDamage { get; }
 
     public override bool RequireFreeHand => false;
+
+    public override bool IsThrowablePotion => true;
 
     public override void Drink(Mobile from)
     {
@@ -37,17 +39,15 @@ public abstract partial class BaseConflagrationPotion : BasePotion
             return;
         }
 
-        if (from.Target is ThrowTarget targ && targ.Potion == this)
+        if ((from.Target as ThrowTarget)?.Potion == this)
         {
             return;
         }
 
         from.RevealingAction();
 
-        if (!m_Users.Contains(from))
-        {
-            m_Users.Add(from);
-        }
+        _users ??= [];
+        _users.Add(from);
 
         from.Target = new ThrowTarget(this);
     }
@@ -62,11 +62,22 @@ public abstract partial class BaseConflagrationPotion : BasePotion
         Consume();
 
         // Check if any other players are using this potion
-        for (var i = 0; i < m_Users.Count; i++)
+        if (_users is { Count: > 0 })
         {
-            if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
+            using var usersQueue = PooledRefQueue<Mobile>.Create();
+            foreach (var user in _users)
             {
-                Target.Cancel(from);
+                if ((user.Target as ThrowTarget)?.Potion == this)
+                {
+                    usersQueue.Enqueue(user);
+                }
+            }
+
+            _users.Clear();
+
+            while (usersQueue.Count > 0)
+            {
+                Target.Cancel(usersQueue.Dequeue());
             }
         }
 
@@ -89,16 +100,16 @@ public abstract partial class BaseConflagrationPotion : BasePotion
 
     public static void AddDelay(Mobile m)
     {
-        m_Delay.TryGetValue(m, out var timer);
+        _delay.TryGetValue(m, out var timer);
         timer.Cancel();
 
         Timer.StartTimer(TimeSpan.FromSeconds(30), () => EndDelay(m), out timer);
-        m_Delay[m] = timer;
+        _delay[m] = timer;
     }
 
     public static int GetDelay(Mobile m)
     {
-        if (m_Delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
+        if (_delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
         {
             return (int)Math.Round((timer.Next - Core.Now).TotalSeconds);
         }
@@ -108,7 +119,7 @@ public abstract partial class BaseConflagrationPotion : BasePotion
 
     public static void EndDelay(Mobile m)
     {
-        if (m_Delay.Remove(m, out var timer))
+        if (_delay.Remove(m, out var timer))
         {
             timer.Cancel();
         }
@@ -155,6 +166,8 @@ public abstract partial class BaseConflagrationPotion : BasePotion
             Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
             Timer.StartTimer(TimeSpan.FromSeconds(1.5), () => Potion.Explode(from, loc, map));
         }
+
+        protected override void OnTargetFinish(Mobile from) => Potion._users.Remove(from);
     }
 
     [SerializationGenerator(0, false)]
