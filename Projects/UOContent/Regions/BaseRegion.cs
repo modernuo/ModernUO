@@ -77,7 +77,7 @@ public class BaseRegion : Region
     {
         if (m is PlayerMobile mobile && mobile.Young && !YoungProtected)
         {
-            mobile.SendGump(new YoungDungeonWarning());
+            mobile.SendGump(new YoungDungeonWarningGump());
         }
     }
 
