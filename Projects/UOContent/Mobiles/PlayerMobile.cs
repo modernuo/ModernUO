@@ -4431,7 +4431,7 @@ namespace Server.Mobiles
 
         private void SendYoungDeathNotice()
         {
-            SendGump(new YoungDeathNotice());
+            SendGump(new YoungDeathNoticeGump());
         }
 
         public override void OnSpeech(SpeechEventArgs e)
