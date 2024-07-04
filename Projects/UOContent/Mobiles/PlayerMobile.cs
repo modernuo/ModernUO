@@ -1214,6 +1214,11 @@ namespace Server.Mobiles
                     SpecialMove.ClearCurrentMove(this);
                 }
             }
+
+            if (!Meditating)
+            {
+                BuffInfo.RemoveBuff(this, BuffIcon.ActiveMeditation);
+            }
         }
 
         public static void OnLogin(PlayerMobile from)
