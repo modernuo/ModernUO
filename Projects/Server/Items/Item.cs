@@ -3840,20 +3840,23 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     {
         var root = RootParent;
 
-        if (root == null)
-        {
-            return new Point3D(
-                m_Location.m_X,
-                m_Location.m_Y,
-                m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0)
-            );
-        }
-
-        return root.Location;
+        return (root as Item)?.GetSurfaceTop() ?? root?.Location ?? new Point3D(
+            m_Location.m_X,
+            m_Location.m_Y,
+            m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0)
+        );
     }
 
-    public Point3D GetWorldTop() => RootParent?.Location ??
-                                    new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
+    public Point3D GetWorldTop()
+    {
+        var root = RootParent;
+
+        return (root as Item)?.GetWorldTop() ?? root?.Location ?? new Point3D(
+            m_Location.m_X,
+            m_Location.m_Y,
+            m_Location.m_Z + ItemData.CalcHeight
+        );
+    }
 
     public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
     {
