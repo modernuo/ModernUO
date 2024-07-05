@@ -86,13 +86,13 @@ public static class Movement
             case Direction.Right:
                 {
                     x += count;
-                    y += count;
+                    y -= count;
                     break;
                 }
             case Direction.Left:
                 {
                     x -= count;
-                    y -= count;
+                    y += count;
                     break;
                 }
             case Direction.Down:
