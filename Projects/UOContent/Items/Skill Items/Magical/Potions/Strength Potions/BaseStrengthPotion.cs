@@ -14,7 +14,7 @@ public abstract partial class BaseStrengthPotion : BasePotion
     public abstract int StrOffset { get; }
     public abstract TimeSpan Duration { get; }
 
-    public bool CanDrink(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
         if (!base.CanDrink(from))
         {
@@ -22,15 +22,15 @@ public abstract partial class BaseStrengthPotion : BasePotion
         }
 
         // TODO: Verify scaled; is it offset, duration, or both?
-        if (SpellHelper.AddStatOffset(from, StatType.Str, Scale(from, StrOffset), Duration))
+        if (!SpellHelper.AddStatOffset(from, StatType.Str, Scale(from, StrOffset), Duration))
         {
-            from.FixedEffect(0x375A, 10, 15);
-            from.PlaySound(0x1E7);
-            return true;
+            from.SendLocalizedMessage(502173); // You are already under a similar effect.
+            return false;
         }
 
-        from.SendLocalizedMessage(502173); // You are already under a similar effect.
-        return false;
+        from.FixedEffect(0x375A, 10, 15);
+        from.PlaySound(0x1E7);
+        return true;
     }
 
     public override void Drink(Mobile from)
