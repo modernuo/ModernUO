@@ -9,7 +9,7 @@ public static class SkillsInfo
     {
         var exclusiveMaxIndex = Core.Expansion switch
         {
-            >= Expansion.SA => 59, // <= Throwing
+            >= Expansion.SA => 58, // <= Throwing
             >= Expansion.ML => 55, // <= Spellweaving
             Expansion.SE    => 54, // <= Ninjitsu
             Expansion.AOS   => 52, // <= Chivalry
