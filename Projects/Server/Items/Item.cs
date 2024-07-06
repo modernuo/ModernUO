@@ -3836,24 +3836,27 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         // return root == null ? m_Location : new Point3D( (IPoint3D) root );
     }
 
-    public Point3D GetSurfaceTop()
+    public IPoint3D GetSurfaceTop()
     {
         var root = RootParent;
 
-        if (root == null)
-        {
-            return new Point3D(
-                m_Location.m_X,
-                m_Location.m_Y,
-                m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0)
-            );
-        }
-
-        return root.Location;
+        return (root as Item)?.GetSurfaceTop() ?? (ItemData.Surface ? new Point3D(
+            m_Location.m_X,
+            m_Location.m_Y,
+            m_Location.m_Z + ItemData.CalcHeight
+        ) : this);
     }
 
-    public Point3D GetWorldTop() => RootParent?.Location ??
-                                    new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
+    public Point3D GetWorldTop()
+    {
+        var root = RootParent;
+
+        return (root as Item)?.GetWorldTop() ?? new Point3D(
+            m_Location.m_X,
+            m_Location.m_Y,
+            m_Location.m_Z + ItemData.CalcHeight
+        );
+    }
 
     public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
     {

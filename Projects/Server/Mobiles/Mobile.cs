@@ -4089,10 +4089,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return true;
     }
 
-    public virtual bool CheckMovement(Direction d, out int newZ) => Movement.Movement.CheckMovement(this, d, out newZ);
+    public virtual bool CheckMovement(Direction d, out int newZ) => CalcMoves.CheckMovement(this, d, out newZ);
 
-    private bool CanMove(Direction d, Point3D oldLocation, ref Point3D newLocation)
+    private bool CanMove(Direction d, Point3D oldLocation, out Point3D newLocation)
     {
+        newLocation = oldLocation;
+
         if (m_Spell?.OnCasterMoving(d) == false)
         {
             return false;
@@ -4110,61 +4112,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return false;
         }
 
-        int x = oldLocation.m_X, y = oldLocation.m_Y;
-        int oldX = x, oldY = y;
+        var oldX = oldLocation.m_X;
+        var oldY = oldLocation.m_Y;
         var oldZ = oldLocation.m_Z;
-
-        switch (d & Direction.Mask)
-        {
-            case Direction.North:
-                {
-                    --y;
-                    break;
-                }
-            case Direction.Right:
-                {
-                    ++x;
-                    --y;
-                    break;
-                }
-            case Direction.East:
-                {
-                    ++x;
-                    break;
-                }
-            case Direction.Down:
-                {
-                    ++x;
-                    ++y;
-                    break;
-                }
-            case Direction.South:
-                {
-                    ++y;
-                    break;
-                }
-            case Direction.Left:
-                {
-                    --x;
-                    ++y;
-                    break;
-                }
-            case Direction.West:
-                {
-                    --x;
-                    break;
-                }
-            case Direction.Up:
-                {
-                    --x;
-                    --y;
-                    break;
-                }
-        }
-
-        newLocation.m_X = x;
-        newLocation.m_Y = y;
-        newLocation.m_Z = newZ;
+        int x = 0;
+        int y = 0;
+        CalcMoves.Offset(d, ref x, ref y);
+        newLocation = new Point3D(x, y, newZ);
 
         Pushing = false;
 
@@ -4344,17 +4298,21 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         var oldLocation = m_Location;
-        Point3D newLocation = oldLocation;
+        Point3D newLocation;
 
         if ((m_Direction & Direction.Mask) == (d & Direction.Mask))
         {
             // We are actually moving (not just a direction change)
-            if (!CanMove(d, oldLocation, ref newLocation))
+            if (!CanMove(d, oldLocation, out newLocation))
             {
                 return false;
             }
 
             DisruptiveAction();
+        }
+        else
+        {
+            newLocation = oldLocation;
         }
 
         if (m_NetState != null)
