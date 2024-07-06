@@ -66,17 +66,13 @@ public partial class ThrowingDagger : Item
                 }
                 else
                 {
-                    int x = 0;
-                    int y = 0;
-                    CalcMoves.Offset(to, ref x, ref y);
+                    var p = m.Location;
+                    CalcMoves.Offset(to, ref p);
 
-                    x += Utility.Random(-1, 3);
-                    y += Utility.Random(-1, 3);
+                    p.X += Utility.Random(-1, 3);
+                    p.Y += Utility.Random(-1, 3);
 
-                    x += m.X;
-                    y += m.Y;
-
-                    m_Dagger.MoveToWorld(new Point3D(x, y, m.Z), m.Map);
+                    m_Dagger.MoveToWorld(p, m.Map);
 
                     from.MovingEffect(m_Dagger, 0x1BFE, 7, 1, false, false, 0x481, 0);
 

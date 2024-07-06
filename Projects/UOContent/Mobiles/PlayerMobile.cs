@@ -1763,8 +1763,9 @@ namespace Server.Mobiles
 
             newZ = foundation.Z + HouseFoundation.GetLevelZ(context.Level, context.Foundation);
 
-            int newX = X, newY = Y;
-            Movement.Movement.Offset(d, ref newX, ref newY);
+            var newX = X;
+            var newY = Y;
+            CalcMoves.Offset(d, ref newX, ref newY);
 
             var startX = foundation.X + foundation.Components.Min.X + 1;
             var startY = foundation.Y + foundation.Components.Min.Y + 1;

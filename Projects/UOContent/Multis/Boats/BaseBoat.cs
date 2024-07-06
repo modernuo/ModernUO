@@ -282,14 +282,15 @@ namespace Server.Multis
                 SPlank.SetFacing(_facing);
             }
 
-            int xOffset = 0, yOffset = 0;
+            var xOffset = X;
+            var yOffset = Y;
             Movement.Movement.Offset(_facing, ref xOffset, ref yOffset);
 
             if (TillerMan != null)
             {
                 TillerMan.Location = new Point3D(
-                    X + xOffset * TillerManDistance + (_facing == Direction.North ? 1 : 0),
-                    Y + yOffset * TillerManDistance,
+                    xOffset * TillerManDistance + (_facing == Direction.North ? 1 : 0),
+                    yOffset * TillerManDistance,
                     TillerMan.Z
                 );
                 TillerMan.SetFacing(_facing);
@@ -298,7 +299,7 @@ namespace Server.Multis
 
             if (Hold != null)
             {
-                Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
+                Hold.Location = new Point3D(xOffset * HoldDistance, yOffset * HoldDistance, Hold.Z);
                 Hold.SetFacing(_facing);
             }
         }
@@ -1722,7 +1723,8 @@ namespace Server.Multis
                 return false;
             }
 
-            int rx = 0, ry = 0;
+            var rx = 0;
+            var ry = 0;
             var d = (Direction)(((int)_facing + (int)dir) & 0x7);
             Movement.Movement.Offset(d, ref rx, ref ry);
 
@@ -2083,7 +2085,8 @@ namespace Server.Multis
             PPlank?.SetFacing(facing);
             SPlank?.SetFacing(facing);
 
-            int xOffset = 0, yOffset = 0;
+            var xOffset = X;
+            var yOffset = Y;
             Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
 
             var count = ((_facing - old) & 0x7) / 2;
@@ -2109,15 +2112,15 @@ namespace Server.Multis
             if (TillerMan != null)
             {
                 TillerMan.Location = new Point3D(
-                    X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
-                    Y + yOffset * TillerManDistance,
+                    xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
+                    yOffset * TillerManDistance,
                     TillerMan.Z
                 );
             }
 
             if (Hold != null)
             {
-                Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
+                Hold.Location = new Point3D(xOffset * HoldDistance, yOffset * HoldDistance, Hold.Z);
             }
 
             if (PPlank != null)
