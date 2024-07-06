@@ -3836,22 +3836,22 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         // return root == null ? m_Location : new Point3D( (IPoint3D) root );
     }
 
-    public Point3D GetSurfaceTop()
+    public IPoint3D GetSurfaceTop()
     {
         var root = RootParent;
 
-        return (root as Item)?.GetSurfaceTop() ?? root?.Location ?? new Point3D(
+        return (root as Item)?.GetSurfaceTop() ?? (ItemData.Surface ? new Point3D(
             m_Location.m_X,
             m_Location.m_Y,
-            m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0)
-        );
+            m_Location.m_Z + ItemData.CalcHeight
+        ) : this);
     }
 
     public Point3D GetWorldTop()
     {
         var root = RootParent;
 
-        return (root as Item)?.GetWorldTop() ?? root?.Location ?? new Point3D(
+        return (root as Item)?.GetWorldTop() ?? new Point3D(
             m_Location.m_X,
             m_Location.m_Y,
             m_Location.m_Z + ItemData.CalcHeight
