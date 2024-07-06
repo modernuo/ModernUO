@@ -59,6 +59,15 @@ public static class Movement
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Offset(Direction d, ref Point3D p, int count = 1)
+    {
+        var x = p.m_X;
+        var y = p.m_Y;
+        Offset(d, ref x, ref y, count);
+        p = new Point3D(x, y, p.m_Z);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Offset(Direction d, ref int x, ref int y, int count = 1)
     {
         switch (d & Direction.Mask)

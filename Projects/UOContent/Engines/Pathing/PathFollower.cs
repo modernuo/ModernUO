@@ -42,12 +42,7 @@ namespace Server
 
                 if (index >= 0 && index < dirs.Length)
                 {
-                    int x = p.X, y = p.Y;
-
-                    CalcMoves.Offset(dirs[index], ref x, ref y);
-
-                    p.X = x;
-                    p.Y = y;
+                    CalcMoves.Offset(dirs[index], ref p);
                 }
             }
         }

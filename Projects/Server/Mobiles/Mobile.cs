@@ -4115,10 +4115,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         var oldX = oldLocation.m_X;
         var oldY = oldLocation.m_Y;
         var oldZ = oldLocation.m_Z;
-        int x = 0;
-        int y = 0;
+        var x = oldX;
+        var y = oldY;
         CalcMoves.Offset(d, ref x, ref y);
-        newLocation = new Point3D(x, y, newZ);
 
         Pushing = false;
 
