@@ -11,17 +11,26 @@ public abstract partial class BaseRefreshPotion : BasePotion
 
     public abstract double Refresh { get; }
 
-    public override void Drink(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
-        if (from.Stam < from.StamMax)
+        if (!base.CanDrink(from))
         {
-            from.Stam += Scale(from, (int)(Refresh * from.StamMax));
-
-            PlayDrinkEffect(from);
+            return false;
         }
-        else
+
+        if (from.Stam >= from.StamMax)
         {
             from.SendMessage("You decide against drinking this potion, as you are already at full stamina.");
+            return false;
         }
+
+        return true;
+    }
+
+    public override void Drink(Mobile from)
+    {
+        from.Stam += Scale(from, (int)(Refresh * from.StamMax));
+
+        PlayDrinkEffect(from);
     }
 }

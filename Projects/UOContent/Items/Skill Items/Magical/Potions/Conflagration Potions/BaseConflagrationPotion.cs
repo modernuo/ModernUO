@@ -22,12 +22,17 @@ public abstract partial class BaseConflagrationPotion : BasePotion
 
     public override bool IsThrowablePotion => true;
 
-    public override void Drink(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
+        if (!base.CanDrink(from))
+        {
+            return false;
+        }
+
         if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell?.IsCasting == true))
         {
             from.SendLocalizedMessage(1062725); // You can not use that potion while paralyzed.
-            return;
+            return false;
         }
 
         var delay = GetDelay(from);
@@ -36,14 +41,14 @@ public abstract partial class BaseConflagrationPotion : BasePotion
         {
             // You cannot use that for another ~1_NUM~ ~2_TIMEUNITS~
             from.SendLocalizedMessage(1072529, $"{delay}\t{(delay > 1 ? "seconds." : "second.")}");
-            return;
+            return false;
         }
 
-        if ((from.Target as ThrowTarget)?.Potion == this)
-        {
-            return;
-        }
+        return (from.Target as ThrowTarget)?.Potion != this;
+    }
 
+    public override void Drink(Mobile from)
+    {
         from.RevealingAction();
 
         _users ??= [];

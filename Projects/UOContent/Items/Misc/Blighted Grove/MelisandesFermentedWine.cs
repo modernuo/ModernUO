@@ -22,13 +22,7 @@ public partial class MelisandesFermentedWine : GreaterExplosionPotion
 
     public override int LabelNumber => 1072114; // Melisande's Fermented Wine
 
-    public override void Drink(Mobile from)
-    {
-        if (MondainsLegacy.CheckML(from))
-        {
-            base.Drink(from);
-        }
-    }
+    public override bool CanDrink(Mobile from) => MondainsLegacy.CheckML(from) && base.CanDrink(from);
 
     public override void GetProperties(IPropertyList list)
     {

@@ -51,21 +51,25 @@ public abstract partial class BaseExplosionPotion : BasePotion
         return this;
     }
 
-    public override void Drink(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
+        if (!base.CanDrink(from))
+        {
+            return false;
+        }
+
         if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell?.IsCasting == true))
         {
             from.SendLocalizedMessage(1062725); // You can not use a purple potion while paralyzed.
-            return;
+            return false;
         }
 
-        var targ = from.Target as ThrowTarget;
+        return (from.Target as ThrowTarget)?.Potion != this;
+    }
+
+    public override void Drink(Mobile from)
+    {
         Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
-
-        if (targ?.Potion == this)
-        {
-            return;
-        }
 
         from.RevealingAction();
 

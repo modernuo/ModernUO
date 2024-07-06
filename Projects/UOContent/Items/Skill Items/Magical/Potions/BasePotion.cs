@@ -129,20 +129,8 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (!Movable)
+        if (!CanDrink(from))
         {
-            return;
-        }
-
-        if (!from.InRange(GetWorldLocation(), 1))
-        {
-            from.SendLocalizedMessage(502138); // That is too far away for you to use
-            return;
-        }
-
-        if (RequireFreeHand && !HasFreeHand(from))
-        {
-            from.SendLocalizedMessage(502172); // You must have a free hand to drink a potion.
             return;
         }
 
@@ -172,12 +160,33 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
         _potionEffect = (PotionEffect)reader.ReadInt();
     }
 
+    public virtual bool CanDrink(Mobile from)
+    {
+        if (!Movable)
+        {
+            return false;
+        }
+
+        if (!from.InRange(GetWorldLocation(), 1))
+        {
+            from.SendLocalizedMessage(502138); // That is too far away for you to use
+            return false;
+        }
+
+        if (RequireFreeHand && !HasFreeHand(from))
+        {
+            from.SendLocalizedMessage(502172); // You must have a free hand to drink a potion.
+            return false;
+        }
+
+        return true;
+    }
+
     public abstract void Drink(Mobile from);
 
     public void PlayDrinkEffect(Mobile m)
     {
         m.RevealingAction();
-
         m.PlaySound(0x2D6);
 
         if (!DuelContext.IsFreeConsume(m))
