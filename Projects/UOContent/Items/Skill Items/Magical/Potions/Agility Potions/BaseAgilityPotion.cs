@@ -21,6 +21,7 @@ public abstract partial class BaseAgilityPotion : BasePotion
             return false;
         }
 
+        // TODO: Verify scaled; is it offset, duration, or both?
         if (!SpellHelper.AddStatOffset(from, StatType.Dex, Scale(from, DexOffset), Duration))
         {
             from.SendLocalizedMessage(502173); // You are already under a similar effect.
