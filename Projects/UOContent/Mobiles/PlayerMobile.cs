@@ -28,9 +28,12 @@ using Server.SkillHandlers;
 using Server.Spells;
 using Server.Spells.Bushido;
 using Server.Spells.Fifth;
+using Server.Spells.First;
 using Server.Spells.Fourth;
+using Server.Spells.Mysticism;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
+using Server.Spells.Second;
 using Server.Spells.Seventh;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
@@ -3382,14 +3385,25 @@ namespace Server.Mobiles
             base.OnAfterDelete();
 
             var faction = Faction.Find(this);
-
             faction?.RemoveMember(this);
 
             MLQuestSystem.HandleDeletion(this);
-
             BaseHouse.HandleDeletion(this);
-
             DisguisePersistence.RemoveTimer(this);
+
+            StaminaSystem.OnPlayerDeleted(this);
+            JusticeVirtue.OnPlayerDeleted(this);
+            PlayerMurderSystem.OnPlayerDeleted(this);
+            ChampionTitleSystem.OnPlayerDeleted(this);
+
+            // Spells
+            MagicReflectSpell.EndReflect(this);
+            ReactiveArmorSpell.EndArmor(this);
+            ProtectionSpell.EndProtection(this);
+            StoneFormSpell.RemoveEffects(this);
+            AnimateDeadSpell.RemoveEffects(this);
+            SummonFamiliarSpell.RemoveEffects(this);
+            AnimalForm.RemoveLastAnimalForm(this);
         }
 
         public override void GetProperties(IPropertyList list)
