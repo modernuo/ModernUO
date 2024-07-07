@@ -6,7 +6,6 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using Server.Buffers;
 
 namespace Server.Collections;
@@ -152,14 +151,14 @@ public ref struct PooledRefList<T>
 
                     if (_items.Length > 0)
                     {
-                        Clear();
+                        Array.Clear(_items);
                         ArrayPool.Return(_items);
                     }
                     _items = newItems;
                 }
                 else
                 {
-                    Clear();
+                    Array.Clear(_items);
                     ArrayPool.Return(_items);
                     _items = s_emptyArray;
                 }
