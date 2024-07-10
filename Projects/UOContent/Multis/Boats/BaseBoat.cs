@@ -7,6 +7,7 @@ using Server.Engines.Spawners;
 using Server.Items;
 using Server.Multis.Boats;
 using Server.Network;
+using CalcMoves = Server.Movement.Movement;
 
 namespace Server.Multis
 {
@@ -282,15 +283,15 @@ namespace Server.Multis
                 SPlank.SetFacing(_facing);
             }
 
-            var xOffset = X;
-            var yOffset = Y;
-            Movement.Movement.Offset(_facing, ref xOffset, ref yOffset);
+            var xOffset = 0;
+            var yOffset = 0;
+            CalcMoves.Offset(_facing, ref xOffset, ref yOffset);
 
             if (TillerMan != null)
             {
                 TillerMan.Location = new Point3D(
-                    xOffset * TillerManDistance + (_facing == Direction.North ? 1 : 0),
-                    yOffset * TillerManDistance,
+                    X + xOffset * TillerManDistance + (_facing == Direction.North ? 1 : 0),
+                    Y + yOffset * TillerManDistance,
                     TillerMan.Z
                 );
                 TillerMan.SetFacing(_facing);
@@ -299,7 +300,7 @@ namespace Server.Multis
 
             if (Hold != null)
             {
-                Hold.Location = new Point3D(xOffset * HoldDistance, yOffset * HoldDistance, Hold.Z);
+                Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
                 Hold.SetFacing(_facing);
             }
         }
@@ -2085,8 +2086,8 @@ namespace Server.Multis
             PPlank?.SetFacing(facing);
             SPlank?.SetFacing(facing);
 
-            var xOffset = X;
-            var yOffset = Y;
+            var xOffset = 0;
+            var yOffset = 0;
             Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
 
             var count = ((_facing - old) & 0x7) / 2;
@@ -2112,15 +2113,15 @@ namespace Server.Multis
             if (TillerMan != null)
             {
                 TillerMan.Location = new Point3D(
-                    xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
-                    yOffset * TillerManDistance,
+                    X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
+                    Y + yOffset * TillerManDistance,
                     TillerMan.Z
                 );
             }
 
             if (Hold != null)
             {
-                Hold.Location = new Point3D(xOffset * HoldDistance, yOffset * HoldDistance, Hold.Z);
+                Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
             }
 
             if (PPlank != null)
@@ -2157,6 +2158,15 @@ namespace Server.Multis
         {
             EventSink.WorldLoad += UpdateAllComponents;
             EventSink.WorldSave += UpdateAllComponents;
+
+            // Fix tiler/hold/plank locations
+            foreach (var item in World.Items.Values)
+            {
+                if (item is BaseBoat boat)
+                {
+                    boat.UpdateComponents();
+                }
+            }
         }
 
         private class TurnTimer : Timer
