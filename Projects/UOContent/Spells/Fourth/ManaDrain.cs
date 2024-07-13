@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-    public class ManaDrainSpell : MagerySpell, ISpellTargetingMobile
+    public class ManaDrainSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Mana Drain",
@@ -77,7 +77,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
 
         private static void AosDelay_Callback(Mobile m, int mana)

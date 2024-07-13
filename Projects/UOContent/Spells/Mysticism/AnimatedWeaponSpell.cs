@@ -3,7 +3,7 @@ using Server.Mobiles;
 
 namespace Server.Spells.Mysticism;
 
-public class AnimatedWeaponSpell : MysticSpell, ISpellTargetingPoint3D
+public class AnimatedWeaponSpell : MysticSpell, ITargetingSpell<IPoint3D>
 {
     private static readonly SpellInfo _info = new(
         "Animated Weapon",

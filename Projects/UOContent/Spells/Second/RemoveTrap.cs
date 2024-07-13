@@ -2,7 +2,7 @@ using Server.Items;
 
 namespace Server.Spells.Second
 {
-    public class RemoveTrapSpell : MagerySpell, ISpellTargetingItem
+    public class RemoveTrapSpell : MagerySpell, ITargetingSpell<Item>
     {
         private static readonly SpellInfo _info = new(
             "Remove Trap",
@@ -52,7 +52,7 @@ namespace Server.Spells.Second
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Item>(this);
             Caster.SendLocalizedMessage(502368);
         }
     }

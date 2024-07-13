@@ -1,53 +1,29 @@
 using Server.Targeting;
 
-namespace Server.Spells
+namespace Server.Spells;
+
+public class SpellTargetPoint3D : SpellTarget<IPoint3D>
 {
-    public interface ISpellTargetingPoint3D : ISpell
+    private readonly bool _retryOnLos;
+
+    public SpellTargetPoint3D(
+        ITargetingSpell<IPoint3D> spell, TargetFlags flags = TargetFlags.None, bool retryOnLOS = false
+    ) : base(spell, true, flags) => _retryOnLos = retryOnLOS;
+
+    protected override void OnCantSeeTarget(Mobile from, object o)
     {
-        void Target(IPoint3D p);
+        from.SendLocalizedMessage(500237); // Target can not be seen.
     }
 
-    public class SpellTargetPoint3D : Target, ISpellTarget
+    protected override void OnTargetOutOfLOS(Mobile from, object o)
     {
-        private readonly bool _retryOnLos;
-        private ISpellTargetingPoint3D _spell;
-
-        public SpellTargetPoint3D(
-            ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool retryOnLOS = false
-        ) : base(range, true, flags)
+        if (!_retryOnLos)
         {
-            _spell = spell;
-            _retryOnLos = retryOnLOS;
+            return;
         }
 
-        public ISpell Spell => _spell;
-
-        protected override void OnTarget(Mobile from, object o)
-        {
-            _spell.Target(o as IPoint3D);
-        }
-
-        protected override void OnCantSeeTarget(Mobile from, object o)
-        {
-            from.SendLocalizedMessage(500237); // Target can not be seen.
-        }
-
-        protected override void OnTargetOutOfLOS(Mobile from, object o)
-        {
-            if (!_retryOnLos)
-            {
-                return;
-            }
-
-            from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
-            from.Target = new SpellTargetPoint3D(_spell);
-            from.Target.BeginTimeout(from, TimeoutTime - Core.TickCount);
-            _spell = null; // Needed?
-        }
-
-        protected override void OnTargetFinish(Mobile from)
-        {
-            _spell?.FinishSequence();
-        }
+        from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
+        from.Target = new SpellTargetPoint3D(_spell);
+        from.Target.BeginTimeout(from, TimeoutTime - Core.TickCount);
     }
 }

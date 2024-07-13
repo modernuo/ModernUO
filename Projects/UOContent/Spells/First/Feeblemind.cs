@@ -2,7 +2,7 @@ using Server.Targeting;
 
 namespace Server.Spells.First
 {
-    public class FeeblemindSpell : MagerySpell, ISpellTargetingMobile
+    public class FeeblemindSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Feeblemind",
@@ -49,7 +49,7 @@ namespace Server.Spells.First
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

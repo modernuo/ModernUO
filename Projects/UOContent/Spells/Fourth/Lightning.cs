@@ -2,7 +2,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-    public class LightningSpell : MagerySpell, ISpellTargetingMobile
+    public class LightningSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Lightning",
@@ -57,7 +57,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

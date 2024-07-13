@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
 
-public class PainSpikeSpell : NecromancerSpell, ISpellTargetingMobile
+public class PainSpikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Pain Spike",
@@ -85,7 +85,7 @@ public class PainSpikeSpell : NecromancerSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     private class InternalTimer : Timer

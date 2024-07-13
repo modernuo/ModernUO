@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-    public class GiftOfRenewalSpell : ArcanistSpell, ISpellTargetingMobile
+    public class GiftOfRenewalSpell : ArcanistSpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Gift of Renewal",
@@ -69,7 +69,7 @@ namespace Server.Spells.Spellweaving
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, 10);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
 
         public static bool StopEffect(Mobile m)

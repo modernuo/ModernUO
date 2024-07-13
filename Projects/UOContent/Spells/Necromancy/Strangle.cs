@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
 
-public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
+public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Strangle",
@@ -111,7 +111,7 @@ public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     public static bool RemoveCurse(Mobile m)

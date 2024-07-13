@@ -3,7 +3,7 @@ using Server.Mobiles;
 
 namespace Server.Spells.Fifth
 {
-    public class BladeSpiritsSpell : MagerySpell, ISpellTargetingPoint3D
+    public class BladeSpiritsSpell : MagerySpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Blade Spirits",

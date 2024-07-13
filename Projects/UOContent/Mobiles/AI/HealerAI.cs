@@ -31,7 +31,7 @@ public class HealerAI : BaseAI
 
         if (targ != null)
         {
-            var spellTarg = targ as ISpellTarget;
+            var spellTarg = targ as ISpellTarget<Mobile>;
 
             if (spellTarg?.Spell is CureSpell)
             {

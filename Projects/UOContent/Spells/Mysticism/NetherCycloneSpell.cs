@@ -2,7 +2,7 @@
 
 namespace Server.Spells.Mysticism;
 
-public class NetherCycloneSpell : MysticSpell, ISpellTargetingPoint3D
+public class NetherCycloneSpell : MysticSpell, ITargetingSpell<IPoint3D>
 {
     private static readonly SpellInfo _info = new(
         "Nether Cyclone",
