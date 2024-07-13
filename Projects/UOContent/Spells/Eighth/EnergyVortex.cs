@@ -60,7 +60,7 @@ namespace Server.Spells.Eighth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, retryOnLOS: true);
+            Caster.Target = new SpellTarget<IPoint3D>(this, retryOnLos: true);
         }
     }
 }

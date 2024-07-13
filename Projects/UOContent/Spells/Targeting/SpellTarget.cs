@@ -8,14 +8,23 @@ public class SpellTarget<T> : Target, ISpellTarget<T> where T : class, IPoint3D
     private static readonly bool _canTargetMobile = typeof(T).IsAssignableFrom(typeof(Mobile));
     private static readonly bool _canTargetItem = typeof(T).IsAssignableFrom(typeof(Item));
 
+    private readonly bool _retryOnLos;
     protected readonly ITargetingSpell<T> _spell;
 
-    public SpellTarget(ITargetingSpell<T> spell, TargetFlags flags = TargetFlags.None) : this(spell, false, flags)
+    public SpellTarget(
+        ITargetingSpell<T> spell,
+        TargetFlags flags = TargetFlags.None,
+        bool retryOnLos = false
+    ) : this(spell, false, flags, retryOnLos)
     {
     }
 
-    public SpellTarget(ITargetingSpell<T> spell, bool allowGround, TargetFlags flags = TargetFlags.None)
-        : base(spell.TargetRange, allowGround, flags) => _spell = spell;
+    public SpellTarget(ITargetingSpell<T> spell, bool allowGround, TargetFlags flags = TargetFlags.None, bool retryOnLos = false)
+        : base(spell.TargetRange, allowGround, flags)
+    {
+        _spell = spell;
+        _retryOnLos = retryOnLos;
+    }
 
     public ITargetingSpell<T> Spell => _spell;
 
@@ -32,6 +41,18 @@ public class SpellTarget<T> : Target, ISpellTarget<T> where T : class, IPoint3D
     }
 
     protected override void OnTarget(Mobile from, object o) => _spell.Target(o as T);
+
+    protected override void OnTargetOutOfLOS(Mobile from, object o)
+    {
+        if (!_retryOnLos)
+        {
+            return;
+        }
+
+        from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
+        from.Target = new SpellTarget<T>(_spell, AllowGround, Flags, true);
+        from.Target.BeginTimeout(from, TimeoutTime - Core.TickCount);
+    }
 
     protected override void OnTargetFinish(Mobile from) => _spell?.FinishSequence();
 }

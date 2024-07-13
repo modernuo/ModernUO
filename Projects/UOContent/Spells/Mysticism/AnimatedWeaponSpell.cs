@@ -55,6 +55,6 @@ public class AnimatedWeaponSpell : MysticSpell, ITargetingSpell<IPoint3D>
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetPoint3D(this);
+        Caster.Target = new SpellTarget<IPoint3D>(this);
     }
 }
