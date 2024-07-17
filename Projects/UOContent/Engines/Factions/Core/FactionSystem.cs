@@ -120,5 +120,7 @@ public class FactionPersistence : Item
                 new TownState(reader);
             }
         }
+
+        Timer.DelayCall(Delete);
     }
 }

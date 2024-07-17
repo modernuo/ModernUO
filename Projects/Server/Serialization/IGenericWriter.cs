@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IGenericWriter.cs                                               *
  *                                                                       *
@@ -24,7 +24,6 @@ namespace Server;
 public interface IGenericWriter
 {
     long Position { get; }
-    void Close();
     void Write(string value);
     void Write(long value);
     void Write(ulong value);
@@ -98,6 +97,7 @@ public interface IGenericWriter
 
         Write((byte)v);
     }
+
     void Write(Point3D value)
     {
         Write(value.m_X);
@@ -121,6 +121,8 @@ public interface IGenericWriter
     }
     void Write(Map value) => Write((byte)(value?.MapIndex ?? 0xFF));
     void Write(Race value) => Write((byte)(value?.RaceIndex ?? 0xFF));
+    void Write(byte[] bytes);
+    void Write(byte[] bytes, int offset, int count);
     void Write(ReadOnlySpan<byte> bytes);
     unsafe void WriteEnum<T>(T value) where T : unmanaged, Enum
     {

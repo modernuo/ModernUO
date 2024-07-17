@@ -72,8 +72,6 @@ namespace Server.Spells.Seventh
                     }
                 }
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

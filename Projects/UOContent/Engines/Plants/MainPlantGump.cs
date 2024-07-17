@@ -195,11 +195,15 @@ namespace Server.Engines.Plants
             switch (value)
             {
                 case 1:
-                    AddLabel(x, y, 0x35, "+");
-                    break;
+                    {
+                        AddLabel(x, y, 0x35, "+");
+                        break;
+                    }
                 case 2:
-                    AddLabel(x, y, 0x21, "+");
-                    break;
+                    {
+                        AddLabel(x, y, 0x21, "+");
+                        break;
+                    }
             }
         }
 
@@ -208,17 +212,25 @@ namespace Server.Engines.Plants
             switch (value)
             {
                 case 0:
-                    AddLabel(x, y, 0x21, "-");
-                    break;
+                    {
+                        AddLabel(x, y, 0x21, "-");
+                        break;
+                    }
                 case 1:
-                    AddLabel(x, y, 0x35, "-");
-                    break;
+                    {
+                        AddLabel(x, y, 0x35, "-");
+                        break;
+                    }
                 case 3:
-                    AddLabel(x, y, 0x35, "+");
-                    break;
+                    {
+                        AddLabel(x, y, 0x35, "+");
+                        break;
+                    }
                 case 4:
-                    AddLabel(x, y, 0x21, "+");
-                    break;
+                    {
+                        AddLabel(x, y, 0x21, "+");
+                        break;
+                    }
             }
         }
 
@@ -236,21 +248,33 @@ namespace Server.Engines.Plants
 
             switch (m_Plant.PlantSystem.GrowthIndicator)
             {
+                default:
+                case PlantGrowthIndicator.None:
                 case PlantGrowthIndicator.InvalidLocation:
-                    AddLabel(x, y, 0x21, "!");
-                    break;
+                    {
+                        AddLabel(x, y, 0x21, "!");
+                        break;
+                    }
                 case PlantGrowthIndicator.NotHealthy:
-                    AddLabel(x, y, 0x21, "-");
-                    break;
+                    {
+                        AddLabel(x, y, 0x21, "-");
+                        break;
+                    }
                 case PlantGrowthIndicator.Delay:
-                    AddLabel(x, y, 0x35, "-");
-                    break;
+                    {
+                        AddLabel(x, y, 0x35, "-");
+                        break;
+                    }
                 case PlantGrowthIndicator.Grown:
-                    AddLabel(x, y, 0x3, "+");
-                    break;
+                    {
+                        AddLabel(x, y, 0x3, "+");
+                        break;
+                    }
                 case PlantGrowthIndicator.DoubleGrown:
-                    AddLabel(x, y, 0x3F, "+");
-                    break;
+                    {
+                        AddLabel(x, y, 0x3F, "+");
+                        break;
+                    }
             }
         }
 

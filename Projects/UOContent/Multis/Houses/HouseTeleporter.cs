@@ -11,6 +11,7 @@ namespace Server.Items;
 [SerializationGenerator(2, false)]
 public partial class HouseTeleporter : Item, ISecurable
 {
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;

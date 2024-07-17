@@ -3,131 +3,130 @@ using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
 
-namespace Server.Factions
+namespace Server.Factions;
+
+public class ElectionGump : FactionGump
 {
-    public class ElectionGump : FactionGump
+    private readonly Election m_Election;
+    private readonly PlayerMobile m_From;
+
+    public ElectionGump(PlayerMobile from, Election election) : base(50, 50)
     {
-        private readonly Election m_Election;
-        private readonly PlayerMobile m_From;
+        m_From = from;
+        m_Election = election;
 
-        public ElectionGump(PlayerMobile from, Election election) : base(50, 50)
+        AddPage(0);
+
+        AddBackground(0, 0, 420, 180, 5054);
+        AddBackground(10, 10, 400, 160, 3000);
+
+        AddHtmlText(20, 20, 380, 20, election.Faction.Definition.Header, false, false);
+
+        // NOTE: Gump not entirely OSI-accurate, intentionally so
+
+        switch (election.State)
         {
-            m_From = from;
-            m_Election = election;
+            case ElectionState.Pending:
+                {
+                    var toGo = election.LastStateTime + Election.PendingPeriod - Core.Now;
+                    var days = (int)(toGo.TotalDays + 0.5);
 
-            AddPage(0);
+                    AddHtmlLocalized(20, 40, 380, 20, 1038034); // A new election campaign is pending
 
-            AddBackground(0, 0, 420, 180, 5054);
-            AddBackground(10, 10, 400, 160, 3000);
-
-            AddHtmlText(20, 20, 380, 20, election.Faction.Definition.Header, false, false);
-
-            // NOTE: Gump not entirely OSI-accurate, intentionally so
-
-            switch (election.State)
-            {
-                case ElectionState.Pending:
+                    if (days > 0)
                     {
-                        var toGo = election.LastStateTime + Election.PendingPeriod - Core.Now;
-                        var days = (int)(toGo.TotalDays + 0.5);
-
-                        AddHtmlLocalized(20, 40, 380, 20, 1038034); // A new election campaign is pending
-
-                        if (days > 0)
-                        {
-                            AddHtmlLocalized(20, 60, 280, 20, 1018062); // Days until next election :
-                            AddLabel(300, 60, 0, days.ToString());
-                        }
-                        else
-                        {
-                            AddHtmlLocalized(20, 60, 280, 20, 1018059); // Election campaigning begins tonight.
-                        }
-
-                        break;
-                    }
-                case ElectionState.Campaign:
-                    {
-                        var toGo = election.LastStateTime + Election.CampaignPeriod - Core.Now;
-                        var days = (int)(toGo.TotalDays + 0.5);
-
-                        AddHtmlLocalized(20, 40, 380, 20, 1018058); // There is an election campaign in progress.
-
-                        if (days > 0)
-                        {
-                            AddHtmlLocalized(20, 60, 280, 20, 1038033); // Days to go:
-                            AddLabel(300, 60, 0, days.ToString());
-                        }
-                        else
-                        {
-                            AddHtmlLocalized(20, 60, 280, 20, 1018061); // Campaign in progress. Voting begins tonight.
-                        }
-
-                        if (m_Election.CanBeCandidate(m_From))
-                        {
-                            AddButton(20, 110, 4005, 4007, 2);
-                            AddHtmlLocalized(55, 110, 350, 20, 1011427); // CAMPAIGN FOR LEADERSHIP
-                        }
-                        else
-                        {
-                            var pl = PlayerState.Find(m_From);
-
-                            if (pl == null || pl.Rank.Rank < Election.CandidateRank)
-                            {
-                                AddHtmlLocalized(20, 100, 380, 20, 1010118); // You must have a higher rank to run for office
-                            }
-                        }
-
-                        break;
-                    }
-                case ElectionState.Election:
-                    {
-                        var toGo = election.LastStateTime + Election.VotingPeriod - Core.Now;
-                        var days = (int)Math.Ceiling(toGo.TotalDays);
-
-                        AddHtmlLocalized(20, 40, 380, 20, 1018060); // There is an election vote in progress.
-
-                        AddHtmlLocalized(20, 60, 280, 20, 1038033);
+                        AddHtmlLocalized(20, 60, 280, 20, 1018062); // Days until next election :
                         AddLabel(300, 60, 0, days.ToString());
-
-                        AddHtmlLocalized(55, 100, 380, 20, 1011428); // VOTE FOR LEADERSHIP
-                        AddButton(20, 100, 4005, 4007, 1);
-
-                        break;
                     }
-            }
+                    else
+                    {
+                        AddHtmlLocalized(20, 60, 280, 20, 1018059); // Election campaigning begins tonight.
+                    }
 
-            AddButton(20, 140, 4005, 4007, 0);
-            AddHtmlLocalized(55, 140, 350, 20, 1011012); // CANCEL
+                    break;
+                }
+            case ElectionState.Campaign:
+                {
+                    var toGo = election.LastStateTime + Election.CampaignPeriod - Core.Now;
+                    var days = (int)(toGo.TotalDays + 0.5);
+
+                    AddHtmlLocalized(20, 40, 380, 20, 1018058); // There is an election campaign in progress.
+
+                    if (days > 0)
+                    {
+                        AddHtmlLocalized(20, 60, 280, 20, 1038033); // Days to go:
+                        AddLabel(300, 60, 0, days.ToString());
+                    }
+                    else
+                    {
+                        AddHtmlLocalized(20, 60, 280, 20, 1018061); // Campaign in progress. Voting begins tonight.
+                    }
+
+                    if (m_Election.CanBeCandidate(m_From))
+                    {
+                        AddButton(20, 110, 4005, 4007, 2);
+                        AddHtmlLocalized(55, 110, 350, 20, 1011427); // CAMPAIGN FOR LEADERSHIP
+                    }
+                    else
+                    {
+                        var pl = PlayerState.Find(m_From);
+
+                        if (pl == null || pl.Rank.Rank < Election.CandidateRank)
+                        {
+                            AddHtmlLocalized(20, 100, 380, 20, 1010118); // You must have a higher rank to run for office
+                        }
+                    }
+
+                    break;
+                }
+            case ElectionState.Election:
+                {
+                    var toGo = election.LastStateTime + Election.VotingPeriod - Core.Now;
+                    var days = (int)Math.Ceiling(toGo.TotalDays);
+
+                    AddHtmlLocalized(20, 40, 380, 20, 1018060); // There is an election vote in progress.
+
+                    AddHtmlLocalized(20, 60, 280, 20, 1038033);
+                    AddLabel(300, 60, 0, days.ToString());
+
+                    AddHtmlLocalized(55, 100, 380, 20, 1011428); // VOTE FOR LEADERSHIP
+                    AddButton(20, 100, 4005, 4007, 1);
+
+                    break;
+                }
         }
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
+        AddButton(20, 140, 4005, 4007, 0);
+        AddHtmlLocalized(55, 140, 350, 20, 1011012); // CANCEL
+    }
+
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        switch (info.ButtonID)
         {
-            switch (info.ButtonID)
-            {
-                case 0: // back
+            case 0: // back
+                {
+                    m_From.SendGump(new FactionStoneGump(m_From, m_Election.Faction));
+                    break;
+                }
+            case 1: // vote
+                {
+                    if (m_Election.State == ElectionState.Election)
                     {
-                        m_From.SendGump(new FactionStoneGump(m_From, m_Election.Faction));
-                        break;
+                        m_From.SendGump(new VoteGump(m_From, m_Election));
                     }
-                case 1: // vote
-                    {
-                        if (m_Election.State == ElectionState.Election)
-                        {
-                            m_From.SendGump(new VoteGump(m_From, m_Election));
-                        }
 
-                        break;
-                    }
-                case 2: // campaign
+                    break;
+                }
+            case 2: // campaign
+                {
+                    if (m_Election.CanBeCandidate(m_From))
                     {
-                        if (m_Election.CanBeCandidate(m_From))
-                        {
-                            m_Election.AddCandidate(m_From);
-                        }
-
-                        break;
+                        m_Election.AddCandidate(m_From);
                     }
-            }
+
+                    break;
+                }
         }
     }
 }

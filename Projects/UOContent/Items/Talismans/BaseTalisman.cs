@@ -125,6 +125,7 @@ public partial class BaseTalisman : Item, IAosItem
         SkillName.Tinkering
     };
 
+    [SerializedIgnoreDupe]
     [SerializableField(0, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosAttributes _attributes;
@@ -135,6 +136,7 @@ public partial class BaseTalisman : Item, IAosItem
     [SerializableFieldDefault(0)]
     private AosAttributes AttributesDefaultValue() => new(this);
 
+    [SerializedIgnoreDupe]
     [SerializableField(1, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosSkillBonuses _skillBonuses;
@@ -145,6 +147,7 @@ public partial class BaseTalisman : Item, IAosItem
     [SerializableFieldDefault(1)]
     private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
+    [SerializedIgnoreDupe]
     [InvalidateProperties]
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
@@ -156,6 +159,7 @@ public partial class BaseTalisman : Item, IAosItem
     [SerializableFieldDefault(2)]
     private TalismanAttribute ProtectionDefaultValue() => new();
 
+    [SerializedIgnoreDupe]
     [InvalidateProperties]
     [SerializableField(3)]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
@@ -167,6 +171,7 @@ public partial class BaseTalisman : Item, IAosItem
     [SerializableFieldDefault(3)]
     private TalismanAttribute KillerDefaultValue() => new();
 
+    [SerializedIgnoreDupe]
     [InvalidateProperties]
     [SerializableField(4)]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]

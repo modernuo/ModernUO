@@ -257,10 +257,11 @@ namespace Server.Mobiles
 
                 var version = reader.ReadInt();
 
-                List<IEntity> entities = new (Items);
+                List<IEntity> entities = [..Items];
                 entities.AddRange(reader.ReadEntityList<Mobile>());
 
                 m_Mobiles = new List<Mobile>(); // This cannot be null in case it is referenced before disposing
+                m_Table = new Dictionary<Type, IEntity>();
 
                 Timer.StartTimer(() =>
                     {
@@ -268,19 +269,17 @@ namespace Server.Mobiles
                         {
                             entity.Delete();
                         }
+
+                        if (m_Cache == null)
+                        {
+                            m_Cache = this;
+                        }
+                        else
+                        {
+                            Delete();
+                        }
                     }
                 );
-
-                m_Table = new Dictionary<Type, IEntity>();
-
-                if (m_Cache == null)
-                {
-                    m_Cache = this;
-                }
-                else
-                {
-                    Delete();
-                }
             }
         }
     }

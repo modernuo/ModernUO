@@ -67,7 +67,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     private readonly string _toString;
     private ClientVersion _version;
-    private long _nextActivityCheck;
     private bool _running = true;
     private volatile DecodePacket _packetDecoder;
     private volatile EncodePacket _packetEncoder;
@@ -133,7 +132,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Trades = [];
         RecvPipe = new Pipe(RecvPipeSize);
         SendPipe = new Pipe(SendPipeSize);
-        _nextActivityCheck = Core.TickCount + 30000;
+        NextActivityCheck = Core.TickCount + 30000;
         ConnectedOn = Core.Now;
 
         try
@@ -165,6 +164,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public NetState Next { get; set; }
     public NetState Previous { get; set; }
     public bool OnLinkList { get; set; }
+
+    public long NextActivityCheck { get; private set; }
 
     // Only use this for debugging. This will make your server very slow!
     public bool PacketLogging
@@ -340,28 +341,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return null;
     }
 
-    public SecureTradeContainer FindTradeContainer(Mobile m)
-    {
-        for (var i = 0; i < Trades.Count; ++i)
-        {
-            var trade = Trades[i];
-
-            var from = trade.From;
-            var to = trade.To;
-
-            if (from.Mobile == Mobile && to.Mobile == m)
-            {
-                return from.Container;
-            }
-
-            if (from.Mobile == m && to.Mobile == Mobile)
-            {
-                return to.Container;
-            }
-        }
-
-        return null;
-    }
+    public SecureTradeContainer FindTradeContainer(Mobile m) => FindTrade(m)?.From.Container;
 
     public SecureTradeContainer AddTrade(NetState state)
     {
@@ -826,26 +806,33 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return ParserState.AwaitingPartialPacket;
         }
 
-        if (handler.Ingame)
+        if (handler.InGameOnly)
         {
             if (Mobile == null)
             {
-                LogInfo($"received packet 0x{packetId:X2} before having been attached to a mobile");
+                LogInfo($"Received packet 0x{packetId:X2} before having been attached to a mobile.");
                 return ParserState.Error;
             }
 
             if (Mobile.Deleted)
             {
+                LogInfo($"Received packet 0x{packetId:X2} after having been attached to a deleted mobile.");
                 return ParserState.Error;
             }
+        }
+
+        if (handler.OutOfGameOnly && Mobile?.Deleted == false)
+        {
+            LogInfo($"Received packet 0x{packetId:X2} after having been attached to a mobile.");
+            return ParserState.Error;
         }
 
         var throttler = handler.ThrottleCallback;
         if (throttler != null)
         {
-            if (!throttler(packetId, this, out bool drop))
+            if (throttler(packetId, this))
             {
-                return drop ? ParserState.Throttled : ParserState.AwaitingNextPacket;
+                return ParserState.Throttled;
             }
 
             SetPacketTime(packetId);
@@ -920,7 +907,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         if (bytesWritten > 0)
         {
-            _nextActivityCheck = Core.TickCount + 90000;
+            NextActivityCheck = Core.TickCount + 90000;
             reader.Advance((uint)bytesWritten);
         }
 
@@ -972,7 +959,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         DecodePacket(buffer, ref bytesWritten);
 
         writer.Advance((uint)bytesWritten);
-        _nextActivityCheck = Core.TickCount + 90000;
+        NextActivityCheck = Core.TickCount + 90000;
     }
 
     private static void DisconnectUnattachedSockets()
@@ -1084,7 +1071,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void CheckAlive(long curTicks)
     {
-        if (Connection != null && _nextActivityCheck - curTicks < 0)
+        if (Connection != null && NextActivityCheck - curTicks < 0)
         {
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");

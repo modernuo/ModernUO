@@ -9,6 +9,7 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
 {
     private static Type[] m_Ammo = { typeof(Arrow), typeof(Bolt) };
 
+    [SerializedIgnoreDupe]
     [SerializableField(0, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosAttributes _attributes;

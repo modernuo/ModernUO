@@ -37,7 +37,7 @@ public class SkillPacketsTests : IClassFixture<ServerFixture>
         m.DefaultMobileInit();
 
         var skills = m.Skills;
-        m.Skills[Utility.RandomSkill()].BaseFixedPoint = 1000;
+        m.Skills[SkillsInfo.RandomSkill()].BaseFixedPoint = 1000;
 
         var expected = new SkillUpdate(skills).Compile();
 

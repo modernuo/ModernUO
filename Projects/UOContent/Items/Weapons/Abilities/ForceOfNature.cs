@@ -43,7 +43,7 @@ namespace Server.Items
 
         public static void OnHit(Mobile from, Mobile target)
         {
-            if (_table.TryGetValue(from,out var t))
+            if (_table.TryGetValue(from, out var t))
             {
                 t.Hits++;
                 t.LastHit = Core.Now;

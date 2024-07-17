@@ -28,9 +28,12 @@ using Server.SkillHandlers;
 using Server.Spells;
 using Server.Spells.Bushido;
 using Server.Spells.Fifth;
+using Server.Spells.First;
 using Server.Spells.Fourth;
+using Server.Spells.Mysticism;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
+using Server.Spells.Second;
 using Server.Spells.Seventh;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
@@ -935,14 +938,9 @@ namespace Server.Mobiles
 
         public static void Initialize()
         {
-            EventSink.Login += OnLogin;
             EventSink.Logout += OnLogout;
             EventSink.Connected += EventSink_Connected;
             EventSink.Disconnected += EventSink_Disconnected;
-
-            EventSink.TargetedSkillUse += TargetedSkillUse;
-            EventSink.EquipMacro += EquipMacro;
-            EventSink.UnequipMacro += UnequipMacro;
 
             if (Core.SE)
             {
@@ -962,7 +960,7 @@ namespace Server.Mobiles
             }
         }
 
-        private static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
+        public static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
         {
             if (from == null || target == null)
             {
@@ -1219,9 +1217,14 @@ namespace Server.Mobiles
                     SpecialMove.ClearCurrentMove(this);
                 }
             }
+
+            if (!Meditating)
+            {
+                BuffInfo.RemoveBuff(this, BuffIcon.ActiveMeditation);
+            }
         }
 
-        private static void OnLogin(Mobile from)
+        public static void OnLogin(PlayerMobile from)
         {
             if (AccountHandler.LockdownLevel > AccessLevel.Player)
             {
@@ -1258,11 +1261,9 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (from is PlayerMobile mobile)
-            {
-                VirtueSystem.CheckAtrophies(mobile);
-                mobile.ClaimAutoStabledPets();
-            }
+            VirtueSystem.CheckAtrophies(from);
+            from.ClaimAutoStabledPets();
+            AnimalForm.GetContext(from)?.Timer.Start();
         }
 
         private class ServerLockdownNoticeGump : StaticNoticeGump<ServerLockdownNoticeGump>
@@ -1765,8 +1766,9 @@ namespace Server.Mobiles
 
             newZ = foundation.Z + HouseFoundation.GetLevelZ(context.Level, context.Foundation);
 
-            int newX = X, newY = Y;
-            Movement.Movement.Offset(d, ref newX, ref newY);
+            var newX = X;
+            var newY = Y;
+            CalcMoves.Offset(d, ref newX, ref newY);
 
             var startX = foundation.X + foundation.Components.Min.X + 1;
             var startY = foundation.Y + foundation.Components.Min.Y + 1;
@@ -2566,6 +2568,7 @@ namespace Server.Mobiles
             PolymorphSpell.StopTimer(this);
             IncognitoSpell.StopTimer(this);
             DisguisePersistence.RemoveTimer(this);
+            AnimalForm.RemoveContext(this, true);
 
             EndAction<PolymorphSpell>();
             EndAction<IncognitoSpell>();
@@ -3382,14 +3385,25 @@ namespace Server.Mobiles
             base.OnAfterDelete();
 
             var faction = Faction.Find(this);
-
             faction?.RemoveMember(this);
 
             MLQuestSystem.HandleDeletion(this);
-
             BaseHouse.HandleDeletion(this);
-
             DisguisePersistence.RemoveTimer(this);
+
+            StaminaSystem.OnPlayerDeleted(this);
+            JusticeVirtue.OnPlayerDeleted(this);
+            PlayerMurderSystem.OnPlayerDeleted(this);
+            ChampionTitleSystem.OnPlayerDeleted(this);
+
+            // Spells
+            MagicReflectSpell.EndReflect(this);
+            ReactiveArmorSpell.EndArmor(this);
+            ProtectionSpell.EndProtection(this);
+            StoneFormSpell.RemoveEffects(this);
+            AnimateDeadSpell.RemoveEffects(this);
+            SummonFamiliarSpell.RemoveEffects(this);
+            AnimalForm.RemoveLastAnimalForm(this);
         }
 
         public override void GetProperties(IPropertyList list)
@@ -4437,7 +4451,7 @@ namespace Server.Mobiles
 
         private void SendYoungDeathNotice()
         {
-            SendGump(new YoungDeathNotice());
+            SendGump(new YoungDeathNoticeGump());
         }
 
         public override void OnSpeech(SpeechEventArgs e)
@@ -4497,13 +4511,32 @@ namespace Server.Mobiles
 
         public void ResetRecipes() => _acquiredRecipes = null;
 
+        public void SendAddBuffPacket(BuffInfo buffInfo)
+        {
+            if (buffInfo == null)
+            {
+                return;
+            }
+
+            NetState.SendAddBuffPacket(
+                Serial,
+                buffInfo.ID,
+                buffInfo.TitleCliloc,
+                buffInfo.SecondaryCliloc,
+                buffInfo.Args,
+                buffInfo.TimeStart == 0
+                    ? 0
+                    : Math.Max(buffInfo.TimeStart + (long)buffInfo.TimeLength.TotalMilliseconds - Core.TickCount, 0)
+            );
+        }
+
         public void ResendBuffs()
         {
             if (BuffInfo.Enabled && m_BuffTable != null && NetState?.BuffIcon == true)
             {
                 foreach (var info in m_BuffTable.Values)
                 {
-                    info.SendAddBuffPacket(NetState, Serial);
+                    SendAddBuffPacket(info);
                 }
             }
         }
@@ -4530,15 +4563,15 @@ namespace Server.Mobiles
                     Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), (buffInfo, pm) =>
                     {
                         // They are still online, we still have the buff icon in the table, and it is the same buff icon
-                        if (pm.NetState != null && pm.m_BuffTable.TryGetValue(buffInfo.ID, out var checkBuff) && checkBuff == buffInfo)
+                        if (pm.NetState != null && pm.m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
                         {
-                            buffInfo.SendAddBuffPacket(pm.NetState, pm.Serial);
+                            pm.SendAddBuffPacket(buffInfo);
                         }
                     }, b, this);
                 }
                 else
                 {
-                    b.SendAddBuffPacket(NetState, Serial);
+                    SendAddBuffPacket(b);
                 }
             }
         }
@@ -4562,7 +4595,7 @@ namespace Server.Mobiles
 
             if (NetState?.BuffIcon == true)
             {
-                BuffInfo.SendRemoveBuffPacket(NetState, Serial, b);
+                NetState.SendRemoveBuffPacket(Serial, b);
             }
 
             if (m_BuffTable.Count <= 0)

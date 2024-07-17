@@ -123,7 +123,7 @@ public static class ActivatorExtensions
     {
         var argLength = args?.Length ?? 0;
 
-        var types = argLength > 0 ? new Type[argLength] : Array.Empty<Type>();
+        var types = argLength > 0 ? new Type[argLength] : [];
         for (int i = 0; i < types.Length; i++)
         {
             types[i] = args![i]?.GetType();
@@ -139,7 +139,7 @@ public static class ActivatorExtensions
         object[] paramArgs;
         if (paramCount == 0)
         {
-            paramArgs = Array.Empty<object>();
+            paramArgs = [];
         }
         else if (argLength == paramCount)
         {

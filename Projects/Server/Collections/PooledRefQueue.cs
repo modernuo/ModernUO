@@ -305,7 +305,7 @@ public ref struct PooledRefQueue<T>
 
         if (_array.Length > 0)
         {
-            Clear();
+            Array.Clear(_array);
             (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Return(_array);
         }
 

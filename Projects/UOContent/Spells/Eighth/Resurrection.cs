@@ -64,8 +64,6 @@ namespace Server.Spells.Eighth
                 m.CloseGump<ResurrectGump>();
                 m.SendGump(new ResurrectGump(m, Caster));
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

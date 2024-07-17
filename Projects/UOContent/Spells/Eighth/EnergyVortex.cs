@@ -40,8 +40,6 @@ namespace Server.Spells.Eighth
 
                 BaseCreature.Summon(new EnergyVortex(), false, Caster, new Point3D(p), 0x212, duration);
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

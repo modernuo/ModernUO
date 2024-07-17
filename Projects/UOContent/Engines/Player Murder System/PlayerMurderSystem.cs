@@ -39,11 +39,9 @@ public class PlayerMurderSystem : GenericPersistence
     public static void Initialize()
     {
         EventSink.Disconnected += OnDisconnected;
-        EventSink.Login += OnLogin;
-        EventSink.PlayerDeleted += OnPlayerDeleted;
     }
 
-    private static void OnPlayerDeleted(Mobile m)
+    public static void OnPlayerDeleted(Mobile m)
     {
         if (m is PlayerMobile pm && _murderContexts.Remove(pm, out var context))
         {
@@ -80,7 +78,7 @@ public class PlayerMurderSystem : GenericPersistence
         UpdateMurderContext(context);
     }
 
-    private static void OnLogin(Mobile m)
+    public static void OnLogin(Mobile m)
     {
         if (m is not PlayerMobile pm || !GetMurderContext(pm, out var context))
         {

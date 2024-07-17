@@ -1,4 +1,4 @@
-﻿/*************************************************************************
+/*************************************************************************
  * ModernUO                                                              *
  * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
@@ -13,11 +13,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.IO.Compression;
 
 namespace Server.Compression;
 
 public static class Deflate
 {
-    public static LibDeflateBinding Standard { get; } = new();
+    [ThreadStatic]
+    private static LibDeflateBinding _standard;
+
+    public static LibDeflateBinding Standard => _standard ??= new LibDeflateBinding();
 }

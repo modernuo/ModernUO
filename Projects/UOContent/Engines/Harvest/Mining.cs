@@ -265,7 +265,7 @@ namespace Server.Engines.Harvest
             Definitions = new[] { OreAndStone, Sand };
         }
 
-        public static Mining System => _system ?? (_system = new Mining());
+        public static Mining System => _system ??= new Mining();
 
         public HarvestDefinition OreAndStone { get; }
 

@@ -21,19 +21,13 @@ using ModernUO.Serialization;
 namespace Server;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class HueAttribute : Attribute
-{
-}
+public class HueAttribute : Attribute;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public class PropertyObjectAttribute : Attribute
-{
-}
+public class PropertyObjectAttribute : Attribute;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public class NoSortAttribute : Attribute
-{
-}
+public class NoSortAttribute : Attribute;
 
 [AttributeUsage(AttributeTargets.Method)]
 public class CallPriorityAttribute : Attribute
@@ -193,3 +187,9 @@ public class SerializedCommandPropertyAttribute : SerializedPropertyAttrAttribut
     public bool ReadOnly { get; }
     public bool CanModify { get; }
 }
+
+[AttributeUsage(AttributeTargets.Property)]
+public class IgnoreDupeAttribute : Attribute;
+
+[AttributeUsage(AttributeTargets.Field)]
+public class SerializedIgnoreDupeAttribute : SerializedPropertyAttrAttribute<IgnoreDupeAttribute>;

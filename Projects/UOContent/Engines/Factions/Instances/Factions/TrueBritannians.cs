@@ -38,8 +38,7 @@ public class TrueBritannians : Faction
                 1005182, // Followers of Lord British will now be warned of their impending doom.
                 1005183, // Followers of Lord British will now be attacked on sight.
                 new StrongholdDefinition(
-                    new[]
-                    {
+                    [
                         new Rectangle2D(1292, 1556, 25, 25),
                         new Rectangle2D(1292, 1676, 120, 25),
                         new Rectangle2D(1388, 1556, 25, 25),
@@ -47,11 +46,10 @@ public class TrueBritannians : Faction
                         new Rectangle2D(1300, 1581, 105, 95),
                         new Rectangle2D(1405, 1612, 12, 21),
                         new Rectangle2D(1405, 1633, 11, 5)
-                    },
+                    ],
                     new Point3D(1419, 1622, 20),
                     new Point3D(1330, 1621, 50),
-                    new[]
-                    {
+                    [
                         new Point3D(1328, 1627, 50),
                         new Point3D(1328, 1621, 50),
                         new Point3D(1334, 1627, 50),
@@ -60,10 +58,9 @@ public class TrueBritannians : Faction
                         new Point3D(1340, 1621, 50),
                         new Point3D(1345, 1621, 50),
                         new Point3D(1345, 1627, 50)
-                    }
+                    ]
                 ),
-                new[]
-                {
+                [
                     new RankDefinition(10, 991, 8, 1060794), // Knight of the Codex
                     new RankDefinition(9, 950, 7, 1060793),  // Knight of Virtue
                     new RankDefinition(8, 900, 6, 1060792),  // Crusader
@@ -73,10 +70,9 @@ public class TrueBritannians : Faction
                     new RankDefinition(4, 500, 5, 1060791),  // Sentinel
                     new RankDefinition(3, 400, 4, 1060790),  // Defender
                     new RankDefinition(2, 200, 4, 1060790),  // Defender
-                    new RankDefinition(1, 0, 4, 1060790),    // Defender
-                },
-                new[]
-                {
+                    new RankDefinition(1, 0, 4, 1060790)     // Defender
+                ],
+                [
                     new GuardDefinition(
                         typeof(FactionHenchman),
                         0x1403,
@@ -113,7 +109,7 @@ public class TrueBritannians : Faction
                         1011529, // PALADIN
                         1011498 // Hire Paladin
                     )
-                }
+                ]
             );
     }
 

@@ -8,14 +8,14 @@ internal class ServerFixture : IDisposable
     // Global setup
     static ServerFixture()
     {
-        Core.Assembly = Assembly.GetExecutingAssembly(); // Server.Tests.dll
+        Core.ApplicationAssembly = Assembly.GetExecutingAssembly(); // Server.Tests.dll
 
         // Load Configurations
         ServerConfiguration.Load(true);
 
         // Load an empty assembly list into the resolver
         ServerConfiguration.AssemblyDirectories.Add(Core.BaseDirectory);
-        AssemblyHandler.LoadAssemblies(new[]{ "ModernUO.dll" });
+        AssemblyHandler.LoadAssemblies(["Server.dll"]);
 
         Core.LoopContext = new EventLoopContext();
         Core.Expansion = Expansion.EJ;

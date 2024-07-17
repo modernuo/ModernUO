@@ -486,7 +486,7 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual bool HasManaOveride => false;
+        public virtual bool HasManaOverride => false;
 
         public virtual FoodType FavoriteFood => FoodType.Meat;
         public virtual PackInstinct PackInstinct => PackInstinct.None;
@@ -2395,13 +2395,17 @@ namespace Server.Mobiles
                 AnimateDeadSpell.Unregister(m_SummonMaster, this);
             }
 
+            if (Summoned && SummonMaster != null)
+            {
+                SummonFamiliarSpell.Unregister(SummonMaster, this);
+            }
+
             if (MLQuestSystem.Enabled)
             {
                 MLQuestSystem.HandleDeletion(this);
             }
 
             UnsummonTimer.StopTimer(this);
-
             StaminaSystem.RemoveEntry(this as IHasSteps);
 
             base.OnAfterDelete();

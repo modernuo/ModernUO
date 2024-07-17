@@ -83,11 +83,6 @@ namespace Server.Misc
             new(1240, 1003)
         };
 
-        public static void Initialize()
-        {
-            EventSink.Login += EventSink_Login;
-        }
-
         private static bool IsStranded(Mobile from)
         {
             var map = from.Map;
@@ -117,7 +112,7 @@ namespace Server.Misc
             return false;
         }
 
-        public static void EventSink_Login(Mobile from)
+        public static void OnLogin(Mobile from)
         {
             if (!IsStranded(from))
             {

@@ -772,8 +772,6 @@ namespace Server.Guilds
 
         public static void Configure()
         {
-            EventSink.GuildGumpRequest += EventSink_GuildGumpRequest;
-
             CommandSystem.Register("GuildProps", AccessLevel.Counselor, GuildProps_OnCommand);
         }
 
@@ -915,7 +913,7 @@ namespace Server.Guilds
             }
         }
 
-        public static void EventSink_GuildGumpRequest(Mobile m)
+        public static void GuildGumpRequest(Mobile m)
         {
             if (!NewGuildSystem || m is not PlayerMobile pm)
             {

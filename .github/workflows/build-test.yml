@@ -24,7 +24,7 @@ jobs:
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
     - name: Setup .NET 8
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
     - name: Install Prerequisites
@@ -48,6 +48,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - container: ubuntu:noble
+            name: Ubuntu 24
+            packageManager: apt
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
@@ -63,14 +66,8 @@ jobs:
           - container: fedora:39
             name: Fedora 39
             packageManager: dnf
-          - container: fedora:38
-            name: Fedora 38
-            packageManager: dnf
-          - container: fedora:37
-            name: Fedora 37
-            packageManager: dnf
-          - container: quay.io/centos/centos:stream8
-            name: CentOS 8 Stream
+          - container: fedora:40
+            name: Fedora 40
             packageManager: dnf
           - container: quay.io/centos/centos:stream9
             name: CentOS 9 Stream
@@ -90,10 +87,10 @@ jobs:
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
       - name: Build
-        run: ./publish.sh Release
+        run: ./publish.cmd Release
       - name: Test
         run: dotnet test --no-restore

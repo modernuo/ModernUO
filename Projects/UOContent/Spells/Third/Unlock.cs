@@ -80,8 +80,6 @@ namespace Server.Spells.Third
                     }
                 }
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

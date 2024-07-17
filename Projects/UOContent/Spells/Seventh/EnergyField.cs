@@ -67,8 +67,6 @@ public class EnergyFieldSpell : MagerySpell, ISpellTargetingPoint3D
                 );
             }
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

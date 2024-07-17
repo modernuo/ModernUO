@@ -2182,7 +2182,8 @@ public abstract class BaseAI
 
             if (map != null)
             {
-                int x = m_Mobile.X, y = m_Mobile.Y;
+                var x = m_Mobile.X;
+                var y = m_Mobile.Y;
                 Movement.Movement.Offset(d, ref x, ref y);
 
                 using var queue = PooledRefQueue<Item>.Create();

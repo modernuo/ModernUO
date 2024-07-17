@@ -1,40 +1,44 @@
+using ModernUO.Serialization;
 using Server.Factions;
 
-namespace Server.Ethics.Hero
+namespace Server.Ethics.Hero;
+
+[SerializationGenerator(0, false)]
+public sealed partial class HeroEthic : Ethic
 {
-    public sealed class HeroEthic : Ethic
+    public override EthicDefinition Definition => new(
+        0x482,
+        "Hero",
+        "(Hero)",
+        "I will defend the virtues",
+        [
+            new HolySense(),
+            new HolyItem(),
+            new SummonFamiliar(),
+            new HolyBlade(),
+            new Bless(),
+            new HolyShield(),
+            new HolySteed(),
+            new HolyWord()
+        ]
+    );
+
+    public HeroEthic()
     {
-        public HeroEthic()
+        if (!RegisterEthic(this))
         {
-            m_Definition = new EthicDefinition(
-                0x482,
-                "Hero",
-                "(Hero)",
-                "I will defend the virtues",
-                new Power[]
-                {
-                    new HolySense(),
-                    new HolyItem(),
-                    new SummonFamiliar(),
-                    new HolyBlade(),
-                    new Bless(),
-                    new HolyShield(),
-                    new HolySteed(),
-                    new HolyWord()
-                }
-            );
+            Delete();
         }
+    }
 
-        public override bool IsEligible(Mobile mob)
+    public override bool IsEligible(Mobile mob) => mob.Kills < 5 && Faction.Find(mob) is TrueBritannians or CouncilOfMages;
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        if (!RegisterEthic(this))
         {
-            if (mob.Kills >= 5)
-            {
-                return false;
-            }
-
-            var fac = Faction.Find(mob);
-
-            return fac is TrueBritannians or CouncilOfMages;
+            Delete();
         }
     }
 }

@@ -39,15 +39,13 @@ public class CouncilOfMages : Faction
                 1005189, // Members of the Council of Mages will now be beaten with a stick.
                 // Moonglow
                 new StrongholdDefinition(
-                    new[]
-                    {
+                    [
                         new Rectangle2D(4463, 1487, 15, 35),
                         new Rectangle2D(4450, 1522, 35, 48)
-                    },
+                    ],
                     new Point3D(4469, 1486, 0),
                     new Point3D(4457, 1544, 0),
-                    new[]
-                    {
+                    [
                         new Point3D(4464, 1534, 21),
                         new Point3D(4470, 1536, 21),
                         new Point3D(4468, 1534, 21),
@@ -56,7 +54,7 @@ public class CouncilOfMages : Faction
                         new Point3D(4466, 1534, 21),
                         new Point3D(4466, 1536, 21),
                         new Point3D(4464, 1536, 21)
-                    }
+                    ]
                 ),
                 // Magincia
                 /* new StrongholdDefinition(
@@ -80,8 +78,7 @@ public class CouncilOfMages : Faction
                     new Point3D( 3797, 2249, 20 ),
                     new Point3D( 3797, 2246, 20 )
                   } ), */
-                new[]
-                {
+                [
                     new RankDefinition(10, 991, 8, 1060789), // Inquisitor of the Council
                     new RankDefinition(9, 950, 7, 1060788),  // Archon of Principle
                     new RankDefinition(8, 900, 6, 1060787),  // Luminary
@@ -92,9 +89,8 @@ public class CouncilOfMages : Faction
                     new RankDefinition(3, 400, 4, 1060785),  // Mystic
                     new RankDefinition(2, 200, 4, 1060785),  // Mystic
                     new RankDefinition(1, 0, 4, 1060785)     // Mystic
-                },
-                new[]
-                {
+                ],
+                [
                     new GuardDefinition(
                         typeof(FactionHenchman),
                         0x1403,
@@ -131,7 +127,7 @@ public class CouncilOfMages : Faction
                         1011508, // ELDER WIZARD
                         1011502  // Hire Elder Wizard
                     )
-                }
+                ]
             );
     }
 

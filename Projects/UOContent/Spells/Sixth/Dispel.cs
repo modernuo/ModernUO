@@ -54,8 +54,6 @@ namespace Server.Spells.Sixth
                     Caster.SendLocalizedMessage(1010084); // The creature resisted the attempt to dispel it!
                 }
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

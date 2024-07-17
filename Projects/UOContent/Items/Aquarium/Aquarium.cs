@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.ContextMenus;
 using Server.Multis;
@@ -13,7 +14,7 @@ namespace Server.Items
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
 
         private static readonly Type[] m_Decorations =
-        {
+        [
             typeof(FishBones),
             typeof(WaterloggedBoots),
             typeof(CaptainBlackheartsFishingPole),
@@ -23,7 +24,7 @@ namespace Server.Items
             typeof(IslandStatue),
             typeof(Shell),
             typeof(ToyBoat)
-        };
+        ];
 
         private bool m_EvaluateDay;
 
@@ -45,16 +46,19 @@ namespace Server.Items
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _vacationLeft;
 
+        [SerializedIgnoreDupe]
         [InvalidateProperties]
         [SerializableField(3, setter: "private")]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private AquariumState _food;
 
+        [SerializedIgnoreDupe]
         [InvalidateProperties]
         [SerializableField(4, setter: "private")]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private AquariumState _water;
 
+        [SerializedIgnoreDupe]
         [SerializableField(5, setter: "private")]
         private List<int> _events;
 
@@ -90,7 +94,7 @@ namespace Server.Items
 
             _water.Maintain = Utility.RandomMinMax(1, 3);
 
-            _events = new List<int>();
+            _events = [];
 
             _evaluateTimer = Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate);
         }
@@ -145,9 +149,9 @@ namespace Server.Items
         public override double DefaultWeight => 10.0;
 
         private static int[] FishHues =
-        {
+        [
             0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
-        };
+        ];
 
         public override void OnDelete()
         {
@@ -471,6 +475,26 @@ namespace Server.Items
             }
         }
 
+        public override void OnAfterDuped(Item newItem)
+        {
+            if (newItem is not Aquarium aquarium)
+            {
+                return;
+            }
+
+            aquarium.Food.Added = Food.Added;
+            aquarium.Food.Improve = Food.Improve;
+            aquarium.Food.Maintain = Food.Maintain;
+            aquarium.Food.State = Food.State;
+
+            aquarium.Water.Added = Water.Added;
+            aquarium.Water.Improve = Water.Improve;
+            aquarium.Water.Maintain = Water.Maintain;
+            aquarium.Water.State = Water.State;
+
+            aquarium.Events = [..Events];
+        }
+
         private void Deserialize(IGenericReader reader, int version)
         {
             switch (version)
@@ -500,7 +524,7 @@ namespace Server.Items
                         _water = new AquariumState(this);
                         _water.Deserialize(reader);
 
-                        _events = new List<int>();
+                        _events = [];
                         var count = reader.ReadInt();
                         for (var i = 0; i < count; i++)
                         {
@@ -856,7 +880,8 @@ namespace Server.Items
             from.PlaySound(0x5A4);
         }
 
-        public virtual bool AddFish(BaseFish fish) => AddFish(null, fish);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool AddFish(BaseFish fish) => AddFish(null, fish);
 
         public virtual bool AddFish(Mobile from, BaseFish fish)
         {
@@ -877,16 +902,15 @@ namespace Server.Items
 
             LiveCreatures += 1;
 
-            from?.SendLocalizedMessage(
-                1073632,
-                $"#{fish.LabelNumber}"
-            ); // You add the following creature to your aquarium: ~1_FISH~
+            // You add the following creature to your aquarium: ~1_FISH~
+            from?.SendLocalizedMessage(1073632, $"#{fish.LabelNumber}");
 
             InvalidateProperties();
             return true;
         }
 
-        public virtual bool AddDecoration(Item item) => AddDecoration(null, item);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool AddDecoration(Item item) => AddDecoration(null, item);
 
         public virtual bool AddDecoration(Mobile from, Item item)
         {

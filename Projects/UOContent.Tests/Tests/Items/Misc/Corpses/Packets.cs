@@ -1,12 +1,12 @@
 using System.IO;
 using Server.Items;
 
-namespace Server.Network
+namespace Server.Network;
+
+public sealed class CorpseEquip : Packet
 {
-    public sealed class CorpseEquip : Packet
+    public CorpseEquip(Mobile beholder, Corpse beheld) : base(0x89)
     {
-        public CorpseEquip(Mobile beholder, Corpse beheld) : base(0x89)
-        {
             var list = beheld.EquipItems;
 
             var count = list.Count;
@@ -49,13 +49,13 @@ namespace Server.Network
 
             Stream.Write((byte)Layer.Invalid);
         }
-    }
+}
 
-    public sealed class CorpseContent : Packet
+public sealed class CorpseContent : Packet
+{
+    public CorpseContent(Mobile beholder, Corpse beheld)
+        : base(0x3C)
     {
-        public CorpseContent(Mobile beholder, Corpse beheld)
-            : base(0x3C)
-        {
             var items = beheld.EquipItems;
             var count = items.Count;
 
@@ -127,13 +127,13 @@ namespace Server.Network
             Stream.Seek(pos, SeekOrigin.Begin);
             Stream.Write((ushort)written);
         }
-    }
+}
 
-    public sealed class CorpseContent6017 : Packet
+public sealed class CorpseContent6017 : Packet
+{
+    public CorpseContent6017(Mobile beholder, Corpse beheld)
+        : base(0x3C)
     {
-        public CorpseContent6017(Mobile beholder, Corpse beheld)
-            : base(0x3C)
-        {
             var items = beheld.EquipItems;
             var count = items.Count;
 
@@ -208,5 +208,4 @@ namespace Server.Network
             Stream.Seek(pos, SeekOrigin.Begin);
             Stream.Write((ushort)written);
         }
-    }
 }

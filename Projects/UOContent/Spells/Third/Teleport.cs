@@ -112,8 +112,6 @@ namespace Server.Spells.Third
                     queue.Dequeue().OnMoveOver(m);
                 }
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

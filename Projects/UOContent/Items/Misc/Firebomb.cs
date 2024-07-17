@@ -15,12 +15,11 @@ public partial class Firebomb : Item
     private Point3D _thrownFromLocation;
     private int _ticks;
     private TimerExecutionToken _timerToken;
-    private List<Mobile> _users;
+    private HashSet<Mobile> _users;
 
     [Constructible]
     public Firebomb(int itemID = 0x99B) : base(itemID)
     {
-        // Name = "a firebomb";
         Weight = 2.0;
         Hue = 1260;
     }
@@ -51,12 +50,8 @@ public partial class Firebomb : Item
             from.SendLocalizedMessage(1060582); // You light the firebomb.  Throw it now!
         }
 
-        _users ??= new List<Mobile>();
-
-        if (!_users.Contains(from))
-        {
-            _users.Add(from);
-        }
+        _users ??= [];
+        _users.Add(from);
 
         from.Target = new ThrowTarget(this);
     }
@@ -101,18 +96,23 @@ public partial class Firebomb : Item
                 {
                     HeldBy?.DropHolding();
 
-                    if (_users != null)
+                    if (_users is { Count: > 0 })
                     {
-                        foreach (var m in _users)
+                        using var usersQueue = PooledRefQueue<Mobile>.Create();
+                        foreach (var user in _users)
                         {
-                            if (m.Target is ThrowTarget targ && targ.Bomb == this)
+                            if ((user.Target as ThrowTarget)?.Bomb == this)
                             {
-                                Target.Cancel(m);
+                                usersQueue.Enqueue(user);
                             }
                         }
 
                         _users.Clear();
-                        _users = null;
+
+                        while (usersQueue.Count > 0)
+                        {
+                            Target.Cancel(usersQueue.Dequeue());
+                        }
                     }
 
                     if (RootParent is Mobile parent)
@@ -201,5 +201,7 @@ public partial class Firebomb : Item
         public Firebomb Bomb { get; }
 
         protected override void OnTarget(Mobile from, object targeted) => Bomb.OnFirebombTarget(from, targeted);
+
+        protected override void OnTargetFinish(Mobile from) => Bomb._users.Remove(from);
     }
 }

@@ -56,8 +56,6 @@ public class FireFieldSpell : MagerySpell, ISpellTargetingPoint3D
                 new FireFieldItem(itemID, targetLoc, Caster, Caster.Map, duration, i);
             }
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

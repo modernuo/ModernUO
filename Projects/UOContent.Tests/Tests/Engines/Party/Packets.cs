@@ -1,11 +1,11 @@
 using Server.Network;
 
-namespace Server.Engines.PartySystem
+namespace Server.Engines.PartySystem;
+
+public sealed class PartyEmptyList : Packet
 {
-    public sealed class PartyEmptyList : Packet
+    public PartyEmptyList(Serial m) : base(0xBF)
     {
-        public PartyEmptyList(Serial m) : base(0xBF)
-        {
             EnsureCapacity(7);
 
             Stream.Write((short)0x0006);
@@ -13,12 +13,12 @@ namespace Server.Engines.PartySystem
             Stream.Write((byte)0);
             Stream.Write(m);
         }
-    }
+}
 
-    public sealed class PartyMemberList : Packet
+public sealed class PartyMemberList : Packet
+{
+    public PartyMemberList(Party p) : base(0xBF)
     {
-        public PartyMemberList(Party p) : base(0xBF)
-        {
             EnsureCapacity(7 + p.Count * 4);
 
             Stream.Write((short)0x0006);
@@ -30,12 +30,12 @@ namespace Server.Engines.PartySystem
                 Stream.Write(p[i].Mobile.Serial);
             }
         }
-    }
+}
 
-    public sealed class PartyRemoveMember : Packet
+public sealed class PartyRemoveMember : Packet
+{
+    public PartyRemoveMember(Serial removed, Party p) : base(0xBF)
     {
-        public PartyRemoveMember(Serial removed, Party p) : base(0xBF)
-        {
             EnsureCapacity(11 + p.Count * 4);
 
             Stream.Write((short)0x0006);
@@ -49,12 +49,12 @@ namespace Server.Engines.PartySystem
                 Stream.Write(p[i].Mobile.Serial);
             }
         }
-    }
+}
 
-    public sealed class PartyTextMessage : Packet
+public sealed class PartyTextMessage : Packet
+{
+    public PartyTextMessage(bool toAll, Serial from, string text) : base(0xBF)
     {
-        public PartyTextMessage(bool toAll, Serial from, string text) : base(0xBF)
-        {
             text ??= "";
 
             EnsureCapacity(12 + text.Length * 2);
@@ -64,17 +64,16 @@ namespace Server.Engines.PartySystem
             Stream.Write(from);
             Stream.WriteBigUniNull(text);
         }
-    }
+}
 
-    public sealed class PartyInvitation : Packet
+public sealed class PartyInvitation : Packet
+{
+    public PartyInvitation(Serial leader) : base(0xBF)
     {
-        public PartyInvitation(Serial leader) : base(0xBF)
-        {
             EnsureCapacity(10);
 
             Stream.Write((short)0x0006);
             Stream.Write((byte)0x07);
             Stream.Write(leader);
         }
-    }
 }

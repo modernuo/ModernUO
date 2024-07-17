@@ -1,15 +1,14 @@
 using System.Text.Json.Serialization;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GoCategory
 {
-    public class GoCategory
-    {
-        public GoCategory Parent { get; set; }
+    public GoCategory Parent { get; set; }
 
-        [JsonPropertyName("locations")] public GoLocation[] Locations { get; set; }
+    [JsonPropertyName("locations")] public GoLocation[] Locations { get; set; }
 
-        [JsonPropertyName("categories")] public GoCategory[] Categories { get; set; }
+    [JsonPropertyName("categories")] public GoCategory[] Categories { get; set; }
 
-        [JsonPropertyName("name")] public string Name { get; set; }
-    }
+    [JsonPropertyName("name")] public string Name { get; set; }
 }

@@ -75,8 +75,6 @@ namespace Server.Spells.Seventh
 
                 HarmfulSpell(m);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

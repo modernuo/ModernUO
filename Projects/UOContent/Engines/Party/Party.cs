@@ -99,7 +99,6 @@ namespace Server.Engines.PartySystem
         public static void Configure()
         {
             EventSink.Logout += EventSink_Logout;
-            EventSink.Login += EventSink_Login;
             EventSink.PlayerDeath += EventSink_PlayerDeath;
 
             CommandSystem.Register("ListenToParty", AccessLevel.GameMaster, ListenToParty_OnCommand);
@@ -159,7 +158,7 @@ namespace Server.Engines.PartySystem
             }
         }
 
-        public static void EventSink_Login(Mobile from)
+        public static void OnLogin(Mobile from)
         {
             var p = Get(from);
 

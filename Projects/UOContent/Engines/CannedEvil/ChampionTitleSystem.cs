@@ -22,12 +22,10 @@ public class ChampionTitleSystem : GenericPersistence
 
     public static void Initialize()
     {
-        EventSink.PlayerDeleted += OnPlayerDeleted;
-
         _championTitleTimer.Start();
     }
 
-    private static void OnPlayerDeleted(Mobile m)
+    public static void OnPlayerDeleted(Mobile m)
     {
         if (m is PlayerMobile pm)
         {

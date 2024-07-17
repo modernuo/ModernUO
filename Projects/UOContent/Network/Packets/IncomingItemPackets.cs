@@ -17,6 +17,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -25,7 +26,7 @@ public static class IncomingItemPackets
     public static unsafe void Configure()
     {
         IncomingPackets.Register(0x07, 7, true, &LiftReq);
-        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, true, &DropReq));
+        IncomingPackets.Register(new ContainerGridPacketHandler(0x08, 14, &DropReq));
         IncomingPackets.Register(0x13, 10, true, &EquipReq);
         IncomingPackets.Register(0xEC, 0, false, &EquipMacro);
         IncomingPackets.Register(0xED, 0, false, &UnequipMacro);
@@ -117,7 +118,7 @@ public static class IncomingItemPackets
             serialList.Add((Serial)reader.ReadUInt32());
         }
 
-        EventSink.InvokeEquipMacro(state.Mobile, serialList);
+        PlayerMobile.EquipMacro(state.Mobile, serialList);
     }
 
     public static void UnequipMacro(NetState state, SpanReader reader)
@@ -129,6 +130,6 @@ public static class IncomingItemPackets
             layers.Add((Layer)reader.ReadUInt16());
         }
 
-        EventSink.InvokeUnequipMacro(state.Mobile, layers);
+        PlayerMobile.UnequipMacro(state.Mobile, layers);
     }
 }

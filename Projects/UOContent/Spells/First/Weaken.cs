@@ -43,8 +43,6 @@ namespace Server.Spells.First
 
                 HarmfulSpell(m);
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

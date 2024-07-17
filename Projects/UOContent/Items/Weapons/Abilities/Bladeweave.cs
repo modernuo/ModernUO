@@ -5,7 +5,7 @@ namespace Server.Items
 {
     public class Bladeweave : WeaponAbility
     {
-        private class BladeWeaveRedirect
+        private struct BladeWeaveRedirect
         {
             public readonly WeaponAbility NewAbility;
             public readonly int ClilocEntry;
@@ -61,7 +61,7 @@ namespace Server.Items
                 5 => new BladeWeaveRedirect(MortalStrike, 1028846),
                 6 => new BladeWeaveRedirect(ParalyzingBlow, 1028848),
                 7 => new BladeWeaveRedirect(Block, 1028853),
-                _ => new BladeWeaveRedirect(Feint, 1028857) //8
+                _ => new BladeWeaveRedirect(Feint, 1028857)
             };
 
         public override bool OnBeforeDamage(Mobile attacker, Mobile defender) =>

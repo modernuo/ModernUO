@@ -41,16 +41,25 @@ public class GumpImage : GumpEntry
 
     public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
-        var hasHue = Hue != 0;
         var hasClass = !string.IsNullOrEmpty(Class);
-        writer.WriteAscii(
-            hasHue switch
+        if (Hue != 0)
+        {
+            if (hasClass)
             {
-                true when hasClass  => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class={Class} }}",
-                true                => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} }}",
-                false when hasClass => $"{{ gumppic {X} {Y} {GumpID} class={Class} }}",
-                false               => $"{{ gumppic {X} {Y} {GumpID} }}",
+                writer.WriteAscii($"{{ gumppic {X} {Y} {GumpID} hue={Hue} class={Class} }}");
             }
-        );
+            else
+            {
+                writer.WriteAscii($"{{ gumppic {X} {Y} {GumpID} hue={Hue} }}");
+            }
+        }
+        else if (hasClass)
+        {
+            writer.WriteAscii($"{{ gumppic {X} {Y} {GumpID} class={Class} }}");
+        }
+        else
+        {
+            writer.WriteAscii($"{{ gumppic {X} {Y} {GumpID} }}");
+        }
     }
 }

@@ -42,22 +42,16 @@ public class WallOfStoneSpell : MagerySpell, ISpellTargetingPoint3D
                 var targetLoc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
                 var canFit = SpellHelper.AdjustField(ref targetLoc, Caster.Map, 22, true);
 
-                // Effects.SendLocationParticles( EffectItem.Create( loc, Caster.Map, EffectItem.DefaultDuration ), 0x376A, 9, 10, 5025 );
-
                 if (!canFit)
                 {
                     continue;
                 }
 
-                Item item = new WallOfStone(targetLoc, Caster.Map, Caster);
+                var item = new WallOfStone(targetLoc, Caster.Map, Caster);
 
                 Effects.SendLocationParticles(item, 0x376A, 9, 10, 5025);
-
-                // new WallOfStone( loc, Caster.Map, Caster );
             }
         }
-
-        FinishSequence();
     }
 
     public override void OnCast()

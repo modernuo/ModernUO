@@ -28,7 +28,7 @@ public partial class ScrollofTranscendence : SpecialScroll
         $"Scroll of Transcendence ({Math.Floor(Value * 10) / 10:0.#} Skill):".Color(0xFFFFFF);
 
     public static ScrollofTranscendence CreateRandom(int min, int max) =>
-        new(Utility.RandomSkill(), Utility.RandomMinMax(min, max) / 10.0);
+        new(SkillsInfo.RandomSkill(), Utility.RandomMinMax(min, max) / 10.0);
 
     public override void GetProperties(IPropertyList list)
     {

@@ -176,23 +176,22 @@ namespace Server.Spells
             return false;
         }
 
-        public static void Turn(Mobile from, object to)
+        public static void Turn(Mobile from, IPoint3D to)
         {
-            if (to is not IPoint3D target)
+            if (from == null)
             {
                 return;
             }
 
-            if (target is Item item)
+            var root = (to as Item)?.RootParent;
+            if (from != root)
             {
-                if (item.RootParent != from)
-                {
-                    from.Direction = from.GetDirectionTo(item.GetWorldLocation());
-                }
+                to = root;
             }
-            else if (!from.Equals(target))
+
+            if (!from.Equals(to))
             {
-                from.Direction = from.GetDirectionTo(target);
+                from.Direction = from.GetDirectionTo(to);
             }
         }
 
@@ -1022,6 +1021,7 @@ namespace Server.Spells
                 StaminaSystem.DFA = dfa;
 
                 var damageGiven = AOS.Damage(target, from, dmg, phys, fire, cold, pois, nrgy, chaos);
+                Mysticism.SpellPlagueSpell.OnMobileDamaged(target);
 
                 StaminaSystem.DFA = DFAlgorithm.Standard;
 

@@ -86,6 +86,7 @@ public partial class RegionSpawner : Spawner
 
     public override void ToJson(DynamicJson json, JsonSerializerOptions options)
     {
+        base.ToJson(json, options);
         json.SetProperty("region", options, SpawnRegion.Name);
     }
 

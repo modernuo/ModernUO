@@ -14,6 +14,7 @@ namespace Server.Engines.Spawners;
 [SerializationGenerator(10, false)]
 public abstract partial class BaseSpawner : Item, ISpawner
 {
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private Guid _guid;
@@ -22,6 +23,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _returnOnDeactivate;
 
+    [SerializedIgnoreDupe]
     [SerializableField(2, setter: "private")]
     private List<SpawnerEntry> _entries;
 
@@ -141,6 +143,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public bool IsFull => Spawned?.Count >= _count;
     public bool IsEmpty => Spawned?.Count == 0;
 
+    [IgnoreDupe]
     public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
 
     [SerializableProperty(8)]
@@ -269,17 +272,18 @@ public abstract partial class BaseSpawner : Item, ISpawner
         {
             newSpawner._guid = Guid.NewGuid();
             newSpawner.Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
-            newSpawner.Entries = new List<SpawnerEntry>();
+            newSpawner.Entries = [];
 
             for (var i = 0; i < Entries.Count; i++)
             {
+                var entry = Entries[i];
                 newSpawner.AddEntry(
-                    Entries[i].SpawnedName,
-                    Entries[i].SpawnedProbability,
-                    Entries[i].SpawnedMaxCount,
+                    entry.SpawnedName,
+                    entry.SpawnedProbability,
+                    entry.SpawnedMaxCount,
                     false,
-                    Entries[i].Properties,
-                    Entries[i].Parameters
+                    entry.Properties,
+                    entry.Parameters
                 );
             }
         }
@@ -295,7 +299,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     )
     {
         var entry = new SpawnerEntry(this, creaturename, probability, amount, properties, parameters);
-        Entries.Add(entry);
+        AddToEntries(entry);
         if (dotimer)
         {
             DoTimer(TimeSpan.FromSeconds(1));
@@ -315,7 +319,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _count = amount;
         _team = team;
         _homeRange = homeRange;
-        Entries = new List<SpawnerEntry>();
+        Entries = [];
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
         DoTimer(TimeSpan.FromSeconds(1));
@@ -394,7 +398,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     public void Defrag()
     {
-        Entries ??= new List<SpawnerEntry>();
+        Entries ??= [];
 
         for (var i = 0; i < Entries.Count; ++i)
         {
@@ -590,7 +594,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             IEntity entity = null;
 
             var propargs = string.IsNullOrEmpty(entry.Properties)
-                ? Array.Empty<string>()
+                ? []
                 : CommandSystem.Split(entry.Properties.Trim());
 
             var props = FormatProperties(propargs);
@@ -604,7 +608,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             }
 
             var paramargs = string.IsNullOrEmpty(entry.Parameters)
-                ? Array.Empty<string>()
+                ? []
                 : entry.Parameters.Trim().Split(' ');
 
             if (paramargs.Length == 0)

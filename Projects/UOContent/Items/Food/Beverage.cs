@@ -711,12 +711,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         _quantity = reader.ReadInt();
     }
 
-    public static void Initialize()
-    {
-        EventSink.Login += EventSink_Login;
-    }
-
-    private static void EventSink_Login(Mobile m)
+    public static void OnLogin(Mobile m)
     {
         CheckHeaveTimer(m);
     }

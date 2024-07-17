@@ -4,15 +4,15 @@ using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
 
-namespace UOContent.Tests
+namespace UOContent.Tests;
+
+public class TestHelpTopicPacket
 {
-    public class TestHelpTopicPacket
+    [Theory]
+    [InlineData(HelpTopic.Healing, false)]
+    [InlineData(HelpTopic.EmptyingBowl, true)]
+    public void TestDisplayHelpTopic(int topic, bool display)
     {
-        [Theory]
-        [InlineData(HelpTopic.Healing, false)]
-        [InlineData(HelpTopic.EmptyingBowl, true)]
-        public void TestDisplayHelpTopic(int topic, bool display)
-        {
             var expected = new DisplayHelpTopic(topic, display).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
@@ -21,5 +21,4 @@ namespace UOContent.Tests
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
         }
-    }
 }

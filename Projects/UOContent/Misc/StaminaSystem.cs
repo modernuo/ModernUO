@@ -54,9 +54,7 @@ public static class StaminaSystem
     public static void Initialize()
     {
         EventSink.Movement += EventSink_Movement;
-        EventSink.Login += Login;
         EventSink.Logout += Logout;
-        EventSink.PlayerDeleted += OnPlayerDeleted;
 
         // Credit idle time
         using var queue = PooledRefQueue<IHasSteps>.Create();
@@ -77,12 +75,12 @@ public static class StaminaSystem
         }
     }
 
-    private static void OnPlayerDeleted(Mobile m)
+    public static void OnPlayerDeleted(Mobile m)
     {
         RemoveEntry(m as IHasSteps);
     }
 
-    private static void Login(Mobile m)
+    public static void OnLogin(Mobile m)
     {
         if (EnableMountStamina)
         {

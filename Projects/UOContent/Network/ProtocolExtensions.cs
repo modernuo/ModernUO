@@ -46,19 +46,30 @@ namespace Server.Network
                 return;
             }
 
-            if (ph.Ingame && state.Mobile == null)
+            var from = state.Mobile;
+
+            if (ph.InGameOnly)
             {
-                state.LogInfo($"Sent in-game packet (0x{packetId:X2}x{cmd:X2}) before having been attached to a mobile");
-                state.Disconnect("Sent in-game packet before being attached to a mobile.");
+                if (from == null)
+                {
+                    state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} before having been attached to a mobile.");
+                    return;
+                }
+
+                if (from.Deleted)
+                {
+                    state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} after having been attached to a deleted mobile.");
+                    return;
+                }
             }
-            else if (ph.Ingame && state.Mobile.Deleted)
+
+            if (ph.OutOfGameOnly && from?.Deleted == false)
             {
-                state.Disconnect(string.Empty);
+                state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} after having been attached to a mobile.");
+                return;
             }
-            else
-            {
-                ph.OnReceive(state, reader);
-            }
+
+            ph.OnReceive(state, reader);
         }
     }
 }

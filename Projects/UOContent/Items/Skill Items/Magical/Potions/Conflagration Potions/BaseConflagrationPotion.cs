@@ -10,8 +10,8 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public abstract partial class BaseConflagrationPotion : BasePotion
 {
-    private static readonly Dictionary<Mobile, TimerExecutionToken> m_Delay = new();
-    private readonly List<Mobile> m_Users = new();
+    private static readonly Dictionary<Mobile, TimerExecutionToken> _delay = [];
+    private HashSet<Mobile> _users;
 
     public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x489;
 
@@ -20,12 +20,19 @@ public abstract partial class BaseConflagrationPotion : BasePotion
 
     public override bool RequireFreeHand => false;
 
-    public override void Drink(Mobile from)
+    public override bool IsThrowablePotion => true;
+
+    public override bool CanDrink(Mobile from)
     {
+        if (!base.CanDrink(from))
+        {
+            return false;
+        }
+
         if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell?.IsCasting == true))
         {
             from.SendLocalizedMessage(1062725); // You can not use that potion while paralyzed.
-            return;
+            return false;
         }
 
         var delay = GetDelay(from);
@@ -34,20 +41,18 @@ public abstract partial class BaseConflagrationPotion : BasePotion
         {
             // You cannot use that for another ~1_NUM~ ~2_TIMEUNITS~
             from.SendLocalizedMessage(1072529, $"{delay}\t{(delay > 1 ? "seconds." : "second.")}");
-            return;
+            return false;
         }
 
-        if (from.Target is ThrowTarget targ && targ.Potion == this)
-        {
-            return;
-        }
+        return (from.Target as ThrowTarget)?.Potion != this;
+    }
 
+    public override void Drink(Mobile from)
+    {
         from.RevealingAction();
 
-        if (!m_Users.Contains(from))
-        {
-            m_Users.Add(from);
-        }
+        _users ??= [];
+        _users.Add(from);
 
         from.Target = new ThrowTarget(this);
     }
@@ -62,11 +67,22 @@ public abstract partial class BaseConflagrationPotion : BasePotion
         Consume();
 
         // Check if any other players are using this potion
-        for (var i = 0; i < m_Users.Count; i++)
+        if (_users is { Count: > 0 })
         {
-            if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
+            using var usersQueue = PooledRefQueue<Mobile>.Create();
+            foreach (var user in _users)
             {
-                Target.Cancel(from);
+                if ((user.Target as ThrowTarget)?.Potion == this)
+                {
+                    usersQueue.Enqueue(user);
+                }
+            }
+
+            _users.Clear();
+
+            while (usersQueue.Count > 0)
+            {
+                Target.Cancel(usersQueue.Dequeue());
             }
         }
 
@@ -89,16 +105,16 @@ public abstract partial class BaseConflagrationPotion : BasePotion
 
     public static void AddDelay(Mobile m)
     {
-        m_Delay.TryGetValue(m, out var timer);
+        _delay.TryGetValue(m, out var timer);
         timer.Cancel();
 
         Timer.StartTimer(TimeSpan.FromSeconds(30), () => EndDelay(m), out timer);
-        m_Delay[m] = timer;
+        _delay[m] = timer;
     }
 
     public static int GetDelay(Mobile m)
     {
-        if (m_Delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
+        if (_delay.TryGetValue(m, out var timer) && timer.Next > Core.Now)
         {
             return (int)Math.Round((timer.Next - Core.Now).TotalSeconds);
         }
@@ -108,7 +124,7 @@ public abstract partial class BaseConflagrationPotion : BasePotion
 
     public static void EndDelay(Mobile m)
     {
-        if (m_Delay.Remove(m, out var timer))
+        if (_delay.Remove(m, out var timer))
         {
             timer.Cancel();
         }
@@ -155,6 +171,8 @@ public abstract partial class BaseConflagrationPotion : BasePotion
             Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
             Timer.StartTimer(TimeSpan.FromSeconds(1.5), () => Potion.Explode(from, loc, map));
         }
+
+        protected override void OnTargetFinish(Mobile from) => Potion._users.Remove(from);
     }
 
     [SerializationGenerator(0, false)]

@@ -24,10 +24,12 @@ public partial class Runebook : Item, ISecurable, ICraftable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _crafter;
 
+    [SerializedIgnoreDupe]
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
 
+    [SerializedIgnoreDupe]
     [SerializableField(3, setter: "private")]
     private List<RunebookEntry> _entries;
 
@@ -281,7 +283,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
             return;
         }
 
-        book.Entries = new List<RunebookEntry>();
+        book.Entries = [];
 
         for (var i = 0; i < Entries.Count; i++)
         {

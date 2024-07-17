@@ -5,12 +5,21 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class DreadPirateHat : TricorneHat
 {
+    private static readonly SkillName[] _combatSkills =
+    [
+        SkillName.Tactics,
+        SkillName.Archery,
+        SkillName.Swords,
+        SkillName.Macing,
+        SkillName.Fencing
+    ];
+
     [Constructible]
     public DreadPirateHat()
     {
         Hue = 0x497;
 
-        SkillBonuses.SetValues(0, Utility.RandomCombatSkill(), 10.0);
+        SkillBonuses.SetValues(0, _combatSkills.RandomElement(), 10.0);
 
         Attributes.BonusDex = 8;
         Attributes.AttackChance = 10;

@@ -3,268 +3,235 @@ using Server.Network;
 
 using static Server.Gumps.PropsConfig;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class GoGump : Gump
 {
-    public class GoGump : Gump
+    private const int PrevLabelOffsetX = PrevWidth + 1;
+    private const int PrevLabelOffsetY = 0;
+
+    private const int NextLabelOffsetX = -29;
+    private const int NextLabelOffsetY = 0;
+
+    private const int EntryWidth = 180;
+    private const int EntryCount = 15;
+
+    private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
+
+    private const int BackWidth = BorderSize + TotalWidth + BorderSize;
+
+    private readonly GoCategory _node;
+    private readonly int _page;
+
+    private readonly LocationTree _tree;
+
+    private GoGump(int page, Mobile from, LocationTree tree, GoCategory node) : base(50, 50)
     {
-        private static LocationTree Felucca;
-        private static LocationTree Trammel;
-        private static LocationTree Ilshenar;
-        private static LocationTree Malas;
-        private static LocationTree Tokuno;
-        private static LocationTree TerMur;
+        from.CloseGump<GoGump>();
 
-        private static readonly int PrevLabelOffsetX = PrevWidth + 1;
-        private static readonly int PrevLabelOffsetY = 0;
-
-        private static readonly int NextLabelOffsetX = -29;
-        private static readonly int NextLabelOffsetY = 0;
-
-        private static readonly int EntryWidth = 180;
-        private static readonly int EntryCount = 15;
-
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-
-        private readonly GoCategory m_Node;
-        private readonly int m_Page;
-
-        private readonly LocationTree m_Tree;
-
-        private GoGump(int page, Mobile from, LocationTree tree, GoCategory node) : base(50, 50)
+        if (node == tree.Root)
         {
-            from.CloseGump<GoGump>();
+            tree.LastBranch.Remove(from);
+        }
+        else
+        {
+            tree.LastBranch[from] = node;
+        }
 
-            if (node == tree.Root)
+        _page = page;
+        _tree = tree;
+        _node = node;
+
+        var x = BorderSize + OffsetSize;
+        var y = BorderSize + OffsetSize;
+
+        var count = Math.Clamp(node.Categories.Length + node.Locations.Length - page * EntryCount, 0, EntryCount);
+
+        var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
+
+        AddPage(0);
+
+        AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
+        AddImageTiled(
+            BorderSize,
+            BorderSize,
+            TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
+            totalHeight,
+            OffsetGumpID
+        );
+
+        if (OldStyle)
+        {
+            AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+        }
+        else
+        {
+            AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+        }
+
+        if (node.Parent != null)
+        {
+            AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
+
+            if (PrevLabel)
             {
-                tree.LastBranch.Remove(from);
+                AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
             }
-            else
-            {
-                tree.LastBranch[from] = node;
-            }
+        }
 
-            m_Page = page;
-            m_Tree = tree;
-            m_Node = node;
+        x += PrevWidth + OffsetSize;
 
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
+        var emptyWidth = TotalWidth - PrevWidth * 2 - NextWidth - OffsetSize * 5 -
+                         (OldStyle ? SetWidth + OffsetSize : 0);
 
-            var count = Math.Clamp(node.Categories.Length + node.Locations.Length - page * EntryCount, 0, EntryCount);
-
-            var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
-
-            AddPage(0);
-
-            AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
+        if (!OldStyle)
+        {
             AddImageTiled(
-                BorderSize,
-                BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                totalHeight,
-                OffsetGumpID
+                x - (OldStyle ? OffsetSize : 0),
+                y,
+                emptyWidth + (OldStyle ? OffsetSize * 2 : 0),
+                EntryHeight,
+                EntryGumpID
             );
+        }
 
-            if (OldStyle)
+        AddHtml(x + TextOffsetX, y, emptyWidth - TextOffsetX, EntryHeight, $"<center>{node.Name}</center>");
+
+        x += emptyWidth + OffsetSize;
+
+        if (OldStyle)
+        {
+            AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+        }
+        else
+        {
+            AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+        }
+
+        if (page > 0)
+        {
+            AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2);
+
+            if (PrevLabel)
             {
-                AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
-            }
-            else
-            {
-                AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-            }
-
-            if (node.Parent != null)
-            {
-                AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
-
-                if (PrevLabel)
-                {
-                    AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
-                }
-            }
-
-            x += PrevWidth + OffsetSize;
-
-            var emptyWidth = TotalWidth - PrevWidth * 2 - NextWidth - OffsetSize * 5 -
-                             (OldStyle ? SetWidth + OffsetSize : 0);
-
-            if (!OldStyle)
-            {
-                AddImageTiled(
-                    x - (OldStyle ? OffsetSize : 0),
-                    y,
-                    emptyWidth + (OldStyle ? OffsetSize * 2 : 0),
-                    EntryHeight,
-                    EntryGumpID
-                );
-            }
-
-            AddHtml(x + TextOffsetX, y, emptyWidth - TextOffsetX, EntryHeight, $"<center>{node.Name}</center>");
-
-            x += emptyWidth + OffsetSize;
-
-            if (OldStyle)
-            {
-                AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
-            }
-            else
-            {
-                AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-            }
-
-            if (page > 0)
-            {
-                AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2);
-
-                if (PrevLabel)
-                {
-                    AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
-                }
-            }
-
-            x += PrevWidth + OffsetSize;
-
-            if (!OldStyle)
-            {
-                AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-            }
-
-            if ((page + 1) * EntryCount < node.Categories.Length + node.Locations.Length)
-            {
-                AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 3, GumpButtonType.Reply, 1);
-
-                if (NextLabel)
-                {
-                    AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
-                }
-            }
-
-            var totalEntryCount = node.Categories.Length + node.Locations.Length;
-
-            for (int i = 0, index = page * EntryCount; i < EntryCount && index < totalEntryCount; ++i, ++index)
-            {
-                x = BorderSize + OffsetSize;
-                y += EntryHeight + OffsetSize;
-
-                var name = index >= node.Categories.Length
-                    ? node.Locations[index - node.Categories.Length].Name
-                    : node.Categories[index].Name;
-
-                AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-                AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, name);
-
-                x += EntryWidth + OffsetSize;
-
-                if (SetGumpID != 0)
-                {
-                    AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-                }
-
-                AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, index + 4);
+                AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
             }
         }
 
-        public static void DisplayTo(Mobile from)
+        x += PrevWidth + OffsetSize;
+
+        if (!OldStyle)
         {
-            LocationTree tree;
+            AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
+        }
 
-            if (from.Map == Map.Ilshenar)
-            {
-                tree = Ilshenar ??= new LocationTree("ilshenar", Map.Ilshenar);
-            }
-            else if (from.Map == Map.Felucca)
-            {
-                tree = Felucca ??= new LocationTree("felucca", Map.Felucca);
-            }
-            else if (from.Map == Map.Trammel)
-            {
-                tree = Trammel ??= new LocationTree("trammel", Map.Trammel);
-            }
-            else if (from.Map == Map.Malas)
-            {
-                tree = Malas ??= new LocationTree("malas", Map.Malas);
-            }
-            else if (from.Map == Map.Tokuno)
-            {
-                tree = Tokuno ??= new LocationTree("tokuno", Map.Tokuno);
-            }
-            else
-            {
-                tree = TerMur ??= new LocationTree("termur", Map.TerMur);
-            }
+        if ((page + 1) * EntryCount < node.Categories.Length + node.Locations.Length)
+        {
+            AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 3, GumpButtonType.Reply, 1);
 
-            if (!tree.LastBranch.TryGetValue(from, out var branch))
+            if (NextLabel)
             {
-                branch = tree.Root;
-            }
-
-            if (branch != null)
-            {
-                from.SendGump(new GoGump(0, from, tree, branch));
+                AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
             }
         }
 
-        public override void OnResponse(NetState state, in RelayInfo info)
+        var totalEntryCount = node.Categories.Length + node.Locations.Length;
+
+        for (int i = 0, index = page * EntryCount; i < EntryCount && index < totalEntryCount; ++i, ++index)
         {
-            var from = state.Mobile;
+            x = BorderSize + OffsetSize;
+            y += EntryHeight + OffsetSize;
 
-            switch (info.ButtonID)
+            var name = index >= node.Categories.Length
+                ? node.Locations[index - node.Categories.Length].Name
+                : node.Categories[index].Name;
+
+            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
+            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, name);
+
+            x += EntryWidth + OffsetSize;
+
+            if (SetGumpID != 0)
             {
-                case 1:
-                    {
-                        if (m_Node.Parent != null)
-                        {
-                            from.SendGump(new GoGump(0, from, m_Tree, m_Node.Parent));
-                        }
-
-                        break;
-                    }
-                case 2:
-                    {
-                        if (m_Page > 0)
-                        {
-                            from.SendGump(new GoGump(m_Page - 1, from, m_Tree, m_Node));
-                        }
-
-                        break;
-                    }
-                case 3:
-                    {
-                        if ((m_Page + 1) * EntryCount < m_Node.Categories.Length + m_Node.Locations.Length)
-                        {
-                            from.SendGump(new GoGump(m_Page + 1, from, m_Tree, m_Node));
-                        }
-
-                        break;
-                    }
-                default:
-                    {
-                        var index = info.ButtonID - 4;
-
-                        if (index < 0)
-                        {
-                            break;
-                        }
-
-                        if (index < m_Node.Categories.Length)
-                        {
-                            from.SendGump(new GoGump(0, from, m_Tree, m_Node.Categories[index]));
-                        }
-                        else
-                        {
-                            index -= m_Node.Categories.Length;
-                            if (index < m_Node.Locations.Length)
-                            {
-                                from.MoveToWorld(m_Node.Locations[index].Location, m_Tree.Map);
-                            }
-                        }
-
-                        break;
-                    }
+                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
             }
+
+            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, index + 4);
+        }
+    }
+
+    public static void DisplayTo(Mobile from)
+    {
+        LocationTree tree = GoLocations.GetLocations(from.Map);
+
+        if (!tree.LastBranch.TryGetValue(from, out var branch))
+        {
+            branch = tree.Root;
+        }
+
+        if (branch != null)
+        {
+            from.SendGump(new GoGump(0, from, tree, branch));
+        }
+    }
+
+    public override void OnResponse(NetState state, in RelayInfo info)
+    {
+        var from = state.Mobile;
+
+        switch (info.ButtonID)
+        {
+            case 1:
+                {
+                    if (_node.Parent != null)
+                    {
+                        from.SendGump(new GoGump(0, from, _tree, _node.Parent));
+                    }
+
+                    break;
+                }
+            case 2:
+                {
+                    if (_page > 0)
+                    {
+                        from.SendGump(new GoGump(_page - 1, from, _tree, _node));
+                    }
+
+                    break;
+                }
+            case 3:
+                {
+                    if ((_page + 1) * EntryCount < _node.Categories.Length + _node.Locations.Length)
+                    {
+                        from.SendGump(new GoGump(_page + 1, from, _tree, _node));
+                    }
+
+                    break;
+                }
+            default:
+                {
+                    var index = info.ButtonID - 4;
+
+                    if (index < 0)
+                    {
+                        break;
+                    }
+
+                    if (index < _node.Categories.Length)
+                    {
+                        from.SendGump(new GoGump(0, from, _tree, _node.Categories[index]));
+                    }
+                    else
+                    {
+                        index -= _node.Categories.Length;
+                        if (index < _node.Locations.Length)
+                        {
+                            from.MoveToWorld(_node.Locations[index].Location, _tree.Map);
+                        }
+                    }
+
+                    break;
+                }
         }
     }
 }

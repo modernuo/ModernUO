@@ -14,7 +14,10 @@
  *************************************************************************/
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using Server.ContextMenus;
+using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -68,12 +71,18 @@ public static class IncomingExtendedCommandPackets
     {
     }
 
-    public static unsafe void RegisterExtended(int packetID, bool ingame,
-        delegate*<NetState, SpanReader, void> onReceive)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, delegate*<NetState, SpanReader, void> onReceive
+    ) => RegisterExtended(packetID, ingame, false, onReceive);
+
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, bool outgame, delegate*<NetState, SpanReader, void> onReceive
+    )
     {
         if (packetID is >= 0 and < 0x100)
         {
-            _extendedHandlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+            _extendedHandlers[packetID] = new PacketHandler(packetID, onReceive, inGameOnly: ingame, outGameOnly: outgame);
         }
     }
 
@@ -100,21 +109,30 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        if (ph.Ingame && state.Mobile?.Deleted != false)
+        var from = state.Mobile;
+
+        if (ph.InGameOnly)
         {
-            if (state.Mobile == null)
+            if (from == null)
             {
-                state.LogInfo(
-                    $"Sent in-game packet (0xBFx{packetId:X2}) before having been attached to a mobile"
-                );
+                state.Disconnect($"Received packet 0x{packetId:X2} before having been attached to a mobile.");
+                return;
             }
 
-            state.Disconnect($"Sent in-game packet(0xBFx{packetId:X2}) but mobile is deleted.");
+            if (from.Deleted)
+            {
+                state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a deleted mobile.");
+                return;
+            }
         }
-        else
+
+        if (ph.OutOfGameOnly && from?.Deleted == false)
         {
-            ph.OnReceive(state, reader);
+            state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a mobile.");
+            return;
         }
+
+        ph.OnReceive(state, reader);
     }
 
     public static void ScreenSize(NetState state, SpanReader reader)
@@ -250,7 +268,7 @@ public static class IncomingExtendedCommandPackets
         Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
 
         var spellID = reader.ReadInt16() - 1;
-        EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
+        Spellbook.CastSpellRequest(from, spellID, spellbook);
     }
 
     public static void ToggleFlying(NetState state, SpanReader reader)
@@ -267,7 +285,7 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        EventSink.InvokeStunRequest(from);
+        Fists.StunRequest(from);
     }
 
     public static void DisarmRequest(NetState state, SpanReader reader)
@@ -279,7 +297,7 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        EventSink.InvokeDisarmRequest(from);
+        Fists.DisarmRequest(from);
     }
 
     public static void StatLockChange(NetState state, SpanReader reader)
@@ -489,7 +507,7 @@ public static class IncomingExtendedCommandPackets
                 return;
             }
 
-            EventSink.InvokeBandageTargetRequest(from, bandage, target);
+            Bandage.BandageTargetRequest(from, bandage, target);
 
             from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
         }
@@ -503,14 +521,14 @@ public static class IncomingExtendedCommandPackets
     {
         var spellId = (short)(reader.ReadInt16() - 1); // zero based;
 
-        EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
+        Spellbook.TargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
     }
 
     public static void TargetedSkillUse(NetState state, SpanReader reader)
     {
         var skillId = reader.ReadInt16();
 
-        EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
+        PlayerMobile.TargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
     }
 
     public static void TargetByResourceMacro(NetState state, SpanReader reader)
