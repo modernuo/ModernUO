@@ -2131,27 +2131,27 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public virtual bool CanEquip(Mobile m) => m_Layer != Layer.Invalid && m.FindItemOnLayer(m_Layer) == null;
 
-    public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
+    public virtual void GetChildContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list, Item item)
     {
         if (m_Parent is Item parentItem)
         {
-            parentItem.GetChildContextMenuEntries(from, list, item);
+            parentItem.GetChildContextMenuEntries(from, ref list, item);
         }
         else if (m_Parent is Mobile parentMobile)
         {
-            parentMobile.GetChildContextMenuEntries(from, list, item);
+            parentMobile.GetChildContextMenuEntries(from, ref list, item);
         }
     }
 
-    public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public virtual void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
         if (m_Parent is Item item)
         {
-            item.GetChildContextMenuEntries(from, list, this);
+            item.GetChildContextMenuEntries(from, ref list, this);
         }
         else if (m_Parent is Mobile mobile)
         {
-            mobile.GetChildContextMenuEntries(from, list, this);
+            mobile.GetChildContextMenuEntries(from, ref list, this);
         }
     }
 

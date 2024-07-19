@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Mobiles;
 
@@ -79,14 +79,14 @@ public partial class Fukiya : Item, INinjaWeapon
         NinjaWeapon.AttemptShoot((PlayerMobile)from, this);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (IsChildOf(from))
         {
-            list.Add(new NinjaWeapon.LoadEntry(this, 6224));
-            list.Add(new NinjaWeapon.UnloadEntry(this, 6225));
+            list.Add(new NinjaWeapon.LoadEntry(6224));
+            list.Add(new NinjaWeapon.UnloadEntry(6225, UsesRemaining > 0));
         }
     }
 }

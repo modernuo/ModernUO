@@ -264,7 +264,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private int m_ChangingCombatant;
     private Mobile m_Combatant;
     private TimerExecutionToken _combatTimerToken;
-    private ContextMenu m_ContextMenu;
     private bool m_Criminal;
 
     private MobileDelta m_DeltaFlags;
@@ -867,16 +866,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
 
             OnTargetChange();
-        }
-    }
-
-    public ContextMenu ContextMenu
-    {
-        get => m_ContextMenu;
-        set
-        {
-            m_ContextMenu = value;
-            m_NetState.SendDisplayContextMenu(m_ContextMenu);
         }
     }
 
@@ -6521,26 +6510,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual bool CanPaperdollBeOpenedBy(Mobile from) => Body.IsHuman || Body.IsGhost || IsBodyMod;
 
-    public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
+    public virtual void GetChildContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list, Item item)
     {
     }
 
-    public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public virtual void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        if (Deleted)
-        {
-            return;
-        }
-
-        if (CanPaperdollBeOpenedBy(from))
-        {
-            list.Add(new PaperdollEntry(this));
-        }
-
-        if (from == this && Backpack != null && CanSee(Backpack) && CheckAlive(false))
-        {
-            list.Add(new OpenBackpackEntry(this));
-        }
     }
 
     public void Internalize()

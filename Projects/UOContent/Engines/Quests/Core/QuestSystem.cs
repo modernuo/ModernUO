@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Quests.Ambitious;
 using Server.Engines.Quests.Collector;
@@ -246,7 +247,7 @@ namespace Server.Engines.Quests
             From.SendGump(new QuestOfferGump(this));
         }
 
-        public virtual void GetContextMenuEntries(List<ContextMenuEntry> list)
+        public virtual void GetContextMenuEntries(ref PooledRefList<ContextMenuEntry> list)
         {
             if (Objectives.Count > 0)
             {

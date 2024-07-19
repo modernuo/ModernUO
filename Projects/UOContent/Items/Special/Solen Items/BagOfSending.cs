@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Quests;
-using Server.Network;
 using Server.Regions;
 using Server.Spells;
 using Server.Targeting;
@@ -116,13 +115,13 @@ public partial class BagOfSending : Item, TranslocationItem
         LabelTo(from, 1060741, _charges.ToString()); // charges: ~1_val~
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive)
         {
-            list.Add(new UseBagEntry(this, Charges > 0 && IsChildOf(from.Backpack)));
+            list.Add(new UseBagEntry(Charges > 0 && IsChildOf(from.Backpack)));
         }
     }
 
@@ -156,30 +155,13 @@ public partial class BagOfSending : Item, TranslocationItem
 
     private class UseBagEntry : ContextMenuEntry
     {
-        private readonly BagOfSending _bag;
+        public UseBagEntry(bool enabled) : base(6189) => Enabled = enabled;
 
-        public UseBagEntry(BagOfSending bag, bool enabled) : base(6189)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            _bag = bag;
-
-            if (!enabled)
+            if (from.CheckAlive() && target is BagOfSending bag && !bag.Deleted)
             {
-                Flags |= CMEFlags.Disabled;
-            }
-        }
-
-        public override void OnClick()
-        {
-            if (_bag.Deleted)
-            {
-                return;
-            }
-
-            var from = Owner.From;
-
-            if (from.CheckAlive())
-            {
-                _bag.OnDoubleClick(from);
+                bag.OnDoubleClick(from);
             }
         }
     }

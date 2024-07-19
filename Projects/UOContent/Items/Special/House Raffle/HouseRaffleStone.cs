@@ -4,10 +4,10 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
-using Server.Network;
 using Server.Regions;
 using Server.Text;
 
@@ -394,21 +394,21 @@ public partial class HouseRaffleStone : Item
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.AccessLevel >= AccessLevel.Seer)
         {
-            list.Add(new EditEntry(from, this));
+            list.Add(new EditEntry());
 
             if (_currentState == HouseRaffleState.Inactive)
             {
-                list.Add(new ActivateEntry(from, this));
+                list.Add(new ActivateEntry(ValidLocation(_plotBounds, _plotFacet)));
             }
             else
             {
-                list.Add(new ManagementEntry(from, this));
+                list.Add(new ManagementEntry());
             }
         }
     }
@@ -597,70 +597,49 @@ public partial class HouseRaffleStone : Item
         }
     }
 
-    private class RaffleContextMenuEntry : ContextMenuEntry
+    private class EditEntry : ContextMenuEntry
     {
-        protected readonly Mobile _from;
-        protected readonly HouseRaffleStone _stone;
-
-        public RaffleContextMenuEntry(Mobile from, HouseRaffleStone stone, int label) : base(label)
-        {
-            _from = from;
-            _stone = stone;
-        }
-    }
-
-    private class EditEntry : RaffleContextMenuEntry
-    {
-        public EditEntry(Mobile from, HouseRaffleStone stone) : base(from, stone, 5101) // Edit
+        public EditEntry() : base(5101)
         {
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (_stone.Deleted || _from.AccessLevel < AccessLevel.Seer)
+            if (from.AccessLevel < AccessLevel.Seer || target is not HouseRaffleStone stone || stone.Deleted)
             {
                 return;
             }
 
-            _from.SendGump(new PropertiesGump(_from, _stone));
+            from.SendGump(new PropertiesGump(from, stone));
         }
     }
 
-    private class ActivateEntry : RaffleContextMenuEntry
+    private class ActivateEntry : ContextMenuEntry
     {
-        public ActivateEntry(Mobile from, HouseRaffleStone stone) : base(from, stone, 5113) // Start
-        {
-            if (!ValidLocation(stone._plotBounds, stone._plotFacet))
-            {
-                Flags |= CMEFlags.Disabled;
-            }
-        }
+        public ActivateEntry(bool enabled) : base(5113) => Enabled = enabled;
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (_stone.Deleted || _from.AccessLevel < AccessLevel.Seer || !ValidLocation(_stone._plotBounds, _stone._plotFacet))
+            if (from.AccessLevel >= AccessLevel.Seer && target is HouseRaffleStone { Deleted: false } stone &&
+                ValidLocation(stone._plotBounds, stone._plotFacet))
             {
-                return;
+                stone.CurrentState = HouseRaffleState.Active;
             }
-
-            _stone.CurrentState = HouseRaffleState.Active;
         }
     }
 
-    private class ManagementEntry : RaffleContextMenuEntry
+    private class ManagementEntry : ContextMenuEntry
     {
-        public ManagementEntry(Mobile from, HouseRaffleStone stone) : base(from, stone, 5032) // Game Monitor
+        public ManagementEntry() : base(5032)
         {
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (_stone.Deleted || _from.AccessLevel < AccessLevel.Seer)
+            if (from.AccessLevel >= AccessLevel.Seer && target is HouseRaffleStone { Deleted: false } stone)
             {
-                return;
+                from.SendGump(new HouseRaffleManagementGump(stone));
             }
-
-            _from.SendGump(new HouseRaffleManagementGump(_stone));
         }
     }
 

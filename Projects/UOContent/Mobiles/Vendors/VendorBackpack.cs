@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Ethics;
@@ -78,9 +78,9 @@ public partial class VendorBackpack : Backpack
         (from.AccessLevel >= AccessLevel.GameMaster ||
          targ.GetType().IsDefined(typeof(PlayerVendorTargetAttribute), false));
 
-    public override void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
+    public override void GetChildContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list, Item item)
     {
-        base.GetChildContextMenuEntries(from, list, item);
+        base.GetChildContextMenuEntries(from, ref list, item);
 
         if (RootParent is not PlayerVendor pv || pv.IsOwner(from))
         {
@@ -91,7 +91,7 @@ public partial class VendorBackpack : Backpack
 
         if (vi != null)
         {
-            list.Add(new BuyEntry(item));
+            list.Add(new BuyEntry());
         }
     }
 
@@ -169,20 +169,18 @@ public partial class VendorBackpack : Backpack
 
     private class BuyEntry : ContextMenuEntry
     {
-        private readonly Item m_Item;
-
-        public BuyEntry(Item item) : base(6103) => m_Item = item;
+        public BuyEntry() : base(6103)
+        {
+        }
 
         public override bool NonLocalUse => true;
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (m_Item.Deleted)
+            if (target is Item { Deleted: false } item)
             {
-                return;
+                PlayerVendor.TryToBuy(item, from);
             }
-
-            PlayerVendor.TryToBuy(m_Item, Owner.From);
         }
     }
 }

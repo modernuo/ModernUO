@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Accounting;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
@@ -135,9 +135,9 @@ public partial class CharacterStatue : Mobile, IRewardItem
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive && _sculptedBy != null)
         {
@@ -145,7 +145,7 @@ public partial class CharacterStatue : Mobile, IRewardItem
 
             if (house?.IsCoOwner(from) == true || from.AccessLevel > AccessLevel.Counselor)
             {
-                list.Add(new DemolishEntry(this));
+                list.Add(new DemolishEntry());
             }
         }
     }
@@ -382,15 +382,15 @@ public partial class CharacterStatue : Mobile, IRewardItem
 
     private class DemolishEntry : ContextMenuEntry
     {
-        private readonly CharacterStatue m_Statue;
-
-        public DemolishEntry(CharacterStatue statue) : base(6275, 2) => m_Statue = statue;
-
-        public override void OnClick()
+        public DemolishEntry() : base(6275, 2)
         {
-            if (!m_Statue.Deleted)
+        }
+
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (from.Alive && target is CharacterStatue { Deleted: false } statue)
             {
-                m_Statue.Demolish(Owner.From);
+                statue.Demolish(from);
             }
         }
     }

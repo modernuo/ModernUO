@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Mobiles;
@@ -8,17 +9,15 @@ namespace Server.Engines.Quests;
 
 public class TalkEntry : ContextMenuEntry
 {
-    private readonly BaseQuester _quester;
-
-    public TalkEntry(BaseQuester quester) : base(quester.TalkNumber) => _quester = quester;
-
-    public override void OnClick()
+    public TalkEntry(int talkNumber) : base(talkNumber)
     {
-        var from = Owner.From;
+    }
 
-        if (from.CheckAlive() && from is PlayerMobile mobile && _quester.CanTalkTo(mobile))
+    public override void OnClick(Mobile from, IEntity target)
+    {
+        if (from.CheckAlive() && from is PlayerMobile mobile && target is BaseQuester quester && quester.CanTalkTo(mobile))
         {
-            _quester.OnTalk(mobile, true);
+            quester.OnTalk(mobile, true);
         }
     }
 }
@@ -60,13 +59,13 @@ public abstract partial class BaseQuester : BaseVendor
         return item;
     }
 
-    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void AddCustomContextEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.AddCustomContextEntries(from, list);
+        base.AddCustomContextEntries(from, ref list);
 
         if (from.Alive && from is PlayerMobile mobile && TalkNumber > 0 && CanTalkTo(mobile))
         {
-            list.Add(new TalkEntry(this));
+            list.Add(new TalkEntry(TalkNumber));
         }
     }
 

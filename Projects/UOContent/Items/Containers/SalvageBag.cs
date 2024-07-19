@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Craft;
-using Server.Network;
 
 namespace Server.Items;
 
@@ -27,18 +26,18 @@ public partial class SalvageBag : Bag
 
     public override int LabelNumber => 1079931; // Salvage Bag
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive)
         {
             var inBackpack = IsChildOf(from.Backpack);
             var resmeltables = inBackpack && Resmeltables();
             var scissorables = inBackpack && Scissorables();
-            list.Add(new SalvageIngotsEntry(this, resmeltables));
-            list.Add(new SalvageClothEntry(this, scissorables));
-            list.Add(new SalvageAllEntry(this, resmeltables && scissorables));
+            list.Add(new SalvageIngotsEntry(resmeltables));
+            list.Add(new SalvageClothEntry(scissorables));
+            list.Add(new SalvageAllEntry(resmeltables && scissorables));
         }
     }
 
@@ -287,90 +286,39 @@ public partial class SalvageBag : Bag
 
     private class SalvageAllEntry : ContextMenuEntry
     {
-        private readonly SalvageBag m_Bag;
+        public SalvageAllEntry(bool enabled) : base(6276) => Enabled = enabled;
 
-        public SalvageAllEntry(SalvageBag bag, bool enabled) : base(6276)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Bag = bag;
-
-            if (!enabled)
+            if (from.CheckAlive() && target is SalvageBag { Deleted: false } bag)
             {
-                Flags |= CMEFlags.Disabled;
-            }
-        }
-
-        public override void OnClick()
-        {
-            if (m_Bag.Deleted)
-            {
-                return;
-            }
-
-            var from = Owner.From;
-
-            if (from.CheckAlive())
-            {
-                m_Bag.SalvageAll(from);
+                bag.SalvageAll(from);
             }
         }
     }
 
     private class SalvageIngotsEntry : ContextMenuEntry
     {
-        private readonly SalvageBag m_Bag;
+        public SalvageIngotsEntry(bool enabled) : base(6277) => Enabled = enabled;
 
-        public SalvageIngotsEntry(SalvageBag bag, bool enabled) : base(6277)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Bag = bag;
-
-            if (!enabled)
+            if (from.CheckAlive() && target is SalvageBag { Deleted: false } bag)
             {
-                Flags |= CMEFlags.Disabled;
-            }
-        }
-
-        public override void OnClick()
-        {
-            if (m_Bag.Deleted)
-            {
-                return;
-            }
-
-            var from = Owner.From;
-
-            if (from.CheckAlive())
-            {
-                m_Bag.SalvageIngots(from);
+                bag.SalvageIngots(from);
             }
         }
     }
 
     private class SalvageClothEntry : ContextMenuEntry
     {
-        private readonly SalvageBag m_Bag;
+        public SalvageClothEntry(bool enabled) : base(6278) => Enabled = enabled;
 
-        public SalvageClothEntry(SalvageBag bag, bool enabled) : base(6278)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Bag = bag;
-
-            if (!enabled)
+            if (from.CheckAlive() && target is SalvageBag { Deleted: false } bag)
             {
-                Flags |= CMEFlags.Disabled;
-            }
-        }
-
-        public override void OnClick()
-        {
-            if (m_Bag.Deleted)
-            {
-                return;
-            }
-
-            var from = Owner.From;
-
-            if (from.CheckAlive())
-            {
-                m_Bag.SalvageCloth(from);
+                bag.SalvageCloth(from);
             }
         }
     }
