@@ -4,15 +4,28 @@ using Server.Targeting;
 namespace Server.Items;
 
 [SerializationGenerator(0, false)]
+[Flippable(0x1A9C, 0x1A9D)]
 public partial class Flax : Item
 {
     [Constructible]
     public Flax(int amount = 1) : base(0x1A9C)
     {
         Stackable = true;
-        Weight = 1.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1;
+
+    public override int LabelNumber => 1026812; // Flax Bundle
+
+    public override bool CanStackWith(Item dropped) =>
+        dropped.Stackable && Stackable &&
+        dropped.GetType() == GetType() &&
+        dropped.ItemID is 0x1A9C or 0x1A9D &&
+        dropped.Hue == Hue &&
+        dropped.Name == Name &&
+        dropped.Amount + Amount <= 60000 &&
+        dropped != this;
 
     public override void OnDoubleClick(Mobile from)
     {
