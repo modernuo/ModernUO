@@ -14,8 +14,8 @@ public abstract partial class BaseScales : Item, ICommodity
         _resource = resource;
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
         get => _resource;

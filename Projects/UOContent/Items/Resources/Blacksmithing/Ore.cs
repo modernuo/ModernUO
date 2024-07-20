@@ -17,8 +17,8 @@ public abstract partial class BaseOre : Item
         _resource = resource;
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
         get => _resource;

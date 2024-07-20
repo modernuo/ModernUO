@@ -15,8 +15,8 @@ public abstract partial class BaseGranite : Item
 
     public override double DefaultWeight => Core.ML ? 1.0 : 10.0;
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
         get => _resource;

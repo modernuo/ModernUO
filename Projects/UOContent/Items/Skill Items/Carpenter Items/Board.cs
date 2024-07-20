@@ -21,8 +21,8 @@ public partial class Board : Item, ICommodity
         Hue = CraftResources.GetHue(resource);
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
         get => _resource;

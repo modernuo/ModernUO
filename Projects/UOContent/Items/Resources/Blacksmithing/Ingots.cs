@@ -16,8 +16,8 @@ public abstract partial class BaseIngot : Item, ICommodity
 
     public override double DefaultWeight => 0.1;
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
         get => _resource;
