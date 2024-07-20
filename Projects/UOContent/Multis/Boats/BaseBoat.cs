@@ -2088,10 +2088,11 @@ namespace Server.Multis
 
             var xOffset = 0;
             var yOffset = 0;
-            Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
+            CalcMoves.Offset(facing, ref xOffset, ref yOffset);
 
             var count = ((_facing - old) & 0x7) / 2;
 
+            using var queue = PooledRefQueue<IEntity>.Create();
             foreach (var e in GetMovingEntities())
             {
                 if (e == this)
@@ -2101,13 +2102,19 @@ namespace Server.Multis
 
                 if (e is Item item)
                 {
-                    item.Location = Rotate(item.Location, count);
+                    queue.Enqueue(e);
                 }
                 else if (e is Mobile m)
                 {
                     m.Direction = (m.Direction - old + facing) & Direction.Mask;
-                    m.Location = Rotate(m.Location, count);
+                    queue.Enqueue(e);
                 }
+            }
+
+            while (queue.Count > 0)
+            {
+                var e = queue.Dequeue();
+                e.Location = Rotate(e.Location, count);
             }
 
             if (TillerMan != null)
