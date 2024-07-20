@@ -1,15 +1,11 @@
 using ModernUO.Serialization;
+using Server.Engines.Craft;
 
 namespace Server.Items;
 
 [SerializationGenerator(2, false)]
 public abstract partial class BaseHides : Item, ICommodity
 {
-    [InvalidateProperties]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    [SerializableField(0)]
-    private CraftResource _resource;
-
     public BaseHides(CraftResource resource, int amount = 1) : base(0x1079)
     {
         Stackable = true;
@@ -18,6 +14,24 @@ public abstract partial class BaseHides : Item, ICommodity
         Hue = CraftResources.GetHue(resource);
 
         _resource = resource;
+    }
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CraftResource Resource
+    {
+        get => _resource;
+        set
+        {
+            if (_resource != value)
+            {
+                _resource = value;
+                Hue = CraftResources.GetHue(value);
+
+                InvalidateProperties();
+                this.MarkDirty();
+            }
+        }
     }
 
     public override int LabelNumber

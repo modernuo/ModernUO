@@ -5,11 +5,6 @@ namespace Server.Items;
 [SerializationGenerator(1, false)]
 public abstract partial class BaseScales : Item, ICommodity
 {
-    [InvalidateProperties]
-    [SerializableField(0)]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private CraftResource _resource;
-
     public BaseScales(CraftResource resource, int amount = 1) : base(0x26B4)
     {
         Stackable = true;
@@ -17,6 +12,24 @@ public abstract partial class BaseScales : Item, ICommodity
         Hue = CraftResources.GetHue(resource);
 
         _resource = resource;
+    }
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CraftResource Resource
+    {
+        get => _resource;
+        set
+        {
+            if (_resource != value)
+            {
+                _resource = value;
+                Hue = CraftResources.GetHue(value);
+
+                InvalidateProperties();
+                this.MarkDirty();
+            }
+        }
     }
 
     public override int LabelNumber => 1053139; // dragon scales
