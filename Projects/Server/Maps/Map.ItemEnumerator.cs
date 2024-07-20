@@ -252,6 +252,11 @@ public partial class Map
 
             while (true)
             {
+                if (_linkList.Version != _currentVersion)
+                {
+                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
+                }
+
                 current = current?.Next;
 
                 while (current == null)
@@ -275,11 +280,6 @@ public partial class Map
                     _linkList = ref map.GetRealSector(currentSectorX, currentSectorY).Items;
                     _currentVersion = _linkList.Version;
                     current = _linkList._first;
-                }
-
-                if (_linkList.Version != _currentVersion)
-                {
-                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
                 if (current is T { Deleted: false, Parent: null } o && bounds.Contains(o.Location))
