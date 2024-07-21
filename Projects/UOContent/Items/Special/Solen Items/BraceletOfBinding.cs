@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Factions;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Network;
 using Server.Prompts;
 using Server.Regions;
 using Server.Spells;
@@ -93,9 +92,9 @@ public partial class BraceletOfBinding : BaseBracelet, TranslocationItem
         LabelTo(from, 1054000, $"{_charges}\t{_inscription.DefaultIfNullOrEmpty(" ")}");
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive && IsChildOf(from))
         {
@@ -326,17 +325,11 @@ public partial class BraceletOfBinding : BaseBracelet, TranslocationItem
         public BraceletEntry(BraceletCallback callback, int number, bool enabled) : base(number)
         {
             _callback = callback;
-
-            if (!enabled)
-            {
-                Flags |= CMEFlags.Disabled;
-            }
+            Enabled = enabled;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            var from = Owner.From;
-
             if (from.CheckAlive())
             {
                 _callback(from);

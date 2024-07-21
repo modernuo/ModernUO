@@ -4,31 +4,26 @@ namespace Server.ContextMenus
 {
     public class RemoveFromPartyEntry : ContextMenuEntry
     {
-        private readonly Mobile m_From;
-        private readonly Mobile m_Target;
-
-        public RemoveFromPartyEntry(Mobile from, Mobile target) : base(0198, 12)
+        public RemoveFromPartyEntry() : base(0198, 12)
         {
-            m_From = from;
-            m_Target = target;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            var p = Party.Get(m_From);
+            var p = Party.Get(from);
 
-            if (p == null || p.Leader != m_From || !p.Contains(m_Target))
+            if (target is not Mobile mobile || p == null || p.Leader != from || !p.Contains(mobile))
             {
                 return;
             }
 
-            if (m_From == m_Target)
+            if (from == mobile)
             {
-                m_From.SendLocalizedMessage(1005446); // You may only remove yourself from a party if you are not the leader.
+                from.SendLocalizedMessage(1005446); // You may only remove yourself from a party if you are not the leader.
             }
             else
             {
-                p.Remove(m_Target);
+                p.Remove(mobile);
             }
         }
     }

@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
@@ -97,9 +97,9 @@ public partial class BallOfSummoning : Item, TranslocationItem
         LabelTo(from, 1054131, $"{_charges}\t{_petName.DefaultIfNullOrEmpty(" ")}");
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (!from.Alive || RootParent != from)
         {
@@ -299,10 +299,8 @@ public partial class BallOfSummoning : Item, TranslocationItem
 
         public BallEntry(BallCallback callback, int number) : base(number, 2) => _callback = callback;
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            var from = Owner.From;
-
             if (from.CheckAlive())
             {
                 _callback(from);

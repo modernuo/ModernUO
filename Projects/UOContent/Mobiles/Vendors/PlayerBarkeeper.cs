@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Items;
@@ -124,18 +125,13 @@ namespace Server.Mobiles
 
     public class ManageBarkeeperEntry : ContextMenuEntry
     {
-        private readonly PlayerBarkeeper m_Barkeeper;
-        private readonly Mobile m_From;
-
-        public ManageBarkeeperEntry(Mobile from, PlayerBarkeeper barkeeper) : base(6151, 12)
+        public ManageBarkeeperEntry() : base(6151, 12)
         {
-            m_From = from;
-            m_Barkeeper = barkeeper;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Barkeeper.BeginManagement(m_From);
+            (target as PlayerBarkeeper)?.BeginManagement(from);
         }
     }
 
@@ -372,13 +368,13 @@ namespace Server.Mobiles
             return Owner == from;
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             if (IsOwner(from) && from.InLOS(this))
             {
-                list.Add(new ManageBarkeeperEntry(from, this));
+                list.Add(new ManageBarkeeperEntry());
             }
         }
 

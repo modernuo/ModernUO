@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Network;
 
@@ -93,30 +93,30 @@ namespace Server.Items
             }
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             if (!Empty && IsAccessibleTo(from))
             {
-                list.Add(new RemoveCreature(this));
+                list.Add(new RemoveCreature());
             }
         }
 
         private class RemoveCreature : ContextMenuEntry
         {
-            private readonly FishBowl m_Bowl;
-
-            public RemoveCreature(FishBowl bowl) : base(6242, 3) => m_Bowl = bowl;
-
-            public override void OnClick()
+            public RemoveCreature() : base(6242, 3)
             {
-                if (m_Bowl?.Deleted != false || !m_Bowl.IsAccessibleTo(Owner.From))
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (target is not FishBowl { Deleted: false } bowl || !bowl.IsAccessibleTo(from))
                 {
                     return;
                 }
 
-                var fish = m_Bowl.Fish;
+                var fish = bowl.Fish;
 
                 if (fish == null)
                 {
@@ -125,17 +125,17 @@ namespace Server.Items
 
                 if (fish.IsLockedDown) // for legacy fish bowls
                 {
-                    Owner.From.SendLocalizedMessage(1010449); // You may not use this object while it is locked down.
+                    from.SendLocalizedMessage(1010449); // You may not use this object while it is locked down.
                 }
-                else if (!Owner.From.PlaceInBackpack(fish))
+                else if (!from.PlaceInBackpack(fish))
                 {
-                    Owner.From.SendLocalizedMessage(1074496); // There is no room in your pack for the creature.
+                    from.SendLocalizedMessage(1074496); // There is no room in your pack for the creature.
                 }
                 else
                 {
-                    Owner.From.SendLocalizedMessage(1074495); // The creature has been removed from the fish bowl.
+                    from.SendLocalizedMessage(1074495); // The creature has been removed from the fish bowl.
                     fish.StartTimer();
-                    m_Bowl.InvalidateProperties();
+                    bowl.InvalidateProperties();
                 }
             }
         }

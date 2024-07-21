@@ -1,6 +1,6 @@
 using ModernUO.Serialization;
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 
 namespace Server.Mobiles
@@ -85,9 +85,9 @@ namespace Server.Mobiles
         {
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             for (var i = 0; i < list.Count; ++i)
             {

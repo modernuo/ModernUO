@@ -4,25 +4,25 @@ namespace Server.ContextMenus
 {
     public class EjectPlayerEntry : ContextMenuEntry
     {
-        private readonly Mobile m_From;
-        private readonly Mobile m_Target;
-        private readonly BaseHouse m_TargetHouse;
-
-        public EjectPlayerEntry(Mobile from, Mobile target) : base(6206, 12)
+        public EjectPlayerEntry() : base(6206, 12)
         {
-            m_From = from;
-            m_Target = target;
-            m_TargetHouse = BaseHouse.FindHouseAt(m_Target);
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (!m_From.Alive || m_TargetHouse.Deleted || !m_TargetHouse.IsFriend(m_From))
+            if (target is not Mobile targetMobile)
             {
                 return;
             }
 
-            m_TargetHouse.Kick(m_From, m_Target);
+            var house = BaseHouse.FindHouseAt(targetMobile);
+
+            if (!from.Alive || house.Deleted || !house.IsFriend(from))
+            {
+                return;
+            }
+
+            house.Kick(from, targetMobile);
         }
     }
 }

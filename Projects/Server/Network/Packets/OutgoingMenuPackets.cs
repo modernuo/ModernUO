@@ -1,7 +1,21 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: OutgoingMenuPackets.cs                                          *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Buffers;
 using System.IO;
-using Server.ContextMenus;
 using Server.Menus.ItemLists;
 using Server.Menus.Questions;
 
@@ -126,84 +140,6 @@ public static class OutgoingMenuPackets
                 var nameLength = answer.Length;
                 writer.Write((byte)nameLength);
                 writer.WriteAscii(answer);
-            }
-        }
-
-        writer.WritePacketLength();
-        ns.Send(writer.Span);
-    }
-
-    public static void SendDisplayContextMenu(this NetState ns, ContextMenu menu)
-    {
-        if (ns == null || menu == null)
-        {
-            return;
-        }
-
-        var newCommand = ns.NewHaven && menu.RequiresNewPacket;
-
-        var entries = menu.Entries;
-        var entriesLength = (byte)entries.Length;
-        var maxLength = 12 + entriesLength * 8;
-
-        var writer = new SpanWriter(stackalloc byte[maxLength]);
-        writer.Write((byte)0xBF);                        // Packet ID
-        writer.Seek(2, SeekOrigin.Current);              // Length
-        writer.Write((short)0x14);                       // Subpacket
-        writer.Write((short)(newCommand ? 0x02 : 0x01)); // Command
-
-        var target = menu.Target;
-        writer.Write(target.Serial);
-        writer.Write(entriesLength);
-
-        var p = target switch
-        {
-            Mobile _  => target.Location,
-            Item item => item.GetWorldLocation(),
-            _         => Point3D.Zero
-        };
-
-        for (var i = 0; i < entriesLength; ++i)
-        {
-            var e = entries[i];
-
-            var range = e.Range;
-
-            if (range == -1)
-            {
-                range = Core.GlobalUpdateRange;
-            }
-
-            var flags = e.Flags;
-            if (!(e.Enabled && menu.From.InRange(p, range)))
-            {
-                flags |= CMEFlags.Disabled;
-            }
-
-            if (newCommand)
-            {
-                writer.Write(e.Number);
-                writer.Write((short)i);
-                writer.Write((short)flags);
-            }
-            else
-            {
-                writer.Write((short)i);
-                writer.Write((ushort)(e.Number - 3000000));
-
-                var color = e.Color & 0xFFFF;
-
-                if (color != 0xFFFF)
-                {
-                    flags |= CMEFlags.Colored;
-                }
-
-                writer.Write((short)flags);
-
-                if ((flags & CMEFlags.Colored) != 0)
-                {
-                    writer.Write((short)color);
-                }
             }
         }
 

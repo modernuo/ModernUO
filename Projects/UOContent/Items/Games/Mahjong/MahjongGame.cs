@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -187,18 +187,18 @@ public partial class MahjongGame : Item, ISecurable
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         _players.CheckPlayers();
 
         if (from.Alive && IsAccessibleTo(from) && _players.GetInGameMobiles(true, false).Count == 0)
         {
-            list.Add(new ResetGameEntry(this));
+            list.Add(new ResetGameEntry());
         }
 
-        SetSecureLevelEntry.AddTo(from, this, list);
+        SetSecureLevelEntry.AddTo(from, this, ref list);
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -299,18 +299,16 @@ public partial class MahjongGame : Item, ISecurable
 
     private class ResetGameEntry : ContextMenuEntry
     {
-        private readonly MahjongGame _game;
-
-        public ResetGameEntry(MahjongGame game) : base(6162) => _game = game;
-
-        public override void OnClick()
+        public ResetGameEntry() : base(6162)
         {
-            var from = Owner.From;
+        }
 
-            if (from.CheckAlive() && !_game.Deleted && _game.IsAccessibleTo(from) &&
-                _game.Players.GetInGameMobiles(true, false).Count == 0)
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (from.CheckAlive() && target is MahjongGame { Deleted: false } game && game.IsAccessibleTo(from) &&
+                game.Players.GetInGameMobiles(true, false).Count == 0)
             {
-                _game.ResetGame(from);
+                game.ResetGame(from);
             }
         }
     }

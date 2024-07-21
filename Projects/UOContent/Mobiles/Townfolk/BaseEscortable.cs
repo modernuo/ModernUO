@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Buffers;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Definitions;
@@ -738,7 +739,7 @@ public partial class BaseEscortable : BaseCreature
 
     public override bool CanBeRenamedBy(Mobile from) => from.AccessLevel >= AccessLevel.GameMaster;
 
-    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void AddCustomContextEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
         if (from.Alive)
         {
@@ -748,22 +749,22 @@ public partial class BaseEscortable : BaseCreature
             {
                 if (escorter == null || escorter == from)
                 {
-                    list.Add(new AskDestinationEntry(this, from));
+                    list.Add(new AskDestinationEntry());
                 }
 
                 if (escorter == null)
                 {
-                    list.Add(new AcceptEscortEntry(this, from));
+                    list.Add(new AcceptEscortEntry());
                 }
             }
 
             if (escorter == from)
             {
-                list.Add(new AbandonEscortEntry(this));
+                list.Add(new AbandonEscortEntry());
             }
         }
 
-        base.AddCustomContextEntries(from, list);
+        base.AddCustomContextEntries(from, ref list);
     }
 
     public virtual string[] GetPossibleDestinations() => Core.ML ? MlTownNames : TownNames;
@@ -901,46 +902,36 @@ public class EscortDestinationInfo
 
 public class AskDestinationEntry : ContextMenuEntry
 {
-    private readonly Mobile _from;
-    private readonly BaseEscortable _mobile;
-
-    public AskDestinationEntry(BaseEscortable m, Mobile from) : base(6100, 3)
+    public AskDestinationEntry() : base(6100, 3)
     {
-        _mobile = m;
-        _from = from;
     }
 
-    public override void OnClick()
+    public override void OnClick(Mobile from, IEntity target)
     {
-        _mobile.SayDestinationTo(_from);
+        (target as BaseEscortable)?.SayDestinationTo(from);
     }
 }
 
 public class AcceptEscortEntry : ContextMenuEntry
 {
-    private readonly Mobile _from;
-    private readonly BaseEscortable _mobile;
-
-    public AcceptEscortEntry(BaseEscortable m, Mobile from) : base(6101, 3)
+    public AcceptEscortEntry() : base(6101, 3)
     {
-        _mobile = m;
-        _from = from;
     }
 
-    public override void OnClick()
+    public override void OnClick(Mobile from, IEntity target)
     {
-        _mobile.AcceptEscorter(_from);
+        (target as BaseEscortable)?.AcceptEscorter(from);
     }
 }
 
 public class AbandonEscortEntry : ContextMenuEntry
 {
-    private readonly BaseEscortable _mobile;
-
-    public AbandonEscortEntry(BaseEscortable m) : base(6102, 3) => _mobile = m;
-
-    public override void OnClick()
+    public AbandonEscortEntry() : base(6102, 3)
     {
-        _mobile.Delete(); // OSI just seems to delete instantly
+    }
+
+    public override void OnClick(Mobile from, IEntity target)
+    {
+        (target as BaseEscortable)?.Delete(); // OSI just seems to delete instantly
     }
 }

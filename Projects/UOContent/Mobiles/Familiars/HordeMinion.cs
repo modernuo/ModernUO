@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
@@ -179,11 +178,11 @@ public partial class HordeMinionFamiliar : BaseFamiliar
         PackAnimal.TryPackOpen(this, from);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
-        PackAnimal.GetContextMenuEntries(this, from, list);
+        PackAnimal.GetContextMenuEntries(this, from, ref list);
     }
 
     private class ReleaseFamiliarWarningGump : StaticWarningGump<ReleaseFamiliarWarningGump>

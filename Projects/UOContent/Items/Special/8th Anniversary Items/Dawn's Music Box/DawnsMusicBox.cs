@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -191,11 +192,11 @@ public partial class DawnsMusicBox : Item, ISecurable
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
-        SetSecureLevelEntry.AddTo(from, this, list); // Set secure level
+        SetSecureLevelEntry.AddTo(from, this, ref list); // Set secure level
     }
 
     public override void OnDoubleClick(Mobile from)

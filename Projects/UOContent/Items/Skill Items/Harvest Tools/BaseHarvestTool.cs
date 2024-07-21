@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Craft;
 using Server.Engines.Harvest;
@@ -125,14 +125,14 @@ public abstract partial class BaseHarvestTool : Item, IUsesRemaining, ICraftable
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
-        AddContextMenuEntries(from, this, list, HarvestSystem);
+        AddContextMenuEntries(from, this, ref list, HarvestSystem);
     }
 
-    public static void AddContextMenuEntries(Mobile from, Item item, List<ContextMenuEntry> list, HarvestSystem system)
+    public static void AddContextMenuEntries(Mobile from, Item item, ref PooledRefList<ContextMenuEntry> list, HarvestSystem system)
     {
         if (system != Mining.System)
         {
@@ -149,12 +149,14 @@ public abstract partial class BaseHarvestTool : Item, IUsesRemaining, ICraftable
             return;
         }
 
-        var miningEntry = new ContextMenuEntry(pm.ToggleMiningStone ? 6179 : 6178);
-        miningEntry.Color = 0x421F;
-        list.Add(miningEntry);
+        list.Add(new ContextMenuEntry(pm.ToggleMiningStone ? 6179 : 6178)
+        {
+            Color = 0x421F
+        });
 
-        list.Add(new ToggleMiningStoneEntry(pm, false, 6176));
-        list.Add(new ToggleMiningStoneEntry(pm, true, 6177));
+        var stoneMining = pm.StoneMining && pm.Skills.Mining.Base >= 100.0;
+        list.Add(new ToggleMiningStoneEntry(false, pm.ToggleMiningStone, 6176));
+        list.Add(new ToggleMiningStoneEntry(true, !pm.ToggleMiningStone && stoneMining, 6177));
     }
 
     private void Deserialize(IGenericReader reader, int version)
@@ -178,51 +180,48 @@ public abstract partial class BaseHarvestTool : Item, IUsesRemaining, ICraftable
 
     private class ToggleMiningStoneEntry : ContextMenuEntry
     {
-        private PlayerMobile _mobile;
-        private bool _value;
+        private readonly bool _value;
 
-        public ToggleMiningStoneEntry(PlayerMobile mobile, bool value, int number) : base(number)
+        public ToggleMiningStoneEntry(bool value, bool enabled, int number) : base(number)
         {
-            _mobile = mobile;
             _value = value;
-
-            var stoneMining = mobile.StoneMining && mobile.Skills.Mining.Base >= 100.0;
-
-            if (mobile.ToggleMiningStone == value || value && !stoneMining)
-            {
-                Flags |= CMEFlags.Disabled;
-            }
+            Enabled = enabled;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            var oldValue = _mobile.ToggleMiningStone;
+            if (from is not PlayerMobile pm)
+            {
+                return;
+            }
+
+            var oldValue = pm.ToggleMiningStone;
 
             if (_value)
             {
                 if (oldValue)
                 {
-                    _mobile.SendLocalizedMessage(1054023); // You are already set to mine both ore and stone!
+                    pm.SendLocalizedMessage(1054023); // You are already set to mine both ore and stone!
                 }
-                else if (!_mobile.StoneMining || _mobile.Skills.Mining.Base < 100.0)
+                else if (!pm.StoneMining || pm.Skills.Mining.Base < 100.0)
                 {
                     // You have not learned how to mine stone or you do not have enough skill!
-                    _mobile.SendLocalizedMessage(1054024);
+                    pm.SendLocalizedMessage(1054024);
                 }
                 else
                 {
-                    _mobile.ToggleMiningStone = true;
-                    _mobile.SendLocalizedMessage(1054022); // You are now set to mine both ore and stone.
+                    pm.ToggleMiningStone = true;
+                    pm.SendLocalizedMessage(1054022); // You are now set to mine both ore and stone.
                 }
             }
             else if (oldValue)
             {
-                _mobile.ToggleMiningStone = false;
-                _mobile.SendLocalizedMessage(1054020); // You are now set to mine only ore.
+                pm.ToggleMiningStone = false;
+                pm.SendLocalizedMessage(1054020); // You are now set to mine only ore.
             }
             else
             {
-                _mobile.SendLocalizedMessage(1054021); // You are already set to mine only ore!
+                pm.SendLocalizedMessage(1054021); // You are already set to mine only ore!
             }
         }
     }

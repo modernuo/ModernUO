@@ -1398,27 +1398,27 @@ namespace Server.Mobiles
             }
         }
 
-        public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void AddCustomContextEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
             if (from.Alive && IsActiveVendor)
             {
                 if (SupportsBulkOrders(from))
                 {
-                    list.Add(new BulkOrderInfoEntry(from, this));
+                    list.Add(new BulkOrderInfoEntry());
                 }
 
                 if (IsActiveSeller)
                 {
-                    list.Add(new VendorBuyEntry(from, this));
+                    list.Add(new VendorBuyEntry(CheckVendorAccess(from)));
                 }
 
                 if (IsActiveBuyer)
                 {
-                    list.Add(new VendorSellEntry(from, this));
+                    list.Add(new VendorSellEntry(CheckVendorAccess(from)));
                 }
             }
 
-            base.AddCustomContextEntries(from, list);
+            base.AddCustomContextEntries(from, ref list);
         }
 
         public virtual IShopSellInfo[] GetSellInfo() => _sellInfo.ToArray();
@@ -1439,63 +1439,57 @@ namespace Server.Mobiles
 
         private class BulkOrderInfoEntry : ContextMenuEntry
         {
-            private readonly Mobile m_From;
-            private readonly BaseVendor m_Vendor;
-
-            public BulkOrderInfoEntry(Mobile from, BaseVendor vendor)
-                : base(6152)
+            public BulkOrderInfoEntry() : base(6152)
             {
-                m_From = from;
-                m_Vendor = vendor;
             }
 
-            public override void OnClick()
+            public override void OnClick(Mobile from, IEntity target)
             {
-                if (!m_Vendor.SupportsBulkOrders(m_From))
+                if (target is not BaseVendor vendor || !vendor.SupportsBulkOrders(from))
                 {
                     return;
                 }
 
-                var ts = m_Vendor.GetNextBulkOrder(m_From);
+                var ts = vendor.GetNextBulkOrder(from);
 
                 var totalSeconds = ts.TotalSeconds;
 
                 // Let them get a bulk order if they are within 1 second.
                 if (totalSeconds < 1)
                 {
-                    m_From.SendLocalizedMessage(1049038); // You can get an order now.
+                    from.SendLocalizedMessage(1049038); // You can get an order now.
 
                     if (Core.AOS)
                     {
-                        var bulkOrder = m_Vendor.CreateBulkOrder(m_From, true);
+                        var bulkOrder = vendor.CreateBulkOrder(from, true);
 
                         if (bulkOrder is LargeBOD bod)
                         {
-                            m_From.SendGump(new LargeBODAcceptGump(m_From, bod));
+                            from.SendGump(new LargeBODAcceptGump(from, bod));
                         }
                         else if (bulkOrder is SmallBOD smallBod)
                         {
-                            m_From.SendGump(new SmallBODAcceptGump(m_From, smallBod));
+                            from.SendGump(new SmallBODAcceptGump(from, smallBod));
                         }
                     }
                 }
                 else
                 {
-                    var oldSpeechHue = m_Vendor.SpeechHue;
-                    m_Vendor.SpeechHue = 0x3B2;
+                    var oldSpeechHue = vendor.SpeechHue;
+                    vendor.SpeechHue = 0x3B2;
 
                     if (Core.SE)
                     {
                         // An offer may be available in about ~1_minutes~ minutes.
-                        m_Vendor.SayTo(m_From, 1072058, $"{Math.Ceiling(totalSeconds / 60):F0}");
+                        vendor.SayTo(from, 1072058, $"{Math.Ceiling(totalSeconds / 60):F0}");
                     }
                     else
                     {
                         // An offer may be available in about ~1_hours~ hours.
-                        m_Vendor.SayTo(m_From, 1049039, $"{Math.Ceiling(totalSeconds / 3600):F0}");
+                        vendor.SayTo(vendor, 1049039, $"{Math.Ceiling(totalSeconds / 3600):F0}");
                     }
 
-                    m_Vendor.SpeechHue = oldSpeechHue;
+                    vendor.SpeechHue = oldSpeechHue;
                 }
             }
         }
@@ -1506,35 +1500,21 @@ namespace Server.ContextMenus
 {
     public class VendorBuyEntry : ContextMenuEntry
     {
-        private readonly BaseVendor m_Vendor;
+        public VendorBuyEntry(bool enabled) : base(6103, 8) => Enabled = enabled;
 
-        public VendorBuyEntry(Mobile from, BaseVendor vendor)
-            : base(6103, 8)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Vendor = vendor;
-            Enabled = vendor.CheckVendorAccess(from);
-        }
-
-        public override void OnClick()
-        {
-            m_Vendor.VendorBuy(Owner.From);
+            (target as BaseVendor)?.VendorBuy(from);
         }
     }
 
     public class VendorSellEntry : ContextMenuEntry
     {
-        private readonly BaseVendor m_Vendor;
+        public VendorSellEntry(bool enabled) : base(6104, 8) => Enabled = enabled;
 
-        public VendorSellEntry(Mobile from, BaseVendor vendor)
-            : base(6104, 8)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Vendor = vendor;
-            Enabled = vendor.CheckVendorAccess(from);
-        }
-
-        public override void OnClick()
-        {
-            m_Vendor.VendorSell(Owner.From);
+            (target as BaseVendor)?.VendorSell(from);
         }
     }
 }

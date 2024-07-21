@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -86,16 +86,16 @@ public abstract partial class BaseBoard : Container, ISecurable
         return false;
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (ValidateDefault(from, this))
         {
-            list.Add(new DefaultEntry(from, this));
+            list.Add(new DefaultEntry(from.AccessLevel >= AccessLevel.GameMaster ? -1 : 1));
         }
 
-        SetSecureLevelEntry.AddTo(from, this, list);
+        SetSecureLevelEntry.AddTo(from, this, ref list);
     }
 
     public static bool ValidateDefault(Mobile from, BaseBoard board) =>
@@ -106,23 +106,15 @@ public abstract partial class BaseBoard : Container, ISecurable
 
     public class DefaultEntry : ContextMenuEntry
     {
-        private readonly BaseBoard m_Board;
-        private readonly Mobile m_From;
-
-        public DefaultEntry(Mobile from, BaseBoard board) : base(
-            6162,
-            from.AccessLevel >= AccessLevel.GameMaster ? -1 : 1
-        )
+        public DefaultEntry(int range) : base(6162, range)
         {
-            m_From = from;
-            m_Board = board;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (ValidateDefault(m_From, m_Board))
+            if (target is BaseBoard board && ValidateDefault(from, board))
             {
-                m_Board.Reset();
+                board.Reset();
             }
         }
     }
