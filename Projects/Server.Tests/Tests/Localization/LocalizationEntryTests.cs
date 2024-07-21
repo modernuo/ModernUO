@@ -2,6 +2,7 @@ using Xunit;
 
 namespace Server.Tests;
 
+[Collection("Sequential Tests")]
 public class LocalizationEntryTests
 {
     [Fact]
