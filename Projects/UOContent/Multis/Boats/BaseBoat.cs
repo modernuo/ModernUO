@@ -2100,15 +2100,12 @@ namespace Server.Multis
                     continue;
                 }
 
-                if (e is Item item)
-                {
-                    queue.Enqueue(e);
-                }
-                else if (e is Mobile m)
+                if (e is Mobile m)
                 {
                     m.Direction = (m.Direction - old + facing) & Direction.Mask;
-                    queue.Enqueue(e);
                 }
+
+                queue.Enqueue(e);
             }
 
             while (queue.Count > 0)
