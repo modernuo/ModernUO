@@ -103,8 +103,8 @@ public partial class SOS : Item
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsAncient => _level >= 4;
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public int Level
     {
         get => _level;

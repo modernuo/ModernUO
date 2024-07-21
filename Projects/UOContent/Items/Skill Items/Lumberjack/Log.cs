@@ -6,11 +6,6 @@ namespace Server.Items;
 [Flippable(0x1bdd, 0x1be0)]
 public partial class Log : Item, ICommodity, IAxe
 {
-    [InvalidateProperties]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    [SerializableField(0)]
-    private CraftResource _resource;
-
     [Constructible]
     public Log(int amount = 1) : this(CraftResource.RegularWood, amount)
     {
@@ -30,6 +25,24 @@ public partial class Log : Item, ICommodity, IAxe
 
         _resource = resource;
         Hue = CraftResources.GetHue(resource);
+    }
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CraftResource Resource
+    {
+        get => _resource;
+        set
+        {
+            if (_resource != value)
+            {
+                _resource = value;
+                Hue = CraftResources.GetHue(value);
+
+                InvalidateProperties();
+                this.MarkDirty();
+            }
+        }
     }
 
     public virtual bool Axe(Mobile from, BaseAxe axe) => TryCreateBoards(from, 0, new Board());

@@ -65,8 +65,8 @@ public partial class SackFlour : Item, IHasQuantity
         _quantity = 20;
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public int Quantity
     {
         get => _quantity;
