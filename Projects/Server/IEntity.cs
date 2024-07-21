@@ -19,7 +19,7 @@ namespace Server;
 
 public interface IEntity : IPoint3D, ISerializable
 {
-    Point3D Location { get; }
+    Point3D Location { get; set; }
     Map Map { get; }
     void MoveToWorld(Point3D location, Map map);
 
@@ -53,7 +53,7 @@ public class Entity : IEntity
 
     public Serial Serial { get; }
 
-    public Point3D Location { get; private set; }
+    public Point3D Location { get; set; }
 
     public int X => Location.X;
 
