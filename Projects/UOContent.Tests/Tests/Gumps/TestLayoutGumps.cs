@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.IO;
 using Server.Gumps;
-using Server.Network;
 using Server.Tests.Network;
 using Xunit;
 

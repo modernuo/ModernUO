@@ -5,6 +5,7 @@ using Server.Commands.Generic;
 using Server.Engines.ConPVP;
 using Server.Ethics;
 using Server.Guilds;
+using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Prompts;

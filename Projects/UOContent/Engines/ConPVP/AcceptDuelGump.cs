@@ -248,7 +248,7 @@ namespace Server.Engines.ConPVP
 
                         if (ns != null)
                         {
-                            foreach (var g in ns.Gumps)
+                            foreach (var g in ns.GetAllGumps())
                             {
                                 if (g is ParticipantGump pg && pg.Participant == m_Participant)
                                 {

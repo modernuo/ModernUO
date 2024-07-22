@@ -179,7 +179,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
             return false;
         }
 
-        foreach (var gump in ns.Gumps)
+        foreach (var gump in ns.GetAllGumps())
         {
             if ((gump as RunebookGump)?.Book == this)
             {

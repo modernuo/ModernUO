@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.MLQuests.Objectives;
+using Server.Gumps;
 using Server.Mobiles;
 
 namespace Server.Engines.MLQuests
