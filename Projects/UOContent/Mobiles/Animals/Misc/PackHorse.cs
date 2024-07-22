@@ -1,5 +1,5 @@
 using ModernUO.Serialization;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 
@@ -103,43 +103,34 @@ namespace Server.Mobiles
             PackAnimal.TryPackOpen(this, from);
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
-            PackAnimal.GetContextMenuEntries(this, from, list);
+            PackAnimal.GetContextMenuEntries(this, from, ref list);
         }
     }
 
     public class PackAnimalBackpackEntry : ContextMenuEntry
     {
-        private readonly BaseCreature m_Animal;
-        private readonly Mobile m_From;
+        public PackAnimalBackpackEntry(bool enabled) : base(6145, 3) => Enabled = enabled;
 
-        public PackAnimalBackpackEntry(BaseCreature animal, Mobile from) : base(6145, 3)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Animal = animal;
-            m_From = from;
-
-            if (animal.IsDeadPet)
+            if (target is BaseCreature bc)
             {
-                Enabled = false;
+                PackAnimal.TryPackOpen(bc, from);
             }
-        }
-
-        public override void OnClick()
-        {
-            PackAnimal.TryPackOpen(m_Animal, m_From);
         }
     }
 
     public static class PackAnimal
     {
-        public static void GetContextMenuEntries(BaseCreature animal, Mobile from, List<ContextMenuEntry> list)
+        public static void GetContextMenuEntries(BaseCreature animal, Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
             if (CheckAccess(animal, from))
             {
-                list.Add(new PackAnimalBackpackEntry(animal, from));
+                list.Add(new PackAnimalBackpackEntry(!animal.IsDeadPet));
             }
         }
 

@@ -5,11 +5,6 @@ namespace Server.Items;
 [SerializationGenerator(2, false)]
 public abstract partial class BaseGranite : Item
 {
-    [InvalidateProperties]
-    [SerializableField(0)]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private CraftResource _resource;
-
     public BaseGranite(CraftResource resource) : base(0x1779)
     {
         Hue = CraftResources.GetHue(resource);
@@ -19,6 +14,24 @@ public abstract partial class BaseGranite : Item
     }
 
     public override double DefaultWeight => Core.ML ? 1.0 : 10.0;
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CraftResource Resource
+    {
+        get => _resource;
+        set
+        {
+            if (_resource != value)
+            {
+                _resource = value;
+                Hue = CraftResources.GetHue(value);
+
+                InvalidateProperties();
+                this.MarkDirty();
+            }
+        }
+    }
 
     public override int LabelNumber => 1044607; // high quality granite
 

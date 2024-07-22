@@ -1,6 +1,5 @@
 using System;
 using ModernUO.Serialization;
-using Server.Engines.ConPVP;
 
 namespace Server.Items;
 
@@ -23,37 +22,42 @@ public abstract partial class BaseHealPotion : BasePotion
         from.Heal(Utility.RandomMinMax(min, max));
     }
 
-    public override void Drink(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
+        if (!base.CanDrink(from))
+        {
+            return false;
+        }
+
         if (from.Hits >= from.HitsMax)
         {
             // You decide against drinking this potion, as you are already at full health.
             from.SendLocalizedMessage(1049547);
-            return;
+            return false;
         }
 
         if (from.Poisoned || MortalStrike.IsWounded(from))
         {
             // You can not heal yourself in your current state.
             from.LocalOverheadMessage(MessageType.Regular, 0x22, 1005000);
-            return;
+            return false;
         }
 
         if (!from.BeginAction<BaseHealPotion>())
         {
             // You must wait 10 seconds before using another healing potion.
             from.LocalOverheadMessage(MessageType.Regular, 0x22, 500235);
-            return;
+            return false;
         }
 
+        return true;
+    }
+
+    public override void Drink(Mobile from)
+    {
         DoHeal(from);
 
         PlayDrinkEffect(from);
-
-        if (!DuelContext.IsFreeConsume(from))
-        {
-            Consume();
-        }
 
         Timer.StartTimer(TimeSpan.FromSeconds(Delay), from.EndAction<BaseHealPotion>);
     }

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BufferReader.cs                                                 *
  *                                                                       *
@@ -29,9 +29,9 @@ public class BufferReader : IGenericReader
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BufferReader));
 
-    private Dictionary<ulong, string> _typesDb;
-    private Encoding _encoding;
-    private byte[] _buffer;
+    private readonly Dictionary<ulong, string> _typesDb;
+    private readonly Encoding _encoding;
+    private readonly byte[] _buffer;
     private int _position;
 
     public long Position => _position;
@@ -43,21 +43,6 @@ public class BufferReader : IGenericReader
         _encoding = encoding ?? TextEncoding.UTF8;
         _typesDb = typesDb;
     }
-
-    public BufferReader(byte[] buffer, DateTime lastSerialized, Dictionary<ulong, string> typesDb = null) : this(buffer)
-    {
-        LastSerialized = lastSerialized;
-        _typesDb = typesDb;
-    }
-
-    public void Reset(byte[] newBuffer, out byte[] oldBuffer)
-    {
-        oldBuffer = _buffer;
-        _buffer = newBuffer;
-        _position = 0;
-    }
-
-    public DateTime LastSerialized { get; init; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadString(bool intern = false) => ReadBool() ? ReadStringRaw(intern) : null;

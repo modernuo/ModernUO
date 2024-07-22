@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
@@ -75,10 +76,10 @@ public abstract partial class BasePlayerBB : Item, ISecurable
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
-        SetSecureLevelEntry.AddTo(from, this, list);
+        base.GetContextMenuEntries(from, ref list);
+        SetSecureLevelEntry.AddTo(from, this, ref list);
     }
 
     public static bool CheckAccess(BaseHouse house, Mobile from)

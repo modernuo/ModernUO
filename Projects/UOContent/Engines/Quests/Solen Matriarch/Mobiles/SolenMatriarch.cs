@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Plants;
 using Server.Items;
@@ -141,14 +141,14 @@ public abstract partial class BaseSolenMatriarch : BaseQuester
         return true;
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive && from is PlayerMobile pm && pm.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen &&
             qs.IsObjectiveInProgress(typeof(ProcessFungiObjective)))
         {
-            list.Add(new ProcessZoogiFungusEntry(this, pm));
+            list.Add(new ProcessZoogiFungusEntry());
         }
     }
 
@@ -197,20 +197,15 @@ public abstract partial class BaseSolenMatriarch : BaseQuester
 
     private class ProcessZoogiFungusEntry : ContextMenuEntry
     {
-        private readonly PlayerMobile _from;
-        private readonly BaseSolenMatriarch _matriarch;
-
-        public ProcessZoogiFungusEntry(BaseSolenMatriarch matriarch, PlayerMobile from) : base(6184)
+        public ProcessZoogiFungusEntry() : base(6184)
         {
-            _matriarch = matriarch;
-            _from = from;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (_from.Alive)
+            if (from.Alive && from is PlayerMobile pm && target is BaseSolenMatriarch matriarch)
             {
-                _from.Target = new ProcessFungiTarget(_matriarch, _from);
+                from.Target = new ProcessFungiTarget(matriarch, pm);
             }
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Gumps;
@@ -415,13 +416,13 @@ public partial class TreasureMapChest : LockableContainer
         base.OnAfterDelete();
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive)
         {
-            list.Add(new RemoveEntry(from, this));
+            list.Add(new RemoveEntry(from == _owner));
         }
     }
 
@@ -487,25 +488,16 @@ public partial class TreasureMapChest : LockableContainer
 
     private class RemoveEntry : ContextMenuEntry
     {
-        private readonly TreasureMapChest _chest;
-        private readonly Mobile _from;
+        public RemoveEntry(bool enabled) : base(6149, 3) => Enabled = enabled;
 
-        public RemoveEntry(Mobile from, TreasureMapChest chest) : base(6149, 3)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            _from = from;
-            _chest = chest;
-
-            Enabled = from == chest._owner;
-        }
-
-        public override void OnClick()
-        {
-            if (_chest.Deleted || _from != _chest._owner || !_from.CheckAlive())
+            if (!from.CheckAlive() || target is not TreasureMapChest chest || chest.Deleted || from != chest._owner)
             {
                 return;
             }
 
-            _chest.BeginRemove(_from);
+            chest.BeginRemove(from);
         }
     }
 }

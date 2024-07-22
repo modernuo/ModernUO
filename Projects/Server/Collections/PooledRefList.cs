@@ -151,14 +151,14 @@ public ref struct PooledRefList<T>
 
                     if (_items.Length > 0)
                     {
-                        Clear();
+                        Array.Clear(_items);
                         ArrayPool.Return(_items);
                     }
                     _items = newItems;
                 }
                 else
                 {
-                    Clear();
+                    Array.Clear(_items);
                     ArrayPool.Return(_items);
                     _items = s_emptyArray;
                 }
@@ -946,13 +946,16 @@ public ref struct PooledRefList<T>
         _version++;
     }
 
-    // Sorts the elements in this list.  Uses the default comparer and
-    // Array.Sort.
-    public void Sort() => Sort(0, Count, null);
-
     // Sorts the elements in this list.  Uses Array.Sort with the
     // provided comparer.
-    public void Sort(IComparer<T>? comparer) => Sort(0, Count, comparer);
+    public void Sort(IComparer<T>? comparer = null)
+    {
+        if (_size > 1)
+        {
+            Array.Sort(_items, 0, _size, comparer);
+        }
+        _version++;
+    }
 
     // Sorts the elements in a section of this list. The sort compares the
     // elements to each other using the given IComparer interface. If
@@ -964,15 +967,8 @@ public ref struct PooledRefList<T>
     //
     public void Sort(int index, int count, IComparer<T>? comparer)
     {
-        if (index < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
-
-        if (count < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
 
         if (_size - index < count)
         {
@@ -988,14 +984,11 @@ public ref struct PooledRefList<T>
 
     public void Sort(Comparison<T> comparison)
     {
-        if (comparison == null)
-        {
-            throw new ArgumentNullException(nameof(comparison));
-        }
+        ArgumentNullException.ThrowIfNull(comparison);
 
         if (_size > 1)
         {
-            Array.Sort(_items, comparison);
+            _items.AsSpan(0, _size).Sort(comparison);
         }
         _version++;
     }

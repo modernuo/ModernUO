@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 
@@ -108,13 +109,13 @@ public abstract partial class BaseFamiliar : BaseCreature
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive && Controlled && from == ControlMaster && from.InRange(this, 14))
         {
-            list.Add(new ReleaseEntry(from, this));
+            list.Add(new ReleaseEntry());
         }
     }
 
@@ -170,21 +171,16 @@ public abstract partial class BaseFamiliar : BaseCreature
 
     private class ReleaseEntry : ContextMenuEntry
     {
-        private readonly BaseFamiliar m_Familiar;
-        private readonly Mobile m_From;
-
-        public ReleaseEntry(Mobile from, BaseFamiliar familiar) : base(6118, 14)
+        public ReleaseEntry() : base(6118, 14)
         {
-            m_From = from;
-            m_Familiar = familiar;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (!m_Familiar.Deleted && m_Familiar.Controlled && m_From == m_Familiar.ControlMaster &&
-                m_From.CheckAlive())
+            if (from.CheckAlive() && target is BaseFamiliar { Deleted: false, Controlled: true } familiar &&
+                from == familiar.ControlMaster)
             {
-                m_Familiar.BeginRelease(m_From);
+                familiar.BeginRelease(from);
             }
         }
     }

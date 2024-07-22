@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GenericPersistence.cs                                           *
  *                                                                       *
@@ -22,35 +22,54 @@ namespace Server;
 
 public abstract class GenericPersistence : Persistence, IGenericSerializable
 {
+    private long _initialSize = 1024 * 1024;
+    private MemoryMapFileWriter _fileToSave;
+
     public string Name { get; }
 
     public GenericPersistence(string name, int priority) : base(priority) => Name = name;
 
+    public override void Preserialize(string savePath, ConcurrentQueue<Type> types)
+    {
+        var path = Path.Combine(savePath, Name);
+        var filePath = Path.Combine(path, $"{Name}.bin");
+        PathUtility.EnsureDirectory(path);
+
+        _fileToSave = new MemoryMapFileWriter(new FileStream(filePath, FileMode.Create), _initialSize, types);
+    }
+
     public override void Serialize()
     {
-        World.PushToCache(this);
+        World.ResetRoundRobin();
+        World.PushToCache((this, this));
     }
 
-    public long SavePosition { get; set; }
-
-    public BufferWriter SaveBuffer { get; set; }
-
-    public void Serialize(ConcurrentQueue<Type> types)
+    public override void WriteSnapshot()
     {
-        SaveBuffer ??= new BufferWriter(true, types);
+        string folderPath = null;
+        using (var fs = _fileToSave.FileStream)
+        {
+            if (fs.Position > _initialSize)
+            {
+                _initialSize = fs.Position;
+            }
 
-        SaveBuffer.Seek(0, SeekOrigin.Begin);
-        Serialize(SaveBuffer);
+            _fileToSave.Dispose();
+            if (_fileToSave.Position == 0)
+            {
+                folderPath = Path.GetDirectoryName(fs.Name);
+            }
+        }
+
+        if (folderPath != null)
+        {
+            Directory.Delete(folderPath);
+        }
     }
+
+    public override void Serialize(IGenericSerializable e, int threadIndex) => Serialize(_fileToSave);
 
     public abstract void Serialize(IGenericWriter writer);
-
-    public override void WriteSnapshot(string basePath)
-    {
-        string binPath = Path.Combine(basePath, Name, $"{Name}.bin");
-        var buffer = SaveBuffer!.Buffer.AsSpan(0, (int)SaveBuffer.Position);
-        AdhocPersistence.WriteSnapshot(new FileInfo(binPath), buffer);
-    }
 
     public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
         AdhocPersistence.Deserialize(Path.Combine(savePath, Name, $"{Name}.bin"), Deserialize);

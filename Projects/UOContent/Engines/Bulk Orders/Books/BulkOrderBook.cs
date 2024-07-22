@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
@@ -277,36 +278,33 @@ public partial class BulkOrderBook : Item, ISecurable
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.CheckAlive() && IsChildOf(from.Backpack))
         {
-            list.Add(new NameBookEntry(from, this));
+            list.Add(new NameBookEntry());
         }
 
-        SetSecureLevelEntry.AddTo(from, this, list);
+        SetSecureLevelEntry.AddTo(from, this, ref list);
     }
 
     private class NameBookEntry : ContextMenuEntry
     {
-        private readonly BulkOrderBook m_Book;
-        private readonly Mobile m_From;
-
-        public NameBookEntry(Mobile from, BulkOrderBook book) : base(6216)
+        public NameBookEntry() : base(6216)
         {
-            m_From = from;
-            m_Book = book;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (m_From.CheckAlive() && m_Book.IsChildOf(m_From.Backpack))
+            if (!from.CheckAlive() || target is not BulkOrderBook book || !book.IsChildOf(from.Backpack))
             {
-                m_From.Prompt = new NameBookPrompt(m_Book);
-                m_From.SendLocalizedMessage(1062479); // Type in the new name of the book:
+                return;
             }
+
+            from.Prompt = new NameBookPrompt(book);
+            from.SendLocalizedMessage(1062479); // Type in the new name of the book:
         }
     }
 

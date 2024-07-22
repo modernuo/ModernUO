@@ -4296,13 +4296,8 @@ namespace Server.Multis
 
     public class SetSecureLevelEntry : ContextMenuEntry
     {
-        private readonly Item m_Item;
-        private ISecurable m_Securable;
-
-        public SetSecureLevelEntry(Item item, ISecurable securable) : base(6203, 6)
+        public SetSecureLevelEntry() : base(6203, 6)
         {
-            m_Item = item;
-            m_Securable = securable;
         }
 
         public static ISecurable GetSecurable(Mobile from, Item item)
@@ -4313,8 +4308,6 @@ namespace Server.Multis
             {
                 return null;
             }
-
-            ISecurable sec = null;
 
             if (item is ISecurable securable)
             {
@@ -4332,45 +4325,50 @@ namespace Server.Multis
 
                 if (isOwned)
                 {
-                    sec = securable;
+                    return securable;
                 }
             }
             else
             {
                 var list = house.Secures;
 
-                for (var i = 0; sec == null && i < list?.Count; ++i)
+                for (var i = 0; i < list?.Count; ++i)
                 {
                     var si = list[i];
 
                     if (si.Item == item)
                     {
-                        sec = si;
+                        return si;
                     }
                 }
             }
 
-            return sec;
+            return null;
         }
 
-        public static void AddTo(Mobile from, Item item, List<ContextMenuEntry> list)
+        public static void AddTo(Mobile from, Item item, ref PooledRefList<ContextMenuEntry> list)
         {
             var sec = GetSecurable(from, item);
 
             if (sec != null)
             {
-                list.Add(new SetSecureLevelEntry(item, sec));
+                list.Add(new SetSecureLevelEntry());
             }
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            var sec = GetSecurable(Owner.From, m_Item);
+            if (target is not Item item)
+            {
+                return;
+            }
+
+            var sec = GetSecurable(from, item);
 
             if (sec != null)
             {
-                Owner.From.CloseGump<SetSecureLevelGump>();
-                Owner.From.SendGump(new SetSecureLevelGump(Owner.From, sec, BaseHouse.FindHouseAt(m_Item)));
+                from.CloseGump<SetSecureLevelGump>();
+                from.SendGump(new SetSecureLevelGump(from, sec, BaseHouse.FindHouseAt(item)));
             }
         }
     }

@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Mobiles;
 
@@ -92,14 +92,14 @@ public partial class LeatherNinjaBelt : BaseWaist, INinjaWeapon
         NinjaWeapon.AttemptShoot((PlayerMobile)from, this);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (IsChildOf(from))
         {
-            list.Add(new NinjaWeapon.LoadEntry(this, 6222));
-            list.Add(new NinjaWeapon.UnloadEntry(this, 6223));
+            list.Add(new NinjaWeapon.LoadEntry(6222));
+            list.Add(new NinjaWeapon.UnloadEntry(6223, UsesRemaining > 0));
         }
     }
 }

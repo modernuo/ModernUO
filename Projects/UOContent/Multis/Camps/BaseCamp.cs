@@ -21,14 +21,14 @@ public abstract partial class BaseCamp : BaseMulti
     [SerializableField(2, setter: "private")]
     private DateTime _decayTime;
 
-    private TimeSpan m_DecayDelay;
+    private TimeSpan _decayDelay;
     private Timer _decayTimer;
 
     public BaseCamp(int multiID) : base(multiID)
     {
         _items = new List<Item>();
         _mobiles = new List<Mobile>();
-        m_DecayDelay = TimeSpan.FromMinutes(30.0);
+        _decayDelay = TimeSpan.FromMinutes(30.0);
         RefreshDecay(true);
 
         Timer.StartTimer(CheckAddComponents);
@@ -36,12 +36,12 @@ public abstract partial class BaseCamp : BaseMulti
 
     public virtual int EventRange => 10;
 
-    public virtual TimeSpan DecayDelay
+    public TimeSpan DecayDelay
     {
-        get => m_DecayDelay;
+        get => _decayDelay;
         set
         {
-            m_DecayDelay = value;
+            _decayDelay = value;
             RefreshDecay(true);
         }
     }
@@ -62,12 +62,6 @@ public abstract partial class BaseCamp : BaseMulti
     {
     }
 
-    public override void OnDelete()
-    {
-        _decayTimer?.Stop();
-        _decayTimer = null;
-    }
-
     public virtual void RefreshDecay(bool setDecayTime)
     {
         if (Deleted)
@@ -77,11 +71,11 @@ public abstract partial class BaseCamp : BaseMulti
 
         if (setDecayTime)
         {
-            _decayTime = Core.Now + DecayDelay;
+            _decayTime = Core.Now + _decayDelay;
         }
 
         _decayTimer?.Stop();
-        _decayTimer = Timer.DelayCall(DecayDelay, Delete);
+        _decayTimer = Timer.DelayCall(_decayDelay, Delete);
     }
 
     public virtual void AddItem(Item item, int xOffset, int yOffset, int zOffset)
@@ -159,6 +153,9 @@ public abstract partial class BaseCamp : BaseMulti
 
         ClearItems();
         ClearMobiles();
+
+        _decayTimer?.Stop();
+        _decayTimer = null;
     }
 
     private void Deserialize(IGenericReader reader, int version)

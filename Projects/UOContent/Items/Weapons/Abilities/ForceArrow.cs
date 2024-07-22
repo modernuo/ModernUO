@@ -102,7 +102,7 @@ namespace Server.Items
 
         public static ForceArrowInfo GetInfo(Mobile attacker, Mobile defender)
         {
-            if (_table.TryGetValue(attacker,out var list))
+            if (_table.TryGetValue(attacker, out var list))
             {
                 foreach (ForceArrowInfo info in list)
                 {

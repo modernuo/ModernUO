@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Targeting;
+using CalcMoves = Server.Movement.Movement;
 
 namespace Server.Items;
 
@@ -233,53 +234,7 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         int x = m.X;
         int y = m.Y;
 
-        switch (m.Direction & Direction.Mask)
-        {
-            case Direction.North:
-                {
-                    --y;
-                    break;
-                }
-            case Direction.Right:
-                {
-                    ++x;
-                    --y;
-                    break;
-                }
-            case Direction.East:
-                {
-                    ++x;
-                    break;
-                }
-            case Direction.Down:
-                {
-                    ++x;
-                    ++y;
-                    break;
-                }
-            case Direction.South:
-                {
-                    ++y;
-                    break;
-                }
-            case Direction.Left:
-                {
-                    --x;
-                    ++y;
-                    break;
-                }
-            case Direction.West:
-                {
-                    --x;
-                    break;
-                }
-            case Direction.Up:
-                {
-                    --x;
-                    --y;
-                    break;
-                }
-        }
+        CalcMoves.Offset(m.Direction, ref x, ref y);
 
         foreach (var item in m.Map.GetItemsAt(x, y))
         {

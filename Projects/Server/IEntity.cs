@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IEntity.cs                                                      *
  *                                                                       *
@@ -19,7 +19,7 @@ namespace Server;
 
 public interface IEntity : IPoint3D, ISerializable
 {
-    Point3D Location { get; }
+    Point3D Location { get; set; }
     Map Map { get; }
     void MoveToWorld(Point3D location, Map map);
 
@@ -51,13 +51,9 @@ public class Entity : IEntity
 
     public DateTime Created { get; set; } = Core.Now;
 
-    public long SavePosition { get; set; } = -1;
-
-    public BufferWriter SaveBuffer { get; set; }
-
     public Serial Serial { get; }
 
-    public Point3D Location { get; private set; }
+    public Point3D Location { get; set; }
 
     public int X => Location.X;
 

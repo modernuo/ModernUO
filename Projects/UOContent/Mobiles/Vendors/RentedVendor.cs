@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Misc;
@@ -155,27 +155,27 @@ public partial class RentedVendor : PlayerVendor
         base.Destroy(toBackpack);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
         if (from.Alive)
         {
             if (IsOwner(from))
             {
-                list.Add(new ContractOptionsEntry(this));
+                list.Add(new ContractOptionsEntry());
             }
             else if (IsLandlord(from))
             {
                 if (RentalGold > 0)
                 {
-                    list.Add(new CollectRentEntry(this));
+                    list.Add(new CollectRentEntry());
                 }
 
-                list.Add(new TerminateContractEntry(this));
-                list.Add(new ContractOptionsEntry(this));
+                list.Add(new TerminateContractEntry());
+                list.Add(new ContractOptionsEntry());
             }
         }
 
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
     }
 
     [AfterDeserialization]
@@ -190,65 +190,59 @@ public partial class RentedVendor : PlayerVendor
 
     private class ContractOptionsEntry : ContextMenuEntry
     {
-        private readonly RentedVendor m_Vendor;
-
-        public ContractOptionsEntry(RentedVendor vendor) : base(6209) => m_Vendor = vendor;
-
-        public override void OnClick()
+        public ContractOptionsEntry() : base(6209)
         {
-            var from = Owner.From;
+        }
 
-            if (m_Vendor.Deleted || !from.CheckAlive())
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (!from.CheckAlive() || target is not RentedVendor vendor || vendor.Deleted)
             {
                 return;
             }
 
-            if (m_Vendor.IsOwner(from))
+            if (vendor.IsOwner(from))
             {
                 from.CloseGump<RenterVendorRentalGump>();
-                from.SendGump(new RenterVendorRentalGump(m_Vendor));
+                from.SendGump(new RenterVendorRentalGump(vendor));
 
-                m_Vendor.SendRentalExpireMessage(from);
+                vendor.SendRentalExpireMessage(from);
             }
-            else if (m_Vendor.IsLandlord(from))
+            else if (vendor.IsLandlord(from))
             {
                 from.CloseGump<LandlordVendorRentalGump>();
-                from.SendGump(new LandlordVendorRentalGump(m_Vendor));
+                from.SendGump(new LandlordVendorRentalGump(vendor));
 
-                m_Vendor.SendRentalExpireMessage(from);
+                vendor.SendRentalExpireMessage(from);
             }
         }
     }
 
     private class CollectRentEntry : ContextMenuEntry
     {
-        private readonly RentedVendor m_Vendor;
-
-        public CollectRentEntry(RentedVendor vendor) : base(6212) => m_Vendor = vendor;
-
-        public override void OnClick()
+        public CollectRentEntry() : base(6212)
         {
-            var from = Owner.From;
+        }
 
-            if (m_Vendor.Deleted || !from.CheckAlive() || !m_Vendor.IsLandlord(from))
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (!from.CheckAlive() || target is not RentedVendor vendor || vendor.Deleted || !vendor.IsLandlord(from))
             {
                 return;
             }
 
-            if (m_Vendor.RentalGold > 0)
+            if (vendor.RentalGold > 0)
             {
-                var depositedGold = Banker.DepositUpTo(from, m_Vendor.RentalGold);
-                m_Vendor.RentalGold -= depositedGold;
+                var depositedGold = Banker.DepositUpTo(from, vendor.RentalGold);
+                vendor.RentalGold -= depositedGold;
 
                 if (depositedGold > 0)
                 {
-                    from.SendLocalizedMessage(
-                        1060397,
-                        depositedGold.ToString()
-                    ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+                    // ~1_AMOUNT~ gold has been deposited into your bank box.
+                    from.SendLocalizedMessage(1060397, depositedGold.ToString());
                 }
 
-                if (m_Vendor.RentalGold > 0)
+                if (vendor.RentalGold > 0)
                 {
                     from.SendLocalizedMessage(500390); // Your bank box is full.
                 }
@@ -258,23 +252,20 @@ public partial class RentedVendor : PlayerVendor
 
     private class TerminateContractEntry : ContextMenuEntry
     {
-        private readonly RentedVendor m_Vendor;
-
-        public TerminateContractEntry(RentedVendor vendor) : base(6218) => m_Vendor = vendor;
-
-        public override void OnClick()
+        public TerminateContractEntry() : base(6218)
         {
-            var from = Owner.From;
+        }
 
-            if (m_Vendor.Deleted || !from.CheckAlive() || !m_Vendor.IsLandlord(from))
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (!from.CheckAlive() || target is not RentedVendor vendor || vendor.Deleted || !vendor.IsLandlord(from))
             {
                 return;
             }
 
-            from.SendLocalizedMessage(
-                1062503
-            ); // Enter the amount of gold you wish to offer the renter in exchange for immediate termination of this contract?
-            from.Prompt = new RefundOfferPrompt(m_Vendor);
+            // Enter the amount of gold you wish to offer the renter in exchange for immediate termination of this contract?
+            from.SendLocalizedMessage(1062503);
+            from.Prompt = new RefundOfferPrompt(vendor);
         }
     }
 

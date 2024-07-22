@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Guild.cs                                                        *
  *                                                                       *
@@ -51,12 +51,6 @@ public abstract class BaseGuild : ISerializable
     [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
-
-    [IgnoreDupe]
-    public long SavePosition { get; set; } = -1;
-
-    [IgnoreDupe]
-    public BufferWriter SaveBuffer { get; set; }
 
     public abstract void Serialize(IGenericWriter writer);
 

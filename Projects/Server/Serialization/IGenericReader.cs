@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IGenericReader.cs                                               *
  *                                                                       *
@@ -22,9 +22,6 @@ namespace Server;
 
 public interface IGenericReader
 {
-    // Used to determine valid Entity deserialization
-    DateTime LastSerialized { get; init; }
-
     string ReadString(bool intern = false);
     public string ReadStringRaw(bool intern = false);
 

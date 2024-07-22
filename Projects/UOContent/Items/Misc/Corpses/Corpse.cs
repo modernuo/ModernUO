@@ -696,9 +696,9 @@ public partial class Corpse : Container, ICarvable
         _instancedItems?.Remove(item);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (Core.AOS && _owner == from && from.Alive)
         {
@@ -1050,11 +1050,11 @@ public partial class Corpse : Container, ICarvable
         {
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (Owner.Target is Corpse corpse && Owner.From.CheckAlive())
+            if (from.CheckAlive() && target is Corpse corpse)
             {
-                corpse.Open(Owner.From, false);
+                corpse.Open(from, false);
             }
         }
     }

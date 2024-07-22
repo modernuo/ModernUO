@@ -1,5 +1,4 @@
 using ModernUO.Serialization;
-using Server.Engines.ConPVP;
 
 namespace Server.Items;
 
@@ -11,26 +10,30 @@ public partial class NightSightPotion : BasePotion
     {
     }
 
+    public override bool CanDrink(Mobile from)
+    {
+        if (!base.CanDrink(from))
+        {
+            return false;
+        }
+
+        if (!from.BeginAction<LightCycle>())
+        {
+            from.SendMessage("You already have night sight.");
+            return false;
+        }
+
+        return true;
+    }
+
     public override void Drink(Mobile from)
     {
-        if (from.BeginAction<LightCycle>())
-        {
-            new LightCycle.NightSightTimer(from).Start();
-            from.LightLevel = LightCycle.DungeonLevel / 2;
+        new LightCycle.NightSightTimer(from).Start();
+        from.LightLevel = LightCycle.DungeonLevel / 2;
 
-            from.FixedParticles(0x376A, 9, 32, 5007, EffectLayer.Waist);
-            from.PlaySound(0x1E3);
+        from.FixedParticles(0x376A, 9, 32, 5007, EffectLayer.Waist);
+        from.PlaySound(0x1E3);
 
-            PlayDrinkEffect(from);
-
-            if (!DuelContext.IsFreeConsume(from))
-            {
-                Consume();
-            }
-        }
-        else
-        {
-            from.SendMessage("You already have nightsight.");
-        }
+        PlayDrinkEffect(from);
     }
 }

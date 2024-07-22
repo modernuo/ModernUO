@@ -1,6 +1,5 @@
 using System;
 using ModernUO.Serialization;
-using Server.Engines.ConPVP;
 using Server.Spells;
 
 namespace Server.Items;
@@ -15,30 +14,27 @@ public abstract partial class BaseAgilityPotion : BasePotion
     public abstract int DexOffset { get; }
     public abstract TimeSpan Duration { get; }
 
-    public bool DoAgility(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
-        // TODO: Verify scaled; is it offset, duration, or both?
-        if (SpellHelper.AddStatOffset(from, StatType.Dex, Scale(from, DexOffset), Duration))
+        if (!base.CanDrink(from))
         {
-            from.FixedEffect(0x375A, 10, 15);
-            from.PlaySound(0x1E7);
-            return true;
+            return false;
         }
 
-        from.SendLocalizedMessage(502173); // You are already under a similar effect.
-        return false;
+        // TODO: Verify scaled; is it offset, duration, or both?
+        if (!SpellHelper.AddStatOffset(from, StatType.Dex, Scale(from, DexOffset), Duration))
+        {
+            from.SendLocalizedMessage(502173); // You are already under a similar effect.
+            return false;
+        }
+
+        from.FixedEffect(0x375A, 10, 15);
+        from.PlaySound(0x1E7);
+        return true;
     }
 
     public override void Drink(Mobile from)
     {
-        if (DoAgility(from))
-        {
-            PlayDrinkEffect(from);
-
-            if (!DuelContext.IsFreeConsume(from))
-            {
-                Consume();
-            }
-        }
+        PlayDrinkEffect(from);
     }
 }

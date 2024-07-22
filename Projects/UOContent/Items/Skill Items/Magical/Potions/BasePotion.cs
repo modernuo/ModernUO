@@ -57,6 +57,8 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
 
     public virtual bool RequireFreeHand => true;
 
+    public virtual bool IsThrowablePotion => false;
+
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
 
@@ -127,26 +129,16 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (!Movable)
+        if (!CanDrink(from))
         {
             return;
         }
 
-        if (!from.InRange(GetWorldLocation(), 1))
-        {
-            from.SendLocalizedMessage(502138); // That is too far away for you to use
-            return;
-        }
+        var pot = this;
 
-        if (RequireFreeHand && !HasFreeHand(from))
+        if (IsThrowablePotion && Amount > 1)
         {
-            from.SendLocalizedMessage(502172); // You must have a free hand to drink a potion.
-            return;
-        }
-
-        if (this is BaseExplosionPotion && Amount > 1)
-        {
-            var pot = GetType().CreateInstance<BaseExplosionPotion>();
+            pot = GetType().CreateInstance<BasePotion>();
 
             Amount--;
 
@@ -158,13 +150,9 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
             {
                 pot.MoveToWorld(from.Location, from.Map);
             }
+        }
 
-            pot.Drink(from);
-        }
-        else
-        {
-            Drink(from);
-        }
+        pot.Drink(from);
     }
 
     private void Deserialize(IGenericReader reader, int version)
@@ -172,16 +160,38 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
         _potionEffect = (PotionEffect)reader.ReadInt();
     }
 
+    public virtual bool CanDrink(Mobile from)
+    {
+        if (!Movable)
+        {
+            return false;
+        }
+
+        if (!from.InRange(GetWorldLocation(), 1))
+        {
+            from.SendLocalizedMessage(502138); // That is too far away for you to use
+            return false;
+        }
+
+        if (RequireFreeHand && !HasFreeHand(from))
+        {
+            from.SendLocalizedMessage(502172); // You must have a free hand to drink a potion.
+            return false;
+        }
+
+        return true;
+    }
+
     public abstract void Drink(Mobile from);
 
-    public static void PlayDrinkEffect(Mobile m)
+    public void PlayDrinkEffect(Mobile m)
     {
         m.RevealingAction();
-
         m.PlaySound(0x2D6);
 
         if (!DuelContext.IsFreeConsume(m))
         {
+            Consume();
             m.AddToBackpack(new Bottle());
         }
 

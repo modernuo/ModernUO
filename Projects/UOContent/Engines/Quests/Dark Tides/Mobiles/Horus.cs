@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.Engines.Quests.Necro;
 
@@ -115,9 +114,9 @@ public partial class Horus : BaseQuester
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (!from.Alive || from is not PlayerMobile pm)
         {
@@ -131,7 +130,7 @@ public partial class Horus : BaseQuester
             var obj = qs.FindObjective<SpeakCavePasswordObjective>();
             var enabled = obj?.Completed == false;
 
-            list.Add(new SpeakPasswordEntry(this, pm, enabled));
+            list.Add(new SpeakPasswordEntry(enabled));
         }
     }
 
@@ -150,25 +149,13 @@ public partial class Horus : BaseQuester
 
     private class SpeakPasswordEntry : ContextMenuEntry
     {
-        private readonly PlayerMobile _from;
-        private readonly Horus _horus;
+        public SpeakPasswordEntry(bool enabled) : base(6193, 3) => Enabled = enabled;
 
-        public SpeakPasswordEntry(Horus horus, PlayerMobile from, bool enabled) : base(6193, 3)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            _horus = horus;
-            _from = from;
-
-            if (!enabled)
+            if (from.Alive && from is PlayerMobile pm && target is Horus horus)
             {
-                Flags |= CMEFlags.Disabled;
-            }
-        }
-
-        public override void OnClick()
-        {
-            if (_from.Alive)
-            {
-                _horus.OnPasswordSpoken(_from);
+                horus.OnPasswordSpoken(pm);
             }
         }
     }

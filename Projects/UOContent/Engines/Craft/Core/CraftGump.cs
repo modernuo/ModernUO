@@ -39,9 +39,6 @@ public class CraftGump : DynamicGump
     {
         var context = _craftSystem.GetContext(_from);
 
-        _from.CloseGump<CraftGump>();
-        _from.CloseGump<CraftGumpItem>();
-
         builder.AddPage();
 
         builder.AddBackground(0, 0, 530, 437, 5054);
@@ -396,7 +393,7 @@ public class CraftGump : DynamicGump
         }
     }
 
-    public int CreateGroupList(ref DynamicGumpBuilder builder)
+    public void CreateGroupList(ref DynamicGumpBuilder builder)
     {
         var craftGroupCol = _craftSystem.CraftGroups;
 
@@ -418,8 +415,14 @@ public class CraftGump : DynamicGump
                 builder.AddLabel(50, 80 + i * 20, LabelHue, craftGroup.NameString);
             }
         }
+    }
 
-        return craftGroupCol.Count;
+    public override void SendTo(NetState ns)
+    {
+        _from.CloseGump<CraftGump>();
+        _from.CloseGump<CraftGumpItem>();
+
+        base.SendTo(ns);
     }
 
     public static int GetButtonID(int type, int index) => 1 + type + index * 7;

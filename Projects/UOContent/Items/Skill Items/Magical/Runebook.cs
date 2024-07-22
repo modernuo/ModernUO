@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Craft;
 using Server.Gumps;
@@ -113,10 +114,10 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
     public override bool AllowEquippedCast(Mobile from) => true;
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
-        SetSecureLevelEntry.AddTo(from, this, list);
+        base.GetContextMenuEntries(from, ref list);
+        SetSecureLevelEntry.AddTo(from, this, ref list);
     }
 
     private void Deserialize(IGenericReader reader, int version)
