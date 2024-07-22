@@ -237,7 +237,7 @@ public sealed class HelpGump : DynamicGump
 
     public static void HelpRequest(Mobile m)
     {
-        foreach (var gump in m.NetState.Gumps)
+        foreach (var gump in m.NetState.GetAllGumps())
         {
             if (gump is HelpGump)
             {

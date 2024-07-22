@@ -13,8 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
 using Server.Network;
+using System.Collections.Generic;
 
 namespace Server.Gumps;
 

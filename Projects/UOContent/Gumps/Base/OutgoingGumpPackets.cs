@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: OutgoingGumpPackets.cs                                          *
+ * File: OutgoingGumpPackets.cs                                            *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,38 +13,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Collections;
+using Server.Compression;
+using Server.Logging;
+using Server.Network;
 using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Server.Collections;
-using Server.Compression;
-using Server.Gumps;
-using Server.Logging;
 
-namespace Server.Network;
+namespace Server.Gumps;
 
 public static class OutgoingGumpPackets
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(OutgoingGumpPackets));
-
-    public static void SendCloseGump(this NetState ns, int typeId, int buttonId)
-    {
-        if (ns.CannotSendPackets())
-        {
-            return;
-        }
-
-        var writer = new SpanWriter(stackalloc byte[13]);
-        writer.Write((byte)0xBF); // Packet ID
-        writer.Write((ushort)13);
-
-        writer.Write((short)0x04);
-        writer.Write(typeId);
-        writer.Write(buttonId);
-
-        ns.Send(writer.Span);
-    }
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(OutgoingGumpPackets));
 
     private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
     private static readonly byte[] _stringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
@@ -66,7 +48,7 @@ public static class OutgoingGumpPackets
         var bytesPacked = Deflate.Standard.Pack(dest, span);
         if (bytesPacked == 0)
         {
-            logger.Warning("Gump compression failed");
+            _logger.Warning("Gump compression failed");
 
             writer.Write(4);
             writer.Write(0);
@@ -176,6 +158,24 @@ public static class OutgoingGumpPackets
         writer.WriteAsciiNull(unknown);
         writer.Write((short)(caption.Length + 1));
         writer.WriteAsciiNull(caption);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void SendCloseGump(this NetState ns, int typeId, int buttonId)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        var writer = new SpanWriter(stackalloc byte[13]);
+        writer.Write((byte)0xBF); // Packet ID
+        writer.Write((ushort)13);
+
+        writer.Write((short)0x04);
+        writer.Write(typeId);
+        writer.Write(buttonId);
 
         ns.Send(writer.Span);
     }

@@ -1,3 +1,5 @@
+using Server.Gumps;
+
 namespace Server.Engines.ConPVP
 {
     public class TournamentBracketItem : Item

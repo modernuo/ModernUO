@@ -30,7 +30,6 @@ public abstract class BaseGump
     public abstract int TextEntries { get; }
 
     public int X { get; set; }
-
     public int Y { get; set; }
 
     public BaseGump(int x, int y) : this()
@@ -56,7 +55,7 @@ public abstract class BaseGump
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetTypeId(Type type)
+    private static int GetTypeId(Type type)
     {
         unchecked
         {

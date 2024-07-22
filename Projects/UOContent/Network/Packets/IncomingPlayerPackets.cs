@@ -13,20 +13,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Buffers;
-using System.Buffers.Binary;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
-using Server.Diagnostics;
 using Server.Engines.Help;
 using Server.Engines.MLQuests;
 using Server.Engines.Virtues;
-using Server.Exceptions;
 using Server.Guilds;
-using Server.Gumps;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
@@ -52,7 +44,6 @@ public static class IncomingPlayerPackets
         IncomingPackets.Register(0x9B, 258, true, &HelpRequest);
         IncomingPackets.Register(0xA4, 149, false, &SystemInfo);
         IncomingPackets.Register(0xA7, 4, true, &RequestScrollWindow);
-        IncomingPackets.Register(0xB1, 0, true, &DisplayGumpResponse);
         IncomingPackets.Register(0xC2, 0, true, &UnicodePromptResponse);
         IncomingPackets.Register(0xC8, 2, true, &SetUpdateRange);
         IncomingPackets.Register(0xD0, 0, true, &ConfigurationFile);
@@ -347,173 +338,6 @@ public static class IncomingPlayerPackets
     public static void HelpRequest(NetState state, SpanReader reader)
     {
         HelpGump.HelpRequest(state.Mobile);
-    }
-
-    public static void DisplayGumpResponse(NetState state, SpanReader reader)
-    {
-        var serial = (Serial)reader.ReadUInt32();
-        var typeId = reader.ReadInt32();
-        var buttonId = reader.ReadInt32();
-
-        BaseGump baseGump = null;
-
-        foreach (var g in state.Gumps)
-        {
-            if (g.Serial != serial || g.TypeID != typeId)
-            {
-                continue;
-            }
-
-            baseGump = g;
-            break;
-        }
-
-        if (baseGump != null)
-        {
-            if (baseGump is Gump gump)
-            {
-                var buttonExists = buttonId == 0; // 0 is always 'close'
-
-                if (!buttonExists)
-                {
-                    foreach (var e in gump.Entries)
-                    {
-                        if ((e as GumpButton)?.ButtonID == buttonId)
-                        {
-                            buttonExists = true;
-                            break;
-                        }
-
-                        if ((e as GumpImageTileButton)?.ButtonID == buttonId)
-                        {
-                            buttonExists = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!buttonExists)
-                {
-                    state.LogInfo("Invalid gump response, disconnecting...");
-                    var exception = new InvalidGumpResponseException($"Button {buttonId} doesn't exist");
-                    exception.SetStackTrace(new StackTrace());
-                    NetState.TraceException(exception);
-                    return;
-                }
-            }
-
-            var switchCount = reader.ReadInt32();
-
-            if (switchCount < 0 || switchCount > baseGump.Switches)
-            {
-                state.LogInfo("Invalid gump response, disconnecting...");
-                var exception = new InvalidGumpResponseException($"Bad switch count {switchCount}");
-                exception.SetStackTrace(new StackTrace());
-                NetState.TraceException(exception);
-                return;
-            }
-
-            int switchByteCount = switchCount * 4;
-
-            // Read all the integers
-            ReadOnlySpan<int> switchBlock =
-                MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchByteCount));
-
-            reader.Seek(switchByteCount, SeekOrigin.Current);
-
-            scoped ReadOnlySpan<int> switches;
-
-            // Swap the endianness if necessary
-            if (BitConverter.IsLittleEndian)
-            {
-                Span<int> reversedSwitches = stackalloc int[switchCount];
-                BinaryPrimitives.ReverseEndianness(switchBlock, reversedSwitches);
-                switches = reversedSwitches;
-            }
-            else
-            {
-                switches = switchBlock;
-            }
-
-            var textCount = reader.ReadInt32();
-            if (textCount < 0 || textCount > baseGump.TextEntries)
-            {
-                state.LogInfo("Invalid gump response, disconnecting...");
-                var exception = new InvalidGumpResponseException($"Bad text entry count {textCount}");
-                exception.SetStackTrace(new StackTrace());
-                NetState.TraceException(exception);
-                return;
-            }
-
-            Span<ushort> textIds = stackalloc ushort[textCount];
-            Span<Range> textFields = stackalloc Range[textCount];
-
-            var textOffset = reader.Position;
-            for (var i = 0; i < textCount; i++)
-            {
-                var textId = reader.ReadUInt16();
-                var textLength = reader.ReadUInt16();
-
-                if (textLength > 239)
-                {
-                    state.LogInfo("Invalid gump response, disconnecting...");
-                    var exception = new InvalidGumpResponseException($"Text entry {i} is too long ({textLength})");
-                    exception.SetStackTrace(new StackTrace());
-                    NetState.TraceException(exception);
-                    return;
-                }
-
-                textIds[i] = textId;
-                var offset = reader.Position - textOffset;
-                var length = textLength * 2;
-                textFields[i] = offset..(offset + length);
-                reader.Seek(length, SeekOrigin.Current);
-            }
-
-            var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
-
-            state.RemoveGump(baseGump);
-
-            var prof = GumpProfile.Acquire(baseGump.GetType());
-
-            prof?.Start();
-
-            var relayInfo = new RelayInfo(
-                buttonId,
-                switches,
-                textIds,
-                textFields,
-                textBlock
-            );
-            baseGump.OnResponse(state, relayInfo);
-
-            prof?.Finish();
-        }
-
-        if (typeId == 461)
-        {
-            // Virtue gump
-            var switchCount = reader.Remaining >= 4 ? reader.ReadInt32() : 0;
-
-            if (buttonId == 1 && switchCount > 0)
-            {
-                var beheld = World.FindEntity<PlayerMobile>((Serial)reader.ReadUInt32());
-
-                if (beheld != null)
-                {
-                    VirtueGump.RequestVirtueGump((PlayerMobile)state.Mobile, beheld);
-                }
-            }
-            else
-            {
-                var beheld = World.FindMobile(serial);
-
-                if (beheld != null)
-                {
-                    VirtueGump.RequestVirtueItem((PlayerMobile)state.Mobile, beheld, buttonId);
-                }
-            }
-        }
     }
 
     public static void SetWarMode(NetState state, SpanReader reader)

@@ -1546,7 +1546,7 @@ namespace Server.Engines.ConPVP
 
                                 if (ns != null)
                                 {
-                                    foreach (var g in ns.Gumps)
+                                    foreach (var g in ns.GetAllGumps())
                                     {
                                         if (g is ParticipantGump pg && pg.Participant == p)
                                         {
@@ -1586,7 +1586,7 @@ namespace Server.Engines.ConPVP
                                 {
                                     var send = true;
 
-                                    foreach (var g in ns.Gumps)
+                                    foreach (var g in ns.GetAllGumps())
                                     {
                                         if (g is ParticipantGump pg && pg.Participant == p)
                                         {
@@ -1635,7 +1635,7 @@ namespace Server.Engines.ConPVP
                                 {
                                     var send = true;
 
-                                    foreach (var g in ns.Gumps)
+                                    foreach (var g in ns.GetAllGumps())
                                     {
                                         if (g is ParticipantGump pg && pg.Participant == p)
                                         {

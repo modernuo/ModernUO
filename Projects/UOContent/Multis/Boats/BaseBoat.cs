@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.Engines.Spawners;
+using Server.Gumps;
 using Server.Items;
 using Server.Multis.Boats;
 using Server.Network;

@@ -1,3 +1,5 @@
+using Server.Gumps;
+
 namespace Server.Engines.AdvancedSearch;
 
 public static class AdvancedSearchCommand

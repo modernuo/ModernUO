@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Gumps;
 using Server.Multis;
 using Server.Network;
 

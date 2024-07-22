@@ -13,14 +13,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
 using Server.Guilds;
-using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
 using Server.Logging;
@@ -30,6 +26,9 @@ using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
 using Server.Text;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using CalcMoves = Server.Movement.Movement;
 
 namespace Server;
@@ -8121,63 +8120,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         return false;
-    }
-
-    public BaseGump FindGump<T>() where T : BaseGump => m_NetState?.Gumps.Find(g => g is T);
-
-    public bool CloseGump<T>() where T : BaseGump
-    {
-        if (m_NetState == null)
-        {
-            return false;
-        }
-
-        var gump = FindGump<T>();
-
-        if (gump != null)
-        {
-            m_NetState.SendCloseGump(gump.TypeID, 0);
-            m_NetState.RemoveGump(gump);
-            gump.OnServerClose(m_NetState);
-        }
-
-        return true;
-    }
-
-    public bool CloseAllGumps()
-    {
-        var ns = m_NetState;
-
-        if (ns.CannotSendPackets())
-        {
-            return false;
-        }
-
-        var gumps = new List<BaseGump>(ns.Gumps);
-
-        ns.ClearGumps();
-
-        foreach (var gump in gumps)
-        {
-            ns.SendCloseGump(gump.TypeID, 0);
-
-            gump.OnServerClose(ns);
-        }
-
-        return true;
-    }
-
-    public bool HasGump<T>() where T : BaseGump => FindGump<T>() != null;
-
-    public bool SendGump(BaseGump g)
-    {
-        if (m_NetState == null)
-        {
-            return false;
-        }
-
-        g.SendTo(m_NetState);
-        return true;
     }
 
     public bool SendMenu(IMenu m)

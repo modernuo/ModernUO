@@ -1,5 +1,4 @@
 using Server.Gumps;
-using Server.Network;
 using Xunit;
 
 namespace Server.Tests.Network;
