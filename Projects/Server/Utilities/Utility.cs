@@ -746,6 +746,12 @@ public static class Utility
     public static T RandomList<T>(params T[] list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this ReadOnlySpan<T> list) => list.Length == 0 ? (T)default : list[Random(list.Length)];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this T[] list) => list.RandomElement(default);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomElement<T>(this IList<T> list) => list.RandomElement(default);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -857,6 +863,10 @@ public static class Utility
         list.RemoveAt(index);
         return value;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this T[] list, T valueIfZero) =>
+        list.Length == 0 ? valueIfZero : list[Random(list.Length)];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomElement<T>(this IList<T> list, T valueIfZero) =>
