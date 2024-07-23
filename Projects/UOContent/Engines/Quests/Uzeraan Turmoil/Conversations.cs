@@ -219,50 +219,29 @@ namespace Server.Engines.Quests.Haven
             {
                 if (System.From.Profession == 2) // magician
                 {
-                    /*
-                     * <I>Uzeraan takes the dirt from you and smiles...<BR><BR></I>
-                     * Wonderful!  I knew I could count on you.  As a token of my appreciation
-                     * I've given you a bag with some <a href = "?ForceTopic37">reagents</a>
-                     * as well as some <a href="?ForceTopic35">spell scrolls</a>.
-                     * They should help out a bit.<BR><BR>
-                     *
-                     * The next item I need is a <I>Vial of Blood</I>.  I know it seems strange,
-                     * but that's what the formula asks for.  I have some locked away in a chest
-                     * not far from here.  It's only a short distance from the mansion.  Let me give
-                     * you directions...<BR><BR>
-                     *
-                     * Exit the front door to the East.  Then follow the path to the North.
-                     * You will pass by several pedestals with lanterns on them.  Continue on this
-                     * path until you run into a small hut.  Walk up the stairs and through the door.
-                     * Inside you will find a chest.  Open it and bring me a <I>Vial of Blood</I>
-                     * from inside the chest.  It's very easy to find.  Just follow the road and you
-                     * can't miss it.<BR><BR>
-                     *
-                     * Good luck!
-                     */
                     return 1049388;
                 }
 
                 /* <I>Uzeraan takes the dirt from you and smiles...<BR><BR></I>
-                 *
-                 * Wonderful!  I knew I could count on you.  As a token of my appreciation
-                 * I've given you a bag with some bandages as well as some healing potions.
-                 * They should help out a bit.<BR><BR>
-                 *
-                 * The next item I need is a <I>Vial of Blood</I>.  I know it seems strange,
-                 * but that's what the formula asks for.  I have some locked away in a chest
-                 * not far from here.  It's only a short distance from the mansion.  Let me give
-                 * you directions...<BR><BR>
-                 *
-                 * Exit the front door to the East.  Then follow the path to the North.
-                 * You will pass by several pedestals with lanterns on them.  Continue on this
-                 * path until you run into a small hut.  Walk up the stairs and through the door.
-                 * Inside you will find a chest.  Open it and bring me a <I>Vial of Blood</I>
-                 * from inside the chest.  It's very easy to find.  Just follow the road and you
-                 * can't miss it.<BR><BR>
-                 *
-                 * Good luck!
-                 */
+                   *
+                   * Wonderful!  I knew I could count on you.  As a token of my appreciation
+                   * I've given you a bag with some bandages as well as some healing potions.
+                   * They should help out a bit.<BR><BR>
+                   *
+                   * The next item I need is a <I>Vial of Blood</I>.  I know it seems strange,
+                   * but that's what the formula asks for.  I have some locked away in a chest
+                   * not far from here.  It's only a short distance from the mansion.  Let me give
+                   * you directions...<BR><BR>
+                   *
+                   * Exit the front door to the East.  Then follow the path to the North.
+                   * You will pass by several pedestals with lanterns on them.  Continue on this
+                   * path until you run into a small hut.  Walk up the stairs and through the door.
+                   * Inside you will find a chest.  Open it and bring me a <I>Vial of Blood</I>
+                   * from inside the chest.  It's very easy to find.  Just follow the road and you
+                   * can't miss it.<BR><BR>
+                   *
+                   * Good luck!
+                   */
                 return 1049329;
             }
         }
@@ -294,24 +273,6 @@ namespace Server.Engines.Quests.Haven
             {
                 if (System.From.Profession == 2) // magician
                 {
-                    /*
-                     * <I>You hand Uzeraan the Vial of Blood, which he hastily accepts...</I><BR><BR>
-                     *
-                     * Excellent work!  Only one reagent remains and the spell is complete!  The final
-                     * requirement is a <I>Daemon Bone</I>, which will not be as easily acquired as the
-                     * previous two components.<BR><BR>
-                     *
-                     * There is a haunted graveyard on this island, which is the home to many
-                     * undead creatures.   Dispose of the undead as you see fit.  Be sure to search
-                     * their remains after you have smitten them, to check for a <I>Daemon Bone</I>.
-                     * I'm quite sure that you will find what we seek, if you are thorough enough
-                     * with your extermination.<BR><BR>
-                     *
-                     * Take these explosion spell scrolls and  magical wizard's hat to aid you in
-                     * your battle.  The scrolls should help you make short work of the undead.<BR><BR>
-                     *
-                     * Return here when you have found a <I>Daemon Bone</I>.
-                     */
                     return 1049389;
                 }
 
