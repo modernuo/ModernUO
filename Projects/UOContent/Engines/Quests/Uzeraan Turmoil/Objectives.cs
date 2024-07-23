@@ -375,18 +375,13 @@ namespace Server.Engines.Quests.Haven
             {
                 if (System.From.Profession == 5)
                 {
-                    /*
-                     * Use your <a href="?ForceTopic108">Sacred Journey</a> ability on the rune to the
-                     * <a href="?ForceTopic13">North</a> of Uzeraan to travel to the graveyard.
-                     */
                     return 1060755;
                 }
 
-                /*
-                 * Use Uzeraan's teleporter to get to the Haunted graveyard.<BR><BR>
-                 *
-                 * Slay the undead until you find a <I>Daemon Bone</I>.
-                 */
+                /* Use Uzeraan's teleporter to get to the Haunted graveyard.<BR><BR>
+                   *
+                   * Slay the undead until you find a <I>Daemon Bone</I>.
+                   */
                 return 1049362;
             }
         }
