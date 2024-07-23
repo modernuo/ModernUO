@@ -10,7 +10,7 @@ namespace Server.Engines.Quests
     {
         private int m_CurProgress;
 
-        public abstract object Message { get; }
+        public abstract int Message { get; }
 
         public virtual int MaxProgress => 1;
         public virtual QuestItemInfo[] Info => null;
