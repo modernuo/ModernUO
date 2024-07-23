@@ -3178,7 +3178,7 @@ namespace Server.Mobiles
                     }
             }
 
-            if (!CharacterCreation.VerifyProfession(Profession))
+            if (!ProfessionInfo.VerifyProfession(Profession))
             {
                 Profession = 0;
             }

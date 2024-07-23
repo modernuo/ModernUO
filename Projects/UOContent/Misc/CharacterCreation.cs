@@ -199,7 +199,7 @@ public static class CharacterCreation
 
     private static void EventSink_CharacterCreated(CharacterCreatedEventArgs args)
     {
-        if (!VerifyProfession(args.Profession))
+        if (!ProfessionInfo.VerifyProfession(args.Profession))
         {
             args.Profession = 0;
         }
@@ -237,8 +237,6 @@ public static class CharacterCreation
 
             if (newChar is PlayerMobile pm)
             {
-                pm.Profession = args.Profession;
-
                 if (((Account)pm.Account).Young)
                 {
                     pm.Young = true;
@@ -302,9 +300,6 @@ public static class CharacterCreation
         new WelcomeTimer(newChar).Start();
     }
 
-    public static bool VerifyProfession(int profession) =>
-        profession >= 0 && profession < ProfessionInfo.Professions.Length;
-
     private static CityInfo GetStartLocation(CharacterCreatedEventArgs args)
     {
         var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
@@ -325,75 +320,76 @@ public static class CharacterCreation
         }
 
         var flags = args.State?.Flags ?? ClientFlags.None;
-        var profession = ProfessionInfo.Professions[args.Profession];
-
-        switch (profession?.Name.ToLowerInvariant())
+        if (ProfessionInfo.GetProfession(args.Profession, out var profession))
         {
-            case "necromancer":
-                {
-                    if ((flags & ClientFlags.Malas) != 0 && availableMaps.Includes(MapSelectionFlags.Malas))
+            switch (profession.Name.ToLowerInvariant())
+            {
+                case "necromancer":
                     {
-                        return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
+                        if ((flags & ClientFlags.Malas) != 0 && availableMaps.Includes(MapSelectionFlags.Malas))
+                        {
+                            return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
+                        }
+
+                        /*
+                         * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
+                         * installation and cannot be transported to Malas.
+                         * You will not be able to take your new player quest in Malas
+                         * without an AOS client.  You are now being taken to the city of
+                         * Haven on the Trammel facet.
+                         */
+                        Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1062205));
+                        return GetStartingCities()[0];
                     }
-
-                    /*
-                     * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
-                     * installation and cannot be transported to Malas.
-                     * You will not be able to take your new player quest in Malas
-                     * without an AOS client.  You are now being taken to the city of
-                     * Haven on the Trammel facet.
-                     */
-                    Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1062205));
-                    return GetStartingCities()[0];
-                }
-            case "paladin":
-                {
-                    return GetStartingCities()[0];
-                }
-            case "samurai":
-                {
-                    bool haotisAndTokunoAccessible =
-                        (flags & ClientFlags.Tokuno) == ClientFlags.Tokuno &&
-                        (flags & ClientFlags.Malas) == ClientFlags.Malas &&
-                        availableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
-
-                    if (haotisAndTokunoAccessible)
+                case "paladin":
                     {
-                        return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
+                        return GetStartingCities()[0];
                     }
-
-                    /*
-                     * Unfortunately you are playing on a *NON-Samurai-Empire* game
-                     * installation and cannot be transported to Tokuno.
-                     * You will not be able to take your new player quest in Tokuno
-                     * without an SE client. You are now being taken to the city of
-                     * Haven on the Trammel facet.
-                     */
-                    Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1063487));
-                    return GetStartingCities()[0];
-                }
-            case "ninja":
-                {
-                    bool enimosAndTokunoAccessible =
-                        (flags & ClientFlags.Tokuno) == ClientFlags.Tokuno &&
-                        (flags & ClientFlags.Malas) == ClientFlags.Malas &&
-                        availableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
-
-                    if (enimosAndTokunoAccessible)
+                case "samurai":
                     {
-                        return new CityInfo("Ninja DE", "Enimo's Residence", 414, 823, -1, Map.Malas);
-                    }
+                        bool haotisAndTokunoAccessible =
+                            (flags & ClientFlags.Tokuno) == ClientFlags.Tokuno &&
+                            (flags & ClientFlags.Malas) == ClientFlags.Malas &&
+                            availableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
 
-                    /*
-                     * Unfortunately you are playing on a *NON-Samurai-Empire* game
-                     * installation and cannot be transported to Tokuno.
-                     * You will not be able to take your new player quest in Tokuno
-                     * without an SE client. You are now being taken to the city of
-                     * Haven on the Trammel facet.
-                     */
-                    Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1063487));
-                    return GetStartingCities()[0];
-                }
+                        if (haotisAndTokunoAccessible)
+                        {
+                            return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
+                        }
+
+                        /*
+                         * Unfortunately you are playing on a *NON-Samurai-Empire* game
+                         * installation and cannot be transported to Tokuno.
+                         * You will not be able to take your new player quest in Tokuno
+                         * without an SE client. You are now being taken to the city of
+                         * Haven on the Trammel facet.
+                         */
+                        Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1063487));
+                        return GetStartingCities()[0];
+                    }
+                case "ninja":
+                    {
+                        bool enimosAndTokunoAccessible =
+                            (flags & ClientFlags.Tokuno) == ClientFlags.Tokuno &&
+                            (flags & ClientFlags.Malas) == ClientFlags.Malas &&
+                            availableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
+
+                        if (enimosAndTokunoAccessible)
+                        {
+                            return new CityInfo("Ninja DE", "Enimo's Residence", 414, 823, -1, Map.Malas);
+                        }
+
+                        /*
+                         * Unfortunately you are playing on a *NON-Samurai-Empire* game
+                         * installation and cannot be transported to Tokuno.
+                         * You will not be able to take your new player quest in Tokuno
+                         * without an SE client. You are now being taken to the city of
+                         * Haven on the Trammel facet.
+                         */
+                        Timer.StartTimer(BadStartMessageDelay, () => m.SendLocalizedMessage(1063487));
+                        return GetStartingCities()[0];
+                    }
+            }
         }
 
         return args.City;
@@ -407,9 +403,9 @@ public static class CharacterCreation
         var dex = 0;
         var intel = 0;
 
-        if (prof > 0)
+        if (ProfessionInfo.GetProfession(prof, out var profession))
         {
-            stats = ProfessionInfo.Professions[prof]?.Stats ?? stats;
+            stats = profession.Stats;
         }
 
         for (var i = 0; i < stats.Length; i++)
@@ -482,13 +478,11 @@ public static class CharacterCreation
 
     private static void SetSkills(Mobile m, SkillNameValue[] skills, int prof, int shirtHue, int pantsHue)
     {
-        ProfessionInfo profession = null;
-        if (prof > 0)
+        if (ProfessionInfo.GetProfession(prof, out var profession))
         {
-            profession = ProfessionInfo.Professions[prof];
-            skills = ProfessionInfo.Professions[prof]?.Skills ?? skills;
+            skills = profession.Skills;
         }
-        else if (!ValidateSkills(m.Race.RaceFlag, skills)) // This does not check for skills that are not allowed by expansion
+        else if (!ValidateSkills(m.Race.RaceFlag, skills))
         {
             return;
         }
