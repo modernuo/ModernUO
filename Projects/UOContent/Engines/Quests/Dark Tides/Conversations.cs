@@ -2,7 +2,7 @@ namespace Server.Engines.Quests.Necro
 {
     public class AcceptConversation : QuestConversation
     {
-        public override object Message => 1049092;
+        public override int Message => 1049092;
 
         public override void OnRead()
         {
@@ -25,7 +25,7 @@ namespace Server.Engines.Quests.Necro
             new(1048032, 3702)  // a bag
         };
 
-        public override object Message => 1060099;
+        public override int Message => 1060099;
 
         public override QuestItemInfo[] Info => m_Info;
 
@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Necro
             new(1026153, 6178) // teleporter
         };
 
-        public override object Message => 1060103;
+        public override int Message => 1060103;
 
         public override QuestItemInfo[] Info => m_Info;
 
@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Necro
 
     public class HorusConversation : QuestConversation
     {
-        public override object Message => 1060105;
+        public override int Message => 1060105;
 
         public override void OnRead()
         {
@@ -64,7 +64,7 @@ namespace Server.Engines.Quests.Necro
 
     public class MardothVaultConversation : QuestConversation
     {
-        public override object Message => 1060107;
+        public override int Message => 1060107;
 
         public override void OnRead()
         {
@@ -79,7 +79,7 @@ namespace Server.Engines.Quests.Necro
             new(1023643, 8787) // spellbook
         };
 
-        public override object Message => 1060110;
+        public override int Message => 1060110;
 
         public override QuestItemInfo[] Info => m_Info;
 
@@ -91,7 +91,7 @@ namespace Server.Engines.Quests.Necro
 
     public class ReadAbraxusScrollConversation : QuestConversation
     {
-        public override object Message => 1060114;
+        public override int Message => 1060114;
 
         public override void OnRead()
         {
@@ -101,7 +101,7 @@ namespace Server.Engines.Quests.Necro
 
     public class SecondHorusConversation : QuestConversation
     {
-        public override object Message => 1060118;
+        public override int Message => 1060118;
 
         public override void OnRead()
         {
@@ -111,12 +111,12 @@ namespace Server.Engines.Quests.Necro
 
     public class HealConversation : QuestConversation
     {
-        public override object Message => 1061610;
+        public override int Message => 1061610;
     }
 
     public class HorusRewardConversation : QuestConversation
     {
-        public override object Message => 1060717;
+        public override int Message => 1060717;
 
         public override bool Logged => false;
     }
@@ -132,7 +132,7 @@ namespace Server.Engines.Quests.Necro
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -168,7 +168,7 @@ namespace Server.Engines.Quests.Necro
 
     public class MardothKronusConversation : QuestConversation
     {
-        public override object Message => 1060121;
+        public override int Message => 1060121;
 
         public override void OnRead()
         {
@@ -178,7 +178,7 @@ namespace Server.Engines.Quests.Necro
 
     public class MardothEndConversation : QuestConversation
     {
-        public override object Message => 1060133;
+        public override int Message => 1060133;
 
         public override void OnRead()
         {
@@ -188,7 +188,7 @@ namespace Server.Engines.Quests.Necro
 
     public class BankerConversation : QuestConversation
     {
-        public override object Message => 1060137;
+        public override int Message => 1060137;
 
         public override void OnRead()
         {
@@ -198,7 +198,7 @@ namespace Server.Engines.Quests.Necro
 
     public class RadarConversation : QuestConversation
     {
-        public override object Message => 1061692;
+        public override int Message => 1061692;
 
         public override bool Logged => false;
     }

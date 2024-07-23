@@ -4,14 +4,14 @@ namespace Server.Engines.Quests.Hag
 {
     public class DontOfferConversation : QuestConversation
     {
-        public override object Message => 1055000;
+        public override int Message => 1055000;
 
         public override bool Logged => false;
     }
 
     public class AcceptConversation : QuestConversation
     {
-        public override object Message => 1055002;
+        public override int Message => 1055002;
 
         public override void OnRead()
         {
@@ -21,14 +21,14 @@ namespace Server.Engines.Quests.Hag
 
     public class HagDuringCorpseSearchConversation : QuestConversation
     {
-        public override object Message => 1055003;
+        public override int Message => 1055003;
 
         public override bool Logged => false;
     }
 
     public class ApprenticeCorpseConversation : QuestConversation
     {
-        public override object Message => 1055004;
+        public override int Message => 1055004;
 
         public override void OnRead()
         {
@@ -38,7 +38,7 @@ namespace Server.Engines.Quests.Hag
 
     public class MurderConversation : QuestConversation
     {
-        public override object Message => 1055005;
+        public override int Message => 1055005;
 
         public override void OnRead()
         {
@@ -48,7 +48,7 @@ namespace Server.Engines.Quests.Hag
 
     public class HagDuringImpSearchConversation : QuestConversation
     {
-        public override object Message => 1055006;
+        public override int Message => 1055006;
 
         public override bool Logged => false;
     }
@@ -63,7 +63,7 @@ namespace Server.Engines.Quests.Hag
         {
         }
 
-        public override object Message => 1055007;
+        public override int Message => 1055007;
 
         public override void OnRead()
         {
@@ -87,7 +87,7 @@ namespace Server.Engines.Quests.Hag
 
     public class ZeefzorpulConversation : QuestConversation
     {
-        public override object Message => 1055008;
+        public override int Message => 1055008;
 
         public override void OnRead()
         {
@@ -97,7 +97,7 @@ namespace Server.Engines.Quests.Hag
 
     public class RecipeConversation : QuestConversation
     {
-        public override object Message => 1055009;
+        public override int Message => 1055009;
 
         public override void OnRead()
         {
@@ -107,14 +107,14 @@ namespace Server.Engines.Quests.Hag
 
     public class HagDuringIngredientsConversation : QuestConversation
     {
-        public override object Message => 1055012;
+        public override int Message => 1055012;
 
         public override bool Logged => false;
     }
 
     public class BlackheartFirstConversation : QuestConversation
     {
-        public override object Message => 1055010;
+        public override int Message => 1055010;
 
         public override void OnRead()
         {
@@ -141,7 +141,7 @@ namespace Server.Engines.Quests.Hag
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -226,7 +226,7 @@ namespace Server.Engines.Quests.Hag
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -281,7 +281,7 @@ namespace Server.Engines.Quests.Hag
 
     public class EndConversation : QuestConversation
     {
-        public override object Message => 1055013;
+        public override int Message => 1055013;
 
         public override void OnRead()
         {
@@ -291,7 +291,7 @@ namespace Server.Engines.Quests.Hag
 
     public class RecentlyFinishedConversation : QuestConversation
     {
-        public override object Message => 1055064;
+        public override int Message => 1055064;
 
         public override bool Logged => false;
     }

@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Zento
 {
     public class FirstKillObjective : QuestObjective
     {
-        public override object Message => 1063316;
+        public override int Message => 1063316;
 
         public override void RenderProgress(BaseQuestGump gump)
         {
@@ -40,7 +40,7 @@ namespace Server.Engines.Quests.Zento
 
     public class SecondKillObjective : QuestObjective
     {
-        public override object Message => 1063320;
+        public override int Message => 1063320;
 
         public override void RenderProgress(BaseQuestGump gump)
         {
@@ -86,7 +86,7 @@ namespace Server.Engines.Quests.Zento
         {
         }
 
-        public override object Message => 1063319;
+        public override int Message => 1063319;
 
         public override int MaxProgress => 10;
 
@@ -123,7 +123,7 @@ namespace Server.Engines.Quests.Zento
 
     public class ReturnObjective : QuestObjective
     {
-        public override object Message => 1063313;
+        public override int Message => 1063313;
 
         public override void OnComplete()
         {

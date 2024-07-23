@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Doom
 {
     public class CollectBonesObjective : QuestObjective
     {
-        public override object Message => 1050026;
+        public override int Message => 1050026;
 
         public override int MaxProgress => 1000;
 
@@ -86,7 +86,7 @@ namespace Server.Engines.Quests.Doom
 
         public Corpse CorpseWithSkull { get; set; }
 
-        public override object Message => 1050037;
+        public override int Message => 1050037;
 
         public override void CheckProgress()
         {
