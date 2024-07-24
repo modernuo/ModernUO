@@ -1252,7 +1252,7 @@ namespace Server.Engines.Craft
                 return;
             }
 
-            var consumeType = UseAllRes ? ConsumeType.Half : ConsumeType.All;
+            var consumeType = UseAllRes ? ConsumeType.All : ConsumeType.Half;
 
             // Not enough resource to craft it
             if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, true))
