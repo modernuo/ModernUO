@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -15,6 +15,7 @@ namespace Server.Items
     [SerializationGenerator(2, false)]
     public partial class DyeTub : Item, ISecurable
     {
+        [SerializedIgnoreDupe]
         [SerializableField(0)]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SecureLevel _level;
@@ -85,10 +86,10 @@ namespace Server.Items
             }
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
-            SetSecureLevelEntry.AddTo(from, this, list);
+            base.GetContextMenuEntries(from, ref list);
+            SetSecureLevelEntry.AddTo(from, this, ref list);
         }
 
         public override void OnDoubleClick(Mobile from)

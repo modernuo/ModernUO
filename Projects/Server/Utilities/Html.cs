@@ -13,15 +13,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Buffers;
 
-namespace Server.Utilities;
+namespace Server;
 
 public static class Html
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Color(this string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RawInterpolatedStringHandler Color(this ReadOnlySpan<char> text, int color) =>
+        $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Color(this string text, int color, int size) => $"<BASEFONT COLOR=#{color:X6} SIZE={size}>{text}</BASEFONT>";
@@ -30,22 +36,52 @@ public static class Html
     public static string Color(this string text, string color) => $"<BASEFONT COLOR={color}>{text}</BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Color(this string text, string color, int size) => $"<BASEFONT COLOR={color} SIZE={size}>{text}</BASEFONT>";
+    public static string Color(this string text, string color, int size) =>
+        $"<BASEFONT COLOR={color} SIZE={size}>{text}</BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Center(this string text) => $"<CENTER>{text}</CENTER>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Center(this string text, int color) => $"<BASEFONT COLOR=#{color:X6}><CENTER>{text}</CENTER></BASEFONT>";
+    public static RawInterpolatedStringHandler Center(this ReadOnlySpan<char> text) => $"<CENTER>{text}</CENTER>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Center(this string text, int color, int size) => $"<BASEFONT COLOR=#{color:X6} SIZE={size}><CENTER>{text}</CENTER></BASEFONT>";
+    public static string Center(this string text, int color) =>
+        $"<BASEFONT COLOR=#{color:X6}><CENTER>{text}</CENTER></BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Center(this string text, string color) => $"<BASEFONT COLOR={color}><CENTER>{text}</CENTER></BASEFONT>";
+    public static RawInterpolatedStringHandler Center(this ReadOnlySpan<char> text, int color) =>
+        $"<BASEFONT COLOR=#{color:X6}><CENTER>{text}</CENTER></BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Center(this string text, string color, int size) => $"<BASEFONT COLOR={color} SIZE={size}><CENTER>{text}</CENTER></BASEFONT>";
+    public static string Center(this string text, int color, int size) =>
+        $"<BASEFONT COLOR=#{color:X6} SIZE={size}><CENTER>{text}</CENTER></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Center(this string text, string color) =>
+        $"<BASEFONT COLOR={color}><CENTER>{text}</CENTER></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Center(this string text, string color, int size) =>
+        $"<BASEFONT COLOR={color} SIZE={size}><CENTER>{text}</CENTER></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text) => $"<RIGHT>{text}</RIGHT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, int color) =>
+        $"<BASEFONT COLOR=#{color:X6}><RIGHT>{text}</RIGHT></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, int color, int size) =>
+        $"<BASEFONT COLOR=#{color:X6} SIZE={size}><RIGHT>{text}</RIGHT></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, string color) => $"<BASEFONT COLOR={color}><RIGHT>{text}</RIGHT></BASEFONT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string text, string color, int size) =>
+        $"<BASEFONT COLOR={color} SIZE={size}><RIGHT>{text}</RIGHT></BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string EscapeHtml(this string input) =>

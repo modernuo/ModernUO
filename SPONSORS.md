@@ -10,7 +10,7 @@ Thank you to all of our generous sponsors that make ModernUO possible.
 We greatly appreciate the support! Use one of the following platforms below:
 
 #### GitHub
-[<img alt="Github Sponsors | ModernUO" data-canonical-src="https://camo.githubusercontent.com/dec0683928f7db306904f8ea2e7c0d81ca83800fe09fcd5ac792c962eaee02dc/68747470733a2f2f6769746875622e6769746875626173736574732e636f6d2f696d616765732f6d6f64756c65732f736974652f73706f6e736f72732f6c6f676f2d6d6f6e612e737667" src="https://camo.githubusercontent.com/dec0683928f7db306904f8ea2e7c0d81ca83800fe09fcd5ac792c962eaee02dc/68747470733a2f2f6769746875622e6769746875626173736574732e636f6d2f696d616765732f6d6f64756c65732f736974652f73706f6e736f72732f6c6f676f2d6d6f6e612e737667" width=100px />](https://github.com/sponsors/modernuo)
+[<img alt="Github Sponsors | ModernUO" data-canonical-src="https://camo.githubusercontent.com/a44b124b41d702cb4a66abb48cf746ffb7aabcc96d0c72cdb34e0bf8f761ff49/68747470733a2f2f6769746875622e6769746875626173736574732e636f6d2f696d616765732f6d6f64756c65732f736974652f73706f6e736f72732f6c6f676f2d6d6f6e612e737667" src="https://camo.githubusercontent.com/a44b124b41d702cb4a66abb48cf746ffb7aabcc96d0c72cdb34e0bf8f761ff49/68747470733a2f2f6769746875622e6769746875626173736574732e636f6d2f696d616765732f6d6f64756c65732f736974652f73706f6e736f72732f6c6f676f2d6d6f6e612e737667" width=128px />](https://github.com/sponsors/modernuo)
 
 #### Patreon
 [<img alt="Patreon | ModernUO" data-canonical-src="https://user-images.githubusercontent.com/3953314/104968719-7c96e980-599b-11eb-839b-28745496b1a4.png" src="https://user-images.githubusercontent.com/3953314/104968719-7c96e980-599b-11eb-839b-28745496b1a4.png" width=128px />](https://muo.gg/patreon)

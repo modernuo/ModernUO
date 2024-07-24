@@ -117,7 +117,7 @@ namespace Server.Guilds
         {
             var defs = new TextDefinition[aryLength];
 
-            defs[0] = g == guild ? Color(g.Name, 0x006600) : g.Name;
+            defs[0] = g == guild ? g.Name.Color(0x006600) : g.Name;
             defs[1] = g.Abbreviation;
 
             defs[2] = 3000085; // Peace
@@ -186,7 +186,7 @@ namespace Server.Guilds
             }
             else if (m_LowerText?.String != null)
             {
-                AddHtml(66, 153 + itemNumber * 28, 280, 26, Color(m_LowerText.String, 0x99));
+                AddHtml(66, 153 + itemNumber * 28, 280, 26, m_LowerText.String.Color(0x99));
             }
 
             if (AllowAdvancedSearch)

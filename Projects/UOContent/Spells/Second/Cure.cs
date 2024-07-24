@@ -55,8 +55,6 @@ namespace Server.Spells.Second
                 m.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
                 m.PlaySound(0x1E0);
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

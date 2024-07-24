@@ -173,9 +173,8 @@ public partial class Seed : Item
             return;
         }
 
-        newSeed.PlantType = _plantType;
         newSeed.PlantHue = _plantHue;
-        newSeed.ShowType = _showType;
+        newSeed.Hue = Hue;
     }
 
     private void Deserialize(IGenericReader reader, int version)

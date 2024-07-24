@@ -4,23 +4,16 @@ namespace Server.ContextMenus
 {
     public class EatEntry : ContextMenuEntry
     {
-        private readonly Food m_Food;
-        private readonly Mobile m_From;
-
-        public EatEntry(Mobile from, Food food) : base(6135, 1)
+        public EatEntry() : base(6135, 1)
         {
-            m_From = from;
-            m_Food = food;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (m_Food?.Deleted != false || !m_Food.Movable || !m_From.CheckAlive() || !m_Food.CheckItemUse(m_From))
+            if (from.CheckAlive() && target is Food { Deleted: false, Movable: true } food && food.CheckItemUse(from))
             {
-                return;
+                food.Eat(from);
             }
-
-            m_Food.Eat(m_From);
         }
     }
 }

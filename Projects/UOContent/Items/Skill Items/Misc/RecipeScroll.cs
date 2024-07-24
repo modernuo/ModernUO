@@ -40,7 +40,7 @@ public partial class RecipeScroll : Item
         {
             if (r.TextDefinition.Number > 0)
             {
-                list.Add(1049644, r.TextDefinition.Number); // [~1_stuff~]
+                list.AddLocalized(1049644, r.TextDefinition.Number); // [~1_stuff~]
             }
             else
             {

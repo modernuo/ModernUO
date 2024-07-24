@@ -51,8 +51,6 @@ namespace Server.Spells.Spellweaving
 
                 new InternalTimer(nf).Start();
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

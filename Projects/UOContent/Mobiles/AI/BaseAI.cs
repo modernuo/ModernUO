@@ -160,40 +160,44 @@ public abstract class BaseAI
         return name != null && speech.InsensitiveStartsWith(name);
     }
 
-    public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public virtual void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        if (from.Alive && m_Mobile.Controlled && from.InRange(m_Mobile, 14))
+        if (!from.Alive || !m_Mobile.Controlled || !from.InRange(m_Mobile, 14))
         {
-            if (from == m_Mobile.ControlMaster)
+            return;
+        }
+
+        var isDeadPet = m_Mobile.IsDeadPet;
+
+        if (from == m_Mobile.ControlMaster)
+        {
+            list.Add(new InternalEntry(6107, 14, OrderType.Guard, !isDeadPet));  // Command: Guard
+            list.Add(new InternalEntry(6108, 14, OrderType.Follow, true)); // Command: Follow
+
+            if (m_Mobile.CanDrop)
             {
-                list.Add(new InternalEntry(from, 6107, 14, m_Mobile, this, OrderType.Guard));  // Command: Guard
-                list.Add(new InternalEntry(from, 6108, 14, m_Mobile, this, OrderType.Follow)); // Command: Follow
-
-                if (m_Mobile.CanDrop)
-                {
-                    list.Add(new InternalEntry(from, 6109, 14, m_Mobile, this, OrderType.Drop)); // Command: Drop
-                }
-
-                list.Add(new InternalEntry(from, 6111, 14, m_Mobile, this, OrderType.Attack)); // Command: Kill
-
-                list.Add(new InternalEntry(from, 6112, 14, m_Mobile, this, OrderType.Stop)); // Command: Stop
-                list.Add(new InternalEntry(from, 6114, 14, m_Mobile, this, OrderType.Stay)); // Command: Stay
-
-                if (!m_Mobile.Summoned && m_Mobile is not GrizzledMare)
-                {
-                    list.Add(new InternalEntry(from, 6110, 14, m_Mobile, this, OrderType.Friend));   // Add Friend
-                    list.Add(new InternalEntry(from, 6099, 14, m_Mobile, this, OrderType.Unfriend)); // Remove Friend
-                    list.Add(new InternalEntry(from, 6113, 14, m_Mobile, this, OrderType.Transfer)); // Transfer
-                }
-
-                list.Add(new InternalEntry(from, 6118, 14, m_Mobile, this, OrderType.Release)); // Release
+                list.Add(new InternalEntry(6109, 14, OrderType.Drop, !isDeadPet)); // Command: Drop
             }
-            else if (m_Mobile.IsPetFriend(from))
+
+            list.Add(new InternalEntry(6111, 14, OrderType.Attack, !isDeadPet)); // Command: Kill
+
+            list.Add(new InternalEntry(6112, 14, OrderType.Stop, true)); // Command: Stop
+            list.Add(new InternalEntry(6114, 14, OrderType.Stay, true)); // Command: Stay
+
+            if (!m_Mobile.Summoned && m_Mobile is not GrizzledMare)
             {
-                list.Add(new InternalEntry(from, 6108, 14, m_Mobile, this, OrderType.Follow)); // Command: Follow
-                list.Add(new InternalEntry(from, 6112, 14, m_Mobile, this, OrderType.Stop));   // Command: Stop
-                list.Add(new InternalEntry(from, 6114, 14, m_Mobile, this, OrderType.Stay));   // Command: Stay
+                list.Add(new InternalEntry(6110, 14, OrderType.Friend, true));         // Add Friend
+                list.Add(new InternalEntry(6099, 14, OrderType.Unfriend, true));       // Remove Friend
+                list.Add(new InternalEntry(6113, 14, OrderType.Transfer, !isDeadPet)); // Transfer
             }
+
+            list.Add(new InternalEntry(6118, 14, OrderType.Release, true)); // Release
+        }
+        else if (m_Mobile.IsPetFriend(from))
+        {
+            list.Add(new InternalEntry(6108, 14, OrderType.Follow, true));     // Command: Follow
+            list.Add(new InternalEntry(6112, 14, OrderType.Stop, !isDeadPet)); // Command: Stop
+            list.Add(new InternalEntry(6114, 14, OrderType.Stay, true));       // Command: Stay
         }
     }
 
@@ -2182,7 +2186,8 @@ public abstract class BaseAI
 
             if (map != null)
             {
-                int x = m_Mobile.X, y = m_Mobile.Y;
+                var x = m_Mobile.X;
+                var y = m_Mobile.Y;
                 Movement.Movement.Offset(d, ref x, ref y);
 
                 using var queue = PooledRefQueue<Item>.Create();
@@ -2909,51 +2914,41 @@ public abstract class BaseAI
 
     private class InternalEntry : ContextMenuEntry
     {
-        private readonly BaseAI m_AI;
-        private readonly Mobile m_From;
-        private readonly BaseCreature m_Mobile;
-        private readonly OrderType m_Order;
+        private readonly OrderType _order;
 
-        public InternalEntry(Mobile from, int number, int range, BaseCreature mobile, BaseAI ai, OrderType order)
-            : base(number, range)
+        public InternalEntry(int number, int range, OrderType order, bool enabled) : base(number, range)
         {
-            m_From = from;
-            m_Mobile = mobile;
-            m_AI = ai;
-            m_Order = order;
-
-            if (mobile.IsDeadPet && order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop)
-            {
-                Enabled = false;
-            }
+            _order = order;
+            Enabled = enabled;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (m_Mobile.Deleted || !m_Mobile.Controlled || !m_From.CheckAlive())
+            if (!from.CheckAlive() || target is not BaseCreature { Deleted: not true, Controlled: true } bc)
             {
                 return;
             }
 
-            if (m_Mobile.IsDeadPet && m_Order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop)
+            // Just in case
+            if (bc.IsDeadPet && _order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop)
             {
                 return;
             }
 
-            var isOwner = m_From == m_Mobile.ControlMaster;
-            var isFriend = !isOwner && m_Mobile.IsPetFriend(m_From);
+            var isOwner = from == bc.ControlMaster;
+            var isFriend = !isOwner && bc.IsPetFriend(from);
 
             if (!isOwner && !isFriend)
             {
                 return;
             }
 
-            if (isFriend && m_Order != OrderType.Follow && m_Order != OrderType.Stay && m_Order != OrderType.Stop)
+            if (isFriend && _order != OrderType.Follow && _order != OrderType.Stay && _order != OrderType.Stop)
             {
                 return;
             }
 
-            switch (m_Order)
+            switch (_order)
             {
                 case OrderType.Follow:
                 case OrderType.Attack:
@@ -2961,37 +2956,37 @@ public abstract class BaseAI
                 case OrderType.Friend:
                 case OrderType.Unfriend:
                     {
-                        if (m_Order == OrderType.Transfer && m_From.HasTrade)
+                        if (_order == OrderType.Transfer && from.HasTrade)
                         {
-                            m_From.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
+                            from.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
                         }
-                        else if (m_Order == OrderType.Friend && m_From.HasTrade)
+                        else if (_order == OrderType.Friend && from.HasTrade)
                         {
-                            m_From.SendLocalizedMessage(1070947); // You cannot friend a pet with a trade pending
+                            from.SendLocalizedMessage(1070947); // You cannot friend a pet with a trade pending
                         }
                         else
                         {
-                            m_AI.BeginPickTarget(m_From, m_Order);
+                            bc.AIObject.BeginPickTarget(from, _order);
                         }
 
                         break;
                     }
                 case OrderType.Release:
                     {
-                        if (m_Mobile.Summoned)
+                        if (bc.Summoned)
                         {
                             goto default;
                         }
 
-                        m_From.SendGump(new ConfirmReleaseGump(m_From, m_Mobile));
+                        from.SendGump(new ConfirmReleaseGump(from, bc));
 
                         break;
                     }
                 default:
                     {
-                        if (m_Mobile.CheckControlChance(m_From))
+                        if (bc.CheckControlChance(from))
                         {
-                            m_Mobile.ControlOrder = m_Order;
+                            bc.ControlOrder = _order;
                         }
 
                         break;

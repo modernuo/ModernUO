@@ -100,8 +100,7 @@ namespace Server.Spells.Third
                 using var queue = PooledRefQueue<Item>.Create();
                 foreach (var item in m.GetItemsAt())
                 {
-                    if (item is ParalyzeFieldSpell.InternalItem or
-                        PoisonFieldSpell.InternalItem or FireFieldSpell.FireFieldItem)
+                    if (item is ParalyzeField or PoisonField or FireFieldItem)
                     {
                         // Use a queue just in case OnMoveOver changes the item's sector
                         queue.Enqueue(item);
@@ -113,8 +112,6 @@ namespace Server.Spells.Third
                     queue.Dequeue().OnMoveOver(m);
                 }
             }
-
-            FinishSequence();
         }
 
         public override bool CheckCast()

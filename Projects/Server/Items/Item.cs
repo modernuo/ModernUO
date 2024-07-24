@@ -1,5 +1,21 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: Item.cs                                                         *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.ContextMenus;
@@ -254,13 +270,19 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     // Sectors
+    [IgnoreDupe]
     public Item Next { get; set; }
+
+    [IgnoreDupe]
     public Item Previous { get; set; }
+
+    [IgnoreDupe]
     public bool OnLinkList { get; set; }
 
     /// <summary>
     ///     The <see cref="Mobile" /> who is currently <see cref="Mobile.Holding">holding</see> this item.
     /// </summary>
+    [IgnoreDupe]
     public Mobile HeldBy
     {
         get => LookupCompactInfo()?.m_HeldBy;
@@ -373,6 +395,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public static int SecureFlag { get; set; }
 
+    [IgnoreDupe]
     public bool IsLockedDown
     {
         get => GetTempFlag(LockedDownFlag);
@@ -383,6 +406,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
+    [IgnoreDupe]
     public bool IsSecure
     {
         get => GetTempFlag(SecureFlag);
@@ -586,6 +610,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     // Note: Setting the parent via command/props causes problems.
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public IEntity Parent
     {
@@ -754,6 +779,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     public int CompareTo(Item other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
     public virtual int HuedItemID => m_ItemID;
+
     public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 
     /// <summary>
@@ -768,13 +794,11 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         AddNameProperties(list);
     }
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
-    public long SavePosition { get; set; } = -1;
-
-    public BufferWriter SaveBuffer { get; set; }
-
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
 
@@ -1445,6 +1469,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         ClearProperties();
     }
 
+    [IgnoreDupe]
     public ISpawner Spawner
     {
         get => LookupCompactInfo()?.m_Spawner;
@@ -2106,27 +2131,27 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public virtual bool CanEquip(Mobile m) => m_Layer != Layer.Invalid && m.FindItemOnLayer(m_Layer) == null;
 
-    public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
+    public virtual void GetChildContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list, Item item)
     {
         if (m_Parent is Item parentItem)
         {
-            parentItem.GetChildContextMenuEntries(from, list, item);
+            parentItem.GetChildContextMenuEntries(from, ref list, item);
         }
         else if (m_Parent is Mobile parentMobile)
         {
-            parentMobile.GetChildContextMenuEntries(from, list, item);
+            parentMobile.GetChildContextMenuEntries(from, ref list, item);
         }
     }
 
-    public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public virtual void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
         if (m_Parent is Item item)
         {
-            item.GetChildContextMenuEntries(from, list, this);
+            item.GetChildContextMenuEntries(from, ref list, this);
         }
         else if (m_Parent is Mobile mobile)
         {
-            mobile.GetChildContextMenuEntries(from, list, this);
+            mobile.GetChildContextMenuEntries(from, ref list, this);
         }
     }
 
@@ -3341,19 +3366,45 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    private static readonly HashSet<string> _excludedProperties =
-    [
-        "SaveBuffer",
-        "Parent",
-        "Next",
-        "Previous",
-        "OnLinkList"
-    ];
-
-    public virtual bool DupeExcludedProperty(string propertyName) => _excludedProperties.Contains(propertyName);
-
     public virtual void OnAfterDuped(Item newItem)
     {
+    }
+
+    // Warning: This uses reflection and is slow!
+    public virtual void Dupe(Item newItem)
+    {
+        CopyProperties(this, newItem);
+        OnAfterDuped(newItem);
+    }
+
+    // Warning: This uses reflection and is slow!
+    public static void CopyProperties(Item src, Item dest)
+    {
+        var props = src.GetType().GetProperties();
+
+        for (var i = 0; i < props.Length; i++)
+        {
+            var p = props[i];
+            if (p.GetCustomAttribute(typeof(IgnoreDupeAttribute), true) != null || !p.CanRead || !p.CanWrite)
+            {
+                continue;
+            }
+
+            var setMethod = p.GetSetMethod(false);
+
+            try
+            {
+                // Do not copy private properties
+                if (setMethod != null)
+                {
+                    p.SetValue(dest, p.GetValue(src, null), null);
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+        }
     }
 
     public virtual bool OnDragLift(Mobile from) => true;
@@ -3549,7 +3600,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
 
         using var items = PooledRefList<Item>.Create();
-        foreach (var item in map.GetItemsInRange(p, 0))
+        foreach (var item in map.GetItemsAt(p))
         {
             if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
             {
@@ -3785,24 +3836,27 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         // return root == null ? m_Location : new Point3D( (IPoint3D) root );
     }
 
-    public Point3D GetSurfaceTop()
+    public IPoint3D GetSurfaceTop()
     {
         var root = RootParent;
 
-        if (root == null)
-        {
-            return new Point3D(
-                m_Location.m_X,
-                m_Location.m_Y,
-                m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0)
-            );
-        }
-
-        return root.Location;
+        return (root as Item)?.GetSurfaceTop() ?? (ItemData.Surface ? new Point3D(
+            m_Location.m_X,
+            m_Location.m_Y,
+            m_Location.m_Z + ItemData.CalcHeight
+        ) : this);
     }
 
-    public Point3D GetWorldTop() => RootParent?.Location ??
-                                    new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
+    public Point3D GetWorldTop()
+    {
+        var root = RootParent;
+
+        return (root as Item)?.GetWorldTop() ?? new Point3D(
+            m_Location.m_X,
+            m_Location.m_Y,
+            m_Location.m_Z + ItemData.CalcHeight
+        );
+    }
 
     public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
     {

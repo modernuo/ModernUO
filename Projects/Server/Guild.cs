@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Guild.cs                                                        *
  *                                                                       *
@@ -44,21 +44,18 @@ public abstract class BaseGuild : ISerializable
 
     public bool Deleted => Disbanded;
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
-
-    public long SavePosition { get; set; } = -1;
-
-    public BufferWriter SaveBuffer { get; set; }
-
-    public int TypeRef { get; private set; }
 
     public abstract void Serialize(IGenericWriter writer);
 
     public abstract void Deserialize(IGenericReader reader);
+
     public abstract void OnDelete(Mobile mob);
 
     public static BaseGuild FindByName(string name)

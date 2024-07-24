@@ -168,7 +168,7 @@ namespace Server.Gumps
                     y,
                     emptyWidth,
                     EntryHeight,
-                    $"<BASEFONT COLOR=#FAFAFA><CENTER>{m_Type.Name}</CENTER></BASEFONT>"
+                    m_Type.Name.Center(0xFAFAFA)
                 );
             }
 

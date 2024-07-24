@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using System.Reflection.Emit;
-using Server.Utilities;
 
 namespace Server.Commands.Generic
 {
@@ -130,6 +129,10 @@ namespace Server.Commands.Generic
             else if (Type.IsEnum)
             {
                 Value = Enum.Parse(Type, toParse, true);
+            }
+            else if (Type == typeof(bool))
+            {
+                Value = bool.Parse(toParse);
             }
             else
             {

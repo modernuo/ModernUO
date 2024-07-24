@@ -24,8 +24,6 @@ public abstract partial class BaseBOBEntry : IBOBEntry
 
     public DateTime Created { get; set; } = Core.Now;
 
-    public DateTime LastSerialized { get; set; } = Core.Now;
-
     public Serial Serial { get; }
 
     public bool Deleted { get; private set; }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -11,6 +12,7 @@ namespace Server.Items
     [SerializationGenerator(5, false)]
     public partial class BaseBook : Item, ISecurable
     {
+        [SerializedIgnoreDupe]
         [SerializableField(0)]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SecureLevel _level;
@@ -45,6 +47,7 @@ namespace Server.Items
         [SerializableFieldSaveFlag(3)]
         private bool ShouldSerializeWritable() => _writable;
 
+        [SerializedIgnoreDupe]
         [SerializableField(4, setter: "protected")]
         private BookPageInfo[] _pages;
 
@@ -52,7 +55,7 @@ namespace Server.Items
         private bool ShouldSerializePages() => DefaultContent?.IsMatch(_pages) != true;
 
         [SerializableFieldDefault(4)]
-        private BookPageInfo[] PagesDefaultvalue() => DefaultContent?.Copy() ?? Array.Empty<BookPageInfo>();
+        private BookPageInfo[] PagesDefaultValue() => DefaultContent?.Copy() ?? Array.Empty<BookPageInfo>();
 
         [Constructible]
         public BaseBook(int itemID, int pageCount = 20, bool writable = true) : this(itemID, null, null, pageCount, writable)
@@ -91,6 +94,29 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public int PagesCount => _pages.Length;
 
+        public override void OnAfterDuped(Item newItem)
+        {
+            if (newItem is not BaseBook book)
+            {
+                return;
+            }
+
+            book.Pages = new BookPageInfo[book.PagesCount];
+
+            for (var i = 0; i < _pages.Length; ++i)
+            {
+                var oldPage = _pages[i];
+                var oldLines = _pages[i].Lines;
+                var lines = new string[oldPage.Lines.Length];
+                for (var j = 0; j < oldLines.Length; j++)
+                {
+                    lines[j] = oldLines[j];
+                }
+
+                book._pages[i] = new BookPageInfo(lines);
+            }
+        }
+
         public virtual BookContent DefaultContent => null;
 
         public string ContentAsString
@@ -126,10 +152,10 @@ namespace Server.Items
             }
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
-            SetSecureLevelEntry.AddTo(from, this, list);
+            base.GetContextMenuEntries(from, ref list);
+            SetSecureLevelEntry.AddTo(from, this, ref list);
         }
 
         private void Deserialize(IGenericReader reader, int version)

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "type": "Server.Misc.ShardPollOption",
+  "properties": [
+    {
+      "name": "Title",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Voters",
+      "type": "System.Net.IPAddress[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "System.Net.IPAddress",
+        "PrimitiveTypeMigrationRule"
+      ]
+    }
+  ]
+}

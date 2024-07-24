@@ -48,8 +48,6 @@ namespace Server.Spells.Second
                 cont.TrapPower = 0;
                 cont.TrapLevel = 0;
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

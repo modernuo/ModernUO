@@ -2,7 +2,6 @@ using System;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
-using Server.Utilities;
 
 namespace Server.Engines.Harvest
 {
@@ -266,7 +265,7 @@ namespace Server.Engines.Harvest
             Definitions = new[] { OreAndStone, Sand };
         }
 
-        public static Mining System => _system ?? (_system = new Mining());
+        public static Mining System => _system ??= new Mining();
 
         public HarvestDefinition OreAndStone { get; }
 

@@ -71,18 +71,23 @@ public class ExportSpawnersCommand : BaseCommand
         var spawnRecords = new List<DynamicJson>(list.Count);
         for (var i = 0; i < list.Count; i++)
         {
-            if (list[i] is BaseSpawner spawner)
+            // Not a spawner, not on a valid map, or is in a container
+            if (list[i] is not BaseSpawner spawner || spawner.Map == Map.Internal || spawner.Parent != null)
             {
-                if (!string.IsNullOrEmpty(spawner.Name) && spawner.Name.StartsWith(
-                        condition,
-                        StringComparison.OrdinalIgnoreCase
-                    ))
-                {
-                    var dynamicJson = DynamicJson.Create(spawner.GetType());
-                    spawner.ToJson(dynamicJson, options);
-                    spawnRecords.Add(dynamicJson);
-                }
+                continue;
             }
+
+            if (!string.IsNullOrEmpty(spawner.Name) && !spawner.Name.StartsWith(
+                    condition,
+                    StringComparison.OrdinalIgnoreCase
+                ))
+            {
+                continue;
+            }
+
+            var dynamicJson = DynamicJson.Create(spawner.GetType());
+            spawner.ToJson(dynamicJson, options);
+            spawnRecords.Add(dynamicJson);
         }
 
         if (spawnRecords.Count == 0)

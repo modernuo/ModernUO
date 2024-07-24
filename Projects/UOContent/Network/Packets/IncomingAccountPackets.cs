@@ -17,6 +17,22 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using Server.Accounting;
+using Server.Assistants;
+using Server.Commands;
+using Server.Engines.ConPVP;
+using Server.Engines.Doom;
+using Server.Engines.PartySystem;
+using Server.Engines.Plants;
+using Server.Engines.PlayerMurderSystem;
+using Server.Engines.VeteranRewards;
+using Server.Factions;
+using Server.Items;
+using Server.Misc;
+using Server.Mobiles;
+using Server.Regions;
+using Server.Spells.Ninjitsu;
+using Server.Spells.Spellweaving;
 using CV = Server.ClientVersion;
 
 namespace Server.Network;
@@ -41,18 +57,17 @@ public static class IncomingAccountPackets
 
     public static unsafe void Configure()
     {
-        IncomingPackets.Register(0x00, 104, false, &CreateCharacter);
-        IncomingPackets.Register(0x5D, 73, false, &PlayCharacter);
-        IncomingPackets.Register(0x80, 62, false, &AccountLogin);
-        IncomingPackets.Register(0x83, 39, false, &DeleteCharacter);
-        IncomingPackets.Register(0x91, 65, false, &GameLogin);
-        IncomingPackets.Register(0xA0, 3, false, &PlayServer);
-        IncomingPackets.Register(0xBB, 9, false, &AccountID);
-        IncomingPackets.Register(0xBD, 0, false, &ClientVersion);
-        IncomingPackets.Register(0xCF, 0, false, &AccountLogin);
-        IncomingPackets.Register(0xE1, 0, false, &ClientType);
-        IncomingPackets.Register(0xEF, 21, false, &LoginServerSeed);
-        IncomingPackets.Register(0xF8, 106, false, &CreateCharacter);
+        IncomingPackets.Register(0x00, &CreateCharacter, 104, outgameOnly: true);
+        IncomingPackets.Register(0x5D, &PlayCharacter, 73, outgameOnly: true);
+        IncomingPackets.Register(0x80, &AccountLogin, 62, outgameOnly: true);
+        IncomingPackets.Register(0x83, &DeleteCharacter, 39, outgameOnly: true);
+        IncomingPackets.Register(0x91, &GameLogin, 65, outgameOnly: true);
+        IncomingPackets.Register(0xA0, &PlayServer, 3, outgameOnly: true);
+        IncomingPackets.Register(0xBD, &ClientVersion);
+        IncomingPackets.Register(0xCF, &AccountLogin, outgameOnly: true);
+        IncomingPackets.Register(0xE1, &ClientType);
+        IncomingPackets.Register(0xEF, &LoginServerSeed, 21, outgameOnly: true);
+        IncomingPackets.Register(0xF8, &CreateCharacter, 106, outgameOnly: true);
     }
 
     public static void CreateCharacter(NetState state, SpanReader reader)
@@ -190,7 +205,7 @@ public static class IncomingAccountPackets
         reader.Seek(30, SeekOrigin.Current);
         var index = reader.ReadInt32();
 
-        EventSink.InvokeDeleteRequest(state, index);
+        AccountHandler.DeleteRequest(state, index);
     }
 
     public static void AccountID(NetState state, SpanReader reader)
@@ -201,7 +216,7 @@ public static class IncomingAccountPackets
     {
         var version = state.Version = new CV(reader.ReadAscii());
 
-        EventSink.InvokeClientVersionReceived(state, version);
+        ClientVerification.ClientVersionReceived(state, version);
     }
 
     public static void ClientType(NetState state, SpanReader reader)
@@ -211,7 +226,7 @@ public static class IncomingAccountPackets
         int type = reader.ReadUInt16();
         var version = state.Version = new CV(reader.ReadAscii());
 
-        EventSink.InvokeClientVersionReceived(state, version);
+        ClientVerification.ClientVersionReceived(state, version);
     }
 
     public static void PlayCharacter(NetState state, SpanReader reader)
@@ -307,7 +322,34 @@ public static class IncomingAccountPackets
 
         state.SendPlayMusic(m.Region.Music);
 
-        EventSink.InvokeLogin(m);
+        StaminaSystem.OnLogin(m);
+        DuelContext.OnLogin(m);
+        LightCycle.OnLogin(m);
+        LoginStats.OnLogin(m);
+        AnimalForm.OnLogin(m);
+        BaseBeverage.OnLogin(m);
+        AntiMacroSystem.OnLogin(m);
+        Strandedness.OnLogin(m);
+        ShardPoller.OnLogin(m);
+        ReaperFormSpell.OnLogin(m);
+        Party.OnLogin(m);
+        PlantSystem.OnLogin(m);
+        LampRoomRegion.OnLogin(m);
+        HouseRegion.OnLogin(m);
+        Faction.OnLogin(m);
+        PlayerMurderSystem.OnLogin(m);
+        AssistantHandler.OnLogin(m);
+        VisibilityList.OnLogin(m);
+
+        if (m is PlayerMobile pm)
+        {
+            PlayerMobile.OnLogin(pm);
+        }
+        Account.OnLogin(m);
+        GiftGiving.OnLogin(m);
+        PreventInaccess.OnLogin(m);
+        TwistedWealdDesertRegion.OnLogin(m);
+        RewardSystem.OnLogin(m);
     }
 
     private static int GenerateAuthID(this NetState state)

@@ -85,13 +85,13 @@ namespace Server.Guilds
             }
             else if (PendingWar)
             {
-                kills = Color($"{war.Kills}/{war.MaxKills}", 0x990000);
-                time = Color($"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}", 0x990000);
+                kills = $"{war.Kills}/{war.MaxKills}".Color(0x990000);
+                time = $"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}".Color(0x990000);
 
                 otherWar = m_Other.FindPendingWar(guild);
                 if (otherWar != null)
                 {
-                    otherKills = Color($"{otherWar.Kills}/{otherWar.MaxKills}", 0x990000);
+                    otherKills = $"{otherWar.Kills}/{otherWar.MaxKills}".Color(0x990000);
                 }
             }
 
@@ -159,7 +159,7 @@ namespace Server.Guilds
                     // Withdraw Request
                     AddButtonAndBackground(20, 290, 14, 1062986); // Withdraw Request
 
-                    AddHtml(150, 83, 360, 26, Color(alliance.Name, 0x99));
+                    AddHtml(150, 83, 360, 26, alliance.Name.Color(0x99));
                 }
                 else if (alliance.Leader == m_Other && alliance.IsPendingMember(guild))
                 {
@@ -172,7 +172,7 @@ namespace Server.Guilds
                     AddButtonAndBackground(20, 260, 15, 1062988); // Deny Request
                     AddButtonAndBackground(20, 290, 16, 1062987); // Accept Request
 
-                    AddHtml(150, 83, 360, 26, Color(alliance.Name, 0x99));
+                    AddHtml(150, 83, 360, 26, alliance.Name.Color(0x99));
                 }
             }
             else

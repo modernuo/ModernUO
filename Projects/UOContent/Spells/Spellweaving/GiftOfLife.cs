@@ -68,8 +68,6 @@ namespace Server.Spells.Spellweaving
 
                 BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.GiftOfLife, 1031615, 1075807, duration, m, null, true));
             }
-
-            FinishSequence();
         }
 
         public static void Initialize()

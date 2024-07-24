@@ -2,12 +2,7 @@ namespace Server.Misc
 {
     public static class Animations
     {
-        public static void Initialize()
-        {
-            EventSink.AnimateRequest += EventSink_AnimateRequest;
-        }
-
-        private static void EventSink_AnimateRequest(Mobile from, string actionName)
+        public static void AnimateRequest(Mobile from, string actionName)
         {
             var action = actionName switch
             {

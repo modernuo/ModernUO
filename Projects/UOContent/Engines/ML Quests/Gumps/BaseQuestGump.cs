@@ -65,7 +65,7 @@ namespace Server.Engines.MLQuests.Gumps
             AddImage(379, 60, 0x15A9);
             AddImage(425, 0, 0x28C9);
             AddImage(90, 33, 0x232D);
-            AddHtmlLocalized(130, 45, 270, 16, label, 0xFFFFFF);
+            AddHtmlLocalized(130, 45, 270, 16, label, 0x7FFF);
             AddImageTiled(130, 65, 175, 1, 0x238D);
         }
 
@@ -149,7 +149,7 @@ namespace Server.Engines.MLQuests.Gumps
                 0x2710
             );
 
-            quest.Description.AddHtmlText(this, 98, 156, 312, 240, false, true, 0x15F90, 0xBDE784);
+            quest.Description.AddHtmlText(this, 98, 156, 312, 240, false, true, 0x5F90, 0xBDE784);
         }
 
         public void AddObjectives(MLQuest quest)
@@ -250,7 +250,7 @@ namespace Server.Engines.MLQuests.Gumps
 
         public void AddConversation(TextDefinition text)
         {
-            text.AddHtmlText(this, 98, 140, 312, 180, false, true, 0x15F90, 0xBDE784);
+            text.AddHtmlText(this, 98, 140, 312, 180, false, true, 0x5F90, 0xBDE784);
         }
 
         /* OSI gump IDs:

@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
@@ -18,6 +18,7 @@ public partial class RoseOfTrinsic : Item, ISecurable
     [SerializableField(1, setter: "private")]
     private DateTime _nextSpawnTime;
 
+    [SerializedIgnoreDupe]
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
@@ -33,6 +34,16 @@ public partial class RoseOfTrinsic : Item, ISecurable
     }
 
     public override int LabelNumber => 1062913; // Rose of Trinsic
+
+    public override void OnAfterDuped(Item newItem)
+    {
+        if (newItem is not RoseOfTrinsic rose)
+        {
+            return;
+        }
+
+        rose.NextSpawnTime = NextSpawnTime;
+    }
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -66,11 +77,11 @@ public partial class RoseOfTrinsic : Item, ISecurable
         list.Add(1062925, Petals); // Petals:  ~1_COUNT~
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
-        SetSecureLevelEntry.AddTo(from, this, list);
+        SetSecureLevelEntry.AddTo(from, this, ref list);
     }
 
     private void StartSpawnTimer(TimeSpan delay)

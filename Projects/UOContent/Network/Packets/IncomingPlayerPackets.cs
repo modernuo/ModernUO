@@ -21,9 +21,14 @@ using System.IO;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Server.Diagnostics;
+using Server.Engines.Help;
+using Server.Engines.MLQuests;
 using Server.Engines.Virtues;
 using Server.Exceptions;
+using Server.Guilds;
 using Server.Gumps;
+using Server.Items;
+using Server.Misc;
 using Server.Mobiles;
 
 namespace Server.Network;
@@ -136,7 +141,7 @@ public static class IncomingPlayerPackets
         {
             case 0xC7: // Animate
                 {
-                    EventSink.InvokeAnimateRequest(from, command);
+                    Animations.AnimateRequest(from, command);
 
                     break;
                 }
@@ -159,7 +164,7 @@ public static class IncomingPlayerPackets
                         booktype = 1;
                     }
 
-                    EventSink.InvokeOpenSpellbookRequest(from, booktype);
+                    Spellbook.OpenSpellbookRequest(from, booktype);
 
                     break;
                 }
@@ -169,13 +174,13 @@ public static class IncomingPlayerPackets
                     var spellID = (tokenizer.MoveNext() ? Utility.ToInt32(tokenizer.Current) : 0) - 1;
                     var serial = tokenizer.MoveNext() ? (Serial)Utility.ToUInt32(tokenizer.Current) : Serial.MinusOne;
 
-                    EventSink.InvokeCastSpellRequest(from, spellID, World.FindItem(serial));
+                    Spellbook.CastSpellRequest(from, spellID, World.FindItem(serial));
 
                     break;
                 }
             case 0x58: // Open door
                 {
-                    EventSink.InvokeOpenDoorMacroUsed(from);
+                    BaseDoor.OpenDoorMacroUsed(from);
 
                     break;
                 }
@@ -183,7 +188,7 @@ public static class IncomingPlayerPackets
                 {
                     var spellID = Utility.ToInt32(command) - 1;
 
-                    EventSink.InvokeCastSpellRequest(from, spellID, null);
+                    Spellbook.CastSpellRequest(from, spellID, null);
 
                     break;
                 }
@@ -341,7 +346,7 @@ public static class IncomingPlayerPackets
 
     public static void HelpRequest(NetState state, SpanReader reader)
     {
-        EventSink.InvokeHelpRequest(state.Mobile);
+        HelpGump.HelpRequest(state.Mobile);
     }
 
     public static void DisplayGumpResponse(NetState state, SpanReader reader)
@@ -617,12 +622,12 @@ public static class IncomingPlayerPackets
 
     public static void GuildGumpRequest(NetState state, IEntity e, EncodedReader reader)
     {
-        EventSink.InvokeGuildGumpRequest(state.Mobile);
+        Guild.GuildGumpRequest(state.Mobile);
     }
 
     public static void QuestGumpRequest(NetState state, IEntity e, EncodedReader reader)
     {
-        EventSink.InvokeQuestGumpRequest(state.Mobile);
+        MLQuestSystem.QuestGumpRequest(state.Mobile);
     }
 
     public static unsafe void EncodedCommand(NetState state, SpanReader reader)

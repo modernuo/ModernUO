@@ -19,12 +19,7 @@ namespace Server.Misc
             m_Givers.Add(giver);
         }
 
-        public static void Initialize()
-        {
-            EventSink.Login += EventSink_Login;
-        }
-
-        private static void EventSink_Login(Mobile m)
+        public static void OnLogin(Mobile m)
         {
             if (m.Account is not Account acct)
             {

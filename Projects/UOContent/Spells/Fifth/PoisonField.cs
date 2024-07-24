@@ -1,275 +1,246 @@
 using System;
+using ModernUO.Serialization;
 using Server.Collections;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
 
-namespace Server.Spells.Fifth
+namespace Server.Spells.Fifth;
+
+public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
 {
-    public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
+    private static readonly SpellInfo _info = new(
+        "Poison Field",
+        "In Nox Grav",
+        230,
+        9052,
+        false,
+        Reagent.BlackPearl,
+        Reagent.Nightshade,
+        Reagent.SpidersSilk
+    );
+
+    public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Poison Field",
-            "In Nox Grav",
-            230,
-            9052,
-            false,
-            Reagent.BlackPearl,
-            Reagent.Nightshade,
-            Reagent.SpidersSilk
-        );
+    }
 
-        public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
+    public override SpellCircle Circle => SpellCircle.Fifth;
+
+    public void Target(IPoint3D p)
+    {
+        if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
         {
+            SpellHelper.Turn(Caster, p);
+            SpellHelper.GetSurfaceTop(ref p);
+
+            var loc = new Point3D(p);
+            var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
+
+            Effects.PlaySound(loc, Caster.Map, 0x20B);
+
+            var itemID = eastToWest ? 0x3915 : 0x3922;
+            var duration = Core.Expansion switch
+            {
+                Expansion.None  => TimeSpan.FromSeconds(20),
+                < Expansion.LBR => TimeSpan.FromSeconds(15 + Caster.Skills.Magery.Value * 0.4),
+                _               => TimeSpan.FromSeconds(3 + Caster.Skills.Magery.Value * 0.4)
+            };
+
+            for (var i = -2; i <= 2; ++i)
+            {
+                var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
+
+                new PoisonField(itemID, targetLoc, Caster, Caster.Map, duration, i);
+            }
+        }
+    }
+
+    public override void OnCast()
+    {
+        Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+    }
+}
+
+[DispellableField]
+[SerializationGenerator(0, false)]
+public partial class PoisonField : Item
+{
+    [SerializableField(0)]
+    private Mobile _caster;
+
+    [DeltaDateTime]
+    [SerializableField(1)]
+    private DateTime _end;
+
+    private Timer _timer;
+
+    public PoisonField(int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val) : base(itemID)
+    {
+        var canFit = SpellHelper.AdjustField(ref loc, map, 12, false);
+
+        Visible = false;
+        Movable = false;
+        Light = LightType.Circle300;
+
+        MoveToWorld(loc, map);
+
+        _caster = caster;
+
+        _end = Core.Now + duration;
+
+        _timer = new InternalTimer(this, TimeSpan.FromSeconds(val.Abs() * 0.2), caster.InLOS(this), canFit);
+        _timer.Start();
+    }
+
+    public override bool BlocksFit => true;
+
+    public override void OnAfterDelete()
+    {
+        base.OnAfterDelete();
+
+        _timer?.Stop();
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        _timer = new InternalTimer(this, TimeSpan.Zero, true, true);
+        _timer.Start();
+    }
+
+    public void ApplyPoisonTo(Mobile m)
+    {
+        if (_caster == null)
+        {
+            return;
         }
 
-        public override SpellCircle Circle => SpellCircle.Fifth;
+        int level;
 
-        public void Target(IPoint3D p)
+        if (Core.AOS)
         {
-            if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
+            level = (_caster.Skills.Magery.Value + _caster.Skills.Poisoning.Value) switch
             {
-                SpellHelper.Turn(Caster, p);
-                SpellHelper.GetSurfaceTop(ref p);
-
-                var loc = new Point3D(p);
-                var eastToWest = SpellHelper.GetEastToWest(Caster.Location, loc);
-
-                Effects.PlaySound(loc, Caster.Map, 0x20B);
-
-                var itemID = eastToWest ? 0x3915 : 0x3922;
-                var duration = Core.Expansion switch
-                {
-                    Expansion.None  => TimeSpan.FromSeconds(20),
-                    < Expansion.LBR => TimeSpan.FromSeconds(15 + Caster.Skills.Magery.Value * 0.4),
-                    _               => TimeSpan.FromSeconds(3 + Caster.Skills.Magery.Value * 0.4)
-                };
-
-                for (var i = -2; i <= 2; ++i)
-                {
-                    var targetLoc = new Point3D(eastToWest ? loc.X + i : loc.X, eastToWest ? loc.Y : loc.Y + i, loc.Z);
-
-                    new InternalItem(itemID, targetLoc, Caster, Caster.Map, duration, i);
-                }
-            }
-
-            FinishSequence();
+                > 199.8 => 3,
+                > 170.2 => 2,
+                > 130.2 => 1,
+                _       => 0
+            };
+        }
+        else
+        {
+            level = 1;
         }
 
-        public override void OnCast()
+        if (m.ApplyPoison(_caster, Poison.GetPoison(level)) is ApplyPoisonResult.Poisoned or ApplyPoisonResult.HigherPoisonActive)
         {
-            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+            if (SpellHelper.CanRevealCaster(m))
+            {
+                _caster.RevealingAction();
+            }
         }
 
-        [DispellableField]
-        public class InternalItem : Item
+        (m as BaseCreature)?.OnHarmfulSpell(_caster);
+    }
+
+    public override bool OnMoveOver(Mobile m)
+    {
+        if (Visible && _caster != null && (!Core.AOS || m != _caster) &&
+            SpellHelper.ValidIndirectTarget(_caster, m) && _caster.CanBeHarmful(m, false))
         {
-            private Mobile m_Caster;
-            private DateTime m_End;
-            private Timer m_Timer;
+            _caster.DoHarmful(m);
 
-            public InternalItem(int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val) : base(itemID)
+            ApplyPoisonTo(m);
+            m.PlaySound(0x474);
+        }
+
+        return true;
+    }
+
+    private class InternalTimer : Timer
+    {
+        private readonly bool m_CanFit;
+        private readonly bool m_InLOS;
+        private readonly PoisonField m_Item;
+
+        public InternalTimer(PoisonField item, TimeSpan delay, bool inLOS, bool canFit) : base(
+            delay,
+            TimeSpan.FromSeconds(1.5)
+        )
+        {
+            m_Item = item;
+            m_InLOS = inLOS;
+            m_CanFit = canFit;
+        }
+
+        protected override void OnTick()
+        {
+            if (m_Item.Deleted)
             {
-                var canFit = SpellHelper.AdjustField(ref loc, map, 12, false);
-
-                Visible = false;
-                Movable = false;
-                Light = LightType.Circle300;
-
-                MoveToWorld(loc, map);
-
-                m_Caster = caster;
-
-                m_End = Core.Now + duration;
-
-                m_Timer = new InternalTimer(this, TimeSpan.FromSeconds(val.Abs() * 0.2), caster.InLOS(this), canFit);
-                m_Timer.Start();
+                return;
             }
 
-            public InternalItem(Serial serial) : base(serial)
+            if (!m_Item.Visible)
             {
-            }
-
-            public override bool BlocksFit => true;
-
-            public override void OnAfterDelete()
-            {
-                base.OnAfterDelete();
-
-                m_Timer?.Stop();
-            }
-
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(1); // version
-
-                writer.Write(m_Caster);
-                writer.WriteDeltaTime(m_End);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                switch (version)
+                if (m_InLOS && m_CanFit)
                 {
-                    case 1:
-                        {
-                            m_Caster = reader.ReadEntity<Mobile>();
-
-                            goto case 0;
-                        }
-                    case 0:
-                        {
-                            m_End = reader.ReadDeltaTime();
-
-                            m_Timer = new InternalTimer(this, TimeSpan.Zero, true, true);
-                            m_Timer.Start();
-
-                            break;
-                        }
-                }
-            }
-
-            public void ApplyPoisonTo(Mobile m)
-            {
-                if (m_Caster == null)
-                {
-                    return;
-                }
-
-                int level;
-
-                if (Core.AOS)
-                {
-                    level = (m_Caster.Skills.Magery.Value + m_Caster.Skills.Poisoning.Value) switch
-                    {
-                        > 199.8 => 3,
-                        > 170.2  => 2,
-                        > 130.2  => 1,
-                        _        => 0
-                    };
+                    m_Item.Visible = true;
                 }
                 else
                 {
-                    level = 1;
+                    m_Item.Delete();
                 }
 
-                if (m.ApplyPoison(m_Caster, Poison.GetPoison(level)) is ApplyPoisonResult.Poisoned or ApplyPoisonResult.HigherPoisonActive)
+                if (!m_Item.Deleted)
                 {
-                    if (SpellHelper.CanRevealCaster(m))
-                    {
-                        m_Caster.RevealingAction();
-                    }
+                    m_Item.ProcessDelta();
+                    Effects.SendLocationParticles(
+                        EffectItem.Create(m_Item.Location, m_Item.Map, EffectItem.DefaultDuration),
+                        0x376A,
+                        9,
+                        10,
+                        5040
+                    );
                 }
-
-                (m as BaseCreature)?.OnHarmfulSpell(m_Caster);
             }
-
-            public override bool OnMoveOver(Mobile m)
+            else if (Core.Now > m_Item._end)
             {
-                if (Visible && m_Caster != null && (!Core.AOS || m != m_Caster) &&
-                    SpellHelper.ValidIndirectTarget(m_Caster, m) && m_Caster.CanBeHarmful(m, false))
-                {
-                    m_Caster.DoHarmful(m);
-
-                    ApplyPoisonTo(m);
-                    m.PlaySound(0x474);
-                }
-
-                return true;
+                m_Item.Delete();
+                Stop();
             }
-
-            private class InternalTimer : Timer
+            else
             {
-                private readonly bool m_CanFit;
-                private readonly bool m_InLOS;
-                private readonly InternalItem m_Item;
+                var map = m_Item.Map;
+                var caster = m_Item._caster;
 
-                public InternalTimer(InternalItem item, TimeSpan delay, bool inLOS, bool canFit) : base(
-                    delay,
-                    TimeSpan.FromSeconds(1.5)
-                )
+                if (map != null && caster != null)
                 {
-                    m_Item = item;
-                    m_InLOS = inLOS;
-                    m_CanFit = canFit;
-                }
+                    var eastToWest = m_Item.ItemID == 0x3915;
+                    var bounds = new Rectangle2D(
+                        m_Item.X - (eastToWest ? 0 : 1),
+                        m_Item.Y - (eastToWest ? 1 : 0),
+                        eastToWest ? 1 : 2,
+                        eastToWest ? 2 : 1
+                    );
 
-                protected override void OnTick()
-                {
-                    if (m_Item.Deleted)
+                    using var queue = PooledRefQueue<Mobile>.Create();
+                    foreach (var m in map.GetMobilesInBounds(bounds))
                     {
-                        return;
-                    }
-
-                    if (!m_Item.Visible)
-                    {
-                        if (m_InLOS && m_CanFit)
+                        if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
+                            SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
                         {
-                            m_Item.Visible = true;
-                        }
-                        else
-                        {
-                            m_Item.Delete();
-                        }
-
-                        if (!m_Item.Deleted)
-                        {
-                            m_Item.ProcessDelta();
-                            Effects.SendLocationParticles(
-                                EffectItem.Create(m_Item.Location, m_Item.Map, EffectItem.DefaultDuration),
-                                0x376A,
-                                9,
-                                10,
-                                5040
-                            );
+                            queue.Enqueue(m);
                         }
                     }
-                    else if (Core.Now > m_Item.m_End)
+
+                    while (queue.Count > 0)
                     {
-                        m_Item.Delete();
-                        Stop();
-                    }
-                    else
-                    {
-                        var map = m_Item.Map;
-                        var caster = m_Item.m_Caster;
+                        var m = queue.Dequeue();
 
-                        if (map != null && caster != null)
-                        {
-                            var eastToWest = m_Item.ItemID == 0x3915;
-                            var bounds = new Rectangle2D(
-                                m_Item.X - (eastToWest ? 0 : 1),
-                                m_Item.Y - (eastToWest ? 1 : 0),
-                                eastToWest ? 1 : 2,
-                                eastToWest ? 2 : 1
-                            );
+                        caster.DoHarmful(m);
 
-                            using var queue = PooledRefQueue<Mobile>.Create();
-                            foreach (var m in map.GetMobilesInBounds(bounds))
-                            {
-                                if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
-                                    SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
-                                {
-                                    queue.Enqueue(m);
-                                }
-                            }
-
-                            while (queue.Count > 0)
-                            {
-                                var m = queue.Dequeue();
-
-                                caster.DoHarmful(m);
-
-                                m_Item.ApplyPoisonTo(m);
-                                m.PlaySound(0x474);
-                            }
-                        }
+                        m_Item.ApplyPoisonTo(m);
+                        m.PlaySound(0x474);
                     }
                 }
             }

@@ -2,14 +2,14 @@ namespace Server.Engines.Quests.Ambitious
 {
     public class DontOfferConversation : QuestConversation
     {
-        public override object Message => 1054059;
+        public override int Message => 1054059;
 
         public override bool Logged => false;
     }
 
     public class AcceptConversation : QuestConversation
     {
-        public override object Message => 1054061;
+        public override int Message => 1054061;
 
         public override void OnRead()
         {
@@ -19,14 +19,14 @@ namespace Server.Engines.Quests.Ambitious
 
     public class DuringKillQueensConversation : QuestConversation
     {
-        public override object Message => 1054066;
+        public override int Message => 1054066;
 
         public override bool Logged => false;
     }
 
     public class GatherFungiConversation : QuestConversation
     {
-        public override object Message => 1054068;
+        public override int Message => 1054068;
 
         public override void OnRead()
         {
@@ -36,14 +36,14 @@ namespace Server.Engines.Quests.Ambitious
 
     public class DuringFungiGatheringConversation : QuestConversation
     {
-        public override object Message => 1054070;
+        public override int Message => 1054070;
 
         public override bool Logged => false;
     }
 
     public class EndConversation : QuestConversation
     {
-        public override object Message => 1054073;
+        public override int Message => 1054073;
 
         public override void OnRead()
         {
@@ -82,7 +82,7 @@ namespace Server.Engines.Quests.Ambitious
 
         public FullBackpackConversation() => m_Logged = true;
 
-        public override object Message => 1054077;
+        public override int Message => 1054077;
 
         public override bool Logged => m_Logged;
 
@@ -115,7 +115,7 @@ namespace Server.Engines.Quests.Ambitious
 
     public class End2Conversation : QuestConversation
     {
-        public override object Message => 1054078;
+        public override int Message => 1054078;
 
         public override void OnRead()
         {

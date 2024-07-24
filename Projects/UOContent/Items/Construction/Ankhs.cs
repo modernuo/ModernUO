@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
@@ -12,18 +12,18 @@ namespace Server.Items
         public const int TitheRange = 2;
         public const int LockRange = 2;
 
-        public static void GetContextMenuEntries(Mobile from, Item item, List<ContextMenuEntry> list)
+        public static void GetContextMenuEntries(Mobile from, Item item, ref PooledRefList<ContextMenuEntry> list)
         {
             if (from is PlayerMobile mobile)
             {
-                list.Add(new LockKarmaEntry(mobile));
+                list.Add(new LockKarmaEntry(mobile.KarmaLocked));
             }
 
-            list.Add(new ResurrectEntry(from, item));
+            list.Add(new ResurrectEntry(from.Alive));
 
             if (Core.AOS)
             {
-                list.Add(new TitheEntry(from));
+                list.Add(new TitheEntry(from.Alive));
             }
         }
 
@@ -51,62 +51,58 @@ namespace Server.Items
 
         private class ResurrectEntry : ContextMenuEntry
         {
-            private readonly Item m_Item;
-            private readonly Mobile m_Mobile;
+            public ResurrectEntry(bool enabled) : base(6195, ResurrectRange) => Enabled = enabled;
 
-            public ResurrectEntry(Mobile mobile, Item item) : base(6195, ResurrectRange)
+            public override void OnClick(Mobile from, IEntity target)
             {
-                m_Mobile = mobile;
-                m_Item = item;
-
-                Enabled = !m_Mobile.Alive;
-            }
-
-            public override void OnClick()
-            {
-                Resurrect(m_Mobile, m_Item);
+                if (target is Item item)
+                {
+                    Resurrect(from, item);
+                }
             }
         }
 
-        private class LockKarmaEntry : ContextMenuEntry
+        public class LockKarmaEntry : ContextMenuEntry
         {
-            private readonly PlayerMobile m_Mobile;
-
-            public LockKarmaEntry(PlayerMobile mobile) : base(mobile.KarmaLocked ? 6197 : 6196, LockRange) =>
-                m_Mobile = mobile;
-
-            public override void OnClick()
+            public LockKarmaEntry(bool karmaLocked) : base(karmaLocked ? 6197 : 6196, LockRange)
             {
-                m_Mobile.KarmaLocked = !m_Mobile.KarmaLocked;
+            }
 
-                if (m_Mobile.KarmaLocked)
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (from is not PlayerMobile pm || target is not Item item)
+                {
+                    return;
+                }
+
+                if (!from.InRange(item.GetWorldLocation(), 2))
+                {
+                    from.SendLocalizedMessage(500446); // That is too far away.
+                }
+
+                pm.KarmaLocked = !pm.KarmaLocked;
+
+                if (pm.KarmaLocked)
                 {
                     // Your karma has been locked. Your karma can no longer be raised.
-                    m_Mobile.SendLocalizedMessage(1060192);
+                    pm.SendLocalizedMessage(1060192);
                 }
                 else
                 {
-                    m_Mobile.SendLocalizedMessage(1060191); // Your karma has been unlocked. Your karma can be raised again.
+                    pm.SendLocalizedMessage(1060191); // Your karma has been unlocked. Your karma can be raised again.
                 }
             }
         }
 
         private class TitheEntry : ContextMenuEntry
         {
-            private readonly Mobile m_Mobile;
+            public TitheEntry(bool enabled) : base(6198, TitheRange) => Enabled = enabled;
 
-            public TitheEntry(Mobile mobile) : base(6198, TitheRange)
+            public override void OnClick(Mobile from, IEntity target)
             {
-                m_Mobile = mobile;
-
-                Enabled = m_Mobile.Alive;
-            }
-
-            public override void OnClick()
-            {
-                if (m_Mobile.CheckAlive())
+                if (from.CheckAlive())
                 {
-                    m_Mobile.SendGump(new TithingGump(m_Mobile, 0));
+                    from.SendGump(new TithingGump(from));
                 }
             }
         }
@@ -150,10 +146,10 @@ namespace Server.Items
             }
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
-            Ankhs.GetContextMenuEntries(from, this, list);
+            base.GetContextMenuEntries(from, ref list);
+            Ankhs.GetContextMenuEntries(from, this, ref list);
         }
 
         public override void OnDoubleClickDead(Mobile m)
@@ -244,10 +240,10 @@ namespace Server.Items
                 }
             }
 
-            public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+            public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
             {
-                base.GetContextMenuEntries(from, list);
-                Ankhs.GetContextMenuEntries(from, this, list);
+                base.GetContextMenuEntries(from, ref list);
+                Ankhs.GetContextMenuEntries(from, this, ref list);
             }
 
             public override void OnDoubleClickDead(Mobile m)
@@ -297,10 +293,10 @@ namespace Server.Items
             }
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
-            Ankhs.GetContextMenuEntries(from, this, list);
+            base.GetContextMenuEntries(from, ref list);
+            Ankhs.GetContextMenuEntries(from, this, ref list);
         }
 
         public override void OnDoubleClickDead(Mobile m)
@@ -393,10 +389,10 @@ namespace Server.Items
                 }
             }
 
-            public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+            public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
             {
-                base.GetContextMenuEntries(from, list);
-                Ankhs.GetContextMenuEntries(from, this, list);
+                base.GetContextMenuEntries(from, ref list);
+                Ankhs.GetContextMenuEntries(from, this, ref list);
             }
 
             public override void OnDoubleClickDead(Mobile m)

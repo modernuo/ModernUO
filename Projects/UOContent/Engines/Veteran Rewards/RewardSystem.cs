@@ -561,16 +561,13 @@ namespace Server.Engines.VeteranRewards
             RewardInterval = ServerConfiguration.GetOrUpdateSetting("vetRewards.rewardInterval", TimeSpan.FromDays(30.0));
         }
 
-        public static void Initialize()
+        public static void OnLogin(Mobile m)
         {
-            if (Enabled)
+            if (!Enabled)
             {
-                EventSink.Login += EventSink_Login;
+                return;
             }
-        }
 
-        private static void EventSink_Login(Mobile m)
-        {
             if (!m.Alive)
             {
                 return;

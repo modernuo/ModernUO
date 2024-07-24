@@ -65,8 +65,6 @@ namespace Server.Spells.Spellweaving
                     );
                 }
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

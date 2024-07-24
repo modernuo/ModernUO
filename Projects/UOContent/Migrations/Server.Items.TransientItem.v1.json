@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Items.TransientItem",
+  "properties": [
+    {
+      "name": "Expiration",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    }
+  ]
+}

@@ -47,8 +47,6 @@ namespace Server.Spells.Fifth
 
                 item.Delete();
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

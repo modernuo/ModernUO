@@ -8,7 +8,6 @@ using Server.Engines.MLQuests.Objectives;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
-using Server.Utilities;
 
 namespace Server.Engines.MLQuests
 {
@@ -152,8 +151,6 @@ namespace Server.Engines.MLQuests
 
             TargetCommands.Register(new ViewQuestsCommand());
             TargetCommands.Register(new ViewContextCommand());
-
-            EventSink.QuestGumpRequest += EventSink_QuestGumpRequest;
         }
 
         public static void Initialize()
@@ -650,7 +647,7 @@ namespace Server.Engines.MLQuests
             }
         }
 
-        public static void EventSink_QuestGumpRequest(Mobile m)
+        public static void QuestGumpRequest(Mobile m)
         {
             if (!Enabled || m is not PlayerMobile pm)
             {

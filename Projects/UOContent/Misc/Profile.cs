@@ -5,13 +5,7 @@ namespace Server.Misc
 {
     public static class Profile
     {
-        public static void Initialize()
-        {
-            EventSink.ProfileRequest += EventSink_ProfileRequest;
-            EventSink.ChangeProfileRequest += EventSink_ChangeProfileRequest;
-        }
-
-        public static void EventSink_ChangeProfileRequest(Mobile beholder, Mobile beheld, string text)
+        public static void ChangeProfileRequest(Mobile beholder, Mobile beheld, string text)
         {
             if (beholder.ProfileLocked)
             {
@@ -23,7 +17,7 @@ namespace Server.Misc
             }
         }
 
-        public static void EventSink_ProfileRequest(Mobile beholder, Mobile beheld)
+        public static void ProfileRequest(Mobile beholder, Mobile beheld)
         {
             if (!beheld.Player)
             {

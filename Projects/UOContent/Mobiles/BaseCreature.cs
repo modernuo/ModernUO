@@ -486,7 +486,7 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual bool HasManaOveride => false;
+        public virtual bool HasManaOverride => false;
 
         public virtual FoodType FavoriteFood => FoodType.Meat;
         public virtual PackInstinct PackInstinct => PackInstinct.None;
@@ -2395,13 +2395,17 @@ namespace Server.Mobiles
                 AnimateDeadSpell.Unregister(m_SummonMaster, this);
             }
 
+            if (Summoned && SummonMaster != null)
+            {
+                SummonFamiliarSpell.Unregister(SummonMaster, this);
+            }
+
             if (MLQuestSystem.Enabled)
             {
                 MLQuestSystem.HandleDeletion(this);
             }
 
             UnsummonTimer.StopTimer(this);
-
             StaminaSystem.RemoveEntry(this as IHasSteps);
 
             base.OnAfterDelete();
@@ -2542,25 +2546,25 @@ namespace Server.Mobiles
             return base.OnMoveOver(m);
         }
 
-        public virtual void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+        public virtual void AddCustomContextEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             if (Commandable)
             {
-                AIObject?.GetContextMenuEntries(from, list);
+                AIObject?.GetContextMenuEntries(from, ref list);
             }
 
             if (m_bTamable && !m_Controlled && from.Alive)
             {
-                list.Add(new TameEntry(from, this));
+                list.Add(new TameEntry(from.Female ? AllowFemaleTamer : AllowMaleTamer));
             }
 
-            AddCustomContextEntries(from, list);
+            AddCustomContextEntries(from, ref list);
 
             if (CanTeach && from.Alive)
             {
@@ -2581,7 +2585,7 @@ namespace Server.Mobiles
                             toTeach = 420;
                         }
 
-                        list.Add(new TeachEntry((SkillName)i, this, from, toTeach > theirSkill.BaseFixedPoint));
+                        list.Add(new TeachEntry((SkillName)i, toTeach > theirSkill.BaseFixedPoint));
                     }
                 }
             }
@@ -3582,7 +3586,6 @@ namespace Server.Mobiles
 
             creature.RangeHome = 10;
             creature.Summoned = true;
-
             creature.SummonMaster = caster;
 
             var pack = creature.Backpack;
@@ -5502,32 +5505,25 @@ namespace Server.Mobiles
 
         private class TameEntry : ContextMenuEntry
         {
-            private readonly BaseCreature m_Mobile;
+            public TameEntry(bool enabled) : base(6130, 6) => Enabled = enabled;
 
-            public TameEntry(Mobile from, BaseCreature creature) : base(6130, 6)
+            public override void OnClick(Mobile from, IEntity target)
             {
-                m_Mobile = creature;
-
-                Enabled = Enabled && (from.Female ? creature.AllowFemaleTamer : creature.AllowMaleTamer);
-            }
-
-            public override void OnClick()
-            {
-                if (!Owner.From.CheckAlive())
+                if (!from.CheckAlive() || target is not BaseCreature bc)
                 {
                     return;
                 }
 
-                Owner.From.TargetLocked = true;
+                from.TargetLocked = true;
                 AnimalTaming.DisableMessage = true;
 
-                if (Owner.From.UseSkill(SkillName.AnimalTaming))
+                if (from.UseSkill(SkillName.AnimalTaming))
                 {
-                    Owner.From.Target.Invoke(Owner.From, m_Mobile);
+                    from.Target.Invoke(from, bc);
                 }
 
                 AnimalTaming.DisableMessage = false;
-                Owner.From.TargetLocked = false;
+                from.TargetLocked = false;
             }
         }
 

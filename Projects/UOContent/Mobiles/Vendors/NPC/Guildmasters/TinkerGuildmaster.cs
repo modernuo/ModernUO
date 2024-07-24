@@ -1,5 +1,5 @@
 using ModernUO.Serialization;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 
@@ -18,11 +18,11 @@ namespace Server.Mobiles
 
         public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
 
-        public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void AddCustomContextEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
             if (Core.ML && from.Alive)
             {
-                var entry = new RechargeEntry(from, this);
+                var entry = new RechargeEntry();
 
                 if (WeaponEngravingTool.Find(from) == null)
                 {
@@ -32,45 +32,38 @@ namespace Server.Mobiles
                 list.Add(entry);
             }
 
-            base.AddCustomContextEntries(from, list);
+            base.AddCustomContextEntries(from, ref list);
         }
 
         private class RechargeEntry : ContextMenuEntry
         {
-            private readonly Mobile m_From;
-            private readonly Mobile m_Vendor;
-
-            public RechargeEntry(Mobile from, Mobile vendor) : base(6271, 6)
+            public RechargeEntry() : base(6271, 6)
             {
-                m_From = from;
-                m_Vendor = vendor;
             }
 
-            public override void OnClick()
+            public override void OnClick(Mobile from, IEntity target)
             {
-                if (!Core.ML || m_Vendor?.Deleted != false)
+                if (!Core.ML || target is not Mobile vendor || vendor.Deleted)
                 {
                     return;
                 }
 
-                var tool = WeaponEngravingTool.Find(m_From);
+                var tool = WeaponEngravingTool.Find(from);
 
-                if (tool?.UsesRemaining <= 0)
+                if (!(tool?.UsesRemaining <= 0))
                 {
-                    if (Banker.GetBalance(m_From) >= 100000)
-                    {
-                        m_From.SendGump(new WeaponEngravingTool.ConfirmGump(tool, m_Vendor));
-                    }
-                    else
-                    {
-                        m_Vendor.Say(1076167); // You need a 100,000 gold and a blue diamond to recharge the weapon engraver.
-                    }
+                    // I can only help with this if you are carrying an engraving tool that needs repair.
+                    vendor.Say(1076164);
+                    return;
+                }
+
+                if (Banker.GetBalance(from) >= 100000)
+                {
+                    from.SendGump(new WeaponEngravingTool.ConfirmGump(tool, vendor));
                 }
                 else
                 {
-                    m_Vendor.Say(
-                        1076164
-                    ); // I can only help with this if you are carrying an engraving tool that needs repair.
+                    vendor.Say(1076167); // You need a 100,000 gold and a blue diamond to recharge the weapon engraver.
                 }
             }
         }

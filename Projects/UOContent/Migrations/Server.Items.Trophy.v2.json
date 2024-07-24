@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "type": "Server.Items.Trophy",
+  "properties": [
+    {
+      "name": "Title",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Rank",
+      "type": "Server.Items.TrophyRank",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Date",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

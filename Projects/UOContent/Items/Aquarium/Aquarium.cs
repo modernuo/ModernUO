@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Multis;
 using Server.Network;
-using Server.Utilities;
 
 namespace Server.Items
 {
@@ -14,7 +15,7 @@ namespace Server.Items
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
 
         private static readonly Type[] m_Decorations =
-        {
+        [
             typeof(FishBones),
             typeof(WaterloggedBoots),
             typeof(CaptainBlackheartsFishingPole),
@@ -24,7 +25,7 @@ namespace Server.Items
             typeof(IslandStatue),
             typeof(Shell),
             typeof(ToyBoat)
-        };
+        ];
 
         private bool m_EvaluateDay;
 
@@ -46,16 +47,19 @@ namespace Server.Items
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _vacationLeft;
 
+        [SerializedIgnoreDupe]
         [InvalidateProperties]
         [SerializableField(3, setter: "private")]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private AquariumState _food;
 
+        [SerializedIgnoreDupe]
         [InvalidateProperties]
         [SerializableField(4, setter: "private")]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private AquariumState _water;
 
+        [SerializedIgnoreDupe]
         [SerializableField(5, setter: "private")]
         private List<int> _events;
 
@@ -91,7 +95,7 @@ namespace Server.Items
 
             _water.Maintain = Utility.RandomMinMax(1, 3);
 
-            _events = new List<int>();
+            _events = [];
 
             _evaluateTimer = Timer.DelayCall(EvaluationInterval, EvaluationInterval, Evaluate);
         }
@@ -146,9 +150,9 @@ namespace Server.Items
         public override double DefaultWeight => 10.0;
 
         private static int[] FishHues =
-        {
+        [
             0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
-        };
+        ];
 
         public override void OnDelete()
         {
@@ -435,41 +439,61 @@ namespace Server.Items
             }
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             if (from.Alive)
             {
-                list.Add(new ExamineEntry(this));
+                list.Add(new ExamineEntry());
 
                 if (HasAccess(from))
                 {
                     if (_rewardAvailable)
                     {
-                        list.Add(new CollectRewardEntry(this));
+                        list.Add(new CollectRewardEntry());
                     }
 
                     if (_events.Count > 0)
                     {
-                        list.Add(new ViewEventEntry(this));
+                        list.Add(new ViewEventEntry());
                     }
 
                     if (_vacationLeft > 0)
                     {
-                        list.Add(new CancelVacationMode(this));
+                        list.Add(new CancelVacationMode());
                     }
                 }
             }
 
             if (from.AccessLevel >= AccessLevel.GameMaster)
             {
-                list.Add(new GMAddFood(this));
-                list.Add(new GMAddWater(this));
-                list.Add(new GMForceEvaluate(this));
-                list.Add(new GMOpen(this));
-                list.Add(new GMFill(this));
+                list.Add(new GMAddFood());
+                list.Add(new GMAddWater());
+                list.Add(new GMForceEvaluate());
+                list.Add(new GMOpen());
+                list.Add(new GMFill());
             }
+        }
+
+        public override void OnAfterDuped(Item newItem)
+        {
+            if (newItem is not Aquarium aquarium)
+            {
+                return;
+            }
+
+            aquarium.Food.Added = Food.Added;
+            aquarium.Food.Improve = Food.Improve;
+            aquarium.Food.Maintain = Food.Maintain;
+            aquarium.Food.State = Food.State;
+
+            aquarium.Water.Added = Water.Added;
+            aquarium.Water.Improve = Water.Improve;
+            aquarium.Water.Maintain = Water.Maintain;
+            aquarium.Water.State = Water.State;
+
+            aquarium.Events = [..Events];
         }
 
         private void Deserialize(IGenericReader reader, int version)
@@ -501,7 +525,7 @@ namespace Server.Items
                         _water = new AquariumState(this);
                         _water.Deserialize(reader);
 
-                        _events = new List<int>();
+                        _events = [];
                         var count = reader.ReadInt();
                         for (var i = 0; i < count; i++)
                         {
@@ -857,7 +881,8 @@ namespace Server.Items
             from.PlaySound(0x5A4);
         }
 
-        public virtual bool AddFish(BaseFish fish) => AddFish(null, fish);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool AddFish(BaseFish fish) => AddFish(null, fish);
 
         public virtual bool AddFish(Mobile from, BaseFish fish)
         {
@@ -878,16 +903,15 @@ namespace Server.Items
 
             LiveCreatures += 1;
 
-            from?.SendLocalizedMessage(
-                1073632,
-                $"#{fish.LabelNumber}"
-            ); // You add the following creature to your aquarium: ~1_FISH~
+            // You add the following creature to your aquarium: ~1_FISH~
+            from?.SendLocalizedMessage(1073632, $"#{fish.LabelNumber}");
 
             InvalidateProperties();
             return true;
         }
 
-        public virtual bool AddDecoration(Item item) => AddDecoration(null, item);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool AddDecoration(Item item) => AddDecoration(null, item);
 
         public virtual bool AddDecoration(Mobile from, Item item)
         {
@@ -959,177 +983,171 @@ namespace Server.Items
 
         private class ExamineEntry : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public ExamineEntry(Aquarium aquarium) : base(6235, 2) // Examine Aquarium
-                =>
-                    m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public ExamineEntry() : base(6235, 2)
             {
-                if (m_Aquarium.Deleted)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted)
                 {
                     return;
                 }
 
-                m_Aquarium.ExamineAquarium(Owner.From);
+                aquarium.ExamineAquarium(from);
             }
         }
 
         private class CollectRewardEntry : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public CollectRewardEntry(Aquarium aquarium) : base(6237, 2) // Collect Reward
-                =>
-                    m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public CollectRewardEntry() : base(6237, 2)
             {
-                if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From))
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted)
                 {
                     return;
                 }
 
-                m_Aquarium.GiveReward(Owner.From);
+                aquarium.GiveReward(from);
             }
         }
 
         private class ViewEventEntry : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public ViewEventEntry(Aquarium aquarium) : base(6239, 2) // View events
-                =>
-                    m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public ViewEventEntry() : base(6239, 2)
             {
-                if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From) || m_Aquarium._events.Count == 0)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted || aquarium.HasAccess(from) ||
+                    aquarium._events.Count == 0)
                 {
                     return;
                 }
 
-                Owner.From.SendLocalizedMessage(m_Aquarium.Events[0]);
+                var firstEvent = aquarium.Events[0];
+                from.SendLocalizedMessage(firstEvent);
 
-                if (m_Aquarium.Events[0] == 1074366)
+                if (firstEvent == 1074366)
                 {
-                    Owner.From.PlaySound(0x5A2);
+                    from.PlaySound(0x5A2);
                 }
 
-                m_Aquarium.RemoveFromEventsAt(0);
-                m_Aquarium.InvalidateProperties();
+                aquarium.RemoveFromEventsAt(0);
+                aquarium.InvalidateProperties();
             }
         }
 
         private class CancelVacationMode : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public CancelVacationMode(Aquarium aquarium) : base(6240, 2) // Cancel vacation mode
-                =>
-                    m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public CancelVacationMode() : base(6240, 2)
             {
-                if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From))
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted || aquarium.HasAccess(from))
                 {
                     return;
                 }
 
-                Owner.From.SendLocalizedMessage(1074429); // Vacation mode has been cancelled.
-                m_Aquarium.VacationLeft = 0;
-                m_Aquarium.InvalidateProperties();
+                from.SendLocalizedMessage(1074429); // Vacation mode has been cancelled.
+                aquarium.VacationLeft = 0;
+                aquarium.InvalidateProperties();
             }
         }
 
         // GM context entries
         private class GMAddFood : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public GMAddFood(Aquarium aquarium) : base(6231) => m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public GMAddFood() : base(6231)
             {
-                if (m_Aquarium.Deleted)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (from.AccessLevel < AccessLevel.GameMaster || target is not Aquarium aquarium || aquarium.Deleted)
                 {
                     return;
                 }
 
-                m_Aquarium.Food.Added += 1;
-                m_Aquarium.InvalidateProperties();
+                aquarium.Food.Added += 1;
+                aquarium.InvalidateProperties();
             }
         }
 
         private class GMAddWater : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public GMAddWater(Aquarium aquarium) : base(6232) => m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public GMAddWater() : base(6232)
             {
-                if (m_Aquarium.Deleted)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (from.AccessLevel < AccessLevel.GameMaster || target is not Aquarium aquarium || aquarium.Deleted)
                 {
                     return;
                 }
 
-                m_Aquarium.Water.Added += 1;
-                m_Aquarium.InvalidateProperties();
+                aquarium.Water.Added += 1;
+                aquarium.InvalidateProperties();
             }
         }
 
         private class GMForceEvaluate : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public GMForceEvaluate(Aquarium aquarium) : base(6233) => m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public GMForceEvaluate() : base(6233)
             {
-                if (m_Aquarium.Deleted)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (from.AccessLevel < AccessLevel.GameMaster || target is not Aquarium aquarium || aquarium.Deleted)
                 {
                     return;
                 }
 
-                m_Aquarium.Evaluate();
+                aquarium.Evaluate();
             }
         }
 
         private class GMOpen : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public GMOpen(Aquarium aquarium) : base(6234) => m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public GMOpen() : base(6234)
             {
-                if (m_Aquarium.Deleted)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (from.AccessLevel < AccessLevel.GameMaster || target is not Aquarium aquarium || aquarium.Deleted)
                 {
                     return;
                 }
 
-                Owner.From.SendGump(new AquariumGump(m_Aquarium, true));
+                from.SendGump(new AquariumGump(aquarium, true));
             }
         }
 
         private class GMFill : ContextMenuEntry
         {
-            private readonly Aquarium m_Aquarium;
-
-            public GMFill(Aquarium aquarium) : base(6236) => m_Aquarium = aquarium;
-
-            public override void OnClick()
+            public GMFill() : base(6236)
             {
-                if (m_Aquarium.Deleted)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (from.AccessLevel < AccessLevel.GameMaster || target is not Aquarium aquarium || aquarium.Deleted)
                 {
                     return;
                 }
 
-                m_Aquarium.Food.Added = m_Aquarium.Food.Maintain;
-                m_Aquarium.Water.Added = m_Aquarium.Water.Maintain;
-                m_Aquarium.InvalidateProperties();
+                aquarium.Food.Added = aquarium.Food.Maintain;
+                aquarium.Water.Added = aquarium.Water.Maintain;
+                aquarium.InvalidateProperties();
             }
         }
     }

@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Ambitious
 {
     public class KillQueensObjective : QuestObjective
     {
-        public override object Message => ((AmbitiousQueenQuest)System).RedSolen ? 1054062 : 1054063;
+        public override int Message => ((AmbitiousQueenQuest)System).RedSolen ? 1054062 : 1054063;
 
         public override int MaxProgress => 5;
 
@@ -77,7 +77,7 @@ namespace Server.Engines.Quests.Ambitious
 
     public class ReturnAfterKillsObjective : QuestObjective
     {
-        public override object Message => 1054067;
+        public override int Message => 1054067;
 
         public override void OnComplete()
         {
@@ -87,7 +87,7 @@ namespace Server.Engines.Quests.Ambitious
 
     public class GatherFungiObjective : QuestObjective
     {
-        public override object Message => 1054069;
+        public override int Message => 1054069;
 
         public override void OnComplete()
         {
@@ -108,7 +108,7 @@ namespace Server.Engines.Quests.Ambitious
         {
         }
 
-        public override object Message => 1054148;
+        public override int Message => 1054148;
 
         public bool BagOfSending { get; set; }
 

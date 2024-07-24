@@ -4,7 +4,7 @@ namespace Server.Engines.Quests.Doom
 {
     public class AcceptConversation : QuestConversation
     {
-        public override object Message => 1050027;
+        public override int Message => 1050027;
 
         public override void OnRead()
         {
@@ -14,7 +14,7 @@ namespace Server.Engines.Quests.Doom
 
     public class VanquishDaemonConversation : QuestConversation
     {
-        public override object Message => 1050021;
+        public override int Message => 1050021;
 
         public override void OnRead()
         {

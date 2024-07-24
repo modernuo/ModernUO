@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <ApplicationIcon>MUO.ico</ApplicationIcon>
+        <StartupObject>Server.Application</StartupObject>
+        <AssemblyName>ModernUO</AssemblyName>
+        <Win32Resource />
+        <Product>ModernUO Server</Product>
+        <OutDir>..\..\Distribution</OutDir>
+        <Version>0.0.0</Version>
+        <Configurations>Debug;Release;Analyze</Configurations>
+        <RootNamespace>Server</RootNamespace>
+    </PropertyGroup>
+    <Target Name="CleanPub" AfterTargets="Clean">
+        <Message Text="Application: Removing distribution files..." />
+        <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+    </Target>
+    <ItemGroup>
+        <ProjectReference Include="..\Server\Server.csproj" />
+        <ProjectReference Include="..\UOContent\UOContent.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
+            <IncludeInPackage>false</IncludeInPackage>
+        </ProjectReference>
+    </ItemGroup>
+</Project>

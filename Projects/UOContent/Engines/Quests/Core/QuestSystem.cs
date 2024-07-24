@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Quests.Ambitious;
 using Server.Engines.Quests.Collector;
@@ -246,7 +247,7 @@ namespace Server.Engines.Quests
             From.SendGump(new QuestOfferGump(this));
         }
 
-        public virtual void GetContextMenuEntries(List<ContextMenuEntry> list)
+        public virtual void GetContextMenuEntries(ref PooledRefList<ContextMenuEntry> list)
         {
             if (Objectives.Count > 0)
             {
@@ -682,41 +683,15 @@ namespace Server.Engines.Quests
         {
         }
 
-        public static int C16232(int c16)
-        {
-            c16 &= 0x7FFF;
-
-            var r = ((c16 >> 10) & 0x1F) << 3;
-            var g = ((c16 >> 05) & 0x1F) << 3;
-            var b = (c16 & 0x1F) << 3;
-
-            return (r << 16) | (g << 8) | b;
-        }
-
-        public static int C16216(int c16) => c16 & 0x7FFF;
-
-        public static int C32216(int c32)
-        {
-            c32 &= 0xFFFFFF;
-
-            var r = ((c32 >> 16) & 0xFF) >> 3;
-            var g = ((c32 >> 08) & 0xFF) >> 3;
-            var b = (c32 & 0xFF) >> 3;
-
-            return (r << 10) | (g << 5) | b;
-        }
-
-        public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
         public void AddHtmlObject(int x, int y, int width, int height, object message, int color, bool back, bool scroll)
         {
             if (message is int html)
             {
-                AddHtmlLocalized(x, y, width, height, html, C16216(color), back, scroll);
+                AddHtmlLocalized(x, y, width, height, html, color.C16216(), back, scroll);
             }
             else
             {
-                AddHtml(x, y, width, height, Color(message.ToString(), C16232(color)), back, scroll);
+                AddHtml(x, y, width, height, message.ToString().Color(color.C16216()), back, scroll);
             }
         }
     }

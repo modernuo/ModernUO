@@ -1,4 +1,3 @@
-using Server.Utilities;
 using Xunit;
 
 namespace Server.Tests

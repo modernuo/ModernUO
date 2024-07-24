@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: Mobile.cs                                                       *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -15,7 +30,6 @@ using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
 using Server.Text;
-using Server.Utilities;
 using CalcMoves = Server.Movement.Movement;
 
 namespace Server;
@@ -250,7 +264,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private int m_ChangingCombatant;
     private Mobile m_Combatant;
     private TimerExecutionToken _combatTimerToken;
-    private ContextMenu m_ContextMenu;
     private bool m_Criminal;
 
     private MobileDelta m_DeltaFlags;
@@ -491,8 +504,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             if (oldValue != value)
             {
                 m_Hunger = value;
-
-                EventSink.InvokeHungerChanged(this, oldValue);
+                OnHungerChanged(oldValue);
             }
         }
     }
@@ -857,20 +869,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
-    public ContextMenu ContextMenu
-    {
-        get => m_ContextMenu;
-        set
-        {
-            m_ContextMenu = value;
-            m_NetState.SendDisplayContextMenu(m_ContextMenu);
-        }
-    }
-
+    [IgnoreDupe]
     public bool Pushing { get; set; }
 
     public virtual bool IsDeadBondedPet => false;
 
+    [IgnoreDupe]
     public ISpell Spell
     {
         get => m_Spell;
@@ -1001,7 +1005,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public static IWeapon DefaultWeapon { get; set; }
 
-    [CommandProperty(AccessLevel.Counselor)]
+    [CommandProperty(AccessLevel.Counselor, canModify: true)]
     public Skills Skills { get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
@@ -2258,13 +2262,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         AddNameProperties(list);
     }
 
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
-    public long SavePosition { get; set; } = -1;
-
-    public BufferWriter SaveBuffer { get; set; }
-
+    [IgnoreDupe]
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
 
@@ -3699,6 +3701,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
     }
 
+    /// <summary>
+    ///     Overridable. Virtual event invoked after the <see cref="Hunger" /> property has changed.
+    ///     <seealso cref="Hunger" />
+    /// </summary>
+    public virtual void OnHungerChanged(int oldValue)
+    {
+    }
+
     public double GetDistanceToSqrt(Point3D p)
     {
         var xDelta = m_Location.m_X - p.m_X;
@@ -4068,10 +4078,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return true;
     }
 
-    public virtual bool CheckMovement(Direction d, out int newZ) => Movement.Movement.CheckMovement(this, d, out newZ);
+    public virtual bool CheckMovement(Direction d, out int newZ) => CalcMoves.CheckMovement(this, d, out newZ);
 
-    private bool CanMove(Direction d, Point3D oldLocation, ref Point3D newLocation)
+    private bool CanMove(Direction d, Point3D oldLocation, out Point3D newLocation)
     {
+        newLocation = oldLocation;
+
         if (m_Spell?.OnCasterMoving(d) == false)
         {
             return false;
@@ -4089,61 +4101,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return false;
         }
 
-        int x = oldLocation.m_X, y = oldLocation.m_Y;
-        int oldX = x, oldY = y;
+        var oldX = oldLocation.m_X;
+        var oldY = oldLocation.m_Y;
         var oldZ = oldLocation.m_Z;
-
-        switch (d & Direction.Mask)
-        {
-            case Direction.North:
-                {
-                    --y;
-                    break;
-                }
-            case Direction.Right:
-                {
-                    ++x;
-                    --y;
-                    break;
-                }
-            case Direction.East:
-                {
-                    ++x;
-                    break;
-                }
-            case Direction.Down:
-                {
-                    ++x;
-                    ++y;
-                    break;
-                }
-            case Direction.South:
-                {
-                    ++y;
-                    break;
-                }
-            case Direction.Left:
-                {
-                    --x;
-                    ++y;
-                    break;
-                }
-            case Direction.West:
-                {
-                    --x;
-                    break;
-                }
-            case Direction.Up:
-                {
-                    --x;
-                    --y;
-                    break;
-                }
-        }
-
-        newLocation.m_X = x;
-        newLocation.m_Y = y;
-        newLocation.m_Z = newZ;
+        var x = oldX;
+        var y = oldY;
+        CalcMoves.Offset(d, ref x, ref y);
+        newLocation = new Point3D(x, y, newZ);
 
         Pushing = false;
 
@@ -4323,17 +4287,21 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         var oldLocation = m_Location;
-        Point3D newLocation = oldLocation;
+        Point3D newLocation;
 
         if ((m_Direction & Direction.Mask) == (d & Direction.Mask))
         {
             // We are actually moving (not just a direction change)
-            if (!CanMove(d, oldLocation, ref newLocation))
+            if (!CanMove(d, oldLocation, out newLocation))
             {
                 return false;
             }
 
             DisruptiveAction();
+        }
+        else
+        {
+            newLocation = oldLocation;
         }
 
         if (m_NetState != null)
@@ -6542,26 +6510,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual bool CanPaperdollBeOpenedBy(Mobile from) => Body.IsHuman || Body.IsGhost || IsBodyMod;
 
-    public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
+    public virtual void GetChildContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list, Item item)
     {
     }
 
-    public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public virtual void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        if (Deleted)
-        {
-            return;
-        }
-
-        if (CanPaperdollBeOpenedBy(from))
-        {
-            list.Add(new PaperdollEntry(this));
-        }
-
-        if (from == this && Backpack != null && CanSee(Backpack) && CheckAlive(false))
-        {
-            list.Add(new OpenBackpackEntry(this));
-        }
     }
 
     public void Internalize()

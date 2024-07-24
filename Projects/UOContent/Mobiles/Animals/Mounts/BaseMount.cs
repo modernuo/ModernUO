@@ -246,7 +246,7 @@ public abstract partial class BaseMount : BaseCreature, IMount
                 if (Poisoned)
                 {
                     // This mount is too ill to ride.
-                    PrivateOverheadMessage(MessageType.Regular,0x3B2,1049692,from.NetState);
+                    PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1049692, from.NetState);
                 }
                 else
                 {

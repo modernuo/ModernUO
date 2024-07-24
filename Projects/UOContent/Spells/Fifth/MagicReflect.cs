@@ -58,51 +58,47 @@ namespace Server.Spells.Fifth
 
                 if (CheckSequence())
                 {
-                    var targ = Caster;
-
-                    if (_table.Remove(targ, out var mods))
+                    if (_table.Remove(Caster, out var mods))
                     {
-                        targ.PlaySound(0x1ED);
-                        targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
+                        Caster.PlaySound(0x1ED);
+                        Caster.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
-                            targ.RemoveResistanceMod(mods[i]);
+                            Caster.RemoveResistanceMod(mods[i]);
                         }
 
-                        BuffInfo.RemoveBuff(targ, BuffIcon.MagicReflection);
+                        BuffInfo.RemoveBuff(Caster, BuffIcon.MagicReflection);
                     }
                     else
                     {
-                        targ.PlaySound(0x1E9);
-                        targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
+                        Caster.PlaySound(0x1E9);
+                        Caster.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
 
-                        var physiMod = -25 + (int)(targ.Skills.Inscribe.Value / 20);
+                        var physiMod = -25 + (int)(Caster.Skills.Inscribe.Value / 20);
                         const int otherMod = 10;
 
-                        mods = new[]
-                        {
+                        mods =
+                        [
                             new ResistanceMod(ResistanceType.Physical, "PhysicalResistMagicResist", physiMod),
                             new ResistanceMod(ResistanceType.Fire, "FireResistMagicResist", otherMod),
                             new ResistanceMod(ResistanceType.Cold, "ColdResistMagicResist", otherMod),
                             new ResistanceMod(ResistanceType.Poison, "PoisonResistMagicResist", otherMod),
                             new ResistanceMod(ResistanceType.Energy, "EnergyResistMagicResist", otherMod)
-                        };
+                        ];
 
-                        _table[targ] = mods;
+                        _table[Caster] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
                         {
-                            targ.AddResistanceMod(mods[i]);
+                            Caster.AddResistanceMod(mods[i]);
                         }
 
                         var buffFormat = $"{physiMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}";
 
-                        BuffInfo.AddBuff(targ, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
+                        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
                     }
                 }
-
-                FinishSequence();
             }
             else
             {
@@ -131,9 +127,9 @@ namespace Server.Spells.Fifth
                         Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
                     }
                 }
-
-                FinishSequence();
             }
+
+            FinishSequence();
         }
 
         public static void EndReflect(Mobile m)

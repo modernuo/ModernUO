@@ -14,7 +14,9 @@
  *************************************************************************/
 
 using System.Buffers;
-using Server.ContextMenus;
+using System.Runtime.CompilerServices;
+using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -48,8 +50,6 @@ public static class IncomingExtendedCommandPackets
         RegisterExtended(0x0E, true, &Animate);
         RegisterExtended(0x0F, false, &Empty); // What's this?
         RegisterExtended(0x10, true, &QueryProperties);
-        RegisterExtended(0x13, true, &ContextMenuRequest);
-        RegisterExtended(0x15, true, &ContextMenuResponse);
         RegisterExtended(0x1A, true, &StatLockChange);
         RegisterExtended(0x1C, true, &CastSpell);
         RegisterExtended(0x24, false, &UnhandledBF);
@@ -68,12 +68,18 @@ public static class IncomingExtendedCommandPackets
     {
     }
 
-    public static unsafe void RegisterExtended(int packetID, bool ingame,
-        delegate*<NetState, SpanReader, void> onReceive)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, delegate*<NetState, SpanReader, void> onReceive
+    ) => RegisterExtended(packetID, ingame, false, onReceive);
+
+    public static unsafe void RegisterExtended(
+        int packetID, bool ingame, bool outgame, delegate*<NetState, SpanReader, void> onReceive
+    )
     {
         if (packetID is >= 0 and < 0x100)
         {
-            _extendedHandlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+            _extendedHandlers[packetID] = new PacketHandler(packetID, onReceive, inGameOnly: ingame, outGameOnly: outgame);
         }
     }
 
@@ -100,21 +106,30 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        if (ph.Ingame && state.Mobile?.Deleted != false)
+        var from = state.Mobile;
+
+        if (ph.InGameOnly)
         {
-            if (state.Mobile == null)
+            if (from == null)
             {
-                state.LogInfo(
-                    $"Sent in-game packet (0xBFx{packetId:X2}) before having been attached to a mobile"
-                );
+                state.Disconnect($"Received packet 0x{packetId:X2} before having been attached to a mobile.");
+                return;
             }
 
-            state.Disconnect($"Sent in-game packet(0xBFx{packetId:X2}) but mobile is deleted.");
+            if (from.Deleted)
+            {
+                state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a deleted mobile.");
+                return;
+            }
         }
-        else
+
+        if (ph.OutOfGameOnly && from?.Deleted == false)
         {
-            ph.OnReceive(state, reader);
+            state.Disconnect($"Received packet 0x{packetId:X2} after having been attached to a mobile.");
+            return;
         }
+
+        ph.OnReceive(state, reader);
     }
 
     public static void ScreenSize(NetState state, SpanReader reader)
@@ -250,7 +265,7 @@ public static class IncomingExtendedCommandPackets
         Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
 
         var spellID = reader.ReadInt16() - 1;
-        EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
+        Spellbook.CastSpellRequest(from, spellID, spellbook);
     }
 
     public static void ToggleFlying(NetState state, SpanReader reader)
@@ -267,7 +282,7 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        EventSink.InvokeStunRequest(from);
+        Fists.StunRequest(from);
     }
 
     public static void DisarmRequest(NetState state, SpanReader reader)
@@ -279,7 +294,7 @@ public static class IncomingExtendedCommandPackets
             return;
         }
 
-        EventSink.InvokeDisarmRequest(from);
+        Fists.DisarmRequest(from);
     }
 
     public static void StatLockChange(NetState state, SpanReader reader)
@@ -368,102 +383,6 @@ public static class IncomingExtendedCommandPackets
         }
     }
 
-    public static void ContextMenuResponse(NetState state, SpanReader reader)
-    {
-        var from = state.Mobile;
-
-        if (from == null)
-        {
-            return;
-        }
-
-        var menu = from.ContextMenu;
-
-        from.ContextMenu = null;
-
-        if (menu != null && from == menu.From)
-        {
-            var entity = World.FindEntity((Serial)reader.ReadUInt32());
-
-            if (entity != null && entity == menu.Target && from.CanSee(entity))
-            {
-                Point3D p;
-
-                if (entity is Mobile)
-                {
-                    p = entity.Location;
-                }
-                else if (entity is Item item)
-                {
-                    p = item.GetWorldLocation();
-                }
-                else
-                {
-                    return;
-                }
-
-                int index = reader.ReadUInt16();
-
-                if (index < menu.Entries.Length)
-                {
-                    var e = menu.Entries[index];
-
-                    var range = e.Range;
-
-                    if (range == -1)
-                    {
-                        range = 18;
-                    }
-
-                    if (e.Enabled && from.InRange(p, range))
-                    {
-                        e.OnClick();
-                    }
-                }
-            }
-        }
-    }
-
-    public static void ContextMenuRequest(NetState state, SpanReader reader)
-    {
-        var from = state.Mobile;
-        var target = World.FindEntity((Serial)reader.ReadUInt32());
-
-        if (from == null || target == null || from.Map != target.Map || !from.CanSee(target))
-        {
-            return;
-        }
-
-        var item = target as Item;
-
-        var checkLocation = item?.GetWorldLocation() ?? target.Location;
-        if (!(Utility.InUpdateRange(from.Location, checkLocation) && from.CheckContextMenuDisplay(target)))
-        {
-            return;
-        }
-
-        var c = new ContextMenu(from, target);
-
-        if (c.Entries.Length <= 0)
-        {
-            return;
-        }
-
-        if (item?.RootParent is Mobile mobile && mobile != from && mobile.AccessLevel >= from.AccessLevel)
-        {
-            for (var i = 0; i < c.Entries.Length; ++i)
-            {
-                var entry = c.Entries[i];
-                if (!entry.NonLocalUse)
-                {
-                    entry.Enabled = false;
-                }
-            }
-        }
-
-        from.ContextMenu = c;
-    }
-
     public static void BandageTarget(NetState state, SpanReader reader)
     {
         var from = state.Mobile;
@@ -489,7 +408,7 @@ public static class IncomingExtendedCommandPackets
                 return;
             }
 
-            EventSink.InvokeBandageTargetRequest(from, bandage, target);
+            Bandage.BandageTargetRequest(from, bandage, target);
 
             from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
         }
@@ -503,14 +422,14 @@ public static class IncomingExtendedCommandPackets
     {
         var spellId = (short)(reader.ReadInt16() - 1); // zero based;
 
-        EventSink.InvokeTargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
+        Spellbook.TargetedSpell(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), spellId);
     }
 
     public static void TargetedSkillUse(NetState state, SpanReader reader)
     {
         var skillId = reader.ReadInt16();
 
-        EventSink.InvokeTargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
+        PlayerMobile.TargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
     }
 
     public static void TargetByResourceMacro(NetState state, SpanReader reader)

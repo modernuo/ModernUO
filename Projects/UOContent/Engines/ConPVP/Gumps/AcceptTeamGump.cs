@@ -122,7 +122,7 @@ namespace Server.Engines.ConPVP
 
             sb.Append(" Tournament Invitation");
 
-            AddBorderedText(22, 22, 294, 20, Center(sb.ToString()), LabelColor32, BlackColor32);
+            AddBorderedText(22, 22, 294, 20, sb.ToString().Center(), LabelColor32, BlackColor32);
 
             AddBorderedText(
                 22,
@@ -244,10 +244,6 @@ namespace Server.Engines.ConPVP
             Timer.StartTimer(TimeSpan.FromSeconds(15.0), AutoReject);
         }
 
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
         private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
         {
             AddColoredText(x - 1, y - 1, width, height, text, borderColor);
@@ -259,14 +255,7 @@ namespace Server.Engines.ConPVP
 
         private void AddColoredText(int x, int y, int width, int height, string text, int color)
         {
-            if (color == 0)
-            {
-                AddHtml(x, y, width, height, text);
-            }
-            else
-            {
-                AddHtml(x, y, width, height, Color(text, color));
-            }
+            AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
         }
 
         public void AutoReject()

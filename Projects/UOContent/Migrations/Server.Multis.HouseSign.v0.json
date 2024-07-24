@@ -1,0 +1,16 @@
+{
+  "version": 0,
+  "type": "Server.Multis.HouseSign",
+  "properties": [
+    {
+      "name": "Owner",
+      "type": "Server.Multis.BaseHouse",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "OriginalOwner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

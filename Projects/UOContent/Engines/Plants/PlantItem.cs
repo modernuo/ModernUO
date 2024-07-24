@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Items;
@@ -32,6 +33,9 @@ public enum PlantStatus
 [SerializationGenerator(3, false)]
 public partial class PlantItem : Item, ISecurable
 {
+    public static List<PlantItem> Plants { get; } = [];
+
+    [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
@@ -39,6 +43,7 @@ public partial class PlantItem : Item, ISecurable
     [SerializableFieldSaveFlag(0)]
     private bool ShouldSerializeSecureLevel() => (int)_level != 0;
 
+    [SerializedIgnoreDupe]
     [SerializableField(5, setter: "private")]
     private PlantSystem _plantSystem;
 
@@ -192,7 +197,10 @@ public partial class PlantItem : Item, ISecurable
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Reproduces => PlantHueInfo.CanReproduce(PlantHue) && PlantTypeInfo.CanReproduce(PlantType);
 
-    public static List<PlantItem> Plants { get; } = new();
+    public override void OnAfterDuped(Item newItem)
+    {
+        PlantSystem.OnAfterDuped(newItem);
+    }
 
     public override void OnSingleClick(Mobile from)
     {
@@ -214,10 +222,10 @@ public partial class PlantItem : Item, ISecurable
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
-        SetSecureLevelEntry.AddTo(from, this, list);
+        base.GetContextMenuEntries(from, ref list);
+        SetSecureLevelEntry.AddTo(from, this, ref list);
     }
 
     public int GetLocalizedPlantStatus()
@@ -231,7 +239,7 @@ public partial class PlantItem : Item, ISecurable
         };
     }
 
-    public int GetLocalizedContainerType() => 1150435;
+    public static int GetLocalizedContainerType() => 1150435;
 
     private void Update()
     {

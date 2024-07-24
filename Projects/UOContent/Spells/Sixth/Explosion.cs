@@ -39,10 +39,8 @@ namespace Server.Spells.Sixth
                 SpellHelper.Turn(Caster, m);
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);
 
-                var t = new InternalTimer(this, Caster, defender, m).Start();
+                new InternalTimer(this, Caster, defender, m).Start();
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()

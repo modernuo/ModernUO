@@ -50,7 +50,7 @@ namespace Server.Engines.MLQuests.Objectives
             {
                 var amount = DesiredAmount.ToString();
 
-                g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x15F90); // Obtain
+                g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x5F90); // Obtain
                 g.AddLabel(143, y, 0x481, amount);
 
                 if (Name.Number > 0)
@@ -67,7 +67,7 @@ namespace Server.Engines.MLQuests.Objectives
             {
                 if (Name.Number > 0)
                 {
-                    g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x15F90);
+                    g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x5F90);
                 }
                 else if (Name.String != null)
                 {
@@ -207,11 +207,11 @@ namespace Server.Engines.MLQuests.Objectives
             {
                 base.WriteToGump(g, ref y);
 
-                g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90); // Total
+                g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x5F90); // Total
                 g.AddLabel(223, y, 0x481, GetCurrentTotal().ToString());
                 y += 16;
 
-                g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90); // Return to
+                g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x5F90); // Return to
                 g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
                 y += 16;
             }

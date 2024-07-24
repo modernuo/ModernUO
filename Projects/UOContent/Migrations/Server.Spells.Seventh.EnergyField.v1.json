@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "type": "Server.Spells.Seventh.EnergyField",
+  "properties": [
+    {
+      "name": "Caster",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "End",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    }
+  ]
+}

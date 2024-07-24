@@ -54,9 +54,9 @@ namespace Server.Movement
 
             var checkDiagonals = ((int)d & 0x1) == 0x1;
 
-            Offset(d, ref xForward, ref yForward);
-            Offset((Direction)(((int)d - 1) & 0x7), ref xLeft, ref yLeft);
-            Offset((Direction)(((int)d + 1) & 0x7), ref xRight, ref yRight);
+            Movement.Offset(d, ref xForward, ref yForward);
+            Movement.Offset((Direction)(((int)d - 1) & 0x7), ref xLeft, ref yLeft);
+            Movement.Offset((Direction)(((int)d + 1) & 0x7), ref xRight, ref yRight);
 
             if (xForward < 0 || yForward < 0 || xForward >= map.Width || yForward >= map.Height)
             {
@@ -576,58 +576,6 @@ namespace Server.Movement
             else if (loc.Z > zTop)
             {
                 zTop = loc.Z;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Offset(Direction d, ref int x, ref int y)
-        {
-            switch (d & Direction.Mask)
-            {
-                case Direction.North:
-                    {
-                        --y;
-                        break;
-                    }
-                case Direction.South:
-                    {
-                        ++y;
-                        break;
-                    }
-                case Direction.West:
-                    {
-                        --x;
-                        break;
-                    }
-                case Direction.East:
-                    {
-                        ++x;
-                        break;
-                    }
-                case Direction.Right:
-                    {
-                        ++x;
-                        --y;
-                        break;
-                    }
-                case Direction.Left:
-                    {
-                        --x;
-                        ++y;
-                        break;
-                    }
-                case Direction.Down:
-                    {
-                        ++x;
-                        ++y;
-                        break;
-                    }
-                case Direction.Up:
-                    {
-                        --x;
-                        --y;
-                        break;
-                    }
             }
         }
     }

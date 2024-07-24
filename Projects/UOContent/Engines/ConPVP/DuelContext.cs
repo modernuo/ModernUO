@@ -1234,7 +1234,6 @@ namespace Server.Engines.ConPVP
         public static void Configure()
         {
             EventSink.Speech += EventSink_Speech;
-            EventSink.Login += EventSink_Login;
 
             CommandSystem.Register("vli", AccessLevel.GameMaster, vli_oc);
         }
@@ -1288,7 +1287,7 @@ namespace Server.Engines.ConPVP
             return false;
         }
 
-        private static void EventSink_Login(Mobile m)
+        public static void OnLogin(Mobile m)
         {
             if (m is not PlayerMobile pm)
             {

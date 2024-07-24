@@ -66,9 +66,9 @@ namespace Server.Engines.Plants
         private void Deserialize(IGenericReader reader, int version)
         {
             _fertileDirt = reader.ReadBool();
-            NextGrowth = reader.ReadDateTime();
+            _nextGrowth = reader.ReadDateTime();
 
-            GrowthIndicator = (PlantGrowthIndicator)reader.ReadInt();
+            _growthIndicator = (PlantGrowthIndicator)reader.ReadInt();
 
             _water = reader.ReadInt();
 
@@ -139,16 +139,14 @@ namespace Server.Engines.Plants
 
         public int MaxHits => 10 + (int)Plant.PlantStatus * 2;
 
-        public PlantHealth Health
-        {
-            get => (_hits * 100 / MaxHits) switch
+        public PlantHealth Health =>
+            (_hits * 100 / MaxHits) switch
             {
                 < 33  => PlantHealth.Dying,
                 < 66  => PlantHealth.Wilted,
                 < 100 => PlantHealth.Healthy,
                 _     => PlantHealth.Vibrant
             };
-        }
 
         [SerializableProperty(5)]
         public int Infestation
@@ -369,6 +367,41 @@ namespace Server.Engines.Plants
             LeftResources = 8;
         }
 
+        public void OnAfterDuped(Item newItem)
+        {
+            if (newItem is not PlantItem plant)
+            {
+                return;
+            }
+
+            // Copy all properties from this.PlantSystem to plantItem.PlantSystem
+            var plantSystem = plant.PlantSystem;
+            plantSystem.Water = Water;
+            plantSystem.Hits = Hits;
+            plantSystem.Infestation = Infestation;
+            plantSystem.Fungus = Fungus;
+            plantSystem.PoisonPotion = PoisonPotion;
+            plantSystem.Disease = Disease;
+            plantSystem.PoisonPotion = PoisonPotion;
+            plantSystem.CurePotion = CurePotion;
+            plantSystem.HealPotion = HealPotion;
+            plantSystem.StrengthPotion = StrengthPotion;
+
+            plantSystem.Pollinated = Pollinated;
+
+            // Do not use getter since it has computed logic
+            plantSystem.SeedType = _seedType;
+            plantSystem.SeedHue = _seedHue;
+
+            plantSystem.AvailableSeeds = AvailableSeeds;
+            plantSystem.LeftSeeds = LeftSeeds;
+            plantSystem.AvailableResources = AvailableResources;
+            plantSystem.LeftResources = LeftResources;
+            plantSystem.FertileDirt = FertileDirt;
+            plantSystem.NextGrowth = NextGrowth;
+            plantSystem.GrowthIndicator = GrowthIndicator;
+        }
+
         public int GetLocalizedDirtStatus() =>
             Water switch
             {
@@ -397,11 +430,9 @@ namespace Server.Engines.Plants
             {
                 EventSink.WorldSave += EventSink_WorldSave;
             }
-
-            EventSink.Login += EventSink_Login;
         }
 
-        private static void EventSink_Login(Mobile from)
+        public static void OnLogin(Mobile from)
         {
             Container cont = from.Backpack;
             if (cont != null)

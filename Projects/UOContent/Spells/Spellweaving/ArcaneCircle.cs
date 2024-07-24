@@ -164,8 +164,7 @@ namespace Server.Spells.Spellweaving
             else // OSI renewal rules: the new one will override the old one, always.
             {
                 to.SendLocalizedMessage(1072828); // Your arcane focus is renewed.
-                focus.LifeSpan = duration;
-                focus.CreationTime = Core.Now;
+                focus.ResetExpiration(duration);
                 focus.StrengthBonus = strengthBonus;
                 focus.InvalidateProperties();
                 focus.SendTimeRemainingMessage(to);

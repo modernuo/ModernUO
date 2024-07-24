@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Engines.Harvest;
@@ -95,18 +95,14 @@ namespace Server.Items
             HarvestSystem.BeginHarvesting(from, this);
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             if (HarvestSystem != null)
             {
-                BaseHarvestTool.AddContextMenuEntries(from, this, list, HarvestSystem);
+                BaseHarvestTool.AddContextMenuEntries(from, this, ref list, HarvestSystem);
             }
-        }
-
-        private void Deserialize(IGenericReader reader, int version)
-        {
         }
 
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)

@@ -1,109 +1,87 @@
+using ModernUO.Serialization;
 using Server.Commands.Generic;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class ToggleItem : Item
 {
-    public class ToggleItem : Item
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _inactiveItemId;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _activeItemId;
+
+    [SerializableField(2)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _playersCanToggle;
+
+    [Constructible]
+    public ToggleItem(int inactiveItemID, int activeItemID, bool playersCanToggle = false) : base(inactiveItemID)
     {
-        [Constructible]
-        public ToggleItem(int inactiveItemID, int activeItemID, bool playersCanToggle = false)
-            : base(inactiveItemID)
-        {
-            Movable = false;
+        Movable = false;
 
-            InactiveItemID = inactiveItemID;
-            ActiveItemID = activeItemID;
-            PlayersCanToggle = playersCanToggle;
+        _inactiveItemId = inactiveItemID;
+        _activeItemId = activeItemID;
+        _playersCanToggle = playersCanToggle;
+    }
+
+    public static void Configure()
+    {
+        TargetCommands.Register(new ToggleCommand());
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (from.AccessLevel >= AccessLevel.GameMaster)
+        {
+            Toggle();
+        }
+        else if (!PlayersCanToggle)
+        {
+            return;
         }
 
-        public ToggleItem(Serial serial)
-            : base(serial)
+        if (from.InRange(GetWorldLocation(), 1))
         {
+            Toggle();
+        }
+        else
+        {
+            from.SendLocalizedMessage(500446); // That is too far away.
+        }
+    }
+
+    public void Toggle()
+    {
+        ItemID = ItemID == _activeItemId ? _inactiveItemId : _activeItemId;
+        Visible = ItemID != 0x1;
+    }
+
+    public class ToggleCommand : BaseCommand
+    {
+        public ToggleCommand()
+        {
+            AccessLevel = AccessLevel.GameMaster;
+            Supports = CommandSupport.AllItems;
+            Commands = ["Toggle"];
+            ObjectTypes = ObjectTypes.Items;
+            Usage = "Toggle";
+            Description = "Toggles a targeted ToggleItem.";
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int InactiveItemID { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ActiveItemID { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool PlayersCanToggle { get; set; }
-
-        public static void Configure()
+        public override void Execute(CommandEventArgs e, object obj)
         {
-            TargetCommands.Register(new ToggleCommand());
-        }
-
-        public override void OnDoubleClick(Mobile from)
-        {
-            if (from.AccessLevel >= AccessLevel.GameMaster)
+            if (obj is ToggleItem item)
             {
-                Toggle();
+                item.Toggle();
+                AddResponse("The item has been toggled.");
             }
-            else if (PlayersCanToggle)
+            else
             {
-                if (from.InRange(GetWorldLocation(), 1))
-                {
-                    Toggle();
-                }
-                else
-                {
-                    from.SendLocalizedMessage(500446); // That is too far away.
-                }
-            }
-        }
-
-        public void Toggle()
-        {
-            ItemID = ItemID == ActiveItemID ? InactiveItemID : ActiveItemID;
-            Visible = ItemID != 0x1;
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-
-            writer.Write(InactiveItemID);
-            writer.Write(ActiveItemID);
-            writer.Write(PlayersCanToggle);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            InactiveItemID = reader.ReadInt();
-            ActiveItemID = reader.ReadInt();
-            PlayersCanToggle = reader.ReadBool();
-        }
-
-        public class ToggleCommand : BaseCommand
-        {
-            public ToggleCommand()
-            {
-                AccessLevel = AccessLevel.GameMaster;
-                Supports = CommandSupport.AllItems;
-                Commands = new[] { "Toggle" };
-                ObjectTypes = ObjectTypes.Items;
-                Usage = "Toggle";
-                Description = "Toggles a targeted ToggleItem.";
-            }
-
-            public override void Execute(CommandEventArgs e, object obj)
-            {
-                if (obj is ToggleItem item)
-                {
-                    item.Toggle();
-                    AddResponse("The item has been toggled.");
-                }
-                else
-                {
-                    LogFailure("That is not a ToggleItem.");
-                }
+                LogFailure("That is not a ToggleItem.");
             }
         }
     }

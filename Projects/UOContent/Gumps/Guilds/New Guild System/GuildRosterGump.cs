@@ -61,11 +61,11 @@ namespace Server.Guilds
 
             if (pm == player)
             {
-                name = Color(name, 0x006600);
+                name = name.Color(0x006600);
             }
             else if (pm.NetState != null)
             {
-                name = Color(name, 0x000066);
+                name = name.Color(0x000066);
             }
 
             defs[0] = name;

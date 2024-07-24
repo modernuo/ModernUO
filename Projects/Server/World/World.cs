@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: World.cs                                                        *
  *                                                                       *
@@ -38,7 +38,7 @@ public enum WorldState
 
 public static class World
 {
-    private static ILogger logger = LogFactory.GetLogger(typeof(World));
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(World));
 
     private static readonly ItemPersistence _itemPersistence = new();
     private static readonly MobilePersistence _mobilePersistence = new();
@@ -185,66 +185,8 @@ public static class World
         // Create the serialization threads.
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
-            _threadWorkers[i] = new SerializationThreadWorker();
+            _threadWorkers[i] = new SerializationThreadWorker(i);
         }
-    }
-
-    private static void FinishWorldSave()
-    {
-        WorldState = WorldState.Running;
-
-        Persistence.PostSerializeAll(); // Process safety queues
-    }
-
-    public static void WriteFiles(object state)
-    {
-        Exception exception = null;
-
-        var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);
-
-        try
-        {
-            var watch = Stopwatch.StartNew();
-            logger.Information("Writing world save snapshot");
-
-            Persistence.WriteSnapshot(tempPath, SerializedTypes);
-
-            watch.Stop();
-
-            logger.Information("Writing world save snapshot {Status} ({Duration:F2} seconds)", "done", watch.Elapsed.TotalSeconds);
-        }
-        catch (Exception ex)
-        {
-            exception = ex;
-        }
-
-        if (exception != null)
-        {
-            logger.Error(exception, "Writing world save snapshot {Status}.", "failed");
-            Persistence.TraceException(exception);
-
-            BroadcastStaff(0x35, true, "Writing world save snapshot failed.");
-        }
-        else
-        {
-            try
-            {
-                EventSink.InvokeWorldSavePostSnapshot(SavePath, tempPath);
-                PathUtility.MoveDirectoryContents(tempPath, SavePath);
-                Directory.SetLastWriteTimeUtc(SavePath, Core.Now);
-            }
-            catch (Exception ex)
-            {
-                Persistence.TraceException(ex);
-            }
-        }
-
-        // Clear types
-        SerializedTypes.Clear();
-
-        _diskWriteHandle.Set();
-
-        Core.LoopContext.Post(FinishWorldSave);
     }
 
     private static void ProcessDecay()
@@ -301,27 +243,38 @@ public static class World
             return;
         }
 
-        WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
-
-        _diskWriteHandle.Reset();
-
-        // Start our serialization threads
-        for (var i = 0; i < _threadWorkers.Length; i++)
-        {
-            _threadWorkers[i].Wake();
-        }
-
         WorldState = WorldState.PendingSave;
-
-        Core.RequestSnapshot();
+        ThreadPool.QueueUserWorkItem(Preserialize);
     }
 
-    internal static TimeSpan Snapshot()
+    internal static void Preserialize(object state)
+    {
+        var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);
+
+        try
+        {
+            Persistence.PreSerializeAll(tempPath, SerializedTypes);
+            Core.RequestSnapshot(tempPath);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Preparing to save world {Status}", "failed");
+            Persistence.TraceException(ex);
+
+            BroadcastStaff(0x35, true, "Preparing for a world save failed! Check the logs!");
+        }
+    }
+
+    internal static void Snapshot(string snapshotPath)
     {
         if (WorldState != WorldState.PendingSave)
         {
-            return TimeSpan.Zero;
+            return;
         }
+
+        WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
+
+        _diskWriteHandle.Reset();
 
         WorldState = WorldState.Saving;
 
@@ -336,14 +289,10 @@ public static class World
         try
         {
             _serializationStart = Core.Now;
+
+            WakeSerializationThreads();
             Persistence.SerializeAll();
-
-            // Pause the workers
-            foreach (var worker in _threadWorkers)
-            {
-                worker.Sleep();
-            }
-
+            PauseSerializationThreads();
             EventSink.InvokeWorldSave();
         }
         catch (Exception ex)
@@ -351,7 +300,10 @@ public static class World
             exception = ex;
         }
 
-        WorldState = WorldState.WritingSave;
+        WorldState = WorldState.PendingSave;
+        ThreadPool.QueueUserWorkItem(WriteFiles, snapshotPath);
+        Persistence.PostWorldSaveAll(); // Process safety queues
+        watch.Stop();
 
         if (exception == null)
         {
@@ -367,18 +319,74 @@ public static class World
 
             BroadcastStaff(0x35, true, "World save failed! Check the logs!");
         }
+    }
 
-        ThreadPool.QueueUserWorkItem(WriteFiles);
+    private static void WriteFiles(object state)
+    {
+        var snapshotPath = (string)state;
+        try
+        {
+            var watch = Stopwatch.StartNew();
+            logger.Information("Writing world save snapshot");
+            Persistence.WriteSnapshotAll(snapshotPath, SerializedTypes);
 
-        watch.Stop();
+            try
+            {
+                EventSink.InvokeWorldSavePostSnapshot(SavePath, snapshotPath);
+                PathUtility.MoveDirectoryContents(snapshotPath, SavePath);
+                Directory.SetLastWriteTimeUtc(SavePath, Core.Now);
+            }
+            catch (Exception ex)
+            {
+                Persistence.TraceException(ex);
+            }
 
-        return watch.Elapsed;
+            watch.Stop();
+            logger.Information("Writing world save snapshot {Status} ({Duration:F2} seconds)", "done", watch.Elapsed.TotalSeconds);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Writing world save snapshot failed");
+            Persistence.TraceException(ex);
+
+            BroadcastStaff(0x35, true, "Writing world save snapshot failed! Check the logs!");
+        }
+
+        // Clear types
+        SerializedTypes.Clear();
+
+        _diskWriteHandle.Set();
+        WorldState = WorldState.Running;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void PushToCache(IGenericSerializable e)
+    internal static void WakeSerializationThreads()
     {
-        _threadWorkers[_threadId++].Push(e);
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            _threadWorkers[i].Wake();
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void PauseSerializationThreads()
+    {
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            _threadWorkers[i].Sleep();
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int GetThreadWorkerCount() => Math.Max(Environment.ProcessorCount - 1, 1);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ResetRoundRobin() => _threadId = 0;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void PushToCache((IGenericSerializable e, Persistence p) ep)
+    {
+        _threadWorkers[_threadId++].Push(ep);
         if (_threadId == _threadWorkers.Length)
         {
             _threadId = 0;
@@ -389,7 +397,7 @@ public static class World
     {
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
-            _threadWorkers[i].Exit();
+            _threadWorkers[i]?.Exit();
         }
     }
 
@@ -488,15 +496,15 @@ public static class World
                     EnqueueForDecay(item);
                 }
 
-                PushToCache(item);
+                PushToCache((item, this));
             }
         }
 
-        public override void PostSerialize()
+        public override void PostWorldSave()
         {
             ProcessDecay(); // Run this before the safety queue
 
-            base.PostSerialize();
+            base.PostWorldSave();
         }
     }
 
@@ -522,18 +530,20 @@ public static class World
 
     private class SerializationThreadWorker
     {
+        private readonly int _index;
         private readonly Thread _thread;
         private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
         private readonly AutoResetEvent _stopEvent; // Main thread waits for the worker finish draining
         private bool _pause;
         private bool _exit;
-        private readonly ConcurrentQueue<IGenericSerializable> _entities;
+        private readonly ConcurrentQueue<(IGenericSerializable, Persistence)> _entities;
 
-        public SerializationThreadWorker()
+        public SerializationThreadWorker(int index)
         {
+            _index = index;
             _startEvent = new AutoResetEvent(false);
             _stopEvent = new AutoResetEvent(false);
-            _entities = new ConcurrentQueue<IGenericSerializable>();
+            _entities = new ConcurrentQueue<(IGenericSerializable, Persistence)>();
             _thread = new Thread(Execute);
             _thread.Start(this);
         }
@@ -556,14 +566,11 @@ public static class World
             Sleep();
         }
 
-        public void Push(IGenericSerializable entity)
-        {
-            _entities.Enqueue(entity);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Push((IGenericSerializable e, Persistence p) ep) => _entities.Enqueue(ep);
 
         private static void Execute(object obj)
         {
-            var serializedTypes = SerializedTypes;
             SerializationThreadWorker worker = (SerializationThreadWorker)obj;
 
             var reader = worker._entities;
@@ -573,9 +580,10 @@ public static class World
                 while (true)
                 {
                     bool pauseRequested = Volatile.Read(ref worker._pause);
-                    if (reader.TryDequeue(out var entity))
+                    if (reader.TryDequeue(out var ep))
                     {
-                        entity.Serialize(serializedTypes);
+                        var (e, p) = ep;
+                        p.Serialize(e, worker._index);
                     }
                     else if (pauseRequested) // Break when finished
                     {

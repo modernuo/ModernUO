@@ -14,19 +14,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-12
-            name: MacOS 12
           - os: macos-13
             name: MacOS 13
+          - os: macos-14
+            name: MacOS 14
 
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
     - name: Setup .NET 8
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Install Prerequisites
+      run: |
+        brew update
+        brew install icu4c libdeflate zstd argon2
+    - name: Set Library Path
+      run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:\$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Build
       run: ./publish.cmd Release
     - name: Migration Changes
@@ -42,6 +48,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - container: ubuntu:noble
+            name: Ubuntu 24
+            packageManager: apt
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
@@ -57,14 +66,8 @@ jobs:
           - container: fedora:39
             name: Fedora 39
             packageManager: dnf
-          - container: fedora:38
-            name: Fedora 38
-            packageManager: dnf
-          - container: fedora:37
-            name: Fedora 37
-            packageManager: dnf
-          - container: quay.io/centos/centos:stream8
-            name: CentOS 8 Stream
+          - container: fedora:40
+            name: Fedora 40
             packageManager: dnf
           - container: quay.io/centos/centos:stream9
             name: CentOS 9 Stream
@@ -75,19 +78,19 @@ jobs:
         run: dnf upgrade --refresh -y && dnf install -y epel-release epel-next-release
         if: ${{ startsWith(matrix.name, 'CentOS')  }}
       - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu zlib-devel zstd libargon2-devel tzdata
+        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
         if: ${{ matrix.packageManager == 'dnf' }}
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libz-dev zstd libargon2-dev tzdata
+        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev
         if: ${{ matrix.packageManager == 'apt' }}
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
       - name: Build
-        run: ./publish.sh Release
+        run: ./publish.cmd Release
       - name: Test
         run: dotnet test --no-restore

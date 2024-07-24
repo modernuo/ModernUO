@@ -21,91 +21,6 @@ public static class Utility
 {
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
-    private static SkillName[] _allSkills =
-    [
-        SkillName.Alchemy,
-        SkillName.Anatomy,
-        SkillName.AnimalLore,
-        SkillName.ItemID,
-        SkillName.ArmsLore,
-        SkillName.Parry,
-        SkillName.Begging,
-        SkillName.Blacksmith,
-        SkillName.Fletching,
-        SkillName.Peacemaking,
-        SkillName.Camping,
-        SkillName.Carpentry,
-        SkillName.Cartography,
-        SkillName.Cooking,
-        SkillName.DetectHidden,
-        SkillName.Discordance,
-        SkillName.EvalInt,
-        SkillName.Healing,
-        SkillName.Fishing,
-        SkillName.Forensics,
-        SkillName.Herding,
-        SkillName.Hiding,
-        SkillName.Provocation,
-        SkillName.Inscribe,
-        SkillName.Lockpicking,
-        SkillName.Magery,
-        SkillName.MagicResist,
-        SkillName.Tactics,
-        SkillName.Snooping,
-        SkillName.Musicianship,
-        SkillName.Poisoning,
-        SkillName.Archery,
-        SkillName.SpiritSpeak,
-        SkillName.Stealing,
-        SkillName.Tailoring,
-        SkillName.AnimalTaming,
-        SkillName.TasteID,
-        SkillName.Tinkering,
-        SkillName.Tracking,
-        SkillName.Veterinary,
-        SkillName.Swords,
-        SkillName.Macing,
-        SkillName.Fencing,
-        SkillName.Wrestling,
-        SkillName.Lumberjacking,
-        SkillName.Mining,
-        SkillName.Meditation,
-        SkillName.Stealth,
-        SkillName.RemoveTrap,
-        SkillName.Necromancy,
-        SkillName.Focus,
-        SkillName.Chivalry,
-        SkillName.Bushido,
-        SkillName.Ninjitsu,
-        SkillName.Spellweaving,
-        // TODO: Update RandomSkill once these are implemented!
-        // SkillName.Mysticism,
-        // SkillName.Imbuing,
-        SkillName.Throwing
-    ];
-
-    private static readonly SkillName[] m_CombatSkills =
-    [
-        SkillName.Archery,
-        SkillName.Swords,
-        SkillName.Macing,
-        SkillName.Fencing,
-        SkillName.Wrestling
-    ];
-
-    private static readonly SkillName[] m_CraftSkills =
-    [
-        SkillName.Alchemy,
-        SkillName.Blacksmith,
-        SkillName.Fletching,
-        SkillName.Carpentry,
-        SkillName.Cartography,
-        SkillName.Cooking,
-        SkillName.Inscribe,
-        SkillName.Tailoring,
-        SkillName.Tinkering
-    ];
-
     private static readonly Stack<ConsoleColor> m_ConsoleColors = new();
 
     public static void Separate(StringBuilder sb, string value, string separator)
@@ -364,25 +279,6 @@ public static class Utility
 
     public static object GetArrayCap(Array array, int index, object emptyValue = null) =>
         array.Length > 0 ? array.GetValue(Math.Clamp(index, 0, array.Length - 1)) : emptyValue;
-
-    public static SkillName RandomSkill()
-    {
-        // TODO: Add 2 to each entry for Mysticism and Imbuing, once they are uncommented on _allSkills.
-        var offset = Core.Expansion switch
-        {
-            >= Expansion.SA => 0,
-            Expansion.ML    => 1,
-            Expansion.SE    => 2,
-            Expansion.AOS   => 4,
-            _               => 7
-        };
-
-        return _allSkills[Random(_allSkills.Length - offset)];
-    }
-
-    public static SkillName RandomCombatSkill() => m_CombatSkills.RandomElement();
-
-    public static SkillName RandomCraftSkill() => m_CraftSkills.RandomElement();
 
     public static void FixPoints(ref Point3D top, ref Point3D bottom)
     {
@@ -674,14 +570,14 @@ public static class Utility
         InRange(p1.m_X, p1.m_Y, p2.m_X, p2.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InUpdateRange(Point2D p1, Point2D p2) => InRange(p1, p2, 18);
+    public static bool InUpdateRange(Point2D p1, Point2D p2) => InRange(p1, p2, Core.GlobalUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InRange(Point3D p1, Point3D p2, int range) =>
         InRange(p1.m_X, p1.m_Y, p2.m_X, p2.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, 18);
+    public static bool InUpdateRange(Point3D p1, Point3D p2) => InRange(p1, p2, Core.GlobalUpdateRange);
 
     // Optimized method for handling 50% random chances in succession up to a maximum
     public static int CoinFlips(int amount, int maximum)
@@ -850,6 +746,12 @@ public static class Utility
     public static T RandomList<T>(params T[] list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this ReadOnlySpan<T> list) => list.Length == 0 ? (T)default : list[Random(list.Length)];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this T[] list) => list.RandomElement(default);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomElement<T>(this IList<T> list) => list.RandomElement(default);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -961,6 +863,10 @@ public static class Utility
         list.RemoveAt(index);
         return value;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this T[] list, T valueIfZero) =>
+        list.Length == 0 ? valueIfZero : list[Random(list.Length)];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomElement<T>(this IList<T> list, T valueIfZero) =>
@@ -1527,5 +1433,29 @@ public static class Utility
         }
 
         return false;
+    }
+
+    public static int C16232(this int c16)
+    {
+        c16 &= 0x7FFF;
+
+        var r = ((c16 >> 10) & 0x1F) << 3;
+        var g = ((c16 >> 05) & 0x1F) << 3;
+        var b = (c16 & 0x1F) << 3;
+
+        return (r << 16) | (g << 8) | b;
+    }
+
+    public static int C16216(this int c16) => c16 & 0x7FFF;
+
+    public static int C32216(this int c32)
+    {
+        c32 &= 0xFFFFFF;
+
+        var r = ((c32 >> 16) & 0xFF) >> 3;
+        var g = ((c32 >> 08) & 0xFF) >> 3;
+        var b = (c32 & 0xFF) >> 3;
+
+        return (r << 10) | (g << 5) | b;
     }
 }

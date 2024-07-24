@@ -7,30 +7,39 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class InvisibilityPotion : BasePotion
 {
-    private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+    private static readonly Dictionary<Mobile, TimerExecutionToken> _table = new();
 
     [Constructible]
     public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility) => Hue = 0x48D;
 
     public override int LabelNumber => 1072941; // Potion of Invisibility
 
-    public override void Drink(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
+        if (!base.CanDrink(from))
+        {
+            return false;
+        }
+
         if (from.Hidden)
         {
             from.SendLocalizedMessage(1073185); // You are already unseen.
-            return;
+            return false;
         }
 
         if (HasTimer(from))
         {
             from.SendLocalizedMessage(1073186); // An invisibility potion is already taking effect on your person.
-            return;
+            return false;
         }
 
-        Consume();
+        return true;
+    }
+
+    public override void Drink(Mobile from)
+    {
         Timer.StartTimer(TimeSpan.FromSeconds(2), () => Hide(from), out var timerToken);
-        m_Table[from] = timerToken;
+        _table[from] = timerToken;
         PlayDrinkEffect(from);
     }
 
@@ -62,11 +71,11 @@ public partial class InvisibilityPotion : BasePotion
         RemoveTimer(m);
     }
 
-    public static bool HasTimer(Mobile m) => m_Table.ContainsKey(m);
+    public static bool HasTimer(Mobile m) => _table.ContainsKey(m);
 
     public static void RemoveTimer(Mobile m, bool interrupted = false)
     {
-        if (m_Table.Remove(m, out var timer))
+        if (_table.Remove(m, out var timer))
         {
             if (interrupted)
             {

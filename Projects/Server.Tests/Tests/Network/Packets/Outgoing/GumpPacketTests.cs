@@ -84,7 +84,7 @@ public class NameChangeDeedGump : Gump
         AddPage(0);
 
         AddBlackAlpha(10, 120, 250, 85);
-        AddHtml(10, 125, 250, 20, Color(Center("Name Change Deed"), 0xFFFFFF));
+        AddHtml(10, 125, 250, 20, "Name Change Deed".Center(0xFFFFFF));
 
         AddLabel(73, 15, 1152, "");
         AddLabel(20, 150, 0x480, "New Name:");
@@ -105,13 +105,9 @@ public class NameChangeDeedGump : Gump
         AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
     }
 
-    public static string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-    public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
     public void AddButtonLabeled(int x, int y, int buttonID, string text)
     {
         AddButton(x, y - 1, 4005, 4007, buttonID);
-        AddHtml(x + 35, y, 240, 20, Color(text, 0xFFFFFF));
+        AddHtml(x + 35, y, 240, 20, text.Color(0xFFFFFF));
     }
 }

@@ -23,43 +23,24 @@ namespace Server.Commands
             CommandSystem.Prefix = ServerConfiguration.GetOrUpdateSetting("commandsystem.prefix", "[");
 
             Register("Go", AccessLevel.Counselor, Go_OnCommand);
-
             Register("DropHolding", AccessLevel.Counselor, DropHolding_OnCommand);
-
             Register("GetFollowers", AccessLevel.GameMaster, GetFollowers_OnCommand);
-
-            Register("ClearFacet", AccessLevel.Developer, ClearFacet_OnCommand);
-
             Register("Where", AccessLevel.Counselor, Where_OnCommand);
-
             Register("AutoPageNotify", AccessLevel.Counselor, APN_OnCommand);
-
             Register("Animate", AccessLevel.GameMaster, Animate_OnCommand);
-
             Register("Cast", AccessLevel.Counselor, Cast_OnCommand);
-
             Register("Stuck", AccessLevel.Counselor, Stuck_OnCommand);
-
             Register("Help", AccessLevel.Player, Help_OnCommand);
-
             Register("Move", AccessLevel.GameMaster, Move_OnCommand);
             Register("Client", AccessLevel.Counselor, Client_OnCommand);
-
             Register("SMsg", AccessLevel.Counselor, StaffMessage_OnCommand);
-
             Register("BCast", AccessLevel.GameMaster, BroadcastMessage_OnCommand);
-
             Register("Bank", AccessLevel.GameMaster, Bank_OnCommand);
-
             Register("Echo", AccessLevel.Counselor, Echo_OnCommand);
-
             Register("Sound", AccessLevel.GameMaster, Sound_OnCommand);
-
             Register("ViewEquip", AccessLevel.GameMaster, ViewEquip_OnCommand);
-
             Register("Light", AccessLevel.Counselor, Light_OnCommand);
             Register("Stats", AccessLevel.Counselor, Stats_OnCommand);
-
             Register("SpeedBoost", AccessLevel.Counselor, SpeedBoost_OnCommand);
         }
 
@@ -179,99 +160,6 @@ namespace Server.Commands
                 from.BeginTarget(-1, false, TargetFlags.None, DropHolding_OnTarget);
                 from.SendMessage("That is not a player. Try again.");
             }
-        }
-
-        public static void DeleteList_Callback(Mobile from, bool okay, List<IEntity> list)
-        {
-            if (okay)
-            {
-                CommandLogging.WriteLine(
-                    from,
-                    $"{from.AccessLevel} {CommandLogging.Format(from)} deleting {list.Count} object{(list.Count == 1 ? "" : "s")}"
-                );
-
-                NetState.FlushAll();
-
-                for (var i = 0; i < list.Count; ++i)
-                {
-                    list[i].Delete();
-                }
-
-                if (list.Count == 1)
-                {
-                    from.SendMessage($"You have deleted {list.Count} object.");
-                }
-                else
-                {
-                    from.SendMessage($"You have deleted {list.Count} objects.");
-                }
-            }
-            else
-            {
-                from.SendMessage("You have chosen not to delete those objects.");
-            }
-        }
-
-        [Usage("ClearFacet"),
-         Description("Deletes all items and mobiles in your facet. Players and their inventory will not be deleted.")]
-        public static void ClearFacet_OnCommand(CommandEventArgs e)
-        {
-            var from = e.Mobile;
-            var map = from.Map;
-
-            if (map == null || map == Map.Internal)
-            {
-                from.SendMessage("You may not run that command here.");
-                return;
-            }
-
-            var list = new List<IEntity>();
-
-            foreach (var item in World.Items.Values)
-            {
-                if (item.Map == map && item.Parent == null)
-                {
-                    list.Add(item);
-                }
-            }
-
-            foreach (var m in World.Mobiles.Values)
-            {
-                if (m.Map == map && !m.Player)
-                {
-                    list.Add(m);
-                }
-            }
-
-            if (list.Count > 0)
-            {
-                CommandLogging.WriteLine(
-                    from,
-                    $"{from.AccessLevel} {CommandLogging.Format(from)} starting facet clear of {map} ({list.Count} object{(list.Count == 1 ? "" : "s")})"
-                );
-
-                from.SendGump(
-                    new DeleteObjectsNoticeGump(
-                        list.Count,
-                        okay => DeleteList_Callback(from, okay, list)
-                    )
-                );
-            }
-            else
-            {
-                from.SendMessage("There were no objects found to delete.");
-            }
-        }
-
-        private class DeleteObjectsNoticeGump : StaticWarningGump<DeleteObjectsNoticeGump>
-        {
-            public override int Header => 1060635; // <CENTER>WARNING</CENTER>
-            public override int Width => 360;
-            public override int Height => 260;
-            public override string Content { get; }
-
-            public DeleteObjectsNoticeGump(int count, Action<bool> callback) : base(callback) =>
-                Content = $"You are about to delete {count} object{(count == 1 ? "" : "s")} from this facet.  Do you really wish to continue?";
         }
 
         [Usage("GetFollowers")]

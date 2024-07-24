@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Runtime.CompilerServices;
+
 namespace Server.Movement;
 
 public static class Movement
@@ -56,52 +58,63 @@ public static class Movement
         return false;
     }
 
-    public static void Offset(Direction d, ref int x, ref int y)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Offset(Direction d, ref Point3D p, int count = 1)
+    {
+        var x = p.m_X;
+        var y = p.m_Y;
+        Offset(d, ref x, ref y, count);
+        p = new Point3D(x, y, p.m_Z);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Offset(Direction d, ref int x, ref int y, int count = 1)
     {
         switch (d & Direction.Mask)
         {
             case Direction.North:
                 {
-                    --y;
+                    y -= count;
                     break;
                 }
             case Direction.South:
                 {
-                    ++y;
+                    y += count;
                     break;
                 }
             case Direction.West:
                 {
-                    --x;
+                    x -= count;
                     break;
                 }
             case Direction.East:
                 {
-                    ++x;
+                    x += count;
                     break;
                 }
             case Direction.Right:
                 {
-                    ++x;
-                    --y;
+                    x += count;
+                    y -= count;
                     break;
                 }
             case Direction.Left:
                 {
-                    --x;
-                    ++y;
+                    x -= count;
+                    y += count;
                     break;
                 }
             case Direction.Down:
                 {
-                    ++x;
-                    ++y;
+                    x += count;
+                    y += count;
+
                     break;
                 }
             case Direction.Up:
                 {
-                    --x;
-                    --y;
+                    x -= count;
+                    y -= count;
                     break;
                 }
         }

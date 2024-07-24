@@ -37,7 +37,7 @@ namespace Server.Spells.Ninjitsu
         {
             if (m != null)
             {
-                _cloneCount[m] = 1 + (_cloneCount.TryGetValue(m, out var count) ? count : 0);
+                _cloneCount[m] = 1 + _cloneCount.GetValueOrDefault(m, 0);
             }
         }
 
@@ -144,8 +144,10 @@ namespace Server.Mobiles
 
             for (var i = 0; i < caster.Skills.Length; ++i)
             {
-                Skills[i].Base = caster.Skills[i].Base;
-                Skills[i].Cap = caster.Skills[i].Cap;
+                var skill = Skills[i];
+                var casterSkill = caster.Skills[i];
+                skill.Base = casterSkill.Base;
+                skill.Cap = casterSkill.Cap;
             }
 
             for (var i = 0; i < caster.Items.Count; i++)
@@ -161,7 +163,12 @@ namespace Server.Mobiles
             ControlOrder = OrderType.Follow;
             ControlTarget = caster;
 
-            var duration = TimeSpan.FromSeconds(30.0 + caster.Skills.Ninjitsu.Value / 4.0);
+            AddClone();
+        }
+
+        private void AddClone()
+        {
+            var duration = TimeSpan.FromSeconds(30.0 + _caster.Skills.Ninjitsu.Value / 4.0);
 
             new UnsummonTimer(this, duration).Start();
             SummonEnd = Core.Now + duration;
@@ -178,7 +185,7 @@ namespace Server.Mobiles
 
         public override bool IsHumanInTown() => false;
 
-        private Item CloneItem(Item item)
+        private static Item CloneItem(Item item)
         {
             var newItem = new Item(item.ItemID);
             newItem.Hue = item.Hue;
@@ -214,13 +221,10 @@ namespace Server.Mobiles
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            MirrorImage.AddClone(_caster);
+            AddClone();
         }
     }
-}
 
-namespace Server.Mobiles
-{
     public class CloneAI : BaseAI
     {
         public CloneAI(Clone m) : base(m) => m.SetCurrentSpeedToActive();

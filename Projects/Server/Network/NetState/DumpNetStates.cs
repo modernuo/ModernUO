@@ -26,13 +26,13 @@ public static class DumpNetStates
 
     public static void DumpNetStatesCommand(CommandEventArgs args)
     {
-        using var file = new StreamWriter("netstatedump.csv");
+        using var file = new StreamWriter($"netstatedump-{Core.Now:yyyy-M-d-HH-mm-ss}_{Core.TickCount}.csv");
 
-        file.WriteLine("NetState, RecvTask, SendTask, ProtocolState, ParserState");
+        file.WriteLine("NetState, ConnectedOn, NextActivityCheck, SocketConnected, ProtocolState, ParserState");
 
         foreach (var ns in NetState.Instances)
         {
-            file.WriteLine($"{ns}, {ns._protocolState}, {ns._parserState}");
+            file.WriteLine($"{ns}, {ns.ConnectedOn}, {ns.NextActivityCheck}, {ns.Connection.Connected}, {ns._protocolState}, {ns._parserState}");
         }
     }
 }

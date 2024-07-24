@@ -1,7 +1,7 @@
 using System;
 using System.Buffers;
 using System.IO;
-using System.IO.Compression;
+using Server.Compression;
 
 namespace Server.Network
 {
@@ -209,20 +209,14 @@ namespace Server.Network
 
                 var inflatedBuffer = planeBuffers[i];
 
-                var deflatedLength = deflatedBuffer.Length;
-                var ce = Zlib.Pack(
+                var deflatedLength = Deflate.Standard.Pack(
                     deflatedBuffer,
-                    ref deflatedLength,
-                    inflatedBuffer,
-                    size,
-                    ZlibQuality.Default
+                    inflatedBuffer.AsSpan(0, size)
                 );
 
-                if (ce != ZlibError.Okay)
+                if (deflatedLength == 0)
                 {
-                    Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
-                    deflatedLength = 0;
-                    size = 0;
+                    Console.WriteLine("Compression error");
                 }
 
                 Write((byte)(0x20 | i));
@@ -247,20 +241,14 @@ namespace Server.Network
 
                 var inflatedBuffer = stairBuffers[i];
 
-                var deflatedLength = deflatedBuffer.Length;
-                var ce = Zlib.Pack(
+                var deflatedLength = Deflate.Standard.Pack(
                     deflatedBuffer,
-                    ref deflatedLength,
-                    inflatedBuffer,
-                    size,
-                    ZlibQuality.Default
+                    inflatedBuffer.AsSpan(0, size)
                 );
 
-                if (ce != ZlibError.Okay)
+                if (deflatedLength == 0)
                 {
-                    Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
-                    deflatedLength = 0;
-                    size = 0;
+                    Console.WriteLine("Compression error");
                 }
 
                 Write((byte)(9 + i));

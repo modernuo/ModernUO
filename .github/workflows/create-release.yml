@@ -15,62 +15,25 @@ jobs:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Setup .NET 8
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv
-    - name: Get Latest Release
-      id: last_release
-      uses: pozetroninc/github-action-get-latest-release@master
-      with:
-        owner: ModernUO
-        repo: ModernUO
-        excludes: prerelease, draft
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-    - name: Create fake tag for diffing
-      run: |
-        git config --global user.name "Fake Tag Action"
-        git config --global user.email "hi@modernuo.com"
-        git checkout ${{ steps.last_release.outputs.release }}
-        git tag -fa v0.1.0 -m "Fake release"
-        git checkout -
     - name: Push git changes
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         tags: true
-    - name: Conventional Changelog
-      id: changelog
-      uses: TriPSs/conventional-changelog-action@v4
-      with:
-        github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        output-file: false
-        skip-version-file: true
-        skip-commit: true
-        release-count: 1
-    - name: Delete v${{ steps.changelog.outputs.version }} Tag
-      uses: dev-drprasad/delete-tag-and-release@v0.2.1
-      with:
-        delete_release: true
-        tag_name: v${{ steps.changelog.outputs.version }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-    - name: Delete v0.1.0 Tag
-      uses: dev-drprasad/delete-tag-and-release@v0.2.1
-      with:
-        delete_release: true
-        tag_name: v0.1.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Create Release
       id: create_release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         body: ${{ steps.changelog.outputs.clean_changelog }}
         tag_name: ${{ steps.nbgv.outputs.Version }}
         name: ${{ steps.nbgv.outputs.Version }}
         draft: false
         prerelease: false
+        generate_release_notes: true
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

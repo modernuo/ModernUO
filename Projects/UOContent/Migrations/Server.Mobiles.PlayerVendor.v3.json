@@ -1,0 +1,62 @@
+{
+  "version": 3,
+  "type": "Server.Mobiles.PlayerVendor",
+  "properties": [
+    {
+      "name": "ShopName",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "NextPayTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    },
+    {
+      "name": "House",
+      "type": "Server.Multis.BaseHouse",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "BankAccount",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "HoldGold",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SellItems",
+      "type": "System.Collections.Generic.Dictionary\u003CServer.Item, Server.Mobiles.VendorItem\u003E",
+      "rule": "DictionaryMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule",
+        "0",
+        "Server.Mobiles.VendorItem",
+        "RawSerializableMigrationRule",
+        "1",
+        ""
+      ]
+    }
+  ]
+}

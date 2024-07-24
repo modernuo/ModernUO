@@ -1,5 +1,4 @@
 using ModernUO.Serialization;
-using Server.Engines.ConPVP;
 using Server.Spells;
 using Server.Spells.Necromancy;
 
@@ -57,29 +56,35 @@ public abstract partial class BaseCurePotion : BasePotion
         }
     }
 
-    public override void Drink(Mobile from)
+    public override bool CanDrink(Mobile from)
     {
+        if (!base.CanDrink(from))
+        {
+            return false;
+        }
+
         if (TransformationSpellHelper.UnderTransformation(from, typeof(VampiricEmbraceSpell)))
         {
             from.SendLocalizedMessage(1061652); // The garlic in the potion would surely kill you.
+            return false;
         }
-        else if (from.Poisoned)
-        {
-            DoCure(from);
 
-            PlayDrinkEffect(from);
-
-            from.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
-            from.PlaySound(0x1E0);
-
-            if (!DuelContext.IsFreeConsume(from))
-            {
-                Consume();
-            }
-        }
-        else
+        if (!from.Poisoned)
         {
             from.SendLocalizedMessage(1042000); // You are not poisoned.
+            return false;
         }
+
+        return true;
+    }
+
+    public override void Drink(Mobile from)
+    {
+        DoCure(from);
+
+        PlayDrinkEffect(from);
+
+        from.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
+        from.PlaySound(0x1E0);
     }
 }

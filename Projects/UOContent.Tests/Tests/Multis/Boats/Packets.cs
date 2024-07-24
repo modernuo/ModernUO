@@ -5,16 +5,16 @@ using Server.Items;
 using Server.Multis;
 using Server.Network;
 
-namespace UOContent.Tests
+namespace UOContent.Tests;
+
+public sealed class MoveBoatHS : Packet
 {
-    public sealed class MoveBoatHS : Packet
+    public MoveBoatHS(
+        Mobile beholder, BaseBoat boat, Direction d,
+        int speed, PooledRefList<IEntity> ents, int xOffset,
+        int yOffset
+    ) : base(0xF6)
     {
-        public MoveBoatHS(
-            Mobile beholder, BaseBoat boat, Direction d,
-            int speed, PooledRefList<IEntity> ents, int xOffset,
-            int yOffset
-        ) : base(0xF6)
-        {
             EnsureCapacity(3 + 15 + ents.Count * 10);
 
             Stream.Write(boat.Serial);
@@ -40,12 +40,12 @@ namespace UOContent.Tests
             Stream.Seek(16, SeekOrigin.Begin);
             Stream.Write((short)count);
         }
-    }
+}
 
-    public sealed class DisplayBoatHS : Packet
+public sealed class DisplayBoatHS : Packet
+{
+    public DisplayBoatHS(Mobile beholder, BaseBoat boat) : base(0xF7)
     {
-        public DisplayBoatHS(Mobile beholder, BaseBoat boat) : base(0xF7)
-        {
             var ents = boat.GetMovingEntities(true);
 
             EnsureCapacity(3 + 2 + 5 * 26);
@@ -128,5 +128,4 @@ namespace UOContent.Tests
             Stream.Seek(3, SeekOrigin.Begin);
             Stream.Write((short)count);
         }
-    }
 }

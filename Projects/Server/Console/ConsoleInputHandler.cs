@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Server.Logging;
 
 namespace Server;
 
@@ -147,13 +148,23 @@ public static class ConsoleInputHandler
         }
     }
 
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(ConsoleInputHandler));
+
     private static async void ProcessConsoleInput()
     {
-        var token = Core.ClosingTokenSource.Token;
-
-        while (!token.IsCancellationRequested)
+        while (!Core.Closing)
         {
-            var input = Console.ReadLine()?.Trim();
+            string input;
+            try
+            {
+                input = Console.ReadLine()?.Trim();
+            }
+            catch
+            {
+                logger.Warning("Console commands have been disabled due to an error.");
+                _initialized = false;
+                return;
+            }
 
             if (Volatile.Read(ref _expectUserInput))
             {
@@ -171,13 +182,20 @@ public static class ConsoleInputHandler
             var splitInput = input.Split(' ', 2);
             var command = splitInput[0].ToLower();
 
-            Action<string> action;
-            lock (_inputCommands)
+            try
             {
-                action = _inputCommands.GetValueOrDefault(command)?.Function;
-            }
+                Action<string> action;
+                lock (_inputCommands)
+                {
+                    action = _inputCommands.GetValueOrDefault(command)?.Function;
+                }
 
-            action?.Invoke(splitInput.Length > 1 ? splitInput[1] : string.Empty);
+                action?.Invoke(splitInput.Length > 1 ? splitInput[1] : string.Empty);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Failed to execute console command: {Command}", input);
+            }
         }
     }
 

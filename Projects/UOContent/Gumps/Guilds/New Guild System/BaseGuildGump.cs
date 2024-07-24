@@ -139,7 +139,5 @@ namespace Server.Guilds
                 AddHtml(x, y, width, height, text.String, back, scroll);
             }
         }
-
-        public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
     }
 }

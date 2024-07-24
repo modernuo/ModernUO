@@ -190,11 +190,11 @@ namespace Server.Gumps
 
             AddHtmlLocalized(25, 22, 200, 20, 1074974, 0x7D00); // Confirm Selection
             AddImage(25, 40, 0xBBF);
-            AddHtmlLocalized(25, 55, 300, 120, 1074975, 0xFFFFFF); // Are you sure you wish to select this?
+            AddHtmlLocalized(25, 55, 300, 120, 1074975, 0x7FFF); // Are you sure you wish to select this?
             AddRadio(25, 175, 0x25F8, 0x25FB, true, 1);
             AddRadio(25, 210, 0x25F8, 0x25FB, false, 0);
-            AddHtmlLocalized(60, 180, 280, 20, 1074976, 0xFFFFFF); // Yes
-            AddHtmlLocalized(60, 215, 280, 20, 1074977, 0xFFFFFF); // No
+            AddHtmlLocalized(60, 180, 280, 20, 1074976, 0x7FFF); // Yes
+            AddHtmlLocalized(60, 215, 280, 20, 1074977, 0x7FFF); // No
             AddButton(265, 220, 0xF7, 0xF8, 7);
         }
 

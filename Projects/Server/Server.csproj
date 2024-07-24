@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <ApplicationIcon>MUO.ico</ApplicationIcon>
-        <StartupObject>Server.Core</StartupObject>
-        <AssemblyName>ModernUO</AssemblyName>
-        <Win32Resource />
-        <Product>ModernUO Server</Product>
+        <Product>ModernUO Core</Product>
         <OutDir>..\..\Distribution</OutDir>
+        <PublishDir>..\..\Distribution</PublishDir>
         <Version>0.0.0</Version>
         <Configurations>Debug;Release;Analyze</Configurations>
+        <RootNamespace>Server</RootNamespace>
+        <PackageId>Server</PackageId>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
-        <Message Text="Removing distribution files..." />
+        <Message Text="Server: Removing distribution files..." />
         <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
@@ -29,16 +27,19 @@
         <Delete Files="..\..\Distribution\Serilog.Sinks.Async.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Serilog.Sinks.Console.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\wepoll.dll" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\LibDeflate.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libdeflate.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libdeflate.dylib" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\System.IO.Hashing.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
-        <PackageReference Include="PollGroup" Version="1.4.3" />
+        <PackageReference Include="LibDeflate.Bindings" Version="1.0.2.120" />
+        <PackageReference Include="PollGroup" Version="1.5.1" />
         <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
-        <PackageReference Include="Zlib.Bindings" Version="1.11.0" />
 
         <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.9.1" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.10.9" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.11.3" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />

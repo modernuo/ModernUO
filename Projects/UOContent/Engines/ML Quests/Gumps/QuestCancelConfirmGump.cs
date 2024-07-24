@@ -57,21 +57,21 @@ namespace Server.Engines.MLQuests.Gumps
              * <BR>
              * Are you certain you wish to cancel at this time?
              */
-            AddHtmlLocalized(25, 55, 300, 120, 1060836, 0xFFFFFF);
+            AddHtmlLocalized(25, 55, 300, 120, 1060836, 0x7FFF);
 
             var quest = instance.Quest;
 
             if (quest.IsChainTriggered || quest.NextQuest != null)
             {
                 AddRadio(25, 145, 0x25F8, 0x25FB, false, 2);
-                AddHtmlLocalized(60, 150, 280, 20, 1075023, 0xFFFFFF); // Yes, I want to quit this entire chain!
+                AddHtmlLocalized(60, 150, 280, 20, 1075023, 0x7FFF); // Yes, I want to quit this entire chain!
             }
 
             AddRadio(25, 180, 0x25F8, 0x25FB, true, 1);
-            AddHtmlLocalized(60, 185, 280, 20, 1049005, 0xFFFFFF); // Yes, I really want to quit this quest!
+            AddHtmlLocalized(60, 185, 280, 20, 1049005, 0x7FFF); // Yes, I really want to quit this quest!
 
             AddRadio(25, 215, 0x25F8, 0x25FB, false, 0);
-            AddHtmlLocalized(60, 220, 280, 20, 1049006, 0xFFFFFF); // No, I don't want to quit.
+            AddHtmlLocalized(60, 220, 280, 20, 1049006, 0x7FFF); // No, I don't want to quit.
 
             AddButton(265, 220, 0xF7, 0xF8, 7);
         }

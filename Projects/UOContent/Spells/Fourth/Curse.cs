@@ -101,8 +101,6 @@ namespace Server.Spells.Fourth
                     DoHurtFizzle();
                 }
             }
-
-            FinishSequence();
         }
 
         public override void OnCast()
