@@ -50,16 +50,7 @@ public class ProfessionInfo
 
     static ProfessionInfo()
     {
-        var profs = new List<ProfessionInfo>
-        {
-            new()
-            {
-                ID = 0, // Custom
-                Name = "Advanced",
-                TopLevel = false,
-                GumpID = 5571
-            }
-        };
+        List<ProfessionInfo> profs = [];
 
         var file = Core.FindDataFile("prof.txt", false);
         if (!File.Exists(file))
