@@ -17,9 +17,9 @@ namespace Server.Multis
 {
     public abstract class BaseHouse : BaseMulti
     {
-        public const int MaxCoOwners = 15;
+        public static bool DecayEnabled { get; set; }
 
-        public const bool DecayEnabled = true;
+        public const int MaxCoOwners = 15;
 
         public const int MaximumBarkeepCount = 2;
 
@@ -1265,6 +1265,7 @@ namespace Server.Multis
 
         public static void Configure()
         {
+            DecayEnabled = ServerConfiguration.GetOrUpdateSetting("houseDecay.enable", true);
             LockedDownFlag = 1;
             SecureFlag = 2;
         }
