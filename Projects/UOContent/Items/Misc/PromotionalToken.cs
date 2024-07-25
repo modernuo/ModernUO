@@ -46,8 +46,7 @@ public abstract partial class PromotionalToken : Item
         }
         else
         {
-            from.CloseGump<PromotionalTokenGump>();
-            from.SendGump(new PromotionalTokenGump(this));
+            from.SendGump(new PromotionalTokenGump(this), true);
         }
     }
 

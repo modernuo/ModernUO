@@ -135,9 +135,9 @@ namespace Server.Engines.ConPVP
 
             string title = move switch
             {
-                NinjaMove   => "Bushido",
+                NinjaMove => "Bushido",
                 SamuraiMove => "Ninjitsu",
-                _           => null
+                _ => null
             };
 
             if (title == null || name == null || Ruleset.GetOption(title, name))
@@ -199,15 +199,15 @@ namespace Server.Engines.ConPVP
                 case MagerySpell magerySpell:
                     title = magerySpell.Circle switch
                     {
-                        SpellCircle.First   => "1st Circle",
-                        SpellCircle.Second  => "2nd Circle",
-                        SpellCircle.Third   => "3rd Circle",
-                        SpellCircle.Fourth  => "4th Circle",
-                        SpellCircle.Fifth   => "5th Circle",
-                        SpellCircle.Sixth   => "6th Circle",
+                        SpellCircle.First => "1st Circle",
+                        SpellCircle.Second => "2nd Circle",
+                        SpellCircle.Third => "3rd Circle",
+                        SpellCircle.Fourth => "4th Circle",
+                        SpellCircle.Fifth => "5th Circle",
+                        SpellCircle.Sixth => "6th Circle",
                         SpellCircle.Seventh => "7th Circle",
-                        SpellCircle.Eighth  => "8th Circle",
-                        _                   => null
+                        SpellCircle.Eighth => "8th Circle",
+                        _ => null
                     };
 
                     option = magerySpell.Name;
@@ -1431,8 +1431,7 @@ namespace Server.Engines.ConPVP
 
                     if (prefs != null)
                     {
-                        e.Mobile.CloseGump<PreferencesGump>();
-                        e.Mobile.SendGump(new PreferencesGump(e.Mobile, prefs));
+                        e.Mobile.SendGump(new PreferencesGump(e.Mobile, prefs), true);
                     }
                 }
             }
@@ -1542,23 +1541,18 @@ namespace Server.Engines.ConPVP
                                 p.Nullify(pl);
                                 pm.DuelPlayer = null;
 
-                                var ns = init.NetState;
-
-                                if (ns != null)
+                                foreach (var g in init.GetAllGumps())
                                 {
-                                    foreach (var g in ns.GetAllGumps())
+                                    if (g is ParticipantGump pg && pg.Participant == p)
                                     {
-                                        if (g is ParticipantGump pg && pg.Participant == p)
-                                        {
-                                            init.SendGump(new ParticipantGump(init, dc, p));
-                                            break;
-                                        }
+                                        init.SendGump(new ParticipantGump(init, dc, p));
+                                        break;
+                                    }
 
-                                        if (g is DuelContextGump dcg && dcg.Context == dc)
-                                        {
-                                            init.SendGump(new DuelContextGump(init, dc));
-                                            break;
-                                        }
+                                    if (g is DuelContextGump dcg && dcg.Context == dc)
+                                    {
+                                        init.SendGump(new DuelContextGump(init, dc));
+                                        break;
                                     }
                                 }
                             }
@@ -1580,33 +1574,28 @@ namespace Server.Engines.ConPVP
                                 p.Nullify(pl);
                                 pm.DuelPlayer = null;
 
-                                var ns = init.NetState;
+                                var send = true;
 
-                                if (ns != null)
+                                foreach (var g in init.GetAllGumps())
                                 {
-                                    var send = true;
-
-                                    foreach (var g in ns.GetAllGumps())
+                                    if (g is ParticipantGump pg && pg.Participant == p)
                                     {
-                                        if (g is ParticipantGump pg && pg.Participant == p)
-                                        {
-                                            init.SendGump(new ParticipantGump(init, dc, p));
-                                            send = false;
-                                            break;
-                                        }
-
-                                        if (g is DuelContextGump dcg && dcg.Context == dc)
-                                        {
-                                            init.SendGump(new DuelContextGump(init, dc));
-                                            send = false;
-                                            break;
-                                        }
+                                        init.SendGump(new ParticipantGump(init, dc, p));
+                                        send = false;
+                                        break;
                                     }
 
-                                    if (send)
+                                    if (g is DuelContextGump dcg && dcg.Context == dc)
                                     {
                                         init.SendGump(new DuelContextGump(init, dc));
+                                        send = false;
+                                        break;
                                     }
+                                }
+
+                                if (send)
+                                {
+                                    init.SendGump(new DuelContextGump(init, dc));
                                 }
                             }
                         }
@@ -1629,33 +1618,28 @@ namespace Server.Engines.ConPVP
                                 p.Nullify(pl);
                                 pm.DuelPlayer = null;
 
-                                var ns = init.NetState;
+                                var send = true;
 
-                                if (ns != null)
+                                foreach (var g in init.GetAllGumps())
                                 {
-                                    var send = true;
-
-                                    foreach (var g in ns.GetAllGumps())
+                                    if (g is ParticipantGump pg && pg.Participant == p)
                                     {
-                                        if (g is ParticipantGump pg && pg.Participant == p)
-                                        {
-                                            init.SendGump(new ParticipantGump(init, dc, p));
-                                            send = false;
-                                            break;
-                                        }
-
-                                        if (g is DuelContextGump dcg && dcg.Context == dc)
-                                        {
-                                            init.SendGump(new DuelContextGump(init, dc));
-                                            send = false;
-                                            break;
-                                        }
+                                        init.SendGump(new ParticipantGump(init, dc, p));
+                                        send = false;
+                                        break;
                                     }
 
-                                    if (send)
+                                    if (g is DuelContextGump dcg && dcg.Context == dc)
                                     {
                                         init.SendGump(new DuelContextGump(init, dc));
+                                        send = false;
+                                        break;
                                     }
+                                }
+
+                                if (send)
+                                {
+                                    init.SendGump(new DuelContextGump(init, dc));
                                 }
                             }
                         }
@@ -2196,8 +2180,7 @@ namespace Server.Engines.ConPVP
                         {
                             mob.CloseGump<ReadyGump>();
                             mob.CloseGump<ReadyUpGump>();
-                            mob.CloseGump<BeginGump>();
-                            mob.SendGump(new BeginGump(count));
+                            mob.SendGump(new BeginGump(count), true);
                         }
 
                         mob.Frozen = true;
@@ -2256,8 +2239,7 @@ namespace Server.Engines.ConPVP
 
                     if (mob != null && m_Tournament == null)
                     {
-                        mob.CloseGump<ReadyUpGump>();
-                        mob.SendGump(new ReadyUpGump(mob, this));
+                        mob.SendGump(new ReadyUpGump(mob, this), true);
                     }
                 }
             }
@@ -2512,8 +2494,7 @@ namespace Server.Engines.ConPVP
                     {
                         if (m_Tournament == null)
                         {
-                            mob.CloseGump<ReadyGump>();
-                            mob.SendGump(new ReadyGump(mob, this, count));
+                            mob.SendGump(new ReadyGump(mob, this, count), true);
                         }
                     }
                     else

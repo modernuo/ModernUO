@@ -24,6 +24,8 @@ public class CraftGump : DynamicGump
     private readonly BaseTool _tool;
     private readonly TextDefinition _notice;
 
+    public override bool Singleton => true;
+
     public CraftGump(
         Mobile from, CraftSystem craftSystem, BaseTool tool, TextDefinition notice, CraftPage page = CraftPage.None
     ) : base(40, 40)
@@ -419,7 +421,6 @@ public class CraftGump : DynamicGump
 
     public override void SendTo(NetState ns)
     {
-        _from.CloseGump<CraftGump>();
         _from.CloseGump<CraftGumpItem>();
 
         base.SendTo(ns);

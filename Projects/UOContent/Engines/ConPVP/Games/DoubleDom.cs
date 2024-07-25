@@ -27,8 +27,7 @@ namespace Server.Engines.ConPVP
         {
             if (m_TeamInfo?.Game != null)
             {
-                from.CloseGump<DDBoardGump>();
-                from.SendGump(new DDBoardGump(from, m_TeamInfo.Game));
+                from.SendGump(new DDBoardGump(from, m_TeamInfo.Game), true);
             }
         }
 
@@ -605,8 +604,7 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            mob.CloseGump<DDBoardGump>();
-            mob.SendGump(new DDBoardGump(mob, this));
+            mob.SendGump(new DDBoardGump(mob, this), true);
 
             m_Context.Requip(mob, corpse);
             DelayBounce(TimeSpan.FromSeconds(30.0), mob, corpse);
@@ -820,8 +818,7 @@ namespace Server.Engines.ConPVP
 
                     if (dp?.Mobile != null)
                     {
-                        dp.Mobile.CloseGump<DDBoardGump>();
-                        dp.Mobile.SendGump(new DDBoardGump(dp.Mobile, this));
+                        dp.Mobile.SendGump(new DDBoardGump(dp.Mobile, this), true);
                     }
                 }
 

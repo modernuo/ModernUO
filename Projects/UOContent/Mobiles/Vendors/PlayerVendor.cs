@@ -670,17 +670,13 @@ public partial class PlayerVendor : Mobile
     {
         if (BaseHouse.NewVendorSystem)
         {
-            to.CloseGump<NewPlayerVendorOwnerGump>();
             to.CloseGump<NewPlayerVendorCustomizeGump>();
-
-            to.SendGump(new NewPlayerVendorOwnerGump(this));
+            to.SendGump(new NewPlayerVendorOwnerGump(this), true);
         }
         else
         {
-            to.CloseGump<PlayerVendorOwnerGump>();
             to.CloseGump<PlayerVendorCustomizeGump>();
-
-            to.SendGump(new PlayerVendorOwnerGump(this));
+            to.SendGump(new PlayerVendorOwnerGump(this), true);
         }
     }
 
@@ -723,8 +719,7 @@ public partial class PlayerVendor : Mobile
         }
         else
         {
-            from.CloseGump<PlayerVendorBuyGump>();
-            from.SendGump(new PlayerVendorBuyGump(vendor, vi));
+            from.SendGump(new PlayerVendorBuyGump(vendor, vi), true);
         }
     }
 

@@ -191,8 +191,7 @@ namespace Server.Gumps
                     {
                         from.CloseGump<HouseGump>();
                         from.CloseGump<HouseListGump>();
-                        from.CloseGump<HouseRemoveGump>();
-                        from.SendGump(new HouseRemoveGump(m_Number, m_List, m_House, m_AccountOf));
+                        from.SendGump(new HouseRemoveGump(m_Number, m_List, m_House, m_AccountOf), true);
                         return;
                     }
                 }
@@ -206,6 +205,8 @@ namespace Server.Gumps
     {
         private readonly BaseHouse m_House;
 
+        public override bool Singleton => true;
+
         public HouseGump(Mobile from, BaseHouse house) : base(20, 30)
         {
             if (house.Deleted)
@@ -215,7 +216,6 @@ namespace Server.Gumps
 
             m_House = house;
 
-            from.CloseGump<HouseGump>();
             from.CloseGump<HouseListGump>();
             from.CloseGump<HouseRemoveGump>();
 
@@ -465,9 +465,8 @@ namespace Server.Gumps
                 case 2: // List of co-owners
                     {
                         from.CloseGump<HouseGump>();
-                        from.CloseGump<HouseListGump>();
                         from.CloseGump<HouseRemoveGump>();
-                        from.SendGump(new HouseListGump(1011275, m_House.CoOwners, m_House, false));
+                        from.SendGump(new HouseListGump(1011275, m_House.CoOwners, m_House, false), true);
 
                         break;
                     }
@@ -493,8 +492,7 @@ namespace Server.Gumps
                         {
                             from.CloseGump<HouseGump>();
                             from.CloseGump<HouseListGump>();
-                            from.CloseGump<HouseRemoveGump>();
-                            from.SendGump(new HouseRemoveGump(1011274, m_House.CoOwners, m_House, false));
+                            from.SendGump(new HouseRemoveGump(1011274, m_House.CoOwners, m_House, false), true);
                         }
                         else
                         {
@@ -521,9 +519,8 @@ namespace Server.Gumps
                 case 6: // List friends
                     {
                         from.CloseGump<HouseGump>();
-                        from.CloseGump<HouseListGump>();
                         from.CloseGump<HouseRemoveGump>();
-                        from.SendGump(new HouseListGump(1011273, m_House.Friends, m_House, false));
+                        from.SendGump(new HouseListGump(1011273, m_House.Friends, m_House, false), true);
 
                         break;
                     }
@@ -549,8 +546,7 @@ namespace Server.Gumps
                         {
                             from.CloseGump<HouseGump>();
                             from.CloseGump<HouseListGump>();
-                            from.CloseGump<HouseRemoveGump>();
-                            from.SendGump(new HouseRemoveGump(1011272, m_House.Friends, m_House, false));
+                            from.SendGump(new HouseRemoveGump(1011272, m_House.Friends, m_House, false), true);
                         }
                         else
                         {
@@ -591,9 +587,8 @@ namespace Server.Gumps
                 case 12: // List bans
                     {
                         from.CloseGump<HouseGump>();
-                        from.CloseGump<HouseListGump>();
                         from.CloseGump<HouseRemoveGump>();
-                        from.SendGump(new HouseListGump(1011271, m_House.Bans, m_House, true));
+                        from.SendGump(new HouseListGump(1011271, m_House.Bans, m_House, true), true);
 
                         break;
                     }
@@ -601,8 +596,7 @@ namespace Server.Gumps
                     {
                         from.CloseGump<HouseGump>();
                         from.CloseGump<HouseListGump>();
-                        from.CloseGump<HouseRemoveGump>();
-                        from.SendGump(new HouseRemoveGump(1011269, m_House.Bans, m_House, true));
+                        from.SendGump(new HouseRemoveGump(1011269, m_House.Bans, m_House, true), true);
 
                         break;
                     }
@@ -630,8 +624,7 @@ namespace Server.Gumps
                             }
                             else
                             {
-                                from.CloseGump<HouseDemolishGump>();
-                                from.SendGump(new HouseDemolishGump(from, m_House));
+                                from.SendGump(new HouseDemolishGump(from, m_House), true);
                             }
                         }
                         else

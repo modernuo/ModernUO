@@ -244,23 +244,18 @@ namespace Server.Engines.ConPVP
                         m_Challenger.SendMessage($"{m_Challenged.Name} has accepted the request.");
                         m_Challenged.SendMessage($"You have accepted the request from {m_Challenger.Name}.");
 
-                        var ns = m_Challenger.NetState;
-
-                        if (ns != null)
+                        foreach (var g in m_Challenger.GetAllGumps())
                         {
-                            foreach (var g in ns.GetAllGumps())
+                            if (g is ParticipantGump pg && pg.Participant == m_Participant)
                             {
-                                if (g is ParticipantGump pg && pg.Participant == m_Participant)
-                                {
-                                    m_Challenger.SendGump(new ParticipantGump(m_Challenger, m_Context, m_Participant));
-                                    break;
-                                }
+                                m_Challenger.SendGump(new ParticipantGump(m_Challenger, m_Context, m_Participant));
+                                break;
+                            }
 
-                                if (g is DuelContextGump dcg && dcg.Context == m_Context)
-                                {
-                                    m_Challenger.SendGump(new DuelContextGump(m_Challenger, m_Context));
-                                    break;
-                                }
+                            if (g is DuelContextGump dcg && dcg.Context == m_Context)
+                            {
+                                m_Challenger.SendGump(new DuelContextGump(m_Challenger, m_Context));
+                                break;
                             }
                         }
                     }

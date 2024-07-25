@@ -8,6 +8,8 @@ public sealed class PagePromptGump : StaticGump<PagePromptGump>
     private readonly Mobile _from;
     private readonly PageType _type;
 
+    public override bool Singleton => true;
+
     public PagePromptGump(Mobile from, PageType type) : base(0, 0)
     {
         _from = from;
@@ -29,12 +31,6 @@ public sealed class PagePromptGump : StaticGump<PagePromptGump>
 
         builder.AddButton(175, 355, 2074, 2075, 1);  // Okay
         builder. AddButton(405, 355, 2073, 2072, 0); // Cancel
-    }
-
-    public override void SendTo(NetState ns)
-    {
-        _from.CloseGump<PagePromptGump>();
-        base.SendTo(ns);
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)

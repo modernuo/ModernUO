@@ -24,8 +24,6 @@ namespace Server.Gumps;
 
 public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSelf>
 {
-    private static readonly byte[] _packetBuffer = GC.AllocateUninitializedArray<byte>(0x10000);
-
     private static int _switches;
     private static int _textEntries;
     private static byte[] _compressedLayoutData;
@@ -48,7 +46,18 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
     {
     }
 
-    public void CreatePacket(ref SpanWriter writer)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void WriteLayout(ref SpanWriter writer, ref StaticGumpBuilder gumpBuilder)
+    {
+        var layoutPos = writer.Position;
+        OutgoingGumpPackets.WritePacked(gumpBuilder.LayoutData, ref writer);
+        var layoutLength = writer.Position - layoutPos;
+
+        _compressedLayoutData = GC.AllocateUninitializedArray<byte>(layoutLength);
+        writer.Span.Slice(layoutPos, layoutLength).CopyTo(_compressedLayoutData);
+    }
+
+    public override void Compile(ref SpanWriter writer)
     {
         writer.Write((byte)0xDD); // Packet ID
         writer.Seek(2, SeekOrigin.Current);
@@ -152,28 +161,5 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
         }
 
         writer.WritePacketLength();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void WriteLayout(ref SpanWriter writer, ref StaticGumpBuilder gumpBuilder)
-    {
-        var layoutPos = writer.Position;
-        OutgoingGumpPackets.WritePacked(gumpBuilder.LayoutData, ref writer);
-        var layoutLength = writer.Position - layoutPos;
-
-        _compressedLayoutData = GC.AllocateUninitializedArray<byte>(layoutLength);
-        writer.Span.Slice(layoutPos, layoutLength).CopyTo(_compressedLayoutData);
-    }
-
-    public override void SendTo(NetState ns)
-    {
-        ns.AddGump(this);
-
-        var writer = new SpanWriter(_packetBuffer);
-        CreatePacket(ref writer);
-
-        ns.Send(writer.Span);
-
-        writer.Dispose();
     }
 }

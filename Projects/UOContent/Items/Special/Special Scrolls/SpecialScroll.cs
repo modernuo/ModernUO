@@ -72,8 +72,7 @@ public abstract partial class SpecialScroll : Item
             return;
         }
 
-        from.CloseGump<InternalGump>();
-        from.SendGump(new InternalGump(from, this));
+        from.SendGump(new InternalGump(from, this), true);
     }
 
     public class InternalGump : Gump

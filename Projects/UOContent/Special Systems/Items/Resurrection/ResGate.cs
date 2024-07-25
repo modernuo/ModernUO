@@ -23,8 +23,7 @@ public partial class ResGate : Item
             m.PlaySound(0x214);
             m.FixedEffect(0x376A, 10, 16);
 
-            m.CloseGump<ResurrectGump>();
-            m.SendGump(new ResurrectGump(m));
+            m.SendGump(new ResurrectGump(m), true);
         }
         else
         {

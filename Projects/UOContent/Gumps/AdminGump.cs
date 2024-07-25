@@ -74,13 +74,13 @@ namespace Server.Gumps
         private readonly AdminGumpPage m_PageType;
         private readonly object m_State;
 
+        public override bool Singleton => true;
+
         public AdminGump(
             Mobile from, AdminGumpPage pageType, int listPage = 0, List<object> list = null, string notice = null,
             object state = null
         ) : base(50, 40)
         {
-            from.CloseGump<AdminGump>();
-
             m_From = from;
             m_PageType = pageType;
             m_ListPage = listPage;

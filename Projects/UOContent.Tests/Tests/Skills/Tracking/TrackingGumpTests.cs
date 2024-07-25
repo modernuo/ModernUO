@@ -20,7 +20,7 @@ public class TrackingGumpTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
 
         var expected = g.Compile(ns).Compile();
-        ns.SendDisplayGump(g, out var switches, out var entries);
+        ns.SendGump(g);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);

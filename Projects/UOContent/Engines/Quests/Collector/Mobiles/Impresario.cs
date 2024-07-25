@@ -55,8 +55,7 @@ public partial class Impresario : BaseQuester
 
             if (obj.IsInRightTheater())
             {
-                player.CloseGump<SheetMusicOfferGump>();
-                player.SendGump(new SheetMusicOfferGump());
+                player.SendGump(new SheetMusicOfferGump(), true);
             }
             else
             {

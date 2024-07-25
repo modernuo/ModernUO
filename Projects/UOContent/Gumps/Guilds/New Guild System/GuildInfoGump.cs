@@ -158,8 +158,7 @@ namespace Server.Guilds
                         // Guild Faction
                         if (Guild.OrderChaos && IsLeader(pm, guild))
                         {
-                            pm.CloseGump<GuildChangeTypeGump>();
-                            pm.SendGump(new GuildChangeTypeGump(pm, guild));
+                            pm.SendGump(new GuildChangeTypeGump(pm, guild), true);
                         }
 
                         break;

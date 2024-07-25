@@ -1,4 +1,4 @@
-﻿using ModernUO.Serialization;
+using ModernUO.Serialization;
 using Server.Gumps;
 
 namespace Server.Items;
@@ -19,8 +19,7 @@ public partial class HeritageToken : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<HeritageTokenGump>();
-            from.SendGump(new HeritageTokenGump(this));
+            from.SendGump(new HeritageTokenGump(this), true);
         }
         else
         {

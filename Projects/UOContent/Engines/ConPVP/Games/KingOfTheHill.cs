@@ -311,8 +311,7 @@ namespace Server.Engines.ConPVP
         {
             if (m_Game != null)
             {
-                from.CloseGump<KHBoardGump>();
-                from.SendGump(new KHBoardGump(from, m_Game));
+                from.SendGump(new KHBoardGump(from, m_Game), true);
             }
             else
             {
@@ -989,8 +988,7 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            mob.CloseGump<KHBoardGump>();
-            mob.SendGump(new KHBoardGump(mob, this));
+            mob.SendGump(new KHBoardGump(mob, this), true);
 
             m_Context.Requip(mob, corpse);
             DelayBounce(TimeSpan.FromSeconds(30.0), mob, corpse);
@@ -1199,8 +1197,7 @@ namespace Server.Engines.ConPVP
 
                     if (dp?.Mobile != null)
                     {
-                        dp.Mobile.CloseGump<KHBoardGump>();
-                        dp.Mobile.SendGump(new KHBoardGump(dp.Mobile, this));
+                        dp.Mobile.SendGump(new KHBoardGump(dp.Mobile, this), true);
                     }
                 }
 

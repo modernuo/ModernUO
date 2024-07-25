@@ -118,9 +118,7 @@ namespace Server.Engines.Help
             {
                 if (PageQueue.List.IndexOf(m_List[info.ButtonID - 1]) >= 0)
                 {
-                    var g = new PageEntryGump(state.Mobile, m_List[info.ButtonID - 1]);
-
-                    g.SendTo(state);
+                    state.SendGump(new PageEntryGump(state.Mobile, m_List[info.ButtonID - 1]));
                 }
                 else
                 {
@@ -224,12 +222,12 @@ namespace Server.Engines.Help
         private readonly Mobile m_From;
         private readonly PredefinedResponse m_Response;
 
+        public override bool Singleton => true;
+
         public PredefGump(Mobile from, PredefinedResponse response) : base(30, 30)
         {
             m_From = from;
             m_Response = response;
-
-            from.CloseGump<PredefGump>();
 
             var canEdit = from.AccessLevel >= AccessLevel.GameMaster;
 
@@ -593,9 +591,7 @@ namespace Server.Engines.Help
 
         public void Resend(NetState state)
         {
-            var g = new PageEntryGump(m_Mobile, m_Entry);
-
-            g.SendTo(state);
+            state.SendGump(new PageEntryGump(m_Mobile, m_Entry));
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
@@ -613,9 +609,7 @@ namespace Server.Engines.Help
                     {
                         if (m_Entry.Handler != state.Mobile)
                         {
-                            var g = new PageQueueGump();
-
-                            g.SendTo(state);
+                            state.SendGump(new PageQueueGump());
                         }
 
                         break;
@@ -722,10 +716,7 @@ namespace Server.Engines.Help
                             PageQueue.Remove(m_Entry);
 
                             state.Mobile.SendMessage("You delete the page.");
-
-                            var g = new PageQueueGump();
-
-                            g.SendTo(state);
+                            state.SendGump(new PageQueueGump());
                         }
                         else
                         {
@@ -764,10 +755,7 @@ namespace Server.Engines.Help
                             m_Entry.Handler = null;
 
                             state.Mobile.SendMessage("You mark the page as handled, and remove it from the queue.");
-
-                            var g = new PageQueueGump();
-
-                            g.SendTo(state);
+                            state.SendGump(new PageQueueGump());
                         }
                         else
                         {

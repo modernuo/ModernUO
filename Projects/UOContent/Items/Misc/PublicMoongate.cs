@@ -84,8 +84,7 @@ public partial class PublicMoongate : Item
             return false;
         }
 
-        m.CloseGump<MoongateGump>();
-        m.SendGump(new MoongateGump(m, this));
+        m.SendGump(new MoongateGump(m, this), true);
 
         if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
         {

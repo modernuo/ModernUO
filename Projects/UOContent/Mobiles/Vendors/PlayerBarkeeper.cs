@@ -513,8 +513,7 @@ namespace Server.Mobiles
 
         public void BeginChangeAppearance(Mobile from)
         {
-            from.CloseGump<PlayerVendorCustomizeGump>();
-            from.SendGump(new PlayerVendorCustomizeGump(this, from));
+            from.SendGump(new PlayerVendorCustomizeGump(this, from), true);
         }
 
         public void ChangeGender(Mobile from)
@@ -682,13 +681,14 @@ namespace Server.Mobiles
         private readonly PlayerBarkeeper m_Barkeeper;
         private readonly Mobile m_From;
 
+        public override bool Singleton => true;
+
         public BarkeeperTitleGump(Mobile from, PlayerBarkeeper barkeeper) : base(0, 0)
         {
             m_From = from;
             m_Barkeeper = barkeeper;
 
             from.CloseGump<BarkeeperGump>();
-            from.CloseGump<BarkeeperTitleGump>();
 
             var entries = m_Entries;
 
@@ -832,12 +832,13 @@ namespace Server.Mobiles
         private readonly PlayerBarkeeper m_Barkeeper;
         private readonly Mobile m_From;
 
+        public override bool Singleton => true;
+
         public BarkeeperGump(Mobile from, PlayerBarkeeper barkeeper) : base(0, 0)
         {
             m_From = from;
             m_Barkeeper = barkeeper;
 
-            from.CloseGump<BarkeeperGump>();
             from.CloseGump<BarkeeperTitleGump>();
 
             RenderBackground();

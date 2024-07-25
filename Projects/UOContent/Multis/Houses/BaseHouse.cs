@@ -2247,8 +2247,7 @@ namespace Server.Multis
                 }
                 else
                 {
-                    to.CloseGump<HouseTransferGump>();
-                    to.SendGump(new HouseTransferGump(from, to, this));
+                    to.SendGump(new HouseTransferGump(from, to, this), true);
                 }
             }
         }
@@ -2280,8 +2279,7 @@ namespace Server.Multis
 
             if (CheckTransferPosition(from, to))
             {
-                to.CloseGump<HouseTransferGump>();
-                to.SendGump(new HouseTransferGump(from, to, this));
+                to.SendGump(new HouseTransferGump(from, to, this), true);
             }
         }
 
@@ -2400,8 +2398,7 @@ namespace Server.Multis
 
                 if (info != null)
                 {
-                    m.CloseGump<SetSecureLevelGump>();
-                    m.SendGump(new SetSecureLevelGump(m_Owner, info, this));
+                    m.SendGump(new SetSecureLevelGump(m_Owner, info, this), true);
                 }
                 else if (item.Parent != null)
                 {
@@ -2436,8 +2433,7 @@ namespace Server.Multis
                     LockDowns.Remove(item);
                     item.Movable = false;
 
-                    m.CloseGump<SetSecureLevelGump>();
-                    m.SendGump(new SetSecureLevelGump(m_Owner, info, this));
+                    m.SendGump(new SetSecureLevelGump(m_Owner, info, this), true);
                 }
             }
         }
@@ -4367,8 +4363,7 @@ namespace Server.Multis
 
             if (sec != null)
             {
-                from.CloseGump<SetSecureLevelGump>();
-                from.SendGump(new SetSecureLevelGump(from, sec, BaseHouse.FindHouseAt(item)));
+                from.SendGump(new SetSecureLevelGump(from, sec, BaseHouse.FindHouseAt(item)), true);
             }
         }
     }

@@ -77,8 +77,7 @@ public partial class Banner : Item, IAddon, IDyable, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.CloseGump<RewardDemolitionGump>();
-                from.SendGump(new RewardDemolitionGump(this, 1018318)); // Do you wish to re-deed this banner?
+                from.SendGump(new RewardDemolitionGump(this, 1018318), true); // Do you wish to re-deed this banner?
             }
             else
             {
@@ -133,8 +132,7 @@ public partial class BannerDeed : Item, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.CloseGump<InternalGump>();
-                from.SendGump(new InternalGump(this));
+                from.SendGump(new InternalGump(this), true);
             }
             else
             {
@@ -274,8 +272,7 @@ public partial class BannerDeed : Item, IRewardItem
 
             if (north && west)
             {
-                from.CloseGump<FacingGump>();
-                from.SendGump(new FacingGump(_banner, _itemID, p3d, house));
+                from.SendGump(new FacingGump(_banner, _itemID, p3d, house), true);
             }
             else if (north || west)
             {

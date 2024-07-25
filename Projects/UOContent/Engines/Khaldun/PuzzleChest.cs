@@ -290,9 +290,8 @@ namespace Server.Items
                     );
                 }
 
-                from.CloseGump<PuzzleGump>();
                 from.CloseGump<StatusGump>();
-                from.SendGump(new PuzzleGump(from, this, solution, 0));
+                from.SendGump(new PuzzleGump(from, this, solution, 0), true);
 
                 return true;
             }

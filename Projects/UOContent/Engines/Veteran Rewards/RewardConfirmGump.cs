@@ -9,12 +9,12 @@ namespace Server.Engines.VeteranRewards
         private readonly RewardEntry m_Entry;
         private readonly Mobile m_From;
 
+        public override bool Singleton => true;
+
         public RewardConfirmGump(Mobile from, RewardEntry entry) : base(0, 0)
         {
             m_From = from;
             m_Entry = entry;
-
-            from.CloseGump<RewardConfirmGump>();
 
             AddPage(0);
 

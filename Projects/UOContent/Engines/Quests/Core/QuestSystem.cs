@@ -264,8 +264,7 @@ namespace Server.Engines.Quests
 
         public virtual void ShowQuestLogUpdated()
         {
-            From.CloseGump<QuestLogUpdatedGump>();
-            From.SendGump(new QuestLogUpdatedGump(this));
+            From.SendGump(new QuestLogUpdatedGump(this), true);
         }
 
         public virtual void ShowQuestLog()
@@ -274,10 +273,9 @@ namespace Server.Engines.Quests
             {
                 From.CloseGump<QuestItemInfoGump>();
                 From.CloseGump<QuestLogUpdatedGump>();
-                From.CloseGump<QuestObjectivesGump>();
                 From.CloseGump<QuestConversationsGump>();
 
-                From.SendGump(new QuestObjectivesGump(Objectives));
+                From.SendGump(new QuestObjectivesGump(Objectives), true);
 
                 var last = Objectives[^1];
 
@@ -294,9 +292,8 @@ namespace Server.Engines.Quests
             {
                 From.CloseGump<QuestItemInfoGump>();
                 From.CloseGump<QuestObjectivesGump>();
-                From.CloseGump<QuestConversationsGump>();
 
-                From.SendGump(new QuestConversationsGump(Conversations));
+                From.SendGump(new QuestConversationsGump(Conversations), true);
 
                 var last = Conversations[^1];
 
@@ -391,8 +388,7 @@ namespace Server.Engines.Quests
 
             From.CloseGump<QuestItemInfoGump>();
             From.CloseGump<QuestObjectivesGump>();
-            From.CloseGump<QuestConversationsGump>();
-            From.SendGump(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv));
+            From.SendGump(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv), true);
 
             if (conv.Info != null)
             {

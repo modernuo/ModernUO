@@ -197,12 +197,12 @@ public class TownCrierGump : Gump
     private readonly Mobile m_From;
     private readonly ITownCrierEntryList m_Owner;
 
+    public override bool Singleton => true;
+
     public TownCrierGump(Mobile from, ITownCrierEntryList owner) : base(50, 50)
     {
         m_From = from;
         m_Owner = owner;
-
-        from.CloseGump<TownCrierGump>();
 
         AddPage(0);
 

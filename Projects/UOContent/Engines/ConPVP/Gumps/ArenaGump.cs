@@ -50,8 +50,7 @@ namespace Server.Engines.ConPVP
                 return false;
             }
 
-            from.CloseGump<ArenaGump>();
-            from.SendGump(new ArenaGump(from, this));
+            from.SendGump(new ArenaGump(from, this), true);
 
             if (!from.Hidden || from.AccessLevel == AccessLevel.Player)
             {

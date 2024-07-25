@@ -104,8 +104,7 @@ public partial class MistletoeAddon : Item, IDyable, IAddon
 
         if (from.InRange(GetWorldLocation(), 3))
         {
-            from.CloseGump<MistletoeAddonGump>();
-            from.SendGump(new MistletoeAddonGump(from, this));
+            from.SendGump(new MistletoeAddonGump(from, this), true);
         }
         else
         {

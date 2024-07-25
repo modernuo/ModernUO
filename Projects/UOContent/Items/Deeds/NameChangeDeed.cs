@@ -17,8 +17,7 @@ public partial class NameChangeDeed : Item
     {
         if (RootParent == from)
         {
-            from.CloseGump<NameChangeDeedGump>();
-            from.SendGump(new NameChangeDeedGump(this));
+            from.SendGump(new NameChangeDeedGump(this), true);
         }
         else
         {

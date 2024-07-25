@@ -11,12 +11,12 @@ namespace Server.Gumps
         private readonly BaseHouse m_House;
         private readonly Mobile m_Mobile;
 
+        public override bool Singleton => true;
+
         public HouseDemolishGump(Mobile mobile, BaseHouse house) : base(110, 100)
         {
             m_Mobile = mobile;
             m_House = house;
-
-            mobile.CloseGump<HouseDemolishGump>();
 
             Closable = false;
 

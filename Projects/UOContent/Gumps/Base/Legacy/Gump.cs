@@ -13,13 +13,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Collections;
 using Server.Network;
+using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Server.Gumps;
 
 public class Gump : BaseGump
 {
+    private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+    private static readonly byte[] _stringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
+    private static readonly OrderedSet<string> _stringsList = new();
+
     private int _switches;
     private int _textEntries;
 
@@ -240,10 +248,72 @@ public class Gump : BaseGump
         return Strings.Count - 1;
     }
 
-    public override void SendTo(NetState state)
+    public override void Compile(ref SpanWriter writer)
     {
-        state.AddGump(this);
-        state.SendDisplayGump(this, out _switches, out _textEntries);
+        _textEntries = 0;
+        _switches = 0;
+
+        var layoutWriter = new SpanWriter(_layoutBuffer);
+
+        if (!Draggable)
+        {
+            layoutWriter.Write("{ nomove }"u8);
+        }
+
+        if (!Closable)
+        {
+            layoutWriter.Write("{ noclose }"u8);
+        }
+
+        if (!Disposable)
+        {
+            layoutWriter.Write("{ nodispose }"u8);
+        }
+
+        if (!Resizable)
+        {
+            layoutWriter.Write("{ noresize }"u8);
+        }
+
+        foreach (var entry in Entries)
+        {
+            entry.AppendTo(ref layoutWriter, _stringsList, ref _textEntries, ref _switches);
+        }
+
+        var stringsWriter = new SpanWriter(_stringsBuffer);
+
+        foreach (var str in _stringsList)
+        {
+            var s = str ?? "";
+            stringsWriter.Write((ushort)s.Length);
+            stringsWriter.WriteBigUni(s);
+        }
+
+        writer.Write((byte)0xDD); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
+
+        writer.Write(Serial);
+        writer.Write(TypeID);
+        writer.Write(X);
+        writer.Write(Y);
+
+        layoutWriter.Write((byte)0); // Layout text terminator
+        OutgoingGumpPackets.WritePacked(layoutWriter.Span, ref writer);
+
+        writer.Write(_stringsList.Count);
+        OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
+
+        writer.WritePacketLength();
+
+        layoutWriter.Dispose();  // Just in case
+        stringsWriter.Dispose(); // Just in case
+
+        if (_stringsList.Count > 0)
+        {
+            _stringsList.Clear();
+        }
+
+        writer.Dispose();
     }
 
     protected void Reset()

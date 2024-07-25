@@ -136,8 +136,7 @@ public partial class RewardBrazierDeed : Item, IRewardItem
             return;
         }
 
-        from.CloseGump<InternalGump>();
-        from.SendGump(new InternalGump(this));
+        from.SendGump(new InternalGump(this), true);
     }
 
     public override void GetProperties(IPropertyList list)

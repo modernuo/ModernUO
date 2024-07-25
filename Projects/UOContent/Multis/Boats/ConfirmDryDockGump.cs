@@ -8,12 +8,12 @@ namespace Server.Multis
         private readonly BaseBoat m_Boat;
         private readonly Mobile m_From;
 
+        public override bool Singleton => true;
+
         public ConfirmDryDockGump(Mobile from, BaseBoat boat) : base(150, 200)
         {
             m_From = from;
             m_Boat = boat;
-
-            m_From.CloseGump<ConfirmDryDockGump>();
 
             AddPage(0);
 

@@ -27,14 +27,14 @@ namespace Server.Gumps
         private Mobile m_Owner;
         private int m_Page;
 
+        public override bool Singleton => true;
+
         public WhoGump(Mobile owner, string filter) : this(owner, BuildList(owner, filter))
         {
         }
 
         public WhoGump(Mobile owner, List<Mobile> list, int page = 0) : base(GumpOffsetX, GumpOffsetY)
         {
-            owner.CloseGump<WhoGump>();
-
             m_Owner = owner;
             m_Mobiles = list;
 

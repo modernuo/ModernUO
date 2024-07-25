@@ -8,10 +8,10 @@ public class PetResurrectGump : StaticGump<PetResurrectGump>
     private readonly double _hitsScalar;
     private readonly BaseCreature _pet;
 
+    public override bool Singleton => true;
+
     public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar = 0.0) : base(50, 50)
     {
-        from.CloseGump<PetResurrectGump>();
-
         _pet = pet;
         _hitsScalar = hitsScalar;
     }

@@ -433,8 +433,7 @@ public partial class TreasureMapChest : LockableContainer
             return;
         }
 
-        from.CloseGump<RemoveGump>();
-        from.SendGump(new RemoveGump(from, this));
+        from.SendGump(new RemoveGump(from, this), true);
     }
 
     public void EndRemove(Mobile from)

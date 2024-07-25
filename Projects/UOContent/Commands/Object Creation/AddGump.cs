@@ -13,13 +13,13 @@ namespace Server.Gumps
         private readonly Type[] m_SearchResults;
         private readonly string m_SearchString;
 
+        public override bool Singleton => true;
+
         public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
         {
             m_SearchString = searchString;
             m_SearchResults = searchResults;
             m_Page = page;
-
-            from.CloseGump<AddGump>();
 
             AddPage(0);
 
