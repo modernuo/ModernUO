@@ -594,9 +594,7 @@ namespace Server.Gumps
                 if (t.Type == typeof(PigmentsOfTokuno)) // Special case of course.
                 {
                     pm.CloseGump<ToTTurnInGump>(); // Sanity
-                    pm.CloseGump<ToTRedeemGump>();
-
-                    pm.SendGump(new ToTRedeemGump(m_Collector, true));
+                    pm.SendGump(new ToTRedeemGump(m_Collector, true), true);
 
                     return;
                 }

@@ -705,8 +705,7 @@ namespace Server.Gumps
 
             if (types?.Length > 0 && cliloc > 0)
             {
-                sender.Mobile.CloseGump<ConfirmHeritageGump>();
-                sender.Mobile.SendGump(new ConfirmHeritageGump(m_Token, types, cliloc));
+                sender.Mobile.SendGump(new ConfirmHeritageGump(m_Token, types, cliloc), true);
             }
             else
             {

@@ -21,8 +21,7 @@ public partial class SpecialBeardDye : Item
     {
         if (from.InRange(GetWorldLocation(), 1))
         {
-            from.CloseGump<SpecialBeardDyeGump>();
-            from.SendGump(new SpecialBeardDyeGump(this));
+            from.SendGump(new SpecialBeardDyeGump(this), true);
         }
         else
         {

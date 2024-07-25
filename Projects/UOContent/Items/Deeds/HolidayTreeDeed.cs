@@ -103,8 +103,7 @@ public partial class HolidayTreeDeed : Item
 
     public override void OnDoubleClick(Mobile from)
     {
-        from.CloseGump<HolidayTreeChoiceGump>();
-        from.SendGump(new HolidayTreeChoiceGump(from, this));
+        from.SendGump(new HolidayTreeChoiceGump(from, this), true);
     }
 }
 

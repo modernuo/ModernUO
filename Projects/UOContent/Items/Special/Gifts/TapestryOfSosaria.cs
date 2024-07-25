@@ -35,8 +35,7 @@ public partial class TapestryOfSosaria : Item, ISecurable
     {
         if (from.InRange(GetWorldLocation(), 2))
         {
-            from.CloseGump<InternalGump>();
-            from.SendGump(new InternalGump());
+            from.SendGump(new InternalGump(), true);
         }
         else
         {

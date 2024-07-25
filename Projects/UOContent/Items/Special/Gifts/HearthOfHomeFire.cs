@@ -47,8 +47,7 @@ public partial class HearthOfHomeFireDeed : BaseAddonDeed
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
-            from.SendGump(new InternalGump(this));
+            from.SendGump(new InternalGump(this), true);
         }
         else
         {

@@ -174,8 +174,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
 
             if (targeted is BaseWeapon item)
             {
-                from.CloseGump<InternalGump>();
-                from.SendGump(new InternalGump(_tool, item));
+                from.SendGump(new InternalGump(_tool, item), true);
             }
             else
             {

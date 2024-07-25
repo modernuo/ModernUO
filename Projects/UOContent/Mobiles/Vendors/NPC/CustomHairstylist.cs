@@ -155,14 +155,13 @@ namespace Server.Mobiles
         private readonly Mobile m_From;
         private readonly HairstylistBuyInfo[] m_SellList;
         private readonly Mobile m_Vendor;
-
+        public override bool Singleton => true;
         public HairstylistBuyGump(Mobile from, Mobile vendor, HairstylistBuyInfo[] sellList) : base(50, 50)
         {
             m_From = from;
             m_Vendor = vendor;
             m_SellList = sellList;
 
-            from.CloseGump<HairstylistBuyGump>();
             from.CloseGump<ChangeHairHueGump>();
             from.CloseGump<ChangeHairstyleGump>();
 
@@ -327,6 +326,8 @@ namespace Server.Mobiles
         private readonly int m_Price;
         private readonly Mobile m_Vendor;
 
+        public override bool Singleton => true;
+
         public ChangeHairHueGump(
             Mobile from, Mobile vendor, int price, bool hair, bool facialHair,
             ChangeHairHueEntry[] entries
@@ -339,8 +340,6 @@ namespace Server.Mobiles
             m_FacialHair = facialHair;
             m_Entries = entries;
 
-            from.CloseGump<HairstylistBuyGump>();
-            from.CloseGump<ChangeHairHueGump>();
             from.CloseGump<ChangeHairstyleGump>();
 
             AddPage(0);
@@ -496,6 +495,8 @@ namespace Server.Mobiles
         private readonly int m_Price;
         private readonly Mobile m_Vendor;
 
+        public override bool Singleton => true;
+
         public ChangeHairstyleGump(
             Mobile from, Mobile vendor, int price, bool facialHair, ChangeHairstyleEntry[] entries
         ) : base(50, 50)
@@ -508,7 +509,6 @@ namespace Server.Mobiles
 
             from.CloseGump<HairstylistBuyGump>();
             from.CloseGump<ChangeHairHueGump>();
-            from.CloseGump<ChangeHairstyleGump>();
 
             var tableWidth = m_FacialHair ? 2 : 3;
             var tableHeight = (entries.Length + tableWidth - (m_FacialHair ? 1 : 2)) / tableWidth;

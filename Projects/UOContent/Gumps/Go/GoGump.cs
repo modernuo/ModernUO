@@ -25,10 +25,10 @@ public class GoGump : Gump
 
     private readonly LocationTree _tree;
 
+    public override bool Singleton => true;
+
     private GoGump(int page, Mobile from, LocationTree tree, GoCategory node) : base(50, 50)
     {
-        from.CloseGump<GoGump>();
-
         if (node == tree.Root)
         {
             tree.LastBranch.Remove(from);

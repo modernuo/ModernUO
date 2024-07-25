@@ -37,7 +37,7 @@ public static partial class GumpSystem
 
         BaseGump baseGump = null;
 
-        foreach (var g in state.GetAllGumps())
+        foreach (var g in GetAll(state))
         {
             if (g.Serial != serial || g.TypeID != typeId)
             {
@@ -152,7 +152,7 @@ public static partial class GumpSystem
 
             var textBlock = reader.Buffer.Slice(textOffset, reader.Position - textOffset);
 
-            state.RemoveGump(baseGump);
+            Remove(state, baseGump);
 
             var prof = GumpProfile.Acquire(baseGump.GetType());
 

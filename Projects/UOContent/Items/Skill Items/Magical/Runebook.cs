@@ -172,22 +172,9 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
     public bool IsOpen(Mobile toCheck)
     {
-        var ns = toCheck.NetState;
+        RunebookGump gump = toCheck.FindGump<RunebookGump>();
 
-        if (ns == null)
-        {
-            return false;
-        }
-
-        foreach (var gump in ns.GetAllGumps())
-        {
-            if ((gump as RunebookGump)?.Book == this)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return gump != null || gump.Book == this;
     }
 
     public override void GetProperties(IPropertyList list)
@@ -268,9 +255,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
     public void SendGumpTo(Mobile from)
     {
-        from.CloseGump<RunebookGump>();
-        from.SendGump(new RunebookGump(this));
-
+        from.SendGump(new RunebookGump(this), true);
         Openers.Add(from);
     }
 

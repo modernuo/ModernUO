@@ -25,6 +25,8 @@ public class WhoGump : DynamicGump
     private readonly List<Mobile> _mobiles;
     private readonly int _page;
 
+    public override bool Singleton => true;
+
     public WhoGump(Mobile owner, string filter) : this(BuildList(owner, filter))
     {
     }
@@ -33,8 +35,6 @@ public class WhoGump : DynamicGump
     {
         _mobiles = list;
         _page = page;
-
-        // Initialize(page);
     }
 
     public static void Configure()

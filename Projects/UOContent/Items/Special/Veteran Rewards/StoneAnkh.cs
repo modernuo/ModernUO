@@ -76,8 +76,7 @@ public partial class StoneAnkh : BaseAddon, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.CloseGump<RewardDemolitionGump>();
-                from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
+                from.SendGump(new RewardDemolitionGump(this, 1049783), true); // Do you wish to re-deed this decoration?
             }
             else
             {
@@ -122,8 +121,7 @@ public partial class StoneAnkhDeed : BaseAddonDeed, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
-            from.SendGump(new InternalGump(this));
+            from.SendGump(new InternalGump(this), true);
         }
         else
         {

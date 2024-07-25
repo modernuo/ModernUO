@@ -84,8 +84,7 @@ public partial class HouseRaffleDeed : Item
 
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<WritOfLeaseGump>();
-            from.SendGump(new WritOfLeaseGump(this));
+            from.SendGump(new WritOfLeaseGump(this), true);
         }
         else
         {

@@ -60,82 +60,82 @@ public static class OutgoingGumpPackets
         writer.Seek(bytesPacked, SeekOrigin.Current);
     }
 
-    public static void SendDisplayGump(this NetState ns, Gump gump, out int switches, out int entries)
-    {
-        switches = 0;
-        entries = 0;
+    //public static void SendDisplayGump(this NetState ns, Gump gump, out int switches, out int entries)
+    //{
+    //    switches = 0;
+    //    entries = 0;
 
-        if (ns.CannotSendPackets())
-        {
-            return;
-        }
+    //    if (ns.CannotSendPackets())
+    //    {
+    //        return;
+    //    }
 
-        var layoutWriter = new SpanWriter(_layoutBuffer);
+    //    var layoutWriter = new SpanWriter(_layoutBuffer);
 
-        if (!gump.Draggable)
-        {
-            layoutWriter.Write("{ nomove }"u8);
-        }
+    //    if (!gump.Draggable)
+    //    {
+    //        layoutWriter.Write("{ nomove }"u8);
+    //    }
 
-        if (!gump.Closable)
-        {
-            layoutWriter.Write("{ noclose }"u8);
-        }
+    //    if (!gump.Closable)
+    //    {
+    //        layoutWriter.Write("{ noclose }"u8);
+    //    }
 
-        if (!gump.Disposable)
-        {
-            layoutWriter.Write("{ nodispose }"u8);
-        }
+    //    if (!gump.Disposable)
+    //    {
+    //        layoutWriter.Write("{ nodispose }"u8);
+    //    }
 
-        if (!gump.Resizable)
-        {
-            layoutWriter.Write("{ noresize }"u8);
-        }
+    //    if (!gump.Resizable)
+    //    {
+    //        layoutWriter.Write("{ noresize }"u8);
+    //    }
 
-        foreach (var entry in gump.Entries)
-        {
-            entry.AppendTo(ref layoutWriter, _stringsList, ref entries, ref switches);
-        }
+    //    foreach (var entry in gump.Entries)
+    //    {
+    //        entry.AppendTo(ref layoutWriter, _stringsList, ref entries, ref switches);
+    //    }
 
-        var stringsWriter = new SpanWriter(_stringsBuffer);
+    //    var stringsWriter = new SpanWriter(_stringsBuffer);
 
-        foreach (var str in _stringsList)
-        {
-            var s = str ?? "";
-            stringsWriter.Write((ushort)s.Length);
-            stringsWriter.WriteBigUni(s);
-        }
+    //    foreach (var str in _stringsList)
+    //    {
+    //        var s = str ?? "";
+    //        stringsWriter.Write((ushort)s.Length);
+    //        stringsWriter.WriteBigUni(s);
+    //    }
 
 
-        var writer = new SpanWriter(0x10000);
-        writer.Write((byte)0xDD); // Packet ID
-        writer.Seek(2, SeekOrigin.Current);
+    //    var writer = new SpanWriter(0x10000);
+    //    writer.Write((byte)0xDD); // Packet ID
+    //    writer.Seek(2, SeekOrigin.Current);
 
-        writer.Write(gump.Serial);
-        writer.Write(gump.TypeID);
-        writer.Write(gump.X);
-        writer.Write(gump.Y);
+    //    writer.Write(gump.Serial);
+    //    writer.Write(gump.TypeID);
+    //    writer.Write(gump.X);
+    //    writer.Write(gump.Y);
 
-        layoutWriter.Write((byte)0); // Layout text terminator
-        WritePacked(layoutWriter.Span, ref writer);
+    //    layoutWriter.Write((byte)0); // Layout text terminator
+    //    WritePacked(layoutWriter.Span, ref writer);
 
-        writer.Write(_stringsList.Count);
-        WritePacked(stringsWriter.Span, ref writer);
+    //    writer.Write(_stringsList.Count);
+    //    WritePacked(stringsWriter.Span, ref writer);
 
-        writer.WritePacketLength();
+    //    writer.WritePacketLength();
 
-        ns.Send(writer.Span);
+    //    ns.Send(writer.Span);
 
-        layoutWriter.Dispose();  // Just in case
-        stringsWriter.Dispose(); // Just in case
+    //    layoutWriter.Dispose();  // Just in case
+    //    stringsWriter.Dispose(); // Just in case
 
-        if (_stringsList.Count > 0)
-        {
-            _stringsList.Clear();
-        }
+    //    if (_stringsList.Count > 0)
+    //    {
+    //        _stringsList.Clear();
+    //    }
 
-        writer.Dispose();
-    }
+    //    writer.Dispose();
+    //}
 
     public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
     {

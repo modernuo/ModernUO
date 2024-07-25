@@ -41,8 +41,7 @@ public partial class VanityDeed : BaseAddonContainerDeed
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
-            from.SendGump(new InternalGump(this));
+            from.SendGump(new InternalGump(this), true);
         }
         else
         {

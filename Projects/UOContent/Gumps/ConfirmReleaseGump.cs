@@ -8,6 +8,8 @@ public class ConfirmReleaseGump : StaticGump<ConfirmReleaseGump>
     private readonly Mobile _from;
     private readonly BaseCreature _pet;
 
+    public override bool Singleton => true;
+
     public ConfirmReleaseGump(Mobile from, BaseCreature pet) : base(50, 50)
     {
         _from = from;
@@ -29,12 +31,6 @@ public class ConfirmReleaseGump : StaticGump<ConfirmReleaseGump>
 
         builder.AddButton(135, 80, 4005, 4007, 1);
         builder.AddHtmlLocalized(170, 80, 75, 20, 1011012); // CANCEL
-    }
-
-    public override void SendTo(NetState ns)
-    {
-        _from.CloseGump<ConfirmReleaseGump>();
-        base.SendTo(ns);
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)

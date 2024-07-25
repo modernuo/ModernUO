@@ -7,12 +7,12 @@ namespace Server.Guilds
 {
     public abstract class BaseGuildGump : Gump
     {
+        public override bool Singleton => true;
+
         public BaseGuildGump(PlayerMobile pm, Guild g, int x = 10, int y = 10) : base(x, y)
         {
             guild = g;
             player = pm;
-
-            pm.CloseGump<BaseGuildGump>();
         }
 
         protected Guild guild { get; }

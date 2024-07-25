@@ -50,8 +50,7 @@ public partial class PottedCactusDeed : Item, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
-            from.SendGump(new InternalGump(this));
+            from.SendGump(new InternalGump(this), true);
         }
         else
         {

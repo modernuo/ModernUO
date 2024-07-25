@@ -104,8 +104,7 @@ namespace Server.Gumps
 
             public override void OnCancel(Mobile from)
             {
-                from.CloseGump<CommentsGump>();
-                from.SendGump(new CommentsGump(m_Acct));
+                from.SendGump(new CommentsGump(m_Acct), true);
                 base.OnCancel(from);
             }
 
@@ -115,8 +114,7 @@ namespace Server.Gumps
                 from.SendMessage("Comment added.");
                 // m_Acct.AddComment( from.Name, text );
                 m_Acct.Comments.Add(new AccountComment(from.Name, text));
-                from.CloseGump<CommentsGump>();
-                from.SendGump(new CommentsGump(m_Acct));
+                from.SendGump(new CommentsGump(m_Acct), true);
             }
         }
     }

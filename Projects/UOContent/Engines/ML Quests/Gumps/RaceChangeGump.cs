@@ -27,6 +27,8 @@ namespace Server.Engines.MLQuests.Gumps
         private readonly IRaceChanger m_Owner;
         private readonly Race m_Race;
 
+        public override bool Singleton => true;
+
         public RaceChangeConfirmGump(IRaceChanger owner, PlayerMobile from, Race targetRace)
             : base(50, 50)
         {

@@ -65,8 +65,7 @@ public partial class SnowStatueDeed : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
-            from.SendGump(new InternalGump(from, this));
+            from.SendGump(new InternalGump(from, this), true);
         }
         else
         {

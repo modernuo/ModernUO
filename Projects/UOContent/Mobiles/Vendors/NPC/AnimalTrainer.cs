@@ -427,13 +427,13 @@ namespace Server.Mobiles
             private readonly List<BaseCreature> m_List;
             private readonly AnimalTrainer m_Trainer;
 
+            public override bool Singleton => true;
+
             public ClaimListGump(AnimalTrainer trainer, Mobile from, List<BaseCreature> list) : base(50, 50)
             {
                 m_Trainer = trainer;
                 m_From = from;
                 m_List = list;
-
-                from.CloseGump<ClaimListGump>();
 
                 AddPage(0);
 

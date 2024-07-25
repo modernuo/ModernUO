@@ -38,6 +38,8 @@ public sealed class VirtualCheckGump : Gump, IVirtualCheckGump
 
     private int _plat, _gold;
 
+    public override bool Singleton => true;
+
     public VirtualCheckGump(Mobile user, VirtualCheck check) : base(50, 50)
     {
         User = user;
@@ -50,8 +52,6 @@ public sealed class VirtualCheckGump : Gump, IVirtualCheckGump
         Disposable = true;
         Draggable = true;
         Resizable = false;
-
-        User.CloseGump<VirtualCheckGump>();
 
         CompileLayout();
     }
