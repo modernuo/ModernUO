@@ -1431,7 +1431,7 @@ namespace Server.Engines.ConPVP
 
                     if (prefs != null)
                     {
-                        e.Mobile.SendGump(new PreferencesGump(e.Mobile, prefs), true);
+                        e.Mobile.SendGump(new PreferencesGump(e.Mobile, prefs));
                     }
                 }
             }
@@ -1698,13 +1698,15 @@ namespace Server.Engines.ConPVP
 
         public void CloseAllGumps(DuelPlayer pl)
         {
-            pl.Mobile.CloseGump<BeginGump>();
-            pl.Mobile.CloseGump<DuelContextGump>();
-            pl.Mobile.CloseGump<ParticipantGump>();
-            pl.Mobile.CloseGump<PickRulesetGump>();
-            pl.Mobile.CloseGump<ReadyGump>();
-            pl.Mobile.CloseGump<ReadyUpGump>();
-            pl.Mobile.CloseGump<RulesetGump>();
+            var gumps = pl.Mobile.GetGumps();
+
+            gumps.Close<BeginGump>();
+            gumps.Close<DuelContextGump>();
+            gumps.Close<ParticipantGump>();
+            gumps.Close<PickRulesetGump>();
+            gumps.Close<ReadyGump>();
+            gumps.Close<ReadyUpGump>();
+            gumps.Close<RulesetGump>();
         }
 
         public void CloseAllGumps()
@@ -1783,9 +1785,11 @@ namespace Server.Engines.ConPVP
                     }
 
                     // Close all of them?
-                    mob.CloseGump<DuelContextGump>();
-                    mob.CloseGump<ReadyUpGump>();
-                    mob.CloseGump<ReadyGump>();
+                    var gumps = mob.GetGumps();
+
+                    gumps.Close<DuelContextGump>();
+                    gumps.Close<ReadyUpGump>();
+                    gumps.Close<ReadyGump>();
                 }
             }
 
@@ -2178,9 +2182,12 @@ namespace Server.Engines.ConPVP
                     {
                         if (count == 10)
                         {
-                            mob.CloseGump<ReadyGump>();
-                            mob.CloseGump<ReadyUpGump>();
-                            mob.SendGump(new BeginGump(count), true);
+                            var gumps = mob.GetGumps();
+
+                            gumps.Close<ReadyGump>();
+                            gumps.Close<ReadyUpGump>();
+                            gumps.Close<BeginGump>();
+                            gumps.Send(new BeginGump(count));
                         }
 
                         mob.Frozen = true;

@@ -226,19 +226,21 @@ public partial class SoulStone : Item, ISecurable
             return;
         }
 
-        from.CloseGump<SelectSkillGump>();
-        from.CloseGump<ConfirmSkillGump>();
-        from.CloseGump<ConfirmTransferGump>();
-        from.CloseGump<ConfirmRemovalGump>();
-        from.CloseGump<ErrorGump>();
+        var gumps = from.GetGumps();
+
+        gumps.Close<SelectSkillGump>();
+        gumps.Close<ConfirmSkillGump>();
+        gumps.Close<ConfirmTransferGump>();
+        gumps.Close<ConfirmRemovalGump>();
+        gumps.Close<ErrorGump>();
 
         if (IsEmpty)
         {
-            from.SendGump(new SelectSkillGump(this, from));
+            gumps.Send(new SelectSkillGump(this, from));
         }
         else
         {
-            from.SendGump(new ConfirmTransferGump(this, from));
+            gumps.Send(new ConfirmTransferGump(this, from));
         }
     }
 

@@ -12,6 +12,8 @@ namespace Server.Gumps
         private readonly PlayerVendor m_Vendor;
         private readonly VendorItem m_VI;
 
+        public override bool Singleton => true;
+
         public PlayerVendorBuyGump(PlayerVendor vendor, VendorItem vi) : base(100, 200)
         {
             m_Vendor = vendor;

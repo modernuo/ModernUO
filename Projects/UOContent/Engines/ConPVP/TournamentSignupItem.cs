@@ -147,7 +147,7 @@ namespace Server.Engines.ConPVP
                             }
                             else if (!tourney.HasParticipant(from))
                             {
-                                from.SendGump(new ConfirmSignupGump(from, Registrar, tourney, new List<Mobile> { from }), true);
+                                from.SendGump(new ConfirmSignupGump(from, Registrar, tourney, new List<Mobile> { from }));
                             }
                             else
                             {

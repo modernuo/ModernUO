@@ -1057,7 +1057,7 @@ namespace Server.Engines.ConPVP
         {
             if (m_TeamInfo?.Game != null)
             {
-                from.SendGump(new BRBoardGump(from, m_TeamInfo.Game), true);
+                from.SendGump(new BRBoardGump(from, m_TeamInfo.Game));
             }
         }
 
@@ -1081,7 +1081,7 @@ namespace Server.Engines.ConPVP
         private const int LabelColor32 = 0xFFFFFF;
         private const int BlackColor32 = 0x000000;
 
-        // private BRGame m_Game;
+        public override bool Singleton => true;
 
         public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section = null) : base(60, 60)
         {
@@ -1718,7 +1718,7 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            mob.SendGump(new BRBoardGump(mob, this), true);
+            mob.SendGump(new BRBoardGump(mob, this));
 
             m_Context.Requip(mob, corpse);
             DelayBounce(TimeSpan.FromSeconds(30.0), mob, corpse);
@@ -1916,7 +1916,7 @@ namespace Server.Engines.ConPVP
 
                     if (dp?.Mobile != null)
                     {
-                        dp.Mobile.SendGump(new BRBoardGump(dp.Mobile, this), true);
+                        dp.Mobile.SendGump(new BRBoardGump(dp.Mobile, this));
                     }
                 }
 

@@ -103,7 +103,7 @@ namespace Server.Spells.Spellweaving
 
                 if (master?.NetState != null && Utility.InUpdateRange(pet.Location, master.Location))
                 {
-                    master.SendGump(new PetResurrectGump(master, pet, hitsScalar), true);
+                    master.SendGump(new PetResurrectGump(master, pet, hitsScalar));
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace Server.Spells.Spellweaving
 
                         if (friend.NetState != null && Utility.InUpdateRange(pet.Location, friend.Location))
                         {
-                            friend.SendGump(new PetResurrectGump(friend, pet), true);
+                            friend.SendGump(new PetResurrectGump(friend, pet));
                             break;
                         }
                     }
@@ -123,7 +123,7 @@ namespace Server.Spells.Spellweaving
             }
             else
             {
-                m.SendGump(new ResurrectGump(m, hitsScalar), true);
+                m.SendGump(new ResurrectGump(m, hitsScalar));
             }
 
             // Per OSI, buff is removed when gump sent, irregardless of online status or acceptance

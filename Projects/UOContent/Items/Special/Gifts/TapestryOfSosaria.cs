@@ -35,7 +35,7 @@ public partial class TapestryOfSosaria : Item, ISecurable
     {
         if (from.InRange(GetWorldLocation(), 2))
         {
-            from.SendGump(new InternalGump(), true);
+            from.SendGump(new InternalGump());
         }
         else
         {
@@ -50,6 +50,8 @@ public partial class TapestryOfSosaria : Item, ISecurable
 
     private class InternalGump : Gump
     {
+        public override bool Singleton => true;
+
         public InternalGump() : base(50, 50)
         {
             AddImage(0, 0, 0x2C95);

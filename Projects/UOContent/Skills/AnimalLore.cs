@@ -62,7 +62,7 @@ namespace Server.SkillHandlers
                 }
                 else
                 {
-                    from.SendGump(new AnimalLoreGump(c), true);
+                    from.SendGump(new AnimalLoreGump(c));
                 }
             }
         }
@@ -71,6 +71,8 @@ namespace Server.SkillHandlers
     public class AnimalLoreGump : Gump
     {
         private const int LabelColor = 0x24E5;
+
+        public override bool Singleton => true;
 
         public AnimalLoreGump(BaseCreature c) : base(250, 50)
         {

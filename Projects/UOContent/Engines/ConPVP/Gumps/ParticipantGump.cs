@@ -7,15 +7,18 @@ namespace Server.Engines.ConPVP
 {
     public class ParticipantGump : Gump
     {
+        public override bool Singleton => true;
+
         public ParticipantGump(Mobile from, DuelContext context, Participant p) : base(50, 50)
         {
             From = from;
             Context = context;
             Participant = p;
 
-            from.CloseGump<RulesetGump>();
-            from.CloseGump<DuelContextGump>();
-            from.CloseGump<ParticipantGump>();
+            var gumps = from.GetGumps();
+
+            gumps.Close<RulesetGump>();
+            gumps.Close<DuelContextGump>();
 
             var count = p.Players.Length;
 

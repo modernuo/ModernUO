@@ -130,6 +130,8 @@ namespace Server.Engines.Quests
     {
         private readonly QuestSystem m_System;
 
+        public override bool Singleton => true;
+
         public QuestLogUpdatedGump(QuestSystem system) : base(3, 30)
         {
             m_System = system;

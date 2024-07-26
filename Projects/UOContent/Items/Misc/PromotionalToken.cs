@@ -46,7 +46,7 @@ public abstract partial class PromotionalToken : Item
         }
         else
         {
-            from.SendGump(new PromotionalTokenGump(this), true);
+            from.SendGump(new PromotionalTokenGump(this));
         }
     }
 
@@ -69,6 +69,8 @@ public abstract partial class PromotionalToken : Item
     private class PromotionalTokenGump : Gump
     {
         private readonly PromotionalToken m_Token;
+
+        public override bool Singleton => true;
 
         public PromotionalTokenGump(PromotionalToken token) : base(10, 10)
         {

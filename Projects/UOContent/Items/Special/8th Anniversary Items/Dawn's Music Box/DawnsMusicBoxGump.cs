@@ -1,4 +1,4 @@
-﻿using Server.Items;
+using Server.Items;
 using Server.Network;
 
 namespace Server.Gumps;
@@ -6,6 +6,8 @@ namespace Server.Gumps;
 public class DawnsMusicBoxGump : Gump
 {
     private readonly DawnsMusicBox m_Box;
+
+    public override bool Singleton => true;
 
     public DawnsMusicBoxGump(DawnsMusicBox box) : base(60, 36)
     {

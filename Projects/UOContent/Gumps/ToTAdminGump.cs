@@ -31,6 +31,8 @@ namespace Server.Gumps
 
         private readonly int m_ToTEras;
 
+        public override bool Singleton => true;
+
         public ToTAdminGump() : base(30, 50)
         {
             Closable = true;
@@ -123,7 +125,7 @@ namespace Server.Gumps
         [Usage("ToTAdmin"), Description("Displays a menu to configure Treasures of Tokuno.")]
         public static void ToTAdmin_OnCommand(CommandEventArgs e)
         {
-            e.Mobile.SendGump(new ToTAdminGump(), true);
+            e.Mobile.SendGump(new ToTAdminGump());
         }
     }
 }

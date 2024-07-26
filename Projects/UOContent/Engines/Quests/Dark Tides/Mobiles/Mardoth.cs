@@ -186,7 +186,7 @@ public partial class Mardoth : BaseQuester
             m.PlaySound(0x214);
             m.FixedEffect(0x376A, 10, 16);
 
-            m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer), true);
+            m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
         }
     }
 }

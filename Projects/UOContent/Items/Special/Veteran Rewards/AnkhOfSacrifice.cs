@@ -61,7 +61,7 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
         }
         else
         {
-            m.SendGump(new AnkhResurrectGump(m, ResurrectMessage.VirtueShrine), true);
+            m.SendGump(new AnkhResurrectGump(m, ResurrectMessage.VirtueShrine));
         }
     }
 
@@ -214,7 +214,7 @@ public partial class AnkhOfSacrificeDeed : BaseAddonDeed, IRewardItem, IRewardOp
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new RewardOptionGump(this), true);
+            from.SendGump(new RewardOptionGump(this));
         }
         else
         {

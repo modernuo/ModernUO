@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Gumps.Base;
 using Server.Items;
 using Server.Logging;
 using Server.Network;
@@ -176,6 +177,18 @@ public static partial class GumpSystem
         return false;
     }
 
+    private static MobileGumps Get(NetState ns)
+    {
+        ref List<BaseGump> list = ref CollectionsMarshal.GetValueRefOrAddDefault(_gumps, ns, out bool exists);
+
+        if (!exists)
+        {
+            list = [];
+        }
+
+        return new MobileGumps(list, ns);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasGump<T>(this Mobile m) where T : BaseGump
     {
@@ -212,6 +225,17 @@ public static partial class GumpSystem
     public static ReadOnlySpan<BaseGump> GetAllGumps(this Mobile m)
     {
         return m.NetState is { } ns ? GetAll(ns) : [];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static MobileGumps GetGumps(this Mobile m)
+    {
+        if (m.NetState is { } ns)
+        {
+            return Get(ns);
+        }
+
+        return new MobileGumps(null, null);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -252,5 +276,13 @@ public static partial class GumpSystem
         ArgumentNullException.ThrowIfNull(ns, nameof(ns));
 
         Add(ns, gump);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static MobileGumps GetGumps(this NetState ns)
+    {
+        ArgumentNullException.ThrowIfNull(ns, nameof(ns));
+
+        return Get(ns);
     }
 }

@@ -513,7 +513,7 @@ namespace Server.Mobiles
 
         public void BeginChangeAppearance(Mobile from)
         {
-            from.SendGump(new PlayerVendorCustomizeGump(this, from), true);
+            from.SendGump(new PlayerVendorCustomizeGump(this, from));
         }
 
         public void ChangeGender(Mobile from)

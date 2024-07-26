@@ -9,6 +9,8 @@ namespace Server.Gumps
         private readonly BaseHouse m_House;
         private readonly Mobile m_To;
 
+        public override bool Singleton => true;
+
         public HouseTransferGump(Mobile from, Mobile to, BaseHouse house) : base(110, 100)
         {
             m_From = from;

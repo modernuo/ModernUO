@@ -21,7 +21,7 @@ public partial class SpecialHairDye : Item
     {
         if (from.InRange(GetWorldLocation(), 1))
         {
-            from.SendGump(new SpecialHairDyeGump(this), true);
+            from.SendGump(new SpecialHairDyeGump(this));
         }
         else
         {
@@ -45,6 +45,8 @@ public class SpecialHairDyeGump : Gump
     };
 
     private SpecialHairDye _specialHairDye;
+
+    public override bool Singleton => true;
 
     public SpecialHairDyeGump(SpecialHairDye dye) : base(0, 0)
     {

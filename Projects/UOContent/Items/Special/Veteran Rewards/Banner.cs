@@ -77,7 +77,7 @@ public partial class Banner : Item, IAddon, IDyable, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.SendGump(new RewardDemolitionGump(this, 1018318), true); // Do you wish to re-deed this banner?
+                from.SendGump(new RewardDemolitionGump(this, 1018318)); // Do you wish to re-deed this banner?
             }
             else
             {
@@ -132,7 +132,7 @@ public partial class BannerDeed : Item, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.SendGump(new InternalGump(this), true);
+                from.SendGump(new InternalGump(this));
             }
             else
             {
@@ -151,6 +151,8 @@ public partial class BannerDeed : Item, IRewardItem
         public const int End = 0x15F4;
 
         private readonly BannerDeed _banner;
+
+        public override bool Singleton => true;
 
         public InternalGump(BannerDeed banner) : base(100, 200)
         {
@@ -272,7 +274,7 @@ public partial class BannerDeed : Item, IRewardItem
 
             if (north && west)
             {
-                from.SendGump(new FacingGump(_banner, _itemID, p3d, house), true);
+                from.SendGump(new FacingGump(_banner, _itemID, p3d, house));
             }
             else if (north || west)
             {
@@ -297,6 +299,8 @@ public partial class BannerDeed : Item, IRewardItem
             private readonly BaseHouse m_House;
             private readonly int m_ItemID;
             private readonly Point3D m_Location;
+
+            public override bool Singleton => true;
 
             public FacingGump(BannerDeed banner, int itemID, Point3D location, BaseHouse house) : base(150, 50)
             {
