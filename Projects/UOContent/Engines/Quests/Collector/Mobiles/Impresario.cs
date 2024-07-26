@@ -55,7 +55,7 @@ public partial class Impresario : BaseQuester
 
             if (obj.IsInRightTheater())
             {
-                player.SendGump(new SheetMusicOfferGump(), true);
+                player.SendGump(new SheetMusicOfferGump());
             }
             else
             {
@@ -67,6 +67,8 @@ public partial class Impresario : BaseQuester
 
 public class SheetMusicOfferGump : BaseQuestGump
 {
+    public override bool Singleton => true;
+
     public SheetMusicOfferGump() : base(75, 25)
     {
         Closable = false;

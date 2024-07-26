@@ -36,7 +36,7 @@ public partial class PricedHealer : BaseHealer
         m.PlaySound(0x214);
         m.FixedEffect(0x376A, 10, 16);
 
-        m.SendGump(new ResurrectGump(m, this, Price), true);
+        m.SendGump(new ResurrectGump(m, this, Price));
     }
 
     public override bool CheckResurrect(Mobile m) => true;

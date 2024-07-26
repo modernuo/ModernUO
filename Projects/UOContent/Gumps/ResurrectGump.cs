@@ -21,6 +21,8 @@ namespace Server.Gumps
         private readonly double m_HitsScalar;
         private readonly int m_Price;
 
+        public override bool Singleton => true;
+
         public ResurrectGump(Mobile owner, double hitsScalar)
             : this(owner, owner, ResurrectMessage.Generic, false, hitsScalar)
         {

@@ -368,7 +368,7 @@ public partial class MiningCartDeed : BaseAddonDeed, IRewardItem, IRewardOption
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new RewardOptionGump(this), true);
+            from.SendGump(new RewardOptionGump(this));
         }
         else
         {

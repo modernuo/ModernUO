@@ -157,7 +157,7 @@ public partial class Moongate : Item
                 from.SendSound(0x20E, from);
             }
 
-            from.SendGump(new MoongateConfirmGump(from, this), true);
+            from.SendGump(new MoongateConfirmGump(from, this));
         }
         else
         {
@@ -305,6 +305,8 @@ public class MoongateConfirmGump : Gump
 {
     private Mobile _from;
     private Moongate _gate;
+
+    public override bool Singleton => true;
 
     public MoongateConfirmGump(Mobile from, Moongate gate) : base(Core.AOS ? 110 : 20, Core.AOS ? 100 : 30)
     {

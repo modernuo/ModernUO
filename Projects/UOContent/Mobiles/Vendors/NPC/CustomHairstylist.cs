@@ -162,8 +162,10 @@ namespace Server.Mobiles
             m_Vendor = vendor;
             m_SellList = sellList;
 
-            from.CloseGump<ChangeHairHueGump>();
-            from.CloseGump<ChangeHairstyleGump>();
+            var gumps = from.GetGumps();
+
+            gumps.Close<ChangeHairHueGump>();
+            gumps.Close<ChangeHairstyleGump>();
 
             var isFemale = from.Female || from.Body.IsFemale;
 
@@ -507,8 +509,10 @@ namespace Server.Mobiles
             m_FacialHair = facialHair;
             m_Entries = entries;
 
-            from.CloseGump<HairstylistBuyGump>();
-            from.CloseGump<ChangeHairHueGump>();
+            var gumps = from.GetGumps();
+
+            gumps.Close<HairstylistBuyGump>();
+            gumps.Close<ChangeHairHueGump>();
 
             var tableWidth = m_FacialHair ? 2 : 3;
             var tableHeight = (entries.Length + tableWidth - (m_FacialHair ? 1 : 2)) / tableWidth;

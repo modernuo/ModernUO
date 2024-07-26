@@ -220,7 +220,7 @@ public partial class Chyloth : BaseQuester
                         AngryAt = null;
                     }
 
-                    member.SendGump(new ChylothPartyGump(from, member), true);
+                    member.SendGump(new ChylothPartyGump(from, member));
                 }
             }
 

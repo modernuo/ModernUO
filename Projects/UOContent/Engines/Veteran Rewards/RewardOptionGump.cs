@@ -14,6 +14,8 @@ namespace Server.Gumps
         private readonly IRewardOption m_Option;
         private readonly RewardOptionList m_Options = new();
 
+        public override bool Singleton => true;
+
         public RewardOptionGump(IRewardOption option, int title = 0) : base(60, 36)
         {
             m_Option = option;

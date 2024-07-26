@@ -110,7 +110,7 @@ public partial class MinotaurStatueDeed : BaseAddonDeed, IRewardItem, IRewardOpt
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new RewardOptionGump(this), true);
+            from.SendGump(new RewardOptionGump(this));
         }
         else
         {

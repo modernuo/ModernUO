@@ -11,6 +11,7 @@ namespace Server.Gumps
         private readonly Mobile m_Mobile;
 
         public override bool Singleton => true;
+
         public ConfirmHouseResize(Mobile mobile, BaseHouse house) : base(110, 100)
         {
             m_Mobile = mobile;
@@ -163,8 +164,10 @@ namespace Server.Gumps
             }
             else if (info.ButtonID == 0)
             {
-                m_Mobile.CloseGump<ConfirmHouseResize>();
-                m_Mobile.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, m_Mobile, m_House));
+                var gumps = m_Mobile.GetGumps();
+
+                gumps.Close<ConfirmHouseResize>();
+                gumps.Send(new HouseGumpAOS(HouseGumpPageAOS.Customize, m_Mobile, m_House));
             }
         }
     }

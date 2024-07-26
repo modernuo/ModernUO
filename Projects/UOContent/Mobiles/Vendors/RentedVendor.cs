@@ -311,7 +311,7 @@ public partial class RentedVendor : PlayerVendor
             {
                 from.SendLocalizedMessage(1062504); // Please wait while the renter considers your offer.
 
-                owner.SendGump(new VendorRentalRefundGump(m_Vendor, from, amount), true);
+                owner.SendGump(new VendorRentalRefundGump(m_Vendor, from, amount));
             }
         }
     }

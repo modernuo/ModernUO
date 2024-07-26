@@ -47,7 +47,7 @@ public partial class Fireflies : Item, IAddon
         if (house?.IsOwner(from) == true)
         {
             // Do you wish to re-deed this decoration?
-            from.SendGump(new RewardDemolitionGump(this, 1049783), true);
+            from.SendGump(new RewardDemolitionGump(this, 1049783));
         }
         else
         {
@@ -85,13 +85,15 @@ public partial class FirefliesDeed : Item
             return;
         }
 
-        from.SendGump(new FacingGump(this, from), true);
+        from.SendGump(new FacingGump(this, from));
     }
 
     private class FacingGump : Gump
     {
         private readonly FirefliesDeed _deed;
         private readonly Mobile _placer;
+
+        public override bool Singleton => true;
 
         public FacingGump(FirefliesDeed deed, Mobile player) : base(150, 50)
         {

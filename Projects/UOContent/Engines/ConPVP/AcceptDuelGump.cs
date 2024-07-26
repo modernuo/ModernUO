@@ -22,6 +22,8 @@ namespace Server.Engines.ConPVP
 
         private bool m_Active = true;
 
+        public override bool Singleton => true;
+
         public AcceptDuelGump(Mobile challenger, Mobile challenged, DuelContext context, Participant p, int slot) : base(
             50,
             50
@@ -32,8 +34,6 @@ namespace Server.Engines.ConPVP
             m_Context = context;
             m_Participant = p;
             m_Slot = slot;
-
-            challenged.CloseGump<AcceptDuelGump>();
 
             Closable = false;
 

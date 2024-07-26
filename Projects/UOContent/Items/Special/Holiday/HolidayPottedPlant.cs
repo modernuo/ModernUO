@@ -33,7 +33,7 @@ public partial class PottedPlantDeed : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new InternalGump(this), true);
+            from.SendGump(new InternalGump(this));
         }
         else
         {
@@ -44,6 +44,8 @@ public partial class PottedPlantDeed : Item
     private class InternalGump : Gump
     {
         private readonly PottedPlantDeed _deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(PottedPlantDeed deed) : base(100, 200)
         {

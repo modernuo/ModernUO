@@ -72,13 +72,15 @@ public abstract partial class SpecialScroll : Item
             return;
         }
 
-        from.SendGump(new InternalGump(from, this), true);
+        from.SendGump(new InternalGump(from, this));
     }
 
     public class InternalGump : Gump
     {
         private readonly Mobile _mobile;
         private readonly SpecialScroll _scroll;
+
+        public override bool Singleton => true;
 
         public InternalGump(Mobile mobile, SpecialScroll scroll) : base(25, 50)
         {

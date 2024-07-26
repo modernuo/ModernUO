@@ -65,7 +65,7 @@ public partial class HangingSkeleton : Item, IAddon, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.SendGump(new RewardDemolitionGump(this, 1049783), true); // Do you wish to re-deed this decoration?
+                from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
             }
             else
             {
@@ -128,7 +128,7 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
             return;
         }
 
-        from.SendGump(new InternalGump(this), true);
+        from.SendGump(new InternalGump(this));
     }
 
     public static int GetWestItemID(int south)
@@ -144,6 +144,8 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
     private class InternalGump : Gump
     {
         private readonly HangingSkeletonDeed _deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(HangingSkeletonDeed skeleton) : base(100, 200)
         {
@@ -251,7 +253,7 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
 
             if (north && west)
             {
-                from.SendGump(new FacingGump(_deed, _itemID, p3d, house), true);
+                from.SendGump(new FacingGump(_deed, _itemID, p3d, house));
             }
             else if (north || west)
             {
@@ -276,6 +278,8 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
             private readonly int _itemID;
             private readonly Point3D _location;
             private readonly HangingSkeletonDeed _skeleton;
+
+            public override bool Singleton => true;
 
             public FacingGump(HangingSkeletonDeed banner, int itemID, Point3D location, BaseHouse house) : base(150, 50)
             {

@@ -13,6 +13,8 @@ namespace Server.Gumps
     {
         private readonly ISecurable m_Info;
 
+        public override bool Singleton => true;
+
         public SetSecureLevelGump(Mobile owner, ISecurable info, BaseHouse house) : base(50, 50)
         {
             m_Info = info;

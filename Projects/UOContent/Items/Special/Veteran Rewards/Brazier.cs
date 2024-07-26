@@ -136,7 +136,7 @@ public partial class RewardBrazierDeed : Item, IRewardItem
             return;
         }
 
-        from.SendGump(new InternalGump(this), true);
+        from.SendGump(new InternalGump(this));
     }
 
     public override void GetProperties(IPropertyList list)
@@ -152,6 +152,8 @@ public partial class RewardBrazierDeed : Item, IRewardItem
     private class InternalGump : Gump
     {
         private readonly RewardBrazierDeed _brazier;
+
+        public override bool Singleton => true;
 
         public InternalGump(RewardBrazierDeed brazier) : base(100, 200)
         {

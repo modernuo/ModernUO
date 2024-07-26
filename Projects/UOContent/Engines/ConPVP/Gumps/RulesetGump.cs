@@ -12,6 +12,8 @@ namespace Server.Engines.ConPVP
         private readonly bool m_ReadOnly;
         private readonly Ruleset m_Ruleset;
 
+        public override bool Singleton => true;
+
         public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly = false)
             : base(readOnly ? 310 : 50, 50)
         {
@@ -23,9 +25,10 @@ namespace Server.Engines.ConPVP
 
             Draggable = !readOnly;
 
-            from.CloseGump<RulesetGump>();
-            from.CloseGump<DuelContextGump>();
-            from.CloseGump<ParticipantGump>();
+            var gumps = from.GetGumps();
+
+            gumps.Close<DuelContextGump>();
+            gumps.Close<ParticipantGump>();
 
             var depthCounter = page;
 

@@ -86,7 +86,7 @@ public abstract partial class BaseHealer : BaseVendor
         m.PlaySound(0x1F2);
         m.FixedEffect(0x376A, 10, 16);
 
-        m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer), true);
+        m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
     }
 
     public virtual void OfferHeal(PlayerMobile m)

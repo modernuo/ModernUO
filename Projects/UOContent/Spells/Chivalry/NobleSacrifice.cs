@@ -74,7 +74,7 @@ namespace Server.Spells.Chivalry
                         else if (resChance > Utility.RandomDouble())
                         {
                             m.FixedParticles(0x375A, 1, 15, 5005, 5, 3, EffectLayer.Head);
-                            m.SendGump(new ResurrectGump(m, Caster), true);
+                            m.SendGump(new ResurrectGump(m, Caster));
                             sacrifice = true;
                         }
                     }

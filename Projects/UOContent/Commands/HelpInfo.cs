@@ -290,18 +290,20 @@ public static class HelpInfo
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var m = sender.Mobile;
+            var gumps = m.GetGumps();
+
             switch (info.ButtonID)
             {
                 case 0:
                     {
-                        m.CloseGump<CommandInfoGump>();
+                        gumps.Close<CommandInfoGump>();
                         break;
                     }
                 case 1:
                     {
                         if (_page > 0)
                         {
-                            m.SendGump(new CommandListGump(_page - 1, m, _list));
+                            gumps.Send(new CommandListGump(_page - 1, m, _list));
                         }
 
                         break;
@@ -310,7 +312,7 @@ public static class HelpInfo
                     {
                         if ((_page + 1) * EntriesPerPage < SortedHelpInfo.Count)
                         {
-                            m.SendGump(new CommandListGump(_page + 1, m, _list));
+                            gumps.Send(new CommandListGump(_page + 1, m, _list));
                         }
 
                         break;
@@ -325,13 +327,13 @@ public static class HelpInfo
 
                             if (m.AccessLevel >= c.AccessLevel)
                             {
-                                m.SendGump(new CommandInfoGump(c));
-                                m.SendGump(new CommandListGump(_page, m, _list));
+                                gumps.Send(new CommandInfoGump(c));
+                                gumps.Send(new CommandListGump(_page, m, _list));
                             }
                             else
                             {
                                 m.SendMessage("You no longer have access to that command.");
-                                m.SendGump(new CommandListGump(_page, m, null));
+                                gumps.Send(new CommandListGump(_page, m, null));
                             }
                         }
 

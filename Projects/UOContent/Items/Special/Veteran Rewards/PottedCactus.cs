@@ -50,7 +50,7 @@ public partial class PottedCactusDeed : Item, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new InternalGump(this), true);
+            from.SendGump(new InternalGump(this));
         }
         else
         {
@@ -71,6 +71,8 @@ public partial class PottedCactusDeed : Item, IRewardItem
     private class InternalGump : Gump
     {
         private readonly PottedCactusDeed _deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(PottedCactusDeed cactus) : base(100, 200)
         {

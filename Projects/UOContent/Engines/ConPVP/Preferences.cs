@@ -179,6 +179,8 @@ namespace Server.Engines.ConPVP
         private readonly PreferencesEntry m_Entry;
         private int m_ColumnX = 12;
 
+        public override bool Singleton => true;
+
         public PreferencesGump(Mobile from, Preferences prefs) : base(50, 50)
         {
             m_Entry = prefs.Find(from);

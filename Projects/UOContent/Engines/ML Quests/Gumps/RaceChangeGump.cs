@@ -32,8 +32,6 @@ namespace Server.Engines.MLQuests.Gumps
         public RaceChangeConfirmGump(IRaceChanger owner, PlayerMobile from, Race targetRace)
             : base(50, 50)
         {
-            from.CloseGump<RaceChangeConfirmGump>();
-
             m_Owner = owner;
             m_From = from;
             m_Race = targetRace;

@@ -50,7 +50,7 @@ namespace Server.Engines.ConPVP
                 return false;
             }
 
-            from.SendGump(new ArenaGump(from, this), true);
+            from.SendGump(new ArenaGump(from, this));
 
             if (!from.Hidden || from.AccessLevel == AccessLevel.Player)
             {
@@ -82,6 +82,8 @@ namespace Server.Engines.ConPVP
         private readonly ArenasMoongate m_Gate;
 
         private int m_ColumnX = 12;
+
+        public override bool Singleton => true;
 
         public ArenaGump(Mobile from, ArenasMoongate gate) : base(50, 50)
         {

@@ -29,7 +29,7 @@ namespace Server.Engines.ConPVP
         {
             if (m_TeamInfo?.Game != null)
             {
-                from.SendGump(new CTFBoardGump(from, m_TeamInfo.Game), true);
+                from.SendGump(new CTFBoardGump(from, m_TeamInfo.Game));
             }
         }
 
@@ -54,6 +54,8 @@ namespace Server.Engines.ConPVP
         private const int BlackColor32 = 0x000000;
 
         private CTFGame m_Game;
+
+        public override bool Singleton => true;
 
         public CTFBoardGump(Mobile mob, CTFGame game, CTFTeamInfo section = null)
             : base(60, 60)
@@ -1058,7 +1060,7 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            mob.SendGump(new CTFBoardGump(mob, this), true);
+            mob.SendGump(new CTFBoardGump(mob, this));
 
             m_Context.Requip(mob, corpse);
             DelayBounce(TimeSpan.FromSeconds(30.0), mob, corpse);
@@ -1256,7 +1258,7 @@ namespace Server.Engines.ConPVP
 
                     if (dp?.Mobile != null)
                     {
-                        dp.Mobile.SendGump(new CTFBoardGump(dp.Mobile, this), true);
+                        dp.Mobile.SendGump(new CTFBoardGump(dp.Mobile, this));
                     }
                 }
 

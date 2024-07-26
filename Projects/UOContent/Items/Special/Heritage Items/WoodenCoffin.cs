@@ -52,7 +52,7 @@ public partial class WoodenCoffinDeed : BaseAddonDeed
     {
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new InternalGump(this), true);
+            from.SendGump(new InternalGump(this));
         }
         else
         {
@@ -68,6 +68,8 @@ public partial class WoodenCoffinDeed : BaseAddonDeed
     private class InternalGump : Gump
     {
         private readonly WoodenCoffinDeed _deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(WoodenCoffinDeed deed) : base(60, 36)
         {

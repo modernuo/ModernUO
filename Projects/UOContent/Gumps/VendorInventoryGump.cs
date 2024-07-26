@@ -11,6 +11,8 @@ namespace Server.Gumps
         private readonly BaseHouse m_House;
         private readonly List<VendorInventory> m_Inventories;
 
+        public override bool Singleton => true;
+
         public VendorInventoryGump(BaseHouse house, Mobile from) : base(50, 50)
         {
             m_House = house;

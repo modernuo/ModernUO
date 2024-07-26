@@ -11,6 +11,8 @@ namespace Server.Gumps
 {
     public class RunebookGump : Gump
     {
+        public override bool Singleton => true;
+
         public RunebookGump(Mobile from, Runebook book) : base(150, 200)
         {
             Book = book;
@@ -265,6 +267,7 @@ namespace Server.Gumps
                 if (index >= 0 && index < Book.Entries.Count)
                 {
                     var e = Book.Entries[index];
+                    var gumps = from.GetGumps();
 
                     switch (type)
                     {
@@ -272,7 +275,7 @@ namespace Server.Gumps
                             {
                                 if (Book.CurCharges <= 0)
                                 {
-                                    from.SendGump(new RunebookGump(from, Book), true);
+                                    gumps.Send(new RunebookGump(from, Book));
 
                                     from.SendLocalizedMessage(502412); // There are no charges left on that item.
                                 }
@@ -312,10 +315,9 @@ namespace Server.Gumps
                                 {
                                     Book.DropRune(from, e, index);
 
-                                    from.CloseGump<RunebookGump>();
                                     if (!Core.ML)
                                     {
-                                        from.SendGump(new RunebookGump(from, Book));
+                                        gumps.Send(new RunebookGump(from, Book));
                                     }
                                 }
                                 else
@@ -337,7 +339,7 @@ namespace Server.Gumps
                                 {
                                     Book.Default = e;
 
-                                    from.SendGump(new RunebookGump(from, Book), true);
+                                    gumps.Send(new RunebookGump(from, Book));
 
                                     from.SendLocalizedMessage(502417); // New default location set.
                                 }
@@ -481,7 +483,7 @@ namespace Server.Gumps
                 {
                     m_Book.Description = text.AsSpan().Trim().FixHtml();
 
-                    from.SendGump(new RunebookGump(from, m_Book), true);
+                    from.SendGump(new RunebookGump(from, m_Book));
 
                     from.SendMessage("The book's title has been changed.");
                 }
@@ -499,7 +501,7 @@ namespace Server.Gumps
 
                 if (!m_Book.Deleted && from.InRange(m_Book.GetWorldLocation(), Core.ML ? 3 : 1))
                 {
-                    from.SendGump(new RunebookGump(from, m_Book), true);
+                    from.SendGump(new RunebookGump(from, m_Book));
                 }
             }
         }

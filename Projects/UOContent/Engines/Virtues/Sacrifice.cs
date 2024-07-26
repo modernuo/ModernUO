@@ -74,7 +74,7 @@ public static class SacrificeVirtue
                  * We need to wait for them to accept the gump or they can just use
                  * Sacrifice and cancel to have items in their backpack for free.
                  */
-                from.SendGump(new ResurrectGump(from, true), true);
+                from.SendGump(new ResurrectGump(from, true));
             }
             else
             {
