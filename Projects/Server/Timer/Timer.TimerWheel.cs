@@ -151,17 +151,14 @@ public partial class Timer
         prof?.Finish();
 
         // If the timer has been altered (restarted, returned etc) then bail
-        if (timer.Version != version)
+        if (finished || timer.Version != version)
         {
             return;
         }
 
-        if (!finished)
-        {
-            timer.Delay = timer.Interval;
-            timer.Next = DateTime.UtcNow + timer.Interval;
-            AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
-        }
+        timer.Delay = timer.Interval;
+        timer.Next = DateTime.UtcNow + timer.Interval;
+        AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
     }
 
     private static void AddTimer(Timer timer, long delay)
