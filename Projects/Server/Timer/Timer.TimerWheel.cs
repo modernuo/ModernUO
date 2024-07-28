@@ -118,11 +118,6 @@ public partial class Timer
                         Execute(timer);
                     }
                 }
-
-                if (!timer.Running)
-                {
-                    timer.OnDetach();
-                }
             }
 #if DEBUG_TIMERS
             if (executionCount > _chainExecutionThreshold)
@@ -141,27 +136,29 @@ public partial class Timer
     {
         var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
 
-        var version = timer.Version;
-
         var prof = timer.GetProfile();
         prof?.Start();
+
+        // Stop the timer from running so that way if Start() is called in OnTick, the timer will be started.
+        if (finished)
+        {
+            timer.Stop();
+        }
+
+        var version = timer.Version;
+
         timer.OnTick();
         prof?.Finish();
 
-        // If the timer has not been stopped, and it has not been altered (restarted, returned etc)
-        if (timer.Running && timer.Version == version)
+        // If the timer has been altered (restarted, returned etc) then bail
+        if (finished || timer.Version != version)
         {
-            if (finished)
-            {
-                timer.Stop();
-            }
-            else
-            {
-                timer.Delay = timer.Interval;
-                timer.Next = Core.Now + timer.Interval;
-                AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
-            }
+            return;
         }
+
+        timer.Delay = timer.Interval;
+        timer.Next = DateTime.UtcNow + timer.Interval;
+        AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
     }
 
     private static void AddTimer(Timer timer, long delay)

@@ -746,7 +746,7 @@ public static class Utility
     public static T RandomList<T>(params T[] list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T RandomElement<T>(this ReadOnlySpan<T> list) => list.Length == 0 ? (T)default : list[Random(list.Length)];
+    public static T RandomElement<T>(this ReadOnlySpan<T> list) => list.Length == 0 ? default : list[Random(list.Length)];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomElement<T>(this T[] list) => list.RandomElement(default);
