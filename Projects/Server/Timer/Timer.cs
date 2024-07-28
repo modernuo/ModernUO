@@ -153,6 +153,18 @@ public partial class Timer
 
         Running = false;
 
+        // We are the head on the timer ring
+        if (_rings[_ring][_slot] == this)
+        {
+            _rings[_ring][_slot] = _nextTimer;
+        }
+
+        // We are the head on the executing ring
+        if (_executingRings[_ring] == this)
+        {
+            _executingRings[_ring] = _nextTimer;
+        }
+
         Detach();
         OnDetach();
 
@@ -200,18 +212,6 @@ public partial class Timer
 
     private void Detach()
     {
-        // We are the head on the timer ring
-        if (_rings[_ring][_slot] == this)
-        {
-            _rings[_ring][_slot] = _nextTimer;
-        }
-
-        // We are the head on the executing ring
-        if (_executingRings[_ring] == this)
-        {
-            _executingRings[_ring] = _nextTimer;
-        }
-
         if (_prevTimer != null)
         {
             _prevTimer._nextTimer = _nextTimer;
