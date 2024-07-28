@@ -575,9 +575,9 @@ public class AdvancedSearchGump : Gump
                         {
                             var entry = SearchResults[i];
 
-                            if (entry.Selected)
+                            if (entry.Selected && entry.Entity is ISpawner { Running: true } spawner)
                             {
-                                (entry.Entity as Spawner)?.Respawn();
+                                spawner.Respawn();
                             }
                         }
                     }
