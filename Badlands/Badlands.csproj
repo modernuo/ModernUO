@@ -17,4 +17,7 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Engines\ML Quests\Definitions\" />
+    </ItemGroup>
 </Project>

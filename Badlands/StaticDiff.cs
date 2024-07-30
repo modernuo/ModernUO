@@ -28,7 +28,7 @@ public static class StaticDiff
     {
         logger.Information( "Initialize StaticDiff" );
 
-        EventSink.Login += EventSink_Login;
+        //EventSink.Login += EventSink_Login;
     }
 
     private static void EventSink_Login( Mobile obj )

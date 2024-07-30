@@ -17,7 +17,7 @@ namespace Server.Engines.MLQuests
         public const int SpeechColor = 0x3B2;
 
         public static readonly bool AutoGenerateNew = true;
-        public static readonly bool Debug = false;
+        public static readonly bool Debug = true;
 
         public static readonly List<MLQuest> EmptyList = new();
         private static readonly List<MLQuest> m_EligiblePool = new();

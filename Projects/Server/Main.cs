@@ -25,6 +25,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Mono.Unix;
+using Mono.Unix.Native;
 using Server.Compression;
 using Server.Json;
 using Server.Logging;
@@ -524,6 +526,8 @@ public static class Core
 #else
             var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
 #endif
+            Stdlib.SetSignalAction(Signum.SIGTERM, SignalAction.Default);
+            var unixSignal = new UnixSignal(Signum.SIGTERM);
 
             var cycleCount = _cyclesPerSecond.Length;
             long last = Stopwatch.GetTimestamp();
@@ -583,6 +587,12 @@ public static class Core
                     {
                         Thread.Sleep(2);
                     }
+                }
+
+                if (unixSignal.IsSet)
+                {
+                    World.Save();
+                    Kill();
                 }
             }
         }
