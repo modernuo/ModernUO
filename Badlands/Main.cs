@@ -13,9 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Reflection;
+using System.Text.Json;
 using Badlands.Commands;
 using Badlands.Items;
+using Badlands.Items.Decorations;
 using Server;
+using Server.Commands.Generic;
 using Server.Logging;
 
 namespace Badlands;
@@ -31,7 +35,7 @@ public static class Main
         ServerConfiguration.SetSetting( "serverListing.serverName", "The Crossroads" );
         ServerConfiguration.SetSetting( "chat.enabled", true );
 
-        Server.Commands.Generic.TargetCommands.Register( new GotoSpawnerCommand() );
+        TargetCommands.Register( new GotoSpawnerCommand() );
     }
 
     public static void Initialize()
@@ -44,7 +48,7 @@ public static class Main
 
         var (_, item) = World.Items.FirstOrDefault( e => e.Value?.GetType() == typeof( MigrationController ) );
 
-        if ( item is not MigrationController migrationController)
+        if ( item is not MigrationController migrationController )
         {
             logger.Warning( "No migration controller" );
             return;
@@ -66,5 +70,91 @@ public static class Main
                 migrationController.AddMigration( type );
             }
         }
+
+        logger.Information( "Migrations complete" );
+
+        logger.Information( "Applying Decorations" );
+
+        var decorationFiles = Directory.EnumerateFiles( "./Assemblies/Data/Decorations/", "*.json" );
+
+        foreach ( var file in decorationFiles )
+        {
+            var json = File.ReadAllText( file );
+
+            var decorations = JsonSerializer.Deserialize<List<DecorationEntry>>( json );
+
+            foreach ( var decoration in decorations )
+            {
+                var existing = World.Items.Values.FirstOrDefault(
+                    x => x.X == decoration.X && x.Y == decoration.Y && x.Z == decoration.Z && x.ItemID == decoration.ID
+                );
+
+                if ( existing != null )
+                {
+                    // Just set the hue if different for now
+                    if ( existing.Hue != decoration.Hue )
+                    {
+                        existing.Hue = decoration.Hue;
+                    }
+
+                    continue;
+                }
+
+                var type = FindItemByCliloc( decoration.Cliloc );
+
+                if ( type != null )
+                {
+                    if ( Activator.CreateInstance( type ) is Item i )
+                    {
+                        i.Hue = decoration.Hue;
+                        i.MoveToWorld( new Point3D( decoration.X, decoration.Y, decoration.Z ), Map.Maps[decoration.Map] );
+
+                        logger.Information(
+                            $"Added decoration {decoration.Cliloc} at {decoration.X}, {decoration.Y}, {decoration.Z}"
+                        );
+                    }
+                }
+            }
+        }
+
+
+        logger.Information( "Decorations complete" );
+    }
+
+    private static Type? FindItemByCliloc( int cliloc )
+    {
+        // findall derivied types of Server.Item with constuctor with attribute Constructible
+        var types = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany( s => s.GetTypes() )
+            .Where( p => typeof( Item ).IsAssignableFrom( p ) && p.IsClass );
+
+        foreach ( var type in types )
+        {
+            var ctors = type.GetConstructors();
+
+            foreach ( var ctor in ctors )
+            {
+                var attr = ctor.GetCustomAttribute<ConstructibleAttribute>();
+
+                if ( attr != null )
+                {
+                    var param = ctor.GetParameters();
+
+                    if ( param.Length != 0 )
+                    {
+                        continue;
+                    }
+
+                    var item = Activator.CreateInstance( type ) as Item;
+
+                    if ( item?.LabelNumber == cliloc )
+                    {
+                        return type;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

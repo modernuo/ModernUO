@@ -13,11 +13,25 @@
       <ProjectReference Include="..\Projects\UOContent\UOContent.csproj" />
     </ItemGroup>
     <ItemGroup>
+      <None Update="Data\Decorations\malas-decorations.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Data\mlquestors.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Engines\ML Quests\Definitions\" />
+      <Folder Include="Items\Decorations\" />
+      <Folder Include="Rules\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.9.1" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.11.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
 </Project>
