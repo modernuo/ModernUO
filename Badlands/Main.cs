@@ -20,6 +20,7 @@ using Badlands.Items;
 using Badlands.Items.Decorations;
 using Server;
 using Server.Commands.Generic;
+using Server.Items;
 using Server.Logging;
 
 namespace Badlands;
@@ -86,33 +87,44 @@ public static class Main
             foreach ( var decoration in decorations )
             {
                 var existing = World.Items.Values.FirstOrDefault(
-                    x => x.X == decoration.X && x.Y == decoration.Y && x.Z == decoration.Z && x.ItemID == decoration.ID
+                    x => x.X == decoration.X && x.Y == decoration.Y && x.Map == Map.Maps[decoration.Map] &&
+                         ( x.Z == decoration.Z || true ) &&
+                         x.ItemID == decoration.ID
                 );
 
                 if ( existing != null )
                 {
-                    // Just set the hue if different for now
-                    if ( existing.Hue != decoration.Hue )
-                    {
-                        existing.Hue = decoration.Hue;
-                    }
-
                     continue;
                 }
 
-                var type = FindItemByCliloc( decoration.Cliloc );
+                var type = FindItemByClilocAndID( decoration.Cliloc, decoration.ID );
 
                 if ( type != null )
-                {
+                { 
                     if ( Activator.CreateInstance( type ) is Item i )
                     {
                         i.Hue = decoration.Hue;
+                        i.ItemID = decoration.ID;
                         i.MoveToWorld( new Point3D( decoration.X, decoration.Y, decoration.Z ), Map.Maps[decoration.Map] );
 
                         logger.Information(
-                            $"Added decoration {decoration.Cliloc} at {decoration.X}, {decoration.Y}, {decoration.Z}"
+                            $"Added decoration {decoration.Cliloc} at {decoration.X}, {decoration.Y}, {decoration.Z}. Name = {i.Name}"
                         );
                     }
+                }
+                else
+                {
+                    var i = new LocalizedStatic( decoration.ID, decoration.Cliloc )
+                    {
+                        Hue = decoration.Hue,
+                        ItemID = decoration.ID
+                    };
+
+                    i.MoveToWorld( new Point3D( decoration.X, decoration.Y, decoration.Z ), Map.Maps[decoration.Map] );
+
+                    logger.Information(
+                        $"Added decoration {decoration.ID} at {decoration.X}, {decoration.Y}, {decoration.Z}, Name = {i.Name}"
+                    );
                 }
             }
         }
@@ -121,12 +133,15 @@ public static class Main
         logger.Information( "Decorations complete" );
     }
 
-    private static Type? FindItemByCliloc( int cliloc )
+    private static Type? FindItemByClilocAndID( int cliloc, int id )
     {
         // findall derivied types of Server.Item with constuctor with attribute Constructible
         var types = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany( s => s.GetTypes() )
-            .Where( p => typeof( Item ).IsAssignableFrom( p ) && p.IsClass );
+            .Where(
+                p => typeof( Item ).IsAssignableFrom( p ) && p.IsClass && !typeof( BaseMulti ).IsAssignableFrom( p ) &&
+                     !typeof( BaseDoor ).IsAssignableFrom( p ) && !typeof( BaseAddon ).IsAssignableFrom( p )
+            );
 
         foreach ( var type in types )
         {
@@ -147,7 +162,7 @@ public static class Main
 
                     var item = Activator.CreateInstance( type ) as Item;
 
-                    if ( item?.LabelNumber == cliloc )
+                    if ( item?.LabelNumber == cliloc && item?.ItemID == id )
                     {
                         return type;
                     }

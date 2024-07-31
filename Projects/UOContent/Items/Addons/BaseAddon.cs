@@ -270,7 +270,7 @@ namespace Server.Items
 
             foreach (var c in Components)
             {
-                c.Delete();
+                c?.Delete();
             }
         }
 

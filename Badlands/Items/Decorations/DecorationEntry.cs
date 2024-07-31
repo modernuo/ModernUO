@@ -24,4 +24,5 @@ public class DecorationEntry
     public int Z { get; set; }
     public int Map { get; set; } = 3;
     public int Cliloc { get; set; }
+    public string? Text { get; set; }
 }

@@ -168,7 +168,7 @@ public abstract class Target
             Item i                    => CanTarget(from, item = i, ref loc, ref map),
             Mobile m                  => CanTarget(from, mobile = m, ref loc, ref map),
             _                         => isValidTargetType = false
-        };
+        } || from.AccessLevel >= AccessLevel.GameMaster;
 
         if (!valid)
         {
