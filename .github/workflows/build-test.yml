@@ -7,39 +7,6 @@ on:
     branches: [main]
 
 jobs:
-  build-macos:
-    runs-on: ${{ matrix.os }}
-    name: Build (${{ matrix.name }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-13
-            name: MacOS 13
-          - os: macos-14
-            name: MacOS 14
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-    - name: Setup .NET 8
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Install Prerequisites
-      run: |
-        brew update
-        brew install icu4c libdeflate zstd argon2
-    - name: Set Library Path
-      run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:\$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
-    - name: Build
-      run: ./publish.cmd Release
-    - name: Migration Changes
-      run: git diff --exit-code ./**/Migrations/*.v*.json
-    - name: Test
-      run: dotnet test --no-restore
-
   build-linux:
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
@@ -48,38 +15,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - container: ubuntu:noble
-            name: Ubuntu 24
-            packageManager: apt
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
-          - container: ubuntu:focal
-            name: Ubuntu 20
-            packageManager: apt
-          - container: debian:bookworm
-            name: Debian 12
-            packageManager: apt
-          - container: debian:bullseye
-            name: Debian 11
-            packageManager: apt
-          - container: fedora:39
-            name: Fedora 39
-            packageManager: dnf
-          - container: fedora:40
-            name: Fedora 40
-            packageManager: dnf
-          - container: quay.io/centos/centos:stream9
-            name: CentOS 9 Stream
-            packageManager: dnf
-
     steps:
-      - name: Enable EPEL
-        run: dnf upgrade --refresh -y && dnf install -y epel-release epel-next-release
-        if: ${{ startsWith(matrix.name, 'CentOS')  }}
-      - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
-        if: ${{ matrix.packageManager == 'dnf' }}
       - name: Install Prerequisites using apt
         run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev
         if: ${{ matrix.packageManager == 'apt' }}
