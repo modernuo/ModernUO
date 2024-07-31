@@ -20,6 +20,7 @@ namespace Server.Commands.Generic
         {
             Register(new KillCommand(true));
             Register(new KillCommand(false));
+            Register(new KillRightsCommand());
             Register(new HideCommand(true));
             Register(new HideCommand(false));
             Register(new KickCommand(true));
@@ -961,6 +962,33 @@ namespace Server.Commands.Generic
             {
                 LogFailure("That cannot be deleted.");
             }
+        }
+    }
+
+    public class KillRightsCommand : KillCommand
+    {
+        public KillRightsCommand() : base( true )
+        {
+            AccessLevel = AccessLevel.GameMaster;
+            Supports = CommandSupport.AllMobiles;
+            Commands =
+            [
+                "KillRights"
+            ];
+            ObjectTypes = ObjectTypes.Mobiles;
+
+            Usage = "KillRights";
+            Description = "Kills a targeted player or npc.";
+        }
+
+        public override void Execute( CommandEventArgs e, object obj )
+        {
+            if ( obj is Mobile mobile )
+            {
+                mobile.DamageEntries.Add( new DamageEntry( e.Mobile ) { DamageGiven = mobile.HitsMax, LastDamage = DateTime.Now } );
+            }
+
+            base.Execute( e, obj );
         }
     }
 

@@ -35,16 +35,18 @@ public class MLCreaturesSetOnlyOne : IMigration
             e => e is BaseSpawner spawner && spawner.Entries.Any( e => types.Contains( e.SpawnedName ) )
         );
 
-        foreach ( var spawner in spawners )
+        foreach ( var item in spawners.ToList() )
         {
-            if ( spawner is BaseSpawner spawnerItem )
+            if ( item is BaseSpawner spawner )
             {
-                var entries = spawnerItem.Entries.Where( e => types.Contains( e.SpawnedName ) );
+                var entries = spawner.Entries.Where( e => types.Contains( e.SpawnedName ) );
 
                 foreach ( var entry in entries )
                 {
                     entry.SpawnedMaxCount = 1;
                 }
+
+                spawner.Respawn();
             }
         }
     }

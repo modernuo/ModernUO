@@ -197,7 +197,7 @@ namespace Server.Mobiles
             };
         }
 
-        public static bool CheckArtifactChance(Mobile boss) => GetArtifactChance(boss) > Utility.Random(100000);
+        public static bool CheckArtifactChance(Mobile boss) => GetArtifactChance(boss) > Utility.Random(80000);
 
         public override WeaponAbility GetWeaponAbility()
         {
