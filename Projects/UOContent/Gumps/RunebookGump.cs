@@ -13,7 +13,6 @@ namespace Server.Gumps
     {
         public RunebookGump(Mobile from, Runebook book) : base(150, 200)
         {
-            TypeID = 0x554b87f3;
             Book = book;
 
             AddBackground();
