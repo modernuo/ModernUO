@@ -62,8 +62,8 @@ public abstract class BaseGump
         {
             // To use the original .NET Framework deterministic hash code (with really terrible performance)
             // change the next line to use HashUtility.GetNetFrameworkHashCode
-            //var hash = (int)HashUtility.ComputeHash32(type?.FullName);
-            var hash = (type?.FullName).GetNetFrameworkHashCode();
+            var hash = (int)HashUtility.ComputeHash32(type?.FullName);
+            //var hash = (type?.FullName).GetNetFrameworkHashCode();
 
             const int primeMulti = 0x108B76F1;
 
