@@ -1,28 +1,35 @@
 using ModernUO.Serialization;
+using Server.Mobiles;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator( 1 )]
+public partial class ParrotPerchAddon : BaseAddon
 {
-    [SerializationGenerator(0)]
-    public partial class ParrotPerchAddon : BaseAddon
+    [Constructible]
+    public ParrotPerchAddon()
     {
-        [Constructible]
-        public ParrotPerchAddon()
-        {
-            AddComponent(new AddonComponent(0x2FF4), 0, 0, 0);
-        }
-
-        public override BaseAddonDeed Deed => new ParrotPerchDeed();
+        AddComponent( new AddonComponent( 0x2FF4 ), 0, 0, 0 );
     }
 
-    [SerializationGenerator(0)]
-    public partial class ParrotPerchDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public ParrotPerchDeed()
-        {
-        }
+    [SerializableProperty( 0 )]
+    public BaseCreature Parrot { get; set; }
 
-        public override BaseAddon Addon => new ParrotPerchAddon();
-        public override int LabelNumber => 1072617; // parrot perch
+    public override BaseAddonDeed Deed => new ParrotPerchDeed();
+
+    private void MigrateFrom( V0Content content )
+    {
     }
+}
+
+[SerializationGenerator( 0 )]
+public partial class ParrotPerchDeed : BaseAddonDeed
+{
+    [Constructible]
+    public ParrotPerchDeed()
+    {
+    }
+
+    public override BaseAddon Addon => new ParrotPerchAddon();
+    public override int LabelNumber => 1072617; // parrot perch
 }

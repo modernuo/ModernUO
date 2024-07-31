@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Badlands.Items.AccountBoundBankCheck",
+  "properties": [
+    {
+      "name": "Account",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

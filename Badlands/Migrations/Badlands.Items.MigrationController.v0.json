@@ -1,0 +1,15 @@
+{
+  "version": 0,
+  "type": "Badlands.Items.MigrationController",
+  "properties": [
+    {
+      "name": "Migrations",
+      "type": "System.Collections.Generic.List\u003CSystem.Type\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "System.Type",
+        "PrimitiveTypeMigrationRule"
+      ]
+    }
+  ]
+}
