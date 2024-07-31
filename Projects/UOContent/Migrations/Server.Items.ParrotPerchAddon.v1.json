@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.ParrotPerchAddon",
+  "properties": [
+    {
+      "name": "Parrot",
+      "type": "Server.Mobiles.BaseCreature",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

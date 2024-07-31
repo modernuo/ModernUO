@@ -1,4 +1,5 @@
 using ModernUO.Serialization;
+using Server.Items;
 
 namespace Server.Mobiles
 {
@@ -50,18 +51,16 @@ namespace Server.Mobiles
         public override string CorpseName => "a Putrefier corpse";
         public override string DefaultName => "Putrefier";
 
-        /*
-        // TODO: uncomment once added
-        public override void OnDeath( Container c )
+        public override void OnDeath(Container c)
         {
-          base.OnDeath( c );
-    
-          c.DropItem( new SpleenOfThePutrefier() );
-    
-          if (Utility.RandomDouble() < 0.6)
-            c.DropItem( new ParrotItem() );
+            base.OnDeath(c);
+
+            //c.DropItem(new SpleenOfThePutrefier());
+
+            if (Utility.RandomDouble() < 0.6)
+                c.DropItem(new ParrotItem());
         }
-        */
+
 
         public override bool GivesMLMinorArtifact => true;
         public override Poison HitPoison => Poison.Deadly; // Becomes Lethal with Paragon bonus

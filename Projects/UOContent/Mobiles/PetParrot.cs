@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 using Server.Items;
 using Server.Multis;
@@ -5,7 +6,7 @@ using Server.Network;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator( 1, false )]
+[SerializationGenerator( 0, false )]
 public partial class PetParrot : BaseCreature
 {
     [Constructible]
@@ -130,14 +131,6 @@ public partial class PetParrot : BaseCreature
         {
             Say( e.Speech );
             PlaySound( 0xC0 );
-        }
-    }
-
-    private void MigrateFrom( V0Content content )
-    {
-        if ( Birth == DateTime.MinValue )
-        {
-            Birth = DateTime.Now;
         }
     }
 
