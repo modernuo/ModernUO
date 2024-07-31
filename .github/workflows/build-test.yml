@@ -9,27 +9,31 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
-    container: ${{ matrix.container }}
-    name: Build (${{ matrix.name }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - container: ubuntu:jammy
-            name: Ubuntu 22
-            packageManager: apt
+    name: Build
     steps:
-      - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev
-        if: ${{ matrix.packageManager == 'apt' }}
+#      - name: Install Prerequisites using apt
+#        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
+#      - name: Setup .NET 8
+#        uses: actions/setup-dotnet@v4
+#        with:
+#          dotnet-version: 8.0.x
+#      - name: Build
+#        run: ./publish.cmd Release
+      - name: Docker login
+        uses: docker/login-action@v3
         with:
-          dotnet-version: 8.0.x
-      - name: Build
-        run: ./publish.cmd Release
-      - name: Test
-        run: dotnet test --no-restore
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish a Docker image for ${{ github.repository }}
+        uses: macbre/push-to-ghcr@master
+        with:
+          image_name: ${{ github.repository }}  # it will be lowercased internally
+          github_token: ${{ secrets.GITHUB_TOKEN }}          
+      - name: Docker build
+        run: |
+            docker build -t ghcr.io/reetus/badlands .
+            docker push ghcr.io/reetus/badlands
