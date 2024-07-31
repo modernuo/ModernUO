@@ -51,7 +51,7 @@ public class RespawnCommand : BaseCommand
 
         foreach (var obj in list)
         {
-            if (obj is ISpawner spawner)
+            if (obj is ISpawner { Running: true } spawner)
             {
                 spawner.Respawn();
             }

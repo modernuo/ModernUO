@@ -1,4 +1,17 @@
-using System.Collections.Generic;
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: ContextMenu.cs                                                  *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
 
 namespace Server.ContextMenus;
 
@@ -18,30 +31,28 @@ public class ContextMenu
     ///     <seealso cref="From" />
     /// </param>
     /// <param name="target">
-    ///     The <see cref="Mobile" /> or <see cref="Item" /> for which this ContextMenu is on.
+    ///     The <see cref="Mobile" /> or <see cref="Item" /> to execute the ContextMenu on.
     ///     <seealso cref="Target" />
     /// </param>
-    public ContextMenu(Mobile from, IEntity target)
+    /// <param name="entries">
+    ///   An array of <see cref="ContextMenuEntry">entries</see> contained in this ContextMenu.
+    ///   <seealso cref="Entries" />
+    /// </param>
+    public ContextMenu(Mobile from, IEntity target, ContextMenuEntry[] entries)
     {
         From = from;
         Target = target;
+        Entries = entries;
 
-        var list = new List<ContextMenuEntry>();
-
-        if (target is Mobile mobile)
+        for (var i = 0; i < Entries.Length; i++)
         {
-            mobile.GetContextMenuEntries(from, list);
-        }
-        else if (target is Item item)
-        {
-            item.GetContextMenuEntries(from, list);
-        }
+            var entry = Entries[i];
 
-        Entries = list.ToArray();
-
-        for (var i = 0; i < Entries.Length; ++i)
-        {
-            Entries[i].Owner = this;
+            if (entry.Number is < 3000000 or > 3032767)
+            {
+                RequiresNewPacket = true;
+                break;
+            }
         }
     }
 
@@ -63,20 +74,5 @@ public class ContextMenu
     /// <summary>
     ///     Returns true if this ContextMenu requires packet version 2.
     /// </summary>
-    public bool RequiresNewPacket
-    {
-        get
-        {
-            for (var i = 0; i < Entries.Length; ++i)
-            {
-                var number = Entries[i].Number;
-                if (number is < 3000000 or > 3032767)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
+    public bool RequiresNewPacket { get; }
 }

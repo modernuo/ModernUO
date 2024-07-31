@@ -11,7 +11,7 @@ namespace Server.Engines.Quests.Necro
             new(1023643, 8787) // spellbook
         };
 
-        public override object Message => 1060102;
+        public override int Message => 1060102;
 
         public override QuestItemInfo[] Info => m_Info;
 
@@ -23,7 +23,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindCrystalCaveObjective : QuestObjective
     {
-        public override object Message => 1060104;
+        public override int Message => 1060104;
 
         public override void OnComplete()
         {
@@ -33,7 +33,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindMardothAboutVaultObjective : QuestObjective
     {
-        public override object Message => 1060106;
+        public override int Message => 1060106;
 
         public override void OnComplete()
         {
@@ -43,7 +43,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindMaabusTombObjective : QuestObjective
     {
-        public override object Message => 1060124;
+        public override int Message => 1060124;
 
         public override void CheckProgress()
         {
@@ -61,7 +61,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindMaabusCorpseObjective : QuestObjective
     {
-        public override object Message => 1061142;
+        public override int Message => 1061142;
 
         public override void CheckProgress()
         {
@@ -79,7 +79,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindCityOfLightObjective : QuestObjective
     {
-        public override object Message => 1060108;
+        public override int Message => 1060108;
 
         public override void CheckProgress()
         {
@@ -102,7 +102,7 @@ namespace Server.Engines.Quests.Necro
             new(1023676, 3679) // glowing rune
         };
 
-        public override object Message => 1060109;
+        public override int Message => 1060109;
 
         public override QuestItemInfo[] Info => m_Info;
 
@@ -122,7 +122,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FetchAbraxusScrollObjective : QuestObjective
     {
-        public override object Message => 1060196;
+        public override int Message => 1060196;
 
         public override void CheckProgress()
         {
@@ -147,7 +147,7 @@ namespace Server.Engines.Quests.Necro
 
     public class RetrieveAbraxusScrollObjective : QuestObjective
     {
-        public override object Message => 1060199;
+        public override int Message => 1060199;
 
         public override void OnComplete()
         {
@@ -157,7 +157,7 @@ namespace Server.Engines.Quests.Necro
 
     public class ReadAbraxusScrollObjective : QuestObjective
     {
-        public override object Message => 1060125;
+        public override int Message => 1060125;
 
         public override void OnComplete()
         {
@@ -172,7 +172,7 @@ namespace Server.Engines.Quests.Necro
             new(1026153, 6178) // teleporter
         };
 
-        public override object Message => 1060115;
+        public override int Message => 1060115;
 
         public override QuestItemInfo[] Info => m_Info;
 
@@ -184,7 +184,7 @@ namespace Server.Engines.Quests.Necro
 
     public class SpeakCavePasswordObjective : QuestObjective
     {
-        public override object Message => 1060117;
+        public override int Message => 1060117;
 
         public override void OnComplete()
         {
@@ -199,7 +199,7 @@ namespace Server.Engines.Quests.Necro
 
         private int m_SkitteringHoppersKilled;
 
-        public override object Message => 1060119;
+        public override int Message => 1060119;
 
         public override bool IgnoreYoungProtection(Mobile from) => !m_SkitteringHoppersDisposed && from is SkitteringHopper;
 
@@ -249,7 +249,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindHorusAboutRewardObjective : QuestObjective
     {
-        public override object Message => 1060126;
+        public override int Message => 1060126;
 
         public override void OnComplete()
         {
@@ -259,7 +259,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindMardothAboutKronusObjective : QuestObjective
     {
-        public override object Message => 1060127;
+        public override int Message => 1060127;
 
         public override void OnComplete()
         {
@@ -273,7 +273,7 @@ namespace Server.Engines.Quests.Necro
 
         private bool m_Inside;
 
-        public override object Message => 1060128;
+        public override int Message => 1060128;
 
         public override void CheckProgress()
         {
@@ -307,7 +307,7 @@ namespace Server.Engines.Quests.Necro
 
     public class UseCallingScrollObjective : QuestObjective
     {
-        public override object Message => 1060130;
+        public override int Message => 1060130;
     }
 
     public class FindMardothEndObjective : QuestObjective
@@ -321,7 +321,7 @@ namespace Server.Engines.Quests.Necro
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -360,7 +360,7 @@ namespace Server.Engines.Quests.Necro
 
     public class FindBankObjective : QuestObjective
     {
-        public override object Message => 1060134;
+        public override int Message => 1060134;
 
         public override void CheckProgress()
         {
@@ -378,7 +378,7 @@ namespace Server.Engines.Quests.Necro
 
     public class CashBankCheckObjective : QuestObjective
     {
-        public override object Message => 1060644;
+        public override int Message => 1060644;
 
         public override void OnComplete()
         {

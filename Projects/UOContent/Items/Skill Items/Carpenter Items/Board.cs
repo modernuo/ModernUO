@@ -6,10 +6,6 @@ namespace Server.Items;
 [SerializationGenerator(4, false)]
 public partial class Board : Item, ICommodity
 {
-    [InvalidateProperties]
-    [SerializableField(0)]
-    private CraftResource _resource;
-
     [Constructible]
     public Board(int amount = 1) : this(CraftResource.RegularWood, amount)
     {
@@ -23,6 +19,24 @@ public partial class Board : Item, ICommodity
 
         _resource = resource;
         Hue = CraftResources.GetHue(resource);
+    }
+
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CraftResource Resource
+    {
+        get => _resource;
+        set
+        {
+            if (_resource != value)
+            {
+                _resource = value;
+                Hue = CraftResources.GetHue(value);
+
+                InvalidateProperties();
+                this.MarkDirty();
+            }
+        }
     }
 
     int ICommodity.DescriptionNumber

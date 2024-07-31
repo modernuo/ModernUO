@@ -1855,13 +1855,18 @@ namespace Server.Mobiles
             }
         }
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             if (from == this)
             {
-                Quest?.GetContextMenuEntries(list);
+                if (Alive && Backpack != null && CanSee(Backpack))
+                {
+                    list.Add(new OpenBackpackEntry());
+                }
+
+                Quest?.GetContextMenuEntries(ref list);
 
                 if (Alive)
                 {
@@ -1945,17 +1950,17 @@ namespace Server.Mobiles
 
                     if (theirParty == null && ourParty == null)
                     {
-                        list.Add(new AddToPartyEntry(from, this));
+                        list.Add(new AddToPartyEntry());
                     }
                     else if (theirParty != null && theirParty.Leader == from)
                     {
                         if (ourParty == null)
                         {
-                            list.Add(new AddToPartyEntry(from, this));
+                            list.Add(new AddToPartyEntry());
                         }
                         else if (ourParty == theirParty)
                         {
-                            list.Add(new RemoveFromPartyEntry(from, this));
+                            list.Add(new RemoveFromPartyEntry());
                         }
                     }
                 }
@@ -1965,7 +1970,7 @@ namespace Server.Mobiles
                 if (curhouse != null && Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules &&
                     curhouse.IsFriend(from))
                 {
-                    list.Add(new EjectPlayerEntry(from, this));
+                    list.Add(new EjectPlayerEntry());
                 }
             }
         }
@@ -3173,7 +3178,7 @@ namespace Server.Mobiles
                     }
             }
 
-            if (!CharacterCreation.VerifyProfession(Profession))
+            if (!ProfessionInfo.VerifyProfession(Profession))
             {
                 Profession = 0;
             }
@@ -4649,7 +4654,7 @@ namespace Server.Mobiles
             public CallbackEntry(int number, int range, ContextCallback callback) : base(number, range) =>
                 m_Callback = callback;
 
-            public override void OnClick()
+            public override void OnClick(Mobile from, IEntity target)
             {
                 m_Callback?.Invoke();
             }

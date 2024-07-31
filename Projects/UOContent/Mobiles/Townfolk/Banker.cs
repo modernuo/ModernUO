@@ -137,7 +137,7 @@ public partial class Banker : BaseVendor
         }
 
         checks = PooledRefList<BankCheck>.Create();
- 
+
         foreach (var bc in bank.FindItemsByType<BankCheck>())
         {
             balance += bc.Worth;
@@ -507,13 +507,13 @@ public partial class Banker : BaseVendor
         base.OnSpeech(e);
     }
 
-    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void AddCustomContextEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
         if (from.Alive)
         {
-            list.Add(new OpenBankEntry(this));
+            list.Add(new OpenBankEntry());
         }
 
-        base.AddCustomContextEntries(from, list);
+        base.AddCustomContextEntries(from, ref list);
     }
 }

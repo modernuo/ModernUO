@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Multis;
 using Server.Spells;
@@ -25,9 +25,9 @@ public partial class SpellScroll : Item, ICommodity
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive && Movable)
         {

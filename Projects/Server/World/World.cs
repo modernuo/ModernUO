@@ -408,7 +408,7 @@ public static class World
     {
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
-            _threadWorkers[i].Exit();
+            _threadWorkers[i]?.Exit();
         }
     }
 

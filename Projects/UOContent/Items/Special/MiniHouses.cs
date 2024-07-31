@@ -14,8 +14,8 @@ public partial class MiniHouseAddon : BaseAddon
         Construct();
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public MiniHouseType Type
     {
         get => _type;

@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 
@@ -19,33 +19,33 @@ public partial class BaseTalismanSummon : BaseCreature
     public override bool Commandable => false;
     public override bool InitialInnocent => true;
 
-    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void AddCustomContextEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
         if (from.Alive && ControlMaster == from)
         {
-            list.Add(new TalismanReleaseEntry(this));
+            list.Add(new TalismanReleaseEntry());
         }
     }
 
     private class TalismanReleaseEntry : ContextMenuEntry
     {
-        private readonly Mobile m_Mobile;
+        public TalismanReleaseEntry() : base(6118, 3)
+        {
+        }
 
-        public TalismanReleaseEntry(Mobile m) : base(6118, 3) => m_Mobile = m;
-
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
             Effects.SendLocationParticles(
-                EffectItem.Create(m_Mobile.Location, m_Mobile.Map, EffectItem.DefaultDuration),
+                EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration),
                 0x3728,
                 8,
                 20,
                 5042
             );
 
-            Effects.PlaySound(m_Mobile,0x201);
+            Effects.PlaySound(from,0x201);
 
-            m_Mobile.Delete();
+            from.Delete();
         }
     }
 }

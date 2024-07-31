@@ -61,6 +61,7 @@ public interface ISpawner : IEntity
     int HomeRange { get; }
     Region Region { get; }
     bool ReturnOnDeactivate { get; }
+    bool Running { get; }
 
     void Remove(ISpawnable spawn);
     Point3D GetSpawnPosition(ISpawnable spawned, Map map);

@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Harvest;
 
@@ -29,11 +29,11 @@ public partial class FishingPole : Item
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
-        BaseHarvestTool.AddContextMenuEntries(from, this, list, Fishing.System);
+        BaseHarvestTool.AddContextMenuEntries(from, this, ref list, Fishing.System);
     }
 
     public override bool CheckConflictingLayer(Mobile m, Item item, Layer layer)

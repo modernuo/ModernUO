@@ -17,10 +17,23 @@ public abstract partial class BaseOre : Item
         _resource = resource;
     }
 
-    [InvalidateProperties]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    [SerializableField(0)]
-    private CraftResource _resource;
+    [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CraftResource Resource
+    {
+        get => _resource;
+        set
+        {
+            if (_resource != value)
+            {
+                _resource = value;
+                Hue = CraftResources.GetHue(value);
+
+                InvalidateProperties();
+                this.MarkDirty();
+            }
+        }
+    }
 
     public override int LabelNumber
     {

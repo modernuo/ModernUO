@@ -13,7 +13,7 @@ namespace Server.Engines.Quests
         public QuestCallbackEntry(int number, int range, QuestCallback callback) : base(number, range) =>
             m_Callback = callback;
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
             m_Callback?.Invoke();
         }

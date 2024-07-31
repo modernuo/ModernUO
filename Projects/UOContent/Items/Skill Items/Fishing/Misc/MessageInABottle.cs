@@ -24,8 +24,8 @@ public partial class MessageInABottle : Item
 
     public override int LabelNumber => 1041080; // a message in a bottle
 
-    [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(0)]
+    [CommandProperty(AccessLevel.GameMaster)]
     public int Level
     {
         get => _level;

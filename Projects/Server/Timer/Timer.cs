@@ -166,8 +166,6 @@ public partial class Timer
         }
 
         Detach();
-
-        Version++;
         OnDetach();
 
         var prof = GetProfile();
@@ -175,6 +173,7 @@ public partial class Timer
         {
             prof.Stopped++;
         }
+        Version++;
     }
 
     protected virtual void OnTick()

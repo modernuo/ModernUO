@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 
@@ -197,9 +197,9 @@ public partial class HouseSign : Item
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (!BaseHouse.NewVendorSystem || !from.Alive || Owner?.IsAosRules != true)
         {
@@ -208,59 +208,55 @@ public partial class HouseSign : Item
 
         if (Owner.AreThereAvailableVendorsFor(from))
         {
-            list.Add(new VendorsEntry(this));
+            list.Add(new VendorsEntry());
         }
 
         if (Owner.VendorInventories.Count > 0)
         {
-            list.Add(new ReclaimVendorInventoryEntry(this));
+            list.Add(new ReclaimVendorInventoryEntry());
         }
     }
 
     private class VendorsEntry : ContextMenuEntry
     {
-        private readonly HouseSign m_Sign;
-
-        public VendorsEntry(HouseSign sign) : base(6211) => m_Sign = sign;
-
-        public override void OnClick()
+        public VendorsEntry() : base(6211, 5)
         {
-            var from = Owner.From;
+        }
 
-            if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(from) != true)
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (!from.CheckAlive() || target is not HouseSign sign || sign.Deleted || sign.Owner?.AreThereAvailableVendorsFor(from) != true)
             {
                 return;
             }
 
-            if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
+            if (from.Map != sign.Map)
             {
                 // You must be within five paces of the house sign to use this option.
                 from.SendLocalizedMessage(1062429);
             }
             else
             {
-                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, from, m_Sign.Owner));
+                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, from, sign.Owner));
             }
         }
     }
 
     private class ReclaimVendorInventoryEntry : ContextMenuEntry
     {
-        private readonly HouseSign m_Sign;
-
-        public ReclaimVendorInventoryEntry(HouseSign sign) : base(6213) => m_Sign = sign;
-
-        public override void OnClick()
+        public ReclaimVendorInventoryEntry() : base(6213, 5)
         {
-            var from = Owner.From;
+        }
 
-            if (m_Sign.Deleted || m_Sign.Owner == null || m_Sign.Owner.VendorInventories.Count == 0 ||
-                !from.CheckAlive())
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (!from.CheckAlive() || target is not HouseSign sign || sign.Deleted || sign.Owner == null ||
+                sign.Owner.VendorInventories.Count == 0)
             {
                 return;
             }
 
-            if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
+            if (from.Map != sign.Map)
             {
                 // You must be within five paces of the house sign to use this option.
                 from.SendLocalizedMessage(1062429);
@@ -268,7 +264,7 @@ public partial class HouseSign : Item
             else
             {
                 from.CloseGump<VendorInventoryGump>();
-                from.SendGump(new VendorInventoryGump(m_Sign.Owner, from));
+                from.SendGump(new VendorInventoryGump(sign.Owner, from));
             }
         }
     }

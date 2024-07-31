@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Matriarch
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -50,7 +50,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class AcceptConversation : QuestConversation
     {
-        public override object Message => 1054084;
+        public override int Message => 1054084;
 
         public override void OnRead()
         {
@@ -60,14 +60,14 @@ namespace Server.Engines.Quests.Matriarch
 
     public class DuringKillInfiltratorsConversation : QuestConversation
     {
-        public override object Message => 1054089;
+        public override int Message => 1054089;
 
         public override bool Logged => false;
     }
 
     public class GatherWaterConversation : QuestConversation
     {
-        public override object Message => 1054091;
+        public override int Message => 1054091;
 
         public override void OnRead()
         {
@@ -77,7 +77,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class DuringWaterGatheringConversation : QuestConversation
     {
-        public override object Message => 1054094;
+        public override int Message => 1054094;
 
         public override bool Logged => false;
     }
@@ -92,7 +92,7 @@ namespace Server.Engines.Quests.Matriarch
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -141,7 +141,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class DuringFungiProcessConversation : QuestConversation
     {
-        public override object Message => 1054099;
+        public override int Message => 1054099;
 
         public override bool Logged => false;
     }
@@ -154,7 +154,7 @@ namespace Server.Engines.Quests.Matriarch
 
         public FullBackpackConversation() => m_Logged = true;
 
-        public override object Message => 1054102;
+        public override int Message => 1054102;
 
         public override bool Logged => m_Logged;
 
@@ -169,7 +169,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class EndConversation : QuestConversation
     {
-        public override object Message => 1054101;
+        public override int Message => 1054101;
 
         public override void OnRead()
         {

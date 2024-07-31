@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 
@@ -46,17 +47,17 @@ namespace Server.Engines.ConPVP
 
         public override string DefaultName => "tournament controller";
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
             if (from.AccessLevel >= AccessLevel.GameMaster && Tournament != null)
             {
-                list.Add(new EditEntry(Tournament));
+                list.Add(new EditEntry());
 
                 if (Tournament.CurrentStage == TournamentStage.Inactive)
                 {
-                    list.Add(new StartEntry(Tournament));
+                    list.Add(new StartEntry());
                 }
             }
         }
@@ -107,35 +108,42 @@ namespace Server.Engines.ConPVP
 
         private class EditEntry : ContextMenuEntry
         {
-            private readonly Tournament m_Tournament;
-
-            public EditEntry(Tournament tourney) : base(5101) => m_Tournament = tourney;
-
-            public override void OnClick()
+            public EditEntry() : base(5101)
             {
-                Owner.From.SendGump(new PropertiesGump(Owner.From, m_Tournament));
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (target is not TournamentController controller)
+                {
+                    return;
+                }
+
+                from.SendGump(new PropertiesGump(from, controller.Tournament));
             }
         }
 
         private class StartEntry : ContextMenuEntry
         {
-            private readonly Tournament m_Tournament;
-
-            public StartEntry(Tournament tourney) : base(5113) => m_Tournament = tourney;
-
-            public override void OnClick()
+            public StartEntry() : base(5113)
             {
-                if (m_Tournament.Stage == TournamentStage.Inactive)
+            }
+
+            public override void OnClick(Mobile from, IEntity target)
+            {
+                if (target is not TournamentController controller || controller.Tournament.Stage != TournamentStage.Inactive)
                 {
-                    m_Tournament.SignupStart = Core.Now;
-                    m_Tournament.Stage = TournamentStage.Signup;
-                    m_Tournament.Participants.Clear();
-                    m_Tournament.Pyramid.Levels.Clear();
-                    m_Tournament.Alert(
-                        "Hear ye! Hear ye!",
-                        "Tournament signup has opened. You can enter by signing up with the registrar."
-                    );
+                    return;
                 }
+
+                controller.Tournament.SignupStart = Core.Now;
+                controller.Tournament.Stage = TournamentStage.Signup;
+                controller.Tournament.Participants.Clear();
+                controller.Tournament.Pyramid.Levels.Clear();
+                controller.Tournament.Alert(
+                    "Hear ye! Hear ye!",
+                    "Tournament signup has opened. You can enter by signing up with the registrar."
+                );
             }
         }
     }

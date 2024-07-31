@@ -2,24 +2,24 @@ namespace Server.ContextMenus
 {
     public class OpenBankEntry : ContextMenuEntry
     {
-        private readonly Mobile m_Banker;
-
-        public OpenBankEntry(Mobile banker) : base(6105, 12) => m_Banker = banker;
-
-        public override void OnClick()
+        public OpenBankEntry() : base(6105, 12)
         {
-            if (!Owner.From.CheckAlive())
+        }
+
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (!from.CheckAlive() || target is not Mobile banker)
             {
                 return;
             }
 
-            if (Owner.From.Criminal)
+            if (from.Criminal)
             {
-                m_Banker.Say(500378); // Thou art a criminal and cannot access thy bank box.
+                banker.Say(500378); // Thou art a criminal and cannot access thy bank box.
             }
             else
             {
-                Owner.From.BankBox.Open();
+                from.BankBox.Open();
             }
         }
     }

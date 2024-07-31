@@ -243,6 +243,11 @@ public partial class Map
                 return false;
             }
 
+            if (!Unsafe.IsNullRef(in _linkList) && _linkList.Version != _currentVersion)
+            {
+                throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
+            }
+
             Item current = _current;
             ref Rectangle2D bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
@@ -275,11 +280,6 @@ public partial class Map
                     _linkList = ref map.GetRealSector(currentSectorX, currentSectorY).Items;
                     _currentVersion = _linkList.Version;
                     current = _linkList._first;
-                }
-
-                if (_linkList.Version != _currentVersion)
-                {
-                    throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                 }
 
                 if (current is T { Deleted: false, Parent: null } o && bounds.Contains(o.Location))

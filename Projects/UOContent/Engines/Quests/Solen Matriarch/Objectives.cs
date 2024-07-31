@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Matriarch
 {
     public class KillInfiltratorsObjective : QuestObjective
     {
-        public override object Message => ((SolenMatriarchQuest)System).RedSolen ? 1054086 : 1054085;
+        public override int Message => ((SolenMatriarchQuest)System).RedSolen ? 1054086 : 1054085;
 
         public override int MaxProgress => 7;
 
@@ -77,7 +77,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class ReturnAfterKillsObjective : QuestObjective
     {
-        public override object Message => 1054090;
+        public override int Message => 1054090;
 
         public override void OnComplete()
         {
@@ -87,7 +87,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class GatherWaterObjective : QuestObjective
     {
-        public override object Message => 1054092;
+        public override int Message => 1054092;
 
         public override int MaxProgress => 40;
 
@@ -114,7 +114,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class ReturnAfterWaterObjective : QuestObjective
     {
-        public override object Message => 1054095;
+        public override int Message => 1054095;
 
         public override void OnComplete()
         {
@@ -138,7 +138,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class ProcessFungiObjective : QuestObjective
     {
-        public override object Message => 1054098;
+        public override int Message => 1054098;
 
         public override void OnComplete()
         {
@@ -155,7 +155,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public class GetRewardObjective : QuestObjective
     {
-        public override object Message => 1054149;
+        public override int Message => 1054149;
 
         public override void OnComplete()
         {
