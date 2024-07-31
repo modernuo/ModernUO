@@ -58,7 +58,9 @@ namespace Server.Misc
             }
             else
             {
+                logger.Information( "Specified address {ip}", Address );
                 Resolve(Address, out _publicAddress);
+                logger.Information( "Public Address: {ip}", _publicAddress );
             }
 
             EventSink.ServerList += EventSink_ServerList;
@@ -76,19 +78,19 @@ namespace Server.Misc
                     return;
                 }
 
-                var localAddress = ipep.Address;
+                //var localAddress = ipep.Address;
                 var localPort = ipep.Port;
 
-                if (IsPrivateNetwork(localAddress))
-                {
-                    ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
-                    if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
-                    {
-                        localAddress = _publicAddress;
-                    }
-                }
+                //if (IsPrivateNetwork(localAddress))
+                //{
+                //    ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
+                //    if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
+                //    {
+                //        localAddress = _publicAddress;
+                //    }
+                //}
 
-                e.AddServer(ServerName, new IPEndPoint(localAddress, localPort));
+                e.AddServer(ServerName, new IPEndPoint(_publicAddress, localPort));
             }
             catch (Exception er)
             {
