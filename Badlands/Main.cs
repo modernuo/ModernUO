@@ -29,7 +29,6 @@ public static class Main
         logger.Information( "Configuring Badlands" );
 
         ServerConfiguration.SetSetting( "serverListing.serverName", "The Crossroads" );
-        ServerConfiguration.SetSetting( "assistants.enableNegotiation", true );
         ServerConfiguration.SetSetting( "chat.enabled", true );
 
         Server.Commands.Generic.TargetCommands.Register( new GotoSpawnerCommand() );
