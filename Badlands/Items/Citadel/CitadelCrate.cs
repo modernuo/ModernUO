@@ -33,6 +33,12 @@ public partial class CitadelCrate : Item
         {
             var context = MLQuestSystem.GetContext(player);
 
+            if ( context == null )
+            {
+                player.SendLocalizedMessage(1074278); // You realize that your eyes are playing tricks on you. That crate isn't really shimmering.
+                return;
+            }
+
             if ( context.IsDoingQuest( typeof( BlackOrderBadgesQuest ) ) || context.IsDoingQuest( typeof( EvidenceQuest ) ) )
             {
                 BaseCreature.TeleportPets(player, new Point3D(107, 1883, 0), Map.Malas);
