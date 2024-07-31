@@ -247,6 +247,17 @@ public static class World
         ThreadPool.QueueUserWorkItem(Preserialize);
     }
 
+    public static void SaveSync()
+    {
+        if (WorldState != WorldState.Running)
+        {
+            return;
+        }
+
+        WorldState = WorldState.PendingSave;
+        Preserialize( null );
+    }
+
     internal static void Preserialize(object state)
     {
         var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);

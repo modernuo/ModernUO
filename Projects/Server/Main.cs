@@ -592,7 +592,7 @@ public static class Core
                 if (unixSignal.IsSet)
                 {
                     logger.Information( "Received SIGTERM" );
-                    World.Save();
+                    World.SaveSync();
                     Kill();
                 }
             }
