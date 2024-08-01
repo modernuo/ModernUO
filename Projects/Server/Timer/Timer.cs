@@ -155,6 +155,8 @@ public partial class Timer
 
         Detach();
         OnDetach();
+
+        Version++;
     }
 
     private void InternalStop()
@@ -178,7 +180,6 @@ public partial class Timer
         {
             prof.Stopped++;
         }
-        Version++;
     }
 
     protected virtual void OnTick()
