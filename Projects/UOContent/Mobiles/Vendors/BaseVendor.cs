@@ -243,19 +243,19 @@ namespace Server.Mobiles
             var bought = buyer.AccessLevel >= AccessLevel.GameMaster;
 
             var cont = buyer.Backpack;
-            if (!bought && cont != null)
-            {
-                if (cont.ConsumeTotal(typeof(Gold), totalCost))
-                {
-                    bought = true;
-                }
-                else if (totalCost < 2000)
-                {
-                    SayTo(buyer, 500192); // Begging thy pardon, but thou canst not afford that.
-                }
-            }
+            //if (!bought && cont != null)
+            //{
+            //    if (cont.ConsumeTotal(typeof(Gold), totalCost))
+            //    {
+            //        bought = true;
+            //    }
+            //    else if (totalCost < 2000)
+            //    {
+            //        SayTo(buyer, 500192); // Begging thy pardon, but thou canst not afford that.
+            //    }
+            //}
 
-            if (!bought && totalCost >= 2000)
+            if (!bought/* && totalCost >= 2000*/)
             {
                 if (Banker.Withdraw(buyer, totalCost))
                 {
