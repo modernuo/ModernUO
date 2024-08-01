@@ -446,6 +446,10 @@ public partial class Container : Item, IEngravable
 
     private void MigrateFrom( V0Content content )
     {
+        GumpID = content.GumpID ?? DefaultGumpID;
+        DropSound = content.DropSound ?? DefaultDropSound;
+        MaxItems = content.MaxItems ?? DefaultMaxItems;
+        LiftOverride = content.LiftOverride;
     }
 
     public virtual bool TryDropItems(Mobile from, bool sendFullMessage, params Item[] droppedItems)
