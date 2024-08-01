@@ -230,59 +230,41 @@ public static class CharacterCreation
         SetName(newChar, args.Name);
         newChar.AddBackpack();
 
-        if (newChar.AccessLevel == AccessLevel.Player)
+        var race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
+        newChar.Race = race;
+
+        if (newChar is PlayerMobile pm)
         {
-            var race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
-            newChar.Race = race;
-
-            if (newChar is PlayerMobile pm)
+            if (((Account)pm.Account).Young)
             {
-                if (((Account)pm.Account).Young)
+                pm.Young = true;
+
+                newChar.BankBox.DropItem(new NewPlayerTicket
                 {
-                    pm.Young = true;
-
-                    newChar.BankBox.DropItem(new NewPlayerTicket
-                    {
-                        Owner = newChar
-                    });
-                }
-            }
-
-            SetStats(newChar, state, profession?.Stats ?? args.Stats);
-            SetSkills(newChar, profession?.Skills ?? args.Skills);
-            GiveProfessionItems(newChar, profession, args.ShirtHue, args.PantsHue);
-
-            if (race.ValidateHair(newChar, args.HairID))
-            {
-                newChar.HairItemID = args.HairID;
-                newChar.HairHue = race.ClipHairHue(args.HairHue & 0x3FFF);
-            }
-
-            if (race.ValidateFacialHair(newChar, args.BeardID))
-            {
-                newChar.FacialHairItemID = args.BeardID;
-                newChar.FacialHairHue = race.ClipHairHue(args.BeardHue & 0x3FFF);
-            }
-
-            if (TestCenter.Enabled)
-            {
-                TestCenter.FillBankbox(newChar);
+                    Owner = newChar
+                });
             }
         }
-        else
+
+        SetStats(newChar, state, profession?.Stats ?? args.Stats);
+        SetSkills(newChar, profession?.Skills ?? args.Skills);
+        GiveProfessionItems(newChar, profession, args.ShirtHue, args.PantsHue);
+
+        if (race.ValidateHair(newChar, args.HairID))
         {
-            newChar.Str = 100;
-            newChar.Int = 100;
-            newChar.Dex = 100;
+            newChar.HairItemID = args.HairID;
+            newChar.HairHue = race.ClipHairHue(args.HairHue & 0x3FFF);
+        }
 
-            for (var i = 0; i < newChar.Skills.Length; i++)
-            {
-                newChar.Skills[i].BaseFixedPoint = 1000;
-            }
+        if (race.ValidateFacialHair(newChar, args.BeardID))
+        {
+            newChar.FacialHairItemID = args.BeardID;
+            newChar.FacialHairHue = race.ClipHairHue(args.BeardHue & 0x3FFF);
+        }
 
-            newChar.Race = Race.Human;
-            newChar.Blessed = true;
-            newChar.AddItem(new StaffRobe(newChar.AccessLevel));
+        if (TestCenter.Enabled)
+        {
+            TestCenter.FillBankbox(newChar);
         }
 
         var city = GetStartLocation(args);
@@ -306,14 +288,14 @@ public static class CharacterCreation
         var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
         var m = args.Mobile;
 
-        if (m.AccessLevel > AccessLevel.Player)
-        {
-            var map = availableMaps.Includes(MapSelectionFlags.Felucca) ? Map.Felucca : Map.Trammel;
-            if (availableMaps.Includes(MapSelectionFlags.Felucca))
-            {
-                return new CityInfo("Green Acres", "Green Acres", 5445, 1153, 0, map);
-            }
-        }
+        //if (m.AccessLevel > AccessLevel.Player)
+        //{
+        //    var map = availableMaps.Includes(MapSelectionFlags.Felucca) ? Map.Felucca : Map.Trammel;
+        //    if (availableMaps.Includes(MapSelectionFlags.Felucca))
+        //    {
+        //        return new CityInfo("Green Acres", "Green Acres", 5445, 1153, 0, map);
+        //    }
+        //}
 
         if (Core.SA)
         {
