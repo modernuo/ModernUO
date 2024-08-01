@@ -13,14 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Reflection;
-using System.Text.Json;
 using Badlands.Commands;
 using Badlands.Items;
-using Badlands.Items.Decorations;
 using Server;
 using Server.Commands.Generic;
-using Server.Items;
 using Server.Logging;
 
 namespace Badlands;
@@ -53,6 +49,17 @@ public static class Main
         {
             logger.Warning( "No migration controller" );
             return;
+        }
+
+        var others = World.Items.Values.Where(
+            e => e.GetType() == typeof( MigrationController ) && e.Serial != item.Serial
+        );
+
+        foreach ( var other in others )
+        {
+            logger.Debug( "Removing extra MigrationController = {serial}", other.Serial );
+
+            other.Delete();
         }
 
         foreach ( var type in types )

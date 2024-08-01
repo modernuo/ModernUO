@@ -62,6 +62,7 @@ public static class Decorations
                 {
                     i.Hue = decoration.Hue;
                     i.ItemID = decoration.ID;
+                    i.Movable = false;
                     i.MoveToWorld( new Point3D( decoration.X, decoration.Y, decoration.Z ), Map.Maps[decoration.Map] );
 
                     logger.Information(
@@ -74,7 +75,8 @@ public static class Decorations
                 var i = new LocalizedStatic( decoration.ID, decoration.Cliloc )
                 {
                     Hue = decoration.Hue,
-                    ItemID = decoration.ID
+                    ItemID = decoration.ID,
+                    Movable = false
                 };
 
                 i.MoveToWorld( new Point3D( decoration.X, decoration.Y, decoration.Z ), Map.Maps[decoration.Map] );
