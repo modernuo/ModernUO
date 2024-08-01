@@ -127,8 +127,8 @@ public class MonsterStatuetteInfo
     }
 }
 
-[SerializationGenerator(0, false)]
-public partial class MonsterStatuette : Item, IRewardItem, IGumpToggleItem
+[SerializationGenerator(1, false)]
+public partial class MonsterStatuette : Item, IRewardItem, IGumpToggleItem, IEngravable
 {
     [InvalidateProperties]
     [SerializableField(1)]
@@ -139,6 +139,9 @@ public partial class MonsterStatuette : Item, IRewardItem, IGumpToggleItem
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _isRewardItem;
+
+    [SerializableField( 3 )] [SerializedCommandProperty( AccessLevel.GameMaster )]
+    private string _engravedText;
 
     [Constructible]
     public MonsterStatuette(MonsterStatuetteType type = MonsterStatuetteType.Crocodile) : base(
@@ -222,6 +225,20 @@ public partial class MonsterStatuette : Item, IRewardItem, IGumpToggleItem
         }
     }
 
+    public override void AddNameProperties(IPropertyList list)
+    {
+        base.AddNameProperties(list);
+
+        if (!string.IsNullOrEmpty(EngravedText))
+        {
+            list.Add(1072305, Utility.FixHtml(EngravedText)); // Engraved: ~1_INSCRIPTION~
+        }
+    }
+
+    private void MigrateFrom( V0Content content )
+    {
+
+    }
     public bool HasAccess(Mobile mob) => mob.AccessLevel >= AccessLevel.GameMaster ||
                                          BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
 

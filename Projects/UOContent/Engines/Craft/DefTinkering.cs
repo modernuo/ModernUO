@@ -265,6 +265,10 @@ public class DefTinkering : CraftSystem
         AddCraft(typeof(FletcherTools), 1044046, 1044166, 35.0, 85.0, typeof(IronIngot), 1044036, 3, 1044037);
         AddCraft(typeof(MapmakersPen), 1044046, 1044167, 25.0, 75.0, typeof(IronIngot), 1044036, 1, 1044037);
         AddCraft(typeof(ScribesPen), 1044046, 1044168, 25.0, 75.0, typeof(IronIngot), 1044036, 1, 1044037);
+        index = AddCraft(typeof(MetalContainerEngraver), 1044046, 1072154, 75.0, 100.0, typeof(IronIngot), 1044036, 4, 1044037);
+        AddRes( index, typeof( Springs ), 1044171, 1, 1044253 );
+        AddRes( index, typeof( Gears ), 1044254, 2, 1044253 );
+        AddRes( index, typeof( Diamond ), 1075459, 1, 1044253 );
 
         AddCraft(typeof(Gears), 1044047, 1024179, 5.0, 55.0, typeof(IronIngot), 1044036, 2, 1044037);
         AddCraft(typeof(ClockParts), 1044047, 1024175, 25.0, 75.0, typeof(IronIngot), 1044036, 1, 1044037);
@@ -376,6 +380,9 @@ public class DefTinkering : CraftSystem
             SetNeededExpansion(index, Expansion.SE);
         }
 
+        AddCraft( typeof( GoldRing ), 1044049, 1154607, 65.0, 100.0, typeof( IronIngot ), 1044036, 3 );
+        AddCraft( typeof( GoldBracelet ), 1044049, 1154613, 55.0, 100.0, typeof( IronIngot ), 1044036, 3 );
+
         AddJewelrySet(GemType.StarSapphire, typeof(StarSapphire));
         AddJewelrySet(GemType.Emerald, typeof(Emerald));
         AddJewelrySet(GemType.Sapphire, typeof(Sapphire));
@@ -410,6 +417,15 @@ public class DefTinkering : CraftSystem
         AddRes(index, typeof(Bottle), 1044250, 10, 1044253);
         AddRes(index, typeof(BarrelLid), 1044251, 1, 1044253);
         AddRes(index, typeof(BarrelTap), 1044252, 1, 1044253);
+
+        index = AddCraft( typeof( HitchingRope ), 1044051, 1071124, 60.0, 120.0, typeof( Rope ), TextDefinition.Of( "Rope" ), 1 );
+        AddSkill(index, SkillName.AnimalLore, 15.0, 100.0);
+        AddRes(index, typeof(ResolvesBridle), 1074761, 1, 1044253);
+
+        index = AddCraft(typeof(HitchingPost), 1044051, 1071127, 90.0, 160.0, typeof(IronIngot), 1044036, 50, 1044037);
+        AddRes(index, typeof(AnimalPheromone), 1071200, 1, 1044253);
+        AddRes(index, typeof(HitchingRope), 1071124, 2, 1044253);
+        AddRes(index, typeof(PhillipsWoodenSteed), 1063488, 1, 1044253);
 
         // Dart Trap
         index = AddCraft(typeof(DartTrapCraft), 1044052, 1024396, 30.0, 80.0, typeof(IronIngot), 1044036, 1, 1044037);

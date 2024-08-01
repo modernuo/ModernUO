@@ -7,6 +7,10 @@ using Server.Network;
 using ModernUO.Serialization;
 
 namespace Server.Items;
+public interface IEngravable
+{
+    string EngravedText { get; set; }
+}
 
 public delegate void OnItemConsumed(Item item, int amount);
 
@@ -14,8 +18,8 @@ public delegate int CheckItemGroup(Item a, Item b);
 
 public delegate void ContainerSnoopHandler(Container cont, Mobile from);
 
-[SerializationGenerator(0, false)]
-public partial class Container : Item
+[SerializationGenerator(1, false)]
+public partial class Container : Item, IEngravable
 {
     private ContainerData m_ContainerData;
 
@@ -33,6 +37,13 @@ public partial class Container : Item
 
     [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializeLiftOverride() => _liftOverride;
+
+    [SerializableField(4)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _engravedText;
+
+    [SerializableFieldSaveFlag(4)]
+    private bool ShouldSerializeEngravedText() => _engravedText != null;
 
     public Container(int itemID) : base(itemID)
     {
@@ -297,6 +308,16 @@ public partial class Container : Item
         UpdateContainerData();
     }
 
+    public override void AddNameProperties(IPropertyList list)
+    {
+        base.AddNameProperties(list);
+
+        if (!string.IsNullOrEmpty(EngravedText))
+        {
+            list.Add(1072305, EngravedText.FixHtml()); // Engraved: ~1_INSCRIPTION~
+        }
+    }
+
     public override int GetTotal(TotalType type)
     {
         return type switch
@@ -421,6 +442,10 @@ public partial class Container : Item
         }
 
         return false;
+    }
+
+    private void MigrateFrom( V0Content content )
+    {
     }
 
     public virtual bool TryDropItems(Mobile from, bool sendFullMessage, params Item[] droppedItems)

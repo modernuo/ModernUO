@@ -22,9 +22,9 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    [SerializationGenerator(7, false)]
+    [SerializationGenerator(8, false)]
     public abstract partial class BaseClothing
-        : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem
+        : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IEngravable
     {
         [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
@@ -104,6 +104,12 @@ namespace Server.Items
 
         [SerializableFieldSaveFlag(9)]
         private bool ShouldSerializeQuality() => _quality != ClothingQuality.Regular;
+
+        [InvalidateProperties] [SerializableField( 11 )] [SerializedCommandProperty( AccessLevel.GameMaster )]
+        private string _engravedText;
+
+        [SerializableFieldSaveFlag(11)]
+        private bool ShouldSerializeEngravedText() => !string.IsNullOrWhiteSpace(_engravedText);
 
         // Field 10
         private int _strReq = -1;
@@ -902,6 +908,11 @@ namespace Server.Items
             if (_hitPoints >= 0 && _maxHitPoints > 0)
             {
                 list.Add(1060639, $"{_hitPoints}\t{_maxHitPoints}"); // durability ~1_val~ / ~2_val~
+            }
+
+            if (!string.IsNullOrEmpty(EngravedText))
+            {
+                list.Add(1158847, Utility.FixHtml(EngravedText)); // Embroidered: ~1_MESSAGE~	
             }
         }
 

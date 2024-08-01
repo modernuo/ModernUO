@@ -10,8 +10,8 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [SerializationGenerator(9, false)]
-    public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem
+    [SerializationGenerator(10, false)]
+    public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IEngravable
     {
         [SerializedIgnoreDupe]
         [SerializableField(0, setter: "private")]
@@ -91,6 +91,13 @@ namespace Server.Items
         [SerializableField(8)]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _maxHitPoints;
+
+        [SerializableField(25)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private string _engravedText;
+
+        [SerializableFieldSaveFlag(25)]
+        private bool ShouldSerializeEngravedText() => _engravedText != null;
 
         [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
@@ -1329,6 +1336,11 @@ namespace Server.Items
             else
             {
                 list.Add(Name);
+            }
+
+            if (!string.IsNullOrEmpty(EngravedText))
+            {
+                list.Add(1062613, EngravedText.FixHtml());
             }
         }
 

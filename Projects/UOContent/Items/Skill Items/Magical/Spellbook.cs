@@ -30,7 +30,7 @@ public enum BookQuality
 }
 
 [SerializationGenerator(6, false)]
-public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
+public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem, IEngravable
 {
     private static readonly Dictionary<Mobile, List<Spellbook>> _table = new();
 

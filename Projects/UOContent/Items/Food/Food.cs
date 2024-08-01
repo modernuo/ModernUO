@@ -4,8 +4,8 @@ using Server.ContextMenus;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
-public abstract partial class Food : Item
+[SerializationGenerator(1, false)]
+public abstract partial class Food : Item, IEngravable
 {
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
@@ -18,6 +18,10 @@ public abstract partial class Food : Item
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _fillFactor;
+
+    [SerializableField(3)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _engravedText;
 
     public Food(int itemID, int amount = 1) : base(itemID)
     {
@@ -34,6 +38,11 @@ public abstract partial class Food : Item
         {
             list.Add(new EatEntry());
         }
+    }
+
+    private void MigrateFrom(V0Content content)
+    {
+
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -53,6 +62,16 @@ public abstract partial class Food : Item
         (dropped is not Food food || Poison == food.Poison && Poisoner == food.Poisoner) &&
         base.CanStackWith(dropped);
 
+
+    public override void AddNameProperties( IPropertyList list )
+    {
+        base.AddNameProperties( list );
+
+        if (!string.IsNullOrEmpty(EngravedText))
+        {
+            list.Add(1072305, Utility.FixHtml(EngravedText)); // Engraved: ~1_INSCRIPTION~
+        }
+    }
 
     public virtual bool Eat(Mobile from)
     {
