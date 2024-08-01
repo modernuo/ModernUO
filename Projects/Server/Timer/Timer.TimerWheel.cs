@@ -142,7 +142,7 @@ public partial class Timer
         // Stop the timer from running so that way if Start() is called in OnTick, the timer will be started.
         if (finished)
         {
-            timer.Stop();
+            timer.InternalStop();
         }
 
         var version = timer.Version;
@@ -153,6 +153,8 @@ public partial class Timer
         // If the timer has been altered (restarted, returned etc) then bail
         if (finished || timer.Version != version)
         {
+            // Already stopped and detached, now run OnDetach
+            timer.OnDetach();
             return;
         }
 
