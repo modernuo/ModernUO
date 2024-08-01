@@ -272,6 +272,8 @@ namespace Server.Engines.ConPVP
                         m_Tournament = reader.ReadEntity<TournamentController>();
                         Announcer = reader.ReadEntity<Mobile>();
 
+                        m_Tournament.Tournament.Arenas.Add(this);
+
                         goto case 4;
                     }
                 case 4:
