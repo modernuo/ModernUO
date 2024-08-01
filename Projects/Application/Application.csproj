@@ -23,6 +23,7 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
     </Target>
     <ItemGroup>
+        <ProjectReference Include="..\..\Badlands\Badlands.csproj" />
         <ProjectReference Include="..\Server\Server.csproj" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
