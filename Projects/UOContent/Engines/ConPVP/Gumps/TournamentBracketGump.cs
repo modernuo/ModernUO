@@ -786,13 +786,14 @@ namespace Server.Engines.ConPVP
                                     new TournamentBracketGump(
                                         m_From,
                                         m_Tournament,
-                                        TourneyBracketGumpType.Participant_List
+                                        TourneyBracketGumpType.Participant_List,
+                                        [..m_Tournament.Participants]
                                     )
                                 );
                                 break;
                             case 2:
                                 m_From.SendGump(
-                                    new TournamentBracketGump(m_From, m_Tournament, TourneyBracketGumpType.Round_List)
+                                    new TournamentBracketGump(m_From, m_Tournament, TourneyBracketGumpType.Round_List, [])
                                 );
                                 break;
                             case 4:
