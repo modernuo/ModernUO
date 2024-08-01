@@ -2463,7 +2463,7 @@ namespace Server.Engines.ConPVP
 
                     m_EventGame?.OnStart();
 
-                    StartCountdown(10, SendBeginGump);
+                    StartCountdown(11, SendBeginGump);
 
                     mg.Appear(m_GatePoint, m_GateFacet);
                 }

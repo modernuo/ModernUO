@@ -541,7 +541,7 @@ namespace Server.Engines.ConPVP
 
         public void MoveInside(DuelPlayer[] players, int index)
         {
-            index = Math.Min(index, 0) % Points.Points.Length;
+            index = Math.Max(index, 0) % Points.Points.Length;
 
             var start = Points.Points[index];
 
