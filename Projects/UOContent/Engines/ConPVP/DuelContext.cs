@@ -751,7 +751,7 @@ namespace Server.Engines.ConPVP
             mob.MoveToWorld(Arena.Outside, Arena.Facet);
         }
 
-        public void Finish(Participant winner)
+        public void Finish(Participant winner, bool rematch = true)
         {
             if (Finished)
             {
@@ -836,7 +836,7 @@ namespace Server.Engines.ConPVP
 
             m_EventGame?.OnStop();
 
-            Timer.StartTimer(TimeSpan.FromSeconds(9.0), UnregisterRematch);
+            Timer.StartTimer(TimeSpan.FromSeconds(9.0), rematch ? UnregisterRematch : Unregister);
         }
 
         public void Award(Mobile us, Mobile them, bool won)

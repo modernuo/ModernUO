@@ -139,6 +139,8 @@ public partial class Timer
         var prof = timer.GetProfile();
         prof?.Start();
 
+        timer.OnTick();
+
         // Stop the timer from running so that way if Start() is called in OnTick, the timer will be started.
         if (finished)
         {
@@ -147,7 +149,6 @@ public partial class Timer
 
         var version = timer.Version;
 
-        timer.OnTick();
         prof?.Finish();
 
         // If the timer has been altered (restarted, returned etc) then bail
