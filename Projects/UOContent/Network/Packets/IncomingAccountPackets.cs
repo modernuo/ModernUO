@@ -350,6 +350,11 @@ public static class IncomingAccountPackets
         PreventInaccess.OnLogin(m);
         TwistedWealdDesertRegion.OnLogin(m);
         RewardSystem.OnLogin(m);
+
+        if ( m is PlayerMobile player )
+        {
+            EventSink.InvokePlayerLogin( player );
+        }
     }
 
     private static int GenerateAuthID(this NetState state)

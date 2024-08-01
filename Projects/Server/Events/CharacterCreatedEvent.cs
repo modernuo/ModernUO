@@ -81,13 +81,25 @@ public class CharacterCreatedEventArgs
     public Race Race { get; }
 }
 
-public readonly record struct SkillNameValue(SkillName Name, int Value);
-public readonly record struct StatNameValue(StatType Name, int Value);
+public readonly record struct SkillNameValue( SkillName Name, int Value );
+
+public readonly record struct StatNameValue( StatType Name, int Value );
 
 public static partial class EventSink
 {
     public static event Action<CharacterCreatedEventArgs> CharacterCreated;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void InvokeCharacterCreated(CharacterCreatedEventArgs e) => CharacterCreated?.Invoke(e);
+    [MethodImpl( MethodImplOptions.AggressiveInlining )]
+    public static void InvokeCharacterCreated( CharacterCreatedEventArgs e ) => CharacterCreated?.Invoke( e );
+
+    public static event Action<PlayerLoginEventArgs> PlayerLogin;
+
+    [MethodImpl( MethodImplOptions.AggressiveInlining )]
+    public static void InvokePlayerLogin( Mobile mobile ) =>
+        PlayerLogin?.Invoke( new PlayerLoginEventArgs { Mobile = mobile } );
+
+    public class PlayerLoginEventArgs
+    {
+        public Mobile Mobile { get; set; }
+    }
 }

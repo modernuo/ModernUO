@@ -27,17 +27,12 @@ public class StartingItems
 
     public static void Initialize()
     {
-        EventSink.CharacterCreated += EventSink_CharacterCreated;
+        EventSink.PlayerLogin += EventSink_PlayerLogin;
     }
 
-    private static void EventSink_CharacterCreated( CharacterCreatedEventArgs eventArgs )
+    private static void EventSink_PlayerLogin( EventSink.PlayerLoginEventArgs eventArgs )
     {
-        if ( eventArgs.Mobile == null )
-        {
-            return;
-        }
-
-        if ( eventArgs.Account is not Account account )
+        if ( eventArgs.Mobile?.Account is not Account account )
         {
             return;
         }
@@ -47,7 +42,7 @@ public class StartingItems
             return;
         }
 
-        logger.Information( $"Dispensing starting items to '{eventArgs.Name}'" );
+        logger.Information( $"Dispensing starting items to '{eventArgs.Mobile.Name}'" );
 
         account.SetTag( nameof( StartingItems ), DateTime.UtcNow.ToString( "o" ) );
 
