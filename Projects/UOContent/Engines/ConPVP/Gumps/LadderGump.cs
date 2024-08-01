@@ -48,7 +48,7 @@ namespace Server.Engines.ConPVP
         {
             if (from.InRange(GetWorldLocation(), 2))
             {
-                var ladder = ConPVP.Ladder.Instance ?? Ladder.Ladder;
+                var ladder = Ladder?.Ladder ?? ConPVP.Ladder.Instance;
 
                 if (ladder != null)
                 {
