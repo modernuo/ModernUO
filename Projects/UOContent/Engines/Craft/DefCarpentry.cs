@@ -350,6 +350,9 @@ public class DefCarpentry : CraftSystem
             AddRes(index, typeof(Turquoise), 1026250, 1, 1053098);
             AddRecipe(index, 317);
             SetNeededExpansion(index, Expansion.ML);
+
+            AddCraft(typeof(Club), 1044566, 1025043, 65.0, 90.0, typeof(Board), 1044041, 9, 1044351);
+            AddCraft(typeof(BlackStaff), 1044566, 1023568, 81.5, 106.5, typeof(Board), 1044041, 9, 1044351);
         }
 
         // Armor

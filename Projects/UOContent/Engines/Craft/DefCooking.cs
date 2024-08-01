@@ -217,6 +217,13 @@ public class DefCooking : CraftSystem
             AddRes(index, typeof(SackFlour), 1044468, 3, 1044253);
             SetNeededExpansion(index, Expansion.SE);
         }
+
+        if ( Core.ML )
+        {
+            index = AddCraft(typeof(ParrotWafer), 1044496, 1032246, 37.5, 87.5, typeof(Dough), 1044469, 1, 1044253);
+            AddRes(index, typeof(JarHoney), 1044472, 1, 1044253);
+            AddRes(index, typeof(RawFishSteak), 1044476, 10, 1044253);
+        }
         /* End Preparations */
 
         /* Begin Baking */
