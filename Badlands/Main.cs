@@ -69,6 +69,8 @@ public static class Main
                 continue;
             }
 
+            logger.Information( "Applying migration {name}", type.FullName );
+
             var method = type.GetMethod( "Up" );
 
             if ( method != null )
@@ -77,6 +79,8 @@ public static class Main
 
                 migrationController.AddMigration( type );
             }
+
+            logger.Information("Finished migration {name}", type.FullName);
         }
 
         logger.Information( "Migrations complete" );
