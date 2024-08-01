@@ -26,8 +26,10 @@ public class AddCitadelTeleporters : IMigration
     private static readonly ILogger logger = LogFactory.GetLogger( typeof( AddCitadelTeleporters ) );
     public DateTime MigrationTime { get; set; }
 
-    public void Up()
+    public List<Serial> Up()
     {
+        var serials = new List<Serial>();
+
         var fileName = Path.Combine( "./Assemblies/Data/citadel-secret-doors.json" );
 
         var entries = JsonSerializer.Deserialize<List<CitadelTeleporterEntry>>( File.ReadAllText( fileName ) );
@@ -45,7 +47,11 @@ public class AddCitadelTeleporters : IMigration
             item.MoveToWorld( new Point3D( entry.X, entry.Y, entry.Z ), Map.Maps[entry.Map] );
 
             logger.Information( "Added Citadel Teleporter at {0}, {1}, {2}", item.X, item.Y, item.Z );
+
+            serials.Add( item.Serial );
         }
+
+        return serials;
     }
 
     public void Down()

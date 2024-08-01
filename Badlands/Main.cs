@@ -15,6 +15,7 @@
 
 using Badlands.Commands;
 using Badlands.Items;
+using Badlands.Migrations;
 using Server;
 using Server.Commands.Generic;
 using Server.Logging;
@@ -24,6 +25,7 @@ namespace Badlands;
 public static class Main
 {
     private static readonly ILogger logger = LogFactory.GetLogger( typeof( StartingItems ) );
+    private static MigrationPersistence _migrationPersistence;
 
     public static void Configure()
     {
@@ -33,56 +35,59 @@ public static class Main
         ServerConfiguration.SetSetting( "chat.enabled", true );
 
         TargetCommands.Register( new GotoSpawnerCommand() );
+
+        _migrationPersistence = new MigrationPersistence();
+        _migrationPersistence.Register();
     }
 
     public static void Initialize()
     {
-        logger.Information( "Performing migrations" );
-
-        var types = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany( s => s.GetTypes() )
-            .Where( p => typeof( IMigration ).IsAssignableFrom( p ) && p.IsClass );
-
-        var (_, item) = World.Items.FirstOrDefault( e => e.Value?.GetType() == typeof( MigrationController ) );
-
-        if ( item is not MigrationController migrationController )
+        if ( World.Mobiles.Count == 0 )
         {
-            logger.Warning( "No migration controller" );
+            logger.Information( "No mobiles found, skipping migrations" );
             return;
         }
 
-        var others = World.Items.Values.Where(
-            e => e.GetType() == typeof( MigrationController ) && e.Serial != item.Serial
-        );
+        logger.Information( "Performing migrations" );
 
-        foreach ( var other in others )
+        var types = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(s => s.GetTypes())
+            .Where(p => typeof(IMigration).IsAssignableFrom(p) && p.IsClass);
+
+        foreach (var type in types)
         {
-            logger.Debug( "Removing extra MigrationController = {serial}", other.Serial );
-
-            other.Delete();
-        }
-
-        foreach ( var type in types )
-        {
-            if ( migrationController.HasMigration( type ) )
+            if (_migrationPersistence.Contains( type))
             {
                 continue;
             }
 
-            logger.Information( "Applying migration {name}", type.FullName );
+            logger.Information("Applying migration {name}", type.FullName);
 
-            var method = type.GetMethod( "Up" );
+            var method = type.GetMethod("Up");
 
-            if ( method != null )
+            if (method != null)
             {
-                method.Invoke( Activator.CreateInstance( type ), null );
+                var items = method.Invoke(Activator.CreateInstance(type), null);
 
-                migrationController.AddMigration( type );
+                List<Serial> serials = new();
+
+                if ( items is List<Serial> serialList )
+                {
+                    serials = serialList;
+                }
+
+                _migrationPersistence.Add(new MigrationEntry
+                {
+                    Type = type,
+                    Name = type.FullName,
+                    MigrationDateTime = DateTime.UtcNow,
+                    Entities = serials
+                });
             }
 
             logger.Information("Finished migration {name}", type.FullName);
         }
 
-        logger.Information( "Migrations complete" );
+        logger.Information("Migrations complete");
     }
 }

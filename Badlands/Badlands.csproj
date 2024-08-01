@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -13,6 +13,12 @@
       <ProjectReference Include="..\Projects\UOContent\UOContent.csproj" />
     </ItemGroup>
     <ItemGroup>
+      <None Update="Data\citadel-secret-doors.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\Decorations\Citadel.cfg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Data\Decorations\malas-decorations.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
@@ -21,8 +27,11 @@
       </None>
     </ItemGroup>
     <ItemGroup>
+      <Folder Include="Data\Citadel\" />
       <Folder Include="Engines\ML Quests\Definitions\" />
       <Folder Include="Items\Decorations\" />
+      <Folder Include="Items\Ported\" />
+      <Folder Include="Mobiles\" />
       <Folder Include="Rules\" />
     </ItemGroup>
 

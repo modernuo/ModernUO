@@ -26,9 +26,11 @@ public static class Decorations
 {
     private static readonly ILogger logger = LogFactory.GetLogger( typeof( StartingItems ) );
 
-    public static void ApplyDecoration( string fileName )
+    public static List<Serial> ApplyDecoration( string fileName )
     {
         logger.Information( "Applying Decorations" );
+
+        var serials = new List<Serial>();
 
         var decorationFile = Path.Combine( "./Assemblies/Data/Decorations/", fileName );
 
@@ -68,6 +70,8 @@ public static class Decorations
                     logger.Information(
                         $"Added decoration {decoration.Cliloc} at {decoration.X}, {decoration.Y}, {decoration.Z}. Name = {i.Name}"
                     );
+
+                    serials.Add( i.Serial );
                 }
             }
             else
@@ -84,10 +88,14 @@ public static class Decorations
                 logger.Information(
                     $"Added decoration {decoration.ID} at {decoration.X}, {decoration.Y}, {decoration.Z}, Name = {i.Name}"
                 );
+
+                serials.Add( i.Serial );
             }
         }
 
         logger.Information( "Decorations complete" );
+
+        return serials;
     }
 
     private static Type? FindItemByClilocAndID( int cliloc, int id )

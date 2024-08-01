@@ -24,8 +24,9 @@ public class AddCitadelTeleporters2 : IMigration
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(AddCitadelTeleporters2));
     public DateTime MigrationTime { get; set; }
 
-    public void Up()
+    public List<Serial> Up()
     {
+        var serials = new List<Serial>();
         var list = DecorationList.ReadAll( "./Assemblies/Data/Decorations/Citadel.cfg" );
 
         var count = 0;
@@ -36,6 +37,8 @@ public class AddCitadelTeleporters2 : IMigration
         }
 
         logger.Information( "Generated {count} items", count );
+
+        return serials;
     }
 
     public void Down()

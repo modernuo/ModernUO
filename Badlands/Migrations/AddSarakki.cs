@@ -22,14 +22,20 @@ public class AddSarakki : IMigration
 {
     public DateTime MigrationTime { get; set; }
 
-    public void Up()
+    public List<Serial> Up()
     {
+        var serials = new List<Serial>();
+
         foreach ( var map in new[] { Map.Felucca, Map.Trammel } )
         {
             var spawner = new Spawner( 1, TimeSpan.FromMinutes( 5 ), TimeSpan.FromMinutes( 10 ), 1, 4 );
             spawner.AddEntry( "Sarakki" );
             spawner.MoveToWorld( new WorldLocation( new Point3D( 1421, 1619, 20 ), map ) );
+
+            serials.Add( spawner.Serial );
         }
+
+        return serials;
     }
 
     public void Down()

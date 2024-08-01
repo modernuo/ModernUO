@@ -32,6 +32,11 @@ public class StartingItems
 
     private static void EventSink_CharacterCreated( CharacterCreatedEventArgs eventArgs )
     {
+        if ( eventArgs.Mobile == null )
+        {
+            return;
+        }
+
         if ( eventArgs.Account is not Account account )
         {
             return;
@@ -55,7 +60,8 @@ public class StartingItems
             new MarkScroll(),
             new MarkScroll(),
             new MarkScroll(),
-            new Runebook { CurCharges = 20, MaxCharges = 20 }
+            new Runebook { CurCharges = 20, MaxCharges = 20 },
+            new EtherealRottweiler()
         };
 
         foreach ( var item in items )

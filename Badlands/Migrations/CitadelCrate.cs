@@ -22,7 +22,7 @@ public class AddCitadelCrate : IMigration
 {
     public DateTime MigrationTime { get; set; }
 
-    public void Up()
+    public List<Serial> Up()
     {
         var spawner = new Spawner(
             1,
@@ -34,10 +34,11 @@ public class AddCitadelCrate : IMigration
         );
 
         spawner.MoveToWorld( new WorldLocation( new Point3D( 1344, 770, 21 ), Map.Tokuno ) );
+
+        return [spawner.Serial];
     }
 
     public void Down()
     {
-        throw new NotImplementedException();
     }
 }

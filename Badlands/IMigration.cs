@@ -13,12 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Server;
+
 namespace Badlands;
 
 public interface IMigration
 {
     public DateTime MigrationTime { get; set; }
 
-    public void Up();
+    public List<Serial> Up();
     public void Down();
 }

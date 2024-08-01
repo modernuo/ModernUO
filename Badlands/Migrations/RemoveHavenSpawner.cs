@@ -21,17 +21,18 @@ public class RemoveHavenSpawner : IMigration
 {
     public DateTime MigrationTime { get; set; }
 
-    public void Up()
+    public List<Serial> Up()
     {
         var item = World.Items.FirstOrDefault(
             i => i.Value.Location == new Point3D( 3485, 2595, 12 ) && i.Value.Map == Map.Trammel
         );
 
         item.Value?.Delete();
+
+        return [item.Key];
     }
 
     public void Down()
     {
-        throw new NotImplementedException();
     }
 }

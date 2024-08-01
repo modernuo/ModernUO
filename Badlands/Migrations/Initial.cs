@@ -22,19 +22,29 @@ public class Initial : IMigration
 {
     public DateTime MigrationTime { get; set; } = DateTime.Parse( "2024-05-18" );
 
-    public void Up()
+    public List<Serial> Up()
     {
+        var serials = new List<Serial>();
+
         var item = new MetalDoor( DoorFacing.SouthCW );
 
         item.MoveToWorld( new WorldLocation( new Point3D( 3491, 2573, 21 ), Map.Trammel ) );
+
+        serials.Add( item.Serial );
 
         var item2 = new MetalDoor( DoorFacing.NorthCCW );
 
         item2.MoveToWorld( new WorldLocation( new Point3D( 3491, 2571, 21 ), Map.Trammel ) );
 
+        serials.Add( item2.Serial );
+
         var item3 = new MetalDoor( DoorFacing.WestCW );
 
         item3.MoveToWorld( new WorldLocation( new Point3D( 3481, 2579, 20 ), Map.Trammel ) );
+
+        serials.Add( item3.Serial );
+
+        return serials;
     }
 
     public void Down()

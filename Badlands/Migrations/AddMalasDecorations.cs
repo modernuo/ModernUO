@@ -13,15 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Server;
+
 namespace Badlands.Migrations;
 
 public class AddMalasDecorations : IMigration
 {
     public DateTime MigrationTime { get; set; }
 
-    public void Up()
+    public List<Serial> Up()
     {
-        Decorations.ApplyDecoration( "malas-decorations.json" );
+        return Decorations.ApplyDecoration( "malas-decorations.json" );
     }
 
     public void Down()

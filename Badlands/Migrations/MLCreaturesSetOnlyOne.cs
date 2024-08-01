@@ -23,8 +23,10 @@ public class MLCreaturesSetOnlyOne : IMigration
 {
     public DateTime MigrationTime { get; set; }
 
-    public void Up()
+    public List<Serial> Up()
     {
+        var items = new List<Serial>();
+
         var types = new[]
         {
             nameof( Virulent ), nameof( Silk ), nameof( Irk ), nameof( Spite ), nameof( Malefic ), nameof( Guile ),
@@ -48,7 +50,11 @@ public class MLCreaturesSetOnlyOne : IMigration
 
                 spawner.Respawn();
             }
+
+            items.Add( item.Serial );
         }
+
+        return items;
     }
 
     public void Down()

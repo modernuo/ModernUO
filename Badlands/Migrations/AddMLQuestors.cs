@@ -22,13 +22,14 @@ namespace Badlands.Migrations;
 public class AddMLQuestors : IMigration
 {
     public DateTime MigrationTime { get; set; } = DateTime.Parse( "2024-05-19" );
-    public void Up()
+    public List<Serial> Up()
     {
         CommandSystem.Handle(World.Mobiles.FirstOrDefault().Value, $"[GenerateSpawners Assemblies/Data/mlquestors.json");
+
+        return new List<Serial>();
     }
 
     public void Down()
     {
-        throw new NotImplementedException();
     }
 }
