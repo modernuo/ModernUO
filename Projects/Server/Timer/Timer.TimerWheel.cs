@@ -151,10 +151,16 @@ public partial class Timer
         prof?.Finish();
 
         // If the timer has been altered (restarted, returned etc) then bail
-        if (finished || timer.Version != version)
+        if (timer.Version != version)
+        {
+            return;
+        }
+
+        if (finished)
         {
             // Already stopped and detached, now run OnDetach
             timer.OnDetach();
+            timer.Version++;
             return;
         }
 
