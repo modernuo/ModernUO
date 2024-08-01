@@ -151,14 +151,6 @@ public partial class Timer
             return;
         }
 
-        InternalStop();
-
-        Detach();
-        OnDetach();
-    }
-
-    private void InternalStop()
-    {
         Running = false;
 
         // We are the head on the timer ring
@@ -172,6 +164,9 @@ public partial class Timer
         {
             _executingRings[_ring] = _nextTimer;
         }
+
+        Detach();
+        OnDetach();
 
         var prof = GetProfile();
         if (prof != null)
