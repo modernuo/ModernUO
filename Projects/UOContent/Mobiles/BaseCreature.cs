@@ -1840,7 +1840,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(20); // version
+            writer.Write(21); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -1960,6 +1960,9 @@ namespace Server.Mobiles
 
             // Version 19
             writer.Write(HomeMap);
+
+            // Version 21
+            writer.Write( SeeksHome );
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -2166,6 +2169,11 @@ namespace Server.Mobiles
             if (version >= 19)
             {
                 HomeMap = reader.ReadMap();
+            }
+
+            if ( version >= 21 )
+            {
+                SeeksHome = reader.ReadBool();
             }
 
             if (version <= 14 && m_Paragon && Hue == 0x31)
