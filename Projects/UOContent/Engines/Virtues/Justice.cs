@@ -32,23 +32,23 @@ public class JusticeVirtue
     }
 
     public static bool IsProtected(PlayerMobile pm) =>
-        VirtueSystem.GetVirtues(pm) is { JusticeStatus: JusticeProtectorStatus.Protected, JusticeProtection: not null };
+        VirtueSystem.GetOrCreateVirtues(pm) is { JusticeStatus: JusticeProtectorStatus.Protected, JusticeProtection: not null };
 
     public static PlayerMobile GetProtector(PlayerMobile pm) =>
-        VirtueSystem.GetVirtues(pm) is { JusticeStatus: JusticeProtectorStatus.Protected } virtues ? virtues.JusticeProtection : null;
+        VirtueSystem.GetOrCreateVirtues(pm) is { JusticeStatus: JusticeProtectorStatus.Protected } virtues ? virtues.JusticeProtection : null;
 
     public static PlayerMobile GetProtected(PlayerMobile pm) =>
-        VirtueSystem.GetVirtues(pm) is { JusticeStatus: JusticeProtectorStatus.Protector } virtues ? virtues.JusticeProtection : null;
+        VirtueSystem.GetOrCreateVirtues(pm) is { JusticeStatus: JusticeProtectorStatus.Protector } virtues ? virtues.JusticeProtection : null;
 
     public static void CancelProtection(PlayerMobile pm)
     {
-        if (VirtueSystem.GetVirtues(pm) is { JusticeStatus: not JusticeProtectorStatus.None } virtues)
+        if (VirtueSystem.GetOrCreateVirtues(pm) is { JusticeStatus: not JusticeProtectorStatus.None } virtues)
         {
             var protector = virtues.JusticeProtection;
             virtues.JusticeProtection = null;
             virtues.JusticeStatus = JusticeProtectorStatus.None;
 
-            virtues = VirtueSystem.GetVirtues(protector);
+            virtues = VirtueSystem.GetOrCreateVirtues(protector);
             if (virtues != null)
             {
                 virtues.JusticeProtection = null;
@@ -59,13 +59,13 @@ public class JusticeVirtue
 
     public static bool CancelProtection(PlayerMobile pm, out PlayerMobile protector)
     {
-        if (VirtueSystem.GetVirtues(pm) is { JusticeStatus: not JusticeProtectorStatus.None } virtues)
+        if (VirtueSystem.GetOrCreateVirtues(pm) is { JusticeStatus: not JusticeProtectorStatus.None } virtues)
         {
             protector = virtues.JusticeProtection;
             virtues.JusticeProtection = null;
             virtues.JusticeStatus = JusticeProtectorStatus.None;
 
-            virtues = VirtueSystem.GetVirtues(protector);
+            virtues = VirtueSystem.GetOrCreateVirtues(protector);
             if (virtues != null)
             {
                 virtues.JusticeProtection = null;
@@ -254,7 +254,7 @@ public class JusticeVirtue
 
     public static void CheckAtrophy(PlayerMobile pm)
     {
-        var virtues = VirtueSystem.GetVirtues(pm);
+        var virtues = VirtueSystem.GetOrCreateVirtues(pm);
         if (virtues?.Justice > 0 && CanAtrophy(virtues))
         {
             if (VirtueSystem.Atrophy(pm, VirtueName.Justice, LossAmount))

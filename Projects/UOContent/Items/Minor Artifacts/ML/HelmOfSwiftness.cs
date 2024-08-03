@@ -2,8 +2,8 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0)]
-public partial class HelmOfSwiftness : WingedHelm
+[SerializationGenerator(1)]
+public partial class HelmOfSwiftness : WingedHelm, ICanBeElfOrHuman
 {
     [Constructible]
     public HelmOfSwiftness()
@@ -16,6 +16,10 @@ public partial class HelmOfSwiftness : WingedHelm
         ArmorAttributes.MageArmor = 1;
     }
 
+    [SerializableField(0)]
+    private bool _elfOnly = true;
+    public override int RequiredRaces => _elfOnly ? Race.AllowElvesOnly : Race.AllowHumanOrElves;
+
     public override int LabelNumber => 1075037; // Helm of Swiftness
 
     public override int BasePhysicalResistance => 6;
@@ -26,4 +30,9 @@ public partial class HelmOfSwiftness : WingedHelm
 
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
+
+    private void MigrateFrom(V0Content content)
+    {
+        ElfOnly = true;
+    }
 }

@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
@@ -1324,7 +1325,7 @@ public class ReptilianDentist : MLQuest
 
         Objectives.Add(new CollectObjective(1, typeof(CoilsFang), "coil's fang"));
 
-        Rewards.Add(ItemReward.TinkerSatchel);
+        Rewards.Add(ItemReward.AlchemySatchel);
     }
 }
 
@@ -1841,7 +1842,6 @@ public class Hailstorm : MLQuest
     }
 }
 
-/* TODO: Uncomment when Crystal Hydra is added
 public class HowManyHeads : MLQuest
 {
   public HowManyHeads()
@@ -1853,14 +1853,12 @@ public class HowManyHeads : MLQuest
     InProgressMessage = 1074672; // You must not waste time. Do not suffer these crystalline abominations to live.
     CompletionMessage = 1074673; // You have done well.  Enjoy this reward.
 
-    Objectives.Add( new KillObjective( 3, new Type[] { typeof( CrystalHydra ) }, "crystal hydras", new QuestArea( 1074805, "The Prism of Light" ) ) ); // The Prism of Light
+    Objectives.Add( new KillObjective( 3, [typeof( CrystalHydra )], "crystal hydras", new QuestArea( 1074805, "The Prism of Light" ) ) ); // The Prism of Light
 
     Rewards.Add( ItemReward.LargeBagOfTreasure );
   }
 }
-*/
 
-/* TODO: Uncomment when Dreadhorn is added
 public class DreadhornQuest : MLQuest
 {
   public DreadhornQuest()
@@ -1874,10 +1872,9 @@ public class DreadhornQuest : MLQuest
 
     Objectives.Add( new KillObjective( 1, new Type[] { typeof( DreadHorn ) }, "dread horn" ) );
 
-    Rewards.Add( ItemReward.RewardStrongbox );
+    Rewards.Add( ItemReward.Strongbox );
   }
 }
-*/
 
 /* TODO: Uncomment when SerpentsFangHighExecutioner, TigersClawThief and DragonsFlameGrandMage are added
 public class NewLeadership : MLQuest

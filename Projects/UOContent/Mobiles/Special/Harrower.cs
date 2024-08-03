@@ -56,7 +56,7 @@ public partial class Harrower : BaseCreature
     private List<HarrowerTentacles> _tentacles;
 
     [Constructible]
-    public Harrower() : base(AIType.AI_Mage, FightMode.Closest, 18)
+    public Harrower() : base(AIType.AI_NecroMage, FightMode.Closest, 18)
     {
         Instances.Add(this);
         Body = 146;

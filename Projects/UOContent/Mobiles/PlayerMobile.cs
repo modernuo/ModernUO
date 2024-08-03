@@ -387,8 +387,6 @@ namespace Server.Mobiles
         // WARNING - This can be null!!
         public HashSet<Mobile> AutoStabled { get; private set; }
 
-        public bool NinjaWepCooldown { get; set; }
-
         // WARNING - This can be null!!
         public HashSet<Mobile> AllFollowers => _allFollowers;
 

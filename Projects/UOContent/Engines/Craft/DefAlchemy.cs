@@ -3,6 +3,13 @@ using Server.Items;
 
 namespace Server.Engines.Craft;
 
+public enum TinkerRecipes
+{
+    InvisibilityPotion = 400,
+    DarkglowPotion = 401,
+    ParasiticPotion = 402,
+}
+
 public class DefAlchemy : CraftSystem
 {
     private static readonly Type typeofPotion = typeof(BasePotion);
@@ -204,6 +211,14 @@ public class DefAlchemy : CraftSystem
         );
         AddRes(index, typeof(Bottle), 1044529, 1, 500315);
 
+        index = AddCraft(typeof(ParasiticPotion), 1044535, 1072942, 65.0, 115.0, typeof(Bottle), 1044529, 1, 500315);
+        AddRes(index, typeof(ParasiticPlant), 1073474, 5, 1044253);
+        AddRecipe(index, (int)TinkerRecipes.ParasiticPotion);
+
+        index = AddCraft(typeof(DarkglowPotion), 1044535, 1072943, 65.0, 115.0, typeof(Bottle), 1044529, 1, 500315);
+        AddRes(index, typeof(LuminescentFungi), 1073475, 5, 1044253);
+        AddRecipe(index, (int)TinkerRecipes.DarkglowPotion);
+
         // Cure Potion
         index = AddCraft(typeof(LesserCurePotion), 1044536, 1044552, -10.0, 40.0, typeof(Garlic), 1044355, 1, 1044363);
         AddRes(index, typeof(Bottle), 1044529, 1, 500315);
@@ -311,5 +326,12 @@ public class DefAlchemy : CraftSystem
             AddRes(index, typeof(Bottle), 1044529, 1, 500315);
             SetNeededExpansion(index, Expansion.SE);
         }
+
+        index = AddCraft(typeof(InvisibilityPotion), 1074832, 1074860, 65.0, 115.0, typeof(Bottle), 1044529, 1, 500315);
+        AddRes(index, typeof(Bloodmoss), 1044354, 4, 1044362);
+        AddRes(index, typeof(Nightshade), 1044358, 3, 1044366);
+        AddRecipe(index, (int)TinkerRecipes.InvisibilityPotion);
+
+        AddCraft(typeof(HoveringWisp), 1074832, 1072881, 75.0, 125.0, typeof(CapturedEssence), 1032686, 4, 1044253);
     }
 }

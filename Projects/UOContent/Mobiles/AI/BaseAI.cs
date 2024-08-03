@@ -27,7 +27,12 @@ public enum AIType
     AI_Mage,
     AI_Berserk,
     AI_Predator,
-    AI_Thief
+    AI_Thief,
+    AI_Spellweaving,
+    AI_Necro,
+    AI_NecroMage,
+    AI_Ninja,
+    AI_Samurai
 }
 
 public enum ActionType
@@ -2543,7 +2548,7 @@ public abstract class BaseAI
      *  bFacFoe : Check people in other factions
      *
      */
-    public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
+    public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend = false, bool bFacFoe = false)
     {
         if (m_Mobile.Deleted)
         {
@@ -2723,7 +2728,7 @@ public abstract class BaseAI
             }
 
             // Ignore players with activated honor
-            if (m_Mobile.Combatant != m && VirtueSystem.GetVirtues(pm)?.HonorActive == true)
+            if (m_Mobile.Combatant != m && VirtueSystem.GetOrCreateVirtues(pm)?.HonorActive == true)
             {
                 continue;
             }

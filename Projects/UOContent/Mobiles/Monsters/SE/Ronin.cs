@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public partial class Ronin : BaseCreature
     {
         [Constructible]
-        public Ronin() : base(AIType.AI_Melee)
+        public Ronin() : base(AIType.AI_Samurai)
         {
             SpeechHue = Utility.RandomDyedHue();
             Hue = Race.Human.RandomSkinHue();

@@ -81,6 +81,11 @@ namespace Server.Spells
 
         public virtual bool IsCasting => State == SpellState.Casting;
 
+        public virtual IEnumerable<Mobile> AcquireIndirectTargets(IPoint3D pnt, int range)
+        {
+            return SpellHelper.AcquireIndirectTargets(Caster, pnt, Caster.Map, range);
+        }
+
         public virtual void OnCasterHurt()
         {
             // Confirm: Monsters and pets cannot be disturbed.

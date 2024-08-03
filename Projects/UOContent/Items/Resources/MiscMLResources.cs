@@ -359,6 +359,23 @@ public partial class Taint : Item
 }
 
 [SerializationGenerator(0, false)]
+public partial class Putrefaction : Item
+{
+    [Constructible]
+    public Putrefaction(int amountFrom, int amountTo) : this(Utility.RandomMinMax(amountFrom, amountTo))
+    {
+    }
+
+    [Constructible]
+    public Putrefaction(int amount = 1) : base(0x3186)
+    {
+        Stackable = true;
+        Amount = amount;
+        Hue = 883;
+    }
+}
+
+[SerializationGenerator(0, false)]
 [Flippable(0x315A, 0x315B)]
 public partial class PristineDreadHorn : Item
 {

@@ -186,7 +186,7 @@ public class HonorContext
             Source.Mana += restore;
         }
 
-        if (VirtueSystem.GetVirtues(Source).Honor > targetFame)
+        if (VirtueSystem.GetOrCreateVirtues(Source).Honor > targetFame)
         {
             return;
         }

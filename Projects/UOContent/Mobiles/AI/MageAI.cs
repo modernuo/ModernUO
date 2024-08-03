@@ -15,10 +15,14 @@ namespace Server.Mobiles;
 
 public class MageAI : BaseAI
 {
-    private const double HealChance = 0.10;     // 10% chance to heal at gm magery
+    public virtual bool UsesMagery => true;
+
+    protected const double HealChance = 0.10;     // 10% chance to heal at gm magery
     private const double TeleportChance = 0.05; // 5% chance to teleport at gm magery
     private const double DispelChance = 0.75;   // 75% chance to dispel at gm magery
     private const double InvisChance = 0.50; // 50% chance to invis at gm magery
+
+    public virtual Spell GetRandomSummonSpell() => null;
 
     private static readonly int[] m_Offsets =
     {
@@ -123,12 +127,35 @@ public class MageAI : BaseAI
         return true;
     }
 
-    private Spell CheckCastHealingSpell()
+    public virtual Spell GetHealSpell()
+    {
+        Spell spell = null;
+
+        if (m_Mobile.Hits < m_Mobile.HitsMax - 50)
+        {
+            if (CheckCanCastMagery(4))
+            {
+                spell = new GreaterHealSpell(m_Mobile, null);
+            }
+            else
+            {
+                spell = new HealSpell(m_Mobile, null);
+            }
+        }
+        else if (m_Mobile.Hits < m_Mobile.HitsMax - 10)
+        {
+            spell = new HealSpell(m_Mobile, null);
+        }
+
+        return spell;
+    }
+
+    protected virtual Spell CheckCastHealingSpell()
     {
         // If I'm poisoned, always attempt to cure.
         if (m_Mobile.Poisoned)
         {
-            return new CureSpell(m_Mobile);
+            return GetCureSpell();
         }
 
         // Summoned creatures never heal themselves.
@@ -159,7 +186,7 @@ public class MageAI : BaseAI
             }
             else
             {
-                spell = new GreaterHealSpell(m_Mobile);
+                spell = GetHealSpell();
             }
         }
         else if (m_Mobile.Hits < m_Mobile.HitsMax - 10)
@@ -271,6 +298,53 @@ public class MageAI : BaseAI
 
     public virtual Spell GetRandomDamageSpell() =>
         UseNecromancy() ? GetRandomDamageSpellNecro() : GetRandomDamageSpellMage();
+
+    private readonly int[] _manaTable = [4, 6, 9, 11, 14, 20, 40, 50];
+
+    public virtual bool CheckCanCastMagery( int circle )
+    {
+        if ( circle < 1 )
+        {
+            circle = 1;
+        }
+
+        if ( circle > 8 )
+        {
+            circle = 8;
+        }
+
+        return m_Mobile.Mana >= _manaTable[circle - 1];
+    }
+
+    public virtual Spell GetRandomBuffSpell()
+    {
+        if ( BlessSpell.IsBlessed( m_Mobile ) || !CheckCanCastMagery( 3 ) )
+        {
+            if ( !m_Mobile.Controlled && CheckCanCastMagery( 6 ) )
+            {
+                return new InvisibilitySpell( m_Mobile );
+            }
+
+            return null;
+        }
+
+        return new BlessSpell( m_Mobile );
+    }
+
+    public virtual Spell GetCureSpell()
+    {
+        if (SmartAI && m_Mobile.Poison.Level > 1 && CheckCanCastMagery(4))
+        {
+            return new ArchCureSpell(m_Mobile, null);
+        }
+
+        if (CheckCanCastMagery(2))
+        {
+            return new CureSpell(m_Mobile, null);
+        }
+
+        return null;
+    }
 
     public virtual Spell GetRandomDamageSpellNecro()
     {
@@ -430,7 +504,7 @@ public class MageAI : BaseAI
                             m_Mobile.DebugSay("Blessing myself");
                         }
 
-                        spell = new BlessSpell(m_Mobile);
+                        spell = GetRandomBuffSpell();//new BlessSpell(m_Mobile);
                         break;
                     }
                 case 3:
@@ -549,6 +623,11 @@ public class MageAI : BaseAI
                                     m_Combo = 1;
                                     spell = new ExplosionSpell(m_Mobile);
                                 }
+                            }
+
+                            if ( spell == null && m_Mobile.Followers + 1 < m_Mobile.FollowersMax && 0.05 >= Utility.RandomDouble() )
+                            {
+                                spell = GetRandomSummonSpell();
                             }
 
                             break;
@@ -790,7 +869,7 @@ public class MageAI : BaseAI
                     m_Mobile.DebugSay("I am going to cure myself");
                 }
 
-                spell = new CureSpell(m_Mobile);
+                spell = GetCureSpell();
             }
             else if (toDispel != null) // Something dispellable is attacking us
             {
@@ -932,7 +1011,7 @@ public class MageAI : BaseAI
 
             if (m_Mobile.Poisoned && Utility.Random(0, 5) == 0)
             {
-                new CureSpell(m_Mobile).Cast();
+                GetCureSpell()?.Cast();
             }
         }
         else

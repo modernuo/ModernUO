@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public partial class Devourer : BaseCreature
     {
         [Constructible]
-        public Devourer() : base(AIType.AI_Mage)
+        public Devourer() : base(AIType.AI_NecroMage)
         {
             Body = 303;
             BaseSoundID = 357;

@@ -65,6 +65,7 @@ namespace Server.Mobiles
         public override string CorpseName => "a Master Theophilus corpse";
         public override string DefaultName => "Master Theophilus";
 
+        public override bool AllureImmune => true;
         public override bool GivesMLMinorArtifact => true;
         public override int TreasureMapLevel => 5;
 

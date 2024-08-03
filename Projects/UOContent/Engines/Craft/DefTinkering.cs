@@ -380,8 +380,8 @@ public class DefTinkering : CraftSystem
             SetNeededExpansion(index, Expansion.SE);
         }
 
-        AddCraft( typeof( GoldRing ), 1044049, 1154607, 65.0, 100.0, typeof( IronIngot ), 1044036, 3 );
-        AddCraft( typeof( GoldBracelet ), 1044049, 1154613, 55.0, 100.0, typeof( IronIngot ), 1044036, 3 );
+        AddCraft( typeof( GoldRing ), 1044049, TextDefinition.Of( "ring" ), 65.0, 100.0, typeof( IronIngot ), 1044036, 3 );
+        AddCraft( typeof( GoldBracelet ), 1044049, TextDefinition.Of("bracelet"), 55.0, 100.0, typeof( IronIngot ), 1044036, 3 );
 
         AddJewelrySet(GemType.StarSapphire, typeof(StarSapphire));
         AddJewelrySet(GemType.Emerald, typeof(Emerald));

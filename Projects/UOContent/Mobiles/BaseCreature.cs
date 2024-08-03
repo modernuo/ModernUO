@@ -1343,7 +1343,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true)
+            if (VirtueSystem.GetOrCreateVirtues(m as PlayerMobile)?.HonorActive == true)
             {
                 return false;
             }
@@ -1840,7 +1840,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(21); // version
+            writer.Write(22); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -1963,6 +1963,9 @@ namespace Server.Mobiles
 
             // Version 21
             writer.Write( SeeksHome );
+
+            // Version 22
+            writer.Write(Allured );
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -2176,6 +2179,11 @@ namespace Server.Mobiles
                 SeeksHome = reader.ReadBool();
             }
 
+            if ( version >= 22 )
+            {
+                Allured = reader.ReadBool();
+            }
+
             if (version <= 14 && m_Paragon && Hue == 0x31)
             {
                 Hue = Paragon.Hue; // Paragon hue fixed, should now be 0x501.
@@ -2237,6 +2245,39 @@ namespace Server.Mobiles
 
         public virtual bool OverrideBondingReqs() => false;
 
+        public virtual Point3D GetSpawnPosition( int range ) => GetSpawnPosition( Location, Map, range );
+
+        public static Point3D GetSpawnPosition( Point3D from, Map map, int range )
+        {
+            if ( map == null )
+            {
+                return from;
+            }
+
+            for ( var i = 0; i < 10; i++ )
+            {
+                var x = from.X + Utility.RandomMinMax( -range, range );
+                var y = from.Y + Utility.RandomMinMax( -range, range );
+                var z = map.GetAverageZ( x, y );
+
+                var p = new Point3D( x, y, from.Z );
+
+                if ( map.CanSpawnMobile( p ) && map.LineOfSight( from, p ) )
+                {
+                    return p;
+                }
+
+                p = new Point3D( x, y, z );
+
+                if ( map.CanSpawnMobile( p ) && map.LineOfSight( from, p ) )
+                {
+                    return p;
+                }
+            }
+
+            return from;
+        }
+
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (CheckFeed(from, dropped))
@@ -2283,8 +2324,13 @@ namespace Server.Mobiles
                 AIType.AI_Predator =>
                     // m_AI = new PredatorAI(this);
                     new MeleeAI(this),
-                AIType.AI_Thief => new ThiefAI(this),
-                _               => null
+                AIType.AI_Thief        => new ThiefAI(this),
+                AIType.AI_Spellweaving => new SpellweavingAI(this),
+                AIType.AI_Necro        => new NecroAI( this ),
+                AIType.AI_NecroMage    => new NecroMageAI( this ),
+                AIType.AI_Ninja        => new NinjaAI( this ),
+                AIType.AI_Samurai      => new SamuraiAI( this ),
+                _                      => null
             };
         }
 
@@ -3496,7 +3542,7 @@ namespace Server.Mobiles
         }
 
         public override bool CanBeRenamedBy(Mobile from) =>
-            Controlled && from == ControlMaster && !from.Region.IsPartOf<JailRegion>() ||
+            Controlled && from == ControlMaster && !from.Region.IsPartOf<JailRegion>() && !Allured ||
             base.CanBeRenamedBy(from);
 
         public bool SetControlMaster(Mobile m)
@@ -4922,6 +4968,11 @@ namespace Server.Mobiles
         // If this needs to be serialized, recommend creating a hash or registry id. Don't serialize strings.
         public virtual SpeedLevel SpeedClass => SpeedLevel.None;
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool Allured { get; set; }
+
+        public virtual bool AllureImmune { get; set; }
+
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
             NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
@@ -5022,6 +5073,33 @@ namespace Server.Mobiles
             AddItem(backpack);
 
             pack.Generate(this, backpack, m_Spawning, m_KillersLuck);
+        }
+
+        public virtual void SetWearable(Item item, int hue = -1, double dropChance = 0.0)
+        {
+            if (hue > -1)
+                item.Hue = hue;
+
+            if (dropChance <= 0)
+                item.Movable = false;
+            else if (dropChance >= 1)
+                item.Movable = true;
+            else
+                item.Movable = dropChance > Utility.RandomDouble();
+
+            if (!OnEquip(item) || !item.OnEquip(this))
+            {
+                PackItem(item);
+            }
+            else
+            {
+                if (!CheckEquip(item))
+                {
+                    FindItemOnLayer(item.Layer)?.Delete();
+                }
+
+                AddItem(item);
+            }
         }
 
         public bool PackArmor(int minLevel, int maxLevel) => PackArmor(minLevel, maxLevel, 1.0);

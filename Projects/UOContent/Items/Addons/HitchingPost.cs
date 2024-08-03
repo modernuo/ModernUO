@@ -227,16 +227,10 @@ public partial class HitchingPost : Item, ISecurable
         {
             from.SendLocalizedMessage( 502673 ); // I can not stable summoned creatures.
         }
-
-        #region Mondain's Legacy
-
-        //else if (pet.Allured)
-        //{
-        //    from.SendLocalizedMessage(1048053); // You can't stable that!
-        //}
-
-        #endregion
-
+        else if (pet.Allured)
+        {
+            from.SendLocalizedMessage(1048053); // You can't stable that!
+        }
         else if ( pet.Body.IsHuman )
         {
             from.SendLocalizedMessage( 502672 ); // HA HA HA! Sorry, I am not an inn.

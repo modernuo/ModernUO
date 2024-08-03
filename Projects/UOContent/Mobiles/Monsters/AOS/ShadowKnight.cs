@@ -12,7 +12,7 @@ namespace Server.Mobiles
         private TimerExecutionToken _soundTimerToken;
 
         [Constructible]
-        public ShadowKnight() : base(AIType.AI_Mage)
+        public ShadowKnight() : base(AIType.AI_NecroMage)
         {
             Name = NameList.RandomName("shadow knight");
             Title = "the Shadow Knight";

@@ -2,9 +2,11 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0)]
-public partial class FeyLeggings : ChainLegs
+[SerializationGenerator( 1 )]
+public partial class FeyLeggings : ChainLegs, ICanBeElfOrHuman
 {
+    [SerializableField( 0 )] private bool _elfOnly = true;
+
     [Constructible]
     public FeyLeggings()
     {
@@ -13,6 +15,9 @@ public partial class FeyLeggings : ChainLegs
 
         ArmorAttributes.MageArmor = 1;
     }
+
+    [Constructible]
+    public FeyLeggings( bool human ) : this() => ElfOnly = !human;
 
     public override int LabelNumber => 1075041; // Fey Leggings
 
@@ -25,5 +30,10 @@ public partial class FeyLeggings : ChainLegs
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override int RequiredRaces => Race.AllowElvesOnly;
+    public override int RequiredRaces => _elfOnly ? Race.AllowElvesOnly : Race.AllowHumanOrElves;
+
+    private void MigrateFrom(V0Content content)
+    {
+        ElfOnly = true;
+    }
 }

@@ -8,7 +8,7 @@ namespace Server.Mobiles
     public partial class BoneMagi : BaseCreature
     {
         [Constructible]
-        public BoneMagi() : base(AIType.AI_Mage)
+        public BoneMagi() : base(AIType.AI_NecroMage)
         {
             Body = 148;
             BaseSoundID = 451;

@@ -50,7 +50,7 @@ public static class NinjaWeapon
         }
     }
 
-    private static void Shoot(PlayerMobile from, Mobile target, INinjaWeapon weapon)
+    public static void Shoot(Mobile from, Mobile target, INinjaWeapon weapon)
     {
         if (from == target || !CanUseWeapon(from, weapon) || !from.CanBeHarmful(target))
         {
@@ -170,7 +170,7 @@ public static class NinjaWeapon
         }
     }
 
-    private static bool CanUseWeapon(PlayerMobile from, INinjaWeapon weapon)
+    private static bool CanUseWeapon(Mobile from, INinjaWeapon weapon)
     {
         if (WeaponIsValid(weapon, from))
         {

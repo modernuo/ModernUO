@@ -12,7 +12,7 @@ namespace Server.Mobiles
         private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new();
 
         [Constructible]
-        public LadyOfTheSnow() : base(AIType.AI_Mage)
+        public LadyOfTheSnow() : base(AIType.AI_NecroMage)
         {
             Body = 252;
             BaseSoundID = 0x482;

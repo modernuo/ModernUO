@@ -5,6 +5,8 @@ namespace Server.Items
     [SerializationGenerator(0, false)]
     public partial class CrimsonCincture : HalfApron
     {
+        public override int LabelNumber => 1075043; // Crimson Cincture
+
         [Constructible]
         public CrimsonCincture()
         {

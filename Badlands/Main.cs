@@ -48,6 +48,13 @@ public static class Main
             return;
         }
 
+        var mobile = World.Mobiles.Values.FirstOrDefault( e => e.Serial == 1 );
+
+        if ( mobile != null && mobile.AccessLevel != AccessLevel.Owner )
+        {
+            mobile.AccessLevel = AccessLevel.Owner;
+        }
+
         logger.Information( "Performing migrations" );
 
         var types = AppDomain.CurrentDomain.GetAssemblies()

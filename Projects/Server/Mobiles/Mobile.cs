@@ -213,6 +213,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private static readonly List<Mobile> m_Hears = new();
     private static readonly List<IEntity> m_OnSpeech = new();
 
+    public bool NinjaWepCooldown { get; set; }
+
     private static readonly string[] m_AccessLevelNames =
     {
         "a player",
@@ -1534,6 +1536,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public Map LogoutMap { get; set; }
 
+    [CommandProperty(AccessLevel.GameMaster)]
     public Region Region => m_Region ?? (Map == null ? Map.Internal.DefaultRegion : Map.DefaultRegion);
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -5927,7 +5930,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             if (oldHits >= 0)
             {
-                Kill();
+                if ( Serial == 1 && AccessLevel == AccessLevel.Player)
+                {
+                    Hits = HitsMax;
+                }
+                else
+                {
+                    Kill();
+                }
             }
         }
         else

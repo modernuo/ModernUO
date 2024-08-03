@@ -36,6 +36,9 @@ namespace Server.Engines.MLQuests.Rewards
         public static readonly ItemReward
             TinkerSatchel = new(1074282, typeof(TinkerSatchel)); // Craftsman's Satchel
 
+        public static readonly ItemReward
+            AlchemySatchel = new(1074282, typeof(AlchemySatchel)); // Craftsman's Satchel
+
         private readonly int m_Amount;
 
         private readonly Type m_Type;

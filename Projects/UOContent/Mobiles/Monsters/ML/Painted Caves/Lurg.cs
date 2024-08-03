@@ -46,6 +46,8 @@ namespace Server.Mobiles
         public override bool GivesMLMinorArtifact => true;
         public override int TreasureMapLevel => 4;
 
+        public override bool AllureImmune => true;
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.UltraRich, 2);

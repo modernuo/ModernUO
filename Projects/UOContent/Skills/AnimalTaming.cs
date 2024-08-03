@@ -228,7 +228,7 @@ namespace Server.SkillHandlers
                     creature.AIObject?.DoMove(creature.Direction);
 
                     if (from is PlayerMobile pm &&
-                        !(VirtueSystem.GetVirtues(pm)?.HonorActive == true ||
+                        !(VirtueSystem.GetOrCreateVirtues(pm)?.HonorActive == true ||
                           TransformationSpellHelper.UnderTransformation(pm, typeof(EtherealVoyageSpell))))
                     {
                         creature.Combatant = pm;

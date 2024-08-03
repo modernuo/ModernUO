@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public partial class EliteNinja : BaseCreature
     {
         [Constructible]
-        public EliteNinja() : base(AIType.AI_Melee)
+        public EliteNinja() : base(AIType.AI_Ninja)
         {
             SpeechHue = Utility.RandomDyedHue();
             Hue = Race.Human.RandomSkinHue();

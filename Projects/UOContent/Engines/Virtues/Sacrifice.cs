@@ -35,7 +35,7 @@ public static class SacrificeVirtue
 
     public static void CheckAtrophy(PlayerMobile pm)
     {
-        var virtues = VirtueSystem.GetVirtues(pm);
+        var virtues = VirtueSystem.GetOrCreateVirtues(pm);
         if (virtues?.Sacrifice > 0 && CanAtrophy(virtues))
         {
             if (VirtueSystem.Atrophy(pm, VirtueName.Sacrifice, LossAmount))
@@ -67,7 +67,7 @@ public static class SacrificeVirtue
         }
         else
         {
-            var virtues = VirtueSystem.GetVirtues(from);
+            var virtues = VirtueSystem.GetOrCreateVirtues(from);
             if (virtues?.AvailableResurrects > 0)
             {
                 /*

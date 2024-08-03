@@ -53,6 +53,7 @@ public partial class Barracoon : BaseChampion
         HairHue = 0x94;
     }
 
+    public override bool AllureImmune => true;
     public override ChampionSkullType SkullType => ChampionSkullType.Greed;
 
     public override Type[] UniqueList => new[] { typeof(FangOfRactus) };

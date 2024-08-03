@@ -942,7 +942,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
                 attacker.Direction = attacker.GetDirectionTo(defender);
                 var ab = bc.GetWeaponAbility();
 
-                if (ab != null)
+                if (ab != null && ab != WeaponAbility.Disarm)
                 {
                     if (bc.WeaponAbilityChance > Utility.RandomDouble())
                     {
@@ -1902,7 +1902,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
         if (attacker is PlayerMobile pmAttacker && !(Core.ML && defender is PlayerMobile))
         {
-            if (VirtueSystem.GetVirtues(pmAttacker)?.HonorActive == true && pmAttacker.InRange(defender, 1))
+            if (VirtueSystem.GetOrCreateVirtues(pmAttacker)?.HonorActive == true && pmAttacker.InRange(defender, 1))
             {
                 percentageBonus += 25;
             }

@@ -7,7 +7,7 @@ namespace Server.Mobiles
     public partial class Lich : BaseCreature
     {
         [Constructible]
-        public Lich() : base(AIType.AI_Mage)
+        public Lich() : base(AIType.AI_NecroMage)
         {
             Body = 24;
             BaseSoundID = 0x3E9;

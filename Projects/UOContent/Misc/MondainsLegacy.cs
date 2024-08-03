@@ -4,6 +4,11 @@ using Server.Mobiles;
 
 namespace Server
 {
+    public interface ICanBeElfOrHuman
+    {
+        bool ElfOnly { get; set; }
+    }
+
     public static class MondainsLegacy
     {
         public static Type[] Artifacts { get; } =
@@ -55,6 +60,19 @@ namespace Server
                 m.SendLocalizedMessage(1072523); // You find an artifact, but your backpack and bank are too full to hold it.
             }
         }
+
+        public static void DropPeerlessMinor(Container peerlessCorpse)
+        {
+            Item item = Activator.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]) as Item;
+
+            if ( item is ICanBeElfOrHuman )
+            {
+                ( ( ICanBeElfOrHuman )item ).ElfOnly = false;
+            }
+
+            peerlessCorpse.DropItem(item);
+        }
+
 
         public static bool CheckML(Mobile from, bool message = true)
         {

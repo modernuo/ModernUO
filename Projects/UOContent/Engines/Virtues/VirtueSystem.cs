@@ -105,9 +105,6 @@ public class VirtueSystem : GenericPersistence
         }
     }
 
-    public static VirtueContext GetVirtues(PlayerMobile from) =>
-        from != null && _playerVirtues.TryGetValue(from, out var context) ? context : null;
-
     public static VirtueContext GetOrCreateVirtues(PlayerMobile from)
     {
         if (from == null)
@@ -125,11 +122,11 @@ public class VirtueSystem : GenericPersistence
     }
 
     public static bool IsHighestPath(PlayerMobile from, VirtueName virtue) =>
-        GetVirtues(from)?.GetValue((int)virtue) >= GetMaxAmount(virtue);
+        GetOrCreateVirtues(from)?.GetValue((int)virtue) >= GetMaxAmount(virtue);
 
     public static VirtueLevel GetLevel(Mobile from, VirtueName virtue)
     {
-        var v = GetVirtues(from as PlayerMobile)?.GetValue((int)virtue) ?? 0;
+        var v = GetOrCreateVirtues(from as PlayerMobile)?.GetValue((int)virtue) ?? 0;
         int vl;
 
         if (v < 4000)
@@ -251,7 +248,7 @@ public class VirtueSystem : GenericPersistence
 
     public static bool Atrophy(PlayerMobile from, VirtueName virtue, int amount = 1)
     {
-        var virtues = GetVirtues(from);
+        var virtues = GetOrCreateVirtues(from);
         if (virtues == null)
         {
             return false;

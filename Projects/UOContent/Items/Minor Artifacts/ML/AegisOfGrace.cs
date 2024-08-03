@@ -2,8 +2,8 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0)]
-public partial class AegisOfGrace : DragonHelm
+[SerializationGenerator(1)]
+public partial class AegisOfGrace : DragonHelm, ICanBeElfOrHuman
 {
     [Constructible]
     public AegisOfGrace()
@@ -14,6 +14,15 @@ public partial class AegisOfGrace : DragonHelm
 
         ArmorAttributes.SelfRepair = 2;
     }
+
+    private void MigrateFrom( V0Content content )
+    {
+        ElfOnly = true;
+    }
+
+    [SerializableField(0)]
+    private bool _elfOnly = true;
+    public override int RequiredRaces => _elfOnly ? Race.AllowElvesOnly : Race.AllowHumanOrElves;
 
     public override int LabelNumber => 1075047; // Aegis of Grace
 
@@ -28,6 +37,4 @@ public partial class AegisOfGrace : DragonHelm
 
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
-
-    public override int RequiredRaces => Race.AllowElvesOnly;
 }

@@ -191,3 +191,16 @@ public partial class CarpentrySatchel : BaseCraftmansSatchel
         return null;
     }
 }
+
+[SerializationGenerator( 0, false )]
+public partial class AlchemySatchel : BaseCraftmansSatchel
+{
+    [Constructible]
+    public AlchemySatchel()
+    {
+        if ( Items.Count < 2 )
+        {
+            AddRecipe( DefAlchemy.CraftSystem );
+        }
+    }
+}

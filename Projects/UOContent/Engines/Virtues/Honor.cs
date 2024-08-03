@@ -39,7 +39,7 @@ public static class HonorVirtue
 
     private static void EmbraceHonor(PlayerMobile pm)
     {
-        var virtues = VirtueSystem.GetVirtues(pm);
+        var virtues = VirtueSystem.GetOrCreateVirtues(pm);
 
         if (virtues?.HonorActive == true)
         {

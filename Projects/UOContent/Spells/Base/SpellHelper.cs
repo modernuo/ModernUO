@@ -103,6 +103,43 @@ namespace Server.Spells
             IsMLDungeon
         };
 
+        public static IEnumerable<Mobile> AcquireIndirectTargets(Mobile caster, IPoint3D p, Map map, int range)
+        {
+            return AcquireIndirectTargets(caster, p, map, range, true);
+        }
+
+        public static IEnumerable<Mobile> AcquireIndirectTargets(Mobile caster, IPoint3D p, Map map, int range, bool losCheck)
+        {
+            var list = new List<Mobile>();
+
+            if (map == null)
+            {
+                return list;
+            }
+
+            foreach (var id in map.GetMobilesInRange(new Point3D(p), range))
+            {
+                if (id == caster)
+                {
+                    continue;
+                }
+
+                if (!id.Alive || (losCheck && !caster.InLOS(id)) || !caster.CanBeHarmful(id, false))
+                {
+                    continue;
+                }
+
+                if (id is Mobile && !ValidIndirectTarget(caster, (Mobile)id))
+                {
+                    continue;
+                }
+
+                list.Add( id );
+            }
+
+            return list;
+        }
+
         // TODO: Move to configuration
         private static readonly bool[,] m_Rules =
         {

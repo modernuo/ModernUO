@@ -18,7 +18,7 @@ public class VirtueInfoGump : Gump
         _desc = description;
         _site = webPage;
 
-        var value = VirtueSystem.GetVirtues(beholder)?.GetValue((int)virtue) ?? 0;
+        var value = VirtueSystem.GetOrCreateVirtues(beholder)?.GetValue((int)virtue) ?? 0;
 
         AddPage(0);
 

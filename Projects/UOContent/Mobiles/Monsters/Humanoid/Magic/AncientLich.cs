@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public partial class AncientLich : BaseCreature
     {
         [Constructible]
-        public AncientLich() : base(AIType.AI_Mage)
+        public AncientLich() : base(AIType.AI_NecroMage)
         {
             Name = NameList.RandomName("ancient lich");
             Body = 78;

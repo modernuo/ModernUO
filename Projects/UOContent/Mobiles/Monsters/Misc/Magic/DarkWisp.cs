@@ -10,7 +10,7 @@ namespace Server.Mobiles
     public partial class DarkWisp : BaseCreature
     {
         [Constructible]
-        public DarkWisp() : base(AIType.AI_Mage, FightMode.Aggressor)
+        public DarkWisp() : base(AIType.AI_NecroMage, FightMode.Aggressor)
         {
             Body = 165;
             BaseSoundID = 466;

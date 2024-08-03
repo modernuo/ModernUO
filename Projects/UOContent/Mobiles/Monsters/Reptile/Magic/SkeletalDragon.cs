@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public partial class SkeletalDragon : BaseCreature
     {
         [Constructible]
-        public SkeletalDragon() : base(AIType.AI_Mage)
+        public SkeletalDragon() : base(AIType.AI_NecroMage)
         {
             Body = 104;
             BaseSoundID = 0x488;

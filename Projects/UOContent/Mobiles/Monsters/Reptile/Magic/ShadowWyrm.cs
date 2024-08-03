@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public partial class ShadowWyrm : BaseCreature
     {
         [Constructible]
-        public ShadowWyrm() : base(AIType.AI_Mage)
+        public ShadowWyrm() : base(AIType.AI_NecroMage)
         {
             Body = 106;
             BaseSoundID = 362;

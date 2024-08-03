@@ -43,12 +43,13 @@ public partial class CitadelCrate : Item
             {
                 BaseCreature.TeleportPets(player, new Point3D(107, 1883, 0), Map.Malas);
                 player.MoveToWorld(new Point3D(107, 1883, 0), Map.Malas);
+
+                from.SendLocalizedMessage(1072730); // The manor lord is unavailable. Please use the teleporter on your right.
             }
             else
             {
                 player.SendLocalizedMessage(1074278); // You realize that your eyes are playing tricks on you. That crate isn't really shimmering.
             }
         }
-
     }
 }

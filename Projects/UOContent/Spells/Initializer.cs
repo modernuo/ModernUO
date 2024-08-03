@@ -169,13 +169,13 @@ namespace Server.Spells
                     Register(606, typeof(SummonFeySpell));
                     Register(607, typeof(SummonFiendSpell));
                     Register(608, typeof(ReaperFormSpell));
-                    // Register(609, typeof(WildfireSpell));
+                    Register(609, typeof(WildfireSpell));
                     Register(610, typeof(EssenceOfWindSpell));
-                    // Register(611, typeof(DryadAllureSpell));
+                    Register(611, typeof(DryadAllureSpell));
                     Register(612, typeof(EtherealVoyageSpell));
                     Register(613, typeof(WordOfDeathSpell));
                     Register(614, typeof(GiftOfLifeSpell));
-                    // Register(615, typeof(ArcaneEmpowermentSpell));
+                    Register(615, typeof(ArcaneEmpowermentSpell));
                 }
 
                 if (Core.SA)
