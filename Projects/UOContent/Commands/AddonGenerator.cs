@@ -174,7 +174,7 @@ public class AddonGenerator
 
         using var target = PooledRefList<Item>.Create();
 
-        foreach(Static s in map.GetItemsInBounds<Static>(bounds))
+        foreach (Static s in map.GetItemsInBounds<Static>(bounds))
         {
             if (!range || s.Z >= min && s.Z <= max)
             {
@@ -189,7 +189,7 @@ public class AddonGenerator
         }
 
         // Get correct bounds
-        foreach(Item item in target)
+        foreach (Item item in target)
         {
             if (item.Z < center.Z)
             {
@@ -241,7 +241,7 @@ public class AddonGenerator
             }
         }
 
-        foreach(Item item in target)
+        foreach (Item item in target)
         {
             int xOffset = item.X - center.X;
             int yOffset = item.Y - center.Y;
