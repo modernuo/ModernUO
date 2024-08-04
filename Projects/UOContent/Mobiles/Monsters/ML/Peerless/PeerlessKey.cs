@@ -16,4 +16,6 @@ public partial class PeerlessKey : TransientItem
     }
 
     public override bool Nontransferable => false;
+
+    public override bool DisplaySeconds => false;
 }

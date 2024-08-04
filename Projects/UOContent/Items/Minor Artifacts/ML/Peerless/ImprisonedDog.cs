@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Items
@@ -12,7 +13,7 @@ namespace Server.Items
             : base( 0x1F1C )
         {
             Weight = 1.0;
-            Hue = 0x485;
+            Hue = 56;
         }
 
         public override int LabelNumber => 1075091; // An Imprisoned Dog
@@ -159,6 +160,13 @@ namespace Server.Mobiles
             }
 
             return base.OnMove( d );
+        }
+
+        public override void OnDeath( Container c )
+        {
+            EndMorph();
+
+            base.OnDeath( c );
         }
 
         private class ClonedItem : Item
