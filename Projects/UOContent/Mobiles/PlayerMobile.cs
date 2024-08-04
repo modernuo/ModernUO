@@ -209,6 +209,8 @@ namespace Server.Mobiles
 
             m_GameTime = TimeSpan.Zero;
             m_GuildRank = RankDefinition.Lowest;
+
+            SetFlag( PlayerFlag.AutoRenewInsurance, true );
         }
 
         public PlayerMobile(Serial s) : base(s)
@@ -1873,14 +1875,14 @@ namespace Server.Mobiles
                 {
                     if (InsuranceEnabled)
                     {
-                        if (Core.SA)
+                        if (Core.ML)
                         {
                             list.Add(new CallbackEntry(1114299, OpenItemInsuranceMenu)); // Open Item Insurance Menu
                         }
 
                         list.Add(new CallbackEntry(6201, ToggleItemInsurance)); // Toggle Item Insurance
 
-                        if (!Core.SA)
+                        if (!Core.ML)
                         {
                             if (AutoRenewInsurance)
                             {
