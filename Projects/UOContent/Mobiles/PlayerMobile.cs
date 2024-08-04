@@ -740,6 +740,9 @@ namespace Server.Mobiles
             }
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool LibraryFriend { get; set; }
+
         public void ClearQuestArrow() => m_QuestArrow = null;
 
         public override void ToggleFlying()
@@ -2875,6 +2878,11 @@ namespace Server.Mobiles
 
             switch (version)
             {
+                case 35:
+                    {
+                        LibraryFriend = reader.ReadBool();
+                        goto case 34;
+                    }
                 case 34: // Acquired Recipes is now a Set
                 case 33: // Removes champion title
                 case 32: // Removes virtue properties
@@ -3219,7 +3227,9 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(34); // version
+            writer.Write(35); // version
+
+            writer.Write( LibraryFriend );
 
             if (Stabled == null)
             {
