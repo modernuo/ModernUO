@@ -143,6 +143,11 @@ namespace Server.Mobiles
 
         protected override bool OnMove( Direction d )
         {
+            if ( IsDeadPet )
+            {
+                return base.OnMove( d );
+            }
+
             if ( !Morphed && m_NextAttempt <= DateTime.UtcNow )
             {
                 var eable = GetMobilesInRange( 6 );
