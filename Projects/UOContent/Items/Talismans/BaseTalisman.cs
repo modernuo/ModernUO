@@ -542,7 +542,7 @@ public partial class BaseTalisman : Item, IAosItem
             var name = _summoner?.Name;
             if (name?.Number > 0)
             {
-                list.Add(1072400, name.Number); // Talisman of ~1_name~ Summoning
+                list.AddLocalized(1072400, name.Number); // Talisman of ~1_name~ Summoning
             }
             else
             {
