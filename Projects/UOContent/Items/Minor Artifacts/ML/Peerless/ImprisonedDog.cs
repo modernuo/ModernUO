@@ -27,11 +27,13 @@ namespace Server.Mobiles
     {
         private string m_Name;
         private DateTime m_NextAttempt;
+        private int _standardHue;
 
         [Constructible]
         public TravestyDog()
         {
-            Hue = 2301;
+            Hue = Utility.RandomAnimalHue();
+            _standardHue = Hue;
 
             m_Name = null;
             m_NextAttempt = DateTime.UtcNow;
@@ -102,7 +104,7 @@ namespace Server.Mobiles
             DeleteItems();
 
             Body = 0xD9;
-            Hue = 2301;
+            Hue = _standardHue;
             Name = m_Name;
             Female = false;
             Title = null;
@@ -121,9 +123,10 @@ namespace Server.Mobiles
         {
             base.Serialize( writer );
 
-            writer.Write( 0 ); // version
+            writer.Write( 1 ); // version
 
             writer.Write( m_Name );
+            writer.Write( _standardHue );
         }
 
         public override void Deserialize( IGenericReader reader )
@@ -134,6 +137,17 @@ namespace Server.Mobiles
 
             m_Name = reader.ReadString();
             m_NextAttempt = DateTime.UtcNow;
+
+            if ( version == 1 )
+            {
+                _standardHue = reader.ReadInt();
+            }
+
+            if ( _standardHue == 0 )
+            {
+                Hue = Utility.RandomAnimalHue();
+                _standardHue = Hue;
+            }
 
             if ( Morphed )
             {
