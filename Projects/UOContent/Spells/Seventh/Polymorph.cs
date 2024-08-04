@@ -77,9 +77,7 @@ namespace Server.Spells.Seventh
 
             if (m_NewBody == 0)
             {
-                var gump = Core.SE ? (Gump)new NewPolymorphGump(caster, Scroll) : new PolymorphGump(caster, Scroll);
-
-                caster.SendGump(gump);
+                caster.SendGump(Core.SE ? new NewPolymorphGump(Scroll) : new PolymorphGump(Scroll));
                 return false;
             }
 
