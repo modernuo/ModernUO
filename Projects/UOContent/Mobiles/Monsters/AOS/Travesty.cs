@@ -189,7 +189,6 @@ public partial class Travesty : BasePeerless
         HueMod = attacker.Hue;
         NameMod = attacker.Name;
         Female = attacker.Female;
-        Title = "(Travesty)";
         HairItemID = attacker.HairItemID;
         HairHue = attacker.HairHue;
         FacialHairItemID = attacker.FacialHairItemID;
