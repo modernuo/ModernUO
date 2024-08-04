@@ -151,6 +151,16 @@ public partial class Timer
             return;
         }
 
+        InternalStop();
+
+        Detach();
+        OnDetach();
+
+        Version++;
+    }
+
+    private void InternalStop()
+    {
         Running = false;
 
         // We are the head on the timer ring
@@ -165,15 +175,11 @@ public partial class Timer
             _executingRings[_ring] = _nextTimer;
         }
 
-        Detach();
-        OnDetach();
-
         var prof = GetProfile();
         if (prof != null)
         {
             prof.Stopped++;
         }
-        Version++;
     }
 
     protected virtual void OnTick()
