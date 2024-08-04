@@ -50,6 +50,8 @@ public partial class FriendsOfTheLibraryQuest : MLQuest
         );
 
         Rewards.Add( new DummyReward( 1072749 ) ); // Friends of the Library Membership Token.
+
+        OneTimeOnly = true;
     }
 
     public override Type NextQuest => typeof( BureaucraticDelayQuest );
