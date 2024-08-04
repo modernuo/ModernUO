@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using ModernUO.Serialization;
 using Server.Engines.PartySystem;
@@ -12,7 +13,7 @@ public partial class MasterKey : PeerlessKey
     private PeerlessAltar _altar;
 
     [Constructible]
-    public MasterKey( int itemID ) : base( itemID ) => LootType = LootType.Blessed;
+    public MasterKey( int itemID ) : base( itemID, TimeSpan.FromMinutes( 10 ) ) => LootType = LootType.Blessed;
 
     public override int LabelNumber => 1074348; // master key
 
