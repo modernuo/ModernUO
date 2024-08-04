@@ -1,3 +1,4 @@
+using System;
 using Server.Network;
 using Server.Spells;
 using Server.Spells.Seventh;
@@ -109,8 +110,9 @@ namespace Server.Gumps
                 for (var c = 0; c < cat.Entries.Length; c++)
                 {
                     var entry = cat.Entries[c];
-                    x = 198 + c % 3 * 129;
-                    y = 38 + c / 3 * 67;
+                    var yOffset = Math.DivRem(c, 3, out var xOffset);
+                    x = 198 + xOffset * 129;
+                    y = 38 + yOffset * 67;
 
                     builder.AddHtmlLocalized(x, y, 100, 18, entry.LocNumber);
                     builder.AddItem(x + 20, y + 25, entry.ArtID);
@@ -126,9 +128,7 @@ namespace Server.Gumps
                 return;
             }
 
-            var cnum = info.Switches[0];
-            var cat = cnum % 256;
-            var ent = cnum >> 8;
+            var ent = Math.DivRem(info.Switches[0], 256, out var cat);
 
             if (cat < 0 || cat >= Categories.Length)
             {
@@ -205,8 +205,7 @@ namespace Server.Gumps
             {
                 var entry = _entries[i];
 
-                var page = i / 10 + 1;
-                var pos = i % 10;
+                var page = Math.DivRem(i, 10, out var pos) + 1;
 
                 if (pos == 0)
                 {
@@ -225,8 +224,9 @@ namespace Server.Gumps
                     }
                 }
 
-                var x = pos % 2 == 0 ? 14 : 264;
-                var y = pos / 2 * 64 + 44;
+                var yOffset = Math.DivRem(pos, 2, out var xOffset);
+                var x = xOffset * 250 + 14;
+                var y = yOffset * 64 + 44;
 
                 builder.AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entry.ArtID, 0x0, entry.X, entry.Y);
                 builder.AddHtmlLocalized(x + 84, y, 250, 60, entry.LocNumber, 0x7FFF);
