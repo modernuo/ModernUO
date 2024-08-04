@@ -324,17 +324,10 @@ public class HouseRaffleManagementGump : Gump
                 return 1;
             }
 
-            var a = x.Address.GetAddressBytes();
-            var b = y.Address.GetAddressBytes();
-
-            for (var i = 0; i < a.Length && i < b.Length; i++)
+            var addressCompare = x.Address.ToUInt128().CompareTo(y.Address.ToUInt128());
+            if (addressCompare != 0)
             {
-                var compare = a[i].CompareTo(b[i]);
-
-                if (compare != 0)
-                {
-                    return compare;
-                }
+                return addressCompare;
             }
 
             return x.Date.CompareTo(y.Date);
