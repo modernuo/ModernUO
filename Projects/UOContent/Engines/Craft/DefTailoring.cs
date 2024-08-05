@@ -209,9 +209,9 @@ public class DefTailoring : CraftSystem
             SetNeededExpansion(index, Expansion.SE);
             index = AddCraft(typeof(TattsukeHakama), 1015279, 1030214, 50.0, 75.0, typeof(Cloth), 1044286, 16, 1044287);
             SetNeededExpansion(index, Expansion.SE);
-            index = AddCraft(typeof(ElvenPants), 1111747, 1032665, 80.0, 105.0, typeof(Cloth), 1044455, 12, 1044287);
+            index = AddCraft(typeof(ElvenPants), 1015279, 1032665, 80.0, 105.0, typeof(Cloth), 1044455, 12, 1044287);
             SetNeededExpansion(index, Expansion.SE);
-            index = AddCraft(typeof(WoodlandBelt), 1111747, 1032639, 80.0, 105.0, typeof(Cloth), 1044455, 10, 1044287);
+            index = AddCraft(typeof(WoodlandBelt), 1015279, 1032639, 80.0, 105.0, typeof(Cloth), 1044455, 10, 1044287);
             SetNeededExpansion(index, Expansion.SE);
         }
 
