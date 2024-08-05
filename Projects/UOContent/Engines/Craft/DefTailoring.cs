@@ -182,13 +182,13 @@ public class DefTailoring : CraftSystem
             SetNeededExpansion(index, Expansion.SE);
             index = AddCraft(typeof(JinBaori), 1015269, 1030220, 30.0, 55.0, typeof(Cloth), 1044286, 12, 1044287);
             SetNeededExpansion(index, Expansion.SE);
-            index = AddCraft(typeof(ElvenShirt), 1111747, 1032661, 80.0, 105.0, typeof(Cloth), 1044455, 10, 1044287);
+            index = AddCraft(typeof(ElvenShirt), 1015269, 1032661, 80.0, 105.0, typeof(Cloth), 1044455, 10, 1044287);
             SetNeededExpansion(index, Expansion.SE);
-            index = AddCraft(typeof(ElvenDarkShirt), 1111747, 1032662, 80.0, 105.0, typeof(Cloth), 1044455, 10, 1044287);
+            index = AddCraft(typeof(ElvenDarkShirt), 1015269, 1032662, 80.0, 105.0, typeof(Cloth), 1044455, 10, 1044287);
             SetNeededExpansion(index, Expansion.SE);
-            index = AddCraft(typeof(MaleElvenRobe), 1111747, 1032659, 80.0, 105.0, typeof(Cloth), 1044455, 30, 1044287);
+            index = AddCraft(typeof(MaleElvenRobe), 1015269, 1032659, 80.0, 105.0, typeof(Cloth), 1044455, 30, 1044287);
             SetNeededExpansion(index, Expansion.SE);
-            index = AddCraft(typeof(FemaleElvenRobe), 1111747, 1032660, 80.0, 105.0, typeof(Cloth), 1044455, 30, 1044287);
+            index = AddCraft(typeof(FemaleElvenRobe), 1015269, 1032660, 80.0, 105.0, typeof(Cloth), 1044455, 30, 1044287);
             SetNeededExpansion(index, Expansion.SE);
 
         }
