@@ -83,4 +83,6 @@ public class EvilOmenSpell : NecromancerSpell, ISpellTargetingMobile
 
         return false;
     }
+
+    public static bool UnderEffects( Mobile mobile ) => _table.ContainsKey( mobile );
 }

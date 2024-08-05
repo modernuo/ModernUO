@@ -13,7 +13,7 @@ namespace Server.Spells.Chivalry
             9002
         );
 
-        private static readonly Dictionary<BaseWeapon, ExpireTimer> _table = new();
+        private static readonly Dictionary<Mobile, ConsecratedWeaponContext> _table = new Dictionary<Mobile, ConsecratedWeaponContext>();
 
         public ConsecrateWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -92,30 +92,114 @@ namespace Server.Spells.Chivalry
 
                 var duration = TimeSpan.FromSeconds(seconds);
 
-                _table.TryGetValue(weapon, out var timer);
-                timer?.Stop();
+                ConsecratedWeaponContext context;
 
-                weapon.Consecrated = true;
+                if (IsUnderEffects(Caster))
+                {
+                    context = _table[Caster];
 
-                _table[weapon] = timer = new ExpireTimer(weapon, duration);
+                    if (context.Timer != null)
+                    {
+                        context.Timer.Stop();
+                        context.Timer = null;
+                    }
 
-                timer.Start();
+                    context.Weapon = weapon;
+                }
+                else
+                {
+                    context = new ConsecratedWeaponContext(Caster, weapon);
+                }
+
+                weapon.ConsecratedContext = context;
+                context.Timer = Timer.DelayCall(duration, RemoveEffects, Caster);
+
+                _table[Caster] = context;
+
+                BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ConsecrateWeapon, 1151385, 1151386, duration, Caster, string.Format("{0}\t{1}", context.ConsecrateProcChance, context.ConsecrateDamageBonus)));
+
+
+                //_table.TryGetValue(weapon, out var timer);
+                //timer?.Stop();
+
+                //weapon.Consecrated = true;
+
+                //_table[weapon] = timer = new ExpireTimer(weapon, duration);
+
+                //timer.Start();
+
+                //BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ConsecrateWeapon, 1151385, 1151386, duration, Caster, string.Empty/*string.Format("{0}\t{1}"/*, context.ConsecrateProcChance, context.ConsecrateDamageBonus))*/));
             }
 
             FinishSequence();
         }
 
-        private class ExpireTimer : Timer
+        public static void RemoveEffects(Mobile m)
         {
-            private BaseWeapon _weapon;
-
-            public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay) => _weapon = weapon;
-
-            protected override void OnTick()
+            if (_table.ContainsKey(m))
             {
-                _weapon.Consecrated = false;
-                Effects.PlaySound(_weapon.GetWorldLocation(), _weapon.Map, 0x1F8);
-                _table.Remove(_weapon);
+                ConsecratedWeaponContext context = _table[m];
+
+                context.Expire();
+
+                _table.Remove(m);
+            }
+        }
+
+        public static bool IsUnderEffects(Mobile m) => _table.ContainsKey(m);
+    }
+
+    public class ConsecratedWeaponContext
+    {
+        public Mobile Owner { get; private set; }
+        public BaseWeapon Weapon { get; set; }
+
+        public Timer Timer { get; set; }
+
+        public int ConsecrateProcChance
+        {
+            get
+            {
+                if (Owner.Skills.Chivalry.Value >= 80)
+                {
+                    return 100;
+                }
+
+                return (int)Owner.Skills.Chivalry.Value;
+            }
+        }
+
+        public int ConsecrateDamageBonus
+        {
+            get
+            {
+                double value = Owner.Skills.Chivalry.Value;
+
+                if (value >= 90)
+                {
+                    return (int)Math.Truncate((value - 90) / 2);
+                }
+
+                return 0;
+            }
+        }
+
+        public ConsecratedWeaponContext(Mobile owner, BaseWeapon weapon)
+        {
+            Owner = owner;
+            Weapon = weapon;
+        }
+
+        public void Expire()
+        {
+            Weapon.ConsecratedContext = null;
+
+            Effects.PlaySound(Weapon.GetWorldLocation(), Weapon.Map, 0x1F8);
+
+            if (Timer != null)
+            {
+                Timer.Stop();
+                Timer = null;
             }
         }
     }

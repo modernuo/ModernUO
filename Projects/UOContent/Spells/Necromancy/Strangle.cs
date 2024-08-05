@@ -224,4 +224,6 @@ public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
             }
         }
     }
+
+    public static bool UnderEffects( Mobile mobile ) => _table.ContainsKey( mobile );
 }

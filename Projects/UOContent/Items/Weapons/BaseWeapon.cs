@@ -192,6 +192,9 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
 
+    [CommandProperty(AccessLevel.GameMaster)]
+    public ConsecratedWeaponContext ConsecratedContext { get; set; }
+
     public BaseWeapon(int itemID) : base(itemID)
     {
         Layer = (Layer)ItemData.Quality;
@@ -287,9 +290,6 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Cursed { get; set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool Consecrated { get; set; }
 
     [SerializableProperty(1)]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -1956,14 +1956,11 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
             out var direct
         );
 
-        if (Core.ML && this is BaseRanged)
-        {
-            attacker
-                .FindItemOnLayer<BaseQuiver>(Layer.Cloak)
-                ?.AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
-        }
+        bool ranged = this is BaseRanged;
 
-        if (Consecrated)
+        if ( ConsecratedContext != null &&
+             ConsecratedContext.Owner == attacker &&
+             ConsecratedContext.ConsecrateProcChance >= Utility.Random(100))
         {
             phys = defender.PhysicalResistance;
             fire = defender.FireResistance;
@@ -1973,51 +1970,43 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
             int low = phys, type = 0;
 
-            if (fire < low)
-            {
-                low = fire;
-                type = 1;
-            }
-
-            if (cold < low)
-            {
-                low = cold;
-                type = 2;
-            }
-
-            if (pois < low)
-            {
-                low = pois;
-                type = 3;
-            }
-
-            if (nrgy < low)
-            {
-                type = 4;
-            }
+            if (fire < low) { low = fire; type = 1; }
+            if (cold < low) { low = cold; type = 2; }
+            if (pois < low) { low = pois; type = 3; }
+            if (nrgy < low) { low = nrgy; type = 4; }
 
             phys = fire = cold = pois = nrgy = chaos = direct = 0;
 
-            if (type == 0)
+            switch ( type )
             {
-                phys = 100;
+                case 0:
+                    phys = 100;
+                    break;
+                default:
+                    switch ( type )
+                    {
+                        case 1:
+                            fire = 100;
+                            break;
+                        case 2:
+                            cold = 100;
+                            break;
+                        case 3:
+                            pois = 100;
+                            break;
+                        case 4:
+                            nrgy = 100;
+                            break;
+                    }
+
+                    break;
             }
-            else if (type == 1)
-            {
-                fire = 100;
-            }
-            else if (type == 2)
-            {
-                cold = 100;
-            }
-            else if (type == 3)
-            {
-                pois = 100;
-            }
-            else
-            {
-                nrgy = 100;
-            }
+        }
+        else if ( ranged )
+        {
+            attacker
+                .FindItemOnLayer<BaseQuiver>(Layer.Cloak)
+                ?.AlterBowDamage(ref phys, ref fire, ref cold, ref pois, ref nrgy, ref chaos, ref direct);
         }
 
         // TODO: Scale damage, alongside the leech effects below, to weapon speed.
@@ -2400,10 +2389,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         }
     }
 
-    public virtual void GetDamageTypes(
-        Mobile wielder, out int phys, out int fire, out int cold, out int pois,
-        out int nrgy, out int chaos, out int direct
-    )
+    public virtual void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
     {
         if (wielder is BaseCreature bc)
         {

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Server.Mobiles;
 
 namespace Server.Spells.Ninjitsu;
@@ -24,8 +25,9 @@ public abstract class NinjaSpell : Spell
 
     public override int CastRecoveryBase => 7;
 
-    public static bool CheckExpansion(Mobile from) =>
-        (from as PlayerMobile)?.NetState?.SupportsExpansion(Expansion.SE) == true;
+    public static bool CheckExpansion( Mobile from ) =>
+        from is BaseCreature && Core.Expansion >= Expansion.SE ||
+        ( from as PlayerMobile )?.NetState?.SupportsExpansion( Expansion.SE ) == true;
 
     public override bool CheckCast()
     {

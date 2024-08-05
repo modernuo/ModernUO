@@ -139,4 +139,6 @@ public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
             DoExpire();
         }
     }
+
+    public static bool IsUnderEffects( Mobile mobile ) => _table.ContainsKey( mobile );
 }
