@@ -3,6 +3,26 @@ using Server.Items;
 
 namespace Server.Engines.Craft;
 
+public enum CookRecipes
+{
+    // magical
+    RotWormStew = 500,
+    GingerbreadCookie = 599,
+
+    DarkChocolateNutcracker = 600,
+    MilkChocolateNutcracker = 601,
+    WhiteChocolateNutcracker = 602,
+
+    ThreeTieredCake = 603,
+    BlackrockStew = 604,
+    Hamburger = 605,
+    HotDog = 606,
+    Sausage = 607,
+
+    GrilledSerpentSteak = 608,
+    BBQDinoRibs = 609,
+    WakuChicken = 610
+}
 public class DefCooking : CraftSystem
 {
     public static void Initialize()
@@ -140,17 +160,7 @@ public class DefCooking : CraftSystem
 
         if (Core.SE)
         {
-            index = AddCraft(
-                typeof(GreenTea),
-                1044496,
-                1030315,
-                80.0,
-                130.0,
-                typeof(GreenTeaBasket),
-                1030316,
-                1,
-                1044253
-            );
+            index = AddCraft(typeof(GreenTea), 1044496, 1030316, 80.0, 130.0, typeof(GreenTeaBasket), 1030316, 1, 1044253);
             AddRes(index, typeof(BaseBeverage), 1046458, 1, 1044253);
             SetNeededExpansion(index, Expansion.SE);
             SetNeedOven(index, true);
@@ -357,6 +367,18 @@ public class DefCooking : CraftSystem
         }
         /* End Baking */
 
+        if ( Core.ML )
+        {
+            index = AddCraft(typeof(GingerBreadCookie), 1044497, 1031233, 35.0, 85.0, typeof(CookieMix), 1044474, 1, 1044253);
+            AddRes(index, typeof(FreshGinger), 1031235, 1, 1044253);
+            AddRecipe(index, (int)CookRecipes.GingerbreadCookie);
+            SetNeedOven(index, true);
+
+            index = AddCraft(typeof(ThreeTieredCake), 1044497, 1154465, 60.0, 110.0, typeof(CakeMix), 1044471, 3, 1044253);
+            AddRecipe(index, (int)CookRecipes.ThreeTieredCake);
+            SetNeedOven(index, true);
+        }
+
         /* Begin Barbecue */
         index = AddCraft(typeof(CookedBird), 1044498, 1022487, 0.0, 100.0, typeof(RawBird), 1044470, 1, 1044253);
         SetNeedHeat(index, true);
@@ -382,6 +404,25 @@ public class DefCooking : CraftSystem
         SetNeedHeat(index, true);
         SetUseAllRes(index, true);
         /* End Barbecue */
+
+        if ( Core.ML )
+        {
+            index = AddCraft(typeof(FoodEngraver), 1073108, 1072951, 75.0, 100.0, typeof(Dough), 1044469, 1, 1044253);
+            AddRes(index, typeof(JarHoney), 1044472, 1, 1044253);
+
+            index = AddCraft(typeof(EnchantedApple), 1073108, 1072952, 60.0, 85.0, typeof(Apple), 1044479, 1, 1044253);
+            AddRes(index, typeof(GreaterHealPotion), 1073467, 1, 1044253);
+            ForceNonExceptional(index);
+
+            index = AddCraft(typeof(GrapesOfWrath), 1073108, 1072953, 95.0, 120.0, typeof(Grapes), 1073468, 1, 1044253);
+            AddRes(index, typeof(GreaterStrengthPotion), 1073466, 1, 1044253);
+            ForceNonExceptional(index);
+
+            index = AddCraft(typeof(FruitBowl), 1073108, 1072950, 55.0, 105.0, typeof(EmptyWoodenBowl), 1073472, 1, 1044253);
+            AddRes(index, typeof(Pear), 1044481, 3, 1044253);
+            AddRes(index, typeof(Apple), 1044479, 3, 1044253);
+            AddRes(index, typeof(Banana), 1073470, 3, 1044253);
+        }
 
         /* Begin Chocolatiering */
         if (Core.ML)
@@ -440,5 +481,27 @@ public class DefCooking : CraftSystem
         }
 
         /* End Chocolatiering */
+        if ( Core.ML )
+        {
+            //TODO
+            //index = AddCraft(typeof(CoffeeMug), 1155736, 1155737, 0.0, 28.58, typeof(CoffeeGrounds), 1155735, 1, 1155734);
+            //AddRes(index, typeof(BaseBeverage), 1046458, 1, 1044253);
+            //SetBeverageType(index, BeverageType.Water);
+            //SetNeedMaker(index, true);
+            //ForceNonExceptional(index);
+
+            //index = AddCraft(typeof(BasketOfGreenTeaMug), 1155736, 1030315, 0.0, 28.58, typeof(GreenTeaBasket), 1155735, 1, 1044253);
+            //AddRes(index, typeof(BaseBeverage), 1046458, 1, 1044253);
+            //SetBeverageType(index, BeverageType.Water);
+            //SetNeedMaker(index, true);
+            //ForceNonExceptional(index);
+
+            //index = AddCraft(typeof(HotCocoaMug), 1155736, 1155738, 0.0, 28.58, typeof(CocoaLiquor), 1080007, 1, 1080006);
+            //AddRes(index, typeof(SackOfSugar), 1080003, 1, 1080002);
+            //AddRes(index, typeof(BaseBeverage), 1080011, 1, 1080010);
+            //SetBeverageType(index, BeverageType.Milk);
+            //SetNeedMaker(index, true);
+            //ForceNonExceptional(index);
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace Server.Mobiles
         {
             public InternalBuyInfo()
             {
+                Add(new GenericBuyInfo("1031235", typeof(FreshGinger), 505, 10, 11235, 0));
                 Add(new GenericBuyInfo(typeof(BreadLoaf), 6, 20, 0x103B, 0));
                 Add(new GenericBuyInfo(typeof(BreadLoaf), 5, 20, 0x103C, 0));
                 Add(new GenericBuyInfo(typeof(ApplePie), 7, 20, 0x1041, 0)); // OSI just has Pie, not Apple/Fruit/Meat
