@@ -172,8 +172,8 @@ public partial class Corpse : Container, ICarvable
         _kills = owner.Kills;
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
 
-        _hair = new CorpseHair(this, hair.ItemID, hair.Hue);
-        _facialHair = new CorpseFacialHair(this, facialHair.ItemID, facialHair.Hue);
+        _hair = new CorpseHair(this, hair?.ItemID ?? 0, hair?.Hue ?? 0);
+        _facialHair = new CorpseFacialHair(this, facialHair?.ItemID ?? 0, facialHair?.Hue ?? 0);
 
         // This corpse does not turn to bones if: the owner is not a player
         SetFlag(CorpseFlag.NoBones, !owner.Player);
