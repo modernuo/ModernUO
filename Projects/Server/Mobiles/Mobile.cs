@@ -8139,18 +8139,20 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             m_NetState.SendCloseGump(gump.TypeID, 0);
             m_NetState.RemoveGump(gump);
             gump.OnServerClose(m_NetState);
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
-    public bool CloseAllGumps()
+    public void CloseAllGumps()
     {
         var ns = m_NetState;
 
         if (ns.CannotSendPackets())
         {
-            return false;
+            return;
         }
 
         var gumps = new List<BaseGump>(ns.Gumps);
@@ -8164,10 +8166,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             gump.OnServerClose(ns);
         }
 
-        return true;
+        return;
     }
 
-    public bool HasGump<T>() where T : BaseGump => FindGump<T>() != null;
+    public bool HasGump<T>() where T : BaseGump => m_NetState?.Gumps.Exists(g => g is T) ?? false;
 
     public bool SendGump(BaseGump g)
     {
