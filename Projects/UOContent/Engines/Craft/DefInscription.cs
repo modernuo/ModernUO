@@ -439,18 +439,20 @@ public class DefInscription : CraftSystem
             AddCraft(typeof(Spellbook), 1044294, 1023834, 50.0, 126, typeof(BlankScroll), 1044377, 10, 1044378);
         }
 
-        /* TODO
         if (Core.ML)
         {
-          index = AddCraft( typeof( ScrappersCompendium ), 1044294, 1072940, 75.0, 125.0, typeof( BlankScroll ), 1044377, 100, 1044378 );
-          AddRes( index, typeof( DreadHornMane ), 1032682, 1, 1044253 );
-          AddRes( index, typeof( Taint ), 1032679, 10, 1044253 );
-          AddRes( index, typeof( Corruption ), 1032676, 10, 1044253 );
-          AddRareRecipe( index, 400 );
-          ForceNonExceptional( index );
-          SetNeededExpansion( index, Expansion.ML );
+            index = AddCraft(typeof(ScrappersCompendium), 1044294, 1072940, 75.0, 125.0, typeof(BlankScroll), 1044377, 100, 1044378);
+            AddRes(index, typeof(DreadHornMane), 1032682, 1, 1044253);
+            AddRes(index, typeof(Taint), 1032679, 10, 1044253);
+            AddRes(index, typeof(Corruption), 1032676, 10, 1044253);
+            AddRareRecipe(index, 400);
+            ForceNonExceptional(index);
+            SetNeededExpansion(index, Expansion.ML);
+
+            index = AddCraft(typeof(SpellbookEngraver), 1044294, 1072151, 75.0, 100.0, typeof(Feather), 1044562, 1, 1044563);
+            AddRes(index, typeof(BlackPearl), 1015001, 7, 1044253);
         }
-        */
+
 
         if (Core.SA)
         {
