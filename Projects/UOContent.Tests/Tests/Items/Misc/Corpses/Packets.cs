@@ -38,13 +38,13 @@ public sealed class CorpseEquip : Packet
             if (beheld.Hair?.ItemID > 0)
             {
                 Stream.Write((byte)(Layer.Hair + 1));
-                Stream.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                Stream.Write(beheld.Hair.VirtualSerial);
             }
 
             if (beheld.FacialHair?.ItemID > 0)
             {
                 Stream.Write((byte)(Layer.FacialHair + 1));
-                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                Stream.Write(beheld.FacialHair.VirtualSerial);
             }
 
             Stream.Write((byte)Layer.Invalid);
@@ -98,7 +98,7 @@ public sealed class CorpseContent : Packet
 
             if (beheld.Hair?.ItemID > 0)
             {
-                Stream.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                Stream.Write(beheld.Hair.VirtualSerial);
                 Stream.Write((ushort)beheld.Hair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);
@@ -112,7 +112,7 @@ public sealed class CorpseContent : Packet
 
             if (beheld.FacialHair?.ItemID > 0)
             {
-                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                Stream.Write(beheld.FacialHair.VirtualSerial);
                 Stream.Write((ushort)beheld.FacialHair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);
@@ -177,7 +177,7 @@ public sealed class CorpseContent6017 : Packet
 
             if (beheld.Hair?.ItemID > 0)
             {
-                Stream.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                Stream.Write(beheld.Hair.VirtualSerial);
                 Stream.Write((ushort)beheld.Hair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);
@@ -192,7 +192,7 @@ public sealed class CorpseContent6017 : Packet
 
             if (beheld.FacialHair?.ItemID > 0)
             {
-                Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                Stream.Write(beheld.FacialHair.VirtualSerial);
                 Stream.Write((ushort)beheld.FacialHair.ItemID);
                 Stream.Write((byte)0); // signed, itemID offset
                 Stream.Write((ushort)1);

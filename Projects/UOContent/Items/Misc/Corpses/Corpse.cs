@@ -7,6 +7,7 @@ using Server.Engines.PartySystem;
 using Server.Engines.Quests.Doom;
 using Server.Engines.Quests.Haven;
 using Server.Guilds;
+using Server.Items.Misc.Corpses;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -64,7 +65,7 @@ public enum CorpseFlag
     SelfLooted = 0x00000080
 }
 
-[SerializationGenerator(13, false)]
+[SerializationGenerator(14, false)]
 public partial class Corpse : Container, ICarvable
 {
     public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes(2.0);
@@ -132,6 +133,14 @@ public partial class Corpse : Container, ICarvable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Item> _equipItems;
 
+    [SerializableField(14, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private CorpseHair _hair;
+
+    [SerializableField(15, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private CorpseFacialHair _facialHair;
+
     // Why was this public?
     // public override bool IsPublicContainer => true;
 
@@ -139,7 +148,7 @@ public partial class Corpse : Container, ICarvable
     {
     }
 
-    public Corpse(Mobile owner, HairInfo hair, FacialHairInfo facialhair, List<Item> equipItems)
+    public Corpse(Mobile owner, VirtualHairInfo hair, VirtualFacialHairInfo facialHair, List<Item> equipItems)
         : base(0x2006)
     {
         // To suppress console warnings, stackable must be true
@@ -163,8 +172,8 @@ public partial class Corpse : Container, ICarvable
         _kills = owner.Kills;
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
 
-        Hair = hair;
-        FacialHair = facialhair;
+        _hair = new CorpseHair(this, hair.ItemID, hair.Hue);
+        _facialHair = new CorpseFacialHair(this, facialHair.ItemID, facialHair.Hue);
 
         // This corpse does not turn to bones if: the owner is not a player
         SetFlag(CorpseFlag.NoBones, !owner.Player);
@@ -237,6 +246,28 @@ public partial class Corpse : Container, ICarvable
         DevourCorpse();
     }
 
+    // Added corpse hair and corpse facial hair
+    private void MigrateFrom(V13Content content)
+    {
+        _restoreEquip = content.RestoreEquip;
+        _flags = content.Flags;
+        _timeOfDeath = content.TimeOfDeath;
+        _restoreTable = content.RestoreTable;
+        _decayTimer = new InternalTimer(this, content.DecayTimerDelay);
+        _decayTimer.Start();
+        _looters = content.Looters;
+        _killer = content.Killer;
+        _aggressors = content.Aggressors;
+        _owner = content.Owner;
+        _corpseName = content.CorpseName;
+        _accessLevel = content.AccessLevel;
+        _guild = content.Guild;
+        _kills = content.Kills;
+        _equipItems = content.EquipItems;
+        _hair = new CorpseHair(this);
+        _facialHair = new CorpseFacialHair(this);
+    }
+
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual bool InstancedCorpse => Core.SE && Core.Now < TimeOfDeath + InstancedCorpseTime;
 
@@ -247,10 +278,6 @@ public partial class Corpse : Container, ICarvable
     // Name of the first PlayerMobile who used Forensic Evaluation on the corpse
     [CommandProperty(AccessLevel.GameMaster)]
     public string Forensicist { get; set; }
-
-    public HairInfo Hair { get; }
-
-    public FacialHairInfo FacialHair { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsBones => GetFlag(CorpseFlag.IsBones);
@@ -493,7 +520,7 @@ public partial class Corpse : Container, ICarvable
     }
 
     public static Container Mobile_CreateCorpseHandler(
-        Mobile owner, HairInfo hair, FacialHairInfo facialhair,
+        Mobile owner, VirtualHairInfo hair, VirtualFacialHairInfo facialhair,
         List<Item> initialContent, List<Item> equipItems
     )
     {

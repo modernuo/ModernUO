@@ -52,13 +52,13 @@ public static class CorpsePackets
             if (beheld.Hair?.ItemID > 0)
             {
                 writer.Write((byte)(Layer.Hair + 1));
-                writer.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                writer.Write(beheld.Hair.VirtualSerial);
             }
 
             if (beheld.FacialHair?.ItemID > 0)
             {
                 writer.Write((byte)(Layer.FacialHair + 1));
-                writer.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                writer.Write(beheld.FacialHair.VirtualSerial);
             }
         }
 
@@ -122,7 +122,7 @@ public static class CorpsePackets
         {
             if (hairItemID > 0)
             {
-                writer.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                writer.Write(beheld.Hair.VirtualSerial);
                 writer.Write((ushort)hairItemID);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);
@@ -139,7 +139,7 @@ public static class CorpsePackets
 
             if (facialHairItemID > 0)
             {
-                writer.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                writer.Write(beheld.FacialHair.VirtualSerial);
                 writer.Write((ushort)facialHairItemID);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);

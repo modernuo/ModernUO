@@ -590,7 +590,7 @@ namespace Server.Tests.Network
                         itemID |= 0x8000;
                     }
 
-                    Stream.Write(HairInfo.FakeSerial(beheld.Serial));
+                    Stream.Write(beheld.Hair.VirtualSerial);
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.Hair);
 
@@ -621,7 +621,7 @@ namespace Server.Tests.Network
                         itemID |= 0x8000;
                     }
 
-                    Stream.Write(FacialHairInfo.FakeSerial(beheld.Serial));
+                    Stream.Write(beheld.FacialHair.VirtualSerial);
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.FacialHair);
 

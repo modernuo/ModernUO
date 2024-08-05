@@ -65,15 +65,16 @@ public static class OutgoingVirtualHairPackets
     }
 }
 
-public abstract class BaseHairInfo
+public abstract class BaseVirtualHairInfo
 {
-    protected BaseHairInfo(int itemid, int hue = 0)
+    protected BaseVirtualHairInfo(int itemid, int hue = 0)
     {
         ItemID = itemid;
         Hue = hue;
+        VirtualSerial = World.NewVirtual;
     }
 
-    protected BaseHairInfo(IGenericReader reader)
+    protected BaseVirtualHairInfo(IGenericReader reader)
     {
         var version = reader.ReadInt();
 
@@ -86,6 +87,8 @@ public abstract class BaseHairInfo
                     break;
                 }
         }
+
+        VirtualSerial = World.NewVirtual;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -100,48 +103,42 @@ public abstract class BaseHairInfo
         writer.Write(ItemID);
         writer.Write(Hue);
     }
+
+    public Serial VirtualSerial { get; private set; } = Serial.Zero;
 }
 
-public class HairInfo : BaseHairInfo
+public class VirtualHairInfo : BaseVirtualHairInfo
 {
-    public HairInfo(int itemid)
+    public VirtualHairInfo(int itemid)
         : base(itemid)
     {
     }
 
-    public HairInfo(int itemid, int hue)
+    public VirtualHairInfo(int itemid, int hue)
         : base(itemid, hue)
     {
     }
 
-    public HairInfo(IGenericReader reader)
+    public VirtualHairInfo(IGenericReader reader)
         : base(reader)
     {
     }
-
-    // TODO: Can we make this higher for newer clients?
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - m.Value * 4;
 }
 
-public class FacialHairInfo : BaseHairInfo
+public class VirtualFacialHairInfo : BaseVirtualHairInfo
 {
-    public FacialHairInfo(int itemid)
+    public VirtualFacialHairInfo(int itemid)
         : base(itemid)
     {
     }
 
-    public FacialHairInfo(int itemid, int hue)
+    public VirtualFacialHairInfo(int itemid, int hue)
         : base(itemid, hue)
     {
     }
 
-    public FacialHairInfo(IGenericReader reader)
+    public VirtualFacialHairInfo(IGenericReader reader)
         : base(reader)
     {
     }
-
-    // TODO: Can we make this higher for newer clients?
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - 1 - m.Value* 4;
 }

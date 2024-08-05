@@ -53,12 +53,35 @@ public static class World
 
     public const bool DirtyTrackingEnabled = false;
     public const uint ItemOffset = 0x40000000;
-    public const uint MaxItemSerial = 0x7FFFFFFF;
+    public const uint MaxItemSerial = 0x7EEEEEEE;
     public const uint MaxMobileSerial = ItemOffset - 1;
+
+    private const uint ResetVirtualSerial = MaxItemSerial;
+    private const uint MaxVirtualSerial = 0x7FFFFFFF;
+    private static uint NextVirtualSerial = ResetVirtualSerial;
 
     public static Serial NewMobile => _mobilePersistence.NewEntity;
     public static Serial NewItem => _itemPersistence.NewEntity;
     public static Serial NewGuild => _guildPersistence.NewEntity;
+
+    // Virtual things don't persist across saves
+    public static Serial NewVirtual
+    {
+        get
+        {
+            // Guarantee unique serials without locking
+            uint value;
+            uint newValue;
+
+            do
+            {
+                value = NextVirtualSerial;
+                newValue = (value >= MaxVirtualSerial ? ResetVirtualSerial : value + 1);
+            }
+            while (Interlocked.CompareExchange(ref NextVirtualSerial, value + 1, value) != value);
+            return (Serial)value;
+        }
+    }
 
     public static Dictionary<Serial, Item> Items => _itemPersistence.EntitiesBySerial;
     public static Dictionary<Serial, Mobile> Mobiles => _mobilePersistence.EntitiesBySerial;

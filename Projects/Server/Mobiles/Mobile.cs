@@ -187,7 +187,7 @@ public delegate bool AllowBeneficialHandler(Mobile from, Mobile target);
 public delegate bool AllowHarmfulHandler(Mobile from, Mobile target);
 
 public delegate Container CreateCorpseHandler(
-    Mobile from, HairInfo hair, FacialHairInfo facialhair, List<Item> initialContent, List<Item> equippedItems
+    Mobile from, VirtualHairInfo hair, VirtualFacialHairInfo facialhair, List<Item> initialContent, List<Item> equippedItems
 );
 
 public delegate int AOSStatusHandler(Mobile from, int index);
@@ -273,7 +273,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private TimerExecutionToken _expireAggrTimerToken;
     private TimerExecutionToken _expireCombatantTimerToken;
     private TimerExecutionToken _expireCriminalTimerToken;
-    private FacialHairInfo m_FacialHair;
+    private VirtualFacialHairInfo m_FacialHair;
+    public VirtualFacialHairInfo FacialHair
+    {
+        get => m_FacialHair ??= new VirtualFacialHairInfo(FacialHairItemID, FacialHairHue);
+    }
     private int m_Fame, m_Karma;
     private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
     private int m_Followers, m_FollowersMax;
@@ -282,7 +286,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private BaseGuild m_Guild;
     private string m_GuildTitle;
 
-    private HairInfo m_Hair;
+    private VirtualHairInfo m_Hair;
+    public VirtualHairInfo Hair
+    {
+        get => m_Hair ??= new VirtualHairInfo(HairItemID, HairHue);
+    }
     private int m_Hits, m_Stam, m_Mana;
 
     private Item m_Holding;
@@ -2170,7 +2178,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             if (m_Hair == null && value > 0)
             {
-                m_Hair = new HairInfo(value);
+                m_Hair = new VirtualHairInfo(value);
             }
             else if (value <= 0)
             {
@@ -2193,7 +2201,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             if (m_FacialHair == null && value > 0)
             {
-                m_FacialHair = new FacialHairInfo(value);
+                m_FacialHair = new VirtualFacialHairInfo(value);
             }
             else if (value <= 0)
             {
@@ -2708,14 +2716,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             sendFacialHair = true;
         }
 
-        var hairSerial = HairInfo.FakeSerial(Serial);
+        var hairSerial = Hair.VirtualSerial;
         var hairLength = removeHair
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
 
         Span<byte> hairPacket = stackalloc byte[hairLength].InitializePacket();
 
-        var facialHairSerial = FacialHairInfo.FakeSerial(Serial);
+        var facialHairSerial = FacialHair.VirtualSerial;
         var facialHairLength = removeFacialHair
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
@@ -2806,14 +2814,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 if (removeHair)
                 {
-                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
+                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, (uint)hairSerial);
                 }
                 else
                 {
                     OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
                         hairPacket,
                         this,
-                        hairSerial,
+                        (uint)hairSerial,
                         HairItemID,
                         HairHue,
                         Layer.Hair
@@ -2827,14 +2835,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 if (removeFacialHair)
                 {
-                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, facialHairSerial);
+                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, (uint)facialHairSerial);
                 }
                 else
                 {
                     OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
                         facialHairPacket,
                         this,
-                        facialHairSerial,
+                        (uint)facialHairSerial,
                         FacialHairItemID,
                         FacialHairHue,
                         Layer.FacialHair
@@ -2943,14 +2951,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 if (removeHair)
                 {
-                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, hairSerial);
+                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(hairPacket, (uint)hairSerial);
                 }
                 else
                 {
                     OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
                         hairPacket,
                         this,
-                        hairSerial,
+                        (uint)hairSerial,
                         HairItemID,
                         HairHue,
                         Layer.Hair
@@ -2964,14 +2972,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 if (removeFacialHair)
                 {
-                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, facialHairSerial);
+                    OutgoingVirtualHairPackets.CreateRemoveHairPacket(facialHairPacket, (uint)facialHairSerial);
                 }
                 else
                 {
                     OutgoingVirtualHairPackets.CreateHairEquipUpdatePacket(
                         facialHairPacket,
                         this,
-                        facialHairSerial,
+                        (uint)facialHairSerial,
                         FacialHairItemID,
                         FacialHairHue,
                         Layer.FacialHair
@@ -4764,19 +4772,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
 
-        HairInfo hair = null;
-        if (m_Hair != null)
-        {
-            hair = new HairInfo(m_Hair.ItemID, m_Hair.Hue);
-        }
-
-        FacialHairInfo facialhair = null;
-        if (m_FacialHair != null)
-        {
-            facialhair = new FacialHairInfo(m_FacialHair.ItemID, m_FacialHair.Hue);
-        }
-
-        var c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
+        var c = CreateCorpseHandler?.Invoke(this, Hair, FacialHair, content, equip);
 
         if (m_Map != null)
         {
@@ -6092,12 +6088,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                     if ((hairflag & 0x01) != 0)
                     {
-                        m_Hair = new HairInfo(reader);
+                        m_Hair = new VirtualHairInfo(reader);
                     }
 
                     if ((hairflag & 0x02) != 0)
                     {
-                        m_FacialHair = new FacialHairInfo(reader);
+                        m_FacialHair = new VirtualFacialHairInfo(reader);
                     }
 
                     goto case 29;
