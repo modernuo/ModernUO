@@ -580,6 +580,16 @@ namespace Server
                         value += attrs[attribute];
                     }
                 }
+
+                if ( obj is ISetItem item )
+                {
+                    var attrs = item.SetAttributes;
+
+                    if ( attrs != null && item.LastEquipped )
+                    {
+                        value += attrs[attribute];
+                    }
+                }
             }
 
             return value;

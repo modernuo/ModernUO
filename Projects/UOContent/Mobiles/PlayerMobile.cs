@@ -1145,6 +1145,71 @@ namespace Server.Mobiles
             m_LastPersonalLight = -1;
         }
 
+        public override void ComputeResistances()
+        {
+            base.ComputeResistances();
+
+            for (int i = 0; i < Resistances.Length; ++i)
+            {
+                Resistances[i] = 0;
+            }
+
+            Resistances[0] += BasePhysicalResistance;
+            Resistances[1] += BaseFireResistance;
+            Resistances[2] += BaseColdResistance;
+            Resistances[3] += BasePoisonResistance;
+            Resistances[4] += BaseEnergyResistance;
+
+            for (int i = 0; ResistanceMods != null && i < ResistanceMods.Count; ++i)
+            {
+                ResistanceMod mod = ResistanceMods[i];
+                int v = (int)mod.Type;
+
+                if (v >= 0 && v < Resistances.Length)
+                {
+                    Resistances[v] += mod.Offset;
+                }
+            }
+
+            for (int i = 0; i < Items.Count; ++i)
+            {
+                Item item = Items[i];
+
+                if (item.CheckPropertyConflict(this))
+                {
+                    continue;
+                }
+
+                ISetItem setItem = item as ISetItem;
+
+                Resistances[0] += setItem is { SetEquipped: true } ? setItem.SetResistBonus(ResistanceType.Physical) : item.PhysicalResistance;
+                Resistances[1] += setItem is { SetEquipped: true } ? setItem.SetResistBonus(ResistanceType.Fire) : item.FireResistance;
+                Resistances[2] += setItem is { SetEquipped: true } ? setItem.SetResistBonus(ResistanceType.Cold) : item.ColdResistance;
+                Resistances[3] += setItem is { SetEquipped: true } ? setItem.SetResistBonus(ResistanceType.Poison) : item.PoisonResistance;
+                Resistances[4] += setItem is { SetEquipped: true } ? setItem.SetResistBonus(ResistanceType.Energy) : item.EnergyResistance;
+            }
+
+            for (int i = 0; i < Resistances.Length; ++i)
+            {
+                int min = GetMinResistance((ResistanceType)i);
+                int max = GetMaxResistance((ResistanceType)i);
+
+                if (max < min)
+                {
+                    max = min;
+                }
+
+                if (Resistances[i] > max)
+                {
+                    Resistances[i] = max;
+                }
+                else if (Resistances[i] < min)
+                {
+                    Resistances[i] = min;
+                }
+            }
+        }
+
         public override void ComputeBaseLightLevels(out int global, out int personal)
         {
             global = LightCycle.ComputeLevelFor(this);

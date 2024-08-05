@@ -333,8 +333,8 @@ namespace Server.Gumps
                     }
 
                 // 8th anniversary
-                /*case 0x6B: types = new [] {  typeof( SpiritualityHelm )  }; cliloc = 1075188; break;
-                case 0x6C: types = new [] {  typeof( ValorGauntlets )  }; cliloc = 1075192; break;*/
+                case 0x6B: types = new[] { typeof(SpiritualityHelm) }; cliloc = 1075188; break;
+                case 0x6C: types = new[] { typeof(ValorGauntlets) }; cliloc = 1075192; break;
                 case 0x6D:
                     {
                         types = new [] { typeof(DupresShield) };

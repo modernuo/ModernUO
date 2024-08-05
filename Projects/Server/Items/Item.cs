@@ -794,6 +794,9 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         AddNameProperties(list);
     }
 
+    [CommandProperty(AccessLevel.GameMaster)]
+    public IEntity RootParentEntity => RootParent as IEntity;
+
     [IgnoreDupe]
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
