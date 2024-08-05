@@ -165,7 +165,7 @@ public class DefCarpentry : CraftSystem
             SetNeededExpansion(index, Expansion.ML);
             index = AddCraft(typeof(GiantReplicaAcorn), 1044294, 1072889, 80.0, 105.0, typeof(Log), 1044041, 35, 1044351);
             SetNeededExpansion(index, Expansion.ML);
-            index = AddCraft(typeof(MountedDreadHorn), 1044294, 1032632, 90.0, 115.0, typeof(Log), 1044041, 50, 1044351);
+            index = AddCraft(typeof(MountedDreadHorn), 1044294, 1074464, 90.0, 115.0, typeof(Log), 1044041, 50, 1044351);
             AddRes(index, typeof(PristineDreadHorn), 1032634, 1, 1053098);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
@@ -282,7 +282,7 @@ public class DefCarpentry : CraftSystem
             index = AddCraft(typeof(ElvenWashBasinSouthDeed), 1044292, 1072865, 70.0, 95.0, typeof(Log), 1044041, 40, 1044351);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
-            index = AddCraft(typeof(ElvenWashBasinEastDeed), 1044292, 1072865, 70.0, 95.0, typeof(Log), 1044041, 40, 1044351);
+            index = AddCraft(typeof(ElvenWashBasinEastDeed), 1044292, 1073387, 70.0, 95.0, typeof(Log), 1044041, 40, 1044351);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
             index = AddCraft(typeof(ElvenDresserSouthDeed), 1044292, 1072864, 75.0, 100.0, typeof(Log), 1044041, 45, 1044351);
@@ -516,7 +516,7 @@ public class DefCarpentry : CraftSystem
         AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
         AddRes(index, typeof(Cloth), 1044286, 10, 1044287);
 
-        index = AddCraft(typeof(DressformSide), 1044298, 1044339, 63.1, 88.1, typeof(Log), 1044041, 25, 1044351);
+        index = AddCraft(typeof(DressformSide), 1044298, 1044340, 63.1, 88.1, typeof(Log), 1044041, 25, 1044351);
         AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
         AddRes(index, typeof(Cloth), 1044286, 10, 1044287);
 
