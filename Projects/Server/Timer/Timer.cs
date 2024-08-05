@@ -236,11 +236,11 @@ public partial class Timer
     {
         if (Running)
         {
-            logger.Error(
-                $"{{Timer}} detached while still running!{Environment.NewLine}{{StackTrace}}",
-                this,
-                new StackTrace()
-            );
+            //logger.Error(
+            //    $"{{Timer}} detached while still running!{Environment.NewLine}{{StackTrace}}",
+            //    this,
+            //    new StackTrace()
+            //);
             return;
         }
 
