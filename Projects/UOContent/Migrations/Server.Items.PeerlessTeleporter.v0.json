@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Items.PeerlessTeleporter",
+  "properties": [
+    {
+      "name": "Altar",
+      "type": "Server.Items.PeerlessAltar",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

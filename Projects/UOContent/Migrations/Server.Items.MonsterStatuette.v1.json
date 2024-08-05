@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "type": "Server.Items.MonsterStatuette",
+  "properties": [
+    {
+      "name": "Type",
+      "type": "Server.Items.MonsterStatuetteType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "TurnedOn",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "IsRewardItem",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "EngravedText",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

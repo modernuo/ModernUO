@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Items.FeyLeggings",
+  "properties": [
+    {
+      "name": "ElfOnly",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

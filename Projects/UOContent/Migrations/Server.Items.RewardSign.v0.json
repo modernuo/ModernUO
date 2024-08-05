@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.RewardSign",
+  "properties": [
+    {
+      "name": "EngravedText",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

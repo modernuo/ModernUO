@@ -10,7 +10,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [SerializationGenerator(11, false)]
+    [SerializationGenerator(12, false)]
     public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IEngravable, ISetItem
     {
         [SerializedIgnoreDupe]

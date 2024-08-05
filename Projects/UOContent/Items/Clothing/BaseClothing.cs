@@ -22,9 +22,9 @@ namespace Server.Items
         int MaxArcaneCharges { get; set; }
     }
 
-    [SerializationGenerator(8, false)]
+    [SerializationGenerator(9, false)]
     public abstract partial class BaseClothing
-        : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IEngravable
+        : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IEngravable, ISetItem
     {
         [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
@@ -111,6 +111,8 @@ namespace Server.Items
         [SerializableFieldSaveFlag(11)]
         private bool ShouldSerializeEngravedText() => !string.IsNullOrWhiteSpace(_engravedText);
 
+        public virtual bool IsArtifact => false;
+
         // Field 10
         private int _strReq = -1;
 
@@ -129,6 +131,8 @@ namespace Server.Items
             ClothingAttributes = new AosArmorAttributes(this);
             SkillBonuses = new AosSkillBonuses(this);
             Resistances = new AosElementAttributes(this);
+            SetAttributes = new AosAttributes(this);
+            SetSkillBonuses = new AosSkillBonuses(this);
         }
 
         [SerializableProperty(0)]
@@ -720,6 +724,95 @@ namespace Server.Items
             }
         }
 
+        public virtual void GetSetProperties( IPropertyList list )
+        {
+            int prop;
+
+            if ( !_setEquipped )
+            {
+                if ( SetID == SetItem.Virtuoso )
+                {
+                    list.Add( 1151571 ); // Mastery Bonus Cooldown: 15 min.
+                }
+
+                if ( _setPhysicalBonus != 0 )
+                {
+                    list.Add( 1072382, _setPhysicalBonus.ToString() ); // physical resist +~1_val~%
+                }
+
+                if ( _setFireBonus != 0 )
+                {
+                    list.Add( 1072383, _setFireBonus.ToString() ); // fire resist +~1_val~%
+                }
+
+                if ( _setColdBonus != 0 )
+                {
+                    list.Add( 1072384, _setColdBonus.ToString() ); // cold resist +~1_val~%
+                }
+
+                if ( _setPoisonBonus != 0 )
+                {
+                    list.Add( 1072385, _setPoisonBonus.ToString() ); // poison resist +~1_val~%
+                }
+
+                if ( _setEnergyBonus != 0 )
+                {
+                    list.Add( 1072386, _setEnergyBonus.ToString() ); // energy resist +~1_val~%			
+                }
+            }
+            else if ( _setEquipped && SetHelper.ResistsBonusPerPiece( this ) && RootParentEntity is Mobile )
+            {
+                var m = ( Mobile )RootParentEntity;
+
+                if ( _setPhysicalBonus != 0 )
+                {
+                    list.Add(
+                        1080361,
+                        SetHelper.GetSetTotalResist( m, ResistanceType.Physical ).ToString()
+                    ); // physical resist ~1_val~% (total)
+                }
+
+                if ( _setFireBonus != 0 )
+                {
+                    list.Add(
+                        1080362,
+                        SetHelper.GetSetTotalResist( m, ResistanceType.Fire ).ToString()
+                    ); // fire resist ~1_val~% (total)
+                }
+
+                if ( _setColdBonus != 0 )
+                {
+                    list.Add(
+                        1080363,
+                        SetHelper.GetSetTotalResist( m, ResistanceType.Cold ).ToString()
+                    ); // cold resist ~1_val~% (total)
+                }
+
+                if ( _setPoisonBonus != 0 )
+                {
+                    list.Add(
+                        1080364,
+                        SetHelper.GetSetTotalResist( m, ResistanceType.Poison ).ToString()
+                    ); // poison resist ~1_val~% (total)
+                }
+
+                if ( _setEnergyBonus != 0 )
+                {
+                    list.Add(
+                        1080365,
+                        SetHelper.GetSetTotalResist( m, ResistanceType.Energy ).ToString()
+                    ); // energy resist ~1_val~% (total)
+                }
+            }
+
+            if ( ( prop = _setSelfRepair ) != 0 )
+            {
+                list.Add( 1060450, prop.ToString() ); // self repair ~1_val~		
+            }
+
+            SetHelper.GetSetProperties( list, this );
+        }
+
         public override void GetProperties(IPropertyList list)
         {
             base.GetProperties(list);
@@ -727,6 +820,31 @@ namespace Server.Items
             if (_crafter != null)
             {
                 list.Add(1050043, _crafter); // crafted by ~1_NAME~
+            }
+
+
+            if (IsSetItem)
+            {
+                if (MixedSet)
+                    list.Add(1073491, Pieces.ToString()); // Part of a Weapon/Armor Set (~1_val~ pieces)
+                else
+                    list.Add(1072376, Pieces.ToString()); // Part of an Armor Set (~1_val~ pieces)
+
+                //if (SetID == SetItem.Bestial)
+                //    list.Add(1151541, BestialSetHelper.GetTotalBerserk(this).ToString()); // Berserk ~1_VAL~
+
+                //if (BardMasteryBonus)
+                //    list.Add(1151553); // Activate: Bard Mastery Bonus x2<br>(Effect: 1 min. Cooldown: 30 min.)
+
+                if (_setEquipped)
+                {
+                    if (MixedSet)
+                        list.Add(1073492); // Full Weapon/Armor Set Present
+                    else
+                        list.Add(1072377); // Full Armor Set Present
+
+                    GetSetProperties(list);
+                }
             }
 
             if (_factionState != null)
@@ -914,6 +1032,12 @@ namespace Server.Items
             {
                 list.Add(1158847, Utility.FixHtml(EngravedText)); // Embroidered: ~1_MESSAGE~	
             }
+
+            if (IsSetItem && !_setEquipped)
+            {
+                list.Add(1072378); // <br>Only when full set is present:				
+                GetSetProperties(list);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -1014,6 +1138,84 @@ namespace Server.Items
                 AddStatBonuses(parent);
                 parent.CheckStatTimers();
             }
+        }
+
+        public virtual SetItem SetID => SetItem.None;
+        public virtual bool MixedSet => false;
+        public virtual int Pieces => 0;
+        public bool IsSetItem => (SetID != SetItem.None);
+
+        [SerializableField(12)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private AosAttributes _setAttributes;
+
+        [SerializableField(13)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private AosSkillBonuses _setSkillBonuses;
+
+        [SerializableField(14)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _setPhysicalBonus;
+        [SerializableField(15)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _setFireBonus;
+        [SerializableField(16)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _setColdBonus;
+        [SerializableField(17)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _setPoisonBonus;
+        [SerializableField(18)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _setEnergyBonus;
+        [SerializableField(19)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _setHue;
+        [SerializableField(20)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _setEquipped;
+        [SerializableField(21)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _lastEquipped;
+        [SerializableField(22)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _setSelfRepair;
+
+        [SerializableFieldDefault(12)]
+        private AosAttributes SetAttributesDefaultValue() => new(this);
+        [SerializableFieldDefault(13)]
+        private AosSkillBonuses SetSkillBonusesDefaultValue() => new(this);
+        [SerializableFieldSaveFlag(12)]
+        private bool ShouldSerializeSetAttributes() => !_setAttributes.IsEmpty;
+        [SerializableFieldSaveFlag(13)]
+        private bool ShouldSerializeSetSkillBonuses() => !_setSkillBonuses.IsEmpty;
+
+        public int SetResistBonus(ResistanceType resist)
+        {
+            if (SetHelper.ResistsBonusPerPiece(this))
+            {
+                switch (resist)
+                {
+                    case ResistanceType.Physical: return _setEquipped ? PhysicalResistance + _setPhysicalBonus : PhysicalResistance;
+                    case ResistanceType.Fire: return _setEquipped ? FireResistance + _setFireBonus : FireResistance;
+                    case ResistanceType.Cold: return _setEquipped ? ColdResistance + _setColdBonus : ColdResistance;
+                    case ResistanceType.Poison: return _setEquipped ? PoisonResistance + _setPoisonBonus : PoisonResistance;
+                    case ResistanceType.Energy: return _setEquipped ? EnergyResistance + _setEnergyBonus : EnergyResistance;
+                }
+            }
+            else
+            {
+                switch (resist)
+                {
+                    case ResistanceType.Physical: return _setEquipped ? LastEquipped ? (PhysicalResistance * Pieces) + _setPhysicalBonus : 0 : PhysicalResistance;
+                    case ResistanceType.Fire: return _setEquipped ? LastEquipped ? (FireResistance * Pieces) + _setFireBonus : 0 : FireResistance;
+                    case ResistanceType.Cold: return _setEquipped ? LastEquipped ? (ColdResistance * Pieces) + _setColdBonus : 0 : ColdResistance;
+                    case ResistanceType.Poison: return _setEquipped ? LastEquipped ? (PoisonResistance * Pieces) + _setPoisonBonus : 0 : PoisonResistance;
+                    case ResistanceType.Energy: return _setEquipped ? LastEquipped ? (EnergyResistance * Pieces) + _setEnergyBonus : 0 : EnergyResistance;
+                }
+            }
+
+            return 0;
         }
 
         [Flags]

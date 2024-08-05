@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.ThreeTieredCake",
+  "properties": [
+    {
+      "name": "Pieces",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

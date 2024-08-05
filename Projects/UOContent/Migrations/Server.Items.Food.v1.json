@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "type": "Server.Items.Food",
+  "properties": [
+    {
+      "name": "Poisoner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Poison",
+      "type": "Server.Poison",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Poison"
+      ]
+    },
+    {
+      "name": "FillFactor",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "EngravedText",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

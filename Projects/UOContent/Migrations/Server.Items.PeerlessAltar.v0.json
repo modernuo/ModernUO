@@ -1,0 +1,75 @@
+{
+  "version": 0,
+  "type": "Server.Items.PeerlessAltar",
+  "properties": [
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Helpers",
+      "type": "System.Collections.Generic.List\u003CServer.Mobiles.BaseCreature\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Mobiles.BaseCreature",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Peerless",
+      "type": "Server.Mobiles.BasePeerless",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "BossLocation",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "TeleportDest",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "ExitDest",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "DeadLine",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MasterKeys",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    },
+    {
+      "name": "Fighters",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}
