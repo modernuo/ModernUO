@@ -1274,7 +1274,10 @@ namespace Server.Gumps
                              i < 9 && index >= 0 && index < m_List.Count;
                              ++i, ++index)
                         {
-                            var a = (Account)m_List[index];
+                            if (m_List[index] is not Account a)
+                            {
+                                continue;
+                            }
 
                             var offset = 200 + i * 20;
 
