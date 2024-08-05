@@ -511,46 +511,12 @@ public class DefCarpentry : CraftSystem
         AddSkill(index, SkillName.Magery, 50.0, 55.0);
         AddRes(index, typeof(IronIngot), 1044036, 40, 1044037);
 
-        // Blacksmithy - This changed to Anvils and Forges (1111809) for SA
-        if (Core.ML)
-        {
-            index = AddCraft(typeof(ElvenForgeDeed), 1044296, 1072875, 94.7, 119.7, typeof(Log), 1044041, 200, 1044351);
-            ForceNonExceptional(index);
-            SetNeededExpansion(index, Expansion.ML);
-        }
-
-        index = AddCraft(typeof(SmallForgeDeed), 1044296, 1044330, 73.6, 98.6, typeof(Log), 1044041, 5, 1044351);
-        AddSkill(index, SkillName.Blacksmith, 75.0, 80.0);
-        AddRes(index, typeof(IronIngot), 1044036, 75, 1044037);
-        index = AddCraft(typeof(LargeForgeEastDeed), 1044296, 1044331, 78.9, 103.9, typeof(Log), 1044041, 5, 1044351);
-        AddSkill(index, SkillName.Blacksmith, 80.0, 85.0);
-        AddRes(index, typeof(IronIngot), 1044036, 100, 1044037);
-        index = AddCraft(typeof(LargeForgeSouthDeed), 1044296, 1044332, 78.9, 103.9, typeof(Log), 1044041, 5, 1044351);
-        AddSkill(index, SkillName.Blacksmith, 80.0, 85.0);
-        AddRes(index, typeof(IronIngot), 1044036, 100, 1044037);
-        index = AddCraft(typeof(AnvilEastDeed), 1044296, 1044333, 73.6, 98.6, typeof(Log), 1044041, 5, 1044351);
-        AddSkill(index, SkillName.Blacksmith, 75.0, 80.0);
-        AddRes(index, typeof(IronIngot), 1044036, 150, 1044037);
-        index = AddCraft(typeof(AnvilSouthDeed), 1044296, 1044334, 73.6, 98.6, typeof(Log), 1044041, 5, 1044351);
-        AddSkill(index, SkillName.Blacksmith, 75.0, 80.0);
-        AddRes(index, typeof(IronIngot), 1044036, 150, 1044037);
-
-        // Training
-        index = AddCraft(typeof(TrainingDummyEastDeed), 1044297, 1044335, 68.4, 93.4, typeof(Log), 1044041, 55, 1044351);
-        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
-        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
-        index = AddCraft(typeof(TrainingDummySouthDeed), 1044297, 1044336, 68.4, 93.4, typeof(Log), 1044041, 55, 1044351);
-        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
-        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
-        index = AddCraft(typeof(PickpocketDipEastDeed), 1044297, 1044337, 73.6, 98.6, typeof(Log), 1044041, 65, 1044351);
-        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
-        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
-        index = AddCraft(typeof(PickpocketDipSouthDeed), 1044297, 1044338, 73.6, 98.6, typeof(Log), 1044041, 65, 1044351);
-        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
-        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
-
         // Tailoring
         index = AddCraft(typeof(Dressform), 1044298, 1044339, 63.1, 88.1, typeof(Log), 1044041, 25, 1044351);
+        AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
+        AddRes(index, typeof(Cloth), 1044286, 10, 1044287);
+
+        index = AddCraft(typeof(DressformSide), 1044298, 1044339, 63.1, 88.1, typeof(Log), 1044041, 25, 1044351);
         AddSkill(index, SkillName.Tailoring, 65.0, 70.0);
         AddRes(index, typeof(Cloth), 1044286, 10, 1044287);
 
@@ -600,6 +566,44 @@ public class DefCarpentry : CraftSystem
         AddRes(index, typeof(IronIngot), 1044036, 50, 1044037);
         AddCraft(typeof(WaterTroughEastDeed), Core.ML ? 1044298 : 1044299, 1044349, 94.7, 119.7, typeof(Log), 1044041, 150, 1044351);
         AddCraft(typeof(WaterTroughSouthDeed), Core.ML ? 1044298 : 1044299, 1044350, 94.7, 119.7, typeof(Log), 1044041, 150, 1044351);
+
+        // Blacksmithy - This changed to Anvils and Forges (1111809) for SA
+        if (Core.ML)
+        {
+            index = AddCraft(typeof(ElvenForgeDeed), 1044296, 1072875, 94.7, 119.7, typeof(Log), 1044041, 200, 1044351);
+            ForceNonExceptional(index);
+            SetNeededExpansion(index, Expansion.ML);
+        }
+
+        index = AddCraft(typeof(SmallForgeDeed), 1044296, 1044330, 73.6, 98.6, typeof(Log), 1044041, 5, 1044351);
+        AddSkill(index, SkillName.Blacksmith, 75.0, 80.0);
+        AddRes(index, typeof(IronIngot), 1044036, 75, 1044037);
+        index = AddCraft(typeof(LargeForgeEastDeed), 1044296, 1044331, 78.9, 103.9, typeof(Log), 1044041, 5, 1044351);
+        AddSkill(index, SkillName.Blacksmith, 80.0, 85.0);
+        AddRes(index, typeof(IronIngot), 1044036, 100, 1044037);
+        index = AddCraft(typeof(LargeForgeSouthDeed), 1044296, 1044332, 78.9, 103.9, typeof(Log), 1044041, 5, 1044351);
+        AddSkill(index, SkillName.Blacksmith, 80.0, 85.0);
+        AddRes(index, typeof(IronIngot), 1044036, 100, 1044037);
+        index = AddCraft(typeof(AnvilEastDeed), 1044296, 1044333, 73.6, 98.6, typeof(Log), 1044041, 5, 1044351);
+        AddSkill(index, SkillName.Blacksmith, 75.0, 80.0);
+        AddRes(index, typeof(IronIngot), 1044036, 150, 1044037);
+        index = AddCraft(typeof(AnvilSouthDeed), 1044296, 1044334, 73.6, 98.6, typeof(Log), 1044041, 5, 1044351);
+        AddSkill(index, SkillName.Blacksmith, 75.0, 80.0);
+        AddRes(index, typeof(IronIngot), 1044036, 150, 1044037);
+
+        // Training
+        index = AddCraft(typeof(TrainingDummyEastDeed), 1044297, 1044335, 68.4, 93.4, typeof(Log), 1044041, 55, 1044351);
+        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
+        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
+        index = AddCraft(typeof(TrainingDummySouthDeed), 1044297, 1044336, 68.4, 93.4, typeof(Log), 1044041, 55, 1044351);
+        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
+        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
+        index = AddCraft(typeof(PickpocketDipEastDeed), 1044297, 1044337, 73.6, 98.6, typeof(Log), 1044041, 65, 1044351);
+        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
+        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
+        index = AddCraft(typeof(PickpocketDipSouthDeed), 1044297, 1044338, 73.6, 98.6, typeof(Log), 1044041, 65, 1044351);
+        AddSkill(index, SkillName.Tailoring, 50.0, 55.0);
+        AddRes(index, typeof(Cloth), 1044286, 60, 1044287);
 
         MarkOption = true;
         Repair = Core.AOS;
