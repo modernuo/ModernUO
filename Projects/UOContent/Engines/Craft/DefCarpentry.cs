@@ -99,8 +99,12 @@ public class DefCarpentry : CraftSystem
         AddCraft(typeof(BarrelStaves), 1044294, 1027857, 00.0, 25.0, typeof(Log), 1044041, 5, 1044351);
         AddCraft(typeof(BarrelLid), 1044294, 1027608, 11.0, 36.0, typeof(Log), 1044041, 4, 1044351);
         AddCraft(typeof(ShortMusicStand), 1044294, 1044313, 78.9, 103.9, typeof(Log), 1044041, 15, 1044351);
+        AddCraft(typeof(ShortMusicStandRight), 1044294, 1044314, 78.9, 103.9, typeof(Log), 1044041, 15, 1044351);
         AddCraft(typeof(TallMusicStand), 1044294, 1044315, 81.5, 106.5, typeof(Log), 1044041, 20, 1044351);
+        AddCraft(typeof(TallMusicStandRight), 1044294, 1044316, 81.5, 106.5, typeof(Log), 1044041, 20, 1044351);
         AddCraft(typeof(Easel), 1044294, 1044317, 86.8, 111.8, typeof(Log), 1044041, 20, 1044351);
+        AddCraft(typeof(EaselEast), 1044294, 1044318, 86.8, 111.8, typeof(Log), 1044041, 20, 1044351);
+        AddCraft(typeof(EaselNorth), 1044294, 1044319, 86.8, 111.8, typeof(Log), 1044041, 20, 1044351);
 
         if (Core.SE)
         {
@@ -129,6 +133,9 @@ public class DefCarpentry : CraftSystem
 
         if (Core.ML)
         {
+            index = AddCraft(typeof(WoodenContainerEngraver), 1044294, 1072153, 75.0, 100.0, typeof(Board), 1044041, 4, 1044351);
+            AddRes(index, typeof(IronIngot), 1044036, 2, 1044037);
+
             index = AddCraft(typeof(RunedSwitch), 1044294, 1072896, 70.0, 120.0, typeof(Log), 1044041, 2, 1044351);
             AddRes(index, typeof(EnchantedSwitch), 1072893, 1, 1053098);
             AddRes(index, typeof(RunedPrism), 1073465, 1, 1053098);
