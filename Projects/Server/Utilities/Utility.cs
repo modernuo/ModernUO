@@ -419,7 +419,7 @@ public static class Utility
     // This requires copying the List, which is an O(n) operation.
     public static List<R> ToList<T, R>(this PooledRefList<T> poolList) where T : R
     {
-        var size = poolList._size;
+        var size = poolList.Count;
         var items = poolList._items;
 
         var list = new List<R>(size);
@@ -428,7 +428,7 @@ public static class Utility
             return list;
         }
 
-        for (var i = 0; i < items.Length; i++)
+        for (var i = 0; i < size; i++)
         {
             list.Add(items[i]);
         }
