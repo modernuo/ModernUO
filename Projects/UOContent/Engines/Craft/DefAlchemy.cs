@@ -8,6 +8,11 @@ public enum TinkerRecipes
     InvisibilityPotion = 400,
     DarkglowPotion = 401,
     ParasiticPotion = 402,
+
+    EssenceOfBattle = 450,
+    PendantOfTheMagi = 451,
+    ResilientBracer = 452,
+    ScrappersCompendium = 453,
 }
 
 public class DefAlchemy : CraftSystem

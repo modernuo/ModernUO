@@ -445,7 +445,7 @@ public class DefInscription : CraftSystem
             AddRes(index, typeof(DreadHornMane), 1032682, 1, 1044253);
             AddRes(index, typeof(Taint), 1032679, 10, 1044253);
             AddRes(index, typeof(Corruption), 1032676, 10, 1044253);
-            AddRareRecipe(index, 400);
+            AddRareRecipe(index, (int)TinkerRecipes.ScrappersCompendium);
             ForceNonExceptional(index);
             SetNeededExpansion(index, Expansion.ML);
 
