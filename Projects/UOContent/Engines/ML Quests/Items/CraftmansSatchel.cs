@@ -118,24 +118,25 @@ public partial class FletchingSatchel : BaseCraftmansSatchel
 
     public static Item FletcherRunic()
     {
+        var bonus = 3;
         double ran = Utility.RandomDouble();
 
-        if (ran <= 0.0001)
+        if (ran <= 0.0001 * bonus)
         {
             return new RunicFletcherTool(CraftResource.Heartwood, 15);
         }
 
-        if (ran <= 0.0005)
+        if (ran <= 0.0005 * bonus)
         {
             return new RunicFletcherTool(CraftResource.YewWood, 25);
         }
 
-        if (ran <= 0.0025)
+        if (ran <= 0.0025 * bonus)
         {
             return new RunicFletcherTool(CraftResource.AshWood, 35);
         }
 
-        if (ran <= 0.005)
+        if (ran <= 0.005 * bonus)
         {
             return new RunicFletcherTool(CraftResource.OakWood, 45);
         }
@@ -167,23 +168,24 @@ public partial class CarpentrySatchel : BaseCraftmansSatchel
 
     public static Item CarpenterRunic()
     {
+        var bonus = 3;
         double ran = Utility.RandomDouble();
 
-        if (ran <= 0.0001)
+        if (ran <= 0.0001 * bonus)
         {
             return new RunicDovetailSaw(CraftResource.Heartwood, 15);
         }
 
-        if (ran <= 0.0005)
+        if (ran <= 0.0005 * bonus)
         {
             return new RunicDovetailSaw(CraftResource.YewWood, 25);
         }
-        if (ran <= 0.0025)
+        if (ran <= 0.0025 * bonus)
         {
             return new RunicDovetailSaw(CraftResource.AshWood, 35);
         }
 
-        if (ran <= 0.005)
+        if (ran <= 0.005 * bonus)
         {
             return new RunicDovetailSaw(CraftResource.OakWood, 45);
         }
