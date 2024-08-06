@@ -111,11 +111,9 @@ public class ResurrectGump : StaticGump<ResurrectGump>
 
             if (pack != null && corpse != null)
             {
-                var items = new List<Item>(corpse.Items);
-
-                for (var i = 0; i < items.Count; ++i)
+                for (var i = corpse.Items.Count - 1; i >= 0; --i)
                 {
-                    var item = items[i];
+                    var item = corpse.Items[i];
 
                     if (item.Layer != Layer.Hair && item.Layer != Layer.FacialHair && item.Movable)
                     {
