@@ -71,7 +71,7 @@ public class StartingItems
         {
             case 0:
                 {
-                    eventArgs.Mobile.AddToBackpack( new ClumsyWand { WeaponAttributes = { MageWeapon = 30 } } );
+                    eventArgs.Mobile.AddToBackpack( new ClumsyWand { WeaponAttributes = { MageWeapon = -30 } } );
                     break;
                 }
             case 1:
