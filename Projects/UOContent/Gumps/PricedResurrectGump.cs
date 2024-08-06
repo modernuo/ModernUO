@@ -75,7 +75,7 @@ namespace Server.Gumps
         {
             var from = state.Mobile;
 
-            from.CloseGump<ResurrectGump>();
+            from.CloseGump<PricedResurrectGump>();
 
             if (info.ButtonID != 1 && info.ButtonID != 2)
             {
