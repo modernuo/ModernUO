@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -25,11 +25,16 @@
       <None Update="Data\mlquestors.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Data\runebook-benches.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Data\Citadel\" />
       <Folder Include="Engines\ML Quests\Definitions\" />
       <Folder Include="Items\Decorations\" />
+      <Folder Include="Items\Admin\" />
+      <Folder Include="Items\Heritage\" />
       <Folder Include="Items\Ported\" />
       <Folder Include="Mobiles\" />
       <Folder Include="Rules\" />
@@ -41,6 +46,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="Migrations/*.v*.json" />
+        <AdditionalFiles Include="Data/Runebooks/*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </AdditionalFiles>
     </ItemGroup>
 </Project>
