@@ -139,13 +139,14 @@ public partial class Timer
         var prof = timer.GetProfile();
         prof?.Start();
 
+        var version = timer.Version;
+
         // Stop the timer from running so that way if Start() is called in OnTick, the timer will be started.
         if (finished)
         {
             timer.InternalStop();
+            timer.Version++;
         }
-
-        var version = timer.Version;
 
         timer.OnTick();
         prof?.Finish();
@@ -160,7 +161,6 @@ public partial class Timer
         {
             // Already stopped and detached, now run OnDetach
             timer.OnDetach();
-            timer.Version++;
             return;
         }
 
