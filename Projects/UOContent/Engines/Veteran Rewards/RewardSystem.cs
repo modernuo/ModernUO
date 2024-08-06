@@ -368,7 +368,9 @@ namespace Server.Engines.VeteranRewards
                             MiniHouseType.ChurchAtNight
                         ),
                         new RewardEntry(miscellaneous, 1076155, typeof(RedSoulstone), Expansion.ML),
-                        new RewardEntry(miscellaneous, 1080523, typeof(CommodityDeedBox), Expansion.ML)
+                        new RewardEntry(miscellaneous, 1080523, typeof(CommodityDeedBox), Expansion.ML),
+                        new RewardEntry( miscellaneous, 1113945, typeof( CrystalPortal ) ),
+                        new RewardEntry( miscellaneous, 1150074, typeof( CorruptedCrystalPortal ) )
                     }
                 ),
                 new RewardList(

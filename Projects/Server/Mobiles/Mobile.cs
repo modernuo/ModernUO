@@ -446,6 +446,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public object Party { get; set; }
 
+    [CommandProperty(AccessLevel.Counselor)]
+    public virtual bool Murderer => m_Kills >= 5;
+
     public List<SkillMod> SkillMods => _skillMods;
     public List<StatMod> StatMods => _statMods;
     public List<ResistanceMod> ResistanceMods => _resistanceMods;
