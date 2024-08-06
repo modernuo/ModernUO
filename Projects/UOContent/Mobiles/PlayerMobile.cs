@@ -1775,11 +1775,19 @@ namespace Server.Mobiles
                 CheckStatTimers();
             }
 
+            if (item is BaseWeapon weapon)
+            {
+                LastWeapon = weapon;
+            }
+
             if (NetState != null)
             {
                 CheckLightLevels(false);
             }
         }
+
+        [CommandProperty( AccessLevel.GameMaster )]
+        public BaseWeapon LastWeapon { get; set; }
 
         private void AddArmorRating(ref double rating, Item armor)
         {
