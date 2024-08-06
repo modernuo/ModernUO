@@ -38,8 +38,7 @@ public class ResurrectGump : StaticGump<ResurrectGump>
     public ResurrectGump(
         Mobile owner, Mobile healer, ResurrectMessage msg = ResurrectMessage.Generic,
         bool fromSacrifice = false, double hitsScalar = 0.0
-    )
-        : base(100, 0)
+    ) : base(100, 0)
     {
         m_Healer = healer;
         m_FromSacrifice = fromSacrifice;
