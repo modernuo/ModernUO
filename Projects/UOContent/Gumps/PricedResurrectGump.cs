@@ -8,14 +8,14 @@ namespace Server.Gumps;
 
 public class PricedResurrectGump : StaticGump<PricedResurrectGump>
 {
-    private readonly Mobile m_Healer;
-    private readonly int m_Price;
+    private readonly Mobile _healer;
+    private readonly int _price;
 
     public PricedResurrectGump(Mobile owner, Mobile healer, int price)
         : base(150, 50)
     {
-        m_Healer = healer;
-        m_Price = price;
+        _healer = healer;
+        _price = price;
     }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -57,7 +57,7 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
         builder.AddImageTiled(80, 90, 200, 1, 9107);
         builder.AddImageTiled(95, 92, 200, 1, 9157);
 
-        builder.AddLabel(90, 70, 1645, m_Price.ToString());
+        builder.AddLabel(90, 70, 1645, _price.ToString());
         builder.AddHtmlLocalized(140, 70, 100, 25, 1023823, 0x7FFF); // gold coins
 
         builder.AddButton(290, 175, 247, 248, 2);
@@ -89,10 +89,10 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
 
         if (info.IsSwitched(1))
         {
-            if (Banker.Withdraw(from, m_Price))
+            if (Banker.Withdraw(from, _price))
             {
                 // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-                from.SendLocalizedMessage(1060398, m_Price.ToString());
+                from.SendLocalizedMessage(1060398, _price.ToString());
 
                 // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
                 from.SendLocalizedMessage(1060022, Banker.GetBalance(from).ToString());
@@ -115,9 +115,9 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
 
         from.Resurrect();
 
-        if (m_Healer != null && from != m_Healer)
+        if (_healer != null && from != _healer)
         {
-            var level = VirtueSystem.GetLevel(m_Healer, VirtueName.Compassion);
+            var level = VirtueSystem.GetLevel(_healer, VirtueName.Compassion);
 
             from.Hits = level switch
             {

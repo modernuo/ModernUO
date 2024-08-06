@@ -16,10 +16,10 @@ public enum ResurrectMessage
 
 public class ResurrectGump : StaticGump<ResurrectGump>
 {
-    private readonly bool m_FromSacrifice;
-    private readonly Mobile m_Healer;
-    private readonly double m_HitsScalar;
-    private readonly ResurrectMessage m_ResurrectMessage;
+    private readonly bool _fromSacrifice;
+    private readonly Mobile _healer;
+    private readonly double _hitsScalar;
+    private readonly ResurrectMessage _resurrectMessage;
 
     public ResurrectGump(Mobile owner, double hitsScalar)
         : this(owner, owner, ResurrectMessage.Generic, false, hitsScalar)
@@ -40,10 +40,10 @@ public class ResurrectGump : StaticGump<ResurrectGump>
         bool fromSacrifice = false, double hitsScalar = 0.0
     ) : base(100, 0)
     {
-        m_Healer = healer;
-        m_FromSacrifice = fromSacrifice;
-        m_HitsScalar = hitsScalar;
-        m_ResurrectMessage = msg;
+        _healer = healer;
+        _fromSacrifice = fromSacrifice;
+        _hitsScalar = hitsScalar;
+        _resurrectMessage = msg;
     }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -58,7 +58,7 @@ public class ResurrectGump : StaticGump<ResurrectGump>
          * CONTINUE - You chose to try to come back to life now.<br>
          * CANCEL - You prefer to remain a ghost for now.
          */
-        builder.AddHtmlLocalized(50, 55, 300, 140, 1011023 + (int)m_ResurrectMessage, true, true);
+        builder.AddHtmlLocalized(50, 55, 300, 140, 1011023 + (int)_resurrectMessage, true, true);
 
         builder.AddButton(200, 227, 4005, 4007, 0);
         builder.AddHtmlLocalized(235, 230, 110, 35, 1011012); // CANCEL
@@ -87,9 +87,9 @@ public class ResurrectGump : StaticGump<ResurrectGump>
 
         from.Resurrect();
 
-        if (m_Healer != null && from != m_Healer)
+        if (_healer != null && from != _healer)
         {
-            var level = VirtueSystem.GetLevel(m_Healer, VirtueName.Compassion);
+            var level = VirtueSystem.GetLevel(_healer, VirtueName.Compassion);
 
             from.Hits = level switch
             {
@@ -102,7 +102,7 @@ public class ResurrectGump : StaticGump<ResurrectGump>
 
         var player = from as PlayerMobile;
 
-        if (m_FromSacrifice && player != null)
+        if (_fromSacrifice && player != null)
         {
             player.Virtues.AvailableResurrects -= 1;
 
@@ -167,9 +167,9 @@ public class ResurrectGump : StaticGump<ResurrectGump>
             }
         }
 
-        if (from.Alive && m_HitsScalar > 0)
+        if (from.Alive && _hitsScalar > 0)
         {
-            from.Hits = (int)(from.HitsMax * m_HitsScalar);
+            from.Hits = (int)(from.HitsMax * _hitsScalar);
         }
     }
 }
