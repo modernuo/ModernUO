@@ -75,8 +75,6 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
     {
         var from = state.Mobile;
 
-        from.CloseGump<PricedResurrectGump>();
-
         if (info.ButtonID != 1 && info.ButtonID != 2)
         {
             return;
