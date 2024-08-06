@@ -169,7 +169,7 @@ namespace Server.Mobiles
                 list.Add(RewardSystem.GetRewardYearLabel(this, Array.Empty<object>())); // X Year Veteran Reward
             }
 
-            if ( this is IAccountBound )
+            if ( this is IAccountBound { IsAccountBound: true } )
             {
                 list.Add(1155526); // Account Bound
             }
@@ -204,8 +204,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if ( from is PlayerMobile player && this is IAccountBound accountBound &&
-                 player.Account.Username != accountBound.Account )
+            if ( from is PlayerMobile player && this is IAccountBound { IsAccountBound: true } accountBound && player.Account.Username != accountBound.Account )
             {
                 from.SendLocalizedMessage(
                     1071296
