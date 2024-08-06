@@ -91,7 +91,7 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
         {
             var from = state.Mobile;
 
-            if (info.ButtonID is not (1 or 2))
+            if (info.ButtonID is not 1 and not 2)
             {
                 return;
             }

@@ -79,7 +79,7 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
     {
         var from = state.Mobile;
 
-        if (info.ButtonID != 1 && info.ButtonID != 2)
+        if (info.ButtonID is not 1 and not 2)
         {
             return;
         }
