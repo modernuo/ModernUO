@@ -57,7 +57,8 @@ public class StartingItems
             new MarkScroll(),
             new Runebook { CurCharges = 20, MaxCharges = 20 },
             new EtherealRottweiler( account ),
-            new Spellbook( 0xFFFFFFFFFFFF )
+            new Spellbook( 0xFFFFFFFFFFFF ),
+            new SoulstoneFragmentToken()
         };
 
         foreach ( var item in items )
@@ -71,8 +72,7 @@ public class StartingItems
         {
             case 0:
                 {
-                    eventArgs.Mobile.AddToBackpack( new ClumsyWand { WeaponAttributes = { MageWeapon = -30 } } );
-                    break;
+                    goto case 1;
                 }
             case 1:
                 {

@@ -29,7 +29,7 @@ public abstract partial class PromotionalToken : Item
         {
             if (ItemName.Number > 0)
             {
-                list.Add(1070998, ItemName.Number); // Use this to redeem<br>your ~1_PROMO~
+                list.AddLocalized(1070998, ItemName.Number); // Use this to redeem<br>your ~1_PROMO~
             }
             else
             {
