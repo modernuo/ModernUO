@@ -48,7 +48,7 @@ public class ResurrectGump : DynamicGump
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
-        builder.AddPage(0);
+        builder.AddPage();
 
         builder.AddBackground(0, 0, 400, 350, 2600);
 

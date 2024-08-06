@@ -1,6 +1,5 @@
 using System;
 using Server.Engines.Virtues;
-using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -23,7 +22,7 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
     {
         builder.SetNoClose();
 
-        builder.AddPage(0);
+        builder.AddPage();
 
         builder.AddImage(0, 0, 3600);
 
