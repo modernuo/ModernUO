@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using Server.Engines.Virtues;
 using Server.Misc;
 using Server.Mobiles;
@@ -132,7 +132,7 @@ public class ResurrectGump : StaticGump<ResurrectGump>
 
         if (!Core.AOS && player?.ShortTermMurders >= 5)
         {
-            var loss = (100.0 - (4.0 + player.ShortTermMurders / 5.0)) / 100.0; // 5 to 15% loss
+            var loss = Math.Clamp((100.0 - (4.0 + player.ShortTermMurders / 5.0)) / 100.0, 0.85, 0.95); // 5 to 15% loss
 
             if (loss < 0.85)
             {
