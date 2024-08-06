@@ -134,12 +134,10 @@ public partial class Timer
 
     private static void Execute(Timer timer)
     {
-        var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
+        var finished = timer.Count != 0 && timer.Index + 1 >= timer.Count;
 
         var prof = timer.GetProfile();
         prof?.Start();
-
-        var version = timer.Version;
 
         // Stop the timer from running so that way if Start() is called in OnTick, the timer will be started.
         if (finished)
@@ -148,25 +146,30 @@ public partial class Timer
             timer.Version++;
         }
 
+        var version = timer.Version;
+
         timer.OnTick();
         prof?.Finish();
 
-        // If the timer has been altered (restarted, returned etc) then bail
-        if (timer.Version != version)
+        // Starting doesn't change the timer version, so we need to check if it's finished and if it's still running.
+        if (timer.Version != version || finished && timer.Running)
         {
             return;
         }
 
-        if (finished)
+        if (!finished)
+        {
+            timer.Delay = timer.Interval;
+            timer.Next = DateTime.UtcNow + timer.Interval;
+            AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+        }
+        else
         {
             // Already stopped and detached, now run OnDetach
             timer.OnDetach();
-            return;
         }
 
-        timer.Delay = timer.Interval;
-        timer.Next = DateTime.UtcNow + timer.Interval;
-        AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+        timer.Index++;
     }
 
     private static void AddTimer(Timer timer, long delay)
