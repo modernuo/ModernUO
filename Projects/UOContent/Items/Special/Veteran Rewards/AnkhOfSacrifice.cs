@@ -83,7 +83,7 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
 
     private class AnkhResurrectGump : ResurrectGump
     {
-        public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, owner, msg)
+        public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, msg)
         {
         }
 
@@ -91,21 +91,23 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
         {
             var from = state.Mobile;
 
-            if (info.ButtonID is 1 or 2)
+            if (info.ButtonID is not (1 or 2))
             {
-                if (from.Map?.CanFit(from.Location, 16, false, false) != true)
-                {
-                    from.SendLocalizedMessage(502391); // Thou can not be resurrected there!
-                    return;
-                }
-
-                if (from is PlayerMobile mobile)
-                {
-                    mobile.AnkhNextUse = Core.Now + TimeSpan.FromHours(1);
-                }
-
-                base.OnResponse(state, info);
+                return;
             }
+
+            if (from.Map?.CanFit(from.Location, 16, false, false) != true)
+            {
+                from.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+                return;
+            }
+
+            if (from is PlayerMobile mobile)
+            {
+                mobile.AnkhNextUse = Core.Now + TimeSpan.FromHours(1);
+            }
+
+            base.OnResponse(state, info);
         }
     }
 }

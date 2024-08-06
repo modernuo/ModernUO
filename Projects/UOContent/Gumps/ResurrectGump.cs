@@ -16,27 +16,58 @@ public enum ResurrectMessage
 
 public class ResurrectGump : DynamicGump
 {
+    public const int ShortMurdersForStatLoss = 5;
+
     private readonly bool _fromSacrifice;
     private readonly Mobile _healer;
     private readonly double _hitsScalar;
     private readonly ResurrectMessage _resurrectMessage;
 
-    public ResurrectGump(Mobile owner, double hitsScalar)
-        : this(owner, owner, ResurrectMessage.Generic, false, hitsScalar)
+    public static void TryGiveStatLoss(PlayerMobile player)
     {
+        if (Core.AOS || player.ShortTermMurders < ShortMurdersForStatLoss)
+        {
+            return;
+        }
+
+        var loss = Math.Clamp((100.0 - (4.0 + player.ShortTermMurders / (double)ShortMurdersForStatLoss)) / 100.0, 0.85, 0.95); // 5 to 15% loss
+        var lossStr = (int)(player.RawStr * loss);
+        var lossInt = (int)(player.RawInt * loss);
+        var lossDex = (int)(player.RawDex * loss);
+
+        if (lossStr >= 10)
+        {
+            player.RawStr = lossStr;
+        }
+
+        if (lossInt >= 10)
+        {
+            player.RawInt = lossInt;
+        }
+
+        if (lossDex >= 10)
+        {
+            player.RawDex = lossDex;
+        }
+
+        for (var s = 0; s < player.Skills.Length; s++)
+        {
+            var skill = player.Skills[s];
+            var skillLoss = (int)(skill.BaseFixedPoint * loss);
+            if (skillLoss >= 350)
+            {
+                skill.BaseFixedPoint = skillLoss;
+            }
+        }
     }
 
-    public ResurrectGump(Mobile owner, ResurrectMessage msg) : this(owner, owner, msg)
-    {
-    }
-
-    public ResurrectGump(Mobile owner, bool fromSacrifice = false)
-        : this(owner, owner, ResurrectMessage.Generic, fromSacrifice)
+    public ResurrectGump(Mobile healer, double hitsScalar)
+        : this(healer, ResurrectMessage.Generic, false, hitsScalar)
     {
     }
 
     public ResurrectGump(
-        Mobile owner, Mobile healer, ResurrectMessage msg = ResurrectMessage.Generic,
+        Mobile healer, ResurrectMessage msg = ResurrectMessage.Generic,
         bool fromSacrifice = false, double hitsScalar = 0.0
     ) : base(100, 0)
     {
@@ -100,27 +131,30 @@ public class ResurrectGump : DynamicGump
             };
         }
 
-        var player = from as PlayerMobile;
-
-        if (_fromSacrifice && player != null)
+        if (from is PlayerMobile player)
         {
-            player.Virtues.AvailableResurrects -= 1;
-
-            var pack = player.Backpack;
-            var corpse = player.Corpse;
-
-            if (pack != null && corpse != null)
+            if (_fromSacrifice)
             {
-                for (var i = corpse.Items.Count - 1; i >= 0; --i)
-                {
-                    var item = corpse.Items[i];
+                player.Virtues.AvailableResurrects -= 1;
 
-                    if (item.Layer != Layer.Hair && item.Layer != Layer.FacialHair && item.Movable)
+                var pack = player.Backpack;
+                var corpse = player.Corpse;
+
+                if (pack != null && corpse != null)
+                {
+                    for (var i = corpse.Items.Count - 1; i >= 0; --i)
                     {
-                        pack.DropItem(item);
+                        var item = corpse.Items[i];
+
+                        if (item.Layer != Layer.Hair && item.Layer != Layer.FacialHair && item.Movable)
+                        {
+                            pack.DropItem(item);
+                        }
                     }
                 }
             }
+
+            TryGiveStatLoss(player);
         }
 
         if (from.Fame > 0)
@@ -128,43 +162,6 @@ public class ResurrectGump : DynamicGump
             var amount = from.Fame / 10;
 
             Titles.AwardFame(from, -amount, true);
-        }
-
-        if (!Core.AOS && player?.ShortTermMurders >= 5)
-        {
-            var loss = Math.Clamp((100.0 - (4.0 + player.ShortTermMurders / 5.0)) / 100.0, 0.85, 0.95); // 5 to 15% loss
-
-            if (loss < 0.85)
-            {
-                loss = 0.85;
-            }
-            else if (loss > 0.95)
-            {
-                loss = 0.95;
-            }
-
-            if (from.RawStr * loss > 10)
-            {
-                from.RawStr = (int)(from.RawStr * loss);
-            }
-
-            if (from.RawInt * loss > 10)
-            {
-                from.RawInt = (int)(from.RawInt * loss);
-            }
-
-            if (from.RawDex * loss > 10)
-            {
-                from.RawDex = (int)(from.RawDex * loss);
-            }
-
-            for (var s = 0; s < from.Skills.Length; s++)
-            {
-                if (from.Skills[s].Base * loss > 35)
-                {
-                    from.Skills[s].Base *= loss;
-                }
-            }
         }
 
         if (from.Alive && _hitsScalar > 0)

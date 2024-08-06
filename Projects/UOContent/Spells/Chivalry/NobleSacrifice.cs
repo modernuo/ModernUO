@@ -75,7 +75,7 @@ namespace Server.Spells.Chivalry
                         {
                             m.FixedParticles(0x375A, 1, 15, 5005, 5, 3, EffectLayer.Head);
                             m.CloseGump<ResurrectGump>();
-                            m.SendGump(new ResurrectGump(m, Caster));
+                            m.SendGump(new ResurrectGump(Caster));
                             sacrifice = true;
                         }
                     }

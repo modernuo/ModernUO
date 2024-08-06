@@ -1,4 +1,3 @@
-using System;
 using Server.Engines.Virtues;
 using Server.Misc;
 using Server.Mobiles;
@@ -11,8 +10,7 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
     private readonly Mobile _healer;
     private readonly int _price;
 
-    public PricedResurrectGump(Mobile owner, Mobile healer, int price)
-        : base(150, 50)
+    public PricedResurrectGump(Mobile healer, int price) : base(150, 50)
     {
         _healer = healer;
         _price = price;
@@ -92,26 +90,24 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
             return;
         }
 
-        if (info.IsSwitched(1))
+        if (!info.IsSwitched(1))
         {
-            if (Banker.Withdraw(from, _price))
-            {
-                // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-                from.SendLocalizedMessage(1060398, _price.ToString());
+            from.SendLocalizedMessage(1060019); // You decide against paying the healer, and thus remain dead.
+            return;
+        }
 
-                // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
-                from.SendLocalizedMessage(1060022, Banker.GetBalance(from).ToString());
-            }
-            else
-            {
-                // Unfortunately, you do not have enough cash in your bank to cover the cost of the healing.
-                from.SendLocalizedMessage(1060020);
-                return;
-            }
+        if (Banker.Withdraw(from, _price))
+        {
+            // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+            from.SendLocalizedMessage(1060398, _price.ToString());
+
+            // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
+            from.SendLocalizedMessage(1060022, Banker.GetBalance(from).ToString());
         }
         else
         {
-            from.SendLocalizedMessage(1060019); // You decide against paying the healer, and thus remain dead.
+            // Unfortunately, you do not have enough cash in your bank to cover the cost of the healing.
+            from.SendLocalizedMessage(1060020);
             return;
         }
 
@@ -133,8 +129,6 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
             };
         }
 
-        var player = from as PlayerMobile;
-
         if (from.Fame > 0)
         {
             var amount = from.Fame / 10;
@@ -142,32 +136,9 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
             Titles.AwardFame(from, -amount, true);
         }
 
-        if (!Core.AOS && player?.ShortTermMurders >= 5)
+        if (from is PlayerMobile player)
         {
-            var loss = Math.Clamp((100.0 - (4.0 + player.ShortTermMurders / 5.0)) / 100.0, 0.85, 0.95); // 5 to 15% loss
-
-            if (from.RawStr * loss > 10)
-            {
-                from.RawStr = (int)(from.RawStr * loss);
-            }
-
-            if (from.RawInt * loss > 10)
-            {
-                from.RawInt = (int)(from.RawInt * loss);
-            }
-
-            if (from.RawDex * loss > 10)
-            {
-                from.RawDex = (int)(from.RawDex * loss);
-            }
-
-            for (var s = 0; s < from.Skills.Length; s++)
-            {
-                if (from.Skills[s].Base * loss > 35)
-                {
-                    from.Skills[s].Base *= loss;
-                }
-            }
+            ResurrectGump.TryGiveStatLoss(player);
         }
     }
 }

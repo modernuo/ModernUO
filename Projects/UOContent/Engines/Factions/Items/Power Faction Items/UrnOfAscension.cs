@@ -35,7 +35,7 @@ public sealed partial class UrnOfAscension : PowerFactionItem
                 {
                     Faction.ClearSkillLoss(mob);
 
-                    mob.SendGump(new ResurrectGump(mob, from));
+                    mob.SendGump(new ResurrectGump(from));
                     used = true;
                 }
             }
