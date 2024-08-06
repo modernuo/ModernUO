@@ -89,12 +89,12 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            var from = state.Mobile;
-
             if (info.ButtonID is not 1 and not 2)
             {
                 return;
             }
+
+            var from = state.Mobile;
 
             if (from.Map?.CanFit(from.Location, 16, false, false) != true)
             {
