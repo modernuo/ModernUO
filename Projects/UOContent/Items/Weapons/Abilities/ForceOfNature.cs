@@ -16,6 +16,8 @@ public class ForceOfNature : WeaponAbility
 
         ClearCurrentAbility(attacker);
 
+        Remove(attacker);
+
         attacker.SendLocalizedMessage(1074374); // You attack your enemy with the force of nature!
         defender.SendLocalizedMessage(1074375); // You are assaulted with great force!
 
@@ -23,15 +25,18 @@ public class ForceOfNature : WeaponAbility
         defender.FixedParticles(0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head);
         defender.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
-        Remove(attacker);
+        if (Core.SA)
+        {
+            AOS.Damage(defender, attacker, Utility.Random(15, 20), false, 0, 0, 0, 0, 0, 0, 100);
+        }
 
-        ForceOfNatureTimer t = new ForceOfNatureTimer(attacker, defender);
+        var t = new ForceOfNatureTimer(attacker, defender);
         t.Start();
 
         _table[attacker] = t;
     }
 
-    private static readonly Dictionary<Mobile, ForceOfNatureTimer> _table = new();
+    private static readonly Dictionary<Mobile, ForceOfNatureTimer> _table = [];
 
     public static void Remove(Mobile m)
     {
@@ -91,18 +96,18 @@ public class ForceOfNature : WeaponAbility
 
     public static double GetDamageScalar(Mobile from, Mobile target)
     {
-        if (_table.TryGetValue(from, out var t) && t.Target == target)
+        if (!_table.TryGetValue(from, out var t) || t.Target != target)
         {
-            if (Core.SA)
-            {
-                var bonus = Math.Min(100, Math.Max(50, from.Str - 50));
-                return (100.0 + bonus) / 100.0;
-            }
-
-            return 1.65;
+            return 1.0;
         }
 
-        return 1.0;
+        if (Core.SA)
+        {
+            var bonus = Math.Min(100, Math.Max(50, from.Str - 50));
+            return (100.0 + bonus) / 100.0;
+        }
+
+        return 1.65;
     }
 
     private class ForceOfNatureTimer : Timer
@@ -113,11 +118,7 @@ public class ForceOfNature : WeaponAbility
         public DateTime LastHit { get; set; }
 
         public ForceOfNatureTimer(Mobile from, Mobile target)
-            : base(
-                Core.SA ? TimeSpan.FromSeconds(1) : TimeSpan.FromSeconds(10),
-                Core.SA ? TimeSpan.FromSeconds(1) : TimeSpan.Zero,
-                Core.SA ? 36 : 1
-            )
+            : base(TimeSpan.FromSeconds(Core.SA ? 10 : 360))
         {
             Target = target;
             From = from;
@@ -127,26 +128,10 @@ public class ForceOfNature : WeaponAbility
 
         protected override void OnTick()
         {
-            if (!From.Alive || !Target.Alive || Target.Map != From.Map || Target.GetDistanceToSqrt(From.Location) > 10)
+            if (!Core.SA || !From.Alive || !Target.Alive || Target.Map != From.Map ||
+                Target.GetDistanceToSqrt(From.Location) > 10 || LastHit + TimeSpan.FromSeconds(20) < Core.Now)
             {
                 Remove(From);
-                return;
-            }
-
-            if (Core.SA)
-            {
-                if (LastHit + TimeSpan.FromSeconds(20) < Core.Now)
-                {
-                    Remove(From);
-                    return;
-                }
-
-                if (Index == 1)
-                {
-                    int damage = Utility.Random(15, 20);
-
-                    AOS.Damage(Target, From, damage, false, 0, 0, 0, 0, 0, 0, 100);
-                }
             }
         }
     }
