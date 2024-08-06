@@ -56,12 +56,50 @@ public class StartingItems
             new MarkScroll(),
             new MarkScroll(),
             new Runebook { CurCharges = 20, MaxCharges = 20 },
-            new EtherealRottweiler()
+            new EtherealRottweiler( account ),
+            new Spellbook( 0xFFFFFFFFFFFF )
         };
 
         foreach ( var item in items )
         {
             eventArgs.Mobile.AddToBackpack( item );
+        }
+
+        var random = Utility.Random( 4 );
+
+        switch ( random )
+        {
+            case 0:
+                {
+                    eventArgs.Mobile.AddToBackpack( new ClumsyWand { WeaponAttributes = { MageWeapon = 30 } } );
+                    break;
+                }
+            case 1:
+                {
+                    var random2 = Utility.RandomDouble();
+
+                    if ( random2 < 0.5 )
+                    {
+                        eventArgs.Mobile.AddToBackpack( new TotemOfVoid() );
+                    }
+                    else
+                    {
+                        eventArgs.Mobile.AddToBackpack( new Boomstick() );
+                    }
+
+                    break;
+                }
+            case 2:
+                {
+                    eventArgs.Mobile.AddToBackpack( new LesserPigmentsOfTokuno() );
+                    break;
+                }
+            case 3:
+                {
+                    eventArgs.Mobile.AddToBackpack( new LeatherGloves { Attributes = { LowerRegCost = 20 } } );
+                    eventArgs.Mobile.AddToBackpack( new LeatherArms { Attributes = { LowerRegCost = 20 } } );
+                    break;
+                }
         }
     }
 }
