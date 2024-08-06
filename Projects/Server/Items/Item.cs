@@ -779,6 +779,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     public int CompareTo(Item other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
     public virtual int HuedItemID => m_ItemID;
+    public virtual bool IsArtifact => false;
 
     public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
 

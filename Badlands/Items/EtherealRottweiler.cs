@@ -15,17 +15,65 @@
 
 using ModernUO.Serialization;
 using Server;
+using Server.Accounting;
+using Server.Items;
 using Server.Mobiles;
 
 namespace Badlands.Items;
 
-[SerializationGenerator( 0, false )]
-public partial class EtherealRottweiler : EtherealMount
+public partial class EtherealRottweiler : EtherealMount, IAccountBound
 {
+    [CommandProperty( AccessLevel.GameMaster )]
+    public bool IsAccountBound { get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string Account { get; set; }
+
     [Constructible]
     public EtherealRottweiler() : base( 0xA770, 0x3ED9 )
     {
     }
 
+    public EtherealRottweiler(Serial serial) : base(serial)
+    {
+    }
+
+    [Constructible]
+    public EtherealRottweiler(IAccount account) : this()
+    {
+        IsAccountBound = true;
+        Account = account.Username;
+    }
+
     public override string DefaultName => "an ethereal rottweiler";
+
+    public override void Serialize( IGenericWriter writer )
+    {
+        base.Serialize( writer );
+
+        writer.Write( 1 );
+        writer.Write( IsAccountBound );
+
+        if ( IsAccountBound )
+        {
+            writer.Write( Account );
+        }
+    }
+
+    public override void Deserialize( IGenericReader reader )
+    {
+        base.Deserialize( reader );
+
+        int version = reader.ReadInt();
+
+        if ( version >= 1 )
+        {
+            IsAccountBound = reader.ReadBool();
+
+            if ( IsAccountBound )
+            {
+                Account = reader.ReadString();
+            }
+        }
+    }
 }

@@ -1,13 +1,14 @@
 using Badlands.Items;
 using Server;
 using Server.Misc;
+using Server.Mobiles;
 
 namespace Badlands.Misc;
 
 internal class RottweilerGift : GiftGiver
 {
     public override DateTime Start { get; } = new( 2024, 1, 1 );
-    public override DateTime Finish { get; } = new( 2024, 1, 31 );
+    public override DateTime Finish { get; } = new( 2025, 1, 31 );
 
     public static void Initialize()
     {
@@ -16,7 +17,12 @@ internal class RottweilerGift : GiftGiver
 
     public override void GiveGift( Mobile mob )
     {
-        var item = new EtherealRottweiler();
+        if ( mob is not PlayerMobile player )
+        {
+            return;
+        }
+
+        var item = new EtherealRottweiler(player.Account);
 
         switch ( GiveGift( mob, item ) )
         {

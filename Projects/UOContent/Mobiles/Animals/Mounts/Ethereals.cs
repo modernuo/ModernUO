@@ -2,6 +2,7 @@ using ModernUO.Serialization;
 using System;
 using System.Runtime.CompilerServices;
 using Server.Engines.VeteranRewards;
+using Server.Items;
 using Server.Multis;
 using Server.Spells;
 
@@ -167,6 +168,11 @@ namespace Server.Mobiles
             {
                 list.Add(RewardSystem.GetRewardYearLabel(this, Array.Empty<object>())); // X Year Veteran Reward
             }
+
+            if ( this is IAccountBound )
+            {
+                list.Add(1155526); // Account Bound
+            }
         }
 
         public void RemoveFollowers()
@@ -195,6 +201,16 @@ namespace Server.Mobiles
 
             if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this) || !BaseMount.CheckMountAllowed(from))
             {
+                return false;
+            }
+
+            if ( from is PlayerMobile player && this is IAccountBound accountBound &&
+                 player.Account.Username != accountBound.Account )
+            {
+                from.SendLocalizedMessage(
+                    1071296
+                ); /*This item is Account Bound and your character is not bound to it. You cannot use this item.*/
+
                 return false;
             }
 

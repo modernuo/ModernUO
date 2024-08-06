@@ -15,6 +15,12 @@ public interface IUsesRemaining
     bool ShowUsesRemaining { get; set; }
 }
 
+public interface IAccountBound
+{
+    bool IsAccountBound { get; set; }
+    string Account { get; set; }
+}
+
 [SerializationGenerator(2, false)]
 public abstract partial class BaseHarvestTool : Item, IUsesRemaining, ICraftable
 {
