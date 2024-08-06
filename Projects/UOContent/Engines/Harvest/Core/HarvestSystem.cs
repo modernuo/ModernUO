@@ -107,7 +107,7 @@ public abstract class HarvestSystem
                 {
                     var id = ( tile.ID & 0x3FFF ) | 0x4000;
 
-                    if ( definition.Validate( id, false ) )
+                    if ( definition.Validate( id, false ) || definition.Validate(tile.ID, false))
                     {
                         toHarvest = new StaticTarget( new Point3D( x, y, tile.Z ), tile.ID );
                         return true;
