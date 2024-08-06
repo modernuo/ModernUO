@@ -256,11 +256,11 @@ public partial class Runebook : Item, ISecurable, ICraftable
                 return;
             }
 
-            if (Core.Now < NextUse)
-            {
-                from.SendLocalizedMessage(502406); // This book needs time to recharge.
-                return;
-            }
+            //if (Core.Now < NextUse)
+            //{
+            //    from.SendLocalizedMessage(502406); // This book needs time to recharge.
+            //    return;
+            //}
 
             from.CloseGump<RunebookGump>();
             from.SendGump(new RunebookGump(from, this));
