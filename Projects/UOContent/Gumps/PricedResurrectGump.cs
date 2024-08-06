@@ -1,5 +1,6 @@
 using System;
 using Server.Engines.Virtues;
+using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -57,7 +58,7 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
         builder.AddImageTiled(80, 90, 200, 1, 9107);
         builder.AddImageTiled(95, 92, 200, 1, 9157);
 
-        builder.AddLabel(90, 70, 1645, _price.ToString());
+        builder.AddLabelPlaceholder(90, 70, 1645, "resurrectionPrice");
         builder.AddHtmlLocalized(140, 70, 100, 25, 1023823, 0x7FFF); // gold coins
 
         builder.AddButton(290, 175, 247, 248, 2);
@@ -70,6 +71,11 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
         builder.AddImageTiled(394, 0, 1, 217, 9155);
         builder.AddImageTiled(0, 216, 395, 1, 9157);
         builder.AddImageTiled(0, 0, 1, 217, 9155);
+    }
+
+    protected override void BuildStrings(ref GumpStringsBuilder builder)
+    {
+        builder.SetStringSlot("resurrectionPrice", $"{_price}");
     }
 
     public override void OnResponse(NetState state, in RelayInfo info)

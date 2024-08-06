@@ -14,7 +14,7 @@ public enum ResurrectMessage
     Generic = 3
 }
 
-public class ResurrectGump : StaticGump<ResurrectGump>
+public class ResurrectGump : DynamicGump
 {
     private readonly bool _fromSacrifice;
     private readonly Mobile _healer;
@@ -46,7 +46,7 @@ public class ResurrectGump : StaticGump<ResurrectGump>
         _resurrectMessage = msg;
     }
 
-    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
         builder.AddPage(0);
 
