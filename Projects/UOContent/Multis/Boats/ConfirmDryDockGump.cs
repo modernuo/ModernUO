@@ -6,18 +6,14 @@ namespace Server.Multis;
 public class ConfirmDryDockGump : StaticGump<ConfirmDryDockGump>
 {
     private readonly BaseBoat _boat;
-    private readonly Mobile _from;
 
-    public ConfirmDryDockGump(Mobile from, BaseBoat boat) : base(150, 200)
+    public ConfirmDryDockGump(BaseBoat boat) : base(150, 200)
     {
-        _from = from;
         _boat = boat;
-
-        _from.CloseGump<ConfirmDryDockGump>();
-
     }
 
-    protected override void BuildLayout(ref StaticGumpBuilder builder) {
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
         builder.AddPage();
 
         builder.AddBackground(0, 0, 220, 170, 5054);
@@ -34,10 +30,9 @@ public class ConfirmDryDockGump : StaticGump<ConfirmDryDockGump>
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
-        if (info.ButtonID == 2)
+        if (info.ButtonID == 2 && state.Mobile != null)
         {
-            _boat.EndDryDock(_from);
+            _boat.EndDryDock(state.Mobile);
         }
     }
 }
-
