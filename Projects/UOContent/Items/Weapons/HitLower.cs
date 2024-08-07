@@ -44,7 +44,7 @@ namespace Server.Items
             }
 
             m_DefenseTable.Add(m);
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.HitLowerDefense, 1151313, 1151286, DefenseEffectDuration, m, malus.ToString()));
+            //BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.HitLowerDefense, 1151313, 1151286, DefenseEffectDuration, m, malus.ToString()));
             var timer = new DefenseTimer(m);
             timer.Start();
             m.SendLocalizedMessage(1062318); // Your defense chance has been reduced!
