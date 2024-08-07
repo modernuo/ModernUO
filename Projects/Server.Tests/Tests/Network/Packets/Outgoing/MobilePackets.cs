@@ -573,7 +573,7 @@ namespace Server.Tests.Network
                 }
             }
 
-            if (hair != null)
+            if (hair?.ItemId > 0)
             {
                 if (m_DupedLayers![(int)Layer.Hair] != m_Version)
                 {
@@ -604,7 +604,7 @@ namespace Server.Tests.Network
                 }
             }
 
-            if (facialHair != null)
+            if (facialHair?.ItemId > 0)
             {
                 if (m_DupedLayers![(int)Layer.FacialHair] != m_Version)
                 {

@@ -121,7 +121,7 @@ public static class CorpsePackets
 
         if (beheld.Owner != null)
         {
-            if (hair != null)
+            if (hair?.ItemId > 0)
             {
                 writer.Write(hair.VirtualSerial);
                 writer.Write((ushort)hair.ItemId);
@@ -138,7 +138,7 @@ public static class CorpsePackets
                 ++written;
             }
 
-            if (facialHair != null)
+            if (facialHair?.ItemId > 0)
             {
                 writer.Write(facialHair.VirtualSerial);
                 writer.Write((ushort)facialHair.ItemId);

@@ -173,12 +173,12 @@ public partial class Corpse : Container, ICarvable
         _kills = owner.Kills;
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
 
-        if (hair != null)
+        if (hair?.ItemId > 0)
         {
             _hair = new VirtualHairInfo(hair.ItemId, hair.Hue);
         }
 
-        if (facialHair != null)
+        if (facialHair?.ItemId > 0)
         {
             _facialHair = new VirtualHairInfo(facialHair.ItemId, facialHair.Hue);
         }
