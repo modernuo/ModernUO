@@ -121,7 +121,7 @@ namespace Server.Mobiles
 
         public DateTime LastRestock { get; set; }
 
-        public virtual TimeSpan RestockDelay => TimeSpan.FromHours(1);
+        public virtual TimeSpan RestockDelay => TimeSpan.FromMinutes(15);
 
         public virtual void Restock()
         {
