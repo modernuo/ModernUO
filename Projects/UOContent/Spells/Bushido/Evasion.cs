@@ -235,6 +235,7 @@ namespace Server.Spells.Bushido
         {
             if (StopEvasionTimer(m))
             {
+                BuffInfo.RemoveBuff(m, BuffIcon.Evasion);
                 OnEffectEnd(m, typeof(Evasion));
             }
         }

@@ -30,7 +30,7 @@ public partial class EtherealRottweiler : EtherealMount, IAccountBound
     public string Account { get; set; }
 
     [Constructible]
-    public EtherealRottweiler() : base( 0xA770, 0x3ED9 )
+    public EtherealRottweiler() : base( 0xA770, 0x3ED9, 0x3ED9, DefaultEtherealHue)
     {
     }
 

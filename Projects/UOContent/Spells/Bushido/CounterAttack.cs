@@ -93,12 +93,15 @@ namespace Server.Spells.Bushido
             );
 
             _table[m] = timerToken;
+
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.CounterAttack, 1060598, 1063266, TimeSpan.FromSeconds(30), m));
         }
 
         public static void StopCountering(Mobile m)
         {
             if (StopCounterTimer(m))
             {
+                BuffInfo.RemoveBuff(m, BuffIcon.CounterAttack);
                 OnEffectEnd(m, typeof(CounterAttack));
             }
         }

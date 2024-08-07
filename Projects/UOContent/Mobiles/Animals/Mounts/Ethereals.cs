@@ -8,9 +8,11 @@ using Server.Spells;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(4, false)]
+    [SerializationGenerator(5, false)]
     public partial class EtherealMount : Item, IMount, IMountItem, IRewardItem
     {
+        public static readonly int DefaultEtherealHue = 0x4001;
+
         [SerializableField(0)]
         [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool _isDonationItem;
@@ -23,20 +25,43 @@ namespace Server.Mobiles
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         public bool _isRewardItem;
 
+        private bool _transparent1;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [SerializableFieldSaveFlag(1)]
         public bool ShouldSerializeIsRewardItem() => _isRewardItem;
 
         [Constructible]
-        public EtherealMount(int itemID, int mountID) : base(itemID)
+        public EtherealMount(int itemID, int transMountedID, int nonTransMountedID, int transHue = 0, int nonTransHue = 0) : base(itemID)
         {
-            _mountedID = mountID;
+            _mountedID = transMountedID;
             _regularID = itemID;
             _rider = null;
 
             Layer = Layer.Invalid;
 
             LootType = LootType.Blessed;
+
+            Transparent = true;
+            TransparentMountedID = transMountedID;
+            TransparentMountedHue = transHue;
+            NonTransparentMountedID = nonTransMountedID;
+            NonTransparentMountedHue = nonTransHue;
+        }
+
+        private void MigrateFrom( V4Content content )
+        {
+            IsDonationItem = content.IsDonationItem;
+            IsRewardItem = content.IsRewardItem;
+            MountedID = content.MountedID;
+            RegularID = content.RegularID;
+            Rider = content.Rider;
+            Steps = content.Steps ?? 0;
+            Transparent = true;
+            TransparentMountedID = content.MountedID;
+            TransparentMountedHue = DefaultEtherealHue;
+            NonTransparentMountedID = content.MountedID;
+            NonTransparentMountedHue = 0;
         }
 
         public override double DefaultWeight => 1.0;
@@ -85,7 +110,6 @@ namespace Server.Mobiles
 
         public virtual int FollowerSlots => 1;
 
-        public virtual int EtherealHue => 0x4001;
 
         [SerializableProperty(4)]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -143,6 +167,38 @@ namespace Server.Mobiles
         [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializeSteps() => _steps != StepsMax;
 
+        [SerializableField( 6 )] private int _transparentMountedID;
+        [SerializableField( 7 )] private int _transparentMountedHue;
+        [SerializableField( 8 )] private int _nonTransparentMountedID;
+        [SerializableField( 9 )] private int _nonTransparentMountedHue;
+
+
+        [CommandProperty( AccessLevel.GameMaster )]
+        [SerializableProperty( 10 )]
+        public bool Transparent
+        {
+            get => _transparent1;
+            set
+            {
+                if (Rider != null)
+                {
+                    if (value && !_transparent1)
+                    {
+                        ItemID = _transparentMountedID;
+                        Hue = _transparentMountedHue;
+                    }
+                    else if (!value && _transparent1)
+                    {
+                        ItemID = _transparentMountedID;
+                        Hue = _transparentMountedHue;
+                    }
+                }
+
+                _transparent1 = value;
+                this.MarkDirty();
+            }
+        }
+
         public virtual int StepsMax => 3840; // Should be same as horse
 
         public virtual int StepsGainedPerIdleTime => 1;
@@ -173,6 +229,8 @@ namespace Server.Mobiles
             {
                 list.Add(1155526); // Account Bound
             }
+
+            EtherealRetouchingTool.AddProperty(this, list);
         }
 
         public void RemoveFollowers()
@@ -270,6 +328,16 @@ namespace Server.Mobiles
         private void AfterDeserialize()
         {
             AddFollowers();
+
+            if ( TransparentMountedID == 0 )
+            {
+                TransparentMountedID = MountedID;
+            }
+
+            if ( NonTransparentMountedID == 0 )
+            {
+                NonTransparentMountedID = MountedID;
+            }
         }
 
         public override DeathMoveResult OnParentDeath(Mobile parent)
@@ -297,7 +365,7 @@ namespace Server.Mobiles
             Layer = Layer.Invalid;
             Movable = true;
 
-            if (Hue == EtherealHue)
+            if (Hue == TransparentMountedHue)
             {
                 Hue = 0;
             }
@@ -323,14 +391,11 @@ namespace Server.Mobiles
 
         public void MountMe()
         {
-            ItemID = _mountedID;
+            ItemID = Transparent ? _transparentMountedID : _nonTransparentMountedID;
+            Hue = Transparent ? _transparentMountedHue : _nonTransparentMountedHue;
+
             Layer = Layer.Mount;
             Movable = false;
-
-            if (Hue == 0)
-            {
-                Hue = EtherealHue;
-            }
 
             ProcessDelta();
             _rider.ProcessDelta();
@@ -432,8 +497,7 @@ namespace Server.Mobiles
     public partial class EtherealHorse : EtherealMount
     {
         [Constructible]
-        public EtherealHorse()
-            : base(0x20DD, 0x3EAA)
+        public EtherealHorse() : base(0x20DD, 0x3EAA, 0x3EA0)
         {
         }
 
@@ -444,8 +508,7 @@ namespace Server.Mobiles
     public partial class EtherealLlama : EtherealMount
     {
         [Constructible]
-        public EtherealLlama()
-            : base(0x20F6, 0x3EAB)
+        public EtherealLlama() : base(0x20F6, 0x3EAB, 0x3EA6)
         {
         }
 
@@ -456,8 +519,7 @@ namespace Server.Mobiles
     public partial class EtherealOstard : EtherealMount
     {
         [Constructible]
-        public EtherealOstard()
-            : base(0x2135, 0x3EAC)
+        public EtherealOstard() : base(0x2135, 0x3EAC, 0x3EA5)
         {
         }
 
@@ -468,8 +530,7 @@ namespace Server.Mobiles
     public partial class EtherealRidgeback : EtherealMount
     {
         [Constructible]
-        public EtherealRidgeback()
-            : base(0x2615, 0x3E9A)
+        public EtherealRidgeback() : base(0x2615, 0x3E9A, 0x3EBA, DefaultEtherealHue)
         {
         }
 
@@ -480,8 +541,7 @@ namespace Server.Mobiles
     public partial class EtherealUnicorn : EtherealMount
     {
         [Constructible]
-        public EtherealUnicorn()
-            : base(0x25CE, 0x3E9B)
+        public EtherealUnicorn() : base(0x25CE, 0x3E9B, 0x3EB4, DefaultEtherealHue)
         {
         }
 
@@ -492,8 +552,7 @@ namespace Server.Mobiles
     public partial class EtherealBeetle : EtherealMount
     {
         [Constructible]
-        public EtherealBeetle()
-            : base(0x260F, 0x3E97)
+        public EtherealBeetle() : base(0x260F, 0x3E97, 0x3EBC, DefaultEtherealHue)
         {
         }
 
@@ -504,8 +563,7 @@ namespace Server.Mobiles
     public partial class EtherealKirin : EtherealMount
     {
         [Constructible]
-        public EtherealKirin()
-            : base(0x25A0, 0x3E9C)
+        public EtherealKirin() : base(0x25A0, 0x3E9C, 0x3EAD, DefaultEtherealHue)
         {
         }
 
@@ -516,8 +574,7 @@ namespace Server.Mobiles
     public partial class EtherealSwampDragon : EtherealMount
     {
         [Constructible]
-        public EtherealSwampDragon()
-            : base(0x2619, 0x3E98)
+        public EtherealSwampDragon() : base(0x2619, 0x3E98, 0x3EBD, DefaultEtherealHue, 0x851)
         {
         }
 
@@ -528,21 +585,19 @@ namespace Server.Mobiles
     public partial class RideablePolarBear : EtherealMount
     {
         [Constructible]
-        public RideablePolarBear()
-            : base(0x20E1, 0x3EC5)
+        public RideablePolarBear() : base(0x20E1, 0x3EC5, 0x3EC5, DefaultEtherealHue)
         {
+            Transparent = false;
         }
 
         public override int LabelNumber => 1076159; // Rideable Polar Bear
-        public override int EtherealHue => 0;
     }
 
     [SerializationGenerator(0)]
     public partial class EtherealCuSidhe : EtherealMount
     {
         [Constructible]
-        public EtherealCuSidhe()
-            : base(0x2D96, 0x3E91)
+        public EtherealCuSidhe() : base(0x2D96, 0x3E91, 0x3E91, DefaultEtherealHue)
         {
         }
 
@@ -553,8 +608,7 @@ namespace Server.Mobiles
     public partial class EtherealHiryu : EtherealMount
     {
         [Constructible]
-        public EtherealHiryu()
-            : base(0x276A, 0x3E94)
+        public EtherealHiryu() : base(0x276A, 0x3E94, 0x3E94, DefaultEtherealHue)
         {
         }
 
@@ -565,8 +619,7 @@ namespace Server.Mobiles
     public partial class EtherealReptalon : EtherealMount
     {
         [Constructible]
-        public EtherealReptalon()
-            : base(0x2d95, 0x3e90)
+        public EtherealReptalon() : base(0x2d95, 0x3e90, 0x3e90, DefaultEtherealHue)
         {
         }
 
@@ -577,13 +630,11 @@ namespace Server.Mobiles
     public partial class ChargerOfTheFallen : EtherealMount
     {
         [Constructible]
-        public ChargerOfTheFallen()
-            : base(0x2D9C, 0x3E92)
+        public ChargerOfTheFallen() : base(0x2D9C, 0x3E92, 0x3E92, DefaultEtherealHue)
         {
+            Transparent = false;
         }
 
         public override int LabelNumber => 1074816; // Charger of the Fallen Statuette
-
-        public override int EtherealHue => 0;
     }
 }

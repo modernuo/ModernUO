@@ -541,7 +541,8 @@ namespace Server.Engines.VeteranRewards
                     11,
                     new[]
                     {
-                        new RewardEntry(etherealSteeds, 1113908, typeof(EtherealReptalon), Expansion.ML)
+                        new RewardEntry(etherealSteeds, 1113908, typeof(EtherealReptalon), Expansion.ML),
+                        new RewardEntry(miscellaneous, 1113814, typeof(EtherealRetouchingTool))
                     }
                 ),
 
