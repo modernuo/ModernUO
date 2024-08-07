@@ -176,9 +176,13 @@ public class NinjaAI : MeleeAI
 
         if ( m_Mobile.Combatant is Mobile c )
         {
-            if ( !m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee )
+            if ( !m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CheckFlee() )
             {
-                m_Mobile.DebugSay( $"I am going to flee from {c.Name}" );
+                if ( m_Mobile.Debug )
+                {
+                    m_Mobile.DebugSay( $"I am going to flee from {c.Name}" );
+                }
+
                 Action = ActionType.Flee;
             }
             else

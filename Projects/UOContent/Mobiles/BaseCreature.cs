@@ -2468,8 +2468,11 @@ namespace Server.Mobiles
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DebugSay(string text)
         {
-            // Moved the debug check to implementation layer so we can avoid string formatting when we do not need it
-            PublicOverheadMessage(MessageType.Regular, 41, false, text);
+            if ( Debug )
+            {
+                // Moved the debug check to implementation layer so we can avoid string formatting when we do not need it
+                PublicOverheadMessage( MessageType.Regular, 41, false, text );
+            }
         }
 
         /*
