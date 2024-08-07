@@ -75,10 +75,10 @@ public static class World
             do
             {
                 value = NextVirtualSerial;
-                newValue = (value == MaxVirtualSerial) ? ResetVirtualSerial : value + 1;
+                newValue = value == MaxVirtualSerial ? ResetVirtualSerial : value + 1;
 
                 // Atomically set NextVirtualSerial to newValue if it hasn't changed
-            } while (System.Threading.Interlocked.CompareExchange(ref NextVirtualSerial, newValue, value) != value);
+            } while (Interlocked.CompareExchange(ref NextVirtualSerial, newValue, value) != value);
 
             return (Serial) value;
         }
