@@ -1,40 +1,38 @@
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Multis
+namespace Server.Multis;
+
+public class ConfirmDryDockGump : StaticGump<ConfirmDryDockGump>
 {
-    public class ConfirmDryDockGump : Gump
+    private readonly BaseBoat _boat;
+
+    public ConfirmDryDockGump(BaseBoat boat) : base(150, 200)
     {
-        private readonly BaseBoat m_Boat;
-        private readonly Mobile m_From;
+        _boat = boat;
+    }
 
-        public ConfirmDryDockGump(Mobile from, BaseBoat boat) : base(150, 200)
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.AddPage();
+
+        builder.AddBackground(0, 0, 220, 170, 5054);
+        builder.AddBackground(10, 10, 200, 150, 3000);
+
+        builder.AddHtmlLocalized(20, 20, 180, 80, 1018319, true); // Do you wish to dry dock this boat?
+
+        builder.AddHtmlLocalized(55, 100, 140, 25, 1011011); // CONTINUE
+        builder.AddButton(20, 100, 4005, 4007, 2);
+
+        builder.AddHtmlLocalized(55, 125, 140, 25, 1011012); // CANCEL
+        builder.AddButton(20, 125, 4005, 4007, 1);
+    }
+
+    public override void OnResponse(NetState state, in RelayInfo info)
+    {
+        if (info.ButtonID == 2)
         {
-            m_From = from;
-            m_Boat = boat;
-
-            m_From.CloseGump<ConfirmDryDockGump>();
-
-            AddPage(0);
-
-            AddBackground(0, 0, 220, 170, 5054);
-            AddBackground(10, 10, 200, 150, 3000);
-
-            AddHtmlLocalized(20, 20, 180, 80, 1018319, true); // Do you wish to dry dock this boat?
-
-            AddHtmlLocalized(55, 100, 140, 25, 1011011); // CONTINUE
-            AddButton(20, 100, 4005, 4007, 2);
-
-            AddHtmlLocalized(55, 125, 140, 25, 1011012); // CANCEL
-            AddButton(20, 125, 4005, 4007, 1);
-        }
-
-        public override void OnResponse(NetState state, in RelayInfo info)
-        {
-            if (info.ButtonID == 2)
-            {
-                m_Boat.EndDryDock(m_From);
-            }
+            _boat.EndDryDock(state.Mobile);
         }
     }
 }
