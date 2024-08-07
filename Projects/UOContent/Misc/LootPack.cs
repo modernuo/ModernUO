@@ -6,6 +6,10 @@ namespace Server
 {
     public class LootPack
     {
+        // Custom
+        private static readonly int _jeweleryBonusLuck = 5000;
+        // End Custom
+
         public static readonly LootPackItem[] Gold = [new LootPackItem( typeof( Gold ), 1 )];
 
         public static readonly LootPackItem[] Instruments = [new LootPackItem( typeof( BaseInstrument ), 1 )];
@@ -632,6 +636,13 @@ namespace Server
                 MaxProps = maxProps;
                 MinIntensity = minIntensity;
                 MaxIntensity = maxIntensity;
+
+                // Custom
+                if ( MaxIntensity >= 75 )
+                {
+                    MinIntensity = Math.Max( minIntensity, 25 );
+                }
+                // End Custom
             }
 
             public int Chance { get; set; }
@@ -771,6 +782,10 @@ namespace Server
                         }
                         else if ( item is BaseJewel jewel )
                         {
+                            // Custom
+                            luckChance += _jeweleryBonusLuck;
+                            // End Custom
+
                             BaseRunicTool.ApplyAttributesTo( jewel, false, luckChance, props, MinIntensity, MaxIntensity );
                         }
                         else

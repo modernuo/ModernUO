@@ -5056,6 +5056,10 @@ namespace Server.Mobiles
 
         public virtual void AddLoot(LootPack pack, int amount)
         {
+            // Custom
+            amount *= 2;
+            // EndCustom
+
             for (var i = 0; i < amount; ++i)
             {
                 AddLoot(pack);
