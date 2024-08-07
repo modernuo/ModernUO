@@ -21,7 +21,7 @@ public class ConfirmHouseResize : StaticGump<ConfirmHouseResize>
     protected override void BuildLayout(ref StaticGumpBuilder builder) {
         builder.SetNoClose();
 
-        builder.AddPage(0);
+        builder.AddPage();
 
         builder.AddBackground(0, 0, 420, 280, 0x13BE);
         builder.AddImageTiled(10, 10, 400, 20, 0xA40);

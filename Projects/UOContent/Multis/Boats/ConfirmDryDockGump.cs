@@ -18,7 +18,7 @@ public class ConfirmDryDockGump : StaticGump<ConfirmDryDockGump>
     }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder) {
-        builder.AddPage(0);
+        builder.AddPage();
 
         builder.AddBackground(0, 0, 220, 170, 5054);
         builder.AddBackground(10, 10, 200, 150, 3000);
