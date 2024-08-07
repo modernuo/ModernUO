@@ -58,7 +58,7 @@ public partial class InvisibilityPotion : BasePotion
         m.Hidden = true;
 
         BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825)); // Invisibility/Invisible
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, TimeSpan.FromSeconds(30.0d), m));  //Invisibility/Invisible
 
         RemoveTimer(m);
 

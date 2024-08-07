@@ -54,6 +54,8 @@ public partial class OrangePetals : Item
         Timer timer = new OrangePetalsTimer(from);
         timer.Start();
 
+        BuffInfo.AddBuff(from, new BuffInfo(BuffIcon.OrangePetals, 1153785, 1153814, TimeSpan.FromMinutes(5.0), from));
+
         _table[from] = timer;
 
         Consume();

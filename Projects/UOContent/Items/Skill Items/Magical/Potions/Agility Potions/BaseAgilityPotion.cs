@@ -22,7 +22,8 @@ public abstract partial class BaseAgilityPotion : BasePotion
         }
 
         // TODO: Verify scaled; is it offset, duration, or both?
-        if (!SpellHelper.AddStatOffset(from, StatType.Dex, Scale(from, DexOffset), Duration))
+        var scale = Scale( from, DexOffset );
+        if (!SpellHelper.AddStatOffset(from, StatType.Dex, scale, Duration))
         {
             from.SendLocalizedMessage(502173); // You are already under a similar effect.
             return false;
@@ -30,6 +31,9 @@ public abstract partial class BaseAgilityPotion : BasePotion
 
         from.FixedEffect(0x375A, 10, 15);
         from.PlaySound(0x1E7);
+
+        BuffInfo.AddBuff(from, new BuffInfo(BuffIcon.Agility, 1075841, Duration, from, scale.ToString()));
+
         return true;
     }
 

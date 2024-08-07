@@ -34,6 +34,8 @@ public class Feint : WeaponAbility
 
         var skill = Math.Max(attacker.Skills.Ninjitsu.Value, attacker.Skills.Bushido.Value);
 
+        int bonus = (int)(20.0 + 3.0 * (skill - 50.0) / 7.0);
+
         // 20-50 % decrease in damage taken for 6 seconds
         timer = new FeintTimer(
             attacker,
@@ -44,7 +46,9 @@ public class Feint : WeaponAbility
         timer.Start();
         Registry.Add(defender, timer);
 
-        // TODO: Add buff icon (Publish 100)
+        string args = $"{defender.Name}\t{bonus}";
+        BuffInfo.AddBuff(attacker, new BuffInfo(BuffIcon.Feint, 1151308, 1151307, TimeSpan.FromSeconds(6), attacker, args));
+
     }
 
     public static bool GetDamageReduction(Mobile attacker, Mobile defender, out int damageReduction)

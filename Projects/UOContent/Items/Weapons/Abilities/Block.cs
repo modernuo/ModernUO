@@ -49,6 +49,7 @@ namespace Server.Items
         public static void BeginBlock(Mobile m, int bonus)
         {
             EndBlock(m);
+
             _table[m] = new InternalTimer(m, bonus);
         }
 
@@ -56,6 +57,8 @@ namespace Server.Items
         {
             if (_table.Remove(m, out var timer))
             {
+                BuffInfo.RemoveBuff(m, BuffIcon.Block);
+
                 timer?.Stop();
             }
         }

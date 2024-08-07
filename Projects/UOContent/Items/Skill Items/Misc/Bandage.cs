@@ -479,6 +479,7 @@ public class BandageContext : Timer
             double seconds;
             var resDelay = patient.Alive ? 0.0 : 5.0;
 
+
             if (onSelf)
             {
                 if (Core.AOS)
@@ -516,6 +517,35 @@ public class BandageContext : Timer
             else
             {
                 seconds = 5.0 + resDelay;
+            }
+
+            if ( patient is PlayerMobile )
+            {
+                BuffInfo.AddBuff(
+                    healer,
+                    new BuffInfo(
+                        BuffIcon.Healing,
+                        1002082,
+                        1151400,
+                        TimeSpan.FromSeconds( seconds ),
+                        healer,
+                        $"{patient.Name}"
+                    )
+                );
+            }
+            else
+            {
+                BuffInfo.AddBuff(
+                    healer,
+                    new BuffInfo(
+                        BuffIcon.Veterinary,
+                        1002167,
+                        1151400,
+                        TimeSpan.FromSeconds( seconds ),
+                        healer,
+                        $"{patient.Name}"
+                    )
+                );
             }
 
             var context = GetContext(healer);

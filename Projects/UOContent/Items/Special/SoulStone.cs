@@ -42,6 +42,11 @@ public partial class SoulStone : Item, ISecurable
         _inactiveItemID = inactiveItemID;
         _activeItemID = activeItemID;
 
+        if ( this is SoulstoneFragment )
+        {
+            _activeItemID = inactiveItemID;
+        }
+
         _account = account;
     }
 

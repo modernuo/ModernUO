@@ -59,6 +59,7 @@ namespace Server.Items
             _table[m] = timerToken;
 
             m.YellowHealthbar = true;
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.MortalStrike, 1075810, 1075811, duration, m));
         }
 
         public static bool EndWound(Mobile m)
@@ -66,6 +67,7 @@ namespace Server.Items
             if (StopTimer(m))
             {
                 m.YellowHealthbar = false;
+                BuffInfo.RemoveBuff(m, BuffIcon.MortalStrike);
                 m.SendLocalizedMessage(1060208); // You are no longer mortally wounded.
                 return true;
             }

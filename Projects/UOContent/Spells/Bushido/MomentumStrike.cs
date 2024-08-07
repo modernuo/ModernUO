@@ -62,9 +62,23 @@ namespace Server.Spells.Bushido
             CheckGain(attacker);
         }
 
+        public override void OnUse( Mobile from )
+        {
+            base.OnUse( from );
+
+            BuffInfo.AddBuff(from, new BuffInfo(BuffIcon.MomentumStrike, 1060600, 1063268));
+        }
+
         public override void CheckGain(Mobile m)
         {
             m.CheckSkill(MoveSkill, RequiredSkill, 120.0);
+        }
+
+        public override void OnClearMove( Mobile from )
+        {
+            base.OnClearMove( from );
+
+            BuffInfo.RemoveBuff(from, BuffIcon.MomentumStrike);
         }
     }
 }

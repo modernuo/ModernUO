@@ -25,6 +25,7 @@ namespace Server.Items
             if (Registry.TryGetValue(attacker, out var timer))
             {
                 timer.Stop();
+                BuffInfo.RemoveBuff(attacker, BuffIcon.DualWield);
                 Registry.Remove(attacker);
             }
 
@@ -37,6 +38,8 @@ namespace Server.Items
                 attacker,
                 (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0) // 20-50 % increase
             );
+
+            BuffInfo.AddBuff(attacker, new BuffInfo(BuffIcon.DualWield, 1151294, 1151293, TimeSpan.FromSeconds( 15 ), attacker, "25"));
 
             timer.Start();
             Registry.Add(attacker, timer);

@@ -40,6 +40,18 @@ namespace Server.Spells.Bushido
             return Validate(attacker);
         }
 
+        public override void OnUse( Mobile m )
+        {
+            base.OnUse(m);
+
+            double bushido = m.Skills[SkillName.Bushido].Value;
+            int criticalChance = (int)((bushido * bushido) / 720.0);
+
+            m.Delta(MobileDelta.WeaponDamage);
+
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.LightningStrike, 1060599, 1153811, $"50\t{criticalChance}" ));
+        }
+
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             ClearCurrentMove(attacker);
@@ -59,6 +71,7 @@ namespace Server.Spells.Bushido
             if (attacker is PlayerMobile pm)
             {
                 pm.ExecutesLightningStrike = 0;
+                BuffInfo.RemoveBuff(attacker, BuffIcon.LightningStrike);
             }
         }
     }

@@ -63,6 +63,8 @@ namespace Server.Items
             _table.TryGetValue(m, out var timer);
             timer?.Stop();
 
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Bleed, 1075829, 1075830, TimeSpan.FromSeconds(10), m, "1\t10\t2" ));
+
             _table[m] = timer = new InternalTimer(from, m);
             timer.Start();
         }
@@ -98,6 +100,8 @@ namespace Server.Items
             }
 
             t.Stop();
+
+            BuffInfo.RemoveBuff(m, BuffIcon.Bleed);
 
             if (message)
             {
