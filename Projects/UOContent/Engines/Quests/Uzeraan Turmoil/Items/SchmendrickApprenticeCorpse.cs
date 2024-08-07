@@ -57,11 +57,11 @@ public partial class SchmendrickApprenticeCorpse : Corpse
         return new VirtualHairInfo(Race.Human.RandomHair(false), _hairHue);
     }
 
-    private static VirtualFacialHairInfo GetFacialHair()
+    private static VirtualHairInfo GetFacialHair()
     {
         _hairHue = Race.Human.RandomHairHue();
 
-        return new VirtualFacialHairInfo(Race.Human.RandomFacialHair(false), _hairHue);
+        return new VirtualHairInfo(Race.Human.RandomFacialHair(false), _hairHue);
     }
 
     public override void AddNameProperty(IPropertyList list)

@@ -187,7 +187,7 @@ public delegate bool AllowBeneficialHandler(Mobile from, Mobile target);
 public delegate bool AllowHarmfulHandler(Mobile from, Mobile target);
 
 public delegate Container CreateCorpseHandler(
-    Mobile from, VirtualHairInfo hair, VirtualFacialHairInfo facialhair, List<Item> initialContent, List<Item> equippedItems
+    Mobile from, List<Item> initialContent, List<Item> equippedItems
 );
 
 public delegate int AOSStatusHandler(Mobile from, int index);
@@ -273,11 +273,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private TimerExecutionToken _expireAggrTimerToken;
     private TimerExecutionToken _expireCombatantTimerToken;
     private TimerExecutionToken _expireCriminalTimerToken;
-    private VirtualFacialHairInfo m_FacialHair;
-    public VirtualFacialHairInfo FacialHair
-    {
-        get => m_FacialHair ??= new VirtualFacialHairInfo(FacialHairItemID, FacialHairHue);
-    }
+    private VirtualHairInfo _facialHair;
+    public VirtualHairInfo FacialHair => _facialHair ??= new VirtualHairInfo(FacialHairItemID, FacialHairHue);
+
     private int m_Fame, m_Karma;
     private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
     private int m_Followers, m_FollowersMax;
@@ -286,11 +284,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private BaseGuild m_Guild;
     private string m_GuildTitle;
 
-    private VirtualHairInfo m_Hair;
-    public VirtualHairInfo Hair
-    {
-        get => m_Hair ??= new VirtualHairInfo(HairItemID, HairHue);
-    }
+    private VirtualHairInfo _hair;
+    public VirtualHairInfo Hair => _hair ??= new VirtualHairInfo(HairItemID, HairHue);
+
     private int m_Hits, m_Stam, m_Mana;
 
     private Item m_Holding;
@@ -2173,59 +2169,62 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.GameMaster)]
     public int HairItemID
     {
-        get => m_Hair?.ItemID ?? 0;
+        get => _hair?.ItemId ?? 0;
         set
         {
-            if (m_Hair == null && value > 0)
+            if (_hair == null && value > 0)
             {
-                m_Hair = new VirtualHairInfo(value);
+                _hair = new VirtualHairInfo(value);
             }
             else if (value <= 0)
             {
-                m_Hair = null;
+                _hair = null;
             }
-            else if (m_Hair != null)
+            else if (_hair != null)
             {
-                m_Hair.ItemID = value;
+                _hair.ItemId = value;
             }
 
             Delta(MobileDelta.Hair);
+            this.MarkDirty();
         }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int FacialHairItemID
     {
-        get => m_FacialHair?.ItemID ?? 0;
+        get => _facialHair?.ItemId ?? 0;
         set
         {
-            if (m_FacialHair == null && value > 0)
+            if (_facialHair == null && value > 0)
             {
-                m_FacialHair = new VirtualFacialHairInfo(value);
+                _facialHair = new VirtualHairInfo(value);
             }
             else if (value <= 0)
             {
-                m_FacialHair = null;
+                _facialHair = null;
             }
-            else if (m_FacialHair != null)
+            else if (_facialHair != null)
             {
-                m_FacialHair.ItemID = value;
+                _facialHair.ItemId = value;
             }
 
             Delta(MobileDelta.FacialHair);
+            this.MarkDirty();
         }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int HairHue
     {
-        get => m_Hair?.Hue ?? 0;
+        get => _hair?.Hue ?? 0;
         set
         {
-            if (m_Hair != null)
+            if (_hair != null)
             {
-                m_Hair.Hue = value;
+                _hair.Hue = value;
                 Delta(MobileDelta.Hair);
+                this.MarkDirty();
             }
         }
     }
@@ -2233,13 +2232,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.GameMaster)]
     public int FacialHairHue
     {
-        get => m_FacialHair?.Hue ?? 0;
+        get => _facialHair?.Hue ?? 0;
         set
         {
-            if (m_FacialHair != null)
+            if (_facialHair != null)
             {
-                m_FacialHair.Hue = value;
+                _facialHair.Hue = value;
                 Delta(MobileDelta.FacialHair);
+                this.MarkDirty();
             }
         }
     }
@@ -2288,12 +2288,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         byte hairflag = 0x00;
 
-        if (m_Hair != null)
+        if (_hair != null)
         {
             hairflag |= 0x01;
         }
 
-        if (m_FacialHair != null)
+        if (_facialHair != null)
         {
             hairflag |= 0x02;
         }
@@ -2302,12 +2302,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if ((hairflag & 0x01) != 0)
         {
-            m_Hair?.Serialize(writer);
+            _hair?.Serialize(writer);
         }
 
         if ((hairflag & 0x02) != 0)
         {
-            m_FacialHair?.Serialize(writer);
+            _facialHair?.Serialize(writer);
         }
 
         writer.Write(Race);
@@ -2442,8 +2442,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_Map?.OnLeave(this);
         m_Map = null;
 
-        m_Hair = null;
-        m_FacialHair = null;
+        _hair = null;
+        _facialHair = null;
         m_MountItem = null;
 
         World.RemoveEntity(this);
@@ -4772,7 +4772,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
 
-        var c = CreateCorpseHandler?.Invoke(this, Hair, FacialHair, content, equip);
+        var c = CreateCorpseHandler?.Invoke(this, content, equip);
 
         if (m_Map != null)
         {
@@ -6088,12 +6088,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                     if ((hairflag & 0x01) != 0)
                     {
-                        m_Hair = new VirtualHairInfo(reader);
+                        _hair = new VirtualHairInfo();
+                        _hair.Deserialize(reader);
                     }
 
                     if ((hairflag & 0x02) != 0)
                     {
-                        m_FacialHair = new VirtualFacialHairInfo(reader);
+                        _facialHair = new VirtualHairInfo();
+                        _facialHair.Deserialize(reader);
                     }
 
                     goto case 29;

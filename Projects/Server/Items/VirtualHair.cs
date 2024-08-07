@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server;
@@ -65,80 +66,33 @@ public static class OutgoingVirtualHairPackets
     }
 }
 
-public abstract class BaseVirtualHairInfo
+[SerializationGenerator(0, false)]
+public partial class VirtualHairInfo
 {
-    protected BaseVirtualHairInfo(int itemid, int hue = 0)
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _itemId;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _hue;
+
+    public VirtualHairInfo() : this(0)
     {
-        ItemID = itemid;
-        Hue = hue;
+    }
+
+    public VirtualHairInfo(int itemid, int hue = 0)
+    {
+        _itemId = itemid;
+        _hue = hue;
         VirtualSerial = World.NewVirtual;
     }
 
-    protected BaseVirtualHairInfo(IGenericReader reader)
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        var version = reader.ReadInt();
-
-        switch (version)
-        {
-            case 0:
-                {
-                    ItemID = reader.ReadInt();
-                    Hue = reader.ReadInt();
-                    break;
-                }
-        }
-
         VirtualSerial = World.NewVirtual;
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int ItemID { get; set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Hue { get; set; }
-
-    public virtual void Serialize(IGenericWriter writer)
-    {
-        writer.Write(0); // version
-        writer.Write(ItemID);
-        writer.Write(Hue);
-    }
-
-    public Serial VirtualSerial { get; private set; } = Serial.Zero;
-}
-
-public class VirtualHairInfo : BaseVirtualHairInfo
-{
-    public VirtualHairInfo(int itemid)
-        : base(itemid)
-    {
-    }
-
-    public VirtualHairInfo(int itemid, int hue)
-        : base(itemid, hue)
-    {
-    }
-
-    public VirtualHairInfo(IGenericReader reader)
-        : base(reader)
-    {
-    }
-}
-
-public class VirtualFacialHairInfo : BaseVirtualHairInfo
-{
-    public VirtualFacialHairInfo(int itemid)
-        : base(itemid)
-    {
-    }
-
-    public VirtualFacialHairInfo(int itemid, int hue)
-        : base(itemid, hue)
-    {
-    }
-
-    public VirtualFacialHairInfo(IGenericReader reader)
-        : base(reader)
-    {
-    }
+    public Serial VirtualSerial { get; private set; }
 }

@@ -17,7 +17,7 @@ namespace Server.Tests
             var expected = new HairEquipUpdate(m).Compile();
 
             var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendHairEquipUpdatePacket(m, (uint)m.Hair.VirtualSerial, m.Hair.ItemID, m.Hair.Hue, Layer.Hair);
+            ns.SendHairEquipUpdatePacket(m, (uint)m.Hair.VirtualSerial, m.Hair.ItemId, m.Hair.Hue, Layer.Hair);
 
             var result = ns.SendPipe.Reader.AvailableToRead();
             AssertThat.Equal(result, expected);

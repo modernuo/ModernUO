@@ -7,7 +7,6 @@ using Server.Engines.PartySystem;
 using Server.Engines.Quests.Doom;
 using Server.Engines.Quests.Haven;
 using Server.Guilds;
-using Server.Items.Misc.Corpses;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -133,13 +132,15 @@ public partial class Corpse : Container, ICarvable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Item> _equipItems;
 
+    [CanBeNull]
     [SerializableField(14, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private CorpseHair _hair;
+    private VirtualHairInfo _hair;
 
+    [CanBeNull]
     [SerializableField(15, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private CorpseFacialHair _facialHair;
+    private VirtualHairInfo _facialHair;
 
     // Why was this public?
     // public override bool IsPublicContainer => true;
@@ -148,7 +149,7 @@ public partial class Corpse : Container, ICarvable
     {
     }
 
-    public Corpse(Mobile owner, VirtualHairInfo hair, VirtualFacialHairInfo facialHair, List<Item> equipItems)
+    public Corpse(Mobile owner, VirtualHairInfo hair, VirtualHairInfo facialHair, List<Item> equipItems)
         : base(0x2006)
     {
         // To suppress console warnings, stackable must be true
@@ -172,8 +173,15 @@ public partial class Corpse : Container, ICarvable
         _kills = owner.Kills;
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
 
-        _hair = new CorpseHair(this, hair?.ItemID ?? 0, hair?.Hue ?? 0);
-        _facialHair = new CorpseFacialHair(this, facialHair?.ItemID ?? 0, facialHair?.Hue ?? 0);
+        if (hair != null)
+        {
+            _hair = new VirtualHairInfo(hair.ItemId, hair.Hue);
+        }
+
+        if (facialHair != null)
+        {
+            _facialHair = new VirtualHairInfo(facialHair.ItemId, facialHair.Hue);
+        }
 
         // This corpse does not turn to bones if: the owner is not a player
         SetFlag(CorpseFlag.NoBones, !owner.Player);
@@ -264,8 +272,6 @@ public partial class Corpse : Container, ICarvable
         _guild = content.Guild;
         _kills = content.Kills;
         _equipItems = content.EquipItems;
-        _hair = new CorpseHair(this);
-        _facialHair = new CorpseFacialHair(this);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -519,14 +525,11 @@ public partial class Corpse : Container, ICarvable
         Mobile.CreateCorpseHandler += Mobile_CreateCorpseHandler;
     }
 
-    public static Container Mobile_CreateCorpseHandler(
-        Mobile owner, VirtualHairInfo hair, VirtualFacialHairInfo facialhair,
-        List<Item> initialContent, List<Item> equipItems
-    )
+    public static Container Mobile_CreateCorpseHandler(Mobile owner, List<Item> initialContent, List<Item> equipItems)
     {
         var c = owner is MilitiaFighter
-            ? new MilitiaFighterCorpse(owner, hair, facialhair, equipItems)
-            : new Corpse(owner, hair, facialhair, equipItems);
+            ? new MilitiaFighterCorpse(owner, owner.Hair, owner.FacialHair, equipItems)
+            : new Corpse(owner, owner.Hair, owner.FacialHair, equipItems);
 
         owner.Corpse = c;
 
