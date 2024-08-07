@@ -11,7 +11,7 @@ public class ProfessionInfo
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool VerifyProfession(int profIndex) =>
-        profIndex >= 0 && profIndex < _professions.Length;
+        profIndex > 0 && profIndex < _professions.Length;
 
     public static bool GetProfession(int profIndex, out ProfessionInfo profession)
     {
