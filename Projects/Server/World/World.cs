@@ -77,7 +77,7 @@ public static class World
                 value = NextVirtualSerial;
                 newValue = (value == MaxVirtualSerial) ? ResetVirtualSerial : value + 1;
 
-                // Atomically set NextVirtualSerial to newValue if it's still equal to value + 1
+                // Atomically set NextVirtualSerial to newValue if it hasn't changed
             } while (System.Threading.Interlocked.CompareExchange(ref NextVirtualSerial, newValue, value) != value);
 
             return (Serial) value;
