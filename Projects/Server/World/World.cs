@@ -56,8 +56,8 @@ public static class World
     public const uint MaxItemSerial = 0x7EEEEEEE;
     public const uint MaxMobileSerial = ItemOffset - 1;
 
-    private const uint ResetVirtualSerial = MaxItemSerial;
-    private const uint MaxVirtualSerial = 0x7FFFFFFF;
+    public const uint ResetVirtualSerial = MaxItemSerial;
+    public const uint MaxVirtualSerial = 0x7FFFFFFF;
     private static uint NextVirtualSerial = ResetVirtualSerial;
 
     public static Serial NewMobile => _mobilePersistence.NewEntity;
