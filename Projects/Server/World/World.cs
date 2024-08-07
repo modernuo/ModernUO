@@ -70,16 +70,17 @@ public static class World
         get
         {
             // Guarantee unique serials without locking
-            uint value;
             uint newValue;
-
+            uint value;
             do
             {
                 value = NextVirtualSerial;
-                newValue = (value >= MaxVirtualSerial ? ResetVirtualSerial : value + 1);
-            }
-            while (Interlocked.CompareExchange(ref NextVirtualSerial, value + 1, value) != value);
-            return (Serial)value;
+                newValue = (value == MaxVirtualSerial) ? ResetVirtualSerial : value + 1;
+
+                // Atomically set NextVirtualSerial to newValue if it's still equal to value + 1
+            } while (System.Threading.Interlocked.CompareExchange(ref NextVirtualSerial, newValue, value) != value);
+
+            return (Serial) value;
         }
     }
 
