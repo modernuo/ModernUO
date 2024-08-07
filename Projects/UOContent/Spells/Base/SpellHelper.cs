@@ -220,6 +220,11 @@ namespace Server.Spells
                 return;
             }
 
+            if ( to is Mobile mob && from == mob )
+            {
+                return;
+            }
+
             var root = (to as Item)?.RootParent;
             if (from != root)
             {
