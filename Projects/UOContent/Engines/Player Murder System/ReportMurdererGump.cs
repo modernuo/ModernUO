@@ -8,7 +8,7 @@ using Server.SkillHandlers;
 
 namespace Server.Engines.PlayerMurderSystem;
 
-public class ReportMurdererGump : Gump
+public class ReportMurdererGump : StaticGump<ReportMurdererGump>
 {
     // Recently reported
     private static TimeSpan _recentlyReportedDelay;
@@ -21,7 +21,6 @@ public class ReportMurdererGump : Gump
     {
         _killers = killers;
         _idx = idx;
-        BuildGump();
     }
 
     public static void Initialize()
@@ -104,33 +103,39 @@ public class ReportMurdererGump : Gump
         }
     }
 
-    private void BuildGump()
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        AddBackground(265, 205, 320, 290, 5054);
-        Closable = false;
-        Resizable = false;
+        builder.SetNoClose();
+        builder.SetNoResize();
 
-        AddPage(0);
+        builder.AddBackground(265, 205, 320, 290, 5054);
 
-        AddImageTiled(225, 175, 50, 45, 0xCE);  // Top left corner
-        AddImageTiled(267, 175, 315, 44, 0xC9); // Top bar
-        AddImageTiled(582, 175, 43, 45, 0xCF);  // Top right corner
-        AddImageTiled(225, 219, 44, 270, 0xCA); // Left side
-        AddImageTiled(582, 219, 44, 270, 0xCB); // Right side
-        AddImageTiled(225, 489, 44, 43, 0xCC);  // Lower left corner
-        AddImageTiled(267, 489, 315, 43, 0xE9); // Lower Bar
-        AddImageTiled(582, 489, 43, 43, 0xCD);  // Lower right corner
+        builder.AddPage();
 
-        AddPage(1);
+        builder.AddImageTiled(225, 175, 50, 45, 0xCE);  // Top left corner
+        builder.AddImageTiled(267, 175, 315, 44, 0xC9); // Top bar
+        builder.AddImageTiled(582, 175, 43, 45, 0xCF);  // Top right corner
+        builder.AddImageTiled(225, 219, 44, 270, 0xCA); // Left side
+        builder.AddImageTiled(582, 219, 44, 270, 0xCB); // Right side
+        builder.AddImageTiled(225, 489, 44, 43, 0xCC);  // Lower left corner
+        builder.AddImageTiled(267, 489, 315, 43, 0xE9); // Lower Bar
+        builder.AddImageTiled(582, 489, 43, 43, 0xCD);  // Lower right corner
 
-        AddHtml(260, 234, 300, 140, _killers[_idx].Name); // Player's Name
-        AddHtmlLocalized(260, 254, 300, 140, 1049066);    // Would you like to report...
+        builder.AddPage(1);
 
-        AddButton(260, 300, 0xFA5, 0xFA7, 1);
-        AddHtmlLocalized(300, 300, 300, 50, 1046362); // Yes
+        builder.AddHtmlPlaceholder(260, 234, 300, 140, "killerName"); // Player's Name
+        builder.AddHtmlLocalized(260, 254, 300, 140, 1049066);    // Would you like to report...
 
-        AddButton(360, 300, 0xFA5, 0xFA7, 2);
-        AddHtmlLocalized(400, 300, 300, 50, 1046363); // No
+        builder.AddButton(260, 300, 0xFA5, 0xFA7, 1);
+        builder.AddHtmlLocalized(300, 300, 300, 50, 1046362); // Yes
+
+        builder.AddButton(360, 300, 0xFA5, 0xFA7, 2);
+        builder.AddHtmlLocalized(400, 300, 300, 50, 1046363); // No
+    }
+
+    protected override void BuildStrings(ref GumpStringsBuilder builder)
+    {
+        builder.SetStringSlot("killerName", _killers[_idx].Name);
     }
 
     public override void OnResponse(NetState state, in RelayInfo info)
