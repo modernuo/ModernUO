@@ -47,7 +47,7 @@ public class ConfirmHouseResizeGump : StaticGump<ConfirmHouseResizeGump>
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
-        if (info.ButtonID > 1 || _house.Deleted || state.Mobile == null)
+        if (info.ButtonID > 1 || _house.Deleted)
         {
             return;
         }

@@ -30,7 +30,7 @@ public class ConfirmDryDockGump : StaticGump<ConfirmDryDockGump>
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
-        if (info.ButtonID == 2 && state.Mobile != null)
+        if (info.ButtonID == 2)
         {
             _boat.EndDryDock(state.Mobile);
         }
