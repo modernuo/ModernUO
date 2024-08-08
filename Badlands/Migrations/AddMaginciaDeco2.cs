@@ -50,7 +50,7 @@ public class AddMaginciaDeco2 : IMigration
 
         var serials = new List<Serial>();
 
-        var decorationFile = Path.Combine( "./Assemblies/Data/Decorations/", fileName );
+        var decorationFile = Path.Combine( "./Data/Decorations/", fileName );
 
         if ( !File.Exists( decorationFile ) )
         {
