@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-    public class ParalyzeSpell : MagerySpell, ISpellTargetingMobile
+    public class ParalyzeSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Paralyze",
@@ -82,7 +82,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

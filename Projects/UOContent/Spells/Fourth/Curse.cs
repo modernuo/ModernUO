@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-    public class CurseSpell : MagerySpell, ISpellTargetingMobile
+    public class CurseSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Curse",
@@ -105,7 +105,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
 
         public static bool RemoveEffect(Mobile m)

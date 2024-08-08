@@ -6,7 +6,7 @@ using Server.Mobiles;
 
 namespace Server.Spells.Sixth;
 
-public class ParalyzeFieldSpell : MagerySpell, ISpellTargetingPoint3D
+public class ParalyzeFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 {
     private static readonly SpellInfo _info = new(
         "Paralyze Field",
@@ -71,7 +71,7 @@ public class ParalyzeFieldSpell : MagerySpell, ISpellTargetingPoint3D
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<IPoint3D>(this);
     }
 }
 

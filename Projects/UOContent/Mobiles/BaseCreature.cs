@@ -181,7 +181,6 @@ namespace Server.Mobiles
         public const int MaxOwners = 5;
 
         public const int DefaultRangePerception = 16;
-        public const int OldRangePerception = 10;
 
         private const double ChanceToRummage = 0.5; // 50%
 
@@ -350,15 +349,10 @@ namespace Server.Mobiles
         public BaseCreature(
             AIType ai,
             FightMode mode = FightMode.Closest,
-            int iRangePerception = 10,
+            int iRangePerception = DefaultRangePerception,
             int iRangeFight = 1
         )
         {
-            if (iRangePerception == OldRangePerception)
-            {
-                iRangePerception = DefaultRangePerception;
-            }
-
             m_Loyalty = MaxLoyalty; // Wonderfully Happy
 
             m_CurrentAI = ai;
@@ -1979,11 +1973,6 @@ namespace Server.Mobiles
             _activeSpeed = reader.ReadDouble();
             _passiveSpeed = reader.ReadDouble();
             _currentSpeed = reader.ReadDouble();
-
-            if (RangePerception == OldRangePerception)
-            {
-                RangePerception = DefaultRangePerception;
-            }
 
             m_Home.X = reader.ReadInt();
             m_Home.Y = reader.ReadInt();

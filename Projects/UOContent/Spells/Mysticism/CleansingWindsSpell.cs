@@ -7,7 +7,7 @@ using Server.Collections;
 
 namespace Server.Spells.Mysticism;
 
-public class CleansingWindsSpell : MysticSpell, ISpellTargetingMobile
+public class CleansingWindsSpell : MysticSpell, ITargetingSpell<Mobile>
 {
     public override SpellCircle Circle => SpellCircle.Sixth;
 
@@ -27,7 +27,7 @@ public class CleansingWindsSpell : MysticSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
     }
 
     public void Target(Mobile m)

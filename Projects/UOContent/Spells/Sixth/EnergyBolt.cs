@@ -2,7 +2,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-    public class EnergyBoltSpell : MagerySpell, ISpellTargetingMobile
+    public class EnergyBoltSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Energy Bolt",
@@ -63,7 +63,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

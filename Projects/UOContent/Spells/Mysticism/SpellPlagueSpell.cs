@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Mysticism;
 
-public class SpellPlagueSpell : MysticSpell, ISpellTargetingMobile
+public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Spell Plague",
@@ -32,7 +32,7 @@ public class SpellPlagueSpell : MysticSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     public void Target(Mobile m)

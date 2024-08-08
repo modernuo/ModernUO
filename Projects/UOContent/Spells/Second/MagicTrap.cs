@@ -2,7 +2,7 @@ using Server.Items;
 
 namespace Server.Spells.Second
 {
-    public class MagicTrapSpell : MagerySpell, ISpellTargetingItem
+    public class MagicTrapSpell : MagerySpell, ITargetingSpell<Item>
     {
         private static readonly SpellInfo _info = new(
             "Magic Trap",
@@ -82,7 +82,7 @@ namespace Server.Spells.Second
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Item>(this);
         }
     }
 }

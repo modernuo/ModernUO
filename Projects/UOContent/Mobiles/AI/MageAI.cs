@@ -777,7 +777,7 @@ public class MageAI : BaseAI
                 m_Mobile.DebugSay("I used my abilities!");
             }
         }
-        else if (m_Mobile.Spell == null && Core.TickCount - m_NextCastTime >= 0 && m_Mobile.InRange(c, Core.ML ? 10 : 12))
+        else if (m_Mobile.Spell == null && Core.TickCount - m_NextCastTime >= 0)
         {
             // We are ready to cast a spell
             Spell spell;
@@ -816,24 +816,30 @@ public class MageAI : BaseAI
             };
 
             // Now we have a spell picked
-            // Move first before casting
+            var range = (spell as IRangedSpell)?.TargetRange ?? m_Mobile.RangePerception;
 
+            // Move first before casting
             if (!SmartAI || toDispel == null)
             {
                 RunTo(c);
             }
-            else if (m_Mobile.InRange(toDispel, 10))
+            else if (m_Mobile.InRange(toDispel, Math.Min(10, range)))
             {
                 RunFrom(toDispel);
             }
-            else if (!m_Mobile.InRange(toDispel, Core.ML ? 10 : 12))
+            else if (!m_Mobile.InRange(toDispel, range))
             {
                 RunTo(toDispel);
             }
 
-            spell?.Cast();
+            // After running, make sure we are still in range
+            if (spell == null || m_Mobile.InRange(c, range))
+            {
+                spell?.Cast();
 
-            m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
+                // Even if we don't have a spell, delay the next potential cast
+                m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
+            }
         }
         else if (m_Mobile.Spell?.IsCasting != true)
         {
@@ -857,7 +863,7 @@ public class MageAI : BaseAI
         {
             var map = m_Mobile.Map;
 
-            if (map == null || !m_Mobile.InRange(m_LastTargetLoc, Core.ML ? 10 : 12))
+            if (map == null || !m_Mobile.InRange(m_LastTargetLoc, m_Mobile.RangePerception))
             {
                 m_LastTarget = null;
             }
@@ -967,7 +973,7 @@ public class MageAI : BaseAI
             var comb = m_Mobile.Combatant;
 
             if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet &&
-                m_Mobile.InRange(comb, Core.ML ? 10 : 12) && CanDispel(comb))
+                m_Mobile.InRange(comb, m_Mobile.RangePerception) && CanDispel(comb))
             {
                 active = comb;
                 activePrio = m_Mobile.GetDistanceToSqrt(comb);
@@ -983,7 +989,7 @@ public class MageAI : BaseAI
                 var info = aggressed[i];
                 var m = info.Defender;
 
-                if (m != comb && m.Combatant == m_Mobile && m_Mobile.InRange(m, Core.ML ? 10 : 12) && CanDispel(m))
+                if (m != comb && m.Combatant == m_Mobile && m_Mobile.InRange(m, m_Mobile.RangePerception) && CanDispel(m))
                 {
                     var prio = m_Mobile.GetDistanceToSqrt(m);
 
@@ -1005,7 +1011,7 @@ public class MageAI : BaseAI
                 var info = aggressors[i];
                 var m = info.Attacker;
 
-                if (m != comb && m.Combatant == m_Mobile && m_Mobile.InRange(m, Core.ML ? 10 : 12) && CanDispel(m))
+                if (m != comb && m.Combatant == m_Mobile && m_Mobile.InRange(m, m_Mobile.RangePerception) && CanDispel(m))
                 {
                     var prio = m_Mobile.GetDistanceToSqrt(m);
 
@@ -1040,7 +1046,7 @@ public class MageAI : BaseAI
                 actPrio = inactPrio = m_Mobile.GetDistanceToSqrt(comb);
             }
 
-            foreach (var m in m_Mobile.GetMobilesInRange(Core.ML ? 10 : 12))
+            foreach (var m in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
             {
                 if (m != m_Mobile && CanDispel(m))
                 {
@@ -1079,7 +1085,7 @@ public class MageAI : BaseAI
             return false;
         }
 
-        var spellTarg = targ as ISpellTarget;
+        var spellTarg = targ as ISpellTarget<Mobile>;
 
         var isReveal = spellTarg?.Spell is RevealSpell;
         var isDispel = spellTarg?.Spell is DispelSpell;

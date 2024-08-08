@@ -7,7 +7,7 @@ using Server.Mobiles;
 
 namespace Server.Spells.Necromancy;
 
-public class AnimateDeadSpell : NecromancerSpell, ISpellTargetingItem
+public class AnimateDeadSpell : NecromancerSpell, ITargetingSpell<Item>
 {
     private static readonly SpellInfo _info = new(
         "Animate Dead",
@@ -190,7 +190,7 @@ public class AnimateDeadSpell : NecromancerSpell, ISpellTargetingItem
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetItem(this, range: Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Item>(this);
         Caster.SendLocalizedMessage(1061083); // Animate what corpse?
     }
 

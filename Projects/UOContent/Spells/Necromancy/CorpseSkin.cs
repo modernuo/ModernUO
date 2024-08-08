@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
 
-public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
+public class CorpseSkinSpell : NecromancerSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Corpse Skin",
@@ -95,7 +95,7 @@ public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     public static bool RemoveCurse(Mobile m)

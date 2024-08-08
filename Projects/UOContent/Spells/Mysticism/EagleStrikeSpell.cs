@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Mysticism;
 
-public class EagleStrikeSpell : MysticSpell, ISpellTargetingMobile
+public class EagleStrikeSpell : MysticSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Eagle Strike",
@@ -55,7 +55,7 @@ public class EagleStrikeSpell : MysticSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     private void Damage(Mobile to)

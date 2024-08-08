@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Second
 {
-    public class CunningSpell : MagerySpell, ISpellTargetingMobile
+    public class CunningSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Cunning",
@@ -51,7 +51,7 @@ namespace Server.Spells.Second
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
     }
 }

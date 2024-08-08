@@ -7,7 +7,7 @@ namespace Server.Network
         {
             var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.HairHue;
 
-            Stream.Write(HairInfo.FakeSerial(parent.Serial));
+            Stream.Write(parent.Hair.VirtualSerial);
             Stream.Write((short)parent.HairItemID);
             Stream.Write((byte)0);
             Stream.Write((byte)Layer.Hair);
@@ -23,7 +23,7 @@ namespace Server.Network
         {
             var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.FacialHairHue;
 
-            Stream.Write(FacialHairInfo.FakeSerial(parent.Serial));
+            Stream.Write(parent.FacialHair.VirtualSerial);
             Stream.Write((short)parent.FacialHairItemID);
             Stream.Write((byte)0);
             Stream.Write((byte)Layer.FacialHair);
@@ -37,7 +37,7 @@ namespace Server.Network
         public RemoveHair(Mobile parent)
             : base(0x1D, 5)
         {
-            Stream.Write(HairInfo.FakeSerial(parent.Serial));
+            Stream.Write(parent.Hair.VirtualSerial);
         }
     }
 
@@ -46,7 +46,7 @@ namespace Server.Network
         public RemoveFacialHair(Mobile parent)
             : base(0x1D, 5)
         {
-            Stream.Write(FacialHairInfo.FakeSerial(parent.Serial));
+            Stream.Write(parent.FacialHair.VirtualSerial);
         }
     }
 }

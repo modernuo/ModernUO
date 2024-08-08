@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.First
 {
-    public class MagicArrowSpell : MagerySpell, ISpellTargetingMobile
+    public class MagicArrowSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Magic Arrow",
@@ -68,7 +68,7 @@ namespace Server.Spells.First
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

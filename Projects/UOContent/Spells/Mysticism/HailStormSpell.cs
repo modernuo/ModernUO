@@ -2,7 +2,7 @@
 
 namespace Server.Spells.Mysticism;
 
-public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
+public class HailStormSpell : MysticSpell, ITargetingSpell<IPoint3D>
 {
     private static readonly SpellInfo _info = new(
         "Hail Storm",
@@ -73,7 +73,7 @@ public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetPoint3D(this);
+        Caster.Target = new SpellTarget<IPoint3D>(this);
     }
 
     private static void PlayEffect(Point3D p, Map map)

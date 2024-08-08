@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Third
 {
-    public class BlessSpell : MagerySpell, ISpellTargetingMobile
+    public class BlessSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Bless",
@@ -55,7 +55,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
     }
 }

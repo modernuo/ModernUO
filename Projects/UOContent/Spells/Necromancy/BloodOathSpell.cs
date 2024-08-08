@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
 
-public class BloodOathSpell : NecromancerSpell, ISpellTargetingMobile
+public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Blood Oath",
@@ -96,7 +96,7 @@ public class BloodOathSpell : NecromancerSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     public static bool RemoveCurse(Mobile target)

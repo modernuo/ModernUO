@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-    public class GiftOfLifeSpell : ArcanistSpell, ISpellTargetingMobile
+    public class GiftOfLifeSpell : ArcanistSpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Gift of Life",
@@ -77,7 +77,7 @@ namespace Server.Spells.Spellweaving
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, 10);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
 
         public static void HandleDeath(Mobile m)

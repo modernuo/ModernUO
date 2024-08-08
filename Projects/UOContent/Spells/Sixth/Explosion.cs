@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-    public class ExplosionSpell : MagerySpell, ISpellTargetingMobile
+    public class ExplosionSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Explosion",
@@ -45,7 +45,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
 
         private class InternalTimer : Timer

@@ -51,17 +51,17 @@ public partial class SchmendrickApprenticeCorpse : Corpse
         new Spellbook()
     ];
 
-    private static HairInfo GetHair()
+    private static VirtualHairInfo GetHair()
     {
         _hairHue = Race.Human.RandomHairHue();
-        return new HairInfo(Race.Human.RandomHair(false), _hairHue);
+        return new VirtualHairInfo(Race.Human.RandomHair(false), _hairHue);
     }
 
-    private static FacialHairInfo GetFacialHair()
+    private static VirtualHairInfo GetFacialHair()
     {
         _hairHue = Race.Human.RandomHairHue();
 
-        return new FacialHairInfo(Race.Human.RandomFacialHair(false), _hairHue);
+        return new VirtualHairInfo(Race.Human.RandomFacialHair(false), _hairHue);
     }
 
     public override void AddNameProperty(IPropertyList list)

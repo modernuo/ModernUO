@@ -53,12 +53,36 @@ public static class World
 
     public const bool DirtyTrackingEnabled = false;
     public const uint ItemOffset = 0x40000000;
-    public const uint MaxItemSerial = 0x7FFFFFFF;
+    public const uint MaxItemSerial = 0x7EEEEEEE;
     public const uint MaxMobileSerial = ItemOffset - 1;
+
+    public const uint ResetVirtualSerial = MaxItemSerial;
+    public const uint MaxVirtualSerial = 0x7FFFFFFF;
+    private static uint _nextVirtualSerial = ResetVirtualSerial;
 
     public static Serial NewMobile => _mobilePersistence.NewEntity;
     public static Serial NewItem => _itemPersistence.NewEntity;
     public static Serial NewGuild => _guildPersistence.NewEntity;
+
+    // Virtual things don't persist across saves
+    public static Serial NewVirtual
+    {
+        get
+        {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                logger.Error(
+                    "Attempted to get a new virtual serial from the wrong thread!\n{StackTrace}",
+                    new StackTrace()
+                );
+            }
+#endif
+            var value = _nextVirtualSerial > MaxVirtualSerial ? ResetVirtualSerial : _nextVirtualSerial;
+            _nextVirtualSerial = value + 1;
+            return (Serial)value;
+        }
+    }
 
     public static Dictionary<Serial, Item> Items => _itemPersistence.EntitiesBySerial;
     public static Dictionary<Serial, Mobile> Mobiles => _mobilePersistence.EntitiesBySerial;

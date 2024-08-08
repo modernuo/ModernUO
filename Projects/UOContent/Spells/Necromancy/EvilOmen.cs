@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
 
-public class EvilOmenSpell : NecromancerSpell, ISpellTargetingMobile
+public class EvilOmenSpell : NecromancerSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Evil Omen",
@@ -70,7 +70,7 @@ public class EvilOmenSpell : NecromancerSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     public static bool EndEffect(Mobile m)

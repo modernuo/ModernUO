@@ -6,7 +6,7 @@ using Server.Spells.Second;
 
 namespace Server.Spells.Fourth
 {
-    public class ArchProtectionSpell : MagerySpell, ISpellTargetingPoint3D
+    public class ArchProtectionSpell : MagerySpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Arch Protection",
@@ -94,7 +94,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<IPoint3D>(this);
         }
 
         private static void AddEntry(Mobile m, int v)

@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Chivalry
 {
-    public class CloseWoundsSpell : PaladinSpell, ISpellTargetingMobile
+    public class CloseWoundsSpell : PaladinSpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Close Wounds",
@@ -93,7 +93,7 @@ namespace Server.Spells.Chivalry
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
     }
 }

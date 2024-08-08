@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
 
-public class VengefulSpiritSpell : NecromancerSpell, ISpellTargetingMobile
+public class VengefulSpiritSpell : NecromancerSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Vengeful Spirit",
@@ -66,7 +66,7 @@ public class VengefulSpiritSpell : NecromancerSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     public override bool CheckCast()

@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-    public class MindBlastSpell : MagerySpell, ISpellTargetingMobile
+    public class MindBlastSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Mind Blast",
@@ -110,7 +110,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
 
         private void AosDelay_Callback(Mobile caster, Mobile target, Mobile defender, int damage)

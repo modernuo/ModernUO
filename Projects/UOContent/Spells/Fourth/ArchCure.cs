@@ -4,7 +4,7 @@ using Server.Mobiles;
 
 namespace Server.Spells.Fourth
 {
-    public class ArchCureSpell : MagerySpell, ISpellTargetingPoint3D
+    public class ArchCureSpell : MagerySpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Arch Cure",
@@ -95,7 +95,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<IPoint3D>(this);
         }
 
         private bool AreaCanTarget(Mobile target, bool feluccaRules)

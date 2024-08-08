@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
 
-public class PoisonStrikeSpell : NecromancerSpell, ISpellTargetingMobile
+public class PoisonStrikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Poison Strike",
@@ -146,6 +146,6 @@ public class PoisonStrikeSpell : NecromancerSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 }

@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Second
 {
-    public class CureSpell : MagerySpell, ISpellTargetingMobile
+    public class CureSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Cure",
@@ -70,7 +70,7 @@ namespace Server.Spells.Second
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
     }
 }

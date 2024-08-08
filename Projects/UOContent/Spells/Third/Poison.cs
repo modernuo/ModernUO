@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Third
 {
-    public class PoisonSpell : MagerySpell, ISpellTargetingMobile
+    public class PoisonSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Poison",
@@ -99,7 +99,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

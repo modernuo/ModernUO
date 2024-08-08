@@ -10,7 +10,7 @@ public class RecallSpellTarget : Target
     private readonly IRecallSpell _spell;
     private readonly bool _toBoat;
 
-    public RecallSpellTarget(IRecallSpell spell, bool toBoat = true) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
+    public RecallSpellTarget(IRecallSpell spell, bool toBoat = true) : base(spell.TargetRange, false, TargetFlags.None)
     {
         _spell = spell;
         _toBoat = toBoat;
@@ -68,8 +68,5 @@ public class RecallSpellTarget : Target
     {
     }
 
-    protected override void OnTargetFinish(Mobile from)
-    {
-        _spell?.FinishSequence();
-    }
+    protected override void OnTargetFinish(Mobile from) => _spell?.FinishSequence();
 }

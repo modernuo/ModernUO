@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-    public class ManaVampireSpell : MagerySpell, ISpellTargetingMobile
+    public class ManaVampireSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Mana Vampire",
@@ -79,7 +79,7 @@ namespace Server.Spells.Seventh
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
 
         public override double GetResistPercent(Mobile target) => 98.0;

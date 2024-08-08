@@ -2,7 +2,7 @@ using Server.Collections;
 
 namespace Server.Spells.Seventh
 {
-    public class ChainLightningSpell : MagerySpell, ISpellTargetingPoint3D
+    public class ChainLightningSpell : MagerySpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Chain Lightning",
@@ -99,7 +99,7 @@ namespace Server.Spells.Seventh
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<IPoint3D>(this);
         }
     }
 }
