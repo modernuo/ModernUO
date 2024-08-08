@@ -1,5 +1,5 @@
 using ModernUO.Serialization;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
 
@@ -129,11 +129,11 @@ namespace Server.Mobiles
 
         public override bool CheckNonlocalLift(Mobile from, Item item) => PackAnimal.CheckAccess(this, from);
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
 
-            PackAnimal.GetContextMenuEntries(this, from, list);
+            PackAnimal.GetContextMenuEntries(this, from, ref list);
         }
     }
 }

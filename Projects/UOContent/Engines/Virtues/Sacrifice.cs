@@ -75,7 +75,7 @@ public static class SacrificeVirtue
                  * Sacrifice and cancel to have items in their backpack for free.
                  */
                 from.CloseGump<ResurrectGump>();
-                from.SendGump(new ResurrectGump(from, true));
+                from.SendGump(new ResurrectGump(from, fromSacrifice: true));
             }
             else
             {

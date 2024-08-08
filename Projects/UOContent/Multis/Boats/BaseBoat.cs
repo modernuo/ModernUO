@@ -707,7 +707,7 @@ namespace Server.Multis
             }
             else if (result == DryDockResult.Valid)
             {
-                from.SendGump(new ConfirmDryDockGump(from, this));
+                from.SendGump(new ConfirmDryDockGump(this));
             }
         }
 

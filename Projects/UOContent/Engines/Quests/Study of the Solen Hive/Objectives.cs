@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Naturalist
         private DateTime m_StudyBegin;
         private StudyState m_StudyState;
 
-        public override object Message => 1054044;
+        public override int Message => 1054044;
 
         public override int MaxProgress => NestArea.NonSpecialCount;
 
@@ -174,7 +174,7 @@ namespace Server.Engines.Quests.Naturalist
 
     public class ReturnToNaturalistObjective : QuestObjective
     {
-        public override object Message => 1054048;
+        public override int Message => 1054048;
 
         public override void RenderProgress(BaseQuestGump gump)
         {

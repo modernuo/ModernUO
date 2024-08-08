@@ -2,7 +2,7 @@ namespace Server.Engines.Quests.Samurai
 {
     public class AcceptConversation : QuestConversation
     {
-        public override object Message => 1049092;
+        public override int Message => 1049092;
 
         public override void OnRead()
         {
@@ -12,14 +12,14 @@ namespace Server.Engines.Quests.Samurai
 
     public class RadarConversation : QuestConversation
     {
-        public override object Message => 1063033;
+        public override int Message => 1063033;
 
         public override bool Logged => false;
     }
 
     public class FirstTrialIntroConversation : QuestConversation
     {
-        public override object Message => 1063029;
+        public override int Message => 1063029;
 
         public override void OnRead()
         {
@@ -29,7 +29,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FirstTrialKillConversation : QuestConversation
     {
-        public override object Message => 1063031;
+        public override int Message => 1063031;
 
         public override void OnRead()
         {
@@ -47,7 +47,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -88,7 +88,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -131,7 +131,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class SecondTrialAttackConversation : QuestConversation
     {
-        public override object Message => 1063057;
+        public override int Message => 1063057;
 
         public override void OnRead()
         {
@@ -149,7 +149,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -198,7 +198,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class ThirdTrialKillConversation : QuestConversation
     {
-        public override object Message => 1063062;
+        public override int Message => 1063062;
 
         public override void OnRead()
         {
@@ -208,7 +208,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FourthTrialIntroConversation : QuestConversation
     {
-        public override object Message => 1063065;
+        public override int Message => 1063065;
 
         public override void OnRead()
         {
@@ -218,7 +218,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FourthTrialCatsConversation : QuestConversation
     {
-        public override object Message => 1063067;
+        public override int Message => 1063067;
 
         public override void OnRead()
         {
@@ -236,7 +236,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -285,7 +285,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FifthTrialReturnConversation : QuestConversation
     {
-        public override object Message => 1063248;
+        public override int Message => 1063248;
 
         public override void OnRead()
         {
@@ -295,7 +295,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class LostSwordConversation : QuestConversation
     {
-        public override object Message => 1063074;
+        public override int Message => 1063074;
 
         public override bool Logged => false;
     }
@@ -310,7 +310,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -359,7 +359,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class SeventhTrialIntroConversation : QuestConversation
     {
-        public override object Message => 1063079;
+        public override int Message => 1063079;
 
         public override void OnRead()
         {
@@ -369,7 +369,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class EndConversation : QuestConversation
     {
-        public override object Message => 1063125;
+        public override int Message => 1063125;
 
         public override void OnRead()
         {

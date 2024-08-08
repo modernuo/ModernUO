@@ -11,7 +11,7 @@ namespace Server.Gumps
             // Opening Message
             "<center>Treasures of Tokuno Admin</center><br>" +
             "-Use the gems to switch eras<br>" +
-            "-Drop era and Reward era can be changed seperately<br>" +
+            "-Drop era and Reward era can be changed separately<br>" +
             "-Drop era can be deactivated, Reward era is always activated",
             // Treasures of Tokuno 1 message
             "<center>Treasures of Tokuno 1</center><br>" +

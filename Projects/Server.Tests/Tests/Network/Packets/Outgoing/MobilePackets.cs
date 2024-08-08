@@ -504,13 +504,16 @@ namespace Server.Tests.Network
 
             var eq = beheld.Items;
             var count = eq.Count;
+            var hair = beheld.Hair;
+            var facialHair = beheld.FacialHair;
 
-            if (beheld.HairItemID > 0)
+
+            if (hair != null)
             {
                 count++;
             }
 
-            if (beheld.FacialHairItemID > 0)
+            if (facialHair != null)
             {
                 count++;
             }
@@ -570,19 +573,19 @@ namespace Server.Tests.Network
                 }
             }
 
-            if (beheld.HairItemID > 0)
+            if (hair?.ItemId > 0)
             {
                 if (m_DupedLayers![(int)Layer.Hair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.Hair] = m_Version;
-                    hue = beheld.HairHue;
+                    hue = hair.Hue;
 
                     if (beheld.SolidHueOverride >= 0)
                     {
                         hue = beheld.SolidHueOverride;
                     }
 
-                    var itemID = beheld.HairItemID & itemIdMask;
+                    var itemID = hair.ItemId & itemIdMask;
                     var writeHue = newPacket || hue != 0;
 
                     if (!newPacket && writeHue)
@@ -590,7 +593,7 @@ namespace Server.Tests.Network
                         itemID |= 0x8000;
                     }
 
-                    Stream.Write(HairInfo.FakeSerial(beheld.Serial));
+                    Stream.Write(hair.VirtualSerial);
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.Hair);
 
@@ -601,19 +604,19 @@ namespace Server.Tests.Network
                 }
             }
 
-            if (beheld.FacialHairItemID > 0)
+            if (facialHair?.ItemId > 0)
             {
                 if (m_DupedLayers![(int)Layer.FacialHair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.FacialHair] = m_Version;
-                    hue = beheld.FacialHairHue;
+                    hue = facialHair.Hue;
 
                     if (beheld.SolidHueOverride >= 0)
                     {
                         hue = beheld.SolidHueOverride;
                     }
 
-                    var itemID = beheld.FacialHairItemID & itemIdMask;
+                    var itemID = facialHair.ItemId & itemIdMask;
                     var writeHue = newPacket || hue != 0;
 
                     if (!newPacket && writeHue)
@@ -621,7 +624,7 @@ namespace Server.Tests.Network
                         itemID |= 0x8000;
                     }
 
-                    Stream.Write(FacialHairInfo.FakeSerial(beheld.Serial));
+                    Stream.Write(facialHair.VirtualSerial);
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.FacialHair);
 

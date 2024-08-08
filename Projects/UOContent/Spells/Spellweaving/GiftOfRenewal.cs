@@ -102,7 +102,8 @@ namespace Server.Spells.Spellweaving
 
             protected override void OnTick()
             {
-                if (Index + 1 == Count)
+                // Last tick will change running to false
+                if (!Running)
                 {
                     StopEffect(_mobile);
                     _mobile.PlaySound(0x455);

@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Haven
 {
     public class FindUzeraanBeginObjective : QuestObjective
     {
-        public override object Message => 1046039;
+        public override int Message => 1046039;
 
         public override void OnComplete()
         {
@@ -27,7 +27,7 @@ namespace Server.Engines.Quests.Haven
 
         public TitheGoldObjective() => m_OldTithingPoints = -1;
 
-        public override object Message => 1060386;
+        public override int Message => 1060386;
 
         public override void CheckProgress()
         {
@@ -58,7 +58,7 @@ namespace Server.Engines.Quests.Haven
 
     public class FindUzeraanFirstTaskObjective : QuestObjective
     {
-        public override object Message => 1060387;
+        public override int Message => 1060387;
 
         public override void OnComplete()
         {
@@ -83,7 +83,7 @@ namespace Server.Engines.Quests.Haven
 
         public KillHordeMinionsStep Step { get; private set; }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -232,7 +232,7 @@ namespace Server.Engines.Quests.Haven
 
     public class FindUzeraanAboutReportObjective : QuestObjective
     {
-        public override object Message => 1049091;
+        public override int Message => 1049091;
 
         public override void OnComplete()
         {
@@ -242,7 +242,7 @@ namespace Server.Engines.Quests.Haven
 
     public class FindSchmendrickObjective : QuestObjective
     {
-        public override object Message => 1049120;
+        public override int Message => 1049120;
 
         public override bool IgnoreYoungProtection(Mobile from)
         {
@@ -264,7 +264,7 @@ namespace Server.Engines.Quests.Haven
 
     public class FindApprenticeObjective : QuestObjective
     {
-        public override object Message => 1049323;
+        public override int Message => 1049323;
 
         public override void OnComplete()
         {
@@ -274,7 +274,7 @@ namespace Server.Engines.Quests.Haven
 
     public class ReturnScrollOfPowerObjective : QuestObjective
     {
-        public override object Message => 1049324;
+        public override int Message => 1049324;
 
         public override void OnComplete()
         {
@@ -284,7 +284,7 @@ namespace Server.Engines.Quests.Haven
 
     public class FindDryadObjective : QuestObjective
     {
-        public override object Message => 1049358;
+        public override int Message => 1049358;
 
         public override void OnComplete()
         {
@@ -294,7 +294,7 @@ namespace Server.Engines.Quests.Haven
 
     public class ReturnFertileDirtObjective : QuestObjective
     {
-        public override object Message => 1049327;
+        public override int Message => 1049327;
 
         public override void OnComplete()
         {
@@ -306,7 +306,7 @@ namespace Server.Engines.Quests.Haven
     {
         private bool m_Ambushed;
 
-        public override object Message => 1049361;
+        public override int Message => 1049361;
 
         public override void CheckProgress()
         {
@@ -357,7 +357,7 @@ namespace Server.Engines.Quests.Haven
 
     public class ReturnDaemonBloodObjective : QuestObjective
     {
-        public override object Message => 1049332;
+        public override int Message => 1049332;
 
         public override void OnComplete()
         {
@@ -369,7 +369,7 @@ namespace Server.Engines.Quests.Haven
     {
         public Container CorpseWithBone { get; set; }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -447,7 +447,7 @@ namespace Server.Engines.Quests.Haven
 
     public class ReturnDaemonBoneObjective : QuestObjective
     {
-        public override object Message => 1049334;
+        public override int Message => 1049334;
 
         public override void OnComplete()
         {
@@ -457,7 +457,7 @@ namespace Server.Engines.Quests.Haven
 
     public class CashBankCheckObjective : QuestObjective
     {
-        public override object Message => 1049336;
+        public override int Message => 1049336;
 
         public override void OnComplete()
         {

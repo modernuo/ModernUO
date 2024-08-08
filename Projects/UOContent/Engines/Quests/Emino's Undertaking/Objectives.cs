@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Ninja
 {
     public class FindEminoBeginObjective : QuestObjective
     {
-        public override object Message => 1063174;
+        public override int Message => 1063174;
 
         public override void OnComplete()
         {
@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class FindZoelObjective : QuestObjective
     {
-        public override object Message => 1063176;
+        public override int Message => 1063176;
 
         public override void OnComplete()
         {
@@ -25,7 +25,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class EnterCaveObjective : QuestObjective
     {
-        public override object Message => 1063179;
+        public override int Message => 1063179;
 
         public override void CheckProgress()
         {
@@ -45,7 +45,7 @@ namespace Server.Engines.Quests.Ninja
     {
         public bool TaughtHowToUseSkills { get; set; }
 
-        public override object Message => 1063261;
+        public override int Message => 1063261;
 
         public override void CheckProgress()
         {
@@ -77,7 +77,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class UseTeleporterObjective : QuestObjective
     {
-        public override object Message => 1063183;
+        public override int Message => 1063183;
 
         public override void OnComplete()
         {
@@ -87,7 +87,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class GiveZoelNoteObjective : QuestObjective
     {
-        public override object Message => 1063185;
+        public override int Message => 1063185;
 
         public override void OnComplete()
         {
@@ -97,7 +97,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class GainInnInformationObjective : QuestObjective
     {
-        public override object Message => 1063190;
+        public override int Message => 1063190;
 
         public override void CheckProgress()
         {
@@ -117,7 +117,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class ReturnFromInnObjective : QuestObjective
     {
-        public override object Message => 1063197;
+        public override int Message => 1063197;
 
         public override void OnComplete()
         {
@@ -127,7 +127,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class SearchForSwordObjective : QuestObjective
     {
-        public override object Message => 1063200;
+        public override int Message => 1063200;
 
         public override void OnComplete()
         {
@@ -139,7 +139,7 @@ namespace Server.Engines.Quests.Ninja
     {
         public bool StolenTreasure { get; set; }
 
-        public override object Message => 1063202;
+        public override int Message => 1063202;
 
         public override void OnComplete()
         {
@@ -163,7 +163,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class ReturnSwordObjective : QuestObjective
     {
-        public override object Message => 1063204;
+        public override int Message => 1063204;
 
         public override void CheckProgress()
         {
@@ -183,7 +183,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class SlayHenchmenObjective : QuestObjective
     {
-        public override object Message => 1063206;
+        public override int Message => 1063206;
 
         public override int MaxProgress => 3;
 
@@ -219,7 +219,7 @@ namespace Server.Engines.Quests.Ninja
 
     public class GiveEminoSwordObjective : QuestObjective
     {
-        public override object Message => 1063210;
+        public override int Message => 1063210;
 
         public override void OnComplete()
         {

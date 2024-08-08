@@ -64,7 +64,7 @@ public enum CorpseFlag
     SelfLooted = 0x00000080
 }
 
-[SerializationGenerator(13, false)]
+[SerializationGenerator(14, false)]
 public partial class Corpse : Container, ICarvable
 {
     public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes(2.0);
@@ -132,6 +132,16 @@ public partial class Corpse : Container, ICarvable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Item> _equipItems;
 
+    [CanBeNull]
+    [SerializableField(14, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private VirtualHairInfo _hair;
+
+    [CanBeNull]
+    [SerializableField(15, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private VirtualHairInfo _facialHair;
+
     // Why was this public?
     // public override bool IsPublicContainer => true;
 
@@ -139,7 +149,7 @@ public partial class Corpse : Container, ICarvable
     {
     }
 
-    public Corpse(Mobile owner, HairInfo hair, FacialHairInfo facialhair, List<Item> equipItems)
+    public Corpse(Mobile owner, VirtualHairInfo hair, VirtualHairInfo facialHair, List<Item> equipItems)
         : base(0x2006)
     {
         // To suppress console warnings, stackable must be true
@@ -163,8 +173,15 @@ public partial class Corpse : Container, ICarvable
         _kills = owner.Kills;
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
 
-        Hair = hair;
-        FacialHair = facialhair;
+        if (hair?.ItemId > 0)
+        {
+            _hair = new VirtualHairInfo(hair.ItemId, hair.Hue);
+        }
+
+        if (facialHair?.ItemId > 0)
+        {
+            _facialHair = new VirtualHairInfo(facialHair.ItemId, facialHair.Hue);
+        }
 
         // This corpse does not turn to bones if: the owner is not a player
         SetFlag(CorpseFlag.NoBones, !owner.Player);
@@ -237,6 +254,26 @@ public partial class Corpse : Container, ICarvable
         DevourCorpse();
     }
 
+    // Added corpse hair and corpse facial hair
+    private void MigrateFrom(V13Content content)
+    {
+        _restoreEquip = content.RestoreEquip;
+        _flags = content.Flags;
+        _timeOfDeath = content.TimeOfDeath;
+        _restoreTable = content.RestoreTable;
+        _decayTimer = new InternalTimer(this, content.DecayTimerDelay);
+        _decayTimer.Start();
+        _looters = content.Looters;
+        _killer = content.Killer;
+        _aggressors = content.Aggressors;
+        _owner = content.Owner;
+        _corpseName = content.CorpseName;
+        _accessLevel = content.AccessLevel;
+        _guild = content.Guild;
+        _kills = content.Kills;
+        _equipItems = content.EquipItems;
+    }
+
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual bool InstancedCorpse => Core.SE && Core.Now < TimeOfDeath + InstancedCorpseTime;
 
@@ -247,10 +284,6 @@ public partial class Corpse : Container, ICarvable
     // Name of the first PlayerMobile who used Forensic Evaluation on the corpse
     [CommandProperty(AccessLevel.GameMaster)]
     public string Forensicist { get; set; }
-
-    public HairInfo Hair { get; }
-
-    public FacialHairInfo FacialHair { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsBones => GetFlag(CorpseFlag.IsBones);
@@ -492,14 +525,11 @@ public partial class Corpse : Container, ICarvable
         Mobile.CreateCorpseHandler += Mobile_CreateCorpseHandler;
     }
 
-    public static Container Mobile_CreateCorpseHandler(
-        Mobile owner, HairInfo hair, FacialHairInfo facialhair,
-        List<Item> initialContent, List<Item> equipItems
-    )
+    public static Container Mobile_CreateCorpseHandler(Mobile owner, List<Item> initialContent, List<Item> equipItems)
     {
         var c = owner is MilitiaFighter
-            ? new MilitiaFighterCorpse(owner, hair, facialhair, equipItems)
-            : new Corpse(owner, hair, facialhair, equipItems);
+            ? new MilitiaFighterCorpse(owner, owner.Hair, owner.FacialHair, equipItems)
+            : new Corpse(owner, owner.Hair, owner.FacialHair, equipItems);
 
         owner.Corpse = c;
 
@@ -696,9 +726,9 @@ public partial class Corpse : Container, ICarvable
         _instancedItems?.Remove(item);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (Core.AOS && _owner == from && from.Alive)
         {
@@ -1050,11 +1080,11 @@ public partial class Corpse : Container, ICarvable
         {
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (Owner.Target is Corpse corpse && Owner.From.CheckAlive())
+            if (from.CheckAlive() && target is Corpse corpse)
             {
-                corpse.Open(Owner.From, false);
+                corpse.Open(from, false);
             }
         }
     }

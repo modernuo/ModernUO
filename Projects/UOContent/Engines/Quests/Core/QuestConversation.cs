@@ -6,7 +6,7 @@ namespace Server.Engines.Quests
 {
     public abstract class QuestConversation
     {
-        public abstract object Message { get; }
+        public abstract int Message { get; }
 
         public virtual QuestItemInfo[] Info => null;
         public virtual bool Logged => true;

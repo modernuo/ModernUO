@@ -49,16 +49,16 @@ public static class CorpsePackets
 
         if (beheld.Owner != null)
         {
-            if (beheld.Hair?.ItemID > 0)
+            if (beheld.Hair?.ItemId > 0)
             {
                 writer.Write((byte)(Layer.Hair + 1));
-                writer.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                writer.Write(beheld.Hair.VirtualSerial);
             }
 
-            if (beheld.FacialHair?.ItemID > 0)
+            if (beheld.FacialHair?.ItemId > 0)
             {
                 writer.Write((byte)(Layer.FacialHair + 1));
-                writer.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+                writer.Write(beheld.FacialHair.VirtualSerial);
             }
         }
 
@@ -76,15 +76,16 @@ public static class CorpsePackets
         }
 
         var list = beheld.EquipItems;
-        var hairItemID = beheld.Hair?.ItemID ?? 0;
-        var facialHairItemID = beheld.FacialHair?.ItemID ?? 0;
+        var hair = beheld.Hair;
+        var facialHair = beheld.FacialHair;
+
         var count = list.Count;
-        if (hairItemID > 0)
+        if (hair != null)
         {
             count++;
         }
 
-        if (facialHairItemID > 0)
+        if (facialHair != null)
         {
             count++;
         }
@@ -120,10 +121,10 @@ public static class CorpsePackets
 
         if (beheld.Owner != null)
         {
-            if (hairItemID > 0)
+            if (hair?.ItemId > 0)
             {
-                writer.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
-                writer.Write((ushort)hairItemID);
+                writer.Write(hair.VirtualSerial);
+                writer.Write((ushort)hair.ItemId);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);
                 writer.Write(0); // X/Y
@@ -132,15 +133,15 @@ public static class CorpsePackets
                     writer.Write((byte)0); // Grid Location?
                 }
                 writer.Write(beheld.Serial);
-                writer.Write((ushort)beheld.Hair!.Hue);
+                writer.Write((ushort)hair.Hue);
 
                 ++written;
             }
 
-            if (facialHairItemID > 0)
+            if (facialHair?.ItemId > 0)
             {
-                writer.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
-                writer.Write((ushort)facialHairItemID);
+                writer.Write(facialHair.VirtualSerial);
+                writer.Write((ushort)facialHair.ItemId);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);
                 writer.Write(0); // X/Y
@@ -149,7 +150,7 @@ public static class CorpsePackets
                     writer.Write((byte)0); // Grid Location?
                 }
                 writer.Write(beheld.Serial);
-                writer.Write((ushort)beheld.FacialHair!.Hue);
+                writer.Write((ushort)facialHair.Hue);
 
                 ++written;
             }

@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Mobiles;
@@ -205,13 +205,13 @@ public partial class VendorRentalContract : Item
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (IsUsableBy(from, true, true, true, false))
         {
-            list.Add(new ContractOptionEntry(this));
+            list.Add(new ContractOptionEntry());
         }
     }
 
@@ -224,18 +224,16 @@ public partial class VendorRentalContract : Item
 
     private class ContractOptionEntry : ContextMenuEntry
     {
-        private readonly VendorRentalContract m_Contract;
-
-        public ContractOptionEntry(VendorRentalContract contract) : base(6209) => m_Contract = contract;
-
-        public override void OnClick()
+        public ContractOptionEntry() : base(6209)
         {
-            var from = Owner.From;
+        }
 
-            if (m_Contract.IsUsableBy(from, true, true, true, true))
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (target is VendorRentalContract contract && contract.IsUsableBy(from, true, true, true, true))
             {
                 from.CloseGump<VendorRentalContractGump>();
-                from.SendGump(new VendorRentalContractGump(m_Contract, from));
+                from.SendGump(new VendorRentalContractGump(contract, from));
             }
         }
     }

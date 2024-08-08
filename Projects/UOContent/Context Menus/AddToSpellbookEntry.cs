@@ -9,11 +9,11 @@ namespace Server.ContextMenus
         {
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (Owner.From.CheckAlive() && Owner.Target is SpellScroll scroll)
+            if (from.CheckAlive() && target is SpellScroll scroll)
             {
-                Owner.From.Target = new InternalTarget(scroll);
+                from.Target = new InternalTarget(scroll);
             }
         }
 

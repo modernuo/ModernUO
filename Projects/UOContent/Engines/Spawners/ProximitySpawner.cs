@@ -95,7 +95,7 @@ public partial class ProximitySpawner : Spawner
 
     public override string DefaultName => "Proximity Spawner";
 
-    public override bool HandlesOnMovement => true;
+    public override bool HandlesOnMovement => Running;
 
     public override void ToJson(DynamicJson json, JsonSerializerOptions options)
     {

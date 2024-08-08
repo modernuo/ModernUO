@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Network;
 using Server.Targeting;
@@ -153,13 +153,13 @@ public partial class Obsidian : Item
         }
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from.Alive && _quantity is >= Partial and < Completed && IsChildOf(from.Backpack))
         {
-            list.Add(new DisassembleEntry(this));
+            list.Add(new DisassembleEntry());
         }
     }
 
@@ -187,23 +187,24 @@ public partial class Obsidian : Item
 
     private class DisassembleEntry : ContextMenuEntry
     {
-        private readonly Obsidian _obsidian;
-
-        public DisassembleEntry(Obsidian obsidian) : base(6142) => _obsidian = obsidian;
-
-        public override void OnClick()
+        public DisassembleEntry() : base(6142)
         {
-            var from = Owner.From;
-            if (!_obsidian.Deleted && _obsidian.Quantity >= Partial && _obsidian.Quantity < Completed &&
-                _obsidian.IsChildOf(from.Backpack) && from.CheckAlive())
-            {
-                for (var i = 0; i < _obsidian.Quantity - 1; i++)
-                {
-                    from.AddToBackpack(new Obsidian());
-                }
+        }
 
-                _obsidian.Quantity = 1;
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (!from.CheckAlive() || target is not Obsidian obsidian || obsidian.Deleted || obsidian.Quantity < Partial ||
+                obsidian.Quantity >= Completed || !obsidian.IsChildOf(from.Backpack))
+            {
+                return;
             }
+
+            for (var i = 0; i < obsidian.Quantity - 1; i++)
+            {
+                from.AddToBackpack(new Obsidian());
+            }
+
+            obsidian.Quantity = 1;
         }
     }
 

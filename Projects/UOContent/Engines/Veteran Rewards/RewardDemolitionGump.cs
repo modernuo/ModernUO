@@ -36,35 +36,35 @@ namespace Server.Gumps
                 return;
             }
 
-            if (info.ButtonID == (int)Buttons.Confirm)
+            if (info.ButtonID != (int)Buttons.Confirm)
             {
-                var m = sender.Mobile;
-                var house = BaseHouse.FindHouseAt(m);
+                return;
+            }
 
-                if (house?.IsOwner(m) == true)
-                {
-                    if (m.InRange(item.Location, 2))
-                    {
-                        var deed = m_Addon.Deed;
+            var m = sender.Mobile;
+            var house = BaseHouse.FindHouseAt(m);
 
-                        if (deed != null)
-                        {
-                            m.AddToBackpack(deed);
-                            house.Addons.Remove(item);
-                            item.Delete();
-                        }
-                    }
-                    else
-                    {
-                        m.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-                    }
-                }
-                else
+            if (house?.IsOwner(m) != true)
+            {
+                // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
+                m.SendLocalizedMessage(1049784);
+                return;
+            }
+
+            if (m.InRange(item.Location, 2))
+            {
+                var deed = m_Addon.Deed;
+
+                if (deed != null)
                 {
-                    m.SendLocalizedMessage(
-                        1049784
-                    ); // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
+                    m.AddToBackpack(deed);
+                    house.Addons.Remove(item);
+                    item.Delete();
                 }
+            }
+            else
+            {
+                m.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
         }
 

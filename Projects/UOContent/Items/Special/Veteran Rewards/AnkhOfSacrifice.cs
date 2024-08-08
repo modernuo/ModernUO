@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
@@ -19,16 +19,16 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
     public override int LabelNumber => 1027772; // Ankh of Sacrifice
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (from is PlayerMobile mobile)
         {
-            list.Add(new LockKarmaEntry(mobile, Addon as AnkhOfSacrificeAddon));
+            list.Add(new Ankhs.LockKarmaEntry(mobile.KarmaLocked));
         }
 
-        list.Add(new ResurrectEntry(from, Addon as AnkhOfSacrificeAddon));
+        list.Add(new ResurrectEntry());
     }
 
     public static void Resurrect(PlayerMobile m, AnkhOfSacrificeAddon ankh)
@@ -68,86 +68,46 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
 
     private class ResurrectEntry : ContextMenuEntry
     {
-        private readonly AnkhOfSacrificeAddon _ankh;
-        private readonly Mobile _mobile;
-
-        public ResurrectEntry(Mobile mobile, AnkhOfSacrificeAddon ankh) : base(6195, 2)
+        public ResurrectEntry() : base(6195, 2)
         {
-            _mobile = mobile;
-            _ankh = ankh;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (_ankh?.Deleted != false)
+            if (target is AnkhOfSacrificeAddon { Deleted: false } ankh)
             {
-                return;
-            }
-
-            Resurrect(_mobile as PlayerMobile, _ankh);
-        }
-    }
-
-    private class LockKarmaEntry : ContextMenuEntry
-    {
-        private readonly AnkhOfSacrificeAddon _ankh;
-        private readonly PlayerMobile _mobile;
-
-        public LockKarmaEntry(PlayerMobile mobile, AnkhOfSacrificeAddon ankh) : base(mobile.KarmaLocked ? 6197 : 6196, 2)
-        {
-            _mobile = mobile;
-            _ankh = ankh;
-        }
-
-        public override void OnClick()
-        {
-            if (!_mobile.InRange(_ankh.GetWorldLocation(), 2))
-            {
-                _mobile.SendLocalizedMessage(500446); // That is too far away.
-            }
-            else
-            {
-                _mobile.KarmaLocked = !_mobile.KarmaLocked;
-
-                if (_mobile.KarmaLocked)
-                {
-                    // Your karma has been locked. Your karma can no longer be raised.
-                    _mobile.SendLocalizedMessage(1060192);
-                }
-                else
-                {
-                    // Your karma has been unlocked. Your karma can be raised again.
-                    _mobile.SendLocalizedMessage(1060191);
-                }
+                Resurrect(from as PlayerMobile, ankh);
             }
         }
     }
 
     private class AnkhResurrectGump : ResurrectGump
     {
-        public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, owner, msg)
+        public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, msg)
         {
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
+            if (info.ButtonID is not 1 and not 2)
+            {
+                return;
+            }
+
             var from = state.Mobile;
 
-            if (info.ButtonID is 1 or 2)
+            if (from.Map?.CanFit(from.Location, 16, false, false) != true)
             {
-                if (from.Map?.CanFit(from.Location, 16, false, false) != true)
-                {
-                    from.SendLocalizedMessage(502391); // Thou can not be resurrected there!
-                    return;
-                }
-
-                if (from is PlayerMobile mobile)
-                {
-                    mobile.AnkhNextUse = Core.Now + TimeSpan.FromHours(1);
-                }
-
-                base.OnResponse(state, info);
+                from.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+                return;
             }
+
+            if (from is PlayerMobile mobile)
+            {
+                mobile.AnkhNextUse = Core.Now + TimeSpan.FromHours(1);
+            }
+
+            base.OnResponse(state, info);
         }
     }
 }

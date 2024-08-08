@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Samurai
 {
     public class FindHaochiObjective : QuestObjective
     {
-        public override object Message => 1063026;
+        public override int Message => 1063026;
 
         public override void OnComplete()
         {
@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FirstTrialIntroObjective : QuestObjective
     {
-        public override object Message => 1063030;
+        public override int Message => 1063030;
 
         public override void OnComplete()
         {
@@ -29,7 +29,7 @@ namespace Server.Engines.Quests.Samurai
         private int m_CursedSoulsKilled;
         private int m_YoungRoninKilled;
 
-        public override object Message => 1063032;
+        public override int Message => 1063032;
 
         public override int MaxProgress => 3;
 
@@ -95,7 +95,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message => 1063044;
+        public override int Message => 1063044;
 
         public override void OnComplete()
         {
@@ -119,7 +119,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class SecondTrialIntroObjective : QuestObjective
     {
-        public override object Message => 1063047;
+        public override int Message => 1063047;
 
         public override void OnComplete()
         {
@@ -129,7 +129,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class SecondTrialAttackObjective : QuestObjective
     {
-        public override object Message => 1063058;
+        public override int Message => 1063058;
     }
 
     public class SecondTrialReturnObjective : QuestObjective
@@ -140,7 +140,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message => 1063229;
+        public override int Message => 1063229;
 
         public bool Dragon { get; private set; }
 
@@ -166,7 +166,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class ThirdTrialIntroObjective : QuestObjective
     {
-        public override object Message => 1063061;
+        public override int Message => 1063061;
 
         public override void OnComplete()
         {
@@ -176,7 +176,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class ThirdTrialKillObjective : QuestObjective
     {
-        public override object Message => 1063063;
+        public override int Message => 1063063;
 
         public override void OnKill(BaseCreature creature, Container corpse)
         {
@@ -194,7 +194,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class ThirdTrialReturnObjective : QuestObjective
     {
-        public override object Message => 1063064;
+        public override int Message => 1063064;
 
         public override void OnComplete()
         {
@@ -204,7 +204,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FourthTrialIntroObjective : QuestObjective
     {
-        public override object Message => 1063066;
+        public override int Message => 1063066;
 
         public override void OnComplete()
         {
@@ -214,7 +214,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FourthTrialCatsObjective : QuestObjective
     {
-        public override object Message => 1063068;
+        public override int Message => 1063068;
 
         public override void OnKill(BaseCreature creature, Container corpse)
         {
@@ -234,7 +234,7 @@ namespace Server.Engines.Quests.Samurai
         {
         }
 
-        public override object Message => 1063242;
+        public override int Message => 1063242;
 
         public bool KilledCat { get; private set; }
 
@@ -260,7 +260,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class FifthTrialIntroObjective : QuestObjective
     {
-        public override object Message => 1063072;
+        public override int Message => 1063072;
 
         public bool StolenTreasure { get; set; }
 
@@ -286,12 +286,12 @@ namespace Server.Engines.Quests.Samurai
 
     public class FifthTrialReturnObjective : QuestObjective
     {
-        public override object Message => 1063073;
+        public override int Message => 1063073;
     }
 
     public class SixthTrialIntroObjective : QuestObjective
     {
-        public override object Message => 1063078;
+        public override int Message => 1063078;
 
         public override void OnComplete()
         {
@@ -301,7 +301,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class SixthTrialReturnObjective : QuestObjective
     {
-        public override object Message => 1063252;
+        public override int Message => 1063252;
 
         public override void OnComplete()
         {
@@ -311,7 +311,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class SeventhTrialIntroObjective : QuestObjective
     {
-        public override object Message => 1063080;
+        public override int Message => 1063080;
 
         public override int MaxProgress => 3;
 
@@ -331,7 +331,7 @@ namespace Server.Engines.Quests.Samurai
 
     public class SeventhTrialReturnObjective : QuestObjective
     {
-        public override object Message => 1063253;
+        public override int Message => 1063253;
 
         public override void OnComplete()
         {

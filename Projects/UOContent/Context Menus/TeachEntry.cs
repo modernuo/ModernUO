@@ -1,34 +1,25 @@
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.ContextMenus
 {
     public class TeachEntry : ContextMenuEntry
     {
-        private readonly Mobile m_From;
-        private readonly BaseCreature m_Mobile;
-        private readonly SkillName m_Skill;
+        private readonly SkillName _skill;
 
-        public TeachEntry(SkillName skill, BaseCreature m, Mobile from, bool enabled) : base(6000 + (int)skill)
+        public TeachEntry(SkillName skill, bool enabled) : base(6000 + (int)skill)
         {
-            m_Skill = skill;
-            m_Mobile = m;
-            m_From = from;
-
-            if (!enabled)
-            {
-                Flags |= CMEFlags.Disabled;
-            }
+            _skill = skill;
+            Enabled = enabled;
         }
 
-        public override void OnClick()
+        public override void OnClick(Mobile from, IEntity target)
         {
-            if (!m_From.CheckAlive())
+            if (!from.CheckAlive() || target is not BaseCreature bc)
             {
                 return;
             }
 
-            m_Mobile.Teach(m_Skill, m_From, 0, false);
+            bc.Teach(_skill, from, 0, false);
         }
     }
 }

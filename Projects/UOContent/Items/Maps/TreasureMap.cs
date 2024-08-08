@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.Harvest;
 using Server.Mobiles;
@@ -454,22 +455,20 @@ public partial class TreasureMap : MapItem
         base.DisplayTo(from);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        base.GetContextMenuEntries(from, list);
+        base.GetContextMenuEntries(from, ref list);
 
         if (!_completed)
         {
             if (_decoder == null)
             {
-                list.Add(new DecodeMapEntry(this));
+                list.Add(new DecodeMapEntry());
             }
             else
             {
-                var digTool = HasDiggingTool(from);
-
-                list.Add(new OpenMapEntry(this));
-                list.Add(new DigEntry(this, digTool));
+                list.Add(new OpenMapEntry());
+                list.Add(new DigEntry(HasDiggingTool(from)));
             }
         }
     }
@@ -842,65 +841,52 @@ public partial class TreasureMap : MapItem
 
     private class DecodeMapEntry : ContextMenuEntry
     {
-        private readonly TreasureMap m_Map;
-
-        public DecodeMapEntry(TreasureMap map) : base(6147, 2) => m_Map = map;
-
-        public override void OnClick()
+        public DecodeMapEntry() : base(6147, 2)
         {
-            if (!m_Map.Deleted)
+        }
+
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (target is TreasureMap { Deleted: false } map)
             {
-                m_Map.Decode(Owner.From);
+                map.Decode(from);
             }
         }
     }
 
     private class OpenMapEntry : ContextMenuEntry
     {
-        private readonly TreasureMap m_Map;
-
-        public OpenMapEntry(TreasureMap map) : base(6150, 2) => m_Map = map;
-
-        public override void OnClick()
+        public OpenMapEntry() : base(6150, 2)
         {
-            if (!m_Map.Deleted)
+        }
+
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (target is TreasureMap { Deleted: false } map)
             {
-                m_Map.DisplayTo(Owner.From);
+                map.DisplayTo(from);
             }
         }
     }
 
     private class DigEntry : ContextMenuEntry
     {
-        private readonly TreasureMap m_Map;
+        public DigEntry(bool enabled) : base(6148, 2) => Enabled = enabled;
 
-        public DigEntry(TreasureMap map, bool enabled) : base(6148, 2)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            m_Map = map;
-
-            if (!enabled)
-            {
-                Flags |= CMEFlags.Disabled;
-            }
-        }
-
-        public override void OnClick()
-        {
-            if (m_Map.Deleted)
+            if (target is not TreasureMap { Deleted: false } map)
             {
                 return;
             }
 
-            var from = Owner.From;
-
-            if (HasDiggingTool(from))
-            {
-                m_Map.OnBeginDig(from);
-            }
-            else
+            if (!HasDiggingTool(from))
             {
                 from.SendLocalizedMessage(1114416); // You must have a digging tool to dig for treasure.
+                return;
             }
+
+            map.OnBeginDig(from);
         }
     }
 }

@@ -219,7 +219,7 @@ public partial class BaseHire : BaseCreature
         base.OnSpeech(e);
     }
 
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
         if (Deleted)
         {
@@ -230,14 +230,14 @@ public partial class BaseHire : BaseCreature
         {
             if (CanPaperdollBeOpenedBy(from))
             {
-                list.Add(new PaperdollEntry(this));
+                list.Add(new PaperdollEntry());
             }
 
-            list.Add(new HireEntry(this));
+            list.Add(new HireEntry());
         }
         else
         {
-            base.GetContextMenuEntries(from, list);
+            base.GetContextMenuEntries(from, ref list);
         }
     }
 
@@ -309,13 +309,13 @@ public partial class BaseHire : BaseCreature
 
     public class HireEntry : ContextMenuEntry
     {
-        private readonly BaseHire _hire;
-
-        public HireEntry(BaseHire hire) : base(6120, 3) => _hire = hire;
-
-        public override void OnClick()
+        public HireEntry() : base(6120, 3)
         {
-            _hire.SayHireCost();
+        }
+
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            (target as BaseHire)?.SayHireCost();
         }
     }
 }

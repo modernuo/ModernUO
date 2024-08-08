@@ -118,11 +118,6 @@ public partial class Timer
                         Execute(timer);
                     }
                 }
-
-                if (!timer.Running)
-                {
-                    timer.OnDetach();
-                }
             }
 #if DEBUG_TIMERS
             if (executionCount > _chainExecutionThreshold)
@@ -139,29 +134,42 @@ public partial class Timer
 
     private static void Execute(Timer timer)
     {
-        var finished = timer.Count != 0 && ++timer.Index >= timer.Count;
-
-        var version = timer.Version;
+        var finished = timer.Count != 0 && timer.Index + 1 >= timer.Count;
 
         var prof = timer.GetProfile();
         prof?.Start();
+
+        // Stop the timer from running so that way if Start() is called in OnTick, the timer will be started.
+        if (finished)
+        {
+            timer.InternalStop();
+            timer.Version++;
+        }
+
+        var version = timer.Version;
+
         timer.OnTick();
         prof?.Finish();
 
-        // If the timer has not been stopped, and it has not been altered (restarted, returned etc)
-        if (timer.Running && timer.Version == version)
+        // Starting doesn't change the timer version, so we need to check if it's finished and if it's still running.
+        if (timer.Version != version || finished && timer.Running)
         {
-            if (finished)
-            {
-                timer.Stop();
-            }
-            else
-            {
-                timer.Delay = timer.Interval;
-                timer.Next = Core.Now + timer.Interval;
-                AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
-            }
+            return;
         }
+
+        if (!finished)
+        {
+            timer.Delay = timer.Interval;
+            timer.Next = DateTime.UtcNow + timer.Interval;
+            AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+        }
+        else
+        {
+            // Already stopped and detached, now run OnDetach
+            timer.OnDetach();
+        }
+
+        timer.Index++;
     }
 
     private static void AddTimer(Timer timer, long delay)

@@ -2,7 +2,7 @@ namespace Server.Engines.Quests.Haven
 {
     public class AcceptConversation : QuestConversation
     {
-        public override object Message => 1049092;
+        public override int Message => 1049092;
 
         public override void OnRead()
         {
@@ -12,7 +12,7 @@ namespace Server.Engines.Quests.Haven
 
     public class UzeraanTitheConversation : QuestConversation
     {
-        public override object Message => 1060209;
+        public override int Message => 1060209;
 
         public override void OnRead()
         {
@@ -27,7 +27,7 @@ namespace Server.Engines.Quests.Haven
             new(1023676, 0xE68) // glowing rune
         };
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -84,7 +84,7 @@ namespace Server.Engines.Quests.Haven
             new(1048032, 0xE76)   // a bag
         };
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -138,7 +138,7 @@ namespace Server.Engines.Quests.Haven
             new(1023637, 0xE34) // scroll
         };
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -185,7 +185,7 @@ namespace Server.Engines.Quests.Haven
             new(1049117, 0xFC4)   // Horn of Retreat
         };
 
-        public override object Message => 1049325;
+        public override int Message => 1049325;
 
         public override QuestItemInfo[] Info => m_Info;
 
@@ -197,7 +197,7 @@ namespace Server.Engines.Quests.Haven
 
     public class DryadConversation : QuestConversation
     {
-        public override object Message => 1049326;
+        public override int Message => 1049326;
 
         public override void OnRead()
         {
@@ -213,7 +213,7 @@ namespace Server.Engines.Quests.Haven
             new(1022581, 0xA22)  // lantern
         };
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -267,28 +267,13 @@ namespace Server.Engines.Quests.Haven
             new(1060577, 0x1F14) // Recall Rune
         };
 
-        public override object Message
+        public override int Message
         {
             get
             {
                 if (System.From.Profession == 2) // magician
                 {
-                    return "<I>You hand Uzeraan the Vial of Blood, which he hastily accepts...</I><BR>"
-                           + "<BR>"
-                           + "Excellent work!  Only one reagent remains and the spell is complete!  The final "
-                           + "requirement is a <I>Daemon Bone</I>, which will not be as easily acquired as the "
-                           + "previous two components.<BR>"
-                           + "<BR>"
-                           + "There is a haunted graveyard on this island, which is the home to many undead "
-                           + "creatures.   Dispose of the undead as you see fit.  Be sure to search their remains "
-                           + "after you have smitten them, to check for a <I>Daemon Bone</I>.  I'm quite sure "
-                           + "that you will find what we seek, if you are thorough enough with your "
-                           + "extermination.<BR>"
-                           + "<BR>"
-                           + "Take these explosion spell scrolls and  magical wizard's hat to aid you in your "
-                           + "battle.  The scrolls should help you make short work of the undead.<BR>"
-                           + "<BR>"
-                           + "Return here when you have found a <I>Daemon Bone</I>.";
+                    return 1049389;
                 }
 
                 /* <I>You hand Uzeraan the Vial of Blood, which he hastily accepts...</I><BR><BR>
@@ -333,7 +318,7 @@ namespace Server.Engines.Quests.Haven
 
     public class UzeraanDaemonBoneConversation : QuestConversation
     {
-        public override object Message => 1049335;
+        public override int Message => 1049335;
 
         public override void OnRead()
         {
@@ -343,7 +328,7 @@ namespace Server.Engines.Quests.Haven
 
     public class BankerConversation : QuestConversation
     {
-        public override object Message => 1060137;
+        public override int Message => 1060137;
 
         public override void OnRead()
         {
@@ -353,7 +338,7 @@ namespace Server.Engines.Quests.Haven
 
     public class RadarConversation : QuestConversation
     {
-        public override object Message => 1049660;
+        public override int Message => 1049660;
 
         public override bool Logged => false;
     }
@@ -368,7 +353,7 @@ namespace Server.Engines.Quests.Haven
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -417,7 +402,7 @@ namespace Server.Engines.Quests.Haven
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -466,28 +451,28 @@ namespace Server.Engines.Quests.Haven
 
     public class DryadAppleConversation : QuestConversation
     {
-        public override object Message => 1049360;
+        public override int Message => 1049360;
 
         public override bool Logged => false;
     }
 
     public class LostDaemonBloodConversation : QuestConversation
     {
-        public override object Message => 1049375;
+        public override int Message => 1049375;
 
         public override bool Logged => false;
     }
 
     public class LostDaemonBoneConversation : QuestConversation
     {
-        public override object Message => 1049376;
+        public override int Message => 1049376;
 
         public override bool Logged => false;
     }
 
     public class FewReagentsConversation : QuestConversation
     {
-        public override object Message => 1049390;
+        public override int Message => 1049390;
 
         public override bool Logged => false;
     }

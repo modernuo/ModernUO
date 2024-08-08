@@ -29,7 +29,7 @@ namespace Server.Engines.Quests.Hag
         {
         }
 
-        public override object Message => 1055014;
+        public override int Message => 1055014;
 
         public Corpse Corpse { get; private set; }
 
@@ -117,7 +117,7 @@ namespace Server.Engines.Quests.Hag
 
     public class FindGrizeldaAboutMurderObjective : QuestObjective
     {
-        public override object Message => 1055015;
+        public override int Message => 1055015;
 
         public override void OnComplete()
         {
@@ -141,7 +141,7 @@ namespace Server.Engines.Quests.Hag
         {
         }
 
-        public override object Message => 1055016;
+        public override int Message => 1055016;
 
         public override int MaxProgress => m_MaxProgress;
 
@@ -204,7 +204,7 @@ namespace Server.Engines.Quests.Hag
         {
         }
 
-        public override object Message => 1055017;
+        public override int Message => 1055017;
 
         public Point3D ImpLocation { get; private set; }
 
@@ -256,7 +256,7 @@ namespace Server.Engines.Quests.Hag
 
     public class ReturnRecipeObjective : QuestObjective
     {
-        public override object Message => 1055018;
+        public override int Message => 1055018;
 
         public override void OnComplete()
         {
@@ -296,7 +296,7 @@ namespace Server.Engines.Quests.Hag
         {
         }
 
-        public override object Message
+        public override int Message
         {
             get
             {
@@ -453,7 +453,7 @@ namespace Server.Engines.Quests.Hag
 
     public class ReturnIngredientsObjective : QuestObjective
     {
-        public override object Message => 1055050;
+        public override int Message => 1055050;
 
         public override void OnComplete()
         {

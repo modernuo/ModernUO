@@ -1,12 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
 public class ProfessionInfo
 {
-    public static ProfessionInfo[] Professions { get; }
+    private static readonly ProfessionInfo[] _professions;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool VerifyProfession(int profIndex) =>
+        profIndex >= 0 && profIndex < _professions.Length;
+
+    public static bool GetProfession(int profIndex, out ProfessionInfo profession)
+    {
+        if (!VerifyProfession(profIndex))
+        {
+            profession = null;
+            return false;
+        }
+
+        return (profession = _professions[profIndex - 1]) != null;
+    }
 
     private static bool TryGetSkillName(string name, out SkillName skillName)
     {
@@ -34,16 +50,7 @@ public class ProfessionInfo
 
     static ProfessionInfo()
     {
-        var profs = new List<ProfessionInfo>
-        {
-            new()
-            {
-                ID = 0, // Custom
-                Name = "Advanced",
-                TopLevel = false,
-                GumpID = 5571
-            }
-        };
+        List<ProfessionInfo> profs = [];
 
         var file = Core.FindDataFile("prof.txt", false);
         if (!File.Exists(file))
@@ -177,11 +184,11 @@ public class ProfessionInfo
             }
         }
 
-        Professions = new ProfessionInfo[1 + maxProf];
+        _professions = new ProfessionInfo[maxProf];
 
         foreach (var p in profs)
         {
-            Professions[p.ID] = p;
+            _professions[p.ID - 1] = p;
         }
 
         profs.Clear();

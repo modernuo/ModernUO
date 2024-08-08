@@ -4,7 +4,7 @@ namespace Server.Engines.Quests.Collector
 {
     public class FishPearlsObjective : QuestObjective
     {
-        public override object Message => 1055084;
+        public override int Message => 1055084;
 
         public override int MaxProgress => 6;
 
@@ -33,7 +33,7 @@ namespace Server.Engines.Quests.Collector
 
     public class ReturnPearlsObjective : QuestObjective
     {
-        public override object Message => 1055088;
+        public override int Message => 1055088;
 
         public override void OnComplete()
         {
@@ -43,7 +43,7 @@ namespace Server.Engines.Quests.Collector
 
     public class FindAlbertaObjective : QuestObjective
     {
-        public override object Message => 1055091;
+        public override int Message => 1055091;
 
         public override void OnComplete()
         {
@@ -60,7 +60,7 @@ namespace Server.Engines.Quests.Collector
 
         public SitOnTheStoolObjective() => m_Begin = DateTime.MaxValue;
 
-        public override object Message => 1055093;
+        public override int Message => 1055093;
 
         public override void CheckProgress()
         {
@@ -96,7 +96,7 @@ namespace Server.Engines.Quests.Collector
 
     public class ReturnPaintingObjective : QuestObjective
     {
-        public override object Message => 1055099;
+        public override int Message => 1055099;
 
         public override void OnComplete()
         {
@@ -106,7 +106,7 @@ namespace Server.Engines.Quests.Collector
 
     public class FindGabrielObjective : QuestObjective
     {
-        public override object Message => 1055101;
+        public override int Message => 1055101;
 
         public override void OnComplete()
         {
@@ -137,7 +137,7 @@ namespace Server.Engines.Quests.Collector
         {
         }
 
-        public override object Message => 1055104;
+        public override int Message => 1055104;
 
         public void InitTheater()
         {
@@ -191,7 +191,7 @@ namespace Server.Engines.Quests.Collector
 
     public class ReturnSheetMusicObjective : QuestObjective
     {
-        public override object Message => 1055110;
+        public override int Message => 1055110;
 
         public override void OnComplete()
         {
@@ -201,7 +201,7 @@ namespace Server.Engines.Quests.Collector
 
     public class ReturnAutographObjective : QuestObjective
     {
-        public override object Message => 1055114;
+        public override int Message => 1055114;
 
         public override void OnComplete()
         {
@@ -211,7 +211,7 @@ namespace Server.Engines.Quests.Collector
 
     public class FindTomasObjective : QuestObjective
     {
-        public override object Message => 1055117;
+        public override int Message => 1055117;
 
         public override void OnComplete()
         {
@@ -244,7 +244,7 @@ namespace Server.Engines.Quests.Collector
         {
         }
 
-        public override object Message => 1055120;
+        public override int Message => 1055120;
 
         public override bool Completed
         {
@@ -376,7 +376,7 @@ namespace Server.Engines.Quests.Collector
 
     public class ReturnImagesObjective : QuestObjective
     {
-        public override object Message => 1055128;
+        public override int Message => 1055128;
 
         public override void OnComplete()
         {
@@ -386,11 +386,11 @@ namespace Server.Engines.Quests.Collector
 
     public class ReturnToysObjective : QuestObjective
     {
-        public override object Message => 1055132;
+        public override int Message => 1055132;
     }
 
     public class MakeRoomObjective : QuestObjective
     {
-        public override object Message => 1055136;
+        public override int Message => 1055136;
     }
 }

@@ -329,38 +329,28 @@ public static class NinjaWeapon
 
     public class LoadEntry : ContextMenuEntry
     {
-        private readonly INinjaWeapon weapon;
-
-        public LoadEntry(INinjaWeapon wep, int entry)
-            : base(entry, 0) =>
-            weapon = wep;
-
-        public override void OnClick()
+        public LoadEntry(int entry) : base(entry, 0)
         {
-            if (WeaponIsValid(weapon, Owner.From))
+        }
+
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (target is INinjaWeapon weapon && WeaponIsValid(weapon, from))
             {
-                Owner.From.BeginTarget(10, false, TargetFlags.Harmful, OnTarget, weapon);
+                from.BeginTarget(10, false, TargetFlags.Harmful, OnTarget, weapon);
             }
         }
     }
 
     public class UnloadEntry : ContextMenuEntry
     {
-        private readonly INinjaWeapon weapon;
+        public UnloadEntry(int entry, bool enabled) : base(entry, 0) => Enabled = enabled;
 
-        public UnloadEntry(INinjaWeapon wep, int entry)
-            : base(entry, 0)
+        public override void OnClick(Mobile from, IEntity target)
         {
-            weapon = wep;
-
-            Enabled = weapon.UsesRemaining > 0;
-        }
-
-        public override void OnClick()
-        {
-            if (WeaponIsValid(weapon, Owner.From))
+            if (target is INinjaWeapon weapon && WeaponIsValid(weapon, from))
             {
-                Unload(Owner.From, weapon);
+                Unload(from, weapon);
             }
         }
     }

@@ -162,7 +162,7 @@ namespace Server.Items
 /*
         public override void GetProperties(IPropertyList list) => _addon?.GetProperties(list);
 
-        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list) =>
+        public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list) =>
             _addon?.GetContextMenuEntries(from, list);
 */
         public override void OnAfterDelete()

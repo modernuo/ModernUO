@@ -44,11 +44,6 @@ namespace Server.Tests
         public void TestIntervals(long delay, long expectedDelayTicks, long interval, long expectedIntervalTicks, int count)
         {
             var timerTicks = new TimerTicks();
-            void action()
-            {
-                timerTicks.ExpectedTicks += timerTicks.ExecutedCount++ == 0 ? expectedDelayTicks : expectedIntervalTicks;
-                Assert.Equal(timerTicks.ExpectedTicks, timerTicks.Ticks);
-            }
 
             Timer.Init(timerTicks.Ticks);
 
@@ -64,6 +59,29 @@ namespace Server.Tests
             }
 
             Assert.Equal(count, timerTicks.ExecutedCount);
+            return;
+
+            void action()
+            {
+                timerTicks.ExpectedTicks += timerTicks.ExecutedCount++ == 0 ? expectedDelayTicks : expectedIntervalTicks;
+                Assert.Equal(timerTicks.ExpectedTicks, timerTicks.Ticks);
+            }
+        }
+
+        [Fact]
+        public void TestTimerStartedOnTick()
+        {
+            var timerTicks = new TimerTicks();
+
+            Timer.Init(timerTicks.Ticks);
+
+            var timer = new SelfRunningTimer(timerTicks);
+            timer.Start();
+
+            Timer.Slice(128);
+            Assert.Equal(1, timerTicks.ExecutedCount);
+            Timer.Slice(256);
+            Assert.Equal(2, timerTicks.ExecutedCount);
         }
 
         private class TimerTicks
@@ -71,6 +89,21 @@ namespace Server.Tests
             public long ExpectedTicks;
             public long Ticks;
             public int ExecutedCount;
+        }
+
+        private class SelfRunningTimer : Timer
+        {
+            private readonly TimerTicks _timerTicks;
+            public SelfRunningTimer(TimerTicks ticks) : base(TimeSpan.FromMilliseconds(100)) => _timerTicks = ticks;
+
+            protected override void OnTick()
+            {
+                if (_timerTicks.ExecutedCount++ == 0)
+                {
+                    Delay = TimeSpan.FromMilliseconds(100);
+                    Start();
+                }
+            }
         }
     }
 }
