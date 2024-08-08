@@ -1,0 +1,332 @@
+[
+    {
+        "Hue": 0,
+        "X": 3674,
+        "Z": 26,
+        "Cliloc": 1025351,
+        "ID": 5351,
+        "Serial": 1088073118,
+        "Text": "hitching post",
+        "Y": 2261
+    },
+    {
+        "Hue": 0,
+        "X": 3674,
+        "Z": 24,
+        "Cliloc": 1023059,
+        "ID": 3059,
+        "Serial": 1088243921,
+        "Text": "Fishermens' Guild",
+        "Y": 2258
+    },
+    {
+        "Hue": 0,
+        "X": 3674,
+        "Z": 28,
+        "Cliloc": 1023063,
+        "ID": 3063,
+        "Serial": 1088238802,
+        "Text": "Shipwrights' Guild",
+        "Y": 2258
+    },
+    {
+        "Hue": 0,
+        "X": 3666,
+        "Z": 26,
+        "Cliloc": 1027845,
+        "ID": 7845,
+        "Serial": 1088291647,
+        "Text": "net",
+        "Y": 2263
+    },
+    {
+        "Hue": 0,
+        "X": 3669,
+        "Z": 33,
+        "Cliloc": 1025369,
+        "ID": 5369,
+        "Serial": 1088283352,
+        "Text": "anchor",
+        "Y": 2263
+    },
+    {
+        "Hue": 0,
+        "X": 3672,
+        "Z": 46,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088052885,
+        "Text": "lantern",
+        "Y": 2271
+    },
+    {
+        "Hue": 0,
+        "X": 3665,
+        "Z": 34,
+        "Cliloc": 1096485,
+        "ID": 17613,
+        "Serial": 1085286091,
+        "Text": "bouy",
+        "Y": 2258
+    },
+    {
+        "Hue": 0,
+        "X": 3667,
+        "Z": 31,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088311241,
+        "Text": "lantern",
+        "Y": 2255
+    },
+    {
+        "Hue": 0,
+        "X": 3669,
+        "Z": 31,
+        "Cliloc": 1096491,
+        "ID": 17619,
+        "Serial": 1088309697,
+        "Text": "lobster",
+        "Y": 2256
+    },
+    {
+        "Hue": 0,
+        "X": 3670,
+        "Z": 26,
+        "Cliloc": 1096511,
+        "ID": 17639,
+        "Serial": 1088304885,
+        "Text": "dragonfish trophy",
+        "Y": 2255
+    },
+    {
+        "Hue": 0,
+        "X": 3691,
+        "Z": 89,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088029616,
+        "Text": "lantern",
+        "Y": 2275
+    },
+    {
+        "Hue": 0,
+        "X": 3687,
+        "Z": 26,
+        "Cliloc": 1042971,
+        "ID": 2996,
+        "Serial": 1088067763,
+        "Text": "Modest Damsel",
+        "Y": 2263
+    },
+    {
+        "Hue": 0,
+        "X": 3695,
+        "Z": 46,
+        "Cliloc": 1022604,
+        "ID": 2604,
+        "Serial": 1088091440,
+        "Text": "chest of drawers",
+        "Y": 2246
+    },
+    {
+        "Hue": 0,
+        "X": 3695,
+        "Z": 46,
+        "Cliloc": 1022604,
+        "ID": 2604,
+        "Serial": 1088091938,
+        "Text": "chest of drawers",
+        "Y": 2252
+    },
+    {
+        "Hue": 0,
+        "X": 3695,
+        "Z": 46,
+        "Cliloc": 1022604,
+        "ID": 2604,
+        "Serial": 1088094137,
+        "Text": "chest of drawers",
+        "Y": 2258
+    },
+    {
+        "Hue": 0,
+        "X": 3689,
+        "Z": 46,
+        "Cliloc": 1022604,
+        "ID": 2604,
+        "Serial": 1088093732,
+        "Text": "chest of drawers",
+        "Y": 2258
+    },
+    {
+        "Hue": 0,
+        "X": 3689,
+        "Z": 46,
+        "Cliloc": 1022604,
+        "ID": 2604,
+        "Serial": 1088092681,
+        "Text": "chest of drawers",
+        "Y": 2252
+    },
+    {
+        "Hue": 0,
+        "X": 3709,
+        "Z": 20,
+        "Cliloc": 1153124,
+        "ID": 2981,
+        "Serial": 1089539405,
+        "Text": "Sand In Ya Britches Tailor Hut",
+        "Y": 2251
+    },
+    {
+        "Hue": 0,
+        "X": 3709,
+        "Z": 20,
+        "Cliloc": 1153123,
+        "ID": 3015,
+        "Serial": 1089537708,
+        "Text": "The Sandy Smithy ",
+        "Y": 2243
+    },
+    {
+        "Hue": 0,
+        "X": 3692,
+        "Z": 32,
+        "Cliloc": 1022519,
+        "ID": 2519,
+        "Serial": 1088197518,
+        "Text": "plate",
+        "Y": 2259
+    },
+    {
+        "Hue": 0,
+        "X": 3694,
+        "Z": 26,
+        "Cliloc": 1024099,
+        "ID": 4099,
+        "Serial": 1088204900,
+        "Text": "spittoon",
+        "Y": 2259
+    },
+    {
+        "Hue": 0,
+        "X": 3695,
+        "Z": 32,
+        "Cliloc": 1024086,
+        "ID": 4086,
+        "Serial": 1088196181,
+        "Text": "glass pitcher",
+        "Y": 2255
+    },
+    {
+        "Hue": 0,
+        "X": 3691,
+        "Z": 26,
+        "Cliloc": 1024099,
+        "ID": 4099,
+        "Serial": 1088202600,
+        "Text": "spittoon",
+        "Y": 2255
+    },
+    {
+        "Hue": 0,
+        "X": 3693,
+        "Z": 26,
+        "Cliloc": 1024099,
+        "ID": 4099,
+        "Serial": 1088209427,
+        "Text": "spittoon",
+        "Y": 2249
+    },
+    {
+        "Hue": 0,
+        "X": 3696,
+        "Z": 33,
+        "Cliloc": 1024086,
+        "ID": 4086,
+        "Serial": 1088106915,
+        "Text": "glass pitcher",
+        "Y": 2248
+    },
+    {
+        "Hue": 0,
+        "X": 3699,
+        "Z": 37,
+        "Cliloc": 1042971,
+        "ID": 6464,
+        "Serial": 1088117404,
+        "Text": "Keg",
+        "Y": 2248
+    },
+    {
+        "Hue": 743,
+        "X": 3678,
+        "Z": 11,
+        "Cliloc": 1042971,
+        "ID": 7774,
+        "Serial": 1088013950,
+        "Text": "Welcome To New Magincia",
+        "Y": 2280
+    },
+    {
+        "Hue": 0,
+        "X": 3681,
+        "Z": 30,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088338143,
+        "Text": "lantern",
+        "Y": 2291
+    },
+    {
+        "Hue": 0,
+        "X": 3675,
+        "Z": 32,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088337871,
+        "Text": "lantern",
+        "Y": 2291
+    },
+    {
+        "Hue": 0,
+        "X": 3678,
+        "Z": 8,
+        "Cliloc": 1027708,
+        "ID": 7708,
+        "Serial": 1088349674,
+        "Text": "cooked fish",
+        "Y": 2300
+    },
+    {
+        "Hue": 0,
+        "X": 3652,
+        "Z": 11,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088369267,
+        "Text": "lantern",
+        "Y": 2301
+    },
+    {
+        "Hue": 0,
+        "X": 3691,
+        "Z": 11,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088353419,
+        "Text": "lantern",
+        "Y": 2300
+    },
+    {
+        "Hue": 0,
+        "X": 3710,
+        "Z": 11,
+        "Cliloc": 1022594,
+        "ID": 2594,
+        "Serial": 1088358997,
+        "Text": "lantern",
+        "Y": 2301
+    }
+]
