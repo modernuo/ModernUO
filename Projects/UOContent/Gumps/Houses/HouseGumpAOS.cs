@@ -74,7 +74,7 @@ namespace Server.Gumps
         private List<Mobile> m_List;
 
         public override bool Singleton => true;
-        
+
         public HouseGumpAOS(HouseGumpPageAOS page, Mobile from, BaseHouse house) : base(50, 40)
         {
             m_House = house;
@@ -1425,7 +1425,7 @@ namespace Server.Gumps
                                         }
                                         else
                                         {
-                                            from.SendGump(new HouseDemolishGump(from, m_House), true);
+                                            from.SendGump(new ConfirmDemolishHouseGump(m_House), true);
                                         }
                                     }
 
