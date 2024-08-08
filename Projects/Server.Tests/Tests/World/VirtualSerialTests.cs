@@ -6,7 +6,7 @@ namespace Server.Tests;
 public class VirtualSerialTests : IClassFixture<ServerFixture>
 {
     [Fact]
-    public void TestNewVirtualGetsAndRollover_SingleThreaded()
+    public void TestNewVirtualGetsAndRollover()
     {
         // Acquire virtual serials until we hit the max
         Serial lastSerial = World.NewVirtual;
