@@ -50,9 +50,8 @@ public class SetSecureLevelGump : DynamicGump
         builder.AddHtmlLocalized(45, 110, 150, 20, 1061279, GetColor(SecureLevel.Friends)); // Friends
 
         var houseOwner = _house.Owner;
-        if (Guild.NewGuildSystem && houseOwner?.Guild != null &&
-            ((Guild)houseOwner.Guild).Leader == houseOwner
-           ) // Only the actual House owner AND guild master can set guild secures
+        // Only the actual House owner AND guild master can set guild secures
+        if (Guild.NewGuildSystem && houseOwner.Guild is Guild { Leader: houseOwner })
         {
             builder.AddButton(10, 130, GetFirstID(SecureLevel.Guild), 4007, 5);
             builder.AddHtmlLocalized(45, 130, 150, 20, 1063455, GetColor(SecureLevel.Guild)); // Guild Members

@@ -30,7 +30,8 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
         builder.AddImageTiled(10, 40, 400, 200, 2624);
         builder.AddAlphaRegion(10, 40, 400, 200);
 
-        /* You are about to demolish your house.
+        /*
+         * You are about to demolish your house.
          * You will be refunded the house's value directly to your bank box.
          * All items in the house will remain behind and can be freely picked up by anyone.
          * Once the house is demolished, anyone can attempt to place a new house on the vacant land.
