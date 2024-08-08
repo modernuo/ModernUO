@@ -1428,7 +1428,7 @@ namespace Server.Gumps
                                         else
                                         {
                                             from.CloseGump<ConfirmDemolishHouseGump>();
-                                            from.SendGump(new ConfirmDemolishHouseGump(from, m_House));
+                                            from.SendGump(new ConfirmDemolishHouseGump(m_House));
                                         }
                                     }
 
