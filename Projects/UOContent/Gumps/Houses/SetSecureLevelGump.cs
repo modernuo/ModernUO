@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Server.Guilds;
 using Server.Multis;
 using Server.Network;
@@ -61,9 +62,11 @@ public class SetSecureLevelGump : DynamicGump
         builder.AddHtmlLocalized(45, 130 + offset, 150, 20, 1061626, GetColor(SecureLevel.Anyone)); // Anyone
     }
 
-    public int GetColor(SecureLevel level) => _info.Level == level ? 0x7F18 : 0x7FFF;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int GetColor(SecureLevel level) => _info.Level == level ? 0x7F18 : 0x7FFF;
 
-    public int GetFirstID(SecureLevel level) => _info.Level == level ? 4006 : 4005;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int GetFirstID(SecureLevel level) => _info.Level == level ? 4006 : 4005;
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
