@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server;
@@ -65,83 +66,33 @@ public static class OutgoingVirtualHairPackets
     }
 }
 
-public abstract class BaseHairInfo
+[SerializationGenerator(0, false)]
+public partial class VirtualHairInfo
 {
-    protected BaseHairInfo(int itemid, int hue = 0)
-    {
-        ItemID = itemid;
-        Hue = hue;
-    }
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _itemId;
 
-    protected BaseHairInfo(IGenericReader reader)
-    {
-        var version = reader.ReadInt();
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _hue;
 
-        switch (version)
-        {
-            case 0:
-                {
-                    ItemID = reader.ReadInt();
-                    Hue = reader.ReadInt();
-                    break;
-                }
-        }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int ItemID { get; set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Hue { get; set; }
-
-    public virtual void Serialize(IGenericWriter writer)
-    {
-        writer.Write(0); // version
-        writer.Write(ItemID);
-        writer.Write(Hue);
-    }
-}
-
-public class HairInfo : BaseHairInfo
-{
-    public HairInfo(int itemid)
-        : base(itemid)
+    public VirtualHairInfo() : this(0)
     {
     }
 
-    public HairInfo(int itemid, int hue)
-        : base(itemid, hue)
+    public VirtualHairInfo(int itemid, int hue = 0)
     {
+        _itemId = itemid;
+        _hue = hue;
+        VirtualSerial = World.NewVirtual;
     }
 
-    public HairInfo(IGenericReader reader)
-        : base(reader)
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
+        VirtualSerial = World.NewVirtual;
     }
 
-    // TODO: Can we make this higher for newer clients?
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - m.Value * 4;
-}
-
-public class FacialHairInfo : BaseHairInfo
-{
-    public FacialHairInfo(int itemid)
-        : base(itemid)
-    {
-    }
-
-    public FacialHairInfo(int itemid, int hue)
-        : base(itemid, hue)
-    {
-    }
-
-    public FacialHairInfo(IGenericReader reader)
-        : base(reader)
-    {
-    }
-
-    // TODO: Can we make this higher for newer clients?
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint FakeSerial(Serial m) => 0x7FFFFFFF - 0x400 - 1 - m.Value* 4;
+    public Serial VirtualSerial { get; private set; }
 }
