@@ -1,6 +1,7 @@
 using Server.Accounting;
 using Server.Guilds;
 using Server.Items;
+using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
 
@@ -96,7 +97,7 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
                 return;
             }
 
-            if (state.Mobile.AccessLevel >= AccessLevel.GameMaster)
+            if (state.Mobile.AccessLevel > AccessLevel.Player)
             {
                 state.Mobile.SendMessage("You do not get a refund for your house as you are not a player");
                 _house.RemoveKeys(state.Mobile);
@@ -104,74 +105,28 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
             }
             else
             {
-                Item toGive;
+                var toGive = !_house.IsAosRules || _house.Price <= 0 ? _house.GetDeed() : null;
 
-                if (_house.IsAosRules)
+                if (toGive != null && !state.Mobile.BankBox.TryDropItem(state.Mobile, toGive, false))
                 {
-                    if (_house.Price > 0)
-                    {
-                        toGive = new BankCheck(_house.Price);
-                    }
-                    else
-                    {
-                        toGive = _house.GetDeed();
-                    }
-                }
-                else
-                {
-                    toGive = _house.GetDeed();
+                    toGive.Delete();
+                    state.Mobile.SendLocalizedMessage(500390); // Your bank box is full.
 
-                    if (toGive == null && _house.Price > 0)
-                    {
-                        toGive = new BankCheck(_house.Price);
-                    }
+                    return;
                 }
 
-                var check = toGive as BankCheck;
-
-                if (AccountGold.Enabled && check != null)
-                {
-                    var worth = check.Worth;
-
-                    if (state.Mobile.Account?.DepositGold(worth) == true)
-                    {
-                        check.Delete();
-
-                        // ~1_AMOUNT~ gold has been deposited into your bank box.
-                        state.Mobile.SendLocalizedMessage(1060397, $"{worth:#,0}");
-
-                        _house.RemoveKeys(state.Mobile);
-                        _house.Delete();
-                        return;
-                    }
-                }
-
-                if (toGive != null)
-                {
-                    var box = state.Mobile.BankBox;
-
-                    if (box.TryDropItem(state.Mobile, toGive, false))
-                    {
-                        if (check != null)
-                        {
-                            // ~1_AMOUNT~ gold has been deposited into your bank box.
-                            state.Mobile.SendLocalizedMessage(1060397, check.Worth.ToString());
-                        }
-
-                        _house.RemoveKeys(state.Mobile);
-                        _house.Delete();
-                    }
-                    else
-                    {
-                        toGive.Delete();
-                        state.Mobile.SendLocalizedMessage(500390); // Your bank box is full.
-                    }
-                }
-                else
+                if (_house.Price <= 0 || !Banker.Deposit(state.Mobile, _house.Price))
                 {
                     state.Mobile.SendMessage("Unable to refund house.");
+                    return;
                 }
+
+                // ~1_AMOUNT~ gold has been deposited into your bank box.
+                state.Mobile.SendLocalizedMessage(1060397, _house.Price.ToString());
             }
+
+            _house.RemoveKeys(state.Mobile);
+            _house.Delete();
         }
         else
         {
