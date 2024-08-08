@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-    public class DispelSpell : MagerySpell, ISpellTargetingMobile
+    public class DispelSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Dispel",
@@ -58,7 +58,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

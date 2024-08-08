@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-    public class InvisibilitySpell : MagerySpell, ISpellTargetingMobile
+    public class InvisibilitySpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Invisibility",
@@ -82,7 +82,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
 
         public static bool HasTimer(Mobile m) => _table.ContainsKey(m);

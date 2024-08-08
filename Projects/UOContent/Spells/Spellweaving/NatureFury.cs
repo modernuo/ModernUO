@@ -1,11 +1,10 @@
 using System;
 using Server.Mobiles;
 using Server.Regions;
-using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-    public class NatureFurySpell : ArcanistSpell, ISpellTargetingPoint3D
+    public class NatureFurySpell : ArcanistSpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Nature's Fury",
@@ -71,7 +70,7 @@ namespace Server.Spells.Spellweaving
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, 10);
+            Caster.Target = new SpellTarget<IPoint3D>(this);
         }
 
         private class InternalTimer : Timer

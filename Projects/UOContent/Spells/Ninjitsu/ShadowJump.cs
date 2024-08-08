@@ -5,11 +5,10 @@ using Server.Misc;
 using Server.Mobiles;
 using Server.Regions;
 using Server.SkillHandlers;
-using Server.Targeting;
 
 namespace Server.Spells.Ninjitsu;
 
-public class Shadowjump : NinjaSpell, ISpellTargetingPoint3D
+public class Shadowjump : NinjaSpell, ITargetingSpell<IPoint3D>
 {
     private static readonly SpellInfo _info = new(
         "Shadowjump",
@@ -28,6 +27,8 @@ public class Shadowjump : NinjaSpell, ISpellTargetingPoint3D
     public override int RequiredMana => 15;
 
     public override bool BlockedByAnimalForm => false;
+
+    public int TargetRange => 11;
 
     public void Target(IPoint3D p)
     {
@@ -111,6 +112,6 @@ public class Shadowjump : NinjaSpell, ISpellTargetingPoint3D
     public override void OnCast()
     {
         Caster.SendLocalizedMessage(1063088); // You prepare to perform a Shadowjump.
-        Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, 11);
+        Caster.Target = new SpellTarget<IPoint3D>(this);
     }
 }

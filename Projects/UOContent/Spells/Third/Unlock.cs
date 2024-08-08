@@ -3,7 +3,7 @@ using Server.Multis;
 
 namespace Server.Spells.Third
 {
-    public class UnlockSpell : MagerySpell, ISpellTargetingPoint3D
+    public class UnlockSpell : MagerySpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Unlock Spell",
@@ -84,7 +84,7 @@ namespace Server.Spells.Third
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<IPoint3D>(this);
         }
     }
 }

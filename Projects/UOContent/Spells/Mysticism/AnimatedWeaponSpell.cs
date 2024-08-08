@@ -3,7 +3,7 @@ using Server.Mobiles;
 
 namespace Server.Spells.Mysticism;
 
-public class AnimatedWeaponSpell : MysticSpell, ISpellTargetingPoint3D
+public class AnimatedWeaponSpell : MysticSpell, ITargetingSpell<IPoint3D>
 {
     private static readonly SpellInfo _info = new(
         "Animated Weapon",
@@ -55,6 +55,6 @@ public class AnimatedWeaponSpell : MysticSpell, ISpellTargetingPoint3D
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetPoint3D(this);
+        Caster.Target = new SpellTarget<IPoint3D>(this);
     }
 }

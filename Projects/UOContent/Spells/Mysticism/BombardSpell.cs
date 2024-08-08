@@ -3,7 +3,7 @@ using System;
 
 namespace Server.Spells.Mysticism;
 
-public class BombardSpell : MysticSpell, ISpellTargetingMobile
+public class BombardSpell : MysticSpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Bombard", "Corp Por Ylem",
@@ -26,7 +26,7 @@ public class BombardSpell : MysticSpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
     public void Target(Mobile m)

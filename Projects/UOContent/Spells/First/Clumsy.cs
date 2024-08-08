@@ -2,7 +2,7 @@ using Server.Targeting;
 
 namespace Server.Spells.First
 {
-    public class ClumsySpell : MagerySpell, ISpellTargetingMobile
+    public class ClumsySpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Clumsy",
@@ -47,7 +47,7 @@ namespace Server.Spells.First
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
         }
     }
 }

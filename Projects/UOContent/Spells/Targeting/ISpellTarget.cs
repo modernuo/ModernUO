@@ -1,7 +1,6 @@
-namespace Server.Spells
+namespace Server.Spells;
+
+public interface ISpellTarget<in T> where T : IPoint3D
 {
-    public interface ISpellTarget
-    {
-        ISpell Spell { get; }
-    }
+    ITargetingSpell<T> Spell { get; }
 }

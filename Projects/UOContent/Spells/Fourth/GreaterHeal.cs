@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-    public class GreaterHealSpell : MagerySpell, ISpellTargetingMobile
+    public class GreaterHealSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Greater Heal",
@@ -72,7 +72,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
     }
 }

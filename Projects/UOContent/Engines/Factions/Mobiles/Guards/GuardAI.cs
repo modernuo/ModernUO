@@ -487,7 +487,7 @@ namespace Server.Factions
                     {
                         targ.Invoke(m_Guard, toHarm);
                     }
-                    else if ((targ as ISpellTarget)?.Spell is DispelSpell)
+                    else if ((targ as ISpellTarget<Mobile>)?.Spell is DispelSpell)
                     {
                         targ.Cancel(m_Guard, TargetCancelType.Canceled);
                     }

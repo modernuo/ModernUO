@@ -1,6 +1,6 @@
 namespace Server.Spells.Sixth
 {
-    public class MassCurseSpell : MagerySpell, ISpellTargetingPoint3D
+    public class MassCurseSpell : MagerySpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Mass Curse",
@@ -58,7 +58,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, range: Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<IPoint3D>(this);
         }
     }
 }

@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Chivalry
 {
-    public class CleanseByFireSpell : PaladinSpell, ISpellTargetingMobile
+    public class CleanseByFireSpell : PaladinSpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Cleanse By Fire",
@@ -113,7 +113,7 @@ namespace Server.Spells.Chivalry
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
+            Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
     }
 }

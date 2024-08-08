@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.First;
 
-public class NightSightSpell : MagerySpell, ISpellTargetingMobile
+public class NightSightSpell : MagerySpell, ITargetingSpell<Mobile>
 {
     private static readonly SpellInfo _info = new(
         "Night Sight",
@@ -14,6 +14,8 @@ public class NightSightSpell : MagerySpell, ISpellTargetingMobile
         Reagent.SpidersSilk
     );
 
+    public int TargetRange => 12;
+
     public NightSightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
     {
     }
@@ -22,7 +24,7 @@ public class NightSightSpell : MagerySpell, ISpellTargetingMobile
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, 12);
+        Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
     }
 
     public void Target(Mobile m)

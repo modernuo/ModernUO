@@ -3,7 +3,7 @@ using Server.Mobiles;
 
 namespace Server.Spells.Eighth
 {
-    public class EnergyVortexSpell : MagerySpell, ISpellTargetingPoint3D
+    public class EnergyVortexSpell : MagerySpell, ITargetingSpell<IPoint3D>
     {
         private static readonly SpellInfo _info = new(
             "Energy Vortex",
@@ -60,7 +60,7 @@ namespace Server.Spells.Eighth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTargetPoint3D(this, retryOnLOS: true);
+            Caster.Target = new SpellTarget<IPoint3D>(this, retryOnLos: true);
         }
     }
 }
