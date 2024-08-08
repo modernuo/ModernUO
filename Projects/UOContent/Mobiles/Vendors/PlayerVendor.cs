@@ -97,6 +97,7 @@ public partial class PlayerVendor : Mobile
         NextPayTime = Core.Now + delay;
 
         PlayerVendors.Add(this);
+        VendorSearch = true;
     }
 
     public PlayerVendorPlaceholder Placeholder { get; set; }
