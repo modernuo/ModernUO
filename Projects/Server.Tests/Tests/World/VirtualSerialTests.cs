@@ -2,6 +2,10 @@ using Xunit;
 
 namespace Server.Tests;
 
+[CollectionDefinition("NonParallelVirtualSerialTestCollection", DisableParallelization = true)]
+public class NonParallelVirtualSerialTestCollection { }
+
+[Collection("NonParallelVirtualSerialTestCollection")]
 public class VirtualSerialTests
 {
     [Fact]

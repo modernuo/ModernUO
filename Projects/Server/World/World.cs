@@ -69,6 +69,15 @@ public static class World
     {
         get
         {
+#if THREADGUARD
+            if (Thread.CurrentThread != Core.Thread)
+            {
+                logger.Error(
+                    "Attempted to get a new virtual serial from the wrong thread!\n{StackTrace}",
+                    new StackTrace()
+                );
+            }
+#endif
             var value = _nextVirtualSerial > MaxVirtualSerial ? ResetVirtualSerial : _nextVirtualSerial;
             _nextVirtualSerial = value + 1;
             return (Serial)value;
