@@ -2,11 +2,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-[CollectionDefinition("NonParallelVirtualSerialTestCollection", DisableParallelization = true)]
-public class NonParallelVirtualSerialTestCollection { }
-
-[Collection("NonParallelVirtualSerialTestCollection")]
-public class VirtualSerialTests
+[Collection("Sequential Tests")]
+public class VirtualSerialTests : IClassFixture<ServerFixture>
 {
     [Fact]
     public void TestNewVirtualGetsAndRollover_SingleThreaded()
