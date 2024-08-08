@@ -254,9 +254,9 @@ public class HouseRegion : BaseRegion
             }
             else if (isOwner)
             {
-                from.CloseGump<ConfirmHouseResizeGump>();
+                from.CloseGump<ConfirmResizeHouseGump>();
                 from.CloseGump<HouseGumpAOS>();
-                from.SendGump(new ConfirmHouseResizeGump(House));
+                from.SendGump(new ConfirmResizeHouseGump(House));
             }
             else
             {

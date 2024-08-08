@@ -251,7 +251,7 @@ namespace Server.Gumps
                     case 3:
                         {
                             m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
-                            m_From.SendGump(new HouseDemolishGump(m_From, m_Selection));
+                            m_From.SendGump(new ConfirmDemolishHouseGump(m_From, m_Selection));
 
                             break;
                         }

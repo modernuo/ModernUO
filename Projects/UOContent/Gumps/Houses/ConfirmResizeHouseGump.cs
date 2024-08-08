@@ -6,11 +6,11 @@ using Server.Network;
 
 namespace Server.Gumps;
 
-public class ConfirmHouseResizeGump : StaticGump<ConfirmHouseResizeGump>
+public class ConfirmResizeHouseGump : StaticGump<ConfirmResizeHouseGump>
 {
     private readonly BaseHouse _house;
 
-    public ConfirmHouseResizeGump(BaseHouse house) : base(110, 100) => _house = house;
+    public ConfirmResizeHouseGump(BaseHouse house) : base(110, 100) => _house = house;
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
