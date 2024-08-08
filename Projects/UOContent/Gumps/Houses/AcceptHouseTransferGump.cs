@@ -32,7 +32,8 @@ public class AcceptHouseTransferGump : StaticGump<AcceptHouseTransferGump>
         builder.AddImageTiled(10, 40, 400, 200, 2624);
         builder.AddAlphaRegion(10, 40, 400, 200);
 
-        /* Another player is attempting to initiate a house trade with you.
+        /*
+         * Another player is attempting to initiate a house trade with you.
          * In order for you to see this window, both you and the other person are standing within two paces of the house to be traded.
          * If you click OKAY below, a house trade scroll will appear in your trade window and you can complete the transaction.
          * This scroll is a distinctive blue color and will show the name of the house, the name of the owner of that house, and the sextant coordinates of the center of the house when you hover your mouse over it.

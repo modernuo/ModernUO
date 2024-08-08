@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Server.Guilds;
 using Server.Multis;
 using Server.Network;
@@ -52,7 +53,7 @@ public class SetSecureLevelGump : DynamicGump
 
         var houseOwner = _house.Owner;
         // Only the actual House owner AND guild master can set guild secures
-        if (Guild.NewGuildSystem && houseOwner?.Guild != null && ((Guild)houseOwner.Guild).Leader == houseOwner)
+        if (Guild.NewGuildSystem && houseOwner?.Guild is Guild guild && guild.Leader == houseOwner)
         {
             builder.AddButton(10, 130, GetFirstID(SecureLevel.Guild), 4007, 5);
             builder.AddHtmlLocalized(45, 130, 150, 20, 1063455, GetColor(SecureLevel.Guild)); // Guild Members
@@ -62,9 +63,11 @@ public class SetSecureLevelGump : DynamicGump
         builder.AddHtmlLocalized(45, 130 + offset, 150, 20, 1061626, GetColor(SecureLevel.Anyone)); // Anyone
     }
 
-    public int GetColor(SecureLevel level) => _info.Level == level ? 0x7F18 : 0x7FFF;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int GetColor(SecureLevel level) => _info.Level == level ? 0x7F18 : 0x7FFF;
 
-    public int GetFirstID(SecureLevel level) => _info.Level == level ? 4006 : 4005;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int GetFirstID(SecureLevel level) => _info.Level == level ? 4006 : 4005;
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {

@@ -1425,7 +1425,7 @@ namespace Server.Gumps
                                         }
                                         else
                                         {
-                                            from.SendGump(new ConfirmDemolishHouseGump(m_House), true);
+                                            from.SendGump(new ConfirmDemolishHouseGump(m_House));
                                         }
                                     }
 
