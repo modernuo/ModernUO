@@ -39,6 +39,11 @@ public partial class TwistedWieldTeleporter : Teleporter
         {
             var context = MLQuestSystem.GetContext( player );
 
+            if ( context == null )
+            {
+                player.SendLocalizedMessage(1074274); // You dance in the fairy ring, but nothing happens.
+                return true;
+            }
 
             if ( context.IsDoingQuest( typeof( DreadhornQuest ) ) || context.HasDoneQuest( typeof( DreadhornQuest ) ) )
             {
