@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Reflection;
 using Badlands.Commands;
 using Badlands.Items;
 using Badlands.Migrations;
@@ -61,7 +62,13 @@ public static class Main
             .SelectMany(s => s.GetTypes())
             .Where(p => typeof(IMigration).IsAssignableFrom(p) && p.IsClass);
 
-        foreach (var type in types)
+        var sortedTypes = types.OrderBy(
+            e => e.GetCustomAttribute<MigrationPriorityAttribute>( false ) != null
+                ? e.GetCustomAttribute<MigrationPriorityAttribute>( false ).Priority
+                : -1
+        );
+
+        foreach (var type in sortedTypes)
         {
             if (_migrationPersistence.Contains( type))
             {
