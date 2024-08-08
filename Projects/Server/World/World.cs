@@ -58,7 +58,7 @@ public static class World
 
     public const uint ResetVirtualSerial = MaxItemSerial;
     public const uint MaxVirtualSerial = 0x7FFFFFFF;
-    private static uint NextVirtualSerial = ResetVirtualSerial;
+    private static uint _nextVirtualSerial = ResetVirtualSerial;
 
     public static Serial NewMobile => _mobilePersistence.NewEntity;
     public static Serial NewItem => _itemPersistence.NewEntity;
@@ -69,18 +69,9 @@ public static class World
     {
         get
         {
-            // Guarantee unique serials without locking
-            uint newValue;
-            uint value;
-            do
-            {
-                value = NextVirtualSerial;
-                newValue = value == MaxVirtualSerial ? ResetVirtualSerial : value + 1;
-
-                // Atomically set NextVirtualSerial to newValue if it hasn't changed
-            } while (Interlocked.CompareExchange(ref NextVirtualSerial, newValue, value) != value);
-
-            return (Serial) value;
+            var value = _nextVirtualSerial > MaxVirtualSerial ? ResetVirtualSerial : _nextVirtualSerial;
+            _nextVirtualSerial = value + 1;
+            return (Serial)value;
         }
     }
 
