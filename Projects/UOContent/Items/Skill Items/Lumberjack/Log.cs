@@ -47,7 +47,7 @@ public partial class Log : Item, ICommodity, IAxe
 
     public virtual bool Axe(Mobile from, BaseAxe axe) => TryCreateBoards(from, 0, new Board());
 
-    int ICommodity.DescriptionNumber => CraftResources.IsStandard(_resource)
+    TextDefinition ICommodity.Description => CraftResources.IsStandard(_resource)
         ? LabelNumber
         : 1075062 + ((int)_resource - (int)CraftResource.RegularWood);
 

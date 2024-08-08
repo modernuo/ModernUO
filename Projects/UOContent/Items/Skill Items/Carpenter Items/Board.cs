@@ -39,7 +39,7 @@ public partial class Board : Item, ICommodity
         }
     }
 
-    int ICommodity.DescriptionNumber
+    TextDefinition ICommodity.Description
     {
         get
         {

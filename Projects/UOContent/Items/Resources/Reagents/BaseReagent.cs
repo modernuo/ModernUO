@@ -13,6 +13,6 @@ public abstract partial class BaseReagent : Item, ICommodity
 
     public override double DefaultWeight => 0.1;
 
-    public virtual int DescriptionNumber => LabelNumber;
+    public virtual TextDefinition Description => LabelNumber;
     public virtual bool IsDeedable => true;
 }

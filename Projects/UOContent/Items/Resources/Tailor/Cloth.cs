@@ -15,7 +15,7 @@ public partial class Cloth : Item, IScissorable, IDyable, ICommodity
     }
 
     public override double DefaultWeight => 0.1;
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => true;
 
     public bool Dye(Mobile from, DyeTub sender)

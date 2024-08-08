@@ -14,6 +14,6 @@ public partial class Sand : Item, ICommodity
     }
 
     public override int LabelNumber => 1044626; // sand
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => true;
 }

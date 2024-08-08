@@ -15,7 +15,7 @@ public partial class BoltOfCloth : Item, IScissorable, IDyable, ICommodity
         Amount = amount;
     }
 
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => true;
 
     public bool Dye(Mobile from, DyeTub sender)

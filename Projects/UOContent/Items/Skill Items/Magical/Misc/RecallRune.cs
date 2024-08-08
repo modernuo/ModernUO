@@ -100,6 +100,41 @@ public partial class RecallRune : Item
         }
     }
 
+    public static int CalculateHue( Map map, BaseHouse house, bool mark )
+    {
+        var hue = 0;
+
+        if ( mark )
+        {
+            if ( map == Map.Trammel )
+            {
+                hue = house != null ? 0x47F : 50;
+            }
+            else if ( map == Map.Felucca )
+            {
+                hue = house != null ? 0x66D : 0;
+            }
+            else if ( map == Map.Ilshenar )
+            {
+                hue = house != null ? 0x55F : 1102;
+            }
+            else if ( map == Map.Malas )
+            {
+                hue = house != null ? 0x55F : 1102;
+            }
+            else if ( map == Map.Tokuno )
+            {
+                hue = house != null ? 0x1F14 : 1154;
+            }
+            else if ( map == Map.TerMur )
+            {
+                hue = 1162;
+            }
+        }
+
+        return hue;
+    }
+
     private void CalculateHue()
     {
         if (!_marked)

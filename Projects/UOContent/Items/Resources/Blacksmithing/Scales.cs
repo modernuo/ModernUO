@@ -36,7 +36,7 @@ public abstract partial class BaseScales : Item, ICommodity
 
     public override double DefaultWeight => 0.1;
 
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => true;
 
     private void Deserialize(IGenericReader reader, int version)

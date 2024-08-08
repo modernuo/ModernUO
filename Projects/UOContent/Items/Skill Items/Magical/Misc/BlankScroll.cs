@@ -13,6 +13,6 @@ public partial class BlankScroll : Item, ICommodity
         Amount = amount;
     }
 
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
 }

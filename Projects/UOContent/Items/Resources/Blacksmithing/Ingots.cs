@@ -47,7 +47,7 @@ public abstract partial class BaseIngot : Item, ICommodity
         }
     }
 
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => true;
 
     private void Deserialize(IGenericReader reader, int version)

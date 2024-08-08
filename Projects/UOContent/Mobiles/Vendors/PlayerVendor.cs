@@ -24,6 +24,7 @@ public class PlayerVendorTargetAttribute : Attribute;
 [SerializationGenerator(3, false)]
 public partial class PlayerVendor : Mobile
 {
+    public static List<PlayerVendor> PlayerVendors { get; set; } = [];
     private Timer _payTimer;
 
     [InvalidateProperties]
@@ -51,6 +52,11 @@ public partial class PlayerVendor : Mobile
     [SerializableField(6)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Dictionary<Item, VendorItem> _sellItems;
+
+    [SerializableField( 7 )]
+    [SerializedCommandProperty( AccessLevel.GameMaster )]
+    private bool _vendorSearch;
+
 
     public PlayerVendor(Mobile owner, BaseHouse house)
     {
@@ -89,6 +95,8 @@ public partial class PlayerVendor : Mobile
         _payTimer.Start();
 
         NextPayTime = Core.Now + delay;
+
+        PlayerVendors.Add(this);
     }
 
     public PlayerVendorPlaceholder Placeholder { get; set; }
@@ -201,6 +209,10 @@ public partial class PlayerVendor : Mobile
         {
             NameHue = -1;
         }
+
+        VendorSearch = true;
+
+        PlayerVendors.Add(this);
     }
 
     public void InitBody()
@@ -388,6 +400,11 @@ public partial class PlayerVendor : Mobile
         House = null;
 
         Placeholder?.Delete();
+
+        if (PlayerVendors.Contains(this))
+        {
+            PlayerVendors.Remove(this);
+        }
     }
 
     public override bool IsSnoop(Mobile from) => false;

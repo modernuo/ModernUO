@@ -21,6 +21,7 @@ namespace Server.Spells.Fourth
         private readonly Runebook m_Book;
 
         private readonly RunebookEntry m_Entry;
+        private readonly VendorSearchMap _searchMap;
 
         public RecallSpell(Mobile caster, Item scroll) : base(caster, scroll, _info)
         {
@@ -34,6 +35,12 @@ namespace Server.Spells.Fourth
         {
             m_Entry = entry;
             m_Book = book;
+        }
+
+        public RecallSpell(Mobile caster, Item scroll, VendorSearchMap map)
+            : base(caster, scroll, _info)
+        {
+            _searchMap = map;
         }
 
         public override SpellCircle Circle => SpellCircle.Fourth;
@@ -121,13 +128,26 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            if (m_Entry == null)
+            if (m_Entry == null && _searchMap == null)
             {
                 Caster.Target = new RecallSpellTarget(this);
             }
             else
             {
-                Effect(m_Entry.Location, m_Entry.Map, true);
+                Point3D loc = default;
+                Map map = null;
+
+                if ( m_Entry != null )
+                {
+                    loc = m_Entry.Location;
+                    map = m_Entry.Map;
+                } else if ( _searchMap != null )
+                {
+                    loc = _searchMap.GetLocation(Caster);
+                    map = _searchMap.GetMap();
+                }
+
+                Effect(loc, map, true);
                 FinishSequence();
             }
         }

@@ -5,7 +5,7 @@ namespace Server.Items;
 
 public interface ICommodity /* added IsDeedable prop so expansion-based deedables can determine true/false */
 {
-    int DescriptionNumber { get; }
+    TextDefinition Description { get; }
     bool IsDeedable { get; }
 }
 
@@ -68,7 +68,7 @@ public partial class CommodityDeed : Item
 
         if (Commodity is ICommodity ic)
         {
-            list.Add(1060658, $"{ic.DescriptionNumber:#}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
+            list.Add(1060658, $"{ic.Description.Number:#}\t{Commodity.Amount}"); // ~1_val~: ~2_val~
         }
         else if (Commodity != null)
         {
@@ -97,7 +97,7 @@ public partial class CommodityDeed : Item
                 from,
                 1060658, // ~1_val~: ~2_val~
                 Commodity.Name == null
-                    ? $"#{(Commodity as ICommodity)?.DescriptionNumber ?? Commodity.LabelNumber}\t{Commodity.Amount}"
+                    ? $"#{(Commodity as ICommodity)?.Description.Number ?? Commodity.LabelNumber}\t{Commodity.Amount}"
                     : $"{Commodity.Name}\t{Commodity.Amount}"
             );
         }

@@ -13,6 +13,6 @@ public partial class Bone : Item, ICommodity
         Weight = 1.0;
     }
 
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => true;
 }

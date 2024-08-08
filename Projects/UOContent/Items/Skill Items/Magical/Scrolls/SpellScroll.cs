@@ -22,7 +22,7 @@ public partial class SpellScroll : Item, ICommodity
         _spellID = spellID;
     }
 
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
 
     public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)

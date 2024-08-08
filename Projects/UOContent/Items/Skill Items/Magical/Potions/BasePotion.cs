@@ -59,7 +59,7 @@ public abstract partial class BasePotion : Item, ICraftable, ICommodity
 
     public virtual bool IsThrowablePotion => false;
 
-    int ICommodity.DescriptionNumber => LabelNumber;
+    TextDefinition ICommodity.Description => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
 
     public int OnCraft(

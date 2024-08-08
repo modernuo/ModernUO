@@ -13,6 +13,7 @@ using Server.Engines.MLQuests.Gumps;
 using Server.Engines.PartySystem;
 using Server.Engines.PlayerMurderSystem;
 using Server.Engines.Quests;
+using Server.Engines.VendorSearching;
 using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
@@ -1968,6 +1969,8 @@ namespace Server.Mobiles
                                 list.Add(new CallbackEntry(6200, AutoRenewInventoryInsurance));
                             }
                         }
+
+                        list.Add(new SearchVendors(this));
                     }
 
                     if (MLQuestSystem.Enabled)

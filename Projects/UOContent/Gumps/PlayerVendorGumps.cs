@@ -144,6 +144,9 @@ namespace Server.Gumps
             AddLabel(300, 25, 0, ((int)days).ToString());
             AddHtmlLocalized(40, 48, 260, 20, 1038319); // Earth days:
             AddLabel(300, 48, 0, ((int)(days / 12.0)).ToString());
+
+            //TODO
+            //AddHtmlLocalized(40, 181, 260, 20, vendor.VendorSearch ? 1154633 : 1154634, 0x7FFF, false, false); // Vendor Search Enabled / Disable            
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
