@@ -104,15 +104,15 @@ public partial class CorruptedCrystalPortal : Item, ISecurable
             return false;
         }
 
-        if ( m.Spell != null )
-        {
-            if ( message )
-            {
-                m.SendLocalizedMessage( 1049616 ); // You are too busy to do that at the moment.
-            }
+        //if ( m.Spell != null )
+        //{
+        //    if ( message )
+        //    {
+        //        m.SendLocalizedMessage( 1049616 ); // You are too busy to do that at the moment.
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         //if (Engines.CityLoyalty.CityTradeSystem.HasTrade(m))
         //{
