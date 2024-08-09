@@ -159,7 +159,7 @@ public partial class SalvageBag : Bag
                 continue;
             }
 
-            if (i is BaseClothing or Cloth or BoltOfCloth or Hides or BonePile || i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
+            if (i is BaseClothing or Cloth or BoltOfCloth or Hides or BonePile or OilCloth || i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
             {
                 return true;
             }
