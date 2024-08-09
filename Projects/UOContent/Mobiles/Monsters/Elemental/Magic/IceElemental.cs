@@ -47,10 +47,10 @@ namespace Server.Mobiles
         public override string DefaultName => "an ice elemental";
         public override bool BleedImmune => true;
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Average, 2);
-            AddLoot(LootPack.Gems, 2);
-        }
+//        public override void GenerateLoot()
+//        {
+//            AddLoot(LootPack.Average, 2);
+//            AddLoot(LootPack.Gems, 2);
+//        }
     }
 }

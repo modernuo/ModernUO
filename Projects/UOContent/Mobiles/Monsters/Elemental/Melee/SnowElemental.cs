@@ -51,9 +51,9 @@ namespace Server.Mobiles
 
         public override int TreasureMapLevel => Utility.RandomList(2, 3);
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Rich);
-        }
+//        public override void GenerateLoot()
+//        {
+//            AddLoot(LootPack.Rich);
+//        }
     }
 }
