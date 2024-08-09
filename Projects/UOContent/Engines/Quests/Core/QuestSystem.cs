@@ -391,9 +391,10 @@ namespace Server.Engines.Quests
                 Conversations.Add(conv);
             }
 
-            From.CloseGump<QuestItemInfoGump>();
-            From.CloseGump<QuestObjectivesGump>();
-            From.SendGump(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv), true);
+            var gumps = From.GetGumps();
+            gumps.Close<QuestItemInfoGump>();
+            gumps.Close<QuestObjectivesGump>();
+            gumps.Send(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv));
 
             if (conv.Info != null)
             {

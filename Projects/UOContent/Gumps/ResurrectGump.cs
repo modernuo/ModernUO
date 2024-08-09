@@ -23,6 +23,8 @@ public class ResurrectGump : DynamicGump
     private readonly double _hitsScalar;
     private readonly ResurrectMessage _resurrectMessage;
 
+    public override bool Singleton => true;
+
     public static void TryGiveStatLoss(PlayerMobile player)
     {
         if (Core.AOS || player.ShortTermMurders < ShortMurdersForStatLoss)

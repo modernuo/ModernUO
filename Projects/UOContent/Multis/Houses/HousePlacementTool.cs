@@ -47,8 +47,6 @@ public class HousePlacementCategoryGump : Gump
     {
         _from = from;
 
-        from.CloseGump<HousePlacementListGump>();
-
         AddPage(0);
 
         AddBackground(0, 0, 270, 145, 5054);
@@ -114,8 +112,6 @@ public class HousePlacementListGump : Gump
     {
         _from = from;
         _entries = entries;
-
-        from.CloseGump<HousePlacementCategoryGump>();
 
         AddPage(0);
 

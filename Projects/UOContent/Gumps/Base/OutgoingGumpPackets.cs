@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Collections;
 using Server.Compression;
 using Server.Logging;
 using Server.Network;
@@ -27,10 +26,6 @@ namespace Server.Gumps;
 public static class OutgoingGumpPackets
 {
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(OutgoingGumpPackets));
-
-    private static readonly byte[] _layoutBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
-    private static readonly byte[] _stringsBuffer = GC.AllocateUninitializedArray<byte>(0x20000);
-    private static readonly OrderedSet<string> _stringsList = new();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WritePacked(ReadOnlySpan<byte> span, ref SpanWriter writer)
@@ -59,83 +54,6 @@ public static class OutgoingGumpPackets
         writer.Write(length);
         writer.Seek(bytesPacked, SeekOrigin.Current);
     }
-
-    //public static void SendDisplayGump(this NetState ns, Gump gump, out int switches, out int entries)
-    //{
-    //    switches = 0;
-    //    entries = 0;
-
-    //    if (ns.CannotSendPackets())
-    //    {
-    //        return;
-    //    }
-
-    //    var layoutWriter = new SpanWriter(_layoutBuffer);
-
-    //    if (!gump.Draggable)
-    //    {
-    //        layoutWriter.Write("{ nomove }"u8);
-    //    }
-
-    //    if (!gump.Closable)
-    //    {
-    //        layoutWriter.Write("{ noclose }"u8);
-    //    }
-
-    //    if (!gump.Disposable)
-    //    {
-    //        layoutWriter.Write("{ nodispose }"u8);
-    //    }
-
-    //    if (!gump.Resizable)
-    //    {
-    //        layoutWriter.Write("{ noresize }"u8);
-    //    }
-
-    //    foreach (var entry in gump.Entries)
-    //    {
-    //        entry.AppendTo(ref layoutWriter, _stringsList, ref entries, ref switches);
-    //    }
-
-    //    var stringsWriter = new SpanWriter(_stringsBuffer);
-
-    //    foreach (var str in _stringsList)
-    //    {
-    //        var s = str ?? "";
-    //        stringsWriter.Write((ushort)s.Length);
-    //        stringsWriter.WriteBigUni(s);
-    //    }
-
-
-    //    var writer = new SpanWriter(0x10000);
-    //    writer.Write((byte)0xDD); // Packet ID
-    //    writer.Seek(2, SeekOrigin.Current);
-
-    //    writer.Write(gump.Serial);
-    //    writer.Write(gump.TypeID);
-    //    writer.Write(gump.X);
-    //    writer.Write(gump.Y);
-
-    //    layoutWriter.Write((byte)0); // Layout text terminator
-    //    WritePacked(layoutWriter.Span, ref writer);
-
-    //    writer.Write(_stringsList.Count);
-    //    WritePacked(stringsWriter.Span, ref writer);
-
-    //    writer.WritePacketLength();
-
-    //    ns.Send(writer.Span);
-
-    //    layoutWriter.Dispose();  // Just in case
-    //    stringsWriter.Dispose(); // Just in case
-
-    //    if (_stringsList.Count > 0)
-    //    {
-    //        _stringsList.Clear();
-    //    }
-
-    //    writer.Dispose();
-    //}
 
     public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
     {

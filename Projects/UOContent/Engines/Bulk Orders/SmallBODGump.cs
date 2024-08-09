@@ -15,8 +15,6 @@ namespace Server.Engines.BulkOrders
             m_From = from;
             m_Deed = deed;
 
-            m_From.CloseGump<LargeBODGump>();
-
             AddPage(0);
 
             AddBackground(50, 10, 455, 260, 5054);

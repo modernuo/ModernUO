@@ -68,7 +68,7 @@ public abstract class BaseGump
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetTypeId(Type type)
+    public static int GetTypeId(Type type)
     {
         unchecked
         {

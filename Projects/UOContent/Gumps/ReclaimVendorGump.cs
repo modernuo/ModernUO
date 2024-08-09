@@ -10,6 +10,8 @@ namespace Server.Gumps
         private readonly BaseHouse m_House;
         private readonly List<Mobile> m_Vendors;
 
+        public override bool Singleton => true;
+
         public ReclaimVendorGump(BaseHouse house) : base(50, 50)
         {
             m_House = house;

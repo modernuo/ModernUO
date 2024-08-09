@@ -342,8 +342,6 @@ namespace Server.Mobiles
             m_FacialHair = facialHair;
             m_Entries = entries;
 
-            from.CloseGump<ChangeHairstyleGump>();
-
             AddPage(0);
 
             AddBackground(100, 10, 350, 370, 2600);

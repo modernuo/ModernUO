@@ -308,7 +308,6 @@ public class BandageContext : Timer
             }
             else
             {
-                Patient.CloseGump<ResurrectGump>();
                 Patient.SendGump(new ResurrectGump(Healer));
             }
         }

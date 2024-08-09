@@ -14,11 +14,11 @@
  *************************************************************************/
 
 using Server.Gumps.Base;
-using Server.Items;
 using Server.Logging;
 using Server.Network;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -47,21 +47,22 @@ public static partial class GumpSystem
         }
     }
 
-    private static ReadOnlySpan<BaseGump> GetAll(NetState ns)
-    {
-        return _gumps.TryGetValue(ns, out var gumps) ? CollectionsMarshal.AsSpan(gumps) : [];
-    }
+    private static ReadOnlySpan<BaseGump> GetAll(NetState ns) =>
+        _gumps.TryGetValue(ns, out var gumps) ? CollectionsMarshal.AsSpan(gumps) : [];
 
     private static T Find<T>(NetState ns) where T : BaseGump
     {
-        if (_gumps.TryGetValue(ns, out var gumps))
+        if (ns == null || !_gumps.TryGetValue(ns, out var gumps))
         {
-            for (int i = 0; i < gumps.Count; i++)
+            return null;
+        }
+
+        var gumpsSpan = CollectionsMarshal.AsSpan(gumps);
+        for (int i = 0; i < gumpsSpan.Length; i++)
+        {
+            if (gumpsSpan[i] is T tGump)
             {
-                if (gumps[i] is T tGump)
-                {
-                    return tGump;
-                }
+                return tGump;
             }
         }
 
@@ -70,6 +71,11 @@ public static partial class GumpSystem
 
     private static void Add(NetState ns, BaseGump gump)
     {
+        if (ns == null || gump == null)
+        {
+            return;
+        }
+
         if (!_gumps.TryGetValue(ns, out var gumps))
         {
             gumps = new List<BaseGump>(InitialCapacity);
@@ -104,11 +110,12 @@ public static partial class GumpSystem
 
     private static bool Remove<T>(NetState ns, out T gump) where T : BaseGump
     {
-        if (_gumps.TryGetValue(ns, out var gumps))
+        if (ns != null && _gumps.TryGetValue(ns, out var gumps))
         {
-            for (int i = 0; i < gumps.Count; i++)
+            var gumpsSpan = CollectionsMarshal.AsSpan(gumps);
+            for (int i = 0; i < gumpsSpan.Length; i++)
             {
-                if (gumps[i] is T tGump)
+                if (gumpsSpan[i] is T tGump)
                 {
                     gumps.RemoveAt(i);
                     gump = tGump;
@@ -123,7 +130,7 @@ public static partial class GumpSystem
 
     private static void Send(NetState ns, BaseGump gump, bool singleton)
     {
-        if (ns.CannotSendPackets())
+        if (ns.CannotSendPackets()) // Handles ns null check too
         {
             return;
         }
@@ -177,8 +184,15 @@ public static partial class GumpSystem
         return false;
     }
 
-    private static MobileGumps Get(NetState ns)
+    private static readonly List<BaseGump> _emptyList = [];
+
+    private static NetStateGumps Get(NetState ns)
     {
+        if (ns == null)
+        {
+            return new NetStateGumps(_emptyList, null);
+        }
+
         ref List<BaseGump> list = ref CollectionsMarshal.GetValueRefOrAddDefault(_gumps, ns, out bool exists);
 
         if (!exists)
@@ -186,103 +200,90 @@ public static partial class GumpSystem
             list = [];
         }
 
-        return new MobileGumps(list, ns);
+        return new NetStateGumps(list, ns);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool HasGump<T>(this Mobile m) where T : BaseGump
+    public static bool HasGump<T>([DisallowNull] this Mobile m) where T : BaseGump
     {
-        return m.NetState is { } ns && Find<T>(ns) != null;
+        ArgumentNullException.ThrowIfNull(m);
+        return Find<T>(m.NetState) != null;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T FindGump<T>(this Mobile m) where T : BaseGump
+    public static T FindGump<T>([DisallowNull] this Mobile m) where T : BaseGump
     {
-        if (m.NetState is { } ns)
-        {
-            return Find<T>(ns);
-        }
-
-        return null;
+        ArgumentNullException.ThrowIfNull(m);
+        return Find<T>(m.NetState);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CloseGump<T>(this Mobile m) where T : BaseGump
+    public static bool CloseGump<T>([DisallowNull] this Mobile m) where T : BaseGump
     {
-        return m.NetState is { } ns && Close<T>(ns);
+        ArgumentNullException.ThrowIfNull(m);
+        return Close<T>(m.NetState);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendGump(this Mobile m, BaseGump g, bool singleton = false)
+    public static void SendGump([DisallowNull] this Mobile m, BaseGump g, bool singleton = false)
     {
-        if (m.NetState is { } ns)
-        {
-            Send(ns, g, singleton);
-        }
+        ArgumentNullException.ThrowIfNull(m);
+        Send(m.NetState, g, singleton);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<BaseGump> GetAllGumps(this Mobile m)
+    public static ReadOnlySpan<BaseGump> GetAllGumps([DisallowNull] this Mobile m)
     {
-        return m.NetState is { } ns ? GetAll(ns) : [];
+        ArgumentNullException.ThrowIfNull(m);
+        return GetAll(m.NetState);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static MobileGumps GetGumps(this Mobile m)
+    public static NetStateGumps GetGumps([DisallowNull] this Mobile m)
     {
-        if (m.NetState is { } ns)
-        {
-            return Get(ns);
-        }
-
-        return new MobileGumps(null, null);
+        ArgumentNullException.ThrowIfNull(m);
+        return Get(m.NetState);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool HasGump<T>(this NetState ns) where T : BaseGump
+    public static bool HasGump<T>([DisallowNull] this NetState ns) where T : BaseGump
     {
-        ArgumentNullException.ThrowIfNull(ns, nameof(ns));
-
+        ArgumentNullException.ThrowIfNull(ns);
         return Find<T>(ns) != null;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendGump(this NetState ns, BaseGump g, bool singleton = false)
+    public static void SendGump([DisallowNull] this NetState ns, BaseGump g, bool singleton = false)
     {
-        ArgumentNullException.ThrowIfNull(ns, nameof(ns));
-
+        ArgumentNullException.ThrowIfNull(ns);
         Send(ns, g, singleton);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CloseGump<T>(this NetState ns) where T : BaseGump
+    public static bool CloseGump<T>([DisallowNull] this NetState ns) where T : BaseGump
     {
-        ArgumentNullException.ThrowIfNull(ns, nameof(ns));
-
+        ArgumentNullException.ThrowIfNull(ns);
         return Close<T>(ns);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ReadOnlySpan<BaseGump> GetAllGumps(this NetState ns)
+    public static ReadOnlySpan<BaseGump> GetAllGumps([DisallowNull] this NetState ns)
     {
-        ArgumentNullException.ThrowIfNull(ns, nameof(ns));
-
+        ArgumentNullException.ThrowIfNull(ns);
         return GetAll(ns);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddGump(this NetState ns, BaseGump gump)
+    public static void AddGump([DisallowNull] this NetState ns, BaseGump gump)
     {
-        ArgumentNullException.ThrowIfNull(ns, nameof(ns));
-
+        ArgumentNullException.ThrowIfNull(ns);
         Add(ns, gump);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static MobileGumps GetGumps(this NetState ns)
+    public static NetStateGumps GetGumps([DisallowNull] this NetState ns)
     {
-        ArgumentNullException.ThrowIfNull(ns, nameof(ns));
-
+        ArgumentNullException.ThrowIfNull(ns);
         return Get(ns);
     }
 }

@@ -14,6 +14,9 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
     {
         _healer = healer;
         _price = price;
+
+        // Close this gump when
+        TypeID = GetTypeId(typeof(ResurrectGump));
     }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)

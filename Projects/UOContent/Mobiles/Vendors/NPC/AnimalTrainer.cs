@@ -99,7 +99,7 @@ namespace Server.Mobiles
             return max;
         }
 
-        private void CloseClaimList(Mobile from)
+        private static void CloseClaimList(Mobile from)
         {
             from.CloseGump<ClaimListGump>();
         }

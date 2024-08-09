@@ -83,7 +83,7 @@ namespace Server.Engines.BulkOrders
         {
             var f = _from.UseOwnFilter ? _from.BOBFilter : _book.Filter;
 
-            builder.AddPage(0);
+            builder.AddPage();
 
             builder.AddBackground(10, 10, 600, 439, 5054);
 
@@ -156,13 +156,6 @@ namespace Server.Engines.BulkOrders
                     4 + filterIndex + i * 4
                 );
             }
-        }
-
-        public override void SendTo(NetState ns)
-        {
-            ns.CloseGump<BOBGump>();
-
-            base.SendTo(ns);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)

@@ -15,8 +15,6 @@ namespace Server.Engines.BulkOrders
             m_From = from;
             m_Deed = deed;
 
-            m_From.CloseGump<SmallBODAcceptGump>();
-
             var entries = deed.Entries;
 
             AddPage(0);

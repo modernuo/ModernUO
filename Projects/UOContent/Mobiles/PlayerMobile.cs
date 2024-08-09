@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
@@ -1724,7 +1723,7 @@ namespace Server.Mobiles
 
         public override bool Move(Direction d)
         {
-            if (NetState is { } ns && Alive && !ns.CloseGump<ResurrectGump>())
+            if (NetState != null && Alive && !NetState.CloseGump<ResurrectGump>())
             {
                 SendLocalizedMessage(500111); // You are frozen and cannot move.
                 return false;
@@ -1989,7 +1988,6 @@ namespace Server.Mobiles
 
             if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0 && NetState is NetState { } ns)
             {
-                ns.CloseGump<ReclaimVendorGump>();
                 ns.SendGump(new ReclaimVendorGump(house));
             }
         }
@@ -3996,9 +3994,10 @@ namespace Server.Mobiles
             if (NetState is { } ns)
             {
                 BaseQuestGump.CloseOtherGumps(this);
-                ns.CloseGump<QuestLogDetailedGump>();
-                ns.CloseGump<QuestLogGump>();
-                ns.CloseGump<QuestOfferGump>();
+                var gumps = this.GetGumps();
+                gumps.Close<QuestLogDetailedGump>();
+                gumps.Close<QuestLogGump>();
+                gumps.Close<QuestOfferGump>();
                 // CloseGump( typeof( UnknownGump802 ) );
                 // CloseGump( typeof( UnknownGump804 ) );
             }

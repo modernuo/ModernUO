@@ -14,14 +14,14 @@ public class AddGump : DynamicGump
     private readonly string _searchString;
     private readonly bool _explicitSearch;
 
+    public override bool Singleton => true;
+
     public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
     {
         _searchString = searchString;
         _searchResults = searchResults;
         _explicitSearch = explicitSearch;
         _page = page;
-
-        from.CloseGump<AddGump>();
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder) {

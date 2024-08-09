@@ -36,8 +36,6 @@ namespace Server.Engines.Craft
             m_CraftItem = craftItem;
             m_Tool = tool;
 
-            from.CloseGump<CraftGump>();
-
             AddPage(0);
             AddBackground(0, 0, 530, 417, 5054);
             AddImageTiled(10, 10, 510, 22, 2624);
