@@ -43,7 +43,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
-    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(2000); // 2 seconds
+    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
     private const int RecvPipeSize = 1024 * 64;
     private const int SendPipeSize = 1024 * 256;
     private const int GumpCap = 512;
@@ -634,6 +634,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     }
 
                                     Seed = newSeed;
+                                    Seeded = true;
                                     packetLength = 4;
 
                                     _parserState = ParserState.AwaitingNextPacket;
