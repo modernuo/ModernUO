@@ -73,7 +73,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime NextUse { get; set; }
 
-    public List<Mobile> Openers { get; } = new();
+    public HashSet<Mobile> Openers { get; } = new();
 
     public override int LabelNumber => 1041267; // runebook
 
