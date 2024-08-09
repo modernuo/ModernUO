@@ -263,7 +263,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
             }
 
             from.CloseGump<RunebookGump>();
-            from.SendGump(new RunebookGump(from, this));
+            from.SendGump(new RunebookGump(this));
 
             Openers.Add(from);
         }
