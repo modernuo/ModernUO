@@ -52,10 +52,10 @@ namespace Server.Mobiles
 
         public override int TreasureMapLevel => Core.AOS ? 2 : 3;
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Rich);
-            AddLoot(LootPack.Average);
-        }
+//        public override void GenerateLoot()
+//        {
+//            AddLoot(LootPack.Rich);
+//            AddLoot(LootPack.Average);
+//        }
     }
 }

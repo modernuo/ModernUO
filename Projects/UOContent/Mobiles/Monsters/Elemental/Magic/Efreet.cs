@@ -46,33 +46,33 @@ namespace Server.Mobiles
 
         public override int TreasureMapLevel => Core.AOS ? 4 : 5;
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Rich);
-            AddLoot(LootPack.Average);
-            AddLoot(LootPack.Gems);
-
-            if (Utility.RandomDouble() < 0.02)
-            {
-                switch (Utility.Random(5))
-                {
-                    case 0:
-                        PackItem(new DaemonArms());
-                        break;
-                    case 1:
-                        PackItem(new DaemonChest());
-                        break;
-                    case 2:
-                        PackItem(new DaemonGloves());
-                        break;
-                    case 3:
-                        PackItem(new DaemonLegs());
-                        break;
-                    case 4:
-                        PackItem(new DaemonHelm());
-                        break;
-                }
-            }
-        }
+//        public override void GenerateLoot()
+//        {
+//            AddLoot(LootPack.Rich);
+//            AddLoot(LootPack.Average);
+//            AddLoot(LootPack.Gems);
+//
+//            if (Utility.RandomDouble() < 0.02)
+//            {
+//                switch (Utility.Random(5))
+//                {
+//                    case 0:
+//                        PackItem(new DaemonArms());
+//                        break;
+//                    case 1:
+//                        PackItem(new DaemonChest());
+//                        break;
+//                    case 2:
+//                        PackItem(new DaemonGloves());
+//                        break;
+//                    case 3:
+//                        PackItem(new DaemonLegs());
+//                        break;
+//                    case 4:
+//                        PackItem(new DaemonHelm());
+//                        break;
+//                }
+//            }
+//        }
     }
 }

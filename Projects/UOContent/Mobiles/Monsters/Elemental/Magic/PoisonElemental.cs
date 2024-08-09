@@ -57,11 +57,11 @@ namespace Server.Mobiles
 
         public override int TreasureMapLevel => 5;
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.FilthyRich);
-            AddLoot(LootPack.Rich);
-            AddLoot(LootPack.MedScrolls);
-        }
+//        public override void GenerateLoot()
+//        {
+//            AddLoot(LootPack.FilthyRich);
+//            AddLoot(LootPack.Rich);
+//            AddLoot(LootPack.MedScrolls);
+//        }
     }
 }
