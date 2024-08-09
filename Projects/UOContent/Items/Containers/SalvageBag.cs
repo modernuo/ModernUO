@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
@@ -152,20 +153,7 @@ public partial class SalvageBag : Bag
 
     private bool Scissorables() // Where context menu checks for Leather items and cloth items
     {
-        foreach (var i in Items)
-        {
-            if (i is not IScissorable || i.Deleted)
-            {
-                continue;
-            }
-
-            if (i is BaseClothing or Cloth or BoltOfCloth or Hides or BonePile or OilCloth || i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return Items.Any(i => i is { Deleted: false } and IScissorable and Item);
     }
 
     private void SalvageIngots(Mobile from)
