@@ -524,11 +524,11 @@ namespace Server.Commands.Generic
                     if (match.Length < 3)
                     {
                         e.Mobile.SendMessage("Invalid search string.");
-                        e.Mobile.SendGump(new AddGump(e.Mobile, match, 0, Type.EmptyTypes, false));
+                        e.Mobile.SendGump(new AddGump(match, 0, Type.EmptyTypes, false));
                     }
                     else
                     {
-                        e.Mobile.SendGump(new AddGump(e.Mobile, match, 0, AddGump.Match(match), true));
+                        e.Mobile.SendGump(new AddGump(match, 0, AddGump.Match(match), true));
                     }
                 }
                 else
