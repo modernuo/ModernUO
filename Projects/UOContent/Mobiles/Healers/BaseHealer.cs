@@ -7,15 +7,25 @@ using Server.Items;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(2, false)]
+[SerializationGenerator(3, false)]
 public abstract partial class BaseHealer : BaseVendor
 {
     private static readonly TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);
 
     private DateTime _nextResurrect;
 
-    public BaseHealer()
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _price;
+
+    public BaseHealer() : this(0)
     {
+    }
+
+    public BaseHealer(int price)
+    {
+        _price = price;
+
         if (!IsInvulnerable)
         {
             AI = AIType.AI_Mage;
@@ -86,7 +96,13 @@ public abstract partial class BaseHealer : BaseVendor
         m.PlaySound(0x1F2);
         m.FixedEffect(0x376A, 10, 16);
 
-        m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
+        if (_price > 0)
+        {
+            m.SendGump(new ResurrectGump(this, _price), true);
+            return;
+        }
+
+        m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer), true);
     }
 
     public virtual void OfferHeal(PlayerMobile m)
@@ -150,5 +166,10 @@ public abstract partial class BaseHealer : BaseVendor
             RangePerception = DefaultRangePerception;
             FightMode = FightMode.Aggressor;
         }
+    }
+
+    private void MigrateFrom(V2Content content)
+    {
+        _price = 0;
     }
 }
