@@ -17,7 +17,7 @@ public class YoungDungeonWarningGump : StaticGump<YoungDungeonWarningGump>
         builder.AddBackground(10, 10, 230, 150, 5120);
 
         // Warning: monsters may attack you on site down here in the dungeons!
-        builder.AddHtmlLocalized(20, 25, 210, 70, 1018030, 65535);
+        builder.AddHtmlLocalized(20, 25, 210, 70, 1018030, 0x7FFF);
 
         builder.AddButton(163, 125, 0xF8, 0xF9, 0);
     }
@@ -71,7 +71,7 @@ public class RenounceYoungGump : StaticGump<RenounceYoungGump>
         builder.AddBackground(0, 0, 450, 330, 302);
         builder.AddBackground(10, 10, 430, 310, 5120);
 
-        builder.AddHtmlLocalized(0, 24, 450, 20, 1013004, 65535); // <center> Renouncing 'Young Player' Status</center>
+        builder.AddHtmlLocalized(0, 24, 450, 20, 1013004, 0x7FFF); // <center> Renouncing 'Young Player' Status</center>
 
         /*
          * As a 'Young' player, you are currently under a system of protection that prevents
@@ -84,7 +84,7 @@ public class RenounceYoungGump : StaticGump<RenounceYoungGump>
          * Select OKAY now if you wish to renounce your status as a 'Young' player, otherwise
          * press CANCEL.
          */
-        builder.AddHtmlLocalized(25, 50, 380, 210, 1013005, 65535);
+        builder.AddHtmlLocalized(25, 50, 380, 210, 1013005, 0x7FFF);
 
         builder.AddButton(363, 285, 0xF8, 0xF9, 1); // OKAY
         builder.AddButton(283, 285, 0xF1, 0xF2, 0); // CANCEL
