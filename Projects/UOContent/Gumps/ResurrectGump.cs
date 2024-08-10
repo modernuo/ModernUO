@@ -101,23 +101,29 @@ public class ResurrectGump : DynamicGump
 
     private void BuildDefaultLayout(ref DynamicGumpBuilder builder)
     {
+        builder.SetNoClose();
+        builder.SetNoResize();
+
         builder.AddPage();
+        builder.AddBackground(0, 0, 330, 255, 2620);
+        builder.AddItem(20, 80, 4650);
+        builder.AddItem(30, 60, 4653);
+        builder.AddItem(20, 20, 3);
+        builder.AddItem(0, 20, 2);
+        builder.AddItem(40, 90, 4651);
 
-        builder.AddBackground(0, 0, 400, 350, 2600);
-
-        builder.AddHtmlLocalized(0, 20, 400, 35, 1011022); // <center>Resurrection</center>
-
-        /* It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
+        /*
+         * It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
          * CONTINUE - You chose to try to come back to life now.<br>
          * CANCEL - You prefer to remain a ghost for now.
          */
-        builder.AddHtmlLocalized(50, 55, 300, 140, 1011023 + (int)_resurrectMessage, true, true);
+         builder.AddHtmlLocalized(90, 20, 220, 200, 1011023 + (int)_resurrectMessage, 0x7FFF);
 
-        builder.AddButton(200, 227, 4005, 4007, 0);
-        builder.AddHtmlLocalized(235, 230, 110, 35, 1011012); // CANCEL
+        builder.AddButton(280, 180, 4005, 4007, 0);
+        builder.AddHtmlLocalized(220, 182, 110, 35, 1011012, 0x7FFF); // CANCEL
 
-        builder.AddButton(65, 227, 4005, 4007, 1);
-        builder.AddHtmlLocalized(100, 230, 110, 35, 1011011); // CONTINUE
+        builder.AddButton(280, 210, 4005, 4007, 1);
+        builder.AddHtmlLocalized(210, 212, 110, 35, 1011011, 0x7FFF); // CONTINUE
     }
 
     private void BuildPricedLayout(ref DynamicGumpBuilder builder)
