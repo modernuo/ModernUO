@@ -1541,7 +1541,7 @@ namespace Server.Engines.ConPVP
                                 p.Nullify(pl);
                                 pm.DuelPlayer = null;
 
-                                foreach (var g in init.GetAllGumps())
+                                foreach (var g in init.GetGumps())
                                 {
                                     if (g is ParticipantGump pg && pg.Participant == p)
                                     {
@@ -1576,7 +1576,7 @@ namespace Server.Engines.ConPVP
 
                                 var send = true;
 
-                                foreach (var g in init.GetAllGumps())
+                                foreach (var g in init.GetGumps())
                                 {
                                     if (g is ParticipantGump pg && pg.Participant == p)
                                     {
@@ -1620,7 +1620,7 @@ namespace Server.Engines.ConPVP
 
                                 var send = true;
 
-                                foreach (var g in init.GetAllGumps())
+                                foreach (var g in init.GetGumps())
                                 {
                                     if (g is ParticipantGump pg && pg.Participant == p)
                                     {

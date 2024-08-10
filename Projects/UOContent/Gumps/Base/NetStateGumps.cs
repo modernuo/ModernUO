@@ -1,10 +1,31 @@
-using Server.Network;
-using System.Collections.Generic;
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: NetStateGumps.cs                                                *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
 
-namespace Server.Gumps.Base;
+using Server.Logging;
+using Server.Network;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Server.Gumps;
 
 public readonly ref struct NetStateGumps
 {
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(NetStateGumps));
+
     private readonly List<BaseGump> _gumps;
     private readonly NetState _state;
 
@@ -16,7 +37,7 @@ public readonly ref struct NetStateGumps
 
     public bool Close<T>() where T : BaseGump
     {
-        if (_state == null || _gumps == null)
+        if (_state == null)
         {
             return false;
         }
@@ -38,7 +59,7 @@ public readonly ref struct NetStateGumps
 
     public T Find<T>() where T : BaseGump
     {
-        if (_state == null || _gumps == null)
+        if (_state == null)
         {
             return null;
         }
@@ -81,7 +102,18 @@ public readonly ref struct NetStateGumps
             }
         }
 
+        if (_gumps.Count >= GumpSystem.GumpCap)
+        {
+            _logger.Information("Exceeded gump cap, disconnecting...");
+            _state.Disconnect("Exceeded gump cap.");
+            return;
+        }
+
         _gumps.Add(gump);
         gump.SendTo(_state);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<BaseGump>.Enumerator GetEnumerator() =>
+        ((ReadOnlySpan<BaseGump>)CollectionsMarshal.AsSpan(_gumps)).GetEnumerator();
 }
