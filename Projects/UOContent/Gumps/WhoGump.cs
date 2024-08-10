@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Mobiles;
 using Server.Network;
 
@@ -51,7 +52,7 @@ public class WhoGump : DynamicGump
 
     public static List<Mobile> BuildList(Mobile owner, string rawFilter)
     {
-        var filter = rawFilter.Trim().ToLower().DefaultIfNullOrEmpty(null);
+        var filter = rawFilter.AsSpan().Trim();
 
         var list = new List<Mobile>();
 
@@ -59,16 +60,18 @@ public class WhoGump : DynamicGump
         {
             var m = ns.Mobile;
 
-            if (m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel ||
-                              m is PlayerMobile mobile && mobile.VisibilityList.Contains(owner)))
+            if (m == null || m != owner && m.Hidden && owner.AccessLevel < m.AccessLevel &&
+                (m is not PlayerMobile mobile || !mobile.VisibilityList.Contains(owner)))
             {
-                if (filter != null && !m.Name.InsensitiveContains(filter))
-                {
-                    continue;
-                }
-
-                list.Add(m);
+                continue;
             }
+
+            if (filter.Length > 0 && !m.Name.AsSpan().InsensitiveContains(filter))
+            {
+                continue;
+            }
+
+            list.Add(m);
         }
 
         list.Sort(InternalComparer.Instance);
@@ -185,23 +188,18 @@ public class WhoGump : DynamicGump
         }
     }
 
-    private static int GetHueFor(Mobile m)
-    {
-        switch (m.AccessLevel)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int GetHueFor(Mobile m) =>
+        m.AccessLevel switch
         {
-            case AccessLevel.Owner:
-            case AccessLevel.Developer:
-            case AccessLevel.Administrator: return 0x516;
-            case AccessLevel.Seer:       return 0x144;
-            case AccessLevel.GameMaster: return 0x21;
-            case AccessLevel.Counselor:  return 0x2;
-            default:
-                {
-                    return m.Kills >= 5 ? 0x21 :
-                        m.Criminal ? 0x3B1 : 0x58;
-                }
-        }
-    }
+            >= AccessLevel.Administrator => 0x516,
+            AccessLevel.Seer                                                        => 0x144,
+            AccessLevel.GameMaster                                                  => 0x21,
+            AccessLevel.Counselor                                                   => 0x2,
+            _ when m.Kills >= 5                                                     => 0x21,
+            _ when m.Criminal                                                       => 0x3B1,
+            _                                                                       => 0x58
+        };
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
