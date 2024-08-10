@@ -262,11 +262,16 @@ public partial class Runebook : Item, ISecurable, ICraftable
                 return;
             }
 
-            from.CloseGump<RunebookGump>();
-            from.SendGump(new RunebookGump(this));
-
-            Openers.Add(from);
+            SendGumpTo(from);
         }
+    }
+
+    public void SendGumpTo(Mobile from)
+    {
+        from.CloseGump<RunebookGump>();
+        from.SendGump(new RunebookGump(this));
+
+        Openers.Add(from);
     }
 
     public virtual void OnTravel()
@@ -408,7 +413,7 @@ public partial class RunebookEntry
 
     public RunebookEntry(
         Runebook runebook,
-        Point3D loc = new(),
+        Point3D loc = default,
         Map map = null,
         string description = null,
         BaseHouse house = null
