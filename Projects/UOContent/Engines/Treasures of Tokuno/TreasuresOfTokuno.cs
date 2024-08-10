@@ -291,6 +291,8 @@ namespace Server.Mobiles
         {
             if (m.Alive && m is PlayerMobile pm)
             {
+                var gumps = pm.GetGumps();
+
                 if (pm.Alive && (Z - pm.Z).Abs() < 16 && InRange(m, 3) && !InRange(oldLocation, 3))
                 {
                     if (pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward)
@@ -298,11 +300,11 @@ namespace Server.Mobiles
                         // Congratulations! You have turned in enough minor treasures to earn a greater reward.
                         SayTo(pm, 1070980);
 
-                        pm.CloseGump<ToTTurnInGump>(); // Sanity
+                        gumps.Close<ToTTurnInGump>(); // Sanity
 
                         if (!pm.HasGump<ToTRedeemGump>())
                         {
-                            pm.SendGump(new ToTRedeemGump(this, false));
+                            gumps.Send(new ToTRedeemGump(this, false));
                         }
                     }
                     else
@@ -325,7 +327,7 @@ namespace Server.Mobiles
 
                         if (buttons?.Count > 0 && !pm.HasGump<ToTTurnInGump>())
                         {
-                            pm.SendGump(new ToTTurnInGump(this, buttons));
+                            gumps.Send(new ToTTurnInGump(this, buttons));
                         }
                     }
                 }
@@ -334,8 +336,8 @@ namespace Server.Mobiles
 
                 if (!InRange(m, leaveRange) && InRange(oldLocation, leaveRange))
                 {
-                    pm.CloseGump<ToTRedeemGump>();
-                    pm.CloseGump<ToTTurnInGump>();
+                    gumps.Close<ToTRedeemGump>();
+                    gumps.Close<ToTTurnInGump>();
                 }
             }
         }
@@ -412,16 +414,18 @@ namespace Server.Gumps
 
             item.Delete();
 
+            var gumps = pm.GetGumps();
+
             if (++pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward)
             {
                 // Congratulations! You have turned in enough minor treasures to earn a greater reward.
                 m_Collector.SayTo(pm, 1070980);
 
-                pm.CloseGump<ToTTurnInGump>(); // Sanity
+                gumps.Close<ToTTurnInGump>(); // Sanity
 
-                if (!pm.HasGump<ToTRedeemGump>())
+                if (!gumps.Has<ToTRedeemGump>())
                 {
-                    pm.SendGump(new ToTRedeemGump(m_Collector, false));
+                    gumps.Send(new ToTRedeemGump(m_Collector, false));
                 }
             }
             else
@@ -434,11 +438,11 @@ namespace Server.Gumps
 
                 var buttons = FindRedeemableItems(pm);
 
-                pm.CloseGump<ToTTurnInGump>(); // Sanity
+                gumps.Close<ToTTurnInGump>(); // Sanity
 
                 if (buttons?.Count > 0)
                 {
-                    pm.SendGump(new ToTTurnInGump(m_Collector, buttons));
+                    gumps.Send(new ToTTurnInGump(m_Collector, buttons));
                 }
             }
         }
@@ -594,9 +598,7 @@ namespace Server.Gumps
                 if (t.Type == typeof(PigmentsOfTokuno)) // Special case of course.
                 {
                     pm.CloseGump<ToTTurnInGump>(); // Sanity
-                    pm.CloseGump<ToTRedeemGump>();
-
-                    pm.SendGump(new ToTRedeemGump(m_Collector, true));
+                    pm.SendGump(new ToTRedeemGump(m_Collector, true), true);
 
                     return;
                 }

@@ -277,7 +277,6 @@ public class BandageContext : Timer
                 {
                     healerNumber = 503255; // You are able to resurrect the creature.
 
-                    master.CloseGump<PetResurrectGump>();
                     master.SendGump(new PetResurrectGump(Healer, petPatient));
                 }
                 else
@@ -294,7 +293,6 @@ public class BandageContext : Timer
                         {
                             healerNumber = 503255; // You are able to resurrect the creature.
 
-                            friend.CloseGump<PetResurrectGump>();
                             friend.SendGump(new PetResurrectGump(Healer, petPatient));
 
                             found = true;
@@ -310,7 +308,6 @@ public class BandageContext : Timer
             }
             else
             {
-                Patient.CloseGump<ResurrectGump>();
                 Patient.SendGump(new ResurrectGump(Healer));
             }
         }

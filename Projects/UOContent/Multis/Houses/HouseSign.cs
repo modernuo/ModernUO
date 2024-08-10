@@ -263,7 +263,6 @@ public partial class HouseSign : Item
             }
             else
             {
-                from.CloseGump<VendorInventoryGump>();
                 from.SendGump(new VendorInventoryGump(sign.Owner, from));
             }
         }

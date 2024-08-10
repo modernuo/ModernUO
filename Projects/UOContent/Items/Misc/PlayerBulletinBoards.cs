@@ -290,10 +290,10 @@ public class PlayerBBGump : Gump
     private BaseHouse _house;
     private int _page;
 
+    public override bool Singleton => true;
+
     public PlayerBBGump(Mobile from, BaseHouse house, BasePlayerBB board, int page) : base(50, 10)
     {
-        from.CloseGump<PlayerBBGump>();
-
         _page = page;
         _from = from;
         _house = house;

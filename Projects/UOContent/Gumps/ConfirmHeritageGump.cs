@@ -9,6 +9,8 @@ namespace Server.Gumps
         private readonly Type[] m_Selected;
         private readonly HeritageToken m_Token;
 
+        public override bool Singleton => true;
+
         public ConfirmHeritageGump(HeritageToken token, Type[] selected, int cliloc) : base(60, 36)
         {
             m_Token = token;

@@ -34,14 +34,14 @@ namespace Server.Gumps
         private readonly Mobile m_Owner;
         private int m_Page;
 
+        public override bool Singleton => true;
+
         public CategorizedAddGump(Mobile owner) : this(owner, CAGCategory.Root)
         {
         }
 
         public CategorizedAddGump(Mobile owner, CAGCategory category, int page = 0) : base(GumpOffsetX, GumpOffsetY)
         {
-            owner.CloseGump<WhoGump>();
-
             m_Owner = owner;
             m_Category = category;
 

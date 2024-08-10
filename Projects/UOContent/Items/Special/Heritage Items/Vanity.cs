@@ -41,7 +41,6 @@ public partial class VanityDeed : BaseAddonContainerDeed
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
             from.SendGump(new InternalGump(this));
         }
         else
@@ -58,6 +57,8 @@ public partial class VanityDeed : BaseAddonContainerDeed
     private class InternalGump : Gump
     {
         private readonly VanityDeed _deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(VanityDeed deed) : base(60, 36)
         {

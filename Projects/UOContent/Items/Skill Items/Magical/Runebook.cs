@@ -170,25 +170,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
         from.SendLocalizedMessage(502421); // You have removed the rune.
     }
 
-    public bool IsOpen(Mobile toCheck)
-    {
-        var ns = toCheck.NetState;
-
-        if (ns == null)
-        {
-            return false;
-        }
-
-        foreach (var gump in ns.Gumps)
-        {
-            if ((gump as RunebookGump)?.Book == this)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    public bool IsOpen(Mobile toCheck) => toCheck.FindGump<RunebookGump>()?.Book == this;
 
     public override void GetProperties(IPropertyList list)
     {
@@ -268,9 +250,7 @@ public partial class Runebook : Item, ISecurable, ICraftable
 
     public void SendGumpTo(Mobile from)
     {
-        from.CloseGump<RunebookGump>();
-        from.SendGump(new RunebookGump(this));
-
+        from.SendGump(new RunebookGump(this), true);
         Openers.Add(from);
     }
 

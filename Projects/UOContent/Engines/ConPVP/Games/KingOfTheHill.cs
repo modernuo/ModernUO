@@ -311,7 +311,6 @@ namespace Server.Engines.ConPVP
         {
             if (m_Game != null)
             {
-                from.CloseGump<KHBoardGump>();
                 from.SendGump(new KHBoardGump(from, m_Game));
             }
             else
@@ -352,6 +351,8 @@ namespace Server.Engines.ConPVP
         private const int BlackColor32 = 0x000000;
 
         private KHGame m_Game;
+
+        public override bool Singleton => true;
 
         public KHBoardGump(Mobile mob, KHGame game)
             : base(60, 60)
@@ -989,7 +990,6 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            mob.CloseGump<KHBoardGump>();
             mob.SendGump(new KHBoardGump(mob, this));
 
             m_Context.Requip(mob, corpse);
@@ -1199,7 +1199,6 @@ namespace Server.Engines.ConPVP
 
                     if (dp?.Mobile != null)
                     {
-                        dp.Mobile.CloseGump<KHBoardGump>();
                         dp.Mobile.SendGump(new KHBoardGump(dp.Mobile, this));
                     }
                 }

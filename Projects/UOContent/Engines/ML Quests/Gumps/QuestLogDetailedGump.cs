@@ -8,6 +8,8 @@ namespace Server.Engines.MLQuests.Gumps
         private readonly bool m_CloseGumps;
         private readonly MLQuestInstance m_Instance;
 
+        public override bool Singleton => true;
+
         public QuestLogDetailedGump(MLQuestInstance instance, bool closeGumps = true)
             : base(1046026) // Quest Log
         {
@@ -20,7 +22,6 @@ namespace Server.Engines.MLQuests.Gumps
             if (closeGumps)
             {
                 CloseOtherGumps(pm);
-                pm.CloseGump<QuestLogDetailedGump>();
             }
 
             SetTitle(quest.Title);

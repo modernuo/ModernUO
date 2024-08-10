@@ -606,6 +606,8 @@ namespace Server.Gumps
         private readonly int m_RefundAmount;
         private readonly RentedVendor m_Vendor;
 
+        public override bool Singleton => true;
+
         public VendorRentalRefundGump(RentedVendor vendor, Mobile landlord, int refundAmount) : base(50, 50)
         {
             m_Vendor = vendor;

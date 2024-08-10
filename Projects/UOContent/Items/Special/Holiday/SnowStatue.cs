@@ -65,7 +65,6 @@ public partial class SnowStatueDeed : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
             from.SendGump(new InternalGump(from, this));
         }
         else
@@ -77,6 +76,8 @@ public partial class SnowStatueDeed : Item
     private class InternalGump : Gump
     {
         private readonly SnowStatueDeed _deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(Mobile from, SnowStatueDeed deed) : base(100, 200)
         {

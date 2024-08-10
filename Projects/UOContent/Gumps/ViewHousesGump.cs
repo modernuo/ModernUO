@@ -16,13 +16,13 @@ namespace Server.Gumps
         private readonly List<BaseHouse> m_List;
         private readonly BaseHouse m_Selection;
 
+        public override bool Singleton => true;
+
         public ViewHousesGump(Mobile from, List<BaseHouse> list, BaseHouse sel) : base(50, 40)
         {
             m_From = from;
             m_List = list;
             m_Selection = sel;
-
-            from.CloseGump<ViewHousesGump>();
 
             AddPage(0);
 

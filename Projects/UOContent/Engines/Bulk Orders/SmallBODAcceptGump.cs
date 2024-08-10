@@ -8,13 +8,12 @@ namespace Server.Engines.BulkOrders
         private readonly SmallBOD m_Deed;
         private readonly Mobile m_From;
 
+        public override bool Singleton => true;
+
         public SmallBODAcceptGump(Mobile from, SmallBOD deed) : base(50, 50)
         {
             m_From = from;
             m_Deed = deed;
-
-            m_From.CloseGump<LargeBODAcceptGump>();
-            m_From.CloseGump<SmallBODAcceptGump>();
 
             AddPage(0);
 

@@ -8,6 +8,8 @@ namespace Server.Gumps
     {
         private readonly IAddon m_Addon;
 
+        public override bool Singleton => true;
+
         public RewardDemolitionGump(IAddon addon, int question) : base(150, 50)
         {
             m_Addon = addon;

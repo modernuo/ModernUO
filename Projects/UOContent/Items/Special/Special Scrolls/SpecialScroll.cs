@@ -72,7 +72,6 @@ public abstract partial class SpecialScroll : Item
             return;
         }
 
-        from.CloseGump<InternalGump>();
         from.SendGump(new InternalGump(from, this));
     }
 
@@ -80,6 +79,8 @@ public abstract partial class SpecialScroll : Item
     {
         private readonly Mobile _mobile;
         private readonly SpecialScroll _scroll;
+
+        public override bool Singleton => true;
 
         public InternalGump(Mobile mobile, SpecialScroll scroll) : base(25, 50)
         {

@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Gumps;
 using Server.Multis;
 using Server.Network;
 
@@ -875,8 +876,7 @@ namespace Server.Items
                 return;
             }
 
-            from.CloseGump<AquariumGump>();
-            from.SendGump(new AquariumGump(this, HasAccess(from)));
+            from.SendGump(new AquariumGump(this, HasAccess(from)), true);
 
             from.PlaySound(0x5A4);
         }

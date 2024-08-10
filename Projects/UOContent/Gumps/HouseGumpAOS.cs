@@ -73,14 +73,12 @@ namespace Server.Gumps
 
         private List<Mobile> m_List;
 
+        public override bool Singleton => true;
+        
         public HouseGumpAOS(HouseGumpPageAOS page, Mobile from, BaseHouse house) : base(50, 40)
         {
             m_House = house;
             m_Page = page;
-
-            from.CloseGump<HouseGumpAOS>();
-            // from.CloseGump( typeof( HouseListGump ) );
-            // from.CloseGump( typeof( HouseRemoveGump ) );
 
             var isCombatRestricted = house.IsCombatRestricted(from);
 
@@ -1427,8 +1425,7 @@ namespace Server.Gumps
                                         }
                                         else
                                         {
-                                            from.CloseGump<HouseDemolishGump>();
-                                            from.SendGump(new HouseDemolishGump(from, m_House));
+                                            from.SendGump(new HouseDemolishGump(from, m_House), true);
                                         }
                                     }
 

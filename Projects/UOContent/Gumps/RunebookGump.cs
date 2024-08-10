@@ -15,6 +15,8 @@ public class RunebookGump : DynamicGump
     private readonly Runebook _book;
     public Runebook Book => _book;
 
+    public override bool Singleton => true;
+
     public RunebookGump(Runebook book) : base(150, 200) => _book = book;
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)

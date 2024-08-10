@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Commands;
 using Server.Factions;
+using Server.Gumps;
 using Server.Items;
 using Server.Logging;
 using Server.Mobiles;

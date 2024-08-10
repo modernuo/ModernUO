@@ -103,7 +103,6 @@ public partial class HolidayTreeDeed : Item
 
     public override void OnDoubleClick(Mobile from)
     {
-        from.CloseGump<HolidayTreeChoiceGump>();
         from.SendGump(new HolidayTreeChoiceGump(from, this));
     }
 }
@@ -112,6 +111,8 @@ public class HolidayTreeChoiceGump : Gump
 {
     private readonly HolidayTreeDeed m_Deed;
     private readonly Mobile m_From;
+
+    public override bool Singleton => true;
 
     public HolidayTreeChoiceGump(Mobile from, HolidayTreeDeed deed) : base(200, 200)
     {

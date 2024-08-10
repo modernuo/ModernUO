@@ -96,7 +96,6 @@ public partial class WreathAddon : Item, IDyable, IAddon
         {
             if (from.InRange(GetWorldLocation(), 3))
             {
-                from.CloseGump<WreathAddonGump>();
                 from.SendGump(new WreathAddonGump(from, this));
             }
             else
@@ -110,6 +109,8 @@ public partial class WreathAddon : Item, IDyable, IAddon
     {
         private readonly WreathAddon _addon;
         private readonly Mobile _from;
+
+        public override bool Singleton => true;
 
         public WreathAddonGump(Mobile from, WreathAddon addon) : base(150, 50)
         {

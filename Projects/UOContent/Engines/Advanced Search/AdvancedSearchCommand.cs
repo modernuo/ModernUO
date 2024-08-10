@@ -1,3 +1,5 @@
+using Server.Gumps;
+
 namespace Server.Engines.AdvancedSearch;
 
 public static class AdvancedSearchCommand
@@ -14,7 +16,6 @@ public static class AdvancedSearchCommand
     {
         var from = e.Mobile;
 
-        from.CloseGump<AdvancedSearchGump>();
-        from.SendGump(new AdvancedSearchGump(from));
+        from.SendGump(new AdvancedSearchGump(from), true);
     }
 }

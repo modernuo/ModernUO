@@ -12,6 +12,8 @@ namespace Server.Gumps
         private readonly PlayerVendor m_Vendor;
         private readonly VendorItem m_VI;
 
+        public override bool Singleton => true;
+
         public PlayerVendorBuyGump(PlayerVendor vendor, VendorItem vi) : base(100, 200)
         {
             m_Vendor = vendor;
@@ -497,12 +499,12 @@ namespace Server.Gumps
 
         private readonly Mobile m_Vendor;
 
+        public override bool Singleton => true;
+
         public PlayerVendorCustomizeGump(Mobile v, Mobile from) : base(30, 40)
         {
             m_Vendor = v;
             int x, y;
-
-            from.CloseGump<PlayerVendorCustomizeGump>();
 
             AddPage(0);
             AddBackground(0, 0, 585, 393, 5054);

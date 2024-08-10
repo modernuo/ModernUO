@@ -1,3 +1,5 @@
+using Server.Gumps;
+
 namespace Server.Engines.ConPVP
 {
     public class TournamentBracketItem : Item
@@ -26,8 +28,7 @@ namespace Server.Engines.ConPVP
 
                 if (tourney != null)
                 {
-                    from.CloseGump<TournamentBracketGump>();
-                    from.SendGump(new TournamentBracketGump(from, tourney, TourneyBracketGumpType.Index));
+                    from.SendGump(new TournamentBracketGump(from, tourney, TourneyBracketGumpType.Index), true);
                 }
             }
         }

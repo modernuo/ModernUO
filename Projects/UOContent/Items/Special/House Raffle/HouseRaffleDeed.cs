@@ -84,7 +84,6 @@ public partial class HouseRaffleDeed : Item
 
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<WritOfLeaseGump>();
             from.SendGump(new WritOfLeaseGump(this));
         }
         else
@@ -95,6 +94,8 @@ public partial class HouseRaffleDeed : Item
 
     private class WritOfLeaseGump : Gump
     {
+        public override bool Singleton => true;
+
         public WritOfLeaseGump(HouseRaffleDeed deed) : base(150, 50)
         {
             AddPage(0);

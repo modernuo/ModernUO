@@ -17,7 +17,6 @@ public partial class NameChangeDeed : Item
     {
         if (RootParent == from)
         {
-            from.CloseGump<NameChangeDeedGump>();
             from.SendGump(new NameChangeDeedGump(this));
         }
         else
@@ -30,6 +29,8 @@ public partial class NameChangeDeed : Item
 public class NameChangeDeedGump : Gump
 {
     private readonly Item m_Sender;
+
+    public override bool Singleton => true;
 
     public NameChangeDeedGump(Item sender) : base(50, 50)
     {

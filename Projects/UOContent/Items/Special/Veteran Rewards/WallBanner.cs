@@ -304,7 +304,6 @@ public partial class WallBannerDeed : BaseAddonDeed, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
             from.SendGump(new InternalGump(this));
         }
         else
@@ -323,6 +322,8 @@ public partial class WallBannerDeed : BaseAddonDeed, IRewardItem
     private class InternalGump : Gump
     {
         private readonly WallBannerDeed _wallBanner;
+
+        public override bool Singleton => true;
 
         public InternalGump(WallBannerDeed wallBanner) : base(150, 50)
         {

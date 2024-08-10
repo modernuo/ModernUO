@@ -14,14 +14,14 @@ public class AddGump : DynamicGump
     private readonly string _searchString;
     private readonly bool _explicitSearch;
 
-    public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
+    public override bool Singleton => true;
+
+    public AddGump(string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
     {
         _searchString = searchString;
         _searchResults = searchResults;
         _explicitSearch = explicitSearch;
         _page = page;
-
-        from.CloseGump<AddGump>();
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder) {
@@ -120,7 +120,7 @@ public class AddGump : DynamicGump
             explicitSearch = true;
         }
 
-        e.Mobile.SendGump(new AddGump(e.Mobile, val, 0, types, explicitSearch));
+        e.Mobile.SendGump(new AddGump(val, 0, types, explicitSearch));
     }
 
     private static void Match(string match, Type[] types, HashSet<Type> results)
@@ -212,11 +212,11 @@ public class AddGump : DynamicGump
                     if (match.Length < 3)
                     {
                         from.SendMessage("Invalid search string.");
-                        from.SendGump(new AddGump(from, match, _page, _searchResults, false));
+                        from.SendGump(new AddGump(match, _page, _searchResults, false));
                     }
                     else
                     {
-                        from.SendGump(new AddGump(from, match, 0, Match(match), true));
+                        from.SendGump(new AddGump(match, 0, Match(match), true));
                     }
 
                     break;
@@ -225,7 +225,7 @@ public class AddGump : DynamicGump
                 {
                     if (_page > 0)
                     {
-                        from.SendGump(new AddGump(from, _searchString, _page - 1, _searchResults, true));
+                        from.SendGump(new AddGump(_searchString, _page - 1, _searchResults, true));
                     }
 
                     break;
@@ -234,7 +234,7 @@ public class AddGump : DynamicGump
                 {
                     if ((_page + 1) * 10 < _searchResults.Length)
                     {
-                        from.SendGump(new AddGump(from, _searchString, _page + 1, _searchResults, true));
+                        from.SendGump(new AddGump(_searchString, _page + 1, _searchResults, true));
                     }
 
                     break;
@@ -307,7 +307,7 @@ public class AddGump : DynamicGump
         {
             if (cancelType == TargetCancelType.Canceled)
             {
-                from.SendGump(new AddGump(from, m_SearchString, m_Page, m_SearchResults, true));
+                from.SendGump(new AddGump(m_SearchString, m_Page, m_SearchResults, true));
             }
         }
     }

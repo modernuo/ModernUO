@@ -61,7 +61,6 @@ public partial class DecorativeShield : Item, IAddon, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.CloseGump<RewardDemolitionGump>();
                 from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
             }
             else
@@ -113,7 +112,6 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
             from.SendGump(new InternalGump(this));
         }
         else
@@ -140,6 +138,8 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
         public const int End = 0x1585;
 
         private readonly DecorativeShieldDeed _shield;
+
+        public override bool Singleton => true;
 
         public InternalGump(DecorativeShieldDeed shield) : base(150, 50)
         {
@@ -267,7 +267,6 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
 
             if (north && west)
             {
-                from.CloseGump<FacingGump>();
                 from.SendGump(new FacingGump(_shield, _itemID, p3d, house));
             }
             else if (north || west)
@@ -293,6 +292,8 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
             private readonly int _itemID;
             private readonly Point3D _location;
             private readonly DecorativeShieldDeed _shield;
+
+            public override bool Singleton => true;
 
             public FacingGump(DecorativeShieldDeed shield, int itemID, Point3D location, BaseHouse house) : base(150, 50)
             {

@@ -58,6 +58,8 @@ public sealed class HelpGump : DynamicGump
 {
     private readonly Mobile _from;
 
+    public override bool Singleton => true;
+
     public HelpGump(Mobile from) : base(0, 0) => _from = from;
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -206,12 +208,6 @@ public sealed class HelpGump : DynamicGump
         builder.AddHtmlLocalized(180, y + 150, 335, 40, 1001015); // NO  - I meant to ask for help with another matter.
     }
 
-    public override void SendTo(NetState ns)
-    {
-        _from.CloseGump<HelpGump>();
-        base.SendTo(ns);
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void AddOption(
         ref DynamicGumpBuilder builder, int y, int buttonId, int localizedName, GumpButtonType type = GumpButtonType.Reply,
@@ -237,12 +233,9 @@ public sealed class HelpGump : DynamicGump
 
     public static void HelpRequest(Mobile m)
     {
-        foreach (var gump in m.NetState.Gumps)
+        if (m.HasGump<HelpGump>())
         {
-            if (gump is HelpGump)
-            {
-                return;
-            }
+            return;
         }
 
         if (!PageQueue.CheckAllowedToPage(m))

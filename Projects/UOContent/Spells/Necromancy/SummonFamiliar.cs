@@ -69,7 +69,6 @@ public class SummonFamiliarSpell : NecromancerSpell
     {
         if (CheckSequence())
         {
-            Caster.CloseGump<SummonFamiliarGump>();
             Caster.SendGump(new SummonFamiliarGump(Caster, Entries, this));
         }
 
@@ -108,6 +107,8 @@ public class SummonFamiliarGump : Gump
     private readonly Mobile _from;
 
     private readonly SummonFamiliarSpell _spell;
+
+    public override bool Singleton => true;
 
     public SummonFamiliarGump(Mobile from, SummonFamiliarEntry[] entries, SummonFamiliarSpell spell) : base(200, 100)
     {
@@ -187,14 +188,12 @@ public class SummonFamiliarGump : Gump
             // That familiar requires ~1_NECROMANCY~ Necromancy and ~2_SPIRIT~ Spirit Speak.
             _from.SendLocalizedMessage(1061606, $"{entry.ReqNecromancy:F1}\t{entry.ReqSpiritSpeak:F1}");
 
-            _from.CloseGump<SummonFamiliarGump>();
             _from.SendGump(new SummonFamiliarGump(_from, SummonFamiliarSpell.Entries, _spell));
         }
         else if (entry.Type == null)
         {
             _from.SendMessage("That familiar has not yet been defined.");
 
-            _from.CloseGump<SummonFamiliarGump>();
             _from.SendGump(new SummonFamiliarGump(_from, SummonFamiliarSpell.Entries, _spell));
         }
         else

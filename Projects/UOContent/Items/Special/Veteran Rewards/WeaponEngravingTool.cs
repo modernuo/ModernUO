@@ -174,7 +174,6 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
 
             if (targeted is BaseWeapon item)
             {
-                from.CloseGump<InternalGump>();
                 from.SendGump(new InternalGump(_tool, item));
             }
             else
@@ -188,6 +187,8 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
     {
         private readonly BaseWeapon _target;
         private readonly WeaponEngravingTool _tool;
+
+        public override bool Singleton => true;
 
         public InternalGump(WeaponEngravingTool tool, BaseWeapon target) : base(0, 0)
         {

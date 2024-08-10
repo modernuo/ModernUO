@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.IO;
 using Server.Gumps;
-using Server.Network;
 using Server.Tests.Network;
 using Xunit;
 
@@ -20,7 +19,7 @@ public class TestLayoutGumps
         var staticGump = new DynamicTestGump("Test");
         var buffer = GC.AllocateUninitializedArray<byte>(512);
         var writer = new SpanWriter(buffer);
-        staticGump.CreatePacket(ref writer);
+        staticGump.Compile(ref writer);
 
         AssertThat.Equal(writer.Span, legacyPacketData);
     }
@@ -61,7 +60,7 @@ public class TestLayoutGumps
         var gump = new CachedGump();
         var buffer = GC.AllocateUninitializedArray<byte>(512);
         var writer = new SpanWriter(buffer);
-        gump.CreatePacket(ref writer);
+        gump.Compile(ref writer);
 
         var packet = writer.Span.ToArray();
 
@@ -69,7 +68,7 @@ public class TestLayoutGumps
         writer.Seek(0, SeekOrigin.Begin);
 
         // Second call should not call BuildLayout
-        gump.CreatePacket(ref writer);
+        gump.Compile(ref writer);
 
         AssertThat.Equal(writer.Span, packet);
     }
@@ -85,7 +84,7 @@ public class TestLayoutGumps
 
         var buffer = GC.AllocateUninitializedArray<byte>(512);
         var writer = new SpanWriter(buffer);
-        staticGump.CreatePacket(ref writer);
+        staticGump.Compile(ref writer);
 
         // Assert layout is exactly what we are expecting
         AssertThat.Equal(writer.Span.Slice(19, layoutLength), expectedBufferWriter.Span);

@@ -307,9 +307,10 @@ public class AddonGenerator
         private const int GreenHue = 0x40;
         private readonly PickerState _state;
 
+        public override bool Singleton => true;
+
         public InternalGump(Mobile m, PickerState state) : base(100, 50)
         {
-            m.CloseGump<InternalGump>();
             _state = state;
             MakeGump();
         }

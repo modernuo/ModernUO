@@ -42,7 +42,6 @@ public partial class StoneStatueDeed : BaseAddonDeed
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
             from.SendGump(new InternalGump(this));
         }
         else
@@ -59,6 +58,8 @@ public partial class StoneStatueDeed : BaseAddonDeed
     private class InternalGump : Gump
     {
         private readonly StoneStatueDeed _deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(StoneStatueDeed deed) : base(60, 36)
         {

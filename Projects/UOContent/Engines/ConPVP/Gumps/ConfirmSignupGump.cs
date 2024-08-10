@@ -19,6 +19,8 @@ namespace Server.Engines.ConPVP
         private readonly Mobile m_Registrar;
         private readonly Tournament m_Tournament;
 
+        public override bool Singleton => true;
+
         public ConfirmSignupGump(Mobile from, Mobile registrar, Tournament tourney, List<Mobile> players) : base(50, 50)
         {
             m_From = from;
@@ -26,10 +28,11 @@ namespace Server.Engines.ConPVP
             m_Tournament = tourney;
             m_Players = players;
 
-            m_From.CloseGump<AcceptTeamGump>();
-            m_From.CloseGump<AcceptDuelGump>();
-            m_From.CloseGump<DuelContextGump>();
-            m_From.CloseGump<ConfirmSignupGump>();
+            var gumps = m_From.GetGumps();
+
+            gumps.Close<AcceptTeamGump>();
+            gumps.Close<AcceptDuelGump>();
+            gumps.Close<DuelContextGump>();
 
             var ruleset = tourney.Ruleset;
             var basedef = ruleset.Base;

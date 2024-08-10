@@ -84,7 +84,6 @@ public partial class PublicMoongate : Item
             return false;
         }
 
-        m.CloseGump<MoongateGump>();
         m.SendGump(new MoongateGump(m, this));
 
         if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
@@ -322,6 +321,8 @@ public class MoongateGump : Gump
     private PMList[] _lists;
     private Mobile _mobile;
     private Item _moongate;
+
+    public override bool Singleton => true;
 
     public MoongateGump(Mobile mobile, Item moongate) : base(100, 100)
     {

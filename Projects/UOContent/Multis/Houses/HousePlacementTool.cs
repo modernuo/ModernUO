@@ -41,12 +41,11 @@ public class HousePlacementCategoryGump : Gump
     private const int LabelColorDisabled = 0x4210;
     private readonly Mobile _from;
 
+    public override bool Singleton => true;
+
     public HousePlacementCategoryGump(Mobile from) : base(50, 50)
     {
         _from = from;
-
-        from.CloseGump<HousePlacementCategoryGump>();
-        from.CloseGump<HousePlacementListGump>();
 
         AddPage(0);
 
@@ -107,13 +106,12 @@ public class HousePlacementListGump : Gump
     private readonly HousePlacementEntry[] _entries;
     private readonly Mobile _from;
 
+    public override bool Singleton => true;
+
     public HousePlacementListGump(Mobile from, HousePlacementEntry[] entries) : base(50, 50)
     {
         _from = from;
         _entries = entries;
-
-        from.CloseGump<HousePlacementCategoryGump>();
-        from.CloseGump<HousePlacementListGump>();
 
         AddPage(0);
 

@@ -8,11 +8,11 @@ namespace Server.Engines.VeteranRewards
     {
         private readonly Mobile m_From;
 
+        public override bool Singleton => true;
+
         public RewardChoiceGump(Mobile from) : base(0, 0)
         {
             m_From = from;
-
-            from.CloseGump<RewardChoiceGump>();
 
             RenderBackground();
             RenderCategories();

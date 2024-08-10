@@ -268,12 +268,13 @@ namespace Server.Engines.MLQuests.Gumps
          */
         public static void CloseOtherGumps(PlayerMobile pm)
         {
-            pm.CloseGump<InfoNPCGump>();
-            pm.CloseGump<QuestRewardGump>();
-            pm.CloseGump<QuestConversationGump>();
-            pm.CloseGump<QuestReportBackGump>();
-            // pm.CloseGump( typeof( UnknownGump807 ) );
-            pm.CloseGump<QuestCancelConfirmGump>();
+            var gumps = pm.GetGumps();
+
+            gumps.Close<InfoNPCGump>();
+            gumps.Close<QuestRewardGump>();
+            gumps.Close<QuestConversationGump>();
+            gumps.Close<QuestReportBackGump>();
+            gumps.Close<QuestCancelConfirmGump>();
         }
 
         private struct ButtonInfo

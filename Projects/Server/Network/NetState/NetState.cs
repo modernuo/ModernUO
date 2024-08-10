@@ -13,6 +13,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Accounting;
+using Server.Collections;
+using Server.Diagnostics;
+using Server.HuePickers;
+using Server.Items;
+using Server.Logging;
+using Server.Menus;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
@@ -23,14 +30,6 @@ using System.Net.Sockets;
 using System.Network;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Server.Accounting;
-using Server.Collections;
-using Server.Diagnostics;
-using Server.Gumps;
-using Server.HuePickers;
-using Server.Items;
-using Server.Logging;
-using Server.Menus;
 
 namespace Server.Network;
 
@@ -46,7 +45,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
     private const int RecvPipeSize = 1024 * 64;
     private const int SendPipeSize = 1024 * 256;
-    private const int GumpCap = 512;
     private const int HuePickerCap = 512;
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
@@ -126,7 +124,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         Connection = connection;
         Seeded = false;
-        Gumps = [];
         HuePickers = [];
         Menus = [];
         Trades = [];
@@ -225,8 +222,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public bool CompressionEnabled { get; set; }
 
     public int Sequence { get; set; }
-
-    public List<BaseGump> Gumps { get; private set; }
 
     public List<HuePicker> HuePickers { get; private set; }
 
@@ -417,36 +412,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public void ClearHuePickers()
     {
         HuePickers?.Clear();
-    }
-
-    public void AddGump(BaseGump gump)
-    {
-        Gumps ??= [];
-
-        if (Gumps.Count < GumpCap)
-        {
-            Gumps.Add(gump);
-        }
-        else
-        {
-            LogInfo("Exceeded gump cap, disconnecting...");
-            Disconnect("Exceeded gump cap.");
-        }
-    }
-
-    public void RemoveGump(BaseGump gump)
-    {
-        Gumps?.Remove(gump);
-    }
-
-    public void RemoveGump(int index)
-    {
-        Gumps?.RemoveAt(index);
-    }
-
-    public void ClearGumps()
-    {
-        Gumps?.Clear();
     }
 
     public void LaunchBrowser(string url)
@@ -1217,7 +1182,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         var a = Account;
 
-        Gumps.Clear();
         Menus.Clear();
         HuePickers.Clear();
         Account = null;

@@ -27,15 +27,14 @@ namespace Server.Engines.Craft
 
         private bool m_ShowExceptionalChance;
 
+        public override bool Singleton => true;
+
         public CraftGumpItem(Mobile from, CraftSystem craftSystem, CraftItem craftItem, BaseTool tool) : base(40, 40)
         {
             m_From = from;
             m_CraftSystem = craftSystem;
             m_CraftItem = craftItem;
             m_Tool = tool;
-
-            from.CloseGump<CraftGump>();
-            from.CloseGump<CraftGumpItem>();
 
             AddPage(0);
             AddBackground(0, 0, 530, 417, 5054);

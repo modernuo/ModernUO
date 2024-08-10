@@ -104,7 +104,6 @@ public partial class MistletoeAddon : Item, IDyable, IAddon
 
         if (from.InRange(GetWorldLocation(), 3))
         {
-            from.CloseGump<MistletoeAddonGump>();
             from.SendGump(new MistletoeAddonGump(from, this));
         }
         else
@@ -117,6 +116,8 @@ public partial class MistletoeAddon : Item, IDyable, IAddon
     {
         private readonly MistletoeAddon _addon;
         private readonly Mobile _from;
+
+        public override bool Singleton => true;
 
         public MistletoeAddonGump(Mobile from, MistletoeAddon addon) : base(150, 50)
         {

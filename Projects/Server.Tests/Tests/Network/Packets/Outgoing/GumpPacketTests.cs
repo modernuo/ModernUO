@@ -1,5 +1,4 @@
 using Server.Gumps;
-using Server.Network;
 using Xunit;
 
 namespace Server.Tests.Network;
@@ -45,8 +44,7 @@ public class GumpPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
 
         var expected = gump.Compile(ns).Compile();
-
-        ns.SendDisplayGump(gump, out _, out _);
+        ns.SendGump(gump);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
@@ -65,8 +63,7 @@ public class GumpPacketTests : IClassFixture<ServerFixture>
         var ns = PacketTestUtilities.CreateTestNetState();
 
         var expected = gump.Compile(ns).Compile();
-
-        ns.SendDisplayGump(gump, out _, out _);
+        ns.SendGump(gump);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);

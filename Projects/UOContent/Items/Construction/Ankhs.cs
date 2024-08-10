@@ -40,7 +40,6 @@ namespace Server.Items
             }
             else if (m.Map?.CanFit(m.Location, 16, false, false) == true)
             {
-                m.CloseGump<ResurrectGump>();
                 m.SendGump(new ResurrectGump(m, ResurrectMessage.VirtueShrine));
             }
             else

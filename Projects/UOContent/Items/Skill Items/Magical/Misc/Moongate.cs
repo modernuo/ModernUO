@@ -157,7 +157,6 @@ public partial class Moongate : Item
                 from.SendSound(0x20E, from);
             }
 
-            from.CloseGump<MoongateConfirmGump>();
             from.SendGump(new MoongateConfirmGump(from, this));
         }
         else
@@ -265,7 +264,6 @@ public partial class ConfirmationMoongate : Moongate
     {
         if (GumpWidth > 0 && GumpHeight > 0 && TitleNumber > 0 && Message?.IsEmpty == false)
         {
-            from.CloseGump<WarningGump>();
             from.SendGump(
                 new WarningGump(
                     TitleNumber,
@@ -275,7 +273,8 @@ public partial class ConfirmationMoongate : Moongate
                     GumpWidth,
                     GumpHeight,
                     okay => Warning_Callback(from, okay)
-                )
+                ),
+                true
             );
         }
         else
@@ -306,6 +305,8 @@ public class MoongateConfirmGump : Gump
 {
     private Mobile _from;
     private Moongate _gate;
+
+    public override bool Singleton => true;
 
     public MoongateConfirmGump(Mobile from, Moongate gate) : base(Core.AOS ? 110 : 20, Core.AOS ? 100 : 30)
     {

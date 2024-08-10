@@ -433,7 +433,6 @@ public partial class TreasureMapChest : LockableContainer
             return;
         }
 
-        from.CloseGump<RemoveGump>();
         from.SendGump(new RemoveGump(from, this));
     }
 
@@ -452,6 +451,8 @@ public partial class TreasureMapChest : LockableContainer
     {
         private readonly TreasureMapChest _chest;
         private readonly Mobile _from;
+
+        public override bool Singleton => true;
 
         public RemoveGump(Mobile from, TreasureMapChest chest) : base(15, 15)
         {

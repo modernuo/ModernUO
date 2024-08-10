@@ -136,7 +136,6 @@ public partial class RewardBrazierDeed : Item, IRewardItem
             return;
         }
 
-        from.CloseGump<InternalGump>();
         from.SendGump(new InternalGump(this));
     }
 
@@ -153,6 +152,8 @@ public partial class RewardBrazierDeed : Item, IRewardItem
     private class InternalGump : Gump
     {
         private readonly RewardBrazierDeed _brazier;
+
+        public override bool Singleton => true;
 
         public InternalGump(RewardBrazierDeed brazier) : base(100, 200)
         {

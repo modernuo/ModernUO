@@ -27,7 +27,6 @@ namespace Server.Engines.ConPVP
         {
             if (m_TeamInfo?.Game != null)
             {
-                from.CloseGump<DDBoardGump>();
                 from.SendGump(new DDBoardGump(from, m_TeamInfo.Game));
             }
         }
@@ -52,7 +51,7 @@ namespace Server.Engines.ConPVP
         private const int LabelColor32 = 0xFFFFFF;
         private const int BlackColor32 = 0x000000;
 
-        // private DDGame m_Game;
+        public override bool Singleton => true;
 
         public DDBoardGump(Mobile mob, DDGame game, DDTeamInfo section = null)
             : base(60, 60)
@@ -605,7 +604,6 @@ namespace Server.Engines.ConPVP
                 }
             }
 
-            mob.CloseGump<DDBoardGump>();
             mob.SendGump(new DDBoardGump(mob, this));
 
             m_Context.Requip(mob, corpse);
@@ -820,7 +818,6 @@ namespace Server.Engines.ConPVP
 
                     if (dp?.Mobile != null)
                     {
-                        dp.Mobile.CloseGump<DDBoardGump>();
                         dp.Mobile.SendGump(new DDBoardGump(dp.Mobile, this));
                     }
                 }

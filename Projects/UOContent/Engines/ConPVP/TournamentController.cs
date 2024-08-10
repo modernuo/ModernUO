@@ -66,9 +66,11 @@ namespace Server.Engines.ConPVP
         {
             if (from.AccessLevel >= AccessLevel.GameMaster && Tournament != null)
             {
-                from.CloseGump<PickRulesetGump>();
-                from.CloseGump<RulesetGump>();
-                from.SendGump(new PickRulesetGump(from, null, Tournament.Ruleset));
+                var gumps = from.GetGumps();
+
+                gumps.Close<RulesetGump>();
+                gumps.Close<PickRulesetGump>();
+                gumps.Send(new PickRulesetGump(from, null, Tournament.Ruleset));
             }
         }
 

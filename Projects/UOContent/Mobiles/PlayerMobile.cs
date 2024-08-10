@@ -900,17 +900,17 @@ namespace Server.Mobiles
                                 {
                                     Direction.North => itemIDs[0],
                                     Direction.South => itemIDs[0],
-                                    Direction.East  => itemIDs[1],
-                                    Direction.West  => itemIDs[1],
-                                    _               => item.ItemID
+                                    Direction.East => itemIDs[1],
+                                    Direction.West => itemIDs[1],
+                                    _ => item.ItemID
                                 },
                                 4 => dir switch
                                 {
                                     Direction.South => itemIDs[0],
-                                    Direction.East  => itemIDs[1],
+                                    Direction.East => itemIDs[1],
                                     Direction.North => itemIDs[2],
-                                    Direction.West  => itemIDs[3],
-                                    _               => item.ItemID
+                                    Direction.West => itemIDs[3],
+                                    _ => item.ItemID
                                 },
                                 _ => item.ItemID
                             };
@@ -981,7 +981,7 @@ namespace Server.Mobiles
             }
 
             if (skillId == 35)
-                // AnimalTaming.DeferredTarget = true;
+            // AnimalTaming.DeferredTarget = true;
             {
                 AnimalTaming.DisableMessage = false;
             }
@@ -1723,22 +1723,10 @@ namespace Server.Mobiles
 
         public override bool Move(Direction d)
         {
-            var ns = NetState;
-
-            if (ns != null)
+            if (NetState != null && Alive && !NetState.CloseGump<ResurrectGump>())
             {
-                if (HasGump<ResurrectGump>())
-                {
-                    if (Alive)
-                    {
-                        CloseGump<ResurrectGump>();
-                    }
-                    else
-                    {
-                        SendLocalizedMessage(500111); // You are frozen and cannot move.
-                        return false;
-                    }
-                }
+                SendLocalizedMessage(500111); // You are frozen and cannot move.
+                return false;
             }
 
             // var speed = ComputeMovementSpeed(d);
@@ -1998,10 +1986,9 @@ namespace Server.Mobiles
         {
             var house = BaseHouse.FindHouseAt(this);
 
-            if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0)
+            if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0 && NetState is NetState { } ns)
             {
-                CloseGump<ReclaimVendorGump>();
-                SendGump(new ReclaimVendorGump(house));
+                ns.SendGump(new ReclaimVendorGump(house));
             }
         }
 
@@ -3760,8 +3747,8 @@ namespace Server.Mobiles
                     var name = ammo.Name ?? ammo switch
                     {
                         Arrow _ => $"arrow{(ammo.Amount != 1 ? "s" : "")}",
-                        Bolt _  => $"bolt{(ammo.Amount != 1 ? "s" : "")}",
-                        _       => $"#{ammo.LabelNumber}"
+                        Bolt _ => $"bolt{(ammo.Amount != 1 ? "s" : "")}",
+                        _ => $"#{ammo.LabelNumber}"
                     };
 
                     PlaceInBackpack(ammo);
@@ -3924,11 +3911,11 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (Core.SE)
+            if (Core.SE && NetState is { } ns)
             {
-                if (!HasGump<CancelRenewInventoryInsuranceGump>())
+                if (!ns.HasGump<CancelRenewInventoryInsuranceGump>())
                 {
-                    SendGump(new CancelRenewInventoryInsuranceGump(this, null));
+                    ns.SendGump(new CancelRenewInventoryInsuranceGump(this, null));
                 }
             }
             else
@@ -3974,15 +3961,18 @@ namespace Server.Mobiles
 
             // TODO: Investigate item sorting
 
-            CloseGump<ItemInsuranceMenuGump>();
+            if (NetState is { } ns)
+            {
+                ns.CloseGump<ItemInsuranceMenuGump>();
 
-            if (queue.Count == 0)
-            {
-                SendLocalizedMessage(1114915, "", 0x35); // None of your current items meet the requirements for insurance.
-            }
-            else
-            {
-                SendGump(new ItemInsuranceMenuGump(this, queue.ToArray()));
+                if (queue.Count == 0)
+                {
+                    SendLocalizedMessage(1114915, "", 0x35); // None of your current items meet the requirements for insurance.
+                }
+                else
+                {
+                    ns.SendGump(new ItemInsuranceMenuGump(this, queue.ToArray()));
+                }
             }
         }
 
@@ -4001,12 +3991,14 @@ namespace Server.Mobiles
 
         private void ToggleQuestItemTarget()
         {
-            BaseQuestGump.CloseOtherGumps(this);
-            CloseGump<QuestLogDetailedGump>();
-            CloseGump<QuestLogGump>();
-            CloseGump<QuestOfferGump>();
-            // CloseGump( typeof( UnknownGump802 ) );
-            // CloseGump( typeof( UnknownGump804 ) );
+            if (NetState != null)
+            {
+                BaseQuestGump.CloseOtherGumps(this);
+                var gumps = this.GetGumps();
+                gumps.Close<QuestLogDetailedGump>();
+                gumps.Close<QuestLogGump>();
+                gumps.Close<QuestOfferGump>();
+            }
 
             BeginTarget(-1, false, TargetFlags.None, ToggleQuestItem_Callback);
             SendLocalizedMessage(1072352); // Target the item you wish to toggle Quest Item status on <ESC> to cancel
@@ -4456,7 +4448,10 @@ namespace Server.Mobiles
 
         private void SendYoungDeathNotice()
         {
-            SendGump(new YoungDeathNoticeGump());
+            if (NetState is { } ns)
+            {
+                ns.SendGump(new YoungDeathNoticeGump());
+            }
         }
 
         public override void OnSpeech(SpeechEventArgs e)

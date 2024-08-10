@@ -6,9 +6,10 @@ namespace Server.Guilds
 {
     public class CreateGuildGump : Gump
     {
+        public override bool Singleton => true;
+
         public CreateGuildGump(PlayerMobile pm, string guildName = "Guild Name", string guildAbbrev = "") : base(10, 10)
         {
-            pm.CloseGump<CreateGuildGump>();
             pm.CloseGump<BaseGuildGump>();
 
             AddPage(0);

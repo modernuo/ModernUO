@@ -22,6 +22,8 @@ namespace Server.Engines.ConPVP
 
         private bool m_Active = true;
 
+        public override bool Singleton => true;
+
         public AcceptDuelGump(Mobile challenger, Mobile challenged, DuelContext context, Participant p, int slot) : base(
             50,
             50
@@ -32,8 +34,6 @@ namespace Server.Engines.ConPVP
             m_Context = context;
             m_Participant = p;
             m_Slot = slot;
-
-            challenged.CloseGump<AcceptDuelGump>();
 
             Closable = false;
 
@@ -244,23 +244,18 @@ namespace Server.Engines.ConPVP
                         m_Challenger.SendMessage($"{m_Challenged.Name} has accepted the request.");
                         m_Challenged.SendMessage($"You have accepted the request from {m_Challenger.Name}.");
 
-                        var ns = m_Challenger.NetState;
-
-                        if (ns != null)
+                        foreach (var g in m_Challenger.GetAllGumps())
                         {
-                            foreach (var g in ns.Gumps)
+                            if (g is ParticipantGump pg && pg.Participant == m_Participant)
                             {
-                                if (g is ParticipantGump pg && pg.Participant == m_Participant)
-                                {
-                                    m_Challenger.SendGump(new ParticipantGump(m_Challenger, m_Context, m_Participant));
-                                    break;
-                                }
+                                m_Challenger.SendGump(new ParticipantGump(m_Challenger, m_Context, m_Participant));
+                                break;
+                            }
 
-                                if (g is DuelContextGump dcg && dcg.Context == m_Context)
-                                {
-                                    m_Challenger.SendGump(new DuelContextGump(m_Challenger, m_Context));
-                                    break;
-                                }
+                            if (g is DuelContextGump dcg && dcg.Context == m_Context)
+                            {
+                                m_Challenger.SendGump(new DuelContextGump(m_Challenger, m_Context));
+                                break;
                             }
                         }
                     }

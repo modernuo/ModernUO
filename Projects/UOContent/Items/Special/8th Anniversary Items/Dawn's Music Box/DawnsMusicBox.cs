@@ -212,7 +212,6 @@ public partial class DawnsMusicBox : Item, ISecurable
         }
         else
         {
-            from.CloseGump<DawnsMusicBoxGump>();
             from.SendGump(new DawnsMusicBoxGump(this));
         }
     }

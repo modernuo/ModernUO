@@ -15,12 +15,14 @@
 
 using Server.Network;
 using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace Server.Gumps;
 
 public abstract class BaseGump
 {
+    private static readonly byte[] _packetBuffer = GC.AllocateUninitializedArray<byte>(0x10000);
     private static Serial nextSerial = (Serial)1;
 
     public int TypeID { get; protected set; }
@@ -30,8 +32,12 @@ public abstract class BaseGump
     public abstract int TextEntries { get; }
 
     public int X { get; set; }
-
     public int Y { get; set; }
+
+    /**
+     * If true, only one instance of this gump can be open at a time per player.
+     */
+    public virtual bool Singleton => false;
 
     public BaseGump(int x, int y) : this()
     {
@@ -45,7 +51,17 @@ public abstract class BaseGump
         TypeID = GetTypeId(GetType());
     }
 
-    public abstract void SendTo(NetState ns);
+    public virtual void SendTo(NetState ns)
+    {
+        var writer = new SpanWriter(_packetBuffer);
+        Compile(ref writer);
+
+        ns.Send(writer.Span);
+
+        writer.Dispose();
+    }
+
+    public abstract void Compile(ref SpanWriter writer);
 
     public virtual void OnResponse(NetState sender, in RelayInfo info)
     {

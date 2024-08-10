@@ -40,7 +40,6 @@ public partial class HangingAxesDeed : BaseAddonDeed
     {
         if (IsChildOf(from.Backpack))
         {
-            from.CloseGump<InternalGump>();
             from.SendGump(new InternalGump(this));
         }
         else
@@ -57,6 +56,8 @@ public partial class HangingAxesDeed : BaseAddonDeed
     private class InternalGump : Gump
     {
         private readonly HangingAxesDeed m_Deed;
+
+        public override bool Singleton => true;
 
         public InternalGump(HangingAxesDeed deed) : base(60, 36)
         {

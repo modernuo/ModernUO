@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Buffers;
 using System.IO;
 using Server.Network;
@@ -22,8 +21,6 @@ namespace Server.Gumps;
 
 public abstract class DynamicGump : BaseGump
 {
-    private static readonly byte[] _packetBuffer = GC.AllocateUninitializedArray<byte>(0x10000);
-
     private int _switches;
     private int _textEntries;
 
@@ -36,7 +33,7 @@ public abstract class DynamicGump : BaseGump
 
     protected abstract void BuildLayout(ref DynamicGumpBuilder builder);
 
-    public void CreatePacket(ref SpanWriter writer)
+    public override void Compile(ref SpanWriter writer)
     {
         writer.Write((byte)0xDD); // Packet ID
         writer.Seek(2, SeekOrigin.Current);
@@ -61,17 +58,5 @@ public abstract class DynamicGump : BaseGump
         gumpBuilder.Dispose();
 
         writer.WritePacketLength();
-    }
-
-    public override void SendTo(NetState ns)
-    {
-        ns.AddGump(this);
-
-        var writer = new SpanWriter(_packetBuffer);
-        CreatePacket(ref writer);
-
-        ns.Send(writer.Span);
-
-        writer.Dispose();
     }
 }

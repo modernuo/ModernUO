@@ -39,9 +39,11 @@ namespace Server.SkillHandlers
             {
                 m.SendLocalizedMessage(1011350); // What do you wish to track?
 
-                m.CloseGump<TrackWhatGump>();
-                m.CloseGump<TrackWhoGump>();
-                m.SendGump(new TrackWhatGump(pm));
+                var gumps = pm.GetGumps();
+
+                gumps.Close<TrackWhoGump>();
+                gumps.Close<TrackWhatGump>();
+                gumps.Send(new TrackWhatGump(pm));
             }
 
             return TimeSpan.FromSeconds(10.0); // 10 second delay before being able to re-use a skill
