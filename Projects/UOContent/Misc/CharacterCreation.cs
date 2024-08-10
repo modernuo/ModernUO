@@ -467,24 +467,6 @@ public static class CharacterCreation
                     }
             }
 
-            // if (!Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry or SkillName.Focus)
-            // {
-            //     skills[i] = default;
-            // }
-            // else if (!Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido)
-            // {
-            //     skills[i] = default;
-            // }
-            // else if (!Core.SA && name is SkillName.Throwing or SkillName.Imbuing)
-            // {
-            //     skills[i] = default;
-            // }
-            // else if (name == SkillName.Archery && raceFlag == Race.AllowGargoylesOnly ||
-            //          name == SkillName.Throwing && raceFlag != Race.AllowGargoylesOnly)
-            // {
-            //     skills[i] = default;
-            // }
-
             total += value;
 
             // Do not allow a skill to be listed twice
