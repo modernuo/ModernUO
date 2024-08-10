@@ -3991,15 +3991,13 @@ namespace Server.Mobiles
 
         private void ToggleQuestItemTarget()
         {
-            if (NetState is { } ns)
+            if (NetState != null)
             {
                 BaseQuestGump.CloseOtherGumps(this);
                 var gumps = this.GetGumps();
                 gumps.Close<QuestLogDetailedGump>();
                 gumps.Close<QuestLogGump>();
                 gumps.Close<QuestOfferGump>();
-                // CloseGump( typeof( UnknownGump802 ) );
-                // CloseGump( typeof( UnknownGump804 ) );
             }
 
             BeginTarget(-1, false, TargetFlags.None, ToggleQuestItem_Callback);
