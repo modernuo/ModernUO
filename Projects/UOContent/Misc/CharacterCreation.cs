@@ -444,21 +444,32 @@ public static class CharacterCreation
         for (var i = 0; i < skills.Length; ++i)
         {
             var (name, value) = skills[i];
-            var notValid = value is < 0 or > 50 || !_allowedStartingSkills.Contains(name) ||
-                           !Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry or SkillName.Focus ||
-                           !Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido ||
-                           Core.SA && (raceFlag == Race.AllowGargoylesOnly && name == SkillName.Archery ||
-                                       raceFlag != Race.AllowGargoylesOnly && name == SkillName.Throwing) ||
-                           !Core.SA && name is SkillName.Throwing or SkillName.Imbuing;
 
-            if (notValid)
+            if (value is < 0 or > 50 || !_allowedStartingSkills.Contains(name))
             {
-                skills[i] = default;
-                continue;
+                return false;
+            }
+
+            /**
+             * Note: Change to Alchemy @ 0 skill if something invalid is chosen.
+             * To avoid this, modify the client to only show the skills allowed by your shard.
+             */
+            switch (name)
+            {
+                case SkillName.Necromancy or SkillName.Chivalry or SkillName.Focus when !Core.AOS:
+                case SkillName.Ninjitsu or SkillName.Bushido when !Core.SE:
+                case SkillName.Throwing or SkillName.Imbuing when !Core.SA:
+                case SkillName.Archery when raceFlag == Race.AllowGargoylesOnly:
+                case SkillName.Throwing when raceFlag != Race.AllowGargoylesOnly:
+                    {
+                        skills[i] = default;
+                        break;
+                    }
             }
 
             total += value;
 
+            // Do not allow a skill to be listed twice
             for (var j = i + 1; j < skills.Length; ++j)
             {
                 var (nameCheck, valueCheck) = skills[j];
