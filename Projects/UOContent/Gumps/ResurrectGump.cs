@@ -92,7 +92,7 @@ public class ResurrectGump : DynamicGump
     {
         if (_price > 0)
         {
-
+            BuildPricedLayout(ref builder);
             return;
         }
 
@@ -193,8 +193,8 @@ public class ResurrectGump : DynamicGump
         {
             if (Banker.Withdraw(from, _price))
             {
-                // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-                from.SendLocalizedMessage(1060398, _price.ToString());
+                // ~1_AMOUNT~ gold has been withdrawn from your bank to cover the price of the healing.
+                from.SendLocalizedMessage(1060021, _price.ToString());
 
                 // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
                 from.SendLocalizedMessage(1060022, Banker.GetBalance(from).ToString());
