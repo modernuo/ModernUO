@@ -9,6 +9,8 @@ public class YoungDungeonWarningGump : StaticGump<YoungDungeonWarningGump>
     {
     }
 
+    public override bool Singleton => true;
+
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
         builder.AddBackground(0, 0, 250, 170, 302);
@@ -26,6 +28,8 @@ public class YoungDeathNoticeGump : StaticGump<YoungDeathNoticeGump>
     public YoungDeathNoticeGump() : base(100, 15)
     {
     }
+
+    public override bool Singleton => true;
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
@@ -59,6 +63,8 @@ public class RenounceYoungGump : StaticGump<RenounceYoungGump>
     public RenounceYoungGump() : base(150, 50)
     {
     }
+
+    public override bool Singleton => true;
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
