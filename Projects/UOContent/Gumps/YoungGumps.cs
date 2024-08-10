@@ -62,11 +62,13 @@ public class RenounceYoungGump : StaticGump<RenounceYoungGump>
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        builder.AddBackground(0, 0, 450, 400, 0xA28);
+        builder.AddBackground(0, 0, 450, 330, 302);
+        builder.AddBackground(10, 10, 430, 310, 5120);
 
-        builder.AddHtmlLocalized(0, 30, 450, 35, 1013004); // <center> Renouncing 'Young Player' Status</center>
+        builder.AddHtmlLocalized(0, 24, 450, 20, 1013004, 65535); // <center> Renouncing 'Young Player' Status</center>
 
-        /* As a 'Young' player, you are currently under a system of protection that prevents
+        /*
+         * As a 'Young' player, you are currently under a system of protection that prevents
          * you from being attacked by other players and certain monsters.<br><br>
          *
          * If you choose to renounce your status as a 'Young' player, you will lose this protection.
@@ -76,13 +78,10 @@ public class RenounceYoungGump : StaticGump<RenounceYoungGump>
          * Select OKAY now if you wish to renounce your status as a 'Young' player, otherwise
          * press CANCEL.
          */
-        builder.AddHtmlLocalized(30, 70, 390, 210, 1013005, true, true);
+        builder.AddHtmlLocalized(25, 50, 380, 210, 1013005, 65535);
 
-        builder.AddButton(45, 298, 0xFA5, 0xFA7, 1);
-        builder. AddHtmlLocalized(78, 300, 100, 35, 1011036); // OKAY
-
-        builder.AddButton(178, 298, 0xFA5, 0xFA7, 0);
-        builder.AddHtmlLocalized(211, 300, 100, 35, 1011012); // CANCEL
+        builder.AddButton(363, 285, 0xF8, 0xF9, 1); // OKAY
+        builder.AddButton(283, 285, 0xF1, 0xF2, 0); // OKAY
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
