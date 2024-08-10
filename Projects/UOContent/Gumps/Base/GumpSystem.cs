@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Logging;
 using Server.Network;
 using System;
 using System.Collections.Generic;
