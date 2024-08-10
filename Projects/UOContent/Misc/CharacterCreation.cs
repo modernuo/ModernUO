@@ -454,24 +454,36 @@ public static class CharacterCreation
              * Note: Change to Alchemy @ 0 skill if something invalid is chosen.
              * To avoid this, modify the client to only show the skills allowed by your shard.
              */
+            switch (name)
+            {
+                case SkillName.Necromancy or SkillName.Chivalry or SkillName.Focus when !Core.AOS:
+                case SkillName.Ninjitsu or SkillName.Bushido when !Core.SE:
+                case SkillName.Throwing or SkillName.Imbuing when !Core.SA:
+                case SkillName.Archery when raceFlag == Race.AllowGargoylesOnly:
+                case SkillName.Throwing when raceFlag != Race.AllowGargoylesOnly:
+                    {
+                        skills[i] = default;
+                        break;
+                    }
+            }
 
-            if (!Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry or SkillName.Focus)
-            {
-                skills[i] = default;
-            }
-            else if (!Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido)
-            {
-                skills[i] = default;
-            }
-            else if (!Core.SA && name is SkillName.Throwing or SkillName.Imbuing)
-            {
-                skills[i] = default;
-            }
-            else if (name == SkillName.Archery && raceFlag == Race.AllowGargoylesOnly ||
-                     name == SkillName.Throwing && raceFlag != Race.AllowGargoylesOnly)
-            {
-                skills[i] = default;
-            }
+            // if (!Core.AOS && name is SkillName.Necromancy or SkillName.Chivalry or SkillName.Focus)
+            // {
+            //     skills[i] = default;
+            // }
+            // else if (!Core.SE && name is SkillName.Ninjitsu or SkillName.Bushido)
+            // {
+            //     skills[i] = default;
+            // }
+            // else if (!Core.SA && name is SkillName.Throwing or SkillName.Imbuing)
+            // {
+            //     skills[i] = default;
+            // }
+            // else if (name == SkillName.Archery && raceFlag == Race.AllowGargoylesOnly ||
+            //          name == SkillName.Throwing && raceFlag != Race.AllowGargoylesOnly)
+            // {
+            //     skills[i] = default;
+            // }
 
             total += value;
 
