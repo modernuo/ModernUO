@@ -11,13 +11,13 @@ public class YoungDungeonWarningGump : StaticGump<YoungDungeonWarningGump>
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        builder.AddBackground(0, 0, 250, 170, 0xA28);
+        builder.AddBackground(0, 0, 250, 170, 302);
+        builder.AddBackground(10, 10, 230, 150, 5120);
 
         // Warning: monsters may attack you on site down here in the dungeons!
-        builder.AddHtmlLocalized(20, 43, 215, 70, 1018030, true, true);
+        builder.AddHtmlLocalized(20, 25, 210, 70, 1018030, 65535);
 
-        builder.AddButton(70, 123, 0xFA5, 0xFA7, 0);
-        builder.AddHtmlLocalized(105, 125, 100, 35, 1011036); // OKAY
+        builder.AddButton(163, 125, 0xF8, 0xF9, 0);
     }
 }
 
