@@ -36,7 +36,7 @@ public readonly ref struct NetStateGumps
 
     public bool Close<T>() where T : BaseGump
     {
-        if (_state == null || _gumps == null)
+        if (_state == null)
         {
             return false;
         }
@@ -58,7 +58,7 @@ public readonly ref struct NetStateGumps
 
     public T Find<T>() where T : BaseGump
     {
-        if (_state == null || _gumps == null)
+        if (_state == null)
         {
             return null;
         }
@@ -78,7 +78,7 @@ public readonly ref struct NetStateGumps
 
     public void Send(BaseGump gump, bool singleton = false)
     {
-        if (_state == null || _gumps == null || _state.CannotSendPackets()) // Cannot send packets handles _state null check
+        if (_state.CannotSendPackets()) // Cannot send packets handles _state null check
         {
             return;
         }

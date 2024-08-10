@@ -1723,10 +1723,22 @@ namespace Server.Mobiles
 
         public override bool Move(Direction d)
         {
-            if (NetState != null && Alive && !NetState.CloseGump<ResurrectGump>())
+            if (NetState != null)
             {
-                SendLocalizedMessage(500111); // You are frozen and cannot move.
-                return false;
+                var gumps = NetState.GetGumps();
+
+                if (gumps.Has<ResurrectGump>())
+                {
+                    if (Alive)
+                    {
+                        gumps.Close<ResurrectGump>();
+                    }
+                    else
+                    {
+                        SendLocalizedMessage(500111); // You are frozen and cannot move.
+                        return false;
+                    }
+                }
             }
 
             // var speed = ComputeMovementSpeed(d);
