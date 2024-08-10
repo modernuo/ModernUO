@@ -33,7 +33,11 @@ public abstract class BaseGump
 
     public int X { get; set; }
     public int Y { get; set; }
-    public virtual bool Singleton { get; }
+
+    /**
+     * If true, only one instance of this gump can be open at a time per player.
+     */
+    public virtual bool Singleton => false;
 
     public BaseGump(int x, int y) : this()
     {
