@@ -87,7 +87,7 @@ public class RenounceYoungGump : StaticGump<RenounceYoungGump>
         builder.AddHtmlLocalized(25, 50, 380, 210, 1013005, 65535);
 
         builder.AddButton(363, 285, 0xF8, 0xF9, 1); // OKAY
-        builder.AddButton(283, 285, 0xF1, 0xF2, 0); // OKAY
+        builder.AddButton(283, 285, 0xF1, 0xF2, 0); // CANCEL
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
