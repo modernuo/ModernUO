@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Gumps.Base;
 using Server.Logging;
 using Server.Network;
 using System;
@@ -29,7 +28,6 @@ public static partial class GumpSystem
     public const int GumpCap = 512;
 
     private static readonly Dictionary<NetState, List<BaseGump>> _gumps = [];
-    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(GumpSystem));
 
     public static unsafe void Configure()
     {
@@ -46,24 +44,7 @@ public static partial class GumpSystem
         }
     }
 
-    private static T Find<T>(NetState ns) where T : BaseGump
-    {
-        if (ns == null || !_gumps.TryGetValue(ns, out var gumps))
-        {
-            return null;
-        }
-
-        var gumpsSpan = CollectionsMarshal.AsSpan(gumps);
-        for (int i = 0; i < gumpsSpan.Length; i++)
-        {
-            if (gumpsSpan[i] is T tGump)
-            {
-                return tGump;
-            }
-        }
-
-        return null;
-    }
+    private static T Find<T>(NetState ns) where T : BaseGump => ns != null ? Get(ns).Find<T>() : null;
 
     private static void Remove(NetState ns, BaseGump gump)
     {
@@ -80,26 +61,6 @@ public static partial class GumpSystem
         }
     }
 
-    private static bool Remove<T>(NetState ns, out T gump) where T : BaseGump
-    {
-        if (ns != null && _gumps.TryGetValue(ns, out var gumps))
-        {
-            var gumpsSpan = CollectionsMarshal.AsSpan(gumps);
-            for (int i = 0; i < gumpsSpan.Length; i++)
-            {
-                if (gumpsSpan[i] is T tGump)
-                {
-                    gumps.RemoveAt(i);
-                    gump = tGump;
-                    return true;
-                }
-            }
-        }
-
-        gump = null;
-        return false;
-    }
-
     private static void Send(NetState ns, BaseGump gump, bool singleton)
     {
         if (ns.CannotSendPackets()) // Handles ns null check too
@@ -107,61 +68,10 @@ public static partial class GumpSystem
             return;
         }
 
-        ref List<BaseGump> list = ref CollectionsMarshal.GetValueRefOrAddDefault(_gumps, ns, out bool exists);
-
-        if (exists)
-        {
-            bool replaced = false;
-
-            if (singleton || gump.Singleton)
-            {
-                for (int i = 0; i < list.Count; i++)
-                {
-                    BaseGump old = list[i];
-
-                    if (old.TypeID == gump.TypeID)
-                    {
-                        ns.SendCloseGump(old.TypeID, 0);
-                        old.OnServerClose(ns);
-
-                        list[i] = gump;
-                        replaced = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!replaced)
-            {
-                if (list.Count >= GumpCap)
-                {
-                    _logger.Information("Exceeded gump cap, disconnecting...");
-                    ns.Disconnect("Exceeded gump cap.");
-                    return;
-                }
-
-                list.Add(gump);
-            }
-        }
-        else
-        {
-            list = [gump];
-        }
-
-        gump.SendTo(ns);
+        Get(ns).Send(gump, singleton);
     }
 
-    private static bool Close<T>(NetState ns) where T : BaseGump
-    {
-        if (Remove<T>(ns, out var gump))
-        {
-            ns.SendCloseGump(gump.TypeID, 0);
-            gump.OnServerClose(ns);
-            return true;
-        }
-
-        return false;
-    }
+    private static bool Close<T>(NetState ns) where T : BaseGump => ns != null && Get(ns).Close<T>();
 
     private static NetStateGumps Get(NetState ns)
     {

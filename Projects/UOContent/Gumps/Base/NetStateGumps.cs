@@ -17,9 +17,10 @@ using Server.Logging;
 using Server.Network;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Server.Gumps.Base;
+namespace Server.Gumps;
 
 public readonly ref struct NetStateGumps
 {
@@ -112,6 +113,7 @@ public readonly ref struct NetStateGumps
         gump.SendTo(_state);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<BaseGump>.Enumerator GetEnumerator() =>
         ((ReadOnlySpan<BaseGump>)CollectionsMarshal.AsSpan(_gumps)).GetEnumerator();
 }
