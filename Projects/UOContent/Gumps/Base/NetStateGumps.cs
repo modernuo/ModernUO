@@ -24,6 +24,7 @@ namespace Server.Gumps;
 
 public readonly ref struct NetStateGumps
 {
+    private const int GumpCap = 512;
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(NetStateGumps));
 
     private readonly List<BaseGump> _gumps;
@@ -102,7 +103,7 @@ public readonly ref struct NetStateGumps
             }
         }
 
-        if (_gumps.Count >= GumpSystem.GumpCap)
+        if (_gumps.Count >= GumpCap)
         {
             _logger.Information("Exceeded gump cap, disconnecting...");
             _state.Disconnect("Exceeded gump cap.");
