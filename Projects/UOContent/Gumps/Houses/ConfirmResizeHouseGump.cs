@@ -5,11 +5,13 @@ using Server.Network;
 
 namespace Server.Gumps;
 
-public class ConfirmHouseResizeGump : StaticGump<ConfirmHouseResizeGump>
+public class ConfirmResizeHouseGump : StaticGump<ConfirmResizeHouseGump>
 {
     private readonly BaseHouse _house;
 
-    public ConfirmHouseResizeGump(BaseHouse house) : base(110, 100) => _house = house;
+    public override bool Singleton => true;
+
+    public ConfirmResizeHouseGump(BaseHouse house) : base(110, 100) => _house = house;
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
@@ -18,9 +20,12 @@ public class ConfirmHouseResizeGump : StaticGump<ConfirmHouseResizeGump>
         builder.AddPage();
 
         builder.AddBackground(0, 0, 420, 280, 0x13BE);
+
         builder.AddImageTiled(10, 10, 400, 20, 0xA40);
         builder.AddAlphaRegion(10, 10, 400, 20);
+
         builder.AddHtmlLocalized(10, 10, 400, 20, 1060635, 0x7800); // <CENTER>WARNING</CENTER>
+
         builder.AddImageTiled(10, 40, 400, 200, 0xA40);
         builder.AddAlphaRegion(10, 40, 400, 200);
 
@@ -38,8 +43,10 @@ public class ConfirmHouseResizeGump : StaticGump<ConfirmHouseResizeGump>
 
         builder.AddImageTiled(10, 250, 400, 20, 0xA40);
         builder.AddAlphaRegion(10, 250, 400, 20);
+
         builder.AddButton(10, 250, 0xFA5, 0xFA7, 1);
         builder.AddButton(210, 250, 0xFA5, 0xFA7, 0);
+
         builder.AddHtmlLocalized(40, 250, 170, 20, 1011036, 0x7FFF);  // OKAY
         builder.AddHtmlLocalized(240, 250, 170, 20, 1011012, 0x7FFF); // CANCEL
     }
