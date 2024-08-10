@@ -13,8 +13,8 @@ public class YoungDungeonWarningGump : StaticGump<YoungDungeonWarningGump>
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        builder.AddBackground(0, 0, 250, 170, 302);
-        builder.AddBackground(10, 10, 230, 150, 5120);
+        builder.AddBackground(0, 0, 250, 170, 0x12E);
+        builder.AddBackground(10, 10, 230, 150, 0x1400);
 
         // Warning: monsters may attack you on site down here in the dungeons!
         builder.AddHtmlLocalized(20, 25, 210, 70, 1018030, 0x7FFF);
@@ -35,8 +35,8 @@ public class YoungDeathNoticeGump : StaticGump<YoungDeathNoticeGump>
     {
         builder.SetNoClose();
 
-        builder.AddBackground(25, 10, 425, 444, 302);
-        builder.AddBackground(35, 20, 405, 424, 5120);
+        builder.AddBackground(25, 10, 425, 444, 0x12E);
+        builder.AddBackground(35, 20, 405, 424, 0x1400);
         builder.AddAlphaRegion(25, 10, 425, 444);
 
         builder.AddHtmlLocalized(190, 34, 120, 20, 1046287, 0x7D00); // You have died.
@@ -68,8 +68,8 @@ public class RenounceYoungGump : StaticGump<RenounceYoungGump>
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        builder.AddBackground(0, 0, 450, 330, 302);
-        builder.AddBackground(10, 10, 430, 310, 5120);
+        builder.AddBackground(0, 0, 450, 330, 0x12E);
+        builder.AddBackground(10, 10, 430, 310, 0x1400);
 
         builder.AddHtmlLocalized(0, 24, 450, 20, 1013004, 0x7FFF); // <center> Renouncing 'Young Player' Status</center>
 
