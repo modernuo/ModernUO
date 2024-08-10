@@ -18,4 +18,9 @@ public partial class PricedHealer : BaseHealer
     public override bool IsInvulnerable => true;
 
     public override bool HealsYoungPlayers => false;
+
+    private void MigrateFrom(V0Content content)
+    {
+        Price = content.Price;
+    }
 }

@@ -167,4 +167,9 @@ public abstract partial class BaseHealer : BaseVendor
             FightMode = FightMode.Aggressor;
         }
     }
+
+    private void MigrateFrom(V2Content content)
+    {
+        _price = 0;
+    }
 }
