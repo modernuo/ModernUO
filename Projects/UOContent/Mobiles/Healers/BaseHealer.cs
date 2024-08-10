@@ -14,7 +14,8 @@ public abstract partial class BaseHealer : BaseVendor
 
     private DateTime _nextResurrect;
 
-    [SerializableField(0)] [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _price;
 
     public BaseHealer() : this(0)
@@ -97,11 +98,11 @@ public abstract partial class BaseHealer : BaseVendor
 
         if (_price > 0)
         {
-            m.SendGump(new PricedResurrectGump(this, _price), true);
+            m.SendGump(new ResurrectGump(this, _price), true);
             return;
         }
 
-        m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
+        m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer), true);
     }
 
     public virtual void OfferHeal(PlayerMobile m)
