@@ -7,7 +7,7 @@ using Server.Items;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(2, false)]
+[SerializationGenerator(3, false)]
 public abstract partial class BaseHealer : BaseVendor
 {
     private static readonly TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);

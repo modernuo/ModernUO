@@ -3,7 +3,7 @@ using Server.Gumps;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(1, false)]
 public partial class PricedHealer : BaseHealer
 {
     [Constructible]

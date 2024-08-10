@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "type": "Server.Mobiles.BaseHealer",
+  "properties": [
+    {
+      "name": "Price",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
