@@ -451,7 +451,7 @@ public static class CharacterCreation
             }
 
             /**
-             * Note: Change to Alchemy & 0 skill if something invalid is chosen.
+             * Note: Change to Alchemy @ 0 skill if something invalid is chosen.
              * To avoid this, modify the client to only show the skills allowed by your shard.
              */
 
