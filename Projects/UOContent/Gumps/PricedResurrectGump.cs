@@ -15,7 +15,6 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
         _healer = healer;
         _price = price;
 
-        // Close this gump when
         TypeID = GetTypeId(typeof(ResurrectGump));
     }
 
@@ -101,8 +100,8 @@ public class PricedResurrectGump : StaticGump<PricedResurrectGump>
 
         if (Banker.Withdraw(from, _price))
         {
-            // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-            from.SendLocalizedMessage(1060398, _price.ToString());
+            // ~1_AMOUNT~ gold has been withdrawn from your bank to cover the price of the healing.
+            from.SendLocalizedMessage(1060021, _price.ToString());
 
             // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
             from.SendLocalizedMessage(1060022, Banker.GetBalance(from).ToString());

@@ -1727,17 +1727,14 @@ namespace Server.Mobiles
             {
                 var gumps = NetState.GetGumps();
 
-                if (gumps.Has<ResurrectGump>())
+                if (Alive)
                 {
-                    if (Alive)
-                    {
-                        gumps.Close<ResurrectGump>();
-                    }
-                    else
-                    {
-                        SendLocalizedMessage(500111); // You are frozen and cannot move.
-                        return false;
-                    }
+                    gumps.Close<ResurrectGump>();
+                }
+                else if (gumps.Has<ResurrectGump>())
+                {
+                    SendLocalizedMessage(500111); // You are frozen and cannot move.
+                    return false;
                 }
             }
 
