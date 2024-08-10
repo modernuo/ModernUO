@@ -2248,7 +2248,7 @@ namespace Server.Multis
                 }
                 else
                 {
-                    to.SendGump(new HouseTransferGump(from, to, this));
+                    to.SendGump(new AcceptHouseTransferGump(from, this));
                 }
             }
         }
@@ -2271,22 +2271,22 @@ namespace Server.Multis
             }
         }
 
-        private void ConfirmTransfer_Callback(Mobile to, bool ok, Mobile from)
+        private void ConfirmTransfer_Callback(Mobile transferee, bool ok, Mobile transferor)
         {
-            if (!ok || Deleted || !from.CheckAlive() || !IsOwner(from))
+            if (!ok || Deleted || !transferor.CheckAlive() || !IsOwner(transferor))
             {
                 return;
             }
 
-            if (CheckTransferPosition(from, to))
+            if (CheckTransferPosition(transferor, transferee))
             {
-                to.SendGump(new HouseTransferGump(from, to, this));
+                transferee.SendGump(new AcceptHouseTransferGump(transferor, this));
             }
         }
 
-        public void EndConfirmTransfer(Mobile from, Mobile to)
+        public void EndConfirmTransfer(Mobile transferor, Mobile transferee)
         {
-            if (Deleted || !from.CheckAlive() || !IsOwner(from))
+            if (Deleted || !transferor.CheckAlive() || !IsOwner(transferor))
             {
                 return;
             }
@@ -2294,42 +2294,42 @@ namespace Server.Multis
             if (NewVendorSystem && HasPersonalVendors)
             {
                 // You cannot trade this house while you still have personal vendors inside.
-                from.SendLocalizedMessage(1062467);
+                transferor.SendLocalizedMessage(1062467);
             }
             else if (DecayLevel == DecayLevel.DemolitionPending)
             {
                 // This house has been marked for demolition, and it cannot be transferred.
-                from.SendLocalizedMessage(1005321);
+                transferor.SendLocalizedMessage(1005321);
             }
-            else if (from == to)
+            else if (transferor == transferee)
             {
-                from.SendLocalizedMessage(1005330); // You cannot transfer a house to yourself, silly.
+                transferor.SendLocalizedMessage(1005330); // You cannot transfer a house to yourself, silly.
             }
-            else if (HasAccountHouse(to))
+            else if (HasAccountHouse(transferee))
             {
-                from.SendLocalizedMessage(501388); // You cannot transfer ownership to another house owner or co-owner!
+                transferor.SendLocalizedMessage(501388); // You cannot transfer ownership to another house owner or co-owner!
             }
-            else if (CheckTransferPosition(from, to))
+            else if (CheckTransferPosition(transferor, transferee))
             {
-                var fromState = from.NetState;
-                var toState = to.NetState;
+                var fromState = transferor.NetState;
+                var toState = transferee.NetState;
 
                 if (fromState != null && toState != null)
                 {
-                    if (from.HasTrade)
+                    if (transferor.HasTrade)
                     {
                         // You cannot trade a house while you have other trades pending.
-                        from.SendLocalizedMessage(1062071);
+                        transferor.SendLocalizedMessage(1062071);
                     }
-                    else if (to.HasTrade)
+                    else if (transferee.HasTrade)
                     {
                         // You cannot trade a house while you have other trades pending.
-                        to.SendLocalizedMessage(1062071);
+                        transferee.SendLocalizedMessage(1062071);
                     }
-                    else if (!to.Alive)
+                    else if (!transferee.Alive)
                     {
                         // TODO: Check if the message is correct.
-                        from.SendLocalizedMessage(1062069); // You cannot transfer this house to that person.
+                        transferor.SendLocalizedMessage(1062069); // You cannot transfer this house to that person.
                     }
                     else
                     {
@@ -2399,7 +2399,7 @@ namespace Server.Multis
 
                 if (info != null)
                 {
-                    m.SendGump(new SetSecureLevelGump(m_Owner, info, this));
+                    m.SendGump(new SetSecureLevelGump(info, this));
                 }
                 else if (item.Parent != null)
                 {
@@ -2434,7 +2434,7 @@ namespace Server.Multis
                     LockDowns.Remove(item);
                     item.Movable = false;
 
-                    m.SendGump(new SetSecureLevelGump(m_Owner, info, this));
+                    m.SendGump(new SetSecureLevelGump(info, this));
                 }
             }
         }
@@ -4364,7 +4364,7 @@ namespace Server.Multis
 
             if (sec != null)
             {
-                from.SendGump(new SetSecureLevelGump(from, sec, BaseHouse.FindHouseAt(item)));
+                from.SendGump(new SetSecureLevelGump(sec, BaseHouse.FindHouseAt(item)));
             }
         }
     }
