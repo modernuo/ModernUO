@@ -14,8 +14,17 @@ public abstract partial class BaseHealer : BaseVendor
 
     private DateTime _nextResurrect;
 
-    public BaseHealer()
+    [SerializableField(0)] [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _price;
+
+    public BaseHealer() : this(0)
     {
+    }
+
+    public BaseHealer(int price)
+    {
+        _price = price;
+
         if (!IsInvulnerable)
         {
             AI = AIType.AI_Mage;
@@ -85,6 +94,12 @@ public abstract partial class BaseHealer : BaseVendor
 
         m.PlaySound(0x1F2);
         m.FixedEffect(0x376A, 10, 16);
+
+        if (_price > 0)
+        {
+            m.SendGump(new PricedResurrectGump(this, _price), true);
+            return;
+        }
 
         m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
     }

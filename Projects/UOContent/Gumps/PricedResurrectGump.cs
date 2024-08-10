@@ -7,6 +7,16 @@ namespace Server.Gumps;
 
 public class PricedResurrectGump : StaticGump<PricedResurrectGump>
 {
+    public static void Configure()
+    {
+        CommandSystem.Register("testgump", AccessLevel.Administrator,
+            args =>
+            {
+                args.Mobile.CloseGump<PricedResurrectGump>();
+                args.Mobile.SendGump(new PricedResurrectGump(args.Mobile, 1));
+            });
+    }
+
     private readonly Mobile _healer;
     private readonly int _price;
 
