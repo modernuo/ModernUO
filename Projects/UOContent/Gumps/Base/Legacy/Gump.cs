@@ -312,8 +312,6 @@ public class Gump : BaseGump
         {
             _stringsList.Clear();
         }
-
-        writer.Dispose();
     }
 
     protected void Reset()
