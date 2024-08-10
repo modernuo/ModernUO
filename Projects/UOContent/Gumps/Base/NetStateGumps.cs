@@ -78,7 +78,7 @@ public readonly ref struct NetStateGumps
 
     public void Send(BaseGump gump, bool singleton = false)
     {
-        if (_state == null || _gumps == null || _state.CannotSendPackets()) // Cannot send packets handles _state null check
+        if (_gumps == null || _state.CannotSendPackets()) // Cannot send packets handles _state null check
         {
             return;
         }
@@ -112,5 +112,6 @@ public readonly ref struct NetStateGumps
         gump.SendTo(_state);
     }
 
-    public ReadOnlySpan<BaseGump>.Enumerator GetEnumerator() => ((ReadOnlySpan<BaseGump>)CollectionsMarshal.AsSpan(_gumps)).GetEnumerator();
+    public ReadOnlySpan<BaseGump>.Enumerator GetEnumerator() =>
+        ((ReadOnlySpan<BaseGump>)CollectionsMarshal.AsSpan(_gumps)).GetEnumerator();
 }

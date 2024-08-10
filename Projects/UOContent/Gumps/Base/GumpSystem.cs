@@ -26,7 +26,6 @@ namespace Server.Gumps;
 
 public static partial class GumpSystem
 {
-    private const int InitialCapacity = 4;
     public const int GumpCap = 512;
 
     private static readonly Dictionary<NetState, List<BaseGump>> _gumps = [];
@@ -146,7 +145,7 @@ public static partial class GumpSystem
         }
         else
         {
-            list = new List<BaseGump>(InitialCapacity) { gump };
+            list = [gump];
         }
 
         gump.SendTo(ns);
@@ -175,7 +174,7 @@ public static partial class GumpSystem
 
         if (!exists)
         {
-            list = new List<BaseGump>(InitialCapacity);
+            list = [];
         }
 
         return new NetStateGumps(list, ns);
