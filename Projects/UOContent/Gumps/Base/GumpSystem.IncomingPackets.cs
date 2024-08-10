@@ -37,15 +37,18 @@ public static partial class GumpSystem
 
         BaseGump baseGump = null;
 
-        foreach (var g in GetAll(state))
+        if (_gumps.TryGetValue(state, out var gumps))
         {
-            if (g.Serial != serial || g.TypeID != typeId)
+            foreach (var g in gumps)
             {
-                continue;
-            }
+                if (g.Serial != serial || g.TypeID != typeId)
+                {
+                    continue;
+                }
 
-            baseGump = g;
-            break;
+                baseGump = g;
+                break;
+            }
         }
 
         if (baseGump != null)

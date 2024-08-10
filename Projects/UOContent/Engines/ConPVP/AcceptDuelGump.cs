@@ -244,7 +244,7 @@ namespace Server.Engines.ConPVP
                         m_Challenger.SendMessage($"{m_Challenged.Name} has accepted the request.");
                         m_Challenged.SendMessage($"You have accepted the request from {m_Challenger.Name}.");
 
-                        foreach (var g in m_Challenger.GetAllGumps())
+                        foreach (var g in m_Challenger.GetGumps())
                         {
                             if (g is ParticipantGump pg && pg.Participant == m_Participant)
                             {
