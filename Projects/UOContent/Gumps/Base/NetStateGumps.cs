@@ -112,5 +112,6 @@ public readonly ref struct NetStateGumps
         gump.SendTo(_state);
     }
 
-    public ReadOnlySpan<BaseGump>.Enumerator GetEnumerator() => ((ReadOnlySpan<BaseGump>)CollectionsMarshal.AsSpan(_gumps)).GetEnumerator();
+    public ReadOnlySpan<BaseGump>.Enumerator GetEnumerator() =>
+        ((ReadOnlySpan<BaseGump>)CollectionsMarshal.AsSpan(_gumps)).GetEnumerator();
 }
