@@ -57,6 +57,8 @@ public partial class PlayerVendor : Mobile
     [SerializedCommandProperty( AccessLevel.GameMaster )]
     private bool _vendorSearch;
 
+    public double CommissionPerc => 5.25;
+    public virtual bool IsCommission => false;
 
     public PlayerVendor(Mobile owner, BaseHouse house)
     {
@@ -89,12 +91,15 @@ public partial class PlayerVendor : Mobile
         InitBody();
         InitOutfit();
 
-        var delay = PayTimer.GetInterval();
+        if ( !IsCommission )
+        {
+            var delay = PayTimer.GetInterval();
 
-        _payTimer = new PayTimer(this, delay);
-        _payTimer.Start();
+            _payTimer = new PayTimer( this, delay );
+            _payTimer.Start();
 
-        NextPayTime = Core.Now + delay;
+            NextPayTime = Core.Now + delay;
+        }
 
         PlayerVendors.Add(this);
         VendorSearch = true;
@@ -199,10 +204,13 @@ public partial class PlayerVendor : Mobile
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        var delay = _nextPayTime - Core.Now;
+        if ( !IsCommission )
+        {
+            var delay = _nextPayTime - Core.Now;
 
-        _payTimer = new PayTimer(this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero);
-        _payTimer.Start();
+            _payTimer = new PayTimer( this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero );
+            _payTimer.Start();
+        }
 
         Blessed = false;
 
