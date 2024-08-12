@@ -7,20 +7,22 @@ using Server.Prompts;
 
 namespace Server.Gumps;
 
+public enum HouseGumpSection
+{
+    Info,
+    Friends,
+    Options,
+}
+
 public class HouseGump : DynamicGump
 {
-    public enum Section
-    {
-        Info,
-        Friends,
-        Options,
-    }
 
     public enum Page
     {
         One = 1,
         ShopSigns = 2,
         GuildSigns = 3,
+        // allow for 20 pages of each, page size 10, so 200 max bans, co owners, and friends?
         ListBans = 10,
         ListCoOwners = 30,
         ListFriends = 50,
@@ -59,14 +61,14 @@ public class HouseGump : DynamicGump
     private readonly bool _isCoOwner;
     private readonly bool _isFriend;
 
-    private readonly Section _section;
+    private readonly HouseGumpSection _houseGumpSection;
 
     public override bool Singleton => true;
 
-    public HouseGump(Mobile from, BaseHouse house, Section section = Section.Info) : base(50, 50)
+    public HouseGump(Mobile from, BaseHouse house, HouseGumpSection houseGumpSection = HouseGumpSection.Info) : base(50, 50)
     {
         _house = house;
-        _section = section;
+        _houseGumpSection = houseGumpSection;
 
         var isCombatRestricted = house.IsCombatRestricted(from);
 
@@ -83,18 +85,6 @@ public class HouseGump : DynamicGump
     private void AddBackButton(ref DynamicGumpBuilder builder, int buttonId)
     {
         builder.AddButton(15, 389, 0xFAE, 0xFB0, buttonId); // back button
-    }
-
-    private void AddTableOfContents(ref DynamicGumpBuilder builder)
-    {
-        builder.AddHtmlLocalized(335, 19, 75, 20, 1011233); // INFO
-        builder.AddButton(370, 20, 0x16CD, 0x16CE, (int)Button.GotoInfo);
-
-        builder.AddHtmlLocalized(314, 49, 75, 20, 1011234); // FRIENDS
-        builder.AddButton(370, 50, 0x16CD, 0x16CE, (int)Button.GotoFriends);
-
-        builder.AddHtmlLocalized(314, 79, 75, 20, 1011235); // OPTIONS
-        builder.AddButton(370, 79, 0x16CD, 0x16CE, (int)Button.GotoOptions);
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -131,21 +121,29 @@ public class HouseGump : DynamicGump
             return;
         }
 
-        AddTableOfContents(ref builder);
+        // Table of Contents
+        builder.AddHtmlLocalized(340, 17, 75, 20, 1011233); // INFO
+        builder.AddButton(374, 15, 0xFAB, 0xFAD, (int)Button.GotoInfo);
 
-        switch (_section)
+        builder.AddHtmlLocalized(319, 47, 75, 20, 1011234); // FRIENDS
+        builder.AddButton(374, 45, 0xFA8, 0xFAA, (int)Button.GotoFriends);
+
+        builder.AddHtmlLocalized(319, 77, 75, 20, 1011235); // OPTIONS
+        builder.AddButton(374, 75, 0xFBD, 0xFBF, (int)Button.GotoOptions);
+
+        switch (_houseGumpSection)
         {
-            case Section.Info:
+            case HouseGumpSection.Info:
                 {
                     BuildInfoPage(ref builder);
                     break;
                 }
-            case Section.Friends:
+            case HouseGumpSection.Friends:
                 {
                     BuildPeoplePages(ref builder);
                     break;
                 }
-            case Section.Options:
+            case HouseGumpSection.Options:
                 {
                     BuildOptionsPages(ref builder);
                     break;
@@ -245,7 +243,7 @@ public class HouseGump : DynamicGump
             {
                 if (i + pageSize < _house.Bans.Count)
                 {
-                    builder.AddButton(370, 310, 4005, 4007, 0, GumpButtonType.Page, i / pageSize + (int)Page.ListBans);
+                    builder.AddButton(374, 310, 4005, 4007, 0, GumpButtonType.Page, i / pageSize + (int)Page.ListBans);
                 }
 
                 builder.AddPage(i / pageSize + (int)Page.ListBans);
@@ -266,8 +264,8 @@ public class HouseGump : DynamicGump
                 builder.AddHtmlLocalized(260, 250, 150, 20, 1011258); // View a list of banned people
                 builder.AddButton(370, 250, 0xFBD, 0xFBF, (int)Button.Ban);
 
-                builder.AddHtmlLocalized(240, 280, 150, 20, 1011261); // Lift a ban
-                builder.AddButton(370, 280, 0xFA2, 0xFA4, (int)Button.RemoveBans);
+                builder.AddHtmlLocalized(245, 280, 150, 20, 1011261); // Lift a ban
+                builder.AddButton(374, 280, 0xFA2, 0xFA4, (int)Button.RemoveBans);
 
                 AddBackButton(ref builder, (int)Button.GotoFriends);
             }
@@ -316,11 +314,11 @@ public class HouseGump : DynamicGump
                     );
                 }
 
-                builder.AddHtmlLocalized(260, 250, 150, 20, 1011267); // Add a co-owner
-                builder.AddButton(370, 250, 0xFBD, 0xFBF, (int)Button.AddCoOwner);
+                builder.AddHtmlLocalized(265, 250, 150, 20, 1011267); // Add a co-owner
+                builder.AddButton(374, 250, 0xFBD, 0xFBF, (int)Button.AddCoOwner);
 
-                builder.AddHtmlLocalized(240, 280, 150, 20, 1018036); // Remove a co-owner
-                builder.AddButton(370, 280, 0xFA2, 0xFA4, (int)Button.RemoveCoOwners);
+                builder.AddHtmlLocalized(245, 280, 150, 20, 1018036); // Remove a co-owner
+                builder.AddButton(374, 280, 0xFA2, 0xFA4, (int)Button.RemoveCoOwners);
 
                 AddBackButton(ref builder, (int)Button.GotoFriends);
             }
@@ -351,7 +349,7 @@ public class HouseGump : DynamicGump
             {
                 if (i + pageSize < _house.Friends.Count)
                 {
-                    builder.AddButton(370, 310, 4005, 4007, 0, GumpButtonType.Page, i / pageSize + (int)Page.ListFriends);
+                    builder.AddButton(374, 310, 4005, 4007, 0, GumpButtonType.Page, i / pageSize + (int)Page.ListFriends);
                 }
 
                 builder.AddPage(i / pageSize + (int)Page.ListFriends);
@@ -370,10 +368,10 @@ public class HouseGump : DynamicGump
                 }
 
                 builder.AddHtmlLocalized(260, 250, 150, 20, 1011244); // Add a friend
-                builder.AddButton(370, 250, 0xFBD, 0xFBF, (int)Button.AddFriend);
+                builder.AddButton(374, 250, 0xFBD, 0xFBF, (int)Button.AddFriend);
 
                 builder.AddHtmlLocalized(240, 280, 150, 20, 1018037); // Remove a friend
-                builder.AddButton(370, 280, 0xFA2, 0xFA4, (int)Button.RemoveFriends);
+                builder.AddButton(374, 280, 0xFA2, 0xFA4, (int)Button.RemoveFriends);
 
                 AddBackButton(ref builder, (int)Button.GotoFriends);
             }
@@ -442,11 +440,11 @@ public class HouseGump : DynamicGump
             builder.AddItem(36 + i / 4 * 65, 130 + i % 4 * 35, 2980 + i * 2);
         }
 
-        builder.AddHtmlLocalized(240, 360, 129, 20, 1011254); // Guild sign choices
-        builder.AddButton(360, 359, 0xFA5, 0xFA7, 0, GumpButtonType.Page, (int)Page.GuildSigns);
+        builder.AddHtmlLocalized(254, 360, 129, 20, 1011254); // Guild sign choices
+        builder.AddButton(374, 359, 0xFA5, 0xFA7, 0, GumpButtonType.Page, (int)Page.GuildSigns);
 
-        builder.AddHtmlLocalized(240, 390, 355, 30, 1011277); // Okay that is fine.
-        builder.AddButton(360, 389, 0xFB7, 0xFB9, (int)Button.ChangeSign);
+        builder.AddHtmlLocalized(254, 390, 355, 30, 1011277); // Okay that is fine.
+        builder.AddButton(374, 389, 0xFB7, 0xFB9, (int)Button.ChangeSign);
 
         builder.AddButton(15, 389, 0xFAE, 0xFB0, 0, GumpButtonType.Page, (int)Page.One);
 
@@ -458,11 +456,11 @@ public class HouseGump : DynamicGump
             builder.AddItem(36 + i / 5 * 65, 130 + i % 5 * 35, 3028 + i * 2);
         }
 
-        builder.AddHtmlLocalized(240, 360, 129, 20, 1011255); // Shop sign choices
-        builder.AddButton(360, 359, 0xFAE, 0xFB0, 0, GumpButtonType.Page, (int)Page.ShopSigns);
+        builder.AddHtmlLocalized(254, 360, 129, 20, 1011255); // Shop sign choices
+        builder.AddButton(374, 359, 0xFAE, 0xFB0, 0, GumpButtonType.Page, (int)Page.ShopSigns);
 
-        builder.AddHtmlLocalized(240, 390, 355, 30, 1011277); // Okay that is fine.
-        builder.AddButton(360, 389, 0xFB7, 0xFB9, (int)Button.ChangeSign);
+        builder.AddHtmlLocalized(254, 390, 355, 30, 1011277); // Okay that is fine.
+        builder.AddButton(374, 389, 0xFB7, 0xFB9, (int)Button.ChangeSign);
 
         builder.AddButton(15, 389, 0xFAE, 0xFB0, 0, GumpButtonType.Page, (int)Page.One);
     }
@@ -550,7 +548,7 @@ public class HouseGump : DynamicGump
                         }
                     }
 
-                    from.SendGump(new HouseGump(from, _house, Section.Friends));
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Friends));
 
                     break;
                 }
@@ -565,6 +563,8 @@ public class HouseGump : DynamicGump
                     _house.CoOwners?.Clear();
 
                     from.SendLocalizedMessage(501333); // All co-owners have been removed from this house.
+
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Friends));
 
                     break;
                 }
@@ -610,7 +610,7 @@ public class HouseGump : DynamicGump
                         }
                     }
 
-                    from.SendGump(new HouseGump(from, _house, Section.Friends));
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Friends));
 
                     break;
                 }
@@ -625,6 +625,8 @@ public class HouseGump : DynamicGump
                     _house.Friends?.Clear();
 
                     from.SendLocalizedMessage(501332); // All friends have been removed from this house.
+
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Friends));
 
                     break;
                 }
@@ -663,7 +665,7 @@ public class HouseGump : DynamicGump
                         }
                     }
 
-                    from.SendGump(new HouseGump(from, _house, Section.Friends));
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Friends));
 
                     break;
                 }
@@ -741,7 +743,7 @@ public class HouseGump : DynamicGump
                         ); // This house is now public. Friends of the house my now have vendors working out of this building.
                     }
 
-                    from.SendGump(new HouseGump(from, _house, Section.Options));
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Options));
                     break;
                 }
             case Button.ChangeKeys: // Change locks
@@ -766,7 +768,7 @@ public class HouseGump : DynamicGump
                         ); // The locks on your front door have been changed, and new master keys have been placed in your bank and your backpack.
                     }
 
-                    from.SendGump(new HouseGump(from, _house, Section.Options));
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Options));
                     break;
                 }
             case Button.ChangeSign: // Change sign type
@@ -790,17 +792,17 @@ public class HouseGump : DynamicGump
                         _house.ChangeSignType(2980 + index * 2);
                     }
 
-                    from.SendGump(new HouseGump(from, _house, Section.Options));
+                    from.SendGump(new HouseGump(from, _house, HouseGumpSection.Options));
                     break;
                 }
             case Button.GotoInfo:
                 from.SendGump(new HouseGump(from, _house));
                 break;
             case Button.GotoFriends:
-                from.SendGump(new HouseGump(from, _house, Section.Friends));
+                from.SendGump(new HouseGump(from, _house, HouseGumpSection.Friends));
                 break;
             case Button.GotoOptions:
-                from.SendGump(new HouseGump(from, _house, Section.Options));
+                from.SendGump(new HouseGump(from, _house, HouseGumpSection.Options));
                 break;
         }
     }
@@ -840,7 +842,7 @@ public class HouseRenamePrompt : Prompt
                 _house.Sign.Name = text;
             }
 
-            from.SendGump(new HouseGump(from, _house, HouseGump.Section.Options));
+            from.SendGump(new HouseGump(from, _house, HouseGumpSection.Options));
         }
     }
 }

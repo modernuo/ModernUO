@@ -58,7 +58,7 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
 
         if (info.ButtonID != 1)
         {
-            state.Mobile.SendGump(new HouseGump(state.Mobile, _house, HouseGump.Section.Options));
+            state.Mobile.SendGump(new HouseGump(state.Mobile, _house, HouseGumpSection.Options));
             return;
         }
 
