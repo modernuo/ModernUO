@@ -6,13 +6,6 @@ using Server.Prompts;
 
 namespace Server.Gumps;
 
-public enum HousePeopleType
-{
-    Bans,
-    CoOwners,
-    Friends,
-}
-
 public class HouseGump : DynamicGump
 {
     public enum Page
