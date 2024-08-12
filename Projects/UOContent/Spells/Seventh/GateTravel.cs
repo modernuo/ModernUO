@@ -184,7 +184,7 @@ public partial class GateTravelMoongate : Moongate
         }
 
         var target = LinkedGate.Location;
-        var targetMap = LinkedGate.TargetMap;
+        var targetMap = LinkedGate.Map;
 
         // TODO: Add boat permissions
         // BaseBoat boat = BaseBoat.FindBoatAt(target, targetMap);
