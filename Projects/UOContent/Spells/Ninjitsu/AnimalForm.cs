@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -254,7 +255,8 @@ public class AnimalForm : NinjaSpell
         }
     }
 
-    public static void RemoveContext(Mobile m, bool resetGraphics)
+    [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+    public static void RemoveContext(Mobile m, bool resetGraphics = true)
     {
         var context = GetContext(m);
 
@@ -517,7 +519,7 @@ public class AnimalFormTimer : Timer
     {
         if (_mobile.Deleted || !_mobile.Alive || _mobile.Body != _body || _mobile.Hue != _hue)
         {
-            AnimalForm.RemoveContext(_mobile, true);
+            AnimalForm.RemoveContext(_mobile);
             Stop();
             return;
         }

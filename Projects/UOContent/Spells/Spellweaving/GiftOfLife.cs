@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Targeting;
@@ -70,17 +71,14 @@ namespace Server.Spells.Spellweaving
             }
         }
 
-        public static void Initialize()
-        {
-            EventSink.PlayerDeath += HandleDeath;
-        }
-
         public override void OnCast()
         {
             Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
 
-        public static void HandleDeath(Mobile m)
+        [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void OnDeathEvent(Mobile m)
         {
             if (_table.ContainsKey(m))
             {
@@ -128,16 +126,6 @@ namespace Server.Spells.Spellweaving
 
             // Per OSI, buff is removed when gump sent, irregardless of online status or acceptance
             timer.DoExpire();
-        }
-
-        public static void OnLogin(Mobile m)
-        {
-            if (m?.Alive != false || _table[m] == null)
-            {
-                return;
-            }
-
-            HandleDeath_OnCallback(m);
         }
 
         private class ExpireTimer : Timer

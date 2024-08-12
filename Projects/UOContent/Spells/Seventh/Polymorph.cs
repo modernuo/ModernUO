@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
+using Server.Mobiles;
 using Server.Spells.Fifth;
 
 namespace Server.Spells.Seventh
@@ -182,6 +184,13 @@ namespace Server.Spells.Seventh
             }
 
             FinishSequence();
+        }
+
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void OnPlayerDeathEvent(Mobile m)
+        {
+            StopTimer(m);
+            m.EndAction<PolymorphSpell>();
         }
 
         public static void StopTimer(Mobile m)

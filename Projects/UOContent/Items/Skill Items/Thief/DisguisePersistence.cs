@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Mobiles;
 
 namespace Server.Items;
@@ -69,6 +70,7 @@ public class DisguisePersistence : GenericPersistence
         t.Stop();
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
     public static void RemoveTimer(Mobile m)
     {
         if (Timers.Remove(m, out var t))

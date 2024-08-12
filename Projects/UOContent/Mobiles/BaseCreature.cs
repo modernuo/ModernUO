@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
@@ -155,7 +156,7 @@ namespace Server.Mobiles
         }
     }
 
-    public abstract class BaseCreature : Mobile, IHonorTarget, IQuestGiver
+    public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
         public enum Allegiance
         {
@@ -3248,10 +3249,11 @@ namespace Server.Mobiles
             }
         }
 
+        [GeneratedEvent(nameof(CreatureDeathEvent))]
+        public static partial void CreatureDeathEvent(Mobile m);
+
         public override void OnDeath(Container c)
         {
-            MeerMage.StopEffect(this, false);
-
             if (IsBonded)
             {
                 Effects.PlaySound(this, GetDeathSound());
@@ -3312,7 +3314,7 @@ namespace Server.Mobiles
                     OwnerAbandonTime = DateTime.MinValue;
                 }
 
-                GiftOfLifeSpell.HandleDeath(this);
+                CreatureDeathEvent(this);
 
                 CheckStatTimers();
                 return;
@@ -3435,6 +3437,8 @@ namespace Server.Mobiles
             {
                 c.Delete();
             }
+
+            CreatureDeathEvent(this);
         }
 
         public override void OnDelete()
