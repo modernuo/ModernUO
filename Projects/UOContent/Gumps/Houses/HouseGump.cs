@@ -30,8 +30,8 @@ namespace Server.Gumps
 
             builder.AddPage();
 
-            builder.AddBackground(0, 0, 420, 430, 5054);
-            builder.AddBackground(10, 10, 400, 410, 3000);
+            builder.AddBackground(0, 0, 420, 430, 0x6DB);
+            builder.AddBackground(5, 5, 410, 420, 0xBB8);
 
             builder.AddButton(20, 388, 4005, 4007, 0);
             builder.AddHtmlLocalized(55, 388, 300, 20, 1011104); // Return to previous menu
@@ -128,8 +128,8 @@ namespace Server.Gumps
 
             builder.AddPage();
 
-            builder.AddBackground(0, 0, 420, 430, 5054);
-            builder.AddBackground(10, 10, 400, 410, 3000);
+            builder.AddBackground(0, 0, 420, 430, 0x6DB);
+            builder.AddBackground(5, 5, 410, 420, 0xBB8);
 
             builder.AddButton(20, 388, 4005, 4007, 0);
             builder.AddHtmlLocalized(55, 388, 300, 20, 1011104); // Return to previous menu
@@ -226,6 +226,12 @@ namespace Server.Gumps
 
     public class HouseSignSelectionGump : DynamicGump
     {
+        private enum Page
+        {
+            ShopSigns = 1,
+            GuildSigns = 2,
+        }
+
         private readonly BaseHouse _house;
 
         public override bool Singleton => true;
@@ -258,7 +264,7 @@ namespace Server.Gumps
                 }
             }
 
-            builder.AddPage(1);
+            builder.AddPage((int)Page.ShopSigns);
 
             for (var i = 0; i < 24; ++i)
             {
@@ -267,12 +273,12 @@ namespace Server.Gumps
             }
 
             builder.AddHtmlLocalized(240, 360, 129, 20, 1011254); // Guild sign choices
-            builder.AddButton(360, 359, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 2);
+            builder.AddButton(360, 359, 0xFAE, 0xFB0, 0, GumpButtonType.Page, (int)Page.GuildSigns);
 
             builder.AddHtmlLocalized(240, 390, 355, 30, 1011277); // Okay that is fine.
             builder.AddButton(360, 389, 0xFB7, 0xFB9, 1);
 
-            builder.AddPage(2);
+            builder.AddPage((int)Page.GuildSigns);
 
             for (var i = 0; i < 29; ++i)
             {
@@ -281,7 +287,7 @@ namespace Server.Gumps
             }
 
             builder.AddHtmlLocalized(240, 360, 129, 20, 1011255); // Shop sign choices
-            builder.AddButton(360, 359, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 1);
+            builder.AddButton(360, 359, 0xFAE, 0xFB0, 0, GumpButtonType.Page, (int)Page.ShopSigns);
 
             builder.AddHtmlLocalized(240, 390, 355, 30, 1011277); // Okay that is fine.
             builder.AddButton(360, 389, 0xFB7, 0xFB9, 1);
@@ -339,6 +345,16 @@ namespace Server.Gumps
 
     public class HouseOptionsGump : DynamicGump
     {
+        private enum Button
+        {
+            ChangeName = 1,
+            TransferOwnership = 2,
+            Demolish,
+            ChangePrivacy = 4,
+            ChangeKeys = 5,
+            ChangeSign = 6,
+        }
+
         private readonly BaseHouse _house;
 
         public override bool Singleton => true;
@@ -372,25 +388,25 @@ namespace Server.Gumps
             }
 
             builder.AddItem(22, 144, 0xFBF); // scribe's pen
-            builder.AddButton(65, 146, 0x16CD, 0x16CE, 1);
+            builder.AddButton(65, 146, 0x16CD, 0x16CE, (int)Button.ChangeName);
             builder.AddHtmlLocalized(95, 145, 200, 20, 1011236); // Change this house's name!
 
             builder.AddImage(10, 165, 0x1196); // right facing arrow
-            builder.AddButton(65, 181, 0x16CD, 0x16CE, 2);
+            builder.AddButton(65, 181, 0x16CD, 0x16CE, (int)Button.TransferOwnership);
             builder.AddHtmlLocalized(95, 180, 200, 30, 1011248); // Transfer ownership of the house
 
             builder.AddItem(10, 211, 0x14F0); // deed
-            builder.AddButton(65, 216, 0x16CD, 0x16CE, 3);
+            builder.AddButton(65, 216, 0x16CD, 0x16CE, (int)Button.Demolish);
             builder.AddHtmlLocalized(95, 215, 300, 30, 1011249); // Demolish house and get deed back
 
             if (!_house.Public)
             {
                 builder.AddItem(14, 252, 0x176B); // keyring with keys
-                builder.AddButton(65, 251, 0x16CD, 0x16CE, 5);
+                builder.AddButton(65, 251, 0x16CD, 0x16CE, (int)Button.ChangeKeys);
                 builder.AddHtmlLocalized(95, 250, 355, 30, 1011247); // Change the house locks
 
                 builder.AddItem(14, 284, 0xBC4); // inn sign
-                builder.AddButton(65, 286, 0x16CD, 0x16CE, 4);
+                builder.AddButton(65, 286, 0x16CD, 0x16CE, (int)Button.ChangePrivacy);
                 builder.AddHtmlLocalized(
                     95,
                     285,
@@ -402,11 +418,11 @@ namespace Server.Gumps
             else
             {
                 builder.AddItem(14, 247, 0xBD2); // default sign
-                builder.AddButton(65, 251, 0x16CD, 0x16CE, 4);
+                builder.AddButton(65, 251, 0x16CD, 0x16CE, (int)Button.ChangePrivacy);
                 builder.AddHtmlLocalized(95, 250, 300, 30, 1011252); // Declare this building to be private.
 
                 builder.AddItem(14, 284, 0xBCA); // artist sign
-                builder.AddButton(65, 286, 0x16CD, 0x16CE, 6);
+                builder.AddButton(65, 286, 0x16CD, 0x16CE, (int)Button.ChangeSign);
                 builder.AddHtmlLocalized(95, 285, 200, 30, 1011250); // Change the sign type
             }
         }
@@ -449,16 +465,16 @@ namespace Server.Gumps
                 return;
             }
 
-            switch (info.ButtonID)
+            switch ((Button)info.ButtonID)
             {
-                case 1: // Rename sign
+                case Button.ChangeName: // Rename sign
                     {
                         from.Prompt = new RenamePrompt(_house);
                         from.SendLocalizedMessage(501302); // What dost thou wish the sign to say?
 
                         break;
                     }
-                case 2: // Transfer ownership
+                case Button.TransferOwnership: // Transfer ownership
                     {
                         if (!isOwner)
                         {
@@ -471,7 +487,7 @@ namespace Server.Gumps
 
                         break;
                     }
-                case 3: // Demolish house
+                case Button.Demolish: // Demolish house
                     {
                         if (isOwner)
                         {
@@ -492,7 +508,7 @@ namespace Server.Gumps
                         from.SendGump(new HouseOptionsGump(_house));
                         break;
                     }
-                case 4: // Declare public/private
+                case Button.ChangePrivacy: // Declare public/private
                     {
                         if (!isOwner)
                         {
@@ -530,7 +546,7 @@ namespace Server.Gumps
                         from.SendGump(new HouseOptionsGump(_house));
                         break;
                     }
-                case 5: // Change locks
+                case Button.ChangeKeys: // Change locks
                     {
                         if (!isOwner)
                         {
@@ -555,7 +571,7 @@ namespace Server.Gumps
                         from.SendGump(new HouseOptionsGump(_house));
                         break;
                     }
-                case 6: // Change sign type
+                case Button.ChangeSign: // Change sign type
                     {
                         if (!isOwner)
                         {
