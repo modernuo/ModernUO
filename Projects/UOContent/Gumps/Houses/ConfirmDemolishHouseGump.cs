@@ -36,7 +36,7 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
          * Once the house is demolished, anyone can attempt to place a new house on the vacant land.
          * This action will not un-condemn any other houses on your account, nor will it end your 7-day waiting period (if it applies to you).
          * Are you sure you wish to continue?
-        */
+         */
         builder.AddHtmlLocalized(10, 40, 400, 200, 1061795, 32512, false, true);
 
         builder.AddImageTiled(10, 250, 400, 20, 2624);
@@ -51,14 +51,14 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
-        if (info.ButtonID != 1 || _house.Deleted)
+        if (_house.Deleted || !_house.IsOwner(state.Mobile))
         {
             return;
         }
 
-        if (!_house.IsOwner(state.Mobile))
+        if (info.ButtonID != 1)
         {
-
+            state.Mobile.SendGump(new HouseGump(state.Mobile, _house, HouseGump.Section.Options));
             return;
         }
 
