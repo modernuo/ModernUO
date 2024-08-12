@@ -5,7 +5,6 @@ using Server.Guilds;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
-using Server.Prompts;
 
 namespace Server.Gumps
 {
