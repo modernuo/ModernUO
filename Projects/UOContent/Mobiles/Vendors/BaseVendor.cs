@@ -556,7 +556,7 @@ namespace Server.Mobiles
                     }
                     else if (bulkOrder is SmallBOD smallBod)
                     {
-                        seller.SendGump(new SmallBODAcceptGump(seller, smallBod));
+                        seller.SendGump(new SmallBODAcceptGump(smallBod));
                     }
                 }
             }
@@ -1470,7 +1470,7 @@ namespace Server.Mobiles
                         }
                         else if (bulkOrder is SmallBOD smallBod)
                         {
-                            from.SendGump(new SmallBODAcceptGump(from, smallBod));
+                            from.SendGump(new SmallBODAcceptGump(smallBod));
                         }
                     }
                 }

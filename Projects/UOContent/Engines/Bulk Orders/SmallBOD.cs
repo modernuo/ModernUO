@@ -86,7 +86,7 @@ namespace Server.Engines.BulkOrders
         {
             if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
             {
-                from.SendGump(new SmallBODGump(from, this));
+                from.SendGump(new SmallBODGump(this));
             }
             else
             {
@@ -181,7 +181,7 @@ namespace Server.Engines.BulkOrders
                         ++AmountCur;
 
                         from.SendLocalizedMessage(1045170); // The item has been combined with the deed.
-                        from.SendGump(new SmallBODGump(from, this));
+                        from.SendGump(new SmallBODGump(this));
 
                         if (m_AmountCur < AmountMax)
                         {
