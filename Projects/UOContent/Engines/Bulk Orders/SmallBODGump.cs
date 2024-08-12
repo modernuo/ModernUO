@@ -9,14 +9,10 @@ namespace Server.Engines.BulkOrders
 
         public override bool Singleton => true;
 
-        public SmallBODGump(SmallBOD deed) : base(25, 25)
-        {
-            _deed = deed;
-        }
+        public SmallBODGump(SmallBOD deed) : base(25, 25) => _deed = deed;
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-
             builder.AddPage();
 
             builder.AddBackground(50, 10, 455, 260, 5054);

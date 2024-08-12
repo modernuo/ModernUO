@@ -9,14 +9,10 @@ namespace Server.Engines.BulkOrders
 
         public override bool Singleton => true;
 
-        public SmallBODAcceptGump(SmallBOD deed) : base(50, 50)
-        {
-            _deed = deed;
-        }
+        public SmallBODAcceptGump(SmallBOD deed) : base(50, 50) => _deed = deed;
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-
             builder.AddPage();
 
             builder.AddBackground(25, 10, 430, 264, 5054);
@@ -30,7 +26,7 @@ namespace Server.Engines.BulkOrders
             builder.AddImage(430, 249, 10460);
 
             builder.AddHtmlLocalized(190, 25, 120, 20, 1045133, 0x7FFF); // A bulk order
-            builder.AddHtmlLocalized(40, 48, 350, 20, 1045135, 0x7FFF);  // Ah!  Thanks for the goods!  Would you help me out?
+            builder.AddHtmlLocalized(40, 48, 350, 20, 1045135, 0x7FFF); // Ah!  Thanks for the goods!  Would you help me out?
 
             builder.AddHtmlLocalized(40, 72, 210, 20, 1045138, 0x7FFF); // Amount to make:
             builder.AddLabel(250, 72, 1152, _deed.AmountMax.ToString());

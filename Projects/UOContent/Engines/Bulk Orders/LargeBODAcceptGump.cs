@@ -9,15 +9,10 @@ namespace Server.Engines.BulkOrders
 
         public override bool Singleton => true;
 
-        public LargeBODAcceptGump(Mobile from, LargeBOD deed) : base(50, 50)
-        {
-            _deed = deed;
-        }
-
+        public LargeBODAcceptGump(LargeBOD deed) : base(50, 50) => _deed = deed;
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-
             var entries = _deed.Entries;
 
             builder.AddPage();

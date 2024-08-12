@@ -9,10 +9,7 @@ namespace Server.Engines.BulkOrders
 
         public override bool Singleton => true;
 
-        public LargeBODGump(LargeBOD deed) : base(25, 25)
-        {
-            _deed = deed;
-        }
+        public LargeBODGump(LargeBOD deed) : base(25, 25) => _deed = deed;
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
