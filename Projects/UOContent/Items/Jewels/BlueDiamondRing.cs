@@ -15,7 +15,7 @@ public partial class BlueDiamondRing : GoldRing
         switch ( Utility.Random( 4 ) )
         {
             case 0:
-                Attributes.LowerManaCost += 10;
+                Attributes.LowerRegCost += 10;
                 break;
             case 1:
                 Attributes.CastSpeed += 1;
