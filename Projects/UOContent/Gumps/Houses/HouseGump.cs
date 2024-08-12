@@ -103,8 +103,8 @@ public class HouseGump : DynamicGump
         builder.AddHtmlLocalized(314, 49, 75, 20, 1011234); // FRIENDS
         builder.AddButton(370, 50, 0x16CD, 0x16CE, 0, GumpButtonType.Page, (int)Page.People);
 
-        builder.AddHtmlLocalized(314, 79, 75, 20, 1011235);                                    // OPTIONS
-        builder.AddButton(370, 79, 0x16CD, 0x16CE, 0, GumpButtonType.Page, (int)Page.Options); // HouseOptionsGump
+        builder.AddHtmlLocalized(314, 79, 75, 20, 1011235); // OPTIONS
+        builder.AddButton(370, 79, 0x16CD, 0x16CE, 0, GumpButtonType.Page, (int)Page.Options);
 
         BuildInfoPage(ref builder);
         BuildPeoplePages(ref builder);
@@ -140,8 +140,6 @@ public class HouseGump : DynamicGump
             builder.AddHtmlLocalized(20, 345, 275, 20, 1011241); // Number of visits this building has had
             builder.AddHtml(320, 345, 50, 20, _house.Visits.ToString());
         }
-
-        builder.AddButton(360, 389, 0xFB1, 0xFB3, 0);
     }
 
     private void BuildPeoplePages(ref DynamicGumpBuilder builder)
@@ -186,11 +184,9 @@ public class HouseGump : DynamicGump
 
         builder.AddButton(15, 389, 0xFAE, 0xFB0, 0, GumpButtonType.Page, (int)Page.Info); // Back button
 
-        var pageSize = 10;
-
-        BuildBansPage(ref builder, pageSize);
-        BuildCoOwnersPage(ref builder, pageSize);
-        BuildFriendsPage(ref builder, pageSize);
+        BuildBansPage(ref builder);
+        BuildCoOwnersPage(ref builder);
+        BuildFriendsPage(ref builder);
     }
 
     private void BuildBansPage(ref DynamicGumpBuilder builder, int pageSize = 10)
