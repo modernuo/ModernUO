@@ -552,11 +552,11 @@ namespace Server.Mobiles
 
                     if (bulkOrder is LargeBOD largeBod)
                     {
-                        seller.SendGump(new LargeBODAcceptGump(seller, largeBod));
+                        seller.SendGump(new LargeBODAcceptGump(largeBod));
                     }
                     else if (bulkOrder is SmallBOD smallBod)
                     {
-                        seller.SendGump(new SmallBODAcceptGump(seller, smallBod));
+                        seller.SendGump(new SmallBODAcceptGump(smallBod));
                     }
                 }
             }
@@ -1466,11 +1466,11 @@ namespace Server.Mobiles
 
                         if (bulkOrder is LargeBOD bod)
                         {
-                            from.SendGump(new LargeBODAcceptGump(from, bod));
+                            from.SendGump(new LargeBODAcceptGump(bod));
                         }
                         else if (bulkOrder is SmallBOD smallBod)
                         {
-                            from.SendGump(new SmallBODAcceptGump(from, smallBod));
+                            from.SendGump(new SmallBODAcceptGump(smallBod));
                         }
                     }
                 }

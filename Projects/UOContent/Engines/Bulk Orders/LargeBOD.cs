@@ -78,7 +78,7 @@ namespace Server.Engines.BulkOrders
         {
             if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
             {
-                from.SendGump(new LargeBODGump(from, this));
+                from.SendGump(new LargeBODGump(this));
             }
             else
             {
@@ -143,7 +143,7 @@ namespace Server.Engines.BulkOrders
                 small.Delete();
 
                 from.SendLocalizedMessage(1045165); // The orders have been combined.
-                from.SendGump(new LargeBODGump(from, this));
+                from.SendGump(new LargeBODGump(this));
 
                 if (!Complete)
                 {
