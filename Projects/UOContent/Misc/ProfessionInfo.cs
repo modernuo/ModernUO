@@ -10,8 +10,7 @@ public class ProfessionInfo
     private static readonly ProfessionInfo[] _professions;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool VerifyProfession(int profIndex) =>
-        profIndex >= 0 && profIndex < _professions.Length;
+    public static bool VerifyProfession(int profIndex) => profIndex > 0 && profIndex < _professions.Length;
 
     public static bool GetProfession(int profIndex, out ProfessionInfo profession)
     {
@@ -21,7 +20,7 @@ public class ProfessionInfo
             return false;
         }
 
-        return (profession = _professions[profIndex - 1]) != null;
+        return (profession = _professions[profIndex]) != null;
     }
 
     private static bool TryGetSkillName(string name, out SkillName skillName)
@@ -184,11 +183,15 @@ public class ProfessionInfo
             }
         }
 
-        _professions = new ProfessionInfo[maxProf];
+        _professions = new ProfessionInfo[maxProf + 1];
+        _professions[0] = new ProfessionInfo
+        {
+            Name = "Advanced Skills"
+        };
 
         foreach (var p in profs)
         {
-            _professions[p.ID - 1] = p;
+            _professions[p.ID] = p;
         }
 
         profs.Clear();
