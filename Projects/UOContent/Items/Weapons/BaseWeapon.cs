@@ -2552,12 +2552,9 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         var strengthBonus = GetBonus(attacker.Str, 0.300, 100.0, 5.00);
         var anatomyBonus = GetBonus(attacker.Skills.Anatomy.Value, 0.500, 100.0, 5.00);
         var tacticsBonus = GetBonus(attacker.Skills.Tactics.Value, 0.625, 100.0, 6.25);
-        var lumberBonus = GetBonus(attacker.Skills.Lumberjacking.Value, 0.200, 100.0, 10.00);
-
-        if (Type != WeaponType.Axe)
-        {
-            lumberBonus = 0.0;
-        }
+        var lumberBonus = Type == WeaponType.Axe
+            ? GetBonus(attacker.Skills.Lumberjacking.Value, 0.200, 100.0, 10.00)
+            : 0.0;
 
         /*
          * The following are damage modifiers whose effect shows on the status bar.
@@ -2595,9 +2592,10 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
             damageBonus = 100;
         }
 
-        var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus + damageBonus + GetDamageBonus();
+        var totalBonus = strengthBonus + anatomyBonus + tacticsBonus + lumberBonus +
+                         (damageBonus + GetDamageBonus()) / 100.0;
 
-        return damage + damage * totalBonus / 100.0;
+        return damage + damage * totalBonus;
     }
 
     public virtual int ComputeDamageAOS(Mobile attacker, Mobile defender) =>
