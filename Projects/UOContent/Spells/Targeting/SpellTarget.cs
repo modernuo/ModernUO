@@ -29,11 +29,13 @@ public class SpellTarget<T> : Target, ISpellTarget<T> where T : class, IPoint3D
     public ITargetingSpell<T> Spell => _spell;
 
     protected override bool CanTarget(Mobile from, StaticTarget staticTarget, ref Point3D loc, ref Map map)
-        => _canTargetStatic;
+        => base.CanTarget(from, staticTarget, ref loc, ref map) && _canTargetStatic;
 
-    protected override bool CanTarget(Mobile from, Mobile mobile, ref Point3D loc, ref Map map) => _canTargetMobile;
+    protected override bool CanTarget(Mobile from, Mobile mobile, ref Point3D loc, ref Map map) =>
+        base.CanTarget(from, mobile, ref loc, ref map) && _canTargetMobile;
 
-    protected override bool CanTarget(Mobile from, Item item, ref Point3D loc, ref Map map) => _canTargetItem;
+    protected override bool CanTarget(Mobile from, Item item, ref Point3D loc, ref Map map) =>
+        base.CanTarget(from, item, ref loc, ref map) && _canTargetItem;
 
     protected override void OnCantSeeTarget(Mobile from, object o)
     {
