@@ -237,6 +237,8 @@ public static class Utility
     {
         var chars = STArrayPool<char>.Shared.Rent(str.Length);
         var span = chars.AsSpan(0, str.Length);
+        str.CopyTo(span);
+
         var formattable = new PooledArraySpanFormattable(chars, str.Length);
 
         if (!str.IsNullOrWhiteSpace())
