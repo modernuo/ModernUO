@@ -89,7 +89,7 @@ public class NetherCycloneSpell : MysticSpell, ITargetingSpell<IPoint3D>
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTarget<IPoint3D>(this);
+        Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true);
     }
 
     private static void PlayEffect(Point3D p, Map map)
