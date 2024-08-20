@@ -13,14 +13,18 @@ public class SpellTarget<T> : Target, ISpellTarget<T> where T : class, IPoint3D
 
     public SpellTarget(
         ITargetingSpell<T> spell,
-        TargetFlags flags = TargetFlags.None,
+        TargetFlags flags,
         bool retryOnLos = false
     ) : this(spell, false, flags, retryOnLos)
     {
     }
 
-    public SpellTarget(ITargetingSpell<T> spell, bool allowGround, TargetFlags flags = TargetFlags.None, bool retryOnLos = false)
-        : base(spell.TargetRange, allowGround, flags)
+    public SpellTarget(
+        ITargetingSpell<T> spell,
+        bool allowGround = false,
+        TargetFlags flags = TargetFlags.None,
+        bool retryOnLos = false
+    ) : base(spell.TargetRange, allowGround, flags)
     {
         _spell = spell;
         _retryOnLos = retryOnLos;

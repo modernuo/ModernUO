@@ -55,7 +55,7 @@ namespace Server.Spells.Sixth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTarget<IPoint3D>(this);
+            Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true);
         }
 
         // Reveal uses magery and detect hidden vs. hide and stealth

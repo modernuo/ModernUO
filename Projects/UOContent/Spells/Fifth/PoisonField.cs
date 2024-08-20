@@ -57,7 +57,7 @@ public class PoisonFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 
     public override void OnCast()
     {
-        Caster.Target = new SpellTarget<IPoint3D>(this);
+        Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true);
     }
 }
 
