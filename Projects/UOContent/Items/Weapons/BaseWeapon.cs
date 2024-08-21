@@ -3109,7 +3109,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
             list.Add(1111917); // Immolated
         }
 
-        if (Core.ML && (ranged?.Velocity ?? 0) != 0)
+        if (Core.ML && (prop = ranged?.Velocity ?? 0) != 0)
         {
             list.Add(1072793, prop); // Velocity ~1_val~%
         }
