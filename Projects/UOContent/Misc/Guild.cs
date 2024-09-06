@@ -1050,7 +1050,7 @@ namespace Server.Guilds
             }
         }
 
-        public static void HandleDeath(Mobile victim, Mobile killer = null)
+        public static void HandleDeath(Mobile victim, Mobile killer)
         {
             if (!NewGuildSystem)
             {

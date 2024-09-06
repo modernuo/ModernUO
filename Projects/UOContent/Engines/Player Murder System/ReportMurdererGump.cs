@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Gumps;
 using Server.Misc;
 using Server.Mobiles;
@@ -26,16 +27,16 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
     public static void Initialize()
     {
         _recentlyReportedDelay = ServerConfiguration.GetOrUpdateSetting("murderSystem.recentlyReportedDelay", TimeSpan.FromMinutes(10));
-        EventSink.PlayerDeath += OnPlayerDeath;
     }
 
-    public static void OnPlayerDeath(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+    public static void OnPlayerDeathEvent(PlayerMobile m)
     {
         List<Mobile> killers = null;
         HashSet<Mobile> toGive = null;
 
         // Guards won't take reports of the death of a thief!
-        bool notInThievesGuild = m is not PlayerMobile { NpcGuild: NpcGuild.ThievesGuild };
+        bool notInThievesGuild = m.NpcGuild != NpcGuild.ThievesGuild;
 
         foreach (var ai in m.Aggressors)
         {

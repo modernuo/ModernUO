@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
@@ -34,7 +35,6 @@ using Server.Spells.Mysticism;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Second;
-using Server.Spells.Seventh;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
@@ -97,7 +97,7 @@ namespace Server.Mobiles
         DismountRecovery = 1070859 // You cannot mount while recovering from a dismount special maneuver.
     }
 
-    public class PlayerMobile : Mobile, IHonorTarget, IHasSteps
+    public partial class PlayerMobile : Mobile, IHonorTarget, IHasSteps
     {
         private static bool m_NoRecursion;
 
@@ -1089,7 +1089,7 @@ namespace Server.Mobiles
                 }
                 else if (AnimalForm.UnderTransformation(this))
                 {
-                    AnimalForm.RemoveContext(this, true);
+                    AnimalForm.RemoveContext(this);
                 }
             }
 
@@ -2549,6 +2549,9 @@ namespace Server.Mobiles
             return res;
         }
 
+        [GeneratedEvent(nameof(PlayerDeathEvent))]
+        public static partial void PlayerDeathEvent(PlayerMobile m);
+
         public override void OnDeath(Container c)
         {
             if (m_NonAutoreinsuredItems > 0)
@@ -2563,26 +2566,13 @@ namespace Server.Mobiles
             HueMod = -1;
             NameMod = null;
             SavagePaintExpiration = TimeSpan.Zero;
-
             SetHairMods(-1, -1);
-
-            PolymorphSpell.StopTimer(this);
-            IncognitoSpell.StopTimer(this);
-            DisguisePersistence.RemoveTimer(this);
-            AnimalForm.RemoveContext(this, true);
-
-            EndAction<PolymorphSpell>();
-            EndAction<IncognitoSpell>();
-
-            MeerMage.StopEffect(this, false);
 
             if (Flying)
             {
                 Flying = false;
                 BuffInfo.RemoveBuff(this, BuffIcon.Fly);
             }
-
-            StolenItem.ReturnOnDeath(this, c);
 
             if (PermaFlags.Count > 0)
             {
@@ -2669,10 +2659,6 @@ namespace Server.Mobiles
 
             Guilds.Guild.HandleDeath(this, killer);
 
-            MLQuestSystem.HandleDeath(this);
-
-            DuelContext?.OnDeath(this, c);
-
             if (m_BuffTable != null)
             {
                 using var queue = PooledRefQueue<BuffInfo>.Create();
@@ -2690,6 +2676,8 @@ namespace Server.Mobiles
                     RemoveBuff(queue.Dequeue());
                 }
             }
+
+            PlayerDeathEvent(this);
         }
 
         public override bool MutateSpeech(List<Mobile> hears, ref string text, ref object context)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ModernUO.CodeGeneratedEvents;
 using Server.Commands;
 using Server.Commands.Generic;
 using Server.Engines.MLQuests.Gumps;
@@ -611,6 +612,7 @@ namespace Server.Engines.MLQuests
             return context;
         }
 
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
         public static void HandleDeath(PlayerMobile pm)
         {
             var context = GetContext(pm);

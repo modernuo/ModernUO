@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Mysticism;
@@ -24,11 +26,6 @@ public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
     }
 
     public override SpellCircle Circle => SpellCircle.Seventh;
-
-    public static void Initialize()
-    {
-        EventSink.PlayerDeath += OnPlayerDeath;
-    }
 
     public override void OnCast()
     {
@@ -75,6 +72,7 @@ public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
 
     public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
     public static bool RemoveEffect(Mobile m)
     {
         if (_table.Remove(m, out var timer))
@@ -94,8 +92,6 @@ public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
             context.OnDamage();
         }
     }
-
-    private static void OnPlayerDeath(Mobile m) => RemoveEffect(m);
 
     private static void VisualEffect(Mobile to)
     {

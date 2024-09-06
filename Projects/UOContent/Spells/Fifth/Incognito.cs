@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Factions;
 using Server.Items;
 using Server.Mobiles;
@@ -122,6 +123,13 @@ namespace Server.Spells.Fifth
             }
 
             FinishSequence();
+        }
+
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void OnPlayerDeathEvent(Mobile m)
+        {
+            StopTimer(m);
+            m.EndAction<IncognitoSpell>();
         }
 
         public static void StopTimer(Mobile m)

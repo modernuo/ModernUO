@@ -1,6 +1,7 @@
 using ModernUO.Serialization;
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -152,7 +153,9 @@ namespace Server.Mobiles
 
         public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
 
-        public static void StopEffect(Mobile m, bool message)
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        [OnEvent(nameof(CreatureDeathEvent))]
+        public static void StopEffect(Mobile m, bool message = false)
         {
             if (m_Table.Remove(m, out var timer))
             {
@@ -170,7 +173,7 @@ namespace Server.Mobiles
         {
             if (!m.Alive)
             {
-                StopEffect(m, false);
+                StopEffect(m);
                 return;
             }
 
@@ -197,7 +200,7 @@ namespace Server.Mobiles
 
             if (!m.Alive)
             {
-                StopEffect(m, false);
+                StopEffect(m);
             }
         }
     }

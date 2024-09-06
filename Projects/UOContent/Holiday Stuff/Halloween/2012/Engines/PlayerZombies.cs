@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Events.Halloween;
 using Server.Items;
@@ -60,15 +61,13 @@ namespace Server.Engines.Events
             {
                 _timer = Timer.DelayCall(tick, 0, Timer_Callback);
                 _clearTimer = Timer.DelayCall(clear, 0, Clear_Callback);
-
-                EventSink.PlayerDeath += EventSink_PlayerDeath;
             }
         }
 
-        public static void EventSink_PlayerDeath(Mobile m)
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void OnPlayerDeathEvent(PlayerMobile pm)
         {
-            if (m is PlayerMobile { Deleted: false } pm &&
-                _timer.Running && !_deathQueue.Contains(pm) && _deathQueue.Count < m_DeathQueueLimit)
+            if (_timer.Running && !_deathQueue.Contains(pm) && _deathQueue.Count < m_DeathQueueLimit)
             {
                 _deathQueue.Add(pm);
             }
