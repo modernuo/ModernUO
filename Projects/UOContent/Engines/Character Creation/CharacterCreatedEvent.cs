@@ -1,7 +1,7 @@
 using Server.Accounting;
 using Server.Network;
 
-namespace Server;
+namespace Server.Engines.CharacterCreation;
 
 public class CharacterCreatedEventArgs(
     NetState state, IAccount a, string name, bool female,

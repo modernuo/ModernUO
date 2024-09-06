@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
+using Server.Engines.CharacterCreation;
 using Server.Engines.Help;
 using Server.Logging;
 using Server.Network;

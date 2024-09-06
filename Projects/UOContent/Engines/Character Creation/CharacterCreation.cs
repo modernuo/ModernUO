@@ -6,10 +6,11 @@ using Server.Accounting;
 using Server.Items;
 using Server.Logging;
 using Server.Maps;
+using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
 
-namespace Server.Misc;
+namespace Server.Engines.CharacterCreation;
 
 public static partial class CharacterCreation
 {

@@ -20,6 +20,7 @@ using System.IO;
 using Server.Accounting;
 using Server.Assistants;
 using Server.Commands;
+using Server.Engines.CharacterCreation;
 using Server.Engines.ConPVP;
 using Server.Engines.Doom;
 using Server.Engines.PartySystem;
