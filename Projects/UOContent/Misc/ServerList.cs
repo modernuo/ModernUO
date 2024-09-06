@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using ModernUO.CodeGeneratedEvents;
 using Server.Logging;
 using Server.Network;
 
@@ -60,11 +61,10 @@ namespace Server.Misc
             {
                 Resolve(Address, out _publicAddress);
             }
-
-            EventSink.ServerList += EventSink_ServerList;
         }
 
-        private static void EventSink_ServerList(ServerListEventArgs e)
+        [OnEvent(nameof(GatewayServer.ServerListEvent))]
+        public static void OnServerListEvent(GatewayServer.ServerListEventArgs e)
         {
             try
             {

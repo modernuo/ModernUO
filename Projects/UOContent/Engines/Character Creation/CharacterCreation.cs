@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Items;
 using Server.Logging;
 using Server.Maps;
+using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
 
-namespace Server.Misc;
+namespace Server.Engines.CharacterCreation;
 
-public static class CharacterCreation
+public static partial class CharacterCreation
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(CharacterCreation));
 
@@ -78,45 +80,45 @@ public static class CharacterCreation
 
     public static readonly CityInfo[] OldHavenStartingCities =
     [
-        new CityInfo("Haven", "The Bountiful Harvest Inn", 3677, 2625, 0, Map.Trammel),
-        new CityInfo("Britain", "Sweet Dreams Inn", 1075074, 1496, 1628, 10, Map.Trammel),
-        new CityInfo("Magincia", "The Great Horns Tavern", 1075077, 3734, 2222, 20, Map.Trammel),
+        new("Haven", "The Bountiful Harvest Inn", 3677, 2625, 0, Map.Trammel),
+        new("Britain", "Sweet Dreams Inn", 1075074, 1496, 1628, 10, Map.Trammel),
+        new("Magincia", "The Great Horns Tavern", 1075077, 3734, 2222, 20, Map.Trammel),
     ];
 
     public static readonly CityInfo[] FeluccaStartingCities =
     [
-        new CityInfo("Yew", "The Empath Abbey", 1075072, 633, 858, 0, Map.Felucca),
-        new CityInfo("Minoc", "The Barnacle", 1075073, 2476, 413, 15, Map.Felucca),
-        new CityInfo("Britain", "Sweet Dreams Inn", 1075074, 1496, 1628, 10, Map.Felucca),
-        new CityInfo("Moonglow", "The Scholars Inn", 1075075, 4408, 1168, 0, Map.Felucca),
-        new CityInfo("Trinsic", "The Traveler's Inn", 1075076, 1845, 2745, 0, Map.Felucca),
-        new CityInfo("Magincia", "The Great Horns Tavern", 1075077, 3734, 2222, 20, Map.Felucca),
-        new CityInfo("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0, Map.Felucca),
-        new CityInfo("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0, Map.Felucca),
-        new CityInfo("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Felucca)
+        new("Yew", "The Empath Abbey", 1075072, 633, 858, 0, Map.Felucca),
+        new("Minoc", "The Barnacle", 1075073, 2476, 413, 15, Map.Felucca),
+        new("Britain", "Sweet Dreams Inn", 1075074, 1496, 1628, 10, Map.Felucca),
+        new("Moonglow", "The Scholars Inn", 1075075, 4408, 1168, 0, Map.Felucca),
+        new("Trinsic", "The Traveler's Inn", 1075076, 1845, 2745, 0, Map.Felucca),
+        new("Magincia", "The Great Horns Tavern", 1075077, 3734, 2222, 20, Map.Felucca),
+        new("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0, Map.Felucca),
+        new("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0, Map.Felucca),
+        new("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Felucca)
     ];
 
     public static readonly CityInfo[] TrammelStartingCities =
     [
-        new CityInfo("Yew", "The Empath Abbey", 1075072, 633, 858, 0, Map.Trammel),
-        new CityInfo("Minoc", "The Barnacle", 1075073, 2476, 413, 15, Map.Trammel),
-        new CityInfo("Moonglow", "The Scholars Inn", 1075075, 4408, 1168, 0, Map.Trammel),
-        new CityInfo("Trinsic", "The Traveler's Inn", 1075076, 1845, 2745, 0, Map.Trammel),
-        new CityInfo("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0, Map.Trammel),
-        new CityInfo("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0, Map.Trammel),
-        new CityInfo("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Trammel),
+        new("Yew", "The Empath Abbey", 1075072, 633, 858, 0, Map.Trammel),
+        new("Minoc", "The Barnacle", 1075073, 2476, 413, 15, Map.Trammel),
+        new("Moonglow", "The Scholars Inn", 1075075, 4408, 1168, 0, Map.Trammel),
+        new("Trinsic", "The Traveler's Inn", 1075076, 1845, 2745, 0, Map.Trammel),
+        new("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0, Map.Trammel),
+        new("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0, Map.Trammel),
+        new("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0, Map.Trammel),
     ];
 
     public static readonly CityInfo[] NewHavenStartingCities =
     [
-        new CityInfo("New Haven", "The Bountiful Harvest Inn", 1150168, 3503, 2574, 14, Map.Trammel),
-        new CityInfo("Britain", "The Wayfarer's Inn", 1075074, 1602, 1591, 20, Map.Trammel)
+        new("New Haven", "The Bountiful Harvest Inn", 1150168, 3503, 2574, 14, Map.Trammel),
+        new("Britain", "The Wayfarer's Inn", 1075074, 1602, 1591, 20, Map.Trammel)
         // Magincia removed because it burned down.
     ];
 
     public static readonly CityInfo[] StartingCitiesSA =
     [
-        new CityInfo("Royal City", "Royal City Inn", 1150169, 738, 3486, -19, Map.TerMur)
+        new("Royal City", "Royal City Inn", 1150169, 738, 3486, -19, Map.TerMur)
     ];
 
     private static CityInfo[] _availableStartingCities;
@@ -155,11 +157,8 @@ public static class CharacterCreation
         return [];
     }
 
-    public static void Initialize()
-    {
-        // Register our event handler
-        EventSink.CharacterCreated += EventSink_CharacterCreated;
-    }
+    [GeneratedEvent(nameof(CharacterCreatedEvent))]
+    public static partial void CharacterCreatedEvent(CharacterCreatedEventArgs e);
 
     private static void AddBackpack(this Mobile m)
     {
@@ -197,7 +196,8 @@ public static class CharacterCreation
         return null;
     }
 
-    private static void EventSink_CharacterCreated(CharacterCreatedEventArgs args)
+    [OnEvent(nameof(CharacterCreatedEvent))]
+    private static void OnCharacterCreated(CharacterCreatedEventArgs args)
     {
         if (!ProfessionInfo.GetProfession(args.Profession, out var profession))
         {
@@ -396,24 +396,13 @@ public static class CharacterCreation
         return args.City;
     }
 
-    private static void SetStats(Mobile m, NetState state, StatNameValue[] stats)
+    private static void SetStats(Mobile m, NetState state, byte[] stats)
     {
         var maxStats = state.NewCharacterCreation ? 90 : 80;
 
-        var str = 0;
-        var dex = 0;
-        var intel = 0;
-
-        for (var i = 0; i < stats.Length; i++)
-        {
-            var (statType, value) = stats[i];
-            switch (statType)
-            {
-                case StatType.Str: str = value; break;
-                case StatType.Dex: dex = value; break;
-                case StatType.Int: intel = value; break;
-            }
-        }
+        var str = stats[0];
+        var dex = stats[1];
+        var intel = stats[2];
 
         if (str is < 10 or > 60 || dex is < 10 or > 60 || intel is < 10 or > 60 || str + dex + intel != maxStats)
         {
@@ -437,7 +426,7 @@ public static class CharacterCreation
         m.Name = name;
     }
 
-    private static bool ValidateSkills(int raceFlag, SkillNameValue[] skills)
+    private static bool ValidateSkills(int raceFlag, (SkillName, byte)[] skills)
     {
         var total = 0;
 
@@ -445,7 +434,7 @@ public static class CharacterCreation
         {
             var (name, value) = skills[i];
 
-            if (value is < 0 or > 50 || !_allowedStartingSkills.Contains(name))
+            if (value > 50 || !_allowedStartingSkills.Contains(name))
             {
                 return false;
             }
@@ -473,6 +462,7 @@ public static class CharacterCreation
             for (var j = i + 1; j < skills.Length; ++j)
             {
                 var (nameCheck, valueCheck) = skills[j];
+
                 if (valueCheck > 0 && nameCheck == name)
                 {
                     return false;
@@ -483,7 +473,7 @@ public static class CharacterCreation
         return total is 100 or 120;
     }
 
-    private static void SetSkills(Mobile m, SkillNameValue[] skills)
+    private static void SetSkills(Mobile m, (SkillName, byte)[] skills)
     {
         if (!ValidateSkills(m.Race.RaceFlag, skills))
         {

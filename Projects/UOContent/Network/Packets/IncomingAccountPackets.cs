@@ -20,6 +20,7 @@ using System.IO;
 using Server.Accounting;
 using Server.Assistants;
 using Server.Commands;
+using Server.Engines.CharacterCreation;
 using Server.Engines.ConPVP;
 using Server.Engines.Doom;
 using Server.Engines.PartySystem;
@@ -33,7 +34,6 @@ using Server.Mobiles;
 using Server.Regions;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Spellweaving;
-using CV = Server.ClientVersion;
 
 namespace Server.Network;
 
@@ -88,20 +88,17 @@ public static class IncomingAccountPackets
 
         var genderRace = reader.ReadByte();
 
-        var stats = new StatNameValue[]
-        {
-            new(StatType.Str, reader.ReadByte()),
-            new(StatType.Dex, reader.ReadByte()),
-            new(StatType.Int, reader.ReadByte())
-        };
+        // Strength, Dex, Intelligence
+        byte[] stats = [reader.ReadByte(), reader.ReadByte(), reader.ReadByte()];
 
-        var skills = new SkillNameValue[state.NewCharacterCreation ? 4 : 3];
-        skills[0] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
-        skills[1] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
-        skills[2] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+        var skills = new (SkillName, byte)[state.NewCharacterCreation ? 4 : 3];
+        skills[0] = ((SkillName)reader.ReadByte(), reader.ReadByte());
+        skills[1] = ((SkillName)reader.ReadByte(), reader.ReadByte());
+        skills[2] = ((SkillName)reader.ReadByte(), reader.ReadByte());
+
         if (state.NewCharacterCreation)
         {
-            skills[3] = new SkillNameValue((SkillName)reader.ReadByte(), reader.ReadByte());
+            skills[3] = ((SkillName)reader.ReadByte(), reader.ReadByte());
         }
 
         int hue = reader.ReadUInt16();
@@ -183,7 +180,7 @@ public static class IncomingAccountPackets
 
         state.BlockAllPackets = true;
 
-        EventSink.InvokeCharacterCreated(args);
+        CharacterCreation.CharacterCreatedEvent(args);
 
         var m = args.Mobile;
 
@@ -208,13 +205,9 @@ public static class IncomingAccountPackets
         AccountHandler.DeleteRequest(state, index);
     }
 
-    public static void AccountID(NetState state, SpanReader reader)
-    {
-    }
-
     public static void ClientVersion(NetState state, SpanReader reader)
     {
-        var version = state.Version = new CV(reader.ReadAscii());
+        var version = state.Version = new ClientVersion(reader.ReadAscii());
 
         ClientVerification.ClientVersionReceived(state, version);
     }
@@ -224,7 +217,7 @@ public static class IncomingAccountPackets
         reader.ReadUInt16();
 
         int type = reader.ReadUInt16();
-        var version = state.Version = new CV(reader.ReadAscii());
+        var version = state.Version = new ClientVersion(reader.ReadAscii());
 
         ClientVerification.ClientVersionReceived(state, version);
     }
@@ -420,9 +413,9 @@ public static class IncomingAccountPackets
         var username = reader.ReadAscii(30);
         var password = reader.ReadAscii(30);
 
-        var e = new GameLoginEventArgs(state, username, password);
+        var e = new GameServer.GameLoginEventArgs(state, username, password);
 
-        EventSink.InvokeGameLogin(e);
+        GameServer.GameServerLoginEvent(e);
 
         if (e.Accepted)
         {
@@ -501,9 +494,9 @@ public static class IncomingAccountPackets
 
         if (accountLoginEventArgs.Accepted)
         {
-            var serverListEventArgs = new ServerListEventArgs(state, state.Account);
+            var serverListEventArgs = new GatewayServer.ServerListEventArgs(state, state.Account);
 
-            EventSink.InvokeServerList(serverListEventArgs);
+            GatewayServer.ServerListEvent(serverListEventArgs);
 
             if (serverListEventArgs.Rejected)
             {

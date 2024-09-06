@@ -59,7 +59,7 @@ public class DamageEntry
 }
 
 [Flags]
-public enum StatType
+public enum StatType : byte
 {
     Str = 1,
     Dex = 2,
