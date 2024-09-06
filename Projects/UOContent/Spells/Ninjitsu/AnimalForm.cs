@@ -136,7 +136,7 @@ public class AnimalForm : NinjaSpell
             }
             else if (context != null)
             {
-                RemoveContext(Caster, context, true);
+                RemoveContext(Caster, context);
                 Caster.Mana -= mana;
             }
             else
@@ -256,17 +256,17 @@ public class AnimalForm : NinjaSpell
     }
 
     [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
-    public static void RemoveContext(Mobile m, bool resetGraphics = true)
+    public static void RemoveContext(Mobile m)
     {
         var context = GetContext(m);
 
         if (context != null)
         {
-            RemoveContext(m, context, resetGraphics);
+            RemoveContext(m, context);
         }
     }
 
-    public static void RemoveContext(Mobile m, AnimalFormContext context, bool resetGraphics)
+    public static void RemoveContext(Mobile m, AnimalFormContext context)
     {
         _table.Remove(m);
 
@@ -289,11 +289,8 @@ public class AnimalForm : NinjaSpell
             m.RemoveSkillMod(mod);
         }
 
-        if (resetGraphics)
-        {
-            m.HueMod = -1;
-            m.BodyMod = 0;
-        }
+        m.HueMod = -1;
+        m.BodyMod = 0;
 
         m.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
 

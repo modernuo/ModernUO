@@ -36,7 +36,7 @@ public partial class BaseFormTalisman : Item
 
         if (parent is Mobile m)
         {
-            AnimalForm.RemoveContext(m, true);
+            AnimalForm.RemoveContext(m);
         }
     }
 

@@ -1089,7 +1089,7 @@ namespace Server.Mobiles
                 }
                 else if (AnimalForm.UnderTransformation(this))
                 {
-                    AnimalForm.RemoveContext(this, true);
+                    AnimalForm.RemoveContext(this);
                 }
             }
 
