@@ -41,9 +41,4 @@ public static partial class EventSink
 
     public static event Action ServerStarted;
     public static void InvokeServerStarted() => ServerStarted?.Invoke();
-
-    public static event Action<Mobile, Item, short> TargetByResourceMacro;
-
-    public static void InvokeTargetByResourceMacro(Mobile m, Item item, short resourceType) =>
-        TargetByResourceMacro?.Invoke(m, item, resourceType);
 }

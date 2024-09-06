@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingExtendedCommandPackets.cs                               *
  *                                                                       *
@@ -15,12 +15,13 @@
 
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Network;
 
-public static class IncomingExtendedCommandPackets
+public static partial class IncomingExtendedCommandPackets
 {
     private static readonly PacketHandler[] _extendedHandlers = new PacketHandler[0x100];
 
@@ -432,13 +433,16 @@ public static class IncomingExtendedCommandPackets
         PlayerMobile.TargetedSkillUse(state.Mobile, World.FindEntity((Serial)reader.ReadUInt32()), skillId);
     }
 
+    [GeneratedEvent("TargetByResourceMacro")]
+    public static partial void InvokeTargetByResourceMacro(Mobile m, Item item, short resourceType);
+
     public static void TargetByResourceMacro(NetState state, SpanReader reader)
     {
         var serial = (Serial)reader.ReadUInt32();
 
         if (serial.IsItem)
         {
-            EventSink.InvokeTargetByResourceMacro(state.Mobile, World.FindItem(serial), reader.ReadInt16());
+            InvokeTargetByResourceMacro(state.Mobile, World.FindItem(serial), reader.ReadInt16());
         }
     }
 }

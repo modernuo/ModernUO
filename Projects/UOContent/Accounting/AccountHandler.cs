@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Engines.Help;
 using Server.Logging;
@@ -65,7 +66,6 @@ public static class AccountHandler
     public static void Initialize()
     {
         EventSink.AccountLogin += EventSink_AccountLogin;
-        EventSink.GameLogin += EventSink_GameLogin;
     }
 
     [Usage("Password <newPassword> <repeatPassword>")]
@@ -348,7 +348,8 @@ public static class AccountHandler
         }
     }
 
-    public static void EventSink_GameLogin(GameLoginEventArgs e)
+    [OnEvent(nameof(GameServer.GameServerLoginEvent))]
+    public static void OnGameServerLogin(GameServer.GameLoginEventArgs e)
     {
         var un = e.Username;
         var pw = e.Password;

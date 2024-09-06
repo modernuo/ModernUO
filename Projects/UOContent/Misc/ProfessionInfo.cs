@@ -82,7 +82,6 @@ public class ProfessionInfo
 
                 var prof = new ProfessionInfo();
 
-                var statIndex = 0;
                 var totalStats = 0;
                 var skillIndex = 0;
                 var totalSkill = 0;
@@ -161,8 +160,8 @@ public class ProfessionInfo
                                     break;
                                 }
 
-                                var skillValue = Utility.ToInt32(cols[2]);
-                                prof.Skills[skillIndex++] = new SkillNameValue(skillName, skillValue);
+                                var skillValue = byte.Parse(cols[2]);
+                                prof.Skills[skillIndex++] = (skillName, skillValue);
                                 totalSkill += skillValue;
                             }
                             break;
@@ -173,8 +172,8 @@ public class ProfessionInfo
                                     break;
                                 }
 
-                                var statValue = Utility.ToInt32(cols[2]);
-                                prof.Stats[statIndex++] = new StatNameValue(stat, statValue);
+                                var statValue = byte.Parse(cols[2]);
+                                prof.Stats[(int)stat] = statValue;
                                 totalStats += statValue;
                             }
                             break;
@@ -198,14 +197,14 @@ public class ProfessionInfo
         profs.TrimExcess();
     }
 
-    private SkillNameValue[] _skills;
+    private (SkillName, byte)[] _skills;
 
     private ProfessionInfo()
     {
         Name = string.Empty;
 
-        _skills = new SkillNameValue[4];
-        Stats = new StatNameValue[3];
+        _skills = new (SkillName, byte)[4];
+        Stats = new byte[3];
     }
 
     public int ID { get; private set; }
@@ -214,8 +213,8 @@ public class ProfessionInfo
     public int DescID { get; private set; }
     public bool TopLevel { get; private set; }
     public int GumpID { get; private set; }
-    public SkillNameValue[] Skills => _skills;
-    public StatNameValue[] Stats { get; }
+    public (SkillName, byte)[] Skills => _skills;
+    public byte[] Stats { get; }
 
     public void FixSkills()
     {
@@ -223,7 +222,7 @@ public class ProfessionInfo
         while (index >= 0)
         {
             var skill = _skills[index];
-            if (skill is not { Name: SkillName.Alchemy, Value: 0 })
+            if (skill is not (SkillName.Alchemy, 0))
             {
                 break;
             }
