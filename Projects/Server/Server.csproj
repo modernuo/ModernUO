@@ -33,7 +33,7 @@
         <Delete Files="..\..\Distribution\System.IO.Hashing.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
+        <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.3.0" />
         <PackageReference Include="LibDeflate.Bindings" Version="1.0.2.120" />
         <PackageReference Include="PollGroup" Version="1.5.1" />
         <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
