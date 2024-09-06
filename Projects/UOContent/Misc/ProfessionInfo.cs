@@ -49,8 +49,6 @@ public class ProfessionInfo
 
     static ProfessionInfo()
     {
-        List<ProfessionInfo> profs = [];
-
         var file = Core.FindDataFile("prof.txt", false);
         if (!File.Exists(file))
         {
@@ -58,10 +56,11 @@ public class ProfessionInfo
             file = Path.Combine(ExpansionInfo.GetEraFolder(parent), "prof.txt");
         }
 
-        var maxProf = 0;
-
         if (File.Exists(file))
         {
+            var maxProf = 0;
+            List<ProfessionInfo> profs = [];
+
             using var s = File.OpenText(file);
 
             while (!s.EndOfStream)
@@ -173,28 +172,33 @@ public class ProfessionInfo
                                 }
 
                                 var statValue = byte.Parse(cols[2]);
-                                prof.Stats[(int)stat] = statValue;
+                                prof.Stats[(int)stat >> 1] = statValue;
                                 totalStats += statValue;
                             }
                             break;
                     }
                 }
             }
+
+            _professions = new ProfessionInfo[maxProf + 1];
+
+            foreach (var p in profs)
+            {
+                _professions[p.ID] = p;
+            }
+
+            profs.Clear();
+            profs.TrimExcess();
+        }
+        else
+        {
+            _professions = new ProfessionInfo[1];
         }
 
-        _professions = new ProfessionInfo[maxProf + 1];
         _professions[0] = new ProfessionInfo
         {
             Name = "Advanced Skills"
         };
-
-        foreach (var p in profs)
-        {
-            _professions[p.ID] = p;
-        }
-
-        profs.Clear();
-        profs.TrimExcess();
     }
 
     private (SkillName, byte)[] _skills;
