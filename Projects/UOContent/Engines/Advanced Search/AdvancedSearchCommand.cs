@@ -14,8 +14,6 @@ public static class AdvancedSearchCommand
     [Aliases("AdvSrch", "AS", "XmlFind")]
     private static void OnCommand(CommandEventArgs e)
     {
-        var from = e.Mobile;
-
-        from.SendGump(new AdvancedSearchGump(from), true);
+        e.Mobile.SendGump(new AdvancedSearchGump(), true);
     }
 }

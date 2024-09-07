@@ -122,9 +122,9 @@ public class AdvancedSearchGump : Gump
     public int DisplayFrom { get; set; }
     public string CommandString { get; set; }
 
-    public AdvancedSearchGump(Mobile from) : base(50, 50) => Build(from);
+    public AdvancedSearchGump() : base(50, 50) => Build();
 
-    private void Build(Mobile from)
+    private void Build()
     {
         const int height = 500;
         var haveResults = SearchResults?.Length > 0;
@@ -958,7 +958,7 @@ public class AdvancedSearchGump : Gump
     public void Resend(Mobile m)
     {
         Reset();
-        Build(m);
+        Build();
         m.SendGump(this);
     }
 }
