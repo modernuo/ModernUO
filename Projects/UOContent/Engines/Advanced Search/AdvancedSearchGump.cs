@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using CommunityToolkit.HighPerformance;
 using Server.Commands;
 using Server.Commands.Generic;
@@ -121,9 +122,9 @@ public class AdvancedSearchGump : Gump
     public int DisplayFrom { get; set; }
     public string CommandString { get; set; }
 
-    public AdvancedSearchGump(Mobile from) : base(50, 50) => Build(from);
+    public AdvancedSearchGump() : base(50, 50) => Build();
 
-    private void Build(Mobile from)
+    private void Build()
     {
         const int height = 500;
         var haveResults = SearchResults?.Length > 0;
@@ -264,12 +265,6 @@ public class AdvancedSearchGump : Gump
         AddButton(5, y, 0xFAE, 0xFAF, 154);
         AddLabel(38, y, 0x384, "Bring");
 
-        // AddButton(150, y - 25, 0xFA8, 0xFAA, 159);
-        // AddLabel(183, y - 25, 0x384, "Save to file:");
-        //
-        // AddImageTiled(270, y - 25, 180, 19, 0xBBC);
-        // AddTextEntry(270, y - 25, 180, 19, 0, 300, SaveFilename);
-
         AddButton(470, y - 25, 0xFA8, 0xFAA, 160);
         AddLabel(503, y - 25, 0x384, "Command:");
 
@@ -323,9 +318,12 @@ public class AdvancedSearchGump : Gump
             AddButton(670, y, AllSelected ? 0xD3 : 0xD2, AllSelected ? 0xD2 : 0xD3, 1);
 
             var allDisplayedSelected = true;
+
             for (int i = 0; i < MaxEntries; i++)
             {
-                var index = i + DisplayFrom;
+                var offset = SortDescending ? MaxEntries - 1 - i : i;
+                var index = offset + DisplayFrom;
+
                 if (index >= SearchResults.Length)
                 {
                     break;
@@ -343,14 +341,14 @@ public class AdvancedSearchGump : Gump
 
                 if (entry.Entity is BaseSpawner)
                 {
-                    AddButton(145, 22 * i + 30, 0xFBD, 0xFBE, 2000 + i);
+                    AddButton(145, 22 * i + 30, 0xFBD, 0xFBE, 2000 + offset);
                 }
 
                 // Goto button
-                AddButton(205, 22 * i + 30, 0xFAE, 0xFAF, 1000 + i);
+                AddButton(205, 22 * i + 30, 0xFAE, 0xFAF, 1000 + offset);
 
                 // Interface button
-                AddButton(175, 22 * i + 30, 0xFAB, 0xFAD, 3000 + i);
+                AddButton(175, 22 * i + 30, 0xFAB, 0xFAD, 3000 + offset);
 
                 var textHue = 0;
                 var parentName = "";
@@ -394,7 +392,7 @@ public class AdvancedSearchGump : Gump
                 AddLabelCropped(640, 22 * i + 31, 90, 21, textHue, parentName);
 
                 // display the selection button
-                AddButton(730, 22 * i + 32, entry.Selected ? 0xD3 : 0xD2, entry.Selected ? 0xD2 : 0xD3, 4000 + i);
+                AddButton(730, 22 * i + 32, entry.Selected ? 0xD3 : 0xD2, entry.Selected ? 0xD2 : 0xD3, 4000 + offset);
             }
 
             AddButton(730, 5, allDisplayedSelected ? 0xD3 : 0xD2, allDisplayedSelected ? 0xD2 : 0xD3, 2); // Select all displayed
@@ -506,7 +504,7 @@ public class AdvancedSearchGump : Gump
             case 3: // Search
                 {
                     DoSearch(from);
-                    break;
+                    return; // Don't resend the gump, it's sent async
                 }
             case 154: // Bring
                 {
@@ -622,14 +620,11 @@ public class AdvancedSearchGump : Gump
                     SortDescending = !SortDescending;
 
                     var radioSwitch = info.Switches.Length > 0 ? info.Switches[0] : -1;
-                    if (radioSwitch is < 0 or > 4)
-                    {
-                        Array.Reverse(SearchResults);
-                    }
-                    else
+                    if (radioSwitch is >= 0 and <= 4)
                     {
                         Sort(from);
                     }
+
                     break;
                 }
             case >= 1000 and <= 1999: // Goto
@@ -780,32 +775,42 @@ public class AdvancedSearchGump : Gump
             }
         }
 
-        // Block until everything is processed
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        ThreadPool.QueueUserWorkItem(state =>
         {
-            _threadWorkers[i].Sleep();
-        }
-
-        var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
-
-        // Force the GC to collect the ignored entities
-        ignoreQueue.Clear();
-
-        var resultsList = new List<AdvancedSearchResult>(results.Count);
-        foreach (var result in results)
-        {
-            if (!ignoredEntities.Contains(result.Entity))
+            // Block until everything is processed
+            for (var i = 0; i < _threadWorkers.Length; i++)
             {
-                resultsList.Add(result);
+                _threadWorkers[i].Sleep();
             }
-        }
 
-        SearchResults = resultsList.ToArray();
+            var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
 
-        // Force the GC to collect the results
-        resultsList.Clear();
+            // Force the GC to collect the ignored entities
+            ignoreQueue.Clear();
 
-        AutoSave.SavesEnabled = autoSave;
+            var resultsList = new List<AdvancedSearchResult>(results.Count);
+            foreach (var result in results)
+            {
+                if (!ignoredEntities.Contains(result.Entity))
+                {
+                    resultsList.Add(result);
+                }
+            }
+
+            SearchResults = resultsList.ToArray();
+
+            // Force the GC to collect the results
+            resultsList.Clear();
+            resultsList.TrimExcess();
+
+            // Send the gump on the main thread
+            Core.LoopContext.Post(
+                autoSaveState =>
+                {
+                    AutoSave.SavesEnabled = (bool)autoSaveState!;
+                    Resend(from);
+                }, state);
+        }, autoSave);
     }
 
     private void SetSortSwitches(int radioSwitch)
@@ -953,7 +958,7 @@ public class AdvancedSearchGump : Gump
     public void Resend(Mobile m)
     {
         Reset();
-        Build(m);
+        Build();
         m.SendGump(this);
     }
 }
