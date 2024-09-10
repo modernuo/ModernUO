@@ -2277,6 +2277,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
 
+    public byte SerializedThread { get; set; }
+    public int SerializedPosition { get; set; }
+    public int SerializedLength { get; set; }
+
     public virtual void Serialize(IGenericWriter writer)
     {
         writer.Write(36); // version

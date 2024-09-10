@@ -45,7 +45,7 @@ public static class World
     private static readonly GenericEntityPersistence<BaseGuild> _guildPersistence = new("Guilds", 3, 1, 0x7FFFFFFF);
 
     private static int _threadId;
-    private static readonly SerializationThreadWorker[] _threadWorkers = new SerializationThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
+    internal static readonly SerializationThreadWorker[] _threadWorkers = new SerializationThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
     private static readonly ManualResetEvent _diskWriteHandle = new(true);
     private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
@@ -271,13 +271,19 @@ public static class World
         ThreadPool.QueueUserWorkItem(Preserialize);
     }
 
-    internal static void Preserialize(object state)
+    private static void Preserialize(object state)
     {
         var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);
 
         try
         {
-            Persistence.PreSerializeAll(tempPath, SerializedTypes);
+            // Allocate the heaps for the GC
+            foreach (var worker in _threadWorkers)
+            {
+                worker.AllocateHeap();
+            }
+
+            WakeSerializationThreads();
             Core.RequestSnapshot(tempPath);
         }
         catch (Exception ex)
@@ -300,6 +306,8 @@ public static class World
 
         _diskWriteHandle.Reset();
 
+        NetState.FlushAll();
+
         WorldState = WorldState.Saving;
 
         Broadcast(0x35, true, "The world is saving, please wait.");
@@ -314,7 +322,6 @@ public static class World
         {
             _serializationStart = Core.Now;
 
-            WakeSerializationThreads();
             Persistence.SerializeAll();
             PauseSerializationThreads();
             EventSink.InvokeWorldSave();
@@ -324,9 +331,8 @@ public static class World
             exception = ex;
         }
 
-        WorldState = WorldState.PendingSave;
+        WorldState = WorldState.WritingSave;
         ThreadPool.QueueUserWorkItem(WriteFiles, snapshotPath);
-        Persistence.PostWorldSaveAll(); // Process safety queues
         watch.Stop();
 
         if (exception == null)
@@ -345,6 +351,8 @@ public static class World
         }
     }
 
+    private static readonly HashSet<Type> _typesSet = [];
+
     private static void WriteFiles(object state)
     {
         var snapshotPath = (string)state;
@@ -352,7 +360,16 @@ public static class World
         {
             var watch = Stopwatch.StartNew();
             logger.Information("Writing world save snapshot");
-            Persistence.WriteSnapshotAll(snapshotPath, SerializedTypes);
+
+            // Dedupe the types
+            while (SerializedTypes.TryDequeue(out var type))
+            {
+                _typesSet.Add(type);
+            }
+
+            Persistence.WriteSnapshotAll(snapshotPath, _typesSet);
+
+            _typesSet.Clear();
 
             try
             {
@@ -379,8 +396,15 @@ public static class World
         // Clear types
         SerializedTypes.Clear();
 
-        _diskWriteHandle.Set();
+        Core.LoopContext.Post(FinishWorldSave);
+    }
+
+    private static void FinishWorldSave()
+    {
         WorldState = WorldState.Running;
+        _diskWriteHandle.Set();
+
+        Persistence.PostWorldSaveAll(); // Process decay and safety queues
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -408,9 +432,9 @@ public static class World
     internal static void ResetRoundRobin() => _threadId = 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void PushToCache((IGenericSerializable e, Persistence p) ep)
+    internal static void PushToCache(IGenericSerializable e)
     {
-        _threadWorkers[_threadId++].Push(ep);
+        _threadWorkers[_threadId++].Push(e);
         if (_threadId == _threadWorkers.Length)
         {
             _threadId = 0;
@@ -520,7 +544,7 @@ public static class World
                     EnqueueForDecay(item);
                 }
 
-                PushToCache((item, this));
+                PushToCache(item);
             }
         }
 
@@ -548,80 +572,6 @@ public static class World
                 m.UpdateTotals();
 
                 m.ClearProperties();
-            }
-        }
-    }
-
-    private class SerializationThreadWorker
-    {
-        private readonly int _index;
-        private readonly Thread _thread;
-        private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
-        private readonly AutoResetEvent _stopEvent; // Main thread waits for the worker finish draining
-        private bool _pause;
-        private bool _exit;
-        private readonly ConcurrentQueue<(IGenericSerializable, Persistence)> _entities;
-
-        public SerializationThreadWorker(int index)
-        {
-            _index = index;
-            _startEvent = new AutoResetEvent(false);
-            _stopEvent = new AutoResetEvent(false);
-            _entities = new ConcurrentQueue<(IGenericSerializable, Persistence)>();
-            _thread = new Thread(Execute);
-            _thread.Start(this);
-        }
-
-        public void Wake()
-        {
-            _startEvent.Set();
-        }
-
-        public void Sleep()
-        {
-            Volatile.Write(ref _pause, true);
-            _stopEvent.WaitOne();
-        }
-
-        public void Exit()
-        {
-            _exit = true;
-            Wake();
-            Sleep();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Push((IGenericSerializable e, Persistence p) ep) => _entities.Enqueue(ep);
-
-        private static void Execute(object obj)
-        {
-            SerializationThreadWorker worker = (SerializationThreadWorker)obj;
-
-            var reader = worker._entities;
-
-            while (worker._startEvent.WaitOne())
-            {
-                while (true)
-                {
-                    bool pauseRequested = Volatile.Read(ref worker._pause);
-                    if (reader.TryDequeue(out var ep))
-                    {
-                        var (e, p) = ep;
-                        p.Serialize(e, worker._index);
-                    }
-                    else if (pauseRequested) // Break when finished
-                    {
-                        break;
-                    }
-                }
-
-                worker._stopEvent.Set(); // Allow the main thread to continue now that we are finished
-                worker._pause = false;
-
-                if (Core.Closing || worker._exit)
-                {
-                    return;
-                }
             }
         }
     }

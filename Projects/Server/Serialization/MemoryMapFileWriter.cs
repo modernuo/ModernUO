@@ -15,7 +15,7 @@
 
 using System;
 using System.Buffers.Binary;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
@@ -29,7 +29,7 @@ public unsafe class MemoryMapFileWriter : IGenericWriter, IDisposable
 {
     private readonly Encoding _encoding;
 
-    private readonly ConcurrentQueue<Type> _types;
+    private readonly HashSet<Type> _types;
     private readonly FileStream _fileStream;
     private MemoryMappedFile _mmf;
     private MemoryMappedViewAccessor _accessor;
@@ -37,7 +37,7 @@ public unsafe class MemoryMapFileWriter : IGenericWriter, IDisposable
     private long _position;
     private long _size;
 
-    public MemoryMapFileWriter(FileStream fileStream, long initialSize, ConcurrentQueue<Type> types = null)
+    public MemoryMapFileWriter(FileStream fileStream, long initialSize, HashSet<Type> types = null)
     {
         _types = types;
         _fileStream = fileStream;
@@ -244,7 +244,7 @@ public unsafe class MemoryMapFileWriter : IGenericWriter, IDisposable
         {
             Write((byte)0x2); // xxHash3 64bit
             Write(AssemblyHandler.GetTypeHash(type));
-            _types.Enqueue(type);
+            _types.Add(type);
         }
     }
 

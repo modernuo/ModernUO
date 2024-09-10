@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
@@ -53,7 +52,7 @@ public abstract class Persistence
         }
     }
 
-    private unsafe static Dictionary<ulong, string> LoadTypes(string path)
+    private static unsafe Dictionary<ulong, string> LoadTypes(string path)
     {
         var db = new Dictionary<ulong, string>();
 
@@ -85,32 +84,31 @@ public abstract class Persistence
     }
 
     // Note: This is strictly on a background thread
-    internal static void PreSerializeAll(string path, ConcurrentQueue<Type> types)
+    internal static void WriteSnapshotAll(string path, HashSet<Type> typeSet)
     {
         foreach (var p in _registry)
         {
-            p.Preserialize(path, types);
+            p.WriteSnapshot(path, typeSet);
         }
+
+        WriteSerializedTypesSnapshot(path, typeSet);
     }
 
-    private static readonly HashSet<Type> _typesSet = [];
-
-    // Note: This is strictly on a background thread
-    internal static void WriteSnapshotAll(string path, ConcurrentQueue<Type> types)
+    public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
     {
-        foreach (var p in _registry)
-        {
-            p.WriteSnapshot();
-        }
+        string typesPath = Path.Combine(path, "SerializedTypes.db");
+        using var fs = new FileStream(typesPath, FileMode.Create);
+        using var writer = new MemoryMapFileWriter(fs, 1024 * 1024 * 4);
 
-        // Dedupe the queue.
+        writer.Write(0); // version
+        writer.Write(types.Count);
+
         foreach (var type in types)
         {
-            _typesSet.Add(type);
+            var fullName = type.FullName;
+            writer.Write(HashUtility.ComputeHash64(fullName));
+            writer.WriteStringRaw(fullName);
         }
-
-        WriteSerializedTypesSnapshot(path, _typesSet);
-        _typesSet.Clear();
     }
 
     internal static void SerializeAll()
@@ -137,32 +135,8 @@ public abstract class Persistence
         }
     }
 
-    public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
-    {
-        string typesPath = Path.Combine(path, "SerializedTypes.db");
-        using var fs = new FileStream(typesPath, FileMode.Create);
-        using var writer = new MemoryMapFileWriter(fs, 1024 * 1024 * 4);
-
-        writer.Write(0); // version
-        writer.Write(types.Count);
-
-        foreach (var type in types)
-        {
-            var fullName = type.FullName;
-            writer.Write(HashUtility.ComputeHash64(fullName));
-            writer.WriteStringRaw(fullName);
-        }
-    }
-
-    // Open file streams, MMFs, prepare data structures
     // Note: This should only be run on a background thread
-    public abstract void Preserialize(string savePath, ConcurrentQueue<Type> types);
-
-    // Note: This should only be run on a background thread
-    public abstract void Serialize(IGenericSerializable e, int threadIndex);
-
-    // Note: This should only be run on a background thread
-    public abstract void WriteSnapshot();
+    public abstract void WriteSnapshot(string savePath, HashSet<Type> typeSet);
 
     public abstract void Serialize();
 
