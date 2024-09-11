@@ -31,14 +31,13 @@ public interface IGenericEntityPersistence
     public void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb);
 }
 
-public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistence where T : class, ISerializable
+public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPersistence where T : class, ISerializable
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(GenericEntityPersistence<T>));
 
     // Support legacy split file serialization
     private static Dictionary<int, List<EntitySpan<T>>> _entities;
 
-    private readonly string _name;
     private readonly Serial _minSerial;
     private readonly Serial _maxSerial;
     private Serial _lastEntitySerial;
@@ -56,9 +55,8 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
     {
     }
 
-    public GenericEntityPersistence(string name, int priority, Serial minSerial, Serial maxSerial) : base(priority)
+    public GenericEntityPersistence(string name, int priority, Serial minSerial, Serial maxSerial) : base(name, priority)
     {
-        _name = name;
         _minSerial = minSerial;
         _maxSerial = maxSerial;
         _lastEntitySerial = minSerial - 1;
@@ -67,18 +65,40 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
     public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
     {
-        var dir = Path.Combine(savePath, _name);
+        var dir = Path.Combine(savePath, Name);
         PathUtility.EnsureDirectory(dir);
 
         var threads = World._threadWorkers;
 
-        using var binFs = new FileStream(Path.Combine(dir, $"{_name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None);
-        using var idxFs = new FileStream(Path.Combine(dir, $"{_name}.idx"), FileMode.Create);
+        using var binFs = new FileStream(Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None);
+        using var idxFs = new FileStream(Path.Combine(dir, $"{Name}.idx"), FileMode.Create);
         using var idx = new MemoryMapFileWriter(idxFs, 1024 * 1024, typeSet); // 1MB
+
+        var binPosition = 0L;
+
+        // Support for non-entity generic serialization.
+        if (SerializedLength > 0)
+        {
+            try
+            {
+                binFs.Write(threads[SerializedThread].GetHeap(SerializedPosition, SerializedLength));
+            }
+            catch (Exception error)
+            {
+                logger.Error(
+                    error,
+                    "Error writing entity: (Thread: {Thread} - {Start} {Length})",
+                    SerializedThread,
+                    SerializedPosition,
+                    SerializedLength
+                );
+            }
+
+            binPosition += SerializedLength;
+        }
 
         idx.Write(3); // Version
         idx.Write(EntitiesBySerial.Values.Count);
-        var binPosition = 0L;
 
         foreach (var e in EntitiesBySerial.Values)
         {
@@ -98,7 +118,14 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
             }
             catch (Exception error)
             {
-                Console.WriteLine("Error writing entity: {0} (Thread: {1} - {2} {3})\n{4}", e, thread, heapStart, heapLength, error);
+                logger.Error(
+                    error,
+                    "Error writing entity: {Entity} (Thread: {Thread} - {Start} {Length})",
+                    e,
+                    thread,
+                    heapStart,
+                    heapLength
+                );
             }
 
             binPosition += heapLength;
@@ -111,6 +138,8 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         {
             World.PushToCache(entity);
         }
+
+        World.PushToCache(this);
     }
 
     private static ConstructorInfo GetConstructorFor(string typeName, Type t, Type[] constructorTypes)
@@ -149,7 +178,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
      */
     private unsafe Dictionary<int, ConstructorInfo> ReadTypes(string savePath)
     {
-        string typesPath = Path.Combine(savePath, _name, $"{_name}.tdb");
+        string typesPath = Path.Combine(savePath, Name, $"{Name}.tdb");
         if (!File.Exists(typesPath))
         {
             return null;
@@ -180,7 +209,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
     public virtual void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb)
     {
-        string indexPath = Path.Combine(savePath, _name, $"{_name}.idx");
+        string indexPath = Path.Combine(savePath, Name, $"{Name}.idx");
 
         _entities ??= [];
 
@@ -199,7 +228,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         var index = 0;
         while (true)
         {
-            var path = Path.Combine(savePath, _name, $"{_name}_{index}.idx");
+            var path = Path.Combine(savePath, Name, $"{Name}_{index}.idx");
             var fi = new FileInfo(path);
             if (!fi.Exists)
             {
@@ -303,7 +332,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
     public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb)
     {
-        string dataPath = Path.Combine(savePath, _name, $"{_name}.bin");
+        string dataPath = Path.Combine(savePath, Name, $"{Name}.bin");
         var fi = new FileInfo(dataPath);
 
         if (!fi.Exists)
@@ -320,7 +349,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         _entities = null;
     }
 
-    private static unsafe void InternalDeserialize(string filePath, int index, Dictionary<ulong, string> typesDb)
+    private unsafe void InternalDeserialize(string filePath, int index, Dictionary<ulong, string> typesDb)
     {
         using var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open);
         using var accessor = mmf.CreateViewStream();
@@ -328,6 +357,9 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         byte* ptr = null;
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
         UnmanagedDataReader dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
+
+        Deserialize(dataReader);
+
         var deleteAllFailures = false;
 
         foreach (var entry in _entities[index])
@@ -398,13 +430,23 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
             return;
         }
 
-        var folderPath = Path.Combine(savePath, _name);
+        var folderPath = Path.Combine(savePath, Name);
 
         foreach (var i in _entities.Keys)
         {
-            var path = Path.Combine(folderPath, $"{_name}_{i}.bin");
+            var path = Path.Combine(folderPath, $"{Name}_{i}.bin");
             InternalDeserialize(path, i, typesDb);
         }
+    }
+
+    // Override for non-entity serialization
+    public override void Serialize(IGenericWriter writer)
+    {
+    }
+
+    // Override for non-entity deserialization
+    public override void Deserialize(IGenericReader reader)
+    {
     }
 
     public override void PostWorldSave()
@@ -449,7 +491,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                 }
             }
 
-            OutOfMemory($"No serials left to allocate for {_name}");
+            OutOfMemory($"No serials left to allocate for {Name}");
             return Serial.MinusOne;
         }
     }
