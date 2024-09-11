@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Diagnostics;
 using Server.Engines.Virtues;
 using Server.Exceptions;
 using Server.Mobiles;
@@ -157,10 +156,6 @@ public static partial class GumpSystem
 
             Remove(state, baseGump);
 
-            var prof = GumpProfile.Acquire(baseGump.GetType());
-
-            prof?.Start();
-
             var relayInfo = new RelayInfo(
                 buttonId,
                 switches,
@@ -169,8 +164,6 @@ public static partial class GumpSystem
                 textBlock
             );
             baseGump.OnResponse(state, relayInfo);
-
-            prof?.Finish();
         }
 
         if (typeId == 461)

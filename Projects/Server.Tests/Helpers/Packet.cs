@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.IO;
-using Server.Diagnostics;
 
 namespace Server.Network
 {
@@ -19,12 +18,6 @@ namespace Server.Network
         protected Packet(int packetID)
         {
             PacketID = packetID;
-
-            if (Core.Profiling)
-            {
-                var prof = PacketSendProfile.Acquire(PacketID);
-                prof.Increment();
-            }
         }
 
         protected Packet(int packetID, int length)
@@ -34,12 +27,6 @@ namespace Server.Network
 
             Stream = PacketWriter.CreateInstance(length); // new PacketWriter( length );
             Stream.Write((byte)packetID);
-
-            if (Core.Profiling)
-            {
-                var prof = PacketSendProfile.Acquire(PacketID);
-                prof.Increment();
-            }
         }
 
         public int PacketID { get; }

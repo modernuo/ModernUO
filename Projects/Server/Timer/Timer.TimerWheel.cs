@@ -136,9 +136,6 @@ public partial class Timer
     {
         var finished = timer.Count != 0 && timer.Index + 1 >= timer.Count;
 
-        var prof = timer.GetProfile();
-        prof?.Start();
-
         // Stop the timer from running so that way if Start() is called in OnTick, the timer will be started.
         if (finished)
         {
@@ -149,7 +146,6 @@ public partial class Timer
         var version = timer.Version;
 
         timer.OnTick();
-        prof?.Finish();
 
         // Starting doesn't change the timer version, so we need to check if it's finished and if it's still running.
         if (timer.Version != version || finished && timer.Running)
