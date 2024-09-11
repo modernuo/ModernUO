@@ -446,7 +446,7 @@ public static class Core
 #endif
 
             var cycleCount = _cyclesPerSecond.Length;
-            long last = Stopwatch.GetTimestamp();
+            long last = _tickCount;
             const int interval = 100;
             double frequency = Stopwatch.Frequency * interval;
 
@@ -486,8 +486,9 @@ public static class Core
                 _tickCount = 0;
                 _now = DateTime.MinValue;
 
-                if (idleCPU && ++sample % interval == 0)
+                if (sample++ == interval)
                 {
+                    sample = 0;
                     var now = GetTimestamp();
 
                     var cyclesPerSecond = frequency / (now - last);
@@ -499,7 +500,7 @@ public static class Core
 
                     last = now;
 
-                    if (cyclesPerSecond > 125)
+                    if (idleCPU && cyclesPerSecond > 125)
                     {
                         Thread.Sleep(2);
                     }
