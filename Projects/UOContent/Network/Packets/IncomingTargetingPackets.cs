@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System.Buffers;
-using Server.Diagnostics;
 using Server.Targeting;
 
 namespace Server.Network;
@@ -52,95 +51,83 @@ public static class IncomingTargetingPackets
             return;
         }
 
-        var prof = TargetProfile.Acquire(t.GetType());
-        prof?.Start();
-
-        try
+        if (x == -1 && y == -1 && !serial.IsValid)
         {
-            if (x == -1 && y == -1 && !serial.IsValid)
-            {
-                // User pressed escape
-                t.Cancel(from, TargetCancelType.Canceled);
-            }
-            else if (t.TargetID == targetID)
-            {
-                object toTarget;
+            // User pressed escape
+            t.Cancel(from, TargetCancelType.Canceled);
+        }
+        else if (t.TargetID == targetID)
+        {
+            object toTarget;
 
-                if (type == 1)
+            if (type == 1)
+            {
+                if (graphic == 0)
                 {
-                    if (graphic == 0)
+                    toTarget = new LandTarget(new Point3D(x, y, z), from.Map);
+                }
+                else
+                {
+                    var map = from.Map;
+
+                    if (map == null || map == Map.Internal)
                     {
-                        toTarget = new LandTarget(new Point3D(x, y, z), from.Map);
+                        t.Cancel(from, TargetCancelType.Canceled);
+                        return;
                     }
                     else
                     {
-                        var map = from.Map;
+                        if (state.HighSeas)
+                        {
+                            var id = TileData.ItemTable[graphic & TileData.MaxItemValue];
+                            if (id.Surface)
+                            {
+                                z -= id.Height;
+                            }
+                        }
 
-                        if (map == null || map == Map.Internal)
+                        int hue = 0;
+                        var valid = false;
+
+                        var eable = t.DisallowMultis
+                            ? map.Tiles.GetStaticTiles(x, y)
+                            : map.Tiles.GetStaticAndMultiTiles(x, y);
+
+                        foreach (var tile in eable)
+                        {
+                            if (tile.Z == z && tile.ID == graphic)
+                            {
+                                valid = true;
+                                hue = tile.Hue;
+                                break;
+                            }
+                        }
+
+                        if (!valid)
                         {
                             t.Cancel(from, TargetCancelType.Canceled);
                             return;
                         }
-                        else
-                        {
-                            if (state.HighSeas)
-                            {
-                                var id = TileData.ItemTable[graphic & TileData.MaxItemValue];
-                                if (id.Surface)
-                                {
-                                    z -= id.Height;
-                                }
-                            }
 
-                            int hue = 0;
-                            var valid = false;
-
-                            var eable = t.DisallowMultis
-                                ? map.Tiles.GetStaticTiles(x, y)
-                                : map.Tiles.GetStaticAndMultiTiles(x, y);
-
-                            foreach (var tile in eable)
-                            {
-                                if (tile.Z == z && tile.ID == graphic)
-                                {
-                                    valid = true;
-                                    hue = tile.Hue;
-                                    break;
-                                }
-                            }
-
-                            if (!valid)
-                            {
-                                t.Cancel(from, TargetCancelType.Canceled);
-                                return;
-                            }
-                            else
-                            {
-                                toTarget = new StaticTarget(new Point3D(x, y, z), graphic, hue);
-                            }
-                        }
+                        toTarget = new StaticTarget(new Point3D(x, y, z), graphic, hue);
                     }
                 }
-                else if (serial.IsMobile)
-                {
-                    toTarget = World.FindMobile(serial);
-                }
-                else if (serial.IsItem)
-                {
-                    toTarget = World.FindItem(serial);
-                }
-                else
-                {
-                    t.Cancel(from, TargetCancelType.Canceled);
-                    return;
-                }
-
-                t.Invoke(from, toTarget);
             }
-        }
-        finally
-        {
-            prof?.Finish();
+            else if (serial.IsMobile)
+            {
+                toTarget = World.FindMobile(serial);
+            }
+            else if (serial.IsItem)
+            {
+                toTarget = World.FindItem(serial);
+            }
+            else
+            {
+                t.Cancel(from, TargetCancelType.Canceled);
+                return;
+            }
+
+            t.Invoke(from, toTarget);
         }
     }
 }

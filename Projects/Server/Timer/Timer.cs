@@ -15,7 +15,6 @@
 
 using System;
 using System.Diagnostics;
-using Server.Diagnostics;
 using Server.Logging;
 
 namespace Server;
@@ -54,13 +53,6 @@ public partial class Timer
         Next = Core.Now + Delay;
         _ring = -1;
         _slot = -1;
-
-        var prof = GetProfile();
-
-        if (prof != null)
-        {
-            prof.Created++;
-        }
     }
 
     protected int Version { get; set; } // Used to determine if a timer was altered and we should abandon it.
@@ -72,8 +64,6 @@ public partial class Timer
     public int Count { get; private set; }
     public int RemainingCount => Count == 0 ? int.MaxValue : Count - Index;
     public bool Running { get; private set; }
-
-    public TimerProfile GetProfile() => !Core.Profiling ? null : TimerProfile.Acquire(ToString() ?? "null");
 
     public override string ToString() => GetType().FullName;
 
@@ -110,13 +100,6 @@ public partial class Timer
         Index = 0;
         Running = true;
         AddTimer(this, (long)Delay.TotalMilliseconds);
-
-        var prof = GetProfile();
-
-        if (prof != null)
-        {
-            prof.Started++;
-        }
 
         return this;
     }
@@ -173,12 +156,6 @@ public partial class Timer
         if (_executingRings[_ring] == this)
         {
             _executingRings[_ring] = _nextTimer;
-        }
-
-        var prof = GetProfile();
-        if (prof != null)
-        {
-            prof.Stopped++;
         }
     }
 

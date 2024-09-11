@@ -15,7 +15,6 @@
 
 using Server.Accounting;
 using Server.Collections;
-using Server.Diagnostics;
 using Server.HuePickers;
 using Server.Items;
 using Server.Logging;
@@ -455,14 +454,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            PacketSendProfile prof = null;
-
-            if (Core.Profiling)
-            {
-                prof = PacketSendProfile.Acquire(span[0]);
-                prof.Start();
-            }
-
             if (_packetEncoder != null)
             {
                 length = _packetEncoder(span, buffer);
@@ -484,8 +475,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 _flushPending.Enqueue(this);
                 _flushQueued = true;
             }
-
-            prof?.Finish();
         }
         catch (Exception ex)
         {
@@ -804,14 +793,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             SetPacketTime(packetId);
         }
 
-        PacketReceiveProfile prof = null;
-
-        if (Core.Profiling)
-        {
-            prof = PacketReceiveProfile.Acquire(packetId);
-            prof?.Start();
-        }
-
         UpdatePacketCount(packetId);
 
         if (PacketLogging)
@@ -825,8 +806,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         var remainingLength = packetLength - packetReader.Position;
 
         handler.OnReceive(this, new SpanReader(packetReader.Buffer.Slice(start, remainingLength)));
-
-        prof?.Finish(packetLength);
 
         return ParserState.AwaitingNextPacket;
     }
