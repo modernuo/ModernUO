@@ -515,7 +515,11 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 {
                     if (_pendingDelete.Remove(entity.Serial))
                     {
-                        logger.Warning("Deleted then added {Entity} during {WorldState} state.", entity.GetType().Name, worldState.ToString());
+                        logger.Warning(
+                            "Deleted then added {Entity} during {WorldState} state.",
+                            entity.GetType().Name,
+                            worldState.ToString()
+                        );
                     }
 
                     _pendingAdd[entity.Serial] = entity;
@@ -594,8 +598,6 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             AddEntity(entity);
         }
 
-        _pendingAdd.Clear();
-
         foreach (var entity in _pendingDelete.Values)
         {
             if (_pendingAdd.ContainsKey(entity.Serial))
@@ -606,10 +608,11 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             RemoveEntity(entity);
         }
 
+        _pendingAdd.Clear();
         _pendingDelete.Clear();
     }
 
-    private void AppendSafetyLog(string action, ISerializable entity)
+    private static void AppendSafetyLog(string action, ISerializable entity)
     {
         var message =
             $"Warning: Attempted to {{Action}} {{Entity}} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
@@ -619,7 +622,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         try
         {
             using var op = new StreamWriter("world-save-errors.log", true);
-            op.WriteLine("{0}\t{1}", DateTime.UtcNow, message);
+            op.WriteLine($"{DateTime.UtcNow}\t{message}");
             op.WriteLine(new StackTrace(2).ToString());
             op.WriteLine();
         }
@@ -630,17 +633,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Find(Serial serial) => FindEntity<T>(serial, false, false);
+    public T Find(Serial serial, bool returnDeleted = false) => FindEntity<T>(serial, returnDeleted);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Find(Serial serial, bool returnDeleted) => FindEntity<T>(serial, returnDeleted, false);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Find(Serial serial, bool returnDeleted, bool returnPending) => FindEntity<T>(serial, returnDeleted, returnPending);
-
-    public R FindEntity<R>(Serial serial) where R : class, T => FindEntity<R>(serial, false, false);
-
-    public R FindEntity<R>(Serial serial, bool returnDeleted, bool returnPending) where R : class, T
+    public R FindEntity<R>(Serial serial, bool returnDeleted = false) where R : class, T
     {
         switch (World.WorldState)
         {
@@ -652,13 +647,12 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             case WorldState.Saving:
             case WorldState.WritingSave:
                 {
-                    if (returnDeleted && returnPending && _pendingDelete.TryGetValue(serial, out var entity))
+                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
                     {
                         return entity as R;
                     }
 
-                    if (returnPending && _pendingAdd.TryGetValue(serial, out entity) ||
-                        EntitiesBySerial.TryGetValue(serial, out entity))
+                    if (_pendingAdd.TryGetValue(serial, out entity) || EntitiesBySerial.TryGetValue(serial, out entity))
                     {
                         return entity as R;
                     }

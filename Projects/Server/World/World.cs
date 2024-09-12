@@ -493,20 +493,20 @@ public static class World
 
     // Legacy: Only used for retrieving Items and Mobiles.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEntity FindEntity(Serial serial, bool returnDeleted = false, bool returnPending = false) =>
-        FindEntity<IEntity>(serial, returnDeleted, returnPending);
+    public static IEntity FindEntity(Serial serial, bool returnDeleted = false) =>
+        FindEntity<IEntity>(serial, returnDeleted);
 
     // Legacy: Only used for retrieving Items and Mobiles.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T FindEntity<T>(Serial serial, bool returnDeleted = false, bool returnPending = false)
+    public static T FindEntity<T>(Serial serial, bool returnDeleted = false)
         where T : class, IEntity
     {
         if (serial.IsItem)
         {
-            return _itemPersistence.Find(serial, returnDeleted, returnPending) as T;
+            return _itemPersistence.Find(serial, returnDeleted) as T;
         }
 
-        return _mobilePersistence.Find(serial, returnDeleted, returnPending) as T;
+        return _mobilePersistence.Find(serial, returnDeleted) as T;
     }
 
     private class ItemPersistence : GenericEntityPersistence<Item>
