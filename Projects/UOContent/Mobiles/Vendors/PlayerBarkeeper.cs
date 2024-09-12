@@ -939,7 +939,7 @@ public class BarkeeperGump : Gump
         AddHtml(170, 160, 380, 20, "Are you sure you want to dismiss your barkeeper?");
 
         AddButton(205, 280, 4005, 4007, GetButtonID(0, 0));
-        AddHtml(240, 280, 100, 20, @"Yes");
+        AddHtml(240, 280, 100, 20, "Yes");
 
         AddButton(395, 280, 4005, 4007, 0);
         AddHtml(430, 280, 100, 20, "No");

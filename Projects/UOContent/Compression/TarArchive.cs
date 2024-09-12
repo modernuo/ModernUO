@@ -6,7 +6,7 @@ namespace Server.Compression;
 
 public static class TarArchive
 {
-    private const string _libArchiveWindowsUrl = @"https://www.libarchive.org/downloads/libarchive-v3.5.2-win64.zip";
+    private const string _libArchiveWindowsUrl = "https://www.libarchive.org/downloads/libarchive-v3.5.2-win64.zip";
     private static string _pathToTar;
 
     private static string GetPathToTar()
