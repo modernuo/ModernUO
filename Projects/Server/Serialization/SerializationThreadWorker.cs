@@ -60,15 +60,7 @@ public class SerializationThreadWorker
         Sleep();
     }
 
-    // 6GB heap, divide by number of threads from World.GetThreadWorkerCount()
-    private const ulong totalMemory = 1024 * 1024;
-    // private static readonly ulong _memoryPerThread = totalMemory / (ulong)World.GetThreadWorkerCount();
-
-    // private static ulong NextBlockSize(ulong amount) => (amount + 4096UL - 1) & ~(4096UL - 1);
-
-    // public void AllocateHeap() => _heap ??= GC.AllocateUninitializedArray<byte>((int)NextBlockSize(_memoryPerThread));
-
-    public void AllocateHeap() => _heap ??= GC.AllocateUninitializedArray<byte>((int)totalMemory);
+    public void AllocateHeap() => _heap ??= GC.AllocateUninitializedArray<byte>(1024 * 1024); // 1MB
 
     public void DeallocateHeap()
     {

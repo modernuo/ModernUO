@@ -104,10 +104,7 @@ public static class World
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WaitForWriteCompletion()
-    {
-        _diskWriteHandle.WaitOne();
-    }
+    public static void WaitForWriteCompletion() => _diskWriteHandle.WaitOne();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void EnqueueForDecay(Item item)
@@ -303,7 +300,6 @@ public static class World
         }
 
         WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
-
         _diskWriteHandle.Reset();
 
         NetState.FlushAll();
@@ -396,14 +392,13 @@ public static class World
         // Clear types
         SerializedTypes.Clear();
 
+        _diskWriteHandle.Set();
         Core.LoopContext.Post(FinishWorldSave);
     }
 
     private static void FinishWorldSave()
     {
         WorldState = WorldState.Running;
-        _diskWriteHandle.Set();
-
         Persistence.PostWorldSaveAll(); // Process decay and safety queues
     }
 
