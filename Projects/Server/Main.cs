@@ -477,9 +477,6 @@ public static class Core
                     break;
                 }
 
-                _tickCount = 0;
-                _now = DateTime.MinValue;
-
                 if (sample++ == interval)
                 {
                     sample = 0;
