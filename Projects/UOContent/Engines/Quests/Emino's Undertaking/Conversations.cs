@@ -1,185 +1,184 @@
-namespace Server.Engines.Quests.Ninja
+namespace Server.Engines.Quests.Ninja;
+
+public class AcceptConversation : QuestConversation
 {
-    public class AcceptConversation : QuestConversation
-    {
-        public override int Message => 1049092;
+    public override int Message => 1049092;
 
-        public override void OnRead()
-        {
-            System.AddObjective(new FindEminoBeginObjective());
-        }
+    public override void OnRead()
+    {
+        System.AddObjective(new FindEminoBeginObjective());
     }
+}
 
-    public class FindZoelConversation : QuestConversation
+public class FindZoelConversation : QuestConversation
+{
+    public override int Message => 1063175;
+
+    public override void OnRead()
     {
-        public override int Message => 1063175;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new FindZoelObjective());
-        }
+        System.AddObjective(new FindZoelObjective());
     }
+}
 
-    public class RadarConversation : QuestConversation
+public class RadarConversation : QuestConversation
+{
+    public override int Message => 1063033;
+
+    public override bool Logged => false;
+}
+
+public class EnterCaveConversation : QuestConversation
+{
+    public override int Message => 1063177;
+
+    public override void OnRead()
     {
-        public override int Message => 1063033;
-
-        public override bool Logged => false;
+        System.AddObjective(new EnterCaveObjective());
     }
+}
 
-    public class EnterCaveConversation : QuestConversation
+public class SneakPastGuardiansConversation : QuestConversation
+{
+    public override int Message => 1063180;
+
+    public override void OnRead()
     {
-        public override int Message => 1063177;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new EnterCaveObjective());
-        }
+        System.AddObjective(new SneakPastGuardiansObjective());
     }
+}
 
-    public class SneakPastGuardiansConversation : QuestConversation
+public class NeedToHideConversation : QuestConversation
+{
+    public override int Message => 1063181;
+}
+
+public class UseTeleporterConversation : QuestConversation
+{
+    public override int Message => 1063182;
+
+    public override void OnRead()
     {
-        public override int Message => 1063180;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new SneakPastGuardiansObjective());
-        }
+        System.AddObjective(new UseTeleporterObjective());
     }
+}
 
-    public class NeedToHideConversation : QuestConversation
+public class GiveZoelNoteConversation : QuestConversation
+{
+    public override int Message => 1063184;
+
+    public override void OnRead()
     {
-        public override int Message => 1063181;
+        System.AddObjective(new GiveZoelNoteObjective());
     }
+}
 
-    public class UseTeleporterConversation : QuestConversation
+public class LostNoteConversation : QuestConversation
+{
+    public override int Message => 1063187;
+
+    public override bool Logged => false;
+}
+
+public class GainInnInformationConversation : QuestConversation
+{
+    public override int Message => 1063189;
+
+    public override void OnRead()
     {
-        public override int Message => 1063182;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new UseTeleporterObjective());
-        }
+        System.AddObjective(new GainInnInformationObjective());
     }
+}
 
-    public class GiveZoelNoteConversation : QuestConversation
+public class ReturnFromInnConversation : QuestConversation
+{
+    public override int Message => 1063196;
+
+    public override void OnRead()
     {
-        public override int Message => 1063184;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new GiveZoelNoteObjective());
-        }
+        System.AddObjective(new ReturnFromInnObjective());
     }
+}
 
-    public class LostNoteConversation : QuestConversation
+public class SearchForSwordConversation : QuestConversation
+{
+    public override int Message => 1063199;
+
+    public override void OnRead()
     {
-        public override int Message => 1063187;
-
-        public override bool Logged => false;
+        System.AddObjective(new SearchForSwordObjective());
     }
+}
 
-    public class GainInnInformationConversation : QuestConversation
+public class HallwayWalkConversation : QuestConversation
+{
+    public override int Message => 1063201;
+
+    public override void OnRead()
     {
-        public override int Message => 1063189;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new GainInnInformationObjective());
-        }
+        System.AddObjective(new HallwayWalkObjective());
     }
+}
 
-    public class ReturnFromInnConversation : QuestConversation
+public class ReturnSwordConversation : QuestConversation
+{
+    public override int Message => 1063203;
+
+    public override void OnRead()
     {
-        public override int Message => 1063196;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new ReturnFromInnObjective());
-        }
+        System.AddObjective(new ReturnSwordObjective());
     }
+}
 
-    public class SearchForSwordConversation : QuestConversation
+public class SlayHenchmenConversation : QuestConversation
+{
+    public override int Message => 1063205;
+
+    public override void OnRead()
     {
-        public override int Message => 1063199;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new SearchForSwordObjective());
-        }
+        System.AddObjective(new SlayHenchmenObjective());
     }
+}
 
-    public class HallwayWalkConversation : QuestConversation
+public class ContinueSlayHenchmenConversation : QuestConversation
+{
+    public override int Message => 1063208;
+
+    public override bool Logged => false;
+}
+
+public class GiveEminoSwordConversation : QuestConversation
+{
+    public override int Message => 1063211;
+
+    public override void OnRead()
     {
-        public override int Message => 1063201;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new HallwayWalkObjective());
-        }
+        System.AddObjective(new GiveEminoSwordObjective());
     }
+}
 
-    public class ReturnSwordConversation : QuestConversation
+public class LostSwordConversation : QuestConversation
+{
+    public override int Message => 1063212;
+
+    public override bool Logged => false;
+}
+
+public class EarnGiftsConversation : QuestConversation
+{
+    public override int Message => 1063216;
+
+    public override void OnRead()
     {
-        public override int Message => 1063203;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new ReturnSwordObjective());
-        }
+        System.Complete();
     }
+}
 
-    public class SlayHenchmenConversation : QuestConversation
+public class EarnLessGiftsConversation : QuestConversation
+{
+    public override int Message => 1063217;
+
+    public override void OnRead()
     {
-        public override int Message => 1063205;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new SlayHenchmenObjective());
-        }
-    }
-
-    public class ContinueSlayHenchmenConversation : QuestConversation
-    {
-        public override int Message => 1063208;
-
-        public override bool Logged => false;
-    }
-
-    public class GiveEminoSwordConversation : QuestConversation
-    {
-        public override int Message => 1063211;
-
-        public override void OnRead()
-        {
-            System.AddObjective(new GiveEminoSwordObjective());
-        }
-    }
-
-    public class LostSwordConversation : QuestConversation
-    {
-        public override int Message => 1063212;
-
-        public override bool Logged => false;
-    }
-
-    public class EarnGiftsConversation : QuestConversation
-    {
-        public override int Message => 1063216;
-
-        public override void OnRead()
-        {
-            System.Complete();
-        }
-    }
-
-    public class EarnLessGiftsConversation : QuestConversation
-    {
-        public override int Message => 1063217;
-
-        public override void OnRead()
-        {
-            System.Complete();
-        }
+        System.Complete();
     }
 }

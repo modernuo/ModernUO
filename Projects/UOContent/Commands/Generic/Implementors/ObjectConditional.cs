@@ -1,215 +1,211 @@
-using System;
-using System.Collections.Generic;
-
 using static Server.Types;
 
-namespace Server.Commands.Generic
+namespace Server.Commands.Generic;
+
+public sealed class ObjectConditional
 {
-    public sealed class ObjectConditional
+    public static readonly ObjectConditional Empty = new(null, null);
+
+    private readonly ICondition[][] m_Conditions;
+
+    private IConditional[] m_Conditionals;
+
+    public ObjectConditional(Type objectType, ICondition[][] conditions)
     {
-        public static readonly ObjectConditional Empty = new(null, null);
+        Type = objectType;
+        m_Conditions = conditions;
+    }
 
-        private readonly ICondition[][] m_Conditions;
+    public Type Type { get; }
 
-        private IConditional[] m_Conditionals;
+    public bool IsItem => Type?.IsAssignableTo(OfItem) != false;
 
-        public ObjectConditional(Type objectType, ICondition[][] conditions)
+    public bool IsMobile => Type?.IsAssignableTo(OfMobile) != false;
+
+    public bool HasCompiled => m_Conditionals != null;
+
+    public void Compile(ref AssemblyEmitter emitter)
+    {
+        emitter ??= new AssemblyEmitter("__dynamic");
+
+        m_Conditionals = new IConditional[m_Conditions.Length];
+
+        for (var i = 0; i < m_Conditionals.Length; ++i)
         {
-            Type = objectType;
-            m_Conditions = conditions;
+            m_Conditionals[i] = ConditionalCompiler.Compile(emitter, Type, m_Conditions[i], i);
+        }
+    }
+
+    public bool CheckCondition(object obj)
+    {
+        if (Type == null)
+        {
+            return true; // null type means no condition
         }
 
-        public Type Type { get; }
-
-        public bool IsItem => Type?.IsAssignableTo(OfItem) != false;
-
-        public bool IsMobile => Type?.IsAssignableTo(OfMobile) != false;
-
-        public bool HasCompiled => m_Conditionals != null;
-
-        public void Compile(ref AssemblyEmitter emitter)
+        if (!HasCompiled)
         {
-            emitter ??= new AssemblyEmitter("__dynamic");
+            AssemblyEmitter emitter = null;
 
-            m_Conditionals = new IConditional[m_Conditions.Length];
+            Compile(ref emitter);
+        }
 
-            for (var i = 0; i < m_Conditionals.Length; ++i)
+        for (var i = 0; i < m_Conditionals.Length; ++i)
+        {
+            if (m_Conditionals[i].Verify(obj))
             {
-                m_Conditionals[i] = ConditionalCompiler.Compile(emitter, Type, m_Conditions[i], i);
+                return true;
             }
         }
 
-        public bool CheckCondition(object obj)
+        return false; // all conditions false
+    }
+
+    public static ObjectConditional Parse(Mobile from, ref string[] args)
+    {
+        string[] conditionArgs = null;
+
+        for (var i = 0; i < args.Length; ++i)
         {
-            if (Type == null)
+            if (args[i].InsensitiveEquals("where"))
             {
-                return true; // null type means no condition
-            }
+                var origArgs = args;
 
-            if (!HasCompiled)
-            {
-                AssemblyEmitter emitter = null;
+                args = new string[i];
 
-                Compile(ref emitter);
-            }
-
-            for (var i = 0; i < m_Conditionals.Length; ++i)
-            {
-                if (m_Conditionals[i].Verify(obj))
+                for (var j = 0; j < args.Length; ++j)
                 {
-                    return true;
+                    args[j] = origArgs[j];
                 }
-            }
 
-            return false; // all conditions false
+                conditionArgs = new string[origArgs.Length - i - 1];
+
+                for (var j = 0; j < conditionArgs.Length; ++j)
+                {
+                    conditionArgs[j] = origArgs[i + j + 1];
+                }
+
+                break;
+            }
         }
 
-        public static ObjectConditional Parse(Mobile from, ref string[] args)
+        return ParseDirect(from, conditionArgs, 0, conditionArgs?.Length ?? 0);
+    }
+
+    public static ObjectConditional ParseDirect(Mobile from, string[] args, int offset, int size)
+    {
+        if (args == null || size == 0)
         {
-            string[] conditionArgs = null;
-
-            for (var i = 0; i < args.Length; ++i)
-            {
-                if (args[i].InsensitiveEquals("where"))
-                {
-                    var origArgs = args;
-
-                    args = new string[i];
-
-                    for (var j = 0; j < args.Length; ++j)
-                    {
-                        args[j] = origArgs[j];
-                    }
-
-                    conditionArgs = new string[origArgs.Length - i - 1];
-
-                    for (var j = 0; j < conditionArgs.Length; ++j)
-                    {
-                        conditionArgs[j] = origArgs[i + j + 1];
-                    }
-
-                    break;
-                }
-            }
-
-            return ParseDirect(from, conditionArgs, 0, conditionArgs?.Length ?? 0);
+            return Empty;
         }
 
-        public static ObjectConditional ParseDirect(Mobile from, string[] args, int offset, int size)
+        var objectType = AssemblyHandler.FindTypeByName(args[offset]);
+
+        if (objectType == null)
         {
-            if (args == null || size == 0)
+            throw new Exception($"No type with that name ({args[offset]}) was found.");
+        }
+
+        var conditions = new List<ICondition[]>();
+        var current = new List<ICondition> { TypeCondition.Default };
+
+        var index = 1;
+
+        while (index < size)
+        {
+            var cur = args[offset + index];
+
+            var inverse = false;
+
+            if (cur.InsensitiveEquals("not") || cur == "!")
             {
-                return Empty;
-            }
-
-            var objectType = AssemblyHandler.FindTypeByName(args[offset]);
-
-            if (objectType == null)
-            {
-                throw new Exception($"No type with that name ({args[offset]}) was found.");
-            }
-
-            var conditions = new List<ICondition[]>();
-            var current = new List<ICondition> { TypeCondition.Default };
-
-            var index = 1;
-
-            while (index < size)
-            {
-                var cur = args[offset + index];
-
-                var inverse = false;
-
-                if (cur.InsensitiveEquals("not") || cur == "!")
-                {
-                    inverse = true;
-                    ++index;
-
-                    if (index >= size)
-                    {
-                        throw new Exception("Improperly formatted object conditional.");
-                    }
-                }
-                else if (cur.InsensitiveEquals("or") || cur == "||")
-                {
-                    if (current.Count > 1)
-                    {
-                        conditions.Add(current.ToArray());
-
-                        current.Clear();
-                        current.Add(TypeCondition.Default);
-                    }
-
-                    ++index;
-
-                    continue;
-                }
-
-                var binding = args[offset + index];
-                index++;
+                inverse = true;
+                ++index;
 
                 if (index >= size)
                 {
                     throw new Exception("Improperly formatted object conditional.");
                 }
-
-                var oper = args[offset + index];
-                index++;
-
-                if (index >= size)
+            }
+            else if (cur.InsensitiveEquals("or") || cur == "||")
+            {
+                if (current.Count > 1)
                 {
-                    throw new Exception("Improperly formatted object conditional.");
+                    conditions.Add(current.ToArray());
+
+                    current.Clear();
+                    current.Add(TypeCondition.Default);
                 }
 
-                var val = args[offset + index];
-                index++;
+                ++index;
 
-                var prop = new Property(binding);
-
-                prop.BindTo(objectType, PropertyAccess.Read);
-                prop.CheckAccess(from);
-
-                var condition = oper switch
-                {
-                    "="         => (ICondition)new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
-                    "=="        => new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
-                    "is"        => new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
-                    "!="        => new ComparisonCondition(prop, inverse, ComparisonOperator.NotEqual, val),
-                    ">"         => new ComparisonCondition(prop, inverse, ComparisonOperator.Greater, val),
-                    "<"         => new ComparisonCondition(prop, inverse, ComparisonOperator.Lesser, val),
-                    ">="        => new ComparisonCondition(prop, inverse, ComparisonOperator.GreaterEqual, val),
-                    "<="        => new ComparisonCondition(prop, inverse, ComparisonOperator.LesserEqual, val),
-                    "==~"       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
-                    "~=="       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
-                    "=~"        => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
-                    "~="        => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
-                    "is~"       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
-                    "~is"       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
-                    "!=~"       => new StringCondition(prop, inverse, StringOperator.NotEqual, val, true),
-                    "~!="       => new StringCondition(prop, inverse, StringOperator.NotEqual, val, true),
-                    "starts"    => new StringCondition(prop, inverse, StringOperator.StartsWith, val, false),
-                    "starts~"   => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
-                    "~starts"   => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
-                    "ends"      => new StringCondition(prop, inverse, StringOperator.EndsWith, val, false),
-                    "ends~"     => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
-                    "~ends"     => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
-                    "contains"  => new StringCondition(prop, inverse, StringOperator.Contains, val, false),
-                    "contains~" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
-                    "~contains" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
-                    _            => null
-                };
-
-                if (condition == null)
-                {
-                    throw new InvalidOperationException($"Unrecognized operator (\"{oper}\").");
-                }
-
-                current.Add(condition);
+                continue;
             }
 
-            conditions.Add(current.ToArray());
+            var binding = args[offset + index];
+            index++;
 
-            return new ObjectConditional(objectType, conditions.ToArray());
+            if (index >= size)
+            {
+                throw new Exception("Improperly formatted object conditional.");
+            }
+
+            var oper = args[offset + index];
+            index++;
+
+            if (index >= size)
+            {
+                throw new Exception("Improperly formatted object conditional.");
+            }
+
+            var val = args[offset + index];
+            index++;
+
+            var prop = new Property(binding);
+
+            prop.BindTo(objectType, PropertyAccess.Read);
+            prop.CheckAccess(from);
+
+            var condition = oper switch
+            {
+                "="         => (ICondition)new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
+                "=="        => new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
+                "is"        => new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
+                "!="        => new ComparisonCondition(prop, inverse, ComparisonOperator.NotEqual, val),
+                ">"         => new ComparisonCondition(prop, inverse, ComparisonOperator.Greater, val),
+                "<"         => new ComparisonCondition(prop, inverse, ComparisonOperator.Lesser, val),
+                ">="        => new ComparisonCondition(prop, inverse, ComparisonOperator.GreaterEqual, val),
+                "<="        => new ComparisonCondition(prop, inverse, ComparisonOperator.LesserEqual, val),
+                "==~"       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+                "~=="       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+                "=~"        => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+                "~="        => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+                "is~"       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+                "~is"       => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+                "!=~"       => new StringCondition(prop, inverse, StringOperator.NotEqual, val, true),
+                "~!="       => new StringCondition(prop, inverse, StringOperator.NotEqual, val, true),
+                "starts"    => new StringCondition(prop, inverse, StringOperator.StartsWith, val, false),
+                "starts~"   => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
+                "~starts"   => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
+                "ends"      => new StringCondition(prop, inverse, StringOperator.EndsWith, val, false),
+                "ends~"     => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
+                "~ends"     => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
+                "contains"  => new StringCondition(prop, inverse, StringOperator.Contains, val, false),
+                "contains~" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
+                "~contains" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
+                _            => null
+            };
+
+            if (condition == null)
+            {
+                throw new InvalidOperationException($"Unrecognized operator (\"{oper}\").");
+            }
+
+            current.Add(condition);
         }
+
+        conditions.Add(current.ToArray());
+
+        return new ObjectConditional(objectType, conditions.ToArray());
     }
 }

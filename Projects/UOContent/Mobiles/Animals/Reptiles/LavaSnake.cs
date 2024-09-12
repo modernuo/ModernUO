@@ -1,59 +1,58 @@
 using ModernUO.Serialization;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[TypeAlias("Server.Mobiles.Lavasnake")]
+[SerializationGenerator(0, false)]
+public partial class LavaSnake : BaseCreature
 {
-    [TypeAlias("Server.Mobiles.Lavasnake")]
-    [SerializationGenerator(0, false)]
-    public partial class LavaSnake : BaseCreature
+    [Constructible]
+    public LavaSnake() : base(AIType.AI_Melee)
     {
-        [Constructible]
-        public LavaSnake() : base(AIType.AI_Melee)
-        {
-            Body = 52;
-            Hue = Utility.RandomList(0x647, 0x650, 0x659, 0x662, 0x66B, 0x674);
-            BaseSoundID = 0xDB;
+        Body = 52;
+        Hue = Utility.RandomList(0x647, 0x650, 0x659, 0x662, 0x66B, 0x674);
+        BaseSoundID = 0xDB;
 
-            SetStr(43, 55);
-            SetDex(16, 25);
-            SetInt(6, 10);
+        SetStr(43, 55);
+        SetDex(16, 25);
+        SetInt(6, 10);
 
-            SetHits(28, 32);
-            SetMana(0);
+        SetHits(28, 32);
+        SetMana(0);
 
-            SetDamage(1, 8);
+        SetDamage(1, 8);
 
-            SetDamageType(ResistanceType.Physical, 100);
+        SetDamageType(ResistanceType.Physical, 100);
 
-            SetResistance(ResistanceType.Physical, 20, 25);
-            SetResistance(ResistanceType.Fire, 30, 40);
-            SetResistance(ResistanceType.Poison, 20, 30);
-            SetResistance(ResistanceType.Energy, 10, 20);
+        SetResistance(ResistanceType.Physical, 20, 25);
+        SetResistance(ResistanceType.Fire, 30, 40);
+        SetResistance(ResistanceType.Poison, 20, 30);
+        SetResistance(ResistanceType.Energy, 10, 20);
 
-            SetSkill(SkillName.MagicResist, 15.1, 20.0);
-            SetSkill(SkillName.Tactics, 19.3, 34.0);
-            SetSkill(SkillName.Wrestling, 19.3, 34.0);
+        SetSkill(SkillName.MagicResist, 15.1, 20.0);
+        SetSkill(SkillName.Tactics, 19.3, 34.0);
+        SetSkill(SkillName.Wrestling, 19.3, 34.0);
 
-            Fame = 600;
-            Karma = -600;
+        Fame = 600;
+        Karma = -600;
 
-            VirtualArmor = 24;
+        VirtualArmor = 24;
 
-            PackItem(new SulfurousAsh());
-        }
+        PackItem(new SulfurousAsh());
+    }
 
-        public override string CorpseName => "a lava snake corpse";
-        public override string DefaultName => "a lava snake";
+    public override string CorpseName => "a lava snake corpse";
+    public override string DefaultName => "a lava snake";
 
-        public override bool DeathAdderCharmable => true;
-        public override int Meat => 1;
+    public override bool DeathAdderCharmable => true;
+    public override int Meat => 1;
 
-        private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
-        public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+    private static MonsterAbility[] _abilities = { MonsterAbilities.FireBreath };
+    public override MonsterAbility[] GetMonsterAbilities() => _abilities;
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Poor);
-        }
+    public override void GenerateLoot()
+    {
+        AddLoot(LootPack.Poor);
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Accounting;
 
 public static class AccountGold

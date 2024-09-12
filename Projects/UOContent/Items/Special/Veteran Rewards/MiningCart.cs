@@ -1,4 +1,3 @@
-using System;
 using ModernUO.Serialization;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;

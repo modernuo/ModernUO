@@ -1,28 +1,27 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class AlchemistTableEastAddon : BaseAddon
 {
-    [SerializationGenerator(0)]
-    public partial class AlchemistTableEastAddon : BaseAddon
+    [Constructible]
+    public AlchemistTableEastAddon()
     {
-        [Constructible]
-        public AlchemistTableEastAddon()
-        {
-            AddComponent(new AddonComponent(0x2DD3), 0, 0, 0);
-        }
-
-        public override BaseAddonDeed Deed => new AlchemistTableEastDeed();
+        AddComponent(new AddonComponent(0x2DD3), 0, 0, 0);
     }
 
-    [SerializationGenerator(0)]
-    public partial class AlchemistTableEastDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public AlchemistTableEastDeed()
-        {
-        }
+    public override BaseAddonDeed Deed => new AlchemistTableEastDeed();
+}
 
-        public override BaseAddon Addon => new AlchemistTableEastAddon();
-        public override int LabelNumber => 1073397; // alchemist table (east)
+[SerializationGenerator(0)]
+public partial class AlchemistTableEastDeed : BaseAddonDeed
+{
+    [Constructible]
+    public AlchemistTableEastDeed()
+    {
     }
+
+    public override BaseAddon Addon => new AlchemistTableEastAddon();
+    public override int LabelNumber => 1073397; // alchemist table (east)
 }

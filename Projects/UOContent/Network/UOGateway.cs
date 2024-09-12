@@ -13,89 +13,87 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Buffers;
 using System.Text;
 using Server.Misc;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class UOGateway
 {
-    public static class UOGateway
+    public static unsafe void Configure()
     {
-        public static unsafe void Configure()
-        {
-            var enabled = ServerConfiguration.GetOrUpdateSetting("uogateway.enabled", true);
+        var enabled = ServerConfiguration.GetOrUpdateSetting("uogateway.enabled", true);
 
-            if (enabled)
-            {
-                FreeshardProtocol.Register(0xFE, false, &QueryCompactShardStats);
-                FreeshardProtocol.Register(0xFF, false, &QueryExtendedShardStats);
-            }
+        if (enabled)
+        {
+            FreeshardProtocol.Register(0xFE, false, &QueryCompactShardStats);
+            FreeshardProtocol.Register(0xFF, false, &QueryExtendedShardStats);
+        }
+    }
+
+    public static void QueryCompactShardStats(NetState state, SpanReader reader)
+    {
+        state.SendCompactShardStats(
+            (uint)(Core.Uptime / 1000),
+            NetState.Instances.Count - 1, // Shame if you modify this!
+            World.Items.Count,
+            World.Mobiles.Count,
+            GC.GetTotalMemory(false)
+        );
+    }
+
+    public static void QueryExtendedShardStats(NetState state, SpanReader reader)
+    {
+        const long ticksInHour = 1000 * 60 * 60;
+        state.SendExtendedShardStats(
+            ServerList.ServerName,
+            (int)(Core.Uptime / ticksInHour),
+            NetState.Instances.Count - 1, // Shame if you modify this!
+            World.Items.Count,
+            World.Mobiles.Count,
+            (int)(GC.GetTotalMemory(false) / 1024)
+        );
+    }
+
+    public static void SendCompactShardStats(
+        this NetState ns, uint age, int clients, int items, int mobiles, long mem
+    )
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
         }
 
-        public static void QueryCompactShardStats(NetState state, SpanReader reader)
+        var writer = new SpanWriter(stackalloc byte[27]);
+        writer.Write((byte)0x51); // Packet ID
+        writer.Write((ushort)27); // Length
+        writer.Write(clients);
+        writer.Write(items);
+        writer.Write(mobiles);
+        writer.Write(age);
+        writer.Write(mem);
+
+        ns.Send(writer.Span);
+    }
+
+    public static void SendExtendedShardStats(
+        this NetState ns, string name, int age, int clients, int items, int mobiles, int mem
+    )
+    {
+        if (ns.CannotSendPackets())
         {
-            state.SendCompactShardStats(
-                (uint)(Core.Uptime / 1000),
-                NetState.Instances.Count - 1, // Shame if you modify this!
-                World.Items.Count,
-                World.Mobiles.Count,
-                GC.GetTotalMemory(false)
-            );
+            return;
         }
 
-        public static void QueryExtendedShardStats(NetState state, SpanReader reader)
-        {
-            const long ticksInHour = 1000 * 60 * 60;
-            state.SendExtendedShardStats(
-                ServerList.ServerName,
-                (int)(Core.Uptime / ticksInHour),
-                NetState.Instances.Count - 1, // Shame if you modify this!
-                World.Items.Count,
-                World.Mobiles.Count,
-                (int)(GC.GetTotalMemory(false) / 1024)
-            );
-        }
+        var str =
+            $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}K, Ver=2\0";
 
-        public static void SendCompactShardStats(
-            this NetState ns, uint age, int clients, int items, int mobiles, long mem
-        )
-        {
-            if (ns.CannotSendPackets())
-            {
-                return;
-            }
+        var length = Encoding.UTF8.GetByteCount(str);
 
-            var writer = new SpanWriter(stackalloc byte[27]);
-            writer.Write((byte)0x51); // Packet ID
-            writer.Write((ushort)27); // Length
-            writer.Write(clients);
-            writer.Write(items);
-            writer.Write(mobiles);
-            writer.Write(age);
-            writer.Write(mem);
+        Span<byte> span = stackalloc byte[length];
+        Encoding.UTF8.GetBytes(str, span);
 
-            ns.Send(writer.Span);
-        }
-
-        public static void SendExtendedShardStats(
-            this NetState ns, string name, int age, int clients, int items, int mobiles, int mem
-        )
-        {
-            if (ns.CannotSendPackets())
-            {
-                return;
-            }
-
-            var str =
-                $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}K, Ver=2\0";
-
-            var length = Encoding.UTF8.GetByteCount(str);
-
-            Span<byte> span = stackalloc byte[length];
-            Encoding.UTF8.GetBytes(str, span);
-
-            ns.Send(span);
-        }
+        ns.Send(span);
     }
 }

@@ -1,15 +1,14 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class BlazeDyeTub : DyeTub
 {
-    [SerializationGenerator(0, false)]
-    public partial class BlazeDyeTub : DyeTub
+    [Constructible]
+    public BlazeDyeTub()
     {
-        [Constructible]
-        public BlazeDyeTub()
-        {
-            Hue = DyedHue = 0x489;
-            Redyable = false;
-        }
+        Hue = DyedHue = 0x489;
+        Redyable = false;
     }
 }

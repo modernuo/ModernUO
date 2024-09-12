@@ -1,72 +1,71 @@
 using ModernUO.Serialization;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class GypsyAnimalTrainer : AnimalTrainer
 {
-    [SerializationGenerator(0, false)]
-    public partial class GypsyAnimalTrainer : AnimalTrainer
+    [Constructible]
+    public GypsyAnimalTrainer()
     {
-        [Constructible]
-        public GypsyAnimalTrainer()
+        if (Utility.RandomBool())
         {
-            if (Utility.RandomBool())
-            {
-                Title = "the gypsy animal trainer";
-            }
-            else
-            {
-                Title = "the gypsy animal herder";
-            }
+            Title = "the gypsy animal trainer";
+        }
+        else
+        {
+            Title = "the gypsy animal herder";
+        }
+    }
+
+    public override VendorShoeType ShoeType => Female ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
+
+    public override int GetShoeHue() => 0;
+
+    public override void InitOutfit()
+    {
+        base.InitOutfit();
+
+        var item = FindItemOnLayer(Layer.Pants);
+
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
         }
 
-        public override VendorShoeType ShoeType => Female ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
+        item = FindItemOnLayer(Layer.OuterLegs);
 
-        public override int GetShoeHue() => 0;
-
-        public override void InitOutfit()
+        if (item != null)
         {
-            base.InitOutfit();
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            var item = FindItemOnLayer(Layer.Pants);
+        item = FindItemOnLayer(Layer.InnerLegs);
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            item = FindItemOnLayer(Layer.OuterLegs);
+        item = FindItemOnLayer(Layer.OuterTorso);
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            item = FindItemOnLayer(Layer.InnerLegs);
+        item = FindItemOnLayer(Layer.InnerTorso);
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            item = FindItemOnLayer(Layer.OuterTorso);
+        item = FindItemOnLayer(Layer.Shirt);
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
-
-            item = FindItemOnLayer(Layer.InnerTorso);
-
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
-
-            item = FindItemOnLayer(Layer.Shirt);
-
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
         }
     }
 }

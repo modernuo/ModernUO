@@ -1,111 +1,109 @@
-using System;
 using Server.Saves;
 
-namespace Server.Misc
+namespace Server.Misc;
+
+public class AutoRestart : Timer
 {
-    public class AutoRestart : Timer
+    private static Timer _autoRestart;
+    private static bool _enabled;
+
+    public static bool Enabled
     {
-        private static Timer _autoRestart;
-        private static bool _enabled;
-
-        public static bool Enabled
+        get => _enabled;
+        set
         {
-            get => _enabled;
-            set
+            _enabled = value;
+
+            if (value)
             {
-                _enabled = value;
-
-                if (value)
-                {
-                    _autoRestart ??= new AutoRestart();
-                    _autoRestart.Start();
-                }
-                else
-                {
-                    _autoRestart?.Stop();
-                    _autoRestart = null;
-                }
-            }
-        }
-
-        private static readonly TimeSpan RestartTime = TimeSpan.FromHours(2.0); // time of day at which to restart
-
-        // how long the server should remain active before restart (period of 'server wars')
-        private static readonly TimeSpan RestartDelay = TimeSpan.Zero;
-
-        // at what interval should the shutdown message be displayed?
-        private static readonly TimeSpan WarningDelay = TimeSpan.FromMinutes(1.0);
-
-        private static DateTime m_RestartTime;
-
-        public AutoRestart() : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
-        {
-
-            m_RestartTime = Core.Now.Date + RestartTime;
-
-            if (m_RestartTime < Core.Now)
-            {
-                m_RestartTime += TimeSpan.FromDays(1.0);
-            }
-        }
-
-        public static bool Restarting { get; private set; }
-
-        public static void Configure()
-        {
-            Enabled = ServerConfiguration.GetOrUpdateSetting("world.enableAutoRestart", false);
-            CommandSystem.Register("Restart", AccessLevel.Administrator, Restart_OnCommand);
-        }
-
-        [Usage("Restart")]
-        [Description("Initiates a server restart. The world is not saved before the restart.")]
-        public static void Restart_OnCommand(CommandEventArgs e)
-        {
-            if (Restarting)
-            {
-                e.Mobile.SendMessage("The server is already restarting.");
+                _autoRestart ??= new AutoRestart();
+                _autoRestart.Start();
             }
             else
             {
-                e.Mobile.SendMessage("You have initiated server shutdown.");
-                Enabled = true;
-                m_RestartTime = Core.Now;
+                _autoRestart?.Stop();
+                _autoRestart = null;
             }
         }
+    }
 
-        private static void Warning_Callback()
+    private static readonly TimeSpan RestartTime = TimeSpan.FromHours(2.0); // time of day at which to restart
+
+    // how long the server should remain active before restart (period of 'server wars')
+    private static readonly TimeSpan RestartDelay = TimeSpan.Zero;
+
+    // at what interval should the shutdown message be displayed?
+    private static readonly TimeSpan WarningDelay = TimeSpan.FromMinutes(1.0);
+
+    private static DateTime m_RestartTime;
+
+    public AutoRestart() : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
+    {
+
+        m_RestartTime = Core.Now.Date + RestartTime;
+
+        if (m_RestartTime < Core.Now)
         {
-            World.Broadcast(0x22, true, "The server is going down shortly.");
+            m_RestartTime += TimeSpan.FromDays(1.0);
         }
+    }
 
-        private static void Restart_Callback()
+    public static bool Restarting { get; private set; }
+
+    public static void Configure()
+    {
+        Enabled = ServerConfiguration.GetOrUpdateSetting("world.enableAutoRestart", false);
+        CommandSystem.Register("Restart", AccessLevel.Administrator, Restart_OnCommand);
+    }
+
+    [Usage("Restart")]
+    [Description("Initiates a server restart. The world is not saved before the restart.")]
+    public static void Restart_OnCommand(CommandEventArgs e)
+    {
+        if (Restarting)
         {
-            Core.Kill(true);
+            e.Mobile.SendMessage("The server is already restarting.");
         }
-
-        protected override void OnTick()
+        else
         {
-            if (Restarting || !Enabled)
-            {
-                return;
-            }
-
-            if (Core.Now < m_RestartTime)
-            {
-                return;
-            }
-
-            if (WarningDelay > TimeSpan.Zero)
-            {
-                Warning_Callback();
-                StartTimer(WarningDelay, WarningDelay, Warning_Callback);
-            }
-
-            AutoSave.Save();
-
-            Restarting = true;
-
-            StartTimer(RestartDelay, Restart_Callback);
+            e.Mobile.SendMessage("You have initiated server shutdown.");
+            Enabled = true;
+            m_RestartTime = Core.Now;
         }
+    }
+
+    private static void Warning_Callback()
+    {
+        World.Broadcast(0x22, true, "The server is going down shortly.");
+    }
+
+    private static void Restart_Callback()
+    {
+        Core.Kill(true);
+    }
+
+    protected override void OnTick()
+    {
+        if (Restarting || !Enabled)
+        {
+            return;
+        }
+
+        if (Core.Now < m_RestartTime)
+        {
+            return;
+        }
+
+        if (WarningDelay > TimeSpan.Zero)
+        {
+            Warning_Callback();
+            StartTimer(WarningDelay, WarningDelay, Warning_Callback);
+        }
+
+        AutoSave.Save();
+
+        Restarting = true;
+
+        StartTimer(RestartDelay, Restart_Callback);
     }
 }

@@ -1,47 +1,45 @@
-using System;
 using Server.Network;
 
-namespace Server.Misc
+namespace Server.Misc;
+
+public class FoodDecayTimer : Timer
 {
-    public class FoodDecayTimer : Timer
+    public FoodDecayTimer() : base(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5))
     {
-        public FoodDecayTimer() : base(TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5))
-        {
-        }
+    }
 
-        public static void Initialize()
-        {
-            new FoodDecayTimer().Start();
-        }
+    public static void Initialize()
+    {
+        new FoodDecayTimer().Start();
+    }
 
-        protected override void OnTick()
-        {
-            FoodDecay();
-        }
+    protected override void OnTick()
+    {
+        FoodDecay();
+    }
 
-        public static void FoodDecay()
+    public static void FoodDecay()
+    {
+        foreach (var state in NetState.Instances)
         {
-            foreach (var state in NetState.Instances)
-            {
-                HungerDecay(state.Mobile);
-                ThirstDecay(state.Mobile);
-            }
+            HungerDecay(state.Mobile);
+            ThirstDecay(state.Mobile);
         }
+    }
 
-        public static void HungerDecay(Mobile m)
+    public static void HungerDecay(Mobile m)
+    {
+        if (m?.Hunger >= 1)
         {
-            if (m?.Hunger >= 1)
-            {
-                m.Hunger -= 1;
-            }
+            m.Hunger -= 1;
         }
+    }
 
-        public static void ThirstDecay(Mobile m)
+    public static void ThirstDecay(Mobile m)
+    {
+        if (m?.Thirst >= 1)
         {
-            if (m?.Thirst >= 1)
-            {
-                m.Thirst -= 1;
-            }
+            m.Thirst -= 1;
         }
     }
 }

@@ -15,69 +15,68 @@
 
 using Server.Targeting;
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+public static class ChampionCommands
 {
-    public static class ChampionCommands
+    public static void Configure()
     {
-        public static void Configure()
+        CommandSystem.Register("ClearChampByTarget", AccessLevel.Administrator, KillByTarget_OnCommand);
+        CommandSystem.Register("ClearChampByRegion", AccessLevel.Administrator, KillByRegion_OnCommand);
+    }
+
+    [Usage("ClearChampByTarget")]
+    [Description("Kills all minions of a champion spawn.")]
+    private static void KillByTarget_OnCommand(CommandEventArgs e)
+    {
+        e.Mobile.Target = new KillTarget();
+        e.Mobile.SendMessage("Which champion spawn would you like to clear?");
+    }
+
+    private class KillTarget : Target
+    {
+        public KillTarget() : base(15, false, TargetFlags.None)
         {
-            CommandSystem.Register("ClearChampByTarget", AccessLevel.Administrator, KillByTarget_OnCommand);
-            CommandSystem.Register("ClearChampByRegion", AccessLevel.Administrator, KillByRegion_OnCommand);
         }
 
-        [Usage("ClearChampByTarget")]
-        [Description("Kills all minions of a champion spawn.")]
-        private static void KillByTarget_OnCommand(CommandEventArgs e)
+        protected override void OnTarget(Mobile from, object targ)
         {
-            e.Mobile.Target = new KillTarget();
-            e.Mobile.SendMessage("Which champion spawn would you like to clear?");
+            if (from == null || from.AccessLevel < AccessLevel.Administrator)
+            {
+                return;
+            }
+
+            ChampionSpawn spawn = targ switch
+            {
+                ChampionSpawn championSpawn => championSpawn,
+                IdolOfTheChampion champion  => champion.Spawn,
+                ChampionAltar altar         => altar.Spawn,
+                ChampionPlatform platform   => platform.Spawn,
+                _                           => null
+            };
+
+            if (spawn == null)
+            {
+                from.SendMessage("That is not a valid target. Please target the champion, altar, platform, or idol.");
+            }
+
+            spawn?.DeleteCreatures();
+            spawn?.Champion?.Delete();
         }
+    }
 
-        private class KillTarget : Target
+    [Usage("ClearChampByRegion")]
+    [Description("Kills all minions of a champion spawn.")]
+    private static void KillByRegion_OnCommand(CommandEventArgs e)
+    {
+        if (e.Mobile.Region is ChampionSpawnRegion { Spawn: { } } region)
         {
-            public KillTarget() : base(15, false, TargetFlags.None)
-            {
-            }
-
-            protected override void OnTarget(Mobile from, object targ)
-            {
-                if (from == null || from.AccessLevel < AccessLevel.Administrator)
-                {
-                    return;
-                }
-
-                ChampionSpawn spawn = targ switch
-                {
-                    ChampionSpawn championSpawn => championSpawn,
-                    IdolOfTheChampion champion  => champion.Spawn,
-                    ChampionAltar altar         => altar.Spawn,
-                    ChampionPlatform platform   => platform.Spawn,
-                    _                           => null
-                };
-
-                if (spawn == null)
-                {
-                    from.SendMessage("That is not a valid target. Please target the champion, altar, platform, or idol.");
-                }
-
-                spawn?.DeleteCreatures();
-                spawn?.Champion?.Delete();
-            }
+            region.Spawn.DeleteCreatures();
+            region.Spawn.Champion?.Delete();
         }
-
-        [Usage("ClearChampByRegion")]
-        [Description("Kills all minions of a champion spawn.")]
-        private static void KillByRegion_OnCommand(CommandEventArgs e)
+        else
         {
-            if (e.Mobile.Region is ChampionSpawnRegion { Spawn: { } } region)
-            {
-                region.Spawn.DeleteCreatures();
-                region.Spawn.Champion?.Delete();
-            }
-            else
-            {
-                e.Mobile.SendMessage("You are not in a champion spawn region.");
-            }
+            e.Mobile.SendMessage("You are not in a champion spawn region.");
         }
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Server.Factions;
 
 public class VendorList

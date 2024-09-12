@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Network;
 
 /// <summary>

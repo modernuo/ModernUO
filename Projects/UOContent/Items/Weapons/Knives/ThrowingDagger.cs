@@ -1,4 +1,3 @@
-using System;
 using ModernUO.Serialization;
 using Server.Targeting;
 using CalcMoves = Server.Movement.Movement;

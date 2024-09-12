@@ -1,4 +1,3 @@
-using System;
 using ModernUO.Serialization;
 using Server.Engines.ConPVP;
 using Server.Engines.Craft;

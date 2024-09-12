@@ -15,18 +15,17 @@
 
 using Server.Network;
 
-namespace Server.Engines.MLQuests
-{
-    public static class MLQuestPackets
-    {
-        public static unsafe void SendRaceChanger(this NetState ns, bool female, Race newRace)
-        {
-            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x07, 0x00, 0x2A, *(byte*)&female, (byte)(newRace.RaceID + 1) });
-        }
+namespace Server.Engines.MLQuests;
 
-        public static void SendCloseRaceChanger(this NetState ns)
-        {
-            ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x07, 0x00, 0x2A, 0x0, 0xFF });
-        }
+public static class MLQuestPackets
+{
+    public static unsafe void SendRaceChanger(this NetState ns, bool female, Race newRace)
+    {
+        ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x07, 0x00, 0x2A, *(byte*)&female, (byte)(newRace.RaceID + 1) });
+    }
+
+    public static void SendCloseRaceChanger(this NetState ns)
+    {
+        ns?.Send(stackalloc byte[] { 0xBF, 0x00, 0x07, 0x00, 0x2A, 0x0, 0xFF });
     }
 }

@@ -1,22 +1,21 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class TheNightReaper : RepeatingCrossbow
 {
-    [SerializationGenerator(0, false)]
-    public partial class TheNightReaper : RepeatingCrossbow
+    [Constructible]
+    public TheNightReaper()
     {
-        [Constructible]
-        public TheNightReaper()
-        {
-            ItemID = 0x26CD;
-            Hue = 0x41C;
+        ItemID = 0x26CD;
+        Hue = 0x41C;
 
-            Slayer = SlayerName.Exorcism;
-            Attributes.NightSight = 1;
-            Attributes.WeaponSpeed = 25;
-            Attributes.WeaponDamage = 55;
-        }
-
-        public override int LabelNumber => 1072912; // The Night Reaper
+        Slayer = SlayerName.Exorcism;
+        Attributes.NightSight = 1;
+        Attributes.WeaponSpeed = 25;
+        Attributes.WeaponDamage = 55;
     }
+
+    public override int LabelNumber => 1072912; // The Night Reaper
 }

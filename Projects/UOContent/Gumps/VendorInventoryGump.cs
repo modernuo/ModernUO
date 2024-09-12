@@ -1,141 +1,138 @@
-using System.Collections.Generic;
-using System.Linq;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class VendorInventoryGump : Gump
 {
-    public class VendorInventoryGump : Gump
+    private readonly BaseHouse m_House;
+    private readonly List<VendorInventory> m_Inventories;
+
+    public override bool Singleton => true;
+
+    public VendorInventoryGump(BaseHouse house, Mobile from) : base(50, 50)
     {
-        private readonly BaseHouse m_House;
-        private readonly List<VendorInventory> m_Inventories;
+        m_House = house;
+        m_Inventories = house.VendorInventories.ToList();
 
-        public override bool Singleton => true;
+        AddBackground(0, 0, 420, 50 + 20 * m_Inventories.Count, 0x13BE);
 
-        public VendorInventoryGump(BaseHouse house, Mobile from) : base(50, 50)
+        AddImageTiled(10, 10, 400, 20, 0xA40);
+        AddHtmlLocalized(15, 10, 200, 20, 1062435, 0x7FFF); // Reclaim Vendor Inventory
+        AddHtmlLocalized(330, 10, 50, 20, 1062465, 0x7FFF); // Expires
+
+        AddImageTiled(10, 40, 400, 20 * m_Inventories.Count, 0xA40);
+
+        for (var i = 0; i < m_Inventories.Count; i++)
         {
-            m_House = house;
-            m_Inventories = house.VendorInventories.ToList();
+            var inventory = m_Inventories[i];
 
-            AddBackground(0, 0, 420, 50 + 20 * m_Inventories.Count, 0x13BE);
+            var y = 40 + 20 * i;
 
-            AddImageTiled(10, 10, 400, 20, 0xA40);
-            AddHtmlLocalized(15, 10, 200, 20, 1062435, 0x7FFF); // Reclaim Vendor Inventory
-            AddHtmlLocalized(330, 10, 50, 20, 1062465, 0x7FFF); // Expires
-
-            AddImageTiled(10, 40, 400, 20 * m_Inventories.Count, 0xA40);
-
-            for (var i = 0; i < m_Inventories.Count; i++)
+            if (inventory.Owner == from)
             {
-                var inventory = m_Inventories[i];
+                AddButton(10, y, 0xFA5, 0xFA7, i + 1);
+            }
 
-                var y = 40 + 20 * i;
+            AddLabel(45, y, 0x481, $"{inventory.ShopName} ({inventory.VendorName})");
 
-                if (inventory.Owner == from)
-                {
-                    AddButton(10, y, 0xFA5, 0xFA7, i + 1);
-                }
+            var expire = inventory.ExpireTime - Core.Now;
+            var hours = (int)expire.TotalHours;
 
-                AddLabel(45, y, 0x481, $"{inventory.ShopName} ({inventory.VendorName})");
+            AddLabel(320, y, 0x481, hours.ToString());
+            AddHtmlLocalized(350, y, 50, 20, 1062466, 0x7FFF); // hour(s)
+        }
+    }
 
-                var expire = inventory.ExpireTime - Core.Now;
-                var hours = (int)expire.TotalHours;
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        if (info.ButtonID == 0)
+        {
+            return;
+        }
 
-                AddLabel(320, y, 0x481, hours.ToString());
-                AddHtmlLocalized(350, y, 50, 20, 1062466, 0x7FFF); // hour(s)
+        var from = sender.Mobile;
+        var sign = m_House.Sign;
+
+        if (m_House.Deleted || sign?.Deleted != false || !from.CheckAlive())
+        {
+            return;
+        }
+
+        if (from.Map != sign.Map || !from.InRange(sign, 5))
+        {
+            from.SendLocalizedMessage(1062429); // You must be within five paces of the house sign to use this option.
+            return;
+        }
+
+        var index = info.ButtonID - 1;
+        if (index < 0 || index >= m_Inventories.Count)
+        {
+            return;
+        }
+
+        var inventory = m_Inventories[index];
+
+        if (inventory.Owner != from || !m_House.VendorInventories.Contains(inventory))
+        {
+            return;
+        }
+
+        var totalItems = 0;
+        var givenToBackpack = 0;
+        var givenToBankBox = 0;
+        for (var i = inventory.Items.Count - 1; i >= 0; i--)
+        {
+            var item = inventory.Items[i];
+
+            if (item.Deleted)
+            {
+                inventory.Items.RemoveAt(i);
+                continue;
+            }
+
+            totalItems += 1 + item.TotalItems;
+
+            if (from.PlaceInBackpack(item))
+            {
+                inventory.Items.RemoveAt(i);
+                givenToBackpack += 1 + item.TotalItems;
+            }
+            else if (from.BankBox.TryDropItem(from, item, false))
+            {
+                inventory.Items.RemoveAt(i);
+                givenToBankBox += 1 + item.TotalItems;
             }
         }
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
+        from.SendLocalizedMessage(
+            1062436,
+            $"{totalItems}\t{inventory.Gold}"
+        ); // The vendor you selected had ~1_COUNT~ items in its inventory, and ~2_AMOUNT~ gold in its account.
+
+        var givenGold = Banker.DepositUpTo(from, inventory.Gold);
+        inventory.Gold -= givenGold;
+
+        from.SendLocalizedMessage(
+            1060397,
+            givenGold.ToString()
+        ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+        from.SendLocalizedMessage(
+            1062437,
+            $"{givenToBackpack}\t{givenToBankBox}"
+        ); // ~1_COUNT~ items have been removed from the shop inventory and placed in your backpack.  ~2_BANKCOUNT~ items were removed from the shop inventory and placed in your bank box.
+
+        if (inventory.Gold > 0 || inventory.Items.Count > 0)
         {
-            if (info.ButtonID == 0)
-            {
-                return;
-            }
-
-            var from = sender.Mobile;
-            var sign = m_House.Sign;
-
-            if (m_House.Deleted || sign?.Deleted != false || !from.CheckAlive())
-            {
-                return;
-            }
-
-            if (from.Map != sign.Map || !from.InRange(sign, 5))
-            {
-                from.SendLocalizedMessage(1062429); // You must be within five paces of the house sign to use this option.
-                return;
-            }
-
-            var index = info.ButtonID - 1;
-            if (index < 0 || index >= m_Inventories.Count)
-            {
-                return;
-            }
-
-            var inventory = m_Inventories[index];
-
-            if (inventory.Owner != from || !m_House.VendorInventories.Contains(inventory))
-            {
-                return;
-            }
-
-            var totalItems = 0;
-            var givenToBackpack = 0;
-            var givenToBankBox = 0;
-            for (var i = inventory.Items.Count - 1; i >= 0; i--)
-            {
-                var item = inventory.Items[i];
-
-                if (item.Deleted)
-                {
-                    inventory.Items.RemoveAt(i);
-                    continue;
-                }
-
-                totalItems += 1 + item.TotalItems;
-
-                if (from.PlaceInBackpack(item))
-                {
-                    inventory.Items.RemoveAt(i);
-                    givenToBackpack += 1 + item.TotalItems;
-                }
-                else if (from.BankBox.TryDropItem(from, item, false))
-                {
-                    inventory.Items.RemoveAt(i);
-                    givenToBankBox += 1 + item.TotalItems;
-                }
-            }
-
             from.SendLocalizedMessage(
-                1062436,
-                $"{totalItems}\t{inventory.Gold}"
-            ); // The vendor you selected had ~1_COUNT~ items in its inventory, and ~2_AMOUNT~ gold in its account.
-
-            var givenGold = Banker.DepositUpTo(from, inventory.Gold);
-            inventory.Gold -= givenGold;
-
-            from.SendLocalizedMessage(
-                1060397,
-                givenGold.ToString()
-            ); // ~1_AMOUNT~ gold has been deposited into your bank box.
-            from.SendLocalizedMessage(
-                1062437,
-                $"{givenToBackpack}\t{givenToBankBox}"
-            ); // ~1_COUNT~ items have been removed from the shop inventory and placed in your backpack.  ~2_BANKCOUNT~ items were removed from the shop inventory and placed in your bank box.
-
-            if (inventory.Gold > 0 || inventory.Items.Count > 0)
-            {
-                from.SendLocalizedMessage(
-                    1062440
-                ); // Some of the shop inventory would not fit in your backpack or bank box.  Please free up some room and try again.
-            }
-            else
-            {
-                inventory.Delete();
-                from.SendLocalizedMessage(1062438); // The shop is now empty of inventory and funds, so it has been deleted.
-            }
+                1062440
+            ); // Some of the shop inventory would not fit in your backpack or bank box.  Please free up some room and try again.
+        }
+        else
+        {
+            inventory.Delete();
+            from.SendLocalizedMessage(1062438); // The shop is now empty of inventory and funds, so it has been deleted.
         }
     }
 }

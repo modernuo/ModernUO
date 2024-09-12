@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Server.Engines.AdvancedSearch;
 
 public class AdvancedSearchResultTypeComparer : IComparer<AdvancedSearchResult>

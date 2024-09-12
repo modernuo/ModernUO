@@ -1,28 +1,27 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class AnvilSouthAddon : BaseAddon
 {
-    [SerializationGenerator(0, false)]
-    public partial class AnvilSouthAddon : BaseAddon
+    [Constructible]
+    public AnvilSouthAddon()
     {
-        [Constructible]
-        public AnvilSouthAddon()
-        {
-            AddComponent(new AnvilComponent(0xFB0), 0, 0, 0);
-        }
-
-        public override BaseAddonDeed Deed => new AnvilSouthDeed();
+        AddComponent(new AnvilComponent(0xFB0), 0, 0, 0);
     }
 
-    [SerializationGenerator(0, false)]
-    public partial class AnvilSouthDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public AnvilSouthDeed()
-        {
-        }
+    public override BaseAddonDeed Deed => new AnvilSouthDeed();
+}
 
-        public override BaseAddon Addon => new AnvilSouthAddon();
-        public override int LabelNumber => 1044334; // anvil (south)
+[SerializationGenerator(0, false)]
+public partial class AnvilSouthDeed : BaseAddonDeed
+{
+    [Constructible]
+    public AnvilSouthDeed()
+    {
     }
+
+    public override BaseAddon Addon => new AnvilSouthAddon();
+    public override int LabelNumber => 1044334; // anvil (south)
 }

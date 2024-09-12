@@ -1,63 +1,62 @@
-namespace Server.Engines.MLQuests
+namespace Server.Engines.MLQuests;
+
+public class MLQuestPersistence : Item
 {
-    public class MLQuestPersistence : Item
+    private static MLQuestPersistence m_Instance;
+
+    private MLQuestPersistence() : base(1) => Movable = false;
+
+    public MLQuestPersistence(Serial serial) : base(serial) => m_Instance = this;
+
+    public override string DefaultName => "ML quests persistence - Internal";
+
+    public static void EnsureExistence()
     {
-        private static MLQuestPersistence m_Instance;
+        m_Instance ??= new MLQuestPersistence();
+    }
 
-        private MLQuestPersistence() : base(1) => Movable = false;
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
 
-        public MLQuestPersistence(Serial serial) : base(serial) => m_Instance = this;
+        writer.Write(2); // version
+        writer.Write(MLQuestSystem.Contexts.Count);
 
-        public override string DefaultName => "ML quests persistence - Internal";
-
-        public static void EnsureExistence()
+        foreach (var context in MLQuestSystem.Contexts.Values)
         {
-            m_Instance ??= new MLQuestPersistence();
+            context.Serialize(writer);
         }
 
-        public override void Serialize(IGenericWriter writer)
+        writer.Write(MLQuestSystem.Quests.Count);
+
+        foreach (var quest in MLQuestSystem.Quests.Values)
         {
-            base.Serialize(writer);
+            MLQuest.Serialize(writer, quest);
+        }
+    }
 
-            writer.Write(2); // version
-            writer.Write(MLQuestSystem.Contexts.Count);
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
 
-            foreach (var context in MLQuestSystem.Contexts.Values)
+        var version = reader.ReadInt();
+        var contexts = reader.ReadInt();
+
+        for (var i = 0; i < contexts; ++i)
+        {
+            var context = new MLQuestContext(reader, version);
+
+            if (context.Owner != null)
             {
-                context.Serialize(writer);
-            }
-
-            writer.Write(MLQuestSystem.Quests.Count);
-
-            foreach (var quest in MLQuestSystem.Quests.Values)
-            {
-                MLQuest.Serialize(writer, quest);
+                MLQuestSystem.Contexts[context.Owner] = context;
             }
         }
 
-        public override void Deserialize(IGenericReader reader)
+        var quests = reader.ReadInt();
+
+        for (var i = 0; i < quests; ++i)
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-            var contexts = reader.ReadInt();
-
-            for (var i = 0; i < contexts; ++i)
-            {
-                var context = new MLQuestContext(reader, version);
-
-                if (context.Owner != null)
-                {
-                    MLQuestSystem.Contexts[context.Owner] = context;
-                }
-            }
-
-            var quests = reader.ReadInt();
-
-            for (var i = 0; i < quests; ++i)
-            {
-                MLQuest.Deserialize(reader, version);
-            }
+            MLQuest.Deserialize(reader, version);
         }
     }
 }

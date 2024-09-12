@@ -1,11 +1,10 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class SkullPole : Item
 {
-    [SerializationGenerator(0, false)]
-    public partial class SkullPole : Item
-    {
-        [Constructible]
-        public SkullPole() : base(0x2204) => Weight = 5;
-    }
+    [Constructible]
+    public SkullPole() : base(0x2204) => Weight = 5;
 }

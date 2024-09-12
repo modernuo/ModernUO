@@ -1,4 +1,3 @@
-using System;
 using Server.Spells;
 using Server.Targeting;
 

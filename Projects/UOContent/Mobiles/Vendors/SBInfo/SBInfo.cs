@@ -1,12 +1,9 @@
-using System.Collections.Generic;
+namespace Server.Mobiles;
 
-namespace Server.Mobiles
+public abstract class SBInfo
 {
-    public abstract class SBInfo
-    {
-        public static readonly List<SBInfo> Empty = new();
+    public static readonly List<SBInfo> Empty = new();
 
-        public abstract IShopSellInfo SellInfo { get; }
-        public abstract List<GenericBuyInfo> BuyInfo { get; }
-    }
+    public abstract IShopSellInfo SellInfo { get; }
+    public abstract List<GenericBuyInfo> BuyInfo { get; }
 }

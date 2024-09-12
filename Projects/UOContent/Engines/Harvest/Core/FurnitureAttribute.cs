@@ -1,10 +1,7 @@
-using System;
+namespace Server;
 
-namespace Server
+[AttributeUsage(AttributeTargets.Class)]
+public class FurnitureAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class FurnitureAttribute : Attribute
-    {
-        public static bool Check(Item item) => item?.GetType().IsDefined(typeof(FurnitureAttribute), false) == true;
-    }
+    public static bool Check(Item item) => item?.GetType().IsDefined(typeof(FurnitureAttribute), false) == true;
 }

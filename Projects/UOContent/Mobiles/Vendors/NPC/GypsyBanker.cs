@@ -1,80 +1,79 @@
 using ModernUO.Serialization;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class GypsyBanker : Banker
 {
-    [SerializationGenerator(0, false)]
-    public partial class GypsyBanker : Banker
+    [Constructible]
+    public GypsyBanker() => Title = "the gypsy banker";
+
+    public override bool IsActiveVendor => false;
+    public override NpcGuild NpcGuild => NpcGuild.None;
+    public override bool ClickTitle => false;
+
+    public override void InitOutfit()
     {
-        [Constructible]
-        public GypsyBanker() => Title = "the gypsy banker";
+        base.InitOutfit();
 
-        public override bool IsActiveVendor => false;
-        public override NpcGuild NpcGuild => NpcGuild.None;
-        public override bool ClickTitle => false;
+        AddItem(
+            Utility.Random(4) switch
+            {
+                0 => new JesterHat(Utility.RandomBrightHue()),
+                1 => new Bandana(Utility.RandomBrightHue()),
+                2 => new SkullCap(Utility.RandomBrightHue()),
+                _ => null // 3
+            }
+        );
 
-        public override void InitOutfit()
+        var item = FindItemOnLayer(Layer.Pants);
+
+        if (item != null)
         {
-            base.InitOutfit();
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            AddItem(
-                Utility.Random(4) switch
-                {
-                    0 => new JesterHat(Utility.RandomBrightHue()),
-                    1 => new Bandana(Utility.RandomBrightHue()),
-                    2 => new SkullCap(Utility.RandomBrightHue()),
-                    _ => null // 3
-                }
-            );
+        item = FindItemOnLayer(Layer.Shoes);
 
-            var item = FindItemOnLayer(Layer.Pants);
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        item = FindItemOnLayer(Layer.OuterLegs);
 
-            item = FindItemOnLayer(Layer.Shoes);
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        item = FindItemOnLayer(Layer.InnerLegs);
 
-            item = FindItemOnLayer(Layer.OuterLegs);
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        item = FindItemOnLayer(Layer.OuterTorso);
 
-            item = FindItemOnLayer(Layer.InnerLegs);
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        item = FindItemOnLayer(Layer.InnerTorso);
 
-            item = FindItemOnLayer(Layer.OuterTorso);
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
+        }
 
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        item = FindItemOnLayer(Layer.Shirt);
 
-            item = FindItemOnLayer(Layer.InnerTorso);
-
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
-
-            item = FindItemOnLayer(Layer.Shirt);
-
-            if (item != null)
-            {
-                item.Hue = Utility.RandomBrightHue();
-            }
+        if (item != null)
+        {
+            item.Hue = Utility.RandomBrightHue();
         }
     }
 }

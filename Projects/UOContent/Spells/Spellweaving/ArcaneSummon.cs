@@ -1,58 +1,56 @@
-using System;
 using Server.Mobiles;
 
-namespace Server.Spells.Spellweaving
+namespace Server.Spells.Spellweaving;
+
+public abstract class ArcaneSummon<T> : ArcanistSpell where T : BaseCreature
 {
-    public abstract class ArcaneSummon<T> : ArcanistSpell where T : BaseCreature
+    public ArcaneSummon(Mobile caster, Item scroll, SpellInfo info)
+        : base(caster, scroll, info)
     {
-        public ArcaneSummon(Mobile caster, Item scroll, SpellInfo info)
-            : base(caster, scroll, info)
+    }
+
+    public abstract int Sound { get; }
+
+    public override bool CheckCast()
+    {
+        if (!base.CheckCast())
         {
+            return false;
         }
 
-        public abstract int Sound { get; }
-
-        public override bool CheckCast()
+        if (Caster.Followers + 1 > Caster.FollowersMax)
         {
-            if (!base.CheckCast())
-            {
-                return false;
-            }
-
-            if (Caster.Followers + 1 > Caster.FollowersMax)
-            {
-                Caster.SendLocalizedMessage(1074270); // You have too many followers to summon another one.
-                return false;
-            }
-
-            return true;
+            Caster.SendLocalizedMessage(1074270); // You have too many followers to summon another one.
+            return false;
         }
 
-        public override void OnCast()
-        {
-            if (CheckSequence())
-            {
-                var duration = TimeSpan.FromMinutes(Caster.Skills.Spellweaving.Value / 24 + FocusLevel * 2);
-                var summons = Math.Min(1 + FocusLevel, Caster.FollowersMax - Caster.Followers);
+        return true;
+    }
 
-                for (var i = 0; i < summons; i++)
+    public override void OnCast()
+    {
+        if (CheckSequence())
+        {
+            var duration = TimeSpan.FromMinutes(Caster.Skills.Spellweaving.Value / 24 + FocusLevel * 2);
+            var summons = Math.Min(1 + FocusLevel, Caster.FollowersMax - Caster.Followers);
+
+            for (var i = 0; i < summons; i++)
+            {
+                BaseCreature bc;
+
+                try
                 {
-                    BaseCreature bc;
-
-                    try
-                    {
-                        bc = typeof(T).CreateInstance<BaseCreature>();
-                    }
-                    catch
-                    {
-                        break;
-                    }
-
-                    SpellHelper.Summon(bc, Caster, Sound, duration, false, false);
+                    bc = typeof(T).CreateInstance<BaseCreature>();
+                }
+                catch
+                {
+                    break;
                 }
 
-                FinishSequence();
+                SpellHelper.Summon(bc, Caster, Sound, duration, false, false);
             }
+
+            FinishSequence();
         }
     }
 }

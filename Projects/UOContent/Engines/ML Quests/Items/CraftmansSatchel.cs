@@ -1,5 +1,4 @@
-﻿using System;
-using ModernUO.Serialization;
+﻿using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Items;
 

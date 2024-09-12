@@ -1,384 +1,380 @@
-using System;
-using System.Collections.Generic;
+namespace Server.Engines.ConPVP;
 
-namespace Server.Engines.ConPVP
+public class LadderController : Item
 {
-    public class LadderController : Item
+    [Constructible]
+    public LadderController() : base(0x1B7A)
     {
-        [Constructible]
-        public LadderController() : base(0x1B7A)
+        Visible = false;
+        Movable = false;
+
+        Ladder = new Ladder();
+
+        Ladder.Instance ??= Ladder;
+    }
+
+    public LadderController(Serial serial) : base(serial)
+    {
+    }
+
+    [CommandProperty(AccessLevel.Administrator, canModify: true)]
+    public Ladder Ladder { get; private set; }
+
+    public override string DefaultName => "ladder controller";
+
+    public override void Delete()
+    {
+        if (Ladder.Instance == Ladder)
         {
-            Visible = false;
-            Movable = false;
-
-            Ladder = new Ladder();
-
-            Ladder.Instance ??= Ladder;
+            Ladder.Instance = null;
         }
 
-        public LadderController(Serial serial) : base(serial)
+        base.Delete();
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+
+        writer.Write(1);
+
+        Ladder.Serialize(writer);
+
+        writer.Write(Ladder.Instance == Ladder);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+
+        var version = reader.ReadInt();
+
+        switch (version)
         {
+            case 1:
+            case 0:
+                {
+                    Ladder = new Ladder(reader);
+
+                    if (version < 1 || reader.ReadBool())
+                    {
+                        Ladder.Instance = Ladder;
+                    }
+
+                    break;
+                }
+        }
+    }
+}
+
+public class Ladder
+{
+    private static readonly int[] m_ShortLevels =
+    {
+        1,
+        2,
+        3, 3,
+        4, 4,
+        5, 5, 5,
+        6, 6, 6,
+        7, 7, 7, 7,
+        8, 8, 8, 8,
+        9, 9, 9, 9, 9
+    };
+
+    private static readonly int[] m_BaseXP =
+    {
+        0, 100, 200, 400, 600, 900, 1200, 1600, 2000, 2500
+    };
+
+    private static readonly int[] m_LossFactors =
+    {
+        10,
+        11, 11,
+        25, 25,
+        43, 43,
+        67, 67
+    };
+
+    private static readonly int[,] m_OffsetScalar =
+    {
+        /* { win, los } */
+        /* -6 */ { 175, 25 },
+        /* -5 */ { 165, 35 },
+        /* -4 */ { 155, 45 },
+        /* -3 */ { 145, 55 },
+        /* -2 */ { 130, 70 },
+        /* -1 */ { 115, 85 },
+        /*  0 */ { 100, 100 },
+        /* +1 */ { 90, 110 },
+        /* +2 */ { 80, 120 },
+        /* +3 */ { 70, 130 },
+        /* +4 */ { 60, 140 },
+        /* +5 */ { 50, 150 },
+        /* +6 */ { 40, 160 }
+    };
+
+    private readonly Dictionary<Mobile, LadderEntry> m_Table;
+
+    public Ladder() => m_Table = new Dictionary<Mobile, LadderEntry>();
+
+    public Ladder(IGenericReader reader)
+    {
+        var version = reader.ReadEncodedInt();
+
+        switch (version)
+        {
+            case 1:
+            case 0:
+                {
+                    var count = reader.ReadEncodedInt();
+
+                    m_Table = new Dictionary<Mobile, LadderEntry>(count);
+                    Entries = new List<LadderEntry>(count);
+
+                    for (var i = 0; i < count; ++i)
+                    {
+                        var entry = new LadderEntry(reader, this, version);
+
+                        if (entry.Mobile != null)
+                        {
+                            m_Table[entry.Mobile] = entry;
+                            entry.Index = Entries.Count;
+                            Entries.Add(entry);
+                        }
+                    }
+
+                    if (version == 0)
+                    {
+                        Entries.Sort();
+
+                        for (var i = 0; i < Entries.Count; ++i)
+                        {
+                            var entry = Entries[i];
+
+                            entry.Index = i;
+                        }
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    public List<LadderEntry> Entries { get; } = new();
+
+    public static Ladder Instance { get; set; }
+
+    public static int GetLevel(int xp)
+    {
+        if (xp >= 22500)
+        {
+            return 50;
         }
 
-        [CommandProperty(AccessLevel.Administrator, canModify: true)]
-        public Ladder Ladder { get; private set; }
-
-        public override string DefaultName => "ladder controller";
-
-        public override void Delete()
+        if (xp >= 2500)
         {
-            if (Ladder.Instance == Ladder)
+            return 10 + (xp - 2500) / 500;
+        }
+
+        return m_ShortLevels[Math.Max(xp, 0) / 100];
+    }
+
+    public static void GetLevelInfo(int level, out int xpBase, out int xpAdvance)
+    {
+        if (level >= 10)
+        {
+            xpBase = 2500 + (level - 10) * 500;
+            xpAdvance = 500;
+        }
+        else
+        {
+            xpBase = m_BaseXP[level - 1];
+            xpAdvance = m_BaseXP[level] - xpBase;
+        }
+    }
+
+    public static int GetLossFactor(int level)
+    {
+        if (level >= 10)
+        {
+            return 100;
+        }
+
+        return m_LossFactors[level - 1];
+    }
+
+    public static int GetOffsetScalar(int ourLevel, int theirLevel, bool win)
+    {
+        var x = ourLevel - theirLevel;
+
+        if (x is < -6 or > +6)
+        {
+            return 0;
+        }
+
+        var y = win ? 0 : 1;
+
+        return m_OffsetScalar[x + 6, y];
+    }
+
+    public static int GetExperienceGain(LadderEntry us, LadderEntry them, bool weWon)
+    {
+        if (us == null || them == null)
+        {
+            return 0;
+        }
+
+        var ourLevel = GetLevel(us.Experience);
+        var theirLevel = GetLevel(them.Experience);
+
+        var scalar = GetOffsetScalar(ourLevel, theirLevel, weWon);
+
+        if (scalar == 0)
+        {
+            return 0;
+        }
+
+        var xp = 25 * scalar;
+
+        if (!weWon)
+        {
+            xp = xp * GetLossFactor(ourLevel) / 100;
+        }
+
+        xp /= 100;
+
+        if (xp <= 0)
+        {
+            xp = 1;
+        }
+
+        return xp * (weWon ? 1 : -1);
+    }
+
+    private int Swap(int idx, int newIdx)
+    {
+        var hold = Entries[idx];
+
+        Entries[idx] = Entries[newIdx];
+        Entries[newIdx] = hold;
+
+        Entries[idx].Index = idx;
+        Entries[newIdx].Index = newIdx;
+
+        return newIdx;
+    }
+
+    public void UpdateEntry(LadderEntry entry)
+    {
+        var index = entry.Index;
+
+        if (index >= 0 && index < Entries.Count)
+        {
+            while (index - 1 >= 0 && entry.CompareTo(Entries[index - 1]) < 0)
             {
-                Ladder.Instance = null;
+                index = Swap(index, index - 1);
             }
 
-            base.Delete();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(1);
-
-            Ladder.Serialize(writer);
-
-            writer.Write(Ladder.Instance == Ladder);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
+            while (index + 1 < Entries.Count && entry.CompareTo(Entries[index + 1]) > 0)
             {
-                case 1:
-                case 0:
-                    {
-                        Ladder = new Ladder(reader);
-
-                        if (version < 1 || reader.ReadBool())
-                        {
-                            Ladder.Instance = Ladder;
-                        }
-
-                        break;
-                    }
+                index = Swap(index, index + 1);
             }
         }
     }
 
-    public class Ladder
+    public LadderEntry Find(Mobile mob)
     {
-        private static readonly int[] m_ShortLevels =
+        if (m_Table.TryGetValue(mob, out var entry))
         {
-            1,
-            2,
-            3, 3,
-            4, 4,
-            5, 5, 5,
-            6, 6, 6,
-            7, 7, 7, 7,
-            8, 8, 8, 8,
-            9, 9, 9, 9, 9
-        };
-
-        private static readonly int[] m_BaseXP =
-        {
-            0, 100, 200, 400, 600, 900, 1200, 1600, 2000, 2500
-        };
-
-        private static readonly int[] m_LossFactors =
-        {
-            10,
-            11, 11,
-            25, 25,
-            43, 43,
-            67, 67
-        };
-
-        private static readonly int[,] m_OffsetScalar =
-        {
-            /* { win, los } */
-            /* -6 */ { 175, 25 },
-            /* -5 */ { 165, 35 },
-            /* -4 */ { 155, 45 },
-            /* -3 */ { 145, 55 },
-            /* -2 */ { 130, 70 },
-            /* -1 */ { 115, 85 },
-            /*  0 */ { 100, 100 },
-            /* +1 */ { 90, 110 },
-            /* +2 */ { 80, 120 },
-            /* +3 */ { 70, 130 },
-            /* +4 */ { 60, 140 },
-            /* +5 */ { 50, 150 },
-            /* +6 */ { 40, 160 }
-        };
-
-        private readonly Dictionary<Mobile, LadderEntry> m_Table;
-
-        public Ladder() => m_Table = new Dictionary<Mobile, LadderEntry>();
-
-        public Ladder(IGenericReader reader)
-        {
-            var version = reader.ReadEncodedInt();
-
-            switch (version)
-            {
-                case 1:
-                case 0:
-                    {
-                        var count = reader.ReadEncodedInt();
-
-                        m_Table = new Dictionary<Mobile, LadderEntry>(count);
-                        Entries = new List<LadderEntry>(count);
-
-                        for (var i = 0; i < count; ++i)
-                        {
-                            var entry = new LadderEntry(reader, this, version);
-
-                            if (entry.Mobile != null)
-                            {
-                                m_Table[entry.Mobile] = entry;
-                                entry.Index = Entries.Count;
-                                Entries.Add(entry);
-                            }
-                        }
-
-                        if (version == 0)
-                        {
-                            Entries.Sort();
-
-                            for (var i = 0; i < Entries.Count; ++i)
-                            {
-                                var entry = Entries[i];
-
-                                entry.Index = i;
-                            }
-                        }
-
-                        break;
-                    }
-            }
+            m_Table[mob] = entry = new LadderEntry(mob, this);
+            entry.Index = Entries.Count;
+            Entries.Add(entry);
         }
 
-        public List<LadderEntry> Entries { get; } = new();
+        return entry;
+    }
 
-        public static Ladder Instance { get; set; }
+    public LadderEntry FindNoCreate(Mobile mob)
+    {
+        m_Table.TryGetValue(mob, out var entry);
+        return entry;
+    }
 
-        public static int GetLevel(int xp)
+    public void Serialize(IGenericWriter writer)
+    {
+        writer.WriteEncodedInt(1); // version;
+
+        writer.WriteEncodedInt(Entries.Count);
+
+        for (var i = 0; i < Entries.Count; ++i)
         {
-            if (xp >= 22500)
-            {
-                return 50;
-            }
-
-            if (xp >= 2500)
-            {
-                return 10 + (xp - 2500) / 500;
-            }
-
-            return m_ShortLevels[Math.Max(xp, 0) / 100];
+            Entries[i].Serialize(writer);
         }
+    }
+}
 
-        public static void GetLevelInfo(int level, out int xpBase, out int xpAdvance)
+public class LadderEntry : IComparable<LadderEntry>
+{
+    private readonly Ladder m_Ladder;
+    private int m_Experience;
+
+    public LadderEntry(Mobile mob, Ladder ladder)
+    {
+        m_Ladder = ladder;
+        Mobile = mob;
+    }
+
+    public LadderEntry(IGenericReader reader, Ladder ladder, int version)
+    {
+        m_Ladder = ladder;
+
+        switch (version)
         {
-            if (level >= 10)
-            {
-                xpBase = 2500 + (level - 10) * 500;
-                xpAdvance = 500;
-            }
-            else
-            {
-                xpBase = m_BaseXP[level - 1];
-                xpAdvance = m_BaseXP[level] - xpBase;
-            }
-        }
-
-        public static int GetLossFactor(int level)
-        {
-            if (level >= 10)
-            {
-                return 100;
-            }
-
-            return m_LossFactors[level - 1];
-        }
-
-        public static int GetOffsetScalar(int ourLevel, int theirLevel, bool win)
-        {
-            var x = ourLevel - theirLevel;
-
-            if (x is < -6 or > +6)
-            {
-                return 0;
-            }
-
-            var y = win ? 0 : 1;
-
-            return m_OffsetScalar[x + 6, y];
-        }
-
-        public static int GetExperienceGain(LadderEntry us, LadderEntry them, bool weWon)
-        {
-            if (us == null || them == null)
-            {
-                return 0;
-            }
-
-            var ourLevel = GetLevel(us.Experience);
-            var theirLevel = GetLevel(them.Experience);
-
-            var scalar = GetOffsetScalar(ourLevel, theirLevel, weWon);
-
-            if (scalar == 0)
-            {
-                return 0;
-            }
-
-            var xp = 25 * scalar;
-
-            if (!weWon)
-            {
-                xp = xp * GetLossFactor(ourLevel) / 100;
-            }
-
-            xp /= 100;
-
-            if (xp <= 0)
-            {
-                xp = 1;
-            }
-
-            return xp * (weWon ? 1 : -1);
-        }
-
-        private int Swap(int idx, int newIdx)
-        {
-            var hold = Entries[idx];
-
-            Entries[idx] = Entries[newIdx];
-            Entries[newIdx] = hold;
-
-            Entries[idx].Index = idx;
-            Entries[newIdx].Index = newIdx;
-
-            return newIdx;
-        }
-
-        public void UpdateEntry(LadderEntry entry)
-        {
-            var index = entry.Index;
-
-            if (index >= 0 && index < Entries.Count)
-            {
-                while (index - 1 >= 0 && entry.CompareTo(Entries[index - 1]) < 0)
+            case 1:
+            case 0:
                 {
-                    index = Swap(index, index - 1);
+                    Mobile = reader.ReadEntity<Mobile>();
+                    m_Experience = reader.ReadEncodedInt();
+                    Wins = reader.ReadEncodedInt();
+                    Losses = reader.ReadEncodedInt();
+
+                    break;
                 }
-
-                while (index + 1 < Entries.Count && entry.CompareTo(Entries[index + 1]) > 0)
-                {
-                    index = Swap(index, index + 1);
-                }
-            }
-        }
-
-        public LadderEntry Find(Mobile mob)
-        {
-            if (m_Table.TryGetValue(mob, out var entry))
-            {
-                m_Table[mob] = entry = new LadderEntry(mob, this);
-                entry.Index = Entries.Count;
-                Entries.Add(entry);
-            }
-
-            return entry;
-        }
-
-        public LadderEntry FindNoCreate(Mobile mob)
-        {
-            m_Table.TryGetValue(mob, out var entry);
-            return entry;
-        }
-
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.WriteEncodedInt(1); // version;
-
-            writer.WriteEncodedInt(Entries.Count);
-
-            for (var i = 0; i < Entries.Count; ++i)
-            {
-                Entries[i].Serialize(writer);
-            }
         }
     }
 
-    public class LadderEntry : IComparable<LadderEntry>
+    public Mobile Mobile { get; }
+
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    public int Experience
     {
-        private readonly Ladder m_Ladder;
-        private int m_Experience;
-
-        public LadderEntry(Mobile mob, Ladder ladder)
+        get => m_Experience;
+        set
         {
-            m_Ladder = ladder;
-            Mobile = mob;
+            m_Experience = value;
+            m_Ladder.UpdateEntry(this);
         }
+    }
 
-        public LadderEntry(IGenericReader reader, Ladder ladder, int version)
-        {
-            m_Ladder = ladder;
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    public int Wins { get; set; }
 
-            switch (version)
-            {
-                case 1:
-                case 0:
-                    {
-                        Mobile = reader.ReadEntity<Mobile>();
-                        m_Experience = reader.ReadEncodedInt();
-                        Wins = reader.ReadEncodedInt();
-                        Losses = reader.ReadEncodedInt();
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    public int Losses { get; set; }
 
-                        break;
-                    }
-            }
-        }
+    public int Index { get; set; }
 
-        public Mobile Mobile { get; }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Rank => Index;
 
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public int Experience
-        {
-            get => m_Experience;
-            set
-            {
-                m_Experience = value;
-                m_Ladder.UpdateEntry(this);
-            }
-        }
+    public int CompareTo(LadderEntry l) => (l?.m_Experience ?? 0) - m_Experience;
 
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public int Wins { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-        public int Losses { get; set; }
-
-        public int Index { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Rank => Index;
-
-        public int CompareTo(LadderEntry l) => (l?.m_Experience ?? 0) - m_Experience;
-
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.Write(Mobile);
-            writer.WriteEncodedInt(m_Experience);
-            writer.WriteEncodedInt(Wins);
-            writer.WriteEncodedInt(Losses);
-        }
+    public void Serialize(IGenericWriter writer)
+    {
+        writer.Write(Mobile);
+        writer.WriteEncodedInt(m_Experience);
+        writer.WriteEncodedInt(Wins);
+        writer.WriteEncodedInt(Losses);
     }
 }

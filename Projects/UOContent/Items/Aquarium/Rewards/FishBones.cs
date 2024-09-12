@@ -1,23 +1,22 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class FishBones : Item
 {
-    [SerializationGenerator(0, false)]
-    public partial class FishBones : Item
+    [Constructible]
+    public FishBones() : base(0x3B0C)
     {
-        [Constructible]
-        public FishBones() : base(0x3B0C)
-        {
-        }
+    }
 
-        public override int LabelNumber => 1074601; // Fish bones
-        public override double DefaultWeight => 1.0;
+    public override int LabelNumber => 1074601; // Fish bones
+    public override double DefaultWeight => 1.0;
 
-        public override void AddNameProperties(IPropertyList list)
-        {
-            base.AddNameProperties(list);
+    public override void AddNameProperties(IPropertyList list)
+    {
+        base.AddNameProperties(list);
 
-            list.Add(1073634); // An aquarium decoration
-        }
+        list.Add(1073634); // An aquarium decoration
     }
 }

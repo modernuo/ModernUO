@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Gumps;
 
 public class NoticeGump : WarningGump

@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System.Buffers;
-using System.IO;
 using Server.Network;
 
 namespace Server.Gumps;

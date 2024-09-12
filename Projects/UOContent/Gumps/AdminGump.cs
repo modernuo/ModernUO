@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Threading;
 using Server.Accounting;
 using Server.Collections;
 using Server.Commands;
@@ -14,2543 +10,2530 @@ using Server.Network;
 using Server.Prompts;
 using Server.Text;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public enum AdminGumpPage
 {
-    public enum AdminGumpPage
+    Information_General,
+    Information_Perf,
+    Administer,
+    Clients,
+    Accounts,
+    Accounts_Shared,
+    Firewall,
+    Administer_WorldBuilding,
+    Administer_Server,
+    Administer_Access,
+    Administer_Access_Lockdown,
+    Administer_Commands,
+    ClientInfo,
+    AccountDetails,
+    AccountDetails_Information,
+    AccountDetails_Characters,
+    AccountDetails_Access,
+    AccountDetails_Access_ClientIPs,
+    AccountDetails_Comments,
+    AccountDetails_Tags,
+    AccountDetails_ChangePassword,
+    AccountDetails_ChangeAccess,
+    FirewallInfo
+}
+
+public class AdminGump : Gump
+{
+    private const int LabelColor = 0x7FFF;
+    private const int SelectedColor = 0x421F;
+    private const int DisabledColor = 0x4210;
+
+    private const int LabelColor32 = 0xFFFFFF;
+    private const int SelectedColor32 = 0x8080FF;
+    private const int DisabledColor32 = 0x808080;
+
+    private const int LabelHue = 0x480;
+    private const int GreenHue = 0x40;
+    private const int RedHue = 0x20;
+
+    private static readonly string[] m_AccessLevelStrings =
     {
-        Information_General,
-        Information_Perf,
-        Administer,
-        Clients,
-        Accounts,
-        Accounts_Shared,
-        Firewall,
-        Administer_WorldBuilding,
-        Administer_Server,
-        Administer_Access,
-        Administer_Access_Lockdown,
-        Administer_Commands,
-        ClientInfo,
-        AccountDetails,
-        AccountDetails_Information,
-        AccountDetails_Characters,
-        AccountDetails_Access,
-        AccountDetails_Access_ClientIPs,
-        AccountDetails_Comments,
-        AccountDetails_Tags,
-        AccountDetails_ChangePassword,
-        AccountDetails_ChangeAccess,
-        FirewallInfo
-    }
+        "Player",
+        "Counselor",
+        "Game Master",
+        "Seer",
+        "Administrator",
+        "Developer",
+        "Owner"
+    };
 
-    public class AdminGump : Gump
+    private readonly Mobile m_From;
+    private readonly List<object> m_List;
+    private readonly int m_ListPage;
+    private readonly AdminGumpPage m_PageType;
+    private readonly object m_State;
+
+    public override bool Singleton => true;
+
+    public AdminGump(
+        Mobile from, AdminGumpPage pageType, int listPage = 0, List<object> list = null, string notice = null,
+        object state = null
+    ) : base(50, 40)
     {
-        private const int LabelColor = 0x7FFF;
-        private const int SelectedColor = 0x421F;
-        private const int DisabledColor = 0x4210;
+        m_From = from;
+        m_PageType = pageType;
+        m_ListPage = listPage;
+        m_State = state;
+        m_List = list;
 
-        private const int LabelColor32 = 0xFFFFFF;
-        private const int SelectedColor32 = 0x8080FF;
-        private const int DisabledColor32 = 0x808080;
+        FilterAccess(m_List, from);
 
-        private const int LabelHue = 0x480;
-        private const int GreenHue = 0x40;
-        private const int RedHue = 0x20;
+        AddPage(0);
 
-        private static readonly string[] m_AccessLevelStrings =
+        AddBackground(0, 0, 420, 440, 5054);
+
+        AddBlackAlpha(10, 10, 170, 100);
+        AddBlackAlpha(190, 10, 220, 100);
+        AddBlackAlpha(10, 120, 400, 260);
+        AddBlackAlpha(10, 390, 400, 40);
+
+        AddPageButton(
+            10,
+            10,
+            GetButtonID(0, 0),
+            "INFORMATION",
+            AdminGumpPage.Information_General,
+            AdminGumpPage.Information_Perf
+        );
+        AddPageButton(
+            10,
+            30,
+            GetButtonID(0, 1),
+            "ADMINISTER",
+            AdminGumpPage.Administer,
+            AdminGumpPage.Administer_Access,
+            AdminGumpPage.Administer_Commands,
+            AdminGumpPage.Administer_Server,
+            AdminGumpPage.Administer_WorldBuilding,
+            AdminGumpPage.Administer_Access_Lockdown
+        );
+        AddPageButton(10, 50, GetButtonID(0, 2), "CLIENT LIST", AdminGumpPage.Clients, AdminGumpPage.ClientInfo);
+        AddPageButton(
+            10,
+            70,
+            GetButtonID(0, 3),
+            "ACCOUNT LIST",
+            AdminGumpPage.Accounts,
+            AdminGumpPage.Accounts_Shared,
+            AdminGumpPage.AccountDetails,
+            AdminGumpPage.AccountDetails_Information,
+            AdminGumpPage.AccountDetails_Characters,
+            AdminGumpPage.AccountDetails_Access,
+            AdminGumpPage.AccountDetails_Access_ClientIPs,
+            AdminGumpPage.AccountDetails_Comments,
+            AdminGumpPage.AccountDetails_Tags,
+            AdminGumpPage.AccountDetails_ChangeAccess,
+            AdminGumpPage.AccountDetails_ChangePassword
+        );
+        AddPageButton(10, 90, GetButtonID(0, 4), "FIREWALL", AdminGumpPage.Firewall, AdminGumpPage.FirewallInfo);
+
+        if (notice != null)
         {
-            "Player",
-            "Counselor",
-            "Game Master",
-            "Seer",
-            "Administrator",
-            "Developer",
-            "Owner"
-        };
-
-        private readonly Mobile m_From;
-        private readonly List<object> m_List;
-        private readonly int m_ListPage;
-        private readonly AdminGumpPage m_PageType;
-        private readonly object m_State;
-
-        public override bool Singleton => true;
-
-        public AdminGump(
-            Mobile from, AdminGumpPage pageType, int listPage = 0, List<object> list = null, string notice = null,
-            object state = null
-        ) : base(50, 40)
-        {
-            m_From = from;
-            m_PageType = pageType;
-            m_ListPage = listPage;
-            m_State = state;
-            m_List = list;
-
-            FilterAccess(m_List, from);
-
-            AddPage(0);
-
-            AddBackground(0, 0, 420, 440, 5054);
-
-            AddBlackAlpha(10, 10, 170, 100);
-            AddBlackAlpha(190, 10, 220, 100);
-            AddBlackAlpha(10, 120, 400, 260);
-            AddBlackAlpha(10, 390, 400, 40);
-
-            AddPageButton(
-                10,
-                10,
-                GetButtonID(0, 0),
-                "INFORMATION",
-                AdminGumpPage.Information_General,
-                AdminGumpPage.Information_Perf
-            );
-            AddPageButton(
-                10,
-                30,
-                GetButtonID(0, 1),
-                "ADMINISTER",
-                AdminGumpPage.Administer,
-                AdminGumpPage.Administer_Access,
-                AdminGumpPage.Administer_Commands,
-                AdminGumpPage.Administer_Server,
-                AdminGumpPage.Administer_WorldBuilding,
-                AdminGumpPage.Administer_Access_Lockdown
-            );
-            AddPageButton(10, 50, GetButtonID(0, 2), "CLIENT LIST", AdminGumpPage.Clients, AdminGumpPage.ClientInfo);
-            AddPageButton(
-                10,
-                70,
-                GetButtonID(0, 3),
-                "ACCOUNT LIST",
-                AdminGumpPage.Accounts,
-                AdminGumpPage.Accounts_Shared,
-                AdminGumpPage.AccountDetails,
-                AdminGumpPage.AccountDetails_Information,
-                AdminGumpPage.AccountDetails_Characters,
-                AdminGumpPage.AccountDetails_Access,
-                AdminGumpPage.AccountDetails_Access_ClientIPs,
-                AdminGumpPage.AccountDetails_Comments,
-                AdminGumpPage.AccountDetails_Tags,
-                AdminGumpPage.AccountDetails_ChangeAccess,
-                AdminGumpPage.AccountDetails_ChangePassword
-            );
-            AddPageButton(10, 90, GetButtonID(0, 4), "FIREWALL", AdminGumpPage.Firewall, AdminGumpPage.FirewallInfo);
-
-            if (notice != null)
-            {
-                AddHtml(12, 392, 396, 36, notice.Color(LabelColor32));
-            }
-
-            switch (pageType)
-            {
-                case AdminGumpPage.Information_General:
-                    {
-                        var banned = 0;
-                        var active = 0;
-
-                        foreach (Account acct in Accounts.GetAccounts())
-                        {
-                            if (acct.Banned)
-                            {
-                                ++banned;
-                            }
-                            else
-                            {
-                                ++active;
-                            }
-                        }
-
-                        AddLabel(20, 130, LabelHue, "Active Accounts:");
-                        AddLabel(150, 130, LabelHue, active.ToString());
-
-                        AddLabel(20, 150, LabelHue, "Banned Accounts:");
-                        AddLabel(150, 150, LabelHue, banned.ToString());
-
-                        AddLabel(20, 170, LabelHue, "Firewalled:");
-                        AddLabel(150, 170, LabelHue, AdminFirewall.Set.Count.ToString());
-
-                        AddLabel(20, 190, LabelHue, "Clients:");
-                        AddLabel(150, 190, LabelHue, NetState.Instances.Count.ToString());
-
-                        AddLabel(20, 210, LabelHue, "Mobiles:");
-                        AddLabel(150, 210, LabelHue, World.Mobiles.Count.ToString());
-
-                        AddLabel(20, 230, LabelHue, "Mobile Scripts:");
-                        AddLabel(150, 230, LabelHue, Core.ScriptMobiles.ToString());
-
-                        AddLabel(20, 250, LabelHue, "Items:");
-                        AddLabel(150, 250, LabelHue, World.Items.Count.ToString());
-
-                        AddLabel(20, 270, LabelHue, "Item Scripts:");
-                        AddLabel(150, 270, LabelHue, Core.ScriptItems.ToString());
-
-                        AddLabel(20, 290, LabelHue, "Uptime:");
-                        AddLabel(150, 290, LabelHue, FormatTimeSpan(TimeSpan.FromMilliseconds(Core.Uptime)));
-
-                        AddLabel(20, 310, LabelHue, "Memory:");
-                        AddLabel(150, 310, LabelHue, FormatByteAmount(GC.GetTotalMemory(false)));
-
-                        AddLabel(20, 330, LabelHue, "Framework:");
-                        AddLabel(150, 330, LabelHue, Environment.Version.ToString());
-
-                        AddLabel(20, 350, LabelHue, "Operating System: ");
-                        var os = Environment.OSVersion.ToString();
-
-                        os = os.ReplaceOrdinal("Microsoft", "MSFT");
-                        os = os.ReplaceOrdinal("Service Pack", "SP");
-
-                        AddLabel(150, 350, LabelHue, os);
-
-                        /*string str;
-
-                        try{ str = FormatTimeSpan( Core.Process.TotalProcessorTime ); }
-                        catch{ str = "(unable to retrieve)"; }
-
-                        AddLabel( 20, 330, LabelHue, "Process Time:" );
-                        AddLabel( 250, 330, LabelHue, str );*/
-
-                        /*try{ str = Core.Process.PriorityClass.ToString(); }
-                        catch{ str = "(unable to retrieve)"; }
-
-                        AddLabel( 20, 350, LabelHue, "Process Priority:" );
-                        AddLabel( 250, 350, LabelHue, str );*/
-
-                        AddPageButton(200, 20, GetButtonID(0, 0), "General", AdminGumpPage.Information_General);
-                        AddPageButton(200, 40, GetButtonID(0, 5), "Performance", AdminGumpPage.Information_Perf);
-
-                        break;
-                    }
-                case AdminGumpPage.Information_Perf:
-                    {
-                        AddLabel(20, 130, LabelHue, "Cycles Per Second:");
-                        AddLabel(40, 150, LabelHue, $"Current: {Core.CyclesPerSecond:N2}");
-                        AddLabel(40, 170, LabelHue, $"Average: {Core.AverageCPS:N2}");
-
-                        using var sb = ValueStringBuilder.Create();
-
-                        ThreadPool.GetAvailableThreads(out var curUser, out var curIOCP);
-                        ThreadPool.GetMaxThreads(out var maxUser, out var maxIOCP);
-
-                        sb.Append("Worker Threads:<br>Capacity: ");
-                        sb.Append(maxUser);
-                        sb.Append("<br>Available: ");
-                        sb.Append(curUser);
-                        sb.Append("<br>Usage: ");
-                        sb.Append((maxUser - curUser) * 100 / maxUser);
-                        sb.Append("%<br><br>IOCP Threads:<br>Capacity: ");
-                        sb.Append(maxIOCP);
-                        sb.Append("<br>Available: ");
-                        sb.Append(curIOCP);
-                        sb.Append("<br>Usage: ");
-                        sb.Append((maxIOCP - curIOCP) * 100 / maxIOCP);
-                        sb.Append('%');
-
-                        AddLabel(20, 200, LabelHue, "Pooling:");
-                        AddHtml(20, 220, 380, 150, sb.ToString(), true, true);
-
-                        AddPageButton(200, 20, GetButtonID(0, 0), "General", AdminGumpPage.Information_General);
-                        AddPageButton(200, 40, GetButtonID(0, 5), "Performance", AdminGumpPage.Information_Perf);
-
-                        break;
-                    }
-                case AdminGumpPage.Administer_WorldBuilding:
-                    {
-                        AddHtml(10, 125, 400, 20, "Generating".Center(LabelColor32));
-
-                        AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
-                        AddButtonLabeled(220, 175, GetButtonID(3, 102), "Moongates");
-
-                        AddButtonLabeled(20, 200, GetButtonID(3, 103), "Spawners");
-                        AddButtonLabeled(220, 200, GetButtonID(3, 106), "Decorations");
-
-                        AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
-                        AddButtonLabeled(220, 225, GetButtonID(3, 105), "Signs");
-
-                        AddButtonLabeled(20, 250, GetButtonID(3, 107), "Champions");
-                        AddButtonLabeled(220, 250, GetButtonID(3, 108), "Magincia (AOS+)");
-
-                        AddButtonLabeled(20, 275, GetButtonID(3, 109), "Stealable Artifacts");
-                        AddButtonLabeled(220, 275, GetButtonID(3, 110), "SH Teleporters");
-
-                        AddButtonLabeled(20, 300, GetButtonID(3, 111), "Secret Locations");
-                        AddButtonLabeled(220, 300, GetButtonID(3, 112), "Doom");
-
-                        AddButtonLabeled(20, 325, GetButtonID(3, 113), "Khaldun Puzzles");
-                        AddButtonLabeled(220, 325, GetButtonID(3, 114), "Do everything");
-
-                        goto case AdminGumpPage.Administer;
-                    }
-                case AdminGumpPage.Administer_Server:
-                    {
-                        AddHtml(10, 125, 400, 20, "Server".Center(LabelColor32));
-
-                        AddButtonLabeled(20, 150, GetButtonID(3, 200), "Save");
-
-                        /*if (!Core.Service)
-                        {*/
-                        AddButtonLabeled(20, 180, GetButtonID(3, 201), "Shutdown (With Save)");
-                        AddButtonLabeled(20, 200, GetButtonID(3, 202), "Shutdown (Without Save)");
-
-                        AddButtonLabeled(20, 230, GetButtonID(3, 203), "Shutdown & Restart (With Save)");
-                        AddButtonLabeled(20, 250, GetButtonID(3, 204), "Shutdown & Restart (Without Save)");
-                        /*}
-                        else
-                        {
-                          AddLabel( 20, 215, LabelHue, "Shutdown/Restart not available." );
-                        }*/
-
-                        AddHtml(10, 295, 400, 20, "Broadcast".Center(LabelColor32));
-
-                        AddTextField(20, 320, 380, 20, 0);
-                        AddButtonLabeled(20, 350, GetButtonID(3, 210), "To Everyone");
-                        AddButtonLabeled(220, 350, GetButtonID(3, 211), "To Staff");
-
-                        goto case AdminGumpPage.Administer;
-                    }
-                case AdminGumpPage.Administer_Access_Lockdown:
-                    {
-                        AddHtml(10, 125, 400, 20, "Server Lockdown".Center(LabelColor32));
-
-                        AddHtml(
-                            20,
-                            150,
-                            380,
-                            80,
-                            "When enabled, only clients with an access level equal to or greater than the specified lockdown level may access the server. After setting a lockdown level, use the <em>Purge Invalid Clients</em> button to disconnect those clients without access.".Color(
-                                LabelColor32
-                            )
-                        );
-
-                        var level = AccountHandler.LockdownLevel;
-                        var isLockedDown = level > AccessLevel.Player;
-
-                        AddSelectedButton(20, 230, GetButtonID(3, 500), "Not Locked Down", !isLockedDown);
-                        AddSelectedButton(
-                            20,
-                            260,
-                            GetButtonID(3, 504),
-                            "Administrators",
-                            isLockedDown && level <= AccessLevel.Administrator
-                        );
-                        AddSelectedButton(20, 280, GetButtonID(3, 503), "Seers", isLockedDown && level <= AccessLevel.Seer);
-                        AddSelectedButton(
-                            20,
-                            300,
-                            GetButtonID(3, 502),
-                            "Game Masters",
-                            isLockedDown && level <= AccessLevel.GameMaster
-                        );
-                        AddSelectedButton(
-                            20,
-                            320,
-                            GetButtonID(3, 501),
-                            "Counselors",
-                            isLockedDown && level <= AccessLevel.Counselor
-                        );
-
-                        AddButtonLabeled(20, 350, GetButtonID(3, 510), "Purge Invalid Clients");
-
-                        goto case AdminGumpPage.Administer;
-                    }
-                case AdminGumpPage.Administer_Access:
-                    {
-                        AddHtml(10, 125, 400, 20, "Access".Center(LabelColor32));
-
-                        AddHtml(10, 155, 400, 20, "Connectivity".Center(LabelColor32));
-
-                        AddButtonLabeled(20, 180, GetButtonID(3, 300), "Kick");
-                        AddButtonLabeled(220, 180, GetButtonID(3, 301), "Ban");
-
-                        AddButtonLabeled(20, 210, GetButtonID(3, 302), "Firewall");
-                        AddButtonLabeled(220, 210, GetButtonID(3, 303), "Lockdown");
-
-                        AddHtml(10, 245, 400, 20, "Staff".Center(LabelColor32));
-
-                        AddButtonLabeled(20, 270, GetButtonID(3, 310), "Make Player");
-                        AddButtonLabeled(20, 290, GetButtonID(3, 311), "Make Counselor");
-                        AddButtonLabeled(20, 310, GetButtonID(3, 312), "Make Game Master");
-                        AddButtonLabeled(20, 330, GetButtonID(3, 313), "Make Seer");
-
-                        if (from.AccessLevel > AccessLevel.Administrator)
-                        {
-                            AddButtonLabeled(220, 270, GetButtonID(3, 314), "Make Administrator");
-
-                            if (from.AccessLevel > AccessLevel.Developer)
-                            {
-                                AddButtonLabeled(220, 290, GetButtonID(3, 315), "Make Developer");
-
-                                if (from.AccessLevel >= AccessLevel.Owner)
-                                {
-                                    AddButtonLabeled(220, 310, GetButtonID(3, 316), "Make Owner");
-                                }
-                            }
-                        }
-
-                        goto case AdminGumpPage.Administer;
-                    }
-                case AdminGumpPage.Administer_Commands:
-                    {
-                        AddHtml(10, 125, 400, 20, "Commands".Center(LabelColor32));
-
-                        AddButtonLabeled(20, 150, GetButtonID(3, 400), "Add");
-                        AddButtonLabeled(220, 150, GetButtonID(3, 401), "Remove");
-
-                        AddButtonLabeled(20, 170, GetButtonID(3, 402), "Dupe");
-                        AddButtonLabeled(220, 170, GetButtonID(3, 403), "Dupe in bag");
-
-                        AddButtonLabeled(20, 200, GetButtonID(3, 404), "Properties");
-                        AddButtonLabeled(220, 200, GetButtonID(3, 405), "Skills");
-
-                        AddButtonLabeled(20, 230, GetButtonID(3, 406), "Mortal");
-                        AddButtonLabeled(220, 230, GetButtonID(3, 407), "Immortal");
-
-                        AddButtonLabeled(20, 250, GetButtonID(3, 408), "Squelch");
-                        AddButtonLabeled(220, 250, GetButtonID(3, 409), "Unsquelch");
-
-                        AddButtonLabeled(20, 290, GetButtonID(3, 412), "Hide");
-                        AddButtonLabeled(220, 290, GetButtonID(3, 413), "Unhide");
-
-                        AddButtonLabeled(20, 310, GetButtonID(3, 414), "Kill");
-                        AddButtonLabeled(220, 310, GetButtonID(3, 415), "Resurrect");
-
-                        AddButtonLabeled(20, 330, GetButtonID(3, 416), "Move");
-                        AddButtonLabeled(220, 330, GetButtonID(3, 417), "Wipe");
-
-                        AddButtonLabeled(20, 350, GetButtonID(3, 418), "Teleport");
-                        AddButtonLabeled(220, 350, GetButtonID(3, 419), "Teleport (Multiple)");
-
-                        goto case AdminGumpPage.Administer;
-                    }
-                case AdminGumpPage.Administer:
-                    {
-                        AddPageButton(200, 20, GetButtonID(3, 0), "World Building", AdminGumpPage.Administer_WorldBuilding);
-                        AddPageButton(200, 40, GetButtonID(3, 1), "Server", AdminGumpPage.Administer_Server);
-                        AddPageButton(
-                            200,
-                            60,
-                            GetButtonID(3, 2),
-                            "Access",
-                            AdminGumpPage.Administer_Access,
-                            AdminGumpPage.Administer_Access_Lockdown
-                        );
-                        AddPageButton(200, 80, GetButtonID(3, 3), "Commands", AdminGumpPage.Administer_Commands);
-
-                        break;
-                    }
-                case AdminGumpPage.Clients:
-                    {
-                        if (m_List == null)
-                        {
-                            var states = NetState.Instances.ToList();
-                            states.Sort(NetStateComparer.Instance);
-
-                            m_List = states.ToList<object>();
-                            FilterAccess(m_List, from);
-                        }
-
-                        AddClientHeader();
-
-                        AddLabelCropped(12, 120, 81, 20, LabelHue, "Name");
-                        AddLabelCropped(95, 120, 81, 20, LabelHue, "Account");
-                        AddLabelCropped(178, 120, 81, 20, LabelHue, "Access Level");
-                        AddLabelCropped(273, 120, 109, 20, LabelHue, "IP Address");
-
-                        if (listPage > 0)
-                        {
-                            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
-                        }
-                        else
-                        {
-                            AddImage(375, 122, 0x25EA);
-                        }
-
-                        if ((listPage + 1) * 12 < m_List.Count)
-                        {
-                            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
-                        }
-                        else
-                        {
-                            AddImage(392, 122, 0x25E6);
-                        }
-
-                        if (m_List.Count == 0)
-                        {
-                            AddLabel(12, 140, LabelHue, "There are no clients to display.");
-                        }
-
-                        for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
-                        {
-                            if (m_List[index] is not NetState ns)
-                            {
-                                continue;
-                            }
-
-                            var m = ns.Mobile;
-                            var a = ns.Account as Account;
-                            var offset = 140 + i * 20;
-
-                            if (m == null)
-                            {
-                                AddLabelCropped(12, offset, 81, 20, LabelHue, "(logging in)");
-                            }
-                            else
-                            {
-                                AddLabelCropped(12, offset, 81, 20, GetHueFor(m), m.Name);
-                            }
-
-                            AddLabelCropped(95, offset, 81, 20, LabelHue, a == null ? "(no account)" : a.Username);
-                            AddLabelCropped(
-                                178,
-                                offset,
-                                81,
-                                20,
-                                LabelHue,
-                                m == null
-                                    ? a != null ? FormatAccessLevel(a.AccessLevel) : ""
-                                    : FormatAccessLevel(m.AccessLevel)
-                            );
-                            AddLabelCropped(273, offset, 109, 20, LabelHue, ns.ToString());
-
-                            if (a != null || m != null)
-                            {
-                                AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(4, index + 2));
-                            }
-                        }
-
-                        break;
-                    }
-                case AdminGumpPage.ClientInfo:
-                    {
-                        if (state is not Mobile m)
-                        {
-                            break;
-                        }
-
-                        AddClientHeader();
-
-                        AddHtml(10, 125, 400, 20, "Information".Center(LabelColor32));
-
-                        var y = 146;
-
-                        AddLabel(20, y, LabelHue, "Name:");
-                        AddLabel(200, y, GetHueFor(m), m.Name);
-                        y += 20;
-
-                        var a = m.Account as Account;
-
-                        AddLabel(20, y, LabelHue, "Account:");
-                        AddLabel(200, y, a?.Banned == true ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
-
-                        if (m.AccessLevel > from.AccessLevel || a?.AccessLevel > from.AccessLevel)
-                        {
-                            AddLabel(20, y + 20, LabelHue, "You do not have permission to view this client's information.");
-                            break;
-                        }
-
-                        AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14));
-                        y += 20;
-
-                        var ns = m.NetState;
-
-                        if (ns == null)
-                        {
-                            AddLabel(20, y, LabelHue, "Address:");
-                            AddLabel(200, y, RedHue, "Offline");
-                            y += 20;
-
-                            AddLabel(20, y, LabelHue, "Location:");
-                            AddLabel(200, y, LabelHue, $"{m.Location} [{m.Map}]");
-                            y += 44;
-                        }
-                        else
-                        {
-                            AddLabel(20, y, LabelHue, "Address:");
-                            AddLabel(200, y, GreenHue, ns.ToString());
-                            y += 20;
-
-                            var v = ns.Version;
-
-                            AddLabel(20, y, LabelHue, "Version:");
-                            if (ns.Assistant != null)
-                            {
-                                AddLabel(200, y, LabelHue, $"{v.SourceString ?? "(null)"} ({ns.Assistant})");
-                            }
-                            else
-                            {
-                                AddLabel(200, y, LabelHue, v.SourceString ?? "(null)");
-                            }
-
-                            y += 20;
-
-                            AddLabel(20, y, LabelHue, "Location:");
-                            AddLabel(200, y, LabelHue, $"{m.Location} [{m.Map}]");
-                            y += 24;
-                        }
-
-                        AddButtonLabeled(20, y, GetButtonID(7, 0), "Go to");
-                        AddButtonLabeled(200, y, GetButtonID(7, 1), "Get");
-                        y += 20;
-
-                        AddButtonLabeled(20, y, GetButtonID(7, 2), "Kick");
-                        AddButtonLabeled(200, y, GetButtonID(7, 3), "Ban");
-                        y += 20;
-
-                        AddButtonLabeled(20, y, GetButtonID(7, 4), "Properties");
-                        AddButtonLabeled(200, y, GetButtonID(7, 5), "Skills");
-                        y += 20;
-
-                        AddButtonLabeled(20, y, GetButtonID(7, 6), "Mortal");
-                        AddButtonLabeled(200, y, GetButtonID(7, 7), "Immortal");
-                        y += 20;
-
-                        AddButtonLabeled(20, y, GetButtonID(7, 8), "Squelch");
-                        AddButtonLabeled(200, y, GetButtonID(7, 9), "Unsquelch");
-                        y += 20;
-
-                        /*AddButtonLabeled(  20, y, GetButtonID( 7, 10 ), "Hide" );
-                        AddButtonLabeled( 200, y, GetButtonID( 7, 11 ), "Unhide" );
-                        y += 20;*/
-
-                        AddButtonLabeled(20, y, GetButtonID(7, 12), "Kill");
-                        AddButtonLabeled(200, y, GetButtonID(7, 13), "Resurrect");
-
-                        break;
-                    }
-                case AdminGumpPage.Accounts_Shared:
-                    {
-                        m_List ??= GetAllSharedAccounts();
-
-                        AddLabelCropped(12, 120, 60, 20, LabelHue, "Count");
-                        AddLabelCropped(72, 120, 120, 20, LabelHue, "Address");
-                        AddLabelCropped(192, 120, 180, 20, LabelHue, "Accounts");
-
-                        if (listPage > 0)
-                        {
-                            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
-                        }
-                        else
-                        {
-                            AddImage(375, 122, 0x25EA);
-                        }
-
-                        if ((listPage + 1) * 12 < m_List.Count)
-                        {
-                            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
-                        }
-                        else
-                        {
-                            AddImage(392, 122, 0x25E6);
-                        }
-
-                        if (m_List.Count == 0)
-                        {
-                            AddLabel(12, 140, LabelHue, "There are no accounts to display.");
-                        }
-
-                        using var sb = ValueStringBuilder.Create();
-
-                        for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
-                        {
-                            var (ipAddr, accts) = (KeyValuePair<IPAddress, List<Account>>)m_List[index];
-
-                            var offset = 140 + i * 20;
-
-                            AddLabelCropped(12, offset, 60, 20, LabelHue, accts.Count.ToString());
-                            AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToString());
-
-                            sb.Reset();
-
-                            for (var j = 0; j < accts.Count; ++j)
-                            {
-                                if (j > 0)
-                                {
-                                    sb.Append(", ");
-                                }
-
-                                if (j < 4)
-                                {
-                                    var acct = accts[j];
-
-                                    sb.Append(acct.Username);
-                                }
-                                else
-                                {
-                                    sb.Append("...");
-                                    break;
-                                }
-                            }
-
-                            AddLabelCropped(192, offset, 180, 20, LabelHue, sb.ToString());
-
-                            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
-                        }
-
-                        break;
-                    }
-                case AdminGumpPage.Accounts:
-                    {
-                        m_List ??= new List<object>();
-
-                        var rads = state as List<Account>;
-
-                        AddAccountHeader();
-
-                        if (rads == null)
-                        {
-                            AddLabelCropped(12, 120, 120, 20, LabelHue, "Name");
-                        }
-                        else
-                        {
-                            AddLabelCropped(32, 120, 100, 20, LabelHue, "Name");
-                        }
-
-                        AddLabelCropped(132, 120, 120, 20, LabelHue, "Access Level");
-                        AddLabelCropped(252, 120, 120, 20, LabelHue, "Status");
-
-                        if (listPage > 0)
-                        {
-                            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
-                        }
-                        else
-                        {
-                            AddImage(375, 122, 0x25EA);
-                        }
-
-                        if ((listPage + 1) * 12 < m_List.Count)
-                        {
-                            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
-                        }
-                        else
-                        {
-                            AddImage(392, 122, 0x25E6);
-                        }
-
-                        if (m_List.Count == 0)
-                        {
-                            AddLabel(12, 140, LabelHue, "There are no accounts to display.");
-                        }
-
-                        if (rads != null && notice == null)
-                        {
-                            AddButtonLabeled(10, 390, GetButtonID(5, 27), "Ban marked");
-                            AddButtonLabeled(10, 410, GetButtonID(5, 28), "Delete marked");
-
-                            AddButtonLabeled(210, 390, GetButtonID(5, 29), "Mark all");
-                            AddButtonLabeled(210, 410, GetButtonID(5, 35), "Unmark house owners");
-                        }
-
-                        for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
-                        {
-                            if (m_List[index] is not Account a)
-                            {
-                                continue;
-                            }
-
-                            var offset = 140 + i * 20;
-
-                            GetAccountInfo(a, out var accessLevel, out var online);
-
-                            if (rads == null)
-                            {
-                                AddLabelCropped(12, offset, 120, 20, LabelHue, a.Username);
-                            }
-                            else
-                            {
-                                AddCheck(10, offset, 0xD2, 0xD3, rads.Contains(a), index);
-                                AddLabelCropped(32, offset, 100, 20, LabelHue, a.Username);
-                            }
-
-                            AddLabelCropped(132, offset, 120, 20, LabelHue, FormatAccessLevel(accessLevel));
-
-                            if (online)
-                            {
-                                AddLabelCropped(252, offset, 120, 20, GreenHue, "Online");
-                            }
-                            else if (a.Banned)
-                            {
-                                AddLabelCropped(252, offset, 120, 20, RedHue, "Banned");
-                            }
-                            else
-                            {
-                                AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
-                            }
-
-                            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
-                        }
-
-                        break;
-                    }
-                case AdminGumpPage.AccountDetails:
-                    {
-                        AddPageButton(
-                            190,
-                            10,
-                            GetButtonID(5, 0),
-                            "Information",
-                            AdminGumpPage.AccountDetails_Information,
-                            AdminGumpPage.AccountDetails_ChangeAccess,
-                            AdminGumpPage.AccountDetails_ChangePassword
-                        );
-                        AddPageButton(190, 30, GetButtonID(5, 1), "Characters", AdminGumpPage.AccountDetails_Characters);
-                        AddPageButton(
-                            190,
-                            50,
-                            GetButtonID(5, 13),
-                            "Access",
-                            AdminGumpPage.AccountDetails_Access,
-                            AdminGumpPage.AccountDetails_Access_ClientIPs
-                        );
-                        AddPageButton(190, 70, GetButtonID(5, 2), "Comments", AdminGumpPage.AccountDetails_Comments);
-                        AddPageButton(190, 90, GetButtonID(5, 3), "Tags", AdminGumpPage.AccountDetails_Tags);
-                        break;
-                    }
-                case AdminGumpPage.AccountDetails_ChangePassword:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        AddHtml(10, 125, 400, 20, "Change Password".Center(LabelColor32));
-
-                        AddLabel(20, 150, LabelHue, "Username:");
-                        AddLabel(200, 150, LabelHue, a.Username);
-
-                        AddLabel(20, 180, LabelHue, "Password:");
-                        AddTextField(200, 180, 160, 20, 0);
-
-                        AddLabel(20, 210, LabelHue, "Confirm:");
-                        AddTextField(200, 210, 160, 20, 1);
-
-                        AddButtonLabeled(20, 240, GetButtonID(5, 12), "Submit Change");
-
-                        goto case AdminGumpPage.AccountDetails;
-                    }
-                case AdminGumpPage.AccountDetails_ChangeAccess:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        AddHtml(10, 125, 400, 20, "Change Access Level".Center(LabelColor32));
-
-                        AddLabel(20, 150, LabelHue, "Username:");
-                        AddLabel(200, 150, LabelHue, a.Username);
-
-                        AddLabel(20, 170, LabelHue, "Current Level:");
-                        AddLabel(200, 170, LabelHue, FormatAccessLevel(a.AccessLevel));
-
-                        AddButtonLabeled(20, 200, GetButtonID(5, 20), "Player");
-                        AddButtonLabeled(20, 220, GetButtonID(5, 21), "Counselor");
-                        AddButtonLabeled(20, 240, GetButtonID(5, 22), "Game Master");
-                        AddButtonLabeled(20, 260, GetButtonID(5, 23), "Seer");
-
-                        if (from.AccessLevel > AccessLevel.Administrator)
-                        {
-                            AddButtonLabeled(20, 280, GetButtonID(5, 24), "Administrator");
-
-                            if (from.AccessLevel > AccessLevel.Developer)
-                            {
-                                AddButtonLabeled(20, 300, GetButtonID(5, 33), "Developer");
-
-                                if (from.AccessLevel >= AccessLevel.Owner)
-                                {
-                                    AddButtonLabeled(20, 320, GetButtonID(5, 34), "Owner");
-                                }
-                            }
-                        }
-
-                        goto case AdminGumpPage.AccountDetails;
-                    }
-                case AdminGumpPage.AccountDetails_Information:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        var charCount = 0;
-
-                        for (var i = 0; i < a.Length; ++i)
-                        {
-                            if (a[i] != null)
-                            {
-                                ++charCount;
-                            }
-                        }
-
-                        AddHtml(10, 125, 400, 20, "Information".Center(LabelColor32));
-
-                        AddLabel(20, 150, LabelHue, "Username:");
-                        AddLabel(200, 150, LabelHue, a.Username);
-
-                        AddLabel(20, 170, LabelHue, "Access Level:");
-                        AddLabel(200, 170, LabelHue, FormatAccessLevel(a.AccessLevel));
-
-                        AddLabel(20, 190, LabelHue, "Status:");
-                        AddLabel(200, 190, a.Banned ? RedHue : GreenHue, a.Banned ? "Banned" : "Active");
-
-                        if (a.Banned && a.GetBanTags(out var banTime, out var banDuration))
-                        {
-                            if (banDuration == TimeSpan.MaxValue)
-                            {
-                                AddLabel(250, 190, LabelHue, "(Infinite)");
-                            }
-                            else if (banDuration == TimeSpan.Zero)
-                            {
-                                AddLabel(250, 190, LabelHue, "(Zero)");
-                            }
-                            else
-                            {
-                                var remaining = (Core.Now - banTime).Clamp(TimeSpan.Zero, banDuration);
-                                var remMinutes = remaining.TotalMinutes;
-                                var totMinutes = banDuration.TotalMinutes;
-
-                                var perc = remMinutes / totMinutes;
-
-                                AddLabel(250, 190, LabelHue, $"{FormatTimeSpan(banDuration)} [{perc * 100:F0}%]");
-                            }
-                        }
-                        else if (a.Banned)
-                        {
-                            AddLabel(250, 190, LabelHue, "(Unspecified)");
-                        }
-
-                        AddLabel(20, 210, LabelHue, "Created:");
-                        AddLabel(200, 210, LabelHue, a.Created.ToString());
-
-                        AddLabel(20, 230, LabelHue, "Last Login:");
-                        AddLabel(200, 230, LabelHue, a.LastLogin.ToString());
-
-                        AddLabel(20, 250, LabelHue, "Character Count:");
-                        AddLabel(200, 250, LabelHue, charCount.ToString());
-
-                        AddLabel(20, 270, LabelHue, "Comment Count:");
-                        AddLabel(200, 270, LabelHue, a.Comments.Count.ToString());
-
-                        AddLabel(20, 290, LabelHue, "Tag Count:");
-                        AddLabel(200, 290, LabelHue, a.Tags.Count.ToString());
-
-                        AddButtonLabeled(20, 320, GetButtonID(5, 8), "Change Password");
-                        AddButtonLabeled(200, 320, GetButtonID(5, 9), "Change Access Level");
-
-                        if (!a.Banned)
-                        {
-                            AddButtonLabeled(20, 350, GetButtonID(5, 10), "Ban Account");
-                        }
-                        else
-                        {
-                            AddButtonLabeled(20, 350, GetButtonID(5, 11), "Unban Account");
-                        }
-
-                        AddButtonLabeled(200, 350, GetButtonID(5, 25), "Delete Account");
-
-                        goto case AdminGumpPage.AccountDetails;
-                    }
-                case AdminGumpPage.AccountDetails_Access:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        AddHtml(10, 125, 400, 20, "Access".Center(LabelColor32));
-
-                        AddPageButton(
-                            20,
-                            150,
-                            GetButtonID(5, 14),
-                            "View client addresses",
-                            AdminGumpPage.AccountDetails_Access_ClientIPs
-                        );
-
-                        goto case AdminGumpPage.AccountDetails;
-                    }
-                case AdminGumpPage.AccountDetails_Access_ClientIPs:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        m_List ??= a.LoginIPs.ToList<object>();
-
-                        AddHtml(10, 195, 400, 20, "Client Addresses".Center(LabelColor32));
-
-                        AddButtonLabeled(227, 225, GetButtonID(5, 16), "View all shared accounts");
-                        AddButtonLabeled(227, 245, GetButtonID(5, 17), "Ban all shared accounts");
-                        AddButtonLabeled(227, 265, GetButtonID(5, 18), "Firewall all addresses");
-                        AddButtonLabeled(227, 285, GetButtonID(5, 36), "Clear all addresses");
-
-                        AddHtml(
-                            225,
-                            315,
-                            180,
-                            80,
-                            "List of IP addresses which have accessed this account.".Color(LabelColor32)
-                        );
-
-                        AddImageTiled(15, 219, 206, 156, 0xBBC);
-                        AddBlackAlpha(16, 220, 204, 154);
-
-                        AddHtml(18, 221, 114, 20, "IP Address".Color(LabelColor32));
-
-                        if (listPage > 0)
-                        {
-                            AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0));
-                        }
-                        else
-                        {
-                            AddImage(184, 223, 0x25EA);
-                        }
-
-                        if ((listPage + 1) * 6 < m_List.Count)
-                        {
-                            AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1));
-                        }
-                        else
-                        {
-                            AddImage(201, 223, 0x25E6);
-                        }
-
-                        if (m_List.Count == 0)
-                        {
-                            AddHtml(18, 243, 200, 60, "This account has not yet been accessed.".Color(LabelColor32));
-                        }
-
-                        for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
-                        {
-                            AddHtml(18, 243 + i * 22, 114, 20, m_List[index].ToString().Color(LabelColor32));
-                            AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
-                            AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
-                            AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
-                        }
-
-                        goto case AdminGumpPage.AccountDetails_Access;
-                    }
-                case AdminGumpPage.AccountDetails_Characters:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        AddHtml(10, 125, 400, 20, "Characters".Center(LabelColor32));
-
-                        AddLabelCropped(12, 150, 120, 20, LabelHue, "Name");
-                        AddLabelCropped(132, 150, 120, 20, LabelHue, "Access Level");
-                        AddLabelCropped(252, 150, 120, 20, LabelHue, "Status");
-
-                        var index = 0;
-
-                        for (var i = 0; i < a.Length; ++i)
-                        {
-                            var m = a[i];
-
-                            if (m == null)
-                            {
-                                continue;
-                            }
-
-                            var offset = 170 + index * 20;
-
-                            AddLabelCropped(12, offset, 120, 20, GetHueFor(m), m.Name);
-                            AddLabelCropped(132, offset, 120, 20, LabelHue, FormatAccessLevel(m.AccessLevel));
-
-                            if (m.NetState != null)
-                            {
-                                AddLabelCropped(252, offset, 120, 20, GreenHue, "Online");
-                            }
-                            else
-                            {
-                                AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
-                            }
-
-                            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, i + 50));
-
-                            ++index;
-                        }
-
-                        if (index == 0)
-                        {
-                            AddLabel(12, 170, LabelHue, "The character list is empty.");
-                        }
-
-                        goto case AdminGumpPage.AccountDetails;
-                    }
-                case AdminGumpPage.AccountDetails_Comments:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        AddHtml(10, 125, 400, 20, "Comments".Center(LabelColor32));
-
-                        AddButtonLabeled(20, 150, GetButtonID(5, 4), "Add Comment");
-
-                        var sb = ValueStringBuilder.Create();
-
-                        if (a.Comments.Count == 0)
-                        {
-                            sb.Append("There are no comments for this account.");
-                        }
-
-                        for (var i = 0; i < a.Comments.Count; ++i)
-                        {
-                            if (i > 0)
-                            {
-                                sb.Append("<BR><BR>");
-                            }
-
-                            var c = a.Comments[i];
-                            sb.Append('[');
-                            sb.Append(c.AddedBy);
-                            sb.Append(" on ");
-                            sb.Append(c.LastModified.ToString());
-                            sb.Append("]<BR>");
-                            sb.Append(c.Content);
-                        }
-
-                        AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
-
-                        sb.Dispose(); // Due to an analyzer bug, we can't use a using
-                        goto case AdminGumpPage.AccountDetails;
-                    }
-                case AdminGumpPage.AccountDetails_Tags:
-                    {
-                        if (state is not Account a)
-                        {
-                            break;
-                        }
-
-                        AddHtml(10, 125, 400, 20, "Tags".Center(LabelColor32));
-
-                        AddButtonLabeled(20, 150, GetButtonID(5, 5), "Add Tag");
-
-                        var sb = ValueStringBuilder.Create();
-
-                        if (a.Tags.Count == 0)
-                        {
-                            sb.Append("There are no tags for this account.");
-                        }
-
-                        for (var i = 0; i < a.Tags.Count; ++i)
-                        {
-                            if (i > 0)
-                            {
-                                sb.Append("<BR>");
-                            }
-
-                            var tag = a.Tags[i];
-
-                            sb.Append(tag.Name);
-                            sb.Append(" = ");
-                            sb.Append(tag.Value);
-                        }
-
-                        AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
-
-                        sb.Dispose();
-                        goto case AdminGumpPage.AccountDetails;
-                    }
-                case AdminGumpPage.Firewall:
-                    {
-                        AddFirewallHeader();
-
-                        m_List ??= AdminFirewall.Set.ToList<object>();
-
-                        AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
-
-                        if (listPage > 0)
-                        {
-                            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
-                        }
-                        else
-                        {
-                            AddImage(375, 122, 0x25EA);
-                        }
-
-                        if ((listPage + 1) * 12 < m_List.Count)
-                        {
-                            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
-                        }
-                        else
-                        {
-                            AddImage(392, 122, 0x25E6);
-                        }
-
-                        if (m_List.Count == 0)
-                        {
-                            AddLabel(12, 140, LabelHue, "The firewall list is empty.");
-                        }
-                        else
-                        {
-                            var i = 0;
-                            var index = listPage * 12;
-                            foreach (var firewallEntry in m_List)
-                            {
-                                if (i >= 12)
-                                {
-                                    break;
-                                }
-
-                                var offset = 140 + i++ * 20;
-
-                                AddLabelCropped(12, offset, 358, 20, LabelHue, firewallEntry.ToString());
-                                AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(6, index++ + 4));
-                            }
-                        }
-
-                        break;
-                    }
-                case AdminGumpPage.FirewallInfo:
-                    {
-                        AddFirewallHeader();
-
-                        if (state is not IFirewallEntry firewallEntry)
-                        {
-                            break;
-                        }
-
-                        AddHtml(10, 125, 400, 20, firewallEntry.ToString().Center(LabelColor32));
-
-                        AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
-
-                        AddHtml(10, 175, 400, 20, "Potentially Affected Accounts".Center(LabelColor32));
-
-                        if (m_List == null)
-                        {
-                            using var blockedEntriesList = PooledRefList<Account>.Create();
-
-                            foreach (var ia in Accounts.GetAccounts())
-                            {
-                                var acct = (Account)ia;
-
-                                var loginList = acct.LoginIPs;
-
-                                for (var i = 0; i < loginList.Length; ++i)
-                                {
-                                    if (firewallEntry.IsBlocked(loginList[i]))
-                                    {
-                                        blockedEntriesList.Add(acct);
-                                        break;
-                                    }
-                                }
-                            }
-
-                            blockedEntriesList.Sort(AccountComparer.Instance);
-
-                            m_List = blockedEntriesList.ToList<Account, object>();
-                        }
-
-                        if (listPage > 0)
-                        {
-                            AddButton(375, 177, 0x15E3, 0x15E7, GetButtonID(1, 0));
-                        }
-                        else
-                        {
-                            AddImage(375, 177, 0x25EA);
-                        }
-
-                        if ((listPage + 1) * 12 < m_List.Count)
-                        {
-                            AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1));
-                        }
-                        else
-                        {
-                            AddImage(392, 177, 0x25E6);
-                        }
-
-                        if (m_List.Count == 0)
-                        {
-                            AddLabelCropped(12, 200, 398, 20, LabelHue, "No accounts found.");
-                        }
-
-                        for (int i = 0, index = listPage * 9;
-                             i < 9 && index >= 0 && index < m_List.Count;
-                             ++i, ++index)
-                        {
-                            if (m_List[index] is not Account a)
-                            {
-                                continue;
-                            }
-
-                            var offset = 200 + i * 20;
-
-                            GetAccountInfo(a, out var accessLevel, out var online);
-
-                            AddLabelCropped(12, offset, 120, 20, LabelHue, a.Username);
-                            AddLabelCropped(132, offset, 120, 20, LabelHue, FormatAccessLevel(accessLevel));
-
-                            if (online)
-                            {
-                                AddLabelCropped(252, offset, 120, 20, GreenHue, "Online");
-                            }
-                            else if (a.Banned)
-                            {
-                                AddLabelCropped(252, offset, 120, 20, RedHue, "Banned");
-                            }
-                            else
-                            {
-                                AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
-                            }
-
-                            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
-                        }
-
-                        break;
-                    }
-            }
+            AddHtml(12, 392, 396, 36, notice.Color(LabelColor32));
         }
 
-        public void AddPageButton(
-            int x, int y, int buttonID, string text, AdminGumpPage page,
-            params AdminGumpPage[] subPages
-        )
+        switch (pageType)
         {
-            var isSelection = m_PageType == page;
-
-            for (var i = 0; !isSelection && i < subPages.Length; ++i)
-            {
-                isSelection = m_PageType == subPages[i];
-            }
-
-            AddSelectedButton(x, y, buttonID, text, isSelection);
-        }
-
-        public void AddSelectedButton(int x, int y, int buttonID, string text, bool isSelection)
-        {
-            AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID);
-            AddHtml(x + 35, y, 200, 20, text.Color(isSelection ? SelectedColor32 : LabelColor32));
-        }
-
-        public void AddButtonLabeled(int x, int y, int buttonID, string text)
-        {
-            AddButton(x, y - 1, 4005, 4007, buttonID);
-            AddHtml(x + 35, y, 240, 20, text.Color(LabelColor32));
-        }
-
-        public void AddBlackAlpha(int x, int y, int width, int height)
-        {
-            AddImageTiled(x, y, width, height, 2624);
-            AddAlphaRegion(x, y, width, height);
-        }
-
-        public int GetButtonID(int type, int index) => 1 + index * 11 + type;
-
-        public static string FormatTimeSpan(TimeSpan ts) =>
-            $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
-
-        public static string FormatByteAmount(long totalBytes)
-        {
-            return totalBytes switch
-            {
-                > 1000000000 => $"{(double)totalBytes / 1073741824:F1} GB",
-                > 1000000    => $"{(double)totalBytes / 1048576:F1} MB",
-                > 1000       => $"{(double)totalBytes / 1024:F1} KB",
-                _            => $"{totalBytes} Bytes"
-            };
-        }
-
-        public static void Configure()
-        {
-            CommandSystem.Register("Admin", AccessLevel.Administrator, Admin_OnCommand);
-        }
-
-        [Usage("Admin"), Description(
-             "Opens an interface providing server information and administration features including client, account, and firewall management."
-         )]
-        public static void Admin_OnCommand(CommandEventArgs e)
-        {
-            e.Mobile.SendGump(new AdminGump(e.Mobile, AdminGumpPage.Clients));
-        }
-
-        public static int GetHueFor(Mobile m)
-        {
-            if (m == null)
-            {
-                return LabelHue;
-            }
-
-            switch (m.AccessLevel)
-            {
-                case AccessLevel.Owner:
-                case AccessLevel.Developer:
-                case AccessLevel.Administrator:
-                    {
-                        return 0x516;
-                    }
-                case AccessLevel.Seer:
-                    {
-                        return 0x144;
-                    }
-                case AccessLevel.GameMaster:
-                    {
-                        return 0x21;
-                    }
-                case AccessLevel.Counselor:
-                    {
-                        return 0x2;
-                    }
-                default:
-                    {
-                        if (m.Kills >= 5)
-                        {
-                            return 0x21;
-                        }
-
-                        return m.Criminal ? 0x3B1 : 0x58;
-                    }
-            }
-        }
-
-        public static string FormatAccessLevel(AccessLevel level)
-        {
-            var v = (int)level;
-
-            if (v >= 0 && v < m_AccessLevelStrings.Length)
-            {
-                return m_AccessLevelStrings[v];
-            }
-
-            return "Unknown";
-        }
-
-        public void AddTextField(int x, int y, int width, int height, int index)
-        {
-            AddBackground(x - 2, y - 2, width + 4, height + 4, 0x2486);
-            AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
-        }
-
-        public void AddClientHeader()
-        {
-            AddTextField(200, 20, 200, 20, 0);
-            AddButtonLabeled(200, 50, GetButtonID(4, 0), "Search For Name");
-            AddButtonLabeled(200, 80, GetButtonID(4, 1), "Search For IP Address");
-        }
-
-        public void AddAccountHeader()
-        {
-            AddPage(1);
-
-            AddLabel(200, 20, LabelHue, "Name:");
-            AddTextField(250, 20, 150, 20, 0);
-
-            AddLabel(200, 50, LabelHue, "Pass:");
-            AddTextField(250, 50, 150, 20, 1);
-
-            AddButtonLabeled(200, 80, GetButtonID(5, 6), "Add");
-            AddButtonLabeled(290, 80, GetButtonID(5, 7), "Search");
-
-            AddButton(384, 84, 0x15E1, 0x15E5, 0, GumpButtonType.Page, 2);
-
-            AddPage(2);
-
-            AddButtonLabeled(200, 20, GetButtonID(5, 31), "View All: Inactive");
-            AddButtonLabeled(200, 40, GetButtonID(5, 32), "View All: Banned");
-            AddButtonLabeled(200, 60, GetButtonID(5, 26), "View All: Shared");
-            AddButtonLabeled(200, 80, GetButtonID(5, 30), "View All: Empty");
-
-            AddButton(384, 84, 0x15E1, 0x15E5, 0, GumpButtonType.Page, 1);
-
-            AddPage(0);
-        }
-
-        public void AddFirewallHeader()
-        {
-            AddTextField(200, 20, 200, 20, 0);
-            AddButtonLabeled(320, 50, GetButtonID(6, 0), "Search");
-            AddButtonLabeled(200, 50, GetButtonID(6, 1), "Add (Input)");
-            AddButtonLabeled(200, 80, GetButtonID(6, 2), "Add (Target)");
-        }
-
-        private static List<object> GetAllSharedAccounts()
-        {
-            var table = new Dictionary<IPAddress, List<Account>>();
-
-            foreach (Account acct in Accounts.GetAccounts())
-            {
-                var theirAddresses = acct.LoginIPs;
-
-                for (var i = 0; i < theirAddresses.Length; ++i)
+            case AdminGumpPage.Information_General:
                 {
-                    var theirAddress = theirAddresses[i];
+                    var banned = 0;
+                    var active = 0;
 
-                    // This path is heavy for larger shards, so use optimized code
-                    ref var accts = ref CollectionsMarshal.GetValueRefOrAddDefault(table, theirAddress, out var acctExists);
-
-                    // If we don't have a list, create one
-                    if (!acctExists)
+                    foreach (Account acct in Accounts.GetAccounts())
                     {
-                        accts = new List<Account>();
+                        if (acct.Banned)
+                        {
+                            ++banned;
+                        }
+                        else
+                        {
+                            ++active;
+                        }
                     }
 
-                    accts.Add(acct);
+                    AddLabel(20, 130, LabelHue, "Active Accounts:");
+                    AddLabel(150, 130, LabelHue, active.ToString());
+
+                    AddLabel(20, 150, LabelHue, "Banned Accounts:");
+                    AddLabel(150, 150, LabelHue, banned.ToString());
+
+                    AddLabel(20, 170, LabelHue, "Firewalled:");
+                    AddLabel(150, 170, LabelHue, AdminFirewall.Set.Count.ToString());
+
+                    AddLabel(20, 190, LabelHue, "Clients:");
+                    AddLabel(150, 190, LabelHue, NetState.Instances.Count.ToString());
+
+                    AddLabel(20, 210, LabelHue, "Mobiles:");
+                    AddLabel(150, 210, LabelHue, World.Mobiles.Count.ToString());
+
+                    AddLabel(20, 230, LabelHue, "Mobile Scripts:");
+                    AddLabel(150, 230, LabelHue, Core.ScriptMobiles.ToString());
+
+                    AddLabel(20, 250, LabelHue, "Items:");
+                    AddLabel(150, 250, LabelHue, World.Items.Count.ToString());
+
+                    AddLabel(20, 270, LabelHue, "Item Scripts:");
+                    AddLabel(150, 270, LabelHue, Core.ScriptItems.ToString());
+
+                    AddLabel(20, 290, LabelHue, "Uptime:");
+                    AddLabel(150, 290, LabelHue, FormatTimeSpan(TimeSpan.FromMilliseconds(Core.Uptime)));
+
+                    AddLabel(20, 310, LabelHue, "Memory:");
+                    AddLabel(150, 310, LabelHue, FormatByteAmount(GC.GetTotalMemory(false)));
+
+                    AddLabel(20, 330, LabelHue, "Framework:");
+                    AddLabel(150, 330, LabelHue, Environment.Version.ToString());
+
+                    AddLabel(20, 350, LabelHue, "Operating System: ");
+                    var os = Environment.OSVersion.ToString();
+
+                    os = os.ReplaceOrdinal("Microsoft", "MSFT");
+                    os = os.ReplaceOrdinal("Service Pack", "SP");
+
+                    AddLabel(150, 350, LabelHue, os);
+
+                    /*string str;
+
+                    try{ str = FormatTimeSpan( Core.Process.TotalProcessorTime ); }
+                    catch{ str = "(unable to retrieve)"; }
+
+                    AddLabel( 20, 330, LabelHue, "Process Time:" );
+                    AddLabel( 250, 330, LabelHue, str );*/
+
+                    /*try{ str = Core.Process.PriorityClass.ToString(); }
+                    catch{ str = "(unable to retrieve)"; }
+
+                    AddLabel( 20, 350, LabelHue, "Process Priority:" );
+                    AddLabel( 250, 350, LabelHue, str );*/
+
+                    AddPageButton(200, 20, GetButtonID(0, 0), "General", AdminGumpPage.Information_General);
+                    AddPageButton(200, 40, GetButtonID(0, 5), "Performance", AdminGumpPage.Information_Perf);
+
+                    break;
                 }
-            }
-
-            var list = new List<object>();
-
-            // Lets find all the entries that have only one account
-            foreach (var kvp in table)
-            {
-                if (kvp.Value.Count > 1)
+            case AdminGumpPage.Information_Perf:
                 {
-                    // Sort the accounts alphabetically
-                    kvp.Value.Sort(AccountComparer.Instance);
+                    AddLabel(20, 130, LabelHue, "Cycles Per Second:");
+                    AddLabel(40, 150, LabelHue, $"Current: {Core.CyclesPerSecond:N2}");
+                    AddLabel(40, 170, LabelHue, $"Average: {Core.AverageCPS:N2}");
 
-                    // Can't avoid boxing because `m_List` in AdminGump is expecting List<object>
-                    list.Add(kvp);
+                    using var sb = ValueStringBuilder.Create();
+
+                    ThreadPool.GetAvailableThreads(out var curUser, out var curIOCP);
+                    ThreadPool.GetMaxThreads(out var maxUser, out var maxIOCP);
+
+                    sb.Append("Worker Threads:<br>Capacity: ");
+                    sb.Append(maxUser);
+                    sb.Append("<br>Available: ");
+                    sb.Append(curUser);
+                    sb.Append("<br>Usage: ");
+                    sb.Append((maxUser - curUser) * 100 / maxUser);
+                    sb.Append("%<br><br>IOCP Threads:<br>Capacity: ");
+                    sb.Append(maxIOCP);
+                    sb.Append("<br>Available: ");
+                    sb.Append(curIOCP);
+                    sb.Append("<br>Usage: ");
+                    sb.Append((maxIOCP - curIOCP) * 100 / maxIOCP);
+                    sb.Append('%');
+
+                    AddLabel(20, 200, LabelHue, "Pooling:");
+                    AddHtml(20, 220, 380, 150, sb.ToString(), true, true);
+
+                    AddPageButton(200, 20, GetButtonID(0, 0), "General", AdminGumpPage.Information_General);
+                    AddPageButton(200, 40, GetButtonID(0, 5), "Performance", AdminGumpPage.Information_Perf);
+
+                    break;
                 }
-            }
-
-            // Sort by highest accounts per IP first
-            list.Sort(SharedAccountDescendingComparer.Instance);
-
-            return list;
-        }
-
-        private static List<Account> GetSharedAccounts(IPAddress ipAddress)
-        {
-            var list = new List<Account>();
-
-            foreach (var account in Accounts.GetAccounts())
-            {
-                var acct = (Account)account;
-
-                var theirAddresses = acct.LoginIPs;
-                var contains = false;
-
-                for (var i = 0; !contains && i < theirAddresses.Length; ++i)
+            case AdminGumpPage.Administer_WorldBuilding:
                 {
-                    contains = ipAddress.Equals(theirAddresses[i]);
+                    AddHtml(10, 125, 400, 20, "Generating".Center(LabelColor32));
+
+                    AddButtonLabeled(20, 175, GetButtonID(3, 101), "Teleporters");
+                    AddButtonLabeled(220, 175, GetButtonID(3, 102), "Moongates");
+
+                    AddButtonLabeled(20, 200, GetButtonID(3, 103), "Spawners");
+                    AddButtonLabeled(220, 200, GetButtonID(3, 106), "Decorations");
+
+                    AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
+                    AddButtonLabeled(220, 225, GetButtonID(3, 105), "Signs");
+
+                    AddButtonLabeled(20, 250, GetButtonID(3, 107), "Champions");
+                    AddButtonLabeled(220, 250, GetButtonID(3, 108), "Magincia (AOS+)");
+
+                    AddButtonLabeled(20, 275, GetButtonID(3, 109), "Stealable Artifacts");
+                    AddButtonLabeled(220, 275, GetButtonID(3, 110), "SH Teleporters");
+
+                    AddButtonLabeled(20, 300, GetButtonID(3, 111), "Secret Locations");
+                    AddButtonLabeled(220, 300, GetButtonID(3, 112), "Doom");
+
+                    AddButtonLabeled(20, 325, GetButtonID(3, 113), "Khaldun Puzzles");
+                    AddButtonLabeled(220, 325, GetButtonID(3, 114), "Do everything");
+
+                    goto case AdminGumpPage.Administer;
                 }
-
-                if (contains)
+            case AdminGumpPage.Administer_Server:
                 {
-                    list.Add(acct);
-                }
-            }
+                    AddHtml(10, 125, 400, 20, "Server".Center(LabelColor32));
 
-            list.Sort(AccountComparer.Instance);
-            return list;
-        }
+                    AddButtonLabeled(20, 150, GetButtonID(3, 200), "Save");
 
-        private static List<Account> GetSharedAccounts(IPAddress[] ipAddresses)
-        {
-            var list = new List<Account>();
+                    /*if (!Core.Service)
+                    {*/
+                    AddButtonLabeled(20, 180, GetButtonID(3, 201), "Shutdown (With Save)");
+                    AddButtonLabeled(20, 200, GetButtonID(3, 202), "Shutdown (Without Save)");
 
-            foreach (Account acct in Accounts.GetAccounts())
-            {
-                var theirAddresses = acct.LoginIPs;
-                var contains = false;
-
-                for (var i = 0; !contains && i < theirAddresses.Length; ++i)
-                {
-                    var check = theirAddresses[i];
-
-                    for (var j = 0; !contains && j < ipAddresses.Length; ++j)
+                    AddButtonLabeled(20, 230, GetButtonID(3, 203), "Shutdown & Restart (With Save)");
+                    AddButtonLabeled(20, 250, GetButtonID(3, 204), "Shutdown & Restart (Without Save)");
+                    /*}
+                    else
                     {
-                        contains = check.Equals(ipAddresses[j]);
+                      AddLabel( 20, 215, LabelHue, "Shutdown/Restart not available." );
+                    }*/
+
+                    AddHtml(10, 295, 400, 20, "Broadcast".Center(LabelColor32));
+
+                    AddTextField(20, 320, 380, 20, 0);
+                    AddButtonLabeled(20, 350, GetButtonID(3, 210), "To Everyone");
+                    AddButtonLabeled(220, 350, GetButtonID(3, 211), "To Staff");
+
+                    goto case AdminGumpPage.Administer;
+                }
+            case AdminGumpPage.Administer_Access_Lockdown:
+                {
+                    AddHtml(10, 125, 400, 20, "Server Lockdown".Center(LabelColor32));
+
+                    AddHtml(
+                        20,
+                        150,
+                        380,
+                        80,
+                        "When enabled, only clients with an access level equal to or greater than the specified lockdown level may access the server. After setting a lockdown level, use the <em>Purge Invalid Clients</em> button to disconnect those clients without access.".Color(
+                            LabelColor32
+                        )
+                    );
+
+                    var level = AccountHandler.LockdownLevel;
+                    var isLockedDown = level > AccessLevel.Player;
+
+                    AddSelectedButton(20, 230, GetButtonID(3, 500), "Not Locked Down", !isLockedDown);
+                    AddSelectedButton(
+                        20,
+                        260,
+                        GetButtonID(3, 504),
+                        "Administrators",
+                        isLockedDown && level <= AccessLevel.Administrator
+                    );
+                    AddSelectedButton(20, 280, GetButtonID(3, 503), "Seers", isLockedDown && level <= AccessLevel.Seer);
+                    AddSelectedButton(
+                        20,
+                        300,
+                        GetButtonID(3, 502),
+                        "Game Masters",
+                        isLockedDown && level <= AccessLevel.GameMaster
+                    );
+                    AddSelectedButton(
+                        20,
+                        320,
+                        GetButtonID(3, 501),
+                        "Counselors",
+                        isLockedDown && level <= AccessLevel.Counselor
+                    );
+
+                    AddButtonLabeled(20, 350, GetButtonID(3, 510), "Purge Invalid Clients");
+
+                    goto case AdminGumpPage.Administer;
+                }
+            case AdminGumpPage.Administer_Access:
+                {
+                    AddHtml(10, 125, 400, 20, "Access".Center(LabelColor32));
+
+                    AddHtml(10, 155, 400, 20, "Connectivity".Center(LabelColor32));
+
+                    AddButtonLabeled(20, 180, GetButtonID(3, 300), "Kick");
+                    AddButtonLabeled(220, 180, GetButtonID(3, 301), "Ban");
+
+                    AddButtonLabeled(20, 210, GetButtonID(3, 302), "Firewall");
+                    AddButtonLabeled(220, 210, GetButtonID(3, 303), "Lockdown");
+
+                    AddHtml(10, 245, 400, 20, "Staff".Center(LabelColor32));
+
+                    AddButtonLabeled(20, 270, GetButtonID(3, 310), "Make Player");
+                    AddButtonLabeled(20, 290, GetButtonID(3, 311), "Make Counselor");
+                    AddButtonLabeled(20, 310, GetButtonID(3, 312), "Make Game Master");
+                    AddButtonLabeled(20, 330, GetButtonID(3, 313), "Make Seer");
+
+                    if (from.AccessLevel > AccessLevel.Administrator)
+                    {
+                        AddButtonLabeled(220, 270, GetButtonID(3, 314), "Make Administrator");
+
+                        if (from.AccessLevel > AccessLevel.Developer)
+                        {
+                            AddButtonLabeled(220, 290, GetButtonID(3, 315), "Make Developer");
+
+                            if (from.AccessLevel >= AccessLevel.Owner)
+                            {
+                                AddButtonLabeled(220, 310, GetButtonID(3, 316), "Make Owner");
+                            }
+                        }
                     }
+
+                    goto case AdminGumpPage.Administer;
                 }
-
-                if (contains)
+            case AdminGumpPage.Administer_Commands:
                 {
-                    list.Add(acct);
+                    AddHtml(10, 125, 400, 20, "Commands".Center(LabelColor32));
+
+                    AddButtonLabeled(20, 150, GetButtonID(3, 400), "Add");
+                    AddButtonLabeled(220, 150, GetButtonID(3, 401), "Remove");
+
+                    AddButtonLabeled(20, 170, GetButtonID(3, 402), "Dupe");
+                    AddButtonLabeled(220, 170, GetButtonID(3, 403), "Dupe in bag");
+
+                    AddButtonLabeled(20, 200, GetButtonID(3, 404), "Properties");
+                    AddButtonLabeled(220, 200, GetButtonID(3, 405), "Skills");
+
+                    AddButtonLabeled(20, 230, GetButtonID(3, 406), "Mortal");
+                    AddButtonLabeled(220, 230, GetButtonID(3, 407), "Immortal");
+
+                    AddButtonLabeled(20, 250, GetButtonID(3, 408), "Squelch");
+                    AddButtonLabeled(220, 250, GetButtonID(3, 409), "Unsquelch");
+
+                    AddButtonLabeled(20, 290, GetButtonID(3, 412), "Hide");
+                    AddButtonLabeled(220, 290, GetButtonID(3, 413), "Unhide");
+
+                    AddButtonLabeled(20, 310, GetButtonID(3, 414), "Kill");
+                    AddButtonLabeled(220, 310, GetButtonID(3, 415), "Resurrect");
+
+                    AddButtonLabeled(20, 330, GetButtonID(3, 416), "Move");
+                    AddButtonLabeled(220, 330, GetButtonID(3, 417), "Wipe");
+
+                    AddButtonLabeled(20, 350, GetButtonID(3, 418), "Teleport");
+                    AddButtonLabeled(220, 350, GetButtonID(3, 419), "Teleport (Multiple)");
+
+                    goto case AdminGumpPage.Administer;
                 }
-            }
-
-            list.Sort(AccountComparer.Instance);
-            return list;
-        }
-
-        public static void BanShared_Callback(Mobile from, bool okay, Account a)
-        {
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            string notice;
-            List<Account> list = null;
-
-            if (okay)
-            {
-                list = GetSharedAccounts(a.LoginIPs);
-
-                for (var i = 0; i < list.Count; ++i)
+            case AdminGumpPage.Administer:
                 {
-                    list[i].SetUnspecifiedBan(from);
-                    list[i].Banned = true;
+                    AddPageButton(200, 20, GetButtonID(3, 0), "World Building", AdminGumpPage.Administer_WorldBuilding);
+                    AddPageButton(200, 40, GetButtonID(3, 1), "Server", AdminGumpPage.Administer_Server);
+                    AddPageButton(
+                        200,
+                        60,
+                        GetButtonID(3, 2),
+                        "Access",
+                        AdminGumpPage.Administer_Access,
+                        AdminGumpPage.Administer_Access_Lockdown
+                    );
+                    AddPageButton(200, 80, GetButtonID(3, 3), "Commands", AdminGumpPage.Administer_Commands);
+
+                    break;
                 }
-
-                notice = "All addresses in the list have been banned.";
-            }
-            else
-            {
-                notice = "You have chosen not to ban all shared accounts.";
-            }
-
-            from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
-
-            if (okay)
-            {
-                from.SendGump(new BanDurationGump(list));
-            }
-        }
-
-        public static void AccountDelete_Callback(Mobile from, bool okay, Account a)
-        {
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            if (okay)
-            {
-                CommandLogging.WriteLine(
-                    from,
-                    $"{from.AccessLevel} {CommandLogging.Format(from)} deleting account {a.Username}"
-                );
-                a.Delete();
-
-                from.SendGump(
-                    new AdminGump(
-                        from,
-                        AdminGumpPage.Accounts,
-                        0,
-                        null,
-                        $"{a.Username} : The account has been deleted."
-                    )
-                );
-            }
-            else
-            {
-                from.SendGump(
-                    new AdminGump(
-                        from,
-                        AdminGumpPage.AccountDetails_Information,
-                        0,
-                        null,
-                        "You have chosen not to delete the account.",
-                        a
-                    )
-                );
-            }
-        }
-
-        public static void ResendGump_Callback(Mobile from, List<object> list, List<Account> rads, int page)
-        {
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, page, list, null, rads));
-        }
-
-        public static void Marked_Callback(Mobile from, bool okay, bool ban, List<object> list, List<Account> rads, int page)
-        {
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            if (okay)
-            {
-                if (!ban)
+            case AdminGumpPage.Clients:
                 {
-                    NetState.FlushAll();
-                }
-
-                for (var i = 0; i < rads.Count; ++i)
-                {
-                    var acct = rads[i];
-
-                    if (ban)
+                    if (m_List == null)
                     {
-                        CommandLogging.WriteLine(
-                            from,
-                            $"{from.AccessLevel} {CommandLogging.Format(from)} banning account {acct.Username}"
-                        );
-                        acct.SetUnspecifiedBan(from);
-                        acct.Banned = true;
+                        var states = NetState.Instances.ToList();
+                        states.Sort(NetStateComparer.Instance);
+
+                        m_List = states.ToList<object>();
+                        FilterAccess(m_List, from);
+                    }
+
+                    AddClientHeader();
+
+                    AddLabelCropped(12, 120, 81, 20, LabelHue, "Name");
+                    AddLabelCropped(95, 120, 81, 20, LabelHue, "Account");
+                    AddLabelCropped(178, 120, 81, 20, LabelHue, "Access Level");
+                    AddLabelCropped(273, 120, 109, 20, LabelHue, "IP Address");
+
+                    if (listPage > 0)
+                    {
+                        AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
                     }
                     else
                     {
-                        CommandLogging.WriteLine(
-                            from,
-                            $"{from.AccessLevel} {CommandLogging.Format(from)} deleting account {acct.Username}"
-                        );
-                        acct.Delete();
-                        rads.RemoveAt(i--);
-                        list.Remove(acct);
+                        AddImage(375, 122, 0x25EA);
                     }
+
+                    if ((listPage + 1) * 12 < m_List.Count)
+                    {
+                        AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
+                    }
+                    else
+                    {
+                        AddImage(392, 122, 0x25E6);
+                    }
+
+                    if (m_List.Count == 0)
+                    {
+                        AddLabel(12, 140, LabelHue, "There are no clients to display.");
+                    }
+
+                    for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
+                    {
+                        if (m_List[index] is not NetState ns)
+                        {
+                            continue;
+                        }
+
+                        var m = ns.Mobile;
+                        var a = ns.Account as Account;
+                        var offset = 140 + i * 20;
+
+                        if (m == null)
+                        {
+                            AddLabelCropped(12, offset, 81, 20, LabelHue, "(logging in)");
+                        }
+                        else
+                        {
+                            AddLabelCropped(12, offset, 81, 20, GetHueFor(m), m.Name);
+                        }
+
+                        AddLabelCropped(95, offset, 81, 20, LabelHue, a == null ? "(no account)" : a.Username);
+                        AddLabelCropped(
+                            178,
+                            offset,
+                            81,
+                            20,
+                            LabelHue,
+                            m == null
+                                ? a != null ? FormatAccessLevel(a.AccessLevel) : ""
+                                : FormatAccessLevel(m.AccessLevel)
+                        );
+                        AddLabelCropped(273, offset, 109, 20, LabelHue, ns.ToString());
+
+                        if (a != null || m != null)
+                        {
+                            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(4, index + 2));
+                        }
+                    }
+
+                    break;
+                }
+            case AdminGumpPage.ClientInfo:
+                {
+                    if (state is not Mobile m)
+                    {
+                        break;
+                    }
+
+                    AddClientHeader();
+
+                    AddHtml(10, 125, 400, 20, "Information".Center(LabelColor32));
+
+                    var y = 146;
+
+                    AddLabel(20, y, LabelHue, "Name:");
+                    AddLabel(200, y, GetHueFor(m), m.Name);
+                    y += 20;
+
+                    var a = m.Account as Account;
+
+                    AddLabel(20, y, LabelHue, "Account:");
+                    AddLabel(200, y, a?.Banned == true ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
+
+                    if (m.AccessLevel > from.AccessLevel || a?.AccessLevel > from.AccessLevel)
+                    {
+                        AddLabel(20, y + 20, LabelHue, "You do not have permission to view this client's information.");
+                        break;
+                    }
+
+                    AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14));
+                    y += 20;
+
+                    var ns = m.NetState;
+
+                    if (ns == null)
+                    {
+                        AddLabel(20, y, LabelHue, "Address:");
+                        AddLabel(200, y, RedHue, "Offline");
+                        y += 20;
+
+                        AddLabel(20, y, LabelHue, "Location:");
+                        AddLabel(200, y, LabelHue, $"{m.Location} [{m.Map}]");
+                        y += 44;
+                    }
+                    else
+                    {
+                        AddLabel(20, y, LabelHue, "Address:");
+                        AddLabel(200, y, GreenHue, ns.ToString());
+                        y += 20;
+
+                        var v = ns.Version;
+
+                        AddLabel(20, y, LabelHue, "Version:");
+                        if (ns.Assistant != null)
+                        {
+                            AddLabel(200, y, LabelHue, $"{v.SourceString ?? "(null)"} ({ns.Assistant})");
+                        }
+                        else
+                        {
+                            AddLabel(200, y, LabelHue, v.SourceString ?? "(null)");
+                        }
+
+                        y += 20;
+
+                        AddLabel(20, y, LabelHue, "Location:");
+                        AddLabel(200, y, LabelHue, $"{m.Location} [{m.Map}]");
+                        y += 24;
+                    }
+
+                    AddButtonLabeled(20, y, GetButtonID(7, 0), "Go to");
+                    AddButtonLabeled(200, y, GetButtonID(7, 1), "Get");
+                    y += 20;
+
+                    AddButtonLabeled(20, y, GetButtonID(7, 2), "Kick");
+                    AddButtonLabeled(200, y, GetButtonID(7, 3), "Ban");
+                    y += 20;
+
+                    AddButtonLabeled(20, y, GetButtonID(7, 4), "Properties");
+                    AddButtonLabeled(200, y, GetButtonID(7, 5), "Skills");
+                    y += 20;
+
+                    AddButtonLabeled(20, y, GetButtonID(7, 6), "Mortal");
+                    AddButtonLabeled(200, y, GetButtonID(7, 7), "Immortal");
+                    y += 20;
+
+                    AddButtonLabeled(20, y, GetButtonID(7, 8), "Squelch");
+                    AddButtonLabeled(200, y, GetButtonID(7, 9), "Unsquelch");
+                    y += 20;
+
+                    /*AddButtonLabeled(  20, y, GetButtonID( 7, 10 ), "Hide" );
+                    AddButtonLabeled( 200, y, GetButtonID( 7, 11 ), "Unhide" );
+                    y += 20;*/
+
+                    AddButtonLabeled(20, y, GetButtonID(7, 12), "Kill");
+                    AddButtonLabeled(200, y, GetButtonID(7, 13), "Resurrect");
+
+                    break;
+                }
+            case AdminGumpPage.Accounts_Shared:
+                {
+                    m_List ??= GetAllSharedAccounts();
+
+                    AddLabelCropped(12, 120, 60, 20, LabelHue, "Count");
+                    AddLabelCropped(72, 120, 120, 20, LabelHue, "Address");
+                    AddLabelCropped(192, 120, 180, 20, LabelHue, "Accounts");
+
+                    if (listPage > 0)
+                    {
+                        AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
+                    }
+                    else
+                    {
+                        AddImage(375, 122, 0x25EA);
+                    }
+
+                    if ((listPage + 1) * 12 < m_List.Count)
+                    {
+                        AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
+                    }
+                    else
+                    {
+                        AddImage(392, 122, 0x25E6);
+                    }
+
+                    if (m_List.Count == 0)
+                    {
+                        AddLabel(12, 140, LabelHue, "There are no accounts to display.");
+                    }
+
+                    using var sb = ValueStringBuilder.Create();
+
+                    for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
+                    {
+                        var (ipAddr, accts) = (KeyValuePair<IPAddress, List<Account>>)m_List[index];
+
+                        var offset = 140 + i * 20;
+
+                        AddLabelCropped(12, offset, 60, 20, LabelHue, accts.Count.ToString());
+                        AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToString());
+
+                        sb.Reset();
+
+                        for (var j = 0; j < accts.Count; ++j)
+                        {
+                            if (j > 0)
+                            {
+                                sb.Append(", ");
+                            }
+
+                            if (j < 4)
+                            {
+                                var acct = accts[j];
+
+                                sb.Append(acct.Username);
+                            }
+                            else
+                            {
+                                sb.Append("...");
+                                break;
+                            }
+                        }
+
+                        AddLabelCropped(192, offset, 180, 20, LabelHue, sb.ToString());
+
+                        AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
+                    }
+
+                    break;
+                }
+            case AdminGumpPage.Accounts:
+                {
+                    m_List ??= new List<object>();
+
+                    var rads = state as List<Account>;
+
+                    AddAccountHeader();
+
+                    if (rads == null)
+                    {
+                        AddLabelCropped(12, 120, 120, 20, LabelHue, "Name");
+                    }
+                    else
+                    {
+                        AddLabelCropped(32, 120, 100, 20, LabelHue, "Name");
+                    }
+
+                    AddLabelCropped(132, 120, 120, 20, LabelHue, "Access Level");
+                    AddLabelCropped(252, 120, 120, 20, LabelHue, "Status");
+
+                    if (listPage > 0)
+                    {
+                        AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
+                    }
+                    else
+                    {
+                        AddImage(375, 122, 0x25EA);
+                    }
+
+                    if ((listPage + 1) * 12 < m_List.Count)
+                    {
+                        AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
+                    }
+                    else
+                    {
+                        AddImage(392, 122, 0x25E6);
+                    }
+
+                    if (m_List.Count == 0)
+                    {
+                        AddLabel(12, 140, LabelHue, "There are no accounts to display.");
+                    }
+
+                    if (rads != null && notice == null)
+                    {
+                        AddButtonLabeled(10, 390, GetButtonID(5, 27), "Ban marked");
+                        AddButtonLabeled(10, 410, GetButtonID(5, 28), "Delete marked");
+
+                        AddButtonLabeled(210, 390, GetButtonID(5, 29), "Mark all");
+                        AddButtonLabeled(210, 410, GetButtonID(5, 35), "Unmark house owners");
+                    }
+
+                    for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
+                    {
+                        if (m_List[index] is not Account a)
+                        {
+                            continue;
+                        }
+
+                        var offset = 140 + i * 20;
+
+                        GetAccountInfo(a, out var accessLevel, out var online);
+
+                        if (rads == null)
+                        {
+                            AddLabelCropped(12, offset, 120, 20, LabelHue, a.Username);
+                        }
+                        else
+                        {
+                            AddCheck(10, offset, 0xD2, 0xD3, rads.Contains(a), index);
+                            AddLabelCropped(32, offset, 100, 20, LabelHue, a.Username);
+                        }
+
+                        AddLabelCropped(132, offset, 120, 20, LabelHue, FormatAccessLevel(accessLevel));
+
+                        if (online)
+                        {
+                            AddLabelCropped(252, offset, 120, 20, GreenHue, "Online");
+                        }
+                        else if (a.Banned)
+                        {
+                            AddLabelCropped(252, offset, 120, 20, RedHue, "Banned");
+                        }
+                        else
+                        {
+                            AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
+                        }
+
+                        AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
+                    }
+
+                    break;
+                }
+            case AdminGumpPage.AccountDetails:
+                {
+                    AddPageButton(
+                        190,
+                        10,
+                        GetButtonID(5, 0),
+                        "Information",
+                        AdminGumpPage.AccountDetails_Information,
+                        AdminGumpPage.AccountDetails_ChangeAccess,
+                        AdminGumpPage.AccountDetails_ChangePassword
+                    );
+                    AddPageButton(190, 30, GetButtonID(5, 1), "Characters", AdminGumpPage.AccountDetails_Characters);
+                    AddPageButton(
+                        190,
+                        50,
+                        GetButtonID(5, 13),
+                        "Access",
+                        AdminGumpPage.AccountDetails_Access,
+                        AdminGumpPage.AccountDetails_Access_ClientIPs
+                    );
+                    AddPageButton(190, 70, GetButtonID(5, 2), "Comments", AdminGumpPage.AccountDetails_Comments);
+                    AddPageButton(190, 90, GetButtonID(5, 3), "Tags", AdminGumpPage.AccountDetails_Tags);
+                    break;
+                }
+            case AdminGumpPage.AccountDetails_ChangePassword:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    AddHtml(10, 125, 400, 20, "Change Password".Center(LabelColor32));
+
+                    AddLabel(20, 150, LabelHue, "Username:");
+                    AddLabel(200, 150, LabelHue, a.Username);
+
+                    AddLabel(20, 180, LabelHue, "Password:");
+                    AddTextField(200, 180, 160, 20, 0);
+
+                    AddLabel(20, 210, LabelHue, "Confirm:");
+                    AddTextField(200, 210, 160, 20, 1);
+
+                    AddButtonLabeled(20, 240, GetButtonID(5, 12), "Submit Change");
+
+                    goto case AdminGumpPage.AccountDetails;
+                }
+            case AdminGumpPage.AccountDetails_ChangeAccess:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    AddHtml(10, 125, 400, 20, "Change Access Level".Center(LabelColor32));
+
+                    AddLabel(20, 150, LabelHue, "Username:");
+                    AddLabel(200, 150, LabelHue, a.Username);
+
+                    AddLabel(20, 170, LabelHue, "Current Level:");
+                    AddLabel(200, 170, LabelHue, FormatAccessLevel(a.AccessLevel));
+
+                    AddButtonLabeled(20, 200, GetButtonID(5, 20), "Player");
+                    AddButtonLabeled(20, 220, GetButtonID(5, 21), "Counselor");
+                    AddButtonLabeled(20, 240, GetButtonID(5, 22), "Game Master");
+                    AddButtonLabeled(20, 260, GetButtonID(5, 23), "Seer");
+
+                    if (from.AccessLevel > AccessLevel.Administrator)
+                    {
+                        AddButtonLabeled(20, 280, GetButtonID(5, 24), "Administrator");
+
+                        if (from.AccessLevel > AccessLevel.Developer)
+                        {
+                            AddButtonLabeled(20, 300, GetButtonID(5, 33), "Developer");
+
+                            if (from.AccessLevel >= AccessLevel.Owner)
+                            {
+                                AddButtonLabeled(20, 320, GetButtonID(5, 34), "Owner");
+                            }
+                        }
+                    }
+
+                    goto case AdminGumpPage.AccountDetails;
+                }
+            case AdminGumpPage.AccountDetails_Information:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    var charCount = 0;
+
+                    for (var i = 0; i < a.Length; ++i)
+                    {
+                        if (a[i] != null)
+                        {
+                            ++charCount;
+                        }
+                    }
+
+                    AddHtml(10, 125, 400, 20, "Information".Center(LabelColor32));
+
+                    AddLabel(20, 150, LabelHue, "Username:");
+                    AddLabel(200, 150, LabelHue, a.Username);
+
+                    AddLabel(20, 170, LabelHue, "Access Level:");
+                    AddLabel(200, 170, LabelHue, FormatAccessLevel(a.AccessLevel));
+
+                    AddLabel(20, 190, LabelHue, "Status:");
+                    AddLabel(200, 190, a.Banned ? RedHue : GreenHue, a.Banned ? "Banned" : "Active");
+
+                    if (a.Banned && a.GetBanTags(out var banTime, out var banDuration))
+                    {
+                        if (banDuration == TimeSpan.MaxValue)
+                        {
+                            AddLabel(250, 190, LabelHue, "(Infinite)");
+                        }
+                        else if (banDuration == TimeSpan.Zero)
+                        {
+                            AddLabel(250, 190, LabelHue, "(Zero)");
+                        }
+                        else
+                        {
+                            var remaining = (Core.Now - banTime).Clamp(TimeSpan.Zero, banDuration);
+                            var remMinutes = remaining.TotalMinutes;
+                            var totMinutes = banDuration.TotalMinutes;
+
+                            var perc = remMinutes / totMinutes;
+
+                            AddLabel(250, 190, LabelHue, $"{FormatTimeSpan(banDuration)} [{perc * 100:F0}%]");
+                        }
+                    }
+                    else if (a.Banned)
+                    {
+                        AddLabel(250, 190, LabelHue, "(Unspecified)");
+                    }
+
+                    AddLabel(20, 210, LabelHue, "Created:");
+                    AddLabel(200, 210, LabelHue, a.Created.ToString());
+
+                    AddLabel(20, 230, LabelHue, "Last Login:");
+                    AddLabel(200, 230, LabelHue, a.LastLogin.ToString());
+
+                    AddLabel(20, 250, LabelHue, "Character Count:");
+                    AddLabel(200, 250, LabelHue, charCount.ToString());
+
+                    AddLabel(20, 270, LabelHue, "Comment Count:");
+                    AddLabel(200, 270, LabelHue, a.Comments.Count.ToString());
+
+                    AddLabel(20, 290, LabelHue, "Tag Count:");
+                    AddLabel(200, 290, LabelHue, a.Tags.Count.ToString());
+
+                    AddButtonLabeled(20, 320, GetButtonID(5, 8), "Change Password");
+                    AddButtonLabeled(200, 320, GetButtonID(5, 9), "Change Access Level");
+
+                    if (!a.Banned)
+                    {
+                        AddButtonLabeled(20, 350, GetButtonID(5, 10), "Ban Account");
+                    }
+                    else
+                    {
+                        AddButtonLabeled(20, 350, GetButtonID(5, 11), "Unban Account");
+                    }
+
+                    AddButtonLabeled(200, 350, GetButtonID(5, 25), "Delete Account");
+
+                    goto case AdminGumpPage.AccountDetails;
+                }
+            case AdminGumpPage.AccountDetails_Access:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    AddHtml(10, 125, 400, 20, "Access".Center(LabelColor32));
+
+                    AddPageButton(
+                        20,
+                        150,
+                        GetButtonID(5, 14),
+                        "View client addresses",
+                        AdminGumpPage.AccountDetails_Access_ClientIPs
+                    );
+
+                    goto case AdminGumpPage.AccountDetails;
+                }
+            case AdminGumpPage.AccountDetails_Access_ClientIPs:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    m_List ??= a.LoginIPs.ToList<object>();
+
+                    AddHtml(10, 195, 400, 20, "Client Addresses".Center(LabelColor32));
+
+                    AddButtonLabeled(227, 225, GetButtonID(5, 16), "View all shared accounts");
+                    AddButtonLabeled(227, 245, GetButtonID(5, 17), "Ban all shared accounts");
+                    AddButtonLabeled(227, 265, GetButtonID(5, 18), "Firewall all addresses");
+                    AddButtonLabeled(227, 285, GetButtonID(5, 36), "Clear all addresses");
+
+                    AddHtml(
+                        225,
+                        315,
+                        180,
+                        80,
+                        "List of IP addresses which have accessed this account.".Color(LabelColor32)
+                    );
+
+                    AddImageTiled(15, 219, 206, 156, 0xBBC);
+                    AddBlackAlpha(16, 220, 204, 154);
+
+                    AddHtml(18, 221, 114, 20, "IP Address".Color(LabelColor32));
+
+                    if (listPage > 0)
+                    {
+                        AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0));
+                    }
+                    else
+                    {
+                        AddImage(184, 223, 0x25EA);
+                    }
+
+                    if ((listPage + 1) * 6 < m_List.Count)
+                    {
+                        AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1));
+                    }
+                    else
+                    {
+                        AddImage(201, 223, 0x25E6);
+                    }
+
+                    if (m_List.Count == 0)
+                    {
+                        AddHtml(18, 243, 200, 60, "This account has not yet been accessed.".Color(LabelColor32));
+                    }
+
+                    for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
+                    {
+                        AddHtml(18, 243 + i * 22, 114, 20, m_List[index].ToString().Color(LabelColor32));
+                        AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
+                        AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
+                        AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
+                    }
+
+                    goto case AdminGumpPage.AccountDetails_Access;
+                }
+            case AdminGumpPage.AccountDetails_Characters:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    AddHtml(10, 125, 400, 20, "Characters".Center(LabelColor32));
+
+                    AddLabelCropped(12, 150, 120, 20, LabelHue, "Name");
+                    AddLabelCropped(132, 150, 120, 20, LabelHue, "Access Level");
+                    AddLabelCropped(252, 150, 120, 20, LabelHue, "Status");
+
+                    var index = 0;
+
+                    for (var i = 0; i < a.Length; ++i)
+                    {
+                        var m = a[i];
+
+                        if (m == null)
+                        {
+                            continue;
+                        }
+
+                        var offset = 170 + index * 20;
+
+                        AddLabelCropped(12, offset, 120, 20, GetHueFor(m), m.Name);
+                        AddLabelCropped(132, offset, 120, 20, LabelHue, FormatAccessLevel(m.AccessLevel));
+
+                        if (m.NetState != null)
+                        {
+                            AddLabelCropped(252, offset, 120, 20, GreenHue, "Online");
+                        }
+                        else
+                        {
+                            AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
+                        }
+
+                        AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, i + 50));
+
+                        ++index;
+                    }
+
+                    if (index == 0)
+                    {
+                        AddLabel(12, 170, LabelHue, "The character list is empty.");
+                    }
+
+                    goto case AdminGumpPage.AccountDetails;
+                }
+            case AdminGumpPage.AccountDetails_Comments:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    AddHtml(10, 125, 400, 20, "Comments".Center(LabelColor32));
+
+                    AddButtonLabeled(20, 150, GetButtonID(5, 4), "Add Comment");
+
+                    var sb = ValueStringBuilder.Create();
+
+                    if (a.Comments.Count == 0)
+                    {
+                        sb.Append("There are no comments for this account.");
+                    }
+
+                    for (var i = 0; i < a.Comments.Count; ++i)
+                    {
+                        if (i > 0)
+                        {
+                            sb.Append("<BR><BR>");
+                        }
+
+                        var c = a.Comments[i];
+                        sb.Append('[');
+                        sb.Append(c.AddedBy);
+                        sb.Append(" on ");
+                        sb.Append(c.LastModified.ToString());
+                        sb.Append("]<BR>");
+                        sb.Append(c.Content);
+                    }
+
+                    AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
+
+                    sb.Dispose(); // Due to an analyzer bug, we can't use a using
+                    goto case AdminGumpPage.AccountDetails;
+                }
+            case AdminGumpPage.AccountDetails_Tags:
+                {
+                    if (state is not Account a)
+                    {
+                        break;
+                    }
+
+                    AddHtml(10, 125, 400, 20, "Tags".Center(LabelColor32));
+
+                    AddButtonLabeled(20, 150, GetButtonID(5, 5), "Add Tag");
+
+                    var sb = ValueStringBuilder.Create();
+
+                    if (a.Tags.Count == 0)
+                    {
+                        sb.Append("There are no tags for this account.");
+                    }
+
+                    for (var i = 0; i < a.Tags.Count; ++i)
+                    {
+                        if (i > 0)
+                        {
+                            sb.Append("<BR>");
+                        }
+
+                        var tag = a.Tags[i];
+
+                        sb.Append(tag.Name);
+                        sb.Append(" = ");
+                        sb.Append(tag.Value);
+                    }
+
+                    AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
+
+                    sb.Dispose();
+                    goto case AdminGumpPage.AccountDetails;
+                }
+            case AdminGumpPage.Firewall:
+                {
+                    AddFirewallHeader();
+
+                    m_List ??= AdminFirewall.Set.ToList<object>();
+
+                    AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
+
+                    if (listPage > 0)
+                    {
+                        AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
+                    }
+                    else
+                    {
+                        AddImage(375, 122, 0x25EA);
+                    }
+
+                    if ((listPage + 1) * 12 < m_List.Count)
+                    {
+                        AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
+                    }
+                    else
+                    {
+                        AddImage(392, 122, 0x25E6);
+                    }
+
+                    if (m_List.Count == 0)
+                    {
+                        AddLabel(12, 140, LabelHue, "The firewall list is empty.");
+                    }
+                    else
+                    {
+                        var i = 0;
+                        var index = listPage * 12;
+                        foreach (var firewallEntry in m_List)
+                        {
+                            if (i >= 12)
+                            {
+                                break;
+                            }
+
+                            var offset = 140 + i++ * 20;
+
+                            AddLabelCropped(12, offset, 358, 20, LabelHue, firewallEntry.ToString());
+                            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(6, index++ + 4));
+                        }
+                    }
+
+                    break;
+                }
+            case AdminGumpPage.FirewallInfo:
+                {
+                    AddFirewallHeader();
+
+                    if (state is not IFirewallEntry firewallEntry)
+                    {
+                        break;
+                    }
+
+                    AddHtml(10, 125, 400, 20, firewallEntry.ToString().Center(LabelColor32));
+
+                    AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
+
+                    AddHtml(10, 175, 400, 20, "Potentially Affected Accounts".Center(LabelColor32));
+
+                    if (m_List == null)
+                    {
+                        using var blockedEntriesList = PooledRefList<Account>.Create();
+
+                        foreach (var ia in Accounts.GetAccounts())
+                        {
+                            var acct = (Account)ia;
+
+                            var loginList = acct.LoginIPs;
+
+                            for (var i = 0; i < loginList.Length; ++i)
+                            {
+                                if (firewallEntry.IsBlocked(loginList[i]))
+                                {
+                                    blockedEntriesList.Add(acct);
+                                    break;
+                                }
+                            }
+                        }
+
+                        blockedEntriesList.Sort(AccountComparer.Instance);
+
+                        m_List = blockedEntriesList.ToList<Account, object>();
+                    }
+
+                    if (listPage > 0)
+                    {
+                        AddButton(375, 177, 0x15E3, 0x15E7, GetButtonID(1, 0));
+                    }
+                    else
+                    {
+                        AddImage(375, 177, 0x25EA);
+                    }
+
+                    if ((listPage + 1) * 12 < m_List.Count)
+                    {
+                        AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1));
+                    }
+                    else
+                    {
+                        AddImage(392, 177, 0x25E6);
+                    }
+
+                    if (m_List.Count == 0)
+                    {
+                        AddLabelCropped(12, 200, 398, 20, LabelHue, "No accounts found.");
+                    }
+
+                    for (int i = 0, index = listPage * 9;
+                         i < 9 && index >= 0 && index < m_List.Count;
+                         ++i, ++index)
+                    {
+                        if (m_List[index] is not Account a)
+                        {
+                            continue;
+                        }
+
+                        var offset = 200 + i * 20;
+
+                        GetAccountInfo(a, out var accessLevel, out var online);
+
+                        AddLabelCropped(12, offset, 120, 20, LabelHue, a.Username);
+                        AddLabelCropped(132, offset, 120, 20, LabelHue, FormatAccessLevel(accessLevel));
+
+                        if (online)
+                        {
+                            AddLabelCropped(252, offset, 120, 20, GreenHue, "Online");
+                        }
+                        else if (a.Banned)
+                        {
+                            AddLabelCropped(252, offset, 120, 20, RedHue, "Banned");
+                        }
+                        else
+                        {
+                            AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
+                        }
+
+                        AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    public void AddPageButton(
+        int x, int y, int buttonID, string text, AdminGumpPage page,
+        params AdminGumpPage[] subPages
+    )
+    {
+        var isSelection = m_PageType == page;
+
+        for (var i = 0; !isSelection && i < subPages.Length; ++i)
+        {
+            isSelection = m_PageType == subPages[i];
+        }
+
+        AddSelectedButton(x, y, buttonID, text, isSelection);
+    }
+
+    public void AddSelectedButton(int x, int y, int buttonID, string text, bool isSelection)
+    {
+        AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID);
+        AddHtml(x + 35, y, 200, 20, text.Color(isSelection ? SelectedColor32 : LabelColor32));
+    }
+
+    public void AddButtonLabeled(int x, int y, int buttonID, string text)
+    {
+        AddButton(x, y - 1, 4005, 4007, buttonID);
+        AddHtml(x + 35, y, 240, 20, text.Color(LabelColor32));
+    }
+
+    public void AddBlackAlpha(int x, int y, int width, int height)
+    {
+        AddImageTiled(x, y, width, height, 2624);
+        AddAlphaRegion(x, y, width, height);
+    }
+
+    public int GetButtonID(int type, int index) => 1 + index * 11 + type;
+
+    public static string FormatTimeSpan(TimeSpan ts) =>
+        $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
+
+    public static string FormatByteAmount(long totalBytes)
+    {
+        return totalBytes switch
+        {
+            > 1000000000 => $"{(double)totalBytes / 1073741824:F1} GB",
+            > 1000000    => $"{(double)totalBytes / 1048576:F1} MB",
+            > 1000       => $"{(double)totalBytes / 1024:F1} KB",
+            _            => $"{totalBytes} Bytes"
+        };
+    }
+
+    public static void Configure()
+    {
+        CommandSystem.Register("Admin", AccessLevel.Administrator, Admin_OnCommand);
+    }
+
+    [Usage("Admin"), Description(
+         "Opens an interface providing server information and administration features including client, account, and firewall management."
+     )]
+    public static void Admin_OnCommand(CommandEventArgs e)
+    {
+        e.Mobile.SendGump(new AdminGump(e.Mobile, AdminGumpPage.Clients));
+    }
+
+    public static int GetHueFor(Mobile m)
+    {
+        if (m == null)
+        {
+            return LabelHue;
+        }
+
+        switch (m.AccessLevel)
+        {
+            case AccessLevel.Owner:
+            case AccessLevel.Developer:
+            case AccessLevel.Administrator:
+                {
+                    return 0x516;
+                }
+            case AccessLevel.Seer:
+                {
+                    return 0x144;
+                }
+            case AccessLevel.GameMaster:
+                {
+                    return 0x21;
+                }
+            case AccessLevel.Counselor:
+                {
+                    return 0x2;
+                }
+            default:
+                {
+                    if (m.Kills >= 5)
+                    {
+                        return 0x21;
+                    }
+
+                    return m.Criminal ? 0x3B1 : 0x58;
+                }
+        }
+    }
+
+    public static string FormatAccessLevel(AccessLevel level)
+    {
+        var v = (int)level;
+
+        if (v >= 0 && v < m_AccessLevelStrings.Length)
+        {
+            return m_AccessLevelStrings[v];
+        }
+
+        return "Unknown";
+    }
+
+    public void AddTextField(int x, int y, int width, int height, int index)
+    {
+        AddBackground(x - 2, y - 2, width + 4, height + 4, 0x2486);
+        AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
+    }
+
+    public void AddClientHeader()
+    {
+        AddTextField(200, 20, 200, 20, 0);
+        AddButtonLabeled(200, 50, GetButtonID(4, 0), "Search For Name");
+        AddButtonLabeled(200, 80, GetButtonID(4, 1), "Search For IP Address");
+    }
+
+    public void AddAccountHeader()
+    {
+        AddPage(1);
+
+        AddLabel(200, 20, LabelHue, "Name:");
+        AddTextField(250, 20, 150, 20, 0);
+
+        AddLabel(200, 50, LabelHue, "Pass:");
+        AddTextField(250, 50, 150, 20, 1);
+
+        AddButtonLabeled(200, 80, GetButtonID(5, 6), "Add");
+        AddButtonLabeled(290, 80, GetButtonID(5, 7), "Search");
+
+        AddButton(384, 84, 0x15E1, 0x15E5, 0, GumpButtonType.Page, 2);
+
+        AddPage(2);
+
+        AddButtonLabeled(200, 20, GetButtonID(5, 31), "View All: Inactive");
+        AddButtonLabeled(200, 40, GetButtonID(5, 32), "View All: Banned");
+        AddButtonLabeled(200, 60, GetButtonID(5, 26), "View All: Shared");
+        AddButtonLabeled(200, 80, GetButtonID(5, 30), "View All: Empty");
+
+        AddButton(384, 84, 0x15E1, 0x15E5, 0, GumpButtonType.Page, 1);
+
+        AddPage(0);
+    }
+
+    public void AddFirewallHeader()
+    {
+        AddTextField(200, 20, 200, 20, 0);
+        AddButtonLabeled(320, 50, GetButtonID(6, 0), "Search");
+        AddButtonLabeled(200, 50, GetButtonID(6, 1), "Add (Input)");
+        AddButtonLabeled(200, 80, GetButtonID(6, 2), "Add (Target)");
+    }
+
+    private static List<object> GetAllSharedAccounts()
+    {
+        var table = new Dictionary<IPAddress, List<Account>>();
+
+        foreach (Account acct in Accounts.GetAccounts())
+        {
+            var theirAddresses = acct.LoginIPs;
+
+            for (var i = 0; i < theirAddresses.Length; ++i)
+            {
+                var theirAddress = theirAddresses[i];
+
+                // This path is heavy for larger shards, so use optimized code
+                ref var accts = ref CollectionsMarshal.GetValueRefOrAddDefault(table, theirAddress, out var acctExists);
+
+                // If we don't have a list, create one
+                if (!acctExists)
+                {
+                    accts = new List<Account>();
                 }
 
-                from.SendGump(
-                    new AdminNoticeGump(
-                        $"You have {(ban ? "banned" : "deleted")} the account{(rads.Count == 1 ? "" : "s")}.",
-                        () => ResendGump_Callback(from, list, rads, ban ? page : 0)
-                    )
-                );
+                accts.Add(acct);
+            }
+        }
+
+        var list = new List<object>();
+
+        // Lets find all the entries that have only one account
+        foreach (var kvp in table)
+        {
+            if (kvp.Value.Count > 1)
+            {
+                // Sort the accounts alphabetically
+                kvp.Value.Sort(AccountComparer.Instance);
+
+                // Can't avoid boxing because `m_List` in AdminGump is expecting List<object>
+                list.Add(kvp);
+            }
+        }
+
+        // Sort by highest accounts per IP first
+        list.Sort(SharedAccountDescendingComparer.Instance);
+
+        return list;
+    }
+
+    private static List<Account> GetSharedAccounts(IPAddress ipAddress)
+    {
+        var list = new List<Account>();
+
+        foreach (var account in Accounts.GetAccounts())
+        {
+            var acct = (Account)account;
+
+            var theirAddresses = acct.LoginIPs;
+            var contains = false;
+
+            for (var i = 0; !contains && i < theirAddresses.Length; ++i)
+            {
+                contains = ipAddress.Equals(theirAddresses[i]);
+            }
+
+            if (contains)
+            {
+                list.Add(acct);
+            }
+        }
+
+        list.Sort(AccountComparer.Instance);
+        return list;
+    }
+
+    private static List<Account> GetSharedAccounts(IPAddress[] ipAddresses)
+    {
+        var list = new List<Account>();
+
+        foreach (Account acct in Accounts.GetAccounts())
+        {
+            var theirAddresses = acct.LoginIPs;
+            var contains = false;
+
+            for (var i = 0; !contains && i < theirAddresses.Length; ++i)
+            {
+                var check = theirAddresses[i];
+
+                for (var j = 0; !contains && j < ipAddresses.Length; ++j)
+                {
+                    contains = check.Equals(ipAddresses[j]);
+                }
+            }
+
+            if (contains)
+            {
+                list.Add(acct);
+            }
+        }
+
+        list.Sort(AccountComparer.Instance);
+        return list;
+    }
+
+    public static void BanShared_Callback(Mobile from, bool okay, Account a)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        string notice;
+        List<Account> list = null;
+
+        if (okay)
+        {
+            list = GetSharedAccounts(a.LoginIPs);
+
+            for (var i = 0; i < list.Count; ++i)
+            {
+                list[i].SetUnspecifiedBan(from);
+                list[i].Banned = true;
+            }
+
+            notice = "All addresses in the list have been banned.";
+        }
+        else
+        {
+            notice = "You have chosen not to ban all shared accounts.";
+        }
+
+        from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
+
+        if (okay)
+        {
+            from.SendGump(new BanDurationGump(list));
+        }
+    }
+
+    public static void AccountDelete_Callback(Mobile from, bool okay, Account a)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        if (okay)
+        {
+            CommandLogging.WriteLine(
+                from,
+                $"{from.AccessLevel} {CommandLogging.Format(from)} deleting account {a.Username}"
+            );
+            a.Delete();
+
+            from.SendGump(
+                new AdminGump(
+                    from,
+                    AdminGumpPage.Accounts,
+                    0,
+                    null,
+                    $"{a.Username} : The account has been deleted."
+                )
+            );
+        }
+        else
+        {
+            from.SendGump(
+                new AdminGump(
+                    from,
+                    AdminGumpPage.AccountDetails_Information,
+                    0,
+                    null,
+                    "You have chosen not to delete the account.",
+                    a
+                )
+            );
+        }
+    }
+
+    public static void ResendGump_Callback(Mobile from, List<object> list, List<Account> rads, int page)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, page, list, null, rads));
+    }
+
+    public static void Marked_Callback(Mobile from, bool okay, bool ban, List<object> list, List<Account> rads, int page)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        if (okay)
+        {
+            if (!ban)
+            {
+                NetState.FlushAll();
+            }
+
+            for (var i = 0; i < rads.Count; ++i)
+            {
+                var acct = rads[i];
 
                 if (ban)
                 {
-                    from.SendGump(new BanDurationGump(rads));
+                    CommandLogging.WriteLine(
+                        from,
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} banning account {acct.Username}"
+                    );
+                    acct.SetUnspecifiedBan(from);
+                    acct.Banned = true;
+                }
+                else
+                {
+                    CommandLogging.WriteLine(
+                        from,
+                        $"{from.AccessLevel} {CommandLogging.Format(from)} deleting account {acct.Username}"
+                    );
+                    acct.Delete();
+                    rads.RemoveAt(i--);
+                    list.Remove(acct);
                 }
             }
-            else
+
+            from.SendGump(
+                new AdminNoticeGump(
+                    $"You have {(ban ? "banned" : "deleted")} the account{(rads.Count == 1 ? "" : "s")}.",
+                    () => ResendGump_Callback(from, list, rads, ban ? page : 0)
+                )
+            );
+
+            if (ban)
             {
-                from.SendGump(
-                    new AdminNoticeGump(
-                        $"You have chosen not to {(ban ? "ban" : "delete")} the account{(rads.Count == 1 ? "" : "s")}.",
-                        () => ResendGump_Callback(from, list, rads, page)
-                    )
-                );
+                from.SendGump(new BanDurationGump(rads));
             }
         }
-
-        public static void FirewallShared_Callback(Mobile from, bool okay, Account a)
+        else
         {
-            if (from.AccessLevel < AccessLevel.Administrator)
+            from.SendGump(
+                new AdminNoticeGump(
+                    $"You have chosen not to {(ban ? "ban" : "delete")} the account{(rads.Count == 1 ? "" : "s")}.",
+                    () => ResendGump_Callback(from, list, rads, page)
+                )
+            );
+        }
+    }
+
+    public static void FirewallShared_Callback(Mobile from, bool okay, Account a)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        string notice;
+
+        if (okay)
+        {
+            for (var i = 0; i < a.LoginIPs.Length; ++i)
             {
-                return;
+                AdminFirewall.Add(a.LoginIPs[i]);
             }
 
-            string notice;
+            notice = "All addresses in the list have been firewalled.";
+        }
+        else
+        {
+            notice = "You have chosen not to firewall all addresses.";
+        }
 
-            if (okay)
+        from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
+    }
+
+    public static void Firewall_Callback(Mobile from, bool okay, Account a, object toFirewall)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        string notice;
+
+        if (okay)
+        {
+            AdminFirewall.Add(toFirewall);
+
+            notice = $"{toFirewall} : Added to firewall.";
+        }
+        else
+        {
+            notice = "You have chosen not to firewall the address.";
+        }
+
+        from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
+    }
+
+    public static void RemoveLoginIP_Callback(Mobile from, bool okay, Account a, IPAddress ip)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        string notice;
+
+        if (okay)
+        {
+            var ips = a.LoginIPs;
+
+            if (ips.Length != 0 && Equals(ip, ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
             {
-                for (var i = 0; i < a.LoginIPs.Length; ++i)
+                --AccountHandler.IPTable[ip];
+            }
+
+            var newList = new List<IPAddress>(ips);
+            newList.Remove(ip);
+            a.LoginIPs = newList.ToArray();
+
+            notice = $"{ip} : Removed address.";
+        }
+        else
+        {
+            notice = "You have chosen not to remove the address.";
+        }
+
+        from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
+    }
+
+    public static void RemoveLoginIPs_Callback(Mobile from, bool okay, Account a)
+    {
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        string notice;
+
+        if (okay)
+        {
+            var ips = a.LoginIPs;
+
+            if (ips.Length != 0 && AccountHandler.IPTable.ContainsKey(ips[0]))
+            {
+                --AccountHandler.IPTable[ips[0]];
+            }
+
+            a.LoginIPs = Array.Empty<IPAddress>();
+
+            notice = "All addresses in the list have been removed.";
+        }
+        else
+        {
+            notice = "You have chosen not to clear all addresses.";
+        }
+
+        from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
+    }
+
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        var val = info.ButtonID - 1;
+
+        if (val < 0)
+        {
+            return;
+        }
+
+        var from = m_From;
+
+        if (from.AccessLevel < AccessLevel.Administrator)
+        {
+            return;
+        }
+
+        if (m_PageType == AdminGumpPage.Accounts)
+        {
+            if (m_State is List<Account> rads)
+            {
+                for (int i = 0, v = m_ListPage * 12; i < 12 && v < m_List.Count; ++i, ++v)
                 {
-                    AdminFirewall.Add(a.LoginIPs[i]);
-                }
+                    var acct = (Account)m_List[v];
 
-                notice = "All addresses in the list have been firewalled.";
-            }
-            else
-            {
-                notice = "You have chosen not to firewall all addresses.";
-            }
-
-            from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
-        }
-
-        public static void Firewall_Callback(Mobile from, bool okay, Account a, object toFirewall)
-        {
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            string notice;
-
-            if (okay)
-            {
-                AdminFirewall.Add(toFirewall);
-
-                notice = $"{toFirewall} : Added to firewall.";
-            }
-            else
-            {
-                notice = "You have chosen not to firewall the address.";
-            }
-
-            from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
-        }
-
-        public static void RemoveLoginIP_Callback(Mobile from, bool okay, Account a, IPAddress ip)
-        {
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            string notice;
-
-            if (okay)
-            {
-                var ips = a.LoginIPs;
-
-                if (ips.Length != 0 && Equals(ip, ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
-                {
-                    --AccountHandler.IPTable[ip];
-                }
-
-                var newList = new List<IPAddress>(ips);
-                newList.Remove(ip);
-                a.LoginIPs = newList.ToArray();
-
-                notice = $"{ip} : Removed address.";
-            }
-            else
-            {
-                notice = "You have chosen not to remove the address.";
-            }
-
-            from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
-        }
-
-        public static void RemoveLoginIPs_Callback(Mobile from, bool okay, Account a)
-        {
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            string notice;
-
-            if (okay)
-            {
-                var ips = a.LoginIPs;
-
-                if (ips.Length != 0 && AccountHandler.IPTable.ContainsKey(ips[0]))
-                {
-                    --AccountHandler.IPTable[ips[0]];
-                }
-
-                a.LoginIPs = Array.Empty<IPAddress>();
-
-                notice = "All addresses in the list have been removed.";
-            }
-            else
-            {
-                notice = "You have chosen not to clear all addresses.";
-            }
-
-            from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
-        }
-
-        public override void OnResponse(NetState sender, in RelayInfo info)
-        {
-            var val = info.ButtonID - 1;
-
-            if (val < 0)
-            {
-                return;
-            }
-
-            var from = m_From;
-
-            if (from.AccessLevel < AccessLevel.Administrator)
-            {
-                return;
-            }
-
-            if (m_PageType == AdminGumpPage.Accounts)
-            {
-                if (m_State is List<Account> rads)
-                {
-                    for (int i = 0, v = m_ListPage * 12; i < 12 && v < m_List.Count; ++i, ++v)
+                    if (info.IsSwitched(v))
                     {
-                        var acct = (Account)m_List[v];
-
-                        if (info.IsSwitched(v))
+                        if (!rads.Contains(acct))
                         {
-                            if (!rads.Contains(acct))
+                            rads.Add(acct);
+                        }
+                    }
+                    else if (rads.Contains(acct))
+                    {
+                        rads.Remove(acct);
+                    }
+                }
+            }
+        }
+
+        var type = val % 11;
+        var index = val / 11;
+
+        switch (type)
+        {
+            case 0:
+                {
+                    AdminGumpPage page;
+
+                    switch (index)
+                    {
+                        case 0:
                             {
-                                rads.Add(acct);
+                                page = AdminGumpPage.Information_General;
+                                break;
                             }
-                        }
-                        else if (rads.Contains(acct))
-                        {
-                            rads.Remove(acct);
-                        }
+                        case 1:
+                            {
+                                page = AdminGumpPage.Administer;
+                                break;
+                            }
+                        case 2:
+                            {
+                                page = AdminGumpPage.Clients;
+                                break;
+                            }
+                        case 3:
+                            {
+                                page = AdminGumpPage.Accounts;
+                                break;
+                            }
+                        case 4:
+                            {
+                                page = AdminGumpPage.Firewall;
+                                break;
+                            }
+                        case 5:
+                            {
+                                page = AdminGumpPage.Information_Perf;
+                                break;
+                            }
+                        default:
+                            {
+                                return;
+                            }
                     }
+
+                    from.SendGump(new AdminGump(from, page));
+                    break;
                 }
-            }
-
-            var type = val % 11;
-            var index = val / 11;
-
-            switch (type)
-            {
-                case 0:
+            case 1:
+                {
+                    switch (index)
                     {
-                        AdminGumpPage page;
+                        case 0:
+                            {
+                                if (m_List != null && m_ListPage > 0)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(from, m_PageType, m_ListPage - 1, m_List, null, m_State)
+                                    );
+                                }
 
-                        switch (index)
-                        {
-                            case 0:
+                                break;
+                            }
+                        case 1:
+                            {
+                                if (m_List != null /*&& (m_ListPage + 1) * 12 < m_List.Count*/)
                                 {
-                                    page = AdminGumpPage.Information_General;
-                                    break;
+                                    from.SendGump(
+                                        new AdminGump(from, m_PageType, m_ListPage + 1, m_List, null, m_State)
+                                    );
                                 }
-                            case 1:
-                                {
-                                    page = AdminGumpPage.Administer;
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    page = AdminGumpPage.Clients;
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    page = AdminGumpPage.Accounts;
-                                    break;
-                                }
-                            case 4:
-                                {
-                                    page = AdminGumpPage.Firewall;
-                                    break;
-                                }
-                            case 5:
-                                {
-                                    page = AdminGumpPage.Information_Perf;
-                                    break;
-                                }
-                            default:
-                                {
-                                    return;
-                                }
-                        }
 
-                        from.SendGump(new AdminGump(from, page));
-                        break;
+                                break;
+                            }
                     }
-                case 1:
+
+                    break;
+                }
+            case 3:
+                {
+                    string notice = null;
+                    var page = AdminGumpPage.Administer;
+
+                    if (index >= 500)
                     {
-                        switch (index)
-                        {
-                            case 0:
-                                {
-                                    if (m_List != null && m_ListPage > 0)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(from, m_PageType, m_ListPage - 1, m_List, null, m_State)
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 1:
-                                {
-                                    if (m_List != null /*&& (m_ListPage + 1) * 12 < m_List.Count*/)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(from, m_PageType, m_ListPage + 1, m_List, null, m_State)
-                                        );
-                                    }
-
-                                    break;
-                                }
-                        }
-
-                        break;
+                        page = AdminGumpPage.Administer_Access_Lockdown;
                     }
-                case 3:
+                    else if (index >= 400)
                     {
-                        string notice = null;
-                        var page = AdminGumpPage.Administer;
+                        page = AdminGumpPage.Administer_Commands;
+                    }
+                    else if (index >= 300)
+                    {
+                        page = AdminGumpPage.Administer_Access;
+                    }
+                    else if (index >= 200)
+                    {
+                        page = AdminGumpPage.Administer_Server;
+                    }
+                    else if (index >= 100)
+                    {
+                        page = AdminGumpPage.Administer_WorldBuilding;
+                    }
 
-                        if (index >= 500)
-                        {
-                            page = AdminGumpPage.Administer_Access_Lockdown;
-                        }
-                        else if (index >= 400)
-                        {
-                            page = AdminGumpPage.Administer_Commands;
-                        }
-                        else if (index >= 300)
-                        {
-                            page = AdminGumpPage.Administer_Access;
-                        }
-                        else if (index >= 200)
-                        {
-                            page = AdminGumpPage.Administer_Server;
-                        }
-                        else if (index >= 100)
-                        {
-                            page = AdminGumpPage.Administer_WorldBuilding;
-                        }
+                    switch (index)
+                    {
+                        case 0:
+                            {
+                                page = AdminGumpPage.Administer_WorldBuilding;
+                                break;
+                            }
+                        case 1:
+                            {
+                                page = AdminGumpPage.Administer_Server;
+                                break;
+                            }
+                        case 2:
+                            {
+                                page = AdminGumpPage.Administer_Access;
+                                break;
+                            }
+                        case 3:
+                            {
+                                page = AdminGumpPage.Administer_Commands;
+                                break;
+                            }
 
-                        switch (index)
-                        {
-                            case 0:
+                        case 101:
+                            {
+                                InvokeCommand("TelGen");
+                                notice = "Teleporters have been generated.";
+                                break;
+                            }
+                        case 102:
+                            {
+                                InvokeCommand("MoonGen");
+                                notice = "Moongates have been generated.";
+                                break;
+                            }
+                        case 104:
+                            {
+                                InvokeCommand("DoorGen");
+                                notice = "Doors have been generated.";
+                                break;
+                            }
+                        case 103:
+                            {
+                                GenerateSpawners();
+                                notice = "Spawners have been generated.";
+                                break;
+                            }
+                        case 105:
+                            {
+                                InvokeCommand("SignGen");
+                                notice = "Signs have been generated.";
+                                break;
+                            }
+                        case 106:
+                            {
+                                InvokeCommand("Decorate");
+                                notice = "Decorations have been generated.";
+                                break;
+                            }
+                        case 107:
+                            {
+                                InvokeCommand("GenChamps");
+                                notice = "Champions have been generated.";
+                                break;
+                            }
+                        case 108:
+                            {
+                                InvokeCommand("DecorateMag");
+                                notice = "Magincia Ruins decorations have been generated.";
+                                break;
+                            }
+                        case 109:
+                            {
+                                InvokeCommand("GenStealArties");
+                                notice = "Stealable Artifacts have been generated.";
+                                break;
+                            }
+                        case 110:
+                            {
+                                InvokeCommand("SHTelGen");
+                                notice = "Solen Hive teleporters have been generated.";
+                                break;
+                            }
+                        case 111:
+                            {
+                                InvokeCommand("SecretLocGen");
+                                notice = "Secret Locations have been generated.";
+                                break;
+                            }
+                        case 112:
+                            {
+                                InvokeCommand("GenLeverPuzzle");
+                                InvokeCommand("GenGauntlet");
+                                notice = "Doom  has been generated.";
+                                break;
+                            }
+                        case 113:
+                            {
+                                InvokeCommand("GenKhaldun");
+                                notice = "Khaldun puzzles have been generated.";
+                                break;
+                            }
+
+                        case 114:
+                            {
+                                // 101
+                                InvokeCommand("TelGen");
+
+                                // 102
+                                InvokeCommand("MoonGen");
+
+                                // 103
+                                InvokeCommand("DoorGen");
+
+                                // 104
+                                GenerateSpawners();
+
+                                // 105
+                                InvokeCommand("SignGen");
+
+                                // 106
+                                InvokeCommand("Decorate");
+
+                                // 107
+                                InvokeCommand("GenChamps");
+
+                                // 108
+                                InvokeCommand("DecorateMag");
+
+                                // 109
+                                InvokeCommand("GenStealArties");
+
+                                // 110
+                                InvokeCommand("SHTelGen");
+
+                                // 111
+                                InvokeCommand("SecretLocGen");
+
+                                // 112
+                                InvokeCommand("GenLeverPuzzle");
+                                InvokeCommand("GenGauntlet");
+
+                                // 113
+                                InvokeCommand("GenKhaldun");
+
+                                notice = "All the above options have been generated at once.";
+                                break;
+                            }
+
+                        case 200:
+                            {
+                                InvokeCommand("Save");
+                                notice = "The world has been saved.";
+                                break;
+                            }
+                        case 201:
+                            {
+                                Shutdown(false, true);
+                                break;
+                            }
+                        case 202:
+                            {
+                                Shutdown(false, false);
+                                break;
+                            }
+                        case 203:
+                            {
+                                Shutdown(true, true);
+                                break;
+                            }
+                        case 204:
+                            {
+                                Shutdown(true, false);
+                                break;
+                            }
+                        case 210:
+                        case 211:
+                            {
+                                var text = info.GetTextEntry(0)?.Trim();
+
+                                if (string.IsNullOrEmpty(text))
                                 {
-                                    page = AdminGumpPage.Administer_WorldBuilding;
-                                    break;
+                                    notice = "You must enter text to broadcast it.";
                                 }
-                            case 1:
+                                else
                                 {
-                                    page = AdminGumpPage.Administer_Server;
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    page = AdminGumpPage.Administer_Access;
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    page = AdminGumpPage.Administer_Commands;
-                                    break;
+                                    notice = "Your message has been broadcasted.";
+                                    InvokeCommand($"{(index == 210 ? "BC" : "SM")} {text}");
                                 }
 
-                            case 101:
+                                break;
+                            }
+
+                        case 300:
+                            {
+                                InvokeCommand("Kick");
+                                notice = "Target the player to kick.";
+                                break;
+                            }
+                        case 301:
+                            {
+                                InvokeCommand("Ban");
+                                notice = "Target the player to ban.";
+                                break;
+                            }
+                        case 302:
+                            {
+                                InvokeCommand("Firewall");
+                                notice = "Target the player to firewall.";
+                                break;
+                            }
+
+                        case 303:
+                            {
+                                page = AdminGumpPage.Administer_Access_Lockdown;
+                                break;
+                            }
+
+                        case 310:
+                            {
+                                InvokeCommand("Set AccessLevel Player");
+                                notice = "Target the player to change their access level. (Player)";
+                                break;
+                            }
+                        case 311:
+                            {
+                                InvokeCommand("Set AccessLevel Counselor");
+                                notice = "Target the player to change their access level. (Counselor)";
+                                break;
+                            }
+                        case 312:
+                            {
+                                InvokeCommand("Set AccessLevel GameMaster");
+                                notice = "Target the player to change their access level. (Game Master)";
+                                break;
+                            }
+                        case 313:
+                            {
+                                InvokeCommand("Set AccessLevel Seer");
+                                notice = "Target the player to change their access level. (Seer)";
+                                break;
+                            }
+
+                        case 314:
+                            {
+                                if (from.AccessLevel > AccessLevel.Administrator)
                                 {
-                                    InvokeCommand("TelGen");
-                                    notice = "Teleporters have been generated.";
-                                    break;
-                                }
-                            case 102:
-                                {
-                                    InvokeCommand("MoonGen");
-                                    notice = "Moongates have been generated.";
-                                    break;
-                                }
-                            case 104:
-                                {
-                                    InvokeCommand("DoorGen");
-                                    notice = "Doors have been generated.";
-                                    break;
-                                }
-                            case 103:
-                                {
-                                    GenerateSpawners();
-                                    notice = "Spawners have been generated.";
-                                    break;
-                                }
-                            case 105:
-                                {
-                                    InvokeCommand("SignGen");
-                                    notice = "Signs have been generated.";
-                                    break;
-                                }
-                            case 106:
-                                {
-                                    InvokeCommand("Decorate");
-                                    notice = "Decorations have been generated.";
-                                    break;
-                                }
-                            case 107:
-                                {
-                                    InvokeCommand("GenChamps");
-                                    notice = "Champions have been generated.";
-                                    break;
-                                }
-                            case 108:
-                                {
-                                    InvokeCommand("DecorateMag");
-                                    notice = "Magincia Ruins decorations have been generated.";
-                                    break;
-                                }
-                            case 109:
-                                {
-                                    InvokeCommand("GenStealArties");
-                                    notice = "Stealable Artifacts have been generated.";
-                                    break;
-                                }
-                            case 110:
-                                {
-                                    InvokeCommand("SHTelGen");
-                                    notice = "Solen Hive teleporters have been generated.";
-                                    break;
-                                }
-                            case 111:
-                                {
-                                    InvokeCommand("SecretLocGen");
-                                    notice = "Secret Locations have been generated.";
-                                    break;
-                                }
-                            case 112:
-                                {
-                                    InvokeCommand("GenLeverPuzzle");
-                                    InvokeCommand("GenGauntlet");
-                                    notice = "Doom  has been generated.";
-                                    break;
-                                }
-                            case 113:
-                                {
-                                    InvokeCommand("GenKhaldun");
-                                    notice = "Khaldun puzzles have been generated.";
-                                    break;
+                                    InvokeCommand("Set AccessLevel Administrator");
+                                    notice = "Target the player to change their access level. (Administrator)";
                                 }
 
-                            case 114:
+                                break;
+                            }
+
+                        case 315:
+                            {
+                                if (from.AccessLevel > AccessLevel.Developer)
                                 {
-                                    // 101
-                                    InvokeCommand("TelGen");
-
-                                    // 102
-                                    InvokeCommand("MoonGen");
-
-                                    // 103
-                                    InvokeCommand("DoorGen");
-
-                                    // 104
-                                    GenerateSpawners();
-
-                                    // 105
-                                    InvokeCommand("SignGen");
-
-                                    // 106
-                                    InvokeCommand("Decorate");
-
-                                    // 107
-                                    InvokeCommand("GenChamps");
-
-                                    // 108
-                                    InvokeCommand("DecorateMag");
-
-                                    // 109
-                                    InvokeCommand("GenStealArties");
-
-                                    // 110
-                                    InvokeCommand("SHTelGen");
-
-                                    // 111
-                                    InvokeCommand("SecretLocGen");
-
-                                    // 112
-                                    InvokeCommand("GenLeverPuzzle");
-                                    InvokeCommand("GenGauntlet");
-
-                                    // 113
-                                    InvokeCommand("GenKhaldun");
-
-                                    notice = "All the above options have been generated at once.";
-                                    break;
+                                    InvokeCommand("Set AccessLevel Developer");
+                                    notice = "Target the player to change their access level. (Developer)";
                                 }
 
-                            case 200:
-                                {
-                                    InvokeCommand("Save");
-                                    notice = "The world has been saved.";
-                                    break;
-                                }
-                            case 201:
-                                {
-                                    Shutdown(false, true);
-                                    break;
-                                }
-                            case 202:
-                                {
-                                    Shutdown(false, false);
-                                    break;
-                                }
-                            case 203:
-                                {
-                                    Shutdown(true, true);
-                                    break;
-                                }
-                            case 204:
-                                {
-                                    Shutdown(true, false);
-                                    break;
-                                }
-                            case 210:
-                            case 211:
-                                {
-                                    var text = info.GetTextEntry(0)?.Trim();
+                                break;
+                            }
 
-                                    if (string.IsNullOrEmpty(text))
+                        case 316:
+                            {
+                                if (from.AccessLevel >= AccessLevel.Owner)
+                                {
+                                    InvokeCommand("Set AccessLevel Owner");
+                                    notice = "Target the player to change their access level. (Owner)";
+                                }
+
+                                break;
+                            }
+
+                        case 400:
+                            {
+                                notice = "Enter search terms to add objects.";
+                                break;
+                            }
+                        case 401:
+                            {
+                                InvokeCommand("Remove");
+                                notice = "Target the item or mobile to remove.";
+                                break;
+                            }
+                        case 402:
+                            {
+                                InvokeCommand("Dupe");
+                                notice = "Target the item to dupe.";
+                                break;
+                            }
+                        case 403:
+                            {
+                                InvokeCommand("DupeInBag");
+                                notice = "Target the item to dupe. The item will be duped at it's current location.";
+                                break;
+                            }
+                        case 404:
+                            {
+                                InvokeCommand("Props");
+                                notice = "Target the item or mobile to inspect.";
+                                break;
+                            }
+                        case 405:
+                            {
+                                InvokeCommand("Skills");
+                                notice = "Target a mobile to view their skills.";
+                                break;
+                            }
+                        case 406:
+                            {
+                                InvokeCommand("Set Blessed False");
+                                notice = "Target the mobile to make mortal.";
+                                break;
+                            }
+                        case 407:
+                            {
+                                InvokeCommand("Set Blessed True");
+                                notice = "Target the mobile to make immortal.";
+                                break;
+                            }
+                        case 408:
+                            {
+                                InvokeCommand("Set Squelched True");
+                                notice = "Target the mobile to squelch.";
+                                break;
+                            }
+                        case 409:
+                            {
+                                InvokeCommand("Set Squelched False");
+                                notice = "Target the mobile to unsquelch.";
+                                break;
+                            }
+                        case 410:
+                            {
+                                InvokeCommand("Set Frozen True");
+                                notice = "Target the mobile to freeze.";
+                                break;
+                            }
+                        case 411:
+                            {
+                                InvokeCommand("Set Frozen False");
+                                notice = "Target the mobile to unfreeze.";
+                                break;
+                            }
+                        case 412:
+                            {
+                                InvokeCommand("Set Hidden True");
+                                notice = "Target the mobile to hide.";
+                                break;
+                            }
+                        case 413:
+                            {
+                                InvokeCommand("Set Hidden False");
+                                notice = "Target the mobile to unhide.";
+                                break;
+                            }
+                        case 414:
+                            {
+                                InvokeCommand("Kill");
+                                notice = "Target the mobile to kill.";
+                                break;
+                            }
+                        case 415:
+                            {
+                                InvokeCommand("Resurrect");
+                                notice = "Target the mobile to resurrect.";
+                                break;
+                            }
+                        case 416:
+                            {
+                                InvokeCommand("Move");
+                                notice = "Target the item or mobile to move.";
+                                break;
+                            }
+                        case 417:
+                            {
+                                InvokeCommand("Wipe");
+                                notice = "Target bounding points.";
+                                break;
+                            }
+                        case 418:
+                            {
+                                InvokeCommand("Tele");
+                                notice = "Choose your destination.";
+                                break;
+                            }
+                        case 419:
+                            {
+                                InvokeCommand("Multi Tele");
+                                notice = "Choose your destination.";
+                                break;
+                            }
+
+                        case 500:
+                        case 501:
+                        case 502:
+                        case 503:
+                        case 504:
+                            {
+                                AccountHandler.LockdownLevel = (AccessLevel)(index - 500);
+
+                                if (AccountHandler.LockdownLevel > AccessLevel.Player)
+                                {
+                                    notice = "The lockdown level has been changed.";
+                                }
+                                else
+                                {
+                                    notice = "The server is now accessible to everyone.";
+                                }
+
+                                break;
+                            }
+
+                        case 510:
+                            {
+                                var level = AccountHandler.LockdownLevel;
+
+                                if (level > AccessLevel.Player)
+                                {
+                                    var count = 0;
+
+                                    foreach (var ns in NetState.Instances)
                                     {
-                                        notice = "You must enter text to broadcast it.";
-                                    }
-                                    else
-                                    {
-                                        notice = "Your message has been broadcasted.";
-                                        InvokeCommand($"{(index == 210 ? "BC" : "SM")} {text}");
-                                    }
+                                        var a = ns.Account;
 
-                                    break;
-                                }
-
-                            case 300:
-                                {
-                                    InvokeCommand("Kick");
-                                    notice = "Target the player to kick.";
-                                    break;
-                                }
-                            case 301:
-                                {
-                                    InvokeCommand("Ban");
-                                    notice = "Target the player to ban.";
-                                    break;
-                                }
-                            case 302:
-                                {
-                                    InvokeCommand("Firewall");
-                                    notice = "Target the player to firewall.";
-                                    break;
-                                }
-
-                            case 303:
-                                {
-                                    page = AdminGumpPage.Administer_Access_Lockdown;
-                                    break;
-                                }
-
-                            case 310:
-                                {
-                                    InvokeCommand("Set AccessLevel Player");
-                                    notice = "Target the player to change their access level. (Player)";
-                                    break;
-                                }
-                            case 311:
-                                {
-                                    InvokeCommand("Set AccessLevel Counselor");
-                                    notice = "Target the player to change their access level. (Counselor)";
-                                    break;
-                                }
-                            case 312:
-                                {
-                                    InvokeCommand("Set AccessLevel GameMaster");
-                                    notice = "Target the player to change their access level. (Game Master)";
-                                    break;
-                                }
-                            case 313:
-                                {
-                                    InvokeCommand("Set AccessLevel Seer");
-                                    notice = "Target the player to change their access level. (Seer)";
-                                    break;
-                                }
-
-                            case 314:
-                                {
-                                    if (from.AccessLevel > AccessLevel.Administrator)
-                                    {
-                                        InvokeCommand("Set AccessLevel Administrator");
-                                        notice = "Target the player to change their access level. (Administrator)";
-                                    }
-
-                                    break;
-                                }
-
-                            case 315:
-                                {
-                                    if (from.AccessLevel > AccessLevel.Developer)
-                                    {
-                                        InvokeCommand("Set AccessLevel Developer");
-                                        notice = "Target the player to change their access level. (Developer)";
-                                    }
-
-                                    break;
-                                }
-
-                            case 316:
-                                {
-                                    if (from.AccessLevel >= AccessLevel.Owner)
-                                    {
-                                        InvokeCommand("Set AccessLevel Owner");
-                                        notice = "Target the player to change their access level. (Owner)";
-                                    }
-
-                                    break;
-                                }
-
-                            case 400:
-                                {
-                                    notice = "Enter search terms to add objects.";
-                                    break;
-                                }
-                            case 401:
-                                {
-                                    InvokeCommand("Remove");
-                                    notice = "Target the item or mobile to remove.";
-                                    break;
-                                }
-                            case 402:
-                                {
-                                    InvokeCommand("Dupe");
-                                    notice = "Target the item to dupe.";
-                                    break;
-                                }
-                            case 403:
-                                {
-                                    InvokeCommand("DupeInBag");
-                                    notice = "Target the item to dupe. The item will be duped at it's current location.";
-                                    break;
-                                }
-                            case 404:
-                                {
-                                    InvokeCommand("Props");
-                                    notice = "Target the item or mobile to inspect.";
-                                    break;
-                                }
-                            case 405:
-                                {
-                                    InvokeCommand("Skills");
-                                    notice = "Target a mobile to view their skills.";
-                                    break;
-                                }
-                            case 406:
-                                {
-                                    InvokeCommand("Set Blessed False");
-                                    notice = "Target the mobile to make mortal.";
-                                    break;
-                                }
-                            case 407:
-                                {
-                                    InvokeCommand("Set Blessed True");
-                                    notice = "Target the mobile to make immortal.";
-                                    break;
-                                }
-                            case 408:
-                                {
-                                    InvokeCommand("Set Squelched True");
-                                    notice = "Target the mobile to squelch.";
-                                    break;
-                                }
-                            case 409:
-                                {
-                                    InvokeCommand("Set Squelched False");
-                                    notice = "Target the mobile to unsquelch.";
-                                    break;
-                                }
-                            case 410:
-                                {
-                                    InvokeCommand("Set Frozen True");
-                                    notice = "Target the mobile to freeze.";
-                                    break;
-                                }
-                            case 411:
-                                {
-                                    InvokeCommand("Set Frozen False");
-                                    notice = "Target the mobile to unfreeze.";
-                                    break;
-                                }
-                            case 412:
-                                {
-                                    InvokeCommand("Set Hidden True");
-                                    notice = "Target the mobile to hide.";
-                                    break;
-                                }
-                            case 413:
-                                {
-                                    InvokeCommand("Set Hidden False");
-                                    notice = "Target the mobile to unhide.";
-                                    break;
-                                }
-                            case 414:
-                                {
-                                    InvokeCommand("Kill");
-                                    notice = "Target the mobile to kill.";
-                                    break;
-                                }
-                            case 415:
-                                {
-                                    InvokeCommand("Resurrect");
-                                    notice = "Target the mobile to resurrect.";
-                                    break;
-                                }
-                            case 416:
-                                {
-                                    InvokeCommand("Move");
-                                    notice = "Target the item or mobile to move.";
-                                    break;
-                                }
-                            case 417:
-                                {
-                                    InvokeCommand("Wipe");
-                                    notice = "Target bounding points.";
-                                    break;
-                                }
-                            case 418:
-                                {
-                                    InvokeCommand("Tele");
-                                    notice = "Choose your destination.";
-                                    break;
-                                }
-                            case 419:
-                                {
-                                    InvokeCommand("Multi Tele");
-                                    notice = "Choose your destination.";
-                                    break;
-                                }
-
-                            case 500:
-                            case 501:
-                            case 502:
-                            case 503:
-                            case 504:
-                                {
-                                    AccountHandler.LockdownLevel = (AccessLevel)(index - 500);
-
-                                    if (AccountHandler.LockdownLevel > AccessLevel.Player)
-                                    {
-                                        notice = "The lockdown level has been changed.";
-                                    }
-                                    else
-                                    {
-                                        notice = "The server is now accessible to everyone.";
-                                    }
-
-                                    break;
-                                }
-
-                            case 510:
-                                {
-                                    var level = AccountHandler.LockdownLevel;
-
-                                    if (level > AccessLevel.Player)
-                                    {
-                                        var count = 0;
-
-                                        foreach (var ns in NetState.Instances)
+                                        if (a == null)
                                         {
-                                            var a = ns.Account;
+                                            continue;
+                                        }
 
-                                            if (a == null)
-                                            {
-                                                continue;
-                                            }
+                                        var hasAccess = false;
 
-                                            var hasAccess = false;
+                                        if (a.AccessLevel >= level)
+                                        {
+                                            hasAccess = true;
+                                        }
+                                        else
+                                        {
+                                            for (var j = 0; !hasAccess && j < a.Length; ++j)
+                                            {
+                                                var m = a[j];
 
-                                            if (a.AccessLevel >= level)
-                                            {
-                                                hasAccess = true;
-                                            }
-                                            else
-                                            {
-                                                for (var j = 0; !hasAccess && j < a.Length; ++j)
+                                                if (m?.AccessLevel >= level)
                                                 {
-                                                    var m = a[j];
-
-                                                    if (m?.AccessLevel >= level)
-                                                    {
-                                                        hasAccess = true;
-                                                    }
+                                                    hasAccess = true;
                                                 }
                                             }
-
-                                            if (!hasAccess)
-                                            {
-                                                ns.Disconnect("Server has been locked down.");
-                                                ++count;
-                                            }
                                         }
 
-                                        if (count == 0)
+                                        if (!hasAccess)
                                         {
-                                            notice = "Nobody without access was found to disconnect.";
+                                            ns.Disconnect("Server has been locked down.");
+                                            ++count;
                                         }
-                                        else
-                                        {
-                                            notice = $"Number of players disconnected: {count}";
-                                        }
+                                    }
+
+                                    if (count == 0)
+                                    {
+                                        notice = "Nobody without access was found to disconnect.";
                                     }
                                     else
                                     {
-                                        notice = "The server is not currently locked down.";
+                                        notice = $"Number of players disconnected: {count}";
                                     }
-
-                                    break;
                                 }
-                        }
-
-                        from.SendGump(new AdminGump(from, page, 0, null, notice));
-
-                        switch (index)
-                        {
-                            case 400:
+                                else
                                 {
-                                    InvokeCommand("Add");
-                                    break;
+                                    notice = "The server is not currently locked down.";
                                 }
-                        }
 
-                        break;
+                                break;
+                            }
                     }
-                case 4:
+
+                    from.SendGump(new AdminGump(from, page, 0, null, notice));
+
+                    switch (index)
                     {
-                        switch (index)
-                        {
-                            case 0:
-                            case 1:
+                        case 400:
+                            {
+                                InvokeCommand("Add");
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+            case 4:
+                {
+                    switch (index)
+                    {
+                        case 0:
+                        case 1:
+                            {
+                                var forName = index == 0;
+
+                                var results = new List<NetState>();
+
+                                var match = info.GetTextEntry(0)?.Trim().ToLower();
+                                string notice = null;
+
+                                if (string.IsNullOrEmpty(match))
                                 {
-                                    var forName = index == 0;
-
-                                    var results = new List<NetState>();
-
-                                    var match = info.GetTextEntry(0)?.Trim().ToLower();
-                                    string notice = null;
-
-                                    if (string.IsNullOrEmpty(match))
+                                    notice = $"You must enter {(forName ? "a name" : "an ip address")} to search.";
+                                }
+                                else
+                                {
+                                    foreach (var ns in NetState.Instances)
                                     {
-                                        notice = $"You must enter {(forName ? "a name" : "an ip address")} to search.";
-                                    }
-                                    else
-                                    {
-                                        foreach (var ns in NetState.Instances)
+                                        bool isMatch;
+
+                                        if (forName)
                                         {
-                                            bool isMatch;
+                                            var m = ns.Mobile;
+                                            var a = ns.Account;
 
-                                            if (forName)
-                                            {
-                                                var m = ns.Mobile;
-                                                var a = ns.Account;
-
-                                                isMatch = m?.Name.InsensitiveContains(match) == true
-                                                          || a?.Username.InsensitiveContains(match) == true;
-                                            }
-                                            else
-                                            {
-                                                isMatch = ns.ToString().ContainsOrdinal(match);
-                                            }
-
-                                            if (isMatch)
-                                            {
-                                                results.Add(ns);
-                                            }
-                                        }
-
-                                        results.Sort(NetStateComparer.Instance);
-                                    }
-
-                                    if (results.Count == 1)
-                                    {
-                                        var ns = results[0];
-                                        var state = ns.Mobile ?? (object)ns.Account;
-
-                                        if (state is Mobile)
-                                        {
-                                            from.SendGump(
-                                                new AdminGump(
-                                                    from,
-                                                    AdminGumpPage.ClientInfo,
-                                                    0,
-                                                    null,
-                                                    "One match found.",
-                                                    state
-                                                )
-                                            );
-                                        }
-                                        else if (state is Account)
-                                        {
-                                            from.SendGump(
-                                                new AdminGump(
-                                                    from,
-                                                    AdminGumpPage.AccountDetails_Information,
-                                                    0,
-                                                    null,
-                                                    "One match found.",
-                                                    state
-                                                )
-                                            );
+                                            isMatch = m?.Name.InsensitiveContains(match) == true
+                                                      || a?.Username.InsensitiveContains(match) == true;
                                         }
                                         else
                                         {
-                                            from.SendGump(
-                                                new AdminGump(
-                                                    from,
-                                                    AdminGumpPage.Clients,
-                                                    0,
-                                                    results.ToList<object>(),
-                                                    "One match found."
-                                                )
-                                            );
+                                            isMatch = ns.ToString().ContainsOrdinal(match);
                                         }
+
+                                        if (isMatch)
+                                        {
+                                            results.Add(ns);
+                                        }
+                                    }
+
+                                    results.Sort(NetStateComparer.Instance);
+                                }
+
+                                if (results.Count == 1)
+                                {
+                                    var ns = results[0];
+                                    var state = ns.Mobile ?? (object)ns.Account;
+
+                                    if (state is Mobile)
+                                    {
+                                        from.SendGump(
+                                            new AdminGump(
+                                                from,
+                                                AdminGumpPage.ClientInfo,
+                                                0,
+                                                null,
+                                                "One match found.",
+                                                state
+                                            )
+                                        );
+                                    }
+                                    else if (state is Account)
+                                    {
+                                        from.SendGump(
+                                            new AdminGump(
+                                                from,
+                                                AdminGumpPage.AccountDetails_Information,
+                                                0,
+                                                null,
+                                                "One match found.",
+                                                state
+                                            )
+                                        );
                                     }
                                     else
                                     {
@@ -2560,57 +2543,224 @@ namespace Server.Gumps
                                                 AdminGumpPage.Clients,
                                                 0,
                                                 results.ToList<object>(),
-                                                notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null)
+                                                "One match found."
                                             )
                                         );
                                     }
-
-                                    break;
                                 }
-                            default:
+                                else
                                 {
-                                    index -= 2;
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.Clients,
+                                            0,
+                                            results.ToList<object>(),
+                                            notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null)
+                                        )
+                                    );
+                                }
 
-                                    if (index < m_List?.Count)
+                                break;
+                            }
+                        default:
+                            {
+                                index -= 2;
+
+                                if (index < m_List?.Count)
+                                {
+                                    if (m_List[index] is not NetState ns)
                                     {
-                                        if (m_List[index] is not NetState ns)
-                                        {
-                                            break;
-                                        }
+                                        break;
+                                    }
 
-                                        var m = ns.Mobile;
-                                        var a = ns.Account as Account;
+                                    var m = ns.Mobile;
+                                    var a = ns.Account as Account;
 
-                                        if (m != null)
+                                    if (m != null)
+                                    {
+                                        from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, null, m));
+                                    }
+                                    else if (a != null)
+                                    {
+                                        from.SendGump(
+                                            new AdminGump(
+                                                from,
+                                                AdminGumpPage.AccountDetails_Information,
+                                                0,
+                                                null,
+                                                null,
+                                                a
+                                            )
+                                        );
+                                    }
+                                }
+
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+            case 5:
+                {
+                    switch (index)
+                    {
+                        case 0:
+                            {
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_Information,
+                                        0,
+                                        null,
+                                        null,
+                                        m_State
+                                    )
+                                );
+                                break;
+                            }
+                        case 1:
+                            {
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_Characters,
+                                        0,
+                                        null,
+                                        null,
+                                        m_State
+                                    )
+                                );
+                                break;
+                            }
+                        case 2:
+                            {
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_Comments,
+                                        0,
+                                        null,
+                                        null,
+                                        m_State
+                                    )
+                                );
+                                break;
+                            }
+                        case 3:
+                            {
+                                from.SendGump(
+                                    new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, null, m_State)
+                                );
+                                break;
+                            }
+                        case 13:
+                            {
+                                from.SendGump(
+                                    new AdminGump(from, AdminGumpPage.AccountDetails_Access, 0, null, null, m_State)
+                                );
+                                break;
+                            }
+                        case 14:
+                            {
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                        0,
+                                        null,
+                                        null,
+                                        m_State
+                                    )
+                                );
+                                break;
+                            }
+                        case 4:
+                            {
+                                from.Prompt = new AddCommentPrompt(m_State as Account);
+                                from.SendMessage("Enter the new account comment.");
+                                break;
+                            }
+                        case 5:
+                            {
+                                from.Prompt = new AddTagNamePrompt(m_State as Account);
+                                from.SendMessage("Enter the new tag name.");
+                                break;
+                            }
+                        case 6:
+                            {
+                                var un = info.GetTextEntry(0)?.Trim();
+                                var pw = info.GetTextEntry(1)?.Trim();
+
+                                Account dispAccount = null;
+                                string notice;
+
+                                if (string.IsNullOrEmpty(un))
+                                {
+                                    notice = "You must enter a username to add an account.";
+                                }
+                                else if (string.IsNullOrEmpty(pw))
+                                {
+                                    notice = "You must enter a password to add an account.";
+                                }
+                                else
+                                {
+                                    var account = Accounts.GetAccount(un);
+
+                                    if (account != null)
+                                    {
+                                        notice = "There is already an account with that username.";
+                                    }
+                                    else
+                                    {
+                                        dispAccount = new Account(un, pw);
+                                        notice = $"{un} : Account added.";
+                                        CommandLogging.WriteLine(
+                                            from,
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} adding new account: {un}"
+                                        );
+                                    }
+                                }
+
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        dispAccount != null ? AdminGumpPage.AccountDetails_Information : m_PageType,
+                                        m_ListPage,
+                                        m_List,
+                                        notice,
+                                        dispAccount ?? m_State
+                                    )
+                                );
+                                break;
+                            }
+                        case 7:
+                            {
+                                List<IAccount> results;
+
+                                var match = info.GetTextEntry(0)?.Trim().ToLower();
+
+                                if (string.IsNullOrEmpty(match))
+                                {
+                                    results = Accounts.GetAccounts().ToList();
+                                    results.Sort(AccountComparer.Instance);
+                                }
+                                else
+                                {
+                                    results = new List<IAccount>();
+                                    foreach (var acct in Accounts.GetAccounts())
+                                    {
+                                        if (acct.Username.InsensitiveContains(match))
                                         {
-                                            from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, null, m));
-                                        }
-                                        else if (a != null)
-                                        {
-                                            from.SendGump(
-                                                new AdminGump(
-                                                    from,
-                                                    AdminGumpPage.AccountDetails_Information,
-                                                    0,
-                                                    null,
-                                                    null,
-                                                    a
-                                                )
-                                            );
+                                            results.Add(acct);
                                         }
                                     }
 
-                                    break;
+                                    results.Sort(AccountComparer.Instance);
                                 }
-                        }
 
-                        break;
-                    }
-                case 5:
-                    {
-                        switch (index)
-                        {
-                            case 0:
+                                if (results.Count == 1)
                                 {
                                     from.SendGump(
                                         new AdminGump(
@@ -2618,1242 +2768,132 @@ namespace Server.Gumps
                                             AdminGumpPage.AccountDetails_Information,
                                             0,
                                             null,
-                                            null,
-                                            m_State
+                                            "One match found.",
+                                            results[0]
                                         )
                                     );
-                                    break;
                                 }
-                            case 1:
+                                else
                                 {
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_Characters,
-                                            0,
-                                            null,
-                                            null,
-                                            m_State
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_Comments,
-                                            0,
-                                            null,
-                                            null,
-                                            m_State
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, null, m_State)
-                                    );
-                                    break;
-                                }
-                            case 13:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(from, AdminGumpPage.AccountDetails_Access, 0, null, null, m_State)
-                                    );
-                                    break;
-                                }
-                            case 14:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                            0,
-                                            null,
-                                            null,
-                                            m_State
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 4:
-                                {
-                                    from.Prompt = new AddCommentPrompt(m_State as Account);
-                                    from.SendMessage("Enter the new account comment.");
-                                    break;
-                                }
-                            case 5:
-                                {
-                                    from.Prompt = new AddTagNamePrompt(m_State as Account);
-                                    from.SendMessage("Enter the new tag name.");
-                                    break;
-                                }
-                            case 6:
-                                {
-                                    var un = info.GetTextEntry(0)?.Trim();
-                                    var pw = info.GetTextEntry(1)?.Trim();
-
-                                    Account dispAccount = null;
-                                    string notice;
-
-                                    if (string.IsNullOrEmpty(un))
-                                    {
-                                        notice = "You must enter a username to add an account.";
-                                    }
-                                    else if (string.IsNullOrEmpty(pw))
-                                    {
-                                        notice = "You must enter a password to add an account.";
-                                    }
-                                    else
-                                    {
-                                        var account = Accounts.GetAccount(un);
-
-                                        if (account != null)
-                                        {
-                                            notice = "There is already an account with that username.";
-                                        }
-                                        else
-                                        {
-                                            dispAccount = new Account(un, pw);
-                                            notice = $"{un} : Account added.";
-                                            CommandLogging.WriteLine(
-                                                from,
-                                                $"{from.AccessLevel} {CommandLogging.Format(from)} adding new account: {un}"
-                                            );
-                                        }
-                                    }
-
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            dispAccount != null ? AdminGumpPage.AccountDetails_Information : m_PageType,
-                                            m_ListPage,
-                                            m_List,
-                                            notice,
-                                            dispAccount ?? m_State
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 7:
-                                {
-                                    List<IAccount> results;
-
-                                    var match = info.GetTextEntry(0)?.Trim().ToLower();
-
-                                    if (string.IsNullOrEmpty(match))
-                                    {
-                                        results = Accounts.GetAccounts().ToList();
-                                        results.Sort(AccountComparer.Instance);
-                                    }
-                                    else
-                                    {
-                                        results = new List<IAccount>();
-                                        foreach (var acct in Accounts.GetAccounts())
-                                        {
-                                            if (acct.Username.InsensitiveContains(match))
-                                            {
-                                                results.Add(acct);
-                                            }
-                                        }
-
-                                        results.Sort(AccountComparer.Instance);
-                                    }
-
-                                    if (results.Count == 1)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Information,
-                                                0,
-                                                null,
-                                                "One match found.",
-                                                results[0]
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Accounts,
-                                                0,
-                                                results.ToList<object>(),
-                                                results.Count == 0 ? "Nothing matched your search terms." : null,
-                                                new List<object>()
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 8:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_ChangePassword,
-                                            0,
-                                            null,
-                                            null,
-                                            m_State
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 9:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_ChangeAccess,
-                                            0,
-                                            null,
-                                            null,
-                                            m_State
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 10:
-                            case 11:
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    a.SetUnspecifiedBan(from);
-                                    a.Banned = index == 10;
-                                    CommandLogging.WriteLine(
-                                        from,
-                                        $"{from.AccessLevel} {CommandLogging.Format(from)} {a.Username} account {(a.Banned ? "banning" : "unbanning")}"
-                                    );
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            m_PageType,
-                                            m_ListPage,
-                                            m_List,
-                                            $"The account has been {(a.Banned ? "banned" : "unbanned")}.",
-                                            m_State
-                                        )
-                                    );
-
-                                    if (index == 10)
-                                    {
-                                        from.SendGump(new BanDurationGump(a));
-                                    }
-
-                                    break;
-                                }
-                            case 12:
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    var password = info.GetTextEntry(0)?.Trim();
-                                    var confirm = info.GetTextEntry(1)?.Trim();
-
-                                    string notice;
-                                    var page = AdminGumpPage.AccountDetails_ChangePassword;
-
-                                    if (string.IsNullOrEmpty(password))
-                                    {
-                                        notice = "You must enter the password.";
-                                    }
-                                    else if (confirm != password)
-                                    {
-                                        notice =
-                                            "You must confirm the password. That field must precisely match the password field.";
-                                    }
-                                    else
-                                    {
-                                        notice = "The password has been changed.";
-                                        a.SetPassword(password);
-                                        page = AdminGumpPage.AccountDetails_Information;
-                                        CommandLogging.WriteLine(
-                                            from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} changing password of account {a.Username}"
-                                        );
-                                    }
-
-                                    from.SendGump(new AdminGump(from, page, 0, null, notice, m_State));
-
-                                    break;
-                                }
-                            case 16: // view shared
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    var list = GetSharedAccounts(a.LoginIPs);
-
-                                    if (list.Count > 1 || list.Count == 1 && !list.Contains(a))
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Accounts,
-                                                0,
-                                                list.ToList<object>(),
-                                                null,
-                                                new List<object>()
-                                            )
-                                        );
-                                    }
-                                    else if (a.LoginIPs.Length > 0)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                                0,
-                                                null,
-                                                "There are no other accounts which share an address with this one.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                                0,
-                                                null,
-                                                "This account has not yet been accessed.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 17: // ban shared
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    var list = GetSharedAccounts(a.LoginIPs);
-
-                                    if (list.Count > 0)
-                                    {
-                                        using var sb = ValueStringBuilder.Create();
-                                        sb.Append("You are about to ban ");
-                                        sb.Append(list.Count);
-                                        sb.Append(list.Count != 1 ? "accounts." : "account.");
-                                        sb.Append(" Do you wish to continue?");
-
-                                        for (var i = 0; i < list.Count; ++i)
-                                        {
-                                            sb.Append("<br>- ");
-                                            sb.Append(list[i].Username);
-                                        }
-
-                                        from.SendGump(
-                                            new WarningGump(
-                                                sb.ToString(),
-                                                420,
-                                                400,
-                                                okay => BanShared_Callback(from, okay, a)
-                                            )
-                                        );
-                                    }
-                                    else if (a.LoginIPs.Length > 0)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                                0,
-                                                null,
-                                                "There are no accounts which share an address with this one.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                                0,
-                                                null,
-                                                "This account has not yet been accessed.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 18: // firewall all
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    if (a.LoginIPs.Length > 0)
-                                    {
-                                        from.SendGump(
-                                            new WarningGump(
-                                                $"You are about to firewall {a.LoginIPs.Length} address{(a.LoginIPs.Length != 1 ? "s" : "")}. Do you wish to continue?",
-                                                420,
-                                                400,
-                                                okay => FirewallShared_Callback(from, okay, a)
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                                0,
-                                                null,
-                                                "This account has not yet been accessed.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 20: // Change access level
-                            case 21:
-                            case 22:
-                            case 23:
-                            case 24:
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    var newLevel = index switch
-                                    {
-                                        21 => AccessLevel.Counselor,
-                                        22 => AccessLevel.GameMaster,
-                                        23 => AccessLevel.Seer,
-                                        24 => AccessLevel.Administrator,
-                                        33 => AccessLevel.Developer,
-                                        34 => AccessLevel.Owner,
-                                        _  => AccessLevel.Player // 20
-                                    };
-
-                                    if (newLevel < from.AccessLevel || from.AccessLevel == AccessLevel.Owner)
-                                    {
-                                        a.AccessLevel = newLevel;
-
-                                        CommandLogging.WriteLine(
-                                            from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} changing access level of account {a.Username} to {a.AccessLevel}"
-                                        );
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Information,
-                                                0,
-                                                null,
-                                                "The access level has been changed.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 25:
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    from.SendGump(
-                                        new WarningGump(
-                                            $"<center>Account of {a.Username}</center><br>You are about to <em><basefont color=red>permanently delete</basefont></em> the account. Likewise, all characters on the account will be deleted, including equipped, inventory, and banked items. Any houses tied to the account will be demolished.<br><br>Do you wish to continue?",
-                                            420,
-                                            280,
-                                            okay => AccountDelete_Callback(from, okay, a)
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 26: // View all shared accounts
-                                {
-                                    from.SendGump(new AdminGump(from, AdminGumpPage.Accounts_Shared));
-                                    break;
-                                }
-                            case 27: // Ban marked
-                                {
-                                    var list = m_List;
-
-                                    if (list == null || m_State is not List<Account> rads)
-                                    {
-                                        break;
-                                    }
-
-                                    if (rads.Count > 0)
-                                    {
-                                        from.SendGump(
-                                            new WarningGump(
-                                                $"You are about to ban {rads.Count} marked account{(rads.Count == 1 ? "" : "s")}. Be cautioned, the only way to reverse this is by hand--manually unbanning each account.<br><br>Do you wish to continue?",
-                                                420,
-                                                280,
-                                                okay => Marked_Callback(from, okay, true, list, rads, m_ListPage)
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminNoticeGump(
-                                                "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
-                                                () => ResendGump_Callback(from, list, rads, m_ListPage)
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 28: // Delete marked
-                                {
-                                    var list = m_List;
-
-                                    if (list == null || m_State is not List<Account> rads)
-                                    {
-                                        break;
-                                    }
-
-                                    if (rads.Count > 0)
-                                    {
-                                        from.SendGump(
-                                            new WarningGump(
-                                                $"You are about to <em><basefont color=red>permanently delete</basefont></em> {rads.Count} marked account{(rads.Count == 1 ? "" : "s")}. Likewise, all characters on the account{(rads.Count == 1 ? "" : "s")} will be deleted, including equipped, inventory, and banked items. Any houses tied to the account{(rads.Count == 1 ? "" : "s")} will be demolished.<br><br>Do you wish to continue?",
-                                                420,
-                                                280,
-                                                okay => Marked_Callback(from, okay, false, list, rads, m_ListPage)
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminNoticeGump(
-                                                "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
-                                                () => ResendGump_Callback(from, list, rads, m_ListPage)
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 29: // Mark all
-                                {
-                                    if (m_List == null || m_State is not List<object>)
-                                    {
-                                        break;
-                                    }
-
                                     from.SendGump(
                                         new AdminGump(
                                             from,
                                             AdminGumpPage.Accounts,
-                                            m_ListPage,
-                                            m_List,
-                                            null,
-                                            m_List.ToList()
-                                        )
-                                    );
-
-                                    break;
-                                }
-                            case 30: // View all empty accounts
-                                {
-                                    var results = new List<object>();
-
-                                    foreach (Account acct in Accounts.GetAccounts())
-                                    {
-                                        var empty = true;
-
-                                        for (var i = 0; empty && i < acct.Length; ++i)
-                                        {
-                                            empty = acct[i] == null;
-                                        }
-
-                                        if (empty)
-                                        {
-                                            results.Add(acct);
-                                        }
-                                    }
-
-                                    if (results.Count == 1)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Information,
-                                                0,
-                                                null,
-                                                "One match found.",
-                                                results[0]
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Accounts,
-                                                0,
-                                                results,
-                                                results.Count == 0 ? "Nothing matched your search terms." : null,
-                                                new List<object>()
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 31: // View all inactive accounts
-                                {
-                                    var results = new List<object>();
-
-                                    foreach (Account acct in Accounts.GetAccounts())
-                                    {
-                                        if (acct.Inactive)
-                                        {
-                                            results.Add(acct);
-                                        }
-                                    }
-
-                                    if (results.Count == 1)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Information,
-                                                0,
-                                                null,
-                                                "One match found.",
-                                                results[0]
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Accounts,
-                                                0,
-                                                results,
-                                                results.Count == 0 ? "Nothing matched your search terms." : null,
-                                                new List<object>()
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 32: // View all banned accounts
-                                {
-                                    var results = new List<object>();
-
-                                    foreach (Account acct in Accounts.GetAccounts())
-                                    {
-                                        if (acct.Banned)
-                                        {
-                                            results.Add(acct);
-                                        }
-                                    }
-
-                                    if (results.Count == 1)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Information,
-                                                0,
-                                                null,
-                                                "One match found.",
-                                                results[0]
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Accounts,
-                                                0,
-                                                results,
-                                                results.Count == 0 ? "Nothing matched your search terms." : null,
-                                                new List<object>()
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 33: // Change access level (extended)
-                            case 34:
-                                {
-                                    goto case 20;
-                                }
-                            case 35: // Unmark house owners
-                                {
-                                    var list = m_List;
-                                    var rads = m_State as List<Account>;
-
-                                    if (list == null || rads == null)
-                                    {
-                                        break;
-                                    }
-
-                                    var newRads = new List<Account>();
-
-                                    foreach (var acct in rads)
-                                    {
-                                        var hasHouse = false;
-
-                                        for (var i = 0; i < acct.Length && !hasHouse; ++i)
-                                        {
-                                            if (acct[i] != null && BaseHouse.HasHouse(acct[i]))
-                                            {
-                                                hasHouse = true;
-                                            }
-                                        }
-
-                                        if (!hasHouse)
-                                        {
-                                            newRads.Add(acct);
-                                        }
-                                    }
-
-                                    from.SendGump(
-                                        new AdminGump(from, AdminGumpPage.Accounts, m_ListPage, m_List, null, newRads)
-                                    );
-
-                                    break;
-                                }
-                            case 36: // Clear login addresses
-                                {
-                                    if (m_State is not Account a)
-                                    {
-                                        break;
-                                    }
-
-                                    var ips = a.LoginIPs;
-
-                                    if (ips.Length == 0)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.AccountDetails_Access_ClientIPs,
-                                                0,
-                                                null,
-                                                "This account has not yet been accessed.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new WarningGump(
-                                                $"You are about to clear the address list for account {a} containing {ips.Length} {(ips.Length == 1 ? "entry" : "entries")}. Do you wish to continue?",
-                                                420,
-                                                280,
-                                                okay => RemoveLoginIPs_Callback(from, okay, a)
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            default:
-                                {
-                                    index -= 50;
-
-                                    if (m_State is Account a && index >= 0 && index < a.Length)
-                                    {
-                                        var m = a[index];
-
-                                        if (m != null)
-                                        {
-                                            from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, null, m));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        index -= 6;
-
-                                        if (m_List != null && index >= 0 && index < m_List.Count)
-                                        {
-                                            if (m_List[index] is Account)
-                                            {
-                                                from.SendGump(
-                                                    new AdminGump(
-                                                        from,
-                                                        AdminGumpPage.AccountDetails_Information,
-                                                        0,
-                                                        null,
-                                                        null,
-                                                        m_List[index]
-                                                    )
-                                                );
-                                            }
-                                            else if (m_List[index] is KeyValuePair<IPAddress, List<Account>> kvp)
-                                            {
-                                                from.SendGump(
-                                                    new AdminGump(
-                                                        from,
-                                                        AdminGumpPage.Accounts,
-                                                        0,
-                                                        kvp.Value.ToList<object>(),
-                                                        null,
-                                                        new List<object>()
-                                                    )
-                                                );
-                                            }
-                                        }
-                                    }
-
-                                    break;
-                                }
-                        }
-
-                        break;
-                    }
-                case 6:
-                    {
-                        switch (index)
-                        {
-                            case 0:
-                                {
-                                    var match = info.GetTextEntry(0)?.Trim();
-
-                                    string notice = null;
-                                    var results = new List<object>();
-
-                                    if (string.IsNullOrEmpty(match))
-                                    {
-                                        notice = "You must enter a username to search.";
-                                    }
-                                    else
-                                    {
-                                        foreach (var check in AdminFirewall.Set)
-                                        {
-                                            var checkStr = check.ToString();
-
-                                            if (checkStr.ContainsOrdinal(match))
-                                            {
-                                                results.Add(check);
-                                            }
-                                        }
-                                    }
-
-                                    if (results.Count == 1)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.FirewallInfo,
-                                                0,
-                                                null,
-                                                "One match found.",
-                                                results[0]
-                                            )
-                                        );
-                                    }
-                                    else if (results.Count > 1)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Firewall,
-                                                0,
-                                                results,
-                                                $"Search results for : {match}",
-                                                m_State
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                m_PageType,
-                                                m_ListPage,
-                                                m_List,
-                                                notice ?? "Nothing matched your search terms.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 1:
-                                {
-                                    var text = info.GetTextEntry(0)?.Trim();
-
-                                    if (string.IsNullOrEmpty(text))
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                m_PageType,
-                                                m_ListPage,
-                                                m_List,
-                                                "You must enter an address or CIDR to add.",
-                                                m_State
-                                            )
-                                        );
-                                    }
-                                    else
-                                    {
-                                        IFirewallEntry firewallEntry;
-                                        try
-                                        {
-                                            firewallEntry = AdminFirewall.ToFirewallEntry(text);
-                                        }
-                                        catch
-                                        {
-                                            from.SendGump(
-                                                new AdminGump(
-                                                    from,
-                                                    m_PageType,
-                                                    m_ListPage,
-                                                    m_List,
-                                                    "That is not a valid address or CIDR.",
-                                                    m_State
-                                                )
-                                            );
-                                            break;
-                                        }
-
-                                        CommandLogging.WriteLine(
-                                            from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {firewallEntry}"
-                                        );
-
-                                        AdminFirewall.Add(firewallEntry);
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.FirewallInfo,
-                                                0,
-                                                null,
-                                                $"{firewallEntry} : Added to firewall.",
-                                                firewallEntry
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    InvokeCommand("Firewall");
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            m_PageType,
-                                            m_ListPage,
-                                            m_List,
-                                            "Target the player to firewall.",
-                                            m_State
-                                        )
-                                    );
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    if (m_State is IFirewallEntry)
-                                    {
-                                        CommandLogging.WriteLine(
-                                            from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} removing {m_State} from firewall list"
-                                        );
-
-                                        AdminFirewall.Remove(m_State);
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Firewall,
-                                                0,
-                                                null,
-                                                $"{m_State} : Removed from firewall."
-                                            )
-                                        );
-                                    }
-
-                                    break;
-                                }
-                            default:
-                                {
-                                    index -= 4;
-
-                                    if (index < m_List?.Count)
-                                    {
-                                        from.SendGump(
-                                            new AdminGump(from, AdminGumpPage.FirewallInfo, 0, null, null, m_List[index])
-                                        );
-                                    }
-
-                                    break;
-                                }
-                        }
-
-                        break;
-                    }
-                case 7:
-                    {
-                        if (m_State is not Mobile m ||
-                            m.AccessLevel > from.AccessLevel || m.Account?.AccessLevel > from.AccessLevel)
-                        {
-                            break;
-                        }
-
-                        string notice = null;
-                        var sendGump = true;
-
-                        switch (index)
-                        {
-                            case 0:
-                                {
-                                    var map = m.Map;
-                                    var loc = m.Location;
-
-                                    if (map == null || map == Map.Internal)
-                                    {
-                                        map = m.LogoutMap;
-                                        loc = m.LogoutLocation;
-                                    }
-
-                                    if (map != null && map != Map.Internal)
-                                    {
-                                        from.MoveToWorld(loc, map);
-                                        notice = "You have been teleported to their location.";
-                                    }
-
-                                    break;
-                                }
-                            case 1:
-                                {
-                                    m.MoveToWorld(from.Location, from.Map);
-                                    notice = "They have been teleported to your location.";
-                                    break;
-                                }
-                            case 2:
-                                {
-                                    var ns = m.NetState;
-
-                                    if (ns != null)
-                                    {
-                                        CommandLogging.WriteLine(
-                                            from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} kicking {CommandLogging.Format(m)}"
-                                        );
-                                        ns.Disconnect($"Kicked by {from}.");
-                                        notice = "They have been kicked.";
-                                    }
-                                    else
-                                    {
-                                        notice = "They are already disconnected.";
-                                    }
-
-                                    break;
-                                }
-                            case 3:
-                                {
-                                    if (m.Account is Account a)
-                                    {
-                                        CommandLogging.WriteLine(
-                                            from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} banning {CommandLogging.Format(m)}"
-                                        );
-                                        a.Banned = true;
-
-                                        var ns = m.NetState;
-
-                                        ns?.Disconnect($"Banned by {from}.");
-
-                                        notice = "They have been banned.";
-                                    }
-
-                                    break;
-                                }
-                            case 6:
-                                {
-                                    Properties.SetValue(from, m, "Blessed", "False");
-                                    notice = "They are now mortal.";
-                                    break;
-                                }
-                            case 7:
-                                {
-                                    Properties.SetValue(from, m, "Blessed", "True");
-                                    notice = "They are now immortal.";
-                                    break;
-                                }
-                            case 8:
-                                {
-                                    Properties.SetValue(from, m, "Squelched", "True");
-                                    notice = "They are now squelched.";
-                                    break;
-                                }
-                            case 9:
-                                {
-                                    Properties.SetValue(from, m, "Squelched", "False");
-                                    notice = "They are now unsquelched.";
-                                    break;
-                                }
-                            case 10:
-                                {
-                                    Properties.SetValue(from, m, "Hidden", "True");
-                                    notice = "They are now hidden.";
-                                    break;
-                                }
-                            case 11:
-                                {
-                                    Properties.SetValue(from, m, "Hidden", "False");
-                                    notice = "They are now unhidden.";
-                                    break;
-                                }
-                            case 12:
-                                {
-                                    CommandLogging.WriteLine(
-                                        from,
-                                        $"{from.AccessLevel} {CommandLogging.Format(from)} killing {CommandLogging.Format(m)}"
-                                    );
-                                    m.Kill();
-                                    notice = "They have been killed.";
-                                    break;
-                                }
-                            case 13:
-                                {
-                                    CommandLogging.WriteLine(
-                                        from,
-                                        $"{from.AccessLevel} {CommandLogging.Format(from)} resurrecting {CommandLogging.Format(m)}"
-                                    );
-                                    m.Resurrect();
-                                    notice = "They have been resurrected.";
-                                    break;
-                                }
-                            case 14:
-                                {
-                                    from.SendGump(
-                                        new AdminGump(
-                                            from,
-                                            AdminGumpPage.AccountDetails_Information,
                                             0,
-                                            null,
-                                            null,
-                                            m.Account
+                                            results.ToList<object>(),
+                                            results.Count == 0 ? "Nothing matched your search terms." : null,
+                                            new List<object>()
                                         )
                                     );
-                                    sendGump = false;
-                                    break;
                                 }
-                        }
 
-                        if (sendGump)
-                        {
-                            from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, notice, m_State));
-                        }
-
-                        switch (index)
-                        {
-                            case 3:
-                                {
-                                    if (m.Account is Account a)
-                                    {
-                                        from.SendGump(new BanDurationGump(a));
-                                    }
-
-                                    break;
-                                }
-                            case 4:
-                                {
-                                    from.SendGump(new PropertiesGump(from, m));
-                                    break;
-                                }
-                            case 5:
-                                {
-                                    from.SendGump(new SkillsGump(from, m));
-                                    break;
-                                }
-                        }
-
-                        break;
-                    }
-                case 8:
-                    {
-                        if (index < m_List?.Count)
-                        {
-                            if (m_State is not Account a)
-                            {
                                 break;
                             }
-
-                            if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
+                        case 8:
                             {
                                 from.SendGump(
-                                    new WarningGump(
-                                        $"You are about to firewall {m_List[index]}. All connection attempts from a matching IP will be refused. Are you sure?",
-                                        420,
-                                        280,
-                                        okay => Firewall_Callback(from, okay, a, m_List[index])
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_ChangePassword,
+                                        0,
+                                        null,
+                                        null,
+                                        m_State
                                     )
                                 );
+                                break;
                             }
-                        }
-
-                        break;
-                    }
-                case 9:
-                    {
-                        if (index < m_List?.Count)
-                        {
-                            if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
+                        case 9:
                             {
-                                var obj = m_List[index];
-
-                                if (obj is not IPAddress ip)
-                                {
-                                    break;
-                                }
-
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_ChangeAccess,
+                                        0,
+                                        null,
+                                        null,
+                                        m_State
+                                    )
+                                );
+                                break;
+                            }
+                        case 10:
+                        case 11:
+                            {
                                 if (m_State is not Account a)
                                 {
                                     break;
                                 }
 
-                                var list = GetSharedAccounts(ip);
+                                a.SetUnspecifiedBan(from);
+                                a.Banned = index == 10;
+                                CommandLogging.WriteLine(
+                                    from,
+                                    $"{from.AccessLevel} {CommandLogging.Format(from)} {a.Username} account {(a.Banned ? "banning" : "unbanning")}"
+                                );
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        m_PageType,
+                                        m_ListPage,
+                                        m_List,
+                                        $"The account has been {(a.Banned ? "banned" : "unbanned")}.",
+                                        m_State
+                                    )
+                                );
+
+                                if (index == 10)
+                                {
+                                    from.SendGump(new BanDurationGump(a));
+                                }
+
+                                break;
+                            }
+                        case 12:
+                            {
+                                if (m_State is not Account a)
+                                {
+                                    break;
+                                }
+
+                                var password = info.GetTextEntry(0)?.Trim();
+                                var confirm = info.GetTextEntry(1)?.Trim();
+
+                                string notice;
+                                var page = AdminGumpPage.AccountDetails_ChangePassword;
+
+                                if (string.IsNullOrEmpty(password))
+                                {
+                                    notice = "You must enter the password.";
+                                }
+                                else if (confirm != password)
+                                {
+                                    notice =
+                                        "You must confirm the password. That field must precisely match the password field.";
+                                }
+                                else
+                                {
+                                    notice = "The password has been changed.";
+                                    a.SetPassword(password);
+                                    page = AdminGumpPage.AccountDetails_Information;
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} changing password of account {a.Username}"
+                                    );
+                                }
+
+                                from.SendGump(new AdminGump(from, page, 0, null, notice, m_State));
+
+                                break;
+                            }
+                        case 16: // view shared
+                            {
+                                if (m_State is not Account a)
+                                {
+                                    break;
+                                }
+
+                                var list = GetSharedAccounts(a.LoginIPs);
 
                                 if (list.Count > 1 || list.Count == 1 && !list.Contains(a))
                                 {
@@ -3868,6 +2908,19 @@ namespace Server.Gumps
                                         )
                                     );
                                 }
+                                else if (a.LoginIPs.Length > 0)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                            0,
+                                            null,
+                                            "There are no other accounts which share an address with this one.",
+                                            m_State
+                                        )
+                                    );
+                                }
                                 else
                                 {
                                     from.SendGump(
@@ -3876,29 +2929,155 @@ namespace Server.Gumps
                                             AdminGumpPage.AccountDetails_Access_ClientIPs,
                                             0,
                                             null,
-                                            "There are no other accounts which share that address.",
-                                            a
+                                            "This account has not yet been accessed.",
+                                            m_State
                                         )
                                     );
                                 }
+
+                                break;
                             }
-                        }
-
-                        break;
-                    }
-                case 10:
-                    {
-                        if (index < m_List?.Count)
-                        {
-                            if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
+                        case 17: // ban shared
                             {
-                                var ip = m_List[index] as IPAddress;
-
-                                if (ip == null)
+                                if (m_State is not Account a)
                                 {
                                     break;
                                 }
 
+                                var list = GetSharedAccounts(a.LoginIPs);
+
+                                if (list.Count > 0)
+                                {
+                                    using var sb = ValueStringBuilder.Create();
+                                    sb.Append("You are about to ban ");
+                                    sb.Append(list.Count);
+                                    sb.Append(list.Count != 1 ? "accounts." : "account.");
+                                    sb.Append(" Do you wish to continue?");
+
+                                    for (var i = 0; i < list.Count; ++i)
+                                    {
+                                        sb.Append("<br>- ");
+                                        sb.Append(list[i].Username);
+                                    }
+
+                                    from.SendGump(
+                                        new WarningGump(
+                                            sb.ToString(),
+                                            420,
+                                            400,
+                                            okay => BanShared_Callback(from, okay, a)
+                                        )
+                                    );
+                                }
+                                else if (a.LoginIPs.Length > 0)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                            0,
+                                            null,
+                                            "There are no accounts which share an address with this one.",
+                                            m_State
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                            0,
+                                            null,
+                                            "This account has not yet been accessed.",
+                                            m_State
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 18: // firewall all
+                            {
+                                if (m_State is not Account a)
+                                {
+                                    break;
+                                }
+
+                                if (a.LoginIPs.Length > 0)
+                                {
+                                    from.SendGump(
+                                        new WarningGump(
+                                            $"You are about to firewall {a.LoginIPs.Length} address{(a.LoginIPs.Length != 1 ? "s" : "")}. Do you wish to continue?",
+                                            420,
+                                            400,
+                                            okay => FirewallShared_Callback(from, okay, a)
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                            0,
+                                            null,
+                                            "This account has not yet been accessed.",
+                                            m_State
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 20: // Change access level
+                        case 21:
+                        case 22:
+                        case 23:
+                        case 24:
+                            {
+                                if (m_State is not Account a)
+                                {
+                                    break;
+                                }
+
+                                var newLevel = index switch
+                                {
+                                    21 => AccessLevel.Counselor,
+                                    22 => AccessLevel.GameMaster,
+                                    23 => AccessLevel.Seer,
+                                    24 => AccessLevel.Administrator,
+                                    33 => AccessLevel.Developer,
+                                    34 => AccessLevel.Owner,
+                                    _  => AccessLevel.Player // 20
+                                };
+
+                                if (newLevel < from.AccessLevel || from.AccessLevel == AccessLevel.Owner)
+                                {
+                                    a.AccessLevel = newLevel;
+
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} changing access level of account {a.Username} to {a.AccessLevel}"
+                                    );
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Information,
+                                            0,
+                                            null,
+                                            "The access level has been changed.",
+                                            m_State
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 25:
+                            {
                                 if (m_State is not Account a)
                                 {
                                     break;
@@ -3906,343 +3085,1159 @@ namespace Server.Gumps
 
                                 from.SendGump(
                                     new WarningGump(
-                                        $"You are about to remove address {ip} from account {a}. Do you wish to continue?",
+                                        $"<center>Account of {a.Username}</center><br>You are about to <em><basefont color=red>permanently delete</basefont></em> the account. Likewise, all characters on the account will be deleted, including equipped, inventory, and banked items. Any houses tied to the account will be demolished.<br><br>Do you wish to continue?",
                                         420,
                                         280,
-                                        okay => RemoveLoginIP_Callback(from, okay, a, ip)
+                                        okay => AccountDelete_Callback(from, okay, a)
+                                    )
+                                );
+                                break;
+                            }
+                        case 26: // View all shared accounts
+                            {
+                                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts_Shared));
+                                break;
+                            }
+                        case 27: // Ban marked
+                            {
+                                var list = m_List;
+
+                                if (list == null || m_State is not List<Account> rads)
+                                {
+                                    break;
+                                }
+
+                                if (rads.Count > 0)
+                                {
+                                    from.SendGump(
+                                        new WarningGump(
+                                            $"You are about to ban {rads.Count} marked account{(rads.Count == 1 ? "" : "s")}. Be cautioned, the only way to reverse this is by hand--manually unbanning each account.<br><br>Do you wish to continue?",
+                                            420,
+                                            280,
+                                            okay => Marked_Callback(from, okay, true, list, rads, m_ListPage)
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminNoticeGump(
+                                            "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
+                                            () => ResendGump_Callback(from, list, rads, m_ListPage)
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 28: // Delete marked
+                            {
+                                var list = m_List;
+
+                                if (list == null || m_State is not List<Account> rads)
+                                {
+                                    break;
+                                }
+
+                                if (rads.Count > 0)
+                                {
+                                    from.SendGump(
+                                        new WarningGump(
+                                            $"You are about to <em><basefont color=red>permanently delete</basefont></em> {rads.Count} marked account{(rads.Count == 1 ? "" : "s")}. Likewise, all characters on the account{(rads.Count == 1 ? "" : "s")} will be deleted, including equipped, inventory, and banked items. Any houses tied to the account{(rads.Count == 1 ? "" : "s")} will be demolished.<br><br>Do you wish to continue?",
+                                            420,
+                                            280,
+                                            okay => Marked_Callback(from, okay, false, list, rads, m_ListPage)
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminNoticeGump(
+                                            "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
+                                            () => ResendGump_Callback(from, list, rads, m_ListPage)
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 29: // Mark all
+                            {
+                                if (m_List == null || m_State is not List<object>)
+                                {
+                                    break;
+                                }
+
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.Accounts,
+                                        m_ListPage,
+                                        m_List,
+                                        null,
+                                        m_List.ToList()
+                                    )
+                                );
+
+                                break;
+                            }
+                        case 30: // View all empty accounts
+                            {
+                                var results = new List<object>();
+
+                                foreach (Account acct in Accounts.GetAccounts())
+                                {
+                                    var empty = true;
+
+                                    for (var i = 0; empty && i < acct.Length; ++i)
+                                    {
+                                        empty = acct[i] == null;
+                                    }
+
+                                    if (empty)
+                                    {
+                                        results.Add(acct);
+                                    }
+                                }
+
+                                if (results.Count == 1)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Information,
+                                            0,
+                                            null,
+                                            "One match found.",
+                                            results[0]
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.Accounts,
+                                            0,
+                                            results,
+                                            results.Count == 0 ? "Nothing matched your search terms." : null,
+                                            new List<object>()
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 31: // View all inactive accounts
+                            {
+                                var results = new List<object>();
+
+                                foreach (Account acct in Accounts.GetAccounts())
+                                {
+                                    if (acct.Inactive)
+                                    {
+                                        results.Add(acct);
+                                    }
+                                }
+
+                                if (results.Count == 1)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Information,
+                                            0,
+                                            null,
+                                            "One match found.",
+                                            results[0]
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.Accounts,
+                                            0,
+                                            results,
+                                            results.Count == 0 ? "Nothing matched your search terms." : null,
+                                            new List<object>()
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 32: // View all banned accounts
+                            {
+                                var results = new List<object>();
+
+                                foreach (Account acct in Accounts.GetAccounts())
+                                {
+                                    if (acct.Banned)
+                                    {
+                                        results.Add(acct);
+                                    }
+                                }
+
+                                if (results.Count == 1)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Information,
+                                            0,
+                                            null,
+                                            "One match found.",
+                                            results[0]
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.Accounts,
+                                            0,
+                                            results,
+                                            results.Count == 0 ? "Nothing matched your search terms." : null,
+                                            new List<object>()
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 33: // Change access level (extended)
+                        case 34:
+                            {
+                                goto case 20;
+                            }
+                        case 35: // Unmark house owners
+                            {
+                                var list = m_List;
+                                var rads = m_State as List<Account>;
+
+                                if (list == null || rads == null)
+                                {
+                                    break;
+                                }
+
+                                var newRads = new List<Account>();
+
+                                foreach (var acct in rads)
+                                {
+                                    var hasHouse = false;
+
+                                    for (var i = 0; i < acct.Length && !hasHouse; ++i)
+                                    {
+                                        if (acct[i] != null && BaseHouse.HasHouse(acct[i]))
+                                        {
+                                            hasHouse = true;
+                                        }
+                                    }
+
+                                    if (!hasHouse)
+                                    {
+                                        newRads.Add(acct);
+                                    }
+                                }
+
+                                from.SendGump(
+                                    new AdminGump(from, AdminGumpPage.Accounts, m_ListPage, m_List, null, newRads)
+                                );
+
+                                break;
+                            }
+                        case 36: // Clear login addresses
+                            {
+                                if (m_State is not Account a)
+                                {
+                                    break;
+                                }
+
+                                var ips = a.LoginIPs;
+
+                                if (ips.Length == 0)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                            0,
+                                            null,
+                                            "This account has not yet been accessed.",
+                                            m_State
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new WarningGump(
+                                            $"You are about to clear the address list for account {a} containing {ips.Length} {(ips.Length == 1 ? "entry" : "entries")}. Do you wish to continue?",
+                                            420,
+                                            280,
+                                            okay => RemoveLoginIPs_Callback(from, okay, a)
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        default:
+                            {
+                                index -= 50;
+
+                                if (m_State is Account a && index >= 0 && index < a.Length)
+                                {
+                                    var m = a[index];
+
+                                    if (m != null)
+                                    {
+                                        from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, null, m));
+                                    }
+                                }
+                                else
+                                {
+                                    index -= 6;
+
+                                    if (m_List != null && index >= 0 && index < m_List.Count)
+                                    {
+                                        if (m_List[index] is Account)
+                                        {
+                                            from.SendGump(
+                                                new AdminGump(
+                                                    from,
+                                                    AdminGumpPage.AccountDetails_Information,
+                                                    0,
+                                                    null,
+                                                    null,
+                                                    m_List[index]
+                                                )
+                                            );
+                                        }
+                                        else if (m_List[index] is KeyValuePair<IPAddress, List<Account>> kvp)
+                                        {
+                                            from.SendGump(
+                                                new AdminGump(
+                                                    from,
+                                                    AdminGumpPage.Accounts,
+                                                    0,
+                                                    kvp.Value.ToList<object>(),
+                                                    null,
+                                                    new List<object>()
+                                                )
+                                            );
+                                        }
+                                    }
+                                }
+
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+            case 6:
+                {
+                    switch (index)
+                    {
+                        case 0:
+                            {
+                                var match = info.GetTextEntry(0)?.Trim();
+
+                                string notice = null;
+                                var results = new List<object>();
+
+                                if (string.IsNullOrEmpty(match))
+                                {
+                                    notice = "You must enter a username to search.";
+                                }
+                                else
+                                {
+                                    foreach (var check in AdminFirewall.Set)
+                                    {
+                                        var checkStr = check.ToString();
+
+                                        if (checkStr.ContainsOrdinal(match))
+                                        {
+                                            results.Add(check);
+                                        }
+                                    }
+                                }
+
+                                if (results.Count == 1)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.FirewallInfo,
+                                            0,
+                                            null,
+                                            "One match found.",
+                                            results[0]
+                                        )
+                                    );
+                                }
+                                else if (results.Count > 1)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.Firewall,
+                                            0,
+                                            results,
+                                            $"Search results for : {match}",
+                                            m_State
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            m_PageType,
+                                            m_ListPage,
+                                            m_List,
+                                            notice ?? "Nothing matched your search terms.",
+                                            m_State
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 1:
+                            {
+                                var text = info.GetTextEntry(0)?.Trim();
+
+                                if (string.IsNullOrEmpty(text))
+                                {
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            m_PageType,
+                                            m_ListPage,
+                                            m_List,
+                                            "You must enter an address or CIDR to add.",
+                                            m_State
+                                        )
+                                    );
+                                }
+                                else
+                                {
+                                    IFirewallEntry firewallEntry;
+                                    try
+                                    {
+                                        firewallEntry = AdminFirewall.ToFirewallEntry(text);
+                                    }
+                                    catch
+                                    {
+                                        from.SendGump(
+                                            new AdminGump(
+                                                from,
+                                                m_PageType,
+                                                m_ListPage,
+                                                m_List,
+                                                "That is not a valid address or CIDR.",
+                                                m_State
+                                            )
+                                        );
+                                        break;
+                                    }
+
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {firewallEntry}"
+                                    );
+
+                                    AdminFirewall.Add(firewallEntry);
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.FirewallInfo,
+                                            0,
+                                            null,
+                                            $"{firewallEntry} : Added to firewall.",
+                                            firewallEntry
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        case 2:
+                            {
+                                InvokeCommand("Firewall");
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        m_PageType,
+                                        m_ListPage,
+                                        m_List,
+                                        "Target the player to firewall.",
+                                        m_State
+                                    )
+                                );
+                                break;
+                            }
+                        case 3:
+                            {
+                                if (m_State is IFirewallEntry)
+                                {
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} removing {m_State} from firewall list"
+                                    );
+
+                                    AdminFirewall.Remove(m_State);
+                                    from.SendGump(
+                                        new AdminGump(
+                                            from,
+                                            AdminGumpPage.Firewall,
+                                            0,
+                                            null,
+                                            $"{m_State} : Removed from firewall."
+                                        )
+                                    );
+                                }
+
+                                break;
+                            }
+                        default:
+                            {
+                                index -= 4;
+
+                                if (index < m_List?.Count)
+                                {
+                                    from.SendGump(
+                                        new AdminGump(from, AdminGumpPage.FirewallInfo, 0, null, null, m_List[index])
+                                    );
+                                }
+
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+            case 7:
+                {
+                    if (m_State is not Mobile m ||
+                        m.AccessLevel > from.AccessLevel || m.Account?.AccessLevel > from.AccessLevel)
+                    {
+                        break;
+                    }
+
+                    string notice = null;
+                    var sendGump = true;
+
+                    switch (index)
+                    {
+                        case 0:
+                            {
+                                var map = m.Map;
+                                var loc = m.Location;
+
+                                if (map == null || map == Map.Internal)
+                                {
+                                    map = m.LogoutMap;
+                                    loc = m.LogoutLocation;
+                                }
+
+                                if (map != null && map != Map.Internal)
+                                {
+                                    from.MoveToWorld(loc, map);
+                                    notice = "You have been teleported to their location.";
+                                }
+
+                                break;
+                            }
+                        case 1:
+                            {
+                                m.MoveToWorld(from.Location, from.Map);
+                                notice = "They have been teleported to your location.";
+                                break;
+                            }
+                        case 2:
+                            {
+                                var ns = m.NetState;
+
+                                if (ns != null)
+                                {
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} kicking {CommandLogging.Format(m)}"
+                                    );
+                                    ns.Disconnect($"Kicked by {from}.");
+                                    notice = "They have been kicked.";
+                                }
+                                else
+                                {
+                                    notice = "They are already disconnected.";
+                                }
+
+                                break;
+                            }
+                        case 3:
+                            {
+                                if (m.Account is Account a)
+                                {
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} banning {CommandLogging.Format(m)}"
+                                    );
+                                    a.Banned = true;
+
+                                    var ns = m.NetState;
+
+                                    ns?.Disconnect($"Banned by {from}.");
+
+                                    notice = "They have been banned.";
+                                }
+
+                                break;
+                            }
+                        case 6:
+                            {
+                                Properties.SetValue(from, m, "Blessed", "False");
+                                notice = "They are now mortal.";
+                                break;
+                            }
+                        case 7:
+                            {
+                                Properties.SetValue(from, m, "Blessed", "True");
+                                notice = "They are now immortal.";
+                                break;
+                            }
+                        case 8:
+                            {
+                                Properties.SetValue(from, m, "Squelched", "True");
+                                notice = "They are now squelched.";
+                                break;
+                            }
+                        case 9:
+                            {
+                                Properties.SetValue(from, m, "Squelched", "False");
+                                notice = "They are now unsquelched.";
+                                break;
+                            }
+                        case 10:
+                            {
+                                Properties.SetValue(from, m, "Hidden", "True");
+                                notice = "They are now hidden.";
+                                break;
+                            }
+                        case 11:
+                            {
+                                Properties.SetValue(from, m, "Hidden", "False");
+                                notice = "They are now unhidden.";
+                                break;
+                            }
+                        case 12:
+                            {
+                                CommandLogging.WriteLine(
+                                    from,
+                                    $"{from.AccessLevel} {CommandLogging.Format(from)} killing {CommandLogging.Format(m)}"
+                                );
+                                m.Kill();
+                                notice = "They have been killed.";
+                                break;
+                            }
+                        case 13:
+                            {
+                                CommandLogging.WriteLine(
+                                    from,
+                                    $"{from.AccessLevel} {CommandLogging.Format(from)} resurrecting {CommandLogging.Format(m)}"
+                                );
+                                m.Resurrect();
+                                notice = "They have been resurrected.";
+                                break;
+                            }
+                        case 14:
+                            {
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_Information,
+                                        0,
+                                        null,
+                                        null,
+                                        m.Account
+                                    )
+                                );
+                                sendGump = false;
+                                break;
+                            }
+                    }
+
+                    if (sendGump)
+                    {
+                        from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, notice, m_State));
+                    }
+
+                    switch (index)
+                    {
+                        case 3:
+                            {
+                                if (m.Account is Account a)
+                                {
+                                    from.SendGump(new BanDurationGump(a));
+                                }
+
+                                break;
+                            }
+                        case 4:
+                            {
+                                from.SendGump(new PropertiesGump(from, m));
+                                break;
+                            }
+                        case 5:
+                            {
+                                from.SendGump(new SkillsGump(from, m));
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+            case 8:
+                {
+                    if (index < m_List?.Count)
+                    {
+                        if (m_State is not Account a)
+                        {
+                            break;
+                        }
+
+                        if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
+                        {
+                            from.SendGump(
+                                new WarningGump(
+                                    $"You are about to firewall {m_List[index]}. All connection attempts from a matching IP will be refused. Are you sure?",
+                                    420,
+                                    280,
+                                    okay => Firewall_Callback(from, okay, a, m_List[index])
+                                )
+                            );
+                        }
+                    }
+
+                    break;
+                }
+            case 9:
+                {
+                    if (index < m_List?.Count)
+                    {
+                        if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
+                        {
+                            var obj = m_List[index];
+
+                            if (obj is not IPAddress ip)
+                            {
+                                break;
+                            }
+
+                            if (m_State is not Account a)
+                            {
+                                break;
+                            }
+
+                            var list = GetSharedAccounts(ip);
+
+                            if (list.Count > 1 || list.Count == 1 && !list.Contains(a))
+                            {
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.Accounts,
+                                        0,
+                                        list.ToList<object>(),
+                                        null,
+                                        new List<object>()
+                                    )
+                                );
+                            }
+                            else
+                            {
+                                from.SendGump(
+                                    new AdminGump(
+                                        from,
+                                        AdminGumpPage.AccountDetails_Access_ClientIPs,
+                                        0,
+                                        null,
+                                        "There are no other accounts which share that address.",
+                                        a
                                     )
                                 );
                             }
                         }
-
-                        break;
                     }
-            }
+
+                    break;
+                }
+            case 10:
+                {
+                    if (index < m_List?.Count)
+                    {
+                        if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
+                        {
+                            var ip = m_List[index] as IPAddress;
+
+                            if (ip == null)
+                            {
+                                break;
+                            }
+
+                            if (m_State is not Account a)
+                            {
+                                break;
+                            }
+
+                            from.SendGump(
+                                new WarningGump(
+                                    $"You are about to remove address {ip} from account {a}. Do you wish to continue?",
+                                    420,
+                                    280,
+                                    okay => RemoveLoginIP_Callback(from, okay, a, ip)
+                                )
+                            );
+                        }
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    private void GenerateSpawners()
+    {
+        var folder = Core.SA ? "post-uoml" : "uoml";
+
+        var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
+        if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
+        {
+            InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
         }
 
-        private void GenerateSpawners()
+        if (availableMaps.Includes(MapSelectionFlags.Malas))
         {
-            var folder = Core.SA ? "post-uoml" : "uoml";
-
-            var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
-            if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
-            {
-                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
-            }
-
-            if (availableMaps.Includes(MapSelectionFlags.Malas))
-            {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
-            }
-
-            if (availableMaps.Includes(MapSelectionFlags.Tokuno))
-            {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
-            }
-
-            if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
-            {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
-            }
-
-            if (availableMaps.Includes(MapSelectionFlags.Trammel))
-            {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
-            }
-
-            if (availableMaps.Includes(MapSelectionFlags.Felucca))
-            {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
-            }
+            InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
         }
 
-        private void Shutdown(bool restart, bool save)
+        if (availableMaps.Includes(MapSelectionFlags.Tokuno))
         {
-            CommandLogging.WriteLine(
-                m_From,
-                $"{m_From.AccessLevel} {CommandLogging.Format(m_From)} shutting down server (Restart: {restart}) (Save: {save})"
+            InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
+        }
+
+        if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
+        {
+            InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
+        }
+
+        if (availableMaps.Includes(MapSelectionFlags.Trammel))
+        {
+            InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
+        }
+
+        if (availableMaps.Includes(MapSelectionFlags.Felucca))
+        {
+            InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
+        }
+    }
+
+    private void Shutdown(bool restart, bool save)
+    {
+        CommandLogging.WriteLine(
+            m_From,
+            $"{m_From.AccessLevel} {CommandLogging.Format(m_From)} shutting down server (Restart: {restart}) (Save: {save})"
+        );
+
+        if (save)
+        {
+            InvokeCommand("Save");
+        }
+
+        Core.Kill(restart);
+    }
+
+    private void InvokeCommand(string c)
+    {
+        CommandSystem.Handle(m_From, $"{CommandSystem.Prefix}{c}");
+    }
+
+    public static void GetAccountInfo(IAccount a, out AccessLevel accessLevel, out bool online)
+    {
+        accessLevel = a.AccessLevel;
+        online = false;
+
+        for (var j = 0; j < a.Length; ++j)
+        {
+            var check = a[j];
+
+            if (check == null)
+            {
+                continue;
+            }
+
+            if (check.AccessLevel > accessLevel)
+            {
+                accessLevel = check.AccessLevel;
+            }
+
+            if (check.NetState != null)
+            {
+                online = true;
+            }
+        }
+    }
+
+    private static void FilterAccess(List<object> list, Mobile from)
+    {
+        if (list == null || list.Count == 0)
+        {
+            return;
+        }
+
+        for (var i = list.Count - 1; i >= 0; i--)
+        {
+            var obj = list[i];
+
+            if (obj is Account acc && acc.AccessLevel > from.AccessLevel ||
+                obj is Mobile mob && mob.AccessLevel > from.AccessLevel ||
+                obj is NetState ns &&
+                (ns.Mobile?.AccessLevel > from.AccessLevel || ns.Account?.AccessLevel > from.AccessLevel))
+            {
+                list.RemoveAt(i);
+            }
+        }
+    }
+
+    private class SharedAccountDescendingComparer : IComparer<object>
+    {
+        public static readonly IComparer<object> Instance = new SharedAccountDescendingComparer();
+
+        public int Compare(object x, object y)
+        {
+            if (x is not KeyValuePair<IPAddress, List<Account>> a)
+            {
+                return -1;
+            }
+
+            if (y is not KeyValuePair<IPAddress, List<Account>> b)
+            {
+                return 1;
+            }
+
+            return a.Value.Count - b.Value.Count;
+        }
+    }
+
+    private class AddCommentPrompt : Prompt
+    {
+        private readonly Account m_Account;
+
+        public AddCommentPrompt(Account acct) => m_Account = acct;
+
+        public override void OnCancel(Mobile from)
+        {
+            from.SendGump(
+                new AdminGump(
+                    from,
+                    AdminGumpPage.AccountDetails_Comments,
+                    0,
+                    null,
+                    "Request to add comment was canceled.",
+                    m_Account
+                )
             );
-
-            if (save)
-            {
-                InvokeCommand("Save");
-            }
-
-            Core.Kill(restart);
         }
 
-        private void InvokeCommand(string c)
+        public override void OnResponse(Mobile from, string text)
         {
-            CommandSystem.Handle(m_From, $"{CommandSystem.Prefix}{c}");
-        }
-
-        public static void GetAccountInfo(IAccount a, out AccessLevel accessLevel, out bool online)
-        {
-            accessLevel = a.AccessLevel;
-            online = false;
-
-            for (var j = 0; j < a.Length; ++j)
+            if (m_Account != null)
             {
-                var check = a[j];
-
-                if (check == null)
-                {
-                    continue;
-                }
-
-                if (check.AccessLevel > accessLevel)
-                {
-                    accessLevel = check.AccessLevel;
-                }
-
-                if (check.NetState != null)
-                {
-                    online = true;
-                }
-            }
-        }
-
-        private static void FilterAccess(List<object> list, Mobile from)
-        {
-            if (list == null || list.Count == 0)
-            {
-                return;
-            }
-
-            for (var i = list.Count - 1; i >= 0; i--)
-            {
-                var obj = list[i];
-
-                if (obj is Account acc && acc.AccessLevel > from.AccessLevel ||
-                    obj is Mobile mob && mob.AccessLevel > from.AccessLevel ||
-                    obj is NetState ns &&
-                    (ns.Mobile?.AccessLevel > from.AccessLevel || ns.Account?.AccessLevel > from.AccessLevel))
-                {
-                    list.RemoveAt(i);
-                }
-            }
-        }
-
-        private class SharedAccountDescendingComparer : IComparer<object>
-        {
-            public static readonly IComparer<object> Instance = new SharedAccountDescendingComparer();
-
-            public int Compare(object x, object y)
-            {
-                if (x is not KeyValuePair<IPAddress, List<Account>> a)
-                {
-                    return -1;
-                }
-
-                if (y is not KeyValuePair<IPAddress, List<Account>> b)
-                {
-                    return 1;
-                }
-
-                return a.Value.Count - b.Value.Count;
-            }
-        }
-
-        private class AddCommentPrompt : Prompt
-        {
-            private readonly Account m_Account;
-
-            public AddCommentPrompt(Account acct) => m_Account = acct;
-
-            public override void OnCancel(Mobile from)
-            {
+                m_Account.Comments.Add(new AccountComment(from.RawName, text));
                 from.SendGump(
                     new AdminGump(
                         from,
                         AdminGumpPage.AccountDetails_Comments,
                         0,
                         null,
-                        "Request to add comment was canceled.",
+                        "Comment added.",
                         m_Account
                     )
                 );
             }
-
-            public override void OnResponse(Mobile from, string text)
-            {
-                if (m_Account != null)
-                {
-                    m_Account.Comments.Add(new AccountComment(from.RawName, text));
-                    from.SendGump(
-                        new AdminGump(
-                            from,
-                            AdminGumpPage.AccountDetails_Comments,
-                            0,
-                            null,
-                            "Comment added.",
-                            m_Account
-                        )
-                    );
-                }
-            }
         }
+    }
 
-        private class AddTagNamePrompt : Prompt
+    private class AddTagNamePrompt : Prompt
+    {
+        private readonly Account m_Account;
+
+        public AddTagNamePrompt(Account acct) => m_Account = acct;
+
+        public override void OnCancel(Mobile from)
         {
-            private readonly Account m_Account;
-
-            public AddTagNamePrompt(Account acct) => m_Account = acct;
-
-            public override void OnCancel(Mobile from)
-            {
-                from.SendGump(
-                    new AdminGump(
-                        from,
-                        AdminGumpPage.AccountDetails_Tags,
-                        0,
-                        null,
-                        "Request to add tag was canceled.",
-                        m_Account
-                    )
-                );
-            }
-
-            public override void OnResponse(Mobile from, string text)
-            {
-                from.Prompt = new AddTagValuePrompt(m_Account, text);
-                from.SendMessage("Enter the new tag value.");
-            }
+            from.SendGump(
+                new AdminGump(
+                    from,
+                    AdminGumpPage.AccountDetails_Tags,
+                    0,
+                    null,
+                    "Request to add tag was canceled.",
+                    m_Account
+                )
+            );
         }
 
-        private class AddTagValuePrompt : Prompt
+        public override void OnResponse(Mobile from, string text)
         {
-            private readonly Account m_Account;
-            private readonly string m_Name;
-
-            public AddTagValuePrompt(Account acct, string name)
-            {
-                m_Account = acct;
-                m_Name = name;
-            }
-
-            public override void OnCancel(Mobile from)
-            {
-                from.SendGump(
-                    new AdminGump(
-                        from,
-                        AdminGumpPage.AccountDetails_Tags,
-                        0,
-                        null,
-                        "Request to add tag was canceled.",
-                        m_Account
-                    )
-                );
-            }
-
-            public override void OnResponse(Mobile from, string text)
-            {
-                if (m_Account != null)
-                {
-                    m_Account.AddTag(m_Name, text);
-                    from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, "Tag added.", m_Account));
-                }
-            }
+            from.Prompt = new AddTagValuePrompt(m_Account, text);
+            from.SendMessage("Enter the new tag value.");
         }
+    }
 
-        private class NetStateComparer : IComparer<NetState>
+    private class AddTagValuePrompt : Prompt
+    {
+        private readonly Account m_Account;
+        private readonly string m_Name;
+
+        public AddTagValuePrompt(Account acct, string name)
         {
-            public static readonly IComparer<NetState> Instance = new NetStateComparer();
+            m_Account = acct;
+            m_Name = name;
+        }
 
-            public int Compare(NetState x, NetState y)
+        public override void OnCancel(Mobile from)
+        {
+            from.SendGump(
+                new AdminGump(
+                    from,
+                    AdminGumpPage.AccountDetails_Tags,
+                    0,
+                    null,
+                    "Request to add tag was canceled.",
+                    m_Account
+                )
+            );
+        }
+
+        public override void OnResponse(Mobile from, string text)
+        {
+            if (m_Account != null)
             {
-                if (x == null && y == null)
-                {
-                    return 0;
-                }
-
-                if (x == null)
-                {
-                    return -1;
-                }
-
-                if (y == null)
-                {
-                    return 1;
-                }
-
-                var aMob = x.Mobile;
-                var bMob = y.Mobile;
-
-                if (aMob == null && bMob == null)
-                {
-                    return 0;
-                }
-
-                if (aMob == null)
-                {
-                    return 1;
-                }
-
-                if (bMob == null)
-                {
-                    return -1;
-                }
-
-                if (aMob.AccessLevel > bMob.AccessLevel)
-                {
-                    return -1;
-                }
-
-                return aMob.AccessLevel < bMob.AccessLevel ? 1 : aMob.Name.InsensitiveCompare(bMob.Name);
+                m_Account.AddTag(m_Name, text);
+                from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, "Tag added.", m_Account));
             }
         }
+    }
 
-        private class AccountComparer : IComparer<IAccount>
+    private class NetStateComparer : IComparer<NetState>
+    {
+        public static readonly IComparer<NetState> Instance = new NetStateComparer();
+
+        public int Compare(NetState x, NetState y)
         {
-            public static readonly IComparer<IAccount> Instance = new AccountComparer();
-
-            public int Compare(IAccount x, IAccount y)
+            if (x == null && y == null)
             {
-                if (x == null && y == null)
-                {
-                    return 0;
-                }
-
-                if (x == null)
-                {
-                    return -1;
-                }
-
-                if (y == null)
-                {
-                    return 1;
-                }
-
-                GetAccountInfo(x, out var aLevel, out var aOnline);
-                GetAccountInfo(y, out var bLevel, out var bOnline);
-
-                if (aOnline && !bOnline)
-                {
-                    return -1;
-                }
-
-                if (bOnline && !aOnline)
-                {
-                    return 1;
-                }
-
-                if (aLevel > bLevel)
-                {
-                    return -1;
-                }
-
-                return aLevel < bLevel ? 1 : x.Username.InsensitiveCompare(y.Username);
+                return 0;
             }
-        }
 
-        private class AdminNoticeGump : StaticNoticeGump<AdminNoticeGump>
+            if (x == null)
+            {
+                return -1;
+            }
+
+            if (y == null)
+            {
+                return 1;
+            }
+
+            var aMob = x.Mobile;
+            var bMob = y.Mobile;
+
+            if (aMob == null && bMob == null)
+            {
+                return 0;
+            }
+
+            if (aMob == null)
+            {
+                return 1;
+            }
+
+            if (bMob == null)
+            {
+                return -1;
+            }
+
+            if (aMob.AccessLevel > bMob.AccessLevel)
+            {
+                return -1;
+            }
+
+            return aMob.AccessLevel < bMob.AccessLevel ? 1 : aMob.Name.InsensitiveCompare(bMob.Name);
+        }
+    }
+
+    private class AccountComparer : IComparer<IAccount>
+    {
+        public static readonly IComparer<IAccount> Instance = new AccountComparer();
+
+        public int Compare(IAccount x, IAccount y)
         {
-            public override int Width => 420;
-            public override int Height => 280;
+            if (x == null && y == null)
+            {
+                return 0;
+            }
 
-            public override string Content { get; }
+            if (x == null)
+            {
+                return -1;
+            }
 
-            public AdminNoticeGump(string content, Action callback) : base(callback) => Content = content;
+            if (y == null)
+            {
+                return 1;
+            }
+
+            GetAccountInfo(x, out var aLevel, out var aOnline);
+            GetAccountInfo(y, out var bLevel, out var bOnline);
+
+            if (aOnline && !bOnline)
+            {
+                return -1;
+            }
+
+            if (bOnline && !aOnline)
+            {
+                return 1;
+            }
+
+            if (aLevel > bLevel)
+            {
+                return -1;
+            }
+
+            return aLevel < bLevel ? 1 : x.Username.InsensitiveCompare(y.Username);
         }
+    }
+
+    private class AdminNoticeGump : StaticNoticeGump<AdminNoticeGump>
+    {
+        public override int Width => 420;
+        public override int Height => 280;
+
+        public override string Content { get; }
+
+        public AdminNoticeGump(string content, Action callback) : base(callback) => Content = content;
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Engines.AdvancedSearch;
 
 public record AdvancedSearchResult(string Name, Type Type, Point3D Location, Map Map, IEntity Parent)

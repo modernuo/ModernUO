@@ -1,194 +1,191 @@
-using System;
+namespace Server.Engines.Quests;
 
-namespace Server.Engines.Quests
+public static class QuestSerializer
 {
-    public static class QuestSerializer
+    public static object Construct(Type type)
     {
-        public static object Construct(Type type)
+        try
         {
-            try
-            {
-                return type.CreateInstance<object>();
-            }
-            catch
-            {
-                return null;
-            }
+            return type.CreateInstance<object>();
         }
-
-        public static void Write(Type type, Type[] referenceTable, IGenericWriter writer)
+        catch
         {
-            if (type == null)
+            return null;
+        }
+    }
+
+    public static void Write(Type type, Type[] referenceTable, IGenericWriter writer)
+    {
+        if (type == null)
+        {
+            writer.WriteEncodedInt(0x00);
+        }
+        else
+        {
+            for (var i = 0; i < referenceTable.Length; ++i)
             {
-                writer.WriteEncodedInt(0x00);
-            }
-            else
-            {
-                for (var i = 0; i < referenceTable.Length; ++i)
+                if (referenceTable[i] == type)
                 {
-                    if (referenceTable[i] == type)
-                    {
-                        writer.WriteEncodedInt(0x01);
-                        writer.WriteEncodedInt(i);
-                        return;
-                    }
+                    writer.WriteEncodedInt(0x01);
+                    writer.WriteEncodedInt(i);
+                    return;
                 }
-
-                writer.WriteEncodedInt(0x02);
-                writer.Write(type.FullName);
             }
+
+            writer.WriteEncodedInt(0x02);
+            writer.Write(type.FullName);
         }
+    }
 
-        public static Type ReadType(Type[] referenceTable, IGenericReader reader)
+    public static Type ReadType(Type[] referenceTable, IGenericReader reader)
+    {
+        var encoding = reader.ReadEncodedInt();
+
+        switch (encoding)
         {
-            var encoding = reader.ReadEncodedInt();
+            default:
+                {
+                    return null;
+                }
+            case 0x01: // indexed
+                {
+                    var index = reader.ReadEncodedInt();
 
-            switch (encoding)
-            {
-                default:
+                    if (index >= 0 && index < referenceTable.Length)
+                    {
+                        return referenceTable[index];
+                    }
+
+                    return null;
+                }
+            case 0x02: // by name
+                {
+                    var fullName = reader.ReadString();
+
+                    if (fullName == null)
                     {
                         return null;
                     }
-                case 0x01: // indexed
-                    {
-                        var index = reader.ReadEncodedInt();
 
-                        if (index >= 0 && index < referenceTable.Length)
-                        {
-                            return referenceTable[index];
-                        }
-
-                        return null;
-                    }
-                case 0x02: // by name
-                    {
-                        var fullName = reader.ReadString();
-
-                        if (fullName == null)
-                        {
-                            return null;
-                        }
-
-                        return AssemblyHandler.FindTypeByFullName(fullName);
-                    }
-            }
+                    return AssemblyHandler.FindTypeByFullName(fullName);
+                }
         }
+    }
 
-        public static QuestSystem DeserializeQuest(IGenericReader reader)
+    public static QuestSystem DeserializeQuest(IGenericReader reader)
+    {
+        var encoding = reader.ReadEncodedInt();
+
+        switch (encoding)
         {
-            var encoding = reader.ReadEncodedInt();
+            default:
+                {
+                    return null;
+                }
+            case 0x01:
+                {
+                    var type = ReadType(QuestSystem.QuestTypes, reader);
 
-            switch (encoding)
-            {
-                default:
-                    {
-                        return null;
-                    }
-                case 0x01:
-                    {
-                        var type = ReadType(QuestSystem.QuestTypes, reader);
+                    var qs = Construct(type) as QuestSystem;
 
-                        var qs = Construct(type) as QuestSystem;
+                    qs?.BaseDeserialize(reader);
 
-                        qs?.BaseDeserialize(reader);
-
-                        return qs;
-                    }
-            }
+                    return qs;
+                }
         }
+    }
 
-        public static void Serialize(QuestSystem qs, IGenericWriter writer)
+    public static void Serialize(QuestSystem qs, IGenericWriter writer)
+    {
+        if (qs == null)
         {
-            if (qs == null)
-            {
-                writer.WriteEncodedInt(0x00);
-            }
-            else
-            {
-                writer.WriteEncodedInt(0x01);
-
-                Write(qs.GetType(), QuestSystem.QuestTypes, writer);
-
-                qs.BaseSerialize(writer);
-            }
+            writer.WriteEncodedInt(0x00);
         }
-
-        public static QuestObjective DeserializeObjective(Type[] referenceTable, IGenericReader reader)
+        else
         {
-            var encoding = reader.ReadEncodedInt();
+            writer.WriteEncodedInt(0x01);
 
-            switch (encoding)
-            {
-                default:
-                    {
-                        return null;
-                    }
-                case 0x01:
-                    {
-                        var type = ReadType(referenceTable, reader);
+            Write(qs.GetType(), QuestSystem.QuestTypes, writer);
 
-                        var obj = Construct(type) as QuestObjective;
-
-                        obj?.BaseDeserialize(reader);
-
-                        return obj;
-                    }
-            }
+            qs.BaseSerialize(writer);
         }
+    }
 
-        public static void Serialize(Type[] referenceTable, QuestObjective obj, IGenericWriter writer)
+    public static QuestObjective DeserializeObjective(Type[] referenceTable, IGenericReader reader)
+    {
+        var encoding = reader.ReadEncodedInt();
+
+        switch (encoding)
         {
-            if (obj == null)
-            {
-                writer.WriteEncodedInt(0x00);
-            }
-            else
-            {
-                writer.WriteEncodedInt(0x01);
+            default:
+                {
+                    return null;
+                }
+            case 0x01:
+                {
+                    var type = ReadType(referenceTable, reader);
 
-                Write(obj.GetType(), referenceTable, writer);
+                    var obj = Construct(type) as QuestObjective;
 
-                obj.BaseSerialize(writer);
-            }
+                    obj?.BaseDeserialize(reader);
+
+                    return obj;
+                }
         }
+    }
 
-        public static QuestConversation DeserializeConversation(Type[] referenceTable, IGenericReader reader)
+    public static void Serialize(Type[] referenceTable, QuestObjective obj, IGenericWriter writer)
+    {
+        if (obj == null)
         {
-            var encoding = reader.ReadEncodedInt();
-
-            switch (encoding)
-            {
-                default:
-                    {
-                        return null;
-                    }
-                case 0x01:
-                    {
-                        var type = ReadType(referenceTable, reader);
-
-                        var conv = Construct(type) as QuestConversation;
-
-                        conv?.BaseDeserialize(reader);
-
-                        return conv;
-                    }
-            }
+            writer.WriteEncodedInt(0x00);
         }
-
-        public static void Serialize(Type[] referenceTable, QuestConversation conv, IGenericWriter writer)
+        else
         {
-            if (conv == null)
-            {
-                writer.WriteEncodedInt(0x00);
-            }
-            else
-            {
-                writer.WriteEncodedInt(0x01);
+            writer.WriteEncodedInt(0x01);
 
-                Write(conv.GetType(), referenceTable, writer);
+            Write(obj.GetType(), referenceTable, writer);
 
-                conv.BaseSerialize(writer);
-            }
+            obj.BaseSerialize(writer);
+        }
+    }
+
+    public static QuestConversation DeserializeConversation(Type[] referenceTable, IGenericReader reader)
+    {
+        var encoding = reader.ReadEncodedInt();
+
+        switch (encoding)
+        {
+            default:
+                {
+                    return null;
+                }
+            case 0x01:
+                {
+                    var type = ReadType(referenceTable, reader);
+
+                    var conv = Construct(type) as QuestConversation;
+
+                    conv?.BaseDeserialize(reader);
+
+                    return conv;
+                }
+        }
+    }
+
+    public static void Serialize(Type[] referenceTable, QuestConversation conv, IGenericWriter writer)
+    {
+        if (conv == null)
+        {
+            writer.WriteEncodedInt(0x00);
+        }
+        else
+        {
+            writer.WriteEncodedInt(0x01);
+
+            Write(conv.GetType(), referenceTable, writer);
+
+            conv.BaseSerialize(writer);
         }
     }
 }

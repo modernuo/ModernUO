@@ -1,35 +1,34 @@
-namespace Server.Commands.Generic
+namespace Server.Commands.Generic;
+
+public class FacetCommandImplementor : BaseCommandImplementor
 {
-    public class FacetCommandImplementor : BaseCommandImplementor
+    public FacetCommandImplementor()
     {
-        public FacetCommandImplementor()
+        Accessors = new[] { "Facet" };
+        SupportRequirement = CommandSupport.Area;
+        SupportsConditionals = true;
+        AccessLevel = AccessLevel.GameMaster;
+        Usage = "Facet <command> [condition]";
+        Description =
+            "Invokes the command on all appropriate objects within your facet's map bounds. Optional condition arguments can further restrict the set of objects.";
+    }
+
+    public override void Process(Mobile from, BaseCommand command, string[] args)
+    {
+        var impl = AreaCommandImplementor.Instance;
+
+        if (impl == null)
         {
-            Accessors = new[] { "Facet" };
-            SupportRequirement = CommandSupport.Area;
-            SupportsConditionals = true;
-            AccessLevel = AccessLevel.GameMaster;
-            Usage = "Facet <command> [condition]";
-            Description =
-                "Invokes the command on all appropriate objects within your facet's map bounds. Optional condition arguments can further restrict the set of objects.";
+            return;
         }
 
-        public override void Process(Mobile from, BaseCommand command, string[] args)
+        var map = from.Map;
+
+        if (map == null || map == Map.Internal)
         {
-            var impl = AreaCommandImplementor.Instance;
-
-            if (impl == null)
-            {
-                return;
-            }
-
-            var map = from.Map;
-
-            if (map == null || map == Map.Internal)
-            {
-                return;
-            }
-
-            impl.OnTarget(from, map, Point3D.Zero, new Point3D(map.Width - 1, map.Height - 1, 0), command, args);
+            return;
         }
+
+        impl.OnTarget(from, map, Point3D.Zero, new Point3D(map.Width - 1, map.Height - 1, 0), command, args);
     }
 }

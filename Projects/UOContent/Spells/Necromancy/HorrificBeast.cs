@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Spells.Necromancy;
 
 public class HorrificBeastSpell : TransformationSpell

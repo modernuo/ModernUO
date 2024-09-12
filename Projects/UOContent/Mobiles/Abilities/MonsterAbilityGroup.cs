@@ -1,5 +1,4 @@
-﻿using System;
-using Server.Random;
+﻿using Server.Random;
 using WeightedMonsterAbility = Server.Random.WeightedValue<Server.Mobiles.MonsterAbility>;
 
 namespace Server.Mobiles;

@@ -1,13 +1,12 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class WaterTile : Item
 {
-    [SerializationGenerator(0, false)]
-    public partial class WaterTile : Item
+    [Constructible]
+    public WaterTile() : base(0x346E)
     {
-        [Constructible]
-        public WaterTile() : base(0x346E)
-        {
-        }
     }
 }

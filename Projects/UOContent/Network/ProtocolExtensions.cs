@@ -15,61 +15,60 @@
 
 using System.Buffers;
 
-namespace Server.Network
+namespace Server.Network;
+
+public interface IProtocolExtensionsInfo
 {
-    public interface IProtocolExtensionsInfo
+    public int PacketId { get; }
+}
+
+public static class ProtocolExtensions<T> where T : struct, IProtocolExtensionsInfo
+{
+    private static readonly PacketHandler[] packetHandlers = new PacketHandler[0x100];
+    private static int packetId;
+
+    public static unsafe PacketHandler[] Register(T info)
     {
-        public int PacketId { get; }
+        packetId = info.PacketId;
+        IncomingPackets.Register(packetId, 0, false, &DecodeBundledPacket);
+
+        return packetHandlers;
     }
 
-    public static class ProtocolExtensions<T> where T : struct, IProtocolExtensionsInfo
+    private static unsafe void DecodeBundledPacket(NetState state, SpanReader reader)
     {
-        private static readonly PacketHandler[] packetHandlers = new PacketHandler[0x100];
-        private static int packetId;
+        int cmd = reader.ReadByte();
 
-        public static unsafe PacketHandler[] Register(T info)
+        PacketHandler ph = packetHandlers[cmd];
+
+        if (ph == null)
         {
-            packetId = info.PacketId;
-            IncomingPackets.Register(packetId, 0, false, &DecodeBundledPacket);
-
-            return packetHandlers;
+            return;
         }
 
-        private static unsafe void DecodeBundledPacket(NetState state, SpanReader reader)
+        var from = state.Mobile;
+
+        if (ph.InGameOnly)
         {
-            int cmd = reader.ReadByte();
-
-            PacketHandler ph = packetHandlers[cmd];
-
-            if (ph == null)
+            if (from == null)
             {
+                state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} before having been attached to a mobile.");
                 return;
             }
 
-            var from = state.Mobile;
-
-            if (ph.InGameOnly)
+            if (from.Deleted)
             {
-                if (from == null)
-                {
-                    state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} before having been attached to a mobile.");
-                    return;
-                }
-
-                if (from.Deleted)
-                {
-                    state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} after having been attached to a deleted mobile.");
-                    return;
-                }
-            }
-
-            if (ph.OutOfGameOnly && from?.Deleted == false)
-            {
-                state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} after having been attached to a mobile.");
+                state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} after having been attached to a deleted mobile.");
                 return;
             }
-
-            ph.OnReceive(state, reader);
         }
+
+        if (ph.OutOfGameOnly && from?.Deleted == false)
+        {
+            state.Disconnect($"Received packet 0x{packetId:X2}x{cmd:X2} after having been attached to a mobile.");
+            return;
+        }
+
+        ph.OnReceive(state, reader);
     }
 }

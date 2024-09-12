@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Server.SkillHandlers;
 
 namespace Server.Spells.Ninjitsu;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Server.Mobiles;
+﻿namespace Server.Mobiles;
 
 public class DeathExplosion : AreaEffectMonsterAbility
 {

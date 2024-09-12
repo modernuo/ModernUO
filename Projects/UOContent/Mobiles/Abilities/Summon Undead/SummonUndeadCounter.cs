@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Server.Mobiles;
+﻿namespace Server.Mobiles;
 
 public abstract class SummonUndeadCounter : MonsterAbility
 {

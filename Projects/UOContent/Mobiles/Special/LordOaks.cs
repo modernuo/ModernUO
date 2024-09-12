@@ -1,4 +1,3 @@
-using System;
 using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Items;

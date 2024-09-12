@@ -1,88 +1,85 @@
-using System;
+namespace Server.Spells.Spellweaving;
 
-namespace Server.Spells.Spellweaving
+public class EtherealVoyageSpell : ArcaneForm
 {
-    public class EtherealVoyageSpell : ArcaneForm
+    private static readonly SpellInfo _info = new(
+        "Ethereal Voyage",
+        "Orlavdra",
+        -1
+    );
+
+    public EtherealVoyageSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
     {
-        private static readonly SpellInfo _info = new(
-            "Ethereal Voyage",
-            "Orlavdra",
-            -1
-        );
+    }
 
-        public EtherealVoyageSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
+    public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(3.5);
+
+    public override double RequiredSkill => 24.0;
+    public override int RequiredMana => 32;
+
+    public override int Body => 0x302;
+    public override int Hue => 0x48F;
+
+    public static void Initialize()
+    {
+        EventSink.AggressiveAction += RemoveTransformationOnAggressiveAction;
+    }
+
+    public static void RemoveTransformationOnAggressiveAction(AggressiveActionEventArgs e)
+    {
+        if (TransformationSpellHelper.UnderTransformation(e.Aggressor, typeof(EtherealVoyageSpell)))
         {
+            TransformationSpellHelper.RemoveContext(e.Aggressor, true);
+        }
+    }
+
+    public override bool CheckCast()
+    {
+        if (TransformationSpellHelper.UnderTransformation(Caster, typeof(EtherealVoyageSpell)))
+        {
+            Caster.SendLocalizedMessage(501775); // This spell is already in effect.
+        }
+        else if (!Caster.CanBeginAction<EtherealVoyageSpell>())
+        {
+            Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
+        }
+        else if (Caster.Combatant != null)
+        {
+            Caster.SendLocalizedMessage(1072586); // You cannot cast Ethereal Voyage while you are in combat.
+        }
+        else
+        {
+            return base.CheckCast();
         }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(3.5);
+        return false;
+    }
 
-        public override double RequiredSkill => 24.0;
-        public override int RequiredMana => 32;
+    public override void DoEffect(Mobile m)
+    {
+        m.PlaySound(0x5C8);
+        m.SendLocalizedMessage(1074770); // You are now under the effects of Ethereal Voyage.
 
-        public override int Body => 0x302;
-        public override int Hue => 0x48F;
+        var skill = Caster.Skills.Spellweaving.Value;
 
-        public static void Initialize()
-        {
-            EventSink.AggressiveAction += RemoveTransformationOnAggressiveAction;
-        }
+        var duration = TimeSpan.FromSeconds(12 + (int)(skill / 24) + FocusLevel * 2);
 
-        public static void RemoveTransformationOnAggressiveAction(AggressiveActionEventArgs e)
-        {
-            if (TransformationSpellHelper.UnderTransformation(e.Aggressor, typeof(EtherealVoyageSpell)))
-            {
-                TransformationSpellHelper.RemoveContext(e.Aggressor, true);
-            }
-        }
+        Timer.StartTimer(duration, () => RemoveEffect(Caster));
 
-        public override bool CheckCast()
-        {
-            if (TransformationSpellHelper.UnderTransformation(Caster, typeof(EtherealVoyageSpell)))
-            {
-                Caster.SendLocalizedMessage(501775); // This spell is already in effect.
-            }
-            else if (!Caster.CanBeginAction<EtherealVoyageSpell>())
-            {
-                Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
-            }
-            else if (Caster.Combatant != null)
-            {
-                Caster.SendLocalizedMessage(1072586); // You cannot cast Ethereal Voyage while you are in combat.
-            }
-            else
-            {
-                return base.CheckCast();
-            }
+        // Cannot cast this spell for another 5 minutes(300sec) after effect removed.
+        Caster.BeginAction<EtherealVoyageSpell>();
 
-            return false;
-        }
+        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.EtherealVoyage, 1031613, 1075805, duration, Caster));
+    }
 
-        public override void DoEffect(Mobile m)
-        {
-            m.PlaySound(0x5C8);
-            m.SendLocalizedMessage(1074770); // You are now under the effects of Ethereal Voyage.
+    public override void RemoveEffect(Mobile m)
+    {
+        m.SendLocalizedMessage(1074771); // You are no longer under the effects of Ethereal Voyage.
 
-            var skill = Caster.Skills.Spellweaving.Value;
+        TransformationSpellHelper.RemoveContext(m, true);
 
-            var duration = TimeSpan.FromSeconds(12 + (int)(skill / 24) + FocusLevel * 2);
+        Timer.StartTimer(TimeSpan.FromMinutes(5), m.EndAction<EtherealVoyageSpell>);
 
-            Timer.StartTimer(duration, () => RemoveEffect(Caster));
-
-            // Cannot cast this spell for another 5 minutes(300sec) after effect removed.
-            Caster.BeginAction<EtherealVoyageSpell>();
-
-            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.EtherealVoyage, 1031613, 1075805, duration, Caster));
-        }
-
-        public override void RemoveEffect(Mobile m)
-        {
-            m.SendLocalizedMessage(1074771); // You are no longer under the effects of Ethereal Voyage.
-
-            TransformationSpellHelper.RemoveContext(m, true);
-
-            Timer.StartTimer(TimeSpan.FromMinutes(5), m.EndAction<EtherealVoyageSpell>);
-
-            BuffInfo.RemoveBuff(m, BuffIcon.EtherealVoyage);
-        }
+        BuffInfo.RemoveBuff(m, BuffIcon.EtherealVoyage);
     }
 }

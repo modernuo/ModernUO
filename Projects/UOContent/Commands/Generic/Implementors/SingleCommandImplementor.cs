@@ -1,104 +1,103 @@
 using Server.Targeting;
 
-namespace Server.Commands.Generic
+namespace Server.Commands.Generic;
+
+public class SingleCommandImplementor : BaseCommandImplementor
 {
-    public class SingleCommandImplementor : BaseCommandImplementor
+    public SingleCommandImplementor()
     {
-        public SingleCommandImplementor()
+        Accessors = new[] { "Single" };
+        SupportRequirement = CommandSupport.Single;
+        AccessLevel = AccessLevel.Counselor;
+        Usage = "Single <command>";
+        Description =
+            "Invokes the command on a single targeted object. This is the same as just invoking the command directly.";
+    }
+
+    public override void Register(BaseCommand command)
+    {
+        base.Register(command);
+
+        for (var i = 0; i < command.Commands.Length; ++i)
         {
-            Accessors = new[] { "Single" };
-            SupportRequirement = CommandSupport.Single;
-            AccessLevel = AccessLevel.Counselor;
-            Usage = "Single <command>";
-            Description =
-                "Invokes the command on a single targeted object. This is the same as just invoking the command directly.";
+            CommandSystem.Register(command.Commands[i], command.AccessLevel, Redirect);
+        }
+    }
+
+    public void Redirect(CommandEventArgs e)
+    {
+        Commands.TryGetValue(e.Command, out var command);
+
+        if (command == null)
+        {
+            e.Mobile.SendMessage("That is either an invalid command name or one that does not support this modifier.");
+        }
+        else if (e.Mobile.AccessLevel < command.AccessLevel)
+        {
+            e.Mobile.SendMessage("You do not have access to that command.");
+        }
+        else if (command.ValidateArgs(this, e))
+        {
+            Process(e.Mobile, command, e.Arguments);
+        }
+    }
+
+    public override void Process(Mobile from, BaseCommand command, string[] args)
+    {
+        if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
+        {
+            from.BeginTarget(
+                -1,
+                command.ObjectTypes == ObjectTypes.All,
+                TargetFlags.None,
+                (m, targeted, a) => OnTarget(m, targeted, command, a),
+                args
+            );
+        }
+    }
+
+    public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)
+    {
+        if (!BaseCommand.IsAccessible(from, targeted))
+        {
+            from.SendLocalizedMessage(500447); // That is not accessible.
+            return;
         }
 
-        public override void Register(BaseCommand command)
+        switch (command.ObjectTypes)
         {
-            base.Register(command);
-
-            for (var i = 0; i < command.Commands.Length; ++i)
-            {
-                CommandSystem.Register(command.Commands[i], command.AccessLevel, Redirect);
-            }
-        }
-
-        public void Redirect(CommandEventArgs e)
-        {
-            Commands.TryGetValue(e.Command, out var command);
-
-            if (command == null)
-            {
-                e.Mobile.SendMessage("That is either an invalid command name or one that does not support this modifier.");
-            }
-            else if (e.Mobile.AccessLevel < command.AccessLevel)
-            {
-                e.Mobile.SendMessage("You do not have access to that command.");
-            }
-            else if (command.ValidateArgs(this, e))
-            {
-                Process(e.Mobile, command, e.Arguments);
-            }
-        }
-
-        public override void Process(Mobile from, BaseCommand command, string[] args)
-        {
-            if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
-            {
-                from.BeginTarget(
-                    -1,
-                    command.ObjectTypes == ObjectTypes.All,
-                    TargetFlags.None,
-                    (m, targeted, a) => OnTarget(m, targeted, command, a),
-                    args
-                );
-            }
-        }
-
-        public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)
-        {
-            if (!BaseCommand.IsAccessible(from, targeted))
-            {
-                from.SendLocalizedMessage(500447); // That is not accessible.
-                return;
-            }
-
-            switch (command.ObjectTypes)
-            {
-                case ObjectTypes.Both:
+            case ObjectTypes.Both:
+                {
+                    if (targeted is not Item && targeted is not Mobile)
                     {
-                        if (targeted is not Item && targeted is not Mobile)
-                        {
-                            from.SendMessage("This command does not work on that.");
-                            return;
-                        }
-
-                        break;
+                        from.SendMessage("This command does not work on that.");
+                        return;
                     }
-                case ObjectTypes.Items:
+
+                    break;
+                }
+            case ObjectTypes.Items:
+                {
+                    if (targeted is not Item)
                     {
-                        if (targeted is not Item)
-                        {
-                            from.SendMessage("This command only works on items.");
-                            return;
-                        }
-
-                        break;
+                        from.SendMessage("This command only works on items.");
+                        return;
                     }
-                case ObjectTypes.Mobiles:
+
+                    break;
+                }
+            case ObjectTypes.Mobiles:
+                {
+                    if (targeted is not Mobile)
                     {
-                        if (targeted is not Mobile)
-                        {
-                            from.SendMessage("This command only works on mobiles.");
-                            return;
-                        }
-
-                        break;
+                        from.SendMessage("This command only works on mobiles.");
+                        return;
                     }
-            }
 
-            RunCommand(from, targeted, command, args);
+                    break;
+                }
         }
+
+        RunCommand(from, targeted, command, args);
     }
 }

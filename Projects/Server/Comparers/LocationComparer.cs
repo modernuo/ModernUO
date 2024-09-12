@@ -13,8 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Collections.Generic;
-
 namespace Server;
 
 public class LocationComparer : IComparer<IPoint3D>

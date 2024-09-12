@@ -1,81 +1,78 @@
-using System;
-using System.Collections.Generic;
 using Server.Accounting;
 
-namespace Server.Misc
+namespace Server.Misc;
+
+public enum GiftResult
 {
-    public enum GiftResult
+    Backpack,
+    BankBox
+}
+
+public static class GiftGiving
+{
+    private static readonly List<GiftGiver> m_Givers = new();
+
+    public static void Register(GiftGiver giver)
     {
-        Backpack,
-        BankBox
+        m_Givers.Add(giver);
     }
 
-    public static class GiftGiving
+    public static void OnLogin(Mobile m)
     {
-        private static readonly List<GiftGiver> m_Givers = new();
-
-        public static void Register(GiftGiver giver)
+        if (m.Account is not Account acct)
         {
-            m_Givers.Add(giver);
+            return;
         }
 
-        public static void OnLogin(Mobile m)
+        var now = Core.Now;
+
+        for (var i = 0; i < m_Givers.Count; ++i)
         {
-            if (m.Account is not Account acct)
+            var giver = m_Givers[i];
+
+            if (now < giver.Start || now >= giver.Finish)
             {
-                return;
+                continue; // not in the correct time frame
             }
 
-            var now = Core.Now;
-
-            for (var i = 0; i < m_Givers.Count; ++i)
+            if (acct.Created > giver.Start - giver.MinimumAge)
             {
-                var giver = m_Givers[i];
-
-                if (now < giver.Start || now >= giver.Finish)
-                {
-                    continue; // not in the correct time frame
-                }
-
-                if (acct.Created > giver.Start - giver.MinimumAge)
-                {
-                    continue; // newly created account
-                }
-
-                if (acct.LastLogin >= giver.Start)
-                {
-                    continue; // already got one
-                }
-
-                giver.DelayGiveGift(TimeSpan.FromSeconds(5.0), m);
+                continue; // newly created account
             }
 
-            acct.LastLogin = now;
+            if (acct.LastLogin >= giver.Start)
+            {
+                continue; // already got one
+            }
+
+            giver.DelayGiveGift(TimeSpan.FromSeconds(5.0), m);
         }
+
+        acct.LastLogin = now;
+    }
+}
+
+public abstract class GiftGiver
+{
+    public virtual TimeSpan MinimumAge => TimeSpan.FromDays(30.0);
+
+    public abstract DateTime Start { get; }
+    public abstract DateTime Finish { get; }
+    public abstract void GiveGift(Mobile mob);
+
+    public virtual void DelayGiveGift(TimeSpan delay, Mobile mob)
+    {
+        Timer.StartTimer(delay, () => GiveGift(mob));
     }
 
-    public abstract class GiftGiver
+    public virtual GiftResult GiveGift(Mobile mob, Item item)
     {
-        public virtual TimeSpan MinimumAge => TimeSpan.FromDays(30.0);
-
-        public abstract DateTime Start { get; }
-        public abstract DateTime Finish { get; }
-        public abstract void GiveGift(Mobile mob);
-
-        public virtual void DelayGiveGift(TimeSpan delay, Mobile mob)
+        if (mob.PlaceInBackpack(item) && !StaminaSystem.IsOverloaded(mob))
         {
-            Timer.StartTimer(delay, () => GiveGift(mob));
+            return GiftResult.Backpack;
         }
 
-        public virtual GiftResult GiveGift(Mobile mob, Item item)
-        {
-            if (mob.PlaceInBackpack(item) && !StaminaSystem.IsOverloaded(mob))
-            {
-                return GiftResult.Backpack;
-            }
-
-            mob.BankBox.DropItem(item);
-            return GiftResult.BankBox;
-        }
+        mob.BankBox.DropItem(item);
+        return GiftResult.BankBox;
     }
 }

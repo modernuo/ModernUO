@@ -13,94 +13,91 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using System.Collections.Generic;
 using Server.Misc;
 
-namespace Server.Engines.CannedEvil
+namespace Server.Engines.CannedEvil;
+
+public class CannedEvilTimer : Timer
 {
-    public class CannedEvilTimer : Timer
+    public static void Initialize()
     {
-        public static void Initialize()
+        // TODO: Needs configuration
+        Instance = new CannedEvilTimer();
+        Instance.Start();
+        Instance.OnTick();
+    }
+
+    private static readonly HashSet<DungeonChampionSpawn> _dungeonSpawns = new();
+    private static readonly HashSet<LLChampionSpawn> _lostLandsSpawns = new();
+    private static DateTime _sliceTime;
+
+    public static CannedEvilTimer Instance { get; private set; }
+
+    public static void AddSpawn(DungeonChampionSpawn spawn)
+    {
+        _dungeonSpawns.Add(spawn);
+        Instance?.OnSlice(_dungeonSpawns, false);
+    }
+
+    public static void AddSpawn(LLChampionSpawn spawn)
+    {
+        _lostLandsSpawns.Add(spawn);
+        Instance?.OnSlice(_lostLandsSpawns, false);
+    }
+
+    public static void RemoveSpawn(DungeonChampionSpawn spawn)
+    {
+        _dungeonSpawns.Remove(spawn);
+        Instance?.OnSlice(_dungeonSpawns, false);
+    }
+
+    public static void RemoveSpawn(LLChampionSpawn spawn)
+    {
+        _lostLandsSpawns.Remove(spawn);
+        Instance?.OnSlice(_lostLandsSpawns, false);
+    }
+
+    public CannedEvilTimer() : base(TimeSpan.Zero, TimeSpan.FromMinutes(1.0))
+    {
+        _sliceTime = Core.Now;
+    }
+
+    public void OnSlice<T>(ICollection<T> list, bool rotate = true) where T : ChampionSpawn
+    {
+        if (list.Count > 0)
         {
-            // TODO: Needs configuration
-            Instance = new CannedEvilTimer();
-            Instance.Start();
-            Instance.OnTick();
-        }
+            List<T> valid = new List<T>();
 
-        private static readonly HashSet<DungeonChampionSpawn> _dungeonSpawns = new();
-        private static readonly HashSet<LLChampionSpawn> _lostLandsSpawns = new();
-        private static DateTime _sliceTime;
-
-        public static CannedEvilTimer Instance { get; private set; }
-
-        public static void AddSpawn(DungeonChampionSpawn spawn)
-        {
-            _dungeonSpawns.Add(spawn);
-            Instance?.OnSlice(_dungeonSpawns, false);
-        }
-
-        public static void AddSpawn(LLChampionSpawn spawn)
-        {
-            _lostLandsSpawns.Add(spawn);
-            Instance?.OnSlice(_lostLandsSpawns, false);
-        }
-
-        public static void RemoveSpawn(DungeonChampionSpawn spawn)
-        {
-            _dungeonSpawns.Remove(spawn);
-            Instance?.OnSlice(_dungeonSpawns, false);
-        }
-
-        public static void RemoveSpawn(LLChampionSpawn spawn)
-        {
-            _lostLandsSpawns.Remove(spawn);
-            Instance?.OnSlice(_lostLandsSpawns, false);
-        }
-
-        public CannedEvilTimer() : base(TimeSpan.Zero, TimeSpan.FromMinutes(1.0))
-        {
-            _sliceTime = Core.Now;
-        }
-
-        public void OnSlice<T>(ICollection<T> list, bool rotate = true) where T : ChampionSpawn
-        {
-            if (list.Count > 0)
+            foreach (T spawn in list)
             {
-                List<T> valid = new List<T>();
-
-                foreach (T spawn in list)
+                if (spawn.AlwaysActive && !spawn.Active)
                 {
-                    if (spawn.AlwaysActive && !spawn.Active)
-                    {
-                        spawn.ReadyToActivate = true;
-                    }
-                    else if (rotate && (!spawn.Active || spawn.Kills == 0 && spawn.Level == 0))
-                    {
-                        spawn.Active = false;
-                        spawn.ReadyToActivate = false;
-
-                        valid.Add(spawn);
-                    }
+                    spawn.ReadyToActivate = true;
                 }
-
-                if (valid.Count > 0)
+                else if (rotate && (!spawn.Active || spawn.Kills == 0 && spawn.Level == 0))
                 {
-                    valid[Utility.Random(valid.Count)].ReadyToActivate = true;
+                    spawn.Active = false;
+                    spawn.ReadyToActivate = false;
+
+                    valid.Add(spawn);
                 }
             }
-        }
 
-        protected override void OnTick()
-        {
-            if (!AutoRestart.Restarting && Core.Now >= _sliceTime)
+            if (valid.Count > 0)
             {
-                OnSlice(_dungeonSpawns);
-                OnSlice(_lostLandsSpawns);
-
-                _sliceTime = Core.Now.Date + TimeSpan.FromDays(1.0);
+                valid[Utility.Random(valid.Count)].ReadyToActivate = true;
             }
+        }
+    }
+
+    protected override void OnTick()
+    {
+        if (!AutoRestart.Restarting && Core.Now >= _sliceTime)
+        {
+            OnSlice(_dungeonSpawns);
+            OnSlice(_lostLandsSpawns);
+
+            _sliceTime = Core.Now.Date + TimeSpan.FromDays(1.0);
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using Server.Engines.ConPVP;
 using Server.Targeting;
 

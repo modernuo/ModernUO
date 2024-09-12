@@ -1,36 +1,35 @@
-namespace Server.Engines.Quests.Zento
+namespace Server.Engines.Quests.Zento;
+
+public class AcceptConversation : QuestConversation
 {
-    public class AcceptConversation : QuestConversation
-    {
-        public override int Message => 1049092;
+    public override int Message => 1049092;
 
-        public override void OnRead()
-        {
-            System.AddObjective(new FirstKillObjective());
-        }
+    public override void OnRead()
+    {
+        System.AddObjective(new FirstKillObjective());
     }
+}
 
-    public class DirectionConversation : QuestConversation
+public class DirectionConversation : QuestConversation
+{
+    public override int Message => 1063323;
+
+    public override bool Logged => false;
+}
+
+public class TakeCareConversation : QuestConversation
+{
+    public override int Message => 1063324;
+
+    public override bool Logged => false;
+}
+
+public class EndConversation : QuestConversation
+{
+    public override int Message => 1063321;
+
+    public override void OnRead()
     {
-        public override int Message => 1063323;
-
-        public override bool Logged => false;
-    }
-
-    public class TakeCareConversation : QuestConversation
-    {
-        public override int Message => 1063324;
-
-        public override bool Logged => false;
-    }
-
-    public class EndConversation : QuestConversation
-    {
-        public override int Message => 1063321;
-
-        public override void OnRead()
-        {
-            System.Complete();
-        }
+        System.Complete();
     }
 }

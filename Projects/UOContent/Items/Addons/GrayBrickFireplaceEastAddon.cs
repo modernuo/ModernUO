@@ -1,29 +1,28 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class GrayBrickFireplaceEastAddon : BaseAddon
 {
-    [SerializationGenerator(0, false)]
-    public partial class GrayBrickFireplaceEastAddon : BaseAddon
+    [Constructible]
+    public GrayBrickFireplaceEastAddon()
     {
-        [Constructible]
-        public GrayBrickFireplaceEastAddon()
-        {
-            AddComponent(new AddonComponent(0x93D), 0, 0, 0);
-            AddComponent(new AddonComponent(0x937), 0, 1, 0);
-        }
-
-        public override BaseAddonDeed Deed => new GrayBrickFireplaceEastDeed();
+        AddComponent(new AddonComponent(0x93D), 0, 0, 0);
+        AddComponent(new AddonComponent(0x937), 0, 1, 0);
     }
 
-    [SerializationGenerator(0, false)]
-    public partial class GrayBrickFireplaceEastDeed : BaseAddonDeed
-    {
-        [Constructible]
-        public GrayBrickFireplaceEastDeed()
-        {
-        }
+    public override BaseAddonDeed Deed => new GrayBrickFireplaceEastDeed();
+}
 
-        public override BaseAddon Addon => new GrayBrickFireplaceEastAddon();
-        public override int LabelNumber => 1061846; // grey brick fireplace (east)
+[SerializationGenerator(0, false)]
+public partial class GrayBrickFireplaceEastDeed : BaseAddonDeed
+{
+    [Constructible]
+    public GrayBrickFireplaceEastDeed()
+    {
     }
+
+    public override BaseAddon Addon => new GrayBrickFireplaceEastAddon();
+    public override int LabelNumber => 1061846; // grey brick fireplace (east)
 }

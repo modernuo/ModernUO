@@ -13,11 +13,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server.Commands
+namespace Server.Commands;
+
+public abstract class CAGNode
 {
-    public abstract class CAGNode
-    {
-        public abstract string Title { get; }
-        public abstract void OnClick(Mobile from, int page);
-    }
+    public abstract string Title { get; }
+    public abstract void OnClick(Mobile from, int page);
 }

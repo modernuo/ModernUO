@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 using Server.Engines.CannedEvil;
 using Server.Mobiles;

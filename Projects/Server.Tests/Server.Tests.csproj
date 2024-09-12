@@ -3,6 +3,7 @@
         <IsPackable>false</IsPackable>
         <Configurations>Debug;Release;Analyze</Configurations>
         <RootNamespace>Server.Tests</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />

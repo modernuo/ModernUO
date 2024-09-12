@@ -2,87 +2,86 @@ using Server.Engines.Help;
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Engines.Plants
+namespace Server.Engines.Plants;
+
+public class SetToDecorativeGump : Gump
 {
-    public class SetToDecorativeGump : Gump
+    private readonly PlantItem m_Plant;
+
+    public SetToDecorativeGump(PlantItem plant) : base(20, 20)
     {
-        private readonly PlantItem m_Plant;
+        m_Plant = plant;
 
-        public SetToDecorativeGump(PlantItem plant) : base(20, 20)
+        DrawBackground();
+
+        AddLabel(115, 85, 0x44, "Set plant");
+        AddLabel(82, 105, 0x44, "to decorative mode?");
+
+        AddButton(98, 140, 0x47E, 0x480, 1); // Cancel
+
+        AddButton(138, 141, 0xD2, 0xD2, 2); // Help
+        AddLabel(143, 141, 0x835, "?");
+
+        AddButton(168, 140, 0x481, 0x483, 3); // Ok
+    }
+
+    private void DrawBackground()
+    {
+        AddBackground(50, 50, 200, 150, 0xE10);
+
+        AddItem(25, 45, 0xCEB);
+        AddItem(25, 118, 0xCEC);
+
+        AddItem(227, 45, 0xCEF);
+        AddItem(227, 118, 0xCF0);
+    }
+
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        var from = sender.Mobile;
+
+        if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus != PlantStatus.Stage9)
         {
-            m_Plant = plant;
-
-            DrawBackground();
-
-            AddLabel(115, 85, 0x44, "Set plant");
-            AddLabel(82, 105, 0x44, "to decorative mode?");
-
-            AddButton(98, 140, 0x47E, 0x480, 1); // Cancel
-
-            AddButton(138, 141, 0xD2, 0xD2, 2); // Help
-            AddLabel(143, 141, 0x835, "?");
-
-            AddButton(168, 140, 0x481, 0x483, 3); // Ok
+            return;
         }
 
-        private void DrawBackground()
+        if (info.ButtonID == 3 && !from.InRange(m_Plant.GetWorldLocation(), 3))
         {
-            AddBackground(50, 50, 200, 150, 0xE10);
-
-            AddItem(25, 45, 0xCEB);
-            AddItem(25, 118, 0xCEC);
-
-            AddItem(227, 45, 0xCEF);
-            AddItem(227, 118, 0xCF0);
+            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 500446); // That is too far away.
+            return;
         }
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
+        if (!m_Plant.IsUsableBy(from))
         {
-            var from = sender.Mobile;
+            m_Plant.LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
+            return;
+        }
 
-            if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus != PlantStatus.Stage9)
-            {
-                return;
-            }
+        switch (info.ButtonID)
+        {
+            case 1: // Cancel
+                {
+                    from.SendGump(new ReproductionGump(m_Plant));
 
-            if (info.ButtonID == 3 && !from.InRange(m_Plant.GetWorldLocation(), 3))
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 500446); // That is too far away.
-                return;
-            }
+                    break;
+                }
+            case 2: // Help
+                {
+                    from.NetState.SendDisplayHelpTopic(HelpTopic.DecorativeMode);
 
-            if (!m_Plant.IsUsableBy(from))
-            {
-                m_Plant.LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
-                return;
-            }
+                    from.SendGump(new SetToDecorativeGump(m_Plant));
 
-            switch (info.ButtonID)
-            {
-                case 1: // Cancel
-                    {
-                        from.SendGump(new ReproductionGump(m_Plant));
+                    break;
+                }
+            case 3: // Ok
+                {
+                    m_Plant.PlantStatus = PlantStatus.DecorativePlant;
+                    // You prune the plant.
+                    // This plant will no longer produce resources or seeds, but will require no upkeep.
+                    m_Plant.LabelTo(from, 1053077);
 
-                        break;
-                    }
-                case 2: // Help
-                    {
-                        from.NetState.SendDisplayHelpTopic(HelpTopic.DecorativeMode);
-
-                        from.SendGump(new SetToDecorativeGump(m_Plant));
-
-                        break;
-                    }
-                case 3: // Ok
-                    {
-                        m_Plant.PlantStatus = PlantStatus.DecorativePlant;
-                        // You prune the plant.
-                        // This plant will no longer produce resources or seeds, but will require no upkeep.
-                        m_Plant.LabelTo(from, 1053077);
-
-                        break;
-                    }
-            }
+                    break;
+                }
         }
     }
 }

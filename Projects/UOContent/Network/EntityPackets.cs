@@ -13,41 +13,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class EntityPackets
 {
-    public static class EntityPackets
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendBatchEntities(this NetState ns, IReadOnlyCollection<IEntity> entities) =>
+        ns.SendBatchEntities(entities, entities.Count);
+
+    public static void SendBatchEntities(this NetState ns, IEnumerable<IEntity> entities, int estimatedCount)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendBatchEntities(this NetState ns, IReadOnlyCollection<IEntity> entities) =>
-            ns.SendBatchEntities(entities, entities.Count);
-
-        public static void SendBatchEntities(this NetState ns, IEnumerable<IEntity> entities, int estimatedCount)
+        if (ns?.HighSeas != true || ns.CannotSendPackets())
         {
-            if (ns?.HighSeas != true || ns.CannotSendPackets())
-            {
-                return;
-            }
-
-            var minLength = PacketContainerBuilder.MinPacketLength
-                            + OutgoingEntityPackets.MaxWorldEntityPacketLength
-                            * estimatedCount;
-
-            using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
-
-            Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
-
-            foreach (var entity in entities)
-            {
-                buffer.InitializePacket();
-                var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
-                builder.Advance(bytesWritten);
-            }
-
-            ns.Send(builder.Finalize());
+            return;
         }
+
+        var minLength = PacketContainerBuilder.MinPacketLength
+                        + OutgoingEntityPackets.MaxWorldEntityPacketLength
+                        * estimatedCount;
+
+        using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
+
+        Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
+
+        foreach (var entity in entities)
+        {
+            buffer.InitializePacket();
+            var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
+            builder.Advance(bytesWritten);
+        }
+
+        ns.Send(builder.Finalize());
     }
 }

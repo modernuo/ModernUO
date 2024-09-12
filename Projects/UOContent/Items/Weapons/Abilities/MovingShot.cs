@@ -1,35 +1,34 @@
-namespace Server.Items
+namespace Server.Items;
+
+/// <summary>
+///     Available on some crossbows, this special move allows archers to fire while on the move.
+///     This shot is somewhat less accurate than normal, but the ability to fire while running is a clear advantage.
+/// </summary>
+public class MovingShot : WeaponAbility
 {
-    /// <summary>
-    ///     Available on some crossbows, this special move allows archers to fire while on the move.
-    ///     This shot is somewhat less accurate than normal, but the ability to fire while running is a clear advantage.
-    /// </summary>
-    public class MovingShot : WeaponAbility
+    public override int BaseMana => 15;
+    public override int AccuracyBonus => -25;
+
+    public override bool ValidatesDuringHit => false;
+
+    public override bool OnBeforeSwing(Mobile attacker, Mobile defender) =>
+        Validate(attacker) && CheckMana(attacker, true);
+
+    public override void OnMiss(Mobile attacker, Mobile defender)
     {
-        public override int BaseMana => 15;
-        public override int AccuracyBonus => -25;
+        // Validates in OnSwing for accuracy scalar
 
-        public override bool ValidatesDuringHit => false;
+        ClearCurrentAbility(attacker);
 
-        public override bool OnBeforeSwing(Mobile attacker, Mobile defender) =>
-            Validate(attacker) && CheckMana(attacker, true);
+        attacker.SendLocalizedMessage(1060089); // You fail to execute your special move
+    }
 
-        public override void OnMiss(Mobile attacker, Mobile defender)
-        {
-            // Validates in OnSwing for accuracy scalar
+    public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
+    {
+        // Validates in OnSwing for accuracy scalar
 
-            ClearCurrentAbility(attacker);
+        ClearCurrentAbility(attacker);
 
-            attacker.SendLocalizedMessage(1060089); // You fail to execute your special move
-        }
-
-        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
-        {
-            // Validates in OnSwing for accuracy scalar
-
-            ClearCurrentAbility(attacker);
-
-            attacker.SendLocalizedMessage(1060216); // Your shot was successful
-        }
+        attacker.SendLocalizedMessage(1060216); // Your shot was successful
     }
 }

@@ -1,79 +1,75 @@
-using System;
-using System.Collections.Generic;
+namespace Server.Commands.Generic;
 
-namespace Server.Commands.Generic
+public class AreaCommandImplementor : BaseCommandImplementor
 {
-    public class AreaCommandImplementor : BaseCommandImplementor
+    public AreaCommandImplementor()
     {
-        public AreaCommandImplementor()
+        Accessors = new[] { "Area", "Group" };
+        SupportRequirement = CommandSupport.Area;
+        SupportsConditionals = true;
+        AccessLevel = AccessLevel.GameMaster;
+        Usage = "Area <command> [condition]";
+        Description =
+            "Invokes the command on all appropriate objects in a targeted area. Optional condition arguments can further restrict the set of objects.";
+
+        Instance = this;
+    }
+
+    public static AreaCommandImplementor Instance { get; private set; }
+
+    public override void Process(Mobile from, BaseCommand command, string[] args)
+    {
+        BoundingBoxPicker.Begin(from, (map, start, end) => OnTarget(from, map, start, end, command, args));
+    }
+
+    public void OnTarget(Mobile from, Map map, Point3D start, Point3D end, BaseCommand command, string[] args)
+    {
+        try
         {
-            Accessors = new[] { "Area", "Group" };
-            SupportRequirement = CommandSupport.Area;
-            SupportsConditionals = true;
-            AccessLevel = AccessLevel.GameMaster;
-            Usage = "Area <command> [condition]";
-            Description =
-                "Invokes the command on all appropriate objects in a targeted area. Optional condition arguments can further restrict the set of objects.";
+            var rect = new Rectangle2D(start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1);
 
-            Instance = this;
-        }
+            var ext = Extensions.Parse(from, ref args);
 
-        public static AreaCommandImplementor Instance { get; private set; }
-
-        public override void Process(Mobile from, BaseCommand command, string[] args)
-        {
-            BoundingBoxPicker.Begin(from, (map, start, end) => OnTarget(from, map, start, end, command, args));
-        }
-
-        public void OnTarget(Mobile from, Map map, Point3D start, Point3D end, BaseCommand command, string[] args)
-        {
-            try
+            if (!CheckObjectTypes(from, command, ext, out var items, out var mobiles))
             {
-                var rect = new Rectangle2D(start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1);
+                return;
+            }
 
-                var ext = Extensions.Parse(from, ref args);
+            if (!(items || mobiles))
+            {
+                return;
+            }
 
-                if (!CheckObjectTypes(from, command, ext, out var items, out var mobiles))
+            var objs = new List<object>();
+            if (mobiles)
+            {
+                foreach (var m in map.GetMobilesInBounds(rect))
                 {
-                    return;
-                }
-
-                if (!(items || mobiles))
-                {
-                    return;
-                }
-
-                var objs = new List<object>();
-                if (mobiles)
-                {
-                    foreach (var m in map.GetMobilesInBounds(rect))
+                    if (BaseCommand.IsAccessible(from, m) && ext.IsValid(m))
                     {
-                        if (BaseCommand.IsAccessible(from, m) && ext.IsValid(m))
-                        {
-                            objs.Add(m);
-                        }
+                        objs.Add(m);
                     }
                 }
+            }
 
-                if (items)
+            if (items)
+            {
+                foreach (var item in map.GetItemsInBounds(rect))
                 {
-                    foreach (var item in map.GetItemsInBounds(rect))
+                    if (BaseCommand.IsAccessible(from, item) && ext.IsValid(item))
                     {
-                        if (BaseCommand.IsAccessible(from, item) && ext.IsValid(item))
-                        {
-                            objs.Add(item);
-                        }
+                        objs.Add(item);
                     }
                 }
-
-                ext.Filter(objs);
-
-                RunCommand(from, objs, command, args);
             }
-            catch (Exception ex)
-            {
-                from.SendMessage(ex.Message);
-            }
+
+            ext.Filter(objs);
+
+            RunCommand(from, objs, command, args);
+        }
+        catch (Exception ex)
+        {
+            from.SendMessage(ex.Message);
         }
     }
 }

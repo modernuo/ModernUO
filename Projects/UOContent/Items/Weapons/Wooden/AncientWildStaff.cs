@@ -1,14 +1,13 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+
+[SerializationGenerator(0)]
+public partial class AncientWildStaff : WildStaff
 {
+    [Constructible]
+    public AncientWildStaff() => WeaponAttributes.ResistPoisonBonus = 5;
 
-    [SerializationGenerator(0)]
-    public partial class AncientWildStaff : WildStaff
-    {
-        [Constructible]
-        public AncientWildStaff() => WeaponAttributes.ResistPoisonBonus = 5;
-
-        public override int LabelNumber => 1073550; // ancient wild staff
-    }
+    public override int LabelNumber => 1073550; // ancient wild staff
 }

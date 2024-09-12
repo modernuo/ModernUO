@@ -1,4 +1,3 @@
-using System;
 using Server.Ethics.Evil;
 using Server.Ethics.Hero;
 

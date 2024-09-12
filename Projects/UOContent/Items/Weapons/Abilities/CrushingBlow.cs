@@ -1,62 +1,61 @@
-namespace Server.Items
+namespace Server.Items;
+
+/// <summary>
+///     Also known as the Haymaker, this attack dramatically increases the damage done by a weapon reaching its mark.
+/// </summary>
+public class CrushingBlow : WeaponAbility
 {
-    /// <summary>
-    ///     Also known as the Haymaker, this attack dramatically increases the damage done by a weapon reaching its mark.
-    /// </summary>
-    public class CrushingBlow : WeaponAbility
+    public override int BaseMana => 25;
+    public override double DamageScalar => 1.5;
+
+    public override double GetRequiredTactics(Mobile from)
     {
-        public override int BaseMana => 25;
-        public override double DamageScalar => 1.5;
-
-        public override double GetRequiredTactics(Mobile from)
+        if (from.Weapon is BaseWeapon weapon)
         {
-            if (from.Weapon is BaseWeapon weapon)
+            if (weapon.PrimaryAbility == this)
             {
-                if (weapon.PrimaryAbility == this)
-                {
-                    return 30.0;
-                }
-
-                if (weapon.SecondaryAbility == this)
-                {
-                    return 60.0;
-                }
+                return 30.0;
             }
 
-            return 200.0;
-        }
-
-        public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
-        {
-            if (!Validate(attacker) || !CheckMana(attacker, true))
+            if (weapon.SecondaryAbility == this)
             {
-                return;
+                return 60.0;
             }
-
-            ClearCurrentAbility(attacker);
-
-            attacker.SendLocalizedMessage(1060090); // You have delivered a crushing blow!
-            defender.SendLocalizedMessage(1060091); // You take extra damage from the crushing attack!
-
-            defender.PlaySound(0x1E1);
-            defender.FixedParticles(0, 1, 0, 9946, EffectLayer.Head);
-
-            Effects.SendMovingParticles(
-                new Entity(Serial.Zero, new Point3D(defender.X, defender.Y, defender.Z + 50), defender.Map),
-                new Entity(Serial.Zero, new Point3D(defender.X, defender.Y, defender.Z + 20), defender.Map),
-                0xFB4,
-                1,
-                0,
-                false,
-                false,
-                0,
-                3,
-                9501,
-                1,
-                0,
-                EffectLayer.Head,
-                0x100
-            );
         }
+
+        return 200.0;
+    }
+
+    public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
+    {
+        if (!Validate(attacker) || !CheckMana(attacker, true))
+        {
+            return;
+        }
+
+        ClearCurrentAbility(attacker);
+
+        attacker.SendLocalizedMessage(1060090); // You have delivered a crushing blow!
+        defender.SendLocalizedMessage(1060091); // You take extra damage from the crushing attack!
+
+        defender.PlaySound(0x1E1);
+        defender.FixedParticles(0, 1, 0, 9946, EffectLayer.Head);
+
+        Effects.SendMovingParticles(
+            new Entity(Serial.Zero, new Point3D(defender.X, defender.Y, defender.Z + 50), defender.Map),
+            new Entity(Serial.Zero, new Point3D(defender.X, defender.Y, defender.Z + 20), defender.Map),
+            0xFB4,
+            1,
+            0,
+            false,
+            false,
+            0,
+            3,
+            9501,
+            1,
+            0,
+            EffectLayer.Head,
+            0x100
+        );
     }
 }

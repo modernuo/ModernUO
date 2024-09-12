@@ -1,13 +1,12 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class ArtifactLargeVase : Item
 {
-    [SerializationGenerator(0, false)]
-    public partial class ArtifactLargeVase : Item
+    [Constructible]
+    public ArtifactLargeVase() : base(0x0B47)
     {
-        [Constructible]
-        public ArtifactLargeVase() : base(0x0B47)
-        {
-        }
     }
 }

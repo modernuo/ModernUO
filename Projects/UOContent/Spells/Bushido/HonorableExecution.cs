@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Server.Spells.Bushido;
 
 public class HonorableExecution : SamuraiMove

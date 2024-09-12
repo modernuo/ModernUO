@@ -1,207 +1,204 @@
 using ModernUO.Serialization;
-using System;
-using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class MeerMage : BaseCreature
 {
-    [SerializationGenerator(0, false)]
-    public partial class MeerMage : BaseCreature
+    private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+
+    private DateTime m_NextAbilityTime;
+
+    [Constructible]
+    public MeerMage() : base(AIType.AI_Mage, FightMode.Evil)
     {
-        private static readonly Dictionary<Mobile, TimerExecutionToken> m_Table = new();
+        Body = 770;
 
-        private DateTime m_NextAbilityTime;
+        SetStr(171, 200);
+        SetDex(126, 145);
+        SetInt(276, 305);
 
-        [Constructible]
-        public MeerMage() : base(AIType.AI_Mage, FightMode.Evil)
+        SetHits(103, 120);
+
+        SetDamage(24, 26);
+
+        SetDamageType(ResistanceType.Physical, 100);
+
+        SetResistance(ResistanceType.Physical, 45, 55);
+        SetResistance(ResistanceType.Fire, 15, 25);
+        SetResistance(ResistanceType.Cold, 50);
+        SetResistance(ResistanceType.Poison, 25, 35);
+        SetResistance(ResistanceType.Energy, 25, 35);
+
+        SetSkill(SkillName.EvalInt, 100.0);
+        SetSkill(SkillName.Magery, 70.1, 80.0);
+        SetSkill(SkillName.Meditation, 85.1, 95.0);
+        SetSkill(SkillName.MagicResist, 80.1, 100.0);
+        SetSkill(SkillName.Tactics, 70.1, 90.0);
+        SetSkill(SkillName.Wrestling, 60.1, 80.0);
+
+        Fame = 8000;
+        Karma = 8000;
+
+        VirtualArmor = 16;
+
+        m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
+    }
+
+    public override string CorpseName => "a meer's corpse";
+    public override string DefaultName => "a meer mage";
+
+    public override bool AutoDispel => true;
+    public override Poison PoisonImmune => Poison.Lethal;
+    public override bool CanRummageCorpses => true;
+    public override int TreasureMapLevel => 3;
+
+    public override bool InitialInnocent => true;
+
+    public override void GenerateLoot()
+    {
+        AddLoot(LootPack.FilthyRich);
+        AddLoot(LootPack.MedScrolls, 2);
+        // TODO: Daemon bone ...
+    }
+
+    public override int GetHurtSound() => 0x14D;
+
+    public override int GetDeathSound() => 0x314;
+
+    public override int GetAttackSound() => 0x75;
+
+    public override void OnThink()
+    {
+        if (Core.Now >= m_NextAbilityTime)
         {
-            Body = 770;
+            var combatant = Combatant;
 
-            SetStr(171, 200);
-            SetDex(126, 145);
-            SetInt(276, 305);
-
-            SetHits(103, 120);
-
-            SetDamage(24, 26);
-
-            SetDamageType(ResistanceType.Physical, 100);
-
-            SetResistance(ResistanceType.Physical, 45, 55);
-            SetResistance(ResistanceType.Fire, 15, 25);
-            SetResistance(ResistanceType.Cold, 50);
-            SetResistance(ResistanceType.Poison, 25, 35);
-            SetResistance(ResistanceType.Energy, 25, 35);
-
-            SetSkill(SkillName.EvalInt, 100.0);
-            SetSkill(SkillName.Magery, 70.1, 80.0);
-            SetSkill(SkillName.Meditation, 85.1, 95.0);
-            SetSkill(SkillName.MagicResist, 80.1, 100.0);
-            SetSkill(SkillName.Tactics, 70.1, 90.0);
-            SetSkill(SkillName.Wrestling, 60.1, 80.0);
-
-            Fame = 8000;
-            Karma = 8000;
-
-            VirtualArmor = 16;
-
-            m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
-        }
-
-        public override string CorpseName => "a meer's corpse";
-        public override string DefaultName => "a meer mage";
-
-        public override bool AutoDispel => true;
-        public override Poison PoisonImmune => Poison.Lethal;
-        public override bool CanRummageCorpses => true;
-        public override int TreasureMapLevel => 3;
-
-        public override bool InitialInnocent => true;
-
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.FilthyRich);
-            AddLoot(LootPack.MedScrolls, 2);
-            // TODO: Daemon bone ...
-        }
-
-        public override int GetHurtSound() => 0x14D;
-
-        public override int GetDeathSound() => 0x314;
-
-        public override int GetAttackSound() => 0x75;
-
-        public override void OnThink()
-        {
-            if (Core.Now >= m_NextAbilityTime)
+            if (combatant != null && combatant.Map == Map && combatant.InRange(this, 12) && IsEnemy(combatant) &&
+                !UnderEffect(combatant))
             {
-                var combatant = Combatant;
+                m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(20, 30));
 
-                if (combatant != null && combatant.Map == Map && combatant.InRange(this, 12) && IsEnemy(combatant) &&
-                    !UnderEffect(combatant))
+                if (combatant is BaseCreature bc)
                 {
-                    m_NextAbilityTime = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(20, 30));
-
-                    if (combatant is BaseCreature bc)
+                    if (bc.Controlled && bc.ControlMaster?.Deleted == false && bc.ControlMaster.Alive)
                     {
-                        if (bc.Controlled && bc.ControlMaster?.Deleted == false && bc.ControlMaster.Alive)
+                        if (bc.ControlMaster.Map == Map && bc.ControlMaster.InRange(this, 12) &&
+                            !UnderEffect(bc.ControlMaster))
                         {
-                            if (bc.ControlMaster.Map == Map && bc.ControlMaster.InRange(this, 12) &&
-                                !UnderEffect(bc.ControlMaster))
-                            {
-                                Combatant = combatant = bc.ControlMaster;
-                            }
+                            Combatant = combatant = bc.ControlMaster;
                         }
                     }
+                }
 
-                    if (Utility.RandomDouble() < .1)
+                if (Utility.RandomDouble() < .1)
+                {
+                    int[][] coord =
                     {
-                        int[][] coord =
+                        new[] { -4, -6 }, new[] { 4, -6 }, new[] { 0, -8 }, new[] { -5, 5 }, new[] { 5, 5 }
+                    };
+
+                    for (var i = 0; i < 5; i++)
+                    {
+                        var x = combatant.X + coord[i][0];
+                        var y = combatant.Y + coord[i][1];
+
+                        var loc = new Point3D(x, y, combatant.Map.GetAverageZ(x, y));
+
+                        if (!combatant.Map.CanSpawnMobile(loc))
                         {
-                            new[] { -4, -6 }, new[] { 4, -6 }, new[] { 0, -8 }, new[] { -5, 5 }, new[] { 5, 5 }
+                            continue;
+                        }
+
+                        var rabid = i switch
+                        {
+                            0 => (BaseCreature)new EnragedRabbit(this),
+                            1 => new EnragedHind(this),
+                            2 => new EnragedHart(this),
+                            3 => new EnragedBlackBear(this),
+                            _ => new EnragedEagle(this)
                         };
 
-                        for (var i = 0; i < 5; i++)
-                        {
-                            var x = combatant.X + coord[i][0];
-                            var y = combatant.Y + coord[i][1];
-
-                            var loc = new Point3D(x, y, combatant.Map.GetAverageZ(x, y));
-
-                            if (!combatant.Map.CanSpawnMobile(loc))
-                            {
-                                continue;
-                            }
-
-                            var rabid = i switch
-                            {
-                                0 => (BaseCreature)new EnragedRabbit(this),
-                                1 => new EnragedHind(this),
-                                2 => new EnragedHart(this),
-                                3 => new EnragedBlackBear(this),
-                                _ => new EnragedEagle(this)
-                            };
-
-                            rabid.FocusMob = combatant;
-                            rabid.MoveToWorld(loc, combatant.Map);
-                        }
-
-                        // Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
-                        Say(1071932);
+                        rabid.FocusMob = combatant;
+                        rabid.MoveToWorld(loc, combatant.Map);
                     }
-                    else if (combatant.Player)
-                    {
-                        // I call a plague of insects to sting your flesh!
-                        Say(1071931);
 
-                        var count = 0;
-                        Timer.StartTimer(
-                            TimeSpan.FromSeconds(0.5),
-                            TimeSpan.FromSeconds(7.0),
-                            () => DoEffect(combatant, count++),
-                            out var timerToken
-                        );
-
-                        m_Table[combatant] = timerToken;
-                    }
+                    // Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
+                    Say(1071932);
                 }
-            }
-
-            base.OnThink();
-        }
-
-        public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
-
-        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
-        [OnEvent(nameof(CreatureDeathEvent))]
-        public static void StopEffect(Mobile m, bool message = false)
-        {
-            if (m_Table.Remove(m, out var timer))
-            {
-                if (message)
+                else if (combatant.Player)
                 {
-                    // * The open flame begins to scatter the swarm of insects! *
-                    m.PublicOverheadMessage(MessageType.Emote, m.SpeechHue, 1071925);
-                }
+                    // I call a plague of insects to sting your flesh!
+                    Say(1071931);
 
-                timer.Cancel();
+                    var count = 0;
+                    Timer.StartTimer(
+                        TimeSpan.FromSeconds(0.5),
+                        TimeSpan.FromSeconds(7.0),
+                        () => DoEffect(combatant, count++),
+                        out var timerToken
+                    );
+
+                    m_Table[combatant] = timerToken;
+                }
             }
         }
 
-        private void DoEffect(Mobile m, int count)
+        base.OnThink();
+    }
+
+    public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
+
+    [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+    [OnEvent(nameof(CreatureDeathEvent))]
+    public static void StopEffect(Mobile m, bool message = false)
+    {
+        if (m_Table.Remove(m, out var timer))
         {
-            if (!m.Alive)
+            if (message)
             {
-                StopEffect(m);
-                return;
+                // * The open flame begins to scatter the swarm of insects! *
+                m.PublicOverheadMessage(MessageType.Emote, m.SpeechHue, 1071925);
             }
 
-            if (m.FindItemOnLayer<Torch>(Layer.TwoHanded)?.Burning == true)
-            {
-                StopEffect(m, true);
-                return;
-            }
+            timer.Cancel();
+        }
+    }
 
-            if (count % 4 == 0)
-            {
-                // * The swarm of insects bites and stings your flesh! *
-                m.LocalOverheadMessage(MessageType.Emote, m.SpeechHue, 1071905);
+    private void DoEffect(Mobile m, int count)
+    {
+        if (!m.Alive)
+        {
+            StopEffect(m);
+            return;
+        }
 
-                // * ~1_VAL~ is stung by a swarm of insects *
-                m.NonlocalOverheadMessage(MessageType.Emote, m.SpeechHue, 1071924);
-            }
+        if (m.FindItemOnLayer<Torch>(Layer.TwoHanded)?.Burning == true)
+        {
+            StopEffect(m, true);
+            return;
+        }
 
-            m.FixedParticles(0x91C, 10, 180, 9539, EffectLayer.Waist);
-            m.PlaySound(0x00E);
-            m.PlaySound(0x1BC);
+        if (count % 4 == 0)
+        {
+            // * The swarm of insects bites and stings your flesh! *
+            m.LocalOverheadMessage(MessageType.Emote, m.SpeechHue, 1071905);
 
-            AOS.Damage(m, this, Utility.RandomMinMax(30, 40) - (Core.AOS ? 0 : 10), 100, 0, 0, 0, 0);
+            // * ~1_VAL~ is stung by a swarm of insects *
+            m.NonlocalOverheadMessage(MessageType.Emote, m.SpeechHue, 1071924);
+        }
 
-            if (!m.Alive)
-            {
-                StopEffect(m);
-            }
+        m.FixedParticles(0x91C, 10, 180, 9539, EffectLayer.Waist);
+        m.PlaySound(0x00E);
+        m.PlaySound(0x1BC);
+
+        AOS.Damage(m, this, Utility.RandomMinMax(30, 40) - (Core.AOS ? 0 : 10), 100, 0, 0, 0, 0);
+
+        if (!m.Alive)
+        {
+            StopEffect(m);
         }
     }
 }

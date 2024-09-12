@@ -1,15 +1,14 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class MetallicClothDyetub : DyeTub
 {
-    [SerializationGenerator(0, false)]
-    public partial class MetallicClothDyetub : DyeTub
-    {
-        [Constructible]
-        public MetallicClothDyetub() => LootType = LootType.Blessed;
+    [Constructible]
+    public MetallicClothDyetub() => LootType = LootType.Blessed;
 
-        public override int LabelNumber => 1152920; // Metallic Cloth ...
+    public override int LabelNumber => 1152920; // Metallic Cloth ...
 
-        public override bool MetallicHues => true;
-    }
+    public override bool MetallicHues => true;
 }

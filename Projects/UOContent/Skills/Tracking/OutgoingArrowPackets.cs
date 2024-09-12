@@ -16,45 +16,44 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class OutgoingArrowPackets
 {
-    public static class OutgoingArrowPackets
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendCancelArrow(this NetState ns, int x, int y, Serial s) => ns.SendArrow(0, x, y, s);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SendSetArrow(this NetState ns, int x, int y, Serial s) => ns.SendArrow(1, x, y, s);
+
+    public static void SendArrow(this NetState ns, byte command, int x, int y, Serial s)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendCancelArrow(this NetState ns, int x, int y, Serial s) => ns.SendArrow(0, x, y, s);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SendSetArrow(this NetState ns, int x, int y, Serial s) => ns.SendArrow(1, x, y, s);
-
-        public static void SendArrow(this NetState ns, byte command, int x, int y, Serial s)
+        if (ns.CannotSendPackets())
         {
-            if (ns.CannotSendPackets())
-            {
-                return;
-            }
-
-            var writer = new SpanWriter(stackalloc byte[10]);
-            writer.Write((byte)0xBA); // Packet ID
-            writer.Write(command);
-
-            if (ns.HighSeas)
-            {
-                writer.Write((short)x);
-                writer.Write((short)y);
-                writer.Write(s);
-            }
-            else if (command == 1)
-            {
-                writer.Write((short)x);
-                writer.Write((short)y);
-            }
-            else
-            {
-                writer.Write((short)-1);
-                writer.Write((short)-1);
-            }
-
-            ns.Send(writer.Span);
+            return;
         }
+
+        var writer = new SpanWriter(stackalloc byte[10]);
+        writer.Write((byte)0xBA); // Packet ID
+        writer.Write(command);
+
+        if (ns.HighSeas)
+        {
+            writer.Write((short)x);
+            writer.Write((short)y);
+            writer.Write(s);
+        }
+        else if (command == 1)
+        {
+            writer.Write((short)x);
+            writer.Write((short)y);
+        }
+        else
+        {
+            writer.Write((short)-1);
+            writer.Write((short)-1);
+        }
+
+        ns.Send(writer.Span);
     }
 }

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Server.Items;
 
 public partial class FillableContent

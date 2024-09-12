@@ -1,94 +1,93 @@
 using ModernUO.Serialization;
 using Server.Items;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class EvilMage : BaseCreature
 {
-    [SerializationGenerator(0, false)]
-    public partial class EvilMage : BaseCreature
+    [Constructible]
+    public EvilMage() : base(AIType.AI_Mage)
     {
-        [Constructible]
-        public EvilMage() : base(AIType.AI_Mage)
+        Name = NameList.RandomName("evil mage");
+        Title = "the evil mage";
+        if (Core.UOR)
         {
-            Name = NameList.RandomName("evil mage");
-            Title = "the evil mage";
-            if (Core.UOR)
-            {
-                Body = 124;
-            }
-            else
-            {
-                Body = 0x190;
-                Hue = Race.Human.RandomSkinHue();
-                Utility.AssignRandomHair(this);
-                Utility.AssignRandomFacialHair(this, HairHue);
-            }
-
-            SetStr(81, 105);
-            SetDex(91, 115);
-            SetInt(96, 120);
-
-            SetHits(49, 63);
-
-            SetDamage(5, 10);
-
-            SetDamageType(ResistanceType.Physical, 100);
-
-            SetResistance(ResistanceType.Physical, 15, 20);
-            SetResistance(ResistanceType.Fire, 5, 10);
-            SetResistance(ResistanceType.Poison, 5, 10);
-            SetResistance(ResistanceType.Energy, 5, 10);
-
-            SetSkill(SkillName.EvalInt, 75.1, 100.0);
-            SetSkill(SkillName.Magery, 75.1, 100.0);
-            SetSkill(SkillName.MagicResist, 75.0, 97.5);
-            SetSkill(SkillName.Tactics, 65.0, 87.5);
-            SetSkill(SkillName.Wrestling, 20.2, 60.0);
-
-            Fame = 2500;
-            Karma = -2500;
-
-            VirtualArmor = 16;
-            PackReg(6);
-
-            EquipItem(new Robe(Utility.RandomNeutralHue()));
-            EquipItem(new Sandals());
+            Body = 124;
+        }
+        else
+        {
+            Body = 0x190;
+            Hue = Race.Human.RandomSkinHue();
+            Utility.AssignRandomHair(this);
+            Utility.AssignRandomFacialHair(this, HairHue);
         }
 
-        public override string CorpseName => "an evil mage corpse";
+        SetStr(81, 105);
+        SetDex(91, 115);
+        SetInt(96, 120);
 
-        public override bool CanRummageCorpses => true;
-        public override bool AlwaysMurderer => true;
-        public override int Meat => 1;
-        public override int TreasureMapLevel => Core.AOS ? 1 : 0;
+        SetHits(49, 63);
 
-        public override void GenerateLoot()
+        SetDamage(5, 10);
+
+        SetDamageType(ResistanceType.Physical, 100);
+
+        SetResistance(ResistanceType.Physical, 15, 20);
+        SetResistance(ResistanceType.Fire, 5, 10);
+        SetResistance(ResistanceType.Poison, 5, 10);
+        SetResistance(ResistanceType.Energy, 5, 10);
+
+        SetSkill(SkillName.EvalInt, 75.1, 100.0);
+        SetSkill(SkillName.Magery, 75.1, 100.0);
+        SetSkill(SkillName.MagicResist, 75.0, 97.5);
+        SetSkill(SkillName.Tactics, 65.0, 87.5);
+        SetSkill(SkillName.Wrestling, 20.2, 60.0);
+
+        Fame = 2500;
+        Karma = -2500;
+
+        VirtualArmor = 16;
+        PackReg(6);
+
+        EquipItem(new Robe(Utility.RandomNeutralHue()));
+        EquipItem(new Sandals());
+    }
+
+    public override string CorpseName => "an evil mage corpse";
+
+    public override bool CanRummageCorpses => true;
+    public override bool AlwaysMurderer => true;
+    public override int Meat => 1;
+    public override int TreasureMapLevel => Core.AOS ? 1 : 0;
+
+    public override void GenerateLoot()
+    {
+        AddLoot(LootPack.Average);
+        AddLoot(LootPack.MedScrolls);
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        if (Core.UOR)
         {
-            AddLoot(LootPack.Average);
-            AddLoot(LootPack.MedScrolls);
+            if (Body == 0x190)
+            {
+                Body = Utility.Random(125, 2);
+                HairItemID = 0;
+                HairHue = 0;
+                FacialHairItemID = 0;
+                FacialHairItemID = 0;
+                Hue = 0;
+            }
         }
-
-        [AfterDeserialization]
-        private void AfterDeserialization()
+        else if (Body.BodyID is 125 or 126)
         {
-            if (Core.UOR)
-            {
-                if (Body == 0x190)
-                {
-                    Body = Utility.Random(125, 2);
-                    HairItemID = 0;
-                    HairHue = 0;
-                    FacialHairItemID = 0;
-                    FacialHairItemID = 0;
-                    Hue = 0;
-                }
-            }
-            else if (Body.BodyID is 125 or 126)
-            {
-                Body = 0x190;
-                Hue = Race.Human.RandomSkinHue();
-                Utility.AssignRandomHair(this);
-                Utility.AssignRandomFacialHair(this, HairHue);
-            }
+            Body = 0x190;
+            Hue = Race.Human.RandomSkinHue();
+            Utility.AssignRandomHair(this);
+            Utility.AssignRandomFacialHair(this, HairHue);
         }
     }
 }

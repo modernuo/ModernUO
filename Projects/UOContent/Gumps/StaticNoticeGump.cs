@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Gumps;
 
 public abstract class StaticNoticeGump<T> : StaticWarningGump<T> where T : StaticNoticeGump<T>

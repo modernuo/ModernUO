@@ -1,81 +1,80 @@
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Items
+namespace Server.Items;
+
+public class MetallicHuePicker<T> : Gump
 {
-    public class MetallicHuePicker<T> : Gump
+    private readonly CustomHuePickerCallback<T> m_Callback;
+
+    private readonly Mobile m_From;
+    private readonly T m_State;
+
+    public MetallicHuePicker(Mobile from, CustomHuePickerCallback<T> callback, T state)
+        : base(450, 450)
     {
-        private readonly CustomHuePickerCallback<T> m_Callback;
+        m_From = from;
+        m_Callback = callback;
+        m_State = state;
 
-        private readonly Mobile m_From;
-        private readonly T m_State;
+        Render();
+    }
 
-        public MetallicHuePicker(Mobile from, CustomHuePickerCallback<T> callback, T state)
-            : base(450, 450)
+    public void Render()
+    {
+        AddPage(0);
+
+        AddBackground(0, 0, 450, 450, 0x13BE);
+        AddBackground(10, 10, 430, 430, 0xBB8);
+
+        AddHtmlLocalized(55, 400, 200, 25, 1011036); // OKAY
+
+        AddButton(20, 400, 4005, 4007, 1);
+        AddButton(200, 400, 4005, 4007, 2);
+        AddLabel(235, 400, 0, "DEFAULT");
+
+        AddHtmlLocalized(55, 25, 200, 25, 1150063);  // Base/Shadow Color
+        AddHtmlLocalized(260, 25, 200, 25, 1150064); // Highlight Color
+
+        for (var row = 0; row < 13; row++)
         {
-            m_From = from;
-            m_Callback = callback;
-            m_State = state;
-
-            Render();
+            AddButton(30, 65 + row * 25, 0x1467, 0x1468, row + 1, GumpButtonType.Page, row + 1);
+            AddItem(50, 65 + row * 25, 0x1412, 2501 + row * 12 + (row == 12 ? 6 : 0));
         }
 
-        public void Render()
+        for (var page = 1; page < 14; page++)
         {
-            AddPage(0);
+            AddPage(page);
 
-            AddBackground(0, 0, 450, 450, 0x13BE);
-            AddBackground(10, 10, 430, 430, 0xBB8);
-
-            AddHtmlLocalized(55, 400, 200, 25, 1011036); // OKAY
-
-            AddButton(20, 400, 4005, 4007, 1);
-            AddButton(200, 400, 4005, 4007, 2);
-            AddLabel(235, 400, 0, "DEFAULT");
-
-            AddHtmlLocalized(55, 25, 200, 25, 1150063);  // Base/Shadow Color
-            AddHtmlLocalized(260, 25, 200, 25, 1150064); // Highlight Color
-
-            for (var row = 0; row < 13; row++)
+            for (var row = 0; row < 12; row++)
             {
-                AddButton(30, 65 + row * 25, 0x1467, 0x1468, row + 1, GumpButtonType.Page, row + 1);
-                AddItem(50, 65 + row * 25, 0x1412, 2501 + row * 12 + (row == 12 ? 6 : 0));
+                var hue = 2501 + (page == 13 ? 6 : 0) + row +
+                          12 * (page - 1); /* OSI just had to skip 6 unused hues, didnt they */
+                AddRadio(260, 65 + row * 25, 0xd2, 0xd3, false, hue);
+                AddItem(280, 65 + row * 25, 0x1412, hue);
             }
+        }
+    }
 
-            for (var page = 1; page < 14; page++)
-            {
-                AddPage(page);
-
-                for (var row = 0; row < 12; row++)
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        switch (info.ButtonID)
+        {
+            case 1: // Okay
                 {
-                    var hue = 2501 + (page == 13 ? 6 : 0) + row +
-                              12 * (page - 1); /* OSI just had to skip 6 unused hues, didnt they */
-                    AddRadio(260, 65 + row * 25, 0xd2, 0xd3, false, hue);
-                    AddItem(280, 65 + row * 25, 0x1412, hue);
+                    if (info.Switches.Length > 0)
+                    {
+                        m_Callback(m_From, m_State, info.Switches[0]);
+                    }
+
+                    break;
                 }
-            }
-        }
+            case 2: // Default
+                {
+                    m_Callback(m_From, m_State, 0);
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
-        {
-            switch (info.ButtonID)
-            {
-                case 1: // Okay
-                    {
-                        if (info.Switches.Length > 0)
-                        {
-                            m_Callback(m_From, m_State, info.Switches[0]);
-                        }
-
-                        break;
-                    }
-                case 2: // Default
-                    {
-                        m_Callback(m_From, m_State, 0);
-
-                        break;
-                    }
-            }
+                    break;
+                }
         }
     }
 }

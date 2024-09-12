@@ -16,30 +16,29 @@
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
-namespace Server.Network
+namespace Server.Network;
+
+public static class FreeshardProtocol
 {
-    public static class FreeshardProtocol
+    private static PacketHandler[] _handlers;
+
+    [CallPriority(10)]
+    public static void Configure()
     {
-        private static PacketHandler[] _handlers;
+        _handlers = ProtocolExtensions<FreeshardProtocolInfo>.Register(new FreeshardProtocolInfo());
+    }
 
-        [CallPriority(10)]
-        public static void Configure()
-        {
-            _handlers = ProtocolExtensions<FreeshardProtocolInfo>.Register(new FreeshardProtocolInfo());
-        }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void Register(int cmd, bool ingame, delegate*<NetState, SpanReader, void> onReceive) =>
+        Register(cmd, ingame, false, onReceive);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void Register(int cmd, bool ingame, delegate*<NetState, SpanReader, void> onReceive) =>
-            Register(cmd, ingame, false, onReceive);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe void Register(
+        int cmd, bool ingame, bool outgame, delegate*<NetState, SpanReader, void> onReceive
+    ) => _handlers[cmd] = new PacketHandler(cmd, onReceive, inGameOnly: ingame, outGameOnly: outgame);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void Register(
-            int cmd, bool ingame, bool outgame, delegate*<NetState, SpanReader, void> onReceive
-        ) => _handlers[cmd] = new PacketHandler(cmd, onReceive, inGameOnly: ingame, outGameOnly: outgame);
-
-        private struct FreeshardProtocolInfo : IProtocolExtensionsInfo
-        {
-            public int PacketId => 0xF1;
-        }
+    private struct FreeshardProtocolInfo : IProtocolExtensionsInfo
+    {
+        public int PacketId => 0xF1;
     }
 }

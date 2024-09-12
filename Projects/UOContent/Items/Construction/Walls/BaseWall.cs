@@ -1,10 +1,9 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public abstract partial class BaseWall : Item
 {
-    [SerializationGenerator(0, false)]
-    public abstract partial class BaseWall : Item
-    {
-        public BaseWall(int itemID) : base(itemID) => Movable = false;
-    }
+    public BaseWall(int itemID) : base(itemID) => Movable = false;
 }

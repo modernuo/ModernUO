@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using ModernUO.Serialization;
 using Server.Json;

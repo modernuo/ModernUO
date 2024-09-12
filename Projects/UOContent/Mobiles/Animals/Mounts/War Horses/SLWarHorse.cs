@@ -1,13 +1,12 @@
 using ModernUO.Serialization;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class SLWarHorse : BaseWarHorse
 {
-    [SerializationGenerator(0, false)]
-    public partial class SLWarHorse : BaseWarHorse
+    [Constructible]
+    public SLWarHorse() : base(0x79, 0x3EB0)
     {
-        [Constructible]
-        public SLWarHorse() : base(0x79, 0x3EB0)
-        {
-        }
     }
 }

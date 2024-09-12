@@ -1,52 +1,51 @@
 using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class WaterVatEast : BaseAddon
 {
-    [SerializationGenerator(0)]
-    public partial class WaterVatEast : BaseAddon
+    [Constructible]
+    public WaterVatEast()
     {
-        [Constructible]
-        public WaterVatEast()
-        {
-            AddComponent(new AddonComponent(0x1558), 0, 0, 0);
-            AddComponent(new AddonComponent(0x14DE), -1, 1, 0);
-            AddComponent(new AddonComponent(0x1552), 0, 1, 0);
-            AddComponent(new AddonComponent(0x14DF), 1, -1, 0);
-            AddComponent(new AddonComponent(0x1554), 1, 0, 0);
-            AddComponent(new AddonComponent(0x1559), 1, 1, 0);
-            AddComponent(new AddonComponent(0x1550), 1, 3, 0);
-            AddComponent(new AddonComponent(0x1555), 3, 1, 0);
-            AddComponent(new AddonComponent(0x14D7), 2, 2, 0);
+        AddComponent(new AddonComponent(0x1558), 0, 0, 0);
+        AddComponent(new AddonComponent(0x14DE), -1, 1, 0);
+        AddComponent(new AddonComponent(0x1552), 0, 1, 0);
+        AddComponent(new AddonComponent(0x14DF), 1, -1, 0);
+        AddComponent(new AddonComponent(0x1554), 1, 0, 0);
+        AddComponent(new AddonComponent(0x1559), 1, 1, 0);
+        AddComponent(new AddonComponent(0x1550), 1, 3, 0);
+        AddComponent(new AddonComponent(0x1555), 3, 1, 0);
+        AddComponent(new AddonComponent(0x14D7), 2, 2, 0);
 
-            // Blockers
-            AddComponent(new AddonComponent(0x21A4), 2, -1, 0);
-            AddComponent(new AddonComponent(0x21A4), 3, 0, 0);
-            AddComponent(new AddonComponent(0x21A4), -1, 2, 0);
-            AddComponent(new AddonComponent(0x21A4), 0, 3, 0);
-        }
+        // Blockers
+        AddComponent(new AddonComponent(0x21A4), 2, -1, 0);
+        AddComponent(new AddonComponent(0x21A4), 3, 0, 0);
+        AddComponent(new AddonComponent(0x21A4), -1, 2, 0);
+        AddComponent(new AddonComponent(0x21A4), 0, 3, 0);
     }
+}
 
-    [SerializationGenerator(0)]
-    public partial class WaterVatSouth : BaseAddon
+[SerializationGenerator(0)]
+public partial class WaterVatSouth : BaseAddon
+{
+    [Constructible]
+    public WaterVatSouth()
     {
-        [Constructible]
-        public WaterVatSouth()
-        {
-            AddComponent(new AddonComponent(0x1558), 0, 0, 0);
-            AddComponent(new AddonComponent(0x14DE), -1, 1, 0);
-            AddComponent(new AddonComponent(0x1552), 0, 1, 0);
-            AddComponent(new AddonComponent(0x14DF), 1, -1, 0);
-            AddComponent(new AddonComponent(0x1554), 1, 0, 0);
-            AddComponent(new AddonComponent(0x1559), 1, 1, 0);
-            AddComponent(new AddonComponent(0x1551), 1, 3, 0);
-            AddComponent(new AddonComponent(0x1556), 3, 1, 0);
-            AddComponent(new AddonComponent(0x14D7), 2, 2, 0);
+        AddComponent(new AddonComponent(0x1558), 0, 0, 0);
+        AddComponent(new AddonComponent(0x14DE), -1, 1, 0);
+        AddComponent(new AddonComponent(0x1552), 0, 1, 0);
+        AddComponent(new AddonComponent(0x14DF), 1, -1, 0);
+        AddComponent(new AddonComponent(0x1554), 1, 0, 0);
+        AddComponent(new AddonComponent(0x1559), 1, 1, 0);
+        AddComponent(new AddonComponent(0x1551), 1, 3, 0);
+        AddComponent(new AddonComponent(0x1556), 3, 1, 0);
+        AddComponent(new AddonComponent(0x14D7), 2, 2, 0);
 
-            // Blockers
-            AddComponent(new AddonComponent(0x21A4), 2, -1, 0);
-            AddComponent(new AddonComponent(0x21A4), 3, 0, 0);
-            AddComponent(new AddonComponent(0x21A4), -1, 2, 0);
-            AddComponent(new AddonComponent(0x21A4), 0, 3, 0);
-        }
+        // Blockers
+        AddComponent(new AddonComponent(0x21A4), 2, -1, 0);
+        AddComponent(new AddonComponent(0x21A4), 3, 0, 0);
+        AddComponent(new AddonComponent(0x21A4), -1, 2, 0);
+        AddComponent(new AddonComponent(0x21A4), 0, 3, 0);
     }
 }

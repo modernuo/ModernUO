@@ -1,12 +1,11 @@
-namespace Server
-{
-    public delegate MoveResult MoveMethod(Direction d, bool badStateOk);
+namespace Server;
 
-    public enum MoveResult
-    {
-        BadState,
-        Blocked,
-        Success,
-        SuccessAutoTurn
-    }
+public delegate MoveResult MoveMethod(Direction d, bool badStateOk);
+
+public enum MoveResult
+{
+    BadState,
+    Blocked,
+    Success,
+    SuccessAutoTurn
 }

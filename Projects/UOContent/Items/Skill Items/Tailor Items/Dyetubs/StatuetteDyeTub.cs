@@ -1,51 +1,50 @@
 using ModernUO.Serialization;
 using Server.Engines.VeteranRewards;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(1, false)]
+public partial class StatuetteDyeTub : DyeTub, IRewardItem
 {
-    [SerializationGenerator(1, false)]
-    public partial class StatuetteDyeTub : DyeTub, IRewardItem
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _isRewardItem;
+
+    [Constructible]
+    public StatuetteDyeTub() => LootType = LootType.Blessed;
+
+    public override bool AllowDyables => false;
+    public override bool AllowStatuettes => true;
+    public override int TargetMessage => 1049777; // Target the statuette to dye
+    public override int FailMessage => 1049778;   // You can only dye veteran reward statuettes with this tub.
+    public override int LabelNumber => 1049741;   // Reward Statuette Dye Tub
+    public override CustomHuePicker CustomHuePicker => CustomHuePicker.LeatherDyeTub;
+
+    public override void OnDoubleClick(Mobile from)
     {
-        [SerializableField(0)]
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
-        private bool _isRewardItem;
-
-        [Constructible]
-        public StatuetteDyeTub() => LootType = LootType.Blessed;
-
-        public override bool AllowDyables => false;
-        public override bool AllowStatuettes => true;
-        public override int TargetMessage => 1049777; // Target the statuette to dye
-        public override int FailMessage => 1049778;   // You can only dye veteran reward statuettes with this tub.
-        public override int LabelNumber => 1049741;   // Reward Statuette Dye Tub
-        public override CustomHuePicker CustomHuePicker => CustomHuePicker.LeatherDyeTub;
-
-        public override void OnDoubleClick(Mobile from)
+        if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         {
-            if (_isRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
-            {
-                return;
-            }
-
-            base.OnDoubleClick(from);
+            return;
         }
 
-        public override void GetProperties(IPropertyList list)
-        {
-            base.GetProperties(list);
+        base.OnDoubleClick(from);
+    }
 
-            if (Core.ML && _isRewardItem)
-            {
-                list.Add(1076221); // 5th Year Veteran Reward
-            }
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (Core.ML && _isRewardItem)
+        {
+            list.Add(1076221); // 5th Year Veteran Reward
         }
+    }
 
-        private void Deserialize(IGenericReader reader, int version)
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        if (LootType == LootType.Regular)
         {
-            if (LootType == LootType.Regular)
-            {
-                LootType = LootType.Blessed;
-            }
+            LootType = LootType.Blessed;
         }
     }
 }

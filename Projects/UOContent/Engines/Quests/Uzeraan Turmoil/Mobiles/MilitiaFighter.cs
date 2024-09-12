@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Items;
 using Server.Misc;

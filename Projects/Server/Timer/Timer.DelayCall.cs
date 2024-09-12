@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 #if DEBUG_TIMERS
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -1,8 +1,7 @@
-namespace Server.Engines.BulkOrders
+namespace Server.Engines.BulkOrders;
+
+public enum BODType
 {
-    public enum BODType
-    {
-        Smith,
-        Tailor
-    }
+    Smith,
+    Tailor
 }

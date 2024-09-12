@@ -1,4 +1,3 @@
-using System;
 using Server.SkillHandlers;
 
 namespace Server.Spells.Ninjitsu;

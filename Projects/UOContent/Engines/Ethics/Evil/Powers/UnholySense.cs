@@ -1,4 +1,3 @@
-using System;
 using Server.Text;
 
 namespace Server.Ethics.Evil;

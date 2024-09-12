@@ -1,129 +1,125 @@
-using System;
-using System.Collections.Generic;
+namespace Server.Engines.BulkOrders;
 
-namespace Server.Engines.BulkOrders
+public class LargeBulkEntry
 {
-    public class LargeBulkEntry
+    private static Dictionary<string, Dictionary<string, SmallBulkEntry[]>> m_Cache;
+    private int m_Amount;
+
+    public LargeBulkEntry(LargeBOD owner, SmallBulkEntry details)
     {
-        private static Dictionary<string, Dictionary<string, SmallBulkEntry[]>> m_Cache;
-        private int m_Amount;
+        Owner = owner;
+        Details = details;
+    }
 
-        public LargeBulkEntry(LargeBOD owner, SmallBulkEntry details)
+    public LargeBulkEntry(IGenericReader reader, LargeBOD owner)
+    {
+        Owner = owner;
+        m_Amount = reader.ReadInt();
+
+        Type realType = null;
+
+        var type = reader.ReadString();
+
+        if (type != null)
         {
-            Owner = owner;
-            Details = details;
+            realType = AssemblyHandler.FindTypeByFullName(type);
         }
 
-        public LargeBulkEntry(IGenericReader reader, LargeBOD owner)
+        Details = new SmallBulkEntry(realType, reader.ReadInt(), reader.ReadInt());
+    }
+
+    public LargeBOD Owner { get; set; }
+
+    public int Amount
+    {
+        get => m_Amount;
+        set
         {
-            Owner = owner;
-            m_Amount = reader.ReadInt();
+            m_Amount = value;
+            Owner?.InvalidateProperties();
+        }
+    }
 
-            Type realType = null;
+    public SmallBulkEntry Details { get; }
 
-            var type = reader.ReadString();
+    public static SmallBulkEntry[] LargeRing => GetEntries("Blacksmith", "largering");
 
-            if (type != null)
-            {
-                realType = AssemblyHandler.FindTypeByFullName(type);
-            }
+    public static SmallBulkEntry[] LargePlate => GetEntries("Blacksmith", "largeplate");
 
-            Details = new SmallBulkEntry(realType, reader.ReadInt(), reader.ReadInt());
+    public static SmallBulkEntry[] LargeChain => GetEntries("Blacksmith", "largechain");
+
+    public static SmallBulkEntry[] LargeAxes => GetEntries("Blacksmith", "largeaxes");
+
+    public static SmallBulkEntry[] LargeFencing => GetEntries("Blacksmith", "largefencing");
+
+    public static SmallBulkEntry[] LargeMaces => GetEntries("Blacksmith", "largemaces");
+
+    public static SmallBulkEntry[] LargePolearms => GetEntries("Blacksmith", "largepolearms");
+
+    public static SmallBulkEntry[] LargeSwords => GetEntries("Blacksmith", "largeswords");
+
+    public static SmallBulkEntry[] BoneSet => GetEntries("Tailoring", "boneset");
+
+    public static SmallBulkEntry[] Farmer => GetEntries("Tailoring", "farmer");
+
+    public static SmallBulkEntry[] FemaleLeatherSet => GetEntries("Tailoring", "femaleleatherset");
+
+    public static SmallBulkEntry[] FisherGirl => GetEntries("Tailoring", "fishergirl");
+
+    public static SmallBulkEntry[] Gypsy => GetEntries("Tailoring", "gypsy");
+
+    public static SmallBulkEntry[] HatSet => GetEntries("Tailoring", "hatset");
+
+    public static SmallBulkEntry[] Jester => GetEntries("Tailoring", "jester");
+
+    public static SmallBulkEntry[] Lady => GetEntries("Tailoring", "lady");
+
+    public static SmallBulkEntry[] MaleLeatherSet => GetEntries("Tailoring", "maleleatherset");
+
+    public static SmallBulkEntry[] Pirate => GetEntries("Tailoring", "pirate");
+
+    public static SmallBulkEntry[] ShoeSet => GetEntries("Tailoring", "shoeset");
+
+    public static SmallBulkEntry[] StuddedSet => GetEntries("Tailoring", "studdedset");
+
+    public static SmallBulkEntry[] TownCrier => GetEntries("Tailoring", "towncrier");
+
+    public static SmallBulkEntry[] Wizard => GetEntries("Tailoring", "wizard");
+
+    public static SmallBulkEntry[] GetEntries(string type, string name)
+    {
+        m_Cache ??= new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
+
+        if (!m_Cache.TryGetValue(type, out var table))
+        {
+            m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
         }
 
-        public LargeBOD Owner { get; set; }
-
-        public int Amount
+        if (!table.TryGetValue(name, out var entries))
         {
-            get => m_Amount;
-            set
-            {
-                m_Amount = value;
-                Owner?.InvalidateProperties();
-            }
+            table[name] = entries = SmallBulkEntry.LoadEntries(type, name);
         }
 
-        public SmallBulkEntry Details { get; }
+        return entries;
+    }
 
-        public static SmallBulkEntry[] LargeRing => GetEntries("Blacksmith", "largering");
+    public static LargeBulkEntry[] ConvertEntries(LargeBOD owner, SmallBulkEntry[] small)
+    {
+        var large = new LargeBulkEntry[small.Length];
 
-        public static SmallBulkEntry[] LargePlate => GetEntries("Blacksmith", "largeplate");
-
-        public static SmallBulkEntry[] LargeChain => GetEntries("Blacksmith", "largechain");
-
-        public static SmallBulkEntry[] LargeAxes => GetEntries("Blacksmith", "largeaxes");
-
-        public static SmallBulkEntry[] LargeFencing => GetEntries("Blacksmith", "largefencing");
-
-        public static SmallBulkEntry[] LargeMaces => GetEntries("Blacksmith", "largemaces");
-
-        public static SmallBulkEntry[] LargePolearms => GetEntries("Blacksmith", "largepolearms");
-
-        public static SmallBulkEntry[] LargeSwords => GetEntries("Blacksmith", "largeswords");
-
-        public static SmallBulkEntry[] BoneSet => GetEntries("Tailoring", "boneset");
-
-        public static SmallBulkEntry[] Farmer => GetEntries("Tailoring", "farmer");
-
-        public static SmallBulkEntry[] FemaleLeatherSet => GetEntries("Tailoring", "femaleleatherset");
-
-        public static SmallBulkEntry[] FisherGirl => GetEntries("Tailoring", "fishergirl");
-
-        public static SmallBulkEntry[] Gypsy => GetEntries("Tailoring", "gypsy");
-
-        public static SmallBulkEntry[] HatSet => GetEntries("Tailoring", "hatset");
-
-        public static SmallBulkEntry[] Jester => GetEntries("Tailoring", "jester");
-
-        public static SmallBulkEntry[] Lady => GetEntries("Tailoring", "lady");
-
-        public static SmallBulkEntry[] MaleLeatherSet => GetEntries("Tailoring", "maleleatherset");
-
-        public static SmallBulkEntry[] Pirate => GetEntries("Tailoring", "pirate");
-
-        public static SmallBulkEntry[] ShoeSet => GetEntries("Tailoring", "shoeset");
-
-        public static SmallBulkEntry[] StuddedSet => GetEntries("Tailoring", "studdedset");
-
-        public static SmallBulkEntry[] TownCrier => GetEntries("Tailoring", "towncrier");
-
-        public static SmallBulkEntry[] Wizard => GetEntries("Tailoring", "wizard");
-
-        public static SmallBulkEntry[] GetEntries(string type, string name)
+        for (var i = 0; i < small.Length; ++i)
         {
-            m_Cache ??= new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
-
-            if (!m_Cache.TryGetValue(type, out var table))
-            {
-                m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
-            }
-
-            if (!table.TryGetValue(name, out var entries))
-            {
-                table[name] = entries = SmallBulkEntry.LoadEntries(type, name);
-            }
-
-            return entries;
+            large[i] = new LargeBulkEntry(owner, small[i]);
         }
 
-        public static LargeBulkEntry[] ConvertEntries(LargeBOD owner, SmallBulkEntry[] small)
-        {
-            var large = new LargeBulkEntry[small.Length];
+        return large;
+    }
 
-            for (var i = 0; i < small.Length; ++i)
-            {
-                large[i] = new LargeBulkEntry(owner, small[i]);
-            }
-
-            return large;
-        }
-
-        public void Serialize(IGenericWriter writer)
-        {
-            writer.Write(m_Amount);
-            writer.Write(Details.Type?.FullName);
-            writer.Write(Details.Number);
-            writer.Write(Details.Graphic);
-        }
+    public void Serialize(IGenericWriter writer)
+    {
+        writer.Write(m_Amount);
+        writer.Write(Details.Type?.FullName);
+        writer.Write(Details.Number);
+        writer.Write(Details.Graphic);
     }
 }

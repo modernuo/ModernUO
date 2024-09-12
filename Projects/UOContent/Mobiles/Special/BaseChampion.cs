@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Engines.Virtues;

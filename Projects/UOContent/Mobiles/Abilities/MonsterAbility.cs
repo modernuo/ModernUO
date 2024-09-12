@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Server.Mobiles;
+﻿namespace Server.Mobiles;
 
 /// <summary>
 /// Abstract class used to build singletons for managing a specific monster ability.

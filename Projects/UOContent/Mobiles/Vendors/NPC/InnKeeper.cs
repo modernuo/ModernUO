@@ -1,29 +1,27 @@
 using ModernUO.Serialization;
-using System.Collections.Generic;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class InnKeeper : BaseVendor
 {
-    [SerializationGenerator(0, false)]
-    public partial class InnKeeper : BaseVendor
+    private readonly List<SBInfo> m_SBInfos = new();
+
+    [Constructible]
+    public InnKeeper() : base("the innkeeper")
     {
-        private readonly List<SBInfo> m_SBInfos = new();
+    }
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-        [Constructible]
-        public InnKeeper() : base("the innkeeper")
+    public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes;
+
+    public override void InitSBInfo()
+    {
+        m_SBInfos.Add(new SBInnKeeper());
+
+        if (IsTokunoVendor)
         {
-        }
-        protected override List<SBInfo> SBInfos => m_SBInfos;
-
-        public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes;
-
-        public override void InitSBInfo()
-        {
-            m_SBInfos.Add(new SBInnKeeper());
-
-            if (IsTokunoVendor)
-            {
-                m_SBInfos.Add(new SBSEFood());
-            }
+            m_SBInfos.Add(new SBSEFood());
         }
     }
 }

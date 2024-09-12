@@ -16,9 +16,7 @@
 using Server.Compression;
 using Server.Logging;
 using Server.Network;
-using System;
 using System.Buffers;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Server.Gumps;

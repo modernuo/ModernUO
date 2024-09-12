@@ -1,28 +1,27 @@
 ﻿using ModernUO.Serialization;
 
-namespace Server.Items
+namespace Server.Items;
+
+[SerializationGenerator(0, false)]
+public partial class DragonEasterEgg : Item, IDyable
 {
-    [SerializationGenerator(0, false)]
-    public partial class DragonEasterEgg : Item, IDyable
+    [Constructible]
+    public DragonEasterEgg()
+        : base(0x47E6)
     {
-        [Constructible]
-        public DragonEasterEgg()
-            : base(0x47E6)
+    }
+
+    public override int LabelNumber => 1097278;
+
+    public bool Dye(Mobile from, DyeTub sender)
+    {
+        if (Deleted || !sender.AllowDyables)
         {
+            return false;
         }
 
-        public override int LabelNumber => 1097278;
+        Hue = sender.DyedHue;
 
-        public bool Dye(Mobile from, DyeTub sender)
-        {
-            if (Deleted || !sender.AllowDyables)
-            {
-                return false;
-            }
-
-            Hue = sender.DyedHue;
-
-            return true;
-        }
+        return true;
     }
 }

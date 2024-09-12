@@ -13,41 +13,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Text.Json.Serialization;
 using Server.Gumps;
 
-namespace Server.Commands
+namespace Server.Commands;
+
+public class CAGObject : CAGNode
 {
-    public class CAGObject : CAGNode
-    {
-        [JsonPropertyName("type")]
-        public Type Type { get; set; }
+    [JsonPropertyName("type")]
+    public Type Type { get; set; }
 
 #nullable enable
-        [JsonPropertyName("gfx")]
-        public int? ItemID { get; set; }
+    [JsonPropertyName("gfx")]
+    public int? ItemID { get; set; }
 
-        [JsonPropertyName("hue")]
-        public int? Hue { get; set; }
+    [JsonPropertyName("hue")]
+    public int? Hue { get; set; }
 #nullable restore
 
-        public CAGCategory Parent { get; set; }
+    public CAGCategory Parent { get; set; }
 
-        public override string Title => Type?.Name ?? "bad type";
+    public override string Title => Type?.Name ?? "bad type";
 
-        public override void OnClick(Mobile from, int page)
+    public override void OnClick(Mobile from, int page)
+    {
+        if (Type == null)
         {
-            if (Type == null)
-            {
-                from.SendMessage("That is an invalid type name.");
-            }
-            else
-            {
-                CommandSystem.Handle(from, $"{CommandSystem.Prefix}Add {Type.Name}");
+            from.SendMessage("That is an invalid type name.");
+        }
+        else
+        {
+            CommandSystem.Handle(from, $"{CommandSystem.Prefix}Add {Type.Name}");
 
-                from.SendGump(new CategorizedAddGump(from, Parent, page));
-            }
+            from.SendGump(new CategorizedAddGump(from, Parent, page));
         }
     }
 }

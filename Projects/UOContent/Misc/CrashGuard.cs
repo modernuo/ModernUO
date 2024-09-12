@@ -1,205 +1,202 @@
-using System;
-using System.IO;
 using Server.Accounting;
 using Server.Logging;
 using Server.Network;
 using Server.Saves;
 
-namespace Server.Misc
+namespace Server.Misc;
+
+public static class CrashGuard
 {
-    public static class CrashGuard
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(CrashGuard));
+
+    private static bool Enabled;
+    private static bool SaveBackup;
+    private static bool RestartServer; // Disable this if using a daemon/service
+    private static bool GenerateReport;
+
+    public static void Configure()
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(CrashGuard));
+        Enabled = ServerConfiguration.GetOrUpdateSetting("crashGuard.enabled", true);
+        SaveBackup = ServerConfiguration.GetOrUpdateSetting("crashGuard.saveBackup", true);
+        RestartServer = ServerConfiguration.GetOrUpdateSetting("crashGuard.restartServer", true);
+        GenerateReport = ServerConfiguration.GetOrUpdateSetting("crashGuard.generateReport", true);
+    }
 
-        private static bool Enabled;
-        private static bool SaveBackup;
-        private static bool RestartServer; // Disable this if using a daemon/service
-        private static bool GenerateReport;
-
-        public static void Configure()
+    public static void Initialize()
+    {
+        if (Enabled)
         {
-            Enabled = ServerConfiguration.GetOrUpdateSetting("crashGuard.enabled", true);
-            SaveBackup = ServerConfiguration.GetOrUpdateSetting("crashGuard.saveBackup", true);
-            RestartServer = ServerConfiguration.GetOrUpdateSetting("crashGuard.restartServer", true);
-            GenerateReport = ServerConfiguration.GetOrUpdateSetting("crashGuard.generateReport", true);
+            EventSink.ServerCrashed += CrashGuard_OnCrash;
+        }
+    }
+
+    public static void CrashGuard_OnCrash(ServerCrashedEventArgs e)
+    {
+        if (GenerateReport)
+        {
+            GenerateCrashReport(e);
         }
 
-        public static void Initialize()
+        if (SaveBackup)
         {
-            if (Enabled)
-            {
-                EventSink.ServerCrashed += CrashGuard_OnCrash;
-            }
+            Backup();
         }
 
-        public static void CrashGuard_OnCrash(ServerCrashedEventArgs e)
+        if (RestartServer)
         {
-            if (GenerateReport)
-            {
-                GenerateCrashReport(e);
-            }
+            e.Close = true;
+            Core.Kill(true);
+        }
+        else
+        {
+            World.WaitForWriteCompletion();
+        }
+    }
 
-            if (SaveBackup)
-            {
-                Backup();
-            }
+    private static void SendEmail(string filePath)
+    {
+        logger.Information("Sending crash email");
 
-            if (RestartServer)
-            {
-                e.Close = true;
-                Core.Kill(true);
-            }
-            else
-            {
-                World.WaitForWriteCompletion();
-            }
+        Email.SendCrashEmail(filePath);
+    }
+
+    private static void DirectoryCopy(string sourceDirName, string destDirName)
+    {
+        // Get the subdirectories for the specified directory.
+        DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+        DirectoryInfo[] dirs = dir.GetDirectories();
+
+        FileInfo[] files = dir.GetFiles();
+        foreach (FileInfo file in files)
+        {
+            string tempPath = Path.Combine(destDirName, file.Name);
+            file.CopyTo(tempPath, false);
         }
 
-        private static void SendEmail(string filePath)
+        foreach (DirectoryInfo subdir in dirs)
         {
-            logger.Information("Sending crash email");
-
-            Email.SendCrashEmail(filePath);
+            string tempPath = Path.Combine(destDirName, subdir.Name);
+            DirectoryCopy(subdir.FullName, tempPath);
         }
+    }
 
-        private static void DirectoryCopy(string sourceDirName, string destDirName)
+    private static void Backup()
+    {
+        logger.Information("Backing up");
+
+        try
         {
-            // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-            DirectoryInfo[] dirs = dir.GetDirectories();
+            var timeStamp = Utility.GetTimeStamp();
 
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
+            var backupPath = PathUtility.EnsureDirectory(Path.Combine(AutoArchive.BackupPath, "Crashed", timeStamp));
+            var savePath = World.SavePath;
+            if (Directory.Exists(savePath))
             {
-                string tempPath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(tempPath, false);
+                DirectoryCopy(savePath, backupPath);
             }
 
-            foreach (DirectoryInfo subdir in dirs)
-            {
-                string tempPath = Path.Combine(destDirName, subdir.Name);
-                DirectoryCopy(subdir.FullName, tempPath);
-            }
+            logger.Information("Backup {Status}", "done");
         }
-
-        private static void Backup()
+        catch
         {
-            logger.Information("Backing up");
+            logger.Error("Backup {Status}", "failed");
+        }
+    }
 
-            try
+    private static void GenerateCrashReport(ServerCrashedEventArgs e)
+    {
+        logger.Information("Generating crash report");
+
+        try
+        {
+            var timeStamp = Utility.GetTimeStamp();
+            var fileName = $"Crash {timeStamp}.log";
+
+            var root = Core.BaseDirectory;
+            var filePath = Path.Combine(root, fileName);
+
+            using (var op = new StreamWriter(filePath))
             {
-                var timeStamp = Utility.GetTimeStamp();
+                var ver = Core.Version;
 
-                var backupPath = PathUtility.EnsureDirectory(Path.Combine(AutoArchive.BackupPath, "Crashed", timeStamp));
-                var savePath = World.SavePath;
-                if (Directory.Exists(savePath))
+                op.WriteLine("Server Crash Report");
+                op.WriteLine("===================");
+                op.WriteLine();
+                op.WriteLine($"ModernUO Version {ver.Major}.{ver.Minor}, Build {ver.Build}.{ver.Revision}");
+                op.WriteLine("Operating System: {0}", Environment.OSVersion);
+                op.WriteLine(".NET Framework: {0}", Environment.Version);
+                op.WriteLine("Time: {0}", timeStamp);
+
+                try
                 {
-                    DirectoryCopy(savePath, backupPath);
+                    op.WriteLine($"Accounts: {Accounts.Count}");
+                }
+                catch
+                {
+                    // ignored
                 }
 
-                logger.Information("Backup {Status}", "done");
-            }
-            catch
-            {
-                logger.Error("Backup {Status}", "failed");
-            }
-        }
-
-        private static void GenerateCrashReport(ServerCrashedEventArgs e)
-        {
-            logger.Information("Generating crash report");
-
-            try
-            {
-                var timeStamp = Utility.GetTimeStamp();
-                var fileName = $"Crash {timeStamp}.log";
-
-                var root = Core.BaseDirectory;
-                var filePath = Path.Combine(root, fileName);
-
-                using (var op = new StreamWriter(filePath))
+                try
                 {
-                    var ver = Core.Version;
+                    op.WriteLine($"Mobiles: {World.Mobiles.Count}");
+                }
+                catch
+                {
+                    // ignored
+                }
 
-                    op.WriteLine("Server Crash Report");
-                    op.WriteLine("===================");
-                    op.WriteLine();
-                    op.WriteLine($"ModernUO Version {ver.Major}.{ver.Minor}, Build {ver.Build}.{ver.Revision}");
-                    op.WriteLine("Operating System: {0}", Environment.OSVersion);
-                    op.WriteLine(".NET Framework: {0}", Environment.Version);
-                    op.WriteLine("Time: {0}", timeStamp);
+                try
+                {
+                    op.WriteLine($"Items: {World.Items.Count}");
+                }
+                catch
+                {
+                    // ignored
+                }
 
-                    try
+                op.WriteLine($"Exception: {e.Exception}");
+                op.WriteLine();
+
+                op.WriteLine("Clients:");
+
+                try
+                {
+                    var states = NetState.Instances;
+
+                    op.WriteLine($"- Count: {states.Count}");
+
+                    foreach (var ns in NetState.Instances)
                     {
-                        op.WriteLine($"Accounts: {Accounts.Count}");
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                        op.Write($"+ {ns}:");
 
-                    try
-                    {
-                        op.WriteLine($"Mobiles: {World.Mobiles.Count}");
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    try
-                    {
-                        op.WriteLine($"Items: {World.Items.Count}");
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    op.WriteLine($"Exception: {e.Exception}");
-                    op.WriteLine();
-
-                    op.WriteLine("Clients:");
-
-                    try
-                    {
-                        var states = NetState.Instances;
-
-                        op.WriteLine($"- Count: {states.Count}");
-
-                        foreach (var ns in NetState.Instances)
+                        if (ns.Account is Account a)
                         {
-                            op.Write($"+ {ns}:");
-
-                            if (ns.Account is Account a)
-                            {
-                                op.Write($" (account = {a.Username})");
-                            }
-
-                            var m = ns.Mobile;
-
-                            if (m != null)
-                            {
-                                op.Write($" (mobile = {m.Serial} '{m.Name}')");
-                            }
-
-                            op.WriteLine();
+                            op.Write($" (account = {a.Username})");
                         }
-                    }
-                    catch
-                    {
-                        op.WriteLine("- Failed");
+
+                        var m = ns.Mobile;
+
+                        if (m != null)
+                        {
+                            op.Write($" (mobile = {m.Serial} '{m.Name}')");
+                        }
+
+                        op.WriteLine();
                     }
                 }
-
-                logger.Information("Crash report generated");
-
-                SendEmail(filePath);
+                catch
+                {
+                    op.WriteLine("- Failed");
+                }
             }
-            catch
-            {
-                logger.Error("Crash report generation failed");
-            }
+
+            logger.Information("Crash report generated");
+
+            SendEmail(filePath);
+        }
+        catch
+        {
+            logger.Error("Crash report generation failed");
         }
     }
 }

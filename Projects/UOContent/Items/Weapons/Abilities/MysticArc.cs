@@ -1,4 +1,3 @@
-using System;
 using Server.Collections;
 
 namespace Server.Items;

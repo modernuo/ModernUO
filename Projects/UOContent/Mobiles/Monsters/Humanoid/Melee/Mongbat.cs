@@ -1,54 +1,53 @@
 using ModernUO.Serialization;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+[SerializationGenerator(0, false)]
+public partial class Mongbat : BaseCreature
 {
-    [SerializationGenerator(0, false)]
-    public partial class Mongbat : BaseCreature
+    [Constructible]
+    public Mongbat() : base(AIType.AI_Melee)
     {
-        [Constructible]
-        public Mongbat() : base(AIType.AI_Melee)
-        {
-            Body = 39;
-            BaseSoundID = 422;
+        Body = 39;
+        BaseSoundID = 422;
 
-            SetStr(6, 10);
-            SetDex(26, 38);
-            SetInt(6, 14);
+        SetStr(6, 10);
+        SetDex(26, 38);
+        SetInt(6, 14);
 
-            SetHits(4, 6);
-            SetMana(0);
+        SetHits(4, 6);
+        SetMana(0);
 
-            SetDamage(1, 2);
+        SetDamage(1, 2);
 
-            SetDamageType(ResistanceType.Physical, 100);
+        SetDamageType(ResistanceType.Physical, 100);
 
-            SetResistance(ResistanceType.Physical, 5, 10);
+        SetResistance(ResistanceType.Physical, 5, 10);
 
-            SetSkill(SkillName.MagicResist, 5.1, 14.0);
-            SetSkill(SkillName.Tactics, 5.1, 10.0);
-            SetSkill(SkillName.Wrestling, 5.1, 10.0);
+        SetSkill(SkillName.MagicResist, 5.1, 14.0);
+        SetSkill(SkillName.Tactics, 5.1, 10.0);
+        SetSkill(SkillName.Wrestling, 5.1, 10.0);
 
-            Fame = 150;
-            Karma = -150;
+        Fame = 150;
+        Karma = -150;
 
-            VirtualArmor = 10;
+        VirtualArmor = 10;
 
-            Tamable = true;
-            ControlSlots = 1;
-            MinTameSkill = -18.9;
-        }
+        Tamable = true;
+        ControlSlots = 1;
+        MinTameSkill = -18.9;
+    }
 
-        public override string CorpseName => "a mongbat corpse";
-        public override string DefaultName => "a mongbat";
+    public override string CorpseName => "a mongbat corpse";
+    public override string DefaultName => "a mongbat";
 
-        public override bool CanFly => true;
+    public override bool CanFly => true;
 
-        public override int Meat => 1;
-        public override FoodType FavoriteFood => FoodType.Meat;
+    public override int Meat => 1;
+    public override FoodType FavoriteFood => FoodType.Meat;
 
-        public override void GenerateLoot()
-        {
-            AddLoot(LootPack.Poor);
-        }
+    public override void GenerateLoot()
+    {
+        AddLoot(LootPack.Poor);
     }
 }
