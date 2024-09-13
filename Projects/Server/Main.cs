@@ -463,7 +463,6 @@ public static class Core
 
                 // Handle networking
                 NetState.Slice();
-                // PingServer.Slice();
 
                 // Execute captured post-await methods (like Timer.Pause)
                 LoopContext.ExecuteTasks();
