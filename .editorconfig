@@ -135,6 +135,18 @@ dotnet_style_qualification_for_field=false:suggestion
 dotnet_style_qualification_for_method=false:suggestion
 dotnet_style_qualification_for_property=false:suggestion
 dotnet_style_require_accessibility_modifiers=for_non_interface_members:suggestion
+# Added by Derek
+dotnet_diagnostic.IDE0022.severity = none # expression bodies
+dotnet_diagnostic.IDE0130.severity = none # namespace not matching file location
+dotnet_diagnostic.IDE0290.severity = none # primary constructors
+dotnet_diagnostic.IDE1006.severity = none # naming violations with "_"
+dotnet_diagnostic.IDE0038.severity = none # pattern matching
+dotnet_diagnostic.IDE0008.severity = none # using var
+# probably should be ruled var or not var across the board but it's just suggestions anyway. 
+# Leave this here in case we want to turn it on in the future
+# csharp_style_var_for_built_in_types    = true:suggestion  # suggest using var (implied) variables
+# csharp_style_var_when_type_is_apparent = true:suggestion  # suggest using var (implied) variables
+# csharp_style_var_elsewhere             = true:suggestion  # suggest using var (implied) variables
 
 # ReSharper properties
 resharper_apply_auto_detected_rules=false
