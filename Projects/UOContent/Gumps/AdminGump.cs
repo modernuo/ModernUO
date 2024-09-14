@@ -3968,7 +3968,14 @@ namespace Server.Gumps
                 InvokeCommand("Save");
             }
 
-            Core.Kill(restart);
+            // Kill the server on a different thread otherwise we will dead lock
+            ThreadPool.QueueUserWorkItem(
+                _ =>
+                {
+                    World.WaitForWriteCompletion();
+                    Core.Kill(restart);
+                }
+            );
         }
 
         private void InvokeCommand(string c)

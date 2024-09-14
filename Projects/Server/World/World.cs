@@ -264,6 +264,9 @@ public static class World
             return;
         }
 
+        WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
+        _diskWriteHandle.Reset();
+
         WorldState = WorldState.PendingSave;
         ThreadPool.QueueUserWorkItem(Preserialize);
     }
@@ -298,9 +301,6 @@ public static class World
         {
             return;
         }
-
-        WaitForWriteCompletion(); // Blocks Save until current disk flush is done.
-        _diskWriteHandle.Reset();
 
         NetState.FlushAll();
 
