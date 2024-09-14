@@ -14,65 +14,105 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 
 namespace Server;
 
 public abstract class GenericPersistence : Persistence, IGenericSerializable
 {
-    private long _initialSize = 1024 * 1024;
-    private MemoryMapFileWriter _fileToSave;
-
     public string Name { get; }
+    public string SaveFilePath { get; protected set; } // "<Folder>/<System>.bin"
 
-    public GenericPersistence(string name, int priority) : base(priority) => Name = name;
+    public byte SerializedThread { get; set; }
+    public int SerializedPosition { get; set; }
+    public int SerializedLength { get; set; }
 
-    public override void Preserialize(string savePath, ConcurrentQueue<Type> types)
+    public GenericPersistence(string name, int priority) : base(priority)
     {
-        var path = Path.Combine(savePath, Name);
-        var filePath = Path.Combine(path, $"{Name}.bin");
-        PathUtility.EnsureDirectory(path);
-
-        _fileToSave = new MemoryMapFileWriter(new FileStream(filePath, FileMode.Create), _initialSize, types);
+        Name = name;
+        SaveFilePath = Path.Combine(Name, $"{Name}.bin");
     }
 
     public override void Serialize()
     {
-        World.ResetRoundRobin();
-        World.PushToCache((this, this));
+        World.PushToCache(this);
     }
 
-    public override void WriteSnapshot()
+    public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
     {
-        string folderPath = null;
-        using (var fs = _fileToSave.FileStream)
+        if (SerializedLength == 0)
         {
-            if (fs.Position > _initialSize)
-            {
-                _initialSize = fs.Position;
-            }
-
-            _fileToSave.Dispose();
-            if (_fileToSave.Position == 0)
-            {
-                folderPath = Path.GetDirectoryName(fs.Name);
-            }
+            return;
         }
 
-        if (folderPath != null)
-        {
-            Directory.Delete(folderPath);
-        }
+        var file = Path.Combine(savePath, SaveFilePath);
+        var dir = Path.GetDirectoryName(file);
+        PathUtility.EnsureDirectory(dir);
+
+        var threads = World._threadWorkers;
+
+        using var binFs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.None);
+
+        var thread = SerializedThread;
+        var heapStart = SerializedPosition;
+        var heapLength = SerializedLength;
+
+        binFs.Write(threads[thread].GetHeap(heapStart, heapLength));
     }
 
-    public override void Serialize(IGenericSerializable e, int threadIndex) => Serialize(_fileToSave);
+    public override unsafe void Deserialize(string savePath, Dictionary<ulong, string> typesDb)
+    {
+        // Assume savePath has the Core.BaseDirectory already prepended
+        var dataPath = Path.GetFullPath(SaveFilePath, savePath);
+        var file = new FileInfo(dataPath);
+
+        if (!file.Exists || file.Length <= 0)
+        {
+            return;
+        }
+
+        var fileLength = file.Length;
+
+        string error;
+
+        try
+        {
+            using var mmf = MemoryMappedFile.CreateFromFile(dataPath, FileMode.Open);
+            using var accessor = mmf.CreateViewStream();
+
+            byte* ptr = null;
+            accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+            var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
+            Deserialize(dataReader);
+
+            error = dataReader.Position != fileLength
+                ? $"Serialized {fileLength} bytes, but {dataReader.Position} bytes deserialized"
+                : null;
+
+            accessor.SafeMemoryMappedViewHandle.ReleasePointer();
+        }
+        catch (Exception e)
+        {
+            error = e.ToString();
+        }
+
+        if (error != null)
+        {
+            Console.WriteLine($"***** Bad deserialize of {file.FullName} *****");
+            Console.WriteLine(error);
+
+            Console.Write("Skip this file and continue? (y/n): ");
+            var y = Console.ReadLine();
+
+            if (!y.InsensitiveEquals("y"))
+            {
+                throw new Exception("Deserialization failed.");
+            }
+        }
+    }
 
     public abstract void Serialize(IGenericWriter writer);
-
-    public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb) =>
-        AdhocPersistence.Deserialize(Path.Combine(savePath, Name, $"{Name}.bin"), Deserialize);
-
     public abstract void Deserialize(IGenericReader reader);
 }

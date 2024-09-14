@@ -51,6 +51,10 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         public Serial Serial { get; }
         public void Deserialize(IGenericReader reader) => throw new NotImplementedException();
 
+        public byte SerializedThread { get; set; }
+        public int SerializedPosition { get; set; }
+        public int SerializedLength { get; set; }
+
         public void Serialize(IGenericWriter writer) => throw new NotImplementedException();
 
         public bool Deleted { get; }

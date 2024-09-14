@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -32,141 +31,115 @@ public interface IGenericEntityPersistence
     public void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb);
 }
 
-public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistence where T : class, ISerializable
+public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPersistence where T : class, ISerializable
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(GenericEntityPersistence<T>));
-    private static List<EntitySpan<T>>[] _entities;
 
-    private long _initialIdxSize = 1024 * 256;
-    private long _initialBinSize = 1024 * 1024;
-    private readonly string _name;
-    private readonly uint _minSerial;
-    private readonly uint _maxSerial;
+    // Support legacy split file serialization
+    private static Dictionary<int, List<EntitySpan<T>>> _entities;
+
+    private readonly Serial _minSerial;
+    private readonly Serial _maxSerial;
     private Serial _lastEntitySerial;
     private readonly Dictionary<Serial, T> _pendingAdd = new();
     private readonly Dictionary<Serial, T> _pendingDelete = new();
 
-    private readonly uint[] _entitiesCount = new uint[World.GetThreadWorkerCount()];
-
-    private readonly (MemoryMapFileWriter idxWriter, MemoryMapFileWriter binWriter)[] _writers  =
-        new (MemoryMapFileWriter, MemoryMapFileWriter)[World.GetThreadWorkerCount()];
-
     public Dictionary<Serial, T> EntitiesBySerial { get; } = new();
 
-    public GenericEntityPersistence(string name, int priority, uint minSerial, uint maxSerial) : base(priority)
+    public GenericEntityPersistence(string name, int priority, uint minSerial, uint maxSerial) : this(
+        name,
+        priority,
+        (Serial)minSerial,
+        (Serial)maxSerial
+    )
     {
-        _name = name;
+    }
+
+    public GenericEntityPersistence(string name, int priority, Serial minSerial, Serial maxSerial) : base(name, priority)
+    {
         _minSerial = minSerial;
         _maxSerial = maxSerial;
-        _lastEntitySerial = (Serial)(minSerial - 1);
+        _lastEntitySerial = minSerial - 1;
         typeof(T).RegisterFindEntity(Find);
     }
 
-    public override void Preserialize(string savePath, ConcurrentQueue<Type> types)
+    public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
     {
-        var path = Path.Combine(savePath, _name);
-        PathUtility.EnsureDirectory(path);
+        var dir = Path.Combine(savePath, Name);
+        PathUtility.EnsureDirectory(dir);
 
-        var threadCount = World.GetThreadWorkerCount();
-        for (var i = 0; i < threadCount; i++)
+        var threads = World._threadWorkers;
+
+        using var binFs = new FileStream(Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None);
+        using var idxFs = new FileStream(Path.Combine(dir, $"{Name}.idx"), FileMode.Create);
+        using var idx = new MemoryMapFileWriter(idxFs, 1024 * 1024, typeSet); // 1MB
+
+        var binPosition = 0L;
+
+        // Support for non-entity generic serialization.
+        if (SerializedLength > 0)
         {
-            var idxPath = Path.Combine(path, $"{_name}_{i}.idx");
-            var binPath = Path.Combine(path, $"{_name}_{i}.bin");
-
-            _writers[i] = (
-                new MemoryMapFileWriter(new FileStream(idxPath, FileMode.Create), _initialIdxSize, types),
-                new MemoryMapFileWriter(new FileStream(binPath, FileMode.Create), _initialBinSize, types)
-            );
-
-            _writers[i].idxWriter.Write(3); // version
-            _writers[i].idxWriter.Seek(4, SeekOrigin.Current); // Entity count
-
-            _entitiesCount[i] = 0;
-        }
-    }
-
-    public override void Serialize(IGenericSerializable e, int threadIndex)
-    {
-        var (idx, bin) = _writers[threadIndex];
-        var pos = bin.Position;
-
-        var entity = (ISerializable)e;
-
-        entity.Serialize(bin);
-        var length = (uint)(bin.Position - pos);
-
-        var t = entity.GetType();
-        idx.Write(t);
-        idx.Write(entity.Serial);
-        idx.Write(entity.Created.Ticks);
-        idx.Write(pos);
-        idx.Write(length);
-
-        _entitiesCount[threadIndex]++;
-    }
-
-    public override void WriteSnapshot()
-    {
-        var wroteFile = false;
-        string folderPath = null;
-        for (int i = 0; i < _writers.Length; i++)
-        {
-            var (idxWriter, binWriter) = _writers[i];
-
-            var binBytesWritten = binWriter.Position;
-
-            // Write the entity count
-            var pos = idxWriter.Position;
-            idxWriter.Seek(4, SeekOrigin.Begin);
-            idxWriter.Write(_entitiesCount[i]);
-            idxWriter.Seek(pos, SeekOrigin.Begin);
-
-            var idxFs = idxWriter.FileStream;
-            var idxFilePath = idxFs.Name;
-            var binFs = binWriter.FileStream;
-            var binFilePath = binFs.Name;
-
-            if (_initialIdxSize < idxFs.Position)
+            try
             {
-                _initialIdxSize = idxFs.Position;
+                binFs.Write(threads[SerializedThread].GetHeap(SerializedPosition, SerializedLength));
+            }
+            catch (Exception error)
+            {
+                logger.Error(
+                    error,
+                    "Error writing entity: (Thread: {Thread} - {Start} {Length})",
+                    SerializedThread,
+                    SerializedPosition,
+                    SerializedLength
+                );
             }
 
-            if (_initialBinSize < binFs.Position)
-            {
-                _initialBinSize = binFs.Position;
-            }
-
-            idxWriter.Dispose();
-            binWriter.Dispose();
-
-            idxFs.Dispose();
-            binFs.Dispose();
-
-            if (binBytesWritten > 1)
-            {
-                wroteFile = true;
-            }
-            else
-            {
-                File.Delete(idxFilePath);
-                File.Delete(binFilePath);
-                folderPath = Path.GetDirectoryName(idxFilePath);
-            }
+            binPosition += SerializedLength;
         }
 
-        if (!wroteFile && folderPath != null)
+        idx.Write(3); // Version
+        idx.Write(EntitiesBySerial.Values.Count);
+
+        foreach (var e in EntitiesBySerial.Values)
         {
-            Directory.Delete(folderPath);
+            var thread = e.SerializedThread;
+            var heapStart = e.SerializedPosition;
+            var heapLength = e.SerializedLength;
+
+            idx.Write(e.GetType());
+            idx.Write(e.Serial);
+            idx.Write(e.Created.Ticks);
+            idx.Write(binPosition);
+            idx.Write(heapLength);
+
+            try
+            {
+                binFs.Write(threads[thread].GetHeap(heapStart, heapLength));
+            }
+            catch (Exception error)
+            {
+                logger.Error(
+                    error,
+                    "Error writing entity: {Entity} (Thread: {Thread} - {Start} {Length})",
+                    e,
+                    thread,
+                    heapStart,
+                    heapLength
+                );
+            }
+
+            binPosition += heapLength;
         }
     }
 
     public override void Serialize()
     {
-        World.ResetRoundRobin();
         foreach (var entity in EntitiesBySerial.Values)
         {
-            World.PushToCache((entity, this));
+            World.PushToCache(entity);
         }
+
+        World.PushToCache(this);
     }
 
     private static ConstructorInfo GetConstructorFor(string typeName, Type t, Type[] constructorTypes)
@@ -205,7 +178,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
      */
     private unsafe Dictionary<int, ConstructorInfo> ReadTypes(string savePath)
     {
-        string typesPath = Path.Combine(savePath, _name, $"{_name}.tdb");
+        string typesPath = Path.Combine(savePath, Name, $"{Name}.tdb");
         if (!File.Exists(typesPath))
         {
             return null;
@@ -236,59 +209,57 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
     public virtual void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb)
     {
-        string indexPath = Path.Combine(savePath, _name, $"{_name}.idx");
+        string indexPath = Path.Combine(savePath, Name, $"{Name}.idx");
+
+        _entities ??= [];
+
+        // Support for legacy MUO Serialization that used split files
         if (!File.Exists(indexPath))
         {
-            TryDeserializeMultithreadIndexes(savePath, typesDb);
+            TryDeserializeSplitFileIndexes(savePath, typesDb);
             return;
         }
 
-        _entities = [InternalDeserializeIndexes(indexPath, typesDb)];
+        InternalDeserializeIndexes(indexPath, typesDb, _entities[0] = []);
     }
 
-    private void TryDeserializeMultithreadIndexes(string savePath, Dictionary<ulong, string> typesDb)
+    private void TryDeserializeSplitFileIndexes(string savePath, Dictionary<ulong, string> typesDb)
     {
         var index = 0;
-        var fileList = new List<string>();
         while (true)
         {
-            var path = Path.Combine(savePath, _name, $"{_name}_{index}.idx");
+            var path = Path.Combine(savePath, Name, $"{Name}_{index}.idx");
             var fi = new FileInfo(path);
             if (!fi.Exists)
             {
                 break;
             }
 
-            if (fi.Length != 0)
+            if (fi.Length == 0)
             {
-                fileList.Add(path);
+                continue;
             }
 
+            InternalDeserializeIndexes(path, typesDb, _entities[index] = []);
             index++;
-        }
-
-        _entities = new List<EntitySpan<T>>[fileList.Count];
-        for (var i = 0; i < fileList.Count; i++)
-        {
-            _entities[i] = InternalDeserializeIndexes(fileList[i], typesDb);
         }
     }
 
-    private unsafe List<EntitySpan<T>> InternalDeserializeIndexes(string filePath, Dictionary<ulong, string> typesDb)
+    private unsafe void InternalDeserializeIndexes(
+        string filePath, Dictionary<ulong, string> typesDb, List<EntitySpan<T>> entities
+    )
     {
-        object[] ctorArgs = new object[1];
-        List<EntitySpan<T>> entities = [];
-
         using var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open);
         using var accessor = mmf.CreateViewStream();
 
         byte* ptr = null;
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-        UnmanagedDataReader dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
+        var dataReader = new UnmanagedDataReader(ptr, accessor.Length);
 
         var version = dataReader.ReadInt();
 
-        Dictionary<int, ConstructorInfo> ctors = null;
+        Dictionary<int, ConstructorInfo> ctors = [];
+
         if (version < 2)
         {
             ctors = ReadTypes(Path.GetDirectoryName(filePath));
@@ -296,15 +267,16 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
 
         if (typesDb == null && ctors == null)
         {
-            return entities;
+            return;
         }
 
-        int count = dataReader.ReadInt();
-
         var now = DateTime.UtcNow;
+        var ctorArgs = new object[1];
         Type[] ctorArguments = [typeof(Serial)];
 
-        for (int i = 0; i < count; ++i)
+        var count = dataReader.ReadInt();
+
+        for (var i = 0; i < count; ++i)
         {
             ConstructorInfo ctor;
             // Version 2 & 3 with SerializedTypes.db
@@ -331,6 +303,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
             {
                 dataReader.ReadLong(); // LastSerialized
             }
+
             var pos = dataReader.ReadLong();
             var length = dataReader.ReadInt();
 
@@ -344,45 +317,39 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
             if (ctor.Invoke(ctorArgs) is T entity)
             {
                 entity.Created = created;
-                entities.Add(new EntitySpan<T>(entity, pos, (int)length));
+                entities.Add(new EntitySpan<T>(entity, pos, length));
                 EntitiesBySerial[serial] = entity;
             }
         }
 
         accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-        entities.TrimExcess();
 
         if (EntitiesBySerial.Count > 0)
         {
             _lastEntitySerial = EntitiesBySerial.Keys.Max();
         }
-
-        return entities;
     }
 
     public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb)
     {
-        string dataPath = Path.Combine(savePath, _name, $"{_name}.bin");
+        string dataPath = Path.Combine(savePath, Name, $"{Name}.bin");
         var fi = new FileInfo(dataPath);
 
         if (!fi.Exists)
         {
             TryDeserializeMultithread(savePath, typesDb);
         }
-        else
+        else if (fi.Length > 0)
         {
-            if (fi.Length == 0)
-            {
-                return;
-            }
-
             InternalDeserialize(dataPath, 0, typesDb);
         }
 
+        _entities.Clear();
+        _entities.TrimExcess();
         _entities = null;
     }
 
-    private static unsafe void InternalDeserialize(string filePath, int index, Dictionary<ulong, string> typesDb)
+    private unsafe void InternalDeserialize(string filePath, int index, Dictionary<ulong, string> typesDb)
     {
         using var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open);
         using var accessor = mmf.CreateViewStream();
@@ -390,6 +357,9 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         byte* ptr = null;
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
         UnmanagedDataReader dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
+
+        Deserialize(dataReader);
+
         var deleteAllFailures = false;
 
         foreach (var entry in _entities[index])
@@ -460,13 +430,23 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
             return;
         }
 
-        var folderPath = Path.Combine(savePath, _name);
+        var folderPath = Path.Combine(savePath, Name);
 
-        for (var i = 0; i < _entities.Length; i++)
+        foreach (var i in _entities.Keys)
         {
-            var path = Path.Combine(folderPath, $"{_name}_{i}.bin");
+            var path = Path.Combine(folderPath, $"{Name}_{i}.bin");
             InternalDeserialize(path, i, typesDb);
         }
+    }
+
+    // Override for non-entity serialization
+    public override void Serialize(IGenericWriter writer)
+    {
+    }
+
+    // Override for non-entity deserialization
+    public override void Deserialize(IGenericReader reader)
+    {
     }
 
     public override void PostWorldSave()
@@ -492,25 +472,26 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                 );
             }
 #endif
-            var last = _lastEntitySerial;
-            var max = (Serial)_maxSerial;
+            var last = (uint)_lastEntitySerial;
+            var min = (uint)_minSerial;
+            var max = (uint)_maxSerial;
 
-            for (uint i = 0; i < _maxSerial; i++)
+            for (uint i = 0; i < max; i++)
             {
                 last++;
 
                 if (last > max)
                 {
-                    last = (Serial)_minSerial;
+                    last = min;
                 }
 
-                if (FindEntity<T>(last) == null)
+                if (FindEntity<T>((Serial)last) == null)
                 {
-                    return _lastEntitySerial = last;
+                    return _lastEntitySerial = (Serial)last;
                 }
             }
 
-            OutOfMemory($"No serials left to allocate for {_name}");
+            OutOfMemory($"No serials left to allocate for {Name}");
             return Serial.MinusOne;
         }
     }
@@ -530,17 +511,21 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                     goto case WorldState.Loading;
                 }
             case WorldState.Loading:
+            case WorldState.WritingSave:
                 {
                     if (_pendingDelete.Remove(entity.Serial))
                     {
-                        logger.Warning("Deleted then added {Entity} during {WorldState} state.", entity.GetType().Name, worldState.ToString());
+                        logger.Warning(
+                            "Deleted then added {Entity} during {WorldState} state.",
+                            entity.GetType().Name,
+                            worldState.ToString()
+                        );
                     }
 
                     _pendingAdd[entity.Serial] = entity;
                     break;
                 }
             case WorldState.PendingSave:
-            case WorldState.WritingSave:
             case WorldState.Running:
                 {
                     ref var entityEntry = ref CollectionsMarshal.GetValueRefOrAddDefault(EntitiesBySerial, entity.Serial, out bool exists);
@@ -591,13 +576,13 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                     goto case WorldState.Loading;
                 }
             case WorldState.Loading:
+            case WorldState.WritingSave:
                 {
                     _pendingAdd.Remove(entity.Serial);
                     _pendingDelete[entity.Serial] = entity;
                     break;
                 }
             case WorldState.PendingSave:
-            case WorldState.WritingSave:
             case WorldState.Running:
                 {
                     EntitiesBySerial.Remove(entity.Serial);
@@ -613,8 +598,6 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
             AddEntity(entity);
         }
 
-        _pendingAdd.Clear();
-
         foreach (var entity in _pendingDelete.Values)
         {
             if (_pendingAdd.ContainsKey(entity.Serial))
@@ -625,10 +608,11 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
             RemoveEntity(entity);
         }
 
+        _pendingAdd.Clear();
         _pendingDelete.Clear();
     }
 
-    private void AppendSafetyLog(string action, ISerializable entity)
+    private static void AppendSafetyLog(string action, ISerializable entity)
     {
         var message =
             $"Warning: Attempted to {{Action}} {{Entity}} during world save.{Environment.NewLine}This action could cause inconsistent state.{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
@@ -638,7 +622,7 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
         try
         {
             using var op = new StreamWriter("world-save-errors.log", true);
-            op.WriteLine("{0}\t{1}", DateTime.UtcNow, message);
+            op.WriteLine($"{DateTime.UtcNow}\t{message}");
             op.WriteLine(new StackTrace(2).ToString());
             op.WriteLine();
         }
@@ -649,17 +633,9 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Find(Serial serial) => FindEntity<T>(serial, false, false);
+    public T Find(Serial serial, bool returnDeleted = false) => FindEntity<T>(serial, returnDeleted);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Find(Serial serial, bool returnDeleted) => FindEntity<T>(serial, returnDeleted, false);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T Find(Serial serial, bool returnDeleted, bool returnPending) => FindEntity<T>(serial, returnDeleted, returnPending);
-
-    public R FindEntity<R>(Serial serial) where R : class, T => FindEntity<R>(serial, false, false);
-
-    public R FindEntity<R>(Serial serial, bool returnDeleted, bool returnPending) where R : class, T
+    public R FindEntity<R>(Serial serial, bool returnDeleted = false) where R : class, T
     {
         switch (World.WorldState)
         {
@@ -669,14 +645,14 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                 }
             case WorldState.Loading:
             case WorldState.Saving:
+            case WorldState.WritingSave:
                 {
-                    if (returnDeleted && returnPending && _pendingDelete.TryGetValue(serial, out var entity))
+                    if (returnDeleted && _pendingDelete.TryGetValue(serial, out var entity))
                     {
                         return entity as R;
                     }
 
-                    if (returnPending && _pendingAdd.TryGetValue(serial, out entity) ||
-                        EntitiesBySerial.TryGetValue(serial, out entity))
+                    if (_pendingAdd.TryGetValue(serial, out entity) || EntitiesBySerial.TryGetValue(serial, out entity))
                     {
                         return entity as R;
                     }
@@ -684,7 +660,6 @@ public class GenericEntityPersistence<T> : Persistence, IGenericEntityPersistenc
                     return null;
                 }
             case WorldState.PendingSave:
-            case WorldState.WritingSave:
             case WorldState.Running:
                 {
                     return EntitiesBySerial.TryGetValue(serial, out var entity) ? entity as R : null;
