@@ -22,6 +22,7 @@ namespace Server;
 
 public class SerializationThreadWorker
 {
+    private const int MinHeapSize = 1024 * 1024; // 1MB
     private readonly int _index;
     private readonly Thread _thread;
     private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
@@ -60,12 +61,7 @@ public class SerializationThreadWorker
         Sleep();
     }
 
-    public void AllocateHeap() => _heap ??= GC.AllocateUninitializedArray<byte>(1024 * 1024); // 1MB
-
-    public void DeallocateHeap()
-    {
-        _heap = null;
-    }
+    public void AllocateHeap() => _heap ??= GC.AllocateUninitializedArray<byte>(MinHeapSize); // 1MB
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Push(IGenericSerializable entity) => _entities.Enqueue(entity);

@@ -45,7 +45,7 @@ public static class World
     private static readonly GenericEntityPersistence<BaseGuild> _guildPersistence = new("Guilds", 3, 1, 0x7FFFFFFF);
 
     private static int _threadId;
-    internal static readonly SerializationThreadWorker[] _threadWorkers = new SerializationThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
+    internal static SerializationThreadWorker[] _threadWorkers;
     private static readonly ManualResetEvent _diskWriteHandle = new(true);
     private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
@@ -88,6 +88,7 @@ public static class World
     public static Dictionary<Serial, Mobile> Mobiles => _mobilePersistence.EntitiesBySerial;
     public static Dictionary<Serial, BaseGuild> Guilds => _guildPersistence.EntitiesBySerial;
 
+    public static bool UseMultiThreadedSaves { get; private set; }
     public static string SavePath { get; private set; }
     public static WorldState WorldState { get; private set; }
     public static bool Saving => WorldState == WorldState.Saving;
@@ -101,6 +102,8 @@ public static class World
 
         var savePath = ServerConfiguration.GetOrUpdateSetting("world.savePath", "Saves");
         SavePath = PathUtility.GetFullPath(savePath);
+
+        UseMultiThreadedSaves = ServerConfiguration.GetOrUpdateSetting("world.useMultithreadedSaves", true);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -204,6 +207,9 @@ public static class World
         );
 
         // Create the serialization threads.
+        var threadCount = UseMultiThreadedSaves ? Math.Max(Environment.ProcessorCount - 1, 1) : 1;
+        _threadWorkers = new SerializationThreadWorker[threadCount];
+
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
             _threadWorkers[i] = new SerializationThreadWorker(i);
