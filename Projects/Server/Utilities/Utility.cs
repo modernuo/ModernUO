@@ -17,7 +17,7 @@ using Server.Text;
 
 namespace Server;
 
-public static class Utility
+public static partial class Utility
 {
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
