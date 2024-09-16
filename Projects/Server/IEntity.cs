@@ -115,6 +115,10 @@ public class Entity : IEntity
         Timer.StartTimer(Delete);
     }
 
+    public byte SerializedThread { get; set; }
+    public int SerializedPosition { get; set; }
+    public int SerializedLength { get; set; }
+
     public void Serialize(IGenericWriter writer)
     {
     }

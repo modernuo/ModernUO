@@ -105,13 +105,7 @@ public class BufferWriter : IGenericWriter
         _buffer = newBuffer;
     }
 
-    public virtual void Flush()
-    {
-        // Need to avoid buffer.Length = 2, buffer * 2 is 4, but we need 8 or 16bytes, causing an exception.
-        // The least we need is 16bytes + Index, but we use BufferSize since it should always be big enough for a single
-        // non-dynamic field.
-        Resize(Math.Max(BufferSize, _buffer.Length * 2));
-    }
+    public virtual void Flush() => Resize(Math.Clamp(_buffer.Length * 2, BufferSize, _buffer.Length + 1024 * 1024 * 64));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void FlushIfNeeded(int amount)

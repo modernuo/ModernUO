@@ -26,6 +26,10 @@ public abstract partial class BaseBOBEntry : IBOBEntry
 
     public Serial Serial { get; }
 
+    public byte SerializedThread { get; set; }
+    public int SerializedPosition { get; set; }
+    public int SerializedLength { get; set; }
+
     public bool Deleted { get; private set; }
 
     public BaseBOBEntry()

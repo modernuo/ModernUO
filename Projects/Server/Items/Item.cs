@@ -802,6 +802,10 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     [CommandProperty(AccessLevel.Counselor)]
     public Serial Serial { get; }
 
+    public byte SerializedThread { get; set; }
+    public int SerializedPosition { get; set; }
+    public int SerializedLength { get; set; }
+
     public virtual void Serialize(IGenericWriter writer)
     {
         writer.Write(9); // version

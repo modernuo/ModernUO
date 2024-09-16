@@ -55,8 +55,8 @@ public static class AdhocPersistence
     {
         var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
         PathUtility.EnsureDirectory(Path.GetDirectoryName(fullPath));
-        ConcurrentQueue<Type> types = [];
-        var writer = new MemoryMapFileWriter(new FileStream(filePath, FileMode.Create), sizeHint, types);
+        HashSet<Type> typesSet = [];
+        var writer = new MemoryMapFileWriter(new FileStream(filePath, FileMode.Create), sizeHint, typesSet);
         serializer(writer);
 
         Task.Run(
@@ -66,14 +66,6 @@ public static class AdhocPersistence
 
                 writer.Dispose();
                 fs.Dispose();
-
-                HashSet<Type> typesSet = [];
-
-                // Dedupe the queue.
-                foreach (var type in types)
-                {
-                    typesSet.Add(type);
-                }
 
                 Persistence.WriteSerializedTypesSnapshot(Path.GetDirectoryName(fullPath), typesSet);
             },

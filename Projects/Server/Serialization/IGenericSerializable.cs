@@ -17,5 +17,9 @@ namespace Server;
 
 public interface IGenericSerializable
 {
+    byte SerializedThread { get; set; }
+    int SerializedPosition { get; set; }
+    int SerializedLength { get; set; }
+
     void Serialize(IGenericWriter writer);
 }

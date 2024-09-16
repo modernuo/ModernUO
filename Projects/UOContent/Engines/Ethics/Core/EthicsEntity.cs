@@ -16,6 +16,10 @@ public partial class EthicsEntity : ISerializable
 
     public Serial Serial { get; }
 
+    public byte SerializedThread { get; set; }
+    public int SerializedPosition { get; set; }
+    public int SerializedLength { get; set; }
+
     public bool Deleted { get; private set; }
 
     public void Delete()
