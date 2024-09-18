@@ -15,7 +15,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows&logoColor=0078D6&labelColor=222222)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+[![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 13+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
 [![Debian 11+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
 [![Ubuntu 20+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
