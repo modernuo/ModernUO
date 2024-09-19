@@ -16,7 +16,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using Server.Logging;
 
 namespace Server.Network;
@@ -47,8 +46,8 @@ public static class PingServer
             return;
         }
 
-        HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
-        List<UdpClient> listeners = new List<UdpClient>();
+        HashSet<IPEndPoint> listeningAddresses = [];
+        List<UdpClient> listeners = [];
 
         foreach (var serverIpep in ServerConfiguration.Listeners)
         {
@@ -70,7 +69,7 @@ public static class PingServer
             }
 
             listeners.Add(listener);
-            new Thread(BeginAcceptingUdpRequest).Start(listener);
+            BeginAcceptingUdpRequest(listener);
         }
 
         foreach (var ipep in listeningAddresses)
@@ -138,6 +137,14 @@ public static class PingServer
             {
                 // ignored
             }
+        }
+    }
+
+    public static void Shutdown()
+    {
+        foreach (var listener in Listeners)
+        {
+            listener.Close();
         }
     }
 }

@@ -169,7 +169,7 @@ namespace Server.Gumps
                         AddLabel(150, 150, LabelHue, banned.ToString());
 
                         AddLabel(20, 170, LabelHue, "Firewalled:");
-                        AddLabel(150, 170, LabelHue, AdminFirewall.Set.Count.ToString());
+                        AddLabel(150, 170, LabelHue, Firewall.FirewallSet.Count.ToString());
 
                         AddLabel(20, 190, LabelHue, "Clients:");
                         AddLabel(150, 190, LabelHue, NetState.Instances.Count.ToString());
@@ -1161,7 +1161,7 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        m_List ??= AdminFirewall.Set.ToList<object>();
+                        m_List ??= Firewall.FirewallSet.ToList<object>();
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
@@ -3464,7 +3464,7 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        foreach (var check in AdminFirewall.Set)
+                                        foreach (var check in Firewall.FirewallSet)
                                         {
                                             var checkStr = check.ToString();
 
