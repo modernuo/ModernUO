@@ -336,6 +336,8 @@ public static class Core
 
         World.WaitForWriteCompletion();
         World.ExitSerializationThreads();
+        PingServer.Shutdown();
+        TcpServer.Shutdown();
 
         if (!_crashed)
         {

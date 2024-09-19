@@ -14,83 +14,21 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Server.Logging;
 
 namespace Server.Network;
 
 public static class Firewall
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(Firewall));
-
     private static InternalValidationEntry _validationEntry;
     private static readonly Dictionary<IPAddress, bool> _isBlockedCache = new();
 
-    private static readonly ConcurrentQueue<(IFirewallEntry FirewallyEntry, bool Remove)> _firewallQueue = new();
     private static readonly SortedSet<IFirewallEntry> _firewallSet = new();
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IFirewallEntry RequestAddSingleIPEntry(string entry)
-    {
-        try
-        {
-            var firewallEntry = new SingleIpFirewallEntry(entry);
-            _firewallQueue.Enqueue((firewallEntry, false));
-            return firewallEntry;
-        }
-        catch (Exception e)
-        {
-            logger.Warning(e, "Failed to add firewall entry: {Pattern}", entry);
-            return null;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IFirewallEntry RequestAddCIDREntry(string entry)
-    {
-        try
-        {
-            var firewallEntry = new CidrFirewallEntry(entry);
-            _firewallQueue.Enqueue((firewallEntry, false));
-            return firewallEntry;
-        }
-        catch (Exception e)
-        {
-            logger.Warning(e, "Failed to add firewall entry: {Pattern}", entry);
-            return null;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void RequestAddEntry(IFirewallEntry entry)
-    {
-        _firewallQueue.Enqueue((entry, false));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void RequestRemoveEntry(IFirewallEntry entry)
-    {
-        _firewallQueue.Enqueue((entry, true));
-    }
-
-    internal static void ProcessQueue()
-    {
-        while (_firewallQueue.TryDequeue(out var entry))
-        {
-            if (entry.Remove)
-            {
-                RemoveEntry(entry.FirewallyEntry);
-            }
-            else
-            {
-                AddEntry(entry.FirewallyEntry);
-            }
-        }
-    }
+    public static SortedSet<IFirewallEntry> FirewallSet => _firewallSet;
 
     internal static bool IsBlocked(IPAddress address)
     {
@@ -128,22 +66,32 @@ public static class Firewall
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void AddEntry(IFirewallEntry firewallEntry)
+    public static bool Add(IFirewallEntry firewallEntry)
     {
-        _firewallSet.Add(firewallEntry);
-        _isBlockedCache.Clear();
+        if (_firewallSet.Add(firewallEntry))
+        {
+            _isBlockedCache.Clear();
+            return true;
+        }
+
+        return false;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void RemoveEntry(IFirewallEntry entry)
+    public static bool Remove(IFirewallEntry entry)
     {
         if (entry == null)
         {
-            return;
+            return false;
         }
 
-        _firewallSet.Remove(entry);
-        _isBlockedCache.Clear();
+        if (_firewallSet.Remove(entry))
+        {
+            _isBlockedCache.Clear();
+            return true;
+        }
+
+        return false;
     }
 
     private class InternalValidationEntry : BaseFirewallEntry
