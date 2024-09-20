@@ -64,7 +64,6 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0x91, &GameLogin, 65, outgameOnly: true);
         IncomingPackets.Register(0xA0, &PlayServer, 3, outgameOnly: true);
         IncomingPackets.Register(0xBD, &ClientVersion);
-        IncomingPackets.Register(0xCF, &AccountLogin, outgameOnly: true);
         IncomingPackets.Register(0xE1, &ClientType);
         IncomingPackets.Register(0xEF, &LoginServerSeed, 21, outgameOnly: true);
         IncomingPackets.Register(0xF8, &CreateCharacter, 106, outgameOnly: true);

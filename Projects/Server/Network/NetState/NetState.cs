@@ -591,7 +591,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                                     if (newSeed == 0)
                                     {
-                                        HandleError(0, 0);
+                                        Disconnect(string.Empty);
                                         return;
                                     }
 
@@ -602,16 +602,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     _parserState = ParserState.AwaitingNextPacket;
                                     _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
                                 }
-                                else
+                                else // Don't allow partial packets on initial connection, just disconnect them.
                                 {
-                                    _parserState = ParserState.AwaitingPartialPacket;
+                                    Disconnect(string.Empty);
                                 }
                                 break;
                             }
 
                         case ProtocolState.LoginServer_AwaitingLogin:
                             {
-                                if (packetId != 0xCF && packetId != 0x80)
+                                if (packetId != 0x80)
                                 {
                                     LogInfo("Possible encrypted client detected, disconnecting...");
                                     HandleError(packetId, packetLength);
