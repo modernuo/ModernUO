@@ -659,7 +659,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                         case ProtocolState.GameServer_AwaitingGameServerLogin:
                             {
-                                if (packetId != 0x91 && packetId != 0x80)
+                                if (packetId == 0x80)
+                                {
+                                    goto case ProtocolState.LoginServer_AwaitingLogin;
+                                }
+
+                                if (packetId != 0x91)
                                 {
                                     HandleError(packetId, packetLength);
                                     return;
