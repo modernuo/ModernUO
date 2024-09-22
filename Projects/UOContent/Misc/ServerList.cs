@@ -63,7 +63,7 @@ namespace Server.Misc
             {
                 Resolve(Address, out _publicAddress);
 
-                if (_publicAddress is not null)
+                if (_publicAddress != null)
                 {
                     _useServerListingAddressConfig = true;
 
