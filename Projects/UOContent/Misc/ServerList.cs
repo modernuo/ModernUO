@@ -41,6 +41,8 @@ namespace Server.Misc
 
         public static bool AutoDetect { get; private set; }
 
+        private static bool _useServerListingAddressConfig { get; set; }
+
         public static void Configure()
         {
             Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", null);
@@ -60,6 +62,13 @@ namespace Server.Misc
             else
             {
                 Resolve(Address, out _publicAddress);
+
+                if (_publicAddress != null)
+                {
+                    _useServerListingAddressConfig = true;
+
+                    logger.Information("Server listing address set from config: {address}", _publicAddress);
+                }
             }
         }
 
@@ -79,9 +88,14 @@ namespace Server.Misc
                 var localAddress = ipep.Address;
                 var localPort = ipep.Port;
 
-                if (IsPrivateNetwork(localAddress))
+                if (_useServerListingAddressConfig)
+                {
+                    localAddress = _publicAddress;
+                }
+                else if (IsPrivateNetwork(localAddress))
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
+
                     if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
                     {
                         localAddress = _publicAddress;
