@@ -50,24 +50,24 @@ namespace Server.Engines.Events
             m_QueueDelaySeconds = 120;
             m_QueueClearIntervalSeconds = 1800;
 
-            var today = Core.Now;
-            var tick = TimeSpan.FromSeconds(m_QueueDelaySeconds);
-            var clear = TimeSpan.FromSeconds(m_QueueClearIntervalSeconds);
-
             _reAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
             _deathQueue = new HashSet<PlayerMobile>();
-
-            if (today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween)
-            {
-                _timer = Timer.DelayCall(tick, 0, Timer_Callback);
-                _clearTimer = Timer.DelayCall(clear, 0, Clear_Callback);
-            }
         }
 
         [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
         public static void OnPlayerDeathEvent(PlayerMobile pm)
         {
-            if (_timer.Running && !_deathQueue.Contains(pm) && _deathQueue.Count < m_DeathQueueLimit)
+            var now = Core.Now;
+
+            if (now < HolidaySettings.StartHalloween || now > HolidaySettings.FinishHalloween)
+            {
+                return;
+            }
+
+            _timer ??= Timer.DelayCall(TimeSpan.FromSeconds(m_QueueDelaySeconds), 0, Timer_Callback);
+            _clearTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(m_QueueClearIntervalSeconds), 0, Clear_Callback);
+
+            if (_timer.Running && _deathQueue.Count < m_DeathQueueLimit)
             {
                 _deathQueue.Add(pm);
             }
@@ -90,7 +90,6 @@ namespace Server.Engines.Events
 
         private static void Timer_Callback()
         {
-
             if (Core.Now > HolidaySettings.FinishHalloween)
             {
                 _timer.Stop();
