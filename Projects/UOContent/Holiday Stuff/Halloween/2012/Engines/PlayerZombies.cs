@@ -13,15 +13,15 @@ namespace Server.Engines.Events
         private static Timer _timer;
         private static Timer _clearTimer;
 
-        private static int m_TotalZombieLimit;
-        private static int m_DeathQueueLimit;
-        private static int m_QueueDelaySeconds;
-        private static int m_QueueClearIntervalSeconds;
+        private const int TotalZombieLimit = 200;
+        private const int DeathQueueLimit = 200;
+        private const int QueueDelaySeconds = 120;
+        private const int QueueClearIntervalSeconds = 1800;
 
         private static HashSet<PlayerMobile> _deathQueue;
 
-        private static readonly Rectangle2D[] m_Cemetaries =
-        {
+        private static readonly Rectangle2D[] _cemetaries =
+        [
             new(1272, 3712, 30, 20), // Jhelom
             new(1337, 1444, 48, 52), // Britain
             new(2424, 1098, 20, 28), // Trinsic
@@ -39,37 +39,31 @@ namespace Server.Engines.Events
             new(712, 1104, 22, 30),  // Yew
             new(5824, 1464, 6, 22),  // Fire Dungeon
             new(5224, 3655, 5, 14)   // T2A
-        };
+        ];
 
         internal static Dictionary<PlayerMobile, ZombieSkeleton> _reAnimated;
-
-        public static void Initialize()
-        {
-            m_TotalZombieLimit = 200;
-            m_DeathQueueLimit = 200;
-            m_QueueDelaySeconds = 120;
-            m_QueueClearIntervalSeconds = 1800;
-
-            var today = Core.Now;
-            var tick = TimeSpan.FromSeconds(m_QueueDelaySeconds);
-            var clear = TimeSpan.FromSeconds(m_QueueClearIntervalSeconds);
-
-            _reAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
-            _deathQueue = new HashSet<PlayerMobile>();
-
-            if (today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween)
-            {
-                _timer = Timer.DelayCall(tick, 0, Timer_Callback);
-                _clearTimer = Timer.DelayCall(clear, 0, Clear_Callback);
-            }
-        }
 
         [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
         public static void OnPlayerDeathEvent(PlayerMobile pm)
         {
-            if (_timer.Running && !_deathQueue.Contains(pm) && _deathQueue.Count < m_DeathQueueLimit)
+            var now = Core.Now;
+
+            if (now < HolidaySettings.StartHalloween || now > HolidaySettings.FinishHalloween)
             {
-                _deathQueue.Add(pm);
+                return;
+            }
+
+            _timer ??= Timer.DelayCall(TimeSpan.FromSeconds(QueueDelaySeconds), 0, Timer_Callback);
+            _clearTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(QueueClearIntervalSeconds), 0, Clear_Callback);
+
+            if (_timer.Running)
+            {
+                _deathQueue ??= [];
+
+                if (_deathQueue.Count < DeathQueueLimit)
+                {
+                    _deathQueue.Add(pm);
+                }
             }
         }
 
@@ -84,13 +78,12 @@ namespace Server.Engines.Events
                 return;
             }
 
-            _reAnimated.Clear();
-            _deathQueue.Clear();
+            _reAnimated?.Clear();
+            _deathQueue?.Clear();
         }
 
         private static void Timer_Callback()
         {
-
             if (Core.Now > HolidaySettings.FinishHalloween)
             {
                 _timer.Stop();
@@ -98,35 +91,40 @@ namespace Server.Engines.Events
                 return;
             }
 
-            PlayerMobile player = null;
+            if (_deathQueue == null)
+            {
+                return;
+            }
 
+            PlayerMobile player = null;
             foreach (var entry in _deathQueue)
             {
-                if (!_reAnimated.ContainsKey(entry))
+                if (_reAnimated?.ContainsKey(entry) != true)
                 {
                     player = entry;
                     break;
                 }
             }
 
-            if (player?.Deleted != false || _reAnimated.Count >= m_TotalZombieLimit)
+            if (player?.Deleted != false || _reAnimated?.Count >= TotalZombieLimit)
             {
                 return;
             }
 
             var map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
-            var home = Utility.RandomPointIn(m_Cemetaries.RandomElement(), map);
+            var home = Utility.RandomPointIn(_cemetaries.RandomElement(), map);
 
             if (map.CanSpawnMobile(home))
             {
                 var zombieskel = new ZombieSkeleton(player);
 
+                _reAnimated ??= [];
                 _reAnimated.Add(player, zombieskel);
+
                 zombieskel.Home = home;
                 zombieskel.RangeHome = 10;
 
                 zombieskel.MoveToWorld(home, map);
-
                 _deathQueue.Remove(player);
             }
         }
