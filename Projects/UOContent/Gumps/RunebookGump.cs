@@ -133,14 +133,14 @@ public class RunebookGump : DynamicGump
 
         for (var i = 0; i < 16; ++i)
         {
-            var entry = entries[i];
-
             // Use charge button
             builder.AddButton(130 + i / 8 * 160, 65 + i % 8 * 15, 2103, 2104, 2 + i * 6 + 0);
 
             // Description label
             if (i < entries.Count)
             {
+                var entry = entries[i];
+
                 builder.AddLabelCropped(
                     145 + i / 8 * 160,
                     60 + i % 8 * 15,
@@ -257,7 +257,7 @@ public class RunebookGump : DynamicGump
 
         var index = Math.DivRem(buttonID, 6, out var type);
 
-        if (index < 0 || index > _book.Entries.Count)
+        if (index < 0 || index >= _book.Entries.Count)
         {
             return;
         }
