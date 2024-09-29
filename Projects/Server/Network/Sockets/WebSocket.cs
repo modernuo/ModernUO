@@ -328,9 +328,16 @@ namespace Server.Network.Sockets
 
         public void Close()
         {
-            const byte header1 = 0b1000_0000 | (byte)OpCode.Close;
-            Socket.Send([header1, 0]);
-            Socket.Close();
+            try
+            {
+                const byte header1 = 0b1000_0000 | (byte)OpCode.Close;
+                Socket.Send([header1, 0]);
+                Socket.Close();
+            }
+            catch
+            {
+                /* ignore already closed sockets */
+            }
         }
 
         private enum OpCode : byte
