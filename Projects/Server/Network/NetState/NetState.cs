@@ -19,6 +19,7 @@ using Server.HuePickers;
 using Server.Items;
 using Server.Logging;
 using Server.Menus;
+using Server.Network.Sockets;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
@@ -29,6 +30,9 @@ using System.Net.Sockets;
 using System.Network;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace Server.Network;
 
@@ -41,7 +45,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
-    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
+    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(50000); // 5 seconds
     private const int RecvPipeSize = 1024 * 64;
     private const int SendPipeSize = 1024 * 256;
     private const int HuePickerCap = 512;
@@ -121,7 +125,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public NetState(Socket connection)
     {
-        Connection = connection;
+        Connection = new TcpSocket(connection);
         Seeded = false;
         HuePickers = [];
         Menus = [];
@@ -147,7 +151,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            _pollGroup.Add(connection, _handle);
+            _pollGroup.Add(Connection.Socket, _handle);
         }
         catch (Exception ex)
         {
@@ -216,7 +220,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public bool Running => _running;
 
-    public Socket Connection { get; private set; }
+    public ISocket Connection { get; private set; }
 
     public bool CompressionEnabled { get; set; }
 
@@ -577,6 +581,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                         _protocolState = ProtocolState.LoginServer_AwaitingLogin;
                                     }
                                 }
+                                else if (length > 3 && packetId == 0x47)
+                                {
+                                    _parserState = ParserState.ProcessingPacket;
+                                    _parserState = HandleWebSocket(buffer) ? ParserState.AwaitingNextPacket : ParserState.Error;
+                                }
                                 else if (length >= 4)
                                 {
                                     int newSeed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
@@ -651,7 +660,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                         case ProtocolState.GameServer_AwaitingGameServerLogin:
                             {
-                                if (packetId != 0x91 && packetId != 0x80)
+                                if (length > 3 && packetId == 0x47)
+                                {
+                                    _parserState = ParserState.ProcessingPacket;
+                                    _parserState = HandleWebSocket(buffer) ? ParserState.AwaitingNextPacket : ParserState.Error;
+                                }
+                                else if (packetId != 0x91 && packetId != 0x80)
                                 {
                                     HandleError(packetId, packetLength);
                                     return;
@@ -832,7 +846,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            bytesWritten = Connection.Send(buffer, SocketFlags.None);
+            bytesWritten = Connection.Send(buffer);
         }
         catch (SocketException ex)
         {
@@ -875,10 +889,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         var bytesWritten = 0;
+        var forceClose = false;
 
         try
         {
-            bytesWritten = Connection.Receive(buffer, SocketFlags.None);
+            bytesWritten = Connection.Receive(buffer, out forceClose);
         }
         catch (SocketException ex)
         {
@@ -895,15 +910,18 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             TraceException(ex);
         }
 
-        if (bytesWritten <= 0)
+        if (bytesWritten < 0 || forceClose)
         {
             Disconnect(string.Empty);
             return;
         }
 
-        DecodePacket(buffer, ref bytesWritten);
-
-        writer.Advance((uint)bytesWritten);
+        if (bytesWritten > 0)
+        {
+            DecodePacket(buffer, ref bytesWritten);
+            writer.Advance((uint)bytesWritten);
+        }
+        
         NextActivityCheck = Core.TickCount + 90000;
     }
 
@@ -1090,7 +1108,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         _running = false;
-
         _disconnectReason = reason;
         _disposed.Enqueue(this);
     }
@@ -1145,7 +1162,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            _pollGroup.Remove(Connection, _handle);
+            _pollGroup.Remove(Connection.Socket, _handle);
         }
         catch (Exception ex)
         {
@@ -1171,6 +1188,42 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         var count = _instances.Count;
 
         LogInfo(a != null ? $"Disconnected. [{count} Online] [{a}]" : $"Disconnected. [{count} Online]");
+    }
+
+    private bool HandleWebSocket(Span<byte> buffer)
+    {
+        try
+        {
+            string s = Encoding.UTF8.GetString(buffer);
+
+            if (!s.StartsWith("GET", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Disconnect("BOH");
+                return false;
+            }
+
+            string swk = Regex.Match(s, "Sec-WebSocket-Key: (.*)").Groups[1].Value.Trim();
+            string swka = swk + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+            byte[] swkaSha1 = SHA1.HashData(Encoding.UTF8.GetBytes(swka));
+            string swkaSha1Base64 = Convert.ToBase64String(swkaSha1);
+
+            byte[] response = Encoding.UTF8.GetBytes(
+                "HTTP/1.1 101 Switching Protocols\r\n" +
+                "Connection: Upgrade\r\n" +
+                "Upgrade: websocket\r\n" +
+                "Sec-WebSocket-Accept: " + swkaSha1Base64 + "\r\n\r\n");
+
+            var old = Connection;
+            Connection = new WebSocket(old.Socket);
+            old.Send(response);
+        }
+        catch
+        {
+            Disconnect("BOH2");
+            return false;
+        }
+
+        return true;
     }
 
     private class NetStateConnectingComparer : IComparer<NetState>

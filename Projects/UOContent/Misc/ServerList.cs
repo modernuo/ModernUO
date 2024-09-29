@@ -70,7 +70,7 @@ namespace Server.Misc
             {
                 var ns = e.State;
 
-                var ipep = (IPEndPoint)ns.Connection?.LocalEndPoint;
+                var ipep = ns.Connection?.LocalEndPoint;
                 if (ipep == null)
                 {
                     return;
