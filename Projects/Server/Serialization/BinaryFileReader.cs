@@ -31,6 +31,13 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
     private readonly MemoryMappedViewStream _accessor;
     private readonly UnmanagedDataReader _reader;
 
+    /// <summary>
+    /// Read bits of data from a serialized file in a managed environment.
+    /// <br>Encoding is TextEncoding.UTF8 by default.</br>
+    /// </summary>
+    /// <param name="path">Full file path of the file to be deserialized.</param>
+    /// <param name="usePrefixes">Sets if strings should be read with itern.</param>
+    /// <param name="encoding">Set an encoding. By default TextEncoding.UTF8</param>
     public BinaryFileReader(string path, bool usePrefixes = true, Encoding encoding = null)
     {
         _usePrefixes = usePrefixes;
