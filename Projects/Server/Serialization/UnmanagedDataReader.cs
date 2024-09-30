@@ -40,6 +40,13 @@ public unsafe class UnmanagedDataReader : IGenericReader
 
     public long Position { get; private set; }
 
+    /// <summary>
+    /// Read bits of data raw from a serialized file using Little-endian.
+    /// </summary>
+    /// <param name="ptr">The starting address for reading bits.</param>
+    /// <param name="size">The total size of memory to be read.</param>
+    /// <param name="typesDb">The custom type dictionary. Will throw an error if left null ReadType is called.</param>
+    /// <param name="encoding">UTF8 by default.</param>
     public UnmanagedDataReader(byte* ptr, long size, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {
         _encoding = encoding ?? TextEncoding.UTF8;
