@@ -21,6 +21,9 @@ using System.Text;
 
 namespace Server;
 
+/// <summary>
+/// Read bits of data from a serialized file in a managed environment.
+/// </summary>
 public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
 {
     private readonly bool _usePrefixes;
@@ -55,6 +58,7 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
         _accessor?.Dispose();
         _mmf?.Dispose();
     }
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadString(bool intern = false) => _usePrefixes ? _reader.ReadString(intern) : _reader.ReadStringRaw(intern);

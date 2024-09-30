@@ -26,7 +26,7 @@ using Server.Text;
 namespace Server;
 
 /// <summary>
-/// Read bits of data raw from a serialized file
+/// Read bits of data raw from a serialized file using Little-endian.
 /// </summary>
 public unsafe class UnmanagedDataReader : IGenericReader
 {
@@ -49,7 +49,7 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Reads the next bit as a bool. If that bit is true, return a ReadStringRaw(intern) else null
+    /// Reads the next bit as a bool. If that bit is true, return a ReadStringRaw(intern) else null.
     /// </summary>
     /// <param name="intern"></param>
     /// <returns></returns>
@@ -58,7 +58,7 @@ public unsafe class UnmanagedDataReader : IGenericReader
 
 
     /// <summary>
-    /// Reads the next bit as a bool. If that bit is true, return a ReadStringRaw(intern) else null
+    /// Reads the next bit as a bool. If that bit is true, return a ReadStringRaw(intern) else null.
     /// </summary>
     /// <param name="intern"></param>
     /// <returns></returns>
@@ -87,9 +87,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 64 bits to make up a long (int64)
+    /// Read the next 64 bits to make up a long (int64).
     /// </summary>
-    /// <returns>Next long value</returns>
+    /// <returns>Next long value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long ReadLong()
     {
@@ -99,9 +99,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 64 bits to make up an unsigned long (uint64)
+    /// Read the next 64 bits to make up an unsigned long (uint64).
     /// </summary>
-    /// <returns>Next ulong value</returns>
+    /// <returns>Next ulong value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong ReadULong()
     {
@@ -111,9 +111,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 32 bits to make up an int (int32)
+    /// Read the next 32 bits to make up an int (int32).
     /// </summary>
-    /// <returns>Next int value</returns>
+    /// <returns>Next int value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int ReadInt()
     {
@@ -123,9 +123,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 32 bits to make up an unsigned int (uint32)
+    /// Read the next 32 bits to make up an unsigned int (uint32).
     /// </summary>
-    /// <returns>Next uint value</returns>
+    /// <returns>Next uint value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint ReadUInt()
     {
@@ -135,9 +135,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 16 bits to make up a short (int16)
+    /// Read the next 16 bits to make up a short (int16).
     /// </summary>
-    /// <returns>Next short value</returns>
+    /// <returns>Next short value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public short ReadShort()
     {
@@ -147,9 +147,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 16 bits to make up an unsigned short (int16)
+    /// Read the next 16 bits to make up an unsigned short (int16).
     /// </summary>
-    /// <returns>Next ushort value</returns>
+    /// <returns>Next ushort value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ushort ReadUShort()
     {
@@ -159,9 +159,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 8 bits to make up a float point double
+    /// Read the next 8 bits to make up a float point double.
     /// </summary>
-    /// <returns>Next double value</returns>
+    /// <returns>Next double value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public double ReadDouble()
     {
@@ -171,9 +171,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 4 bits to make up a float point
+    /// Read the next 4 bits to make up a float point.
     /// </summary>
-    /// <returns>Next float value</returns>
+    /// <returns>Next float value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public float ReadFloat()
     {
@@ -183,28 +183,28 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Read the next 8 bits to make up a byte
+    /// Read the next 8 bits to make up a byte.
     /// </summary>
-    /// <returns>Next byte value</returns>
+    /// <returns>Next byte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte ReadByte() => *(_ptr + Position++);
     /// <summary>
-    /// Read the next 8 bits to make up a signed byte
+    /// Read the next 8 bits to make up a signed byte.
     /// </summary>
-    /// <returns>Next sbyte value</returns>
+    /// <returns>Next sbyte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public sbyte ReadSByte() => (sbyte)ReadByte();
     /// <summary>
-    /// Read the next 1 bit to make up a boolean
+    /// Read the next 1 bit to make up a boolean.
     /// </summary>
-    /// <returns>Next bool value</returns>
+    /// <returns>Next bool value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ReadBool() => ReadByte() != 0;
 
     /// <summary>
-    /// Read the next 32 bytes to make up a Serial
+    /// Read the next 32 bytes to make up a Serial.
     /// </summary>
-    /// <returns>Next uint value cast as a Serial struct</returns>
+    /// <returns>Next uint value cast as a Serial struct.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)ReadUInt();
 
@@ -280,26 +280,24 @@ public unsafe class UnmanagedDataReader : IGenericReader
     public virtual long Seek(long offset, SeekOrigin origin)
     {
         Debug.Assert(
-            origin != SeekOrigin.End || offset <= 0 && offset > _size,
+            origin != SeekOrigin.End || (offset <= 0 && offset > _size),
             "Attempting to seek to an invalid position using SeekOrigin.End"
         );
         Debug.Assert(
-            origin != SeekOrigin.Begin || offset >= 0 && offset < _size,
+            origin != SeekOrigin.Begin || (offset >= 0 && offset < _size),
             "Attempting to seek to an invalid position using SeekOrigin.Begin"
         );
         Debug.Assert(
-            origin != SeekOrigin.Current || Position + offset >= 0 && Position + offset < _size,
+            origin != SeekOrigin.Current || (Position + offset >= 0 && Position + offset < _size),
             "Attempting to seek to an invalid position using SeekOrigin.Current"
         );
 
-        var position = Math.Max(0L, origin switch
+        Position = Math.Max(0L, origin switch
         {
             SeekOrigin.Current => Position + offset,
             SeekOrigin.End     => _size + offset,
             _                  => offset // Begin
         });
-
-        Position = position;
         return Position;
     }
 }
