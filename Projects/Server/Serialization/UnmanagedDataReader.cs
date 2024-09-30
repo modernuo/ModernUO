@@ -52,16 +52,15 @@ public unsafe class UnmanagedDataReader : IGenericReader
     /// Reads the next bit as a bool. If that bit is true, return a ReadStringRaw(intern) else null.
     /// </summary>
     /// <param name="intern"></param>
-    /// <returns></returns>
+    /// <returns>Next string value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadString(bool intern = false) => ReadBool() ? ReadStringRaw(intern) : null;
 
-
     /// <summary>
-    /// Reads the next bit as a bool. If that bit is true, return a ReadStringRaw(intern) else null.
+    /// Returns the next set of bits that make up a string.
     /// </summary>
     /// <param name="intern"></param>
-    /// <returns></returns>
+    /// <returns>Next string value.</returns>
     public string ReadStringRaw(bool intern = false)
     {
         // ReadEncodedInt

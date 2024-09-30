@@ -59,46 +59,88 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
         _mmf?.Dispose();
     }
 
-
+    /// <summary>
+    /// If usePrefixes is true, return a ReadString(intern) else ReadStringRaw(intern).
+    /// </summary>
+    /// <returns>A string value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadString(bool intern = false) => _usePrefixes ? _reader.ReadString(intern) : _reader.ReadStringRaw(intern);
-
+    /// <summary>
+    /// Returns the next set of bits that make up a string.
+    /// </summary>
+    /// <returns>Next string value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadStringRaw(bool intern = false) => _reader.ReadStringRaw(intern);
-
+    /// <summary>
+    /// Read the next 64 bits to make up a long (int64).
+    /// </summary>
+    /// <returns>Next long value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long ReadLong() => _reader.ReadLong();
-
+    /// <summary>
+    /// Read the next 64 bits to make up an unsigned long (uint64).
+    /// </summary>
+    /// <returns>Next ulong value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong ReadULong() => _reader.ReadULong();
-
+    /// <summary>
+    /// Read the next 32 bits to make up an int (int32).
+    /// </summary>
+    /// <returns>Next int value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int ReadInt() => _reader.ReadInt();
-
+    /// <summary>
+    /// Read the next 32 bits to make up an unsigned int (uint32).
+    /// </summary>
+    /// <returns>Next uint value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint ReadUInt() => _reader.ReadUInt();
-
+    /// <summary>
+    /// Read the next 16 bits to make up a short (int16).
+    /// </summary>
+    /// <returns>Next short value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public short ReadShort() => _reader.ReadShort();
-
+    /// <summary>
+    /// Read the next 16 bits to make up an unsigned short (int16).
+    /// </summary>
+    /// <returns>Next ushort value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ushort ReadUShort() => _reader.ReadUShort();
-
+    /// <summary>
+    /// Read the next 8 bits to make up a float point double.
+    /// </summary>
+    /// <returns>Next double value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public double ReadDouble() => _reader.ReadDouble();
-
+    /// <summary>
+    /// Read the next 4 bits to make up a float point.
+    /// </summary>
+    /// <returns>Next float value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public float ReadFloat() => _reader.ReadFloat();
-
+    /// <summary>
+    /// Read the next 8 bits to make up a byte.
+    /// </summary>
+    /// <returns>Next byte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte ReadByte() => _reader.ReadByte();
-
+    /// <summary>
+    /// Read the next 8 bits to make up a signed byte.
+    /// </summary>
+    /// <returns>Next sbyte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public sbyte ReadSByte() => _reader.ReadSByte();
-
+    /// <summary>
+    /// Read the next 1 bit to make up a boolean.
+    /// </summary>
+    /// <returns>Next bool value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ReadBool() => _reader.ReadBool();
-
+    /// <summary>
+    /// Read the next 32 bytes to make up a Serial.
+    /// </summary>
+    /// <returns>Next uint value cast as a Serial struct.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => _reader.ReadSerial();
 
