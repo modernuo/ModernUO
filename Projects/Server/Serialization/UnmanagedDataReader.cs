@@ -217,12 +217,19 @@ public unsafe class UnmanagedDataReader : IGenericReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)ReadUInt();
 
+    /// <summary>
+    /// Reads the next Byte which helps determin how to read the following Type.
+    /// <br>If the byte returns 1 => <see cref="ReadStringRaw"/> and translate into a Type via the <see cref="AssemblyHandler"/></br>
+    /// <br>If the byte returns 2 => <see cref="ReadTypeByHash"/></br>
+    /// <br>else return null</br>
+    /// </summary>
+    /// <returns>Next Type value</returns>
     public Type ReadType() =>
         ReadByte() switch
         {
-            0 => null,
             1 => AssemblyHandler.FindTypeByFullName(ReadStringRaw()), // Backward compatibility
-            2 => ReadTypeByHash()
+            2 => ReadTypeByHash(),
+            _ => null,
         };
 
     public Type ReadTypeByHash()
