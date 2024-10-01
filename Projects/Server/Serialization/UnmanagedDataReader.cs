@@ -232,6 +232,11 @@ public unsafe class UnmanagedDataReader : IGenericReader
             _ => null,
         };
 
+    /// <summary>
+    /// Reads the next <see cref="ulong"/> to create a hash and convert that into a Type using the <see cref="AssemblyHandler"/>.
+    /// <para>Will throw an <see cref="Exception"/> if typesDb is null or typesDb doesn't contain the hash.</para>
+    /// </summary>
+    /// <returns>Next Type value</returns>
     public Type ReadTypeByHash()
     {
         var hash = ReadULong();
