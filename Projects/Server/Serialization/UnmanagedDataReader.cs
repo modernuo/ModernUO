@@ -234,7 +234,7 @@ public unsafe class UnmanagedDataReader : IGenericReader
 
     /// <summary>
     /// Reads the next <see cref="ulong"/> to create a hash and convert that into a Type using the <see cref="AssemblyHandler"/>.
-    /// <para>Will throw an <see cref="Exception"/> if typesDb is null or typesDb doesn't contain the hash.</para>
+    /// <para>Will log an <see cref="Exception"/> if typesDb is null or typesDb doesn't contain the hash and return null</para>
     /// </summary>
     /// <returns>Next Type value</returns>
     public Type ReadTypeByHash()
@@ -285,6 +285,12 @@ public unsafe class UnmanagedDataReader : IGenericReader
         return t;
     }
 
+    /// <summary>
+    /// Reads the next set of bytes to fill the buffer.
+    /// </summary>
+    /// <param name="buffer">A reference span that will be filled with the next set of bytes.</param>
+    /// <returns>The length of the buffer.</returns>
+    /// <exception cref="OutOfMemoryException">Thrown if the buffer is larger than the remaining data to read in the file.</exception>
     public int Read(Span<byte> buffer)
     {
         var length = buffer.Length;

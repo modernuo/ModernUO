@@ -176,6 +176,12 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Type ReadType() => _reader.ReadType();
 
+    /// <summary>
+    /// Reads the next set of bytes to fill the buffer.
+    /// </summary>
+    /// <param name="buffer">A reference span that will be filled with the next set of bytes.</param>
+    /// <returns>The length of the buffer.</returns>
+    /// <exception cref="OutOfMemoryException">Thrown if the buffer is larger than the remaining data to read in the file.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Read(Span<byte> buffer) => _reader.Read(buffer);
 
