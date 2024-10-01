@@ -38,6 +38,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     private readonly Dictionary<ulong, string> _typesDb;
     private readonly Encoding _encoding;
 
+    /// <summary>
+    /// How many bits deep into the file is the reader at currently.
+    /// </summary>
     public long Position { get; private set; }
 
     /// <summary>
@@ -201,7 +204,7 @@ public unsafe class UnmanagedDataReader : IGenericReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public sbyte ReadSByte() => (sbyte)ReadByte();
     /// <summary>
-    /// Read the next 1 bit to make up a boolean.
+    /// Read the next Byte and return true if it's value returns zero.
     /// </summary>
     /// <returns>Next bool value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

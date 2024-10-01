@@ -69,6 +69,9 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
         }
     }
 
+    /// <summary>
+    /// How many bits deep into the file is the reader at currently.
+    /// </summary>
     public long Position => _reader.Position;
 
     public void Dispose()
