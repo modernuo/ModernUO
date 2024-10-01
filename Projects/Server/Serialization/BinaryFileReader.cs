@@ -23,6 +23,12 @@ namespace Server;
 
 /// <summary>
 /// Read bits of data from a serialized file in a managed environment.
+/// <para>
+/// Uses the following components collectively:
+/// <br><see cref="MemoryMappedFile"/></br>
+/// <br><see cref="MemoryMappedViewStream"/></br>
+/// <br><see cref="UnmanagedDataReader"/></br>
+/// </para>
 /// </summary>
 public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
 {
@@ -33,11 +39,17 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
 
     /// <summary>
     /// Read bits of data from a serialized file in a managed environment.
-    /// <br>Encoding is TextEncoding.UTF8 by default.</br>
+    /// <br>Encoding is UTF8 if left null.</br>
+    /// <para>
+    /// Uses the following components collectively:
+    /// <br><see cref="MemoryMappedFile"/></br>
+    /// <br><see cref="MemoryMappedViewStream"/></br>
+    /// <br><see cref="UnmanagedDataReader"/></br>
+    /// </para>
     /// </summary>
     /// <param name="path">Full file path of the file to be deserialized.</param>
     /// <param name="usePrefixes">Sets if strings should be read with itern.</param>
-    /// <param name="encoding">Set an encoding. By default TextEncoding.UTF8</param>
+    /// <param name="encoding">Set an encoding. By default UTF8</param>
     public BinaryFileReader(string path, bool usePrefixes = true, Encoding encoding = null)
     {
         _usePrefixes = usePrefixes;
@@ -145,9 +157,9 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ReadBool() => _reader.ReadBool();
     /// <summary>
-    /// Read the next 32 bytes to make up a Serial.
+    /// Read the next 32 bytes to make up a <see cref="Serial"/>.
     /// </summary>
-    /// <returns>Next uint value cast as a Serial struct.</returns>
+    /// <returns>Next uint value cast as a <see cref="Serial"/> struct.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => _reader.ReadSerial();
 

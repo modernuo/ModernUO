@@ -46,7 +46,7 @@ public unsafe class UnmanagedDataReader : IGenericReader
     /// <param name="ptr">The starting address for reading bits.</param>
     /// <param name="size">The total size of memory to be read.</param>
     /// <param name="typesDb">The custom type dictionary. Will throw an error if left null ReadType is called.</param>
-    /// <param name="encoding">UTF8 by default.</param>
+    /// <param name="encoding"><see cref="TextEncoding.UTF8"/> by default.</param>
     public UnmanagedDataReader(byte* ptr, long size, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {
         _encoding = encoding ?? TextEncoding.UTF8;
@@ -56,7 +56,7 @@ public unsafe class UnmanagedDataReader : IGenericReader
     }
 
     /// <summary>
-    /// Reads the next bit as a bool. If that bit is true, return a ReadStringRaw(intern) else null.
+    /// Reads the next bit as a bool. If that bit is true, return an <see cref="ReadStringRaw"/> else null.
     /// </summary>
     /// <param name="intern"></param>
     /// <returns>Next string value.</returns>
@@ -208,9 +208,9 @@ public unsafe class UnmanagedDataReader : IGenericReader
     public bool ReadBool() => ReadByte() != 0;
 
     /// <summary>
-    /// Read the next 32 bytes to make up a Serial.
+    /// Read the next 32 bytes to make up a <see cref="Serial"/>.
     /// </summary>
-    /// <returns>Next uint value cast as a Serial struct.</returns>
+    /// <returns>Next uint value cast as a <see cref="Serial"/> struct.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)ReadUInt();
 
