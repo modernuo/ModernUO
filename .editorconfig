@@ -147,6 +147,7 @@ dotnet_diagnostic.IDE0008.severity = none # using var
 # csharp_style_var_for_built_in_types    = true:suggestion  # suggest using var (implied) variables
 # csharp_style_var_when_type_is_apparent = true:suggestion  # suggest using var (implied) variables
 # csharp_style_var_elsewhere             = true:suggestion  # suggest using var (implied) variables
+dotnet_diagnostic.RCS1123.severity = none
 
 # ReSharper properties
 resharper_apply_auto_detected_rules=false

@@ -315,15 +315,15 @@ public unsafe class UnmanagedDataReader : IGenericReader
     public virtual long Seek(long offset, SeekOrigin origin)
     {
         Debug.Assert(
-            origin != SeekOrigin.End || (offset <= 0 && offset > _size),
+            origin != SeekOrigin.End || offset <= 0 && offset > _size,
             "Attempting to seek to an invalid position using SeekOrigin.End"
         );
         Debug.Assert(
-            origin != SeekOrigin.Begin || (offset >= 0 && offset < _size),
+            origin != SeekOrigin.Begin || offset >= 0 && offset < _size,
             "Attempting to seek to an invalid position using SeekOrigin.Begin"
         );
         Debug.Assert(
-            origin != SeekOrigin.Current || (Position + offset >= 0 && Position + offset < _size),
+            origin != SeekOrigin.Current || Position + offset >= 0 && Position + offset < _size,
             "Attempting to seek to an invalid position using SeekOrigin.Current"
         );
 
