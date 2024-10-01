@@ -304,6 +304,14 @@ public unsafe class UnmanagedDataReader : IGenericReader
         return length;
     }
 
+    /// <summary>
+    /// Sets the current position of the stream to a specified value.
+    /// </summary>
+    /// <param name="offset">The new position, relative to the <paramref name="origin"/> parameter.</param>
+    /// <param name="origin">The reference point for the <paramref name="offset"/> parameter. It can be one of the values of <see cref="SeekOrigin"/>.</param>
+    /// <returns>The new position in the stream, in bytes.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the <paramref name="offset"/> or the resulting position is out of the valid range.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the stream does not support seeking.</exception>
     public virtual long Seek(long offset, SeekOrigin origin)
     {
         Debug.Assert(
