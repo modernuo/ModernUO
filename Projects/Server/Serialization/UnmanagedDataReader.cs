@@ -25,19 +25,31 @@ using Server.Text;
 
 namespace Server;
 
+/// <summary>
+/// Read bits of data raw from a serialized file using Little-endian.
+/// </summary>
 public unsafe class UnmanagedDataReader : IGenericReader
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(UnmanagedDataReader));
 
     private readonly byte* _ptr;
-    private long _position;
     private readonly long _size;
 
     private readonly Dictionary<ulong, string> _typesDb;
     private readonly Encoding _encoding;
 
-    public long Position => _position;
+    /// <summary>
+    /// How many bits deep into the file is the reader at currently.
+    /// </summary>
+    public long Position { get; private set; }
 
+    /// <summary>
+    /// Read bits of data raw from a serialized file using Little-endian.
+    /// </summary>
+    /// <param name="ptr">The starting address for reading bits.</param>
+    /// <param name="size">The total size of memory to be read.</param>
+    /// <param name="typesDb">The custom type dictionary. Will throw an error if left null ReadType is called.</param>
+    /// <param name="encoding"><see cref="TextEncoding.UTF8"/> by default.</param>
     public UnmanagedDataReader(byte* ptr, long size, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {
         _encoding = encoding ?? TextEncoding.UTF8;
@@ -46,9 +58,19 @@ public unsafe class UnmanagedDataReader : IGenericReader
         _size = size;
     }
 
+    /// <summary>
+    /// Reads the next bit as a bool. If that bit is true, return an <see cref="ReadStringRaw"/> else null.
+    /// </summary>
+    /// <param name="intern"></param>
+    /// <returns>Next string value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadString(bool intern = false) => ReadBool() ? ReadStringRaw(intern) : null;
 
+    /// <summary>
+    /// Returns the next set of bits that make up a string.
+    /// </summary>
+    /// <param name="intern"></param>
+    /// <returns>Next string value.</returns>
     public string ReadStringRaw(bool intern = false)
     {
         // ReadEncodedInt
@@ -57,7 +79,7 @@ public unsafe class UnmanagedDataReader : IGenericReader
 
         do
         {
-            b = *(_ptr + _position++);
+            b = *(_ptr + Position++);
             length |= (b & 0x7F) << shift;
             shift += 7;
         }
@@ -68,95 +90,153 @@ public unsafe class UnmanagedDataReader : IGenericReader
             return "".Intern();
         }
 
-        var str = TextEncoding.GetString(new ReadOnlySpan<byte>(_ptr + _position, length), _encoding);
-        _position += length;
+        var str = TextEncoding.GetString(new ReadOnlySpan<byte>(_ptr + Position, length), _encoding);
+        Position += length;
         return intern ? str.Intern() : str;
     }
 
+    /// <summary>
+    /// Read the next 64 bits to make up a long (int64).
+    /// </summary>
+    /// <returns>Next long value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public long ReadLong()
     {
-        var v = BinaryPrimitives.ReadInt64LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(long)));
-        _position += sizeof(long);
+        var v = BinaryPrimitives.ReadInt64LittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(long)));
+        Position += sizeof(long);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 64 bits to make up an unsigned long (uint64).
+    /// </summary>
+    /// <returns>Next ulong value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong ReadULong()
     {
-        var v = BinaryPrimitives.ReadUInt64LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(ulong)));
-        _position += sizeof(ulong);
+        var v = BinaryPrimitives.ReadUInt64LittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(ulong)));
+        Position += sizeof(ulong);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 32 bits to make up an int (int32).
+    /// </summary>
+    /// <returns>Next int value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int ReadInt()
     {
-        var v = BinaryPrimitives.ReadInt32LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(int)));
-        _position += sizeof(int);
+        var v = BinaryPrimitives.ReadInt32LittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(int)));
+        Position += sizeof(int);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 32 bits to make up an unsigned int (uint32).
+    /// </summary>
+    /// <returns>Next uint value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public uint ReadUInt()
     {
-        var v = BinaryPrimitives.ReadUInt32LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(uint)));
-        _position += sizeof(uint);
+        var v = BinaryPrimitives.ReadUInt32LittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(uint)));
+        Position += sizeof(uint);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 16 bits to make up a short (int16).
+    /// </summary>
+    /// <returns>Next short value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public short ReadShort()
     {
-        var v = BinaryPrimitives.ReadInt16LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(short)));
-        _position += sizeof(short);
+        var v = BinaryPrimitives.ReadInt16LittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(short)));
+        Position += sizeof(short);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 16 bits to make up an unsigned short (int16).
+    /// </summary>
+    /// <returns>Next ushort value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ushort ReadUShort()
     {
-        var v = BinaryPrimitives.ReadUInt16LittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(ushort)));
-        _position += sizeof(ushort);
+        var v = BinaryPrimitives.ReadUInt16LittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(ushort)));
+        Position += sizeof(ushort);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 8 bits to make up a float point double.
+    /// </summary>
+    /// <returns>Next double value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public double ReadDouble()
     {
-        var v = BinaryPrimitives.ReadDoubleLittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(double)));
-        _position += sizeof(double);
+        var v = BinaryPrimitives.ReadDoubleLittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(double)));
+        Position += sizeof(double);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 4 bits to make up a float point.
+    /// </summary>
+    /// <returns>Next float value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public float ReadFloat()
     {
-        var v = BinaryPrimitives.ReadSingleLittleEndian(new ReadOnlySpan<byte>(_ptr + _position, sizeof(float)));
-        _position += sizeof(float);
+        var v = BinaryPrimitives.ReadSingleLittleEndian(new ReadOnlySpan<byte>(_ptr + Position, sizeof(float)));
+        Position += sizeof(float);
         return v;
     }
 
+    /// <summary>
+    /// Read the next 8 bits to make up a byte.
+    /// </summary>
+    /// <returns>Next byte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public byte ReadByte() => *(_ptr + _position++);
-
+    public byte ReadByte() => *(_ptr + Position++);
+    /// <summary>
+    /// Read the next 8 bits to make up a signed byte.
+    /// </summary>
+    /// <returns>Next sbyte value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public sbyte ReadSByte() => (sbyte)ReadByte();
-
+    /// <summary>
+    /// Read the next Byte and return true if it's value returns zero.
+    /// </summary>
+    /// <returns>Next bool value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool ReadBool() => ReadByte() != 0;
 
+    /// <summary>
+    /// Read the next 32 bytes to make up a <see cref="Serial"/>.
+    /// </summary>
+    /// <returns>Next uint value cast as a <see cref="Serial"/> struct.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)ReadUInt();
 
+    /// <summary>
+    /// Reads the next Byte which helps determin how to read the following Type.
+    /// <br>If the byte returns 1 => <see cref="ReadStringRaw"/> and translate into a Type via the <see cref="AssemblyHandler"/></br>
+    /// <br>If the byte returns 2 => <see cref="ReadTypeByHash"/></br>
+    /// <br>else return null</br>
+    /// </summary>
+    /// <returns>Next Type value</returns>
     public Type ReadType() =>
         ReadByte() switch
         {
-            0 => null,
             1 => AssemblyHandler.FindTypeByFullName(ReadStringRaw()), // Backward compatibility
-            2 => ReadTypeByHash()
+            2 => ReadTypeByHash(),
+            _ => null,
         };
 
+    /// <summary>
+    /// Reads the next <see cref="ulong"/> to create a hash and convert that into a Type using the <see cref="AssemblyHandler"/>.
+    /// <para>Will log an <see cref="Exception"/> if typesDb is null or typesDb doesn't contain the hash and return null</para>
+    /// </summary>
+    /// <returns>Next Type value</returns>
     public Type ReadTypeByHash()
     {
         var hash = ReadULong();
@@ -205,19 +285,33 @@ public unsafe class UnmanagedDataReader : IGenericReader
         return t;
     }
 
+    /// <summary>
+    /// Reads the next set of bytes to fill the buffer.
+    /// </summary>
+    /// <param name="buffer">A reference span that will be filled with the next set of bytes.</param>
+    /// <returns>The length of the buffer.</returns>
+    /// <exception cref="OutOfMemoryException">Thrown if the buffer is larger than the remaining data to read in the file.</exception>
     public int Read(Span<byte> buffer)
     {
         var length = buffer.Length;
-        if (length > _size - _position)
+        if (length > _size - Position)
         {
             throw new OutOfMemoryException();
         }
 
-        new ReadOnlySpan<byte>(_ptr + _position, length).CopyTo(buffer);
-        _position += length;
+        new ReadOnlySpan<byte>(_ptr + Position, length).CopyTo(buffer);
+        Position += length;
         return length;
     }
 
+    /// <summary>
+    /// Sets the current position of the stream to a specified value.
+    /// </summary>
+    /// <param name="offset">The new position, relative to the <paramref name="origin"/> parameter.</param>
+    /// <param name="origin">The reference point for the <paramref name="offset"/> parameter. It can be one of the values of <see cref="SeekOrigin"/>.</param>
+    /// <returns>The new position in the stream, in bytes.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the <paramref name="offset"/> or the resulting position is out of the valid range.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the stream does not support seeking.</exception>
     public virtual long Seek(long offset, SeekOrigin origin)
     {
         Debug.Assert(
@@ -229,18 +323,16 @@ public unsafe class UnmanagedDataReader : IGenericReader
             "Attempting to seek to an invalid position using SeekOrigin.Begin"
         );
         Debug.Assert(
-            origin != SeekOrigin.Current || _position + offset >= 0 && _position + offset < _size,
+            origin != SeekOrigin.Current || Position + offset >= 0 && Position + offset < _size,
             "Attempting to seek to an invalid position using SeekOrigin.Current"
         );
 
-        var position = Math.Max(0L, origin switch
+        Position = Math.Max(0L, origin switch
         {
-            SeekOrigin.Current => _position + offset,
+            SeekOrigin.Current => Position + offset,
             SeekOrigin.End     => _size + offset,
             _                  => offset // Begin
         });
-
-        _position = position;
-        return _position;
+        return Position;
     }
 }
