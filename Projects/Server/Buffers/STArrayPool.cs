@@ -53,7 +53,7 @@ public class STArrayPool<T> : ArrayPool<T>
 #if DEBUG_ARRAYPOOL
                 _rentedArrays.AddOrUpdate(
                     buffer,
-                    new RentReturnStatus { IsRented = true, StackTrace = Environment.StackTrace }
+                    new RentReturnStatus { IsRented = true }
                 );
 #endif
                 return buffer;
@@ -72,7 +72,7 @@ public class STArrayPool<T> : ArrayPool<T>
 #if DEBUG_ARRAYPOOL
                     _rentedArrays.AddOrUpdate(
                         buffer,
-                        new RentReturnStatus { IsRented = true, StackTrace = Environment.StackTrace }
+                        new RentReturnStatus { IsRented = true }
                     );
 #endif
                     return buffer;
