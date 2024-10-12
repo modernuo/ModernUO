@@ -5,7 +5,6 @@ using Server.Guilds;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
-using Server.Prompts;
 
 namespace Server.Gumps
 {
@@ -1392,7 +1391,7 @@ namespace Server.Gumps
                                 {
                                     if (isCoOwner)
                                     {
-                                        from.Prompt = new RenamePrompt(m_House);
+                                        from.Prompt = new HouseRenamePrompt(m_House);
                                         from.SendLocalizedMessage(501302); // What dost thou wish the sign to say?
                                     }
 
