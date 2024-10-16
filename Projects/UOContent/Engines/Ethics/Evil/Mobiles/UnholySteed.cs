@@ -53,17 +53,25 @@ public partial class UnholySteed : BaseMount
 
     public override string ApplyNameSuffix(string suffix)
     {
-        if (suffix.Length == 0)
+        var ethic = Ethic.Evil;
+        if (ethic == null)
         {
-            return base.ApplyNameSuffix(Ethic.Evil.Definition.Adjunct.String);
+            return base.ApplyNameSuffix("");
         }
 
-        return base.ApplyNameSuffix($"{suffix} {Ethic.Evil.Definition.Adjunct.String}");
+        var adjunct = ethic.Definition.Adjunct;
+
+        if (suffix.Length == 0)
+        {
+            return base.ApplyNameSuffix(adjunct);
+        }
+
+        return base.ApplyNameSuffix($"{suffix} {adjunct}");
     }
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (Ethic.Find(from) != Ethic.Evil)
+        if (Ethic.Evil == null || Ethic.Find(from) != Ethic.Evil)
         {
             from.SendMessage("You may not ride this steed.");
         }

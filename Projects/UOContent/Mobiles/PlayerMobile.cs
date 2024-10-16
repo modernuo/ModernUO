@@ -1327,32 +1327,13 @@ namespace Server.Mobiles
                     }
 
                     var item = items[i];
+                    var itemEthic = Ethic.Find(item);
 
-                    if ((item.SavedFlags & 0x100) != 0)
+                    if (itemEthic != null && itemEthic != ethic)
                     {
-                        if (item.Hue != Ethic.Hero.Definition.PrimaryHue)
-                        {
-                            item.SavedFlags &= ~0x100;
-                        }
-                        else if (ethic != Ethic.Hero)
-                        {
-                            from.AddToBackpack(item);
-                            moved = true;
-                            continue;
-                        }
-                    }
-                    else if ((item.SavedFlags & 0x200) != 0)
-                    {
-                        if (item.Hue != Ethic.Evil.Definition.PrimaryHue)
-                        {
-                            item.SavedFlags &= ~0x200;
-                        }
-                        else if (ethic != Ethic.Evil)
-                        {
-                            from.AddToBackpack(item);
-                            moved = true;
-                            continue;
-                        }
+                        from.AddToBackpack(item);
+                        moved = true;
+                        continue;
                     }
 
                     if (item is BaseWeapon weapon)

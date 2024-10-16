@@ -54,15 +54,19 @@ public partial class UnholyFamiliar : BaseCreature
 
     public override string ApplyNameSuffix(string suffix)
     {
-        if (suffix.Length == 0)
+        var ethic = Ethic.Evil;
+        if (ethic == null)
         {
-            suffix = Ethic.Evil.Definition.Adjunct.String;
-        }
-        else
-        {
-            suffix = $"{suffix} {Ethic.Evil.Definition.Adjunct.String}";
+            return base.ApplyNameSuffix("");
         }
 
-        return base.ApplyNameSuffix(suffix);
+        var adjunct = ethic.Definition.Adjunct;
+
+        if (suffix.Length == 0)
+        {
+            return base.ApplyNameSuffix(adjunct);
+        }
+
+        return base.ApplyNameSuffix($"{suffix} {adjunct}");
     }
 }
