@@ -189,12 +189,15 @@ public partial class Map
 
             _bounds = bounds;
 
-            map.CalculateSectors(bounds, out _sectorStartX, out var _sectorStartY, out _sectorEndX, out _sectorEndY);
+            if (map != null)
+            {
+                map.CalculateSectors(bounds, out _sectorStartX, out var _sectorStartY, out _sectorEndX, out _sectorEndY);
 
-            // We start the X sector one short because it gets incremented immediately in MoveNext()
-            _currentSectorX = _sectorStartX - 1;
-            _currentSectorY = _sectorStartY;
-            _index = 0;
+                // We start the X sector one short because it gets incremented immediately in MoveNext()
+                _currentSectorX = _sectorStartX - 1;
+                _currentSectorY = _sectorStartY;
+                _index = 0;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
