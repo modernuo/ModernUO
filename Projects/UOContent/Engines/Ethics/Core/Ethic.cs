@@ -10,37 +10,23 @@ namespace Server.Ethics;
 [SerializationGenerator(1)]
 public abstract partial class Ethic : EthicsEntity
 {
-    public static Ethic Hero { get; private set; }
-    public static Ethic Evil { get; private set; }
+    public static Ethic Hero => Ethics[0];
+    public static Ethic Evil => Ethics[1];
 
-    public static readonly Ethic[] Ethics =
-    {
-        Hero,
-        Evil
-    };
+    private static Ethic[] Ethics => [null, null];
 
     public static bool RegisterEthic(Ethic ethic)
     {
-        if (ethic is HeroEthic)
+        if (ethic is HeroEthic && Hero == null)
         {
-            if (Hero == null)
-            {
-                Hero = ethic;
-                return true;
-            }
-
-            return false;
+            Ethics[0] = ethic;
+            return true;
         }
 
-        if (ethic is EvilEthic)
+        if (ethic is EvilEthic && Evil == null)
         {
-            if (Evil == null)
-            {
-                Evil = ethic;
-                return true;
-            }
-
-            return false;
+            Ethics[1] = ethic;
+            return true;
         }
 
         return false;
@@ -58,6 +44,11 @@ public abstract partial class Ethic : EthicsEntity
     {
         if ((item.SavedFlags & 0x100) != 0)
         {
+            if (Hero == null)
+            {
+                return null;
+            }
+
             if (item.Hue == Hero.Definition.PrimaryHue)
             {
                 return Hero;
@@ -68,6 +59,11 @@ public abstract partial class Ethic : EthicsEntity
 
         if ((item.SavedFlags & 0x200) != 0)
         {
+            if (Evil == null)
+            {
+                return null;
+            }
+
             if (item.Hue == Evil.Definition.PrimaryHue)
             {
                 return Evil;
@@ -172,7 +168,7 @@ public abstract partial class Ethic : EthicsEntity
             {
                 var ethic = Ethics[i];
 
-                if (!ethic.IsEligible(e.Mobile))
+                if (ethic?.IsEligible(e.Mobile) != true)
                 {
                     continue;
                 }
@@ -240,11 +236,7 @@ public abstract partial class Ethic : EthicsEntity
         }
     }
 
-    public static Ethic Find(Mobile mob) => Find(mob, false, false);
-
-    public static Ethic Find(Mobile mob, bool inherit) => Find(mob, inherit, false);
-
-    public static Ethic Find(Mobile mob, bool inherit, bool allegiance)
+    public static Ethic Find(Mobile mob, bool inherit = false, bool allegiance = false)
     {
         var pl = Player.Find(mob);
 
@@ -255,14 +247,10 @@ public abstract partial class Ethic : EthicsEntity
 
         if (inherit && mob is BaseCreature bc)
         {
-            if (bc.Controlled)
+            var master = bc.GetMaster();
+            if (master != null)
             {
-                return Find(bc.ControlMaster, false);
-            }
-
-            if (bc.Summoned)
-            {
-                return Find(bc.SummonMaster, false);
+                return Find(master);
             }
 
             if (allegiance)

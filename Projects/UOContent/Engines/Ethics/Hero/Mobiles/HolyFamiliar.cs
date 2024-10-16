@@ -55,15 +55,19 @@ public partial class HolyFamiliar : BaseCreature
 
     public override string ApplyNameSuffix(string suffix)
     {
-        if (suffix.Length == 0)
+        var ethic = Ethic.Hero;
+        if (ethic == null)
         {
-            suffix = Ethic.Hero.Definition.Adjunct.String;
-        }
-        else
-        {
-            suffix = $"{suffix} {Ethic.Hero.Definition.Adjunct.String}";
+            return base.ApplyNameSuffix("");
         }
 
-        return base.ApplyNameSuffix(suffix);
+        var adjunct = ethic.Definition.Adjunct;
+
+        if (suffix.Length == 0)
+        {
+            return base.ApplyNameSuffix(adjunct);
+        }
+
+        return base.ApplyNameSuffix($"{suffix} {adjunct}");
     }
 }

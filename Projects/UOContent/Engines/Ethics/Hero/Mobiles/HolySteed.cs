@@ -53,17 +53,25 @@ public partial class HolySteed : BaseMount
 
     public override string ApplyNameSuffix(string suffix)
     {
-        if (suffix.Length == 0)
+        var ethic = Ethic.Hero;
+        if (ethic == null)
         {
-            return base.ApplyNameSuffix(Ethic.Hero.Definition.Adjunct.String);
+            return base.ApplyNameSuffix("");
         }
 
-        return base.ApplyNameSuffix($"{suffix} {Ethic.Hero.Definition.Adjunct.String}");
+        var adjunct = ethic.Definition.Adjunct;
+
+        if (suffix.Length == 0)
+        {
+            return base.ApplyNameSuffix(adjunct);
+        }
+
+        return base.ApplyNameSuffix($"{suffix} {adjunct}");
     }
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (Ethic.Find(from) != Ethic.Hero)
+        if (Ethic.Hero == null || Ethic.Find(from) != Ethic.Hero)
         {
             from.SendMessage("You may not ride this steed.");
         }
