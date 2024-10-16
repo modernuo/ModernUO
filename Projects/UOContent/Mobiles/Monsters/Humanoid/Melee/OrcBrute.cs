@@ -102,7 +102,7 @@ namespace Server.Mobiles
         {
             var map = target.Map;
 
-            if (map == null)
+            if (map == null || map == Map.Internal)
             {
                 return;
             }
