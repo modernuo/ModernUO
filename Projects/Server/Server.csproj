@@ -35,6 +35,7 @@
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.3.2" />
         <PackageReference Include="LibDeflate.Bindings" Version="1.0.2.120" />
+        <PackageReference Include="NATS.Net" Version="2.5.1" />
         <PackageReference Include="PollGroup" Version="1.5.1" />
         <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
 

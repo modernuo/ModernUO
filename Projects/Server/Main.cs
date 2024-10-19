@@ -189,9 +189,11 @@ public static class Core
                 if (fi.Directory != null && Directory.Exists(fi.Directory.FullName))
                 {
                     fullPath = fi.Directory.EnumerateFiles(
-                        fi.Name,
-                        new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
-                    ).FirstOrDefault()?.FullName;
+                            fi.Name,
+                            new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
+                        )
+                        .FirstOrDefault()
+                        ?.FullName;
                 }
             }
 
@@ -317,6 +319,7 @@ public static class Core
 
                     process.Start();
                 }
+
                 logger.Information("Restart done");
             }
             catch (Exception e)
@@ -380,13 +383,15 @@ public static class Core
         Utility.PopColor();
 
         Utility.PushColor(ConsoleColor.DarkGray);
-        Console.WriteLine(@"Copyright 2019-2023 ModernUO Development Team
+        Console.WriteLine(
+            @"Copyright 2019-2023 ModernUO Development Team
                 This program comes with ABSOLUTELY NO WARRANTY;
                 This is free software, and you are welcome to redistribute it under certain conditions.
 
                 You should have received a copy of the GNU General Public License
                 along with this program. If not, see <https://www.gnu.org/licenses/>.
-            ".TrimMultiline());
+            ".TrimMultiline()
+        );
         Utility.PopColor();
 
         Console.CancelKeyPress += Console_CancelKeyPressed;
@@ -426,6 +431,8 @@ public static class Core
 
         TileMatrixLoader.LoadTileMatrix();
 
+        MessageBus.Start();
+
         RegionJsonSerializer.LoadRegions();
         World.Load();
 
@@ -433,6 +440,7 @@ public static class Core
 
         TcpServer.Start();
         PingServer.Start();
+
         EventSink.InvokeServerStarted();
         RunEventLoop();
     }
@@ -561,7 +569,8 @@ public static class Core
             if (World.DirtyTrackingEnabled)
             {
                 var manualDirtyCheckingAttribute = type.GetCustomAttribute<ManualDirtyCheckingAttribute>(false);
-                var codeGennedAttribute = type.GetCustomAttribute<ModernUO.Serialization.SerializationGeneratorAttribute>(false);
+                var codeGennedAttribute =
+                    type.GetCustomAttribute<ModernUO.Serialization.SerializationGeneratorAttribute>(false);
 
                 if (manualDirtyCheckingAttribute == null && codeGennedAttribute == null)
                 {

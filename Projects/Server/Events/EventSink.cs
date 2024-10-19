@@ -41,4 +41,7 @@ public static partial class EventSink
 
     public static event Action ServerStarted;
     public static void InvokeServerStarted() => ServerStarted?.Invoke();
+
+    public static event Action<string, int> IncomingMessage;
+    public static void InvokeIncomingMessage(string message, int hue) => IncomingMessage?.Invoke(message, hue);
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Misc
 {
     public static class Broadcasts
@@ -6,6 +8,13 @@ namespace Server.Misc
         {
             EventSink.ServerCrashed += EventSink_Crashed;
             EventSink.Shutdown += EventSink_Shutdown;
+            EventSink.IncomingMessage += EventSink_IncomingMessage;
+        }
+
+        public static void EventSink_IncomingMessage(string message, int hue)
+        {
+            Console.WriteLine("Incoming Message");
+            World.Broadcast(hue, true, message);
         }
 
         public static void EventSink_Crashed(ServerCrashedEventArgs e)

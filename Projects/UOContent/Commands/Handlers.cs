@@ -638,8 +638,10 @@ namespace Server.Commands
         [Description("Broadcasts a message to everyone online.")]
         public static void BroadcastMessage_OnCommand(CommandEventArgs e)
         {
-            BroadcastMessage(AccessLevel.Player, 0x482, $"Staff message from {e.Mobile.Name}:");
-            BroadcastMessage(AccessLevel.Player, 0x482, e.ArgString);
+            MessageBus.SendBroadcast($"Staff message from {e.Mobile.Name}:", 0x482);
+            MessageBus.SendBroadcast($"{e.ArgString}", 0x21);
+            // BroadcastMessage(AccessLevel.Player, 0x482, $"Staff message from {e.Mobile.Name}:");
+            // BroadcastMessage(AccessLevel.Player, 0x482, e.ArgString);
         }
 
         public static void BroadcastMessage(AccessLevel ac, int hue, string message)

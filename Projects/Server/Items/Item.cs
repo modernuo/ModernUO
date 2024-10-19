@@ -233,6 +233,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         SetLastMoved();
 
         World.AddEntity(this);
+
+        MessageBus.Publish("items.created", $"{Serial}:{itemID}");
     }
 
     public Item(Serial serial) => Serial = serial;
@@ -1072,6 +1074,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         {
             writer.WriteEncodedInt(info.m_SavedFlags);
         }
+
+        MessageBus.Publish("items.serialize", $"{Serial}:{ItemID}");
     }
 
     public void MoveToWorld(WorldLocation worldLocation)
@@ -3036,6 +3040,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
         // if (version < 9)
         VerifyCompactInfo();
+
+        MessageBus.Publish("items.deserialize", $"{Serial}:{ItemID}");
     }
 
     private void FixHolding_Sandbox()
