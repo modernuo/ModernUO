@@ -227,7 +227,7 @@ public class JusticeVirtue
         }
         else
         {
-            AddProtection(protectee, protector);
+            AddProtection(protector, protectee);
 
             var args = $"{protector.Name}\t{protectee.Name}";
 
