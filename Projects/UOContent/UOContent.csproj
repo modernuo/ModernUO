@@ -34,6 +34,7 @@
         <Delete Files="..\..\Distribution\Assemblies\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
+        <PackageReference Include="NATS.Net" Version="2.5.1" />
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>

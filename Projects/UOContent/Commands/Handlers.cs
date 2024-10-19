@@ -33,8 +33,6 @@ namespace Server.Commands
             Register("Help", AccessLevel.Player, Help_OnCommand);
             Register("Move", AccessLevel.GameMaster, Move_OnCommand);
             Register("Client", AccessLevel.Counselor, Client_OnCommand);
-            Register("SMsg", AccessLevel.Counselor, StaffMessage_OnCommand);
-            Register("BCast", AccessLevel.GameMaster, BroadcastMessage_OnCommand);
             Register("Bank", AccessLevel.GameMaster, Bank_OnCommand);
             Register("Echo", AccessLevel.Counselor, Echo_OnCommand);
             Register("Sound", AccessLevel.GameMaster, Sound_OnCommand);
@@ -622,38 +620,6 @@ namespace Server.Commands
             if (sb.Length > 0)
             {
                 m.SendAsciiMessage(0x482, sb.ToString());
-            }
-        }
-
-        [Usage("SMsg <text>")]
-        [Aliases("S", "SM")]
-        [Description("Broadcasts a message to all online staff.")]
-        public static void StaffMessage_OnCommand(CommandEventArgs e)
-        {
-            BroadcastMessage(AccessLevel.Counselor, e.Mobile.SpeechHue, $"[{e.Mobile.Name}] {e.ArgString}");
-        }
-
-        [Usage("BCast <text>")]
-        [Aliases("B", "BC")]
-        [Description("Broadcasts a message to everyone online.")]
-        public static void BroadcastMessage_OnCommand(CommandEventArgs e)
-        {
-            MessageBus.SendBroadcast($"Staff message from {e.Mobile.Name}:", 0x482);
-            MessageBus.SendBroadcast($"{e.ArgString}", 0x21);
-            // BroadcastMessage(AccessLevel.Player, 0x482, $"Staff message from {e.Mobile.Name}:");
-            // BroadcastMessage(AccessLevel.Player, 0x482, e.ArgString);
-        }
-
-        public static void BroadcastMessage(AccessLevel ac, int hue, string message)
-        {
-            foreach (var state in NetState.Instances)
-            {
-                var m = state.Mobile;
-
-                if (m?.AccessLevel >= ac)
-                {
-                    m.SendMessage(hue, message);
-                }
             }
         }
 
