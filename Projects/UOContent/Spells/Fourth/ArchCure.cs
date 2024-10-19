@@ -95,7 +95,7 @@ namespace Server.Spells.Fourth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTarget<IPoint3D>(this);
+            Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true);
         }
 
         private bool AreaCanTarget(Mobile target, bool feluccaRules)

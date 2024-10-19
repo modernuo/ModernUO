@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Engines.ConPVP;
 using Server.Engines.Stealables;
 using Server.Factions;
@@ -465,9 +466,12 @@ namespace Server.SkillHandlers
             return false;
         }
 
-        public static void ReturnOnDeath(Mobile killed, Container corpse)
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void ReturnOnDeath(Mobile killed)
         {
             Clean();
+
+            var corpse = killed.Corpse;
 
             foreach (var si in m_Queue)
             {

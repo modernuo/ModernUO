@@ -17,7 +17,7 @@ using Server.Text;
 
 namespace Server;
 
-public static class Utility
+public static partial class Utility
 {
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
@@ -237,6 +237,8 @@ public static class Utility
     {
         var chars = STArrayPool<char>.Shared.Rent(str.Length);
         var span = chars.AsSpan(0, str.Length);
+        str.CopyTo(span);
+
         var formattable = new PooledArraySpanFormattable(chars, str.Length);
 
         if (!str.IsNullOrWhiteSpace())
@@ -1457,5 +1459,13 @@ public static class Utility
         var b = (c32 & 0xFF) >> 3;
 
         return (r << 10) | (g << 5) | b;
+    }
+
+    public static void AddOrUpdate<TKey, TValue>(this ConditionalWeakTable<TKey, TValue> table, TKey key, TValue value)
+        where TKey : class
+        where TValue : class
+    {
+        table.Remove(key);
+        table.Add(key, value);
     }
 }

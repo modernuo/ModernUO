@@ -60,5 +60,7 @@ public partial class VendorItem
         {
             _price = 100000000;
         }
+
+        Valid = true;
     }
 }

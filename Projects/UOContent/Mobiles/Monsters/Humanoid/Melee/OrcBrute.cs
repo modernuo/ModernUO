@@ -102,7 +102,7 @@ namespace Server.Mobiles
         {
             var map = target.Map;
 
-            if (map == null)
+            if (map == null || map == Map.Internal)
             {
                 return;
             }
@@ -112,14 +112,20 @@ namespace Server.Mobiles
             {
                 if (++count == 10)
                 {
-                    BaseCreature orc = new SpawnedOrcishLord { Team = Team };
-
-                    // This MoveToWorld is safe since we return after executing and do not keep looping.
-                    orc.MoveToWorld(map.GetRandomNearbyLocation(target.Location), map);
-                    orc.Combatant = target;
                     return;
                 }
             }
+
+            var location = map.GetRandomNearbyLocation(target.Location);
+            var orc = new SpawnedOrcishLord
+            {
+                Team = Team,
+                Home = location,
+                RangeHome = 10,
+                Combatant = target
+            };
+
+            orc.MoveToWorld(location, map);
         }
     }
 }

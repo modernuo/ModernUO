@@ -69,14 +69,17 @@ public partial class ChampionSpawn : Item
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private ChampionSpawnType _type;
 
+    [Tidy]
     [SerializableField(14)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Mobile> _creatures;
 
+    [Tidy]
     [SerializableField(15)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Item> _redSkulls;
 
+    [Tidy]
     [SerializableField(16)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Item> _whiteSkulls;
@@ -524,126 +527,128 @@ public partial class ChampionSpawn : Item
                 Champion = null;
                 Stop();
             }
+
+            return;
         }
-        else
+
+        int kills = _kills;
+
+        for (var i = 0; i < _creatures.Count; ++i)
         {
-            int kills = _kills;
+            Mobile m = _creatures[i];
 
-            for (var i = 0; i < _creatures.Count; ++i)
+            if (!m.Deleted)
             {
-                Mobile m = _creatures[i];
+                continue;
+            }
 
-                if (m.Deleted)
+            if (m.Corpse is { Deleted: false })
+            {
+                ((Corpse)m.Corpse).BeginDecay(TimeSpan.FromMinutes(1));
+            }
+
+            RemoveFromCreaturesAt(i);
+            --i;
+            ++_kills;
+
+            Mobile killer = m.FindMostRecentDamager(false);
+
+            RegisterDamageTo(m);
+
+            if (killer is BaseCreature creature)
+            {
+                killer = creature.GetMaster();
+            }
+
+            if (killer is not PlayerMobile pm)
+            {
+                continue;
+            }
+
+            int mobSubLevel = GetSubLevelfor(m) + 1;
+
+            if (mobSubLevel >= 0)
+            {
+                bool gainedPath = false;
+
+                int pointsToGain = mobSubLevel * 40;
+
+                if (VirtueSystem.Award(pm, VirtueName.Valor, pointsToGain, ref gainedPath))
                 {
-                    if (m.Corpse is { Deleted: false })
+                    if (gainedPath)
                     {
-                        ((Corpse)m.Corpse).BeginDecay(TimeSpan.FromMinutes(1));
-                    }
-
-                    RemoveFromCreaturesAt(i);
-                    --i;
-                    ++_kills;
-
-                    Mobile killer = m.FindMostRecentDamager(false);
-
-                    RegisterDamageTo(m);
-
-                    if (killer is BaseCreature creature)
-                    {
-                        killer = creature.GetMaster();
-                    }
-
-                    if (killer is not PlayerMobile pm)
-                    {
-                        continue;
-                    }
-
-                    int mobSubLevel = GetSubLevelfor(m) + 1;
-
-                    if (mobSubLevel >= 0)
-                    {
-                        bool gainedPath = false;
-
-                        int pointsToGain = mobSubLevel * 40;
-
-                        if (VirtueSystem.Award(pm, VirtueName.Valor, pointsToGain, ref gainedPath))
-                        {
-                            if (gainedPath)
-                            {
-                                pm.SendLocalizedMessage(1054032); // You have gained a path in Valor!
-                            }
-                            else
-                            {
-                                pm.SendLocalizedMessage(1054030); // You have gained in Valor!
-                            }
-
-                            // No delay on Valor gains
-                        }
-
-                        pm.ChampionTitles.Award(_type, mobSubLevel);
-                    }
-
-                    if (!Core.ML)
-                    {
-                        continue;
-                    }
-
-                    var isFel = Map == Map.Felucca;
-                    double mapChance;
-                    if (isFel)
-                    {
-                        mapChance = 0.001;
-                    }
-                    else if (Map == Map.Ilshenar || Map == Map.Tokuno)
-                    {
-                        mapChance = 0.0015;
-                    }
-                    else // Nothing drops in Trammel, Malas or TerMur
-                    {
-                        continue;
-                    }
-
-                    if (Utility.RandomDouble() >= mapChance)
-                    {
-                        continue;
-                    }
-
-                    if (!isFel || Utility.RandomBool())
-                    {
-                        GiveScrollTo(pm, CreateRandomSoT(isFel), isFel);
+                        pm.SendLocalizedMessage(1054032); // You have gained a path in Valor!
                     }
                     else
                     {
-                        GiveScrollTo(pm, CreateRandomPS());
+                        pm.SendLocalizedMessage(1054030); // You have gained in Valor!
                     }
+
+                    // No delay on Valor gains
                 }
+
+                pm.ChampionTitles.Award(_type, mobSubLevel);
             }
 
-            // Only really needed once.
-            if (_kills > kills)
+            if (!Core.ML)
             {
-                InvalidateProperties();
+                continue;
             }
 
-            double n = _kills / (double)MaxKills;
-            int p = (int)(n * 100);
-
-            if (p >= 99)
+            var isFel = Map == Map.Felucca;
+            double mapChance;
+            if (isFel)
             {
-                AdvanceLevel();
+                mapChance = 0.001;
             }
-            else if (p > 0)
+            else if (Map == Map.Ilshenar || Map == Map.Tokuno)
             {
-                SetWhiteSkullCount(p / 20);
+                mapChance = 0.0015;
+            }
+            else // Nothing drops in Trammel, Malas or TerMur
+            {
+                continue;
             }
 
-            if (Core.Now >= ExpireTime)
+            if (Utility.RandomDouble() >= mapChance)
             {
-                Expire();
+                continue;
             }
 
-            Respawn();
+            if (!isFel || Utility.RandomBool())
+            {
+                GiveScrollTo(pm, CreateRandomSoT(isFel), isFel);
+            }
+            else
+            {
+                GiveScrollTo(pm, CreateRandomPS());
+            }
         }
+
+        // Only really needed once.
+        if (_kills > kills)
+        {
+            InvalidateProperties();
+        }
+
+        double n = _kills / (double)MaxKills;
+        int p = (int)(n * 100);
+
+        if (p >= 99)
+        {
+            AdvanceLevel();
+        }
+        else if (p > 0)
+        {
+            SetWhiteSkullCount(p / 20);
+        }
+
+        if (Core.Now >= ExpireTime)
+        {
+            Expire();
+        }
+
+        Respawn();
     }
 
     public void AdvanceLevel()
@@ -1361,67 +1366,72 @@ public class ChampionSpawnRegion : BaseRegion
 
     public override void OnEnter(Mobile m)
     {
-        if (m.Player && m.AccessLevel == AccessLevel.Player && !Spawn.Active)
+        if (!m.Player || m.AccessLevel != AccessLevel.Player || Spawn.Active)
         {
-            Region parent = Parent ?? this;
+            return;
+        }
 
-            if (Spawn.ReadyToActivate)
+        Region parent = Parent ?? this;
+
+        if (Spawn.ReadyToActivate)
+        {
+            Spawn.Start();
+            return;
+        }
+
+        if (!Spawn.ProximitySpawn || Spawn.ActivatedByProximity || Core.Now < Spawn.NextProximityTime)
+        {
+            return;
+        }
+
+        List<Mobile> players = parent.GetPlayers();
+        List<IPAddress> addresses = new List<IPAddress>();
+        for (var i = 0; i < players.Count; i++)
+        {
+            if (players[i].AccessLevel == AccessLevel.Player && players[i].NetState != null &&
+                !addresses.Contains(players[i].NetState.Address) && !((PlayerMobile)players[i]).Young)
             {
-                Spawn.Start();
+                addresses.Add(players[i].NetState.Address);
             }
-            else if (Spawn.ProximitySpawn && !Spawn.ActivatedByProximity && Core.Now >= Spawn.NextProximityTime)
+        }
+
+        if (addresses.Count >= 15)
+        {
+            foreach (Mobile player in players)
             {
-                List<Mobile> players = parent.GetPlayers();
-                List<IPAddress> addresses = new List<IPAddress>();
-                for (var i = 0; i < players.Count; i++)
-                {
-                    if (players[i].AccessLevel == AccessLevel.Player && players[i].NetState != null &&
-                        !addresses.Contains(players[i].NetState.Address) && !((PlayerMobile)players[i]).Young)
-                    {
-                        addresses.Add(players[i].NetState.Address);
-                    }
-                }
-
-                if (addresses.Count >= 15)
-                {
-                    foreach (Mobile player in players)
-                    {
-                        player.SendMessage(0x20, Spawn.BroadcastMessage);
-                    }
-
-                    Spawn.ActivatedByProximity = true;
-                    Spawn.BeginRestart(TimeSpan.FromMinutes(5.0));
-                }
+                player.SendMessage(0x20, Spawn.BroadcastMessage);
             }
+
+            Spawn.ActivatedByProximity = true;
+            Spawn.BeginRestart(TimeSpan.FromMinutes(5.0));
         }
     }
 
     public override bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation)
     {
-        if (base.OnMoveInto(m, d, newLocation, oldLocation))
+        if (!base.OnMoveInto(m, d, newLocation, oldLocation))
         {
-            if (m.Player)
-            {
-                if (((PlayerMobile)m).Young)
-                {
-                    m.SendMessage("You decide against going here because of the danger.");
-                }
-                else if (!m.Alive)
-                {
-                    m.SendMessage("A magical force prevents ghosts from entering this region.");
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                return true;
-            }
+            return false;
         }
 
-        return false;
+        if (!m.Player)
+        {
+            return true;
+        }
+
+        if (((PlayerMobile)m).Young)
+        {
+            m.SendMessage("You decide against going here because of the danger.");
+            return false;
+        }
+
+        if (!m.Alive)
+        {
+            m.SendMessage("A magical force prevents ghosts from entering this region.");
+            return false;
+        }
+
+        return true;
     }
 
     public override bool OnBeforeDeath(Mobile m)
@@ -1454,21 +1464,23 @@ public class ChampionSpawnRegion : BaseRegion
         protected override void OnTick()
         {
             //See if they are dead, or logged out!
-            if (m_Region.Spawn != null && m_Region.CanSpawn() && !m_From.Alive)
+            if (m_Region.Spawn == null || !m_Region.CanSpawn() || m_From.Alive)
             {
-                if (m_From.NetState != null)
+                return;
+            }
+
+            if (m_From.NetState != null)
+            {
+                if (m_From.Region.IsPartOf(m_Region))
                 {
-                    if (m_From.Region.IsPartOf(m_Region))
-                    {
-                        m_From.MoveToWorld(m_Region.Spawn.EjectLocation, m_Region.Spawn.EjectMap);
-                        m_From.SendMessage("A magical force forces you out of the area.");
-                    }
+                    m_From.MoveToWorld(m_Region.Spawn.EjectLocation, m_Region.Spawn.EjectMap);
+                    m_From.SendMessage("A magical force forces you out of the area.");
                 }
-                else if (Find(m_From.LogoutLocation, m_From.LogoutMap).IsPartOf(m_Region))
-                {
-                    m_From.LogoutLocation = m_Region.Spawn.EjectLocation;
-                    m_From.LogoutMap = m_Region.Spawn.EjectMap;
-                }
+            }
+            else if (Find(m_From.LogoutLocation, m_From.LogoutMap).IsPartOf(m_Region))
+            {
+                m_From.LogoutLocation = m_Region.Spawn.EjectLocation;
+                m_From.LogoutMap = m_Region.Spawn.EjectMap;
             }
         }
     }

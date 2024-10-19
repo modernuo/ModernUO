@@ -284,6 +284,10 @@ public partial class Account : IAccount, IComparable<Account>
 
     public Serial Serial { get; set; }
 
+    public byte SerializedThread { get; set; }
+    public int SerializedPosition { get; set; }
+    public int SerializedLength { get; set; }
+
     [AfterDeserialization(false)]
     private void AfterDeserialization()
     {
@@ -362,13 +366,17 @@ public partial class Account : IAccount, IComparable<Account>
 
     public void SetPassword(string plainPassword)
     {
-        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(plainPassword);
+        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+            ? $"{_username}{plainPassword}"
+            : plainPassword;
+
+        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
         PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
     }
 
     public bool CheckPassword(string plainPassword)
     {
-        var phrase = _passwordAlgorithm == PasswordProtectionAlgorithm.SHA1
+        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
             ? $"{_username}{plainPassword}"
             : plainPassword;
 

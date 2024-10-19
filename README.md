@@ -15,7 +15,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-0078D6?logo=windows&logoColor=0078D6&labelColor=222222)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+[![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 13+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
 [![Debian 11+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
 [![Ubuntu 20+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
@@ -31,24 +31,24 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Required Frameworks
 ##### All Operating Systems
-[![.NET](https://img.shields.io/badge/-8.0.6-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![.NET](https://img.shields.io/badge/-8.0.8-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 ##### Windows
 [![VC++ Redistributable 17](https://img.shields.io/badge/-Redist%2017-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%208.0.301%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![.NET](https://img.shields.io/badge/-%208.0.401%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 #### Supported IDEs
 
-<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2023.2+"
+<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2024.1+"
       alt="Jetbrains Rider 2024.1+"
       src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png"></a><img
       alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://code.visualstudio.com/download"><img height="64" title="VSCode"
       alt="VSCode"
       src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a><img alt="space" width="32"
-      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.7+"
+      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.10+"
       alt="Visual Studio 2022 v17.10+"
       src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png"></a></p>
 

@@ -44,9 +44,6 @@ public static class Core
     private static bool _crashed;
     private static string _baseDirectory;
 
-    private static bool _profiling;
-    private static long _profileStart;
-    private static long _profileTime;
     private static bool? _isRunningFromXUnit;
 
     private static int _itemCount;
@@ -90,30 +87,6 @@ public static class Core
     }
 #nullable restore
 
-    public static bool Profiling
-    {
-        get => _profiling;
-        set
-        {
-            if (_profiling == value)
-            {
-                return;
-            }
-
-            _profiling = value;
-
-            if (_profileStart > 0)
-            {
-                _profileTime += Stopwatch.GetTimestamp() - _profileStart;
-            }
-
-            _profileStart = _profiling ? Stopwatch.GetTimestamp() : 0;
-        }
-    }
-
-    public static TimeSpan ProfileTime =>
-        TimeSpan.FromTicks(_profileStart > 0 ? _profileTime + (Stopwatch.GetTimestamp() - _profileStart) : _profileTime);
-
     public static Assembly ApplicationAssembly { get; set; }
     public static Assembly Assembly { get; set; }
 
@@ -126,50 +99,15 @@ public static class Core
 
     private static long _firstTick;
 
-    [ThreadStatic]
     private static long _tickCount;
 
-    // Don't access this from other threads than the game thread.
     private static DateTime _now;
 
-    // For Unix Stopwatch.Frequency is normalized to 1ns
-    // We don't anticipate needing this for Windows/OSX
-    private const long _maxTickCountBeforePrecisionLoss = long.MaxValue / 1000L;
-    private static readonly long _ticksPerMillisecond = Stopwatch.Frequency / 1000L;
+    public static long TickCount => _tickCount;
 
-    public static long TickCount
-    {
-        get
-        {
-            if (_tickCount != 0)
-            {
-                return _tickCount;
-            }
+    public static DateTime Now => _now;
 
-            var timestamp = Stopwatch.GetTimestamp();
-
-            return timestamp > _maxTickCountBeforePrecisionLoss
-                ? timestamp / _ticksPerMillisecond
-                // No precision loss
-                : 1000L * timestamp / Stopwatch.Frequency;
-        }
-        // Setting this to a value lower than the previous is bad. Timers will become delayed
-        // until time catches up.
-        set => _tickCount = value;
-    }
-
-    public static DateTime Now
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            // See notes above for _now and why this is a volatile variable.
-            var now = _now;
-            return now == DateTime.MinValue ? DateTime.UtcNow : now;
-        }
-    }
-
-    public static long Uptime => Thread.CurrentThread != Thread ? 0 : TickCount - _firstTick;
+    public static long Uptime => TickCount - _firstTick;
 
     private static long _cycleIndex;
     private static readonly double[] _cyclesPerSecond = new double[128];
@@ -206,21 +144,6 @@ public static class Core
     public static CancellationTokenSource ClosingTokenSource { get; } = new();
 
     public static bool Closing => ClosingTokenSource.IsCancellationRequested;
-
-    public static string Arguments
-    {
-        get
-        {
-            var sb = new StringBuilder();
-
-            if (_profiling)
-            {
-                Utility.Separate(sb, "-profile", " ");
-            }
-
-            return sb.ToString();
-        }
-    }
 
     public static int GlobalUpdateRange { get; set; } = 18;
 
@@ -380,7 +303,7 @@ public static class Core
                 logger.Information("Restarting");
                 if (IsWindows)
                 {
-                    using var process = Process.Start("dotnet", $"{ApplicationAssembly.Location} {Arguments}");
+                    using var process = Process.Start("dotnet", $"{ApplicationAssembly.Location}");
                 }
                 else
                 {
@@ -388,7 +311,7 @@ public static class Core
                     process.StartInfo = new ProcessStartInfo
                     {
                         FileName = "dotnet",
-                        Arguments = $"{ApplicationAssembly.Location} {Arguments}",
+                        Arguments = $"{ApplicationAssembly.Location}",
                         UseShellExecute = true
                     };
 
@@ -413,6 +336,8 @@ public static class Core
 
         World.WaitForWriteCompletion();
         World.ExitSerializationThreads();
+        PingServer.Shutdown();
+        TcpServer.Shutdown();
 
         if (!_crashed)
         {
@@ -420,7 +345,10 @@ public static class Core
         }
     }
 
-    public static void Setup(bool profiling, Assembly applicationAssembly, Process process)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long GetTimestamp() => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+
+    public static void Setup(Assembly applicationAssembly, Process process)
     {
         Process = process;
         ApplicationAssembly = applicationAssembly;
@@ -428,7 +356,6 @@ public static class Core
         Thread = Thread.CurrentThread;
         LoopContext = new EventLoopContext();
         SynchronizationContext.SetSynchronizationContext(LoopContext);
-        Profiling = profiling;
 
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
@@ -472,13 +399,6 @@ public static class Core
 
         logger.Information("Running on {Framework}", RuntimeInformation.FrameworkDescription);
 
-        var s = Arguments;
-
-        if (s.Length > 0)
-        {
-            logger.Information("Running with arguments: {Args}", s);
-        }
-
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
         // Load UOContent.dll
@@ -497,7 +417,10 @@ public static class Core
 
         VerifySerialization();
 
-        Timer.Init(TickCount);
+        _now = DateTime.UtcNow;
+        _firstTick = _tickCount = GetTimestamp();
+
+        Timer.Init(_tickCount);
 
         AssemblyHandler.Invoke("Configure");
 
@@ -511,7 +434,6 @@ public static class Core
         TcpServer.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();
-        _firstTick = TickCount;
         RunEventLoop();
     }
 
@@ -526,7 +448,7 @@ public static class Core
 #endif
 
             var cycleCount = _cyclesPerSecond.Length;
-            long last = Stopwatch.GetTimestamp();
+            long last = _tickCount;
             const int interval = 100;
             double frequency = Stopwatch.Frequency * interval;
 
@@ -534,7 +456,7 @@ public static class Core
 
             while (!Closing)
             {
-                _tickCount = TickCount;
+                _tickCount = GetTimestamp();
                 _now = DateTime.UtcNow;
 
                 Mobile.ProcessDeltaQueue();
@@ -543,7 +465,6 @@ public static class Core
 
                 // Handle networking
                 NetState.Slice();
-                // PingServer.Slice();
 
                 // Execute captured post-await methods (like Timer.Pause)
                 LoopContext.ExecuteTasks();
@@ -563,12 +484,10 @@ public static class Core
                     break;
                 }
 
-                _tickCount = 0;
-                _now = DateTime.MinValue;
-
-                if (++sample % interval == 0)
+                if (sample++ == interval)
                 {
-                    var now = Stopwatch.GetTimestamp();
+                    sample = 0;
+                    var now = GetTimestamp();
 
                     var cyclesPerSecond = frequency / (now - last);
                     _cyclesPerSecond[_cycleIndex++] = cyclesPerSecond;

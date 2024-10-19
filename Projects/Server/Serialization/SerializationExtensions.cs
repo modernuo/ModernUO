@@ -21,10 +21,10 @@ namespace Server;
 
 public static class SerializationExtensions
 {
-    private static readonly Dictionary<Type, Func<Serial, bool, bool, ISerializable>> _directFinderTable = new();
-    private static readonly Dictionary<Type, Func<Serial, bool, bool, ISerializable>> _searchTable = new();
+    private static readonly Dictionary<Type, Func<Serial, bool, ISerializable>> _directFinderTable = new();
+    private static readonly Dictionary<Type, Func<Serial, bool, ISerializable>> _searchTable = new();
 
-    public static void RegisterFindEntity(this Type type, Func<Serial, bool, bool, ISerializable> func)
+    public static void RegisterFindEntity(this Type type, Func<Serial, bool, ISerializable> func)
     {
         _searchTable[type] = func;
     }
@@ -47,12 +47,12 @@ public static class SerializationExtensions
 
         if (typeof(IEntity).IsAssignableFrom(typeT))
         {
-            return World.FindEntity<IEntity>(serial, returnPending: false) as T;
+            return World.FindEntity<IEntity>(serial) as T;
         }
 
         if (_directFinderTable.TryGetValue(typeT, out var finder))
         {
-            return finder(serial, false, false) as T;
+            return finder(serial, false) as T;
         }
 
         Type type = null;
@@ -87,7 +87,7 @@ public static class SerializationExtensions
 
         finder = _searchTable[type];
         _directFinderTable[type] = finder;
-        return finder(serial, false, false) as T;
+        return finder(serial, false) as T;
     }
 
     public static List<T> ReadEntityList<T>(

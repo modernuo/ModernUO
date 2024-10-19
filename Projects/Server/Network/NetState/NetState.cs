@@ -15,7 +15,6 @@
 
 using Server.Accounting;
 using Server.Collections;
-using Server.Diagnostics;
 using Server.HuePickers;
 using Server.Items;
 using Server.Logging;
@@ -32,8 +31,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Server.Network;
-
-public delegate void NetStateCreatedCallback(NetState ns);
 
 public delegate void DecodePacket(Span<byte> buffer, ref int length);
 public delegate int EncodePacket(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer);
@@ -57,8 +54,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static readonly Queue<NetState> _throttled = new(256);
     private static readonly Queue<NetState> _throttledPending = new(256);
 
-    public static NetStateCreatedCallback CreatedCallback { get; set; }
-
     private static readonly SortedSet<NetState> _connecting = new(NetStateConnectingComparer.Instance);
     private static readonly HashSet<NetState> _instances = new(2048);
     public static IReadOnlySet<NetState> Instances => _instances;
@@ -69,8 +64,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private volatile DecodePacket _packetDecoder;
     private volatile EncodePacket _packetEncoder;
     private bool _flushQueued;
-    private readonly long[] _packetThrottles = new long[0x100];
-    private readonly long[] _packetCounts = new long[0x100];
+    private long[] _packetThrottles;
+    private long[] _packetCounts;
     private string _disconnectReason = string.Empty;
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
@@ -144,7 +139,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             _toString = "(error)";
         }
 
+        _instances.Add(this);
+        _connecting.Add(this);
         _handle = GCHandle.Alloc(this);
+
+        LogInfo($"Connected. [{_instances.Count} Online]");
 
         try
         {
@@ -255,22 +254,30 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         if (packetID is >= 0 and < 0x100)
         {
+            _packetThrottles ??= new long[0x100];
             _packetThrottles[packetID] = Core.TickCount;
         }
     }
 
-    public long GetPacketTime(int packetID) => packetID is >= 0 and < 0x100 ? _packetThrottles[packetID] : 0;
+    public long GetPacketTime(int packetID) =>
+        packetID is >= 0 and < 0x100 && _packetThrottles != null ? _packetThrottles[packetID] : 0;
 
     private void UpdatePacketCount(int packetID)
     {
         if (packetID is >= 0 and < 0x100)
         {
+            _packetCounts ??= new long[0x100];
             _packetCounts[packetID]++;
         }
     }
 
     public int CheckPacketCounts()
     {
+        if (_packetCounts == null)
+        {
+            return 0;
+        }
+
         for (int i = 0; i < _packetCounts.Length; i++)
         {
             long count = _packetCounts[i];
@@ -455,14 +462,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            PacketSendProfile prof = null;
-
-            if (Core.Profiling)
-            {
-                prof = PacketSendProfile.Acquire(span[0]);
-                prof.Start();
-            }
-
             if (_packetEncoder != null)
             {
                 length = _packetEncoder(span, buffer);
@@ -484,8 +483,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 _flushPending.Enqueue(this);
                 _flushQueued = true;
             }
-
-            prof?.Finish();
         }
         catch (Exception ex)
         {
@@ -594,7 +591,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                                     if (newSeed == 0)
                                     {
-                                        HandleError(0, 0);
+                                        Disconnect(string.Empty);
                                         return;
                                     }
 
@@ -605,16 +602,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     _parserState = ParserState.AwaitingNextPacket;
                                     _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
                                 }
-                                else
+                                else // Don't allow partial packets on initial connection, just disconnect them.
                                 {
-                                    _parserState = ParserState.AwaitingPartialPacket;
+                                    Disconnect(string.Empty);
                                 }
                                 break;
                             }
 
                         case ProtocolState.LoginServer_AwaitingLogin:
                             {
-                                if (packetId != 0xCF && packetId != 0x80)
+                                if (packetId != 0x80)
                                 {
                                     LogInfo("Possible encrypted client detected, disconnecting...");
                                     HandleError(packetId, packetLength);
@@ -662,7 +659,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                         case ProtocolState.GameServer_AwaitingGameServerLogin:
                             {
-                                if (packetId != 0x91 && packetId != 0x80)
+                                if (packetId == 0x80)
+                                {
+                                    goto case ProtocolState.LoginServer_AwaitingLogin;
+                                }
+
+                                if (packetId != 0x91)
                                 {
                                     HandleError(packetId, packetLength);
                                     return;
@@ -804,14 +806,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             SetPacketTime(packetId);
         }
 
-        PacketReceiveProfile prof = null;
-
-        if (Core.Profiling)
-        {
-            prof = PacketReceiveProfile.Acquire(packetId);
-            prof?.Start();
-        }
-
         UpdatePacketCount(packetId);
 
         if (PacketLogging)
@@ -825,8 +819,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         var remainingLength = packetLength - packetReader.Position;
 
         handler.OnReceive(this, new SpanReader(packetReader.Buffer.Slice(start, remainingLength)));
-
-        prof?.Finish(packetLength);
 
         return ParserState.AwaitingNextPacket;
     }
@@ -938,7 +930,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             var ns = _connecting.Min;
             var socketTime = ns.ConnectedOn;
 
-            // If the socket has been connected for less than 2 seconds, we can stop checking
+            // If the socket has been connected for less than the limit, we can stop checking
             if (now - socketTime < ConnectingSocketIdleLimit)
             {
                 break;
@@ -967,17 +959,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         DisconnectUnattachedSockets();
 
-        const int maxEntriesPerLoop = 32;
-        var count = 0;
-        while (++count <= maxEntriesPerLoop && TcpServer.ConnectedQueue.TryDequeue(out var ns))
-        {
-            CreatedCallback?.Invoke(ns);
-
-            _instances.Add(ns);
-            _connecting.Add(ns); // Add to the connecting set, and remove them when they authenticated.
-            ns.LogInfo($"Connected. [{Instances.Count} Online]");
-        }
-
         while (_throttled.Count > 0)
         {
             var ns = _throttled.Dequeue();
@@ -993,7 +974,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             _throttled.Enqueue(_throttledPending.Dequeue());
         }
 
-        count = _pollGroup.Poll(_polledStates);
+        var count = _pollGroup.Poll(_polledStates);
 
         if (count > 0)
         {

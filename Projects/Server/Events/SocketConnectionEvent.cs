@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: IGenericSerializable.cs                                         *
+ * File: SocketConnectionEvent.cs                                        *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,9 +13,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+
 namespace Server;
 
-public interface IGenericSerializable
+public class SocketConnectEventArgs
 {
-    void Serialize(IGenericWriter writer);
+    public SocketConnectEventArgs(Socket c)
+    {
+        Connection = c;
+        AllowConnection = true;
+    }
+
+    public Socket Connection { get; }
+
+    public bool AllowConnection { get; set; }
+}
+
+public static partial class EventSink
+{
+    public static event Action<SocketConnectEventArgs> SocketConnect;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Items;
 
@@ -65,12 +66,8 @@ namespace Server.Mobiles
         public override bool BardImmune => true;
         public override Poison PoisonImmune => Poison.Lethal;
 
-        public new static void Initialize()
-        {
-            EventSink.PlayerDeath += EventSink_PlayerDeath;
-        }
-
-        public static void EventSink_PlayerDeath(Mobile m)
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void OnPlayerDeathEvent(Mobile m)
         {
             var lastKiller = m.LastKiller;
 

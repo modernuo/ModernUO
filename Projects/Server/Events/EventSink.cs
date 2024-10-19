@@ -34,14 +34,6 @@ public static partial class EventSink
     public static event Action<Mobile> Disconnected;
     public static void InvokeDisconnected(Mobile m) => Disconnected?.Invoke(m);
 
-    public static event Action<Mobile> PlayerDeath;
-    public static void InvokePlayerDeath(Mobile m) => PlayerDeath?.Invoke(m);
-
-    public static event Action<Mobile, int> VirtueMacroRequest;
-
-    public static void InvokeVirtueMacroRequest(Mobile mobile, int virtueID) =>
-        VirtueMacroRequest?.Invoke(mobile, virtueID);
-
     public static event Action<Mobile, Mobile> PaperdollRequest;
 
     public static void InvokePaperdollRequest(Mobile beholder, Mobile beheld) =>
@@ -49,9 +41,4 @@ public static partial class EventSink
 
     public static event Action ServerStarted;
     public static void InvokeServerStarted() => ServerStarted?.Invoke();
-
-    public static event Action<Mobile, Item, short> TargetByResourceMacro;
-
-    public static void InvokeTargetByResourceMacro(Mobile m, Item item, short resourceType) =>
-        TargetByResourceMacro?.Invoke(m, item, resourceType);
 }

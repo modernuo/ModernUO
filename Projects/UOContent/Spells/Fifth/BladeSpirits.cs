@@ -78,7 +78,7 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTarget<IPoint3D>(this, retryOnLos: true);
+            Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true, retryOnLos: true);
         }
     }
 }

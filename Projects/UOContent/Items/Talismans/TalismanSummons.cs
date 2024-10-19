@@ -45,7 +45,7 @@ public partial class BaseTalismanSummon : BaseCreature
 
             Effects.PlaySound(from,0x201);
 
-            from.Delete();
+            target.Delete();
         }
     }
 }

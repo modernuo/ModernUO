@@ -51,22 +51,32 @@ public static class IPLimiter
 
         var now = Core.Now;
 
-        CheckThrottledAddresses(now);
+        IPAccessLog accessLog;
+
+        while (_throttledAddresses.Count > 0)
+        {
+            accessLog = _throttledAddresses.Min;
+            if (now <= accessLog.Expiration)
+            {
+                break;
+            }
+
+            _throttledAddresses.Remove(accessLog);
+        }
 
         _accessCheck.IPAddress = ourAddress;
 
-        if (_connectionAttempts.TryGetValue(_accessCheck, out var accessLog))
+        if (_connectionAttempts.TryGetValue(_accessCheck, out accessLog))
         {
             _connectionAttempts.Remove(accessLog);
             accessLog.Count++;
+            accessLog.Expiration = now + ConnectionAttemptsDuration;
 
             if (now <= accessLog.Expiration && accessLog.Count >= MaxConnections)
             {
-                BlockConnection(now, accessLog);
+                _throttledAddresses.Add(accessLog);
                 return false;
             }
-
-            accessLog.Expiration = now + ConnectionAttemptsDuration;
         }
         else
         {
@@ -77,26 +87,6 @@ public static class IPLimiter
         _connectionAttempts.Add(accessLog);
 
         return true;
-    }
-
-    private static void BlockConnection(DateTime now, IPAccessLog accessLog)
-    {
-        accessLog.Expiration = now + ConnectionAttemptsDuration;
-        _throttledAddresses.Add(accessLog);
-    }
-
-    private static void CheckThrottledAddresses(DateTime now)
-    {
-        while (_throttledAddresses.Count > 0)
-        {
-            var accessLog = _throttledAddresses.Min;
-            if (now <= accessLog.Expiration)
-            {
-                break;
-            }
-
-            _throttledAddresses.Remove(accessLog);
-        }
     }
 
     private class IPAccessLog : IComparable<IPAccessLog>

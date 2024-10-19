@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ObjectPropertyList.cs                                           *
  *                                                                       *
@@ -79,8 +79,9 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         _stringNumbersIndex = 0;
         Header = 0;
         HeaderArgs = null;
-        STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
         _pos = 0;
+
+        Dispose();
     }
 
     private void Flush()
@@ -499,13 +500,19 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void Dispose()
     {
-        STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
-        _arrayToReturnToPool = null;
+        if (_arrayToReturnToPool != null)
+        {
+            STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+            _arrayToReturnToPool = null;
+        }
     }
 
     ~ObjectPropertyList()
     {
-        STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
-        _arrayToReturnToPool = null;
+        if (_arrayToReturnToPool != null)
+        {
+            STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
+            _arrayToReturnToPool = null;
+        }
     }
 }

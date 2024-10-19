@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Factions;
+using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
 
@@ -99,7 +101,6 @@ namespace Server.Engines.PartySystem
         public static void Configure()
         {
             EventSink.Logout += EventSink_Logout;
-            EventSink.PlayerDeath += EventSink_PlayerDeath;
 
             CommandSystem.Register("ListenToParty", AccessLevel.GameMaster, ListenToParty_OnCommand);
         }
@@ -135,7 +136,8 @@ namespace Server.Engines.PartySystem
             }
         }
 
-        public static void EventSink_PlayerDeath(Mobile from)
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void OnPlayerDeathEvent(Mobile from)
         {
             var p = Get(from);
 

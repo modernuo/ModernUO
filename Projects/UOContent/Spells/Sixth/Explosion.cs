@@ -68,6 +68,11 @@ namespace Server.Spells.Sixth
 
             protected override void OnTick()
             {
+                if (_defender.Deleted || !_defender.Alive)
+                {
+                    return;
+                }
+
                 if (_attacker.HarmfulCheck(_defender))
                 {
                     double damage;

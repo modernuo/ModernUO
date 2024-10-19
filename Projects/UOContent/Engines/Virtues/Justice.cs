@@ -227,7 +227,7 @@ public class JusticeVirtue
         }
         else
         {
-            AddProtection(protectee, protector);
+            AddProtection(protector, protectee);
 
             var args = $"{protector.Name}\t{protectee.Name}";
 
@@ -267,67 +267,75 @@ public class JusticeVirtue
     }
 }
 
-public class AcceptProtectorGump : Gump
+public class AcceptProtectorGump : StaticGump<AcceptProtectorGump>
 {
-    private readonly PlayerMobile _protectee;
     private readonly PlayerMobile _protector;
+    private readonly PlayerMobile _protectee;
 
     public AcceptProtectorGump(PlayerMobile protector, PlayerMobile protectee) : base(150, 50)
     {
         _protector = protector;
         _protectee = protectee;
+    }
 
-        Closable = false;
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.SetNoClose();
 
-        AddPage(0);
+        builder.AddPage();
 
-        AddBackground(0, 0, 396, 218, 3600);
+        builder.AddBackground(0, 0, 396, 218, 3600);
 
-        AddImageTiled(15, 15, 365, 190, 2624);
-        AddAlphaRegion(15, 15, 365, 190);
+        builder.AddImageTiled(15, 15, 365, 190, 2624);
+        builder.AddAlphaRegion(15, 15, 365, 190);
 
         // Another player is offering you their <a href="?ForceTopic88">protection</a>:
-        AddHtmlLocalized(30, 20, 360, 25, 1049365, 0x7FFF);
-        AddLabel(90, 55, 1153, protector.Name);
+        builder.AddHtmlLocalized(30, 20, 360, 25, 1049365, 0x7FFF);
+        builder.AddLabelPlaceholder(90, 55, 1153, "protector");
 
-        AddImage(50, 45, 9005);
-        AddImageTiled(80, 80, 200, 1, 9107);
-        AddImageTiled(95, 82, 200, 1, 9157);
+        builder.AddImage(50, 45, 9005);
+        builder.AddImageTiled(80, 80, 200, 1, 9107);
+        builder.AddImageTiled(95, 82, 200, 1, 9157);
 
-        AddRadio(30, 110, 9727, 9730, true, 1);
-        AddHtmlLocalized(65, 115, 300, 25, 1049444, 0x7FFF); // Yes, I would like their protection.
+        builder.AddRadio(30, 110, 9727, 9730, true, 1);
+        builder.AddHtmlLocalized(65, 115, 300, 25, 1049444, 0x7FFF); // Yes, I would like their protection.
 
-        AddRadio(30, 145, 9727, 9730, false, 0);
-        AddHtmlLocalized(65, 148, 300, 25, 1049445, 0x7FFF); // No thanks, I can take care of myself.
+        builder.AddRadio(30, 145, 9727, 9730, false, 0);
+        builder.AddHtmlLocalized(65, 148, 300, 25, 1049445, 0x7FFF); // No thanks, I can take care of myself.
 
-        AddButton(160, 175, 247, 248, 2);
+        builder.AddButton(160, 175, 247, 248, 2);
 
-        AddImage(215, 0, 50581);
+        builder.AddImage(215, 0, 50581);
 
-        AddImageTiled(15, 14, 365, 1, 9107);
-        AddImageTiled(380, 14, 1, 190, 9105);
-        AddImageTiled(15, 205, 365, 1, 9107);
-        AddImageTiled(15, 14, 1, 190, 9105);
-        AddImageTiled(0, 0, 395, 1, 9157);
-        AddImageTiled(394, 0, 1, 217, 9155);
-        AddImageTiled(0, 216, 395, 1, 9157);
-        AddImageTiled(0, 0, 1, 217, 9155);
+        builder.AddImageTiled(15, 14, 365, 1, 9107);
+        builder.AddImageTiled(380, 14, 1, 190, 9105);
+        builder.AddImageTiled(15, 205, 365, 1, 9107);
+        builder.AddImageTiled(15, 14, 1, 190, 9105);
+        builder.AddImageTiled(0, 0, 395, 1, 9157);
+        builder.AddImageTiled(394, 0, 1, 217, 9155);
+        builder.AddImageTiled(0, 216, 395, 1, 9157);
+        builder.AddImageTiled(0, 0, 1, 217, 9155);
+    }
+
+    protected override void BuildStrings(ref GumpStringsBuilder builder)
+    {
+        builder.SetStringSlot("protector", _protector.Name);
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        if (info.ButtonID == 2)
+        if (info.ButtonID != 2)
         {
-            var okay = info.IsSwitched(1);
+            return;
+        }
 
-            if (okay)
-            {
-                JusticeVirtue.OnVirtueAccepted(_protector, _protectee);
-            }
-            else
-            {
-                JusticeVirtue.OnVirtueRejected(_protector, _protectee);
-            }
+        if (info.IsSwitched(1)) // okay
+        {
+            JusticeVirtue.OnVirtueAccepted(_protector, _protectee);
+        }
+        else
+        {
+            JusticeVirtue.OnVirtueRejected(_protector, _protectee);
         }
     }
 }

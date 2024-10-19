@@ -15,6 +15,16 @@ namespace Server.Buffers;
  */
 public class STArrayPool<T> : ArrayPool<T>
 {
+#if DEBUG_ARRAYPOOL
+    private class RentReturnStatus
+    {
+        public string StackTrace { get; set; }
+        public bool IsRented { get; set; }
+    }
+
+    private static readonly ConditionalWeakTable<T[], RentReturnStatus> _rentedArrays = new();
+#endif
+
     private const int StackArraySize = 32;
     private const int BucketCount = 27; // SelectBucketIndex(1024 * 1024 * 1024 + 1)
     private static readonly STArrayPool<T> _shared = new();
@@ -39,6 +49,12 @@ public class STArrayPool<T> : ArrayPool<T>
             if (buffer is not null)
             {
                 cachedBuckets[bucketIndex].Array = null;
+#if DEBUG_ARRAYPOOL
+                _rentedArrays.AddOrUpdate(
+                    buffer,
+                    new RentReturnStatus { IsRented = true }
+                );
+#endif
                 return buffer;
             }
         }
@@ -52,6 +68,12 @@ public class STArrayPool<T> : ArrayPool<T>
                 buffer = b.TryPop();
                 if (buffer is not null)
                 {
+#if DEBUG_ARRAYPOOL
+                    _rentedArrays.AddOrUpdate(
+                        buffer,
+                        new RentReturnStatus { IsRented = true }
+                    );
+#endif
                     return buffer;
                 }
             }
@@ -70,8 +92,16 @@ public class STArrayPool<T> : ArrayPool<T>
             throw new ArgumentOutOfRangeException(nameof(minimumLength));
         }
 
-        buffer = GC.AllocateUninitializedArray<T>(minimumLength);
-        return buffer;
+        var array = GC.AllocateUninitializedArray<T>(minimumLength);
+
+#if DEBUG_ARRAYPOOL
+        _rentedArrays.AddOrUpdate(
+            array,
+            new RentReturnStatus { IsRented = true, StackTrace = Environment.StackTrace }
+        );
+#endif
+
+        return array;
     }
 
     public override void Return(T[]? array, bool clearArray = false)
@@ -91,10 +121,26 @@ public class STArrayPool<T> : ArrayPool<T>
                 Array.Clear(array);
             }
 
+#if DEBUG_ARRAYPOOL
+            if (array.Length != GetMaxSizeForBucket(bucketIndex) || !_rentedArrays.TryGetValue(array, out var status))
+            {
+                throw new ArgumentException("Buffer is not from the pool", nameof(array));
+            }
+
+            if (!status!.IsRented)
+            {
+                throw new InvalidOperationException($"Array has already been returned.\nOriginal StackTrace:{status.StackTrace}\n");
+            }
+
+            // Mark it as returned
+            status.IsRented = false;
+            status.StackTrace = Environment.StackTrace;
+#else
             if (array.Length != GetMaxSizeForBucket(bucketIndex))
             {
                 throw new ArgumentException("Buffer is not from the pool", nameof(array));
             }
+#endif
 
             ref var bucketArray = ref cacheBuckets[bucketIndex];
             var prev = bucketArray.Array;

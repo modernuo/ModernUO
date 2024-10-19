@@ -112,6 +112,6 @@ public class Shadowjump : NinjaSpell, ITargetingSpell<IPoint3D>
     public override void OnCast()
     {
         Caster.SendLocalizedMessage(1063088); // You prepare to perform a Shadowjump.
-        Caster.Target = new SpellTarget<IPoint3D>(this);
+        Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true);
     }
 }

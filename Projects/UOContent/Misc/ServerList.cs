@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using ModernUO.CodeGeneratedEvents;
 using Server.Logging;
 using Server.Network;
 
@@ -40,6 +41,8 @@ namespace Server.Misc
 
         public static bool AutoDetect { get; private set; }
 
+        private static bool _useServerListingAddressConfig { get; set; }
+
         public static void Configure()
         {
             Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", null);
@@ -59,12 +62,18 @@ namespace Server.Misc
             else
             {
                 Resolve(Address, out _publicAddress);
-            }
 
-            EventSink.ServerList += EventSink_ServerList;
+                if (_publicAddress != null)
+                {
+                    _useServerListingAddressConfig = true;
+
+                    logger.Information("Server listing address set from config: {address}", _publicAddress);
+                }
+            }
         }
 
-        private static void EventSink_ServerList(ServerListEventArgs e)
+        [OnEvent(nameof(GatewayServer.ServerListEvent))]
+        public static void OnServerListEvent(GatewayServer.ServerListEventArgs e)
         {
             try
             {
@@ -79,9 +88,14 @@ namespace Server.Misc
                 var localAddress = ipep.Address;
                 var localPort = ipep.Port;
 
-                if (IsPrivateNetwork(localAddress))
+                if (_useServerListingAddressConfig)
+                {
+                    localAddress = _publicAddress;
+                }
+                else if (IsPrivateNetwork(localAddress))
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
+
                     if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
                     {
                         localAddress = _publicAddress;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Engines.PartySystem;
 using Server.Factions;
 using Server.Gumps;
@@ -595,6 +596,9 @@ namespace Server.Engines.ConPVP
                 Finish(winner);
             }
         }
+
+        [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+        public static void OnPlayerDeath(PlayerMobile m) => m.DuelContext?.OnDeath(m, m.Corpse);
 
         public void OnDeath(Mobile mob, Container corpse)
         {
@@ -1843,7 +1847,7 @@ namespace Server.Engines.ConPVP
             }
 
             TransformationSpellHelper.RemoveContext(mob, true);
-            AnimalForm.RemoveContext(mob, true);
+            AnimalForm.RemoveContext(mob);
             DisguisePersistence.StopTimer(mob);
 
             if (!mob.CanBeginAction<PolymorphSpell>())

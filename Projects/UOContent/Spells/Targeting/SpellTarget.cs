@@ -13,14 +13,18 @@ public class SpellTarget<T> : Target, ISpellTarget<T> where T : class, IPoint3D
 
     public SpellTarget(
         ITargetingSpell<T> spell,
-        TargetFlags flags = TargetFlags.None,
+        TargetFlags flags,
         bool retryOnLos = false
     ) : this(spell, false, flags, retryOnLos)
     {
     }
 
-    public SpellTarget(ITargetingSpell<T> spell, bool allowGround, TargetFlags flags = TargetFlags.None, bool retryOnLos = false)
-        : base(spell.TargetRange, allowGround, flags)
+    public SpellTarget(
+        ITargetingSpell<T> spell,
+        bool allowGround = false,
+        TargetFlags flags = TargetFlags.None,
+        bool retryOnLos = false
+    ) : base(spell.TargetRange, allowGround, flags)
     {
         _spell = spell;
         _retryOnLos = retryOnLos;
@@ -29,11 +33,13 @@ public class SpellTarget<T> : Target, ISpellTarget<T> where T : class, IPoint3D
     public ITargetingSpell<T> Spell => _spell;
 
     protected override bool CanTarget(Mobile from, StaticTarget staticTarget, ref Point3D loc, ref Map map)
-        => _canTargetStatic;
+        => base.CanTarget(from, staticTarget, ref loc, ref map) && _canTargetStatic;
 
-    protected override bool CanTarget(Mobile from, Mobile mobile, ref Point3D loc, ref Map map) => _canTargetMobile;
+    protected override bool CanTarget(Mobile from, Mobile mobile, ref Point3D loc, ref Map map) =>
+        base.CanTarget(from, mobile, ref loc, ref map) && _canTargetMobile;
 
-    protected override bool CanTarget(Mobile from, Item item, ref Point3D loc, ref Map map) => _canTargetItem;
+    protected override bool CanTarget(Mobile from, Item item, ref Point3D loc, ref Map map) =>
+        base.CanTarget(from, item, ref loc, ref map) && _canTargetItem;
 
     protected override void OnCantSeeTarget(Mobile from, object o)
     {

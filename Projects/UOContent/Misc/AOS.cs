@@ -1094,7 +1094,7 @@ namespace Server
                 SkillName.AnimalTaming => 1049472, // animal taming
                 SkillName.Macing       => 1049470, // mace fighting
                 SkillName.Necromancy   => 1060842, // necromancy
-                SkillName.Focus        => 1061616, // focus
+                SkillName.Focus        => 1061613, // focus
                 SkillName.Chivalry     => 1061615, // chivalry
                 SkillName.Bushido      => 1062935, // bushido
                 SkillName.Ninjitsu     => 1062936, // ninjitsu
@@ -1248,7 +1248,7 @@ namespace Server
 
                 if (m.Skills.Ninjitsu.Value < AnimalForm.Entries[i].ReqSkill)
                 {
-                    AnimalForm.RemoveContext(m, true);
+                    AnimalForm.RemoveContext(m);
                 }
             }
 

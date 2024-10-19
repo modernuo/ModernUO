@@ -1,6 +1,5 @@
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -13,7 +12,6 @@ public static class AdminFirewall
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(AdminFirewall));
 
-    private static readonly HashSet<IFirewallEntry> _firewallSet = [];
     private const string firewallConfigPath = "firewall.cfg";
 
     public static void Configure()
@@ -43,9 +41,6 @@ public static class AdminFirewall
             }
         }
     }
-
-    // Note: This is not optimized, so do not use this in hot paths
-    public static IReadOnlySet<IFirewallEntry> Set => _firewallSet;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFirewallEntry ToFirewallEntry(object entry)
@@ -91,41 +86,49 @@ public static class AdminFirewall
         }
     }
 
-    public static void Remove(object obj, bool save = true)
+    public static bool Remove(object obj, bool save = true)
     {
         var entry = ToFirewallEntry(obj);
 
-        if (entry != null)
+        if (entry == null)
         {
-            _firewallSet.Remove(entry);
-            Firewall.RequestRemoveEntry(entry); // Request that the TcpServer also remove the entry
-
-            if (save)
-            {
-                Save();
-            }
+            return false;
         }
-    }
 
-    public static bool Add(object obj) => Add(ToFirewallEntry(obj));
-
-    public static bool Add(IFirewallEntry entry, bool save = true)
-    {
-        var added = _firewallSet.Add(entry);
-        Firewall.RequestAddEntry(entry); // Request that the TcpServer also add the entry
+        if (!Firewall.Remove(entry))
+        {
+            return false;
+        }
 
         if (save)
         {
             Save();
         }
 
-        return added;
+        return true;
+    }
+
+    public static void Add(object obj) => Add(ToFirewallEntry(obj));
+
+    public static bool Add(IFirewallEntry entry, bool save = true)
+    {
+        if (!Firewall.Add(entry))
+        {
+            return false;
+        }
+
+        if (save)
+        {
+            Save();
+        }
+
+        return true;
     }
 
     public static void Save()
     {
         using var op = new StreamWriter(firewallConfigPath);
-        foreach (var entry in Set)
+        foreach (var entry in Firewall.FirewallSet)
         {
             op.WriteLine(entry);
         }
