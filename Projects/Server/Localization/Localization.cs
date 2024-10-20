@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -96,28 +97,46 @@ public static class Localization
         if (File.Exists(file))
         {
             using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
-            using var bin = new BinaryReader(fs);
+            Span<byte> header = stackalloc byte[6];
+            fs.Read(header);
 
-            bin.ReadInt32();
-            bin.ReadInt16();
+            byte[] data;
+            BufferReader br;
+            if (BinaryPrimitives.ReadInt32LittleEndian(header) != 2 || BinaryPrimitives.ReadInt16LittleEndian(header[4..]) != 1)
+            {
+                // Skip header
+                fs.Position = 4;
+                data = BwtDecompress.Decompress(fs, (int)fs.Length - 4);
+                br = new BufferReader(data);
+
+                var header2 = br.ReadInt();   // Header 2
+                var header1 = br.ReadShort(); // Header 1
+
+                if (header2 != 2 || header1 != 1)
+                {
+                    throw new Exception($"Invalid cliloc header in {file}");
+                }
+            }
+            else
+            {
+                data = GC.AllocateUninitializedArray<byte>((int)fs.Length - 6);
+                fs.Read(data);
+                br = new BufferReader(data);
+            }
 
             byte[] buffer = null;
-            while (bin.BaseStream.Length != bin.BaseStream.Position)
+            while (br.Position < data.Length)
             {
-                var number = bin.ReadInt32();
-                var flag = bin.ReadByte(); // Original, Custom, Modified
-                var length = bin.ReadInt16();
+                var number = br.ReadInt();
+                var flag = br.ReadByte(); // Original, Custom, Modified
+                var length = br.ReadShort();
 
                 if (buffer == null || buffer.Length < length)
                 {
                     buffer = GC.AllocateUninitializedArray<byte>(length);
                 }
 
-                var bytesRead = bin.Read(buffer, 0, length);
-                if (bytesRead != length)
-                {
-                    throw new Exception($"Could not read enough bytes from {file}");
-                }
+                br.Read(buffer.AsSpan(0, length));
 
                 var text = Encoding.UTF8.GetString(buffer.AsSpan(0, length));
                 entries[number] = new LocalizationEntry(lang, number, text);
