@@ -417,6 +417,8 @@ public static class Core
 
         VerifySerialization();
 
+        Telemetry.Start();
+
         _now = DateTime.UtcNow;
         _firstTick = _tickCount = GetTimestamp();
 

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Metrics;
 using ModernUO.Serialization;
 using Server.Accounting;
 
@@ -7,6 +8,10 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class Gold : Item
 {
+    private static readonly Counter<long> goldCreatedCounter = Telemetry.EconomyMeter.CreateCounter<long>("gold_created_count");
+    private static readonly Histogram<long> goldCreatedHistogram = Telemetry.EconomyMeter.CreateHistogram<long>("gold_created_histogram");
+    private static readonly Counter<long> goldDeletedCounter = Telemetry.EconomyMeter.CreateCounter<long>("gold_deleted_count");
+
     [Constructible]
     public Gold(int amountFrom, int amountTo) : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
@@ -36,6 +41,19 @@ public partial class Gold : Item
         var newValue = Amount;
 
         UpdateTotal(this, TotalType.Gold, newValue - oldValue);
+
+        if (newValue > 1)
+        {
+            goldCreatedCounter.Add(newValue);
+            goldCreatedHistogram.Record(newValue);
+        }
+    }
+
+    public override void Delete()
+    {
+        goldDeletedCounter.Add(Amount);
+
+        base.Delete();
     }
 
     public override void OnAdded(IEntity parent)

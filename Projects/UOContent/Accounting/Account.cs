@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Xml;
@@ -15,6 +16,9 @@ namespace Server.Accounting;
 [SerializationGenerator(6)]
 public partial class Account : IAccount, IComparable<Account>
 {
+    private static readonly Counter<long> accountsCreatedCounter = Telemetry.AccountingMeter.CreateCounter<long>("accounts_created_count");
+    private static readonly Counter<long> loginsCounter = Telemetry.AccountingMeter.CreateCounter<long>("logins_count");
+
     public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
     public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
@@ -133,6 +137,8 @@ public partial class Account : IAccount, IComparable<Account>
 
         Accounts.Add(this);
         this.MarkDirty();
+
+        accountsCreatedCounter.Add(1);
     }
 
     public Account(XmlElement node)
@@ -794,6 +800,8 @@ public partial class Account : IAccount, IComparable<Account>
                 m.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
             }
         }
+
+        loginsCounter.Add(1, new KeyValuePair<string, object>("AccessLevel", $"{pm.AccessLevel}"));
     }
 
     public void RemoveYoungStatus(int message)

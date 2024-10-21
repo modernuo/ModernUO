@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Reflection;
 using System.Text.Json;
 using ModernUO.Serialization;
@@ -15,6 +16,9 @@ namespace Server.Engines.Spawners;
 [SerializationGenerator(10, false)]
 public abstract partial class BaseSpawner : Item, ISpawner
 {
+    private static readonly Counter<long> mobilesSpawnedCounter = Telemetry.MobilesMeter.CreateCounter<long>("mobiles_spawned_count");
+    private static readonly Counter<long> itemsSpawnedCounter = Telemetry.ItemsMeter.CreateCounter<long>("items_spawned_count");
+
     [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.Developer)]
@@ -703,6 +707,12 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                 m.Spawner = this;
                 m.OnAfterSpawn();
+
+                mobilesSpawnedCounter.Add(1, new KeyValuePair<string, object?>[]
+                {
+                    new("Map", map),
+                    new("Region", m.Region),
+                });
             }
             else if (entity is Item item)
             {
@@ -717,6 +727,8 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                 item.Spawner = this;
                 item.OnAfterSpawn();
+
+                itemsSpawnedCounter.Add(1, new KeyValuePair<string, object?>("Map", map));
             }
             else
             {

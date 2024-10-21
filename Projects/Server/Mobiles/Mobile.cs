@@ -28,6 +28,7 @@ using Server.Targeting;
 using Server.Text;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
 using CalcMoves = Server.Movement.Movement;
 
@@ -196,6 +197,10 @@ public delegate int AOSStatusHandler(Mobile from, int index);
 /// </summary>
 public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPropertyListEntity, IValueLinkListNode<Mobile>
 {
+    private static readonly Counter<long> mobilesCreatedCounter = Telemetry.MobilesMeter.CreateCounter<long>("mobiles_created_count");
+    private static readonly Counter<long> mobilesDeletedCounter = Telemetry.MobilesMeter.CreateCounter<long>("mobiles_deleted_count");
+    private static readonly Counter<long> mobilesKilledCounter = Telemetry.MobilesMeter.CreateCounter<long>("mobiles_killed_count");
+
     // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
     private const int WarmodeCatchCount = 4;
 
@@ -364,6 +369,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         DefaultMobileInit();
 
         World.AddEntity(this);
+
+        mobilesCreatedCounter.Add(1, new KeyValuePair<string, object?>[]
+        {
+            new("Map", Map?.Name),
+        });
     }
 
     public Mobile(Serial serial)
@@ -2420,6 +2430,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         DropHolding();
 
         Region.OnRegionChange(this, m_Region, null);
+
+        if (Alive) {
+            mobilesDeletedCounter.Add(1, new KeyValuePair<string, object?>[]
+            {
+                new("Map", Map?.Name),
+                new("Region", Region?.Name),
+            });
+        }
 
         m_Region = null;
         // Is the above line REALLY needed?  The old Region system did NOT have said line
@@ -4800,6 +4818,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
         }
+
+        mobilesKilledCounter.Add(1, new KeyValuePair<string, object?>[]
+        {
+            new("Map", Map?.Name),
+            new("Region", Region?.Name),
+            new("IsPlayer", Player),
+        });
 
         Region.OnDeath(this);
         OnDeath(c);
