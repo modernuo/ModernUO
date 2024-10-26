@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Runtime.InteropServices;
 using Server.Collections;
+using Server.Ethics;
 using Server.Logging;
 using Server.Mobiles;
 
@@ -10,6 +12,7 @@ namespace Server.Engines.PlayerMurderSystem;
 
 public class PlayerMurderSystem : GenericPersistence
 {
+    private static readonly Counter<long> playerMurderCounter = Telemetry.MobilesMeter.CreateCounter<long>("player_murder_count");
     private static PlayerMurderSystem _playerMurderPersistence;
 
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PlayerMurderSystem));
@@ -166,6 +169,12 @@ public class PlayerMurderSystem : GenericPersistence
 
     public static void OnPlayerMurder(PlayerMobile player)
     {
+        playerMurderCounter.Add(1, new KeyValuePair<string, object>[]
+        {
+            new("Map", player.Map?.Name),
+            new("Region", player.Region?.Name),
+        });
+
         var context = GetOrCreateMurderContext(player);
         context.ShortTermMurders++;
         player.Kills++;

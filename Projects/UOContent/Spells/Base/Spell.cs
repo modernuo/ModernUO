@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using Server.Engines.ConPVP;
 using Server.Items;
 using Server.Misc;
@@ -15,6 +16,8 @@ namespace Server.Spells
 {
     public abstract class Spell : ISpell
     {
+        protected static readonly Counter<long> spellCastCount = Telemetry.MobilesMeter.CreateCounter<long>("spell_cast_count");
+
         private static readonly TimeSpan NextSpellDelay = TimeSpan.FromSeconds(0.75);
         private static readonly TimeSpan AnimateDelay = TimeSpan.FromSeconds(1.5);
         // In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only
@@ -922,43 +925,51 @@ namespace Server.Spells
 
         private class CastTimer : Timer
         {
-            private readonly Spell m_Spell;
+            private readonly Spell _spell;
 
             public CastTimer(Spell spell, TimeSpan castDelay) : base(castDelay)
             {
-                m_Spell = spell;
+                _spell = spell;
             }
 
             protected override void OnTick()
             {
-                var caster = m_Spell?.Caster;
+                var caster = _spell?.Caster;
 
                 if (caster == null)
                 {
                     return;
                 }
 
-                if (m_Spell.State == SpellState.Casting && caster.Spell == m_Spell)
+                if (_spell.State == SpellState.Casting && caster.Spell == _spell)
                 {
-                    m_Spell.State = SpellState.Sequencing;
-                    m_Spell._castTimer = null;
-                    caster.OnSpellCast(m_Spell);
-                    caster.Region?.OnSpellCast(caster, m_Spell);
+                    _spell.State = SpellState.Sequencing;
+                    _spell._castTimer = null;
+                    caster.OnSpellCast(_spell);
+                    caster.Region?.OnSpellCast(caster, _spell);
                     caster.NextSpellTime =
-                        Core.TickCount + (int)m_Spell.GetCastRecovery().TotalMilliseconds; // Spell.NextSpellDelay;
+                        Core.TickCount + (int)_spell.GetCastRecovery().TotalMilliseconds; // Spell.NextSpellDelay;
 
                     caster.Delta(MobileDelta.Flags); // Update paralyze
 
                     var originalTarget = caster.Target;
 
-                    m_Spell.OnCast();
+                    _spell.OnCast();
 
                     if (caster.Player && caster.Target != originalTarget)
                     {
                         caster.Target?.BeginTimeout(caster, 30000); // 30 seconds
                     }
 
-                    m_Spell._castTimer = null;
+                    spellCastCount.Add(1, new KeyValuePair<string, object>[]
+                    {
+                        new("SpellName", _spell.Name),
+                        new("Skill", $"{_spell.CastSkill}"),
+                        new("Map", $"{caster.Map.Name}"),
+                        new("Region", $"{caster.Region?.Name}"),
+                    });
+
+                    _spell._castTimer = null;
                 }
             }
 

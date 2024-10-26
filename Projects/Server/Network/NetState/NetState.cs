@@ -23,6 +23,7 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -37,6 +38,8 @@ public delegate int EncodePacket(ReadOnlySpan<byte> inputBuffer, Span<byte> outp
 
 public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetState>
 {
+    private static readonly Counter<long> packetCounter =
+        Telemetry.NetworkMeter.CreateCounter<long>("net_state_packet_counter");
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
@@ -476,6 +479,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 LogPacket(span, false);
             }
 
+            packetCounter.Add(1, new KeyValuePair<string, object>[]
+            {
+                new("PacketID", span[0]),
+                new("Kind", "SERVER"),
+            });
+
             SendPipe.Writer.Advance((uint)length);
 
             if (!_flushQueued)
@@ -564,6 +573,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 var packetId = packetReader.ReadByte();
                 int packetLength = length;
 
+                packetCounter.Add(1, new KeyValuePair<string, object>[]
+                {
+                    new("PacketID", packetId),
+                    new("Kind", "CLIENT"),
+                });
                 // These can arrive at any time and are only informational
                 if (_protocolState != ProtocolState.AwaitingSeed && IncomingPackets.IsInfoPacket(packetId))
                 {

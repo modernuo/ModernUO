@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -27,6 +28,18 @@ namespace Server.Network;
 
 public static class TcpServer
 {
+    private static readonly Counter<long> attemptedConnectionsCounter =
+        Telemetry.NetworkMeter.CreateCounter<long>("tcp_server_attempted_connections_count");
+
+    private static readonly Counter<long> ipLimitedConnectionsCounter =
+        Telemetry.NetworkMeter.CreateCounter<long>("tcp_server_ip_limited_connections_count");
+
+    private static readonly Counter<long> firewalledConnectionsCounter =
+        Telemetry.NetworkMeter.CreateCounter<long>("tcp_server_firewalled_connections_count");
+
+    private static readonly Counter<long> allowedConnectionsCounter =
+        Telemetry.NetworkMeter.CreateCounter<long>("tcp_server_allowed_connections_count");
+
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(TcpServer));
 
     // AccountLoginReject BadComm
@@ -78,11 +91,14 @@ public static class TcpServer
     }
 
     public static IEnumerable<IPEndPoint> GetListeningAddresses(IPEndPoint ipep) =>
-        NetworkInterface.GetAllNetworkInterfaces().SelectMany(adapter =>
-            adapter.GetIPProperties().UnicastAddresses
-                .Where(uip => ipep.AddressFamily == uip.Address.AddressFamily)
-                .Select(uip => new IPEndPoint(uip.Address, ipep.Port))
-        );
+        NetworkInterface.GetAllNetworkInterfaces()
+            .SelectMany(
+                adapter =>
+                    adapter.GetIPProperties()
+                        .UnicastAddresses
+                        .Where(uip => ipep.AddressFamily == uip.Address.AddressFamily)
+                        .Select(uip => new IPEndPoint(uip.Address, ipep.Port))
+            );
 
     public static Socket CreateListener(IPEndPoint ipep)
     {
@@ -133,13 +149,17 @@ public static class TcpServer
                 socket = await listener.AcceptAsync();
                 var remoteIP = ((IPEndPoint)socket.RemoteEndPoint)!.Address;
 
+                attemptedConnectionsCounter.Add(1);
+
                 if (!IPLimiter.Verify(remoteIP))
                 {
+                    ipLimitedConnectionsCounter.Add(1);
                     TraceDisconnect("Past IP limit threshold", remoteIP);
                     logger.Debug("{Address} Past IP limit threshold", remoteIP);
                 }
                 else if (Firewall.IsBlocked(remoteIP))
                 {
+                    firewalledConnectionsCounter.Add(1);
                     TraceDisconnect("Firewalled", remoteIP);
                     logger.Debug("{Address} Firewalled", remoteIP);
                 }
@@ -150,6 +170,7 @@ public static class TcpServer
 
                     if (args.AllowConnection)
                     {
+                        allowedConnectionsCounter.Add(1);
                         _ = new NetState(socket);
                         continue;
                     }

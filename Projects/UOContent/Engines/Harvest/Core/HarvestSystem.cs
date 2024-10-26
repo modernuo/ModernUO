@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using Server.Items;
 using Server.Targeting;
 
@@ -6,6 +8,8 @@ namespace Server.Engines.Harvest
 {
     public abstract class HarvestSystem
     {
+        private static readonly Counter<long> harvestedResourcesCounter =
+            Telemetry.EconomyMeter.CreateCounter<long>("harvested_resources_count");
         public HarvestDefinition[] Definitions { get; init; }
 
         public virtual bool CheckTool(Mobile from, Item tool)
@@ -195,6 +199,13 @@ namespace Server.Engines.Harvest
                         }
 
                         bank.Consume(item.Amount, from);
+
+                        harvestedResourcesCounter.Add(item.Amount, new KeyValuePair<string, object>[]
+                        {
+                            new("Resource", item.GetType().Name),
+                            new("Map", map?.Name),
+                            new("Region", from?.Region.Name),
+                        });
 
                         if (Give(from, item, def.PlaceAtFeetIfFull))
                         {
