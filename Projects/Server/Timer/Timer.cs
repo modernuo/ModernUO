@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Timer.cs                                                        *
  *                                                                       *
@@ -34,6 +34,8 @@ public partial class Timer
     private long _remaining;
     private Timer _nextTimer;
     private Timer _prevTimer;
+    private TimeSpan _delay;
+    private TimeSpan _interval;
 
     public Timer(TimeSpan delay) => Init(delay, TimeSpan.Zero, 1);
 
@@ -43,14 +45,14 @@ public partial class Timer
 
     protected void Init(TimeSpan delay, TimeSpan interval, int count)
     {
-        Running = false;
         Delay = delay;
-        Index = 0;
+        Next = DateTime.MinValue;
         Interval = interval;
         Count = count;
+        Running = false;
+        Index = 0;
         _nextTimer = null;
         _prevTimer = null;
-        Next = Core.Now + Delay;
         _ring = -1;
         _slot = -1;
     }
@@ -58,8 +60,19 @@ public partial class Timer
     protected int Version { get; set; } // Used to determine if a timer was altered and we should abandon it.
 
     public DateTime Next { get; private set; }
-    public TimeSpan Delay { get; set; }
-    public TimeSpan Interval { get; set; }
+
+    public TimeSpan Delay
+    {
+        get => _delay;
+        set => _delay = TimeSpan.FromMilliseconds(RoundTicksToNextPowerOfTwo((long)value.TotalMilliseconds));
+    }
+
+    public TimeSpan Interval
+    {
+        get => _interval;
+        set => _interval = TimeSpan.FromMilliseconds(RoundTicksToNextPowerOfTwo((long)value.TotalMilliseconds));
+    }
+
     public int Index { get; private set; }
     public int Count { get; private set; }
     public int RemainingCount => Count == 0 ? int.MaxValue : Count - Index;
