@@ -944,6 +944,15 @@ namespace Server.Spells
                 if (_spell.State == SpellState.Casting && caster.Spell == _spell)
                 {
                     _spell.State = SpellState.Sequencing;
+
+                    spellCastCount.Add(1, new KeyValuePair<string, object>[]
+                    {
+                        new("SpellName", _spell.Name),
+                        new("Skill", $"{_spell.CastSkill}"),
+                        new("Map", caster.Map?.Name),
+                        new("Region", caster.Region?.Name),
+                    });
+
                     _spell._castTimer = null;
                     caster.OnSpellCast(_spell);
                     caster.Region?.OnSpellCast(caster, _spell);
@@ -960,14 +969,6 @@ namespace Server.Spells
                     {
                         caster.Target?.BeginTimeout(caster, 30000); // 30 seconds
                     }
-
-                    spellCastCount.Add(1, new KeyValuePair<string, object>[]
-                    {
-                        new("SpellName", _spell.Name),
-                        new("Skill", $"{_spell.CastSkill}"),
-                        new("Map", $"{caster.Map.Name}"),
-                        new("Region", $"{caster.Region?.Name}"),
-                    });
 
                     _spell._castTimer = null;
                 }

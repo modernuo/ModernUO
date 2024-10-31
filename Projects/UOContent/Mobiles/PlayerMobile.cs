@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
@@ -99,6 +100,7 @@ namespace Server.Mobiles
 
     public partial class PlayerMobile : Mobile, IHonorTarget, IHasSteps
     {
+        public static readonly Counter<long> playerDeathCounter = Telemetry.MobilesMeter.CreateCounter<long>("player_death_count");
         private static bool m_NoRecursion;
 
         private static readonly Point3D[] m_TrammelDeathDestinations =
@@ -2541,6 +2543,12 @@ namespace Server.Mobiles
             }
 
             base.OnDeath(c);
+
+            playerDeathCounter.Add(1, new KeyValuePair<string, object>[]
+            {
+                new("Map", Map?.Name),
+                new("Region", Region?.Name),
+            });
 
             EquipSnapshot = null;
 

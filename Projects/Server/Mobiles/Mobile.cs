@@ -2429,8 +2429,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         DropHolding();
 
-        Region.OnRegionChange(this, m_Region, null);
-
         if (Alive) {
             mobilesDeletedCounter.Add(1, new KeyValuePair<string, object?>[]
             {
@@ -2438,6 +2436,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 new("Region", Region?.Name),
             });
         }
+
+        Region.OnRegionChange(this, m_Region, null);
 
         m_Region = null;
         // Is the above line REALLY needed?  The old Region system did NOT have said line
