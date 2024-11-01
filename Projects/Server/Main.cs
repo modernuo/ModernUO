@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -350,6 +351,8 @@ public static class Core
 
     public static void Setup(Assembly applicationAssembly, Process process)
     {
+        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
         Process = process;
         ApplicationAssembly = applicationAssembly;
         Assembly = Assembly.GetAssembly(typeof(Core));
