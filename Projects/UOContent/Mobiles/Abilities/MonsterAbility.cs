@@ -18,17 +18,19 @@ public abstract partial class MonsterAbility
     public virtual TimeSpan MinTriggerCooldown => TimeSpan.Zero;
     public virtual TimeSpan MaxTriggerCooldown => TimeSpan.Zero;
 
-    // To prevent reflect from harming the monster
-    public virtual bool CanTriggerAgainstSelf => false;
-
     public bool WillTrigger(MonsterAbilityTrigger trigger) => (AbilityTrigger & trigger) != 0;
 
     /// <summary>
-    /// Returns true if ability is not on cooldown, and the change to trigger succeeds.
+    /// Returns true if ability is not on cooldown, and the chance to trigger succeeds.
     /// </summary>
     /// <returns>Boolean indicating the ability can trigger.</returns>
     public virtual bool CanTrigger(BaseCreature source, MonsterAbilityTrigger trigger)
     {
+        if (source is not { Alive: true, Deleted: false })
+        {
+            return false;
+        }
+
         if (_nextTriggerTicks?.TryGetValue(source, out var nextTrigger) == true && nextTrigger - Core.TickCount > 0)
         {
             return false;
@@ -54,11 +56,11 @@ public abstract partial class MonsterAbility
     /// <summary>
     /// Triggers the monster's ability. Override this and call `base.Trigger(source);` to make sure
     /// the cooldown is tracked.
+    /// Note: This can fire after a monster is killed/deleted (map is null)
     /// </summary>
     public virtual void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
-        if (!CanTriggerAgainstSelf && target == source ||
-            MinTriggerCooldown <= TimeSpan.Zero && MaxTriggerCooldown <= TimeSpan.Zero)
+        if (MinTriggerCooldown <= TimeSpan.Zero && MaxTriggerCooldown <= TimeSpan.Zero)
         {
             return;
         }
