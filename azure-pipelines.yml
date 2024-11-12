@@ -5,7 +5,6 @@ trigger:
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
 
 jobs:
 - job: BuildWindows
@@ -14,15 +13,14 @@ jobs:
     vmImage: 'windows-latest'
 
   steps:
-  - task: UseDotNet@2
-    displayName: 'Install .NET 8'
-    inputs:
-      packageType: sdk
-      version: '8.0.x'
-  - task: NuGetAuthenticate@1
-  - script: ./publish.cmd Release
-    displayName: 'Build'
-  - powershell: ./.github/porcelain.ps1
-    displayName: Migration Changes
-  - script: dotnet test --no-restore
-    displayName: 'Test'
+    - task: UseDotNet@2
+      displayName: 'Install .NET 9'
+      inputs:
+        useGlobalJson: true
+    - task: NuGetAuthenticate@1
+    - script: ./publish.cmd Release
+      displayName: 'Build'
+    - powershell: ./.github/porcelain.ps1
+      displayName: Migration Changes
+    - script: dotnet test --no-restore
+      displayName: 'Test'

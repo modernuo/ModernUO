@@ -138,7 +138,7 @@ public readonly struct Serial : IComparable<Serial>, IComparable<uint>,
 
     public bool TryFormat(
         Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider
-    ) => format != null
+    ) => format != ReadOnlySpan<char>.Empty
         ? Value.TryFormat(destination, out charsWritten, format, provider)
         : destination.TryWrite(provider, $"0x{Value:X8}", out charsWritten);
 
