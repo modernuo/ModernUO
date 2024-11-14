@@ -55,7 +55,11 @@ public partial class Barracoon : BaseChampion
 
     public override ChampionSkullType SkullType => ChampionSkullType.Greed;
 
-    public override Type[] UniqueList => new[] { typeof(FangOfRactus) };
+    public override Type[] UniqueList => new[] 
+    { 
+        typeof(FangOfRactus),
+        typeof(OrnamentOfTheMagician) 
+        };
 
     public override Type[] SharedList => new[]
     {
