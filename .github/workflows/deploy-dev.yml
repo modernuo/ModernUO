@@ -19,7 +19,7 @@ jobs:
 
     - name: Clone the Repository at Latest Tag
       run: |
-        git clone --branch  https://github.com/fzebib/ModernUO-AoS.git
+        git clone --branch main https://github.com/fzebib/ModernUO-AoS.git
         
 
     - name: Build and Publish
