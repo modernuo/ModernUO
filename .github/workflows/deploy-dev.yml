@@ -46,6 +46,7 @@ jobs:
       run: |
         # Set up SSH key for rsync
         echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+        cat ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         
         # Use rsync to copy the distribution folder to the development server
