@@ -10,12 +10,12 @@ jobs:
     runs-on: self-hosted  # Uses the self-hosted runner within your private network
 
     steps:
-    # - name: Fetch Latest Tag
-    #   id: fetch_tag
-    #   run: |
-    #     latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/fzebib/ModernUO-AoS.git | tail -n1 | sed 's/.*\///')
-    #     echo "Latest tag is $latest_tag"
-    #     echo "::set-output name=release::$latest_tag"
+    - name: Fetch Latest Tag
+      id: fetch_tag
+      run: |
+        latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/fzebib/ModernUO-AoS.git | tail -n1 | sed 's/.*\///')
+        echo "Latest tag is $latest_tag"
+        echo "::set-output name=release::$latest_tag"
 
     - name: Clone the Repository at Latest Tag
       run: |
