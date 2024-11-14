@@ -1,0 +1,50 @@
+name: Deploy ModernUO Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # Uses the self-hosted runner within your private network
+
+    steps:
+    - name: Fetch Latest Tag
+      id: fetch_tag
+      run: |
+        latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/fzebib/ModernUO-AoS.git | tail -n1 | sed 's/.*\///')
+        echo "Latest tag is $latest_tag"
+        echo "::set-output name=release::$latest_tag"
+
+    - name: Clone the Repository at Latest Tag
+      run: |
+        git clone --branch ${{ steps.fetch_tag.outputs.release }} https://github.com/fzebib/ModernUO-AoS.git
+        cd ModernUO-AoS
+
+    - name: Build and Publish
+      run: |
+        ./publish.cmd ${{ steps.fetch_tag.outputs.release }} [linux]
+
+    # - name: Build and Publish
+    #   run: |
+    #     ./publish.cmd [253][linux]        
+
+    - name: Deploy to Development Server
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        USER: ${{ secrets.SERVER_USER }}
+
+      run: |
+        # Set up SSH key for rsync
+        echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        
+        # Use rsync to copy the distribution folder to the development server
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./ModernUO-AoS/Distribution $USER@$SERVER_IP:/root/ModernUO-AoS-Running-Dev/
+
+        # Restart the ModernUO service on the development server
+        ssh -o StrictHostKeyChecking=no $USER@$SERVER_IP << 'EOF'
+          sudo systemctl restart modernuo.service
+        EOF
