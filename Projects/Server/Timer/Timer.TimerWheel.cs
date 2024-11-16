@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2024 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Timer.TimerWheel.cs                                             *
  *                                                                       *
@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
@@ -33,9 +34,9 @@ public partial class Timer
     private const int _tickRate = 1 << _tickRatePowerOf2; // 8ms
     private const long _maxDuration = (long)_tickRate << (_ringSizePowerOf2 * _ringLayers - 1);
 
-    private static Timer[][] _rings = new Timer[_ringLayers][];
-    private static int[] _ringIndexes = new int[_ringLayers];
-    private static Timer[] _executingRings = new Timer[_ringLayers];
+    private static readonly Timer[][] _rings = new Timer[_ringLayers][];
+    private static readonly int[] _ringIndexes = new int[_ringLayers];
+    private static readonly Timer[] _executingRings = new Timer[_ringLayers];
 
     private static long _lastTickTurned = -1;
 
@@ -155,9 +156,7 @@ public partial class Timer
 
         if (!finished)
         {
-            timer.Delay = timer.Interval;
-            timer.Next = DateTime.UtcNow + timer.Interval;
-            AddTimer(timer, (long)timer.Delay.TotalMilliseconds);
+            AddTimer(timer, (long)timer.Interval.TotalMilliseconds);
         }
         else
         {
@@ -168,10 +167,21 @@ public partial class Timer
         timer.Index++;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static long RoundTicksToNextPowerOfTwo(long value)
+    {
+        if (value <= 0)
+        {
+            return _tickRate;
+        }
+
+        const long mask = _tickRate - 1;
+        return (value + mask) & ~mask;
+    }
+
     private static void AddTimer(Timer timer, long delay)
     {
-        var originalDelay = delay;
-        delay = Math.Max(0, delay);
+        var actualDelay = delay;
 
         var resolutionPowerOf2 = _tickRatePowerOf2;
         for (var i = 0; i < _ringLayers; i++)
@@ -205,7 +215,7 @@ public partial class Timer
                         logger.Error(
                             $"Timer {{Timer}} has a duration of {{Duration}}ms, more than max capacity of {{MaxDuration}}ms.{Environment.NewLine}{{StackTrace}}",
                             timer.GetType(),
-                            originalDelay,
+                            actualDelay,
                             _maxDuration,
                             new StackTrace()
                         );
@@ -214,18 +224,19 @@ public partial class Timer
                     }
                 }
 
+                timer.Next = Core.Now + timer.Delay;
                 timer.Attach(_rings[i][slot]);
                 timer._remaining = remaining;
                 timer._ring = i;
                 timer._slot = (int)slot;
 
                 _rings[i][slot] = timer;
-
                 return;
             }
 
             // The remaining amount until we turn this ring
-            delay -= resolution * (_ringSize - _ringIndexes[i]);
+            var offsetDelay = resolution * (_ringSize - _ringIndexes[i]);
+            delay -= offsetDelay;
             resolutionPowerOf2 = nextResolutionPowerOf2;
         }
     }
