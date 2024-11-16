@@ -19,6 +19,7 @@ public class Telemetry
     {
         MeterProvider = Sdk.CreateMeterProviderBuilder()
             .ConfigureResource(r => r.AddService("ModernUO"))
+            .AddRuntimeInstrumentation()
             .AddOtlpExporter(options =>
             {
                 options.BatchExportProcessorOptions.ScheduledDelayMilliseconds = TimeSpan.FromSeconds(20.0).Milliseconds;
