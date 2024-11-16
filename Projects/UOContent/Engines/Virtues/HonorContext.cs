@@ -186,7 +186,7 @@ public class HonorContext
             Source.Mana += restore;
         }
 
-        if (VirtueSystem.GetVirtues(Source).Honor > targetFame)
+        if (VirtueSystem.GetVirtues(Source)?.Honor > targetFame)
         {
             return;
         }
@@ -194,7 +194,7 @@ public class HonorContext
         // Initial honor gain is 100th of the monsters honor
         var dGain = targetFame / 100.0 * (_honorDamage / _totalDamage);
 
-        if (_honorDamage == _totalDamage && _firstHit == FirstHit.Granted)
+        if (Math.Abs(_honorDamage - _totalDamage) < 0.01 && _firstHit == FirstHit.Granted)
         {
             dGain *= 1.5; // honor gain is increased a lot more if the combat was fully honorable
         }

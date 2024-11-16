@@ -1140,6 +1140,11 @@ namespace Server.Spells
 
             protected override void OnTick()
             {
+                if (m_Target.Deleted || !m_Target.Alive)
+                {
+                    return;
+                }
+
                 Damage(
                     m_Spell,
                     TimeSpan.Zero,
