@@ -293,6 +293,10 @@ namespace Server.SkillHandlers
             {
                 foodPref = 1044477; // Eggs
             }
+            else if ((c.FavoriteFood & FoodType.Gold) != 0)
+            {
+                foodPref = 1062577; // Gold
+            }
 
             // TODO: Add 1115752 "Blackrock Stew" as a food type
 
