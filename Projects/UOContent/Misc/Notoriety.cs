@@ -63,20 +63,16 @@ namespace Server.Misc
                 return true;
             }
 
+            if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
+            {
+                return false;
+            }
+
             var bcFrom = from as BaseCreature;
             var bcTarg = target as BaseCreature;
-            var pmFrom = from as PlayerMobile;
-            var pmTarg = target as PlayerMobile;
 
-            if (pmFrom == null && bcFrom?.Summoned == true)
-            {
-                pmFrom = bcFrom.SummonMaster as PlayerMobile;
-            }
-
-            if (pmTarg == null && bcTarg?.Summoned == true)
-            {
-                pmTarg = bcTarg.SummonMaster as PlayerMobile;
-            }
+            var pmFrom = (bcFrom?.GetMaster() ?? from) as PlayerMobile;
+            var pmTarg = (bcTarg?.GetMaster() ?? target) as PlayerMobile;
 
             if (pmFrom != null && pmTarg != null)
             {
@@ -117,11 +113,6 @@ namespace Server.Misc
                 return false;
             }
 
-            if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
-            {
-                return false;
-            }
-
             var map = from.Map;
 
             var targetFaction = Faction.Find(target, true);
@@ -136,7 +127,7 @@ namespace Server.Misc
                 return true; // In felucca, anything goes
             }
 
-            if (!from.Player)
+            if (!from.Player && pmFrom?.AccessLevel != AccessLevel.Player)
             {
                 return true; // NPCs have no restrictions
             }
@@ -148,7 +139,7 @@ namespace Server.Misc
 
             if (pmFrom?.Young == true && pmTarg?.Young != true)
             {
-                return false; // Young players cannot perform beneficial actions towards older players
+                return false; // Young players cannot perform beneficial actions towards non-young players or pets
             }
 
             if (from.Guild is Guild fromGuild && target.Guild is Guild targetGuild &&
@@ -168,20 +159,16 @@ namespace Server.Misc
                 return true;
             }
 
+            if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
+            {
+                return false;
+            }
+
             var bcFrom = from as BaseCreature;
-            var pmFrom = from as PlayerMobile;
-            var pmTarg = target as PlayerMobile;
             var bcTarg = target as BaseCreature;
 
-            if (pmFrom == null && bcFrom?.Summoned == true)
-            {
-                pmFrom = bcFrom.SummonMaster as PlayerMobile;
-            }
-
-            if (pmTarg == null && bcTarg?.Summoned == true)
-            {
-                pmTarg = bcTarg.SummonMaster as PlayerMobile;
-            }
+            var pmFrom = (bcFrom?.GetMaster() ?? from) as PlayerMobile;
+            var pmTarg = (bcTarg?.GetMaster() ?? target) as PlayerMobile;
 
             if (pmFrom != null && pmTarg != null)
             {
@@ -217,11 +204,6 @@ namespace Server.Misc
                 return false;
             }
 
-            if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
-            {
-                return false;
-            }
-
             var map = from.Map;
 
             if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
@@ -229,12 +211,11 @@ namespace Server.Misc
                 return true; // In felucca, anything goes
             }
 
-            if (!from.Player && !(from is BaseCreature bc && bc.GetMaster() != null &&
-                                  bc.GetMaster().AccessLevel == AccessLevel.Player))
+            if (!from.Player && pmFrom?.AccessLevel != AccessLevel.Player)
             {
                 // Uncontrolled NPCs are only restricted by the young system
                 return CheckAggressor(from.Aggressors, target) || CheckAggressed(from.Aggressed, target) ||
-                       pmTarg?.CheckYoungProtection(from) != true;
+                       (target as PlayerMobile)?.CheckYoungProtection(from) != true;
             }
 
             var fromGuild = GetGuildFor(from.Guild as Guild, from);
@@ -247,7 +228,7 @@ namespace Server.Misc
             }
 
             if (bcTarg?.Controlled == true
-                || (bcTarg?.Summoned == true && bcTarg.SummonMaster != from && bcTarg.SummonMaster.Player))
+                || bcTarg?.Summoned == true && bcTarg.SummonMaster != from && bcTarg.SummonMaster.Player)
             {
                 return false; // Cannot harm other controlled mobiles from players
             }
@@ -267,23 +248,24 @@ namespace Server.Misc
 
         public static Guild GetGuildFor(Guild def, Mobile m)
         {
-            var g = def;
-
-            if (m is BaseCreature c && c.Controlled && c.ControlMaster != null)
+            if (m is not BaseCreature c || !c.Controlled || c.ControlMaster == null)
             {
-                c.DisplayGuildTitle = false;
-
-                if (c.Map != Map.Internal && (Core.AOS || Guild.NewGuildSystem || c.ControlOrder is OrderType.Attack or OrderType.Guard))
-                {
-                    g = (Guild)(c.Guild = c.ControlMaster.Guild);
-                }
-                else if (c.Map == Map.Internal || c.ControlMaster.Guild == null)
-                {
-                    g = (Guild)(c.Guild = null);
-                }
+                return def;
             }
 
-            return g;
+            c.DisplayGuildTitle = false;
+
+            if (c.Map != Map.Internal && (Core.AOS || Guild.NewGuildSystem || c.ControlOrder is OrderType.Attack or OrderType.Guard))
+            {
+                return (Guild)(c.Guild = c.ControlMaster.Guild);
+            }
+
+            if (c.Map == Map.Internal || c.ControlMaster.Guild == null)
+            {
+                return (Guild)(c.Guild = null);
+            }
+
+            return def;
         }
 
         public static int CorpseNotoriety(Mobile source, Corpse target)
