@@ -466,6 +466,10 @@ public class BandageContext : Timer
         {
             healer.SendLocalizedMessage(501042); // Target cannot be resurrected at that location.
         }
+        else if ((healer as PlayerMobile)?.Young == true && (patient as PlayerMobile)?.Young == false)
+        {
+            healer.SendLocalizedMessage(500952); // As a young player, you may not use beneficial skills on older players.
+        }
         else if (healer.CanBeBeneficial(patient, true, true))
         {
             healer.DoBeneficial(patient);
