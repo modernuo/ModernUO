@@ -44,15 +44,8 @@ namespace Server.Misc
             return GuildStatus.Waring;
         }
 
-        private static bool CheckBeneficialStatus(GuildStatus from, GuildStatus target)
-        {
-            if (from == GuildStatus.Waring || target == GuildStatus.Waring)
-            {
-                return false;
-            }
-
-            return true;
-        }
+        private static bool CheckBeneficialStatus(GuildStatus from, GuildStatus target) =>
+            from != GuildStatus.Waring && target != GuildStatus.Waring;
 
         /*private static bool CheckHarmfulStatus( GuildStatus from, GuildStatus target )
         {
@@ -239,13 +232,9 @@ namespace Server.Misc
             if (!from.Player && !(from is BaseCreature bc && bc.GetMaster() != null &&
                                   bc.GetMaster().AccessLevel == AccessLevel.Player))
             {
-                if (!CheckAggressor(from.Aggressors, target) && !CheckAggressed(from.Aggressed, target) &&
-                    pmTarg?.CheckYoungProtection(from) == true)
-                {
-                    return false;
-                }
-
-                return true; // Uncontrolled NPCs are only restricted by the young system
+                // Uncontrolled NPCs are only restricted by the young system
+                return CheckAggressor(from.Aggressors, target) || CheckAggressed(from.Aggressed, target) ||
+                       pmTarg?.CheckYoungProtection(from) != true;
             }
 
             var fromGuild = GetGuildFor(from.Guild as Guild, from);
