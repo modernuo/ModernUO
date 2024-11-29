@@ -53,7 +53,10 @@ public static class PacketThrottles
             }
         }
 
-        SaveDelays();
+        if (!ServerConfiguration.Headless)
+        {
+            SaveDelays();
+        }
     }
 
     [Usage("GetThrottle <packetID>")]

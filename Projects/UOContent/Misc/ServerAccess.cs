@@ -49,7 +49,7 @@ public static class ServerAccess
     {
         var path = Path.Join(Core.BaseDirectory, _serverAccessConfigurationPath);
 
-        if (!File.Exists(path))
+        if (!File.Exists(path) && !ServerConfiguration.Headless)
         {
             SaveConfiguration();
             return;
