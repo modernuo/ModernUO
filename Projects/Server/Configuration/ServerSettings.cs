@@ -22,6 +22,9 @@ namespace Server;
 
 public class ServerSettings
 {
+    [JsonPropertyName("headless")]
+    public bool Headless { get; set; } = false;
+
     [JsonPropertyName("assemblyDirectories")]
     public List<string> AssemblyDirectories { get; set; } = new();
 

@@ -32,6 +32,7 @@ public static class ServerConfiguration
     private static ServerSettings _settings;
     private static bool m_Mocked;
 
+    public static bool Headless => _settings.Headless;
     public static List<string> AssemblyDirectories => _settings.AssemblyDirectories;
 
     public static HashSet<string> DataDirectories => _settings.DataDirectories;
@@ -287,7 +288,7 @@ public static class ServerConfiguration
 
         Core.Expansion = currentExpansion;
 
-        if (updated)
+        if (updated && !Headless)
         {
             Save();
             Console.Write("Server configuration saved to ");
