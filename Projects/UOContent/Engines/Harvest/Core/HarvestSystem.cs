@@ -212,8 +212,8 @@ namespace Server.Engines.Harvest
                         {
                             var bonusItem = Construct(bonus.Type, from);
 
-                            if (Give(from, bonusItem, true)
-                            ) // Bonuses always allow placing at feet, even if pack is full irregrdless of def
+                            // Bonuses always allow placing at feet, even if pack is full irregrdless of def
+                            if (Give(from, bonusItem, true))
                             {
                                 bonus.SendSuccessTo(from);
                             }
