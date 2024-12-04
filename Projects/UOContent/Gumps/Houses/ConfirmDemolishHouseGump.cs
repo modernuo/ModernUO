@@ -124,7 +124,7 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
 
             if (!from.BankBox.TryDropItem(from, deed, false))
             {
-                deed?.Delete();
+                deed.Delete();
                 from.SendLocalizedMessage(500390); // Your bank box is full.
                 return;
             }
