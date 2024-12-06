@@ -209,19 +209,19 @@ public partial class Banker : BaseVendor
     public static bool Deposit(Mobile from, int amount)
     {
         // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
-        if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true)
+        if (amount <= 0 || AccountGold.Enabled && from.Account?.DepositGold(amount) == true)
         {
             return true;
         }
 
-        var box = from.FindBankNoCreate();
+        var box = from.BankBox;
 
         if (box == null)
         {
             return false;
         }
 
-        var items = new List<Item>();
+        using var items = PooledRefQueue<Item>.Create();
 
         while (amount > 0)
         {
@@ -244,14 +244,14 @@ public partial class Banker : BaseVendor
 
             if (box.TryDropItem(from, item, false))
             {
-                items.Add(item);
+                items.Enqueue(item);
             }
             else
             {
                 item.Delete();
-                foreach (var curItem in items)
+                while (items.Count > 0)
                 {
-                    curItem.Delete();
+                    items.Dequeue().Delete();
                 }
 
                 return false;

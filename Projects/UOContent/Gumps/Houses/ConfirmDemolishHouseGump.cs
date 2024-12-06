@@ -56,79 +56,81 @@ public class ConfirmDemolishHouseGump : StaticGump<ConfirmDemolishHouseGump>
             return;
         }
 
-        if (!_house.IsOwner(state.Mobile))
-        {
+        var from = state.Mobile;
 
+        if (!_house.IsOwner(from))
+        {
+            from.SendLocalizedMessage(501320); // Only the house owner may do this.
             return;
         }
 
         if (_house.MovingCrate != null || _house.InternalizedVendors.Count > 0)
         {
-            state.Mobile.SendLocalizedMessage(501320); // Only the house owner may do this.
             return;
         }
 
         if (!Guild.NewGuildSystem && _house.FindGuildstone() != null)
         {
-            state.Mobile.SendLocalizedMessage(501389); // You cannot redeed a house with a guildstone inside.
+            from.SendLocalizedMessage(501389); // You cannot redeed a house with a guildstone inside.
             return;
         }
 
-        /*else if (m_House.PlayerVendors.Count > 0)
-        {
-          state.Mobile.SendLocalizedMessage( 503236 ); // You need to collect your vendor's belongings before moving.
-          return;
-        }*/
         if (_house.HasRentedVendors && _house.VendorInventories.Count > 0)
         {
             // You cannot do that that while you still have contract vendors or unclaimed contract vendor inventory in your house.
-            state.Mobile.SendLocalizedMessage(1062679);
+            from.SendLocalizedMessage(1062679);
             return;
         }
 
         if (_house.HasRentedVendors)
         {
             // You cannot do that that while you still have contract vendors in your house.
-            state.Mobile.SendLocalizedMessage(1062680);
+            from.SendLocalizedMessage(1062680);
             return;
         }
 
         if (_house.VendorInventories.Count > 0)
         {
             // You cannot do that that while you still have unclaimed contract vendor inventory in your house.
-            state.Mobile.SendLocalizedMessage(1062681);
+            from.SendLocalizedMessage(1062681);
             return;
         }
 
-        if (state.Mobile.AccessLevel > AccessLevel.Player)
+        if (from.AccessLevel >= AccessLevel.GameMaster)
         {
-            state.Mobile.SendMessage("You do not get a refund for your house as you are not a player");
-            _house.RemoveKeys(state.Mobile);
-            _house.Delete();
+            from.SendMessage("You do not get a refund for your house as you are not a player");
+        }
+        else if (_house.IsAosRules && _house.Price > 0)
+        {
+            if (Banker.Deposit(state.Mobile, _house.Price))
+            {
+                // ~1_AMOUNT~ gold has been deposited into your bank box.
+                from.SendLocalizedMessage(1060397, $"{_house.Price:#,0}");
+            }
+            else
+            {
+                from.SendLocalizedMessage(500390); // Your bank box is full.
+                return;
+            }
         }
         else
         {
-            var toGive = !_house.IsAosRules || _house.Price <= 0 ? _house.GetDeed() : null;
-
-            if (toGive != null && !state.Mobile.BankBox.TryDropItem(state.Mobile, toGive, false))
+            var deed = _house.GetDeed();
+            if (deed == null)
             {
-                toGive.Delete();
-                state.Mobile.SendLocalizedMessage(500390); // Your bank box is full.
-
+                from.SendMessage("Unable to refund house.");
                 return;
             }
 
-            if (_house.Price <= 0 || !Banker.Deposit(state.Mobile, _house.Price))
+            if (!from.BankBox.TryDropItem(from, deed, false))
             {
-                state.Mobile.SendMessage("Unable to refund house.");
+                deed.Delete();
+                from.SendLocalizedMessage(500390); // Your bank box is full.
                 return;
             }
-
-            // ~1_AMOUNT~ gold has been deposited into your bank box.
-            state.Mobile.SendLocalizedMessage(1060397, _house.Price.ToString());
         }
 
-        _house.RemoveKeys(state.Mobile);
+        _house.RemoveKeys(from);
         _house.Delete();
     }
 }
