@@ -95,7 +95,7 @@ public static class UOClient
         {
             using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length, true);
-            fs.Read(buffer);
+            _ = fs.Read(buffer);
             // VS_VERSION_INFO (unicode)
             Span<byte> vsVersionInfo = stackalloc byte[]
             {

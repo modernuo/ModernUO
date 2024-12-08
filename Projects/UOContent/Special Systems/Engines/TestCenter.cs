@@ -47,7 +47,7 @@ namespace Server.Misc
 
                 var name = tokenizer.MoveNext() ? tokenizer.Current : null;
                 var valueStr = tokenizer.MoveNext() ? tokenizer.Current : null;
-                if (valueStr == null)
+                if (valueStr == ReadOnlySpan<char>.Empty)
                 {
                     return;
                 }

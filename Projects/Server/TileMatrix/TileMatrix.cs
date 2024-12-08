@@ -338,7 +338,7 @@ public class TileMatrix
 
             fixed (StaticTile* pTiles = staTiles)
             {
-                DataStream.Read(new Span<byte>(pTiles, length));
+                _ = DataStream.Read(new Span<byte>(pTiles, length));
 
                 if (m_Lists == null)
                 {
@@ -423,7 +423,7 @@ public class TileMatrix
 
             fixed (LandTile* pTiles = tiles)
             {
-                MapStream.Read(new Span<byte>(pTiles, 192));
+                _ = MapStream.Read(new Span<byte>(pTiles, 192));
             }
 
             return tiles;

@@ -37,7 +37,7 @@ public static class StringHelpers
     )
     {
         size = 0;
-        if (a == null || a.Length == 0)
+        if (a == ReadOnlySpan<char>.Empty || a.Length == 0)
         {
             return;
         }
@@ -72,7 +72,7 @@ public static class StringHelpers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Remove(this ReadOnlySpan<char> a, ReadOnlySpan<char> b, StringComparison comparison)
     {
-        if (a == null)
+        if (a == ReadOnlySpan<char>.Empty)
         {
             return null;
         }

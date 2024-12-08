@@ -3077,7 +3077,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
     public virtual void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
     {
-        if (world != null)
+        if (world != ReadOnlySpan<byte>.Empty)
         {
             ns?.Send(world);
             return;
