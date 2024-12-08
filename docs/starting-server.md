@@ -18,7 +18,7 @@ Everything is run from the _Distribution_ folder.
     Using _terminal_, run:
     ```bash
     cd Distribution
-    dotnet run ModernUO.dll
+    dotnet ModernUO.dll
     ```
 
 === "Game Files"

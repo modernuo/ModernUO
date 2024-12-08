@@ -21,8 +21,8 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![Ubuntu 20+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
 <br />
 [![Alpine 3.18+](https://img.shields.io/badge/-3.18-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
-[![Fedora 39+](https://img.shields.io/badge/-39-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
-[![RedHat 8/9](https://img.shields.io/badge/-8-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
+[![Fedora 40+](https://img.shields.io/badge/-40-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
+[![RedHat 8+](https://img.shields.io/badge/-8-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
 [![CentOS 9](https://img.shields.io/badge/-9-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
 [![openSUSE 15+](https://img.shields.io/badge/-15-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
 [![SUSE Enterprise 12 SP2+](https://img.shields.io/badge/-12%20SP2-0C322C?logo=suse&logoColor=30BA78&labelColor=222222)](https://www.suse.com/download/sles/)
@@ -31,25 +31,25 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Required Frameworks
 ##### All Operating Systems
-[![.NET](https://img.shields.io/badge/-8.0.8-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![.NET](https://img.shields.io/badge/-9.0.0-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 ##### Windows
 [![VC++ Redistributable 17](https://img.shields.io/badge/-Redist%2017-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%208.0.401%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/8.0)
+[![.NET](https://img.shields.io/badge/-%209.0.101%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 #### Supported IDEs
 
-<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2024.1+"
-      alt="Jetbrains Rider 2024.1+"
+<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2024.3+"
+      alt="Jetbrains Rider 2024.3+"
       src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png"></a><img
       alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://code.visualstudio.com/download"><img height="64" title="VSCode"
       alt="VSCode"
       src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a><img alt="space" width="32"
-      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.10+"
-      alt="Visual Studio 2022 v17.10+"
+      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.12+"
+      alt="Visual Studio 2022 v17.12+"
       src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png"></a></p>
 
 ## Getting Started
