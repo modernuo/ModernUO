@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>Server.Addon</RootNamespace>
+        <AssemblyName>AddonExample</AssemblyName>
+        <Product>ModernUO Example Addon</Product>
+        <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <PublishDir>..\..\Distribution\Assemblies</PublishDir>
+        <Configurations>Debug;Release;Analyze</Configurations>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
+            <IncludeInPackage>false</IncludeInPackage>
+        </ProjectReference>
+        <ProjectReference Include="..\UOContent\UOContent.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
+            <IncludeInPackage>false</IncludeInPackage>
+        </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="Migrations/*.v*.json" />
+        <AdditionalFiles Include="Migrations/keep" />
+    </ItemGroup>
+</Project>
