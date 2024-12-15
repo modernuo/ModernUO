@@ -1,5 +1,15 @@
 # Addon Assembly Tutorial
 
+## What We'll Do
+
+We're going to make an addon that is a separate `dll` file from the `UOContent.dll`, but has access to code from `Server` and `UOContent`.
+
+Specifically we're going to make a small addon that removes young player status from a player when they login.  This isn't a perfect example because unfortunately when an account is created it's not young yet.  Just... imagine it works the first time they log in.
+
+(note: can probably fix the shortcoming above, but this is a really basic example)
+
+OKAY let's go...
+
 ### Create a Project
 
 In your IDE, create a new project in the ModernUO solution.  For this example we'll call it `AddonExample`.  It's important that the project is created as a subdirectory of the `Projects` directory within the repository.
