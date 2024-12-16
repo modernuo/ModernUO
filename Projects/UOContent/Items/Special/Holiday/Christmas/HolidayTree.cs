@@ -9,13 +9,14 @@ public enum HolidayTreeType
     Modern
 }
 
-[SerializationGenerator(2, false)]
+[SerializationGenerator(3, false)]
 public partial class HolidayTree : Item, IAddon
 {
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Mobile _placer;
 
+    [SerializableField(1)]
     private Item[] _components;
 
     public HolidayTree(Mobile from, HolidayTreeType type, Point3D loc) : base(1)
@@ -107,6 +108,11 @@ public partial class HolidayTree : Item, IAddon
 
     public override void OnAfterDelete()
     {
+        if (_components == null)
+        {
+            return;
+        }
+
         for (var i = 0; i < _components.Length; ++i)
         {
             _components[i]?.Delete();
@@ -155,6 +161,11 @@ public partial class HolidayTree : Item, IAddon
             deed.MoveToWorld(Location, Map);
             Delete();
         }
+    }
+
+    private void MigrateFrom(V2Content content)
+    {
+        Placer = content.Placer;
     }
 
     public override void OnDoubleClick(Mobile from)
