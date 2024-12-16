@@ -447,7 +447,7 @@ public static class Core
 #if DEBUG
             const bool idleCPU = true;
 #else
-            var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
+            var idleCPU = ServerConfiguration.Headless ? ServerConfiguration.GetSetting("core.enableIdleCPU", false) : ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
 #endif
 
             var cycleCount = _cyclesPerSecond.Length;

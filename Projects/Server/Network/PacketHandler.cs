@@ -40,7 +40,8 @@ public unsafe class PacketHandler
 
     public int PacketID { get; }
 
-    public virtual int GetLength(NetState ns) => _length;
+    public virtual int GetLength() => _length;
+    public virtual int GetLength(NetState ns) => GetLength();
 
     public delegate*<NetState, SpanReader, void> OnReceive { get; }
 
