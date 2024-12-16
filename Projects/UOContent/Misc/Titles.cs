@@ -291,7 +291,7 @@ namespace Server.Misc
 
                             if (karma <= ke.m_Karma || j == karmaEntries.Length - 1)
                             {
-                                if (karma >= 10000)
+                                if (fame >= 10000)
                                 {
                                     if (beheld.Female)
                                     {
