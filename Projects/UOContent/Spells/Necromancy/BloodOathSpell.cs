@@ -67,7 +67,7 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
 
             RemoveCurse(m);
 
-            _oathTable[Caster] = Caster;
+            _oathTable[Caster] = m;
             _oathTable[m] = Caster;
 
             m.Spell?.OnCasterHurt();
@@ -80,7 +80,7 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
             m.FixedParticles(0x375A, 1, 17, 9919, 33, 7, EffectLayer.Waist);
             m.FixedParticles(0x3728, 1, 13, 9502, 33, 7, (EffectLayer)255);
 
-            var duration = TimeSpan.FromSeconds((GetDamageSkill(Caster) - GetResistSkill(m)) / 8 + 8);
+            var duration = TimeSpan.FromSeconds((GetDamageSkill(Caster) - GetResistSkill(m)) / 80 + 8); // Skill check for duration
             m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
             var timer = new ExpireTimer(Caster, m, duration);
@@ -126,7 +126,7 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
     }
 
     public static Mobile GetBloodOath(Mobile m) =>
-        m == null || _oathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
+        m == null || !_oathTable.TryGetValue(m, out var oath) ? null : oath;
 
     private class ExpireTimer : Timer
     {
