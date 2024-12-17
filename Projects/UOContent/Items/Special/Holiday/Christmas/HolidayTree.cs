@@ -17,7 +17,8 @@ public partial class HolidayTree : Item, IAddon
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Mobile _placer;
 
-    private List<Item> _components = [];
+    [SerializableField(1, setter: "private")]
+    private List<Item> _components;
 
     public HolidayTree(Mobile from, HolidayTreeType type, Point3D loc) : base(1)
     {
@@ -32,6 +33,7 @@ public partial class HolidayTree : Item, IAddon
                 {
                     ItemID = 0xCD7;
 
+                    _components = new List<Item>(28);
                     AddItem(0, 0, 0, new TreeTrunk(this, 0xCD6));
 
                     AddOrnament(0, 0, 2, 0xF22);
@@ -67,6 +69,7 @@ public partial class HolidayTree : Item, IAddon
                 {
                     ItemID = 0x1B7E;
 
+                    _components = new List<Item>(23);
                     AddOrnament(0, 0, 2, 0xF2F);
                     AddOrnament(0, 0, 2, 0xF20);
                     AddOrnament(0, 0, 2, 0xF22);
@@ -143,7 +146,8 @@ public partial class HolidayTree : Item, IAddon
     [AfterDeserialization(false)]
     private void AfterDeserialization()
     {
-        if (BaseHouse.FindHouseAt(this) == null)
+        // Bug with older trees, or trees that belong to a house that doesn't exist should be redeeded.
+        if (_components == null || _components.Count == 0 || BaseHouse.FindHouseAt(this) == null)
         {
             var deed = new HolidayTreeDeed();
             deed.MoveToWorld(Location, Map);
@@ -174,7 +178,7 @@ public partial class HolidayTree : Item, IAddon
     }
 
     [SerializationGenerator(1, false)]
-    private partial class Ornament : Item
+    public partial class Ornament : Item
     {
         [SerializableField(0)]
         private HolidayTree _tree;
@@ -185,21 +189,29 @@ public partial class HolidayTree : Item, IAddon
             _tree = tree;
         }
 
-        public override int LabelNumber => 1041118; // a tree ornament
-
-        public static void Deserialize(IGenericReader reader, int version)
-        {
-        }
+        public override int LabelNumber => 1041118; // a tree ornaments
 
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            _tree?._components.Add(this);
+            if (_tree == null)
+            {
+                Timer.DelayCall(Delete); // There was an issue and old trees will be regenerated
+            }
+            else
+            {
+                _tree._components.Add(this);
+            }
+        }
+
+        private void MigrateFrom(V0Content content)
+        {
+
         }
     }
 
     [SerializationGenerator(1, false)]
-    private partial class TreeTrunk : Item
+    public partial class TreeTrunk : Item
     {
         [SerializableField(0)]
         private HolidayTree _tree;
@@ -221,14 +233,21 @@ public partial class HolidayTree : Item, IAddon
             }
         }
 
-        public static void Deserialize(IGenericReader reader, int version)
-        {
-        }
-
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            _tree?._components.Add(this);
+            if (_tree == null)
+            {
+                Timer.DelayCall(Delete); // There was an issue and old trees will be regenerated
+            }
+            else
+            {
+                _tree._components.Add(this);
+            }
+        }
+
+        private void MigrateFrom(V0Content content)
+        {
         }
     }
 }
