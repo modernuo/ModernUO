@@ -1,10 +1,14 @@
+using System;
 using Server.Items;
+using Server.Logging;
 using Server.Network;
 
 namespace Server
 {
     public static class DoorGenerator
     {
+        private static ILogger logger = LogFactory.GetLogger(typeof(DoorGenerator));
+
         private static readonly Rectangle2D[] m_BritRegions =
         {
             new(new Point2D(250, 750), new Point2D(775, 1330)),
@@ -429,64 +433,91 @@ namespace Server
 
         public static bool IsEastFrame(int id) => IsFrame(id, m_EastFrames);
 
-        public static bool IsEastFrame(int x, int y, int z)
+        public static bool IsEastFrame(int x, int y, int z, out int newZ)
         {
             foreach (var tile in m_Map.Tiles.GetStaticTiles(x, y))
             {
-                if (tile.Z == z && IsEastFrame(tile.ID))
+                if (!IsEastFrame(tile.ID))
                 {
+                    continue;
+                }
+
+                var delta = tile.Z - z;
+
+                if (delta is >= -1 and <= 1)
+                {
+                    newZ = tile.Z;
                     return true;
                 }
             }
 
+            newZ = -1;
             return false;
         }
 
-        public static bool IsSouthFrame(int x, int y, int z)
+        public static bool IsSouthFrame(int x, int y, int z, out int newZ)
         {
             foreach (var tile in m_Map.Tiles.GetStaticTiles(x, y))
             {
-                if (tile.Z == z && IsSouthFrame(tile.ID))
+                if (!IsSouthFrame(tile.ID))
                 {
+                    continue;
+                }
+
+                var delta = tile.Z - z;
+
+                if (delta is >= -1 and <= 1)
+                {
+                    newZ = tile.Z;
                     return true;
                 }
             }
 
+            newZ = -1;
             return false;
         }
 
-        public static BaseDoor AddDoor(int x, int y, int z, DoorFacing facing)
+        public static BaseDoor AddDoor(int x, int y, int z, int newZ, DoorFacing facing)
         {
-            var doorZ = z;
-            var doorTop = doorZ + 20;
-
-            if (!m_Map.CanFit(x, y, z, 16, false, false))
+            var minZ = Math.Min(z, newZ);
+            if (!m_Map.CanFit(x, y, minZ, 16, false, false))
             {
                 return null;
             }
 
-            if (y == 1743 && x >= 1343 && x <= 1344)
+            if (y == 1743 && x is >= 1343 and <= 1344)
             {
                 return null;
             }
 
-            if (y == 1679 && x >= 1392 && x <= 1393)
+            if (y == 1679 && x is >= 1392 and <= 1393)
             {
                 return null;
             }
 
-            if (x == 1320 && y >= 1618 && y <= 1640)
+            if (x == 1320 && y is >= 1618 and <= 1640)
             {
                 return null;
             }
 
-            if (x == 1383 && y >= 1642 && y <= 1643)
+            if (x == 1383 && y is >= 1642 and <= 1643)
             {
                 return null;
+            }
+
+            // Ilshenar ruins
+            if (m_Map == Map.Ilshenar && x is >= 644 and <= 670 && y is >= 925 and <= 941 || x == 985 && y == 994)
+            {
+                return null;
+            }
+
+            if (z != newZ)
+            {
+                logger.Warning($"Door at {x}, {y}, {z} ({m_Map}) has mismatched Z levels: {z} != {newZ}");
             }
 
             BaseDoor door = new DarkWoodDoor(facing);
-            door.MoveToWorld(new Point3D(x, y, z), m_Map);
+            door.MoveToWorld(new Point3D(x, y, minZ), m_Map);
 
             ++m_Count;
 
@@ -506,17 +537,18 @@ namespace Server
                     {
                         var id = tile.ID;
                         var z = tile.Z;
+                        int newZ;
 
                         if (IsWestFrame(id))
                         {
-                            if (IsEastFrame(vx + 2, vy, z))
+                            if (IsEastFrame(vx + 2, vy, z, out newZ))
                             {
-                                AddDoor(vx + 1, vy, z, DoorFacing.WestCW);
+                                AddDoor(vx + 1, vy, z, newZ, DoorFacing.WestCW);
                             }
-                            else if (IsEastFrame(vx + 3, vy, z))
+                            else if (IsEastFrame(vx + 3, vy, z, out newZ))
                             {
-                                var first = AddDoor(vx + 1, vy, z, DoorFacing.WestCW);
-                                var second = AddDoor(vx + 2, vy, z, DoorFacing.EastCCW);
+                                var first = AddDoor(vx + 1, vy, z, newZ, DoorFacing.WestCW);
+                                var second = AddDoor(vx + 2, vy, z, newZ, DoorFacing.EastCCW);
 
                                 if (first != null && second != null)
                                 {
@@ -526,21 +558,20 @@ namespace Server
                                 else
                                 {
                                     first?.Delete();
-
                                     second?.Delete();
                                 }
                             }
                         }
                         else if (IsNorthFrame(id))
                         {
-                            if (IsSouthFrame(vx, vy + 2, z))
+                            if (IsSouthFrame(vx, vy + 2, z, out newZ))
                             {
-                                AddDoor(vx, vy + 1, z, DoorFacing.SouthCW);
+                                AddDoor(vx, vy + 1, z, newZ, DoorFacing.SouthCW);
                             }
-                            else if (IsSouthFrame(vx, vy + 3, z))
+                            else if (IsSouthFrame(vx, vy + 3, z, out newZ))
                             {
-                                var first = AddDoor(vx, vy + 1, z, DoorFacing.NorthCCW);
-                                var second = AddDoor(vx, vy + 2, z, DoorFacing.SouthCW);
+                                var first = AddDoor(vx, vy + 1, z, newZ, DoorFacing.NorthCCW);
+                                var second = AddDoor(vx, vy + 2, z, newZ, DoorFacing.SouthCW);
 
                                 if (first != null && second != null)
                                 {
@@ -550,7 +581,6 @@ namespace Server
                                 else
                                 {
                                     first?.Delete();
-
                                     second?.Delete();
                                 }
                             }
