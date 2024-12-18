@@ -89,7 +89,7 @@ public class TileMatrixPatch
             var tiles = new LandTile[64];
             fixed (LandTile* pTiles = tiles)
             {
-                fsData.Read(new Span<byte>(pTiles, 192));
+                _ = fsData.Read(new Span<byte>(pTiles, 192));
             }
 
             matrix.SetLandBlock(x, y, tiles);
@@ -149,7 +149,7 @@ public class TileMatrixPatch
 
             fixed (StaticTile* pTiles = staTiles)
             {
-                fsData.Read(new Span<byte>(pTiles, length));
+                _ = fsData.Read(new Span<byte>(pTiles, length));
 
                 StaticTile* pCur = pTiles, pEnd = pTiles + tileCount;
 

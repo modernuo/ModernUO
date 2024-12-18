@@ -449,7 +449,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void Send(ReadOnlySpan<byte> span)
     {
-        if (span == null || this.CannotSendPackets())
+        if (span == ReadOnlySpan<byte>.Empty || this.CannotSendPackets())
         {
             return;
         }

@@ -26,7 +26,7 @@ public class TithingGump : StaticGump<TithingGump>
         // AddLabel(57, 274, 0, "Gold:");
         builder.AddLabelPlaceholder(87, 274, 53, "goldOffer");
 
-        builder.AddHtmlLocalized(57, 274, 50, 20, 1079251); // Tithe:
+        builder.AddHtmlLocalized(137, 274, 50, 20, 1079251); // Tithe:
         // AddLabel(137, 274, 0, "Tithe:");
         builder.AddLabelPlaceholder(172, 274, 53, "titheOffer");
 
