@@ -19,5 +19,6 @@
     </Target>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
+        <AdditionalFiles Include="Migrations/please-pass-ci" />
     </ItemGroup>
 </Project>
