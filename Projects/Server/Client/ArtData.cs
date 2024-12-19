@@ -66,7 +66,7 @@ public class ArtData : IDisposable
 
         Span<ushort> buffer = stackalloc ushort[entry.Size / 2];
         _dataStream.Seek(entry.Offset, SeekOrigin.Begin);
-        _dataStream.Read(MemoryMarshal.AsBytes(buffer));
+        _ = _dataStream.Read(MemoryMarshal.AsBytes(buffer));
 
         var width = buffer[2];
         var height = buffer[3];

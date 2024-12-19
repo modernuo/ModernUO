@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "Server.Items.HolidayTree.TreeTrunk",
+  "properties": [
+    {
+      "name": "Tree",
+      "type": "Server.Items.HolidayTree",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

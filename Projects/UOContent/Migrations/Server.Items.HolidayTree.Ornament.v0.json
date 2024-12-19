@@ -1,4 +1,11 @@
 {
   "version": 0,
-  "type": "Server.Items.HolidayTree.Ornament"
+  "type": "Server.Items.HolidayTree.Ornament",
+  "properties": [
+    {
+      "name": "Tree",
+      "type": "Server.Items.HolidayTree",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
 }

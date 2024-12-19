@@ -6,6 +6,15 @@
       "name": "Placer",
       "type": "Server.Mobile",
       "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Components",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
     }
   ]
 }

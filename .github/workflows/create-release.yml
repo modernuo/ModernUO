@@ -14,10 +14,10 @@ jobs:
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-    - name: Setup .NET 8
+    - name: Install .NET 9
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        global-json-file: global.json
     - name: Install NGBV
       uses: dotnet/nbgv@master
       id: nbgv

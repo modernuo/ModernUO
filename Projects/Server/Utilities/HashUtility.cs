@@ -52,7 +52,7 @@ public static class HashUtility
 
     public static uint ComputeHash32(ReadOnlySpan<char> str)
     {
-        if (str == null)
+        if (str == ReadOnlySpan<char>.Empty)
         {
             return 0;
         }

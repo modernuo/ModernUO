@@ -98,7 +98,7 @@ public static class Localization
         {
             using var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
             Span<byte> header = stackalloc byte[6];
-            fs.Read(header);
+            _ = fs.Read(header);
 
             byte[] data;
             BufferReader br;
@@ -120,7 +120,7 @@ public static class Localization
             else
             {
                 data = GC.AllocateUninitializedArray<byte>((int)fs.Length - 6);
-                fs.Read(data);
+                _ = fs.Read(data);
                 br = new BufferReader(data);
             }
 
