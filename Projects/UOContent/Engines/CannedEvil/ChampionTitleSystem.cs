@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.Mobiles;
 
@@ -25,6 +26,7 @@ public class ChampionTitleSystem : GenericPersistence
         _championTitleTimer.Start();
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void OnPlayerDeleted(Mobile m)
     {
         if (m is PlayerMobile pm)

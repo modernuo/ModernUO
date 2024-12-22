@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -38,6 +39,7 @@ public class SummonFamiliarSpell : NecromancerSpell
         new(typeof(VampireBatFamiliar), 1060144, 100.0, 100.0) // Vampire Bat
     };
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void RemoveEffects(Mobile m)
     {
         if (Table.Remove(m, out var summon))

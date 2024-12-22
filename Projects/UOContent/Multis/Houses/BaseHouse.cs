@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
@@ -3260,6 +3261,7 @@ namespace Server.Multis
             }
         }
 
+        [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void HandleDeletion(Mobile mob)
         {
             var houses = GetHouses(mob);
