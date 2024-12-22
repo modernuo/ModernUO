@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 
 namespace Server.Spells.Fifth
 {
@@ -132,6 +134,7 @@ namespace Server.Spells.Fifth
             FinishSequence();
         }
 
+        [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndReflect(Mobile m)
         {
             if (!_table.Remove(m, out var mods))

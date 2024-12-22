@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.Logging;
 using Server.Mobiles;
@@ -75,6 +76,7 @@ public static class StaminaSystem
         }
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void OnPlayerDeleted(Mobile m)
     {
         RemoveEntry(m as IHasSteps);

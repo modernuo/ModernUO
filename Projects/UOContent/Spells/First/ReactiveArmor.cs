@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 
 namespace Server.Spells.First
 {
@@ -142,6 +144,7 @@ namespace Server.Spells.First
             }
         }
 
+        [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndArmor(Mobile m)
         {
             if (!_table.Remove(m, out var mods))

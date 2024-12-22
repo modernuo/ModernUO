@@ -3357,23 +3357,7 @@ namespace Server.Mobiles
             var faction = Faction.Find(this);
             faction?.RemoveMember(this);
 
-            MLQuestSystem.HandleDeletion(this);
-            BaseHouse.HandleDeletion(this);
-            DisguisePersistence.RemoveTimer(this);
-
-            StaminaSystem.OnPlayerDeleted(this);
-            JusticeVirtue.OnPlayerDeleted(this);
-            PlayerMurderSystem.OnPlayerDeleted(this);
-            ChampionTitleSystem.OnPlayerDeleted(this);
-
-            // Spells
-            MagicReflectSpell.EndReflect(this);
-            ReactiveArmorSpell.EndArmor(this);
-            ProtectionSpell.EndProtection(this);
-            StoneFormSpell.RemoveEffects(this);
-            AnimateDeadSpell.RemoveEffects(this);
-            SummonFamiliarSpell.RemoveEffects(this);
-            AnimalForm.RemoveLastAnimalForm(this);
+            PlayerDeletedEvent(this);
         }
 
         public override void GetProperties(IPropertyList list)
@@ -4141,6 +4125,9 @@ namespace Server.Mobiles
         public override void OnRawStatChange(StatType stat, int oldValue)
         {
         }
+
+        [GeneratedEvent(nameof(PlayerDeletedEvent))]
+        public static partial void PlayerDeletedEvent(PlayerMobile pm);
 
         public override void OnDelete()
         {

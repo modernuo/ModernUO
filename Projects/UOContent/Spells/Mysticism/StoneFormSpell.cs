@@ -134,6 +134,7 @@ namespace Server.Spells.Mysticism
             FinishSequence();
         }
 
+        [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
         public static void RemoveEffects(Mobile m)
         {

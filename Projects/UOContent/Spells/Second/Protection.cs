@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 
 namespace Server.Spells.Second
 {
@@ -93,6 +95,7 @@ namespace Server.Spells.Second
             }
         }
 
+        [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndProtection(Mobile m)
         {
             if (!_table.Remove(m, out var mods))

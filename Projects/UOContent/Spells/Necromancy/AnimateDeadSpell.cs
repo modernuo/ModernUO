@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
 using Server.Items;
@@ -194,6 +195,7 @@ public class AnimateDeadSpell : NecromancerSpell, ITargetingSpell<Item>
         Caster.SendLocalizedMessage(1061083); // Animate what corpse?
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void RemoveEffects(Mobile caster)
     {
         if (_table.Remove(caster, out var list))
