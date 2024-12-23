@@ -620,6 +620,7 @@ namespace Server.Engines.MLQuests
             context?.HandleDeath();
         }
 
+        [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void HandleDeletion(PlayerMobile pm)
         {
             var context = GetContext(pm);

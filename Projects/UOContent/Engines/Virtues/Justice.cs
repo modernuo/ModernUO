@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -84,6 +85,7 @@ public class JusticeVirtue
         VirtueGump.Register(109, OnVirtueUsed);
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void OnPlayerDeleted(Mobile m)
     {
         if (m is PlayerMobile pm)

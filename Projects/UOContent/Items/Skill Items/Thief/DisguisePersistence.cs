@@ -70,6 +70,7 @@ public class DisguisePersistence : GenericPersistence
         t.Stop();
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
     public static void RemoveTimer(Mobile m)
     {

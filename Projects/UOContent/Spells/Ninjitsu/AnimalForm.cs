@@ -255,6 +255,7 @@ public class AnimalForm : NinjaSpell
         }
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
     public static void RemoveContext(Mobile m)
     {
@@ -303,6 +304,7 @@ public class AnimalForm : NinjaSpell
 
     public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void RemoveLastAnimalForm(Mobile m) => _table.Remove(m);
 
     public class AnimalFormEntry

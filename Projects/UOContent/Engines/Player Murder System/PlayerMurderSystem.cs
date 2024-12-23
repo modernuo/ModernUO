@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.Logging;
 using Server.Mobiles;
@@ -41,6 +42,7 @@ public class PlayerMurderSystem : GenericPersistence
         EventSink.Disconnected += OnDisconnected;
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void OnPlayerDeleted(Mobile m)
     {
         if (m is PlayerMobile pm && _murderContexts.Remove(pm, out var context))
