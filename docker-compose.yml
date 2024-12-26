@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+  gameserver:
+    build:
+      context: .
+    ports:
+      - "2593:2593"
+      - "12000:12000"
+    volumes:
+      - "./Distribution/Saves:/bin/modernuo/Saves"
+      - "./Distribution/Configuration:/bin/modernuo/Configuration"
