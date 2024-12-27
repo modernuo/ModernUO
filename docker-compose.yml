@@ -1,12 +1,16 @@
-version: "2"
-
 services:
-  gameserver:
+  modernuo:
     build:
       context: .
+      args:
+        OS: "${OS:-linux}"
+        ARCH: "${ARCH:-amd64}"
+    environment:
+      UO_DIRECTORY: ${UO_DIRECTORY:-/bin/UO}
     ports:
       - "2593:2593"
       - "12000:12000"
     volumes:
       - "./Distribution/Saves:/bin/modernuo/Saves"
       - "./Distribution/Configuration:/bin/modernuo/Configuration"
+      - "$UO_DIRECTORY:$UO_DIRECTORY"
