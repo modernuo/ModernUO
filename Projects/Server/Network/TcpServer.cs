@@ -43,6 +43,12 @@ public static class TcpServer
     public static IPEndPoint[] ListeningAddresses { get; private set; }
     public static Socket[] Listeners { get; private set; }
 
+    public static void Initialize()
+    {
+        // Reset validating connections when the world is done saving
+        EventSink.WorldSave += () => _startValidating.Set();
+    }
+
     public static void Start()
     {
         HashSet<IPEndPoint> listeningAddresses = [];
@@ -136,9 +142,14 @@ public static class TcpServer
 
     private static async void ValidateSockets()
     {
-        List<Task<Socket>> receiveTasks = [];
+        List<Task<Socket>> receiveTasks = new List<Task<Socket>>(1024);
         while (_startValidating.WaitOne())
         {
+            if (!World.Running || World.Loading)
+            {
+                continue;
+            }
+
             // TODO: Max count
             while (_validatingSocket.TryDequeue(out var socket))
             {
@@ -223,6 +234,7 @@ public static class TcpServer
                 }
 
                 _validatingSocket.Enqueue(socket);
+                _startValidating.Set();
             }
             catch
             {
