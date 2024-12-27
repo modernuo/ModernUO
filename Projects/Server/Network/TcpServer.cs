@@ -37,8 +37,8 @@ public static class TcpServer
 
     public static void Start()
     {
-        HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
-        List<Socket> listeners = new List<Socket>();
+        HashSet<IPEndPoint> listeningAddresses = [];
+        List<Socket> listeners = [];
         foreach (var ipep in ServerConfiguration.Listeners)
         {
             var listener = CreateListener(ipep);
