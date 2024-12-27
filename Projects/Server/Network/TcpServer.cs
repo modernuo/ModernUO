@@ -13,6 +13,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +22,8 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Server.Logging;
 using Server.Misc;
 
@@ -31,6 +35,10 @@ public static class TcpServer
 
     // AccountLoginReject BadComm
     private static readonly byte[] _socketRejected = [0x82, 0xFF];
+
+    private static readonly AutoResetEvent _startValidating = new(false);
+    private static readonly ConcurrentQueue<Socket> _validatingSocket = [];
+    private static readonly ConcurrentQueue<Socket> _validatedSocket = [];
 
     public static IPEndPoint[] ListeningAddresses { get; private set; }
     public static Socket[] Listeners { get; private set; }
@@ -67,6 +75,9 @@ public static class TcpServer
 
         ListeningAddresses = listeningAddresses.ToArray();
         Listeners = listeners.ToArray();
+
+        var validatorThread = new Thread(ValidateSockets);
+        validatorThread.Start();
     }
 
     public static void Shutdown()
@@ -123,50 +134,125 @@ public static class TcpServer
         return null;
     }
 
+    private static async void ValidateSockets()
+    {
+        List<Task<Socket>> receiveTasks = [];
+        while (_startValidating.WaitOne())
+        {
+            // TODO: Max count
+            while (_validatingSocket.TryDequeue(out var socket))
+            {
+                receiveTasks.Add(ValidateSocketAsync(socket));
+            }
+
+            if (receiveTasks.Count == 0)
+            {
+                continue;
+            }
+
+            var sockets = await Task.WhenAll(receiveTasks);
+
+            for (int i = 0; i < sockets.Length; i++)
+            {
+                var socket = sockets[i];
+                if (socket != null)
+                {
+                    _validatedSocket.Enqueue(socket);
+                }
+            }
+
+            receiveTasks.Clear();
+
+            if (Core.Closing)
+            {
+                return;
+            }
+        }
+    }
+
+    private static async Task<Socket> ValidateSocketAsync(Socket socket)
+    {
+        var firstBytes = new byte[5];
+        try
+        {
+            await socket.ReceiveAsync(firstBytes, SocketFlags.Peek).WaitAsync(TimeSpan.FromMilliseconds(20));
+
+            // Validates the first 5 bytes of the socket are valid
+            var passed = firstBytes[0] == 0xEF || firstBytes[5] == 0x91;
+
+            if (!passed)
+            {
+                ForceCloseSocket(socket);
+                return null;
+            }
+
+            return socket;
+        }
+        catch
+        {
+            ForceCloseSocket(socket);
+            return null;
+        }
+    }
+
     private static async void BeginAcceptingSockets(Socket listener)
     {
+        var cancellationToken = Core.ClosingTokenSource.Token;
+        Socket socket = null;
         while (!Core.Closing)
         {
-            Socket socket = null;
             try
             {
-                socket = await listener.AcceptAsync();
+                socket = await listener.AcceptAsync(cancellationToken);
                 var remoteIP = ((IPEndPoint)socket.RemoteEndPoint)!.Address;
 
                 if (!IPLimiter.Verify(remoteIP))
                 {
                     TraceDisconnect("Past IP limit threshold", remoteIP);
                     logger.Debug("{Address} Past IP limit threshold", remoteIP);
+                    ForceCloseSocket(socket);
+                    continue;
                 }
-                else if (Firewall.IsBlocked(remoteIP))
+
+                if (Firewall.IsBlocked(remoteIP))
                 {
                     TraceDisconnect("Firewalled", remoteIP);
                     logger.Debug("{Address} Firewalled", remoteIP);
-                }
-                else
-                {
-                    var args = new SocketConnectEventArgs(socket);
-                    EventSink.InvokeSocketConnect(args);
-
-                    if (args.AllowConnection)
-                    {
-                        _ = new NetState(socket);
-                        continue;
-                    }
-
-                    TraceDisconnect("Rejected by socket event handler", remoteIP);
-
-                    // Reject the connection
-                    socket.Send(_socketRejected, SocketFlags.None);
+                    ForceCloseSocket(socket);
+                    continue;
                 }
 
-                CloseSocket(socket);
+                _validatingSocket.Enqueue(socket);
             }
             catch
             {
                 CloseSocket(socket);
             }
+
+            while (_validatedSocket.TryDequeue(out var validatedSocket))
+            {
+                var args = new SocketConnectEventArgs(validatedSocket);
+                EventSink.InvokeSocketConnect(args);
+
+                if (!args.AllowConnection)
+                {
+                    TraceDisconnect(
+                        "Rejected by socket event handler",
+                        ((IPEndPoint)validatedSocket.RemoteEndPoint)!.Address
+                    );
+
+                    // Reject the connection
+                    validatedSocket.Send(_socketRejected, SocketFlags.None);
+                    CloseSocket(validatedSocket);
+                    continue;
+                }
+
+                _ = new NetState(validatedSocket);
+            }
         }
+
+        // Server is closing, trigger the last validation so that can close too.
+        _startValidating.Set();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -179,6 +265,19 @@ public static class TcpServer
         finally
         {
             socket.Close();
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void ForceCloseSocket(Socket socket)
+    {
+        try
+        {
+            socket.Shutdown(SocketShutdown.Both);
+        }
+        finally
+        {
+            socket.Close(0);
         }
     }
 
