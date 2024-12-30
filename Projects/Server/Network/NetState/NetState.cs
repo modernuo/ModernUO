@@ -29,6 +29,8 @@ using System.Net.Sockets;
 using System.Network;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading; // for CancellationTokenSource
+using System.Threading.Tasks;
 
 namespace Server.Network;
 
@@ -67,6 +69,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private long[] _packetThrottles;
     private long[] _packetCounts;
     private string _disconnectReason = string.Empty;
+
+    /**
+     * If this field is not null, then a packet handler is currently
+     * running asynchronously and handling of other packets should be
+     * suspended.
+     */
+    internal Task _packetHandlerTask;
+    internal CancellationTokenSource _packetHandlerCancel;
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
@@ -533,9 +543,36 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
+    /**
+     * To be called when a packet handler wishes to continue execution
+     * asynchronously.  As long as this #Task runs, no more packets
+     * are handled.
+     */
+    public void AwaitPacketHandlerTask(Task task, CancellationTokenSource cancel)
+    {
+        _packetHandlerTask = task;
+        _packetHandlerCancel = cancel;
+
+        /* schedule the completion callbacks to the main thread */
+        var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+        task.ContinueWith(_ => {
+            _packetHandlerTask = null;
+            _packetHandlerCancel = null;
+        }, cancel.Token, TaskContinuationOptions.OnlyOnRanToCompletion, scheduler);
+
+        task.ContinueWith(t => {
+            _packetHandlerTask = null;
+            _packetHandlerCancel = null;
+
+            Disconnect($"Async packet handler error: {t.Exception.InnerException}");
+            TraceException(t.Exception.InnerException);
+        }, cancel.Token, TaskContinuationOptions.OnlyOnFaulted, scheduler);
+    }
+
     public void HandleReceive(bool throttled = false)
     {
-        if (!_running)
+        if (!_running || _packetHandlerTask != null)
         {
             return;
         }
@@ -550,7 +587,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         try
         {
             // Process as many packets as we can synchronously
-            while (_running && _parserState != ParserState.Error && _protocolState != ProtocolState.Error)
+            while (_running && _parserState != ParserState.Error && _protocolState != ProtocolState.Error && _packetHandlerTask == null)
             {
                 var buffer = reader.AvailableToRead();
                 var length = buffer.Length;
@@ -1092,6 +1129,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         _running = false;
+
+        /* if an asynchronous packet handler is still running, cancel
+           it */
+        _packetHandlerCancel?.Cancel();
+        _packetHandlerCancel = null;
+        _packetHandlerTask = null;
 
         _disconnectReason = reason;
         _disposed.Enqueue(this);
