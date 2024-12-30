@@ -116,7 +116,7 @@ public static class TcpServer
             }
             else
             {
-                logger.Warning(se, "Listener Exception:");
+                logger.Warning(se, $"Listener {ipep}: {se.Message}");
             }
         }
 
