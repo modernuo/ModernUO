@@ -62,7 +62,7 @@ public static class TcpServer
 
         foreach (var ipep in listeningAddresses)
         {
-            logger.Information("Listening: {Address}:{Port}", ipep.Address, ipep.Port);
+            logger.Information($"Listening: {ipep}");
         }
 
         ListeningAddresses = listeningAddresses.ToArray();
@@ -107,12 +107,12 @@ public static class TcpServer
             // WSAEADDRINUSE
             if (se.ErrorCode == 10048)
             {
-                logger.Warning("Listener: {Address}:{Port}: Failed (In Use)", ipep.Address, ipep.Port);
+                logger.Warning($"Listener {ipep}: Failed (In Use)");
             }
             // WSAEADDRNOTAVAIL
             else if (se.ErrorCode == 10049)
             {
-                logger.Warning("Listener {Address}:{Port}: Failed (Unavailable)", ipep.Address, ipep.Port);
+                logger.Warning($"Listener {ipep}: Failed (Unavailable)");
             }
             else
             {
