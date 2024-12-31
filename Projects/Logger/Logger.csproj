@@ -17,8 +17,4 @@
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true"/>
         <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true"/>
     </Target>
-    <ItemGroup>
-        <AdditionalFiles Include="Migrations/*.v*.json" />
-        <AdditionalFiles Include="Migrations/please-pass-ci" />
-    </ItemGroup>
 </Project>
