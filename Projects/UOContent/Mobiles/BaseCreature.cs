@@ -1358,7 +1358,19 @@ namespace Server.Mobiles
                 return true;
             }
 
-            return m_Team != c.m_Team || (_summoned || m_Controlled) != (c._summoned || c.m_Controlled);
+            if (m_Team != c.Team)
+            {
+                return true;
+            }
+
+            var targetControlled = c._summoned || c.m_Controlled;
+
+            if (_summoned || m_Controlled)
+            {
+                return targetControlled || c.IsEnemy(GetMaster());
+            }
+
+            return targetControlled && IsEnemy(c.GetMaster());
         }
 
         public override string ApplyNameSuffix(string suffix)
