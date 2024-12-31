@@ -37,8 +37,8 @@ public static class TcpServer
 
     public static void Start()
     {
-        HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
-        List<Socket> listeners = new List<Socket>();
+        HashSet<IPEndPoint> listeningAddresses = [];
+        List<Socket> listeners = [];
         foreach (var ipep in ServerConfiguration.Listeners)
         {
             var listener = CreateListener(ipep);
@@ -62,7 +62,7 @@ public static class TcpServer
 
         foreach (var ipep in listeningAddresses)
         {
-            logger.Information("Listening: {Address}:{Port}", ipep.Address, ipep.Port);
+            logger.Information("Listening: {Address}", ipep);
         }
 
         ListeningAddresses = listeningAddresses.ToArray();
@@ -107,16 +107,16 @@ public static class TcpServer
             // WSAEADDRINUSE
             if (se.ErrorCode == 10048)
             {
-                logger.Warning("Listener: {Address}:{Port}: Failed (In Use)", ipep.Address, ipep.Port);
+                logger.Warning("Listener: {Address} Exception: {Reason}", ipep, "Currently in use");
             }
             // WSAEADDRNOTAVAIL
             else if (se.ErrorCode == 10049)
             {
-                logger.Warning("Listener {Address}:{Port}: Failed (Unavailable)", ipep.Address, ipep.Port);
+                logger.Warning("Listener {Address} Exception: {Reason}", ipep, "Unavailable");
             }
             else
             {
-                logger.Warning(se, "Listener Exception:");
+                logger.Warning(se, "Listener {Address} Exception: {Reason}", ipep, se.Message);
             }
         }
 

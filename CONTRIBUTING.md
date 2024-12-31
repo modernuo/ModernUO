@@ -28,7 +28,6 @@ We accept fixes and features! Here are some resources to help you get started on
 
 If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. Make sure the repository can build and all tests pass. Familiarize yourself with the project workflow and our coding conventions.
 
-1. Sign a [Contributor License Agreement](https://cla-assistant.io/modernuo/ModernUO) when submitting your pull request.
 1. Ensure all files have the appropriate [LICENSE](/LICENSE) header (Line 634-649)
 1. Ensure any install or build dependencies are removed.
 1. Update the README.md with details of changes to the interface, this includes new build process,
@@ -38,6 +37,5 @@ If you don't know what a pull request is read this article: https://help.github.
 1. You may merge the Pull Request in once you have the sign-off of two other developers, or if you
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
-[aspnet-contributing]: https://github.com/aspnet/AspNetCore/blob/456dbf1309f9fcae1d7b376784088dcd7818c01e/CONTRIBUTING.md
 [homepage]: http://contributor-covenant.org
 [version]: http://contributor-covenant.org/version/1/4/

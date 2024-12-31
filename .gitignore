@@ -1,4 +1,6 @@
 # Distribution Files
+/Distribution/Logger
+/Distribution/Logger.*
 /Distribution/ModernUO
 /Distribution/ModernUO.*
 /Distribution/Server

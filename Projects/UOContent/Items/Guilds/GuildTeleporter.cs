@@ -51,7 +51,7 @@ public partial class GuildTeleporter : Item
         {
             from.SendLocalizedMessage(501141); // You can only place a guildstone in a house you own!
         }
-        else if (house.FindGuildstone() != null)
+        else if (house.FindGuildstone() != null && house.FindGuildstone() != _stone)
         {
             from.SendLocalizedMessage(501142); // Only one guildstone may reside in a given house.
         }
