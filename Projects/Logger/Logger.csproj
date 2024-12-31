@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <RootNamespace>Server</RootNamespace>
+        <AssemblyName>Logger</AssemblyName>
+        <Product>ModernUO Logger</Product>
+        <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <PublishDir>..\..\Distribution\Assemblies</PublishDir>
+        <Configurations>Debug;Release;Analyze</Configurations>
+    </PropertyGroup>
+    <Target Name="CleanPub" AfterTargets="Clean">
+        <Message Text="Application: Removing distribution files..."/>
+        <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true"/>
+        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true"/>
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true"/>
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true"/>
+        <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true"/>
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true"/>
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true"/>
+    </Target>
+</Project>
