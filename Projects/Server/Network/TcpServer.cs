@@ -32,6 +32,13 @@ public static class TcpServer
     // AccountLoginReject BadComm
     private static readonly byte[] _socketRejected = [0x82, 0xFF];
 
+    private static Dictionary<string, List<string>> countryCidrRanges = new Dictionary<string, List<string>>();
+
+    static TcpServer()
+    {
+        LoadCidrRanges("ip-ranges.txt");
+    }
+
     public static IPEndPoint[] ListeningAddresses { get; private set; }
     public static Socket[] Listeners { get; private set; }
 
@@ -190,6 +197,13 @@ public static class TcpServer
             op.WriteLine($"# {Core.Now}");
 
             op.WriteLine($"Address: {ip}");
+            var country = GetCountryForIp(ip);
+
+            if (country != null)
+            {
+                op.WriteLine($"Country: {country}");
+            }
+            
             op.WriteLine(reason);
 
             op.WriteLine();
@@ -199,5 +213,72 @@ public static class TcpServer
         {
             // ignored
         }
+    }
+
+    private static void LoadCidrRanges(string filePath)
+    {
+        foreach (var line in File.ReadLines(filePath))
+        {
+            var parts = line.Split(' ');
+            if (parts.Length == 2)
+            {
+                var country = parts[0];
+                var cidr = parts[1];
+                if (!countryCidrRanges.ContainsKey(country))
+                {
+                    countryCidrRanges[country] = new List<string>();
+                }
+                countryCidrRanges[country].Add(cidr);
+            }
+        }
+    }
+
+    private static bool IsIpInCidrRange(string cidr, IPAddress ip)
+    {
+        var parts = cidr.Split('/');
+        var baseAddress = IPAddress.Parse(parts[0]);
+        var prefixLength = int.Parse(parts[1]);
+
+        var ipBytes = ip.GetAddressBytes();
+        var baseAddressBytes = baseAddress.GetAddressBytes();
+
+        var byteCount = prefixLength / 8;
+        var bitCount = prefixLength % 8;
+
+        for (int i = 0; i < byteCount; i++)
+        {
+            if (ipBytes[i] != baseAddressBytes[i])
+            {
+                return false;
+            }
+        }
+
+        if (bitCount > 0)
+        {
+            int mask = 0xFF << (8 - bitCount);
+            if ((ipBytes[byteCount] & mask) != (baseAddressBytes[byteCount] & mask))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static string GetCountryForIp(IPAddress ip)
+    {
+        foreach (var kvp in countryCidrRanges)
+        {
+            var country = kvp.Key;
+            var cidrRanges = kvp.Value;
+            foreach (var cidr in cidrRanges)
+            {
+                if (IsIpInCidrRange(cidr, ip))
+                {
+                    return country;
+                }
+            }
+        }
+        return null;
     }
 }
