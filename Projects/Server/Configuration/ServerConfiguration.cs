@@ -269,6 +269,7 @@ public static class ServerConfiguration
         {
             updated = true;
             _settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
+            _settings.Settings["serverListing.realAddress"] = ServerConfigurationPrompts.GetRealAddress();
         }
 
         // We have a known, current expansion, so we can deserialize it from Configuration
