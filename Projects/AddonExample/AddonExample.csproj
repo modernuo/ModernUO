@@ -15,8 +15,4 @@
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
     </ItemGroup>
-    <ItemGroup>
-        <AdditionalFiles Include="Migrations/*.v*.json" />
-        <AdditionalFiles Include="Migrations/keep" />
-    </ItemGroup>
 </Project>
