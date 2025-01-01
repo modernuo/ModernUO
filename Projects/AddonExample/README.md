@@ -38,10 +38,6 @@ The process differs between IDEs, but we want to navigate to and open the `Addon
       <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="Migrations/*.v*.json" />
-    <AdditionalFiles Include="Migrations/keep" />
-  </ItemGroup>
 </Project>
 ```
 #### `PropertyGroup`
@@ -60,10 +56,6 @@ The process differs between IDEs, but we want to navigate to and open the `Addon
 
 * `AdditionalFiles` indicates we want to copy some files into the build environment.  If we were to add custom items which are saved and loaded from the game we would need to provide migrations for changes in what those items save.
 
-### Create Migrations Directory
-
-Create the directory `Migrations` within the `AddonExample` project.  Add an empty file called `keep` with no extension.  This isn't strictly necessary, but good practice.
-
 ### Write Some Code
 
 The project should have a directory structure something like this at this point.
@@ -73,8 +65,6 @@ ModernUO
   Projects
     AddonExample
       Class1.cs
-      Migrations
-        keep
 ```
 
 Remove `Class1.cs` and create a new class called `Addon`.  Replace the code in that generated class with the following contents, and we'll walk through it step by step.
