@@ -142,7 +142,6 @@ public static class ServerConfigurationPrompts
                 ipStr = null;
                 break;
             }
-
             else
             {
                 if (!IPEndPoint.TryParse(ipStr, out ip))
