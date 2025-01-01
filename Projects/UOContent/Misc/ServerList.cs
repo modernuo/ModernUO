@@ -124,7 +124,7 @@ namespace Server.Misc
                 // instead of the one we publish for the server listing
                 // this allows LAN-local clients to connect directly to the server
                 // rather than going to their default-gateway which probably won't work
-                if(IsPrivateNetwork(ripep.Address) && _realAddress != null)
+                if (IsPrivateNetwork(ripep.Address) && _realAddress != null)
                 {
                     localAddress = _realAddress;
                 }
