@@ -84,7 +84,7 @@ namespace Server.Misc
             if (realAddress != null)
             {
                 Resolve(realAddress, out _realAddress);
-                logger.Information("Local clients will be told to connect to realAddress: {address}", _realAddress);
+                logger.Information("Local clients will be told to connect to realAddress: {Address}", _realAddress);
             }
         }
 
