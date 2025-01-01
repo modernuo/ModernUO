@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Projects\App
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonExample", "Projects\AddonExample\AddonExample.csproj", "{73F435F7-7D30-4275-8B74-D80A0BD7AC23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Projects\Logger\Logger.csproj", "{ECAD3793-A7C5-4546-AA88-77DD24574410}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analyze|Any CPU = Analyze|Any CPU
@@ -57,6 +59,12 @@ Global
 		{73F435F7-7D30-4275-8B74-D80A0BD7AC23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73F435F7-7D30-4275-8B74-D80A0BD7AC23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73F435F7-7D30-4275-8B74-D80A0BD7AC23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECAD3793-A7C5-4546-AA88-77DD24574410}.Analyze|Any CPU.ActiveCfg = Analyze|Any CPU
+		{ECAD3793-A7C5-4546-AA88-77DD24574410}.Analyze|Any CPU.Build.0 = Analyze|Any CPU
+		{ECAD3793-A7C5-4546-AA88-77DD24574410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECAD3793-A7C5-4546-AA88-77DD24574410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECAD3793-A7C5-4546-AA88-77DD24574410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECAD3793-A7C5-4546-AA88-77DD24574410}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
