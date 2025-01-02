@@ -294,14 +294,15 @@ public abstract partial class BaseExplosionPotion : BasePotion
             }
 
             var parent = _potion.FindParent(_from);
+            var remainingCount = RemainingCount - 1;
 
-            if (RemainingCount > 3)
+            if (remainingCount > 3)
             {
                 return;
             }
 
             // Remaining decrements after OnTick so it is off by 1
-            if (RemainingCount <= 1)
+            if (remainingCount <= 0)
             {
                 Point3D loc;
                 Map map;
@@ -325,11 +326,11 @@ public abstract partial class BaseExplosionPotion : BasePotion
             }
             else if (parent is Item item)
             {
-                item.PublicOverheadMessage(MessageType.Regular, 0x22, false, RemainingCount.ToString());
+                item.PublicOverheadMessage(MessageType.Regular, 0x22, false, remainingCount.ToString());
             }
             else if (parent is Mobile mobile)
             {
-                mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, RemainingCount.ToString());
+                mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, remainingCount.ToString());
             }
         }
     }
