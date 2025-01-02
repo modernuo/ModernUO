@@ -62,14 +62,15 @@ public abstract class MonsterAbilitySingleTargetDoT : MonsterAbilitySingleTarget
 
         protected override void OnTick()
         {
-            var delay = RemainingCount == 0
+            var delay = RemainingCount <= 1
                 ? TimeSpan.MinValue
                 : Utility.RandomMinMax(_ability.MinDelay, _ability.MaxDelay);
 
             _ability.EffectTick(_source, _defender, ref delay);
             Interval = delay;
 
-            if (RemainingCount == 0)
+            // Remaining decrements after OnTick so it is off by 1
+            if (RemainingCount <= 1)
             {
                 _ability.RemoveEffect(_source, _defender);
                 _ability.OnEffectExpired(_source, _defender);
