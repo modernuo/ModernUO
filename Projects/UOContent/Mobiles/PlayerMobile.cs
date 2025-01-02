@@ -2621,12 +2621,9 @@ namespace Server.Mobiles
                 }
             }
 
-            if (Young && DuelContext == null)
+            if (Young && DuelContext == null && YoungDeathTeleport())
             {
-                if (YoungDeathTeleport())
-                {
-                    Timer.StartTimer(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
-                }
+                Timer.StartTimer(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
             }
 
             if (DuelContext?.Registered != true || !DuelContext.Started || m_DuelPlayer?.Eliminated != false)

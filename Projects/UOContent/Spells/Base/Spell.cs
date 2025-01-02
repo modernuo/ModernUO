@@ -831,6 +831,12 @@ namespace Server.Spells
                 return false;
             }
 
+            if ((Caster as PlayerMobile)?.Young == true && (target as PlayerMobile)?.Young == false)
+            {
+                Caster.SendLocalizedMessage(500278); // As a young player, you may not cast beneficial spells onto older players.
+                return false;
+            }
+
             if (Caster.CanBeBeneficial(target, true, allowDead) && CheckSequence())
             {
                 Caster.DoBeneficial(target);

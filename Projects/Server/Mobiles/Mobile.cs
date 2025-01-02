@@ -7105,22 +7105,16 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return false;
         }
 
-        if (item.Parent != null)
+        if (item.Parent is Item parent)
         {
-            if (item.Parent is Item parent)
+            if (!(CanSee(parent) && parent.IsChildVisibleTo(this, item)))
             {
-                if (!(CanSee(parent) && parent.IsChildVisibleTo(this, item)))
-                {
-                    return false;
-                }
+                return false;
             }
-            else if (item.Parent is Mobile mobile)
-            {
-                if (!CanSee(mobile))
-                {
-                    return false;
-                }
-            }
+        }
+        else if (item.Parent is Mobile mobile && !CanSee(mobile))
+        {
+            return false;
         }
 
         if (item is BankBox box && m_AccessLevel <= AccessLevel.Counselor && (box.Owner != this || !box.Opened))
