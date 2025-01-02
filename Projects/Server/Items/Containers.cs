@@ -113,6 +113,18 @@ public class BankBox : Container
         (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) &&
         base.OnDragDropInto(from, item, p);
 
+    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
+    {
+        // This is a horrible hack.
+        // TODO: Refactor this by moving BankBox out of the core.
+        if (AccountGold.Enabled && AccountGold.ConvertOnBank && item.GetType().Name is "Gold" or "BankCheck")
+        {
+            return true;
+        }
+
+        return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
+    }
+
     public override int GetTotal(TotalType type)
     {
         if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold)
