@@ -2,5 +2,5 @@
 
 public class SummonSkeletonsCounter : SummonUndeadCounter
 {
-    public override BaseCreature CreateSummon(BaseCreature source) => new Skeleton();
+    public override BaseCreature CreateSummon(BaseCreature source) => new SkeletalMinion();
 }
