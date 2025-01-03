@@ -4312,12 +4312,15 @@ namespace Server.Mobiles
                 }
                 else if (m_Loyalty < MaxLoyalty)
                 {
-                    // 50% chance to increase 10 loyalty per food
-                    m_Loyalty = Math.Min(MaxLoyalty, Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10);
-                }
+                    // Calculate the loyalty increase
+                    int loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
 
-                // looks like in OSI pets say they are happier even if they are at maximum loyalty
-                SayTo(from, 502060); // Your pet looks happier.
+                    if (loyaltyIncrease > 0)  // Only update if there's an actual increase
+                    {
+                        m_Loyalty = Math.Min(MaxLoyalty, m_Loyalty + loyaltyIncrease);
+                        SayTo(from, 502060); // Your pet looks happier.
+                    }
+                }
 
                 if (Body.IsAnimal)
                 {
