@@ -279,7 +279,7 @@ namespace Server.Mobiles
         private bool m_bTamable;
         private int m_ColdResistance;
 
-        private bool m_Controlled;        // Is controlled
+        private bool _controlled;        // Is controlled
         private Mobile m_ControlMaster;   // My master
         private OrderType m_ControlOrder; // My order
 
@@ -371,7 +371,7 @@ namespace Server.Mobiles
 
             Debug = false;
 
-            m_Controlled = false;
+            _controlled = false;
             m_ControlMaster = null;
             ControlTarget = null;
             m_ControlOrder = OrderType.None;
@@ -750,15 +750,15 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Controlled
         {
-            get => m_Controlled;
+            get => _controlled;
             set
             {
-                if (m_Controlled == value)
+                if (_controlled == value)
                 {
                     return;
                 }
 
-                m_Controlled = value;
+                _controlled = value;
                 Delta(MobileDelta.Noto);
 
                 InvalidateProperties();
@@ -1354,24 +1354,23 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (FightMode == FightMode.Evil && m.Karma < 0 || c.FightMode == FightMode.Evil && Karma < 0)
+            if (m_Team != c.Team || FightMode == FightMode.Evil && m.Karma < 0 || c.FightMode == FightMode.Evil && Karma < 0)
             {
                 return true;
             }
 
-            if (m_Team != c.Team)
+            var master = GetMaster();
+            var cMaster = c.GetMaster();
+
+            if (master == null)
             {
-                return true;
+                // Non-summons will attack summons of non-NPCs
+                return cMaster != null && cMaster is not BaseCreature;
             }
 
-            var targetControlled = c._summoned || c.m_Controlled;
-
-            if (_summoned || m_Controlled)
-            {
-                return targetControlled || c.IsEnemy(GetMaster());
-            }
-
-            return targetControlled && IsEnemy(c.GetMaster());
+            // Summons will attack others summons, if they are enemies with their master
+            // Pets will attack non-summons, but not other summons (legacy logic)
+            return (master as BaseCreature)?.IsEnemy(cMaster ?? m) ?? cMaster == null;
         }
 
         public override string ApplyNameSuffix(string suffix)
@@ -1872,7 +1871,7 @@ namespace Server.Mobiles
             // Version 2
             writer.Write((int)FightMode);
 
-            writer.Write(m_Controlled);
+            writer.Write(_controlled);
             writer.Write(m_ControlMaster);
             writer.Write(ControlTarget);
             writer.Write(ControlDest);
@@ -2022,7 +2021,7 @@ namespace Server.Mobiles
             {
                 FightMode = (FightMode)reader.ReadInt();
 
-                m_Controlled = reader.ReadBool();
+                _controlled = reader.ReadBool();
                 m_ControlMaster = reader.ReadEntity<Mobile>();
                 ControlTarget = reader.ReadEntity<Mobile>();
                 ControlDest = reader.ReadPoint3D();
@@ -2050,7 +2049,7 @@ namespace Server.Mobiles
             {
                 FightMode = FightMode.Closest;
 
-                m_Controlled = false;
+                _controlled = false;
                 m_ControlMaster = null;
                 ControlTarget = null;
                 m_ControlOrder = OrderType.None;
@@ -2518,7 +2517,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (aggressor.ChangingCombatant && (m_Controlled || _summoned) &&
+            if (aggressor.ChangingCombatant && (_controlled || _summoned) &&
                 (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct is OrderType.Stop or OrderType.None or OrderType.Follow))
             {
                 ControlTarget = aggressor;
@@ -2562,7 +2561,7 @@ namespace Server.Mobiles
                 AIObject?.GetContextMenuEntries(from, ref list);
             }
 
-            if (m_bTamable && !m_Controlled && from.Alive)
+            if (m_bTamable && !_controlled && from.Alive)
             {
                 list.Add(new TameEntry(from.Female ? AllowFemaleTamer : AllowMaleTamer));
             }
@@ -3749,7 +3748,7 @@ namespace Server.Mobiles
                 return BardMaster;
             }
 
-            if (m_Controlled && m_ControlMaster != null)
+            if (_controlled && m_ControlMaster != null)
             {
                 return m_ControlMaster;
             }
@@ -4118,7 +4117,7 @@ namespace Server.Mobiles
 
         public virtual bool IsFriend(Mobile m) =>
             OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
-            && (_summoned || m_Controlled) == (c._summoned || c.m_Controlled);
+            && (_summoned || _controlled) == (c._summoned || c._controlled);
 
         public virtual Allegiance GetFactionAllegiance(Mobile mob)
         {
@@ -4313,12 +4312,15 @@ namespace Server.Mobiles
                 }
                 else if (m_Loyalty < MaxLoyalty)
                 {
-                    // 50% chance to increase 10 loyalty per food
-                    m_Loyalty = Math.Min(MaxLoyalty, Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10);
-                }
+                    // Calculate the loyalty increase
+                    int loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
 
-                // looks like in OSI pets say they are happier even if they are at maximum loyalty
-                SayTo(from, 502060); // Your pet looks happier.
+                    if (loyaltyIncrease > 0)  // Only update if there's an actual increase
+                    {
+                        m_Loyalty = Math.Min(MaxLoyalty, m_Loyalty + loyaltyIncrease);
+                        SayTo(from, 502060); // Your pet looks happier.
+                    }
+                }
 
                 if (Body.IsAnimal)
                 {
