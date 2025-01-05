@@ -907,6 +907,11 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
+            if (!Core.AOS)
+            {
+                OnSingleClickPreAOS(from);
+                return;
+            }
             var attrs = new List<EquipInfoAttribute>();
 
             AddEquipInfoAttributes(from, attrs);
@@ -929,6 +934,37 @@ namespace Server.Items
             }
 
             from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
+        }
+
+        public override void OnSingleClickPreAOS(Mobile from)
+        {
+            var qualityText = Quality != ClothingQuality.Regular
+                ? Localization.GetText(1018305 - (int)Quality, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+            // Add any unique name
+            if (Name != null)
+            {
+                LabelTo(from, Name);
+            }
+
+            // Add label
+            if (qualityText.Length > 0)
+            {
+                LabelTo(from, 1151757, $"{qualityText}\t#{LabelNumber}"); // ~1_PREFIX~ ~2_ITEM~
+            }
+            else
+            {
+                LabelTo(from, LabelNumber);
+            }
+
+            // Add maker's mark
+            if (PlayerConstructed)
+            {
+                if (Crafter != null)
+                {
+                    LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
+                }
+            }
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
