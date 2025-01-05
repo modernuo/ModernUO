@@ -194,16 +194,16 @@ namespace Server.Menus.Questions
                     m_Mobile.SendLocalizedMessage(1010588); // You choose not to go to any city.
                 }
             }
-            else
-            {
-                var index = info.ButtonID - 1;
-                var entries = IsInSecondAgeArea(m_Mobile) ? m_T2AEntries : m_Entries;
 
-                if (index >= 0 && index < entries.Length)
-                {
-                    Teleport(entries[index]);
-                }
+            var index = info.ButtonID - 1;
+            var entries = IsInSecondAgeArea(m_Mobile) ? m_T2AEntries : m_Entries;
+
+            if (index >= 0 && index < entries.Length)
+            {
+                Teleport(entries[index]);
             }
+
+            HelpEvents.InvokeStuckMenu(m_Mobile);
         }
 
         private void Teleport(StuckMenuEntry entry)
