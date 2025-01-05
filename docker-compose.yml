@@ -11,6 +11,8 @@ services:
       - "2593:2593"
       - "12000:12000"
     volumes:
-      - "./Distribution/Saves:/bin/modernuo/Saves"
       - "./Distribution/Configuration:/bin/modernuo/Configuration"
-      - "$UO_DIRECTORY:$UO_DIRECTORY"
+      - "./Distribution/Data:/bin/modernuo/Data"
+      - "./Distribution/Saves:/bin/modernuo/Saves"
+      # see the example in the DOCKER.md file to understand this volume
+      - "$UO_DIRECTORY:/bin/UO"
