@@ -1,4 +1,5 @@
 using System;
+using Server.Engines.Help;
 using Server.Factions;
 using Server.Gumps;
 using Server.Mobiles;

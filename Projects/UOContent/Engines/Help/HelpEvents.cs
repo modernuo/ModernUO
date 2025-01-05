@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
-using Server.Engines.Help;
 
-namespace Server;
+namespace Server.Engines.Help;
 
 public static class HelpEvents
 {
