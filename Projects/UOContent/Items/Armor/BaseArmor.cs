@@ -1582,12 +1582,9 @@ namespace Server.Items
             }
 
             // Add maker's mark
-            if (PlayerConstructed)
+            if (PlayerConstructed && Crafter != null)
             {
-                if (Crafter != null)
-                {
-                    LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
-                }
+                LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
             }
         }
 

@@ -4128,9 +4128,10 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     {
         if (!string.IsNullOrEmpty(text))
         {
-            if (builder.Length > 0) builder.Append(" ");
-            builder.Append(text);
+            return;
         }
+        if (builder.Length > 0) builder.Append(" ");
+        builder.Append(text);
     }
 
     public virtual void OnSingleClickPreAOS(Mobile from)
