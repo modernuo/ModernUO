@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
@@ -1451,6 +1452,12 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
+            if (!Core.AOS)
+            {
+                OnSingleClickPreAOS(from);
+                return;
+            }
+
             var attrs = new List<EquipInfoAttribute>();
 
             if (DisplayLootType)
@@ -1511,6 +1518,77 @@ namespace Server.Items
             }
 
             from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
+        }
+
+        public override void OnSingleClickPreAOS(Mobile from)
+        {
+            string prefix = null;
+            string suffix = null;
+
+            var isMagicItem = _durability != ArmorDurabilityLevel.Regular ||
+                              _protectionLevel != ArmorProtectionLevel.Regular;
+
+            // Construct prefix and suffix
+            var prefixBuilder = new StringBuilder();
+            var suffixBuilder = new StringBuilder();
+
+            if (isMagicItem && !_identified)
+            {
+                prefix = Localization.GetText(1038000, from.Language)?.ToLowerInvariant();
+            }
+            else
+            {
+                var qualityText = Quality != ArmorQuality.Regular
+                    ? Localization.GetText(1018305 - (int)Quality, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+                var durabilityText = _durability != ArmorDurabilityLevel.Regular
+                    ? Localization.GetText(1038000 + (int)_durability, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+                var protectionText = _protectionLevel != ArmorProtectionLevel.Regular
+                    ? Localization.GetText(1038005 + (int)_protectionLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+                // Append text
+                AppendWithSpace(prefixBuilder, qualityText);
+                AppendWithSpace(prefixBuilder, durabilityText);
+                AppendWithSpace(suffixBuilder, protectionText);
+
+                // Convert to strings
+                prefix = prefixBuilder.Length > 0 ? prefixBuilder.ToString() : null;
+                suffix = suffixBuilder.Length > 0 ? suffixBuilder.ToString() : null;
+            }
+
+            // Add any unique name
+            if (Name != null && _identified)
+            {
+                LabelTo(from, Name);
+            }
+
+            // Add label
+            if (prefix != null && suffix != null) // ~1_PREFIX~ ~2_ITEM~ of ~3_SUFFIX~
+            {
+                LabelTo(from, 1151756, $"{prefix}\t#{LabelNumber}\t{suffix}");
+            }
+            else if (prefix != null && suffix == null) // ~1_PREFIX~ ~2_ITEM~
+            {
+                LabelTo(from, 1151757, $"{prefix}\t#{LabelNumber}");
+            }
+            else if (prefix == null && suffix != null) // ~1_ITEM~ of ~2_SUFFIX~
+            {
+                LabelTo(from, 1151758, $"#{LabelNumber}\t{suffix}");
+            }
+            else
+            {
+                LabelTo(from, LabelNumber);
+            }
+
+            // Add maker's mark
+            if (PlayerConstructed)
+            {
+                if (Crafter != null)
+                {
+                    LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
+                }
+            }
         }
 
         [Flags]

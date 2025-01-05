@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.Engines.Craft;
@@ -3332,6 +3333,12 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
     public override void OnSingleClick(Mobile from)
     {
+        if (!Core.AOS)
+        {
+            OnSingleClickPreAOS(from);
+            return;
+        }
+
         var attrs = new List<EquipInfoAttribute>();
 
         if (DisplayLootType)
@@ -3421,6 +3428,94 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         }
 
         from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
+    }
+
+    public override void OnSingleClickPreAOS(Mobile from)
+    {
+        string prefix = null;
+        string suffix = null;
+        string slayerSuffix = SlayerNameExtensions.GetSlayerNamePreAOS(_slayer, from);
+
+        var isMagicItem = _durabilityLevel != WeaponDurabilityLevel.Regular ||
+                          _accuracyLevel != WeaponAccuracyLevel.Regular ||
+                          _damageLevel != WeaponDamageLevel.Regular ||
+                          slayerSuffix != "none";
+
+        // Construct prefix and suffix
+        var prefixBuilder = new StringBuilder();
+        var suffixBuilder = new StringBuilder();
+
+        if (isMagicItem && !_identified)
+        {
+            prefix = Localization.GetText(1038000, from.Language)?.ToLowerInvariant();
+        }
+        else
+        {
+            var qualityText = Quality != WeaponQuality.Regular
+                ? Localization.GetText(1018305 - (int)Quality, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+            var durabilityText = _durabilityLevel != WeaponDurabilityLevel.Regular
+                ? Localization.GetText(1038000 + (int)_durabilityLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+            var accuracyText = _accuracyLevel != WeaponAccuracyLevel.Regular
+                ? Localization.GetText(1038010 + (int)_accuracyLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+            var damageText = _damageLevel != WeaponDamageLevel.Regular
+                ? Localization.GetText(1038015 + (int)_damageLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
+
+            // Append text
+            AppendWithSpace(prefixBuilder, qualityText);
+            AppendWithSpace(prefixBuilder, durabilityText);
+            AppendWithSpace(prefixBuilder, accuracyText);
+            AppendWithSpace(suffixBuilder, damageText);
+
+            // Append slayer type
+            if (!string.Equals(slayerSuffix, "none", StringComparison.OrdinalIgnoreCase))
+            {
+                if (suffixBuilder.Length > 0)
+                {
+                    suffixBuilder.Append(" and ");
+                }
+                suffixBuilder.Append(slayerSuffix);
+            }
+
+            // Convert to strings
+            prefix = prefixBuilder.Length > 0 ? prefixBuilder.ToString() : null;
+            suffix = suffixBuilder.Length > 0 ? suffixBuilder.ToString() : null;
+        }
+
+        // Add any unique name
+        if (Name != null && _identified)
+        {
+            LabelTo(from, Name);
+        }
+
+        // Add label
+        if (prefix != null && suffix != null) // ~1_PREFIX~ ~2_ITEM~ of ~3_SUFFIX~
+        {
+            LabelTo(from, 1151756, $"{prefix}\t#{LabelNumber}\t{suffix}");
+        }
+        else if (prefix != null && suffix == null) // ~1_PREFIX~ ~2_ITEM~
+        {
+            LabelTo(from, 1151757, $"{prefix}\t#{LabelNumber}");
+        }
+        else if (prefix == null && suffix != null) // ~1_ITEM~ of ~2_SUFFIX~
+        {
+            LabelTo(from, 1151758, $"#{LabelNumber}\t{suffix}");
+        }
+        else
+        {
+            LabelTo(from, LabelNumber);
+        }
+
+        // Add maker's mark
+        if (PlayerConstructed)
+        {
+            if (Crafter != null)
+            {
+                LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
+            }
+        }
     }
 
     public virtual int GetHitAttackSound(Mobile attacker, Mobile defender)

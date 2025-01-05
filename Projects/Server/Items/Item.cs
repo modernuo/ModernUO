@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Server.Collections;
 using Server.ContextMenus;
 using Server.Items;
@@ -4121,6 +4122,20 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
                 opl.HeaderArgs
             );
         }
+    }
+
+    public static void AppendWithSpace(StringBuilder builder, string text)
+    {
+        if (!string.IsNullOrEmpty(text))
+        {
+            if (builder.Length > 0) builder.Append(" ");
+            builder.Append(text);
+        }
+    }
+
+    public virtual void OnSingleClickPreAOS(Mobile from)
+    {
+        return;
     }
 
     public virtual void OnSingleClick(Mobile from)
