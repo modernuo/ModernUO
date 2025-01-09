@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
 using Server.Network;
+using Server.Text;
 using AMA = Server.Items.ArmorMeditationAllowance;
 using AMT = Server.Items.ArmorMaterialType;
 
@@ -1522,71 +1524,83 @@ namespace Server.Items
 
         public void OnSingleClickPreUOTD(Mobile from)
         {
-            string prefix = null;
-            string suffix = null;
+            var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
 
             var isMagicItem = _durability != ArmorDurabilityLevel.Regular ||
                               _protectionLevel != ArmorProtectionLevel.Regular;
 
-            // Construct prefix and suffix
-            var prefixBuilder = new StringBuilder();
-            var suffixBuilder = new StringBuilder();
-
             if (isMagicItem && !_identified)
             {
-                prefix = Localization.GetText(1038000, from.Language)?.ToLowerInvariant();
+                LabelTo(from, $"an unidentified {Name ??
+                    Localization.GetText(LabelNumber).ToLowerInvariant()}");
+                return;
             }
-            else
+            else if (isMagicItem)
             {
-                var qualityText = Quality != ArmorQuality.Regular
-                    ? Localization.GetText(1018305 - (int)Quality, from.Language)?.ToLowerInvariant() ?? "" : "";
+                var builder = ValueStringBuilder.Create(128);
 
-                var durabilityText = _durability != ArmorDurabilityLevel.Regular
-                    ? Localization.GetText(1038000 + (int)_durability, from.Language)?.ToLowerInvariant() ?? "" : "";
+                var durabilityText = DurabilityText(out var articleAnDurability);
+                if (durabilityText != null)
+                {
+                    builder.PrependWithArticle(durabilityText, articleAnDurability);
+                }
 
-                var protectionText = _protectionLevel != ArmorProtectionLevel.Regular
-                    ? Localization.GetText(1038005 + (int)_protectionLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
+                builder.PrependWithArticle(Name ??
+                    Localization.GetText(LabelNumber).ToLowerInvariant(), articleAnName);
 
-                // Append text
-                AppendWithSpace(prefixBuilder, qualityText);
-                AppendWithSpace(prefixBuilder, durabilityText);
-                AppendWithSpace(suffixBuilder, protectionText);
+                var protectionText = ProtectionText();
+                if (protectionText != null)
+                {
+                    builder.Append($" of {protectionText}");
+                }
 
-                // Convert to strings
-                prefix = prefixBuilder.Length > 0 ? prefixBuilder.ToString() : null;
-                suffix = suffixBuilder.Length > 0 ? suffixBuilder.ToString() : null;
-            }
-
-            // Add any unique name
-            if (Name != null && _identified)
-            {
-                LabelTo(from, Name);
-            }
-
-            // Add label
-            if (prefix != null && suffix != null) // ~1_PREFIX~ ~2_ITEM~ of ~3_SUFFIX~
-            {
-                LabelTo(from, 1151756, $"{prefix}\t#{LabelNumber}\t{suffix}");
-            }
-            else if (prefix != null && suffix == null) // ~1_PREFIX~ ~2_ITEM~
-            {
-                LabelTo(from, 1151757, $"{prefix}\t#{LabelNumber}");
-            }
-            else if (prefix == null && suffix != null) // ~1_ITEM~ of ~2_SUFFIX~
-            {
-                LabelTo(from, 1151758, $"#{LabelNumber}\t{suffix}");
-            }
-            else
-            {
-                LabelTo(from, LabelNumber);
+                LabelTo(from, builder.ToString());
+                builder.Dispose();
+                return;
             }
 
-            // Add maker's mark
-            if (PlayerConstructed && Crafter != null)
+            var name = Name ??
+                $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
+
+            if (Crafter == null)
             {
-                LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
+                LabelTo(from, Quality == ArmorQuality.Exceptional ? $"{name} of exceptional quality" : name);
+                return;
             }
+
+            LabelTo(from,
+                Quality == ArmorQuality.Exceptional
+                    ? $"{name} crafted with exceptional quality by {Crafter}"
+                    : $"{name} crafted by {Crafter}"
+            );
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private string DurabilityText(out bool articleAn)
+        {
+            articleAn = _durability is ArmorDurabilityLevel.Indestructible;
+            return _durability switch
+            {
+                ArmorDurabilityLevel.Durable        => "durable",
+                ArmorDurabilityLevel.Substantial    => "substantial",
+                ArmorDurabilityLevel.Massive        => "massive",
+                ArmorDurabilityLevel.Fortified      => "fortified",
+                ArmorDurabilityLevel.Indestructible => "indestructable",
+                _                                   => null
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private string ProtectionText() =>
+            _protectionLevel switch
+            {
+                ArmorProtectionLevel.Defense         => "defense",
+                ArmorProtectionLevel.Guarding        => "guarding",
+                ArmorProtectionLevel.Hardening       => "hardening",
+                ArmorProtectionLevel.Fortification   => "fortification",
+                ArmorProtectionLevel.Invulnerability => "invulnerability",
+                _                                    => null
+            };
 
         [Flags]
         private enum OldSaveFlag

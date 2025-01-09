@@ -3441,7 +3441,8 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
         if (isMagicItem && !_identified)
         {
-            LabelTo(from, $"an unidentified {Name ?? Localization.GetText(LabelNumber)}");
+            LabelTo(from, $"an unidentified {Name ??
+                Localization.GetText(LabelNumber).ToLowerInvariant()}");
             return;
         }
         else if (isMagicItem)
@@ -3467,7 +3468,8 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
                 builder.PrependWithArticle(slayerText, articleAnSlayer);
             }
 
-            builder.PrependWithArticle(Name ?? Localization.GetText(LabelNumber), articleAnName);
+            builder.PrependWithArticle(Name ??
+                Localization.GetText(LabelNumber).ToLowerInvariant(), articleAnName);
 
             var weaponLevelText = WeaponLevelText();
             if (weaponLevelText != null)
@@ -3483,7 +3485,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         }
 
         var name = Name ??
-                   $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber)}";
+            $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
 
         if (Crafter == null)
         {
