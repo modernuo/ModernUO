@@ -295,6 +295,9 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 230, GetButtonID(3, 203), "Shutdown & Restart (With Save)");
                         AddButtonLabeled(20, 250, GetButtonID(3, 204), "Shutdown & Restart (Without Save)");
+
+                        AddButtonLabeled(20, 270, GetButtonID(3, 205), "Shutdown & 15 min Delay (With Save)");
+
                         /*}
                         else
                         {
@@ -2145,6 +2148,27 @@ namespace Server.Gumps
                             case 204:
                                 {
                                     Shutdown(true, false);
+                                    break;
+                                }
+                            case 205:
+                                {
+                                    sender.Mobile.SendMessage("The shard will shutdown in 15 minutes for maintenance.");
+                                    Timer.DelayCall(TimeSpan.FromMinutes(15), () =>
+                                    {
+                                        sender.Mobile.SendMessage("The shard will shutdown in 10 minutes for maintenance.");
+                                        Timer.DelayCall(TimeSpan.FromMinutes(5), () =>
+                                        {
+                                            sender.Mobile.SendMessage("The shard will shutdown in 5 minutes for maintenance.");
+                                            Timer.DelayCall(TimeSpan.FromMinutes(4), () =>
+                                            {
+                                                sender.Mobile.SendMessage("The shard will shutdown in 1 minute for maintenance.");
+                                                Timer.DelayCall(TimeSpan.FromMinutes(1), () =>
+                                                {
+                                                    Shutdown(false, true);
+                                                });
+                                            });
+                                        });
+                                    });
                                     break;
                                 }
                             case 210:
