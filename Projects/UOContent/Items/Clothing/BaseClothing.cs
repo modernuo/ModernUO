@@ -909,7 +909,7 @@ namespace Server.Items
         {
             if (!Core.AOS)
             {
-                OnSingleClickPreAOS(from);
+                OnSingleClickPreUOTD(from);
                 return;
             }
             var attrs = new List<EquipInfoAttribute>();
@@ -936,7 +936,7 @@ namespace Server.Items
             from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
-        public override void OnSingleClickPreAOS(Mobile from)
+        public void OnSingleClickPreUOTD(Mobile from)
         {
             var qualityText = Quality != ClothingQuality.Regular
                 ? Localization.GetText(1018305 - (int)Quality, from.Language)?.ToLowerInvariant() ?? "" : "";

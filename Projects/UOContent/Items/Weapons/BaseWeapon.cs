@@ -18,6 +18,7 @@ using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
+using Server.Text;
 
 namespace Server.Items;
 
@@ -3333,9 +3334,9 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
     public override void OnSingleClick(Mobile from)
     {
-        if (!Core.AOS)
+        if (Core.Expansion < Expansion.UOTD)
         {
-            OnSingleClickPreAOS(from);
+            OnSingleClickPreUOTD(from);
             return;
         }
 
@@ -3430,90 +3431,115 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
     }
 
-    public override void OnSingleClickPreAOS(Mobile from)
+    public void OnSingleClickPreUOTD(Mobile from)
     {
-        string prefix = null;
-        string suffix = null;
-        string slayerSuffix = SlayerNameExtensions.GetSlayerNamePreAOS(_slayer, from);
+        var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
 
-        var isMagicItem = _durabilityLevel != WeaponDurabilityLevel.Regular ||
-                          _accuracyLevel != WeaponAccuracyLevel.Regular ||
-                          _damageLevel != WeaponDamageLevel.Regular ||
-                          slayerSuffix != "none";
-
-        // Construct prefix and suffix
-        var prefixBuilder = new StringBuilder();
-        var suffixBuilder = new StringBuilder();
-
-        if (isMagicItem && !_identified)
+        if (!_identified)
         {
-            prefix = Localization.GetText(1038000, from.Language)?.ToLowerInvariant();
+            LabelTo(from, $"an unidentified {Name ?? Localization.GetText(LabelNumber)}");
+            return;
         }
-        else
+
+        var isMagicItem = _durabilityLevel > WeaponDurabilityLevel.Regular ||
+                          _accuracyLevel > WeaponAccuracyLevel.Regular ||
+                          _damageLevel > WeaponDamageLevel.Regular;
+
+        if (isMagicItem)
         {
-            var qualityText = Quality != WeaponQuality.Regular
-                ? Localization.GetText(1018305 - (int)Quality, from.Language)?.ToLowerInvariant() ?? "" : "";
+            var builder = ValueStringBuilder.Create(128);
 
-            var durabilityText = _durabilityLevel != WeaponDurabilityLevel.Regular
-                ? Localization.GetText(1038000 + (int)_durabilityLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
-
-            var accuracyText = _accuracyLevel != WeaponAccuracyLevel.Regular
-                ? Localization.GetText(1038010 + (int)_accuracyLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
-
-            var damageText = _damageLevel != WeaponDamageLevel.Regular
-                ? Localization.GetText(1038015 + (int)_damageLevel, from.Language)?.ToLowerInvariant() ?? "" : "";
-
-            // Append text
-            AppendWithSpace(prefixBuilder, qualityText);
-            AppendWithSpace(prefixBuilder, durabilityText);
-            AppendWithSpace(prefixBuilder, accuracyText);
-            AppendWithSpace(suffixBuilder, damageText);
-
-            // Append slayer type
-            if (!string.Equals(slayerSuffix, "none", StringComparison.OrdinalIgnoreCase))
+            var durabilityText = DurabilityText(out var articleAnDurability);
+            if (durabilityText != null)
             {
-                if (suffixBuilder.Length > 0)
-                {
-                    suffixBuilder.Append(" and ");
-                }
-                suffixBuilder.Append(slayerSuffix);
+                builder.PrependWithArticle(durabilityText, articleAnDurability);
             }
 
-            // Convert to strings
-            prefix = prefixBuilder.Length > 0 ? prefixBuilder.ToString() : null;
-            suffix = suffixBuilder.Length > 0 ? suffixBuilder.ToString() : null;
+            var accuracyText = AccuracyText(out var articleAnAccuracy);
+            if (accuracyText != null)
+            {
+                builder.PrependWithArticle(accuracyText, articleAnAccuracy);
+            }
+
+            var slayerText = SlayerGroup.GetEntryByName(_slayer).SlayerText(out var articleAnSlayer);
+            if (slayerText != null)
+            {
+                builder.PrependWithArticle(slayerText, articleAnSlayer);
+            }
+
+            builder.PrependWithArticle(Name ?? Localization.GetText(LabelNumber), articleAnName);
+
+            var weaponLevelText = WeaponLevelText();
+            if (weaponLevelText != null)
+            {
+                builder.Append($" of {weaponLevelText}");
+            }
+
+            // TODO: Spells (of Ghoul's Touch)
+
+            LabelTo(from, builder.ToString());
+            builder.Dispose();
+            return;
         }
 
-        // Add any unique name
-        if (Name != null && _identified)
+        var name = Name ??
+                   $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber)}";
+
+        if (Crafter == null)
         {
-            LabelTo(from, Name);
+            LabelTo(from, Quality == WeaponQuality.Exceptional ? $"{name} of exceptional quality" : name);
+            return;
         }
 
-        // Add label
-        if (prefix != null && suffix != null) // ~1_PREFIX~ ~2_ITEM~ of ~3_SUFFIX~
-        {
-            LabelTo(from, 1151756, $"{prefix}\t#{LabelNumber}\t{suffix}");
-        }
-        else if (prefix != null && suffix == null) // ~1_PREFIX~ ~2_ITEM~
-        {
-            LabelTo(from, 1151757, $"{prefix}\t#{LabelNumber}");
-        }
-        else if (prefix == null && suffix != null) // ~1_ITEM~ of ~2_SUFFIX~
-        {
-            LabelTo(from, 1151758, $"#{LabelNumber}\t{suffix}");
-        }
-        else
-        {
-            LabelTo(from, LabelNumber);
-        }
-
-        // Add maker's mark
-        if (PlayerConstructed && Crafter != null)
-        {
-            LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
-        }
+        LabelTo(
+            from,
+            Quality == WeaponQuality.Exceptional
+                ? $"{name} crafted with exceptional quality by {Crafter}"
+                : $"{name} crafted by {Crafter}"
+        );
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private string DurabilityText(out bool articleAn)
+    {
+        articleAn = _durabilityLevel is WeaponDurabilityLevel.Indestructible;
+        return _durabilityLevel switch
+        {
+            WeaponDurabilityLevel.Durable        => "durable",
+            WeaponDurabilityLevel.Substantial    => "substantial",
+            WeaponDurabilityLevel.Massive        => "massive",
+            WeaponDurabilityLevel.Fortified      => "fortified",
+            WeaponDurabilityLevel.Indestructible => "indestructible",
+            _                                    => null
+        };
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private string AccuracyText(out bool articleAn)
+    {
+        articleAn = _accuracyLevel is WeaponAccuracyLevel.Accurate or WeaponAccuracyLevel.Eminently;
+        return _accuracyLevel switch
+        {
+            WeaponAccuracyLevel.Accurate     => "accurate",
+            WeaponAccuracyLevel.Surpassingly => "surpassingly accurate",
+            WeaponAccuracyLevel.Eminently    => "eminently accurate",
+            WeaponAccuracyLevel.Exceedingly  => "exceedingly accurate",
+            WeaponAccuracyLevel.Supremely    => "supremely accurate",
+            _                                => null
+        };
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private string WeaponLevelText() =>
+        _damageLevel switch
+        {
+            WeaponDamageLevel.Ruin  => "ruin",
+            WeaponDamageLevel.Might => "might",
+            WeaponDamageLevel.Force => "force",
+            WeaponDamageLevel.Power => "power",
+            WeaponDamageLevel.Vanq  => "vanquishing",
+            _                       => null
+        };
 
     public virtual int GetHitAttackSound(Mobile attacker, Mobile defender)
     {

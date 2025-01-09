@@ -52,10 +52,9 @@ public class AddDoorGump : DynamicGump
         ]
     ];
 
-    private static int _maxCount;
-
     private Type _type;
     private int _baseId;
+    private int _page;
 
     public AddDoorGump() : base(50, 40)
     {
@@ -72,66 +71,38 @@ public class AddDoorGump : DynamicGump
             AddBlueBack(ref builder, 155, 174);
 
             builder.AddItem(25, 24, _baseId);
-            builder.AddButton(26, 37, 0x5782, 0x5782, 1);
+            builder.AddButton(26, 37, 0x5782, 0x5782, 10);
 
             builder.AddItem(47, 45, _baseId + 2);
-            builder.AddButton(43, 57, 0x5783, 0x5783, 2);
+            builder.AddButton(43, 57, 0x5783, 0x5783, 11);
 
             builder.AddItem(87, 22, _baseId + 10);
-            builder.AddButton(116, 35, 0x5785, 0x5785, 6);
+            builder.AddButton(116, 35, 0x5785, 0x5785, 15);
 
             builder.AddItem(65, 45, _baseId + 8);
-            builder.AddButton(96, 55, 0x5784, 0x5784, 5);
+            builder.AddButton(96, 55, 0x5784, 0x5784, 14);
 
-            builder.AddButton(73, 36, 0x2716, 0x2716, 9);
+            builder.AddButton(73, 36, 0x2716, 0x2716, 18);
         }
         else
         {
             var pages = _types.Length;
-            if (_maxCount == 0)
-            {
-                for (var i = 0; i < pages; i++)
-                {
-                    _maxCount = Math.Max(_maxCount, _types[i].Length);
-                }
-            }
+            var types = _types[_page];
 
-            AddBlueBack(ref builder, 20 + (_maxCount + 1) * 50, 165);
+            AddBlueBack(ref builder, 20 + (types.Length + 1) * 50, 165);
 
             builder.AddHtmlLocalized(30, 45, 60, 20, 1043353, 0x7FFF); // Next
             builder.AddHtmlLocalized(30, 85, 60, 20, 1011393, 0x7FFF); // Back
 
-            for (var i = 0; i < pages; ++i)
+            builder.AddButton(30, 60, 0xFA5, 0xFA7, 1);
+            builder.AddButton(30, 100, 0xFAE, 0xFB0, 2);
+
+            for (var i = 0; i < types.Length; i++)
             {
-                var page = i + 1;
+                var x = (i + 1) * 50;
 
-                builder.AddPage(page);
-
-                if (page < pages)
-                {
-                    builder.AddButton(30, 60, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page + 1);
-                }
-                else
-                {
-                    builder.AddButton(30, 60, 0xFA5, 0xFA7, 0, GumpButtonType.Page, 1);
-                }
-
-                if (page > 1)
-                {
-                    builder.AddButton(30, 100, 0xFAE, 0xFB0, 0, GumpButtonType.Page, page - 1);
-                }
-                else
-                {
-                    builder.AddButton(30, 100, 0xFAE, 0xFB0, 0, GumpButtonType.Page, pages);
-                }
-
-                for (var j = 0; j < _types[i].Length; j++)
-                {
-                    var x = (j + 1) * 50;
-
-                    builder.AddButton(30 + x, 20, 0x2624, 0x2625, i * _maxCount + j + 1);
-                    builder.AddItem(15 + x, 30, _types[i][j].BaseID);
-                }
+                builder.AddButton(30 + x, 20, 0x2624, 0x2625, _page * types.Length + i + 10);
+                builder.AddItem(15 + x, 30, types[i].BaseID);
             }
         }
     }
@@ -147,35 +118,64 @@ public class AddDoorGump : DynamicGump
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
         var from = sender.Mobile;
-        var button = info.ButtonID - 1;
+        var button = info.ButtonID;
 
-        if (_type == null)
+        if (button == 0)
         {
-            if (button < 0 || button >= _types.Length)
+            if (_type != null)
+            {
+                _type = null;
+                _baseId = 0;
+            }
+            else
             {
                 return;
             }
-
-            var page = Math.DivRem(button, _maxCount, out var pos);
-            var door = _types[page][pos];
-            _type = door.Type;
-            _baseId = door.BaseID;
         }
-        else if (button is >= 0 and < 8)
+        else if (button == 1) // Next
         {
-            CommandSystem.Handle(
-                from,
-                $"{CommandSystem.Prefix}Add {_type.Name} {(DoorFacing)button}"
-            );
+            _page++;
+            if (_page >= _types.Length)
+            {
+                _page = 0;
+            }
         }
-        else if (button == 8)
+        else if (button == 2) // Prev
         {
-            CommandSystem.Handle(from, $"{CommandSystem.Prefix}Link");
+            _page--;
+            if (_page < 0)
+            {
+                _page = _types.Length - 1;
+            }
         }
         else
         {
-            _type = null;
-            _baseId = 0;
+            button -= 10;
+            if (_type == null)
+            {
+                var types = _types[_page];
+                var page = Math.DivRem(button, types.Length, out var pos);
+
+                if (page < 0 || pos >= types.Length)
+                {
+                    return;
+                }
+
+                var door = types[pos];
+                _type = door.Type;
+                _baseId = door.BaseID;
+            }
+            else if (button is >= 0 and < 8)
+            {
+                CommandSystem.Handle(
+                    from,
+                    $"{CommandSystem.Prefix}Add {_type.Name} {(DoorFacing)button}"
+                );
+            }
+            else if (button == 8)
+            {
+                CommandSystem.Handle(from, $"{CommandSystem.Prefix}Link");
+            }
         }
 
         from.SendGump(this);

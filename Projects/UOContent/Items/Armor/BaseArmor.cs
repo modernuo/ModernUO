@@ -1454,7 +1454,7 @@ namespace Server.Items
         {
             if (!Core.AOS)
             {
-                OnSingleClickPreAOS(from);
+                OnSingleClickPreUOTD(from);
                 return;
             }
 
@@ -1520,7 +1520,7 @@ namespace Server.Items
             from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
         }
 
-        public override void OnSingleClickPreAOS(Mobile from)
+        public void OnSingleClickPreUOTD(Mobile from)
         {
             string prefix = null;
             string suffix = null;
