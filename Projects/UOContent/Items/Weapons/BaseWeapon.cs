@@ -3435,17 +3435,16 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
     {
         var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
 
-        if (!_identified)
-        {
-            LabelTo(from, $"an unidentified {Name ?? Localization.GetText(LabelNumber)}");
-            return;
-        }
-
         var isMagicItem = _durabilityLevel > WeaponDurabilityLevel.Regular ||
                           _accuracyLevel > WeaponAccuracyLevel.Regular ||
                           _damageLevel > WeaponDamageLevel.Regular;
 
-        if (isMagicItem)
+        if (isMagicItem && !_identified)
+        {
+            LabelTo(from, $"an unidentified {Name ?? Localization.GetText(LabelNumber)}");
+            return;
+        }
+        else if (isMagicItem)
         {
             var builder = ValueStringBuilder.Create(128);
 
