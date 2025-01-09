@@ -3461,12 +3461,14 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
                 builder.PrependWithArticle(accuracyText, articleAnAccuracy);
             }
 
-            var slayerText = SlayerGroup.GetEntryByName(_slayer).SlayerText(out var articleAnSlayer);
+            
+
+            var slayerText = SlayerGroup.GetEntryByName(_slayer);
             if (slayerText != null)
             {
-                builder.PrependWithArticle(slayerText, articleAnSlayer);
+                slayerText.SlayerText(out var articleAnSlayer);
             }
-
+            
             builder.PrependWithArticle(Name ?? Localization.GetText(LabelNumber), articleAnName);
 
             var weaponLevelText = WeaponLevelText();
