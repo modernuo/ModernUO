@@ -171,7 +171,7 @@ public abstract partial class BaseWand : BaseBashing
     {
         if (!Core.AOS)
         {
-            OnSingleClickPreAOS(from);
+            OnSingleClickPreUOTD(from);
             return;
         }
 
@@ -237,7 +237,7 @@ public abstract partial class BaseWand : BaseBashing
         from.NetState.SendDisplayEquipmentInfo(Serial, number, Crafter, false, attrs);
     }
 
-    public override void OnSingleClickPreAOS(Mobile from)
+    public void OnSingleClickPreUOTD(Mobile from)
     {
         string prefix = null;
         string suffix = null;
