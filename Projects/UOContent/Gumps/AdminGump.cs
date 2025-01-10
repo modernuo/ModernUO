@@ -2152,23 +2152,8 @@ namespace Server.Gumps
                                 }
                             case 205: // shutdown with delay and save
                                 {
-                                    sender.Mobile.SendMessage("The shard will shutdown in 15 minutes for maintenance.");
-                                    Timer.DelayCall(TimeSpan.FromMinutes(15), () =>
-                                    {
-                                        sender.Mobile.SendMessage("The shard will shutdown in 10 minutes for maintenance.");
-                                        Timer.DelayCall(TimeSpan.FromMinutes(5), () =>
-                                        {
-                                            sender.Mobile.SendMessage("The shard will shutdown in 5 minutes for maintenance.");
-                                            Timer.DelayCall(TimeSpan.FromMinutes(4), () =>
-                                            {
-                                                sender.Mobile.SendMessage("The shard will shutdown in 1 minute for maintenance.");
-                                                Timer.DelayCall(TimeSpan.FromMinutes(1), () =>
-                                                {
-                                                    Shutdown(false, true);
-                                                });
-                                            });
-                                        });
-                                    });
+                                    var t = new ShutdownTimer(this);
+                                    t.Start();
                                     break;
                                 }
                             case 210:
@@ -4274,6 +4259,27 @@ namespace Server.Gumps
             public override string Content { get; }
 
             public AdminNoticeGump(string content, Action callback) : base(callback) => Content = content;
+        }
+
+        public class ShutdownTimer : Timer
+        {
+            private readonly AdminGump _adminGump;
+
+            public ShutdownTimer(AdminGump gump) : base(TimeSpan.Zero, TimeSpan.FromMinutes(1), 6) =>
+                _adminGump = gump;
+
+            protected override void OnTick()
+            {
+                if (Index >= 5)
+                {
+                    _adminGump.Shutdown(false, true);
+                    return;
+                }
+
+                ReadOnlySpan<int> times = [15, 10, 5, 4, 1, 0];
+                _adminGump.m_From.SendMessage($"The shard will shutdown in {times[Index]} minutes for maintenance.");
+                Interval = TimeSpan.FromMinutes(times[Index] - times[Index + 1]);
+            }
         }
     }
 }
