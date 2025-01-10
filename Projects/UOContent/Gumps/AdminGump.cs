@@ -2152,23 +2152,29 @@ namespace Server.Gumps
                                 }
                             case 205:
                                 {
-                                    sender.Mobile.SendMessage("The shard will shutdown in 15 minutes for maintenance.");
-                                    Timer.DelayCall(TimeSpan.FromMinutes(15), () =>
+                                    int[] delays = { 15, 10, 5, 4, 1 };
+                                    string[] messages = 
                                     {
-                                        sender.Mobile.SendMessage("The shard will shutdown in 10 minutes for maintenance.");
-                                        Timer.DelayCall(TimeSpan.FromMinutes(5), () =>
+                                        "The shard will shutdown in 15 minutes for maintenance.",
+                                        "The shard will shutdown in 10 minutes for maintenance.",
+                                        "The shard will shutdown in 5 minutes for maintenance.",
+                                        "The shard will shutdown in 1 minute for maintenance."
+                                    };
+
+                                    for (int i = 0; i < delays.Length; i++)
+                                    {
+                                        Timer.DelayCall(TimeSpan.FromMinutes(delays[i]), () =>
                                         {
-                                            sender.Mobile.SendMessage("The shard will shutdown in 5 minutes for maintenance.");
-                                            Timer.DelayCall(TimeSpan.FromMinutes(4), () =>
+                                            if (i < messages.Length)
                                             {
-                                                sender.Mobile.SendMessage("The shard will shutdown in 1 minute for maintenance.");
-                                                Timer.DelayCall(TimeSpan.FromMinutes(1), () =>
-                                                {
-                                                    Shutdown(false, true);
-                                                });
-                                            });
+                                                sender.Mobile.SendMessage(messages[i]);
+                                            }
+                                            else
+                                            {
+                                                Shutdown(false, true);
+                                            }
                                         });
-                                    });
+                                    }
                                     break;
                                 }
                             case 210:
