@@ -12,6 +12,7 @@ using Server.Misc;
 using Server.Multis;
 using Server.Network;
 using Server.Prompts;
+using Server.Saves;
 using Server.Text;
 
 namespace Server.Gumps
@@ -296,7 +297,7 @@ namespace Server.Gumps
                         AddButtonLabeled(20, 230, GetButtonID(3, 203), "Shutdown & Restart (With Save)");
                         AddButtonLabeled(20, 250, GetButtonID(3, 204), "Shutdown & Restart (Without Save)");
 
-                        AddButtonLabeled(20, 270, GetButtonID(3, 205), "Shutdown & 15 min Delay (With Save)");
+                        AddButtonLabeled(20, 270, GetButtonID(3, 205), "Shutdown (With 15m Delay & Save)");
 
                         /*}
                         else
@@ -4265,20 +4266,24 @@ namespace Server.Gumps
         {
             private readonly AdminGump _adminGump;
 
-            public ShutdownTimer(AdminGump gump) : base(TimeSpan.Zero, TimeSpan.FromMinutes(1), 6) =>
+            public ShutdownTimer(AdminGump gump) : base(TimeSpan.Zero, TimeSpan.Zero, 8) =>
                 _adminGump = gump;
 
             protected override void OnTick()
             {
-                if (Index >= 5)
+                if (Index >= 7)
                 {
+                    AutoSave.SavesEnabled = false;
                     _adminGump.Shutdown(false, true);
                     return;
                 }
 
-                ReadOnlySpan<int> times = [15, 10, 5, 4, 1, 0];
-                _adminGump.m_From.SendMessage($"The shard will shutdown in {times[Index]} minutes for maintenance.");
-                Interval = TimeSpan.FromMinutes(times[Index] - times[Index + 1]);
+                ReadOnlySpan<int> times = [15, 10, 5, 4, 3, 2, 1, 0];
+                var time = times[Index];
+                _adminGump.m_From.SendMessage(
+                    $"The shard will shutdown in {time} minute{(time == 1 ? "s" : "")} for maintenance."
+                );
+                Interval = TimeSpan.FromMinutes(time - times[Index + 1]);
             }
         }
     }
