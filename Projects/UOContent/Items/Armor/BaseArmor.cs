@@ -1600,16 +1600,20 @@ namespace Server.Items
             };
         }
 
-        private string ProtectionText =>
-            _protectionLevel switch
-            {
-                ArmorProtectionLevel.Defense         => "defense",
-                ArmorProtectionLevel.Guarding        => "guarding",
-                ArmorProtectionLevel.Hardening       => "hardening",
-                ArmorProtectionLevel.Fortification   => "fortification",
-                ArmorProtectionLevel.Invulnerability => "invulnerability",
-                _                                    => null
-            };
+        private string ProtectionText
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get =>
+                _protectionLevel switch
+                {
+                    ArmorProtectionLevel.Defense         => "defense",
+                    ArmorProtectionLevel.Guarding        => "guarding",
+                    ArmorProtectionLevel.Hardening       => "hardening",
+                    ArmorProtectionLevel.Fortification   => "fortification",
+                    ArmorProtectionLevel.Invulnerability => "invulnerability",
+                    _                                    => null
+                };
+        }
 
         [Flags]
         private enum OldSaveFlag
