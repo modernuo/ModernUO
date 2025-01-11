@@ -4123,11 +4123,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         }
     }
 
-    public virtual void OnSingleClickPreAOS(Mobile from)
-    {
-        return;
-    }
-
     public virtual void OnSingleClick(Mobile from)
     {
         if (Deleted || !from.CanSee(this))
