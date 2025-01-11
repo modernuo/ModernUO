@@ -3424,7 +3424,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
         from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
     }
 
-    public void OnSingleClickPreUOTD(Mobile from)
+    public virtual void OnSingleClickPreUOTD(Mobile from)
     {
         var isMagicItem = _durabilityLevel > WeaponDurabilityLevel.Regular ||
                           _accuracyLevel > WeaponAccuracyLevel.Regular ||
