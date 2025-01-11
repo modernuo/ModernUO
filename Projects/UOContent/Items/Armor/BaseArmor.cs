@@ -561,6 +561,7 @@ namespace Server.Items
 
             Resource = CraftResources.GetFromType(resourceType);
             PlayerConstructed = true;
+            Identified = true;
 
             var context = craftSystem.GetContext(from);
 
@@ -1490,13 +1491,12 @@ namespace Server.Items
                     attrs.Add(new EquipInfoAttribute(1038000 + (int)_durability));
                 }
 
-                if (_protectionLevel > ArmorProtectionLevel.Regular && _protectionLevel <= ArmorProtectionLevel.Invulnerability)
+                if (_protectionLevel != ArmorProtectionLevel.Regular)
                 {
                     attrs.Add(new EquipInfoAttribute(1038005 + (int)_protectionLevel));
                 }
             }
-            else if (_durability != ArmorDurabilityLevel.Regular ||
-                     _protectionLevel is > ArmorProtectionLevel.Regular and <= ArmorProtectionLevel.Invulnerability)
+            else if (_durability != ArmorDurabilityLevel.Regular || _protectionLevel != ArmorProtectionLevel.Regular)
             {
                 attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
             }
