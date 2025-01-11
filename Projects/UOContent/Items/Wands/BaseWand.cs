@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using ModernUO.Serialization;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
+using Server.Text;
 
 namespace Server.Items;
 
@@ -239,74 +241,41 @@ public abstract partial class BaseWand : BaseBashing
 
     public void OnSingleClickPreUOTD(Mobile from)
     {
-        string prefix = null;
-        string suffix = null;
-
-        // Construct suffix
-        var suffixBuilder = new StringBuilder();
-
-        if (!Identified)
+        var isMagicItem = _charges > 0;
+        var name = Name;
+        if (name == null)
         {
-            prefix = Localization.GetText(1038000, from.Language)?.ToLowerInvariant();
-        }
-        else
-        {
-            var num = _wandEffect switch
-            {
-                WandEffect.Clumsiness => 3002011,
-                WandEffect.Identification => 1044063,
-                WandEffect.Healing => 3002014,
-                WandEffect.Feeblemindedness => 3002013,
-                WandEffect.Weakness => 3002018,
-                WandEffect.MagicArrow => 3002015,
-                WandEffect.Harming => 3002022,
-                WandEffect.Fireball => 3002028,
-                WandEffect.GreaterHealing => 3002039,
-                WandEffect.Lightning => 3002040,
-                WandEffect.ManaDraining => 3002041,
-                _ => 0
-            };
-
-            var wandText = Localization.GetText(num, from.Language)?.ToLowerInvariant();
-
-            // Append wand effect text
-            AppendWithSpace(suffixBuilder, wandText);
-
-            // Append charges
-            AppendWithSpace(suffixBuilder, "with");
-            AppendWithSpace(suffixBuilder, _charges.ToString());
-            if (_charges == 1)
-            {
-                AppendWithSpace(suffixBuilder, "charge");
-            }
-            else
-            {
-                AppendWithSpace(suffixBuilder, "charges");
-            }
-
-            // Convert to string
-            suffix = suffixBuilder.Length > 0 ? suffixBuilder.ToString() : null;
+            var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+            name = $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
         }
 
-        // Add any unique name
-        if (Name != null && Identified)
+        if (isMagicItem && !Identified)
         {
-            LabelTo(from, Name);
+            LabelTo(from, $"an unidentified {name}");
+            return;
         }
 
-        // Add label
-        if (prefix != null) // ~1_PREFIX~ ~2_ITEM~
+        LabelTo(from, isMagicItem ? $"{name} of {WandEffectText}" : name);
+    }
+
+    private string WandEffectText
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _wandEffect switch
         {
-            LabelTo(from, 1151757, $"{prefix}\t#{LabelNumber}");
-        }
-        else if (suffix != null)
-        {
-            LabelTo(from, 1151758, $"#{LabelNumber}\t{suffix}");
-        }
-        else
-        {
-            LabelTo(from, LabelNumber);
-        }
+            WandEffect.Clumsiness       => "clumsiness",
+            WandEffect.Identification   => "identification",
+            WandEffect.Healing          => "healing",
+            WandEffect.Feeblemindedness => "feeblemindedness",
+            WandEffect.Weakness         => "weakness",
+            WandEffect.MagicArrow       => "magic arrow",
+            WandEffect.Harming          => "harming",
+            WandEffect.Fireball         => "fireball",
+            WandEffect.GreaterHealing   => "greater healing",
+            WandEffect.Lightning        => "lightning",
+            WandEffect.ManaDraining     => "mana draining",
+            _                           => null
+        };
     }
 
     public void Cast(Spell spell)

@@ -288,15 +288,15 @@ public static class StringHelpers
         return chars;
     }
 
-    public static void PrependWithArticle(this ref ValueStringBuilder builder, string text, bool articleAn)
+    public static void AppendSpaceWithArticle(this ref ValueStringBuilder builder, string text, bool articleAn)
     {
-        if (builder.Length == 0)
+        if (builder.Length != 0)
         {
-            builder.Append(articleAn ? "an " : "a ");
+            builder.Append(' ');
         }
         else
         {
-            builder.Append(' ');
+            builder.Append(articleAn ? "an " : "a ");
         }
 
         builder.Append(text);

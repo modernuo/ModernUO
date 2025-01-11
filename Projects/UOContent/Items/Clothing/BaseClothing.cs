@@ -938,30 +938,26 @@ namespace Server.Items
 
         public void OnSingleClickPreUOTD(Mobile from)
         {
-            var qualityText = Quality != ClothingQuality.Regular
-                ? Localization.GetText(1018305 - (int)Quality, from.Language)?.ToLowerInvariant() ?? "" : "";
+            var name = Name;
 
-            // Add any unique name
-            if (Name != null)
+            if (name == null)
             {
-                LabelTo(from, Name);
-            }
-
-            // Add label
-            if (qualityText.Length > 0)
-            {
-                LabelTo(from, 1151757, $"{qualityText}\t#{LabelNumber}"); // ~1_PREFIX~ ~2_ITEM~
-            }
-            else
-            {
-                LabelTo(from, LabelNumber);
+                var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+                name = $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
             }
 
-            // Add maker's mark
-            if (PlayerConstructed && Crafter != null)
+            if (Crafter == null)
             {
-                LabelTo(from, 1050043, Crafter.ToString()); // crafted by ~1_NAME~
+                LabelTo(from, Quality == ClothingQuality.Exceptional ? $"{name} of exceptional quality" : name);
+                return;
             }
+
+            LabelTo(
+                from,
+                Quality == ClothingQuality.Exceptional
+                    ? $"{name} crafted with exceptional quality by {Crafter}"
+                    : $"{name} crafted by {Crafter}"
+            );
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)

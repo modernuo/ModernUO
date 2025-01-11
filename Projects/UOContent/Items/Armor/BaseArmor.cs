@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
@@ -1496,8 +1495,8 @@ namespace Server.Items
                     attrs.Add(new EquipInfoAttribute(1038005 + (int)_protectionLevel));
                 }
             }
-            else if (_durability != ArmorDurabilityLevel.Regular || _protectionLevel > ArmorProtectionLevel.Regular &&
-                _protectionLevel <= ArmorProtectionLevel.Invulnerability)
+            else if (_durability != ArmorDurabilityLevel.Regular ||
+                     _protectionLevel is > ArmorProtectionLevel.Regular and <= ArmorProtectionLevel.Invulnerability)
             {
                 attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
             }
@@ -1524,31 +1523,42 @@ namespace Server.Items
 
         public void OnSingleClickPreUOTD(Mobile from)
         {
-            var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
-
             var isMagicItem = _durability != ArmorDurabilityLevel.Regular ||
                               _protectionLevel != ArmorProtectionLevel.Regular;
 
             if (isMagicItem && !_identified)
             {
-                LabelTo(from, $"an unidentified {Name ??
-                    Localization.GetText(LabelNumber).ToLowerInvariant()}");
+                LabelTo(from, $"an unidentified {Name ?? Localization.GetText(LabelNumber).ToLowerInvariant()}");
                 return;
             }
-            else if (isMagicItem)
+
+            var name = Name;
+            var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+
+            if (isMagicItem)
             {
                 var builder = ValueStringBuilder.Create(128);
 
                 var durabilityText = DurabilityText(out var articleAnDurability);
                 if (durabilityText != null)
                 {
-                    builder.PrependWithArticle(durabilityText, articleAnDurability);
+                    builder.AppendSpaceWithArticle(durabilityText, articleAnDurability);
                 }
 
-                builder.PrependWithArticle(Name ??
-                    Localization.GetText(LabelNumber).ToLowerInvariant(), articleAnName);
+                if (name == null)
+                {
+                    builder.AppendSpaceWithArticle(Localization.GetText(LabelNumber).ToLowerInvariant(), articleAnName);
+                }
+                else if (builder.Length != 0)
+                {
+                    builder.Append($" {name}");
+                }
+                else
+                {
+                    builder.Append(name);
+                }
 
-                var protectionText = ProtectionText();
+                var protectionText = ProtectionText;
                 if (protectionText != null)
                 {
                     builder.Append($" of {protectionText}");
@@ -1559,8 +1569,7 @@ namespace Server.Items
                 return;
             }
 
-            var name = Name ??
-                $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
+            name ??= $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
 
             if (Crafter == null)
             {
@@ -1568,7 +1577,8 @@ namespace Server.Items
                 return;
             }
 
-            LabelTo(from,
+            LabelTo(
+                from,
                 Quality == ArmorQuality.Exceptional
                     ? $"{name} crafted with exceptional quality by {Crafter}"
                     : $"{name} crafted by {Crafter}"
@@ -1590,8 +1600,7 @@ namespace Server.Items
             };
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string ProtectionText() =>
+        private string ProtectionText =>
             _protectionLevel switch
             {
                 ArmorProtectionLevel.Defense         => "defense",
