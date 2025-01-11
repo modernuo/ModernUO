@@ -912,8 +912,8 @@ namespace Server.Items
                 OnSingleClickPreUOTD(from);
                 return;
             }
-            var attrs = new List<EquipInfoAttribute>();
 
+            var attrs = new List<EquipInfoAttribute>();
             AddEquipInfoAttributes(from, attrs);
 
             int number;
