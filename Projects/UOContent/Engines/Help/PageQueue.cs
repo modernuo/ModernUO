@@ -103,6 +103,8 @@ namespace Server.Engines.Help
                     {
                         m_Entry.Handler = null;
                     }
+
+                    HelpEvents.InvokePageWaiting(m_Entry);
                 }
                 else
                 {
@@ -171,6 +173,13 @@ namespace Server.Engines.Help
             {
                 m_KeyedByHandler[value] = entry;
             }
+
+            if (old == null || value == null)
+            {
+                return;
+            }
+
+            HelpEvents.InvokePageHandlerChanged(old, value, entry);
         }
 
         [Usage("Pages"), Description("Opens the page queue menu.")]
@@ -212,6 +221,8 @@ namespace Server.Engines.Help
             {
                 m_KeyedByHandler.Remove(e.Handler);
             }
+
+            HelpEvents.InvokePageRemoved(e);
         }
 
         public static PageEntry GetEntry(Mobile sender)
@@ -258,6 +269,8 @@ namespace Server.Engines.Help
             {
                 Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
             }
+
+            HelpEvents.InvokePageEnqueued(entry);
         }
     }
 }
