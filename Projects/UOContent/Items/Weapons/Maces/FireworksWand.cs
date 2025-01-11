@@ -101,8 +101,7 @@ namespace Server.Items
 
         public override void OnSingleClickPreUOTD(Mobile from)
         {
-            var name = Name ?? Localization.GetText(LabelNumber).ToLowerInvariant();
-            LabelTo(from, $"{name}");
+            LabelTo(from, Name ?? Localization.GetText(LabelNumber).ToLowerInvariant());
         }
     }
 }
