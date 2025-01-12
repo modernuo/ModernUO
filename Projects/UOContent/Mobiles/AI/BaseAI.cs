@@ -2132,7 +2132,7 @@ public abstract class BaseAI
 
         // This makes them always move one step, never any direction changes
         // TODO: This is firing off deltas which aren't needed. Look into replacing/removing this
-        if (m_Mobile.Direction != d)
+        if ((m_Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
         {
             m_Mobile.Direction = d;
         }
