@@ -907,7 +907,7 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
-            if (!Core.AOS)
+            if (Core.Expansion < Expansion.UOTD)
             {
                 OnSingleClickPreUOTD(from);
                 return;
