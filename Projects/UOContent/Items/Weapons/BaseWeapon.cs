@@ -104,7 +104,7 @@ public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftab
 
     [SerializableFieldSaveFlag(9)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool ShouldSerializeCrafter() => string.IsNullOrEmpty(_crafter);
+    private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
     [InvalidateProperties]
     [SerializableField(10)]
