@@ -3937,32 +3937,32 @@ namespace Server.Gumps
             var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
             if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
             {
-                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Malas))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Tokuno))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Trammel))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Felucca))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/**.json");
             }
         }
 
