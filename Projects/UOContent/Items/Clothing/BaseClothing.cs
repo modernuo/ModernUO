@@ -95,7 +95,7 @@ namespace Server.Items
         private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
-        private bool ShouldSerializeCrafter() => _crafter != null;
+        private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
         [InvalidateProperties]
         [SerializableField(9)]
