@@ -267,7 +267,7 @@ namespace Server.SkillHandlers
             AddImage(128, 152, 2086);
             AddHtmlLocalized(147, 150, 160, 18, 1049563, 200); // Preferred Foods
 
-            var foodPref;
+            int foodPref;
 
             if ((c.FavoriteFood & FoodType.Meat) != 0)
             {
