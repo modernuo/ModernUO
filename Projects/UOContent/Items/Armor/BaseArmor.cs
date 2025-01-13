@@ -101,7 +101,7 @@ namespace Server.Items
         private string _crafter;
 
         [SerializableFieldSaveFlag(10)]
-        private bool ShouldSerializeCrafter() => _crafter != null;
+        private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
         [SerializableFieldSaveFlag(14)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
