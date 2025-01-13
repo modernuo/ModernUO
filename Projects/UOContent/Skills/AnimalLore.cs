@@ -267,7 +267,7 @@ namespace Server.SkillHandlers
             AddImage(128, 152, 2086);
             AddHtmlLocalized(147, 150, 160, 18, 1049563, 200); // Preferred Foods
 
-            var foodPref = 3000340;
+            var foodPref;
 
             if ((c.FavoriteFood & FoodType.Meat) != 0)
             {
@@ -292,6 +292,10 @@ namespace Server.SkillHandlers
             else if ((c.FavoriteFood & FoodType.Eggs) != 0)
             {
                 foodPref = 1044477; // Eggs
+            }
+            else
+            {
+                foodPref = 3000340; // None
             }
 
             // TODO: Add 1115752 "Blackrock Stew" as a food type
