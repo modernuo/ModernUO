@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text;
 using ModernUO.Serialization;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
+using Server.Text;
 
 namespace Server.Items;
 
@@ -168,6 +171,12 @@ public abstract partial class BaseWand : BaseBashing
 
     public override void OnSingleClick(Mobile from)
     {
+        if (!Core.UOTD)
+        {
+            OnSingleClickPreUOTD(from);
+            return;
+        }
+
         var attrs = new List<EquipInfoAttribute>();
 
         if (DisplayLootType)
@@ -228,6 +237,45 @@ public abstract partial class BaseWand : BaseBashing
         }
 
         from.NetState.SendDisplayEquipmentInfo(Serial, number, Crafter, false, attrs);
+    }
+
+    public void OnSingleClickPreUOTD(Mobile from)
+    {
+        var isMagicItem = _charges > 0;
+        var name = Name;
+        if (name == null)
+        {
+            var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+            name = $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
+        }
+
+        if (isMagicItem && !Identified)
+        {
+            LabelTo(from, $"an unidentified {name}");
+            return;
+        }
+
+        LabelTo(from, isMagicItem ? $"{name} of {WandEffectText}" : name);
+    }
+
+    private string WandEffectText
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _wandEffect switch
+        {
+            WandEffect.Clumsiness       => "clumsiness",
+            WandEffect.Identification   => "identification",
+            WandEffect.Healing          => "healing",
+            WandEffect.Feeblemindedness => "feeblemindedness",
+            WandEffect.Weakness         => "weakness",
+            WandEffect.MagicArrow       => "magic arrow",
+            WandEffect.Harming          => "harming",
+            WandEffect.Fireball         => "fireball",
+            WandEffect.GreaterHealing   => "greater healing",
+            WandEffect.Lightning        => "lightning",
+            WandEffect.ManaDraining     => "mana draining",
+            _                           => null
+        };
     }
 
     public void Cast(Spell spell)
