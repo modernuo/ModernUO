@@ -19,7 +19,11 @@ public abstract partial class FillableContainer : LockableContainer
         }
     }
 
-    public FillableContainer(int itemID) : base(itemID) => Movable = false;
+    public FillableContainer(int itemID) : base(itemID)
+    {
+        Movable = false;
+        ContentType = FillableContentType.None;
+    }
 
     public virtual int MinRespawnMinutes => 60;
     public virtual int MaxRespawnMinutes => 90;
