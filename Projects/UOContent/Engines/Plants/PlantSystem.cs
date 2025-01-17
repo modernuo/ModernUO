@@ -1,7 +1,9 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Items;
 using Server.Misc;
+using Server.Mobiles;
 
 namespace Server.Engines.Plants
 {
@@ -432,7 +434,8 @@ namespace Server.Engines.Plants
             }
         }
 
-        public static void OnLogin(Mobile from)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile from)
         {
             Container cont = from.Backpack;
             if (cont != null)

@@ -1220,6 +1220,10 @@ namespace Server.Mobiles
             }
         }
 
+        [GeneratedEvent(nameof(PlayerLoginEvent))]
+        public static partial void PlayerLoginEvent(PlayerMobile pm);
+
+        [OnEvent(nameof(PlayerLoginEvent))]
         public static void OnLogin(PlayerMobile from)
         {
             if (AccountHandler.LockdownLevel > AccessLevel.Player)

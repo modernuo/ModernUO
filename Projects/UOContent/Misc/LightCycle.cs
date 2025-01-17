@@ -1,5 +1,7 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
 using Server.Items;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server
@@ -55,10 +57,8 @@ namespace Server
             }
         }
 
-        public static void OnLogin(Mobile m)
-        {
-            m.CheckLightLevels(true);
-        }
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm) => pm.CheckLightLevels(true);
 
         public static int ComputeLevelFor(Mobile from)
         {
