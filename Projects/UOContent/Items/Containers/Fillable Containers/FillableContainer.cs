@@ -22,7 +22,7 @@ public abstract partial class FillableContainer : LockableContainer
     public FillableContainer(int itemID) : base(itemID)
     {
         Movable = false;
-        ContentType = FillableContentType.None;
+        _contentType = FillableContentType.None;
     }
 
     public virtual int MinRespawnMinutes => 60;
