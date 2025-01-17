@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 
 namespace Server.Misc
 {
@@ -34,7 +36,8 @@ namespace Server.Misc
             m_MoveHistory = new Dictionary<Mobile, LocationInfo>();
         }
 
-        public static void OnLogin(Mobile from)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile from)
         {
             if (!Enabled)
             {

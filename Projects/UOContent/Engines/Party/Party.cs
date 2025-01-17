@@ -160,7 +160,8 @@ namespace Server.Engines.PartySystem
             }
         }
 
-        public static void OnLogin(Mobile from)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile from)
         {
             var p = Get(from);
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
+using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.Json;
 using Server.Mobiles;
@@ -138,10 +139,11 @@ public static class AntiMacroSystem
         }
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
         // Stop the clear out timer
-        if (_logoutCleanup?.Remove(m, out var timer) == true)
+        if (_logoutCleanup?.Remove(pm, out var timer) == true)
         {
             timer.Stop();
         }

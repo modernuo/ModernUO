@@ -1,4 +1,6 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Spells.Spellweaving
@@ -27,13 +29,14 @@ namespace Server.Spells.Spellweaving
         public virtual int SwingSpeedBonus => 10 + FocusLevel;
         public virtual int SpellDamageBonus => 10 + FocusLevel;
 
-        public static void OnLogin(Mobile m)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm)
         {
-            var context = TransformationSpellHelper.GetContext(m);
+            var context = TransformationSpellHelper.GetContext(pm);
 
             if (context?.Type == typeof(ReaperFormSpell))
             {
-                m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
+                pm.NetState.SendSpeedControl(SpeedControlSetting.Walk);
             }
         }
 

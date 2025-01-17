@@ -1291,13 +1291,9 @@ namespace Server.Engines.ConPVP
             return false;
         }
 
-        public static void OnLogin(Mobile m)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm)
         {
-            if (m is not PlayerMobile pm)
-            {
-                return;
-            }
-
             var dc = pm.DuelContext;
 
             if (dc == null)
