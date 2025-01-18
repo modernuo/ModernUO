@@ -92,6 +92,7 @@ public abstract partial class FillableContainer : LockableContainer
 
     public override void LockPick(Mobile from)
     {
+        base.LockPick(from);
         CheckRespawn();
     }
 
