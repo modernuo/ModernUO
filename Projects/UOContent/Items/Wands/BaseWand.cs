@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using ModernUO.Serialization;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
-using Server.Text;
 
 namespace Server.Items;
 
