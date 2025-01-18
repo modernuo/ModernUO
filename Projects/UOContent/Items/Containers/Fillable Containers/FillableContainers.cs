@@ -6,9 +6,25 @@ namespace Server.Items;
 [SerializationGenerator(0)]
 public partial class LibraryBookcase : FillableContainer
 {
+    public override bool IsLockable => false;
+
     [Constructible]
     public LibraryBookcase() : base(0xA97)
     {
+    }
+
+    protected override int GetSpawnCount()
+    {
+        var max = 5 - GetItemsCount();
+        return max <= 0 ? 0 : Utility.RandomMinMax(1, max);
+    }
+
+    public override void AcquireContent()
+    {
+        if (ContentType == FillableContentType.None)
+        {
+            ContentType = FillableContentType.Library;
+        }
     }
 }
 

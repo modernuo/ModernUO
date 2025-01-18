@@ -81,20 +81,18 @@ public abstract partial class FillableContainer : LockableContainer
     {
         if (_contentType == FillableContentType.None)
         {
-            if (this is LibraryBookcase)
-            {
-                _contentType = FillableContentType.Library;
-            }
-            else
-            {
-                _contentType = FillableContent.Acquire(GetWorldLocation(), Map);
-            }
+            _contentType = FillableContent.Acquire(GetWorldLocation(), Map);
         }
 
         if (_contentType != FillableContentType.None)
         {
             Respawn();
         }
+    }
+
+    public override void LockPick(Mobile from)
+    {
+        CheckRespawn();
     }
 
     public override void OnItemRemoved(Item item)
@@ -124,29 +122,13 @@ public abstract partial class FillableContainer : LockableContainer
 
     public void CheckRespawn()
     {
-        var canSpawn =
-            _contentType != FillableContentType.None &&
-            !Deleted && !Movable && Parent == null && !IsLockedDown && !IsSecure &&
-            (
-                GetItemsCount() <= SpawnThreshold ||
-                IsLockable && !Locked ||
-                IsTrappable && TrapType == TrapType.None
-            );
+        if (_respawnTimer?.Running == true)
+        {
+            return;
+        }
 
-        if (canSpawn)
-        {
-            if (_respawnTimer?.Running != true)
-            {
-                var mins = Utility.RandomMinMax(MinRespawnMinutes, MaxRespawnMinutes);
-                var delay = TimeSpan.FromMinutes(mins);
-                _respawnTimer = Timer.DelayCall(delay, Respawn);
-            }
-        }
-        else
-        {
-            _respawnTimer?.Stop();
-            _respawnTimer = null;
-        }
+        var delay = TimeSpan.FromMinutes(Utility.RandomMinMax(MinRespawnMinutes, MaxRespawnMinutes));
+        _respawnTimer = Timer.DelayCall(delay, Respawn);
     }
 
     public void Respawn()
@@ -186,8 +168,6 @@ public abstract partial class FillableContainer : LockableContainer
             TrapPower = 0;
             TrapLevel = 0;
         }
-
-        CheckRespawn();
     }
 
     protected virtual int GetSpawnCount()
