@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
+using Server.Mobiles;
 
 namespace Server.Misc
 {
@@ -19,9 +21,10 @@ namespace Server.Misc
             m_Givers.Add(giver);
         }
 
-        public static void OnLogin(Mobile m)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm)
         {
-            if (m.Account is not Account acct)
+            if (pm.Account is not Account acct)
             {
                 return;
             }
@@ -47,7 +50,7 @@ namespace Server.Misc
                     continue; // already got one
                 }
 
-                giver.DelayGiveGift(TimeSpan.FromSeconds(5.0), m);
+                giver.DelayGiveGift(TimeSpan.FromSeconds(5.0), pm);
             }
 
             acct.LastLogin = now;

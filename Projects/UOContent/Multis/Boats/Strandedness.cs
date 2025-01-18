@@ -1,3 +1,6 @@
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
+
 namespace Server.Misc
 {
     public static class Strandedness
@@ -112,7 +115,8 @@ namespace Server.Misc
             return false;
         }
 
-        public static void OnLogin(Mobile from)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile from)
         {
             if (!IsStranded(from))
             {

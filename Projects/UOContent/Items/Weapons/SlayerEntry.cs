@@ -88,6 +88,20 @@ namespace Server.Items
             }
         }
 
+        public string SlayerText(out bool articleAn)
+        {
+            if (Name == SlayerName.None)
+            {
+                articleAn = false;
+                return null;
+            }
+
+            articleAn = Name is SlayerName.OrcSlaying or SlayerName.OgreTrashing or SlayerName.Exorcism or SlayerName.Ophidian
+                or SlayerName.ArachnidDoom or SlayerName.ElementalBan or SlayerName.ElementalHealth or SlayerName.EarthShatter;
+
+            return Localization.GetText(Title)?.ToLowerInvariant();
+        }
+
         public bool Slays(Mobile m)
         {
             var t = m.GetType();

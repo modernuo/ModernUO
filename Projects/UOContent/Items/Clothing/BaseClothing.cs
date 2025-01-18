@@ -95,7 +95,7 @@ namespace Server.Items
         private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
-        private bool ShouldSerializeCrafter() => _crafter != null;
+        private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
         [InvalidateProperties]
         [SerializableField(9)]
@@ -907,8 +907,13 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
-            var attrs = new List<EquipInfoAttribute>();
+            if (!Core.UOTD)
+            {
+                OnSingleClickPreUOTD(from);
+                return;
+            }
 
+            var attrs = new List<EquipInfoAttribute>();
             AddEquipInfoAttributes(from, attrs);
 
             int number;
@@ -929,6 +934,30 @@ namespace Server.Items
             }
 
             from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
+        }
+
+        public void OnSingleClickPreUOTD(Mobile from)
+        {
+            var name = Name;
+
+            if (name == null)
+            {
+                var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+                name = $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
+            }
+
+            if (Crafter == null)
+            {
+                LabelTo(from, Quality == ClothingQuality.Exceptional ? $"{name} of exceptional quality" : name);
+                return;
+            }
+
+            LabelTo(
+                from,
+                Quality == ClothingQuality.Exceptional
+                    ? $"{name} crafted with exceptional quality by {Crafter}"
+                    : $"{name} crafted by {Crafter}"
+            );
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)

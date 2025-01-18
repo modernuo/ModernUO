@@ -80,9 +80,10 @@ public class PlayerMurderSystem : GenericPersistence
         UpdateMurderContext(context);
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
-        if (m is not PlayerMobile pm || !GetMurderContext(pm, out var context))
+        if (!GetMurderContext(pm, out var context))
         {
             return;
         }

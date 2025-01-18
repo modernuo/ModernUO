@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
@@ -15,10 +16,8 @@ namespace Server.Commands
             CommandSystem.Register("VisClear", AccessLevel.Counselor, VisClear_OnCommand);
         }
 
-        public static void OnLogin(Mobile m)
-        {
-            (m as PlayerMobile)?.VisibilityList.Clear();
-        }
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm) => pm.VisibilityList.Clear();
 
         [Usage("Vis")]
         [Description("Adds or removes a targeted player from your visibility list.  Anyone on your visibility list will be able to see you at all times, even when you're hidden.")]

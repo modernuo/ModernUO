@@ -1,3 +1,4 @@
+using ModernUO.CodeGeneratedEvents;
 using Server.Mobiles;
 using Server.Regions;
 
@@ -14,12 +15,13 @@ namespace Server.Engines.Doom
             Register();
         }
 
-        public static void OnLogin(Mobile m)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm)
         {
             var rect = LeverPuzzleController.lr_Rect;
-            if (m.X >= rect.X && m.X <= rect.X + 10 && m.Y >= rect.Y && m.Y <= rect.Y + 10 && m.Map == Map.Internal)
+            if (pm.X >= rect.X && pm.X <= rect.X + 10 && pm.Y >= rect.Y && pm.Y <= rect.Y + 10 && pm.Map == Map.Internal)
             {
-                Timer kick = new LeverPuzzleController.LampRoomKickTimer(m);
+                Timer kick = new LeverPuzzleController.LampRoomKickTimer(pm);
                 kick.Start();
             }
         }
