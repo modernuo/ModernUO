@@ -1220,6 +1220,10 @@ namespace Server.Mobiles
             }
         }
 
+        [GeneratedEvent(nameof(PlayerLoginEvent))]
+        public static partial void PlayerLoginEvent(PlayerMobile pm);
+
+        [OnEvent(nameof(PlayerLoginEvent))]
         public static void OnLogin(PlayerMobile from)
         {
             if (AccountHandler.LockdownLevel > AccessLevel.Player)
@@ -4474,20 +4478,39 @@ namespace Server.Mobiles
 
         public void SendAddBuffPacket(BuffInfo buffInfo)
         {
-            if (buffInfo == null)
+            if (buffInfo == null || NetState?.BuffIcon != true)
             {
                 return;
             }
 
+            // Synchronize the buff icon as close to _on the second_ as we can.
+            var msecs = buffInfo.TimeLength.Milliseconds;
+            if (msecs >= 8)
+            {
+                Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), () =>
+                {
+                    // They are still online, we still have the buff icon in the table, and it is the same buff icon
+                    if (NetState != null && m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
+                    {
+                        SendAddBuffPacket(buffInfo, (long)buffInfo.TimeLength.TotalMilliseconds - msecs);
+                    }
+                });
+            }
+            else
+            {
+                SendAddBuffPacket(buffInfo, (long)buffInfo.TimeLength.TotalMilliseconds);
+            }
+        }
+
+        private void SendAddBuffPacket(BuffInfo buffInfo, long ticks)
+        {
             NetState.SendAddBuffPacket(
                 Serial,
                 buffInfo.ID,
                 buffInfo.TitleCliloc,
                 buffInfo.SecondaryCliloc,
                 buffInfo.Args,
-                buffInfo.TimeStart == 0
-                    ? 0
-                    : Math.Max(buffInfo.TimeStart + (long)buffInfo.TimeLength.TotalMilliseconds - Core.TickCount, 0)
+                ticks
             );
         }
 
@@ -4512,29 +4535,9 @@ namespace Server.Mobiles
             RemoveBuff(b); // Check & subsequently remove the old one.
 
             m_BuffTable ??= new Dictionary<BuffIcon, BuffInfo>();
-
             m_BuffTable.Add(b.ID, b);
 
-            if (NetState?.BuffIcon == true)
-            {
-                // Synchronize the buff icon as close to _on the second_ as we can.
-                var msecs = b.TimeLength.Milliseconds;
-                if (msecs >= 8)
-                {
-                    Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), (buffInfo, pm) =>
-                    {
-                        // They are still online, we still have the buff icon in the table, and it is the same buff icon
-                        if (pm.NetState != null && pm.m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
-                        {
-                            pm.SendAddBuffPacket(buffInfo);
-                        }
-                    }, b, this);
-                }
-                else
-                {
-                    SendAddBuffPacket(b);
-                }
-            }
+            SendAddBuffPacket(b);
         }
 
         public void RemoveBuff(BuffInfo b)

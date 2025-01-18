@@ -50,7 +50,7 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
     private string _crafter;
 
     [SerializableFieldSaveFlag(4)]
-    private bool ShouldSerializeCrafter() => _crafter != null;
+    private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
     [InvalidateProperties]
     [SerializableField(5)]

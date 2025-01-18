@@ -375,7 +375,6 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             // Skip this entry
             if (t == null)
             {
-                dataReader.Seek(entry.Length, SeekOrigin.Current);
                 continue;
             }
 
@@ -383,7 +382,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
             try
             {
-                var pos = dataReader.Position;
+                dataReader.Seek(entry.Position, SeekOrigin.Begin);
+                var pos = entry.Position;
+
                 t.Deserialize(dataReader);
                 var lengthDeserialized = dataReader.Position - pos;
 

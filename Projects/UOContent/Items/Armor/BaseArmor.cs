@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
 using Server.Network;
+using Server.Text;
 using AMA = Server.Items.ArmorMeditationAllowance;
 using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
     [SerializationGenerator(9, false)]
-    public abstract partial class BaseArmor : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem
+    public abstract partial class BaseArmor
+        : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IIdentifiable
     {
         [SerializedIgnoreDupe]
         [SerializableField(0, setter: "private")]
@@ -101,7 +104,7 @@ namespace Server.Items
         private string _crafter;
 
         [SerializableFieldSaveFlag(10)]
-        private bool ShouldSerializeCrafter() => _crafter != null;
+        private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
         [SerializableFieldSaveFlag(14)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
@@ -559,6 +562,7 @@ namespace Server.Items
 
             Resource = CraftResources.GetFromType(resourceType);
             PlayerConstructed = true;
+            Identified = true;
 
             var context = craftSystem.GetContext(from);
 
@@ -1451,6 +1455,12 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
+            if (!Core.UOTD)
+            {
+                OnSingleClickPreUOTD(from);
+                return;
+            }
+
             var attrs = new List<EquipInfoAttribute>();
 
             if (DisplayLootType)
@@ -1482,13 +1492,12 @@ namespace Server.Items
                     attrs.Add(new EquipInfoAttribute(1038000 + (int)_durability));
                 }
 
-                if (_protectionLevel > ArmorProtectionLevel.Regular && _protectionLevel <= ArmorProtectionLevel.Invulnerability)
+                if (_protectionLevel != ArmorProtectionLevel.Regular)
                 {
                     attrs.Add(new EquipInfoAttribute(1038005 + (int)_protectionLevel));
                 }
             }
-            else if (_durability != ArmorDurabilityLevel.Regular || _protectionLevel > ArmorProtectionLevel.Regular &&
-                _protectionLevel <= ArmorProtectionLevel.Invulnerability)
+            else if (_durability != ArmorDurabilityLevel.Regular || _protectionLevel != ArmorProtectionLevel.Regular)
             {
                 attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
             }
@@ -1511,6 +1520,100 @@ namespace Server.Items
             }
 
             from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
+        }
+
+        public void OnSingleClickPreUOTD(Mobile from)
+        {
+            var isMagicItem = _durability != ArmorDurabilityLevel.Regular ||
+                              _protectionLevel != ArmorProtectionLevel.Regular;
+
+            if (isMagicItem && !_identified)
+            {
+                LabelTo(from, $"an unidentified {Name ?? Localization.GetText(LabelNumber).ToLowerInvariant()}");
+                return;
+            }
+
+            var name = Name;
+            var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+
+            if (isMagicItem)
+            {
+                var builder = ValueStringBuilder.Create(128);
+
+                var durabilityText = DurabilityText(out var articleAnDurability);
+                if (durabilityText != null)
+                {
+                    builder.AppendSpaceWithArticle(durabilityText, articleAnDurability);
+                }
+
+                if (name == null)
+                {
+                    builder.AppendSpaceWithArticle(Localization.GetText(LabelNumber).ToLowerInvariant(), articleAnName);
+                }
+                else if (builder.Length != 0)
+                {
+                    builder.Append($" {name}");
+                }
+                else
+                {
+                    builder.Append(name);
+                }
+
+                var protectionText = ProtectionText;
+                if (protectionText != null)
+                {
+                    builder.Append($" of {protectionText}");
+                }
+
+                LabelTo(from, builder.ToString());
+                builder.Dispose();
+                return;
+            }
+
+            name ??= $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
+
+            if (Crafter == null)
+            {
+                LabelTo(from, Quality == ArmorQuality.Exceptional ? $"{name} of exceptional quality" : name);
+                return;
+            }
+
+            LabelTo(
+                from,
+                Quality == ArmorQuality.Exceptional
+                    ? $"{name} crafted with exceptional quality by {Crafter}"
+                    : $"{name} crafted by {Crafter}"
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private string DurabilityText(out bool articleAn)
+        {
+            articleAn = _durability is ArmorDurabilityLevel.Indestructible;
+            return _durability switch
+            {
+                ArmorDurabilityLevel.Durable        => "durable",
+                ArmorDurabilityLevel.Substantial    => "substantial",
+                ArmorDurabilityLevel.Massive        => "massive",
+                ArmorDurabilityLevel.Fortified      => "fortified",
+                ArmorDurabilityLevel.Indestructible => "indestructable",
+                _                                   => null
+            };
+        }
+
+        private string ProtectionText
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get =>
+                _protectionLevel switch
+                {
+                    ArmorProtectionLevel.Defense         => "defense",
+                    ArmorProtectionLevel.Guarding        => "guarding",
+                    ArmorProtectionLevel.Hardening       => "hardening",
+                    ArmorProtectionLevel.Fortification   => "fortification",
+                    ArmorProtectionLevel.Invulnerability => "invulnerability",
+                    _                                    => null
+                };
         }
 
         [Flags]

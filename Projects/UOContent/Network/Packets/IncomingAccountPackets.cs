@@ -17,23 +17,9 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using Server.Accounting;
-using Server.Assistants;
-using Server.Commands;
 using Server.Engines.CharacterCreation;
-using Server.Engines.ConPVP;
-using Server.Engines.Doom;
-using Server.Engines.PartySystem;
-using Server.Engines.Plants;
-using Server.Engines.PlayerMurderSystem;
-using Server.Engines.VeteranRewards;
-using Server.Factions;
-using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Regions;
-using Server.Spells.Ninjitsu;
-using Server.Spells.Spellweaving;
 
 namespace Server.Network;
 
@@ -314,34 +300,10 @@ public static class IncomingAccountPackets
 
         state.SendPlayMusic(m.Region.Music);
 
-        StaminaSystem.OnLogin(m);
-        DuelContext.OnLogin(m);
-        LightCycle.OnLogin(m);
-        LoginStats.OnLogin(m);
-        AnimalForm.OnLogin(m);
-        BaseBeverage.OnLogin(m);
-        AntiMacroSystem.OnLogin(m);
-        Strandedness.OnLogin(m);
-        ShardPoller.OnLogin(m);
-        ReaperFormSpell.OnLogin(m);
-        Party.OnLogin(m);
-        PlantSystem.OnLogin(m);
-        LampRoomRegion.OnLogin(m);
-        HouseRegion.OnLogin(m);
-        Faction.OnLogin(m);
-        PlayerMurderSystem.OnLogin(m);
-        AssistantHandler.OnLogin(m);
-        VisibilityList.OnLogin(m);
-
         if (m is PlayerMobile pm)
         {
-            PlayerMobile.OnLogin(pm);
+            PlayerMobile.PlayerLoginEvent(pm);
         }
-        Account.OnLogin(m);
-        GiftGiving.OnLogin(m);
-        PreventInaccess.OnLogin(m);
-        TwistedWealdDesertRegion.OnLogin(m);
-        RewardSystem.OnLogin(m);
     }
 
     private static int GenerateAuthID(this NetState state)

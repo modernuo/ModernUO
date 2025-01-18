@@ -12,6 +12,7 @@ using Server.Misc;
 using Server.Multis;
 using Server.Network;
 using Server.Prompts;
+using Server.Saves;
 using Server.Text;
 
 namespace Server.Gumps
@@ -295,6 +296,9 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 230, GetButtonID(3, 203), "Shutdown & Restart (With Save)");
                         AddButtonLabeled(20, 250, GetButtonID(3, 204), "Shutdown & Restart (Without Save)");
+
+                        AddButtonLabeled(20, 270, GetButtonID(3, 205), "Shutdown (With 15m Delay & Save)");
+
                         /*}
                         else
                         {
@@ -2147,6 +2151,12 @@ namespace Server.Gumps
                                     Shutdown(true, false);
                                     break;
                                 }
+                            case 205: // shutdown with delay and save
+                                {
+                                    var t = new ShutdownTimer(this);
+                                    t.Start();
+                                    break;
+                                }
                             case 210:
                             case 211:
                                 {
@@ -3927,32 +3937,32 @@ namespace Server.Gumps
             var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
             if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
             {
-                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Malas))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Tokuno))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Trammel))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Felucca))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/**.json");
             }
         }
 
@@ -4250,6 +4260,31 @@ namespace Server.Gumps
             public override string Content { get; }
 
             public AdminNoticeGump(string content, Action callback) : base(callback) => Content = content;
+        }
+
+        public class ShutdownTimer : Timer
+        {
+            private readonly AdminGump _adminGump;
+
+            public ShutdownTimer(AdminGump gump) : base(TimeSpan.Zero, TimeSpan.Zero, 8) =>
+                _adminGump = gump;
+
+            protected override void OnTick()
+            {
+                if (Index >= 7)
+                {
+                    AutoSave.SavesEnabled = false;
+                    _adminGump.Shutdown(false, true);
+                    return;
+                }
+
+                ReadOnlySpan<int> times = [15, 10, 5, 4, 3, 2, 1, 0];
+                var time = times[Index];
+                _adminGump.m_From.SendMessage(
+                    $"The shard will shutdown in {time} minute{(time == 1 ? "s" : "")} for maintenance."
+                );
+                Interval = TimeSpan.FromMinutes(time - times[Index + 1]);
+            }
         }
     }
 }

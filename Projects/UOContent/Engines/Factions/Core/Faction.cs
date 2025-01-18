@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Commands.Generic;
 using Server.Engines.ConPVP;
@@ -1259,7 +1261,9 @@ public abstract class Faction : IComparable<Faction>
         }
     }
 
-    public static void OnLogin(Mobile m) => CheckLeaveTimer(m);
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void OnLogin(PlayerMobile pm) => CheckLeaveTimer(pm);
 
     public static void WriteReference(IGenericWriter writer, Faction fact)
     {
