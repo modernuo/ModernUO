@@ -48,8 +48,6 @@ public enum AIType
     AI_Healer,
     AI_Vendor,
     AI_Mage,
-    AI_Mage_Fire, // REMOVE ME BEFORE PR
-    AI_Mage_Energy, // REMOVE ME BEFORE PR
     AI_Berserk,
     AI_Predator,
     AI_Thief
