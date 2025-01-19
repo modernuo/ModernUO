@@ -97,7 +97,7 @@ public interface IGoldAccount
 
 public interface IAccount : ISerializable, IGoldAccount, IComparable<IAccount>
 {
-    string Username { get; set; }
+    string Username { get; }
     string Email { get; set; }
     AccessLevel AccessLevel { get; set; }
 
@@ -107,6 +107,7 @@ public interface IAccount : ISerializable, IGoldAccount, IComparable<IAccount>
     Mobile this[int index] { get; set; }
 
     void Delete();
+    bool TrySetUsername(string username);
     void SetPassword(string password);
     bool CheckPassword(string password);
 }
