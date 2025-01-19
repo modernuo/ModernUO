@@ -2726,23 +2726,16 @@ public abstract class BaseAI
                      m_Mobile.GetFactionAllegiance(m) == BaseCreature.Allegiance.Enemy ||
                      m_Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
 
-        if (!bValid)
+        if (!bValid && acqType == FightMode.Evil)
         {
-            bValid = acqType switch
-            {
-                FightMode.Evil => bc?.Controlled == true && bc?.ControlMaster != null 
-                    ? bc.ControlMaster.Karma < 0 
-                    : m.Karma < 0,
-                FightMode.Good => bc?.Controlled == true && bc?.ControlMaster != null 
-                    ? bc.ControlMaster.Karma > 0 
-                    : m.Karma > 0,
-                _ => false
-            };
+            bValid = bc?.Controlled == true && bc?.ControlMaster != null 
+                ? bc.ControlMaster.Karma < 0 
+                : m.Karma < 0;
         }
 
         return !bValid;
     }
-
+    
     private bool IsHostile(Mobile from)
     {
         return m_Mobile.Combatant == from || 
