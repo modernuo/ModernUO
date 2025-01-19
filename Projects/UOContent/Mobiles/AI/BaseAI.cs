@@ -2717,7 +2717,7 @@ public abstract class BaseAI
     
     private bool IsInvalidFightModeTarget(Mobile m, FightMode acqType, BaseCreature bc)
     {
-        if (acqType is not (FightMode.Aggressor or FightMode.Evil or FightMode.Good))
+        if (acqType is not (FightMode.Aggressor or FightMode.Evil))
         {
             return false;
         }
