@@ -727,13 +727,14 @@ public abstract class BaseAI
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
         m_Mobile.FocusMob = null;
-
+        m_Mobile.SetCurrentSpeedToPassive();
     }
     
     private void HandleCombatAction()
     {
         m_Mobile.Warmode = true;
         m_Mobile.FocusMob = null;
+        m_Mobile.SetCurrentSpeedToActive();
     }
     
     private void HandleGuardAction()
@@ -741,24 +742,26 @@ public abstract class BaseAI
         m_Mobile.Warmode = true;
         m_Mobile.FocusMob = null;
         m_Mobile.Combatant = null;
+        m_Mobile.SetCurrentSpeedToActive();
     }
     
     private void HandleFleeAction()
     {
         m_Mobile.Warmode = true;
         m_Mobile.FocusMob = null;
-
+        m_Mobile.SetCurrentSpeedToActive();
     }
     
     private void HandleInteractAction()
     {
         m_Mobile.Warmode = false;
-
+        m_Mobile.SetCurrentSpeedToPassive();
     }
     
     private void HandleBackoffAction()
     {
         m_Mobile.Warmode = false;
+        m_Mobile.SetCurrentSpeedToPassive();
     }
 
     public virtual bool OnAtWayPoint() => true;
