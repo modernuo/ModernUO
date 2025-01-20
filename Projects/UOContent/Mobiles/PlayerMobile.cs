@@ -1591,10 +1591,8 @@ namespace Server.Mobiles
         {
             base.OnHiddenChanged();
 
-            RemoveBuff(
-                BuffIcon
-                    .Invisibility
-            ); // Always remove, default to the hiding icon EXCEPT in the invis spell where it's explicitly set
+            // Always remove, default to the hiding icon EXCEPT in the invis spell where it's explicitly set
+            RemoveBuff(BuffIcon.Invisibility);
 
             if (!Hidden)
             {
@@ -1602,10 +1600,8 @@ namespace Server.Mobiles
             }
             else // if (!InvisibilitySpell.HasTimer( this ))
             {
-                BuffInfo.AddBuff(
-                    this,
-                    new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655)
-                ); // Hidden/Stealthing & You Are Hidden
+                // Hidden/Stealthing & You Are Hidden
+                BuffInfo.AddBuff(this, new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
             }
         }
 
@@ -2654,7 +2650,7 @@ namespace Server.Mobiles
 
                 while (queue.Count > 0)
                 {
-                    RemoveBuff(queue.Dequeue());
+                    BuffInfo.RemoveBuff(this, queue.Dequeue());
                 }
             }
 
@@ -4538,16 +4534,6 @@ namespace Server.Mobiles
             m_BuffTable.Add(b.ID, b);
 
             SendAddBuffPacket(b);
-        }
-
-        public void RemoveBuff(BuffInfo b)
-        {
-            if (b == null)
-            {
-                return;
-            }
-
-            RemoveBuff(b.ID);
         }
 
         public void RemoveBuff(BuffIcon b)
