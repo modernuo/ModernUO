@@ -1044,9 +1044,14 @@ public abstract class BaseAI
 
     public virtual bool DoOrderNone()
     {
-        DebugSay("I currently have no orders.");
+        if (m_Mobile.Debug)
+        {
+            m_Mobile.DebugSay("I currently have no orders.");
+        }
+    
         WalkRandomInHome(3, 2, 1);
         UpdateCombatantState();
+    
         return true;
     }
 
