@@ -1383,8 +1383,10 @@ public abstract class BaseAI
         return true;
     }
     
-    private bool IsInvalidUnfriendRequest(Mobile from, Mobile to) =>
-        from?.Deleted != false || to?.Deleted != false || from == to || !to.Player;
+    private bool IsInvalidUnfriendRequest(Mobile from, Mobile to)
+    {
+        return from?.Deleted != false || to?.Deleted != false || from == to || !to.Player;
+    }
     
     private void HandleUnfriendRequest(Mobile from, Mobile to)
     {
