@@ -1091,7 +1091,11 @@ public abstract class BaseAI
 
     private void HandleLostMaster()
     {
-        DebugSay("Master is missing. Staying put.");
+        if (m_Mobile.Debug)
+        {
+            m_Mobile.DebugSay("Master is missing. Staying put.");
+        }
+    
         m_Mobile.ControlTarget = null;
         m_Mobile.ControlOrder = OrderType.None;
     }
