@@ -18,6 +18,7 @@ namespace Server.SkillHandlers
     {
         public static readonly bool ClassicMode = false;
         public static readonly bool SuspendOnMurder = false;
+        private const int MaxWeightToSteal = 10;
 
         public static void Initialize()
         {
@@ -80,6 +81,7 @@ namespace Server.SkillHandlers
 
                 var root = toSteal.RootParent;
                 var mobRoot = root as Mobile;
+                var rootIsPlayer = mobRoot?.Player == true;
 
                 StealableArtifacts.StealableInstance si = toSteal.Parent == null || !toSteal.Movable
                     ? StealableArtifacts.GetStealableInstance(toSteal)
@@ -93,16 +95,23 @@ namespace Server.SkillHandlers
                 {
                     m_Thief.SendMessage("You may not steal in this area.");
                 }
-                else if (mobRoot?.Player == true && !IsInGuild(m_Thief))
+                else if ((m_Thief as PlayerMobile)?.Young == true && (rootIsPlayer || mobRoot is BaseCreature))
+                {
+                    m_Thief.SendLocalizedMessage(502700); // You cannot steal from people or monsters right now.  Practice on chests and barrels.
+                }
+                else if (rootIsPlayer && !IsInGuild(m_Thief))
                 {
                     m_Thief.SendLocalizedMessage(1005596); // You must be in the thieves guild to steal from other players.
                 }
-                else if (SuspendOnMurder && mobRoot?.Player == true && IsInGuild(m_Thief) &&
-                         m_Thief.Kills > 0)
+                else if (SuspendOnMurder && rootIsPlayer && IsInGuild(m_Thief) && m_Thief.Kills > 0)
                 {
                     m_Thief.SendLocalizedMessage(502706); // You are currently suspended from the thieves guild.
                 }
-                else if (root is BaseVendor vendor && vendor.IsInvulnerable)
+                else if ((mobRoot as PlayerMobile)?.Young == true)
+                {
+                    m_Thief.SendLocalizedMessage(502699); // You cannot steal from the Young.
+                }
+                else if ((root as BaseVendor)?.IsInvulnerable == true)
                 {
                     m_Thief.SendLocalizedMessage(1005598); // You can't steal from shopkeepers.
                 }
@@ -113,10 +122,6 @@ namespace Server.SkillHandlers
                 else if (!m_Thief.CanSee(toSteal))
                 {
                     m_Thief.SendLocalizedMessage(500237); // Target can not be seen.
-                }
-                else if (m_Thief.Backpack?.CheckHold(m_Thief, toSteal, false, true) != true)
-                {
-                    m_Thief.SendLocalizedMessage(1048147); // Your backpack can't hold anything else.
                 }
                 else if (toSteal is Sigil sig)
                 {
@@ -206,6 +211,10 @@ namespace Server.SkillHandlers
                         m_Thief.SendLocalizedMessage(1005588); // You must join a faction to do that
                     }
                 }
+                else if (m_Thief.Backpack?.CheckHold(m_Thief, toSteal, false, true) != true)
+                {
+                    m_Thief.SendLocalizedMessage(1048147); // Your backpack can't hold anything else.
+                }
                 else if (si == null && (toSteal.Parent == null || !toSteal.Movable))
                 {
                     m_Thief.SendLocalizedMessage(502710); // You can't steal that!
@@ -250,9 +259,10 @@ namespace Server.SkillHandlers
                 {
                     var w = toSteal.Weight + toSteal.TotalWeight;
 
-                    if (w > 10)
+                    if (w > MaxWeightToSteal)
                     {
-                        m_Thief.SendMessage("That is too heavy to steal.");
+                        // This item is too heavy to steal from someone's backpack.
+                        m_Thief.SendLocalizedMessage(502722);
                     }
                     else
                     {
