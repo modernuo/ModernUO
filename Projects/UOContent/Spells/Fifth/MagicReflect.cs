@@ -98,7 +98,10 @@ namespace Server.Spells.Fifth
 
                         var buffFormat = $"{physiMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}";
 
-                        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
+                        BuffInfo.AddBuff(
+                            Caster,
+                            new BuffInfo(BuffIcon.MagicReflection, 1075817, args: buffFormat, retainThroughDeath: true)
+                        );
                     }
                 }
             }

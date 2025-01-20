@@ -41,7 +41,7 @@ namespace Server.Spells.First
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
 
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.FeebleMind, 1075833, length, m, percentage.ToString()));
+                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.FeebleMind, 1075833, length, percentage.ToString()));
 
                 HarmfulSpell(m);
             }

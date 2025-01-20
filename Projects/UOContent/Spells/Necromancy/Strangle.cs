@@ -96,7 +96,7 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
             var maxDamage = ((int)power + 1) * 3;
             var args = $"{minDamage}\t{maxDamage}";
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, duration, m, args));
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, duration, args));
         }
     }
 

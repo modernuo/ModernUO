@@ -131,7 +131,7 @@ public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
         {
             BuffInfo.AddBuff(
                 _target,
-                new BuffInfo(BuffIcon.SpellPlague, 1031690, 1080167, TimeSpan.FromSeconds(8.5), _target)
+                new BuffInfo(BuffIcon.SpellPlague, 1031690, 1080167, TimeSpan.FromSeconds(8.5))
             );
 
             _nextExplosion = Core.Now + TimeSpan.FromSeconds(1);

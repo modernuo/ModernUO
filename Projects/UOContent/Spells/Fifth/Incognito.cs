@@ -114,7 +114,7 @@ namespace Server.Spells.Fifth
                     Timer.StartTimer(duration, () => EndIncognito(Caster), out var timerToken);
                     _table[Caster] = timerToken;
 
-                    BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, duration, Caster));
+                    BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, duration));
                 }
                 else
                 {

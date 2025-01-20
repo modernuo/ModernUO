@@ -69,13 +69,20 @@ public class Confidence : SamuraiSpell
         if (Core.HS)
         {
             var bushido = m.Skills.Bushido.Fixed;
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Confidence, 1060596, 1153809, TimeSpan.FromSeconds(30), m,
-                $"{bushido / 120}\t{bushido / 50}\t{"100"}"
-            ));
+            BuffInfo.AddBuff(
+                m,
+                new BuffInfo(
+                    BuffIcon.Confidence,
+                    1060596,
+                    1153809,
+                    TimeSpan.FromSeconds(30),
+                    $"{bushido / 120}\t{bushido / 50}\t{"100"}"
+                )
+            );
         }
         else
         {
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Confidence, 1060596, TimeSpan.FromSeconds(30), m));
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Confidence, 1060596, TimeSpan.FromSeconds(30)));
         }
     }
 

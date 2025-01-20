@@ -34,7 +34,7 @@ namespace Server.Spells.Second
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
 
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Agility, 1075841, length, m, percentage.ToString()));
+                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Agility, 1075841, length, percentage.ToString()));
             }
         }
 

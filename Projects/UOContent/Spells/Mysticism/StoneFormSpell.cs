@@ -124,8 +124,7 @@ namespace Server.Spells.Mysticism
                             BuffIcon.StoneForm,
                             1080145,
                             1080146,
-                            $"-10\t-2\t{offset}\t{resistCap}\t{damageBonus}",
-                            false
+                            args: $"-10\t-2\t{offset}\t{resistCap}\t{damageBonus}"
                         )
                     );
                 }

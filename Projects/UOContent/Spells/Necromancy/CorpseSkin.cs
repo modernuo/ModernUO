@@ -80,7 +80,7 @@ public class CorpseSkinSpell : NecromancerSpell, ITargetingSpell<Mobile>
             timer = new ExpireTimer(m, mods, duration);
             timer.Start();
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.CorpseSkin, 1075663, duration, m));
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.CorpseSkin, 1075663, duration));
 
             _table[m] = timer;
 

@@ -61,7 +61,7 @@ namespace Server.Spells.Spellweaving
 
                     BuffInfo.AddBuff(
                         m,
-                        new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, TimeSpan.FromSeconds(duration), m, hitsPerRound.ToString())
+                        new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, TimeSpan.FromSeconds(duration), hitsPerRound.ToString())
                     );
                 }
             }

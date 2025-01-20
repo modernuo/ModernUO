@@ -4476,22 +4476,24 @@ namespace Server.Mobiles
                 return;
             }
 
-            // Synchronize the buff icon as close to _on the second_ as we can.
-            var msecs = buffInfo.TimeLength.Milliseconds;
-            if (msecs >= 8)
+            var duration = Utility.Max(buffInfo.Duration - (Core.Now - buffInfo.StartTime), TimeSpan.Zero).TotalSeconds;
+            var rounded = Math.Round(duration);
+            var offset = duration - rounded;
+            if (offset > 0)
             {
-                Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), () =>
-                {
-                    // They are still online, we still have the buff icon in the table, and it is the same buff icon
-                    if (NetState != null && m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
+                Timer.DelayCall(TimeSpan.FromSeconds(offset), () =>
                     {
-                        SendAddBuffPacket(buffInfo, (long)buffInfo.TimeLength.TotalMilliseconds - msecs);
+                        // They are still online, we still have the buff icon in the table, and it is the same buff icon
+                        if (NetState != null && m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
+                        {
+                            SendAddBuffPacket(buffInfo, (long)rounded);
+                        }
                     }
-                });
+                );
             }
-            else
+            else // Round up, will be removed a little bit early by the server
             {
-                SendAddBuffPacket(buffInfo, (long)buffInfo.TimeLength.TotalMilliseconds);
+                SendAddBuffPacket(buffInfo, (long)rounded);
             }
         }
 
@@ -4526,6 +4528,7 @@ namespace Server.Mobiles
             }
 
             BuffInfo.RemoveBuff(this, b); // Check, stop old timer, & subsequently remove the old one.
+            b.StartTimer(this);
 
             m_BuffTable ??= new Dictionary<BuffIcon, BuffInfo>();
             m_BuffTable.Add(b.ID, b);

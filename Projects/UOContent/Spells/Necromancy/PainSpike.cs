@@ -70,7 +70,7 @@ public class PainSpikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
                 buffTime = timer.Next - Core.Now;
             }
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, m, Convert.ToString((int)damage)));
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, Convert.ToString((int)damage)));
 
             // TODO: Find a better way to do this
             StaminaSystem.DFA = DFAlgorithm.PainSpike;

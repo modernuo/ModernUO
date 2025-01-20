@@ -101,7 +101,7 @@ public class MindRotSpell : NecromancerSpell, ITargetingSpell<Mobile>
             timer.Start();
             _table[target] = timer;
 
-            BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
+            BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration));
             target.SendLocalizedMessage(1074384);
         }
     }

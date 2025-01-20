@@ -49,7 +49,6 @@ public class HonorableExecution : SamuraiMove
                     1060595,
                     1153807,
                     TimeSpan.FromSeconds(20.0),
-                    attacker,
                     $"{swingBonus}"
                 )
             );
@@ -83,7 +82,6 @@ public class HonorableExecution : SamuraiMove
                         1060595,
                         1153808,
                         TimeSpan.FromSeconds(7.0),
-                        attacker,
                         $"{resSpells}\t{40}\t{40}\t{40}\t{40}\t{40}"
                     )
                 );
@@ -92,7 +90,7 @@ public class HonorableExecution : SamuraiMove
             {
                 BuffInfo.AddBuff(
                     attacker,
-                    new BuffInfo(BuffIcon.HonorableExecution, 1060595, TimeSpan.FromSeconds(7.0), attacker)
+                    new BuffInfo(BuffIcon.HonorableExecution, 1060595, TimeSpan.FromSeconds(7.0))
                 );
             }
         }

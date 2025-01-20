@@ -11,9 +11,7 @@ namespace Server.Network
                 info.TitleCliloc,
                 info.SecondaryCliloc,
                 info.Args,
-                info.TimeStart != 0 ?
-                    TimeSpan.FromMilliseconds(info.TimeStart + (long)info.TimeLength.TotalMilliseconds - Core.TickCount) :
-                    TimeSpan.Zero
+                info.Duration
             )
         {
         }

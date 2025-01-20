@@ -69,7 +69,7 @@ namespace Server.Items
 
                 pack.DropItem(toDisarm);
 
-                BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.NoRearm, 1075637, BlockEquipDuration, defender));
+                BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.NoRearm, 1075637, BlockEquipDuration));
 
                 BaseWeapon.BlockEquip(defender, BlockEquipDuration);
             }

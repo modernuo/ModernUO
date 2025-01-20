@@ -91,7 +91,7 @@ namespace Server.Spells.Second
                 target.AddSkillMod(resistMod);
 
                 var args = $"{physLoss}\t{resistLoss}";
-                BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args));
+                BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args: args));
             }
         }
 

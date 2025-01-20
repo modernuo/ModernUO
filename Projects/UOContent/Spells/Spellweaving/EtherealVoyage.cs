@@ -71,7 +71,7 @@ namespace Server.Spells.Spellweaving
             // Cannot cast this spell for another 5 minutes(300sec) after effect removed.
             Caster.BeginAction<EtherealVoyageSpell>();
 
-            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.EtherealVoyage, 1031613, 1075805, duration, Caster));
+            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.EtherealVoyage, 1031613, 1075805, duration));
         }
 
         public override void RemoveEffect(Mobile m)

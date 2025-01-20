@@ -74,7 +74,7 @@ namespace Server.Spells.Spellweaving
 
                     BuffInfo.AddBuff(
                         m,
-                        new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m))
+                        new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, GetCastRecoveryMalus(m))
                     );
                 }
             }

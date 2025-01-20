@@ -51,7 +51,7 @@ namespace Server.Spells.Chivalry
 
                     BuffInfo.AddBuff(
                         mobile,
-                        new BuffInfo(BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes(delay), mobile)
+                        new BuffInfo(BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes(delay))
                     );
                 }
             }

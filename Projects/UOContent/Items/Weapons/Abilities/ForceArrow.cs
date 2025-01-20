@@ -39,7 +39,10 @@ namespace Server.Items
                 info.Timer.IncreaseExpiration();
 
                 BuffInfo.RemoveBuff(defender, BuffIcon.ForceArrow);
-                BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));
+                BuffInfo.AddBuff(
+                    defender,
+                    new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, args: info.DefenseChanceMalus.ToString())
+                );
             }
 
             if (defender.Spell is Spell spell && spell.IsCasting)
@@ -64,7 +67,10 @@ namespace Server.Items
                 _table.Add(attacker, new List<ForceArrowInfo> { info });
             }
 
-            BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));
+            BuffInfo.AddBuff(
+                defender,
+                new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, args: info.DefenseChanceMalus.ToString())
+            );
         }
 
         public static void EndForceArrow(ForceArrowInfo info)

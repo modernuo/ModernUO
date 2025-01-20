@@ -41,7 +41,7 @@ namespace Server.Items
             BuffInfo.RemoveBuff(defender, BuffIcon.PsychicAttack);
 
             string args = $"{timer.SpellDamageMalus}\t{timer.ManaCostMalus}";
-            BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.PsychicAttack, 1151296, 1151297, args));
+            BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.PsychicAttack, 1151296, 1151297, args: args));
         }
 
         public static void RemoveEffects(Mobile defender)

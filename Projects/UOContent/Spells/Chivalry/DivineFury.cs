@@ -59,17 +59,13 @@ public class DivineFurySpell : PaladinSpell
                         1060589,
                         1150218,
                         delay,
-                        Caster,
                         $"{timer.AttackBonus}\t{timer.DamageBonus}\t{timer.WeaponSpeed}\t{timer.DefendMalus}"
                     )
                 );
             }
             else
             {
-                BuffInfo.AddBuff(
-                    Caster,
-                    new BuffInfo(BuffIcon.DivineFury, 1060589, 1075634, delay, Caster)
-                );
+                BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.DivineFury, 1060589, 1075634, delay));
             }
         }
 

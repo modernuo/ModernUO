@@ -102,7 +102,7 @@ namespace Server.Spells.First
                         var physresist = 15 + (int)(Caster.Skills.Inscribe.Value / 20);
                         var args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
 
-                        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args));
+                        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args: args));
                     }
                 }
 
