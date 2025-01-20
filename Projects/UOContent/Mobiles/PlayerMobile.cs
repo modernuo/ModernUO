@@ -4532,7 +4532,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            RemoveBuff(b); // Check & subsequently remove the old one.
+            BuffInfo.RemoveBuff(this, b); // Check, stop old timer, & subsequently remove the old one.
 
             m_BuffTable ??= new Dictionary<BuffIcon, BuffInfo>();
             m_BuffTable.Add(b.ID, b);
