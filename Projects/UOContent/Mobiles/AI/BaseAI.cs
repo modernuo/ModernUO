@@ -414,6 +414,7 @@ public abstract class BaseAI
     private void HandleMove()
     {
         m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516);
+        // 501516: Excuse me?
         WalkRandomInHome(2, 2, 1);
     }
     
