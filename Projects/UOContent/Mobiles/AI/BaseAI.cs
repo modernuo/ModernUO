@@ -1068,9 +1068,6 @@ public abstract class BaseAI
         }
     }
 
-    private bool IsValidCombatant(Mobile combatant) =>
-        combatant != null && !combatant.Deleted && combatant.Alive && !combatant.IsDeadBondedPet;
-
     public virtual bool DoOrderCome()
     {
         if (m_Mobile.ControlMaster?.Deleted != false)
