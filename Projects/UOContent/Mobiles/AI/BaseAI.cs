@@ -3226,51 +3226,71 @@ public abstract class BaseAI
         {
             if (ShouldStop())
             {
-                Stop();
+                HideMobile();
                 return;
             }
-
-            // update interval based on current state and speed
+        
             Interval = TimeSpan.FromMilliseconds(GetBaseInterval(m_Owner));
-            m_Owner.m_Mobile.OnThink();
+        
+            HandleBardEffects();
+            HandleDetectHidden();
 
+            // additional check
             if (ShouldStop())
             {
-                Stop();
+                HideMobile();
                 return;
             }
-
-            HandleBardEffects();
-
-            if (m_Owner.m_Mobile.Controlled ? !m_Owner.Obey() : !m_Owner.Think())
+        
+            if (m_Owner.m_Mobile.Controlled)
             {
-                Stop();
+                if (!m_Owner.Obey())
+                {
+                    HideMobile();
+                    return;
+                }
+            }
+            else if (!m_Owner.Think())
+            {
+                HideMobile();
                 return;
             }
-
-            HandleDetectHidden();
+        
+            if (!ShouldStop())
+            {
+                m_Owner.m_Mobile.OnThink();
+            }
         }
-
+        
+        private void HideMobile()
+        {
+            if (!m_Owner.m_Mobile.Hidden)
+            {
+                m_Owner.m_Mobile.Hidden = true;
+            }
+            Stop();
+        }
+        
         private bool ShouldStop()
         {
-            if (m_Owner.m_Mobile.Deleted)
+            if (m_Owner.m_Mobile.Hidden)
             {
                 return true;
             }
-
+        
             if (m_Owner.m_Mobile.Map == null || m_Owner.m_Mobile.Map == Map.Internal)
             {
                 m_Owner.Deactivate();
                 return true;
             }
-
+        
             if (m_Owner.m_Mobile.PlayerRangeSensitive && 
                 !m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile.Location).Active)
             {
-                m_Owner.Deactivate();
+                HideMobile();
                 return true;
             }
-
+        
             return false;
         }
 
