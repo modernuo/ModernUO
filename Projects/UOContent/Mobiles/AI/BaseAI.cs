@@ -1760,10 +1760,8 @@ public abstract class BaseAI
 
     private bool IsInCombatState()
     {
-        return m_Mobile.Combatant != null || 
-               m_Mobile.Aggressors.Count > 0 || 
-               m_Mobile.Aggressed.Count > 0 ||
-               Core.TickCount < m_Mobile.NextCombatTime;
+        return m_Mobile.Combatant != null || m_Mobile.Aggressors.Count > 0 ||
+        m_Mobile.Aggressed.Count > 0 || Core.TickCount < m_Mobile.NextCombatTime;
     }
     
     private bool IsValidTransferRequest(Mobile from, Mobile to)
