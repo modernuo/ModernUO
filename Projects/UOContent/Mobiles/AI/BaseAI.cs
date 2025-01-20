@@ -3266,6 +3266,7 @@ public abstract class BaseAI
         {
             if (!m_Owner.m_Mobile.Hidden)
             {
+                m_Owner.m_Mobile.Name = $"Invalid {m_Owner.m_Mobile.Name}";
                 m_Owner.m_Mobile.Hidden = true;
             }
             Stop();
