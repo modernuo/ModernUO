@@ -782,7 +782,7 @@ public abstract class BaseAI
         {
             FollowMaster();
         }
-        else if (CanMoveNow(out _) && !m_Mobile.CheckIdle())
+        else if (CheckMove() && CanMoveNow(out _) && !m_Mobile.CheckIdle())
         {
             WalkRandomInHome(2, 2, 1);
         }
@@ -2078,6 +2078,8 @@ public abstract class BaseAI
         delay = NextMove - Core.TickCount;
         return delay <= MovementTimingTolerance;
     }
+
+    public virtual bool CheckMove() => true;
     
     public virtual bool DoMove(Direction d, bool badStateOk = false)
     {
