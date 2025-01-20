@@ -1746,8 +1746,11 @@ public abstract class BaseAI
                 HandleTransferOrder(from, to);
             }
 
-            m_Mobile.ControlTarget = null;
-            m_Mobile.ControlOrder = OrderType.Stay;
+            if (m_Mobile.ControlOrder != OrderType.Stay)
+            {
+                m_Mobile.ControlTarget = null;
+                m_Mobile.ControlOrder = OrderType.Stay;
+            }
 
             return true;
         }
