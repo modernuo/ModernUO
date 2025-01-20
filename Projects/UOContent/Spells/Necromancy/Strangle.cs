@@ -71,42 +71,42 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
             timer.Start();
 
             HarmfulSpell(m);
-        }
 
-        // Calculations for the buff bar
-        var spiritlevel = Math.Max(4, Caster.Skills.SpiritSpeak.Value / 10);
+            // Calculations for the buff bar
+            var spiritlevel = Math.Max(4, Caster.Skills.SpiritSpeak.Value / 10);
 
-        const int minDamage = 4;
-        var maxDamage = ((int)spiritlevel + 1) * 3;
-        var args = $"{minDamage}\t{maxDamage}";
+            const int minDamage = 4;
+            var maxDamage = ((int)spiritlevel + 1) * 3;
+            var args = $"{minDamage}\t{maxDamage}";
 
-        var count = (int)spiritlevel;
-        var maxCount = count;
-        var hitDelay = 5;
-        var length = hitDelay;
+            var count = (int)spiritlevel;
+            var maxCount = count;
+            var hitDelay = 5;
+            var length = hitDelay;
 
-        while (count >= 1)
-        {
-            --count;
-            if (hitDelay > 1)
+            while (count >= 1)
             {
-                if (maxCount < 5)
+                --count;
+                if (hitDelay > 1)
                 {
-                    --hitDelay;
-                }
-                else
-                {
-                    var delay = (int)Math.Ceiling((1.0 + 5 * count) / maxCount);
+                    if (maxCount < 5)
+                    {
+                        --hitDelay;
+                    }
+                    else
+                    {
+                        var delay = (int)Math.Ceiling((1.0 + 5 * count) / maxCount);
 
-                    hitDelay = delay <= 5 ? delay : 5;
+                        hitDelay = delay <= 5 ? delay : 5;
+                    }
                 }
+
+                length += hitDelay;
             }
 
-            length += hitDelay;
+            var t_Duration = TimeSpan.FromSeconds(length);
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, t_Duration, m, args));
         }
-
-        var t_Duration = TimeSpan.FromSeconds(length);
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, t_Duration, m, args));
     }
 
     public override void OnCast()
