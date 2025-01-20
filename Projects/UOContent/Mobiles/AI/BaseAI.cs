@@ -871,65 +871,19 @@ public abstract class BaseAI
 
     public virtual bool DoActionGuard()
     {
-        if (m_Mobile.IsDeadPet)
+        if (Core.TickCount - m_NextStopGuard < 0)
         {
-            return true;
-        }
-
-        var controlMaster = m_Mobile.ControlMaster;
-        if (controlMaster?.Deleted != false)
-        {
-            return true;
-        }
-
-        var combatant = FindGuardTarget(controlMaster);
-        if (IsValidCombatant(combatant))
-        {
-            GuardFromTarget(combatant);
+            DebugSay("I am on guard.");
+            m_Mobile.Turn(Utility.Random(0, 2) - 1); // added for immersion
         }
         else
         {
-            GuardNothing(controlMaster);
+            DebugSay("I stopped being on guard.");
+            Action = ActionType.Wander;
         }
-
+    
         return true;
     }
-
-    private Mobile FindGuardTarget(Mobile controlMaster)
-    {
-        var combatant = m_Mobile.Combatant;
-        var aggressors = controlMaster.Aggressors;
-
-        if (aggressors.Count <= 0)
-        {
-            return combatant;
-        }
-
-        for (var i = 0; i < aggressors.Count; ++i)
-        {
-            var info = aggressors[i];
-            var attacker = info.Attacker;
-
-            if (IsValidAggressor(attacker) && IsCloserThanCurrent(attacker, controlMaster, combatant))
-            {
-                combatant = attacker;
-            }
-        }
-
-        if (combatant != null)
-        {
-            DebugSay("Master is under attack. Assisting...");
-        }
-
-        return combatant;
-    }
-
-    private bool IsValidAggressor(Mobile attacker) =>
-        attacker?.Deleted == false && attacker.GetDistanceToSqrt(m_Mobile) <= m_Mobile.RangePerception;
-
-    private bool IsCloserThanCurrent(Mobile attacker, Mobile controlMaster, Mobile currentCombatant) =>
-        currentCombatant == null || 
-        attacker.GetDistanceToSqrt(controlMaster) < currentCombatant.GetDistanceToSqrt(controlMaster);
 
     public virtual bool DoActionFlee()
     {
