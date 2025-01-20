@@ -1545,113 +1545,38 @@ public abstract class BaseAI
     
     private void FindNewCombatant()
     {
-        if (m_Mobile.Debug)
+        Mobile newCombatant = null;
+        var newScore = 0.0;
+    
+        foreach (var aggr in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
         {
-            m_Mobile.DebugSay("Searching for combatant...");
-        }
-
-        if (ShouldFindNewTarget())
-        {
-            var newCombatant = ScanForTargets(m_Mobile.RangePerception);
-
-            if (newCombatant != null)
-            {
-                SetNewTarget(newCombatant);
-            }
-            else
-            {
-                StandDownAndWanderHome();
-            }
-        }
-    }
-
-    private bool ShouldFindNewTarget()
-    {
-        var combatant = m_Mobile.Combatant;
-        return m_Mobile.Warmode && (
-            combatant == null ||
-            combatant.Deleted ||
-            !combatant.Alive ||
-            combatant.IsDeadBondedPet ||
-            !m_Mobile.InRange(combatant, m_Mobile.RangePerception)
-        );
-    }
-
-    private Mobile ScanForTargets(int range)
-    {
-        Mobile bestTarget = null;
-        var bestScore = 0.0;
-
-        foreach (var m in m_Mobile.Map.GetMobilesInRange(m_Mobile.Location, range))
-        {
-            if (!IsValidCombatTarget(m))
+            if (!m_Mobile.CanSee(aggr) || aggr.Combatant != m_Mobile || aggr.IsDeadBondedPet || !aggr.Alive)
             {
                 continue;
             }
-
-            var score = m_Mobile.GetFightModeRanking(m, m_Mobile.FightMode, false);
-            
-            if (score > bestScore)
+    
+            var aggrScore = m_Mobile.GetFightModeRanking(aggr, FightMode.Closest, false);
+    
+            if ((newCombatant == null || aggrScore > newScore) && m_Mobile.InLOS(aggr))
             {
-                bestTarget = m;
-                bestScore = score;
+                newCombatant = aggr;
+                newScore = aggrScore;
             }
         }
-
-        return bestTarget;
-    }
-
-    private void SetNewTarget(Mobile target)
-    {
-        if (m_Mobile.Debug)
+    
+        if (newCombatant != null)
         {
-            m_Mobile.DebugSay($"New target acquired: {target.Name}");
-        }
-
-        m_Mobile.ControlTarget = target;
-        m_Mobile.ControlOrder = OrderType.Attack;
-        m_Mobile.Combatant = target;
-        Think();
-    }
-
-    private void StandDownAndWanderHome()
-    {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("No targets found. Standing down and wandering home.");
-        }
-        
-        m_Mobile.Warmode = false;
-        m_Mobile.ControlTarget = null;
-        m_Mobile.ControlOrder = OrderType.None;
-        m_Mobile.Combatant = null;
-        
-        Action = ActionType.Wander;
-
-        if (m_Mobile.Home != Point3D.Zero && !m_Mobile.InRange(m_Mobile.Home, m_Mobile.RangeHome))
-        {
+            m_Mobile.ControlTarget = newCombatant;
+            m_Mobile.ControlOrder = OrderType.Attack;
+            m_Mobile.Combatant = newCombatant;
+    
             if (m_Mobile.Debug)
             {
-                m_Mobile.DebugSay("Moving back to home location.");
+                m_Mobile.DebugSay("Target is still alive. Resuming attacks...");
             }
-
-            DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+    
+            Think();
         }
-        else
-        {
-            WalkRandomInHome(2, 2, 1);
-        }
-    }
-
-    private bool IsValidCombatTarget(Mobile m)
-    {
-        return m != null && 
-               m != m_Mobile && 
-               m.Alive && 
-               !m.IsDeadBondedPet && 
-               m_Mobile.CanSee(m) && 
-               m.Combatant == m_Mobile && 
-               m_Mobile.InLOS(m);
     }
 
     public virtual bool DoOrderRelease()
