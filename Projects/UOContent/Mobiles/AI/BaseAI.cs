@@ -846,7 +846,7 @@ public abstract class BaseAI
     
         var combatant = m_Mobile.Combatant;
     
-        if (!IsValidCombatantOne(combatant))
+        if (!IsValidCombatant(combatant))
         {
             DebugSay("My combatant is missing.");
             Action = ActionType.Wander;
@@ -863,7 +863,7 @@ public abstract class BaseAI
         return true;
     }
     
-    private bool IsValidCombatantOne(Mobile combatant)
+    private bool IsValidCombatant(Mobile combatant)
     {
         return combatant != null && !combatant.Deleted && combatant.Map == m_Mobile.Map
             && combatant.Alive && !combatant.IsDeadBondedPet;
