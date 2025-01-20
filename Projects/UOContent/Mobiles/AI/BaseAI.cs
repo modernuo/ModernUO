@@ -1216,7 +1216,11 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay("I am being herded.");
+            if (m_Mobile.Debug)
+            {
+                DebugSay("I am being herded.");
+            }
+
             return true;
         }
     
@@ -1226,7 +1230,11 @@ public abstract class BaseAI
         }
         else
         {
-            DebugSay("I have no one to follow.");
+            if (m_Mobile.Debug)
+            {
+                DebugSay("I have no one to follow.");
+            }
+
             m_Mobile.ControlTarget = null;
             m_Mobile.ControlOrder = OrderType.None;
         }
