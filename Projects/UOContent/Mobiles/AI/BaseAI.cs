@@ -329,8 +329,13 @@ public abstract class BaseAI
             m_Mobile.SayTo(from, "Your pet refuses to attack this creature!");
             return false;
         }
-
-        if (IsProtectedSolen(from, target))
+    
+        if (SolenHelper.CheckRedFriendship(from) &&
+                target is RedSolenInfiltratorQueen or RedSolenInfiltratorWarrior
+                    or RedSolenQueen or RedSolenWarrior or RedSolenWorker ||
+            SolenHelper.CheckBlackFriendship(from) &&
+                target is BlackSolenInfiltratorQueen or BlackSolenInfiltratorWarrior
+                    or BlackSolenQueen or BlackSolenWarrior or BlackSolenWorker)
         {
             from.SendAsciiMessage("You cannot command your pet to attack a creature you are protected from.");
             return false;
@@ -344,12 +349,6 @@ public abstract class BaseAI
 
         return true;
     }
-
-    private static bool IsProtectedSolen(Mobile from, Mobile target) =>
-        SolenHelper.CheckRedFriendship(from) && target is RedSolenInfiltratorQueen or RedSolenInfiltratorWarrior 
-            or RedSolenQueen or RedSolenWarrior or RedSolenWorker ||
-        SolenHelper.CheckBlackFriendship(from) && target is BlackSolenInfiltratorQueen or BlackSolenInfiltratorWarrior 
-            or BlackSolenQueen or BlackSolenWarrior or BlackSolenWorker;
 
     // currently broken, needs to be fixed.
     // on speech by players do not trigger orders for pets.
