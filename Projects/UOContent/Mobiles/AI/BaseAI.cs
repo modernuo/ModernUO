@@ -2116,6 +2116,7 @@ public abstract class BaseAI
 
         if (moveResult)
         {
+            HandleCombatDelay();
             return MoveResult.Success;
         }
 
@@ -2126,6 +2127,22 @@ public abstract class BaseAI
         }
 
         return HandleBlockedMovement(d, mobDirection);
+    }
+
+    private void HandleCombatDelay()  
+    {
+        if (m_Mobile == null || !ShouldApplyCombatDelay(m_Mobile))
+        {
+            return;
+        }
+
+        var maxWait = Utility.RandomMinMax(50, 100);
+        var remaining = Math.Max(0, m_Mobile.NextCombatTime - Core.TickCount);
+
+        if (remaining < maxWait)
+        {
+            m_Mobile.NextCombatTime = Core.TickCount + maxWait;
+        }
     }
 
     private bool TryMove(Direction d)
