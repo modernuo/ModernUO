@@ -1412,7 +1412,7 @@ public abstract class BaseAI
             return true;
         }
     
-        var combatant = FindGuardTarget(controlMaster);
+        var combatant = FindCombatant(controlMaster);
     
         if (IsValidCombatant(combatant))
         {
@@ -1424,6 +1424,38 @@ public abstract class BaseAI
         }
     
         return true;
+    }
+
+    private Mobile FindCombatant(Mobile controlMaster)
+    {
+        var combatant = m_Mobile.Combatant;
+        var aggressors = controlMaster.Aggressors;
+    
+        if (aggressors.Count > 0)
+        {
+            for (var i = 0; i < aggressors.Count; ++i)
+            {
+                var info = aggressors[i];
+                var attacker = info.Attacker;
+    
+                if (attacker?.Deleted == false &&
+                    attacker.GetDistanceToSqrt(m_Mobile) <= m_Mobile.RangePerception)
+                {
+                    if (combatant == null || attacker.GetDistanceToSqrt(controlMaster) <
+                        combatant.GetDistanceToSqrt(controlMaster))
+                    {
+                        combatant = attacker;
+                    }
+                }
+            }
+    
+            if (combatant != null && m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay("Master is under attack. Assisting...");
+            }
+        }
+    
+        return combatant;
     }
     
     private void GuardFromTarget(Mobile combatant)
