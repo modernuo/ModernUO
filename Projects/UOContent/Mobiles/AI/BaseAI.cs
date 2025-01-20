@@ -1173,7 +1173,7 @@ public abstract class BaseAI
     
         if (target == null)
         {
-            return false; // Creature is not being herded
+            return false;
         }
     
         var distance = m_Mobile.GetDistanceToSqrt(target);
@@ -1190,7 +1190,7 @@ public abstract class BaseAI
         }
     
         m_Mobile.TargetLocation = null;
-        return false; // At the target or too far away
+        return false;
     }
     
     private bool IsSpecialHerdingCase(IPoint2D target)
