@@ -82,7 +82,6 @@ namespace Server.SkillHandlers
                 var root = toSteal.RootParent;
                 var mobRoot = root as Mobile;
                 var rootIsPlayer = mobRoot?.Player == true;
-                var vendor = root as BaseVendor;
 
                 StealableArtifacts.StealableInstance si = toSteal.Parent == null || !toSteal.Movable
                     ? StealableArtifacts.GetStealableInstance(toSteal)
@@ -96,7 +95,7 @@ namespace Server.SkillHandlers
                 {
                     m_Thief.SendMessage("You may not steal in this area.");
                 }
-                else if ((m_Thief as PlayerMobile)?.Young == true && (rootIsPlayer || vendor == null && mobRoot is BaseCreature))
+                else if ((m_Thief as PlayerMobile)?.Young == true && (rootIsPlayer || mobRoot is BaseCreature))
                 {
                     m_Thief.SendLocalizedMessage(502700); // You cannot steal from people or monsters right now.  Practice on chests and barrels.
                 }
@@ -112,7 +111,7 @@ namespace Server.SkillHandlers
                 {
                     m_Thief.SendLocalizedMessage(502699); // You cannot steal from the Young.
                 }
-                else if (vendor?.IsInvulnerable == true)
+                else if ((root as BaseVendor)?.IsInvulnerable == true)
                 {
                     m_Thief.SendLocalizedMessage(1005598); // You can't steal from shopkeepers.
                 }

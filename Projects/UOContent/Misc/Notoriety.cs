@@ -137,7 +137,7 @@ namespace Server.Misc
                 return false; // Players cannot heal uncontrolled mobiles
             }
 
-            if (pmFrom?.Young == true && pmTarg?.Young != true)
+            if (pmFrom?.Young == true && pmTarg?.Young == false)
             {
                 return false; // Young players cannot perform beneficial actions towards non-young players or pets
             }
