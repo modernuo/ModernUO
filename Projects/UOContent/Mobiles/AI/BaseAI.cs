@@ -1102,9 +1102,13 @@ public abstract class BaseAI
 
     private void HandleComeOrder(int currentDistance)
     {
-        DebugSay("I am ordered to come.");
+        if (m_Mobile.Debug)
+        {
+            m_Mobile.DebugSay("I am ordered to come.");
+        }
+    
         var shouldRun = currentDistance > 5;
-
+    
         if (WalkMobileRange(m_Mobile.ControlMaster, 1, shouldRun, 0, 1))
         {
             UpdateCombatantState();
