@@ -300,8 +300,8 @@ public abstract class BaseAI
 
     private bool IsValidTarget(Mobile from, OrderType order)
     {
-        if (m_Mobile.Deleted || !m_Mobile.Controlled || !from.InRange(m_Mobile, 14) ||
-            from.Map != m_Mobile.Map || !from.CheckAlive())
+        if (m_Mobile.Deleted || !m_Mobile.Controlled || !from.InRange(m_Mobile, 14)
+            || from.Map != m_Mobile.Map || !from.CheckAlive())
         {
             return false;
         }
@@ -314,11 +314,13 @@ public abstract class BaseAI
             return false;
         }
 
-        return !isFriend || IsFriendlyOrder(order);
+        if (isFriend && order != OrderType.Follow && order != OrderType.Stay && order != OrderType.Stop)
+        {
+            return false;
+        }
+    
+        return true;
     }
-
-    private static bool IsFriendlyOrder(OrderType order) =>
-        order is OrderType.Follow or OrderType.Stay or OrderType.Stop;
 
     private bool CanAttackTarget(Mobile from, Mobile target)
     {
