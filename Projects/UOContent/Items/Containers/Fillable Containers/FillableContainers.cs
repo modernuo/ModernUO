@@ -6,22 +6,25 @@ namespace Server.Items;
 [SerializationGenerator(0)]
 public partial class LibraryBookcase : FillableContainer
 {
-    [Constructible]
-    public LibraryBookcase() : base(0xA97) => Weight = 1.0;
-
     public override bool IsLockable => false;
-    public override int SpawnThreshold => 5;
 
-    protected override int GetSpawnCount() => 5 - GetItemsCount();
+    [Constructible]
+    public LibraryBookcase() : base(0xA97)
+    {
+    }
+
+    protected override int GetSpawnCount()
+    {
+        var max = 5 - GetItemsCount();
+        return max <= 0 ? 0 : Utility.RandomMinMax(1, max);
+    }
 
     public override void AcquireContent()
     {
-        if (ContentType != FillableContentType.None)
+        if (ContentType == FillableContentType.None)
         {
-            return;
+            ContentType = FillableContentType.Library;
         }
-
-        ContentType = FillableContentType.Library;
     }
 }
 
@@ -30,7 +33,9 @@ public partial class LibraryBookcase : FillableContainer
 public partial class FillableLargeCrate : FillableContainer
 {
     [Constructible]
-    public FillableLargeCrate() : base(0xE3D) => Weight = 1.0;
+    public FillableLargeCrate() : base(0xE3D)
+    {
+    }
 }
 
 [Flippable(0x9A9, 0xE7E)]
@@ -38,7 +43,9 @@ public partial class FillableLargeCrate : FillableContainer
 public partial class FillableSmallCrate : FillableContainer
 {
     [Constructible]
-    public FillableSmallCrate() : base(0x9A9) => Weight = 1.0;
+    public FillableSmallCrate() : base(0x9A9)
+    {
+    }
 }
 
 [Flippable(0x9AA, 0xE7D)]
@@ -46,7 +53,9 @@ public partial class FillableSmallCrate : FillableContainer
 public partial class FillableWoodenBox : FillableContainer
 {
     [Constructible]
-    public FillableWoodenBox() : base(0x9AA) => Weight = 4.0;
+    public FillableWoodenBox() : base(0x9AA)
+    {
+    }
 }
 
 [Flippable(0x9A8, 0xE80)]
