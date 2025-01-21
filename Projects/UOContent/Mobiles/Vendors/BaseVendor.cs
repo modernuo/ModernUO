@@ -560,8 +560,9 @@ namespace Server.Mobiles
                     }
                 }
             }
-            // no cliloc for this?
-            // SayTo( seller, true, "Thank you! I bought {0} item{1}. Here is your {2}gp.", Sold, (Sold > 1 ? "s" : ""), GiveGold );
+            
+            // No CliLoc available for this message; enabled string interpolation for readability.
+            SayTo( seller, true, $"Thank you! I bought {Sold} item{(Sold > 1 ? "s" : "")}. Here is your {GiveGold}gp.");
 
             return true;
         }
