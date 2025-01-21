@@ -127,8 +127,13 @@ namespace Server
 
         public static void RemoveBuff(Mobile m, BuffInfo b)
         {
+            if (b == null)
+            {
+                return;
+            }
+
             b._timerToken.Cancel();
-            (m as PlayerMobile)?.RemoveBuff(b);
+            (m as PlayerMobile)?.RemoveBuff(b.ID);
         }
 
         public static void RemoveBuff(Mobile m, BuffIcon b)
