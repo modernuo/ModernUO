@@ -1943,15 +1943,6 @@ public abstract class BaseAI
         Think();
     }
 
-    private void ResetBardState()
-    {
-        m_Mobile.BardProvoked = false;
-        m_Mobile.BardMaster = null;
-        m_Mobile.BardTarget = null;
-        m_Mobile.Combatant = null;
-        m_Mobile.Warmode = false;
-    }
-
     public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
     {
         if (ShouldNotMove(chanceToNotMove))
