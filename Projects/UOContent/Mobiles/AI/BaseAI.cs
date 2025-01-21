@@ -1926,7 +1926,11 @@ public abstract class BaseAI
             m_Mobile.DebugSay("Provoke target missing.");
         }
     
-        ResetBardState();
+        m_Mobile.BardProvoked = false;
+        m_Mobile.BardMaster = null;
+        m_Mobile.BardTarget = null;
+        m_Mobile.Combatant = null;
+        m_Mobile.Warmode = false;
     }
     
     private void HandleProvokeCombat()
