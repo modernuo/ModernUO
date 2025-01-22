@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Factions;
 using Server.Mobiles;
 using Server.Spells.Fifth;

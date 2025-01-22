@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 using Server.Targeting;
 

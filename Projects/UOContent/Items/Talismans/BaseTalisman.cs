@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 using Server.Spells.Fifth;
 using Server.Spells.First;

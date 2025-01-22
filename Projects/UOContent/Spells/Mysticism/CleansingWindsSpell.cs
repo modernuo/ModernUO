@@ -4,6 +4,7 @@ using Server.Spells.Fourth;
 using Server.Spells.Necromancy;
 using Server.Targeting;
 using Server.Collections;
+using Server.Engines.BuffIcons;
 
 namespace Server.Spells.Mysticism;
 

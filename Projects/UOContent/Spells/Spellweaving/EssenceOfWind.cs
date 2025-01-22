@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Collections;
+using Server.Engines.BuffIcons;
 
 namespace Server.Spells.Spellweaving
 {

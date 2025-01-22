@@ -1,5 +1,6 @@
 using System;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;

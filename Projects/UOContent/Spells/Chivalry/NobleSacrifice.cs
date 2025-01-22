@@ -1,5 +1,6 @@
 using System;
 using Server.Collections;
+using Server.Engines.BuffIcons;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;

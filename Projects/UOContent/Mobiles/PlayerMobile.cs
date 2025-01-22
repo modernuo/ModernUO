@@ -4,6 +4,7 @@ using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.BuffIcons;
 using Server.Engines.BulkOrders;
 using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
