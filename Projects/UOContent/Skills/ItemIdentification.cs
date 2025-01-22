@@ -2,61 +2,61 @@ using System;
 using Server.Mobiles;
 using Server.Targeting;
 
-namespace Server.Items
+namespace Server.Items;
+
+public interface IIdentifiable
 {
-    public static class ItemIdentification
+    bool Identified { get; set; }
+}
+
+public static class ItemIdentification
+{
+    public static void Initialize()
     {
-        public static void Initialize()
+        SkillInfo.Table[(int)SkillName.ItemID].Callback = OnUse;
+    }
+
+    public static TimeSpan OnUse(Mobile from)
+    {
+        from.SendLocalizedMessage(500343); // What do you wish to appraise and identify?
+        from.Target = new InternalTarget();
+
+        return TimeSpan.FromSeconds(1.0);
+    }
+
+    [PlayerVendorTarget]
+    private class InternalTarget : Target
+    {
+        public InternalTarget() : base(8, false, TargetFlags.None) => AllowNonlocal = true;
+
+        protected override void OnTarget(Mobile from, object o)
         {
-            SkillInfo.Table[(int)SkillName.ItemID].Callback = OnUse;
-        }
-
-        public static TimeSpan OnUse(Mobile from)
-        {
-            from.SendLocalizedMessage(500343); // What do you wish to appraise and identify?
-            from.Target = new InternalTarget();
-
-            return TimeSpan.FromSeconds(1.0);
-        }
-
-        [PlayerVendorTarget]
-        private class InternalTarget : Target
-        {
-            public InternalTarget() : base(8, false, TargetFlags.None) => AllowNonlocal = true;
-
-            protected override void OnTarget(Mobile from, object o)
+            if (o is Mobile mobile)
             {
-                if (o is Item item)
-                {
-                    if (from.CheckTargetSkill(SkillName.ItemID, item, 0, 100))
-                    {
-                        if (item is BaseWeapon weapon)
-                        {
-                            weapon.Identified = true;
-                        }
-                        else if (item is BaseArmor armor)
-                        {
-                            armor.Identified = true;
-                        }
+                mobile.OnSingleClick(from);
+                return;
+            }
 
-                        if (!Core.AOS)
-                        {
-                            item.OnSingleClick(from);
-                        }
-                    }
-                    else
-                    {
-                        from.SendLocalizedMessage(500353); // You are not certain...
-                    }
-                }
-                else if (o is Mobile mobile)
+            bool identified = false;
+
+            if (o is Item item)
+            {
+                if (item is IIdentifiable identifiable && from.CheckTargetSkill(SkillName.ItemID, item, 0, 100))
                 {
-                    mobile.OnSingleClick(from);
+                    identifiable.Identified = true;
+                    identified = true;
                 }
-                else
+
+                if (!Core.AOS)
                 {
-                    from.SendLocalizedMessage(500353); // You are not certain...
+                    item.OnSingleClick(from);
                 }
+            }
+
+
+            if (!identified)
+            {
+                from.SendLocalizedMessage(500353); // You are not certain...
             }
         }
     }

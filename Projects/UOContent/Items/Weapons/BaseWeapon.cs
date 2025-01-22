@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
@@ -29,7 +28,8 @@ public interface ISlayer
 }
 
 [SerializationGenerator(10, false)]
-public abstract partial class BaseWeapon : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem
+public abstract partial class BaseWeapon
+    : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem, IIdentifiable
 {
     private static bool _enableInstaHit;
 

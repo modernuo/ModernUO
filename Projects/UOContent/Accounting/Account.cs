@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Xml;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Accounting.Security;
 using Server.Misc;
@@ -20,7 +21,7 @@ public partial class Account : IAccount, IComparable<Account>
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
 
     [InternString]
-    [SerializableField(0)]
+    [SerializableField(0, setter: "private")]
     private string _username;
 
     [SerializableField(1)]
@@ -363,6 +364,19 @@ public partial class Account : IAccount, IComparable<Account>
     }
 
     public bool Deleted { get; private set; }
+
+    public bool TrySetUsername(string username)
+    {
+        if (username == _username || Accounts.GetAccount(username) != null)
+        {
+            return false;
+        }
+
+        Accounts.Remove(this);
+        Username = username;
+        Accounts.Add(this);
+        return true;
+    }
 
     public void SetPassword(string plainPassword)
     {
@@ -768,31 +782,24 @@ public partial class Account : IAccount, IComparable<Account>
         acc.TotalGameTime += Core.Now - pm.SessionStart;
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
-        if (m is not PlayerMobile pm)
+        if (pm.Account is not Account acc || !pm.Young || !acc.Young)
         {
             return;
         }
 
-        if (m.Account is not Account acc)
+        var ts = YoungDuration - acc.TotalGameTime;
+        var hours = Math.Max((int)ts.TotalHours, 0);
+
+        if (hours == 1)
         {
-            return;
+            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hour.");
         }
-
-        if (pm.Young && acc.Young)
+        else
         {
-            var ts = YoungDuration - acc.TotalGameTime;
-            var hours = Math.Max((int)ts.TotalHours, 0);
-
-            if (hours == 1)
-            {
-                m.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hour.");
-            }
-            else
-            {
-                m.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
-            }
+            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
         }
     }
 

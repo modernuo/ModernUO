@@ -1,7 +1,9 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Gumps;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Assistants;
@@ -45,22 +47,23 @@ public static class AssistantHandler
         m.NetState.LogInfo("Failed to negotiate assistant features.");
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
-        if (m?.NetState?.Running != true || !Enabled)
+        if (pm?.NetState?.Running != true || !Enabled)
         {
             return;
         }
 
-        m.NetState.SendAssistVersionReq();
-        m.NetState.SendAssistHandshake();
+        pm.NetState.SendAssistVersionReq();
+        pm.NetState.SendAssistHandshake();
 
-        if (_handshakes.TryGetValue(m, out var t))
+        if (_handshakes.TryGetValue(pm, out var t))
         {
             t?.Stop();
         }
 
-        _handshakes[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), OnTimeout, m);
+        _handshakes[pm] = Timer.DelayCall(TimeSpan.FromSeconds(30), OnTimeout, pm);
     }
 
     public static void AssistVersion(NetState state, SpanReader reader)

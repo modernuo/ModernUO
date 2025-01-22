@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.Engines.Plants;
@@ -711,10 +713,9 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         _quantity = reader.ReadInt();
     }
 
-    public static void OnLogin(Mobile m)
-    {
-        CheckHeaveTimer(m);
-    }
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void OnLogin(PlayerMobile pm) => CheckHeaveTimer(pm);
 
     public static void CheckHeaveTimer(Mobile from)
     {

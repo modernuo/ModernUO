@@ -1,4 +1,5 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
 using Server.Mobiles;
 using Server.Network;
 
@@ -108,17 +109,15 @@ namespace Server
             Enabled = ServerConfiguration.GetOrUpdateSetting("buffIcons.enable", Core.ML);
         }
 
-        public static void ResendBuffsOnClientVersionReceived(NetState ns, ClientVersion cv)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm)
         {
             if (!Enabled)
             {
                 return;
             }
 
-            if (ns.Mobile is PlayerMobile pm)
-            {
-                Timer.StartTimer(pm.ResendBuffs);
-            }
+            pm.ResendBuffs();
         }
 
         public static void AddBuff(Mobile m, BuffInfo b)
@@ -128,8 +127,13 @@ namespace Server
 
         public static void RemoveBuff(Mobile m, BuffInfo b)
         {
+            if (b == null)
+            {
+                return;
+            }
+
             b._timerToken.Cancel();
-            (m as PlayerMobile)?.RemoveBuff(b);
+            (m as PlayerMobile)?.RemoveBuff(b.ID);
         }
 
         public static void RemoveBuff(Mobile m, BuffIcon b)

@@ -1,4 +1,5 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Gumps;
 using Server.Items;
@@ -562,35 +563,31 @@ namespace Server.Engines.VeteranRewards
             RewardInterval = ServerConfiguration.GetOrUpdateSetting("vetRewards.rewardInterval", TimeSpan.FromDays(30.0));
         }
 
-        public static void OnLogin(Mobile m)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm)
         {
-            if (!Enabled)
+            if (!Enabled || !pm.Alive)
             {
                 return;
             }
 
-            if (!m.Alive)
-            {
-                return;
-            }
+            ComputeRewardInfo(pm, out var cur, out var max, out var level);
 
-            ComputeRewardInfo(m, out var cur, out var max, out var level);
-
-            if (m.SkillsCap is 7000 or 7050 or 7100 or 7150 or 7200)
+            if (pm.SkillsCap is 7000 or 7050 or 7100 or 7150 or 7200)
             {
                 level = Math.Clamp(level, 0, 4);
 
                 if (SkillCapRewards)
                 {
-                    m.SkillsCap = 7000 + level * 50;
+                    pm.SkillsCap = 7000 + level * 50;
                 }
                 else
                 {
-                    m.SkillsCap = 7000;
+                    pm.SkillsCap = 7000;
                 }
             }
 
-            if (Core.ML && m is PlayerMobile pm && !pm.HasStatReward && HasHalfLevel(pm))
+            if (Core.ML && !pm.HasStatReward && HasHalfLevel(pm))
             {
                 pm.HasStatReward = true;
                 pm.StatCap += 5;
@@ -598,7 +595,7 @@ namespace Server.Engines.VeteranRewards
 
             if (cur < max)
             {
-                m.SendGump(new RewardNoticeGump(m));
+                pm.SendGump(new RewardNoticeGump(pm));
             }
         }
     }
