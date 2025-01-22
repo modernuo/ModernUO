@@ -3266,8 +3266,8 @@ public abstract class BaseAI
     }
 
     public static class AIMovementTimerPool
-    {   // might need to increase to 2048, more testing needed
-        private const int _poolSize = 1024;
+    {
+        private const int _poolSize = 2048;
         private static readonly Queue<AIMovementTimer> _pool = new(_poolSize);
     
         public static void Configure()
