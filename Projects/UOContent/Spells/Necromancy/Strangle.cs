@@ -61,7 +61,7 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
             m.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
             // According to testing on OSI, it is refreshed.
-            if (_table.TryGetValue(m, out var timer))
+            if (_table.Remove(m, out var timer))
             {
                 timer.Stop();
             }
@@ -71,42 +71,33 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
             timer.Start();
 
             HarmfulSpell(m);
+
+            /* Note: OSI has a bug where the last "tick" is at 0 seconds and never happens.
+             * Example: 100SS -> 39s, 9 ticks, buff icon disappears with 3s left.
+             * 5.5, 5, 5, 5, 4, 3.5, 3, 3, 2 -> off.
+             *
+             * On ModernUO: 100SS -> 34s, 10 ticks
+             * We opt for the last tick at 1 second, so the duration is 1 second longer than it needs to be.
+             */
+
+            // Calculations for the buff bar
+            var power = Math.Max(4, Caster.Skills.SpiritSpeak.Value / 10);
+
+            // Closed formula based on loop:
+            // MaxCount = 4 -> 5 + (4 + 3 + 2 + 1)
+            // MaxCount > 4 -> 5 + (for each count, Ceiling((1.0 + 5 * count) / power) not to exceed 5)
+            var totalLength = power % 5 == 0
+                ? 3 * power + 5
+                : 3 * power + 3;
+
+            var duration = TimeSpan.FromSeconds(totalLength);
+
+            const int minDamage = 4;
+            var maxDamage = ((int)power + 1) * 3;
+            var args = $"{minDamage}\t{maxDamage}";
+
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, duration, m, args));
         }
-
-        // Calculations for the buff bar
-        var spiritlevel = Math.Max(4, Caster.Skills.SpiritSpeak.Value / 10);
-
-        const int minDamage = 4;
-        var maxDamage = ((int)spiritlevel + 1) * 3;
-        var args = $"{minDamage}\t{maxDamage}";
-
-        var count = (int)spiritlevel;
-        var maxCount = count;
-        var hitDelay = 5;
-        var length = hitDelay;
-
-        while (count >= 1)
-        {
-            --count;
-            if (hitDelay > 1)
-            {
-                if (maxCount < 5)
-                {
-                    --hitDelay;
-                }
-                else
-                {
-                    var delay = (int)Math.Ceiling((1.0 + 5 * count) / maxCount);
-
-                    hitDelay = delay <= 5 ? delay : 5;
-                }
-            }
-
-            length += hitDelay;
-        }
-
-        var t_Duration = TimeSpan.FromSeconds(length);
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, t_Duration, m, args));
     }
 
     public override void OnCast()
@@ -143,15 +134,15 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
             _target = target;
             _from = from;
 
-            var spiritLevel = from.Skills.SpiritSpeak.Value / 10;
+            var power = from.Skills.SpiritSpeak.Value / 10;
 
-            _minBaseDamage = spiritLevel - 2;
-            _maxBaseDamage = spiritLevel + 1;
+            _minBaseDamage = power - 2;
+            _maxBaseDamage = power + 1;
 
             _hitDelay = 5;
             _nextHit = Core.Now + TimeSpan.FromSeconds(_hitDelay);
 
-            _maxCount = _count = Math.Max(4, (int)spiritLevel);
+            _maxCount = _count = Math.Max(4, (int)power);
         }
 
         protected override void OnTick()
@@ -160,14 +151,21 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
             {
                 _table.Remove(_target);
                 Stop();
+                return;
             }
 
-            if (!_target.Alive || Core.Now < _nextHit)
+            if (Core.Now < _nextHit)
             {
                 return;
             }
 
-            --_count;
+            if (--_count == 0)
+            {
+                _target.SendLocalizedMessage(1061687); // You can breathe normally again.
+                _table.Remove(_target);
+                Stop();
+                return;
+            }
 
             if (_hitDelay > 1)
             {
@@ -177,50 +175,32 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
                 }
                 else
                 {
-                    var delay = (int)Math.Ceiling((1.0 + 5 * _count) / _maxCount);
-
-                    if (delay <= 5)
-                    {
-                        _hitDelay = delay;
-                    }
-                    else
-                    {
-                        _hitDelay = 5;
-                    }
+                    _hitDelay = (int)Math.Min(Math.Ceiling((1.0 + 5 * _count) / _maxCount), 5);
                 }
             }
 
-            if (_count == 0)
+            _nextHit = Core.Now + TimeSpan.FromSeconds(_hitDelay);
+
+            var damage = Utility.RandomMinMax(_minBaseDamage, _maxBaseDamage);
+
+            damage *= 3 - (double)_target.Stam / _target.StamMax * 2;
+
+            if (damage < 1)
             {
-                _target.SendLocalizedMessage(1061687); // You can breath normally again.
-                _table.Remove(_target);
-                Stop();
+                damage = 1;
             }
-            else
+
+            if (!_target.Player)
             {
-                _nextHit = Core.Now + TimeSpan.FromSeconds(_hitDelay);
+                damage *= 1.75;
+            }
 
-                var damage = _minBaseDamage + Utility.RandomDouble() * (_maxBaseDamage - _minBaseDamage);
+            AOS.Damage(_target, _from, (int)damage, 0, 0, 0, 100, 0);
 
-                damage *= 3 - (double)_target.Stam / _target.StamMax * 2;
-
-                if (damage < 1)
-                {
-                    damage = 1;
-                }
-
-                if (!_target.Player)
-                {
-                    damage *= 1.75;
-                }
-
-                AOS.Damage(_target, _from, (int)damage, 0, 0, 0, 100, 0);
-
-                // OSI: randomly revealed between first and third damage tick, guessing 60% chance
-                if (Utility.RandomDouble() < 0.40)
-                {
-                    _target.RevealingAction();
-                }
+            // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+            if (Utility.RandomDouble() < 0.40)
+            {
+                _target.RevealingAction();
             }
         }
     }
