@@ -3179,72 +3179,51 @@ public abstract class BaseAI
         {
             if (ShouldStop())
             {
-                HideMobile();
+                Stop();
                 return;
             }
-        
-            Interval = TimeSpan.FromMilliseconds(GetBaseInterval(m_Owner));
-        
-            HandleBardEffects();
-            HandleDetectHidden();
 
-            // additional check
+            // update interval based on current state and speed
+            Interval = TimeSpan.FromMilliseconds(GetBaseInterval(m_Owner));
+            m_Owner.m_Mobile.OnThink();
+
             if (ShouldStop())
             {
-                HideMobile();
+                Stop();
                 return;
             }
-        
-            if (m_Owner.m_Mobile.Controlled)
+
+            HandleBardEffects();
+
+            if (m_Owner.m_Mobile.Controlled ? !m_Owner.Obey() : !m_Owner.Think())
             {
-                if (!m_Owner.Obey())
-                {
-                    HideMobile();
-                    return;
-                }
-            }
-            else if (!m_Owner.Think())
-            {
-                HideMobile();
+                Stop();
                 return;
             }
-        
-            if (!ShouldStop())
-            {
-                m_Owner.m_Mobile.OnThink();
-            }
+
+            HandleDetectHidden();
         }
-        
-        private void HideMobile()
-        {
-            if (!m_Owner.m_Mobile.Hidden)
-            {
-                m_Owner.m_Mobile.Name = $"Invalid {m_Owner.m_Mobile.Name}";
-                m_Owner.m_Mobile.Hidden = true;
-            }
-            Stop();
-        }
-        
+
         private bool ShouldStop()
         {
-            if (m_Owner.m_Mobile.Hidden)
+            if (m_Owner.m_Mobile.Deleted)
             {
                 return true;
             }
-        
+
             if (m_Owner.m_Mobile.Map == null || m_Owner.m_Mobile.Map == Map.Internal)
             {
                 m_Owner.Deactivate();
                 return true;
             }
-        
+
             if (m_Owner.m_Mobile.PlayerRangeSensitive && 
                 !m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile.Location).Active)
             {
-                HideMobile();
+                m_Owner.Deactivate();
                 return true;
             }
-        
+
             return false;
         }
 
