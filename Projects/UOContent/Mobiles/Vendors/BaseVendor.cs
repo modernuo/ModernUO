@@ -560,9 +560,6 @@ namespace Server.Mobiles
                     }
                 }
             }
-            
-            // No CliLoc available for this message; enabled string interpolation for readability.
-            SayTo( seller, true, $"Thank you! I bought {Sold} item{(Sold > 1 ? "s" : "")}. Here is your {GiveGold}gp.");
 
             return true;
         }
