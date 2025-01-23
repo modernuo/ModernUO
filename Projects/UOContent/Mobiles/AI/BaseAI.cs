@@ -1264,6 +1264,9 @@ public abstract class BaseAI
             }
 
             m_Mobile.ControlTarget = null;
+            m_Mobile.Warmode = false;
+            m_Mobile.Combatant = null;
+            m_Mobile.FocusMob = null;
             m_Mobile.ControlOrder = OrderType.None;
         }
     
@@ -1290,12 +1293,26 @@ public abstract class BaseAI
                 DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
             }
             
-            var minFollowDist = 1;
-            var shouldRun = currentDistance > 5;
-    
-            if (WalkMobileRange(m_Mobile.ControlTarget, 1, shouldRun, 0, 1))
+            var minFollowDist = 2;
+            var shouldRun = currentDistance > 6;
+            var maxFollowDist = shouldRun ? 4 : 3;
+            
+            if (currentDistance <= maxFollowDist + 1)
             {
-                UpdateCombatantState();
+                m_Mobile.CurrentSpeed = currentDistance <= minFollowDist ? 
+                    m_Mobile.PassiveSpeed : 
+                    (m_Mobile.PassiveSpeed + m_Mobile.ActiveSpeed) / 2;
+                    
+                m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
+            }
+            else
+            {
+                m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                if (WalkMobileRange(m_Mobile.ControlTarget, minFollowDist,
+                    shouldRun, minFollowDist, maxFollowDist))
+                {
+                    UpdateCombatantState();
+                }
             }
         }
     }
