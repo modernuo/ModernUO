@@ -683,11 +683,6 @@ public abstract class BaseAI
             return false;
         }
 
-        /*if (CheckLeashed())
-        {
-            return true;
-        }*/
-
         if (CheckFlee())
         {
             return true;
@@ -3406,55 +3401,4 @@ public abstract class BaseAI
             }
         }
     }
-
-    /*public virtual bool CheckLeashed()
-    {
-        if (m_Mobile.Deleted || !m_Mobile.Alive)
-        {
-            return false;
-        }
-
-        var combatant = m_Mobile.Combatant;
-        var controlMaster = m_Mobile.ControlMaster;
-
-        if (m_Mobile.Controlled && controlMaster?.Deleted == false)
-        {
-            if (m_Mobile.GetDistanceToSqrt(controlMaster) > 16)
-            {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("I am leashed away from my master! Returning...");
-                }
-
-                m_Mobile.Combatant = null;
-                m_Mobile.FocusMob = null;
-                m_Mobile.Warmode = false;
-                m_Mobile.ControlTarget = controlMaster;
-                m_Mobile.ControlOrder = OrderType.Come;
-                return true;
-            }
-        }
-
-        if (combatant != null && m_Mobile.GetDistanceToSqrt(combatant) > 16)
-        {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I have been leashed! Returning home...");
-            }
-
-            m_Mobile.Combatant = null;
-            m_Mobile.FocusMob = null;
-            m_Mobile.Warmode = false;
-
-            if ((m_Mobile.Controlled || m_Mobile.Summoned) && controlMaster?.Deleted == false)
-            {
-                m_Mobile.ControlTarget = controlMaster;
-                m_Mobile.ControlOrder = OrderType.Come;
-            }
-
-            return true;
-        }
-
-        return false;
-    }*/
 }
