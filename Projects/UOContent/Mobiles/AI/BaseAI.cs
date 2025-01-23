@@ -1020,11 +1020,11 @@ public abstract class BaseAI
     
     private void HandlePassiveOrder()
     {
-        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
         m_Mobile.FocusMob = null;
+        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
     
     private void HandleGuardOrder()
@@ -1059,10 +1059,10 @@ public abstract class BaseAI
             return;
         }
 
-        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
         m_Mobile.Warmode = true;
         m_Mobile.FocusMob = null;
+        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
     
     private void HandleFollowOrder()
@@ -1072,11 +1072,10 @@ public abstract class BaseAI
             return;
         }
 
-        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
         m_Mobile.FocusMob = null;
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
 
     public virtual bool DoOrderNone()
