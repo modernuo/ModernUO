@@ -194,9 +194,8 @@ public abstract class BaseAI
         list.Add(new InternalEntry(3006112, 14, OrderType.Stop, true));             // Command: Stop
         list.Add(new InternalEntry(3006114, 14, OrderType.Stay, true));             // Command: Stay
 
-        // The rename feature is on OSI, but not here.
-        // Have not coded rename entry command logic in BaseCreature.cs yet.
-        // list.Add(new InternalEntry(3006116, 14, OrderType.Rename, true));          // Command: Rename
+        // This command is on OSI. However, the cliloc must be manually added to client files.
+        list.Add(new InternalEntry(3006098, 14, OrderType.Rename, true));           // Command: Rename
 
         if (m_Mobile.CanDrop)
         {
