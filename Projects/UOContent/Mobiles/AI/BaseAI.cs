@@ -369,6 +369,14 @@ public abstract class BaseAI
         return from.Alive && from.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown();
     }
 
+    private static readonly Dictionary<int, Action<BaseAI, Mobile>> CommandActions = new()
+    {
+        { 0x9D, (ai, _) => ai.HandleMove() },     // *move*
+        { 0x9E, (ai, _) => ai.HandleTime() },     // *time*
+        { 0x6C, (ai, m) => ai.HandleTraining(m) } // *train*
+    };
+    
+
     public virtual void OnSpeech(SpeechEventArgs e)
     {
         if (!e.Mobile.Alive || !e.Mobile.InRange(m_Mobile.Location, 3) || !m_Mobile.IsHumanInTown())
@@ -378,23 +386,16 @@ public abstract class BaseAI
     
         if (m_Mobile.Combatant != null)
         {
-            m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501482); 
+            m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501482);
             // 501482: I am too busy fighting to deal with thee!
             return;
         }
     
-        var actions = new Dictionary<int, Action>
-        {
-            { 0x9D, () => HandleMove() }, // *move*
-            { 0x9E, () => HandleTime() }, // *time*
-            { 0x6C, () => HandleTraining(e.Mobile) } // *train*
-        };
-    
-        foreach (var (keyword, action) in actions)
+        foreach (var (keyword, action) in CommandActions)
         {
             if (e.HasKeyword(keyword) && WasNamed(e.Speech))
             {
-                action();
+                action(this, e.Mobile);
                 return;
             }
         }
