@@ -1146,14 +1146,7 @@ public abstract class BaseAI
 
     private void RefreshCombatantState()
     {
-        if (IsValidCombatant(m_Mobile.Combatant))
-        {
-            m_Mobile.Warmode = true;
-        }
-        else
-        {
-            m_Mobile.Warmode = false;
-        }
+        m_Mobile.Warmode = IsValidCombatant(m_Mobile.Combatant);
     }
 
     public virtual bool DoOrderDrop()
