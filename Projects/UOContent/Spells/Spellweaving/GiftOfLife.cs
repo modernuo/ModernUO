@@ -68,7 +68,7 @@ namespace Server.Spells.Spellweaving
 
                 _table[m] = t;
 
-                BuffInfo.AddBuff(m,
+                (m as PlayerMobile)?.AddBuff(
                     new BuffInfo(BuffIcon.GiftOfLife, 1031615, 1075807, duration, retainThroughDeath: true)
                 );
             }
@@ -155,7 +155,7 @@ namespace Server.Spells.Spellweaving
                 _mobile.SendLocalizedMessage(1074776); // You are no longer protected with Gift of Life.
                 _table.Remove(_mobile);
 
-                BuffInfo.RemoveBuff(_mobile, BuffIcon.GiftOfLife);
+                (_mobile as PlayerMobile)?.RemoveBuff(BuffIcon.GiftOfLife);
             }
         }
     }

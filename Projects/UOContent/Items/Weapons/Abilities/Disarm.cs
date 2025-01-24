@@ -1,5 +1,6 @@
 using System;
 using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -70,7 +71,7 @@ namespace Server.Items
 
                 pack.DropItem(toDisarm);
 
-                BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.NoRearm, 1075637, BlockEquipDuration));
+                (defender as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.NoRearm, 1075637, BlockEquipDuration));
 
                 BaseWeapon.BlockEquip(defender, BlockEquipDuration);
             }

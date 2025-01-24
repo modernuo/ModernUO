@@ -54,8 +54,11 @@ namespace Server.Spells.Sixth
 
                 var duration = TimeSpan.FromSeconds(1.2 * Caster.Skills.Magery.Value);
 
-                BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, duration)); // Invisibility/Invisible
+                if (m is PlayerMobile pm)
+                {
+                    pm.RemoveBuff(BuffIcon.HidingAndOrStealth);
+                    pm.AddBuff(new BuffInfo(BuffIcon.Invisibility, 1075825, duration)); // Invisibility/Invisible
+                }
 
                 Timer.StartTimer(duration,
                     () =>

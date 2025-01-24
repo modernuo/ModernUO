@@ -60,33 +60,18 @@ public class BuffInfo
         pm.ResendBuffs();
     }
 
-    public void StartTimer(Mobile m)
+    public void StartTimer(PlayerMobile m)
     {
         if (Duration != TimeSpan.Zero)
         {
             StartTime = Core.Now;
-            Timer.StartTimer(Duration, () => RemoveBuff(m, this), out _timerToken);
+            var id = ID;
+            Timer.StartTimer(Duration, () => m.RemoveBuff(id), out _timerToken);
         }
     }
 
-    public static void AddBuff(Mobile m, BuffInfo b)
+    public void StopTimer()
     {
-        (m as PlayerMobile)?.AddBuff(b);
-    }
-
-    public static void RemoveBuff(Mobile m, BuffInfo b)
-    {
-        if (b == null)
-        {
-            return;
-        }
-
-        b._timerToken.Cancel();
-        (m as PlayerMobile)?.RemoveBuff(b.ID);
-    }
-
-    public static void RemoveBuff(Mobile m, BuffIcon b)
-    {
-        (m as PlayerMobile)?.RemoveBuff(b);
+        _timerToken.Cancel();
     }
 }

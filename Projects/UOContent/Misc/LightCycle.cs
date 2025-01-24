@@ -121,7 +121,7 @@ namespace Server
             {
                 m_Owner.EndAction<LightCycle>();
                 m_Owner.LightLevel = 0;
-                BuffInfo.RemoveBuff(m_Owner, BuffIcon.NightSight);
+                (m_Owner as PlayerMobile)?.RemoveBuff(BuffIcon.NightSight);
             }
         }
     }

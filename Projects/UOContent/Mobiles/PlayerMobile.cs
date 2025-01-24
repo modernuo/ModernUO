@@ -753,7 +753,7 @@ namespace Server.Mobiles
                 Freeze(TimeSpan.FromSeconds(1));
                 Animate(61, 10, 1, true, false, 0);
                 Flying = false;
-                BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                RemoveBuff(BuffIcon.Fly);
                 SendMessage("You have landed.");
 
                 BaseMount.Dismount(this);
@@ -811,7 +811,7 @@ namespace Server.Mobiles
                 else
                 {
                     Flying = false;
-                    BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                    RemoveBuff(BuffIcon.Fly);
                 }
             }
         }
@@ -1217,7 +1217,7 @@ namespace Server.Mobiles
 
             if (!Meditating)
             {
-                BuffInfo.RemoveBuff(this, BuffIcon.ActiveMeditation);
+                RemoveBuff(BuffIcon.ActiveMeditation);
             }
         }
 
@@ -1602,7 +1602,7 @@ namespace Server.Mobiles
             else // if (!InvisibilitySpell.HasTimer( this ))
             {
                 // Hidden/Stealthing & You Are Hidden
-                BuffInfo.AddBuff(this, new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
+                AddBuff(new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
             }
         }
 
@@ -2549,7 +2549,7 @@ namespace Server.Mobiles
             if (Flying)
             {
                 Flying = false;
-                BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                RemoveBuff(BuffIcon.Fly);
             }
 
             if (PermaFlags.Count > 0)
@@ -2636,19 +2636,19 @@ namespace Server.Mobiles
 
             if (m_BuffTable != null)
             {
-                using var queue = PooledRefQueue<BuffInfo>.Create();
+                using var queue = PooledRefQueue<BuffIcon>.Create();
 
                 foreach (var buff in m_BuffTable.Values)
                 {
                     if (!buff.RetainThroughDeath)
                     {
-                        queue.Enqueue(buff);
+                        queue.Enqueue(buff.ID);
                     }
                 }
 
                 while (queue.Count > 0)
                 {
-                    BuffInfo.RemoveBuff(this, queue.Dequeue());
+                    RemoveBuff(queue.Dequeue());
                 }
             }
 
@@ -4528,7 +4528,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            BuffInfo.RemoveBuff(this, b); // Check, stop old timer, & subsequently remove the old one.
+            RemoveBuff(b.ID); // Check, stop old timer, & subsequently remove the old one.
             b.StartTimer(this);
 
             m_BuffTable ??= new Dictionary<BuffIcon, BuffInfo>();
@@ -4539,10 +4539,12 @@ namespace Server.Mobiles
 
         public void RemoveBuff(BuffIcon b)
         {
-            if (m_BuffTable?.Remove(b) != true)
+            if (m_BuffTable?.Remove(b, out var buffInfo) != true)
             {
                 return;
             }
+
+            buffInfo.StopTimer();
 
             if (NetState?.BuffIcon == true)
             {

@@ -65,7 +65,7 @@ public class EvilOmenSpell : NecromancerSpell, ITargetingSpell<Mobile>
 
             HarmfulSpell(m);
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EvilOmen, 1075647, 1075648, duration));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.EvilOmen, 1075647, 1075648, duration));
         }
     }
 

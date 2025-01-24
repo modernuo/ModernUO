@@ -119,8 +119,7 @@ namespace Server.Spells.Mysticism
                     var damageBonus = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 12.0);
                     var resistCap = (int)((GetBaseSkill(Caster) + GetDamageSkill(Caster)) / 48.0);
 
-                    BuffInfo.AddBuff(
-                        Caster,
+                    (Caster as PlayerMobile)?.AddBuff(
                         new BuffInfo(
                             BuffIcon.StoneForm,
                             1080145,
@@ -151,7 +150,7 @@ namespace Server.Spells.Mysticism
             m.BodyMod = 0;
             m.HueMod = -1;
 
-            BuffInfo.RemoveBuff(m, BuffIcon.StoneForm);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.StoneForm);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Server.Engines.BuffIcons;
 using Server.Engines.ConPVP;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Second
@@ -35,7 +36,7 @@ namespace Server.Spells.Second
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
 
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Agility, 1075841, length, percentage.ToString()));
+                (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Agility, 1075841, length, percentage.ToString()));
             }
         }
 

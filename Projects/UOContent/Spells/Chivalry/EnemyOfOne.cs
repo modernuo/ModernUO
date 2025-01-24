@@ -50,8 +50,7 @@ namespace Server.Spells.Chivalry
                     mobile.EnemyOfOneType = null;
                     mobile.WaitingForEnemy = true;
 
-                    BuffInfo.AddBuff(
-                        mobile,
+                    mobile.AddBuff(
                         new BuffInfo(BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes(delay))
                     );
                 }

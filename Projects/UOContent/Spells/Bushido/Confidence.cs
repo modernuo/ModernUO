@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Bushido;
 
@@ -70,8 +71,7 @@ public class Confidence : SamuraiSpell
         if (Core.HS)
         {
             var bushido = m.Skills.Bushido.Fixed;
-            BuffInfo.AddBuff(
-                m,
+            (m as PlayerMobile)?.AddBuff(
                 new BuffInfo(
                     BuffIcon.Confidence,
                     1060596,
@@ -83,7 +83,7 @@ public class Confidence : SamuraiSpell
         }
         else
         {
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Confidence, 1060596, TimeSpan.FromSeconds(30)));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Confidence, 1060596, TimeSpan.FromSeconds(30)));
         }
     }
 
@@ -105,7 +105,7 @@ public class Confidence : SamuraiSpell
         if (StopConfidenceTimer(m))
         {
             OnEffectEnd(m, typeof(Confidence));
-            BuffInfo.RemoveBuff(m, BuffIcon.Confidence);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.Confidence);
         }
     }
 

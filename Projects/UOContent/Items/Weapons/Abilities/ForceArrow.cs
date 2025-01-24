@@ -2,6 +2,7 @@ using Server.Spells;
 using System;
 using System.Collections.Generic;
 using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -39,9 +40,7 @@ namespace Server.Items
             {
                 info.Timer.IncreaseExpiration();
 
-                BuffInfo.RemoveBuff(defender, BuffIcon.ForceArrow);
-                BuffInfo.AddBuff(
-                    defender,
+                (defender as PlayerMobile)?.AddBuff(
                     new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, args: info.DefenseChanceMalus.ToString())
                 );
             }
@@ -68,8 +67,7 @@ namespace Server.Items
                 _table.Add(attacker, new List<ForceArrowInfo> { info });
             }
 
-            BuffInfo.AddBuff(
-                defender,
+            (defender as PlayerMobile)?.AddBuff(
                 new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, args: info.DefenseChanceMalus.ToString())
             );
         }
@@ -88,7 +86,7 @@ namespace Server.Items
                 _table.Remove(attacker);
             }
 
-            BuffInfo.RemoveBuff(info.Defender, BuffIcon.ForceArrow);
+            (info.Defender as PlayerMobile)?.RemoveBuff(BuffIcon.ForceArrow);
         }
 
         public static bool HasForceArrow(Mobile attacker, Mobile defender)
