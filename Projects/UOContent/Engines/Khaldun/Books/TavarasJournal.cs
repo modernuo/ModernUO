@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
-public class TavarasJournal1 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal1 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -66,28 +69,11 @@ public class TavarasJournal1 : BaseBook
     {
     }
 
-    public TavarasJournal1(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal2 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal2 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -186,28 +172,11 @@ public class TavarasJournal2 : BaseBook
     {
     }
 
-    public TavarasJournal2(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal3 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal3 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -277,28 +246,11 @@ public class TavarasJournal3 : BaseBook
     {
     }
 
-    public TavarasJournal3(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal6 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal6 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -380,28 +332,11 @@ public class TavarasJournal6 : BaseBook
     {
     }
 
-    public TavarasJournal6(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal7 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal7 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -472,28 +407,11 @@ public class TavarasJournal7 : BaseBook
     {
     }
 
-    public TavarasJournal7(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal8 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal8 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -582,28 +500,11 @@ public class TavarasJournal8 : BaseBook
     {
     }
 
-    public TavarasJournal8(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal9 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal9 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -670,28 +571,11 @@ public class TavarasJournal9 : BaseBook
     {
     }
 
-    public TavarasJournal9(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal11 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal11 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -780,28 +664,11 @@ public class TavarasJournal11 : BaseBook
     {
     }
 
-    public TavarasJournal11(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal14 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal14 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -882,28 +749,11 @@ public class TavarasJournal14 : BaseBook
     {
     }
 
-    public TavarasJournal14(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal16 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal16 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -995,28 +845,11 @@ public class TavarasJournal16 : BaseBook
     {
     }
 
-    public TavarasJournal16(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal16b : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal16b : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -1098,28 +931,11 @@ public class TavarasJournal16b : BaseBook
     {
     }
 
-    public TavarasJournal16b(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal17 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal17 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -1165,28 +981,11 @@ public class TavarasJournal17 : BaseBook
     {
     }
 
-    public TavarasJournal17(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class TavarasJournal19 : BaseBook
+[SerializationGenerator(0)]
+public partial class TavarasJournal19 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Journal: Discovery of the Tomb",
@@ -1222,23 +1021,5 @@ public class TavarasJournal19 : BaseBook
     {
     }
 
-    public TavarasJournal19(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
