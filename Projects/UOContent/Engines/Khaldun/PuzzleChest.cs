@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Network;
 
@@ -807,77 +808,58 @@ namespace Server.Items
             }
         }
 
-        private class StatusGump : Gump
+        private class StatusGump : StaticGump<StatusGump>
         {
+            private readonly int _correctCylinders;
+            private readonly int _correctColors;
+
             public StatusGump(int correctCylinders, int correctColors) : base(50, 50)
             {
-                AddBackground(15, 250, 305, 163, 0x53);
-                AddBackground(28, 265, 280, 133, 0xBB8);
+                _correctCylinders = correctCylinders;
+                _correctColors = correctColors;
+            }
 
-                AddHtmlLocalized(35, 271, 270, 24, 1018314); // Thou hast failed to solve the puzzle!
+            protected override void BuildLayout(ref StaticGumpBuilder builder)
+            {
+                builder.AddBackground(15, 250, 305, 163, 0x53);
+                builder.AddBackground(28, 265, 280, 133, 0xBB8);
 
-                AddHtmlLocalized(35, 297, 250, 24, 1018315); // Correctly placed colors:
-                AddLabel(285, 297, 0x44, correctCylinders.ToString());
+                builder.AddHtmlLocalized(35, 271, 270, 24, 1018314); // Thou hast failed to solve the puzzle!
 
-                AddHtmlLocalized(35, 323, 250, 24, 1018316); // Used colors in wrong slots:
-                AddLabel(285, 323, 0x44, correctColors.ToString());
+                builder.AddHtmlLocalized(35, 297, 250, 24, 1018315); // Correctly placed colors:
+                builder.AddLabelPlaceholder(285, 297, 0x44, "cylinders");
 
-                AddButton(152, 369, 0xFA5, 0xFA7, 0);
+                builder.AddHtmlLocalized(35, 323, 250, 24, 1018316); // Used colors in wrong slots:
+                builder.AddLabelPlaceholder(285, 323, 0x44, "colors");
+
+                builder.AddButton(152, 369, 0xFA5, 0xFA7, 0);
+            }
+
+            protected override void BuildStrings(ref GumpStringsBuilder builder)
+            {
+                builder.SetStringSlot("cylinders", _correctCylinders.ToString());
+                builder.SetStringSlot("colors", _correctColors.ToString());
             }
         }
     }
 
     [Flippable(0xE41, 0xE40)]
-    public class MetalGoldenPuzzleChest : PuzzleChest
+    [SerializationGenerator(0)]
+    public partial class MetalGoldenPuzzleChest : PuzzleChest
     {
         [Constructible]
         public MetalGoldenPuzzleChest() : base(0xE41)
         {
         }
-
-        public MetalGoldenPuzzleChest(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
-        }
     }
 
     [Flippable(0xE80, 0x9A8)]
-    public class StrongBoxPuzzle : PuzzleChest
+    [SerializationGenerator(0)]
+    public partial class StrongBoxPuzzle : PuzzleChest
     {
         [Constructible]
         public StrongBoxPuzzle() : base(0xE80)
         {
-        }
-
-        public StrongBoxPuzzle(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadEncodedInt();
         }
     }
 }
