@@ -2724,8 +2724,7 @@ public abstract class BaseAI
             return m == m_Mobile.SummonMaster || 
                    !SpellHelper.ValidIndirectTarget(m_Mobile.SummonMaster, m) ||
                    (pm != null && m_Mobile.IsAnimatedDead) || 
-                   (m_Mobile.IsAnimatedDead && bc?.IsAnimatedDead == true) ||
-                   (m_Mobile.IsAnimatedDead && bc?.Controlled == true);
+                   (m_Mobile.IsAnimatedDead && (bc?.IsAnimatedDead == true) || bc?.Controlled == true);
         }
 
         return false;
