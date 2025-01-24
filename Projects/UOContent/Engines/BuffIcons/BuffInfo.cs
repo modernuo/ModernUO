@@ -49,17 +49,6 @@ public class BuffInfo
         Enabled = ServerConfiguration.GetOrUpdateSetting("buffIcons.enable", Core.ML);
     }
 
-    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
-    public static void OnLogin(PlayerMobile pm)
-    {
-        if (!Enabled)
-        {
-            return;
-        }
-
-        pm.ResendBuffs();
-    }
-
     public void StartTimer(PlayerMobile m)
     {
         if (Duration != TimeSpan.Zero)

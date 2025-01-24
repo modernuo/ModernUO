@@ -1265,6 +1265,7 @@ namespace Server.Mobiles
             VirtueSystem.CheckAtrophies(from);
             from.ClaimAutoStabledPets();
             AnimalForm.GetContext(from)?.Timer.Start();
+            from.ResendBuffs();
         }
 
         private class ServerLockdownNoticeGump : StaticNoticeGump<ServerLockdownNoticeGump>
