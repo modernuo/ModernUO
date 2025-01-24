@@ -8,8 +8,12 @@ namespace Server.Mobiles
         public override string DefaultName => "a war horse";
 
         public BaseWarHorse(
-            int bodyID, int itemID, AIType aiType = AIType.AI_Melee, FightMode fightMode = FightMode.Aggressor,
-            int rangePerception = 10, int rangeFight = 1
+            int bodyID,
+            int itemID,
+            AIType aiType = AIType.AI_Melee,
+            FightMode fightMode = FightMode.Aggressor,
+            int rangePerception = DefaultRangePerception,
+            int rangeFight = 1
         ) : base(
             bodyID,
             itemID,
