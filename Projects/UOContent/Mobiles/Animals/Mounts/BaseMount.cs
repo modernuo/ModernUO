@@ -15,7 +15,7 @@ public abstract partial class BaseMount : BaseCreature, IMount
         int itemID,
         AIType aiType,
         FightMode fightMode = FightMode.Closest,
-        int rangePerception = 10,
+        int rangePerception = DefaultRangePerception,
         int rangeFight = 1
     ) : base(aiType, fightMode, rangePerception, rangeFight)
     {
