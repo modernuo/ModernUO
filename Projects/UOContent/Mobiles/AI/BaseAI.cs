@@ -336,7 +336,8 @@ public abstract class BaseAI
                 target is BlackSolenInfiltratorQueen or BlackSolenInfiltratorWarrior
                     or BlackSolenQueen or BlackSolenWarrior or BlackSolenWorker)
         {
-            from.SendAsciiMessage("You cannot command your pet to attack a creature you are protected from.");
+            from.SendLocalizedMessage(1063106);
+            // 1063106: You can not force your pet to attack a creature you are protected from.
             return false;
         }
 
@@ -1794,9 +1795,9 @@ public abstract class BaseAI
             else if (IsInCombatState())
             {
                 from.SendLocalizedMessage(1042561);
-                // 1042561: You may not transfer a pet that has recently been in combat.
+                // 1042561: Please dismount first.
                 to.SendLocalizedMessage(1042562);
-                // 1042562: The pet may not be transferred to you because it has recently been in combat.
+                // 1042562: You do not own that pet!
             }
             else
             {
