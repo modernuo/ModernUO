@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -78,7 +79,7 @@ public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
         if (_table.Remove(m, out var timer))
         {
             timer.Stop();
-            BuffInfo.RemoveBuff(m, BuffIcon.SpellPlague);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.SpellPlague);
             return true;
         }
 
@@ -129,9 +130,8 @@ public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
 
         public void StartPlague()
         {
-            BuffInfo.AddBuff(
-                _target,
-                new BuffInfo(BuffIcon.SpellPlague, 1031690, 1080167, TimeSpan.FromSeconds(8.5), _target)
+            (_target as PlayerMobile)?.AddBuff(
+                new BuffInfo(BuffIcon.SpellPlague, 1031690, 1080167, TimeSpan.FromSeconds(8.5))
             );
 
             _nextExplosion = Core.Now + TimeSpan.FromSeconds(1);
@@ -184,7 +184,7 @@ public class SpellPlagueSpell : MysticSpell, ITargetingSpell<Mobile>
             else
             {
                 _table.Remove(_target);
-                BuffInfo.RemoveBuff(_target, BuffIcon.SpellPlague);
+                (_target as PlayerMobile)?.RemoveBuff(BuffIcon.SpellPlague);
             }
 
             _next = null;

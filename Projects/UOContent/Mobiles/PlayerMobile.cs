@@ -4,6 +4,7 @@ using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.BuffIcons;
 using Server.Engines.BulkOrders;
 using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
@@ -752,7 +753,7 @@ namespace Server.Mobiles
                 Freeze(TimeSpan.FromSeconds(1));
                 Animate(61, 10, 1, true, false, 0);
                 Flying = false;
-                BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                RemoveBuff(BuffIcon.Fly);
                 SendMessage("You have landed.");
 
                 BaseMount.Dismount(this);
@@ -810,7 +811,7 @@ namespace Server.Mobiles
                 else
                 {
                     Flying = false;
-                    BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                    RemoveBuff(BuffIcon.Fly);
                 }
             }
         }
@@ -1216,7 +1217,7 @@ namespace Server.Mobiles
 
             if (!Meditating)
             {
-                BuffInfo.RemoveBuff(this, BuffIcon.ActiveMeditation);
+                RemoveBuff(BuffIcon.ActiveMeditation);
             }
         }
 
@@ -1264,6 +1265,7 @@ namespace Server.Mobiles
             VirtueSystem.CheckAtrophies(from);
             from.ClaimAutoStabledPets();
             AnimalForm.GetContext(from)?.Timer.Start();
+            from.ResendBuffs();
         }
 
         private class ServerLockdownNoticeGump : StaticNoticeGump<ServerLockdownNoticeGump>
@@ -1591,10 +1593,8 @@ namespace Server.Mobiles
         {
             base.OnHiddenChanged();
 
-            RemoveBuff(
-                BuffIcon
-                    .Invisibility
-            ); // Always remove, default to the hiding icon EXCEPT in the invis spell where it's explicitly set
+            // Always remove, default to the hiding icon EXCEPT in the invis spell where it's explicitly set
+            RemoveBuff(BuffIcon.Invisibility);
 
             if (!Hidden)
             {
@@ -1602,10 +1602,8 @@ namespace Server.Mobiles
             }
             else // if (!InvisibilitySpell.HasTimer( this ))
             {
-                BuffInfo.AddBuff(
-                    this,
-                    new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655)
-                ); // Hidden/Stealthing & You Are Hidden
+                // Hidden/Stealthing & You Are Hidden
+                AddBuff(new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
             }
         }
 
@@ -2552,7 +2550,7 @@ namespace Server.Mobiles
             if (Flying)
             {
                 Flying = false;
-                BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                RemoveBuff(BuffIcon.Fly);
             }
 
             if (PermaFlags.Count > 0)
@@ -2625,12 +2623,9 @@ namespace Server.Mobiles
                 }
             }
 
-            if (Young && DuelContext == null)
+            if (Young && DuelContext == null && YoungDeathTeleport())
             {
-                if (YoungDeathTeleport())
-                {
-                    Timer.StartTimer(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
-                }
+                Timer.StartTimer(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
             }
 
             if (DuelContext?.Registered != true || !DuelContext.Started || m_DuelPlayer?.Eliminated != false)
@@ -2642,13 +2637,13 @@ namespace Server.Mobiles
 
             if (m_BuffTable != null)
             {
-                using var queue = PooledRefQueue<BuffInfo>.Create();
+                using var queue = PooledRefQueue<BuffIcon>.Create();
 
                 foreach (var buff in m_BuffTable.Values)
                 {
                     if (!buff.RetainThroughDeath)
                     {
-                        queue.Enqueue(buff);
+                        queue.Enqueue(buff.ID);
                     }
                 }
 
@@ -4478,20 +4473,41 @@ namespace Server.Mobiles
 
         public void SendAddBuffPacket(BuffInfo buffInfo)
         {
-            if (buffInfo == null)
+            if (buffInfo == null || NetState?.BuffIcon != true)
             {
                 return;
             }
 
+            var duration = Utility.Max(buffInfo.Duration - (Core.Now - buffInfo.StartTime), TimeSpan.Zero).TotalSeconds;
+            var rounded = Math.Round(duration);
+            var offset = duration - rounded;
+            if (offset > 0)
+            {
+                Timer.DelayCall(TimeSpan.FromSeconds(offset), () =>
+                    {
+                        // They are still online, we still have the buff icon in the table, and it is the same buff icon
+                        if (NetState != null && m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
+                        {
+                            SendAddBuffPacket(buffInfo, (long)rounded);
+                        }
+                    }
+                );
+            }
+            else // Round up, will be removed a little bit early by the server
+            {
+                SendAddBuffPacket(buffInfo, (long)rounded);
+            }
+        }
+
+        private void SendAddBuffPacket(BuffInfo buffInfo, long ticks)
+        {
             NetState.SendAddBuffPacket(
                 Serial,
                 buffInfo.ID,
                 buffInfo.TitleCliloc,
                 buffInfo.SecondaryCliloc,
                 buffInfo.Args,
-                buffInfo.TimeStart == 0
-                    ? 0
-                    : Math.Max(buffInfo.TimeStart + (long)buffInfo.TimeLength.TotalMilliseconds - Core.TickCount, 0)
+                ticks
             );
         }
 
@@ -4513,50 +4529,23 @@ namespace Server.Mobiles
                 return;
             }
 
-            RemoveBuff(b); // Check & subsequently remove the old one.
+            RemoveBuff(b.ID); // Check, stop old timer, & subsequently remove the old one.
+            b.StartTimer(this);
 
             m_BuffTable ??= new Dictionary<BuffIcon, BuffInfo>();
-
             m_BuffTable.Add(b.ID, b);
 
-            if (NetState?.BuffIcon == true)
-            {
-                // Synchronize the buff icon as close to _on the second_ as we can.
-                var msecs = b.TimeLength.Milliseconds;
-                if (msecs >= 8)
-                {
-                    Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), (buffInfo, pm) =>
-                    {
-                        // They are still online, we still have the buff icon in the table, and it is the same buff icon
-                        if (pm.NetState != null && pm.m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
-                        {
-                            pm.SendAddBuffPacket(buffInfo);
-                        }
-                    }, b, this);
-                }
-                else
-                {
-                    SendAddBuffPacket(b);
-                }
-            }
-        }
-
-        public void RemoveBuff(BuffInfo b)
-        {
-            if (b == null)
-            {
-                return;
-            }
-
-            RemoveBuff(b.ID);
+            SendAddBuffPacket(b);
         }
 
         public void RemoveBuff(BuffIcon b)
         {
-            if (m_BuffTable?.Remove(b) != true)
+            if (m_BuffTable?.Remove(b, out var buffInfo) != true)
             {
                 return;
             }
+
+            buffInfo.StopTimer();
 
             if (NetState?.BuffIcon == true)
             {

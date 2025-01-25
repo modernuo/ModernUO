@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Spellweaving
 {
@@ -62,9 +64,8 @@ namespace Server.Spells.Spellweaving
 
                 Caster.BeginAction<AttuneWeaponSpell>();
 
-                BuffInfo.AddBuff(
-                    Caster,
-                    new BuffInfo(BuffIcon.AttuneWeapon, 1075798, duration, Caster, damageAbsorb.ToString())
+                (Caster as PlayerMobile)?.AddBuff(
+                    new BuffInfo(BuffIcon.AttuneWeapon, 1075798, duration, damageAbsorb.ToString())
                 );
             }
 
@@ -130,7 +131,7 @@ namespace Server.Spells.Spellweaving
                 _table.Remove(m_Mobile);
 
                 StartTimer(TimeSpan.FromSeconds(120), m_Mobile.EndAction<AttuneWeaponSpell>);
-                BuffInfo.RemoveBuff(m_Mobile, BuffIcon.AttuneWeapon);
+                (m_Mobile as PlayerMobile)?.RemoveBuff(BuffIcon.AttuneWeapon);
             }
         }
     }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Chivalry;
 
@@ -52,24 +54,19 @@ public class DivineFurySpell : PaladinSpell
 
             if (Core.HS) // Publish 71 with boost
             {
-                BuffInfo.AddBuff(
-                    Caster,
+                (Caster as PlayerMobile)?.AddBuff(
                     new BuffInfo(
                         BuffIcon.DivineFury,
                         1060589,
                         1150218,
                         delay,
-                        Caster,
                         $"{timer.AttackBonus}\t{timer.DamageBonus}\t{timer.WeaponSpeed}\t{timer.DefendMalus}"
                     )
                 );
             }
             else
             {
-                BuffInfo.AddBuff(
-                    Caster,
-                    new BuffInfo(BuffIcon.DivineFury, 1060589, 1075634, delay, Caster)
-                );
+                (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.DivineFury, 1060589, 1075634, delay));
             }
         }
 
@@ -116,7 +113,7 @@ public class DivineFurySpell : PaladinSpell
         RemoveTimer(m);
         m.Delta(MobileDelta.WeaponDamage);
         m.PlaySound(0xF8);
-        BuffInfo.RemoveBuff(m, BuffIcon.DivineFury);
+        (m as PlayerMobile)?.RemoveBuff(BuffIcon.DivineFury);
     }
 
     public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);

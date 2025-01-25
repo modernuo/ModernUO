@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -64,7 +65,7 @@ public class EvilOmenSpell : NecromancerSpell, ITargetingSpell<Mobile>
 
             HarmfulSpell(m);
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EvilOmen, 1075647, 1075648, duration, m));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.EvilOmen, 1075647, 1075648, duration));
         }
     }
 

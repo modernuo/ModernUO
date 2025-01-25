@@ -1,4 +1,6 @@
+using Server.Engines.BuffIcons;
 using Server.Engines.ConPVP;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Third
@@ -38,7 +40,7 @@ namespace Server.Spells.Third
 
                 var args = $"{percentage}\t{percentage}\t{percentage}";
 
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Bless, 1075847, 1075848, length, m, args));
+                (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Bless, 1075847, 1075848, length, args));
             }
         }
 

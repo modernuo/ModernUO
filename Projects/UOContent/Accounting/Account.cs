@@ -21,7 +21,7 @@ public partial class Account : IAccount, IComparable<Account>
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
 
     [InternString]
-    [SerializableField(0)]
+    [SerializableField(0, setter: "private")]
     private string _username;
 
     [SerializableField(1)]
@@ -364,6 +364,19 @@ public partial class Account : IAccount, IComparable<Account>
     }
 
     public bool Deleted { get; private set; }
+
+    public bool TrySetUsername(string username)
+    {
+        if (username == _username || Accounts.GetAccount(username) != null)
+        {
+            return false;
+        }
+
+        Accounts.Remove(this);
+        Username = username;
+        Accounts.Add(this);
+        return true;
+    }
 
     public void SetPassword(string plainPassword)
     {

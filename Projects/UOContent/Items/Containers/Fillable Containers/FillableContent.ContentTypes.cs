@@ -48,12 +48,8 @@ public partial class FillableContent
 {
     private static readonly FillableContent Alchemist = new(
         1,
-        new[]
-        {
-            typeof(Alchemist)
-        },
-        new[]
-        {
+        [typeof(Alchemist)],
+        [
             new FillableEntry(typeof(NightSightPotion)),
             new FillableEntry(typeof(LesserCurePotion)),
             new FillableEntry(typeof(AgilityPotion)),
@@ -63,17 +59,13 @@ public partial class FillableContent
             new FillableEntry(typeof(LesserHealPotion)),
             new FillableEntry(typeof(LesserExplosionPotion)),
             new FillableEntry(typeof(MortarPestle))
-        }
+        ]
     );
 
     private static readonly FillableContent Armorer = new(
         2,
-        new[]
-        {
-            typeof(Armorer)
-        },
-        new[]
-        {
+        [typeof(Armorer)],
+        [
             new FillableEntry(2, typeof(ChainCoif)),
             new FillableEntry(1, typeof(PlateGorget)),
             new FillableEntry(1, typeof(BronzeShield)),
@@ -82,14 +74,13 @@ public partial class FillableContent
             new FillableEntry(2, typeof(HeaterShield)),
             new FillableEntry(1, typeof(WoodenShield)),
             new FillableEntry(1, typeof(MetalShield))
-        }
+        ]
     );
 
     private static readonly FillableContent ArtisanGuild = new(
         1,
-        Array.Empty<Type>(),
-        new[]
-        {
+        [],
+        [
             new FillableEntry(1, typeof(PaintsAndBrush)),
             new FillableEntry(1, typeof(SledgeHammer)),
             new FillableEntry(2, typeof(SmithHammer)),
@@ -110,50 +101,36 @@ public partial class FillableContent
             new FillableEntry(4, typeof(OrcHelm)),
             new FillableEntry(1, typeof(TribalMask)),
             new FillableEntry(1, typeof(HornedTribalMask))
-        }
+        ]
     );
 
     private static readonly FillableContent Baker = new(
         1,
-        new[]
-        {
-            typeof(Baker)
-        },
-        new[]
-        {
+        [typeof(Baker)],
+        [
             new FillableEntry(1, typeof(RollingPin)),
             new FillableEntry(2, typeof(SackFlour)),
             new FillableEntry(2, typeof(BreadLoaf)),
             new FillableEntry(1, typeof(FrenchBread))
-        }
+        ]
     );
 
     private static readonly FillableContent Bard = new(
         1,
-        new[]
-        {
-            typeof(Bard),
-            typeof(BardGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Bard), typeof(BardGuildmaster)],
+        [
             new FillableEntry(1, typeof(LapHarp)),
             new FillableEntry(2, typeof(Lute)),
             new FillableEntry(1, typeof(Drums)),
             new FillableEntry(1, typeof(Tambourine)),
             new FillableEntry(1, typeof(TambourineTassel))
-        }
+        ]
     );
 
     private static readonly FillableContent Blacksmith = new(
         2,
-        new[]
-        {
-            typeof(Blacksmith),
-            typeof(BlacksmithGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Blacksmith), typeof(BlacksmithGuildmaster)],
+        [
             new FillableEntry(8, typeof(SmithHammer)),
             new FillableEntry(8, typeof(Tongs)),
             new FillableEntry(8, typeof(SledgeHammer)),
@@ -165,31 +142,23 @@ public partial class FillableContent
             new FillableEntry(1, typeof(CopperWire)),
             new FillableEntry(1, typeof(HorseShoes)),
             new FillableEntry(1, typeof(ForgedMetal))
-        }
+        ]
     );
 
     private static readonly FillableContent Bowyer = new(
         2,
-        new[]
-        {
-            typeof(Bowyer)
-        },
-        new[]
-        {
+        [typeof(Bowyer)],
+        [
             new FillableEntry(2, typeof(Bow)),
             new FillableEntry(2, typeof(Crossbow)),
             new FillableEntry(1, typeof(Arrow))
-        }
+        ]
     );
 
     private static readonly FillableContent Butcher = new(
         1,
-        new[]
-        {
-            typeof(Butcher)
-        },
-        new[]
-        {
+        [typeof(Butcher)],
+        [
             new FillableEntry(2, typeof(Cleaver)),
             new FillableEntry(2, typeof(SlabOfBacon)),
             new FillableEntry(2, typeof(Bacon)),
@@ -205,19 +174,13 @@ public partial class FillableContent
             new FillableEntry(2, typeof(Sausage)),
             new FillableEntry(1, typeof(RawChickenLeg)),
             new FillableEntry(1, typeof(ChickenLeg))
-        }
+        ]
     );
 
     private static readonly FillableContent Carpenter = new(
         1,
-        new[]
-        {
-            typeof(Carpenter),
-            typeof(Architect),
-            typeof(RealEstateBroker)
-        },
-        new[]
-        {
+        [typeof(Carpenter), typeof(Architect), typeof(RealEstateBroker)],
+        [
             new FillableEntry(1, typeof(ChiselsNorth)),
             new FillableEntry(1, typeof(ChiselsWest)),
             new FillableEntry(2, typeof(DovetailSaw)),
@@ -232,19 +195,13 @@ public partial class FillableContent
             new FillableEntry(1, typeof(Froe)),
             new FillableEntry(1, typeof(Inshave)),
             new FillableEntry(1, typeof(Scorp))
-        }
+        ]
     );
 
     private static readonly FillableContent Clothier = new(
         1,
-        new[]
-        {
-            typeof(Tailor),
-            typeof(Weaver),
-            typeof(TailorGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Tailor), typeof(Weaver), typeof(TailorGuildmaster)],
+        [
             new FillableEntry(1, typeof(Cotton)),
             new FillableEntry(1, typeof(Wool)),
             new FillableEntry(1, typeof(DarkYarn)),
@@ -258,50 +215,36 @@ public partial class FillableContent
             // new FillableEntry( 1, typeof( FoldedCloth ) ),
             new FillableEntry(1, typeof(Dyes)),
             new FillableEntry(2, typeof(Leather))
-        }
+        ]
     );
 
     private static readonly FillableContent Cobbler = new(
         1,
-        new[]
-        {
-            typeof(Cobbler)
-        },
-        new[]
-        {
+        [typeof(Cobbler)],
+        [
             new FillableEntry(1, typeof(Boots)),
             new FillableEntry(2, typeof(Shoes)),
             new FillableEntry(2, typeof(Sandals)),
             new FillableEntry(1, typeof(ThighBoots))
-        }
+        ]
     );
 
     private static readonly FillableContent Docks = new(
         1,
-        new[]
-        {
-            typeof(Fisherman),
-            typeof(FisherGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Fisherman), typeof(FisherGuildmaster)],
+        [
             new FillableEntry(1, typeof(FishingPole)),
             // Two different types
             // new FillableEntry( 1, typeof( SmallFish ) ),
             // new FillableEntry( 1, typeof( SmallFish ) ),
             new FillableEntry(4, typeof(Fish))
-        }
+        ]
     );
 
     private static readonly FillableContent Farm = new(
         1,
-        new[]
-        {
-            typeof(Farmer),
-            typeof(Rancher)
-        },
-        new[]
-        {
+        [typeof(Farmer), typeof(Rancher)],
+        [
             new FillableEntry(1, typeof(Shirt)),
             new FillableEntry(1, typeof(ShortPants)),
             new FillableEntry(1, typeof(Skirt)),
@@ -320,59 +263,45 @@ public partial class FillableContent
             new FillableEntry(1, typeof(RawLambLeg)),
             new FillableEntry(1, typeof(SheafOfHay)),
             new FillableBvrge(1, typeof(Pitcher), BeverageType.Milk)
-        }
+        ]
     );
 
     private static readonly FillableContent FighterGuild = new(
         3,
-        new[]
-        {
-            typeof(WarriorGuildmaster)
-        },
-        new[]
-        {
+        [typeof(WarriorGuildmaster)],
+        [
             new FillableEntry(12, Loot.ArmorTypes),
             new FillableEntry(8, Loot.WeaponTypes),
             new FillableEntry(3, Loot.ShieldTypes),
             new FillableEntry(1, typeof(Arrow))
-        }
+        ]
     );
 
     private static readonly FillableContent Guard = new(
         3,
-        Array.Empty<Type>(),
-        new[]
-        {
+        [],
+        [
             new FillableEntry(12, Loot.ArmorTypes),
             new FillableEntry(8, Loot.WeaponTypes),
             new FillableEntry(3, Loot.ShieldTypes),
             new FillableEntry(1, typeof(Arrow))
-        }
+        ]
     );
 
     private static readonly FillableContent Healer = new(
         1,
-        new[]
-        {
-            typeof(Healer),
-            typeof(HealerGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Healer), typeof(HealerGuildmaster)],
+        [
             new FillableEntry(1, typeof(Bandage)),
             new FillableEntry(1, typeof(MortarPestle)),
             new FillableEntry(1, typeof(LesserHealPotion))
-        }
+        ]
     );
 
     private static readonly FillableContent Herbalist = new(
         1,
-        new[]
-        {
-            typeof(Herbalist)
-        },
-        new[]
-        {
+        [typeof(Herbalist)],
+        [
             new FillableEntry(10, typeof(Garlic)),
             new FillableEntry(10, typeof(Ginseng)),
             new FillableEntry(10, typeof(MandrakeRoot)),
@@ -381,28 +310,23 @@ public partial class FillableContent
             new FillableEntry(1, typeof(GreenDriedFlowers)),
             new FillableEntry(1, typeof(DriedOnions)),
             new FillableEntry(1, typeof(DriedHerbs))
-        }
+        ]
     );
 
     private static readonly FillableContent Inn = new(
         1,
-        Array.Empty<Type>(),
-        new[]
-        {
+        [],
+        [
             new FillableEntry(1, typeof(Candle)),
             new FillableEntry(1, typeof(Torch)),
             new FillableEntry(1, typeof(Lantern))
-        }
+        ]
     );
 
     private static readonly FillableContent Jeweler = new(
         2,
-        new[]
-        {
-            typeof(Jeweler)
-        },
-        new[]
-        {
+        [typeof(Jeweler)],
+        [
             new FillableEntry(1, typeof(GoldRing)),
             new FillableEntry(1, typeof(GoldBracelet)),
             new FillableEntry(1, typeof(GoldEarrings)),
@@ -411,33 +335,23 @@ public partial class FillableContent
             new FillableEntry(1, typeof(Necklace)),
             new FillableEntry(1, typeof(Beads)),
             new FillableEntry(9, Loot.GemTypes)
-        }
+        ]
     );
 
     private static readonly FillableContent Library = new(
         1,
-        new[]
-        {
-            typeof(Scribe)
-        },
-        new[]
-        {
+        [typeof(Scribe)],
+        [
             new FillableEntry(8, Loot.LibraryBookTypes),
             new FillableEntry(1, typeof(RedBook)),
             new FillableEntry(1, typeof(BlueBook))
-        }
+        ]
     );
 
     private static readonly FillableContent Mage = new(
         2,
-        new[]
-        {
-            typeof(Mage),
-            typeof(HolyMage),
-            typeof(MageGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Mage), typeof(HolyMage), typeof(MageGuildmaster)],
+        [
             new FillableEntry(16, typeof(BlankScroll)),
             new FillableEntry(14, typeof(Spellbook)),
             new FillableEntry(12, Loot.RegularScrollTypes, 0, 8),
@@ -448,17 +362,13 @@ public partial class FillableContent
             new FillableEntry(7, Loot.RegularScrollTypes, 40, 8),
             new FillableEntry(6, Loot.RegularScrollTypes, 48, 8),
             new FillableEntry(5, Loot.RegularScrollTypes, 56, 8)
-        }
+        ]
     );
 
     private static readonly FillableContent Merchant = new(
         1,
-        new[]
-        {
-            typeof(MerchantGuildmaster)
-        },
-        new[]
-        {
+        [typeof(MerchantGuildmaster)],
+        [
             new FillableEntry(1, typeof(CheeseWheel)),
             new FillableEntry(1, typeof(CheeseWedge)),
             new FillableEntry(1, typeof(CheeseSlice)),
@@ -507,63 +417,52 @@ public partial class FillableContent
             new FillableEntry(2, typeof(Cantaloupe)),
             new FillableEntry(2, typeof(Cabbage)),
             new FillableEntry(4, typeof(EarOfCorn))
-        }
+        ]
     );
 
     private static readonly FillableContent Mill = new(
         1,
-        Array.Empty<Type>(),
-        new[]
-        {
+        [],
+        [
             new FillableEntry(1, typeof(SackFlour))
-        }
+        ]
     );
 
     private static readonly FillableContent Mine = new(
         1,
-        new[]
-        {
-            typeof(Miner)
-        },
-        new[]
-        {
+        [typeof(Miner)],
+        [
             new FillableEntry(2, typeof(Pickaxe)),
             new FillableEntry(2, typeof(Shovel)),
             new FillableEntry(2, typeof(IronIngot)),
             // new FillableEntry( 2, typeof( IronOre ) ),	TODO: Smaller Ore
             new FillableEntry(1, typeof(ForgedMetal))
-        }
+        ]
     );
 
     private static readonly FillableContent Observatory = new(
         1,
-        Array.Empty<Type>(),
-        new[]
-        {
+        [],
+        [
             new FillableEntry(2, typeof(Sextant)),
             new FillableEntry(2, typeof(Clock)),
             new FillableEntry(1, typeof(Spyglass))
-        }
+        ]
     );
 
     private static readonly FillableContent Painter = new(
         1,
-        Array.Empty<Type>(),
-        new[]
-        {
+        [],
+        [
             new FillableEntry(1, typeof(PaintsAndBrush)),
             new FillableEntry(2, typeof(PenAndInk))
-        }
+        ]
     );
 
     private static readonly FillableContent Provisioner = new(
         1,
-        new[]
-        {
-            typeof(Provisioner)
-        },
-        new[]
-        {
+        [typeof(Provisioner)],
+        [
             new FillableEntry(1, typeof(CheeseWheel)),
             new FillableEntry(1, typeof(CheeseWedge)),
             new FillableEntry(1, typeof(CheeseSlice)),
@@ -619,18 +518,13 @@ public partial class FillableContent
             new FillableEntry(2, typeof(Cantaloupe)),
             new FillableEntry(2, typeof(Cabbage)),
             new FillableEntry(4, typeof(EarOfCorn))
-        }
+        ]
     );
 
     private static readonly FillableContent Ranger = new(
         2,
-        new[]
-        {
-            typeof(Ranger),
-            typeof(RangerGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Ranger), typeof(RangerGuildmaster)],
+        [
             new FillableEntry(2, typeof(StuddedChest)),
             new FillableEntry(2, typeof(StuddedLegs)),
             new FillableEntry(2, typeof(StuddedArms)),
@@ -658,33 +552,22 @@ public partial class FillableContent
             new FillableEntry(2, typeof(Crossbow)),
             new FillableEntry(2, typeof(HeavyCrossbow)),
             new FillableEntry(4, typeof(Arrow))
-        }
+        ]
     );
 
     private static readonly FillableContent Stables = new(
         1,
-        new[]
-        {
-            typeof(AnimalTrainer),
-            typeof(GypsyAnimalTrainer)
-        },
-        new[]
-        {
+        [typeof(AnimalTrainer), typeof(GypsyAnimalTrainer)],
+        [
             // new FillableEntry( 1, typeof( Wheat ) ),
             new FillableEntry(1, typeof(Carrot))
-        }
+        ]
     );
 
     private static readonly FillableContent Tanner = new(
         2,
-        new[]
-        {
-            typeof(Tanner),
-            typeof(LeatherWorker),
-            typeof(Furtrader)
-        },
-        new[]
-        {
+        [typeof(Tanner), typeof(LeatherWorker), typeof(Furtrader)],
+        [
             new FillableEntry(1, typeof(FeatheredHat)),
             new FillableEntry(1, typeof(LeatherArms)),
             new FillableEntry(2, typeof(LeatherLegs)),
@@ -692,54 +575,37 @@ public partial class FillableContent
             new FillableEntry(2, typeof(LeatherGloves)),
             new FillableEntry(1, typeof(LeatherGorget)),
             new FillableEntry(2, typeof(Leather))
-        }
+        ]
     );
 
     private static readonly FillableContent Tavern = new(
         1,
-        new[]
-        {
-            typeof(TavernKeeper),
-            typeof(Barkeeper),
-            typeof(Waiter),
-            typeof(Cook)
-        },
-        new FillableEntry[]
-        {
+        [typeof(TavernKeeper), typeof(Barkeeper), typeof(Waiter), typeof(Cook)],
+        [
             new FillableBvrge(1, typeof(BeverageBottle), BeverageType.Ale),
             new FillableBvrge(1, typeof(BeverageBottle), BeverageType.Wine),
             new FillableBvrge(1, typeof(BeverageBottle), BeverageType.Liquor),
             new FillableBvrge(1, typeof(Jug), BeverageType.Cider)
-        }
+        ]
     );
 
     private static readonly FillableContent ThiefGuild = new(
         1,
-        new[]
-        {
-            typeof(Thief),
-            typeof(ThiefGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Thief), typeof(ThiefGuildmaster)],
+        [
             new FillableEntry(1, typeof(Lockpick)),
             new FillableEntry(1, typeof(BearMask)),
             new FillableEntry(1, typeof(DeerMask)),
             new FillableEntry(1, typeof(TribalMask)),
             new FillableEntry(1, typeof(HornedTribalMask)),
             new FillableEntry(4, typeof(OrcHelm))
-        }
+        ]
     );
 
     private static readonly FillableContent Tinker = new(
         1,
-        new[]
-        {
-            typeof(Tinker),
-            typeof(TinkerGuildmaster)
-        },
-        new[]
-        {
+        [typeof(Tinker), typeof(TinkerGuildmaster)],
+        [
             new FillableEntry(1, typeof(Lockpick)),
             // new FillableEntry( 1, typeof( KeyRing ) ),
             new FillableEntry(2, typeof(Clock)),
@@ -757,43 +623,35 @@ public partial class FillableContent
             new FillableEntry(1, typeof(DecoArrowShafts)),
             new FillableEntry(1, typeof(Lockpicks)),
             new FillableEntry(1, typeof(ToolKit))
-        }
+        ]
     );
 
     private static readonly FillableContent Veterinarian = new(
         1,
-        new[]
-        {
-            typeof(Veterinarian)
-        },
-        new[]
-        {
+        [typeof(Veterinarian)],
+        [
             new FillableEntry(1, typeof(Bandage)),
             new FillableEntry(1, typeof(MortarPestle)),
             new FillableEntry(1, typeof(LesserHealPotion)),
             // new FillableEntry( 1, typeof( Wheat ) ),
             new FillableEntry(1, typeof(Carrot))
-        }
+        ]
     );
 
     private static readonly FillableContent Weaponsmith = new(
         2,
-        new[]
-        {
-            typeof(Weaponsmith)
-        },
-        new[]
-        {
+        [typeof(Weaponsmith)],
+        [
             new FillableEntry(8, Loot.WeaponTypes),
             new FillableEntry(1, typeof(Arrow))
-        }
+        ]
     );
 
     private static Dictionary<Type, FillableContentType> _acquireTable;
 
     // This should match the FillableContentType enum
     private static readonly FillableContent[] ContentTypes =
-    {
+    [
         Weaponsmith, Provisioner, Mage,
         Alchemist, Armorer, ArtisanGuild,
         Baker, Bard, Blacksmith,
@@ -806,5 +664,5 @@ public partial class FillableContent
         Painter, Ranger, Stables,
         Tanner, Tavern, ThiefGuild,
         Tinker, Veterinarian
-    };
+    ];
 }
