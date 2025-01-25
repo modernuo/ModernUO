@@ -350,6 +350,22 @@ public abstract class BaseAI
         return true;
     }
 
+    public virtual bool HandlesOnSpeech(Mobile from)
+    {
+        if (from.AccessLevel >= AccessLevel.GameMaster)
+        {
+            return true;
+        }
+
+        if (from.Alive && m_Mobile.Controlled && m_Mobile.Commandable &&
+            (from == m_Mobile.ControlMaster || m_Mobile.IsPetFriend(from)))
+        {
+            return true;
+        }
+
+        return from.Alive && from.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown();
+    }
+
     public virtual void OnSpeech(SpeechEventArgs e)
     {
         if (WasNamed(e.Speech) && e.Mobile.Alive && 
