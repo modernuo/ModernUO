@@ -1,9 +1,16 @@
 name: Publish Docker Image
 
 on:
-  repository_dispatch:
-    types: [release]
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
 
 jobs:
   build_and_push_image:
@@ -21,13 +28,8 @@ jobs:
     - name: Setup BuildKit
       uses: docker/setup-buildx-action@v3
 
-    - name: Get Revision
-      id: get_revision
-      run: |
-        echo "short_sha_7=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_OUTPUT"
-
     - name: Build and Push
       uses: docker/build-push-action@v6
       with:
         push: true
-        tags: modernuo/modernuo:latest,modernuo/modernuo:${{ steps.get_revision.outputs.short_sha_7 }}
+        tags: modernuo/modernuo:latest,modernuo/modernuo:${{ inputs.version }}

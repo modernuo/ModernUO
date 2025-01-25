@@ -9,6 +9,8 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.nbgv.outputs.Version }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -37,3 +39,10 @@ jobs:
         prerelease: false
         generate_release_notes: true
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+  build_and_push_image:
+    needs: [release]
+    uses: ./.github/workflows/publish_docker_image.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+    secrets: inherit
