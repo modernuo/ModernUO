@@ -780,10 +780,10 @@ public abstract class BaseAI
             return false;
         }
 
-        if (CheckLeashed())
+        /*if (CheckLeashed())
         {
             return true;
-        }
+        }*/
 
         if (CheckFlee())
         {
@@ -3453,7 +3453,7 @@ public abstract class BaseAI
         }
     }
 
-    public virtual bool CheckLeashed()
+    /*public virtual bool CheckLeashed()
     {
         if (m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Controlled)
         {
@@ -3486,5 +3486,5 @@ public abstract class BaseAI
         }
     
         return false;
-    }
+    }*/
 }
