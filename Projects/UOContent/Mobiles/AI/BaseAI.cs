@@ -764,6 +764,11 @@ public abstract class BaseAI
             return false;
         }
 
+        if (CheckLeashed())
+        {
+            return true;
+        }
+
         if (CheckFlee())
         {
             return true;
@@ -3448,5 +3453,40 @@ public abstract class BaseAI
                 }
             }
         }
+    }
+
+    public virtual bool CheckLeashed()
+    {
+        if (m_Mobile.Deleted || !m_Mobile.Alive || m_Mobile.Controlled)
+        {
+            return false;
+        }
+        
+        if (m_Mobile.GetDistanceToSqrt(m_Mobile.Home) > 16)
+        {
+            if (m_Mobile.Debug)
+            {
+                m_Mobile.DebugSay("I am too far from home! Returning home...");
+            }
+            
+            m_Mobile.Combatant = null;
+            m_Mobile.FocusMob = null;
+            m_Mobile.Warmode = false;
+    
+            if (m_Mobile.Hits < m_Mobile.HitsMax)
+            {
+                m_Mobile.Hits = m_Mobile.HitsMax;
+                
+                if (m_Mobile.Debug)
+                {
+                    m_Mobile.DebugSay("My health has been restored!");
+                }
+            }
+    
+            WalkRandomInHome(3, 2, 1);
+            return true;
+        }
+    
+        return false;
     }
 }
