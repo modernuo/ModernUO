@@ -1,5 +1,6 @@
 using System;
 using Server.Collections;
+using Server.Engines.BuffIcons;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -142,14 +143,17 @@ namespace Server.Spells.Chivalry
                         sendEffect = SpellPlagueSpell.RemoveEffect(m) || sendEffect;
 
                         // TODO: Move these into their respective end effect methods
-                        BuffInfo.RemoveBuff(m, BuffIcon.Clumsy);
-                        BuffInfo.RemoveBuff(m, BuffIcon.FeebleMind);
-                        BuffInfo.RemoveBuff(m, BuffIcon.Weaken);
-                        BuffInfo.RemoveBuff(m, BuffIcon.Curse);
-                        BuffInfo.RemoveBuff(m, BuffIcon.MassCurse);
-                        BuffInfo.RemoveBuff(m, BuffIcon.MortalStrike);
-                        BuffInfo.RemoveBuff(m, BuffIcon.Strangle);
-                        BuffInfo.RemoveBuff(m, BuffIcon.EvilOmen);
+                        if (m is PlayerMobile pm)
+                        {
+                            pm.RemoveBuff(BuffIcon.Clumsy);
+                            pm.RemoveBuff(BuffIcon.FeebleMind);
+                            pm.RemoveBuff(BuffIcon.Weaken);
+                            pm.RemoveBuff(BuffIcon.Curse);
+                            pm.RemoveBuff(BuffIcon.MassCurse);
+                            pm.RemoveBuff(BuffIcon.MortalStrike);
+                            pm.RemoveBuff(BuffIcon.Strangle);
+                            pm.RemoveBuff(BuffIcon.EvilOmen);
+                        }
 
                         if (sendEffect)
                         {

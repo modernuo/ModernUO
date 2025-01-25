@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Factions;
 using Server.Items;
 using Server.Mobiles;
@@ -114,7 +115,7 @@ namespace Server.Spells.Fifth
                     Timer.StartTimer(duration, () => EndIncognito(Caster), out var timerToken);
                     _table[Caster] = timerToken;
 
-                    BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Incognito, 1075819, duration, Caster));
+                    pm?.AddBuff(new BuffInfo(BuffIcon.Incognito, 1075819, duration));
                 }
                 else
                 {
@@ -139,7 +140,7 @@ namespace Server.Spells.Fifth
                 timerToken.Cancel();
             }
 
-            BuffInfo.RemoveBuff(m, BuffIcon.Incognito);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.Incognito);
         }
 
         public static void EndIncognito(Mobile m)

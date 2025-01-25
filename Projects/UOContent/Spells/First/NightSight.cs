@@ -1,4 +1,6 @@
 using System;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.First;
@@ -46,7 +48,7 @@ public class NightSightSpell : MagerySpell, ITargetingSpell<Mobile>
                 m.PlaySound(0x1E3);
 
                 // Night Sight/You ignore lighting effects
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.NightSight, 1075643));
+                (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.NightSight, 1075643));
             }
             else if (m == Caster)
             {
