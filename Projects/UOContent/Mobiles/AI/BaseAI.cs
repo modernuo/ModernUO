@@ -350,96 +350,86 @@ public abstract class BaseAI
         return true;
     }
 
-    // currently broken, needs to be fixed.
-    // on speech by players do not trigger orders for pets.
-    // i don't want to fix it the way runuo does it.
-    public virtual bool HandlesOnSpeech(Mobile from)
-    {
-        if (from.AccessLevel >= AccessLevel.GameMaster)
-        {
-            return true;
-        }
-
-        if (from.Alive && m_Mobile.Controlled && m_Mobile.Commandable &&
-            (from == m_Mobile.ControlMaster || m_Mobile.IsPetFriend(from)))
-        {
-            return true;
-        }
-
-        return from.Alive && from.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown();
-    }
-
-    private static readonly Dictionary<int, Action<BaseAI, Mobile>> CommandActions = new()
-    {
-        { 0x9D, (ai, _) => ai.HandleMove() },     // *move*
-        { 0x9E, (ai, _) => ai.HandleTime() },     // *time*
-        { 0x6C, (ai, m) => ai.HandleTraining(m) } // *train*
-    };
-    
     public virtual void OnSpeech(SpeechEventArgs e)
     {
-        if (!e.Mobile.Alive || !e.Mobile.InRange(m_Mobile.Location, 3) || !m_Mobile.IsHumanInTown())
+        if (WasNamed(e.Speech) && e.Mobile.Alive && 
+            e.Mobile.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown())
         {
-            return;
-        }
-    
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501482);
-            // 501482: I am too busy fighting to deal with thee!
-            return;
-        }
-    
-        foreach (var (keyword, action) in CommandActions)
-        {
-            if (e.HasKeyword(keyword) && WasNamed(e.Speech))
+            if (e.HasKeyword(0x9D)) // *move*
             {
-                action(this, e.Mobile);
+                m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516);
+                // 501516: Excuse me?
+                m_Mobile.Location = new Point3D(m_Mobile.Location.X + 
+                Utility.RandomMinMax(-1, 1), m_Mobile.Location.Y + 
+                Utility.RandomMinMax(-1, 1), m_Mobile.Location.Z);
+                WalkRandomInHome(2, 2, 1);
+                return;
+            }
+            else if (e.HasKeyword(0x9E)) // *time*
+            {
+                Clock.GetTime(m_Mobile, out var generalNumber, out _);
+                m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, generalNumber);
+                return;
+            }
+            else if (e.HasKeyword(0x6C)) // *train*
+            {
+                HandleTraining(e.Mobile);
                 return;
             }
         }
-    
-        HandleSkillTraining(e);
-    
+
         if (m_Mobile.Controlled && m_Mobile.Commandable)
         {
-            HandleCommands(e);
+            OnSpeechPet(e);
+            return;
         }
-        else if (e.Mobile.AccessLevel >= AccessLevel.GameMaster)
+
+        if (e.Mobile.AccessLevel >= AccessLevel.GameMaster)
         {
             HandleGMCommands(e);
+            return;
         }
-    }
-    
-    private void HandleMove()
-    {
-        m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516);
-        // 501516: Excuse me?
-        WalkRandomInHome(2, 2, 1);
-    }
-    
-    private void HandleTime()
-    {
-        Clock.GetTime(m_Mobile, out var generalNumber, out _);
-        m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, generalNumber);
     }
     
     private void HandleTraining(Mobile from)
     {
         var foundSomething = false;
-        var ourSkills = m_Mobile.Skills;
-    
-        for (var i = 0; i < ourSkills.Length; ++i)
+        
+        foreach (var skill in m_Mobile.Skills)
         {
-            if (TryTeachSkill(ourSkills[i], from, i, ref foundSomething))
+            if (skill.Base < 60.0 || !m_Mobile.CheckTeach(skill.SkillName, from))
             {
                 continue;
             }
+
+            var toTeach = Math.Min(skill.Base / 3.0, 42.0);
+            
+            if (toTeach <= from.Skills[skill.SkillName].Base)
+            {
+                continue;
+            }
+
+            var number = 1043059 + (int)skill.SkillName;
+            // 1043059: alchemy
+            if (number > 1043107)
+            // 1043107: disarming traps
+            {
+                continue;
+            }
+
+            if (!foundSomething)
+            {
+                m_Mobile.Say(1043058); 
+                // 1043058: I can train the following:
+                foundSomething = true;
+            }
+
+            m_Mobile.Say(number);
         }
-    
+
         if (!foundSomething)
         {
-            m_Mobile.Say(501505); 
+            m_Mobile.Say(501505);
             // 501505: Alas, I cannot teach thee anything.
         }
     }
@@ -3364,37 +3354,6 @@ public abstract class BaseAI
                 {
                     AI = null;
                     _pool.Enqueue(this);
-                }
-            }
-        }
-    }
-
-    private void HandleSkillTraining(SpeechEventArgs e)
-    {
-        if (!e.Mobile.Alive || !m_Mobile.IsHumanInTown())
-        {
-            return;
-        }
-
-        var ourSkills = m_Mobile.Skills;
-        var theirSkills = e.Mobile.Skills;
-
-        for (var i = 0; i < ourSkills.Length && i < theirSkills.Length; ++i)
-        {
-            if (e.HasKeyword(i + 1) && WasNamed(e.Speech))
-            {
-                var skill = ourSkills[i];
-                var theirSkill = theirSkills[i];
-
-                if (skill?.Base >= 60.0 && m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
-                {
-                    var toTeach = Math.Min(skill.Base / 3.0, 42.0);
-
-                    if (toTeach > theirSkill.Base)
-                    {
-                        m_Mobile.Teach(skill.SkillName, e.Mobile, (int)(toTeach - theirSkill.Base), true);
-                        return;
-                    }
                 }
             }
         }
