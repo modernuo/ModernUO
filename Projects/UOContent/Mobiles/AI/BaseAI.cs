@@ -390,6 +390,97 @@ public abstract class BaseAI
             return;
         }
     }
+
+    public virtual void OnSpeechPet(SpeechEventArgs e)
+    {
+        if (e.Mobile.InRange(m_Mobile.Location, 14))
+        {
+            if (e.HasKeyword(0x164)) // all come
+            {
+                HandleComeCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x165)) // all follow
+            {
+                BeginPickTarget(e.Mobile, OrderType.Follow);
+            }
+            else if (e.HasKeyword(0x166)) // all guard
+            {
+                HandleGuardCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x16B)) // all guard me
+            {
+                HandleGuardCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x167)) // all stop
+            {
+                HandleSimpleCommand(e.Mobile, OrderType.Stop);
+            }
+            else if (e.HasKeyword(0x168)) // all kill
+            {
+                HandleAttackCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x169)) // all attack
+            {
+                HandleAttackCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x16C)) // all follow me
+            {
+                HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
+            }
+            else if (e.HasKeyword(0x170)) // all stay
+            {
+                HandleSimpleCommand(e.Mobile, OrderType.Stay);
+            }
+            else if (e.HasKeyword(0x155)) // *come
+            {
+                HandleComeCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x156)) // *drop
+            {
+                HandleDropCommand(e.Mobile, true, e.Speech);
+            }
+            else if (e.HasKeyword(0x15A)) // *follow
+            {
+                BeginPickTarget(e.Mobile, OrderType.Follow);
+            }
+            else if (e.HasKeyword(0x15B)) // *friend
+            {
+                HandleFriendCommand(e.Mobile, true, e.Speech);
+            }
+            else if (e.HasKeyword(0x15C)) // *guard
+            {
+                HandleGuardCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x15D)) // *kill
+            {
+                HandleAttackCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x15E)) // *attack
+            {
+                HandleAttackCommand(e.Mobile, true);
+            }
+            else if (e.HasKeyword(0x161)) // *stop
+            {
+                HandleSimpleCommand(e.Mobile, OrderType.Stop);
+            }
+            else if (e.HasKeyword(0x163)) // *follow me
+            {
+                HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
+            }
+            else if (e.HasKeyword(0x16D)) // *release
+            {
+                HandleReleaseCommand(e.Mobile, true, e.Speech);
+            }
+            else if (e.HasKeyword(0x16E)) // *transfer
+            {
+                HandleTransferCommand(e.Mobile, true, e.Speech);
+            }
+            else if (e.HasKeyword(0x16F)) // *stay
+            {
+                HandleSimpleCommand(e.Mobile, OrderType.Stay);
+            }
+        }
+    }
     
     private void HandleTraining(Mobile from)
     {
