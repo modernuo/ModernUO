@@ -4,6 +4,8 @@ using Server.Spells.Fourth;
 using Server.Spells.Necromancy;
 using Server.Targeting;
 using Server.Collections;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Mysticism;
 
@@ -198,15 +200,18 @@ public class CleansingWindsSpell : MysticSpell, ITargetingSpell<Mobile>
             curseLevel += 2;
         }
 
-        BuffInfo.RemoveBuff(m, BuffIcon.Clumsy);
-        BuffInfo.RemoveBuff(m, BuffIcon.FeebleMind);
-        BuffInfo.RemoveBuff(m, BuffIcon.Weaken);
-        BuffInfo.RemoveBuff(m, BuffIcon.Curse);
-        BuffInfo.RemoveBuff(m, BuffIcon.MassCurse);
-        BuffInfo.RemoveBuff(m, BuffIcon.MortalStrike);
-        BuffInfo.RemoveBuff(m, BuffIcon.CorpseSkin);
-        BuffInfo.RemoveBuff(m, BuffIcon.Strangle);
-        BuffInfo.RemoveBuff(m, BuffIcon.EvilOmen);
+        if (m is PlayerMobile pm)
+        {
+            pm.RemoveBuff(BuffIcon.Clumsy);
+            pm.RemoveBuff(BuffIcon.FeebleMind);
+            pm.RemoveBuff(BuffIcon.Weaken);
+            pm.RemoveBuff(BuffIcon.Curse);
+            pm.RemoveBuff(BuffIcon.MassCurse);
+            pm.RemoveBuff(BuffIcon.MortalStrike);
+            pm.RemoveBuff(BuffIcon.CorpseSkin);
+            pm.RemoveBuff(BuffIcon.Strangle);
+            pm.RemoveBuff(BuffIcon.EvilOmen);
+        }
 
         return curseLevel;
     }

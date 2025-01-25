@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Server.Collections;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Spellweaving
 {
@@ -63,9 +65,8 @@ namespace Server.Spells.Spellweaving
 
                     _table[m] = t;
 
-                    BuffInfo.AddBuff(
-                        m,
-                        new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, m, $"{fcMalus}\t{ssiMalus}")
+                    (m as PlayerMobile)?.AddBuff(
+                        new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, $"{fcMalus}\t{ssiMalus}")
                     );
                 }
             }
@@ -110,7 +111,7 @@ namespace Server.Spells.Spellweaving
                 Stop();
                 _table.Remove(_defender);
 
-                BuffInfo.RemoveBuff(_defender, BuffIcon.EssenceOfWind);
+                (_defender as PlayerMobile)?.RemoveBuff(BuffIcon.EssenceOfWind);
             }
         }
     }

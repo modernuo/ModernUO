@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Bushido;
 
@@ -42,14 +44,12 @@ public class HonorableExecution : SamuraiMove
 
             timer = new HonorableExecutionTimer(attacker, swingBonus);
 
-            BuffInfo.AddBuff(
-                attacker,
+            (attacker as PlayerMobile)?.AddBuff(
                 new BuffInfo(
                     BuffIcon.HonorableExecution,
                     1060595,
                     1153807,
                     TimeSpan.FromSeconds(20.0),
-                    attacker,
                     $"{swingBonus}"
                 )
             );
@@ -76,23 +76,20 @@ public class HonorableExecution : SamuraiMove
 
             if (Core.HS)
             {
-                BuffInfo.AddBuff(
-                    attacker,
+                (attacker as PlayerMobile)?.AddBuff(
                     new BuffInfo(
                         BuffIcon.HonorableExecution,
                         1060595,
                         1153808,
                         TimeSpan.FromSeconds(7.0),
-                        attacker,
                         $"{resSpells}\t{40}\t{40}\t{40}\t{40}\t{40}"
                     )
                 );
             }
             else
             {
-                BuffInfo.AddBuff(
-                    attacker,
-                    new BuffInfo(BuffIcon.HonorableExecution, 1060595, TimeSpan.FromSeconds(7.0), attacker)
+                (attacker as PlayerMobile)?.AddBuff(
+                    new BuffInfo(BuffIcon.HonorableExecution, 1060595, TimeSpan.FromSeconds(7.0))
                 );
             }
         }

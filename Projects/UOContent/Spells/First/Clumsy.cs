@@ -1,3 +1,5 @@
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.First
@@ -39,7 +41,7 @@ namespace Server.Spells.First
 
                 var percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
 
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Clumsy, 1075831, length, m, percentage.ToString()));
+                (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Clumsy, 1075831, length, percentage.ToString()));
 
                 HarmfulSpell(m);
             }

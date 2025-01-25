@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 
 namespace Server.Spells.Second
@@ -72,7 +73,7 @@ namespace Server.Spells.Second
                 target.RemoveResistanceMod(mods.Item1);
                 target.RemoveSkillMod(mods.Item2);
 
-                BuffInfo.RemoveBuff(target, BuffIcon.Protection);
+                (target as PlayerMobile)?.RemoveBuff(BuffIcon.Protection);
             }
             else
             {
@@ -91,7 +92,7 @@ namespace Server.Spells.Second
                 target.AddSkillMod(resistMod);
 
                 var args = $"{physLoss}\t{resistLoss}";
-                BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args));
+                (target as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args: args));
             }
         }
 
@@ -108,7 +109,7 @@ namespace Server.Spells.Second
             m.RemoveResistanceMod(mods.Item1);
             m.RemoveSkillMod(mods.Item2);
 
-            BuffInfo.RemoveBuff(m, BuffIcon.Protection);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.Protection);
         }
 
         public override void OnCast()
