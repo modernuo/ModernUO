@@ -1891,21 +1891,35 @@ public abstract class BaseAI
                 from.SendMessage("You can not transfer a pet while in combat.");
                 to.SendMessage("You can not transfer a pet while in combat.");
             }
+            
+            var fromState = from.NetState;
+            var toState = to.NetState;
+
+            if (fromState == null || toState == null)
+            {
+                return false;
+            }
+
+            if (from.HasTrade || to.HasTrade)
+            {
+                from.SendLocalizedMessage(1010507);
+                // 1010507: You cannot transfer a pet with a trade pending
+                to.SendLocalizedMessage(1010507);
+                // 1010507: You cannot transfer a pet with a trade pending
+                return false;
+            }
             else
             {
-                HandleTransferOrder(from, to);
+                var container = fromState.AddTrade(toState);
+                container.DropItem(new TransferItem(m_Mobile));
             }
-
-            if (m_Mobile.ControlOrder != OrderType.Stay)
-            {
-                m_Mobile.ControlTarget = null;
-                m_Mobile.ControlOrder = OrderType.Stay;
-            }
-
-            return true;
         }
 
-        return false;
+        m_Mobile.ControlTarget = null;
+        m_Mobile.ControlOrder = OrderType.Stay;
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+
+        return true;
     }
 
     private bool IsInCombatState()
@@ -1945,47 +1959,6 @@ public abstract class BaseAI
         var args = $"{to.Name}\t{from.Name}\t ";
         from.SendLocalizedMessage(fromMessage, args);
         to.SendLocalizedMessage(toMessage, args);
-    }
-
-    // I broke this during refactoring or it never worked right.
-    // Its just setup as auto transfer of pet without trade window, for now.
-    // Needs rework of secure trade window logic to be implemented.
-    // But players can just trade the gold before the transfer.
-    private void HandleTransferOrder(Mobile from, Mobile to)
-    {
-        var fromState = from.NetState;
-        var toState = to.NetState;
-
-        if (fromState == null || toState == null)
-        {
-            return;
-        }
-
-        if (from.HasTrade || to.HasTrade)
-        {
-            from.SendLocalizedMessage(1010507);
-            // 1010507: You cannot transfer a pet with a trade pending
-            to.SendLocalizedMessage(1010507);
-            // 1010507: You cannot transfer a pet with a trade pending
-            return;
-        }
-        else
-        {
-            var container = fromState.AddTrade(toState);
-            container.DropItem(new TransferItem(m_Mobile));
-        }
-
-        m_Mobile.ControlMaster = to;
-        m_Mobile.ControlTarget = null;
-
-        if (m_Mobile.ControlOrder != OrderType.Stay)
-        {
-            m_Mobile.ControlOrder = OrderType.Stay;
-        }
-
-        m_Mobile.BondingBegin = DateTime.MinValue;
-        m_Mobile.OwnerAbandonTime = DateTime.MinValue;
-        m_Mobile.IsBonded = false;
     }
 
     public virtual bool DoBardPacified()
