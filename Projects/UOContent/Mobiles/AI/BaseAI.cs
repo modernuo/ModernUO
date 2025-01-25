@@ -2232,10 +2232,7 @@ public abstract class BaseAI
             }
         }
     }
-
-    private bool ShouldApplyCombatDelay(Mobile mobile) => 
-        mobile.Warmode && mobile.Combatant != null;
-
+    
     private bool TryMove(Direction d)
     {
         MoveImpl.IgnoreMovableImpassables = m_Mobile.CanMoveOverObstacles && !m_Mobile.CanDestroyObstacles;
