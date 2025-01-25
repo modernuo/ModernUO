@@ -376,7 +376,6 @@ public abstract class BaseAI
         { 0x6C, (ai, m) => ai.HandleTraining(m) } // *train*
     };
     
-
     public virtual void OnSpeech(SpeechEventArgs e)
     {
         if (!e.Mobile.Alive || !e.Mobile.InRange(m_Mobile.Location, 3) || !m_Mobile.IsHumanInTown())
@@ -1787,10 +1786,8 @@ public abstract class BaseAI
             }
             else if (IsInCombatState())
             {
-                from.SendLocalizedMessage(1042561);
-                // 1042561: Please dismount first.
-                to.SendLocalizedMessage(1042562);
-                // 1042562: You do not own that pet!
+                from.SendMessage("You can not transfer a pet while in combat.");
+                to.SendMessage("You can not transfer a pet while in combat.");
             }
             else
             {
