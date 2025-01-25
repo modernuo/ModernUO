@@ -194,13 +194,13 @@ public abstract class BaseAI
         list.Add(new InternalEntry(3006112, 14, OrderType.Stop, true));             // Command: Stop
         list.Add(new InternalEntry(3006114, 14, OrderType.Stay, true));             // Command: Stay
 
-        // This command is on OSI. However, the cliloc must be manually added to client files.
-        list.Add(new InternalEntry(3006098, 14, OrderType.Rename, true));           // Command: Rename
-
         if (m_Mobile.CanDrop)
         {
             list.Add(new InternalEntry(3006109, 14, OrderType.Drop, !isDeadPet));   // Command: Drop
         }
+
+        // This command is on OSI. However, the cliloc must be manually added to client files.
+        list.Add(new InternalEntry(3006098, 14, OrderType.Rename, true));           // Rename
     
         if (!m_Mobile.Summoned && m_Mobile is not GrizzledMare)
         {
@@ -1117,6 +1117,10 @@ public abstract class BaseAI
             case OrderType.Follow:
                 HandleFollowOrder();
                 break;
+
+            case OrderType.Rename:
+                HandleRenameOrder();
+                break;
         }
     }
     
@@ -1170,6 +1174,11 @@ public abstract class BaseAI
         m_Mobile.Combatant = null;
         m_Mobile.FocusMob = null;
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+    }
+
+    public virtual void HandleRenameOrder()
+    {
+        m_Mobile.ControlMaster.SendMessage("Change name on pet health bar.");
     }
 
     public virtual bool DoOrderNone()
