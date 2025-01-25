@@ -2232,7 +2232,7 @@ public abstract class BaseAI
             }
         }
     }
-    
+
     private bool TryMove(Direction d)
     {
         MoveImpl.IgnoreMovableImpassables = m_Mobile.CanMoveOverObstacles && !m_Mobile.CanDestroyObstacles;
@@ -2326,15 +2326,40 @@ public abstract class BaseAI
         return destroyables;
     }
 
-    private bool IsValidDoor(Item item, int x, int y) =>
-        m_Mobile.CanOpenDoors && item is BaseDoor door &&
-        door.Z + door.ItemData.Height > m_Mobile.Z && m_Mobile.Z + 16 > door.Z &&
-        door.X == x && door.Y == y && (!door.Locked || !door.UseLocks());
+    private bool IsValidDoor(Item item, int x, int y)
+    {
+        if (!m_Mobile.CanOpenDoors || item is not BaseDoor door)
+        {
+            return false;
+        }
 
-    private bool IsValidDestroyableItem(Item item) =>
-        m_Mobile.CanDestroyObstacles && item.Movable && item.ItemData.Impassable &&
-        item.Z + item.ItemData.Height > m_Mobile.Z && m_Mobile.Z + 16 > item.Z &&
-        m_Mobile.InRange(item.GetWorldLocation(), 1);
+        if (door.Z + door.ItemData.Height <= m_Mobile.Z || m_Mobile.Z + 16 <= door.Z)
+        {
+            return false; 
+        }
+
+        if (door.X != x || door.Y != y)
+        {
+            return false;
+        }
+
+        return !door.Locked || !door.UseLocks();
+    }
+
+    private bool IsValidDestroyableItem(Item item) 
+    {
+        if (!m_Mobile.CanDestroyObstacles || !item.Movable || !item.ItemData.Impassable)
+        {
+            return false;
+        }
+
+        if (item.Z + item.ItemData.Height <= m_Mobile.Z || m_Mobile.Z + 16 <= item.Z)
+        {
+            return false;
+        }
+        
+        return m_Mobile.InRange(item.GetWorldLocation(), 1);
+    }
 
     private bool ProcessObstacles(PooledRefQueue<Item> queue, Direction d)
     {
