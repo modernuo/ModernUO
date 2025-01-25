@@ -39,10 +39,12 @@ public partial class Runebook : Item, ISecurable, ICraftable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _description;
 
+    [InvalidateProperties]
     [SerializableField(5)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _curCharges;
 
+    [InvalidateProperties]
     [SerializableField(6)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _maxCharges;
