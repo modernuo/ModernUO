@@ -2216,17 +2216,20 @@ public abstract class BaseAI
 
     private void HandleCombatDelay()  
     {
-        if (m_Mobile == null || !ShouldApplyCombatDelay(m_Mobile))
+        if (m_Mobile == null)
         {
             return;
         }
 
-        var maxWait = Utility.RandomMinMax(50, 100);
-        var remaining = Math.Max(0, m_Mobile.NextCombatTime - Core.TickCount);
-
-        if (remaining < maxWait)
+        if (m_Mobile.Warmode || m_Mobile.Combatant != null)
         {
-            m_Mobile.NextCombatTime = Core.TickCount + maxWait;
+            var maxWait = Utility.RandomMinMax(1000, 2000);
+            var remaining = Math.Max(0, m_Mobile.NextCombatTime - Core.TickCount);
+
+            if (remaining < maxWait)
+            {
+                m_Mobile.NextCombatTime = Core.TickCount + maxWait;
+            }
         }
     }
 
