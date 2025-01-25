@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 using Server.Spells.Fifth;
 using Server.Spells.First;
@@ -973,126 +974,140 @@ public partial class BaseTalisman : Item, IAosItem
             switch (m_Talisman.Removal)
             {
                 case TalismanRemoval.Curse:
-                    target.PlaySound(0xF6);
-                    target.PlaySound(0x1F7);
-                    target.FixedParticles(0x3709, 1, 30, 9963, 13, 3, EffectLayer.Head);
-
-                    IEntity mfrom = new Entity(
-                        Serial.Zero,
-                        new Point3D(target.X, target.Y, target.Z - 10),
-                        from.Map
-                    );
-                    IEntity mto = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z + 50), from.Map);
-                    Effects.SendMovingParticles(
-                        mfrom,
-                        mto,
-                        0x2255,
-                        1,
-                        0,
-                        false,
-                        false,
-                        13,
-                        3,
-                        9501,
-                        1,
-                        0,
-                        EffectLayer.Head,
-                        0x100
-                    );
-
-                    var mod = target.GetStatMod("[Magic] Str Curse");
-                    if (mod?.Offset < 0)
                     {
-                        target.RemoveStatMod("[Magic] Str Curse");
+                        target.PlaySound(0xF6);
+                        target.PlaySound(0x1F7);
+                        target.FixedParticles(0x3709, 1, 30, 9963, 13, 3, EffectLayer.Head);
+
+                        IEntity mfrom = new Entity(
+                            Serial.Zero,
+                            new Point3D(target.X, target.Y, target.Z - 10),
+                            from.Map
+                        );
+                        IEntity mto = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z + 50), from.Map);
+                        Effects.SendMovingParticles(
+                            mfrom,
+                            mto,
+                            0x2255,
+                            1,
+                            0,
+                            false,
+                            false,
+                            13,
+                            3,
+                            9501,
+                            1,
+                            0,
+                            EffectLayer.Head,
+                            0x100
+                        );
+
+                        var mod = target.GetStatMod("[Magic] Str Curse");
+                        if (mod?.Offset < 0)
+                        {
+                            target.RemoveStatMod("[Magic] Str Curse");
+                        }
+
+                        mod = target.GetStatMod("[Magic] Dex Curse");
+                        if (mod?.Offset < 0)
+                        {
+                            target.RemoveStatMod("[Magic] Dex Curse");
+                        }
+
+                        mod = target.GetStatMod("[Magic] Int Curse");
+                        if (mod?.Offset < 0)
+                        {
+                            target.RemoveStatMod("[Magic] Int Curse");
+                        }
+
+                        target.Paralyzed = false;
+
+                        EvilOmenSpell.EndEffect(target);
+                        StrangleSpell.RemoveCurse(target);
+                        CorpseSkinSpell.RemoveCurse(target);
+                        CurseSpell.RemoveEffect(target);
+
+                        if (target is PlayerMobile pm)
+                        {
+                            pm.RemoveBuff(BuffIcon.Clumsy);
+                            pm.RemoveBuff(BuffIcon.FeebleMind);
+                            pm.RemoveBuff(BuffIcon.Weaken);
+                            pm.RemoveBuff(BuffIcon.MassCurse);
+                        }
+
+                        target.SendLocalizedMessage(1072408); // Any curses on you have been lifted
+
+                        if (target != from)
+                        {
+                            from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
+                        }
+
+                        break;
                     }
-
-                    mod = target.GetStatMod("[Magic] Dex Curse");
-                    if (mod?.Offset < 0)
-                    {
-                        target.RemoveStatMod("[Magic] Dex Curse");
-                    }
-
-                    mod = target.GetStatMod("[Magic] Int Curse");
-                    if (mod?.Offset < 0)
-                    {
-                        target.RemoveStatMod("[Magic] Int Curse");
-                    }
-
-                    target.Paralyzed = false;
-
-                    EvilOmenSpell.EndEffect(target);
-                    StrangleSpell.RemoveCurse(target);
-                    CorpseSkinSpell.RemoveCurse(target);
-                    CurseSpell.RemoveEffect(target);
-
-                    BuffInfo.RemoveBuff(target, BuffIcon.Clumsy);
-                    BuffInfo.RemoveBuff(target, BuffIcon.FeebleMind);
-                    BuffInfo.RemoveBuff(target, BuffIcon.Weaken);
-                    BuffInfo.RemoveBuff(target, BuffIcon.MassCurse);
-
-                    target.SendLocalizedMessage(1072408); // Any curses on you have been lifted
-
-                    if (target != from)
-                    {
-                        from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
-                    }
-
-                    break;
                 case TalismanRemoval.Damage:
-                    target.PlaySound(0x201);
-                    Effects.SendLocationParticles(
-                        EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration),
-                        0x3728,
-                        1,
-                        13,
-                        0x834,
-                        0,
-                        0x13B2,
-                        0
-                    );
-
-                    BleedAttack.EndBleed(target, true);
-                    MortalStrike.EndWound(target);
-
-                    BuffInfo.RemoveBuff(target, BuffIcon.Bleed);
-                    BuffInfo.RemoveBuff(target, BuffIcon.MortalStrike);
-
-                    target.SendLocalizedMessage(1072405); // Your lasting damage effects have been removed!
-
-                    if (target != from)
                     {
-                        from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
-                    }
+                        target.PlaySound(0x201);
+                        Effects.SendLocationParticles(
+                            EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration),
+                            0x3728,
+                            1,
+                            13,
+                            0x834,
+                            0,
+                            0x13B2,
+                            0
+                        );
 
-                    break;
+                        BleedAttack.EndBleed(target, true);
+                        MortalStrike.EndWound(target);
+
+                        if (target is PlayerMobile pm)
+                        {
+                            pm.RemoveBuff(BuffIcon.Bleed);
+                            pm.RemoveBuff(BuffIcon.MortalStrike);
+                        }
+
+                        target.SendLocalizedMessage(1072405); // Your lasting damage effects have been removed!
+
+                        if (target != from)
+                        {
+                            from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
+                        }
+
+                        break;
+                    }
                 case TalismanRemoval.Ward:
-                    target.PlaySound(0x201);
-                    Effects.SendLocationParticles(
-                        EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration),
-                        0x3728,
-                        1,
-                        13,
-                        0x834,
-                        0,
-                        0x13B2,
-                        0
-                    );
-
-                    MagicReflectSpell.EndReflect(target);
-                    ReactiveArmorSpell.EndArmor(target);
-                    ProtectionSpell.EndProtection(target);
-
-                    target.SendLocalizedMessage(1072402); // Your wards have been removed!
-
-                    if (target != from)
                     {
-                        from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
-                    }
+                        target.PlaySound(0x201);
+                        Effects.SendLocationParticles(
+                            EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration),
+                            0x3728,
+                            1,
+                            13,
+                            0x834,
+                            0,
+                            0x13B2,
+                            0
+                        );
 
-                    break;
+                        MagicReflectSpell.EndReflect(target);
+                        ReactiveArmorSpell.EndArmor(target);
+                        ProtectionSpell.EndProtection(target);
+
+                        target.SendLocalizedMessage(1072402); // Your wards have been removed!
+
+                        if (target != from)
+                        {
+                            from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
+                        }
+
+                        break;
+                    }
                 case TalismanRemoval.Wildfire:
-                    // TODO
-                    break;
+                    {
+                        // TODO
+                        break;
+                    }
             }
 
             m_Talisman.OnAfterUse(from);

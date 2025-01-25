@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
@@ -96,7 +98,7 @@ public class StrangleSpell : NecromancerSpell, ITargetingSpell<Mobile>
             var maxDamage = ((int)power + 1) * 3;
             var args = $"{minDamage}\t{maxDamage}";
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, duration, m, args));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, duration, args));
         }
     }
 

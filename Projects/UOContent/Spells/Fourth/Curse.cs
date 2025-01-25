@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Fourth
@@ -80,7 +82,7 @@ namespace Server.Spells.Fourth
             var percentage = (int)(SpellHelper.GetOffsetScalar(caster, m, true) * 100);
             var args = $"{percentage}\t{percentage}\t{percentage}\t{10}\t{10}\t{10}\t{10}";
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Curse, 1075835, 1075836, duration, m, args));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Curse, 1075835, 1075836, duration, args));
             return true;
         }
 

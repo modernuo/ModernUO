@@ -1,4 +1,6 @@
 using System;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells
 {
@@ -55,11 +57,10 @@ namespace Server.Spells
         public override void OnCast()
         {
             Caster.Flying = false;
-            BuffInfo.RemoveBuff(Caster, BuffIcon.Fly);
             Caster.Animate(60, 10, 1, true, false, 0);
             Caster.SendLocalizedMessage(1112567); // You are flying.
             Caster.Flying = true;
-            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.Fly, 1112567));
+            (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Fly, 1112567));
             FinishSequence();
         }
     }

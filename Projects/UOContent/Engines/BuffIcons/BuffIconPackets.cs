@@ -1,6 +1,7 @@
 using System.Buffers;
+using Server.Network;
 
-namespace Server.Network;
+namespace Server.Engines.BuffIcons;
 
 public static class BuffIconPackets
 {

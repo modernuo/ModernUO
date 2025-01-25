@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 
 namespace Server.Spells.Chivalry
@@ -49,9 +50,8 @@ namespace Server.Spells.Chivalry
                     mobile.EnemyOfOneType = null;
                     mobile.WaitingForEnemy = true;
 
-                    BuffInfo.AddBuff(
-                        mobile,
-                        new BuffInfo(BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes(delay), mobile)
+                    mobile.AddBuff(
+                        new BuffInfo(BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes(delay))
                     );
                 }
             }

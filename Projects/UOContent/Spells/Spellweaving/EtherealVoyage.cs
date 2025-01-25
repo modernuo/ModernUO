@@ -1,4 +1,6 @@
 using System;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Spellweaving
 {
@@ -71,7 +73,7 @@ namespace Server.Spells.Spellweaving
             // Cannot cast this spell for another 5 minutes(300sec) after effect removed.
             Caster.BeginAction<EtherealVoyageSpell>();
 
-            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.EtherealVoyage, 1031613, 1075805, duration, Caster));
+            (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.EtherealVoyage, 1031613, 1075805, duration));
         }
 
         public override void RemoveEffect(Mobile m)
@@ -82,7 +84,7 @@ namespace Server.Spells.Spellweaving
 
             Timer.StartTimer(TimeSpan.FromMinutes(5), m.EndAction<EtherealVoyageSpell>);
 
-            BuffInfo.RemoveBuff(m, BuffIcon.EtherealVoyage);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.EtherealVoyage);
         }
     }
 }

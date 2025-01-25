@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
@@ -80,7 +82,7 @@ public class CorpseSkinSpell : NecromancerSpell, ITargetingSpell<Mobile>
             timer = new ExpireTimer(m, mods, duration);
             timer.Start();
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.CorpseSkin, 1075663, duration, m));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.CorpseSkin, 1075663, duration));
 
             _table[m] = timer;
 
@@ -129,7 +131,7 @@ public class CorpseSkinSpell : NecromancerSpell, ITargetingSpell<Mobile>
             }
 
             Stop();
-            BuffInfo.RemoveBuff(_mobile, BuffIcon.CorpseSkin);
+            (_mobile as PlayerMobile)?.RemoveBuff(BuffIcon.CorpseSkin);
             _table.Remove(_mobile);
         }
 
