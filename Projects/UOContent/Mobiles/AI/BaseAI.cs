@@ -1323,14 +1323,15 @@ public abstract class BaseAI
     {
         var from = m_Mobile.ControlMaster;
         var to = m_Mobile.ControlTarget;
-    
-        if (IsInvalidFriendRequest(from, to))
+
+        
+        if (IsYoungPlayer(from, to))
+        {
+            return true;
+        }
+        else if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
         {
             m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039); // *looks confused*
-        }
-        else if (IsYoungPlayerMismatch(from, to))
-        {
-            // messages are now handled inside of IsYoungPlayerMismatch method
         }
         else if (from.CanBeBeneficial(to, true))
         {
@@ -1343,12 +1344,7 @@ public abstract class BaseAI
         return true;
     }
     
-    private static bool IsInvalidFriendRequest(Mobile from, Mobile to)
-    {
-        return from?.Deleted != false || to?.Deleted != false || from == to || !to.Player;
-    }
-    
-    private static bool IsYoungPlayerMismatch(Mobile from, Mobile to)
+    private static bool IsYoungPlayer(Mobile from, Mobile to)
     {
         var youngFrom = from is PlayerMobile mobile && mobile.Young;
         var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
@@ -1769,9 +1765,9 @@ public abstract class BaseAI
                 m_Mobile.DebugSay($"Beginning transfer with {to.Name}");
             }
 
-            if (IsYoungPlayerMismatchForTransfer(from, to))
+            if (IsYoungPlayer(from, to))
             {
-                // messages are now handled inside of IsYoungPlayerMismatchForTransfer method
+                return true;
             }
             else if (!m_Mobile.CanBeControlledBy(to))
             {
@@ -1830,27 +1826,6 @@ public abstract class BaseAI
     private static bool IsValidTransferRequest(Mobile from, Mobile to)
     {
         return from?.Deleted == false && to?.Deleted == false && from != to && to.Player;
-    }
-    
-    private static bool IsYoungPlayerMismatchForTransfer(Mobile from, Mobile to)
-    {
-        var youngFrom = from is PlayerMobile mobile && mobile.Young;
-        var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
-    
-        if (youngFrom && !youngTo)
-        {
-            from.SendLocalizedMessage(502051);
-            // 502051: As a young player, you may not transfer pets to older players.
-            return true;
-        }
-        else if (!youngFrom && youngTo)
-        {
-            from.SendLocalizedMessage(502052);
-            // 502052: As an older player, you may not transfer pets to young players.
-            return true;
-        }
-    
-        return false;
     }
     
     private static void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
