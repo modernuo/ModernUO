@@ -397,11 +397,6 @@ public abstract class BaseAI
         if (m_Mobile.Controlled && m_Mobile.Commandable)
         {
             AllOnSpeechPet(e);
-            return;
-        }
-
-        if (m_Mobile.Controlled && m_Mobile.Commandable)
-        {
             NamedOnSpeechPet(e);
             return;
         }
