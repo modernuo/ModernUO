@@ -961,23 +961,21 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return _invalidSector;
     }
 
-    public bool LineOfSight(Point3D org, Point3D dest)
+    public bool LineOfSight(Point3D origin, Point3D destination)
     {
         if (this == Internal)
         {
             return false;
         }
 
-        if (!Utility.InRange(org, dest, MaxLOSDistance))
+        if (!Utility.InRange(origin, destination, MaxLOSDistance))
         {
             return false;
         }
 
-        var end = dest;
-
-        if (org.X > dest.X || org.X == dest.X && org.Y > dest.Y || org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z)
+        if (origin.X > destination.X || origin.X == destination.X && origin.Y > destination.Y || origin.X == destination.X && origin.Y == destination.Y && origin.Z > destination.Z)
         {
-            (org, dest) = (dest, org);
+            (origin, destination) = (destination, origin);
         }
 
         int height;
@@ -985,7 +983,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         var path = new Point3DList();
         TileFlag flags;
 
-        if (org == dest)
+        if (origin == destination)
         {
             return true;
         }
@@ -995,9 +993,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             path.Clear();
         }
 
-        var xd = dest.m_X - org.m_X;
-        var yd = dest.m_Y - org.m_Y;
-        var zd = dest.m_Z - org.m_Z;
+        var xd = destination.X - origin.X;
+        var yd = destination.Y - origin.Y;
+        var zd = destination.Z - origin.Z;
         var zslp = Math.Sqrt(xd * xd + yd * yd);
         var sq3d = zd != 0 ? Math.Sqrt(zslp * zslp + zd * zd) : zslp;
 
@@ -1005,11 +1003,11 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         var run = xd / sq3d;
         zslp = zd / sq3d;
 
-        double y = org.m_Y;
-        double z = org.m_Z;
-        double x = org.m_X;
-        while (Utility.NumberBetween(x, dest.m_X, org.m_X, 0.5) && Utility.NumberBetween(y, dest.m_Y, org.m_Y, 0.5) &&
-               Utility.NumberBetween(z, dest.m_Z, org.m_Z, 0.5))
+        double y = origin.Y;
+        double z = origin.Z;
+        double x = origin.X;
+        while (Utility.NumberBetween(x, destination.X, origin.X, 0.5) && Utility.NumberBetween(y, destination.Y, origin.Y, 0.5) &&
+               Utility.NumberBetween(z, destination.Z, origin.Z, 0.5))
         {
             var ix = (int)Math.Round(x);
             var iy = (int)Math.Round(y);
@@ -1018,7 +1016,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             {
                 p = path.Last;
 
-                if (p.m_X != ix || p.m_Y != iy || p.m_Z != iz)
+                if (p.X != ix || p.Y != iy || p.Z != iz)
                 {
                     path.Add(ix, iy, iz);
                 }
@@ -1040,27 +1038,27 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         p = path.Last;
 
-        if (p != dest)
+        if (p != destination)
         {
-            path.Add(dest);
+            path.Add(destination);
         }
 
-        Point3D pTop = org, pBottom = dest;
+        Point3D pTop = origin, pBottom = destination;
         Utility.FixPoints(ref pTop, ref pBottom);
 
         var pathCount = path.Count;
-        var endTop = end.m_Z + 1;
+        var endTop = destination.Z + 1;
 
         for (var i = 0; i < pathCount; ++i)
         {
             var point = path[i];
-            var pointTop = point.m_Z + 1;
+            var pointTop = point.Z + 1;
 
             var landTile = Tiles.GetLandTile(point.X, point.Y);
-            GetAverageZ(point.m_X, point.m_Y, out var landZ, out _, out var landTop);
+            GetAverageZ(point.X, point.Y, out var landZ, out _, out var landTop);
 
             if (landZ <= pointTop && landTop >= point.m_Z &&
-                (point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > endTop || landTop < end.m_Z) &&
+                (point.X != destination.X || point.Y != destination.Y || landZ > endTop || landTop < destination.Z) &&
                 !landTile.Ignored)
             {
                 return false;
@@ -1082,7 +1080,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             bool foundStatic = false;
 
-            foreach (var t in Tiles.GetStaticAndMultiTiles(point.m_X, point.m_Y))
+            foreach (var t in Tiles.GetStaticAndMultiTiles(point.X, point.Y))
             {
                 foundStatic = true;
 
@@ -1093,7 +1091,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
                 if (t.Z <= pointTop && t.Z + height >= point.Z && (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0)
                 {
-                    if (point.m_X == end.m_X && point.m_Y == end.m_Y && t.Z <= endTop && t.Z + height >= end.m_Z)
+                    if (point.X == destination.X && point.Y == destination.Y && t.Z <= endTop && t.Z + height >= destination.Z)
                     {
                         continue;
                     }
@@ -1120,21 +1118,21 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        var rect = new Rectangle2D(pTop.m_X, pTop.m_Y, pBottom.m_X - pTop.m_X + 1, pBottom.m_Y - pTop.m_Y + 1);
+        var rect = new Rectangle2D(pTop.X, pTop.Y, pBottom.X - pTop.X + 1, pBottom.Y - pTop.Y + 1);
 
-        foreach (var i in GetItemsInBounds(rect))
+        foreach (var item in GetItemsInBounds(rect))
         {
-            if (!i.Visible)
+            if (!item.Visible)
             {
                 continue;
             }
 
-            if (i is BaseMulti || i.ItemID > TileData.MaxItemValue)
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
             {
                 continue;
             }
 
-            var id = i.ItemData;
+            var id = item.ItemData;
             flags = id.Flags;
 
             if ((flags & (TileFlag.Window | TileFlag.NoShoot)) == 0)
@@ -1144,28 +1142,34 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             height = id.CalcHeight;
 
-            var found = false;
+            var losBlocked = false;
 
             var count = path.Count;
 
             for (var j = 0; j < count; ++j)
             {
-                var point = path[j];
-                var pointTop = point.m_Z + 1;
-                var loc = i.Location;
+                var pathPoint = path[j];
+                var pointTop = pathPoint.Z + 1;
+                var itemLocation = item.Location;
 
-                // if (t.Z <= point.Z && t.Z+height >= point.Z && ( height != 0 || ( t.Z == dest.Z && zd != 0 ) ))
-                if (loc.m_X == point.m_X && loc.m_Y == point.m_Y && loc.m_Z <= pointTop && loc.m_Z + height >= point.m_Z)
+                if (itemLocation.X == pathPoint.X && itemLocation.Y == pathPoint.Y //item is on same tile as this point along the LOSpath
+                    && itemLocation.Z <= pointTop && itemLocation.Z + height >= pathPoint.Z //item rests on the same level as the path
+                    //Fix door bugging monsters- if door is at the START or END of the LOS path, then allow LOS
+                    && !(flags.HasFlag(TileFlag.Door)
+                         && (itemLocation.X == origin.X && itemLocation.Y == origin.Y)
+                            || (itemLocation.X == destination.X && itemLocation.Y == destination.Y)))
                 {
-                    if (loc.m_X != end.m_X || loc.m_Y != end.m_Y || loc.m_Z > endTop || loc.m_Z + height < end.m_Z)
+                    if (itemLocation.X != destination.X || itemLocation.Y != destination.Y //at some point along the path BEFORE the target
+                        || itemLocation.Z > endTop //item is diagonally looking DOWN at the target
+                        || itemLocation.Z + height < destination.Z) //item is diagonally looking UP at the target
                     {
-                        found = true;
+                        losBlocked = true;
                         break;
                     }
                 }
             }
 
-            if (!found)
+            if (!losBlocked)
             {
                 continue;
             }

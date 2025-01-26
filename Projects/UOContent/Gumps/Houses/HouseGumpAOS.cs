@@ -115,11 +115,14 @@ namespace Server.Gumps
             {
                 var lines = m_House.Sign.GetName().Wrap(10, 6);
 
-                for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
+                if (lines != null)
                 {
-                    var s = lines[i];
+                    for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
+                    {
+                        var s = lines[i];
 
-                    AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
+                        AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
+                    }
                 }
             }
 
