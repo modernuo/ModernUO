@@ -1447,12 +1447,12 @@ public abstract class BaseAI
         return true;
     }
     
-    private bool IsInvalidFriendRequest(Mobile from, Mobile to)
+    private static bool IsInvalidFriendRequest(Mobile from, Mobile to)
     {
         return from?.Deleted != false || to?.Deleted != false || from == to || !to.Player;
     }
     
-    private bool IsYoungPlayerMismatch(Mobile from, Mobile to)
+    private static bool IsYoungPlayerMismatch(Mobile from, Mobile to)
     {
         var youngFrom = from is PlayerMobile mobile && mobile.Young;
         var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
@@ -1535,7 +1535,7 @@ public abstract class BaseAI
         return true;
     }
     
-    private bool IsInvalidUnfriendRequest(Mobile from, Mobile to)
+    private static bool IsInvalidUnfriendRequest(Mobile from, Mobile to)
     {
         return from?.Deleted != false || to?.Deleted != false || from == to || !to.Player;
     }
@@ -1931,12 +1931,12 @@ public abstract class BaseAI
         m_Mobile.Aggressed.Count > 0 || Core.TickCount < m_Mobile.NextCombatTime;
     }
     
-    private bool IsValidTransferRequest(Mobile from, Mobile to)
+    private static bool IsValidTransferRequest(Mobile from, Mobile to)
     {
         return from?.Deleted == false && to?.Deleted == false && from != to && to.Player;
     }
     
-    private bool IsYoungPlayerMismatchForTransfer(Mobile from, Mobile to)
+    private static bool IsYoungPlayerMismatchForTransfer(Mobile from, Mobile to)
     {
         var youngFrom = from is PlayerMobile mobile && mobile.Young;
         var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
@@ -1957,7 +1957,7 @@ public abstract class BaseAI
         return false;
     }
     
-    private void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
+    private static void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
     {
         var args = $"{to.Name}\t{from.Name}\t ";
         from.SendLocalizedMessage(fromMessage, args);
@@ -2162,7 +2162,7 @@ public abstract class BaseAI
         return IsMoveSuccessful(res, badStateOk);
     }
     
-    private bool IsMoveSuccessful(MoveResult res, bool badStateOk)
+    private static bool IsMoveSuccessful(MoveResult res, bool badStateOk)
     {
         return res is MoveResult.Success or MoveResult.SuccessAutoTurn ||(badStateOk && res == MoveResult.BadState);
     }
@@ -3016,7 +3016,7 @@ public abstract class BaseAI
         m_Timer.Interval = TimeSpan.FromMilliseconds(Math.Max(50, m_Mobile.CurrentSpeed * 1000));
     }
 
-    private class InternalEntry : ContextMenuEntry
+    private sealed class InternalEntry : ContextMenuEntry
     {
         private readonly OrderType _order;
     
@@ -3039,7 +3039,7 @@ public abstract class BaseAI
             HandleOrder(from, bc);
         }
     
-        private bool IsValidClick(Mobile from, IEntity target, out BaseCreature bc)
+        private static bool IsValidClick(Mobile from, IEntity target, out BaseCreature bc)
         {
             bc = target as BaseCreature;
             return from.CheckAlive() && bc != null && !bc.Deleted && bc.Controlled;
@@ -3048,7 +3048,7 @@ public abstract class BaseAI
         private bool IsInvalidOrderForDeadPet(BaseCreature bc) =>
             bc.IsDeadPet && _order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
     
-        private bool IsOwnerOrFriend(Mobile from, BaseCreature bc, out bool isFriend)
+        private static bool IsOwnerOrFriend(Mobile from, BaseCreature bc, out bool isFriend)
         {
             var isOwner = from == bc.ControlMaster;
             isFriend = !isOwner && bc.IsPetFriend(from);
@@ -3111,7 +3111,7 @@ public abstract class BaseAI
         }
     }
 
-    private class TransferItem : Item
+    private sealed class TransferItem : Item
     {
         private readonly BaseCreature m_Creature;
     
@@ -3197,7 +3197,7 @@ public abstract class BaseAI
             return true;
         }
     
-        private bool ValidateYoungStatus(Mobile from, Mobile to)
+        private static bool ValidateYoungStatus(Mobile from, Mobile to)
         {
             var youngFrom = from is PlayerMobile mobile && mobile.Young;
             var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
@@ -3251,7 +3251,7 @@ public abstract class BaseAI
             return true;
         }
     
-        private void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
+        private static void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
         {
             var args = $"{to.Name}\t{from.Name}\t ";
             from.SendLocalizedMessage(fromMessage, args);
@@ -3300,7 +3300,7 @@ public abstract class BaseAI
         }
     }
 
-    private class AITimer : Timer
+    private sealed class AITimer : Timer
     {
         private readonly BaseAI m_Owner;
         private int _detectHiddenMinDelay;
