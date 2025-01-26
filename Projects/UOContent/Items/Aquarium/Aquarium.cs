@@ -551,25 +551,25 @@ namespace Server.Items
 
         public virtual void KillFish(int amount)
         {
-            var toKill = new List<BaseFish>();
+            using var toKill = PooledRefList<Item>.Create();
 
             for (var i = 0; i < Items.Count; i++)
             {
-                if (Items[i] is BaseFish)
+                if (Items[i] is BaseFish { Dead: false } fish)
                 {
-                    var fish = (BaseFish)Items[i];
-
-                    if (!fish.Dead)
-                    {
-                        toKill.Add(fish);
-                    }
+                    toKill.Add(fish);
                 }
             }
 
-            while (amount > 0 && toKill.Count > 0)
+            toKill.Shuffle();
+            if (amount > toKill.Count)
             {
-                var kill = toKill.TakeRandomElement();
-                kill.Kill();
+                amount = toKill.Count;
+            }
+
+            for (var i = 0; i < amount; i++)
+            {
+                (toKill[i] as BaseFish)!.Kill();
 
                 amount -= 1;
                 LiveCreatures = Math.Max(LiveCreatures - 1, 0);
