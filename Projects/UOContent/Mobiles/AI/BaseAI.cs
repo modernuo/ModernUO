@@ -1261,11 +1261,6 @@ public abstract class BaseAI
         }
     }
 
-    private void RefreshCombatantState()
-    {
-        m_Mobile.Warmode = IsValidCombatant(m_Mobile.Combatant);
-    }
-
     public virtual bool DoOrderDrop()
     {
         if (m_Mobile.IsDeadPet || !m_Mobile.CanDrop)
