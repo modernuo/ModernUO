@@ -562,6 +562,10 @@ namespace Server.Items
             }
 
             toKill.Shuffle();
+            if (amount > toKill.Count)
+            {
+                amount = toKill.Count;
+            }
 
             for (var i = 0; i < amount; i++)
             {
