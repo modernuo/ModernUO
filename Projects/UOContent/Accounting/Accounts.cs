@@ -31,7 +31,7 @@ public class Accounts : GenericEntityPersistence<IAccount>
 
     public static IAccount GetAccount(string username) => _accountsByName.GetValueOrDefault(username);
 
-    public static void Add(Account a)
+    public static void Add(IAccount a)
     {
         _accountsByName[a.Username] = a;
         _accountsPersistence.AddEntity(a);

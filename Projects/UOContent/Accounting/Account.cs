@@ -162,6 +162,7 @@ public partial class BaseAccount : IAccount, IComparable<BaseAccount>
             CheckYoung();
         }
 
+        Accounts.Add(this);
         this.MarkDirty();
     }
 
@@ -321,7 +322,7 @@ public partial class BaseAccount : IAccount, IComparable<BaseAccount>
 
         Accounts.Remove(this);
         Username = username;
-        // Accounts.Add(this);
+        Accounts.Add(this);
         return true;
     }
 
