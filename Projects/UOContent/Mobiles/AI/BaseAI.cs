@@ -1422,14 +1422,6 @@ public abstract class BaseAI
             }
         }
     }
-    
-    private void DebugSayMessage(string message)
-    {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay(message);
-        }
-    }
 
     public virtual bool DoOrderFriend()
     {
