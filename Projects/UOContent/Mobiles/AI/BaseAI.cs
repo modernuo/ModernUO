@@ -396,18 +396,23 @@ public abstract class BaseAI
 
         if (m_Mobile.Controlled && m_Mobile.Commandable)
         {
-            OnSpeechPet(e);
+            AllOnSpeechPet(e);
+            return;
+        }
+
+        if (m_Mobile.Controlled && m_Mobile.Commandable)
+        {
+            NamedOnSpeechPet(e);
             return;
         }
 
         if (e.Mobile.AccessLevel >= AccessLevel.GameMaster)
         {
             HandleGMCommands(e);
-            return;
         }
     }
 
-    public virtual void OnSpeechPet(SpeechEventArgs e)
+    public virtual void AllOnSpeechPet(SpeechEventArgs e)
     {
         if (e.Mobile.InRange(m_Mobile.Location, 14))
         {
@@ -447,7 +452,14 @@ public abstract class BaseAI
             {
                 HandleSimpleCommand(e.Mobile, OrderType.Stay);
             }
-            else if (e.HasKeyword(0x155)) // *come
+        }
+    }
+
+    public virtual void NamedOnSpeechPet(SpeechEventArgs e)
+    {
+        if (e.Mobile.InRange(m_Mobile.Location, 14))
+        {
+            if (e.HasKeyword(0x155)) // *come
             {
                 HandleComeCommand(e.Mobile, true);
             }
@@ -495,7 +507,7 @@ public abstract class BaseAI
             {
                 HandleSimpleCommand(e.Mobile, OrderType.Stay);
             }
-        }
+        }    
     }
     
     private void HandleTraining(Mobile from)
