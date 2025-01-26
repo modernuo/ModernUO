@@ -547,36 +547,6 @@ public abstract class BaseAI
             // 501505: Alas, I cannot teach thee anything.
         }
     }
-    
-    private bool TryTeachSkill(Skill skill, Mobile student, int index, ref bool foundSomething)
-    {
-        if (skill.Base < 60.0 || !m_Mobile.CheckTeach(skill.SkillName, student))
-        {
-            return false;
-        }
-    
-        var toTeach = Math.Min(skill.Base / 3.0, 42.0);
-    
-        if (toTeach <= student.Skills[skill.SkillName].Base)
-        {
-            return false;
-        }
-    
-        var number = 1043059 + index;
-        if (number > 1043107)
-        {
-            return false;
-        }
-    
-        if (!foundSomething)
-        {
-            m_Mobile.Say(1043058); // I can train the following:
-            foundSomething = true;
-        }
-    
-        m_Mobile.Say(number);
-        return true;
-    }
 
     // I broke this during refactoring or it never worked right.
     // player mobile speech comamnds are not registered by control pet.
