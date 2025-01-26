@@ -240,7 +240,7 @@ public abstract class BaseAI
         }
     }
     
-    private void SendOrderMessage(Mobile from, OrderType order)
+    private static void SendOrderMessage(Mobile from, OrderType order)
     {
         switch (order)
         {
