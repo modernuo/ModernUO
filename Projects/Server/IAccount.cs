@@ -108,6 +108,5 @@ public interface IAccount : ISerializable, IGoldAccount, IComparable<IAccount>
 
     void Delete();
     bool TrySetUsername(string username);
-    void SetPassword(string password);
-    bool CheckPassword(string password);
 }
+

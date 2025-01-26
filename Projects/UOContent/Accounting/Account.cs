@@ -13,83 +13,66 @@ using Server.Network;
 
 namespace Server.Accounting;
 
-[SerializationGenerator(6)]
-public partial class Account : IAccount, IComparable<Account>
+[SerializationGenerator(0)]
+public partial class BaseAccount : IAccount, IComparable<BaseAccount>
 {
     public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
     public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
 
     [InternString]
-    [SerializableField(0, setter: "private")]
+    [SerializableField(0, setter: "protected")]
     private string _username;
 
     [SerializableField(1)]
-    private PasswordProtectionAlgorithm _passwordAlgorithm;
-
-    [SerializableField(2)]
-    private string _password;
-
-    [SerializableField(3)]
     private AccessLevel _accessLevel;
 
-    [SerializableField(4)]
+    [SerializableField(2)]
     private int _flags;
 
-    [SerializableField(5)]
+    [SerializableField(3)]
     private DateTime _lastLogin;
 
-    /// <summary>
-    ///     This amount represents the current amount of Gold owned by the player.
-    ///     The value does not include the value of Platinum and ranges from
-    ///     0 to 999,999,999 by default.
-    /// </summary>
-    [SerializableField(6, setter: "private")]
+    [SerializableField(4, setter: "protected")]
     [SerializedCommandProperty(AccessLevel.Administrator)]
     public int _totalGold;
 
-    /// <summary>
-    ///     This amount represents the current amount of Platinum owned by the player.
-    ///     The value does not include the value of Gold and ranges from
-    ///     0 to 2,147,483,647 by default.
-    ///     One Platinum represents the value of CurrencyThreshold in Gold.
-    /// </summary>
-    [SerializableField(7, setter: "private")]
+    [SerializableField(5, setter: "protected")]
     [SerializedCommandProperty(AccessLevel.Administrator)]
     public int _totalPlat;
 
-    private Mobile[] _mobiles;
+    protected Mobile[] _mobiles;
 
-    [SerializableProperty(9)]
+    [SerializableProperty(6)]
     public List<AccountComment> Comments
     {
         get => _comments ??= [];
-        private set
+        protected set
         {
             _comments = value;
             this.MarkDirty();
         }
     }
 
-    [SerializableProperty(10)]
+    [SerializableProperty(7)]
     public List<AccountTag> Tags
     {
         get => _tags ??= [];
-        private set
+        protected set
         {
             _tags = value;
             this.MarkDirty();
         }
     }
 
-    [SerializableField(11)]
+    [SerializableField(8)]
     private IPAddress[] _loginIPs;
 
     /// <summary>
     ///     Gets the total game time of this account, also considering the game time of characters
     ///     that have been deleted.
     /// </summary>
-    [SerializableProperty(12)]
+    [SerializableProperty(9)]
     public TimeSpan TotalGameTime
     {
         get
@@ -104,24 +87,22 @@ public partial class Account : IAccount, IComparable<Account>
 
             return _totalGameTime;
         }
-        private set
+        protected set
         {
             _totalGameTime = value;
             this.MarkDirty();
         }
     }
 
-    [SerializableField(13)]
+    [SerializableField(10)]
     [SerializedCommandProperty(AccessLevel.Administrator)]
     private string _email;
 
     private Timer m_YoungTimer;
 
-    public Account(string username, string password) : this(Accounts.NewAccount)
+    public BaseAccount(string username) : this(Accounts.NewAccount)
     {
         _username = username;
-
-        SetPassword(password);
 
         _accessLevel = AccessLevel.Player;
 
@@ -132,39 +113,14 @@ public partial class Account : IAccount, IComparable<Account>
 
         _loginIPs = [];
 
-        Accounts.Add(this);
         this.MarkDirty();
     }
 
-    public Account(XmlElement node)
+    public BaseAccount(XmlElement node)
     {
         Serial = Accounts.NewAccount;
 
         _username = Utility.GetText(node["username"], "empty");
-
-        Enum.TryParse(Utility.GetText(node["passwordAlgorithm"], null), true, out _passwordAlgorithm);
-
-        // Backward compatibility with RunUO/ServUO
-        if (_passwordAlgorithm == PasswordProtectionAlgorithm.None)
-        {
-            var upgraded =
-                UpgradePassword(
-                    Utility.GetText(node["newSecureCryptPassword"], null),
-                    PasswordProtectionAlgorithm.SHA2
-                ) ||
-                UpgradePassword(Utility.GetText(node["newCryptPassword"], null), PasswordProtectionAlgorithm.SHA1) ||
-                UpgradePassword(Utility.GetText(node["cryptPassword"], null), PasswordProtectionAlgorithm.MD5);
-
-            // Automatically upgrade plain passwords to current algorithm.
-            if (!upgraded)
-            {
-                SetPassword(Utility.GetText(node["password"], null));
-            }
-        }
-        else
-        {
-            _password = Utility.GetText(node["password"], null);
-        }
 
         Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out _accessLevel);
         _flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
@@ -206,18 +162,9 @@ public partial class Account : IAccount, IComparable<Account>
             CheckYoung();
         }
 
-        Accounts.Add(this);
         this.MarkDirty();
     }
 
-    /// <summary>
-    ///     Object detailing information about the hardware of the last person to log into this account
-    /// </summary>
-    public HardwareInfo HardwareInfo { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a flag indicating if this account is banned.
-    /// </summary>
     public bool Banned
     {
         get
@@ -374,40 +321,10 @@ public partial class Account : IAccount, IComparable<Account>
 
         Accounts.Remove(this);
         Username = username;
-        Accounts.Add(this);
+        // Accounts.Add(this);
         return true;
     }
 
-    public void SetPassword(string plainPassword)
-    {
-        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
-            ? $"{_username}{plainPassword}"
-            : plainPassword;
-
-        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
-        PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
-    }
-
-    public bool CheckPassword(string plainPassword)
-    {
-        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
-            ? $"{_username}{plainPassword}"
-            : plainPassword;
-
-        var ok = AccountSecurity.GetPasswordProtection(_passwordAlgorithm).ValidatePassword(Password, phrase);
-        if (!ok)
-        {
-            return false;
-        }
-
-        // Upgrade the password protection in case we change the algorithm
-        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm)
-        {
-            SetPassword(plainPassword);
-        }
-
-        return true;
-    }
 
     /// <summary>
     ///     Gets the current number of characters on this account.
@@ -488,6 +405,68 @@ public partial class Account : IAccount, IComparable<Account>
     }
 
     public int CompareTo(IAccount other) => string.CompareOrdinal(Username, other?.Username);
+
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
+    {
+        if (pm.Account is not Account acc || !pm.Young || !acc.Young)
+        {
+            return;
+        }
+
+        var ts = YoungDuration - acc.TotalGameTime;
+        var hours = Math.Max((int)ts.TotalHours, 0);
+
+        if (hours == 1)
+        {
+            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hour.");
+        }
+        else
+        {
+            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
+        }
+    }
+
+    public static void Initialize()
+    {
+        EventSink.Connected += EventSink_Connected;
+        EventSink.Disconnected += EventSink_Disconnected;
+    }
+
+    private static void EventSink_Connected(Mobile m)
+    {
+        if (m.Account is not Account acc)
+        {
+            return;
+        }
+
+        if (acc.Young && acc.m_YoungTimer == null)
+        {
+            acc.m_YoungTimer = new YoungTimer(acc);
+            acc.m_YoungTimer.Start();
+        }
+    }
+
+    private static void EventSink_Disconnected(Mobile m)
+    {
+        if (m.Account is not Account acc)
+        {
+            return;
+        }
+
+        if (acc.m_YoungTimer != null)
+        {
+            acc.m_YoungTimer.Stop();
+            acc.m_YoungTimer = null;
+        }
+
+        if (m is not PlayerMobile pm)
+        {
+            return;
+        }
+
+        acc.TotalGameTime += Core.Now - pm.SessionStart;
+    }
 
     /// <summary>
     ///     Attempts to deposit the given amount of Gold into this account.
@@ -579,7 +558,7 @@ public partial class Account : IAccount, IComparable<Account>
     /// <returns>Total gold, capped at Int32.MaxValue</returns>
     public long GetTotalGold() => _totalGold + _totalPlat * AccountGold.CurrencyThreshold;
 
-    public int CompareTo(Account other) => string.CompareOrdinal(_username, other?._username);
+    public int CompareTo(BaseAccount other) => string.CompareOrdinal(_username, other?._username);
 
     /// <summary>
     ///     Gets the value of a specific flag in the Flags bitfield.
@@ -741,68 +720,6 @@ public partial class Account : IAccount, IComparable<Account>
         return banTime != DateTime.MinValue && banDuration != TimeSpan.Zero;
     }
 
-    public static void Initialize()
-    {
-        EventSink.Connected += EventSink_Connected;
-        EventSink.Disconnected += EventSink_Disconnected;
-    }
-
-    private static void EventSink_Connected(Mobile m)
-    {
-        if (m.Account is not Account acc)
-        {
-            return;
-        }
-
-        if (acc.Young && acc.m_YoungTimer == null)
-        {
-            acc.m_YoungTimer = new YoungTimer(acc);
-            acc.m_YoungTimer.Start();
-        }
-    }
-
-    private static void EventSink_Disconnected(Mobile m)
-    {
-        if (m.Account is not Account acc)
-        {
-            return;
-        }
-
-        if (acc.m_YoungTimer != null)
-        {
-            acc.m_YoungTimer.Stop();
-            acc.m_YoungTimer = null;
-        }
-
-        if (m is not PlayerMobile pm)
-        {
-            return;
-        }
-
-        acc.TotalGameTime += Core.Now - pm.SessionStart;
-    }
-
-    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
-    public static void OnLogin(PlayerMobile pm)
-    {
-        if (pm.Account is not Account acc || !pm.Young || !acc.Young)
-        {
-            return;
-        }
-
-        var ts = YoungDuration - acc.TotalGameTime;
-        var hours = Math.Max((int)ts.TotalHours, 0);
-
-        if (hours == 1)
-        {
-            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hour.");
-        }
-        else
-        {
-            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
-        }
-    }
-
     public void RemoveYoungStatus(int message)
     {
         Young = false;
@@ -837,17 +754,6 @@ public partial class Account : IAccount, IComparable<Account>
         }
     }
 
-    private bool UpgradePassword(string password, PasswordProtectionAlgorithm algorithm)
-    {
-        if (password == null || algorithm < _passwordAlgorithm)
-        {
-            return false;
-        }
-
-        PasswordAlgorithm = algorithm;
-        Password = password.ReplaceOrdinal("-", string.Empty);
-        return true;
-    }
 
     /// <summary>
     ///     Deserializes a list of string values from an xml element. Null values are not added to the list.
@@ -1143,7 +1049,7 @@ public partial class Account : IAccount, IComparable<Account>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator() => new(_mobiles);
 
-    [SerializableProperty(8, useField: nameof(_mobiles))]
+    [SerializableProperty(11, useField: nameof(_mobiles))]
     public Enumerator Mobiles
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1187,4 +1093,110 @@ public partial class Account : IAccount, IComparable<Account>
             get => _current;
         }
     }
+}
+
+[SerializationGenerator(7)]
+public partial class Account : BaseAccount
+{
+    public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
+    public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
+    public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
+
+    [SerializableField(0)]
+    private PasswordProtectionAlgorithm _passwordAlgorithm;
+
+    [SerializableField(1)]
+    private string _password;
+
+    public Account(string username, string password) : base(Accounts.NewAccount)
+    {
+        SetPassword(password);
+        Accounts.Add(this);
+        this.MarkDirty();
+    }
+
+    public Account(XmlElement node) : base(node)
+    {
+        Enum.TryParse(Utility.GetText(node["passwordAlgorithm"], null), true, out _passwordAlgorithm);
+
+        // Backward compatibility with RunUO/ServUO
+        if (_passwordAlgorithm == PasswordProtectionAlgorithm.None)
+        {
+            var upgraded =
+                UpgradePassword(
+                    Utility.GetText(node["newSecureCryptPassword"], null),
+                    PasswordProtectionAlgorithm.SHA2
+                ) ||
+                UpgradePassword(Utility.GetText(node["newCryptPassword"], null), PasswordProtectionAlgorithm.SHA1) ||
+                UpgradePassword(Utility.GetText(node["cryptPassword"], null), PasswordProtectionAlgorithm.MD5);
+
+            // Automatically upgrade plain passwords to current algorithm.
+            if (!upgraded)
+            {
+                SetPassword(Utility.GetText(node["password"], null));
+            }
+        }
+        else
+        {
+            _password = Utility.GetText(node["password"], null);
+        }
+
+        Accounts.Add(this);
+        this.MarkDirty();
+    }
+
+    /// <summary>
+    ///     Object detailing information about the hardware of the last person to log into this account
+    /// </summary>
+    public HardwareInfo HardwareInfo { get; set; }
+
+    public void SetPassword(string plainPassword)
+    {
+        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+            ? $"{Username}{plainPassword}"
+            : plainPassword;
+
+        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
+        PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
+    }
+
+    public bool CheckPassword(string plainPassword)
+    {
+        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+            ? $"{Username}{plainPassword}"
+            : plainPassword;
+
+        var ok = AccountSecurity.GetPasswordProtection(_passwordAlgorithm).ValidatePassword(Password, phrase);
+        if (!ok)
+        {
+            return false;
+        }
+
+        // Upgrade the password protection in case we change the algorithm
+        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm)
+        {
+            SetPassword(plainPassword);
+        }
+
+        return true;
+    }
+
+    public int CompareTo(Account other) => string.CompareOrdinal(Username, other?.Username);
+
+    private bool UpgradePassword(string password, PasswordProtectionAlgorithm algorithm)
+    {
+        if (password == null || algorithm < _passwordAlgorithm)
+        {
+            return false;
+        }
+
+        PasswordAlgorithm = algorithm;
+        Password = password.ReplaceOrdinal("-", string.Empty);
+        return true;
+    }
+}
+
+public interface IPasswordAccount {
+    void SetPassword(string password);
+    bool CheckPassword(string password);
 }

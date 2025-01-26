@@ -1,0 +1,19 @@
+{
+  "version": 7,
+  "type": "Server.Accounting.Account",
+  "properties": [
+    {
+      "name": "PasswordAlgorithm",
+      "type": "Server.Accounting.Security.PasswordProtectionAlgorithm",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

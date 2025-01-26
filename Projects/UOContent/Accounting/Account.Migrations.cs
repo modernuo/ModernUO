@@ -7,62 +7,80 @@ namespace Server.Accounting;
 
 public partial class Account
 {
+    private void MigrateFrom(V6Content content)
+    {
+        Username = content.Username;
+        _passwordAlgorithm = content.PasswordAlgorithm;
+        _password = content.Password;
+        AccessLevel = content.AccessLevel;
+        Flags = content.Flags;
+        LastLogin = content.LastLogin;
+        TotalGold = content.TotalGold;
+        TotalPlat = content.TotalPlat;
+        _mobiles = content.Mobiles;
+        Comments = content.Comments;
+        Tags = content.Tags;
+        LoginIPs = content.LoginIPs;
+        TotalGameTime = content.TotalGameTime;
+        Email = content.Email;
+    }
+
     // Deleted IP Restrictions
     private void MigrateFrom(V5Content content)
     {
-        _username = content.Username;
+        Username = content.Username;
         _passwordAlgorithm = content.PasswordAlgorithm;
         _password = content.Password;
-        _accessLevel = content.AccessLevel;
-        _flags = content.Flags;
-        _lastLogin = content.LastLogin;
-        _totalGold = content.TotalGold;
-        _totalPlat = content.TotalPlat;
+        AccessLevel = content.AccessLevel;
+        Flags = content.Flags;
+        LastLogin = content.LastLogin;
+        TotalGold = content.TotalGold;
+        TotalPlat = content.TotalPlat;
         _mobiles = content.Mobiles;
-        _comments = content.Comments;
-        _tags = content.Tags;
-        _loginIPs = content.LoginIPs;
-        _totalGameTime = content.TotalGameTime;
-        _email = content.Email;
+        Comments = content.Comments;
+        Tags = content.Tags;
+        LoginIPs = content.LoginIPs;
+        TotalGameTime = content.TotalGameTime;
+        Email = content.Email;
     }
 
     // Username was not interned
     private void MigrateFrom(V4Content content)
     {
-        _username = content.Username;
+        Username = content.Username;
         _passwordAlgorithm = content.PasswordAlgorithm;
         _password = content.Password;
-        _accessLevel = content.AccessLevel;
-        _flags = content.Flags;
-        _lastLogin = content.LastLogin;
-        _totalGold = content.TotalGold;
-        _totalPlat = content.TotalPlat;
+        AccessLevel = content.AccessLevel;
+        Flags = content.Flags;
+        LastLogin = content.LastLogin;
+        TotalGold = content.TotalGold;
+        TotalPlat = content.TotalPlat;
         _mobiles = content.Mobiles;
-        _comments = content.Comments;
-        _tags = content.Tags;
-        _loginIPs = content.LoginIPs;
-        _totalGameTime = content.TotalGameTime;
-        _email = content.Email;
+        Comments = content.Comments;
+        Tags = content.Tags;
+        LoginIPs = content.LoginIPs;
+        TotalGameTime = content.TotalGameTime;
+        Email = content.Email;
     }
 
     private void MigrateFrom(V3Content content)
     {
-        _username = content.Username;
-        _username.Intern();
+        Username = content.Username;
+        Username.Intern();
         _passwordAlgorithm = content.PasswordAlgorithm;
         _password = content.Password;
-        _accessLevel = content.AccessLevel;
-        _flags = content.Flags;
+        AccessLevel = content.AccessLevel;
+        Flags = content.Flags;
         Created = content.Created;
-        _lastLogin = content.LastLogin;
-        _totalGold = content.TotalGold;
-        _totalPlat = content.TotalPlat;
+        LastLogin = content.LastLogin;
+        TotalGold = content.TotalGold;
+        TotalPlat = content.TotalPlat;
         _mobiles = content.Mobiles;
-        _comments = content.Comments;
-        _tags = content.Tags;
-        _loginIPs = content.LoginIPs;
-        _totalGameTime = content.TotalGameTime;
-        _email = content.Email;
+        Comments = content.Comments;
+        Tags = content.Tags;
+        LoginIPs = content.LoginIPs;
+        TotalGameTime = content.TotalGameTime;
+        Email = content.Email;
     }
 
     private void Deserialize(IGenericReader reader, int version)
@@ -73,16 +91,18 @@ public partial class Account
             reader.Seek(0, SeekOrigin.Begin);
         }
 
-        _username = reader.ReadString(true);
-        _passwordAlgorithm = version < 2 ? (PasswordProtectionAlgorithm)reader.ReadInt() : reader.ReadEnum<PasswordProtectionAlgorithm>();
+        Username = reader.ReadString(true);
+        _passwordAlgorithm = version < 2
+            ? (PasswordProtectionAlgorithm)reader.ReadInt()
+            : reader.ReadEnum<PasswordProtectionAlgorithm>();
         _password = reader.ReadString();
-        _accessLevel = version < 2 ? (AccessLevel)reader.ReadInt() : reader.ReadEnum<AccessLevel>();
-        _flags = reader.ReadInt();
+        AccessLevel = version < 2 ? (AccessLevel)reader.ReadInt() : reader.ReadEnum<AccessLevel>();
+        Flags = reader.ReadInt();
         Created = reader.ReadDateTime();
-        _lastLogin = reader.ReadDateTime();
+        LastLogin = reader.ReadDateTime();
 
-        _totalGold = reader.ReadInt();
-        _totalPlat = reader.ReadInt();
+        TotalGold = reader.ReadInt();
+        TotalPlat = reader.ReadInt();
 
         var length = reader.ReadInt();
         _mobiles = new Mobile[length];
@@ -92,33 +112,33 @@ public partial class Account
         }
 
         length = reader.ReadInt();
-        _comments = length > 0 ? new List<AccountComment>(length) : null;
+        Comments = length > 0 ? new List<AccountComment>(length) : null;
         for (int i = 0; i < length; i++)
         {
-            _comments!.Add(new AccountComment(reader));
+            Comments!.Add(new AccountComment(reader));
         }
 
         length = reader.ReadInt();
-        _tags = length > 0 ? new List<AccountTag>(length) : null;
+        Tags = length > 0 ? new List<AccountTag>(length) : null;
         for (int i = 0; i < length; i++)
         {
-            _tags!.Add(new AccountTag(reader));
+            Tags!.Add(new AccountTag(reader));
         }
 
         length = reader.ReadInt();
-        _loginIPs = new IPAddress[length];
+        LoginIPs = new IPAddress[length];
         for (int i = 0; i < length; i++)
         {
             if (version < 2)
             {
                 if (IPAddress.TryParse(reader.ReadString(), out var address))
                 {
-                    _loginIPs[i] = Utility.Intern(address);
+                    LoginIPs[i] = Utility.Intern(address);
                 }
             }
             else
             {
-                _loginIPs[i] = reader.ReadIPAddress();
+                LoginIPs[i] = reader.ReadIPAddress();
             }
         }
 
@@ -128,11 +148,11 @@ public partial class Account
             reader.ReadString(); // IP Restrictions
         }
 
-        _totalGameTime = reader.ReadTimeSpan();
+        TotalGameTime = reader.ReadTimeSpan();
 
         if (version > 1)
         {
-            _email = reader.ReadString();
+            Email = reader.ReadString();
         }
     }
 }
