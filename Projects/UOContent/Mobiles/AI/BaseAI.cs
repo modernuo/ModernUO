@@ -1844,10 +1844,24 @@ public abstract class BaseAI
         {
             m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
             m_Mobile.Home = m_Mobile.Location;
-            m_Mobile.ControlTarget = null;
-            m_Mobile.Warmode = false;
-            m_Mobile.Combatant = null;
-            m_Mobile.FocusMob = null;
+
+            if (m_Mobile.ControlTarget != null)
+            {
+                m_Mobile.ControlTarget = null;
+            }
+            if (m_Mobile.Warmode)
+            {
+                m_Mobile.Warmode = false;
+            }
+            if (m_Mobile.Combatant != null)
+            {
+                m_Mobile.Combatant = null;
+            }
+            if (m_Mobile.FocusMob != null)
+            {
+                m_Mobile.FocusMob = null;
+            }
+
             m_Mobile.ControlOrder = OrderType.None;
         }
     }
@@ -1875,10 +1889,24 @@ public abstract class BaseAI
         {
             m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
             m_Mobile.Home = m_Mobile.Location;
-            m_Mobile.ControlTarget = null;
-            m_Mobile.Warmode = false;
-            m_Mobile.Combatant = null;
-            m_Mobile.FocusMob = null;
+
+            if (m_Mobile.ControlTarget != null)
+            {
+                m_Mobile.ControlTarget = null;
+            }
+            if (m_Mobile.Warmode)
+            {
+                m_Mobile.Warmode = false;
+            }
+            if (m_Mobile.Combatant != null)
+            {
+                m_Mobile.Combatant = null;
+            }
+            if (m_Mobile.FocusMob != null)
+            {
+                m_Mobile.FocusMob = null;
+            }
+
             m_Mobile.ControlOrder = OrderType.Stop;
         }
     }
@@ -1945,8 +1973,15 @@ public abstract class BaseAI
             }
         }
 
-        m_Mobile.ControlTarget = null;
-        m_Mobile.ControlOrder = OrderType.Stay;
+        if (m_Mobile.ControlTarget != null)
+        {
+            m_Mobile.ControlTarget = null;
+        }
+        if (m_Mobile.ControlOrder != OrderType.Stay)
+        {
+            m_Mobile.ControlOrder = OrderType.Stay;
+        }
+
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
 
         return true;
@@ -1991,8 +2026,14 @@ public abstract class BaseAI
             m_Mobile.DebugSay("I am pacified. Can not fight.");
         }
     
-        m_Mobile.Combatant = null;
-        m_Mobile.Warmode = false;
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
     }
     
     private void HandleEndOfPacification()
@@ -2044,11 +2085,26 @@ public abstract class BaseAI
             m_Mobile.DebugSay("Provoker missing.");
         }
     
-        m_Mobile.BardProvoked = false;
-        m_Mobile.BardMaster = null;
-        m_Mobile.BardTarget = null;
-        m_Mobile.Combatant = null;
-        m_Mobile.Warmode = false;
+        if (!m_Mobile.BardProvoked)
+        {
+            m_Mobile.BardProvoked = false;
+        }
+        if (m_Mobile.BardMaster != null)
+        {
+            m_Mobile.BardMaster = null;
+        }
+        if (m_Mobile.BardTarget != null)
+        {
+            m_Mobile.BardTarget = null;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
     }
     
     private void HandleLostProvokeTarget()
@@ -2058,11 +2114,26 @@ public abstract class BaseAI
             m_Mobile.DebugSay("Provoke target missing.");
         }
     
-        m_Mobile.BardProvoked = false;
-        m_Mobile.BardMaster = null;
-        m_Mobile.BardTarget = null;
-        m_Mobile.Combatant = null;
-        m_Mobile.Warmode = false;
+        if (m_Mobile.BardProvoked)
+        {
+            m_Mobile.BardProvoked = false;
+        }
+        if (m_Mobile.BardMaster != null)
+        {
+            m_Mobile.BardMaster = null;
+        }
+        if (m_Mobile.BardTarget != null)
+        {
+            m_Mobile.BardTarget = null;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
     }
     
     private void HandleProvokeCombat()
