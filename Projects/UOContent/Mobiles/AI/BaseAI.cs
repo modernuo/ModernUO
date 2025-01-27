@@ -2822,13 +2822,6 @@ public abstract class BaseAI
             return;
         }
     
-    
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Checking for hidden entities...");
-        }
-    
-
         if (m_Mobile.Debug)
         {
             m_Mobile.DebugSay("Checking for hidden entities...");
@@ -2839,12 +2832,7 @@ public abstract class BaseAI
         {
             return;
         }
-
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Checking for hidden entities...");
-        }
-
+    
         foreach (var trg in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
         {
             if (IsValidTargetCombatTarget(trg))
