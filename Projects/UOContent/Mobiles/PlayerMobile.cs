@@ -4478,28 +4478,34 @@ namespace Server.Mobiles
                 return;
             }
 
-            var duration = Utility.Max(buffInfo.Duration - (Core.Now - buffInfo.StartTime), TimeSpan.Zero).TotalSeconds;
-            var rounded = Math.Round(duration);
-            var offset = duration - rounded;
+            var duration = Utility.Max(buffInfo.Duration - (Core.Now - buffInfo.StartTime), TimeSpan.Zero);
+            if (duration == TimeSpan.Zero)
+            {
+                SendAddBuffPacket(buffInfo, 0);
+                return;
+            }
+
+            var roundedSeconds = Math.Round(duration.TotalSeconds);
+            var offset = duration.TotalMilliseconds - roundedSeconds * TimeSpan.MillisecondsPerSecond;
             if (offset > 0)
             {
-                Timer.DelayCall(TimeSpan.FromSeconds(offset), () =>
+                Timer.DelayCall(TimeSpan.FromMilliseconds(offset), () =>
                     {
                         // They are still online, we still have the buff icon in the table, and it is the same buff icon
                         if (NetState != null && m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
                         {
-                            SendAddBuffPacket(buffInfo, (long)rounded);
+                            SendAddBuffPacket(buffInfo, (long)roundedSeconds);
                         }
                     }
                 );
             }
             else // Round up, will be removed a little bit early by the server
             {
-                SendAddBuffPacket(buffInfo, (long)rounded);
+                SendAddBuffPacket(buffInfo, (long)roundedSeconds);
             }
         }
 
-        private void SendAddBuffPacket(BuffInfo buffInfo, long ticks)
+        private void SendAddBuffPacket(BuffInfo buffInfo, long seconds)
         {
             NetState.SendAddBuffPacket(
                 Serial,
@@ -4507,7 +4513,7 @@ namespace Server.Mobiles
                 buffInfo.TitleCliloc,
                 buffInfo.SecondaryCliloc,
                 buffInfo.Args,
-                ticks
+                seconds
             );
         }
 
