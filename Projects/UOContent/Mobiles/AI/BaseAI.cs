@@ -138,7 +138,10 @@ public abstract class BaseAI
             m_Timer.Start();
         }
 
-        Action = ActionType.Wander;
+        if (Action != ActionType.Wander)
+        {
+            Action = ActionType.Wander;
+        }
     }
 
     public ActionType Action
@@ -868,7 +871,10 @@ public abstract class BaseAI
                 m_Mobile.DebugSay("My combatant is missing.");
             }
 
-            Action = ActionType.Wander;
+            if (Action != ActionType.Wander)
+            {
+                Action = ActionType.Wander;
+            }
             return true;
         }
     
@@ -909,7 +915,10 @@ public abstract class BaseAI
                 m_Mobile.DebugSay("I stopped being on guard.");
             }
 
-            Action = ActionType.Wander;
+            if (Action != ActionType.Wander)
+            {
+                Action = ActionType.Wander;
+            }
         }
     
         return true;
@@ -926,7 +935,10 @@ public abstract class BaseAI
                 m_Mobile.DebugSay("Focused target is missing.");
             }
 
-            Action = ActionType.Guard;
+            if (Action != ActionType.Guard)
+            {
+                Action = ActionType.Guard;
+            }
             return true;
         }
     
@@ -937,7 +949,10 @@ public abstract class BaseAI
                 m_Mobile.DebugSay("I am fleeing.");
             }
 
-            Action = ActionType.Guard;
+            if (Action != ActionType.Guard)
+            {
+                Action = ActionType.Guard;
+            }
             return true;
         }
         
@@ -1532,7 +1547,11 @@ public abstract class BaseAI
     
         m_Mobile.Combatant = combatant;
         m_Mobile.FocusMob = combatant;
-        Action = ActionType.Combat;
+        
+        if (Action != ActionType.Combat)
+        {
+            Action = ActionType.Combat;
+        }
     
         // used to update spell caster combat states
         Think();
@@ -1954,7 +1973,11 @@ public abstract class BaseAI
     private void HandleProvokeCombat()
     {
         m_Mobile.Combatant = m_Mobile.BardTarget;
-        m_Action = ActionType.Combat;
+        
+        if (Action != ActionType.Combat)
+        {
+            Action = ActionType.Combat;
+        }
     
         m_Mobile.OnThink();
         
