@@ -3247,25 +3247,30 @@ public abstract class BaseAI
                 Stop();
                 return;
             }
-
+        
             // update interval based on current state and speed
-            Interval = TimeSpan.FromMilliseconds(GetBaseInterval(m_Owner));
+            var newInterval = TimeSpan.FromMilliseconds(GetBaseInterval(m_Owner));
+            if (Interval != newInterval)
+            {
+                Interval = newInterval;
+            }
+        
             m_Owner.m_Mobile.OnThink();
-
+        
             if (ShouldStop())
             {
                 Stop();
                 return;
             }
-
+        
             HandleBardEffects();
-
+        
             if (m_Owner.m_Mobile.Controlled ? !m_Owner.Obey() : !m_Owner.Think())
             {
                 Stop();
                 return;
             }
-
+        
             HandleDetectHidden();
         }
 
