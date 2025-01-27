@@ -681,7 +681,7 @@ public abstract class BaseAI
 
     public virtual bool Think()
     {
-        if (m_Mobile.Deleted)
+        if (m_Mobile?.Deleted != false || m_Mobile.Map == null)
         {
             return false;
         }
@@ -2069,7 +2069,14 @@ public abstract class BaseAI
         return delay <= MovementTimingTolerance;
     }
 
-    public virtual bool CheckMove() => true;
+    public virtual bool CheckMove() 
+    {
+        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves)
+        {
+            return false;
+        }
+        return true;
+    }
     
     public virtual bool DoMove(Direction d, bool badStateOk = false)
     {
@@ -2559,7 +2566,7 @@ public abstract class BaseAI
      */
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
-        if (m_Mobile.Deleted)
+        if (m_Mobile?.Deleted != false || m_Mobile.Map == null || acqType == FightMode.None)
         {
             return false;
         }
@@ -2810,7 +2817,7 @@ public abstract class BaseAI
 
     public virtual void DetectHidden()
     {
-        if (m_Mobile.Deleted || m_Mobile.Map == null)
+        if (m_Mobile?.Deleted != false || m_Mobile.Map == null || !CanDetectHidden)
         {
             return;
         }
