@@ -4663,24 +4663,16 @@ namespace Server.Mobiles
 
             public override bool Singleton => true;
 
-            public ItemInsuranceMenuGump(PlayerMobile from, Item[] items, bool[] insure = null, int page = 0)
-                : base(25, 50)
+            public ItemInsuranceMenuGump(PlayerMobile from, Item[] items) : base(25, 50)
             {
                 _from = from;
                 _items = items;
+                _insure = new bool[items.Length];
 
-                if (insure == null)
+                for (var i = 0; i < items.Length; ++i)
                 {
-                    insure = new bool[items.Length];
-
-                    for (var i = 0; i < items.Length; ++i)
-                    {
-                        insure[i] = items[i].Insured;
-                    }
+                    _insure[i] = items[i].Insured;
                 }
-
-                _insure = insure;
-                _page = page;
             }
 
             protected override void BuildLayout(ref DynamicGumpBuilder builder)
