@@ -724,44 +724,98 @@ public abstract class BaseAI
     
     private void HandleWanderAction()
     {
-        m_Mobile.Warmode = false;
-        m_Mobile.Combatant = null;
-        m_Mobile.FocusMob = null;
-        m_Mobile.SetCurrentSpeedToPassive();
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
+        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
+        {
+            m_Mobile.SetCurrentSpeedToActive();
+        }
     }
     
     private void HandleCombatAction()
     {
-        m_Mobile.Warmode = true;
-        m_Mobile.FocusMob = null;
-        m_Mobile.SetCurrentSpeedToActive();
+        if (!m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = true;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
+        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
+        {
+            m_Mobile.SetCurrentSpeedToActive();
+        }
     }
     
     private void HandleGuardAction()
     {
-        m_Mobile.Warmode = true;
-        m_Mobile.FocusMob = null;
-        m_Mobile.Combatant = null;
-        m_Mobile.SetCurrentSpeedToActive();
+        if (!m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = true;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
+        {
+            m_Mobile.SetCurrentSpeedToActive();
+        }
     }
     
     private void HandleFleeAction()
     {
-        m_Mobile.Warmode = true;
-        m_Mobile.FocusMob = null;
-        m_Mobile.SetCurrentSpeedToActive();
+        if (!m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = true;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
+        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
+        {
+            m_Mobile.SetCurrentSpeedToActive();
+        }
     }
     
     private void HandleInteractAction()
     {
-        m_Mobile.Warmode = false;
-        m_Mobile.SetCurrentSpeedToPassive();
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
+        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
+        {
+            m_Mobile.SetCurrentSpeedToPassive();
+        }
     }
     
     private void HandleBackoffAction()
     {
-        m_Mobile.Warmode = false;
-        m_Mobile.SetCurrentSpeedToPassive();
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
+        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
+        {
+            m_Mobile.SetCurrentSpeedToPassive();
+        }
     }
 
     public virtual bool OnAtWayPoint() => true;
