@@ -1032,7 +1032,12 @@ public abstract class BaseAI
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
         m_Mobile.FocusMob = null;
-        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+        
+        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+        }
+
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
     
@@ -1045,7 +1050,12 @@ public abstract class BaseAI
 
         m_Mobile.Warmode = true;
         m_Mobile.FocusMob = null;
-        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+        
+        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+        }
+
         m_Mobile.Home = m_Mobile.ControlMaster.Location;
         m_Mobile.ControlOrder = OrderType.None;
         m_Mobile.PlaySound(m_Mobile.GetAttackSound());
@@ -1062,7 +1072,12 @@ public abstract class BaseAI
 
         m_Mobile.Warmode = true;
         m_Mobile.FocusMob = null;
-        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        
+        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        }
+
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
     
@@ -1076,6 +1091,12 @@ public abstract class BaseAI
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
         m_Mobile.FocusMob = null;
+
+        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        }
+
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
 
