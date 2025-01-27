@@ -4800,7 +4800,7 @@ namespace Server.Mobiles
                         }
                     case 2: // OK
                         {
-                            _from.SendGump(new ItemInsuranceMenuConfirmGump(this, _items, _insure));
+                            _from.SendGump(new ItemInsuranceMenuConfirmGump(this));
 
                             break;
                         }
@@ -4839,60 +4839,56 @@ namespace Server.Mobiles
                         }
                 }
             }
-        }
 
-        private class ItemInsuranceMenuConfirmGump : StaticGump<ItemInsuranceMenuConfirmGump>
-        {
-            private readonly bool[] _insure;
-            private readonly Item[] _items;
-            private readonly ItemInsuranceMenuGump _parentGump;
-
-            public ItemInsuranceMenuConfirmGump(ItemInsuranceMenuGump parentGump, Item[] items, bool[] insure) : base(250, 200)
+            private class ItemInsuranceMenuConfirmGump : StaticGump<ItemInsuranceMenuConfirmGump>
             {
-                _items = items;
-                _insure = insure;
-                _parentGump = parentGump;
-            }
+                private readonly ItemInsuranceMenuGump _parentGump;
 
-            protected override void BuildLayout(ref StaticGumpBuilder builder)
-            {
-                builder.AddBackground(0, 0, 240, 142, 0x13BE);
-                builder.AddImageTiled(6, 6, 228, 100, 0xA40);
-                builder.AddImageTiled(6, 116, 228, 20, 0xA40);
-                builder.AddAlphaRegion(6, 6, 228, 142);
+                public ItemInsuranceMenuConfirmGump(ItemInsuranceMenuGump parentGump) : base(250, 200) =>
+                    _parentGump = parentGump;
 
-                builder.AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF); // Do you wish to insure all newly selected items?
-
-                builder.AddButton(6, 116, 0xFB1, 0xFB2, 0);
-                builder.AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
-
-                builder.AddButton(114, 116, 0xFA5, 0xFA7, 1);
-                builder.AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF); // ACCEPT
-            }
-
-            public override void OnResponse(NetState sender, in RelayInfo info)
-            {
-                if (sender.Mobile is not PlayerMobile pm || !pm.CheckAlive())
+                protected override void BuildLayout(ref StaticGumpBuilder builder)
                 {
-                    return;
+                    builder.AddBackground(0, 0, 240, 142, 0x13BE);
+                    builder.AddImageTiled(6, 6, 228, 100, 0xA40);
+                    builder.AddImageTiled(6, 116, 228, 20, 0xA40);
+                    builder.AddAlphaRegion(6, 6, 228, 142);
+
+                    builder.AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF); // Do you wish to insure all newly selected items?
+
+                    builder.AddButton(6, 116, 0xFB1, 0xFB2, 0);
+                    builder.AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
+
+                    builder.AddButton(114, 116, 0xFA5, 0xFA7, 1);
+                    builder.AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF); // ACCEPT
                 }
 
-                if (info.ButtonID == 1)
+                public override void OnResponse(NetState sender, in RelayInfo info)
                 {
-                    for (var i = 0; i < _items.Length; ++i)
+                    if (sender.Mobile is not PlayerMobile pm || !pm.CheckAlive())
                     {
-                        var item = _items[i];
+                        return;
+                    }
 
-                        if (item.Insured != _insure[i])
+                    if (info.ButtonID == 1)
+                    {
+                        var items = _parentGump._items;
+                        var insure = _parentGump._insure;
+                        for (var i = 0; i < items.Length; ++i)
                         {
-                            pm.ToggleItemInsurance_Callback(pm, item, false);
+                            var item = items[i];
+
+                            if (item.Insured != insure[i])
+                            {
+                                pm.ToggleItemInsurance_Callback(pm, item, false);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    pm.SendLocalizedMessage(1042021); // Cancelled.
-                    pm.SendGump(_parentGump);
+                    else
+                    {
+                        pm.SendLocalizedMessage(1042021); // Cancelled.
+                        pm.SendGump(_parentGump);
+                    }
                 }
             }
         }
