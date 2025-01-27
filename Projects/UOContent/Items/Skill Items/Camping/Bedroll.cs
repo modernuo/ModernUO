@@ -55,23 +55,26 @@ public partial class Bedroll : Item
         }
     }
 
-    private class LogoutGump : Gump
+    private class LogoutGump : StaticGump<LogoutGump>
     {
-        private Bedroll _dedroll;
+        private readonly Bedroll _bedroll;
         private TimerExecutionToken _closeTimerToken;
 
-        private CampfireEntry _entry;
+        private readonly CampfireEntry _entry;
 
         public LogoutGump(CampfireEntry entry, Bedroll bedroll) : base(100, 0)
         {
             _entry = entry;
-            _dedroll = bedroll;
+            _bedroll = bedroll;
 
             Timer.StartTimer(TimeSpan.FromSeconds(10.0), CloseGump, out _closeTimerToken);
+        }
 
-            AddBackground(0, 0, 400, 350, 0xA28);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddBackground(0, 0, 400, 350, 0xA28);
 
-            AddHtmlLocalized(100, 20, 200, 35, 1011015); // <center>Logging out via camping</center>
+            builder.AddHtmlLocalized(100, 20, 200, 35, 1011015); // <center>Logging out via camping</center>
 
             /* Using a bedroll in the safety of a camp will log you out of the game safely.
              * If this is what you wish to do choose CONTINUE and you will be logged out.
@@ -79,13 +82,13 @@ public partial class Bedroll : Item
              * The camp will remain secure for 10 seconds at which time this window will close
              * and you not be logged out.
              */
-            AddHtmlLocalized(50, 55, 300, 140, 1011016, true, true);
+            builder.AddHtmlLocalized(50, 55, 300, 140, 1011016, true, true);
 
-            AddButton(45, 298, 0xFA5, 0xFA7, 1);
-            AddHtmlLocalized(80, 300, 110, 35, 1011011); // CONTINUE
+            builder.AddButton(45, 298, 0xFA5, 0xFA7, 1);
+            builder.AddHtmlLocalized(80, 300, 110, 35, 1011011); // CONTINUE
 
-            AddButton(200, 298, 0xFA5, 0xFA7, 0);
-            AddHtmlLocalized(235, 300, 110, 35, 1011012); // CANCEL
+            builder.AddButton(200, 298, 0xFA5, 0xFA7, 0);
+            builder.AddHtmlLocalized(235, 300, 110, 35, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -99,10 +102,10 @@ public partial class Bedroll : Item
                 return;
             }
 
-            if (info.ButtonID == 1 && _entry.Safe && _dedroll.Parent == null && _dedroll.IsAccessibleTo(pm)
-                && _dedroll.VerifyMove(pm) && _dedroll.Map == pm.Map && pm.InRange(_dedroll, 2))
+            if (info.ButtonID == 1 && _entry.Safe && _bedroll.Parent == null && _bedroll.IsAccessibleTo(pm)
+                && _bedroll.VerifyMove(pm) && _bedroll.Map == pm.Map && pm.InRange(_bedroll, 2))
             {
-                pm.PlaceInBackpack(_dedroll);
+                pm.PlaceInBackpack(_bedroll);
 
                 pm.BedrollLogout = true;
                 sender.Disconnect("Used a bedroll to log out.");
