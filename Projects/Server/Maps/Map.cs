@@ -978,7 +978,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             (origin, destination) = (destination, origin);
         }
 
-        int height;
         Point3D p;
         var path = new Point3DList();
         TileFlag flags;
@@ -1087,15 +1086,15 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
                 flags = id.Flags;
-                height = id.CalcHeight;
 
-                if (t.Z <= pointTop && t.Z + height >= point.Z && (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0)
+                if (
+                    t.Z <= pointTop && t.Z + id.CalcHeight >= point.Z &&
+                    (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0 &&
+                    (point.X != destination.X ||
+                     point.Y != destination.Y ||
+                     t.Z > endTop || t.Z + id.CalcHeight < destination.Z)
+                )
                 {
-                    if (point.X == destination.X && point.Y == destination.Y && t.Z <= endTop && t.Z + height >= destination.Z)
-                    {
-                        continue;
-                    }
-
                     return false;
                 }
             }
@@ -1140,41 +1139,40 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 continue;
             }
 
-            height = id.CalcHeight;
-
-            var losBlocked = false;
-
-            var count = path.Count;
-
-            for (var j = 0; j < count; ++j)
+            for (var i = 0; i < path.Count; ++i)
             {
-                var pathPoint = path[j];
+                var pathPoint = path[i];
                 var pointTop = pathPoint.Z + 1;
                 var itemLocation = item.Location;
 
-                if (itemLocation.X == pathPoint.X && itemLocation.Y == pathPoint.Y //item is on same tile as this point along the LOSpath
-                    && itemLocation.Z <= pointTop && itemLocation.Z + height >= pathPoint.Z //item rests on the same level as the path
-                    //Fix door bugging monsters- if door is at the START or END of the LOS path, then allow LOS
-                    && !(flags.HasFlag(TileFlag.Door)
-                         && (itemLocation.X == origin.X && itemLocation.Y == origin.Y)
-                            || (itemLocation.X == destination.X && itemLocation.Y == destination.Y)))
+                if (
+                    // Item is on same tile as this point along the LOS path
+                    itemLocation.X == pathPoint.X &&
+                    itemLocation.Y == pathPoint.Y &&
+                    itemLocation.Z <= pointTop &&
+
+                    // Item rests on the same level as the path
+                    itemLocation.Z + id.CalcHeight >= pathPoint.Z &&
+
+                    // Fix door bugging monsters when door is at the START or END of the LOS path by allowing LOS
+                    !(flags.HasFlag(TileFlag.Door) &&
+                      itemLocation.X == origin.X && itemLocation.Y == origin.Y ||
+                      itemLocation.X == destination.X && itemLocation.Y == destination.Y) &&
+
+                    // Item is at some point along the path BEFORE the target
+                    (itemLocation.X != destination.X ||
+                     itemLocation.Y != destination.Y ||
+
+                     // Item is diagonally looking DOWN at the target
+                     itemLocation.Z > endTop ||
+
+                     // Item is diagonally looking UP at the target
+                     itemLocation.Z + id.CalcHeight < destination.Z)
+                )
                 {
-                    if (itemLocation.X != destination.X || itemLocation.Y != destination.Y //at some point along the path BEFORE the target
-                        || itemLocation.Z > endTop //item is diagonally looking DOWN at the target
-                        || itemLocation.Z + height < destination.Z) //item is diagonally looking UP at the target
-                    {
-                        losBlocked = true;
-                        break;
-                    }
+                    return false;
                 }
             }
-
-            if (!losBlocked)
-            {
-                continue;
-            }
-
-            return false;
         }
 
         return true;

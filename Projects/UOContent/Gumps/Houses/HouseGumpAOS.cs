@@ -111,18 +111,15 @@ namespace Server.Gumps
 
             AddImage(10, 10, 100);
 
-            if (m_House.Sign != null)
+            var lines = m_House.Sign?.GetName().Wrap(10, 6);
+
+            if (lines != null)
             {
-                var lines = m_House.Sign.GetName().Wrap(10, 6);
-
-                if (lines != null)
+                for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
                 {
-                    for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
-                    {
-                        var s = lines[i];
+                    var s = lines[i];
 
-                        AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
-                    }
+                    AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
                 }
             }
 
