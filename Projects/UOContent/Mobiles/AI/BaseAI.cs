@@ -1093,10 +1093,18 @@ public abstract class BaseAI
     
     private void HandlePassiveOrder()
     {
-        m_Mobile.Warmode = false;
-        m_Mobile.Combatant = null;
-        m_Mobile.FocusMob = null;
-        
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
         if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
         {
             m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
@@ -1112,16 +1120,26 @@ public abstract class BaseAI
             return;
         }
 
-        m_Mobile.Warmode = true;
-        m_Mobile.FocusMob = null;
-        
+        if (!m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = true;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
         if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
         {
             m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
         }
 
         m_Mobile.Home = m_Mobile.ControlMaster.Location;
-        m_Mobile.ControlOrder = OrderType.None;
+
+        if (m_Mobile.ControlOrder != OrderType.None)
+        {
+            m_Mobile.ControlOrder = OrderType.None;
+        }
+
         m_Mobile.PlaySound(m_Mobile.GetAttackSound());
         m_Mobile.ControlMaster.SendLocalizedMessage(1049671, m_Mobile.Name);
         // 1049671: ~1_NAME~ is now guarding you.
@@ -1134,9 +1152,14 @@ public abstract class BaseAI
             return;
         }
 
-        m_Mobile.Warmode = true;
-        m_Mobile.FocusMob = null;
-        
+        if (!m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = true;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
         if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
         {
             m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
@@ -1152,10 +1175,18 @@ public abstract class BaseAI
             return;
         }
 
-        m_Mobile.Warmode = false;
-        m_Mobile.Combatant = null;
-        m_Mobile.FocusMob = null;
-
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
         if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
         {
             m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
