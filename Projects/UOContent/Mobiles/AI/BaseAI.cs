@@ -2690,7 +2690,8 @@ public abstract class BaseAI
     
         foreach (var m in map.GetMobilesInRange(m_Mobile.Location, iRange))
         {
-            if (IsInvalidTarget(m, bPlayerOnly))
+            var isInvalidTarget = IsInvalidTarget(m, bPlayerOnly);
+            if (isInvalidTarget)
             {
                 continue;
             }
@@ -2698,9 +2699,11 @@ public abstract class BaseAI
             var bc = m as BaseCreature;
             var pm = m as PlayerMobile;
     
-            if (IsInvalidSummonTarget(m, bc, pm) || 
-                IsInvalidFactionTarget(m, bFacFriend, bFacFoe) ||
-                IsInvalidFightModeTarget(m, acqType, bc))
+            var isInvalidSummonTarget = IsInvalidSummonTarget(m, bc, pm);
+            var isInvalidFactionTarget = IsInvalidFactionTarget(m, bFacFriend, bFacFoe);
+            var isInvalidFightModeTarget = IsInvalidFightModeTarget(m, acqType, bc);
+    
+            if (isInvalidSummonTarget || isInvalidFactionTarget || isInvalidFightModeTarget)
             {
                 continue;
             }
