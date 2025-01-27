@@ -2091,7 +2091,8 @@ public abstract class BaseAI
 
     public virtual MoveResult DoMoveImpl(Direction d, bool badStateOk)
     {
-        if (IsInBadState())
+        var isInBadState = IsInBadState();
+        if (isInBadState)
         {
             return MoveResult.BadState;
         }
@@ -2104,29 +2105,29 @@ public abstract class BaseAI
             }
             return MoveResult.BadState;
         }
-
+    
         if ((m_Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
         {
             m_Mobile.Direction = d;
         }
-
+    
         m_Mobile.Pushing = false;
         var mobDirection = m_Mobile.Direction;
-
+    
         var moveResult = TryMove(d);
-
+    
         if (moveResult)
         {
             HandleCombatDelay();
             return MoveResult.Success;
         }
-
+    
         if ((mobDirection & Direction.Mask) != (d & Direction.Mask))
         {
             m_Mobile.Direction = d;
             return MoveResult.SuccessAutoTurn;
         }
-
+    
         return HandleBlockedMovement(d, mobDirection);
     }
 
