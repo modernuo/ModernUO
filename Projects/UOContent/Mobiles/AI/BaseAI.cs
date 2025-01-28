@@ -203,6 +203,7 @@ public abstract class BaseAI
         }
 
         // This command is on OSI. However, the cliloc must be manually added to client files.
+        // simply returns a string giving instruction on how to rename pets.
         list.Add(new InternalEntry(3006098, 14, OrderType.Rename, true));           // Rename
     
         if (!m_Mobile.Summoned && m_Mobile is not GrizzledMare)
@@ -2218,8 +2219,9 @@ public abstract class BaseAI
     
         return (1.0 - offset) * 0.8;
     }
-
-    private const int MovementTimingTolerance = 50; // this needs to match ai interval
+    
+    // this needs to match ai interval
+    private const int MovementTimingTolerance = 50;
 
     public bool CanMoveNow(out long delay)
     {
@@ -3026,7 +3028,8 @@ public abstract class BaseAI
         if (chance > Utility.RandomDouble())
         {
             trg.RevealingAction();
-            trg.SendLocalizedMessage(500814); // You have been revealed!
+            trg.SendLocalizedMessage(500814);
+            // 500814: You have been revealed!
         }
     }
 
@@ -3405,9 +3408,9 @@ public abstract class BaseAI
                 Stop();
                 return;
             }
-        
-            // update interval based on current state and speed
+
             var newInterval = TimeSpan.FromMilliseconds(GetBaseInterval(m_Owner));
+
             if (Interval != newInterval)
             {
                 Interval = newInterval;
