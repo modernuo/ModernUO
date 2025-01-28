@@ -80,7 +80,7 @@ public class SummonFamiliarSpell : NecromancerSpell
 
 public class SummonFamiliarEntry
 {
-    public SummonFamiliarEntry(Type type, object name, double reqNecromancy, double reqSpiritSpeak)
+    public SummonFamiliarEntry(Type type, TextDefinition name, double reqNecromancy, double reqSpiritSpeak)
     {
         Type = type;
         Name = name;
@@ -90,14 +90,14 @@ public class SummonFamiliarEntry
 
     public Type Type { get; }
 
-    public object Name { get; }
+    public TextDefinition Name { get; }
 
     public double ReqNecromancy { get; }
 
     public double ReqSpiritSpeak { get; }
 }
 
-public class SummonFamiliarGump : Gump
+public class SummonFamiliarGump : DynamicGump
 {
     private const int EnabledColor16 = 0x0F20;
     private const int DisabledColor16 = 0x262A;
@@ -105,8 +105,8 @@ public class SummonFamiliarGump : Gump
     private const int EnabledColor32 = 0x18CD00;
     private const int DisabledColor32 = 0x4A8B52;
 
-    private readonly SummonFamiliarEntry[] _entries;
     private readonly Mobile _from;
+    private readonly SummonFamiliarEntry[] _entries;
 
     private readonly SummonFamiliarSpell _spell;
 
@@ -117,49 +117,47 @@ public class SummonFamiliarGump : Gump
         _from = from;
         _entries = entries;
         _spell = spell;
+    }
 
-        AddPage(0);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddBackground(10, 10, 250, 178, 9270);
-        AddAlphaRegion(20, 20, 230, 158);
+        builder.AddBackground(10, 10, 250, 178, 9270);
+        builder.AddAlphaRegion(20, 20, 230, 158);
 
-        AddImage(220, 20, 10464);
-        AddImage(220, 72, 10464);
-        AddImage(220, 124, 10464);
+        builder.AddImage(220, 20, 10464);
+        builder.AddImage(220, 72, 10464);
+        builder.AddImage(220, 124, 10464);
 
-        AddItem(188, 16, 6883);
-        AddItem(198, 168, 6881);
-        AddItem(8, 15, 6882);
-        AddItem(2, 168, 6880);
+        builder.AddItem(188, 16, 6883);
+        builder.AddItem(198, 168, 6881);
+        builder.AddItem(8, 15, 6882);
+        builder.AddItem(2, 168, 6880);
 
-        AddHtmlLocalized(30, 26, 200, 20, 1060147, EnabledColor16); // Chose thy familiar...
+        builder.AddHtmlLocalized(30, 26, 200, 20, 1060147, EnabledColor16); // Chose thy familiar...
 
-        var necro = from.Skills.Necromancy.Value;
-        var spirit = from.Skills.SpiritSpeak.Value;
+        var necro = _from.Skills.Necromancy.Value;
+        var spirit = _from.Skills.SpiritSpeak.Value;
 
-        for (var i = 0; i < entries.Length; ++i)
+        for (var i = 0; i < _entries.Length; ++i)
         {
-            var entry = entries[i];
+            var entry = _entries[i];
             var name = entry.Name;
 
             var enabled = necro >= entry.ReqNecromancy && spirit >= entry.ReqSpiritSpeak;
 
-            AddButton(27, 53 + i * 21, 9702, 9703, i + 1);
+            builder.AddButton(27, 53 + i * 21, 9702, 9703, i + 1);
 
-            if (name is int intName)
-            {
-                AddHtmlLocalized(50, 51 + i * 21, 150, 20, intName, enabled ? EnabledColor16 : DisabledColor16);
-            }
-            else if (name is string strName)
-            {
-                AddHtml(
-                    50,
-                    51 + i * 21,
-                    150,
-                    20,
-                    strName.Color(enabled ? EnabledColor32 : DisabledColor32)
-                );
-            }
+            name.AddHtmlText(
+                ref builder,
+                50,
+                51 + i * 21,
+                150,
+                20,
+                numberColor: enabled ? EnabledColor16 : DisabledColor16,
+                stringColor: enabled ? EnabledColor32 : DisabledColor32
+            );
         }
     }
 
@@ -190,13 +188,12 @@ public class SummonFamiliarGump : Gump
             // That familiar requires ~1_NECROMANCY~ Necromancy and ~2_SPIRIT~ Spirit Speak.
             _from.SendLocalizedMessage(1061606, $"{entry.ReqNecromancy:F1}\t{entry.ReqSpiritSpeak:F1}");
 
-            _from.SendGump(new SummonFamiliarGump(_from, SummonFamiliarSpell.Entries, _spell));
+            _from.SendGump(this);
         }
         else if (entry.Type == null)
         {
             _from.SendMessage("That familiar has not yet been defined.");
-
-            _from.SendGump(new SummonFamiliarGump(_from, SummonFamiliarSpell.Entries, _spell));
+            _from.SendGump(this);
         }
         else
         {
