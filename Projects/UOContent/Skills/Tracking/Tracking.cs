@@ -43,7 +43,7 @@ public static class Tracking
 
             gumps.Close<TrackWhoGump>();
             gumps.Close<TrackWhatGump>();
-            gumps.Send(new TrackWhatGump(pm.CheckSkill(SkillName.Tracking, 0.0, 21.1)));
+            gumps.Send(new TrackWhatGump());
         }
 
         return TimeSpan.FromSeconds(10.0); // 10 second delay before being able to re-use a skill
@@ -94,9 +94,9 @@ public static class Tracking
 
 public class TrackWhatGump : StaticGump<TrackWhatGump>
 {
-    private readonly bool _success;
-
-    public TrackWhatGump(bool success) : base(20, 30) => _success = success;
+    public TrackWhatGump() : base(20, 30)
+    {
+    }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
@@ -128,7 +128,8 @@ public class TrackWhatGump : StaticGump<TrackWhatGump>
     {
         if (info.ButtonID is >= 1 and <= 4 && state.Mobile is PlayerMobile pm)
         {
-            TrackWhoGump.DisplayTo(_success, pm, info.ButtonID - 1);
+            var success = pm.CheckSkill(SkillName.Tracking, 0.0, 21.1);
+            TrackWhoGump.DisplayTo(success, pm, info.ButtonID - 1);
         }
     }
 }
