@@ -1653,7 +1653,7 @@ public abstract class BaseAI
     
         m_Mobile.Warmode = false;
         
-        if (Core.AOS)
+        if (Core.AOS && m_Mobile.CurrentSpeed != 0.1)
         {
             m_Mobile.CurrentSpeed = 0.1;
         }
