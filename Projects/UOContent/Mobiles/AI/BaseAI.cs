@@ -1019,6 +1019,14 @@ public abstract class BaseAI
         return focusMob != null && !focusMob.Deleted && focusMob.Map == m_Mobile.Map;
     }
 
+    private void DebugSay(string message)
+    {
+        if (m_Mobile.Debug)
+        {
+            m_Mobile.DebugSay(message);
+        }
+    }
+
     public virtual bool DoActionInteract() => true;
     
     public virtual bool DoActionBackoff() => true;
