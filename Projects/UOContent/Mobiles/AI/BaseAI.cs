@@ -2566,19 +2566,14 @@ public abstract class BaseAI
         }
         else
         {
-            FleeFromCombatant(combatant);
+            var direction = combatant.GetDirectionTo(m_Mobile);
+            direction = (Direction)((int)direction + Utility.RandomMinMax(-1, +1));
+    
+            m_Mobile.Direction = direction;
+            m_Mobile.Move(direction);
         }
     
         return true;
-    }
-    
-    private void FleeFromCombatant(Mobile combatant)
-    {
-        var direction = combatant.GetDirectionTo(m_Mobile);
-        direction = (Direction)((int)direction + Utility.RandomMinMax(-1, +1));
-    
-        m_Mobile.Direction = direction;
-        m_Mobile.Move(direction);
     }
 
     public virtual void OnTeleported()
