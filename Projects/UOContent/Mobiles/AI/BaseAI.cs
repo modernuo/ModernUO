@@ -2179,53 +2179,25 @@ public abstract class BaseAI
         return randomMove < 8 ? (Direction)randomMove : m_Mobile.Direction;
     }
 
-    public static double TransformMoveDelay(BaseCreature bc)
+    public static double TransformMoveDelay(BaseCreature bc, double maxReduction = 0.4)
     {
         if (bc == null)
         {
             return 0.1;
         }
-
+    
         var moveSpeed = bc.CurrentSpeed;
-
+    
         if (!bc.IsDeadPet && (bc.ReduceSpeedWithDamage || bc.IsSubdued))
         {
-            int stats, statsMax;
-            if (Core.HS)
-            {
-                stats = bc.Stam;
-                statsMax = bc.StamMax;
-            }
-            else
-            {
-                stats = bc.Hits;
-                statsMax = bc.HitsMax;
-            }
-
-            var offset = statsMax <= 0 ? 0.4 : Math.Max(0, stats) / (double)statsMax;
-            moveSpeed += (1.0 - offset) * 0.4;
+            int stats = Core.HS ? bc.Stam : bc.Hits;
+            int statsMax = Core.HS ? bc.StamMax : bc.HitsMax;
+    
+            var statRatio = statsMax <= 0 ? 0.0 : Math.Max(0, stats) / (double)statsMax;
+            moveSpeed += (1.0 - statRatio) * maxReduction;
         }
-
+    
         return Math.Max(0.1, moveSpeed);
-    }
-    
-    private static double CalculateDamageSpeedOffset(BaseCreature bc)
-    {
-        int stats, statsMax;
-        if (Core.HS)
-        {
-            stats = bc.Stam;
-            statsMax = bc.StamMax;
-        }
-        else
-        {
-            stats = bc.Hits;
-            statsMax = bc.HitsMax;
-        }
-    
-        var offset = statsMax <= 0 ? 1.0 : Math.Max(0, stats) / (double)statsMax;
-    
-        return (1.0 - offset) * 0.8;
     }
     
     // this needs to match ai interval
@@ -2286,6 +2258,7 @@ public abstract class BaseAI
     
         if (moveResult)
         {
+            TransformMoveDelay(m_Mobile);
             HandleCombatDelay();
             return MoveResult.Success;
         }
