@@ -13,13 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
- /*DISCLAIMER: ***********************************************************
- * This is a development version of BaseAI.cs pending review and merge.  *
- * Use in production environments is not recommended until this file     *
- * has been properly reviewed and merged into the main repository.       *
- * Breaking changes and major refactoring may occur before final merge.  *
- * Contact Bohicatv in the official MUO discord for more information.    */
-
 
 using System;
 using System.Collections.Generic;
