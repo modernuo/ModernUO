@@ -65,6 +65,14 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
     public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
     {
+
+        if (string.IsNullOrEmpty(savePath))
+        {
+            throw new ArgumentNullException(nameof(savePath));
+        }
+
+        var path = Path.Combine(savePath, "snapshot");
+        
         var dir = Path.Combine(savePath, Name);
         PathUtility.EnsureDirectory(dir);
 
