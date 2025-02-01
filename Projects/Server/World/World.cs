@@ -358,21 +358,27 @@ public static class World
     private static void WriteFiles(object state)
     {
         var snapshotPath = (string)state;
+
+        if (string.IsNullOrEmpty(snapshotPath))
+        {
+            throw new ArgumentNullException(nameof(snapshotPath));
+        }
+    
         try
         {
             var watch = Stopwatch.StartNew();
             logger.Information("Writing world save snapshot");
-
+    
             // Dedupe the types
             while (SerializedTypes.TryDequeue(out var type))
             {
                 _typesSet.Add(type);
             }
-
+    
             Persistence.WriteSnapshotAll(snapshotPath, _typesSet);
-
+    
             _typesSet.Clear();
-
+    
             try
             {
                 EventSink.InvokeWorldSavePostSnapshot(SavePath, snapshotPath);
@@ -383,7 +389,7 @@ public static class World
             {
                 Persistence.TraceException(ex);
             }
-
+    
             watch.Stop();
             logger.Information("Writing world save snapshot {Status} ({Duration:F2} seconds)", "done", watch.Elapsed.TotalSeconds);
         }
