@@ -375,7 +375,7 @@ public abstract class BaseAI
                 m_Mobile.Location = new Point3D(m_Mobile.Location.X + 
                 Utility.RandomMinMax(-1, 1), m_Mobile.Location.Y + 
                 Utility.RandomMinMax(-1, 1), m_Mobile.Location.Z);
-                WalkRandomInHome(2, 2, 1);
+                WalkRandomInHome(4, 3, 1);
                 return;
             }
             else if (e.HasKeyword(0x9E)) // *time*
@@ -833,7 +833,7 @@ public abstract class BaseAI
         }
         else if (CheckMove() && CanMoveNow(out _) && !m_Mobile.CheckIdle())
         {
-            WalkRandomInHome(5, 2, 1);
+            WalkRandomInHome(4, 3, 1);
         }
     
         UpdateCombatantDirection();
@@ -881,7 +881,7 @@ public abstract class BaseAI
         }
         else
         {
-            WalkRandomInHome(2, 2, 1);
+            WalkRandomInHome(4, 3, 1);
         }
     }
     
@@ -1201,7 +1201,7 @@ public abstract class BaseAI
             m_Mobile.DebugSay("I currently have no orders.");
         }
     
-        WalkRandomInHome(3, 2, 1);
+        WalkRandomInHome(4, 3, 1);
         UpdateCombatantState();
     
         return true;
