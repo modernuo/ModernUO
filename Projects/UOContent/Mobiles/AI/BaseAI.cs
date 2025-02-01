@@ -840,7 +840,7 @@ public abstract class BaseAI
         }
         else if (CheckMove() && CanMoveNow(out _) && !m_Mobile.CheckIdle())
         {
-            WalkRandomInHome(2, 2, 1);
+            WalkRandomInHome(5, 2, 1);
         }
     
         UpdateCombatantDirection();
