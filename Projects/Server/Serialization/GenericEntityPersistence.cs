@@ -69,8 +69,6 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         {
             throw new ArgumentNullException(nameof(savePath));
         }
-
-        var path = Path.Combine(savePath, "snapshot");
         
         var dir = Path.Combine(savePath, Name);
         PathUtility.EnsureDirectory(dir);
