@@ -324,6 +324,11 @@ public static class World
         {
             _serializationStart = Core.Now;
 
+            if (string.IsNullOrEmpty(snapshotPath))
+            {
+                throw new ArgumentException("Snapshot path cannot be null or empty", nameof(snapshotPath));
+            }
+
             Persistence.SerializeAll();
             PauseSerializationThreads();
             EventSink.InvokeWorldSave();
