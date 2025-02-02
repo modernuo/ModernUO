@@ -517,10 +517,11 @@ public static class Core
         DoKill(_restartOnKill);
     }
 
+    // This is generally called from background threads during Preserialize
     internal static void RequestSnapshot(string snapshotPath)
     {
-        _performSnapshot = true;
         _snapshotPath = snapshotPath;
+        _performSnapshot = true; // Set this after the path so race conditions do not occur
     }
 
     public static void VerifySerialization()
