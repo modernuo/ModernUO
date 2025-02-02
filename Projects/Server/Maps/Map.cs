@@ -986,14 +986,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             (origin, destination) = (destination, origin);
         }
 
-        Point3D p;
         var path = new Point3DList();
-        TileFlag flags;
-
-        if (path.Count > 0)
-        {
-            path.Clear();
-        }
 
         var xd = destination.X - origin.X;
         var yd = destination.Y - origin.Y;
@@ -1008,15 +1001,17 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         double y = origin.Y;
         double z = origin.Z;
         double x = origin.X;
-        while (Utility.NumberBetween(x, destination.X, origin.X, 0.5) && Utility.NumberBetween(y, destination.Y, origin.Y, 0.5) &&
+        while (Utility.NumberBetween(x, destination.X, origin.X, 0.5) &&
+               Utility.NumberBetween(y, destination.Y, origin.Y, 0.5) &&
                Utility.NumberBetween(z, destination.Z, origin.Z, 0.5))
         {
             var ix = (int)Math.Round(x);
             var iy = (int)Math.Round(y);
             var iz = (int)Math.Round(z);
+
             if (path.Count > 0)
             {
-                p = path.Last;
+                var p = path.Last;
 
                 if (p.X != ix || p.Y != iy || p.Z != iz)
                 {
@@ -1038,16 +1033,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return true; // <--should never happen, but to be safe.
         }
 
-        p = path.Last;
-
-        if (p != destination)
+        if (path.Last != destination)
         {
             path.Add(destination);
         }
-
-        var pTop = origin;
-        var pBottom = destination;
-        Utility.FixPoints(ref pTop, ref pBottom);
 
         var pathCount = path.Count;
         var endTop = end.Z + 1;
@@ -1089,7 +1078,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
-                flags = id.Flags;
+                var flags = id.Flags;
 
                 if (
                     t.Z <= pointTop && t.Z + id.CalcHeight >= point.Z &&
@@ -1121,6 +1110,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
+        var pTop = origin;
+        var pBottom = destination;
+        Utility.FixPoints(ref pTop, ref pBottom);
+
         var rect = new Rectangle2D(pTop.X, pTop.Y, pBottom.X - pTop.X + 1, pBottom.Y - pTop.Y + 1);
 
         foreach (var item in GetItemsInBounds(rect))
@@ -1136,7 +1129,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
 
             var id = item.ItemData;
-            flags = id.Flags;
+            var flags = id.Flags;
 
             if ((flags & (TileFlag.Window | TileFlag.NoShoot)) == 0)
             {
@@ -1161,7 +1154,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                     // Fix door bugging monsters when door is at the START or END of the LOS path by allowing LOS
                     !(flags.HasFlag(TileFlag.Door) &&
                       itemLocation.X == origin.X && itemLocation.Y == origin.Y ||
-                      itemLocation.X == end.X && itemLocation.Y == end.Y) &&
+                      itemLocation.X == destination.X && itemLocation.Y == destination.Y) &&
 
                     // Item is at some point along the path BEFORE the target
                     (itemLocation.X != end.X ||
