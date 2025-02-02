@@ -973,7 +973,15 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return false;
         }
 
-        if (origin.X > destination.X || origin.X == destination.X && origin.Y > destination.Y || origin.X == destination.X && origin.Y == destination.Y && origin.Z > destination.Z)
+        if (origin == destination)
+        {
+            return true;
+        }
+
+        var end = destination;
+
+        if (origin.X > destination.X || origin.X == destination.X && origin.Y > destination.Y || origin.X == destination.X
+            && origin.Y == destination.Y && origin.Z > destination.Z)
         {
             (origin, destination) = (destination, origin);
         }
@@ -981,11 +989,6 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         Point3D p;
         var path = new Point3DList();
         TileFlag flags;
-
-        if (origin == destination)
-        {
-            return true;
-        }
 
         if (path.Count > 0)
         {
@@ -1042,11 +1045,12 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             path.Add(destination);
         }
 
-        Point3D pTop = origin, pBottom = destination;
+        var pTop = origin;
+        var pBottom = destination;
         Utility.FixPoints(ref pTop, ref pBottom);
 
         var pathCount = path.Count;
-        var endTop = destination.Z + 1;
+        var endTop = end.Z + 1;
 
         for (var i = 0; i < pathCount; ++i)
         {
@@ -1057,7 +1061,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             GetAverageZ(point.X, point.Y, out var landZ, out _, out var landTop);
 
             if (landZ <= pointTop && landTop >= point.m_Z &&
-                (point.X != destination.X || point.Y != destination.Y || landZ > endTop || landTop < destination.Z) &&
+                (point.X != end.X || point.Y != end.Y || landZ > endTop || landTop < end.Z) &&
                 !landTile.Ignored)
             {
                 return false;
@@ -1090,9 +1094,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 if (
                     t.Z <= pointTop && t.Z + id.CalcHeight >= point.Z &&
                     (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0 &&
-                    (point.X != destination.X ||
-                     point.Y != destination.Y ||
-                     t.Z > endTop || t.Z + id.CalcHeight < destination.Z)
+                    (point.X != end.X ||
+                     point.Y != end.Y ||
+                     t.Z > endTop || t.Z + id.CalcHeight < end.Z)
                 )
                 {
                     return false;
@@ -1157,17 +1161,17 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                     // Fix door bugging monsters when door is at the START or END of the LOS path by allowing LOS
                     !(flags.HasFlag(TileFlag.Door) &&
                       itemLocation.X == origin.X && itemLocation.Y == origin.Y ||
-                      itemLocation.X == destination.X && itemLocation.Y == destination.Y) &&
+                      itemLocation.X == end.X && itemLocation.Y == end.Y) &&
 
                     // Item is at some point along the path BEFORE the target
-                    (itemLocation.X != destination.X ||
-                     itemLocation.Y != destination.Y ||
+                    (itemLocation.X != end.X ||
+                     itemLocation.Y != end.Y ||
 
                      // Item is diagonally looking DOWN at the target
                      itemLocation.Z > endTop ||
 
                      // Item is diagonally looking UP at the target
-                     itemLocation.Z + id.CalcHeight < destination.Z)
+                     itemLocation.Z + id.CalcHeight < end.Z)
                 )
                 {
                     return false;
