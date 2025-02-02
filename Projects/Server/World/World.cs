@@ -279,8 +279,6 @@ public static class World
 
     private static void Preserialize(object state)
     {
-        var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);
-
         try
         {
             // Allocate the heaps for the GC
@@ -290,7 +288,9 @@ public static class World
             }
 
             WakeSerializationThreads();
-            Core.RequestSnapshot(tempPath);
+
+            // Execute this synchronously so we don't have a race condition
+            Core.LoopContext.Post(() => Core.RequestSnapshot(PathUtility.EnsureRandomPath(_tempSavePath)));
         }
         catch (Exception ex)
         {
