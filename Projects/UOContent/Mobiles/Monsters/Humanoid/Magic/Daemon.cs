@@ -40,20 +40,21 @@ namespace Server.Mobiles
             Karma = -15000;
 
             VirtualArmor = 58;
-            ControlSlots = Core.SE ? 4 : 5;
         }
 
         public override string CorpseName => "a daemon corpse";
-        public override double DispelDifficulty => 125.0;
-        public override double DispelFocus => 45.0;
 
         public override Faction FactionAllegiance => Shadowlords.Instance;
         public override Ethic EthicAllegiance => Ethic.Evil;
 
         public override bool CanRummageCorpses => true;
+
         public override Poison PoisonImmune => Poison.Regular;
+
         public override int TreasureMapLevel => 4;
+
         public override int Meat => 1;
+        
         public override bool CanFly => true;
 
         public override void GenerateLoot()

@@ -49,14 +49,7 @@ namespace Server.Spells.Eighth
                     _  => TimeSpan.FromSeconds(4 * Math.Max(5, Caster.Skills.Magery.Value)),
                 };
 
-                if (Core.AOS)
-                {
-                    SpellHelper.Summon(new SummonedWaterElemental(), Caster, 0x217, duration, false, false);
-                }
-                else
-                {
-                    SpellHelper.Summon(new WaterElemental(), Caster, 0x217, duration, false, false);
-                }
+                SpellHelper.Summon(new SummonedWaterElemental(), Caster, 0x217, duration, false, false);
             }
 
             FinishSequence();

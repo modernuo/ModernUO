@@ -50,16 +50,7 @@ namespace Server.Spells.Eighth
                     _ => TimeSpan.FromSeconds(4 * Math.Max(5, Caster.Skills.Magery.Value)),
                 };
 
-                if (Core.AOS) /* Why two diff daemons? TODO: solve this */
-                {
-                    BaseCreature m_Daemon = new SummonedDaemon();
-                    SpellHelper.Summon(m_Daemon, Caster, 0x216, duration, false, false);
-                    m_Daemon.FixedParticles(0x3728, 8, 20, 5042, EffectLayer.Head);
-                }
-                else
-                {
-                    SpellHelper.Summon(new Daemon(), Caster, 0x216, duration, false, false);
-                }
+                SpellHelper.Summon(new SummonedDaemon(), Caster, 0x216, duration, false, false);
             }
 
             FinishSequence();

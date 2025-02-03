@@ -40,13 +40,9 @@ namespace Server.Mobiles
             Karma = -4500;
 
             VirtualArmor = 40;
-            ControlSlots = 2;
         }
 
         public override string CorpseName => "an air elemental corpse";
-        public override double DispelDifficulty => 117.5;
-        public override double DispelFocus => 45.0;
-
         public override string DefaultName => "an air elemental";
 
         public override bool BleedImmune => true;
