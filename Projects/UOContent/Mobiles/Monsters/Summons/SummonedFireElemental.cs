@@ -67,6 +67,8 @@ namespace Server.Mobiles
             AddItem(new LightSource());
         }
 
+        public override bool DeleteCorpseOnDeath => Summoned;
+
         public override string CorpseName => "a fire elemental corpse";
         public override string DefaultName => "a fire elemental";
 
