@@ -39,7 +39,6 @@ namespace Server.Mobiles
             Karma = -4500;
 
             VirtualArmor = 40;
-            ControlSlots = 4;
 
             PackItem(new SulfurousAsh(3));
 
