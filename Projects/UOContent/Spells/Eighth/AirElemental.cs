@@ -46,17 +46,10 @@ namespace Server.Spells.Eighth
                 {
                     Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
                     // T2A -> Current
-                    _ => TimeSpan.FromSeconds(Math.Clamp(Caster.Skills.Magery.Value * 4, 20, 400));
+                    _ => TimeSpan.FromSeconds(4 * Math.Max(5, Caster.Skills.Magery.Value)),
                 };
 
-                if (Core.AOS)
-                {
-                    SpellHelper.Summon(new SummonedAirElemental(), Caster, 0x217, duration, false, false);
-                }
-                else
-                {
-                    SpellHelper.Summon(new AirElemental(), Caster, 0x217, duration, false, false);
-                }
+                SpellHelper.Summon(new SummonedAirElemental(), Caster, 0x217, duration, false, false);
             }
 
             FinishSequence();
