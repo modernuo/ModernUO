@@ -67,6 +67,8 @@ namespace Server.Mobiles
             CanSwim = true;
         }
 
+        public override bool DeleteCorpseOnDeath => Summoned;
+
         public override string CorpseName => "a water elemental corpse";
         public override string DefaultName => "a water elemental";
 
