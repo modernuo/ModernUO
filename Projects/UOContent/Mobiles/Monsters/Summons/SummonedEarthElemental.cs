@@ -60,6 +60,8 @@ namespace Server.Mobiles
             ControlSlots = 2;
         }
 
+        public override bool DeleteCorpseOnDeath => Summoned;
+
         public override string CorpseName => "an earth elemental corpse";
         public override string DefaultName => "an earth elemental";
 
