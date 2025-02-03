@@ -40,8 +40,12 @@ namespace Server.Mobiles
         
         public override bool DeleteCorpseOnDeath => Summoned;
         public override string CorpseName => "a daemon corpse";
+        
         public override double DispelDifficulty => 125.0;
         public override double DispelFocus => 45.0;
+
+        public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) =>
+            (m.Int + m.Skills.Magery.Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
 
         public override Poison PoisonImmune => Poison.Regular; // TODO: Immune to poison?
         public override bool CanFly => true;
