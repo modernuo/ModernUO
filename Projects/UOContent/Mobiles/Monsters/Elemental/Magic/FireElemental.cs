@@ -47,12 +47,10 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "a fire elemental corpse";
-        public override double DispelDifficulty => 117.5;
-        public override double DispelFocus => 45.0;
-
         public override string DefaultName => "a fire elemental";
 
         public override bool BleedImmune => true;
+        
         public override int TreasureMapLevel => 2;
 
         public override void GenerateLoot()
