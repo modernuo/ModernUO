@@ -42,9 +42,13 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "an air elemental corpse";
+        public override string DefaultName => "an air elemental";
+        
         public override double DispelDifficulty => 117.5;
         public override double DispelFocus => 45.0;
-        public override string DefaultName => "an air elemental";
+
+        public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) =>
+            (m.Int + m.Skills.Magery.Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
 
         [AfterDeserialization]
         private void AfterDeserialization()
