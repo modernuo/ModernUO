@@ -37,7 +37,8 @@ namespace Server.Mobiles
             VirtualArmor = 58;
             ControlSlots = Core.SE ? 4 : 5;
         }
-
+        
+        public override bool DeleteCorpseOnDeath => Summoned;
         public override string CorpseName => "a daemon corpse";
         public override double DispelDifficulty => 125.0;
         public override double DispelFocus => 45.0;
