@@ -43,7 +43,7 @@ public abstract partial class BaseWand : BaseBashing
         _charges = Utility.RandomMinMax(minCharges, maxCharges);
         Attributes.SpellChanneling = 1;
         Attributes.CastSpeed = -1;
-        WeaponAttributes.MageWeapon = Utility.RandomMinMax(1, 10);
+        WeaponAttributes.MageWeapon = Utility.Random(11);
         Resource = CraftResource.None;
     }
 
