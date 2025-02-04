@@ -178,21 +178,26 @@ namespace Server.Spells
 
         public static void Turn(Mobile from, IPoint3D to)
         {
-            if (from == null)
+            if (from == null || to == null || from.Equals(to))
             {
                 return;
             }
 
-            var root = (to as Item)?.RootParent;
-            if (from != root)
+            if (to is Item item)
             {
-                to = root;
+                var root = item.RootParent;
+                if (root != null)
+                {
+                    if (from == root)
+                    {
+                        return;
+                    }
+
+                    to = root;
+                }
             }
 
-            if (!from.Equals(to))
-            {
-                from.Direction = from.GetDirectionTo(to);
-            }
+            from.Direction = from.GetDirectionTo(to);
         }
 
         public static bool CheckCombat(Mobile m)
