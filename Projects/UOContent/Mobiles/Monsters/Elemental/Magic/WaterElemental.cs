@@ -38,16 +38,13 @@ namespace Server.Mobiles
             Karma = -4500;
 
             VirtualArmor = 40;
-            ControlSlots = 3;
+
             CanSwim = true;
 
             PackItem(new BlackPearl(3));
         }
 
         public override string CorpseName => "a water elemental corpse";
-        public override double DispelDifficulty => 117.5;
-        public override double DispelFocus => 45.0;
-
         public override string DefaultName => "a water elemental";
 
         public override bool BleedImmune => true;

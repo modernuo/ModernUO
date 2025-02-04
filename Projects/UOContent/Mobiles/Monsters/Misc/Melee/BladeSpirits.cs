@@ -44,13 +44,13 @@ namespace Server.Mobiles
         }
 
         public override string CorpseName => "a blade spirit corpse";
+        public override string DefaultName => "a blade spirit";
+        
         public override bool DeleteCorpseOnDeath => Core.AOS;
         public override bool IsHouseSummonable => true;
 
         public override double DispelDifficulty => 0.0;
         public override double DispelFocus => 20.0;
-
-        public override string DefaultName => "a blade spirit";
 
         public override bool BleedImmune => true;
         public override Poison PoisonImmune => Poison.Lethal;
