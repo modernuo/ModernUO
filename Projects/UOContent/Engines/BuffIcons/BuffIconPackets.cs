@@ -1,11 +1,18 @@
 using System.Buffers;
+using Server.Network;
 
-namespace Server.Network;
+namespace Server.Engines.BuffIcons;
 
 public static class BuffIconPackets
 {
     public static void SendAddBuffPacket(
-        this NetState ns, Serial mob, BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args, long ticks
+        this NetState ns,
+        Serial mob,
+        BuffIcon iconID,
+        int titleCliloc,
+        int secondaryCliloc,
+        TextDefinition args,
+        long seconds
     )
     {
         if (ns.CannotSendPackets())
@@ -27,8 +34,7 @@ public static class BuffIconPackets
         writer.Write((short)0x1); // command (0 = remove, 1 = add, 2 = data)
         writer.Write(0);
 
-        // Truncate to whole seconds - The packet should be delayed by the partial seconds and then sent "on the second"
-        writer.Write((short)(ticks / 1000));
+        writer.Write((short)seconds);
         writer.Clear(3);
         writer.Write(titleCliloc);
         writer.Write(secondaryCliloc);

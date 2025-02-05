@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 
 namespace Server.Spells.Fifth
@@ -70,7 +71,7 @@ namespace Server.Spells.Fifth
                             Caster.RemoveResistanceMod(mods[i]);
                         }
 
-                        BuffInfo.RemoveBuff(Caster, BuffIcon.MagicReflection);
+                        (Caster as PlayerMobile)?.RemoveBuff(BuffIcon.MagicReflection);
                     }
                     else
                     {
@@ -98,7 +99,9 @@ namespace Server.Spells.Fifth
 
                         var buffFormat = $"{physiMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}";
 
-                        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
+                        (Caster as PlayerMobile)?.AddBuff(
+                            new BuffInfo(BuffIcon.MagicReflection, 1075817, args: buffFormat, retainThroughDeath: true)
+                        );
                     }
                 }
             }
@@ -147,7 +150,7 @@ namespace Server.Spells.Fifth
                 m.RemoveResistanceMod(mods[i]);
             }
 
-            BuffInfo.RemoveBuff(m, BuffIcon.MagicReflection);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.MagicReflection);
         }
     }
 }

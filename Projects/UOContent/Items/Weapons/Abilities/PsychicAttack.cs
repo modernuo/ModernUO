@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -38,10 +40,14 @@ namespace Server.Items
                 Registry.Add(defender, timer);
             }
 
-            BuffInfo.RemoveBuff(defender, BuffIcon.PsychicAttack);
-
-            string args = $"{timer.SpellDamageMalus}\t{timer.ManaCostMalus}";
-            BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.PsychicAttack, 1151296, 1151297, args));
+            (defender as PlayerMobile)?.AddBuff(
+                new BuffInfo(
+                    BuffIcon.PsychicAttack,
+                    1151296,
+                    1151297,
+                    args: $"{timer.SpellDamageMalus}\t{timer.ManaCostMalus}"
+                )
+            );
         }
 
         public static void RemoveEffects(Mobile defender)
@@ -51,7 +57,7 @@ namespace Server.Items
                 return;
             }
 
-            BuffInfo.RemoveBuff(defender, BuffIcon.PsychicAttack);
+            (defender as PlayerMobile)?.RemoveBuff(BuffIcon.PsychicAttack);
 
             Registry.Remove(defender);
 

@@ -1,6 +1,8 @@
 using System;
+using Server.Engines.BuffIcons;
 using Server.Items;
 using Server.Misc;
+using Server.Mobiles;
 
 namespace Server.SkillHandlers
 {
@@ -79,7 +81,7 @@ namespace Server.SkillHandlers
 
                 m.SendLocalizedMessage(501851); // You enter a meditative trance.
                 m.Meditating = true;
-                BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.ActiveMeditation, 1075657));
+                (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.ActiveMeditation, 1075657));
 
                 if (m.Player || m.Body.IsHuman)
                 {

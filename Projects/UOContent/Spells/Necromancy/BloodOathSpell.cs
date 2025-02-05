@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -86,8 +87,8 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
             var timer = new ExpireTimer(Caster, m, duration);
             timer.Start();
 
-            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.BloodOathCaster, 1075659, duration, Caster, m.Name));
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.BloodOathCurse, 1075661, duration, m, Caster.Name));
+            (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.BloodOathCaster, 1075659, duration, m.Name));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.BloodOathCurse, 1075661, duration, Caster.Name));
 
             _table[m] = timer;
             HarmfulSpell(m);
@@ -119,8 +120,8 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
 
         timer.Stop();
 
-        BuffInfo.RemoveBuff(caster, BuffIcon.BloodOathCaster);
-        BuffInfo.RemoveBuff(target, BuffIcon.BloodOathCurse);
+        (caster as PlayerMobile)?.RemoveBuff(BuffIcon.BloodOathCaster);
+        (target as PlayerMobile)?.RemoveBuff(BuffIcon.BloodOathCurse);
 
         return true;
     }

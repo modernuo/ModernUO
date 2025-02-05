@@ -4,6 +4,7 @@ using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.BuffIcons;
 using Server.Engines.BulkOrders;
 using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
@@ -752,7 +753,7 @@ namespace Server.Mobiles
                 Freeze(TimeSpan.FromSeconds(1));
                 Animate(61, 10, 1, true, false, 0);
                 Flying = false;
-                BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                RemoveBuff(BuffIcon.Fly);
                 SendMessage("You have landed.");
 
                 BaseMount.Dismount(this);
@@ -810,7 +811,7 @@ namespace Server.Mobiles
                 else
                 {
                     Flying = false;
-                    BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                    RemoveBuff(BuffIcon.Fly);
                 }
             }
         }
@@ -1216,7 +1217,7 @@ namespace Server.Mobiles
 
             if (!Meditating)
             {
-                BuffInfo.RemoveBuff(this, BuffIcon.ActiveMeditation);
+                RemoveBuff(BuffIcon.ActiveMeditation);
             }
         }
 
@@ -1264,6 +1265,7 @@ namespace Server.Mobiles
             VirtueSystem.CheckAtrophies(from);
             from.ClaimAutoStabledPets();
             AnimalForm.GetContext(from)?.Timer.Start();
+            from.ResendBuffs();
         }
 
         private class ServerLockdownNoticeGump : StaticNoticeGump<ServerLockdownNoticeGump>
@@ -1601,7 +1603,7 @@ namespace Server.Mobiles
             else // if (!InvisibilitySpell.HasTimer( this ))
             {
                 // Hidden/Stealthing & You Are Hidden
-                BuffInfo.AddBuff(this, new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
+                AddBuff(new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
             }
         }
 
@@ -2548,7 +2550,7 @@ namespace Server.Mobiles
             if (Flying)
             {
                 Flying = false;
-                BuffInfo.RemoveBuff(this, BuffIcon.Fly);
+                RemoveBuff(BuffIcon.Fly);
             }
 
             if (PermaFlags.Count > 0)
@@ -2635,19 +2637,19 @@ namespace Server.Mobiles
 
             if (m_BuffTable != null)
             {
-                using var queue = PooledRefQueue<BuffInfo>.Create();
+                using var queue = PooledRefQueue<BuffIcon>.Create();
 
                 foreach (var buff in m_BuffTable.Values)
                 {
                     if (!buff.RetainThroughDeath)
                     {
-                        queue.Enqueue(buff);
+                        queue.Enqueue(buff.ID);
                     }
                 }
 
                 while (queue.Count > 0)
                 {
-                    BuffInfo.RemoveBuff(this, queue.Dequeue());
+                    RemoveBuff(queue.Dequeue());
                 }
             }
 
@@ -3851,11 +3853,8 @@ namespace Server.Mobiles
                 return;
             }
 
-            SendLocalizedMessage(
-                1060881,
-                "",
-                0x23
-            ); // You have selected to automatically reinsure all insured items upon death
+            // You have selected to automatically reinsure all insured items upon death
+            SendLocalizedMessage(1060881, "", 0x23);
             AutoRenewInsurance = true;
         }
 
@@ -3866,20 +3865,14 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (Core.SE && NetState is { } ns)
+            if (Core.SE)
             {
-                if (!ns.HasGump<CancelRenewInventoryInsuranceGump>())
-                {
-                    ns.SendGump(new CancelRenewInventoryInsuranceGump(this, null));
-                }
+                NetState?.SendGump(new CancelRenewInventoryInsuranceGump(null));
             }
             else
             {
-                SendLocalizedMessage(
-                    1061075,
-                    "",
-                    0x23
-                ); // You have cancelled automatically reinsuring all insured items upon death
+                // You have cancelled automatically reinsuring all insured items upon death
+                SendLocalizedMessage(1061075, "", 0x23);
                 AutoRenewInsurance = false;
             }
         }
@@ -3915,18 +3908,15 @@ namespace Server.Mobiles
             }
 
             // TODO: Investigate item sorting
-
-            if (NetState is { } ns)
+            if (NetState != null)
             {
-                ns.CloseGump<ItemInsuranceMenuGump>();
-
                 if (queue.Count == 0)
                 {
                     SendLocalizedMessage(1114915, "", 0x35); // None of your current items meet the requirements for insurance.
                 }
                 else
                 {
-                    ns.SendGump(new ItemInsuranceMenuGump(this, queue.ToArray()));
+                    NetState.SendGump(new ItemInsuranceMenuGump(this, queue.ToArray()));
                 }
             }
         }
@@ -4476,26 +4466,34 @@ namespace Server.Mobiles
                 return;
             }
 
-            // Synchronize the buff icon as close to _on the second_ as we can.
-            var msecs = buffInfo.TimeLength.Milliseconds;
-            if (msecs >= 8)
+            var duration = Utility.Max(buffInfo.Duration - (Core.Now - buffInfo.StartTime), TimeSpan.Zero);
+            if (duration == TimeSpan.Zero)
             {
-                Timer.DelayCall(TimeSpan.FromMilliseconds(msecs), () =>
-                {
-                    // They are still online, we still have the buff icon in the table, and it is the same buff icon
-                    if (NetState != null && m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
-                    {
-                        SendAddBuffPacket(buffInfo, (long)buffInfo.TimeLength.TotalMilliseconds - msecs);
-                    }
-                });
+                SendAddBuffPacket(buffInfo, 0);
+                return;
             }
-            else
+
+            var roundedSeconds = Math.Round(duration.TotalSeconds);
+            var offset = duration.TotalMilliseconds - roundedSeconds * TimeSpan.MillisecondsPerSecond;
+            if (offset > 0)
             {
-                SendAddBuffPacket(buffInfo, (long)buffInfo.TimeLength.TotalMilliseconds);
+                Timer.DelayCall(TimeSpan.FromMilliseconds(offset), () =>
+                    {
+                        // They are still online, we still have the buff icon in the table, and it is the same buff icon
+                        if (NetState != null && m_BuffTable?.GetValueOrDefault(buffInfo.ID) == buffInfo)
+                        {
+                            SendAddBuffPacket(buffInfo, (long)roundedSeconds);
+                        }
+                    }
+                );
+            }
+            else // Round up, will be removed a little bit early by the server
+            {
+                SendAddBuffPacket(buffInfo, (long)roundedSeconds);
             }
         }
 
-        private void SendAddBuffPacket(BuffInfo buffInfo, long ticks)
+        private void SendAddBuffPacket(BuffInfo buffInfo, long seconds)
         {
             NetState.SendAddBuffPacket(
                 Serial,
@@ -4503,7 +4501,7 @@ namespace Server.Mobiles
                 buffInfo.TitleCliloc,
                 buffInfo.SecondaryCliloc,
                 buffInfo.Args,
-                ticks
+                seconds
             );
         }
 
@@ -4525,7 +4523,8 @@ namespace Server.Mobiles
                 return;
             }
 
-            BuffInfo.RemoveBuff(this, b); // Check, stop old timer, & subsequently remove the old one.
+            RemoveBuff(b.ID); // Check, stop old timer, & subsequently remove the old one.
+            b.StartTimer(this);
 
             m_BuffTable ??= new Dictionary<BuffIcon, BuffInfo>();
             m_BuffTable.Add(b.ID, b);
@@ -4535,10 +4534,12 @@ namespace Server.Mobiles
 
         public void RemoveBuff(BuffIcon b)
         {
-            if (m_BuffTable?.Remove(b) != true)
+            if (m_BuffTable?.Remove(b, out var buffInfo) != true)
             {
                 return;
             }
+
+            buffInfo.StopTimer();
 
             if (NetState?.BuffIcon == true)
             {
@@ -4602,43 +4603,35 @@ namespace Server.Mobiles
             }
         }
 
-        private class CancelRenewInventoryInsuranceGump : Gump
+        private class CancelRenewInventoryInsuranceGump : StaticGump<CancelRenewInventoryInsuranceGump>
         {
-            private readonly ItemInsuranceMenuGump m_InsuranceGump;
-            private readonly PlayerMobile m_Player;
+            private readonly ItemInsuranceMenuGump _insuranceGump;
 
-            public CancelRenewInventoryInsuranceGump(PlayerMobile player, ItemInsuranceMenuGump insuranceGump) : base(
-                250,
-                200
-            )
+            public override bool Singleton => true;
+
+            public CancelRenewInventoryInsuranceGump(ItemInsuranceMenuGump insuranceGump) : base(250, 200) =>
+                _insuranceGump = insuranceGump;
+
+            protected override void BuildLayout(ref StaticGumpBuilder builder)
             {
-                m_Player = player;
-                m_InsuranceGump = insuranceGump;
+                builder.AddBackground(0, 0, 240, 142, 0x13BE);
+                builder.AddImageTiled(6, 6, 228, 100, 0xA40);
+                builder.AddImageTiled(6, 116, 228, 20, 0xA40);
+                builder.AddAlphaRegion(6, 6, 228, 142);
 
-                AddBackground(0, 0, 240, 142, 0x13BE);
-                AddImageTiled(6, 6, 228, 100, 0xA40);
-                AddImageTiled(6, 116, 228, 20, 0xA40);
-                AddAlphaRegion(6, 6, 228, 142);
+                // You are about to disable inventory insurance auto-renewal.
+                builder.AddHtmlLocalized(8, 8, 228, 100, 1071021, 0x7FFF);
 
-                AddHtmlLocalized(
-                    8,
-                    8,
-                    228,
-                    100,
-                    1071021,
-                    0x7FFF
-                ); // You are about to disable inventory insurance auto-renewal.
+                builder.AddButton(6, 116, 0xFB1, 0xFB2, 0);
+                builder.AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
 
-                AddButton(6, 116, 0xFB1, 0xFB2, 0);
-                AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
-
-                AddButton(114, 116, 0xFA5, 0xFA7, 1);
-                AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF); // DISABLE IT!
+                builder.AddButton(114, 116, 0xFA5, 0xFA7, 1);
+                builder.AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF); // DISABLE IT!
             }
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
-                if (!m_Player.CheckAlive())
+                if (sender.Mobile is not PlayerMobile pm || !pm.CheckAlive())
                 {
                     return;
                 }
@@ -4646,106 +4639,103 @@ namespace Server.Mobiles
                 if (info.ButtonID == 1)
                 {
                     // You have cancelled automatically reinsuring all insured items upon death
-                    m_Player.SendLocalizedMessage(1061075, "", 0x23);
-                    m_Player.AutoRenewInsurance = false;
+                    pm.SendLocalizedMessage(1061075, "", 0x23);
+                    pm.AutoRenewInsurance = false;
                 }
                 else
                 {
-                    m_Player.SendLocalizedMessage(1042021); // Cancelled.
+                    pm.SendLocalizedMessage(1042021); // Cancelled.
                 }
 
-                if (m_InsuranceGump != null)
+                if (_insuranceGump != null)
                 {
-                    m_Player.SendGump(m_InsuranceGump.NewInstance());
+                    pm.SendGump(_insuranceGump);
                 }
             }
         }
 
-        private class ItemInsuranceMenuGump : Gump
+        private class ItemInsuranceMenuGump : DynamicGump
         {
-            private readonly PlayerMobile m_From;
-            private readonly bool[] m_Insure;
-            private readonly Item[] m_Items;
-            private readonly int m_Page;
+            private readonly PlayerMobile _from;
+            private readonly bool[] _insure;
+            private readonly Item[] _items;
+            private int _page;
 
-            public ItemInsuranceMenuGump(PlayerMobile from, Item[] items, bool[] insure = null, int page = 0)
-                : base(25, 50)
+            public override bool Singleton => true;
+
+            public ItemInsuranceMenuGump(PlayerMobile from, Item[] items) : base(25, 50)
             {
-                m_From = from;
-                m_Items = items;
-
-                if (insure == null)
-                {
-                    insure = new bool[items.Length];
-
-                    for (var i = 0; i < items.Length; ++i)
-                    {
-                        insure[i] = items[i].Insured;
-                    }
-                }
-
-                m_Insure = insure;
-                m_Page = page;
-
-                AddPage(0);
-
-                AddBackground(0, 0, 520, 510, 0x13BE);
-                AddImageTiled(10, 10, 500, 30, 0xA40);
-                AddImageTiled(10, 50, 500, 355, 0xA40);
-                AddImageTiled(10, 415, 500, 80, 0xA40);
-                AddAlphaRegion(10, 10, 500, 485);
-
-                AddButton(15, 470, 0xFB1, 0xFB2, 0);
-                AddHtmlLocalized(50, 472, 80, 20, 1011012, 0x7FFF); // CANCEL
-
-                if (from.AutoRenewInsurance)
-                {
-                    AddButton(360, 10, 9723, 9724, 1);
-                }
-                else
-                {
-                    AddButton(360, 10, 9720, 9722, 1);
-                }
-
-                AddHtmlLocalized(395, 14, 105, 20, 1114122, 0x7FFF); // AUTO REINSURE
-
-                AddButton(395, 470, 0xFA5, 0xFA6, 2);
-                AddHtmlLocalized(430, 472, 50, 20, 1006044, 0x7FFF); // OK
-
-                AddHtmlLocalized(10, 14, 150, 20, 1114121, 0x7FFF); // <CENTER>ITEM INSURANCE MENU</CENTER>
-
-                AddHtmlLocalized(45, 54, 70, 20, 1062214, 0x7FFF);  // Item
-                AddHtmlLocalized(250, 54, 70, 20, 1061038, 0x7FFF); // Cost
-                AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF); // Insured
-
-                var balance = Banker.GetBalance(from);
-                var cost = 0;
+                _from = from;
+                _items = items;
+                _insure = new bool[items.Length];
 
                 for (var i = 0; i < items.Length; ++i)
                 {
-                    if (insure[i])
+                    _insure[i] = items[i].Insured;
+                }
+            }
+
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
+            {
+                builder.AddPage();
+
+                builder.AddBackground(0, 0, 520, 510, 0x13BE);
+                builder.AddImageTiled(10, 10, 500, 30, 0xA40);
+                builder.AddImageTiled(10, 50, 500, 355, 0xA40);
+                builder.AddImageTiled(10, 415, 500, 80, 0xA40);
+                builder.AddAlphaRegion(10, 10, 500, 485);
+
+                builder.AddButton(15, 470, 0xFB1, 0xFB2, 0);
+                builder.AddHtmlLocalized(50, 472, 80, 20, 1011012, 0x7FFF); // CANCEL
+
+                if (_from.AutoRenewInsurance)
+                {
+                    builder.AddButton(360, 10, 9723, 9724, 1);
+                }
+                else
+                {
+                    builder.AddButton(360, 10, 9720, 9722, 1);
+                }
+
+                builder.AddHtmlLocalized(395, 14, 105, 20, 1114122, 0x7FFF); // AUTO REINSURE
+
+                builder.AddButton(395, 470, 0xFA5, 0xFA6, 2);
+                builder.AddHtmlLocalized(430, 472, 50, 20, 1006044, 0x7FFF); // OK
+
+                builder.AddHtmlLocalized(10, 14, 150, 20, 1114121, 0x7FFF); // <CENTER>ITEM INSURANCE MENU</CENTER>
+
+                builder.AddHtmlLocalized(45, 54, 70, 20, 1062214, 0x7FFF);  // Item
+                builder.AddHtmlLocalized(250, 54, 70, 20, 1061038, 0x7FFF); // Cost
+                builder.AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF); // Insured
+
+                var balance = Banker.GetBalance(_from);
+                var cost = 0;
+
+                for (var i = 0; i < _items.Length; ++i)
+                {
+                    if (_insure[i])
                     {
-                        cost += GetInsuranceCost(items[i]);
+                        cost += GetInsuranceCost(_items[i]);
                     }
                 }
 
-                AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF); // GOLD AVAILABLE:
-                AddLabel(215, 420, 0x481, balance.ToString());
-                AddHtmlLocalized(15, 435, 300, 20, 1114123, 0x7FFF); // TOTAL COST OF INSURANCE:
-                AddLabel(215, 435, 0x481, cost.ToString());
+                builder.AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF); // GOLD AVAILABLE:
+                builder.AddLabel(215, 420, 0x481, balance.ToString());
+                builder.AddHtmlLocalized(15, 435, 300, 20, 1114123, 0x7FFF); // TOTAL COST OF INSURANCE:
+                builder.AddLabel(215, 435, 0x481, cost.ToString());
 
                 if (cost != 0)
                 {
-                    AddHtmlLocalized(15, 450, 300, 20, 1114125, 0x7FFF); // NUMBER OF DEATHS PAYABLE:
-                    AddLabel(215, 450, 0x481, (balance / cost).ToString());
+                    builder.AddHtmlLocalized(15, 450, 300, 20, 1114125, 0x7FFF); // NUMBER OF DEATHS PAYABLE:
+                    builder.AddLabel(215, 450, 0x481, (balance / cost).ToString());
                 }
 
-                for (int i = page * 4, y = 72; i < (page + 1) * 4 && i < items.Length; ++i, y += 75)
+                for (int i = _page * 4, y = 72; i < (_page + 1) * 4 && i < _items.Length; ++i, y += 75)
                 {
-                    var item = items[i];
+                    var item = _items[i];
                     var b = ItemBounds.Table[item.ItemID];
 
-                    AddImageTiledButton(
+                    builder.AddImageTiledButton(
                         40,
                         y,
                         0x918,
@@ -4758,38 +4748,36 @@ namespace Server.Mobiles
                         40 - b.Width / 2 - b.X,
                         30 - b.Height / 2 - b.Y
                     );
-                    AddItemProperty(item.Serial);
+                    builder.AddItemProperty(item.Serial);
 
-                    if (insure[i])
+                    if (_insure[i])
                     {
-                        AddButton(400, y, 9723, 9724, 100 + i);
-                        AddLabel(250, y, 0x481, GetInsuranceCost(item).ToString());
+                        builder.AddButton(400, y, 9723, 9724, 100 + i);
+                        builder.AddLabel(250, y, 0x481, GetInsuranceCost(item).ToString());
                     }
                     else
                     {
-                        AddButton(400, y, 9720, 9722, 100 + i);
-                        AddLabel(250, y, 0x66C, GetInsuranceCost(item).ToString());
+                        builder.AddButton(400, y, 9720, 9722, 100 + i);
+                        builder.AddLabel(250, y, 0x66C, GetInsuranceCost(item).ToString());
                     }
                 }
 
-                if (page >= 1)
+                if (_page >= 1)
                 {
-                    AddButton(15, 380, 0xFAE, 0xFAF, 3);
-                    AddHtmlLocalized(50, 380, 450, 20, 1044044, 0x7FFF); // PREV PAGE
+                    builder.AddButton(15, 380, 0xFAE, 0xFAF, 3);
+                    builder.AddHtmlLocalized(50, 380, 450, 20, 1044044, 0x7FFF); // PREV PAGE
                 }
 
-                if ((page + 1) * 4 < items.Length)
+                if ((_page + 1) * 4 < _items.Length)
                 {
-                    AddButton(400, 380, 0xFA5, 0xFA7, 4);
-                    AddHtmlLocalized(435, 380, 70, 20, 1044045, 0x7FFF); // NEXT PAGE
+                    builder.AddButton(400, 380, 0xFA5, 0xFA7, 4);
+                    builder.AddHtmlLocalized(435, 380, 70, 20, 1044045, 0x7FFF); // NEXT PAGE
                 }
             }
 
-            public ItemInsuranceMenuGump NewInstance() => new(m_From, m_Items, m_Insure, m_Page);
-
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
-                if (info.ButtonID == 0 || !m_From.CheckAlive())
+                if (info.ButtonID == 0 || !_from.CheckAlive())
                 {
                     return;
                 }
@@ -4798,41 +4786,40 @@ namespace Server.Mobiles
                 {
                     case 1: // Auto Reinsure
                         {
-                            if (m_From.AutoRenewInsurance)
+                            if (_from.AutoRenewInsurance)
                             {
-                                if (!m_From.HasGump<CancelRenewInventoryInsuranceGump>())
-                                {
-                                    m_From.SendGump(new CancelRenewInventoryInsuranceGump(m_From, this));
-                                }
+                                _from.SendGump(new CancelRenewInventoryInsuranceGump(this));
                             }
                             else
                             {
-                                m_From.AutoRenewInventoryInsurance();
-                                m_From.SendGump(new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page));
+                                _from.AutoRenewInventoryInsurance();
+                                _from.SendGump(this);
                             }
 
                             break;
                         }
                     case 2: // OK
                         {
-                            m_From.SendGump(new ItemInsuranceMenuConfirmGump(m_From, m_Items, m_Insure, m_Page));
+                            _from.SendGump(new ItemInsuranceMenuConfirmGump(this));
 
                             break;
                         }
                     case 3: // Prev
                         {
-                            if (m_Page >= 1)
+                            if (_page >= 1)
                             {
-                                m_From.SendGump(new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page - 1));
+                                _page--;
+                                _from.SendGump(this);
                             }
 
                             break;
                         }
                     case 4: // Next
                         {
-                            if ((m_Page + 1) * 4 < m_Items.Length)
+                            if ((_page + 1) * 4 < _items.Length)
                             {
-                                m_From.SendGump(new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page + 1));
+                                _page++;
+                                _from.SendGump(this);
                             }
 
                             break;
@@ -4841,71 +4828,67 @@ namespace Server.Mobiles
                         {
                             var idx = info.ButtonID - 100;
 
-                            if (idx >= 0 && idx < m_Items.Length)
+                            if (idx >= 0 && idx < _items.Length)
                             {
-                                m_Insure[idx] = !m_Insure[idx];
+                                _insure[idx] = !_insure[idx];
                             }
 
-                            m_From.SendGump(new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page));
+                            _from.SendGump(this);
 
                             break;
                         }
                 }
             }
-        }
 
-        private class ItemInsuranceMenuConfirmGump : Gump
-        {
-            private readonly PlayerMobile m_From;
-            private readonly bool[] m_Insure;
-            private readonly Item[] m_Items;
-            private readonly int m_Page;
-
-            public ItemInsuranceMenuConfirmGump(PlayerMobile from, Item[] items, bool[] insure, int page)
-                : base(250, 200)
+            private class ItemInsuranceMenuConfirmGump : StaticGump<ItemInsuranceMenuConfirmGump>
             {
-                m_From = from;
-                m_Items = items;
-                m_Insure = insure;
-                m_Page = page;
+                private readonly ItemInsuranceMenuGump _parentGump;
 
-                AddBackground(0, 0, 240, 142, 0x13BE);
-                AddImageTiled(6, 6, 228, 100, 0xA40);
-                AddImageTiled(6, 116, 228, 20, 0xA40);
-                AddAlphaRegion(6, 6, 228, 142);
+                public ItemInsuranceMenuConfirmGump(ItemInsuranceMenuGump parentGump) : base(250, 200) =>
+                    _parentGump = parentGump;
 
-                AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF); // Do you wish to insure all newly selected items?
-
-                AddButton(6, 116, 0xFB1, 0xFB2, 0);
-                AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
-
-                AddButton(114, 116, 0xFA5, 0xFA7, 1);
-                AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF); // ACCEPT
-            }
-
-            public override void OnResponse(NetState sender, in RelayInfo info)
-            {
-                if (!m_From.CheckAlive())
+                protected override void BuildLayout(ref StaticGumpBuilder builder)
                 {
-                    return;
+                    builder.AddBackground(0, 0, 240, 142, 0x13BE);
+                    builder.AddImageTiled(6, 6, 228, 100, 0xA40);
+                    builder.AddImageTiled(6, 116, 228, 20, 0xA40);
+                    builder.AddAlphaRegion(6, 6, 228, 142);
+
+                    builder.AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF); // Do you wish to insure all newly selected items?
+
+                    builder.AddButton(6, 116, 0xFB1, 0xFB2, 0);
+                    builder.AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
+
+                    builder.AddButton(114, 116, 0xFA5, 0xFA7, 1);
+                    builder.AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF); // ACCEPT
                 }
 
-                if (info.ButtonID == 1)
+                public override void OnResponse(NetState sender, in RelayInfo info)
                 {
-                    for (var i = 0; i < m_Items.Length; ++i)
+                    if (sender.Mobile is not PlayerMobile pm || !pm.CheckAlive())
                     {
-                        var item = m_Items[i];
+                        return;
+                    }
 
-                        if (item.Insured != m_Insure[i])
+                    if (info.ButtonID == 1)
+                    {
+                        var items = _parentGump._items;
+                        var insure = _parentGump._insure;
+                        for (var i = 0; i < items.Length; ++i)
                         {
-                            m_From.ToggleItemInsurance_Callback(m_From, item, false);
+                            var item = items[i];
+
+                            if (item.Insured != insure[i])
+                            {
+                                pm.ToggleItemInsurance_Callback(pm, item, false);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    m_From.SendLocalizedMessage(1042021); // Cancelled.
-                    m_From.SendGump(new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page));
+                    else
+                    {
+                        pm.SendLocalizedMessage(1042021); // Cancelled.
+                        pm.SendGump(_parentGump);
+                    }
                 }
             }
         }

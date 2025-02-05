@@ -961,43 +961,36 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return _invalidSector;
     }
 
-    public bool LineOfSight(Point3D org, Point3D dest)
+    public bool LineOfSight(Point3D origin, Point3D destination)
     {
         if (this == Internal)
         {
             return false;
         }
 
-        if (!Utility.InRange(org, dest, MaxLOSDistance))
+        if (!Utility.InRange(origin, destination, MaxLOSDistance))
         {
             return false;
         }
 
-        var end = dest;
-
-        if (org.X > dest.X || org.X == dest.X && org.Y > dest.Y || org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z)
-        {
-            (org, dest) = (dest, org);
-        }
-
-        int height;
-        Point3D p;
-        var path = new Point3DList();
-        TileFlag flags;
-
-        if (org == dest)
+        if (origin == destination)
         {
             return true;
         }
 
-        if (path.Count > 0)
+        var end = destination;
+
+        if (origin.X > destination.X || origin.X == destination.X && origin.Y > destination.Y || origin.X == destination.X
+            && origin.Y == destination.Y && origin.Z > destination.Z)
         {
-            path.Clear();
+            (origin, destination) = (destination, origin);
         }
 
-        var xd = dest.m_X - org.m_X;
-        var yd = dest.m_Y - org.m_Y;
-        var zd = dest.m_Z - org.m_Z;
+        var path = new Point3DList();
+
+        var xd = destination.X - origin.X;
+        var yd = destination.Y - origin.Y;
+        var zd = destination.Z - origin.Z;
         var zslp = Math.Sqrt(xd * xd + yd * yd);
         var sq3d = zd != 0 ? Math.Sqrt(zslp * zslp + zd * zd) : zslp;
 
@@ -1005,20 +998,22 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         var run = xd / sq3d;
         zslp = zd / sq3d;
 
-        double y = org.m_Y;
-        double z = org.m_Z;
-        double x = org.m_X;
-        while (Utility.NumberBetween(x, dest.m_X, org.m_X, 0.5) && Utility.NumberBetween(y, dest.m_Y, org.m_Y, 0.5) &&
-               Utility.NumberBetween(z, dest.m_Z, org.m_Z, 0.5))
+        double y = origin.Y;
+        double z = origin.Z;
+        double x = origin.X;
+        while (Utility.NumberBetween(x, destination.X, origin.X, 0.5) &&
+               Utility.NumberBetween(y, destination.Y, origin.Y, 0.5) &&
+               Utility.NumberBetween(z, destination.Z, origin.Z, 0.5))
         {
             var ix = (int)Math.Round(x);
             var iy = (int)Math.Round(y);
             var iz = (int)Math.Round(z);
+
             if (path.Count > 0)
             {
-                p = path.Last;
+                var p = path.Last;
 
-                if (p.m_X != ix || p.m_Y != iy || p.m_Z != iz)
+                if (p.X != ix || p.Y != iy || p.Z != iz)
                 {
                     path.Add(ix, iy, iz);
                 }
@@ -1038,29 +1033,24 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return true; // <--should never happen, but to be safe.
         }
 
-        p = path.Last;
-
-        if (p != dest)
+        if (path.Last != destination)
         {
-            path.Add(dest);
+            path.Add(destination);
         }
 
-        Point3D pTop = org, pBottom = dest;
-        Utility.FixPoints(ref pTop, ref pBottom);
-
         var pathCount = path.Count;
-        var endTop = end.m_Z + 1;
+        var endTop = end.Z + 1;
 
         for (var i = 0; i < pathCount; ++i)
         {
             var point = path[i];
-            var pointTop = point.m_Z + 1;
+            var pointTop = point.Z + 1;
 
             var landTile = Tiles.GetLandTile(point.X, point.Y);
-            GetAverageZ(point.m_X, point.m_Y, out var landZ, out _, out var landTop);
+            GetAverageZ(point.X, point.Y, out var landZ, out _, out var landTop);
 
             if (landZ <= pointTop && landTop >= point.m_Z &&
-                (point.m_X != end.m_X || point.m_Y != end.m_Y || landZ > endTop || landTop < end.m_Z) &&
+                (point.X != end.X || point.Y != end.Y || landZ > endTop || landTop < end.Z) &&
                 !landTile.Ignored)
             {
                 return false;
@@ -1082,22 +1072,22 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             bool foundStatic = false;
 
-            foreach (var t in Tiles.GetStaticAndMultiTiles(point.m_X, point.m_Y))
+            foreach (var t in Tiles.GetStaticAndMultiTiles(point.X, point.Y))
             {
                 foundStatic = true;
 
                 var id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
 
-                flags = id.Flags;
-                height = id.CalcHeight;
+                var flags = id.Flags;
 
-                if (t.Z <= pointTop && t.Z + height >= point.Z && (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0)
+                if (
+                    t.Z <= pointTop && t.Z + id.CalcHeight >= point.Z &&
+                    (flags & (TileFlag.Window | TileFlag.NoShoot)) != 0 &&
+                    (point.X != end.X ||
+                     point.Y != end.Y ||
+                     t.Z > endTop || t.Z + id.CalcHeight < end.Z)
+                )
                 {
-                    if (point.m_X == end.m_X && point.m_Y == end.m_Y && t.Z <= endTop && t.Z + height >= end.m_Z)
-                    {
-                        continue;
-                    }
-
                     return false;
                 }
             }
@@ -1120,57 +1110,66 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        var rect = new Rectangle2D(pTop.m_X, pTop.m_Y, pBottom.m_X - pTop.m_X + 1, pBottom.m_Y - pTop.m_Y + 1);
+        var pTop = origin;
+        var pBottom = destination;
+        Utility.FixPoints(ref pTop, ref pBottom);
 
-        foreach (var i in GetItemsInBounds(rect))
+        var rect = new Rectangle2D(pTop.X, pTop.Y, pBottom.X - pTop.X + 1, pBottom.Y - pTop.Y + 1);
+
+        foreach (var item in GetItemsInBounds(rect))
         {
-            if (!i.Visible)
+            if (!item.Visible)
             {
                 continue;
             }
 
-            if (i is BaseMulti || i.ItemID > TileData.MaxItemValue)
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
             {
                 continue;
             }
 
-            var id = i.ItemData;
-            flags = id.Flags;
+            var id = item.ItemData;
+            var flags = id.Flags;
 
             if ((flags & (TileFlag.Window | TileFlag.NoShoot)) == 0)
             {
                 continue;
             }
 
-            height = id.CalcHeight;
-
-            var found = false;
-
-            var count = path.Count;
-
-            for (var j = 0; j < count; ++j)
+            for (var i = 0; i < path.Count; ++i)
             {
-                var point = path[j];
-                var pointTop = point.m_Z + 1;
-                var loc = i.Location;
+                var pathPoint = path[i];
+                var pointTop = pathPoint.Z + 1;
+                var itemLocation = item.Location;
 
-                // if (t.Z <= point.Z && t.Z+height >= point.Z && ( height != 0 || ( t.Z == dest.Z && zd != 0 ) ))
-                if (loc.m_X == point.m_X && loc.m_Y == point.m_Y && loc.m_Z <= pointTop && loc.m_Z + height >= point.m_Z)
+                if (
+                    // Item is on same tile as this point along the LOS path
+                    itemLocation.X == pathPoint.X &&
+                    itemLocation.Y == pathPoint.Y &&
+                    itemLocation.Z <= pointTop &&
+
+                    // Item rests on the same level as the path
+                    itemLocation.Z + id.CalcHeight >= pathPoint.Z &&
+
+                    // Fix door bugging monsters when door is at the START or END of the LOS path by allowing LOS
+                    !(flags.HasFlag(TileFlag.Door) &&
+                      itemLocation.X == origin.X && itemLocation.Y == origin.Y ||
+                      itemLocation.X == destination.X && itemLocation.Y == destination.Y) &&
+
+                    // Item is at some point along the path BEFORE the target
+                    (itemLocation.X != end.X ||
+                     itemLocation.Y != end.Y ||
+
+                     // Item is diagonally looking DOWN at the target
+                     itemLocation.Z > endTop ||
+
+                     // Item is diagonally looking UP at the target
+                     itemLocation.Z + id.CalcHeight < end.Z)
+                )
                 {
-                    if (loc.m_X != end.m_X || loc.m_Y != end.m_Y || loc.m_Z > endTop || loc.m_Z + height < end.m_Z)
-                    {
-                        found = true;
-                        break;
-                    }
+                    return false;
                 }
             }
-
-            if (!found)
-            {
-                continue;
-            }
-
-            return false;
         }
 
         return true;

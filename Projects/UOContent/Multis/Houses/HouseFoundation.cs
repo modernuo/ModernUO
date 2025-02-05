@@ -2097,53 +2097,62 @@ namespace Server.Multis
             };
     }
 
-    public class ConfirmCommitGump : Gump
+    public class ConfirmCommitGump : DynamicGump
     {
         private readonly HouseFoundation m_Foundation;
+        private readonly int _bankBalance;
+        private readonly int _oldPrice;
+        private readonly int _newPrice;
 
         public ConfirmCommitGump(HouseFoundation foundation, int bankBalance, int oldPrice, int newPrice) : base(50, 50)
         {
             m_Foundation = foundation;
+            _bankBalance = bankBalance;
+            _oldPrice = oldPrice;
+            _newPrice = newPrice;
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddBackground(0, 0, 320, 320, 5054);
+            builder.AddBackground(0, 0, 320, 320, 5054);
 
-            AddImageTiled(10, 10, 300, 20, 2624);
-            AddImageTiled(10, 40, 300, 240, 2624);
-            AddImageTiled(10, 290, 300, 20, 2624);
+            builder.AddImageTiled(10, 10, 300, 20, 2624);
+            builder.AddImageTiled(10, 40, 300, 240, 2624);
+            builder.AddImageTiled(10, 290, 300, 20, 2624);
 
-            AddAlphaRegion(10, 10, 300, 300);
+            builder.AddAlphaRegion(10, 10, 300, 300);
 
-            AddHtmlLocalized(10, 10, 300, 20, 1062060, 32736); // <CENTER>COMMIT DESIGN</CENTER>
+            builder.AddHtmlLocalized(10, 10, 300, 20, 1062060, 32736); // <CENTER>COMMIT DESIGN</CENTER>
 
-            AddHtmlLocalized(10, 40, 300, 140, newPrice - oldPrice <= bankBalance ? 1061898 : 1061903, 1023, false, true);
+            builder.AddHtmlLocalized(10, 40, 300, 140, _newPrice - _oldPrice <= _bankBalance ? 1061898 : 1061903, 1023, false, true);
 
-            AddHtmlLocalized(10, 190, 150, 20, 1061902, 32736); // Bank Balance:
-            AddLabel(170, 190, 55, bankBalance.ToString());
+            builder.AddHtmlLocalized(10, 190, 150, 20, 1061902, 32736); // Bank Balance:
+            builder.AddLabel(170, 190, 55, _bankBalance.ToString());
 
-            AddHtmlLocalized(10, 215, 150, 20, 1061899, 1023); // Old Value:
-            AddLabel(170, 215, 90, oldPrice.ToString());
+            builder.AddHtmlLocalized(10, 215, 150, 20, 1061899, 1023); // Old Value:
+            builder.AddLabel(170, 215, 90, _oldPrice.ToString());
 
-            AddHtmlLocalized(10, 235, 150, 20, 1061900, 1023); // Cost To Commit:
-            AddLabel(170, 235, 90, newPrice.ToString());
+            builder.AddHtmlLocalized(10, 235, 150, 20, 1061900, 1023); // Cost To Commit:
+            builder.AddLabel(170, 235, 90, _newPrice.ToString());
 
-            if (newPrice - oldPrice < 0)
+            if (_newPrice - _oldPrice < 0)
             {
-                AddHtmlLocalized(10, 260, 150, 20, 1062059, 992); // Your Refund:
-                AddLabel(170, 260, 70, (oldPrice - newPrice).ToString());
+                builder. AddHtmlLocalized(10, 260, 150, 20, 1062059, 992); // Your Refund:
+                builder.AddLabel(170, 260, 70, (_oldPrice - _newPrice).ToString());
             }
             else
             {
-                AddHtmlLocalized(10, 260, 150, 20, 1061901, 31744); // Your Cost:
-                AddLabel(170, 260, 40, (newPrice - oldPrice).ToString());
+                builder.AddHtmlLocalized(10, 260, 150, 20, 1061901, 31744); // Your Cost:
+                builder.AddLabel(170, 260, 40, (_newPrice - _oldPrice).ToString());
             }
 
-            AddButton(10, 290, 4005, 4007, 1);
-            AddHtmlLocalized(45, 290, 55, 20, 1011036, 32767); // OKAY
+            builder.AddButton(10, 290, 4005, 4007, 1);
+            builder.AddHtmlLocalized(45, 290, 55, 20, 1011036, 32767); // OKAY
 
-            AddButton(170, 290, 4005, 4007, 0);
-            AddHtmlLocalized(195, 290, 55, 20, 1011012, 32767); // CANCEL
+            builder.AddButton(170, 290, 4005, 4007, 0);
+            builder.AddHtmlLocalized(195, 290, 55, 20, 1011012, 32767); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
