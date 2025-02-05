@@ -315,7 +315,7 @@ namespace Server.Items
                 {
                     if (_quality == ArmorQuality.Exceptional)
                     {
-                        ar += (int)Math.Round(BaseArmorRating * 0.2 * quality);
+                        ar += (int)Math.Round(BaseArmorRating * 0.2);
                     }
 
                     if (_protectionLevel != ArmorProtectionLevel.Regular)
@@ -327,7 +327,7 @@ namespace Server.Items
                 {
                     if (_protectionLevel != ArmorProtectionLevel.Regular)
                     {
-                        ar += 8 * GetProtOffset();
+                        ar += 8 * (int)_protectionLevel;
                     }
 
                     ar += _resource switch
