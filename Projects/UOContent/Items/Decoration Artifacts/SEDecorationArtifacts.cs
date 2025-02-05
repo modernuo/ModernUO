@@ -536,22 +536,21 @@ public partial class TowerLanternArtifact : BaseDecorationArtifact
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (from.InRange(GetWorldLocation(), 2))
+        if (!from.InRange(GetWorldLocation(), 2))
         {
-            if (IsOn)
-            {
-                IsOn = false;
-                from.PlaySound(0x3BE);
-            }
-            else
-            {
-                IsOn = true;
-                from.PlaySound(0x47);
-            }
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
+
+        if (IsOn)
+        {
+            IsOn = false;
+            from.PlaySound(0x3BE);
         }
         else
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            IsOn = true;
+            from.PlaySound(0x47);
         }
     }
 }

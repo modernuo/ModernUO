@@ -70,23 +70,22 @@ public partial class StoneAnkh : BaseAddon, IRewardItem
 
     public override void OnComponentUsed(AddonComponent c, Mobile from)
     {
-        if (from.InRange(Location, 2))
+        if (!from.InRange(Location, 2))
         {
-            var house = BaseHouse.FindHouseAt(this);
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
 
-            if (house?.IsOwner(from) == true)
-            {
-                from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
-            }
-            else
-            {
-                // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
-                from.SendLocalizedMessage(1049784);
-            }
+        var house = BaseHouse.FindHouseAt(this);
+
+        if (house?.IsOwner(from) == true)
+        {
+            from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
         }
         else
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
+            from.SendLocalizedMessage(1049784);
         }
     }
 }
