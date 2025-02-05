@@ -337,17 +337,22 @@ namespace Server
 
         public static BaseWand RandomWand()
         {
+            BaseWand wand = null;
+
             if (Core.ML)
             {
-                return Construct<BaseWand>(NewWandTypes);
+                wand = Construct<BaseWand>(NewWandTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct<BaseWand>(_wandTypes);
+                wand = Construct<BaseWand>(_wandTypes);
+            }
+            else
+            {
+                wand = Construct<BaseWand>(_oldWandTypes);
             }
 
-            return Construct<BaseWand>(_oldWandTypes);
+            return wand;
         }
 
         private static readonly Type[][] _mlClothingTypes = [MLClothingTypes, AosClothingTypes, ClothingTypes];
@@ -356,22 +361,26 @@ namespace Server
 
         public static BaseClothing RandomClothing(bool inTokuno = false, bool isMondain = false)
         {
+            BaseClothing clothing = null;
+    
             if (Core.ML && isMondain)
             {
-                return Construct<BaseClothing>(_mlClothingTypes);
+                clothing = Construct<BaseClothing>(_mlClothingTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct<BaseClothing>(_seClothingTypes);
+                clothing = Construct<BaseClothing>(_seClothingTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct<BaseClothing>(_aosClothingTypes);
+                clothing = Construct<BaseClothing>(_aosClothingTypes);
             }
-
-            return Construct<BaseClothing>(ClothingTypes);
+            else
+            {
+                clothing = Construct<BaseClothing>(ClothingTypes);
+            }
+    
+            return clothing;
         }
 
         private static readonly Type[][] _mlRangedWeaponTypes = [MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes];
@@ -380,22 +389,26 @@ namespace Server
 
         public static BaseWeapon RandomRangedWeapon(bool inTokuno = false, bool isMondain = false)
         {
+            BaseWeapon weapon = null;
+
             if (Core.ML && isMondain)
             {
-                return Construct<BaseWeapon>(_mlRangedWeaponTypes);
+                weapon = Construct<BaseWeapon>(_mlRangedWeaponTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct<BaseWeapon>(_seRangedWeaponTypes);
+                weapon = Construct<BaseWeapon>(_seRangedWeaponTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct<BaseWeapon>(_aosRangedWeaponTypes);
+                weapon = Construct<BaseWeapon>(_aosRangedWeaponTypes);
+            }
+            else
+            {
+                weapon = Construct<BaseWeapon>(RangedWeaponTypes);
             }
 
-            return Construct<BaseWeapon>(RangedWeaponTypes);
+            return weapon; 
         }
 
         private static readonly Type[][] _mlWeaponTypes = [MLWeaponTypes, AosWeaponTypes, WeaponTypes];
@@ -404,22 +417,26 @@ namespace Server
 
         public static BaseWeapon RandomWeapon(bool inTokuno = false, bool isMondain = false)
         {
+            BaseWeapon weapon = null;
+
             if (Core.ML && isMondain)
             {
-                return Construct<BaseWeapon>(_mlWeaponTypes);
+                weapon = Construct<BaseWeapon>(_mlWeaponTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct<BaseWeapon>(_seWeaponTypes);
+                weapon = Construct<BaseWeapon>(_seWeaponTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct<BaseWeapon>(_aosWeaponTypes);
+                weapon = Construct<BaseWeapon>(_aosWeaponTypes);
             }
-
-            return Construct<BaseWeapon>(WeaponTypes);
+            else
+            {
+                weapon = Construct<BaseWeapon>(WeaponTypes);
+            }
+        
+            return weapon;
         }
 
         private static readonly Type[][] _mlWeaponOrJewelryTypes = [MLWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes];
@@ -429,22 +446,26 @@ namespace Server
 
         public static Item RandomWeaponOrJewelry(bool inTokuno = false, bool isMondain = false)
         {
+            Item item = null;
+
             if (Core.ML && isMondain)
             {
-                return Construct(_mlWeaponOrJewelryTypes);
+                item = Construct(_mlWeaponOrJewelryTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno) 
             {
-                return Construct(_seWeaponOrJewelryTypes);
+                item = Construct(_seWeaponOrJewelryTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct(_aosWeaponOrJewelryTypes);
+                item = Construct(_aosWeaponOrJewelryTypes);
+            }
+            else
+            {
+                item = Construct(_oldWeaponOrJewelryTypes);
             }
 
-            return Construct(_oldWeaponOrJewelryTypes);
+            return item;
         }
 
         public static BaseJewel RandomJewelry() => Construct<BaseJewel>(JewelryTypes);
@@ -454,17 +475,22 @@ namespace Server
 
         public static BaseArmor RandomArmor(bool inTokuno = false, bool isMondain = false)
         {
+            BaseArmor armor = null;
+    
             if (Core.ML && isMondain)
             {
-                return Construct<BaseArmor>(_mlArmorTypes);
+                armor = Construct<BaseArmor>(_mlArmorTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct<BaseArmor>(_seArmorTypes);
+                armor = Construct<BaseArmor>(_seArmorTypes);
             }
-
-            return Construct<BaseArmor>(ArmorTypes);
+            else 
+            {
+                armor = Construct<BaseArmor>(ArmorTypes);
+            }
+    
+            return armor;
         }
 
         private static readonly Type[][] _seHatTypes = [SEHatTypes, AosHatTypes, HatTypes];
@@ -472,17 +498,22 @@ namespace Server
 
         public static BaseHat RandomHat(bool inTokuno = false)
         {
+            BaseHat hat = null;
+    
             if (Core.SE && inTokuno)
             {
-                return Construct<BaseHat>(_seHatTypes);
+                hat = Construct<BaseHat>(_seHatTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct<BaseHat>(_aosHatTypes);
+                hat = Construct<BaseHat>(_aosHatTypes);
             }
-
-            return Construct<BaseHat>(HatTypes);
+            else
+            {
+                hat = Construct<BaseHat>(HatTypes);
+            }
+    
+            return hat;
         }
 
         private static readonly Type[][] _mlArmorOrHatTypes = [MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes];
@@ -492,34 +523,44 @@ namespace Server
 
         public static Item RandomArmorOrHat(bool inTokuno = false, bool isMondain = false)
         {
+            Item item = null;
+
             if (Core.ML && isMondain)
             {
-                return Construct(_mlArmorOrHatTypes);
+                item = Construct(_mlArmorOrHatTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct(_seArmorOrHatTypes);
+                item = Construct(_seArmorOrHatTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)  
             {
-                return Construct(_aosArmorOrHatTypes);
+                item = Construct(_aosArmorOrHatTypes);
+            }
+            else
+            {
+                item = Construct(_oldArmorOrHatTypes);
             }
 
-            return Construct(_oldArmorOrHatTypes);
+            return item;
         }
 
         private static readonly Type[][] _aosShieldTypes = [AosShieldTypes, ShieldTypes];
 
         public static BaseShield RandomShield()
         {
+            BaseShield shield = null;
+
             if (Core.AOS)
             {
-                return Construct<BaseShield>(_aosShieldTypes);
+                shield = Construct<BaseShield>(_aosShieldTypes);
+            }
+            else
+            {
+                shield = Construct<BaseShield>(ShieldTypes);
             }
 
-            return Construct<BaseShield>(ShieldTypes);
+            return shield;
         }
 
         private static readonly Type[][] _mlArmorOrShieldTypes = [MLArmorTypes, ArmorTypes, AosShieldTypes, ShieldTypes];
@@ -529,22 +570,26 @@ namespace Server
 
         public static BaseArmor RandomArmorOrShield(bool inTokuno = false, bool isMondain = false)
         {
+            BaseArmor armor = null;
+            
             if (Core.ML && isMondain)
             {
-                return Construct<BaseArmor>(_mlArmorOrShieldTypes);
+                armor = Construct<BaseArmor>(_mlArmorOrShieldTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct<BaseArmor>(_seArmorOrShieldTypes);
+                armor = Construct<BaseArmor>(_seArmorOrShieldTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct<BaseArmor>(_aosArmorOrShieldTypes);
+                armor = Construct<BaseArmor>(_aosArmorOrShieldTypes);
+            }
+            else
+            {
+                armor = Construct<BaseArmor>(_oldArmorOrShieldTypes);
             }
 
-            return Construct<BaseArmor>(_oldArmorOrShieldTypes);
+            return armor;
         }
 
         private static readonly Type[][] _mlArmorOrHatOrShieldOrJeweleyTypes =
@@ -558,22 +603,26 @@ namespace Server
 
         public static Item RandomArmorOrShieldOrJewelry(bool inTokuno = false, bool isMondain = false)
         {
+            Item item = null;
+
             if (Core.ML && isMondain)
             {
-                return Construct(_mlArmorOrHatOrShieldOrJeweleyTypes);
+                item = Construct(_mlArmorOrHatOrShieldOrJeweleyTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct(_seArmorOrHatOrShieldOrJeweleyTypes);
+                item = Construct(_seArmorOrHatOrShieldOrJeweleyTypes); 
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct(_aosArmorOrHatOrShieldOrJeweleyTypes);
+                item = Construct(_aosArmorOrHatOrShieldOrJeweleyTypes);
+            }
+            else
+            {
+                item = Construct(_oldArmorOrHatOrShieldOrJeweleyTypes);
             }
 
-            return Construct(_oldArmorOrHatOrShieldOrJeweleyTypes);
+            return item;
         }
 
         private static readonly Type[][] _mlWeaponOrRangedOrArmorOrHatOrShieldTypes =
@@ -601,22 +650,26 @@ namespace Server
 
         public static Item RandomArmorOrShieldOrWeapon(bool inTokuno = false, bool isMondain = false)
         {
+            Item item = null;
+
             if (Core.ML && isMondain)
             {
-                return Construct(_mlWeaponOrRangedOrArmorOrHatOrShieldTypes);
+                item = Construct(_mlWeaponOrRangedOrArmorOrHatOrShieldTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct(_seWeaponOrRangedOrArmorOrHatOrShieldTypes);
+                item = Construct(_seWeaponOrRangedOrArmorOrHatOrShieldTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct(_aosWeaponOrRangedOrArmorOrHatOrShieldTypes);
+                item = Construct(_aosWeaponOrRangedOrArmorOrHatOrShieldTypes);
+            }
+            else
+            {
+                item = Construct(_oldWeaponOrRangedOrArmorOrHatOrShieldTypes);
             }
 
-            return Construct(_oldWeaponOrRangedOrArmorOrHatOrShieldTypes);
+            return item;
         }
 
         private static readonly Type[][] _mlWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes =
@@ -644,22 +697,26 @@ namespace Server
 
         public static Item RandomArmorOrShieldOrWeaponOrJewelry(bool inTokuno = false, bool isMondain = false)
         {
+            Item item = null;
+
             if (Core.ML && isMondain)
             {
-                return Construct(_mlWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
+                item = Construct(_mlWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
             }
-
-            if (Core.SE && inTokuno)
+            else if (Core.SE && inTokuno)
             {
-                return Construct(_seWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
+                item = Construct(_seWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
             }
-
-            if (Core.AOS)
+            else if (Core.AOS)
             {
-                return Construct(_aosWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
+                item = Construct(_aosWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
+            }
+            else
+            {
+                item = Construct(_oldWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
             }
 
-            return Construct(_oldWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
+            return item;
         }
 
         private static readonly Type[][] _chestOfHeirloomsContentTypes =
