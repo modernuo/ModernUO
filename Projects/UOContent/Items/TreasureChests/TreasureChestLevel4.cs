@@ -77,25 +77,35 @@ public partial class TreasureChestLevel4 : LockableContainer
         }
 
         // Equipment
-        for (var i = Utility.Random(4); i > 0; i--)
+        // Weapons
+        var weapon = Loot.RandomWeapon();
+        if (weapon != null)
         {
-            var item = Loot.RandomArmorOrShieldOrWeapon();
-
-            if (item is BaseWeapon weapon)
-            {
-                weapon.DamageLevel = (WeaponDamageLevel)Utility.Random(4);
-                weapon.AccuracyLevel = (WeaponAccuracyLevel)Utility.Random(4);
-                weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random(4);
-                weapon.Quality = WeaponQuality.Regular;
-            }
-            else if (item is BaseArmor armor)
-            {
-                armor.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(4);
-                armor.Durability = (ArmorDurabilityLevel)Utility.Random(4);
-                armor.Quality = ArmorQuality.Regular;
-            }
-
-            DropItem(item);
+            weapon.DamageLevel = (WeaponDamageLevel)Utility.Random(4);
+            weapon.AccuracyLevel = (WeaponAccuracyLevel)Utility.Random(4);
+            weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random(4);
+            weapon.Quality = WeaponQuality.Regular;
+            DropItem(weapon);
+        }
+        
+        // Armor
+        var armor = Loot.RandomArmor();
+        if (armor != null)
+        {
+            armor.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(4);
+            armor.Durability = (ArmorDurabilityLevel)Utility.Random(4);
+            armor.Quality = ArmorQuality.Regular;
+            DropItem(armor);
+        }
+        
+        // Shield
+        var shield = Loot.RandomShield();
+        if (shield != null)
+        {
+            shield.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(4);
+            shield.Durability = (ArmorDurabilityLevel)Utility.Random(4);
+            shield.Quality = ArmorQuality.Regular;
+            DropItem(shield);
         }
 
         // Clothing
