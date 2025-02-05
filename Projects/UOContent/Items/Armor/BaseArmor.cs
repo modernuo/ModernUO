@@ -311,28 +311,44 @@ namespace Server.Items
             {
                 var ar = BaseArmorRating;
 
-                if (_protectionLevel != ArmorProtectionLevel.Regular)
+                if (Core.T2A)
                 {
-                    ar += 10 + 5 * (int)_protectionLevel;
+                    if (_quality == ArmorQuality.Exceptional)
+                    {
+                        ar += (int)Math.Round(BaseArmorRating * 0.2 * quality);
+                    }
+
+                    if (_protectionLevel != ArmorProtectionLevel.Regular)
+                    {
+                        ar += GetProtOffset();
+                    }
+                }
+                else if (Core.UOR)
+                {
+                    if (_protectionLevel != ArmorProtectionLevel.Regular)
+                    {
+                        ar += 8 * GetProtOffset();
+                    }
+
+                    ar += _resource switch
+                    {
+                        CraftResource.DullCopper    => 2,
+                        CraftResource.ShadowIron    => 4,
+                        CraftResource.Copper        => 6,
+                        CraftResource.Bronze        => 8,
+                        CraftResource.Gold          => 10,
+                        CraftResource.Agapite       => 12,
+                        CraftResource.Verite        => 14,
+                        CraftResource.Valorite      => 16,
+                        CraftResource.SpinedLeather => 10,
+                        CraftResource.HornedLeather => 13,
+                        CraftResource.BarbedLeather => 16,
+                        _                           => 0 // regular
+                    };
+
+                    ar += -8 + 8 * (int)_quality;
                 }
 
-                ar += _resource switch
-                {
-                    CraftResource.DullCopper    => 2,
-                    CraftResource.ShadowIron    => 4,
-                    CraftResource.Copper        => 6,
-                    CraftResource.Bronze        => 8,
-                    CraftResource.Gold          => 10,
-                    CraftResource.Agapite       => 12,
-                    CraftResource.Verite        => 14,
-                    CraftResource.Valorite      => 16,
-                    CraftResource.SpinedLeather => 10,
-                    CraftResource.HornedLeather => 13,
-                    CraftResource.BarbedLeather => 16,
-                    _                           => 0
-                };
-
-                ar += -8 + 8 * (int)_quality;
                 return ScaleArmorByDurability(ar);
             }
         }
@@ -857,29 +873,60 @@ namespace Server.Items
 
         public int GetProtOffset()
         {
-            return _protectionLevel switch
+            if (Core.T2A)
             {
-                ArmorProtectionLevel.Guarding        => 1,
-                ArmorProtectionLevel.Hardening       => 2,
-                ArmorProtectionLevel.Fortification   => 3,
-                ArmorProtectionLevel.Invulnerability => 4,
-                _                                    => 0
-            };
+                return _protectionLevel switch
+                {
+                    ArmorProtectionLevel.Defense         => 5,
+                    ArmorProtectionLevel.Guarding        => 10,
+                    ArmorProtectionLevel.Hardening       => 15,
+                    ArmorProtectionLevel.Fortification   => 20,
+                    ArmorProtectionLevel.Invulnerability => 25,
+                    _                                    => 0 // regular
+                };
+            }
+            else
+            {
+                return _protectionLevel switch
+                {
+                    ArmorProtectionLevel.Defense         => 2,
+                    ArmorProtectionLevel.Guarding        => 4,
+                    ArmorProtectionLevel.Hardening       => 6,
+                    ArmorProtectionLevel.Fortification   => 8,
+                    ArmorProtectionLevel.Invulnerability => 10,
+                    _                                    => 0 // regular
+                };
+            }
         }
 
         public int GetDurabilityBonus()
         {
             var bonus = _quality == ArmorQuality.Exceptional ? 20 : 0;
 
-            bonus += _durability switch
+            if (Core.T2A)
             {
-                ArmorDurabilityLevel.Durable        => 20,
-                ArmorDurabilityLevel.Substantial    => 50,
-                ArmorDurabilityLevel.Massive        => 70,
-                ArmorDurabilityLevel.Fortified      => 100,
-                ArmorDurabilityLevel.Indestructible => 120,
-                _                                   => 0
-            };
+                bonus += _durability switch
+                {
+                    ArmorDurabilityLevel.Durable        => 5,
+                    ArmorDurabilityLevel.Substantial    => 10,
+                    ArmorDurabilityLevel.Massive        => 15,
+                    ArmorDurabilityLevel.Fortified      => 20,
+                    ArmorDurabilityLevel.Indestructible => 25,
+                    _                                   => 0 // regular
+                };
+            }
+            else
+            {
+                bonus += _durability switch
+                {
+                    ArmorDurabilityLevel.Durable        => 2,
+                    ArmorDurabilityLevel.Substantial    => 4,
+                    ArmorDurabilityLevel.Massive        => 6,
+                    ArmorDurabilityLevel.Fortified      => 8,
+                    ArmorDurabilityLevel.Indestructible => 10,
+                    _                                   => 0 // regular
+                };
+            }
 
             if (Core.AOS)
             {
