@@ -31,21 +31,20 @@ public partial class CurtainsComponent : AddonComponent, IDyable
     {
         base.OnDoubleClick(from);
 
-        if (Addon != null)
+        if (Addon == null || !from.InRange(Location, 1))
         {
-            if (from.InRange(Location, 1))
+            return;
+        }
+
+        foreach (var c in Addon.Components)
+        {
+            if (c is CurtainsComponent curtain)
             {
-                foreach (var c in Addon.Components)
-                {
-                    if (c is CurtainsComponent curtain)
-                    {
-                        (curtain.ItemID, curtain.ClosedId) = (curtain.ClosedId, curtain.ItemID);
-                    }
-                    else
-                    {
-                        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-                    }
-                }
+                (curtain.ItemID, curtain.ClosedId) = (curtain.ClosedId, curtain.ItemID);
+            }
+            else
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
             }
         }
     }

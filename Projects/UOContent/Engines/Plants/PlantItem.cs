@@ -467,12 +467,15 @@ public partial class PlantItem : Item, ISecurable
             return;
         }
 
-        var loc = GetWorldLocation();
-
-        if (!from.InLOS(loc) || !from.InRange(loc, 2))
+        if (!IsChildOf(from))
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that.
-            return;
+            var loc = GetWorldLocation();
+
+            if (!from.InLOS(loc) || !from.InRange(loc, 2))
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+                return;
+            }
         }
 
         if (!IsUsableBy(from))

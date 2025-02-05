@@ -361,17 +361,17 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
             }
         }
 
-        if (from.Map != Map || !from.InRange(GetWorldLocation(), 2) || !from.InLOS(this))
+        if (from.Map == Map && from.InRange(GetWorldLocation(), 2) && from.InLOS(this))
         {
-            if (message)
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-
-            return false;
+            return true;
         }
 
-        return true;
+        if (message)
+        {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+        }
+
+        return false;
     }
 
     public virtual void Fill_OnTarget(Mobile from, object targ)

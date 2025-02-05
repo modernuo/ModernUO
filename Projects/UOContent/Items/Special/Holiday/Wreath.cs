@@ -92,16 +92,18 @@ public partial class WreathAddon : Item, IDyable, IAddon
     {
         var house = BaseHouse.FindHouseAt(this);
 
-        if (house?.IsCoOwner(from) == true)
+        if (house?.IsCoOwner(from) != true)
         {
-            if (from.InRange(GetWorldLocation(), 3))
-            {
-                from.SendGump(new WreathAddonGump(from, this));
-            }
-            else
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
+            return;
+        }
+
+        if (from.InRange(GetWorldLocation(), 3))
+        {
+            from.SendGump(new WreathAddonGump(from, this));
+        }
+        else
+        {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
         }
     }
 
