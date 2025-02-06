@@ -52,8 +52,8 @@ public abstract partial class BaseInstrument : Item, ICraftable, ISlayer
         _usesRemaining = Utility.RandomMinMax(InitMinUses, InitMaxUses);
     }
 
-    public virtual int InitMinUses => 350;
-    public virtual int InitMaxUses => 450;
+    public virtual int InitMinUses => Core.UOR ? 350 : 100;
+    public virtual int InitMaxUses => Core.UOR ? 450 : 150;
 
     public virtual TimeSpan ChargeReplenishRate => TimeSpan.FromMinutes(5.0);
 
@@ -116,7 +116,7 @@ public abstract partial class BaseInstrument : Item, ICraftable, ISlayer
         }
     }
 
-    public int OnCraft(
+    public virtual int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
         CraftItem craftItem, int resHue
     )
@@ -126,6 +126,19 @@ public abstract partial class BaseInstrument : Item, ICraftable, ISlayer
         if (makersMark)
         {
             Crafter = from?.RawName;
+        }
+
+        // Publish 16 change
+        if (Core.LBR)
+        {
+            if (Quality == InstrumentQuality.Exceptional)
+            {
+                UsesRemaining += 100;
+            }
+        }
+        else if (Quality != InstrumentQuality.Regular)
+        {
+            UsesRemaining += (int)(UsesRemaining * ((int)Quality - 1) * 0.1);
         }
 
         return quality;

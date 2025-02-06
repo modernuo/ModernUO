@@ -1,4 +1,6 @@
+using System;
 using ModernUO.Serialization;
+using Server.Engines.Craft;
 using Server.Engines.Harvest;
 
 namespace Server.Items
@@ -35,5 +37,27 @@ namespace Server.Items
         public override int InitMaxHits => 60;
 
         public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
+
+        public override int OnCraft(
+            int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
+            CraftItem craftItem, int resHue
+        )
+        {
+            var result = base.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue);
+
+            if (Core.UOR)
+            {
+                if (Quality == WeaponQuality.Exceptional)
+                {
+                    UsesRemaining += 50;
+                }
+            }
+            else if (Quality != WeaponQuality.Regular)
+            {
+                UsesRemaining += (int)(UsesRemaining * ((int)Quality - 1) * 0.2);
+            }
+
+            return result;
+        }
     }
 }
