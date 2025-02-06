@@ -311,25 +311,19 @@ namespace Server.Items
             {
                 var ar = BaseArmorRating;
 
-                if (Core.T2A)
+                if (_protectionLevel != ArmorProtectionLevel.Regular)
                 {
-                    if (_quality == ArmorQuality.Exceptional)
+                    if (Core.UOR)
                     {
-                        ar += (int)Math.Round(BaseArmorRating * 0.2);
+                        ar += 10;
                     }
 
-                    if (_protectionLevel != ArmorProtectionLevel.Regular)
-                    {
-                        ar += GetProtOffset();
-                    }
+                    ar += 5 * (int)_protectionLevel;
                 }
-                else if (Core.UOR)
-                {
-                    if (_protectionLevel != ArmorProtectionLevel.Regular)
-                    {
-                        ar += 8 * (int)_protectionLevel;
-                    }
 
+                // Colored armor does not give a bonus until UOR+
+                if (Core.UOR)
+                {
                     ar += _resource switch
                     {
                         CraftResource.DullCopper    => 2,
@@ -343,12 +337,11 @@ namespace Server.Items
                         CraftResource.SpinedLeather => 10,
                         CraftResource.HornedLeather => 13,
                         CraftResource.BarbedLeather => 16,
-                        _                           => 0 // regular
+                        _                           => 0
                     };
-
-                    ar += -8 + 8 * (int)_quality;
                 }
 
+                ar += 8 * (int)(_quality - 1);
                 return ScaleArmorByDurability(ar);
             }
         }
@@ -562,7 +555,7 @@ namespace Server.Items
             }
         }
 
-        public int OnCraft(
+        public virtual int OnCraft(
             int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
             CraftItem craftItem, int resHue
         )
@@ -594,8 +587,9 @@ namespace Server.Items
                 {
                     DistributeBonuses(
                         tool is BaseRunicTool ? 6 :
+                        // Not sure since when, but right now 15 points are added, not 14.
                         Core.SE ? 15 : 14
-                    ); // Not sure since when, but right now 15 points are added, not 14.
+                    );
                 }
 
                 if (Core.ML && this is not BaseShield)
@@ -607,20 +601,30 @@ namespace Server.Items
                         switch (Utility.Random(5))
                         {
                             case 0:
-                                PhysicalBonus++;
-                                break;
+                                {
+                                    PhysicalBonus++;
+                                    break;
+                                }
                             case 1:
-                                FireBonus++;
-                                break;
+                                {
+                                    FireBonus++;
+                                    break;
+                                }
                             case 2:
-                                ColdBonus++;
-                                break;
+                                {
+                                    ColdBonus++;
+                                    break;
+                                }
                             case 3:
-                                EnergyBonus++;
-                                break;
+                                {
+                                    EnergyBonus++;
+                                    break;
+                                }
                             case 4:
-                                PoisonBonus++;
-                                break;
+                                {
+                                    PoisonBonus++;
+                                    break;
+                                }
                         }
                     }
 
@@ -848,20 +852,30 @@ namespace Server.Items
                 switch (Utility.Random(5))
                 {
                     case 0:
-                        ++PhysicalBonus;
-                        break;
+                        {
+                            ++PhysicalBonus;
+                            break;
+                        }
                     case 1:
-                        ++FireBonus;
-                        break;
+                        {
+                            ++FireBonus;
+                            break;
+                        }
                     case 2:
-                        ++ColdBonus;
-                        break;
+                        {
+                            ++ColdBonus;
+                            break;
+                        }
                     case 3:
-                        ++PoisonBonus;
-                        break;
+                        {
+                            ++PoisonBonus;
+                            break;
+                        }
                     case 4:
-                        ++EnergyBonus;
-                        break;
+                        {
+                            ++EnergyBonus;
+                            break;
+                        }
                 }
             }
 
@@ -901,52 +915,33 @@ namespace Server.Items
 
         public int GetDurabilityBonus()
         {
-            var bonus = _quality == ArmorQuality.Exceptional ? 20 : 0;
-
-            if (Core.T2A)
+            if (Core.UOR)
             {
-                bonus += _durability switch
+                var bonus = _durability switch
                 {
-                    ArmorDurabilityLevel.Durable        => 5,
-                    ArmorDurabilityLevel.Substantial    => 10,
-                    ArmorDurabilityLevel.Massive        => 15,
-                    ArmorDurabilityLevel.Fortified      => 20,
-                    ArmorDurabilityLevel.Indestructible => 25,
-                    _                                   => 0 // regular
+                    ArmorDurabilityLevel.Durable        => 20,
+                    ArmorDurabilityLevel.Substantial    => 50,
+                    ArmorDurabilityLevel.Massive        => 70,
+                    ArmorDurabilityLevel.Fortified      => 100,
+                    ArmorDurabilityLevel.Indestructible => 120,
+                    _                                   => 0
                 };
-            }
-            else
-            {
-                bonus += _durability switch
+
+                if (Core.AOS)
                 {
-                    ArmorDurabilityLevel.Durable        => 2,
-                    ArmorDurabilityLevel.Substantial    => 4,
-                    ArmorDurabilityLevel.Massive        => 6,
-                    ArmorDurabilityLevel.Fortified      => 8,
-                    ArmorDurabilityLevel.Indestructible => 10,
-                    _                                   => 0 // regular
-                };
-            }
-
-            if (Core.AOS)
-            {
-                bonus += ArmorAttributes.DurabilityBonus;
-
-                var resInfo = CraftResources.GetInfo(_resource);
-                CraftAttributeInfo attrInfo = null;
-
-                if (resInfo != null)
-                {
-                    attrInfo = resInfo.AttributeInfo;
+                    var resInfo = CraftResources.GetInfo(_resource);
+                    bonus += ArmorAttributes.DurabilityBonus + (resInfo?.AttributeInfo?.ArmorDurability ?? 0);
                 }
 
-                if (attrInfo != null)
+                if (_quality == ArmorQuality.Exceptional)
                 {
-                    bonus += attrInfo.ArmorDurability;
+                    return bonus + 20;
                 }
+
+                return bonus;
             }
 
-            return bonus;
+            return (int)_durability * 5 + ((int)_quality - 1) * 10;
         }
 
         public static void ValidateMobile(Mobile m)
@@ -1643,7 +1638,7 @@ namespace Server.Items
                 ArmorDurabilityLevel.Substantial    => "substantial",
                 ArmorDurabilityLevel.Massive        => "massive",
                 ArmorDurabilityLevel.Fortified      => "fortified",
-                ArmorDurabilityLevel.Indestructible => "indestructable",
+                ArmorDurabilityLevel.Indestructible => "indestructible",
                 _                                   => null
             };
         }

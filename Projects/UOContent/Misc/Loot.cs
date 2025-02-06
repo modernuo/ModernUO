@@ -547,33 +547,33 @@ namespace Server
             return Construct<BaseArmor>(_oldArmorOrShieldTypes);
         }
 
-        private static readonly Type[][] _mlArmorOrHatOrShieldOrJeweleyTypes =
+        private static readonly Type[][] _mlArmorOrHatOrShieldOrJewelryTypes =
             [MLArmorTypes, ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes];
-        private static readonly Type[][] _seArmorOrHatOrShieldOrJeweleyTypes =
+        private static readonly Type[][] _seArmorOrHatOrShieldOrJewelryTypes =
             [SEArmorTypes, ArmorTypes, SEHatTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes];
-        private static readonly Type[][] _aosArmorOrHatOrShieldOrJeweleyTypes =
+        private static readonly Type[][] _aosArmorOrHatOrShieldOrJewelryTypes =
             [ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes];
-        private static readonly Type[][] _oldArmorOrHatOrShieldOrJeweleyTypes =
+        private static readonly Type[][] _oldArmorOrHatOrShieldOrJewelryTypes =
             [ArmorTypes, HatTypes, ShieldTypes, JewelryTypes];
 
         public static Item RandomArmorOrShieldOrJewelry(bool inTokuno = false, bool isMondain = false)
         {
             if (Core.ML && isMondain)
             {
-                return Construct(_mlArmorOrHatOrShieldOrJeweleyTypes);
+                return Construct(_mlArmorOrHatOrShieldOrJewelryTypes);
             }
 
             if (Core.SE && inTokuno)
             {
-                return Construct(_seArmorOrHatOrShieldOrJeweleyTypes);
+                return Construct(_seArmorOrHatOrShieldOrJewelryTypes);
             }
 
             if (Core.AOS)
             {
-                return Construct(_aosArmorOrHatOrShieldOrJeweleyTypes);
+                return Construct(_aosArmorOrHatOrShieldOrJewelryTypes);
             }
 
-            return Construct(_oldArmorOrHatOrShieldOrJeweleyTypes);
+            return Construct(_oldArmorOrHatOrShieldOrJewelryTypes);
         }
 
         private static readonly Type[][] _mlWeaponOrRangedOrArmorOrHatOrShieldTypes =
