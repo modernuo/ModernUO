@@ -943,15 +943,30 @@ public abstract partial class BaseWeapon
     {
         var bonus = _quality == WeaponQuality.Exceptional ? 20 : 0;
 
-        bonus += _durabilityLevel switch
+        if (Core.UOR)
         {
-            WeaponDurabilityLevel.Durable        => 20,
-            WeaponDurabilityLevel.Substantial    => 50,
-            WeaponDurabilityLevel.Massive        => 70,
-            WeaponDurabilityLevel.Fortified      => 100,
-            WeaponDurabilityLevel.Indestructible => 120,
-            _                                    => 0
-        };
+            bonus += _durabilityLevel switch
+            {
+                WeaponDurabilityLevel.Durable        => 20,
+                WeaponDurabilityLevel.Substantial    => 50,
+                WeaponDurabilityLevel.Massive        => 70,
+                WeaponDurabilityLevel.Fortified      => 100,
+                WeaponDurabilityLevel.Indestructible => 120,
+                _                                    => 0
+            };
+        }
+        else
+        {
+            bonus += _durabilityLevel switch
+            {
+                WeaponDurabilityLevel.Durable        => 5,
+                WeaponDurabilityLevel.Substantial    => 10,
+                WeaponDurabilityLevel.Massive        => 15,
+                WeaponDurabilityLevel.Fortified      => 20,
+                WeaponDurabilityLevel.Indestructible => 25,
+                _                                    => 0
+            };
+        }
 
         if (Core.AOS)
         {
@@ -2474,17 +2489,29 @@ public abstract partial class BaseWeapon
             return damage;
         }
 
-        /* Apply damage level offset
-         * : Regular : 0
-         * : Ruin    : 1
-         * : Might   : 3
-         * : Force   : 5
-         * : Power   : 7
-         * : Vanq    : 9
-         */
-        if (_damageLevel != WeaponDamageLevel.Regular)
+        if (Core.UOR)
         {
-            damage += 2 * (int)_damageLevel - 1;
+            damage += _damageLevel switch
+            {
+                WeaponDamageLevel.Ruin  => 1,
+                WeaponDamageLevel.Might => 3,
+                WeaponDamageLevel.Force => 5,
+                WeaponDamageLevel.Power => 7,
+                WeaponDamageLevel.Vanq  => 9,
+                _                       => 0
+            };
+        }
+        else
+        {
+            damage += _damageLevel switch
+            {
+                WeaponDamageLevel.Ruin  => 5,
+                WeaponDamageLevel.Might => 10,
+                WeaponDamageLevel.Force => 15,
+                WeaponDamageLevel.Power => 20,
+                WeaponDamageLevel.Vanq  => 25,
+                _                       => 0
+            };
         }
 
         return damage;
@@ -2504,20 +2531,30 @@ public abstract partial class BaseWeapon
 
     public virtual int GetHitChanceBonus()
     {
-        if (!Core.AOS)
+        if (Core.UOR)
         {
-            return 0;
+            return _accuracyLevel switch
+            {
+                WeaponAccuracyLevel.Accurate     => 2,
+                WeaponAccuracyLevel.Surpassingly => 4,
+                WeaponAccuracyLevel.Eminently    => 6,
+                WeaponAccuracyLevel.Exceedingly  => 8,
+                WeaponAccuracyLevel.Supremely    => 10,
+                _                                => 0
+            };
         }
-
-        return _accuracyLevel switch
+        else
         {
-            WeaponAccuracyLevel.Accurate     => 2,
-            WeaponAccuracyLevel.Surpassingly => 4,
-            WeaponAccuracyLevel.Eminently    => 6,
-            WeaponAccuracyLevel.Exceedingly  => 8,
-            WeaponAccuracyLevel.Supremely    => 10,
-            _                                => 0
-        };
+            return _accuracyLevel switch
+            {
+                WeaponAccuracyLevel.Accurate     => 5,
+                WeaponAccuracyLevel.Surpassingly => 10,
+                WeaponAccuracyLevel.Eminently    => 15,
+                WeaponAccuracyLevel.Exceedingly  => 20,
+                WeaponAccuracyLevel.Supremely    => 25,
+                _                                => 0
+            };
+        }
     }
 
     // Note: AOS quality/damage bonuses removed since they are incorporated into the crafting already
