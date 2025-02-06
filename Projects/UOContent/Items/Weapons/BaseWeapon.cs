@@ -941,52 +941,28 @@ public abstract partial class BaseWeapon
 
     public int GetDurabilityBonus()
     {
-        var bonus = _quality == WeaponQuality.Exceptional ? 20 : 0;
+        if (!Core.UOR)
+        {
+            return (int)_durabilityLevel * 5 + ((int)_quality - 1) * 10;
+        }
 
-        if (Core.UOR)
+        var bonus = _durabilityLevel switch
         {
-            bonus += _durabilityLevel switch
-            {
-                WeaponDurabilityLevel.Durable        => 20,
-                WeaponDurabilityLevel.Substantial    => 50,
-                WeaponDurabilityLevel.Massive        => 70,
-                WeaponDurabilityLevel.Fortified      => 100,
-                WeaponDurabilityLevel.Indestructible => 120,
-                _                                    => 0
-            };
-        }
-        else
-        {
-            bonus += _durabilityLevel switch
-            {
-                WeaponDurabilityLevel.Durable        => 5,
-                WeaponDurabilityLevel.Substantial    => 10,
-                WeaponDurabilityLevel.Massive        => 15,
-                WeaponDurabilityLevel.Fortified      => 20,
-                WeaponDurabilityLevel.Indestructible => 25,
-                _                                    => 0
-            };
-        }
+            WeaponDurabilityLevel.Durable        => 20,
+            WeaponDurabilityLevel.Substantial    => 50,
+            WeaponDurabilityLevel.Massive        => 70,
+            WeaponDurabilityLevel.Fortified      => 100,
+            WeaponDurabilityLevel.Indestructible => 120,
+            _                                    => 0
+        };
 
         if (Core.AOS)
         {
-            bonus += WeaponAttributes.DurabilityBonus;
-
             var resInfo = CraftResources.GetInfo(_resource);
-            CraftAttributeInfo attrInfo = null;
-
-            if (resInfo != null)
-            {
-                attrInfo = resInfo.AttributeInfo;
-            }
-
-            if (attrInfo != null)
-            {
-                bonus += attrInfo.WeaponDurability;
-            }
+            bonus += WeaponAttributes.DurabilityBonus + (resInfo?.AttributeInfo?.WeaponDurability ?? 0);
         }
 
-        return bonus;
+        return _quality == WeaponQuality.Exceptional ? bonus + 20 : bonus;
     }
 
     public int GetLowerStatReq()
@@ -1258,10 +1234,9 @@ public abstract partial class BaseWeapon
 
         double ourValue, theirValue;
 
-        var bonus = GetHitChanceBonus();
-
         if (Core.AOS)
         {
+            var bonus = GetHitChanceBonus();
             if (atkValue <= -20.0)
             {
                 atkValue = -19.9;
@@ -1360,8 +1335,6 @@ public abstract partial class BaseWeapon
             }
 
             theirValue = (defValue + 20.0) * (100 + bonus);
-
-            bonus = 0;
         }
         else
         {
@@ -1369,7 +1342,7 @@ public abstract partial class BaseWeapon
             theirValue = Math.Max(0.1, defValue + 50.0);
         }
 
-        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;
+        var chance = ourValue / (theirValue * 2.0);
 
         if (Core.AOS && chance < 0.02)
         {
@@ -2489,29 +2462,25 @@ public abstract partial class BaseWeapon
             return damage;
         }
 
-        if (Core.UOR)
+        /* Apply damage level offset
+         * : Regular : 0
+         * : Ruin    : 1
+         * : Might   : 3
+         * : Force   : 5
+         * : Power   : 7
+         * : Vanq    : 9
+         */
+        if (_damageLevel != WeaponDamageLevel.Regular)
         {
-            damage += _damageLevel switch
+            // Toward the end of T2A, calculations were changed
+            if (!Core.T2A)
             {
-                WeaponDamageLevel.Ruin  => 1,
-                WeaponDamageLevel.Might => 3,
-                WeaponDamageLevel.Force => 5,
-                WeaponDamageLevel.Power => 7,
-                WeaponDamageLevel.Vanq  => 9,
-                _                       => 0
-            };
-        }
-        else
-        {
-            damage += _damageLevel switch
+                damage += (int)_damageLevel;
+            }
+            else
             {
-                WeaponDamageLevel.Ruin  => 5,
-                WeaponDamageLevel.Might => 10,
-                WeaponDamageLevel.Force => 15,
-                WeaponDamageLevel.Power => 20,
-                WeaponDamageLevel.Vanq  => 25,
-                _                       => 0
-            };
+                damage += (int)_damageLevel - 1;
+            }
         }
 
         return damage;
@@ -2531,30 +2500,15 @@ public abstract partial class BaseWeapon
 
     public virtual int GetHitChanceBonus()
     {
-        if (Core.UOR)
+        return _accuracyLevel switch
         {
-            return _accuracyLevel switch
-            {
-                WeaponAccuracyLevel.Accurate     => 2,
-                WeaponAccuracyLevel.Surpassingly => 4,
-                WeaponAccuracyLevel.Eminently    => 6,
-                WeaponAccuracyLevel.Exceedingly  => 8,
-                WeaponAccuracyLevel.Supremely    => 10,
-                _                                => 0
-            };
-        }
-        else
-        {
-            return _accuracyLevel switch
-            {
-                WeaponAccuracyLevel.Accurate     => 5,
-                WeaponAccuracyLevel.Surpassingly => 10,
-                WeaponAccuracyLevel.Eminently    => 15,
-                WeaponAccuracyLevel.Exceedingly  => 20,
-                WeaponAccuracyLevel.Supremely    => 25,
-                _                                => 0
-            };
-        }
+            WeaponAccuracyLevel.Accurate     => 2,
+            WeaponAccuracyLevel.Surpassingly => 4,
+            WeaponAccuracyLevel.Eminently    => 6,
+            WeaponAccuracyLevel.Exceedingly  => 8,
+            WeaponAccuracyLevel.Supremely    => 10,
+            _                                => 0
+        };
     }
 
     // Note: AOS quality/damage bonuses removed since they are incorporated into the crafting already
