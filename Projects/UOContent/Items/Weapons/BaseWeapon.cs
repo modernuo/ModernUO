@@ -1234,9 +1234,10 @@ public abstract partial class BaseWeapon
 
         double ourValue, theirValue;
 
+        var bonus = GetHitChanceBonus();
+
         if (Core.AOS)
         {
-            var bonus = GetHitChanceBonus();
             if (atkValue <= -20.0)
             {
                 atkValue = -19.9;
@@ -1335,6 +1336,8 @@ public abstract partial class BaseWeapon
             }
 
             theirValue = (defValue + 20.0) * (100 + bonus);
+
+            bonus = 0;
         }
         else
         {
@@ -1342,7 +1345,7 @@ public abstract partial class BaseWeapon
             theirValue = Math.Max(0.1, defValue + 50.0);
         }
 
-        var chance = ourValue / (theirValue * 2.0);
+        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;;
 
         if (Core.AOS && chance < 0.02)
         {
@@ -2500,6 +2503,11 @@ public abstract partial class BaseWeapon
 
     public virtual int GetHitChanceBonus()
     {
+        if (!Core.AOS)
+        {
+            return 0;
+        }
+
         return _accuracyLevel switch
         {
             WeaponAccuracyLevel.Accurate     => 2,
