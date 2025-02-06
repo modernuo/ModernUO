@@ -17,16 +17,18 @@ public partial class FishingPole : Item
 
     public override void OnDoubleClick(Mobile from)
     {
-        var loc = GetWorldLocation();
+        if (!IsChildOf(from))
+        {
+            var loc = GetWorldLocation();
 
-        if (!from.InLOS(loc) || !from.InRange(loc, 2))
-        {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+            if (!from.InLOS(loc) || !from.InRange(loc, 2))
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+                return;
+            }
         }
-        else
-        {
-            Fishing.System.BeginHarvesting(from, this);
-        }
+
+        Fishing.System.BeginHarvesting(from, this);
     }
 
     public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)

@@ -662,7 +662,7 @@ public abstract partial class BaseWeapon
     [SerializableFieldDefault(23)]
     private CraftResource ResourceDefaultValue() => CraftResource.Iron;
 
-    public int OnCraft(
+    public virtual int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
         CraftItem craftItem, int resHue
     )
