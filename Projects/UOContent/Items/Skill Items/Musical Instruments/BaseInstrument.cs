@@ -52,8 +52,8 @@ public abstract partial class BaseInstrument : Item, ICraftable, ISlayer
         _usesRemaining = Utility.RandomMinMax(InitMinUses, InitMaxUses);
     }
 
-    public virtual int InitMinUses => Core.UOR ? 350 : 150;
-    public virtual int InitMaxUses => Core.UOR ? 450 : 200;
+    public virtual int InitMinUses => Core.UOR ? 350 : 100;
+    public virtual int InitMaxUses => Core.UOR ? 450 : 150;
 
     public virtual TimeSpan ChargeReplenishRate => TimeSpan.FromMinutes(5.0);
 
