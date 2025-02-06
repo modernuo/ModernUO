@@ -887,19 +887,7 @@ namespace Server.Items
 
         public int GetProtOffset()
         {
-            if (Core.T2A)
-            {
-                return _protectionLevel switch
-                {
-                    ArmorProtectionLevel.Defense         => 5,
-                    ArmorProtectionLevel.Guarding        => 10,
-                    ArmorProtectionLevel.Hardening       => 15,
-                    ArmorProtectionLevel.Fortification   => 20,
-                    ArmorProtectionLevel.Invulnerability => 25,
-                    _                                    => 0 // regular
-                };
-            }
-            else
+            if (Core.UOR)
             {
                 return _protectionLevel switch
                 {
@@ -908,16 +896,30 @@ namespace Server.Items
                     ArmorProtectionLevel.Hardening       => 6,
                     ArmorProtectionLevel.Fortification   => 8,
                     ArmorProtectionLevel.Invulnerability => 10,
-                    _                                    => 0 // regular
+                    _                                    => 0
+                };
+            }
+            else
+            {
+                return _protectionLevel switch
+                {
+                    ArmorProtectionLevel.Defense         => 5,
+                    ArmorProtectionLevel.Guarding        => 10,
+                    ArmorProtectionLevel.Hardening       => 15,
+                    ArmorProtectionLevel.Fortification   => 20,
+                    ArmorProtectionLevel.Invulnerability => 25,
+                    _                                    => 0
                 };
             }
         }
 
         public int GetDurabilityBonus()
         {
+            var bonus = _quality == ArmorQuality.Exceptional ? 20 : 0;
+
             if (Core.UOR)
             {
-                var bonus = _durability switch
+                return _durability switch
                 {
                     ArmorDurabilityLevel.Durable        => 20,
                     ArmorDurabilityLevel.Substantial    => 50,
@@ -926,22 +928,32 @@ namespace Server.Items
                     ArmorDurabilityLevel.Indestructible => 120,
                     _                                   => 0
                 };
-
-                if (Core.AOS)
+            }
+            else
+            {
+                return _durability switch
                 {
-                    var resInfo = CraftResources.GetInfo(_resource);
-                    bonus += ArmorAttributes.DurabilityBonus + (resInfo?.AttributeInfo?.ArmorDurability ?? 0);
-                }
-
-                if (_quality == ArmorQuality.Exceptional)
-                {
-                    return bonus + 20;
-                }
-
-                return bonus;
+                    ArmorDurabilityLevel.Durable        => 5,
+                    ArmorDurabilityLevel.Substantial    => 10,
+                    ArmorDurabilityLevel.Massive        => 15,
+                    ArmorDurabilityLevel.Fortified      => 20,
+                    ArmorDurabilityLevel.Indestructible => 25,
+                    _                                   => 0
+                };
             }
 
-            return (int)_durability * 5 + ((int)_quality - 1) * 10;
+            if (Core.AOS)
+            {
+                var resInfo = CraftResources.GetInfo(_resource);
+                bonus += ArmorAttributes.DurabilityBonus + (resInfo?.AttributeInfo?.ArmorDurability ?? 0);
+            }
+
+            if (_quality == ArmorQuality.Exceptional)
+            {
+                return bonus + 20;
+            }
+
+            return bonus; 
         }
 
         public static void ValidateMobile(Mobile m)
