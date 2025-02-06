@@ -2479,7 +2479,7 @@ public abstract partial class BaseWeapon
             }
             else
             {
-                damage += (int)_damageLevel - 1;
+                damage += 2 * (int)_damageLevel - 1;
             }
         }
 
