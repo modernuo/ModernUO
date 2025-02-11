@@ -113,4 +113,10 @@ public abstract class BaseGump
 
         return new Point2D(x, y);
     }
+
+    public static Point2D GetGumpOffsetForItemGraphic(int itemId, int relativeX, int relativeY)
+    {
+        var offset = GetItemGraphicOffset(itemId);
+        return new Point2D(relativeX * 22 - relativeY * 22 + offset.X, relativeX * 22 + relativeY * 22 + offset.Y);
+    }
 }
