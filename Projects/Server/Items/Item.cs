@@ -2346,7 +2346,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             };
         }
 
-        var bounds = ItemBounds.Table[itemID & 0x3FFF];
+        var bounds = ItemBounds.Bounds[itemID & 0x3FFF];
 
         if (doubled)
         {
