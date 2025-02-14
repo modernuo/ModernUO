@@ -88,8 +88,7 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
 
     protected sealed override void BuildStrings(ref GumpStringsBuilder builder)
     {
-        var contentText = Content.AsSpan().Color(ContentColor);
-        builder.SetStringSlot("content", ref contentText);
+        builder.SetHtmlText("content", Content, ContentColor);
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info) => _callback?.Invoke(info.ButtonID == 1);
