@@ -766,15 +766,15 @@ namespace Server
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Item Construct(params Type[] types) => Construct<Item>(types.RandomElement());
+        public static Item Construct(params ReadOnlySpan<Type> types) => Construct<Item>(types.RandomElement());
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Construct<T>(params Type[] types) where T : Item => Construct<T>(types.RandomElement());
+        public static T Construct<T>(params ReadOnlySpan<Type> types) where T : Item => Construct<T>(types.RandomElement());
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Item Construct(Type[] types, int index) => Construct<Item>(types, index);
+        public static Item Construct(ReadOnlySpan<Type> types, int index) => Construct<Item>(types, index);
 
-        public static T Construct<T>(Type[] types, int index) where T : Item
+        public static T Construct<T>(ReadOnlySpan<Type> types, int index) where T : Item
         {
             if (index >= 0 && index < types.Length)
             {

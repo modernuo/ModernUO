@@ -6,7 +6,7 @@ namespace Server.Items;
 [AttributeUsage(AttributeTargets.Class)]
 public class FlippableAddonAttribute : Attribute
 {
-    private static readonly string m_MethodName = "Flip";
+    private const string MethodName = "Flip";
 
     private static readonly Type[] m_Params =
     {
@@ -26,7 +26,7 @@ public class FlippableAddonAttribute : Attribute
 
         try
         {
-            var flipMethod = addon.GetType().GetMethod(m_MethodName, m_Params);
+            var flipMethod = addon.GetType().GetMethod(MethodName, m_Params);
 
             if (flipMethod == null)
             {

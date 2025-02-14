@@ -147,17 +147,17 @@ namespace Server.Multis
             return table;
         }
 
-        private void LoadItems(string path, params string[] itemColumns)
+        private void LoadItems(string path, params ReadOnlySpan<string> itemColumns)
         {
             LoadSpreadsheet(m_ItemTable, path, itemColumns);
         }
 
-        private void LoadMultis(string path, params string[] multiColumns)
+        private void LoadMultis(string path, params ReadOnlySpan<string> multiColumns)
         {
             LoadSpreadsheet(m_MultiTable, path, multiColumns);
         }
 
-        private void LoadSpreadsheet(int[] table, string path, params string[] tileColumns)
+        private void LoadSpreadsheet(int[] table, string path, params ReadOnlySpan<string> tileColumns)
         {
             var ss = new Spreadsheet(path);
 
