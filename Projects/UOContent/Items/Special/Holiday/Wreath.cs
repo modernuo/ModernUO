@@ -212,7 +212,7 @@ public partial class WreathDeed : Item
 
             if (northWall && westWall)
             {
-                from.SendGump(new WreathDeedGump(from, loc, this));
+                from.SendGump(new WreathDeedGump(loc, this));
             }
             else
             {
@@ -267,47 +267,45 @@ public partial class WreathDeed : Item
         }
     }
 
-    private class WreathDeedGump : Gump
+    private class WreathDeedGump : StaticGump<WreathDeedGump>
     {
         private readonly WreathDeed _deed;
-        private readonly Mobile _from;
         private readonly Point3D _loc;
 
-        public WreathDeedGump(Mobile from, Point3D loc, WreathDeed deed) : base(150, 50)
+        public WreathDeedGump(Point3D loc, WreathDeed deed) : base(150, 50)
         {
-            _from = from;
             _loc = loc;
             _deed = deed;
+        }
 
-            AddBackground(0, 0, 300, 150, 0xA28);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddBackground(0, 0, 300, 150, 0xA28);
 
-            AddPage(0);
+            builder.AddPage();
 
-            AddItem(90, 30, 0x232D);
-            AddItem(180, 30, 0x232C);
-            AddButton(50, 35, 0x868, 0x869, 1);
-            AddButton(145, 35, 0x868, 0x869, 2);
+            builder.AddItem(90, 30, 0x232D);
+            builder.AddItem(180, 30, 0x232C);
+            builder.AddButton(50, 35, 0x868, 0x869, 1);
+            builder.AddButton(145, 35, 0x868, 0x869, 2);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (_deed.Deleted)
+            if (_deed.Deleted || info.ButtonID == 0)
             {
                 return;
             }
 
-            switch (info.ButtonID)
+            var from = sender.Mobile;
+
+            if (info.ButtonID == 1)
             {
-                case 1:
-                    {
-                        _deed.PlaceAddon(_from, _loc, false, true);
-                        break;
-                    }
-                case 2:
-                    {
-                        _deed.PlaceAddon(_from, _loc, true, false);
-                        break;
-                    }
+                _deed.PlaceAddon(from, _loc, false, true);
+            }
+            else
+            {
+                _deed.PlaceAddon(from, _loc, true, false);
             }
         }
     }
