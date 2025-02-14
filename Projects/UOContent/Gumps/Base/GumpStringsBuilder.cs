@@ -71,6 +71,14 @@ public ref struct GumpStringsBuilder
         handler.Clear();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void SetStringSlot(ref RawInterpolatedStringHandler slotKeyHandler, ref RawInterpolatedStringHandler handler)
+    {
+        SetStringSlot(slotKeyHandler.Text, handler.Text);
+        slotKeyHandler.Clear();
+        handler.Clear();
+    }
+
     public void SetStringSlot(ReadOnlySpan<char> slotKey, ReadOnlySpan<char> text)
     {
         var hash = HashUtility.ComputeHash64(slotKey);
