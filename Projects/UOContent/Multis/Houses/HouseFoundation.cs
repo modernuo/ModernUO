@@ -2139,7 +2139,7 @@ namespace Server.Multis
 
             if (_newPrice - _oldPrice < 0)
             {
-                builder. AddHtmlLocalized(10, 260, 150, 20, 1062059, 992); // Your Refund:
+                builder.AddHtmlLocalized(10, 260, 150, 20, 1062059, 992); // Your Refund:
                 builder.AddLabel(170, 260, 70, (_oldPrice - _newPrice).ToString());
             }
             else
