@@ -9,6 +9,8 @@ public abstract class SelectAddonDirectionGump<T> : StaticGump<T> where T : Sele
 
     public SelectAddonDirectionGump(IDirectionAddonDeed deed) : base(60, 63) => _deed = deed;
 
+    public override bool Singleton => false;
+
     public abstract int SelectionNumber { get; }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
