@@ -360,10 +360,10 @@ namespace Server.Misc
             return sentence.ToString();
         }
 
-        public void SayRandomTranslate(Mobile mob, params string[] sentancesInEnglish)
+        public void SayRandomTranslate(Mobile mob, params ReadOnlySpan<string> sentencesInEnglish)
         {
             SaySentance(mob, Utility.RandomMinMax(2, 3));
-            mob.Say(sentancesInEnglish.RandomElement());
+            mob.Say(sentencesInEnglish.RandomElement());
         }
 
         private string GetRandomResponseWord(List<string> keywordsFound)
