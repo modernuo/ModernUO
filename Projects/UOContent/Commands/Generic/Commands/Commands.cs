@@ -302,14 +302,16 @@ namespace Server.Commands.Generic
             }
         }
 
-        private class OpenBrowserWarningGump : StaticWarningGump<OpenBrowserWarningGump>
+        private class OpenBrowserWarningGump : WarningGump
         {
-            public override string Content { get; }
-            public override int Width => 320;
-            public override int Height => 240;
-
-            public OpenBrowserWarningGump(string url, Action<bool> callback) : base(callback) =>
-                Content = $"A game master is requesting to open your web browser to the following URL:<br>{url}";
+            public OpenBrowserWarningGump(string url, Action<bool> callback) : base(
+                $"A game master is requesting to open your web browser to the following URL:<br>{url}",
+                320,
+                240,
+                callback
+            )
+            {
+            }
         }
 
         public override void Execute(CommandEventArgs e, object obj)
