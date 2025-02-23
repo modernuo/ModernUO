@@ -59,23 +59,22 @@ public partial class HangingSkeleton : Item, IAddon, IRewardItem
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (from.InRange(Location, 3))
+        if (!from.InRange(Location, 3))
         {
-            var house = BaseHouse.FindHouseAt(this);
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
 
-            if (house?.IsOwner(from) == true)
-            {
-                from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
-            }
-            else
-            {
-                // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
-                from.SendLocalizedMessage(1049784);
-            }
+        var house = BaseHouse.FindHouseAt(this);
+
+        if (house?.IsOwner(from) == true)
+        {
+            from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
         }
         else
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
+            from.SendLocalizedMessage(1049784);
         }
     }
 }
@@ -272,7 +271,7 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
             }
         }
 
-        private class FacingGump : Gump
+        private class FacingGump : DynamicGump
         {
             private readonly BaseHouse _house;
             private readonly int _itemID;
@@ -287,26 +286,26 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
                 _itemID = itemID;
                 _location = location;
                 _house = house;
+            }
 
-                Closable = true;
-                Disposable = true;
-                Draggable = true;
-                Resizable = false;
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
+            {
+                builder.SetNoResize();
 
-                AddPage(0);
+                builder.AddPage();
 
-                AddBackground(0, 0, 300, 150, 0xA28);
+                builder.AddBackground(0, 0, 300, 150, 0xA28);
 
-                AddItem(90, 30, GetWestItemID(itemID));
-                AddItem(180, 30, itemID);
+                builder.AddItem(90, 30, GetWestItemID(_itemID));
+                builder.AddItem(180, 30, _itemID);
 
-                AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
-                AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
+                builder.AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
+                builder.AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
             }
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
-                if (_skeleton?.Deleted != false || _house == null)
+                if (_skeleton?.Deleted != false || _house == null || info.ButtonID == (int)Buttons.Cancel)
                 {
                     return;
                 }
@@ -317,8 +316,7 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
                 {
                     banner = new HangingSkeleton(GetWestItemID(_itemID));
                 }
-
-                if (info.ButtonID == (int)Buttons.South)
+                else if (info.ButtonID == (int)Buttons.South)
                 {
                     banner = new HangingSkeleton(_itemID);
                 }

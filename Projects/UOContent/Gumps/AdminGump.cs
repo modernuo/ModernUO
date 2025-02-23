@@ -1313,7 +1313,7 @@ namespace Server.Gumps
 
         public void AddPageButton(
             int x, int y, int buttonID, string text, AdminGumpPage page,
-            params AdminGumpPage[] subPages
+            params ReadOnlySpan<AdminGumpPage> subPages
         )
         {
             var isSelection = m_PageType == page;

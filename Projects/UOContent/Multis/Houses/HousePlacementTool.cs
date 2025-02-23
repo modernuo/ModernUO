@@ -26,7 +26,7 @@ public partial class HousePlacementTool : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new HousePlacementCategoryGump(from));
+            from.SendGump(new HousePlacementCategoryGump());
         }
         else
         {
@@ -35,43 +35,44 @@ public partial class HousePlacementTool : Item
     }
 }
 
-public class HousePlacementCategoryGump : Gump
+public class HousePlacementCategoryGump : StaticGump<HousePlacementCategoryGump>
 {
     private const int LabelColor = 0x7FFF;
-    private const int LabelColorDisabled = 0x4210;
-    private readonly Mobile _from;
 
     public override bool Singleton => true;
 
-    public HousePlacementCategoryGump(Mobile from) : base(50, 50)
+    public HousePlacementCategoryGump() : base(50, 50)
     {
-        _from = from;
+    }
 
-        AddPage(0);
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddBackground(0, 0, 270, 145, 5054);
+        builder.AddBackground(0, 0, 270, 145, 5054);
 
-        AddImageTiled(10, 10, 250, 125, 2624);
-        AddAlphaRegion(10, 10, 250, 125);
+        builder.AddImageTiled(10, 10, 250, 125, 2624);
+        builder.AddAlphaRegion(10, 10, 250, 125);
 
-        AddHtmlLocalized(10, 10, 250, 20, 1060239, LabelColor); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
+        builder.AddHtmlLocalized(10, 10, 250, 20, 1060239, LabelColor); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
 
-        AddButton(10, 110, 4017, 4019, 0);
-        AddHtmlLocalized(45, 110, 150, 20, 3000363, LabelColor); // Close
+        builder.AddButton(10, 110, 4017, 4019, 0);
+        builder.AddHtmlLocalized(45, 110, 150, 20, 3000363, LabelColor); // Close
 
-        AddButton(10, 40, 4005, 4007, 1);
-        AddHtmlLocalized(45, 40, 200, 20, 1060390, LabelColor); // Classic Houses
+        builder.AddButton(10, 40, 4005, 4007, 1);
+        builder.AddHtmlLocalized(45, 40, 200, 20, 1060390, LabelColor); // Classic Houses
 
-        AddButton(10, 60, 4005, 4007, 2);
-        AddHtmlLocalized(45, 60, 200, 20, 1060391, LabelColor); // 2-Story Customizable Houses
+        builder.AddButton(10, 60, 4005, 4007, 2);
+        builder.AddHtmlLocalized(45, 60, 200, 20, 1060391, LabelColor); // 2-Story Customizable Houses
 
-        AddButton(10, 80, 4005, 4007, 3);
-        AddHtmlLocalized(45, 80, 200, 20, 1060392, LabelColor); // 3-Story Customizable Houses
+        builder.AddButton(10, 80, 4005, 4007, 3);
+        builder.AddHtmlLocalized(45, 80, 200, 20, 1060392, LabelColor); // 3-Story Customizable Houses
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        if (!_from.CheckAlive() || _from.Backpack?.FindItemByType<HousePlacementTool>() == null)
+        var from = sender.Mobile;
+        if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         {
             return;
         }
@@ -81,30 +82,31 @@ public class HousePlacementCategoryGump : Gump
             case 1: // Classic Houses
                 {
                     var entry = Core.EJ ? HousePlacementEntry.HousesEJ : HousePlacementEntry.ClassicHouses;
-                    _from.SendGump(new HousePlacementListGump(_from, entry));
+                    from.SendGump(new HousePlacementListGump(from, entry));
 
                     break;
                 }
             case 2: // 2-Story Customizable Houses
                 {
-                    _from.SendGump(new HousePlacementListGump(_from, HousePlacementEntry.TwoStoryFoundations));
+                    from.SendGump(new HousePlacementListGump(from, HousePlacementEntry.TwoStoryFoundations));
                     break;
                 }
             case 3: // 3-Story Customizable Houses
                 {
-                    _from.SendGump(new HousePlacementListGump(_from, HousePlacementEntry.ThreeStoryFoundations));
+                    from.SendGump(new HousePlacementListGump(from, HousePlacementEntry.ThreeStoryFoundations));
                     break;
                 }
         }
     }
 }
 
-public class HousePlacementListGump : Gump
+public class HousePlacementListGump : DynamicGump
 {
     private const int LabelColor = 0x7FFF;
     private const int LabelHue = 0x480;
-    private readonly HousePlacementEntry[] _entries;
+
     private readonly Mobile _from;
+    private readonly HousePlacementEntry[] _entries;
 
     public override bool Singleton => true;
 
@@ -112,70 +114,72 @@ public class HousePlacementListGump : Gump
     {
         _from = from;
         _entries = entries;
+    }
 
-        AddPage(0);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddBackground(0, 0, 520, 420, 5054);
+        builder.AddBackground(0, 0, 520, 420, 5054);
 
-        AddImageTiled(10, 10, 500, 20, 2624);
-        AddAlphaRegion(10, 10, 500, 20);
+        builder.AddImageTiled(10, 10, 500, 20, 2624);
+        builder.AddAlphaRegion(10, 10, 500, 20);
 
-        AddHtmlLocalized(10, 10, 500, 20, 1060239, LabelColor); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
+        builder.AddHtmlLocalized(10, 10, 500, 20, 1060239, LabelColor); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
 
-        AddImageTiled(10, 40, 500, 20, 2624);
-        AddAlphaRegion(10, 40, 500, 20);
+        builder.AddImageTiled(10, 40, 500, 20, 2624);
+        builder.AddAlphaRegion(10, 40, 500, 20);
 
-        AddHtmlLocalized(50, 40, 225, 20, 1060235, LabelColor); // House Description
-        AddHtmlLocalized(275, 40, 75, 20, 1060236, LabelColor); // Storage
-        AddHtmlLocalized(350, 40, 75, 20, 1060237, LabelColor); // Lockdowns
-        AddHtmlLocalized(425, 40, 75, 20, 1060034, LabelColor); // Cost
+        builder.AddHtmlLocalized(50, 40, 225, 20, 1060235, LabelColor); // House Description
+        builder.AddHtmlLocalized(275, 40, 75, 20, 1060236, LabelColor); // Storage
+        builder.AddHtmlLocalized(350, 40, 75, 20, 1060237, LabelColor); // Lockdowns
+        builder.AddHtmlLocalized(425, 40, 75, 20, 1060034, LabelColor); // Cost
 
-        AddImageTiled(10, 70, 500, 280, 2624);
-        AddAlphaRegion(10, 70, 500, 280);
+        builder.AddImageTiled(10, 70, 500, 280, 2624);
+        builder.AddAlphaRegion(10, 70, 500, 280);
 
-        AddImageTiled(10, 360, 500, 20, 2624);
-        AddAlphaRegion(10, 360, 500, 20);
+        builder.AddImageTiled(10, 360, 500, 20, 2624);
+        builder.AddAlphaRegion(10, 360, 500, 20);
 
-        AddHtmlLocalized(10, 360, 250, 20, 1060645, LabelColor); // Bank Balance:
-        AddLabel(250, 360, LabelHue, Banker.GetBalance(from).ToString());
+        builder.AddHtmlLocalized(10, 360, 250, 20, 1060645, LabelColor); // Bank Balance:
+        builder.AddLabel(250, 360, LabelHue, Banker.GetBalance(_from).ToString());
 
-        AddImageTiled(10, 390, 500, 20, 2624);
-        AddAlphaRegion(10, 390, 500, 20);
+        builder.AddImageTiled(10, 390, 500, 20, 2624);
+        builder.AddAlphaRegion(10, 390, 500, 20);
 
-        AddButton(10, 390, 4017, 4019, 0);
-        AddHtmlLocalized(50, 390, 100, 20, 3000363, LabelColor); // Close
+        builder.AddButton(10, 390, 4017, 4019, 0);
+        builder.AddHtmlLocalized(50, 390, 100, 20, 3000363, LabelColor); // Close
 
-        for (var i = 0; i < entries.Length; ++i)
+        for (var i = 0; i < _entries.Length; ++i)
         {
-            var page = 1 + i / 14;
-            var index = i % 14;
+            var page = Math.DivRem(i, 14, out var index) + 1;
 
             if (index == 0)
             {
                 if (page > 1)
                 {
-                    AddButton(450, 390, 4005, 4007, 0, GumpButtonType.Page, page);
-                    AddHtmlLocalized(400, 390, 100, 20, 3000406, LabelColor); // Next
+                    builder.AddButton(450, 390, 4005, 4007, 0, GumpButtonType.Page, page);
+                    builder.AddHtmlLocalized(400, 390, 100, 20, 3000406, LabelColor); // Next
                 }
 
-                AddPage(page);
+                builder.AddPage(page);
 
                 if (page > 1)
                 {
-                    AddButton(200, 390, 4014, 4016, 0, GumpButtonType.Page, page - 1);
-                    AddHtmlLocalized(250, 390, 100, 20, 3000405, LabelColor); // Previous
+                    builder.AddButton(200, 390, 4014, 4016, 0, GumpButtonType.Page, page - 1);
+                    builder.AddHtmlLocalized(250, 390, 100, 20, 3000405, LabelColor); // Previous
                 }
             }
 
-            var entry = entries[i];
+            var entry = _entries[i];
 
             var y = 70 + index * 20;
 
-            AddButton(10, y, 4005, 4007, 1 + i);
-            AddHtmlLocalized(50, y, 225, 20, entry.Description, LabelColor);
-            AddLabel(275, y, LabelHue, entry.Storage.ToString());
-            AddLabel(350, y, LabelHue, entry.Lockdowns.ToString());
-            AddLabel(425, y, LabelHue, entry.Cost.ToString());
+            builder.AddButton(10, y, 4005, 4007, 1 + i);
+            builder.AddHtmlLocalized(50, y, 225, 20, entry.Description, LabelColor);
+            builder.AddLabel(275, y, LabelHue, entry.Storage.ToString());
+            builder.AddLabel(350, y, LabelHue, entry.Lockdowns.ToString());
+            builder.AddLabel(425, y, LabelHue, entry.Cost.ToString());
         }
     }
 
@@ -188,20 +192,17 @@ public class HousePlacementListGump : Gump
 
         var index = info.ButtonID - 1;
 
-        if (index >= 0 && index < _entries.Length)
+        if (index < 0 || index >= _entries.Length)
         {
-            if (_from.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(_from))
-            {
-                _from.SendLocalizedMessage(501271); // You already own a house, you may not place another!
-            }
-            else
-            {
-                _from.Target = new NewHousePlacementTarget(_entries, _entries[index]);
-            }
+            _from.SendGump(new HousePlacementCategoryGump());
+        }
+        else if (_from.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(_from))
+        {
+            _from.SendLocalizedMessage(501271); // You already own a house, you may not place another!
         }
         else
         {
-            _from.SendGump(new HousePlacementCategoryGump(_from));
+            _from.Target = new NewHousePlacementTarget(_entries, _entries[index]);
         }
     }
 }

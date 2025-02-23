@@ -9,7 +9,7 @@ public class Point3DList
 
     public Point3DList()
     {
-        m_List = new Point3D[8];
+        m_List = new Point3D[16];
         Count = 0;
     }
 

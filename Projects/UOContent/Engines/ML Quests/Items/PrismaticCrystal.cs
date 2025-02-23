@@ -24,32 +24,30 @@ public partial class PrismaticCrystal : Item
             return;
         }
 
-        if (pm.InRange(GetWorldLocation(), 2))
+        if (!pm.InRange(GetWorldLocation(), 2))
         {
-            if (MLQuestSystem.GetContext(pm)?.IsDoingQuest(typeof(UnfadingMemoriesPartOne)) == true &&
-                pm.Backpack.FindItemByType<PrismaticAmber>(false) == null)
-            {
-                Item amber = new PrismaticAmber();
+            pm.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
 
-                if (pm.PlaceInBackpack(amber))
-                {
-                    MLQuestSystem.MarkQuestItem(pm, amber);
-                    Delete();
-                }
-                else
-                {
-                    pm.SendLocalizedMessage(502385); // Your pack cannot hold this item.
-                    amber.Delete();
-                }
-            }
-            else
-            {
-                pm.SendLocalizedMessage(1075464); // You already have as many of those as you need.
-            }
+        if (MLQuestSystem.GetContext(pm)?.IsDoingQuest(typeof(UnfadingMemoriesPartOne)) != true ||
+            pm.Backpack.FindItemByType<PrismaticAmber>(false) != null)
+        {
+            pm.SendLocalizedMessage(1075464); // You already have as many of those as you need.
+            return;
+        }
+
+        var amber = new PrismaticAmber();
+
+        if (pm.PlaceInBackpack(amber))
+        {
+            MLQuestSystem.MarkQuestItem(pm, amber);
+            Delete();
         }
         else
         {
-            pm.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            pm.SendLocalizedMessage(502385); // Your pack cannot hold this item.
+            amber.Delete();
         }
     }
 }

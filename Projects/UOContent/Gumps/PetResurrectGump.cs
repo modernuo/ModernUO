@@ -39,7 +39,7 @@ public class PetResurrectGump : StaticGump<PetResurrectGump>
 
     protected override void BuildStrings(ref GumpStringsBuilder builder)
     {
-        builder.SetStringSlot("petName", $"<CENTER>{_pet.Name}</CENTER>");
+        builder.SetHtmlTextCentered("petName", _pet.Name);
     }
 
     public override void OnResponse(NetState state, in RelayInfo info)

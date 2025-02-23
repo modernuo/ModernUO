@@ -85,7 +85,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     public BaseSpawner(
         int amount, int minDelay, int maxDelay, int team, int homeRange,
-        params string[] spawnedNames
+        params ReadOnlySpan<string> spawnedNames
     ) : this(
         amount,
         TimeSpan.FromMinutes(minDelay),
@@ -99,7 +99,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     public BaseSpawner(
         int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params string[] spawnedNames
+        params ReadOnlySpan<string> spawnedNames
     ) : base(0x1f13)
     {
         _guid = Guid.NewGuid();

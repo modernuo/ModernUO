@@ -24,40 +24,38 @@ public abstract partial class BaseFruitTreeAddon : BaseAddon
 
     public override void OnComponentUsed(AddonComponent c, Mobile from)
     {
-        if (from.InRange(c.Location, 2))
+        if (!from.InRange(c.Location, 2))
         {
-            if (_fruits > 0)
-            {
-                var fruit = Fruit;
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
 
-                if (fruit == null)
-                {
-                    return;
-                }
+        if (_fruits <= 0)
+        {
+            from.SendLocalizedMessage(501017); // There is no more fruit on this tree
+            return;
+        }
 
-                if (!from.PlaceInBackpack(fruit))
-                {
-                    fruit.Delete();
-                    from.SendLocalizedMessage(501015); // There is no room in your backpack for the fruit.
-                }
-                else
-                {
-                    if (--Fruits == 0)
-                    {
-                        Timer.StartTimer(TimeSpan.FromMinutes(30), Respawn);
-                    }
+        var fruit = Fruit;
 
-                    from.SendLocalizedMessage(501016); // You pick some fruit and put it in your backpack.
-                }
-            }
-            else
-            {
-                from.SendLocalizedMessage(501017); // There is no more fruit on this tree
-            }
+        if (fruit == null)
+        {
+            return;
+        }
+
+        if (!from.PlaceInBackpack(fruit))
+        {
+            fruit.Delete();
+            from.SendLocalizedMessage(501015); // There is no room in your backpack for the fruit.
         }
         else
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            if (--Fruits == 0)
+            {
+                Timer.StartTimer(TimeSpan.FromMinutes(30), Respawn);
+            }
+
+            from.SendLocalizedMessage(501016); // You pick some fruit and put it in your backpack.
         }
     }
 

@@ -519,8 +519,8 @@ public static class Core
 
     internal static void RequestSnapshot(string snapshotPath)
     {
-        _performSnapshot = true;
         _snapshotPath = snapshotPath;
+        _performSnapshot = true;
     }
 
     public static void VerifySerialization()

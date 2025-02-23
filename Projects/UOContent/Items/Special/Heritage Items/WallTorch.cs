@@ -14,23 +14,22 @@ public partial class WallTorchComponent : AddonComponent
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (from.InRange(Location, 2))
-        {
-            ItemID = ItemID switch
-            {
-                0x3D98 => 0x3D9B,
-                0x3D9B => 0x3D98,
-                0x3D94 => 0x3D97,
-                0x3D97 => 0x3D94,
-                _      => ItemID
-            };
-
-            Effects.PlaySound(Location, Map, 0x3BE);
-        }
-        else
+        if (!from.InRange(Location, 2))
         {
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
         }
+
+        ItemID = ItemID switch
+        {
+            0x3D98 => 0x3D9B,
+            0x3D9B => 0x3D98,
+            0x3D94 => 0x3D97,
+            0x3D97 => 0x3D94,
+            _      => ItemID
+        };
+
+        Effects.PlaySound(Location, Map, 0x3BE);
     }
 }
 

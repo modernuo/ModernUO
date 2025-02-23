@@ -837,8 +837,8 @@ namespace Server.Items
 
             protected override void BuildStrings(ref GumpStringsBuilder builder)
             {
-                builder.SetStringSlot("cylinders", _correctCylinders.ToString());
-                builder.SetStringSlot("colors", _correctColors.ToString());
+                builder.SetStringSlot("cylinders", $"{_correctCylinders}");
+                builder.SetStringSlot("colors", $"{_correctColors}");
             }
         }
     }

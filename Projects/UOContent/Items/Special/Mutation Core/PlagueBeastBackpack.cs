@@ -125,7 +125,7 @@ public partial class PlagueBeastBackpack : BaseContainer
             return false;
         }
 
-        var ir = ItemBounds.Table[item.ItemID];
+        var ir = ItemBounds.Bounds[item.ItemID];
         int x, y;
         var cx = p.X + ir.X + ir.Width / 2;
         var cy = p.Y + ir.Y + ir.Height / 2;
@@ -134,7 +134,7 @@ public partial class PlagueBeastBackpack : BaseContainer
         {
             if (Items[i] is PlagueBeastComponent innard)
             {
-                var r = ItemBounds.Table[innard.ItemID];
+                var r = ItemBounds.Bounds[innard.ItemID];
 
                 x = innard.X + r.X;
                 y = innard.Y + r.Y;

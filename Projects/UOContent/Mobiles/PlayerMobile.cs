@@ -4733,7 +4733,7 @@ namespace Server.Mobiles
                 for (int i = _page * 4, y = 72; i < (_page + 1) * 4 && i < _items.Length; ++i, y += 75)
                 {
                     var item = _items[i];
-                    var b = ItemBounds.Table[item.ItemID];
+                    var b = ItemBounds.Bounds[item.ItemID];
 
                     builder.AddImageTiledButton(
                         40,

@@ -69,23 +69,22 @@ public partial class FlamingHead : StoneFaceTrapNoDamage, IAddon, IRewardItem
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (from.InRange(Location, 2))
+        if (!from.InRange(Location, 2))
         {
-            var house = BaseHouse.FindHouseAt(this);
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
 
-            if (house?.IsOwner(from) == true)
-            {
-                from.SendGump(new RewardDemolitionGump(this, 1018329)); // Do you wish to re-deed this skull?
-            }
-            else
-            {
-                // You can only re-deed a skull if you placed it or you are the owner of the house.
-                from.SendLocalizedMessage(1018328);
-            }
+        var house = BaseHouse.FindHouseAt(this);
+
+        if (house?.IsOwner(from) == true)
+        {
+            from.SendGump(new RewardDemolitionGump(this, 1018329)); // Do you wish to re-deed this skull?
         }
         else
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            // You can only re-deed a skull if you placed it or you are the owner of the house.
+            from.SendLocalizedMessage(1018328);
         }
     }
 }

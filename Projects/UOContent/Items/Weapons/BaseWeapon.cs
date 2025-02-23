@@ -662,7 +662,7 @@ public abstract partial class BaseWeapon
     [SerializableFieldDefault(23)]
     private CraftResource ResourceDefaultValue() => CraftResource.Iron;
 
-    public int OnCraft(
+    public virtual int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
         CraftItem craftItem, int resHue
     )
@@ -941,9 +941,12 @@ public abstract partial class BaseWeapon
 
     public int GetDurabilityBonus()
     {
-        var bonus = _quality == WeaponQuality.Exceptional ? 20 : 0;
+        if (!Core.UOR)
+        {
+            return (int)_durabilityLevel * 5 + ((int)_quality - 1) * 10;
+        }
 
-        bonus += _durabilityLevel switch
+        var bonus = _durabilityLevel switch
         {
             WeaponDurabilityLevel.Durable        => 20,
             WeaponDurabilityLevel.Substantial    => 50,
@@ -955,23 +958,11 @@ public abstract partial class BaseWeapon
 
         if (Core.AOS)
         {
-            bonus += WeaponAttributes.DurabilityBonus;
-
             var resInfo = CraftResources.GetInfo(_resource);
-            CraftAttributeInfo attrInfo = null;
-
-            if (resInfo != null)
-            {
-                attrInfo = resInfo.AttributeInfo;
-            }
-
-            if (attrInfo != null)
-            {
-                bonus += attrInfo.WeaponDurability;
-            }
+            bonus += WeaponAttributes.DurabilityBonus + (resInfo?.AttributeInfo?.WeaponDurability ?? 0);
         }
 
-        return bonus;
+        return _quality == WeaponQuality.Exceptional ? bonus + 20 : bonus;
     }
 
     public int GetLowerStatReq()
@@ -1354,7 +1345,7 @@ public abstract partial class BaseWeapon
             theirValue = Math.Max(0.1, defValue + 50.0);
         }
 
-        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;
+        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;;
 
         if (Core.AOS && chance < 0.02)
         {
@@ -2484,7 +2475,15 @@ public abstract partial class BaseWeapon
          */
         if (_damageLevel != WeaponDamageLevel.Regular)
         {
-            damage += 2 * (int)_damageLevel - 1;
+            // Toward the end of T2A, calculations were changed
+            if (!Core.T2A)
+            {
+                damage += (int)_damageLevel;
+            }
+            else
+            {
+                damage += 2 * (int)_damageLevel - 1;
+            }
         }
 
         return damage;

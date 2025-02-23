@@ -1,3 +1,5 @@
+using System;
+using Server.Buffers;
 using Server.Gumps;
 
 namespace Server.Tests.Gumps;
@@ -35,6 +37,6 @@ public class StaticLayoutTestGump : StaticGump<StaticLayoutTestGump>
 
     protected override void BuildStrings(ref GumpStringsBuilder builder)
     {
-        builder.SetStringSlot("petName", $"<CENTER>{_petName}</CENTER>");
+        builder.SetHtmlTextCentered("petName", _petName);
     }
 }
