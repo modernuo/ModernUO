@@ -7,6 +7,7 @@ using System.Threading;
 using Server.Accounting;
 using Server.Collections;
 using Server.Commands;
+using Server.Firewall;
 using Server.Maps;
 using Server.Misc;
 using Server.Multis;
@@ -170,7 +171,7 @@ namespace Server.Gumps
                         AddLabel(150, 150, LabelHue, banned.ToString());
 
                         AddLabel(20, 170, LabelHue, "Firewalled:");
-                        AddLabel(150, 170, LabelHue, Firewall.FirewallSet.Count.ToString());
+                        AddLabel(150, 170, LabelHue, FirewallManager.BlockedIPs.Count.ToString());
 
                         AddLabel(20, 190, LabelHue, "Clients:");
                         AddLabel(150, 190, LabelHue, NetState.Instances.Count.ToString());
@@ -1165,7 +1166,7 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        m_List ??= Firewall.FirewallSet.ToList<object>();
+                        m_List ??= FirewallManager.BlockedIPs.ToList<object>();
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
@@ -1215,12 +1216,12 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        if (state is not IFirewallEntry firewallEntry)
+                        if (state is not IPAddress firewalledAddress)
                         {
                             break;
                         }
 
-                        AddHtml(10, 125, 400, 20, firewallEntry.ToString().Center(LabelColor32));
+                        AddHtml(10, 125, 400, 20, firewalledAddress.ToString().Center(LabelColor32));
 
                         AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
 
@@ -1238,7 +1239,7 @@ namespace Server.Gumps
 
                                 for (var i = 0; i < loginList.Length; ++i)
                                 {
-                                    if (firewallEntry.IsBlocked(loginList[i]))
+                                    if (FirewallManager.IsBlocked(loginList[i]))
                                     {
                                         blockedEntriesList.Add(acct);
                                         break;
@@ -1731,12 +1732,23 @@ namespace Server.Gumps
 
             if (okay)
             {
+                var failed = false;
                 for (var i = 0; i < a.LoginIPs.Length; ++i)
                 {
-                    AdminFirewall.Add(a.LoginIPs[i]);
+                    if (!FirewallManager.AddIPAddress(a.LoginIPs[i]))
+                    {
+                        failed = true;
+                    }
                 }
 
-                notice = "All addresses in the list have been firewalled.";
+                if (failed)
+                {
+                    notice = "Some addresses in the list could not be firewalled because the service is not available.";
+                }
+                else
+                {
+                    notice = "All addresses in the list have been firewalled.";
+                }
             }
             else
             {
@@ -1757,9 +1769,14 @@ namespace Server.Gumps
 
             if (okay)
             {
-                AdminFirewall.Add(toFirewall);
-
-                notice = $"{toFirewall} : Added to firewall.";
+                if (toFirewall is IPAddress ipAddress && FirewallManager.AddIPAddress(ipAddress))
+                {
+                    notice = $"{toFirewall} : Added to firewall.";
+                }
+                else
+                {
+                    notice = $"{toFirewall} : Could not be added to firewall because the service is not available.";
+                }
             }
             else
             {
@@ -3474,7 +3491,7 @@ namespace Server.Gumps
                                     }
                                     else
                                     {
-                                        foreach (var check in Firewall.FirewallSet)
+                                        foreach (var check in FirewallManager.BlockedIPs)
                                         {
                                             var checkStr = check.ToString();
 
@@ -3539,19 +3556,14 @@ namespace Server.Gumps
                                                 m_PageType,
                                                 m_ListPage,
                                                 m_List,
-                                                "You must enter an address or CIDR to add.",
+                                                "You must enter an address to add.",
                                                 m_State
                                             )
                                         );
                                     }
                                     else
                                     {
-                                        IFirewallEntry firewallEntry;
-                                        try
-                                        {
-                                            firewallEntry = AdminFirewall.ToFirewallEntry(text);
-                                        }
-                                        catch
+                                        if (!IPAddress.TryParse(text, out var ipAddress))
                                         {
                                             from.SendGump(
                                                 new AdminGump(
@@ -3559,7 +3571,7 @@ namespace Server.Gumps
                                                     m_PageType,
                                                     m_ListPage,
                                                     m_List,
-                                                    "That is not a valid address or CIDR.",
+                                                    "That is not a valid address.",
                                                     m_State
                                                 )
                                             );
@@ -3568,18 +3580,18 @@ namespace Server.Gumps
 
                                         CommandLogging.WriteLine(
                                             from,
-                                            $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {firewallEntry}"
+                                            $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {ipAddress}"
                                         );
 
-                                        AdminFirewall.Add(firewallEntry);
+                                        FirewallManager.AddIPAddress(ipAddress);
                                         from.SendGump(
                                             new AdminGump(
                                                 from,
                                                 AdminGumpPage.FirewallInfo,
                                                 0,
                                                 null,
-                                                $"{firewallEntry} : Added to firewall.",
-                                                firewallEntry
+                                                $"{ipAddress} : Added to firewall.",
+                                                ipAddress
                                             )
                                         );
                                     }
@@ -3603,23 +3615,20 @@ namespace Server.Gumps
                                 }
                             case 3:
                                 {
-                                    if (m_State is IFirewallEntry)
+                                    if (m_State is IPAddress ipAddress)
                                     {
                                         CommandLogging.WriteLine(
                                             from,
                                             $"{from.AccessLevel} {CommandLogging.Format(from)} removing {m_State} from firewall list"
                                         );
 
-                                        AdminFirewall.Remove(m_State);
-                                        from.SendGump(
-                                            new AdminGump(
-                                                from,
-                                                AdminGumpPage.Firewall,
-                                                0,
-                                                null,
-                                                $"{m_State} : Removed from firewall."
-                                            )
-                                        );
+                                        string notice;
+
+                                        notice = FirewallManager.RemoveIPAddress(ipAddress)
+                                            ? $"{ipAddress} : Removed from firewall."
+                                            : $"{ipAddress} : Could not be removed because the service is not available.";
+
+                                        from.SendGump(new AdminGump(from, AdminGumpPage.Firewall, 0, null, notice));
                                     }
 
                                     break;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Accounting;
 using Server.Engines.Help;
 using Server.Factions;
+using Server.Firewall;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -1144,8 +1145,14 @@ namespace Server.Commands.Generic
 
                 try
                 {
-                    AdminFirewall.Add(state.Address);
-                    AddResponse("They have been firewalled.");
+                    if (FirewallManager.AddIPAddress(state.Address))
+                    {
+                        AddResponse("They have been firewalled.");
+                    }
+                    else
+                    {
+                        AddResponse("The firewall system is not available.");
+                    }
                 }
                 catch (Exception ex)
                 {
