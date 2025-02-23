@@ -34,7 +34,7 @@
         <Delete Files="..\..\Distribution\Assemblies\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup Condition="'$(IsWindows)'=='true' OR '$(RuntimeIdentifier)'==''">
-        <PackageReference Include="WindowsFirewallHelper" Version="2.3.0" />
+        <PackageReference Include="WindowsFirewallHelper" Version="2.2.0.86" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Logger\Logger.csproj" />
