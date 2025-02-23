@@ -10,8 +10,8 @@ public static class FirewallManager
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(FirewallManager));
 
-    private static ISet<IPAddress> _blacklistedIps = new HashSet<IPAddress>();
-    public static ISet<IPAddress> BlockedIPs => _blacklistedIps;
+    private static ISet<IPAddress> _blockedIps;
+    public static ISet<IPAddress> BlockedIPs => _blockedIps ??= Instance?.GetBlockedIPs();
 
     private static IFirewallManager _instance;
     private static IFirewallManager Instance
@@ -26,20 +26,7 @@ public static class FirewallManager
             if (_instance == null)
             {
                 _instance ??= CreateFirewallManagerImplementation();
-                if (_instance == null)
-                {
-                    Enabled = false;
-                    return null;
-                }
-
-                if (IsAvailable())
-                {
-                    _blacklistedIps = _instance.GetBlockedIPs();
-                    return _instance;
-                }
-
-                _blacklistedIps = new HashSet<IPAddress>();
-                return null;
+                Enabled = _instance != null;
             }
 
             return IsAvailable() ? _instance : null;
@@ -51,14 +38,8 @@ public static class FirewallManager
 
     private static bool IsAvailable()
     {
-        if (_instance == null)
+        if (!Enabled)
         {
-            if (!_warnedDebug)
-            {
-                logger.Warning("FirewallManager is not supported on this platform.");
-                _warnedDebug = true;
-            }
-
             return false;
         }
 
@@ -66,7 +47,7 @@ public static class FirewallManager
         {
             if (!_warnedDebug)
             {
-                logger.Warning("FirewallManager is disabled while a debugger is attached.");
+                logger.Warning("Firewall is disabled while a debugger is attached.");
                 _warnedDebug = true;
             }
             return false;
@@ -82,11 +63,10 @@ public static class FirewallManager
             return new WindowsFirewallManager();
         }
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            return new LinuxFirewallManager(); // Placeholder for Linux
-        }
-
+        // Linux/BSD are not supported.
+        // Firewall management requires sudo permissions, which we don't want to require.
+        // To implement set up a daemon that listens for requests to block/unblock IPs.
+        logger.Warning("Firewall is not supported on this platform.");
         return null;
     }
 
@@ -98,7 +78,7 @@ public static class FirewallManager
             return false;
         }
 
-        instance.AddIPAddress(ip, out _blacklistedIps);
+        instance.AddIPAddress(ip, out _blockedIps);
         return true;
     }
 
@@ -110,26 +90,13 @@ public static class FirewallManager
             return false;
         }
 
-        instance.RemoveIPAddress(ip, out _blacklistedIps);
+        instance.RemoveIPAddress(ip, out _blockedIps);
         return true;
     }
 
     public static bool IsBlocked(IPAddress ip)
     {
         Utility.Intern(ref ip);
-        return _blacklistedIps.Contains(ip);
-    }
-
-    public static bool GetBlockedIPs(out ISet<IPAddress> ips)
-    {
-        var instance = Instance;
-        if (instance == null)
-        {
-            ips = null;
-            return false;
-        }
-
-        ips = instance.GetBlockedIPs();
-        return true;
+        return BlockedIPs.Contains(ip);
     }
 }

@@ -98,12 +98,15 @@ public class WindowsFirewallManager : IFirewallManager
 
     public ISet<IPAddress> GetBlockedIPs()
     {
+        Console.WriteLine("GetBlockedIPs");
         HashSet<IPAddress> blacklistedIps = [];
 
         foreach (var rule in GetFirewallRules())
         {
+            Console.WriteLine("Rule: {0}", rule.Name);
             foreach (var address in rule.RemoteAddresses)
             {
+                Console.WriteLine("IP: {0}", address.ToString());
                 if (IPAddress.TryParse(address.ToString(), out var ip))
                 {
                     blacklistedIps.Add(Utility.Intern(ip));
@@ -117,7 +120,7 @@ public class WindowsFirewallManager : IFirewallManager
     private static List<FirewallWASRule> GetFirewallRules()
     {
         return FirewallWAS.Instance.Rules
-            .Where(rule => rule.Name.StartsWith(RuleNamePrefix, StringComparison.OrdinalIgnoreCase))
+            .Where(rule => rule.Name.InsensitiveStartsWith(RuleNamePrefix))
             .ToList();
     }
 }
