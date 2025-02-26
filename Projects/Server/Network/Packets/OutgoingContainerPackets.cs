@@ -33,7 +33,7 @@ public static class OutgoingContainerPackets
             return;
         }
 
-        if (ns.NewSpellbook)
+        if (Core.AOS && ns.NewSpellbook)
         {
             ns.SendNewSpellbookContent(book, graphic, offset, content);
         }
