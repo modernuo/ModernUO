@@ -448,6 +448,8 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsPrisoner { get; set; }
 
+        public virtual bool FollowsAcquireRules => true;
+
         protected DateTime SummonEnd { get; set; }
 
         public virtual Faction FactionAllegiance => null;
