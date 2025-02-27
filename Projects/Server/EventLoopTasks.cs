@@ -21,18 +21,29 @@ namespace Server;
 
 public sealed class EventLoopContext : SynchronizationContext
 {
-    private readonly ConcurrentQueue<Action> _queue;
-    private readonly Thread _mainThread;
-
-    public EventLoopContext()
+    public enum Priority
     {
-        _queue = new ConcurrentQueue<Action>();
+        Normal,
+        High
+    }
+
+    private readonly ConcurrentQueue<Action> _queue;
+    private readonly ConcurrentQueue<Action> _priorityQueue;
+    private readonly Thread _mainThread;
+    private readonly int _maxPerFrame;
+
+    public EventLoopContext(int maxPerFrame = 128)
+    {
+        _maxPerFrame = maxPerFrame;
+        _queue = [];
+        _priorityQueue = [];
         _mainThread = Thread.CurrentThread;
     }
 
     public override SynchronizationContext CreateCopy() => new EventLoopContext();
 
-    public void Post(Action d) => _queue.Enqueue(d);
+    public void Post(Action d, Priority priority = Priority.Normal) =>
+        (priority == Priority.High ? _priorityQueue : _queue).Enqueue(d);
 
     public override void Post(SendOrPostCallback d, object state) => _queue.Enqueue(() => d(state));
 
@@ -62,7 +73,17 @@ public sealed class EventLoopContext : SynchronizationContext
             throw new Exception("Called EventLoop.ExecuteTasks on incorrect thread!");
         }
 
-        var count = _queue.Count;
+        var count = _priorityQueue.Count;
+
+        for (int i = 0; i < count; i++)
+        {
+            if (_priorityQueue.TryDequeue(out var a))
+            {
+                a();
+            }
+        }
+
+        count = Math.Min(_queue.Count, _maxPerFrame);
 
         for (int i = 0; i < count; i++)
         {
