@@ -23,8 +23,10 @@ namespace Server;
 
 public class IPRateLimiter
 {
-    private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(1);
+    private static readonly ConcurrentQueue<IPStats> _statsPool = [];
+    private const int MaxPoolSize = 32_768;
 
+    private readonly SemaphoreSlim _cleanupSignal = new(0, 1);
     private readonly ConcurrentDictionary<IPAddress, IPStats> _ipAttempts;
     private readonly ConcurrentQueue<IPAddress> _cleanupQueue;
     private readonly CancellationTokenSource _cts;
@@ -35,7 +37,10 @@ public class IPRateLimiter
     private readonly double _backoffMultiplier;
     private readonly long _maxBackoff; // milliseconds
 
-    public IPRateLimiter(int maxAttempts, long timeWindow, long initialBackoff, double backoffMultiplier, long maxBackoff, CancellationToken token)
+    public IPRateLimiter(
+        int maxAttempts, long timeWindow, long initialBackoff, double backoffMultiplier, long maxBackoff,
+        CancellationToken token
+    )
     {
         _ipAttempts = [];
         _cleanupQueue = [];
@@ -52,7 +57,8 @@ public class IPRateLimiter
     public bool Verify(IPAddress ip, out int totalAttempts)
     {
         var nowTicks = Core.TickCount;
-        var ipStats = _ipAttempts.GetOrAdd(ip, _ => new IPStats());
+        var ipStats = _ipAttempts.GetOrAdd(ip, _ => GetOrCreateIPStats());
+        var added = ipStats.AttemptCount == 0;
 
         lock (ipStats)
         {
@@ -84,27 +90,62 @@ public class IPRateLimiter
                 return false;
             }
 
-            if (!ipStats.IsQueuedForCleanup)
+            if (added)
             {
-                ipStats.IsQueuedForCleanup = true;
                 _cleanupQueue.Enqueue(ip);
+                RunCleanup();
             }
         }
 
         return true;
     }
 
+    private static IPStats GetOrCreateIPStats() => _statsPool.TryDequeue(out var stats) ? stats : new IPStats();
+
+    private static void ReturnToPool(IPStats stats)
+    {
+        stats.Reset();
+
+        if (_statsPool.Count < MaxPoolSize)
+        {
+            _statsPool.Enqueue(stats);
+        }
+    }
+
+    private void RunCleanup()
+    {
+        if (_cleanupSignal.CurrentCount > 0)
+        {
+            return;
+        }
+
+        try
+        {
+            _cleanupSignal.Release();
+            Task.Run(CleanupLoop, _cts.Token);
+        }
+        catch
+        {
+            // Do nothing
+        }
+    }
+
     private async ValueTask CleanupLoop()
     {
         while (!_cts.IsCancellationRequested)
         {
-            await Task.Delay(CleanupInterval, _cts.Token);
+            await _cleanupSignal.WaitAsync(_cts.Token);
 
             int maxToProcess = Math.Min(_cleanupQueue.Count, 500);
             var nowTicks = Core.TickCount;
 
             for (int i = 0; i < maxToProcess; i++)
             {
+                if (!_cts.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 if (!_cleanupQueue.TryDequeue(out var ip) || !_ipAttempts.TryGetValue(ip, out var ipStats))
                 {
                     continue;
@@ -118,8 +159,23 @@ public class IPRateLimiter
                         continue;
                     }
 
-                    _ipAttempts.TryRemove(ip, out _);
-                    ipStats.IsQueuedForCleanup = false;
+                    if (_ipAttempts.TryRemove(ip, out _))
+                    {
+                        ReturnToPool(ipStats);
+                    }
+                }
+            }
+
+            if (!_cleanupQueue.IsEmpty)
+            {
+                await Task.Delay(TimeSpan.FromMinutes(1), _cts.Token);
+                try
+                {
+                    _cleanupSignal.Release();
+                }
+                catch
+                {
+                    // Do nothing
                 }
             }
         }
@@ -130,6 +186,12 @@ public class IPRateLimiter
         public int AttemptCount;
         public long LastAttemptTicks;
         public long BlockUntilTicks;
-        public bool IsQueuedForCleanup;
+
+        public void Reset()
+        {
+            AttemptCount = 0;
+            LastAttemptTicks = 0;
+            BlockUntilTicks = 0;
+        }
     }
 }
