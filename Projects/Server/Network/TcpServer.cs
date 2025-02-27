@@ -140,12 +140,10 @@ public static class TcpServer
 
                 if (!_ipRateLimiter.Verify(remoteIP, out var totalAttempts))
                 {
-                    TraceDisconnect("Past IP limit threshold", remoteIP);
                     logger.Debug("{Address} Past IP limit threshold ({TotalAttempts})", remoteIP, totalAttempts);
                 }
                 else if (Firewall.IsBlocked(remoteIP))
                 {
-                    TraceDisconnect("Firewalled", remoteIP);
                     logger.Debug("{Address} Firewalled", remoteIP);
                 }
                 else
@@ -197,7 +195,7 @@ public static class TcpServer
                     return;
                 }
 
-                TraceDisconnect("Rejected by socket event handler", ((IPEndPoint)socket.RemoteEndPoint)!.Address);
+                logger.Debug("{Address} Rejected by socket handler", ((IPEndPoint)socket.RemoteEndPoint)!.Address);
 
                 cts.TryReset();
                 cts.CancelAfter(TimeSpan.FromMilliseconds(500));
@@ -243,30 +241,6 @@ public static class TcpServer
         finally
         {
             socket.Close(0);
-        }
-    }
-
-    private static readonly Lock _traceDisconnectLock = new();
-
-    private static void TraceDisconnect(string reason, IPAddress ip)
-    {
-        lock (_traceDisconnectLock)
-        {
-            try
-            {
-                using StreamWriter op = new StreamWriter("network-socket-disconnects.log", true);
-                op.WriteLine($"# {Core.Now}");
-
-                op.WriteLine($"Address: {ip}");
-                op.WriteLine(reason);
-
-                op.WriteLine();
-                op.WriteLine();
-            }
-            catch
-            {
-                // ignored
-            }
         }
     }
 }
