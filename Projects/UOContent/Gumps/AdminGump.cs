@@ -1168,11 +1168,10 @@ namespace Server.Gumps
                         if (m_List == null)
                         {
                             Firewall.ReadFirewallSet(firewallSet =>
-                                {
-                                    list = new List<object>(firewallSet.Count);
-                                    list.AddRange(firewallSet);
-                                }
-                            );
+                            {
+                                list = new List<object>(firewallSet.Count);
+                                list.AddRange(firewallSet);
+                            });
 
                             m_List = list;
                         }
