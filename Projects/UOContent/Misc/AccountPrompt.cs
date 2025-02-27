@@ -13,17 +13,15 @@ public static class AccountPrompt
         if (Accounts.Count == 0)
         {
             logger.Warning("This server has no accounts.");
-            logger.Information("Do you want to create the owner account now? (y/n): ");
+            logger.Information("Do you want to create the owner account now? (y/n):");
 
             var answer = ConsoleInputHandler.ReadLine();
             if (answer.InsensitiveEquals("y"))
             {
-                logger.Information("");
-
-                logger.Information("Input Username: ");
+                logger.Information("Input Username:");
                 var username = ConsoleInputHandler.ReadLine();
 
-                logger.Information("Input Password: ");
+                logger.Information("Input Password:");
                 var password = ConsoleInputHandler.ReadLine();
 
                 var a = new Account(username, password)
