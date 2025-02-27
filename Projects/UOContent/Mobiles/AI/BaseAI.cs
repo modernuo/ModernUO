@@ -2672,39 +2672,27 @@ public abstract class BaseAI
             var pm = m as PlayerMobile;
 
             // Monster don't attack it's own summon or the summon of another monster
-            if (Core.AOS && bc != null && bc.Summoned && (bc.SummonMaster == m_Mobile || (!bc.SummonMaster.Player && IsHostile(bc.SummonMaster))))
+            if (Core.AOS && bc != null && bc.Summoned && (bc.SummonMaster == m_Mobile || !bc.SummonMaster.Player && IsHostile(bc.SummonMaster)))
             {
                 continue;
             }
 
             if (m_Mobile.Summoned && m_Mobile.SummonMaster != null)
             {
-                // If this is a summon, it can't target its controller.
-                if (m == m_Mobile.SummonMaster)
-                {
-                    continue;
-                }
-
-                // It also must abide by harmful spell rules.
-                if (!SpellHelper.ValidIndirectTarget(m_Mobile.SummonMaster, m))
-                {
-                    continue;
-                }
-
                 // Animated creatures cannot attack players directly.
                 if (pm != null && m_Mobile.IsAnimatedDead)
                 {
                     continue;
                 }
 
-                // Animated creatures cannot attack other animated creatures
-                if (m_Mobile.IsAnimatedDead && bc?.IsAnimatedDead == true)
+                // Animated creatures cannot attack other animated creatures or pets of other players
+                if (m_Mobile.IsAnimatedDead && bc != null && (bc.IsAnimatedDead || bc.Controlled))
                 {
                     continue;
                 }
 
-                // Animated creatures cannot attack pets of other players
-                if (m_Mobile.IsAnimatedDead && bc?.Controlled == true)
+                // If this is a summon, it can't target its controller or invalid targets.
+                if (m_Mobile.FollowsAcquireRules && (m == m_Mobile.SummonMaster || !SpellHelper.ValidIndirectTarget(m_Mobile, m)))
                 {
                     continue;
                 }
@@ -2771,7 +2759,9 @@ public abstract class BaseAI
             }
 
             var theirVal = m_Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
-            if (theirVal > val && m_Mobile.InLOS(m))
+
+            // Always prefer someone else over the summon master (EV/BS)
+            if ((theirVal > val || newFocusMob == m_Mobile.SummonMaster) && m_Mobile.InLOS(m))
             {
                 newFocusMob = m;
                 val = theirVal;
