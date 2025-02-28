@@ -26,7 +26,7 @@ public static class Firewall
 {
     [ThreadStatic]
     private static InternalValidationEntry _validationEntry;
-    private static readonly ConcurrentDictionary<IPAddress, (bool IsBlocked, int Version)> _isBlockedCache = [];
+    private static readonly ConcurrentDictionary<IPAddress, int> _isBlockedCache = [];
     private static readonly ReaderWriterLockSlim _firewallLock = new(LockRecursionPolicy.NoRecursion);
 
     private static int _firewallVersion;
@@ -49,9 +49,9 @@ public static class Firewall
 
     internal static bool IsBlocked(IPAddress address)
     {
-        if (_isBlockedCache.TryGetValue(address, out var cacheEntry) && cacheEntry.Version == _firewallVersion)
+        if (_isBlockedCache.TryGetValue(address, out var blockVersion) && blockVersion == _firewallVersion)
         {
-            return cacheEntry.IsBlocked;
+            return true;
         }
 
         if (_validationEntry == null)
@@ -65,7 +65,7 @@ public static class Firewall
 
         if (CheckBlocked(_validationEntry))
         {
-            _isBlockedCache[address] = (true, _firewallVersion);
+            _isBlockedCache[address] = _firewallVersion;
             return true;
         }
 
