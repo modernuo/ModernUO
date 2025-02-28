@@ -73,11 +73,22 @@ public static class Firewall
 
     private static bool CheckBlocked()
     {
+        if (_firewallSet.Count == 0)
+        {
+            return false;
+        }
+
         _firewallLock.EnterReadLock();
         try
         {
+            var min = _firewallSet.Min;
+            if (min!.MinIpAddress <= _validationEntry.MinIpAddress && min.MaxIpAddress >= _validationEntry.MaxIpAddress)
+            {
+                return true;
+            }
+
             // Get all entries that are lower than our validation entry
-            var view = _firewallSet.GetViewBetween(_firewallSet.Min, _validationEntry);
+            var view = _firewallSet.GetViewBetween(min, _validationEntry);
 
             // Loop backward since there shouldn't be any entries where the Min address is higher than ours
             foreach (var firewallEntry in view.Reverse())
@@ -152,5 +163,7 @@ public static class Firewall
         public override UInt128 MaxIpAddress => _address;
 
         public InternalValidationEntry(IPAddress ipAddress) => Address = ipAddress;
+
+        public InternalValidationEntry(UInt128 ipAddress) => _address = ipAddress;
     }
 }
