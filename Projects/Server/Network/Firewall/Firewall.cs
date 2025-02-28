@@ -164,7 +164,5 @@ public static class Firewall
         public override UInt128 MaxIpAddress => _address;
 
         public InternalValidationEntry(IPAddress ipAddress) => Address = ipAddress;
-
-        public InternalValidationEntry(UInt128 ipAddress) => _address = ipAddress;
     }
 }
