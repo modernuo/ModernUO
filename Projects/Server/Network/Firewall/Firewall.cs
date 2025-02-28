@@ -24,6 +24,7 @@ namespace Server.Network;
 
 public static class Firewall
 {
+    [ThreadStatic]
     private static InternalValidationEntry _validationEntry;
     private static readonly ConcurrentDictionary<IPAddress, (bool IsBlocked, int Version)> _isBlockedCache = [];
     private static readonly ReaderWriterLockSlim _firewallLock = new(LockRecursionPolicy.NoRecursion);
@@ -62,7 +63,7 @@ public static class Firewall
             _validationEntry.Address = address;
         }
 
-        if (CheckBlocked())
+        if (CheckBlocked(_validationEntry))
         {
             _isBlockedCache[address] = (true, _firewallVersion);
             return true;
@@ -71,7 +72,7 @@ public static class Firewall
         return false;
     }
 
-    private static bool CheckBlocked()
+    private static bool CheckBlocked(IFirewallEntry validationEntry)
     {
         if (_firewallSet.Count == 0)
         {
@@ -82,24 +83,24 @@ public static class Firewall
         try
         {
             var min = _firewallSet.Min;
-            if (min!.MinIpAddress <= _validationEntry.MinIpAddress && min.MaxIpAddress >= _validationEntry.MaxIpAddress)
+            if (validationEntry.CompareTo(min) < 0)
             {
-                return true;
+                return false;
             }
 
             // Get all entries that are lower than our validation entry
-            var view = _firewallSet.GetViewBetween(min, _validationEntry);
+            var view = _firewallSet.GetViewBetween(min, validationEntry);
 
             // Loop backward since there shouldn't be any entries where the Min address is higher than ours
             foreach (var firewallEntry in view.Reverse())
             {
-                if (firewallEntry.IsBlocked(_validationEntry.MinIpAddress))
+                if (firewallEntry.IsBlocked(validationEntry.MinIpAddress))
                 {
                     return true;
                 }
             }
 
-            return view.Max?.IsBlocked(_validationEntry.MinIpAddress) == true;
+            return view.Max?.IsBlocked(validationEntry.MinIpAddress) == true;
         }
         finally
         {
