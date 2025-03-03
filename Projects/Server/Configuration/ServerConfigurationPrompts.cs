@@ -118,6 +118,53 @@ public static class ServerConfigurationPrompts
         return directories;
     }
 
+    internal static string GetRealAddress()
+    {
+        Console.WriteLine("The realAddress is for multi-NAT scenarios. A common example of this");
+        Console.WriteLine("is running MUO inside a container that attaches to an IP network known");
+        Console.WriteLine("only by the server the container runs on. If you configure the realAddress");
+        Console.WriteLine("MUO will advertise it to clients who are connecting from RFC-1918 (private)");
+        Console.WriteLine("networks. This allows clients from both the local LAN and outside networks.");
+        Console.WriteLine("Enter the realAddress here: ");
+        Console.WriteLine("- Or leave blank to skip");
+
+        string ipStr;
+
+        do
+        {
+            // IP:Port?
+            Console.Write("[{0}]> ", "enter to finish");
+            ipStr = Console.ReadLine();
+
+            IPEndPoint ip;
+            if (string.IsNullOrWhiteSpace(ipStr))
+            {
+                ipStr = null;
+                break;
+            }
+            else
+            {
+                if (!IPEndPoint.TryParse(ipStr, out ip))
+                {
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.Write(ipStr);
+                    Utility.PopColor();
+                    Console.WriteLine(" is not a valid IP or port.");
+                    continue;
+                }
+            }
+
+            Console.Write("Added ");
+            Utility.PushColor(ConsoleColor.Green);
+            Console.Write(ipStr);
+            Utility.PopColor();
+            Console.WriteLine(".");
+            break;
+        } while (true);
+
+        return ipStr;
+    }
+
     internal static List<IPEndPoint> GetListeners()
     {
         Console.WriteLine("Please enter the IP and ports to listen:");
