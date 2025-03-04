@@ -1562,6 +1562,13 @@ namespace Server.Guilds
                 winner = m_Leader;
             }
 
+            //There MUST be a new guild master.
+            //Otherwise old Guild.Leader is serialised, and on restart the Leader rank carriers over to any new guild they joined
+            if (winner == null && Members?.Count > 0)
+            {
+                winner = Members.RandomElement();
+            }
+
             if (m_Leader != winner && winner != null)
             {
                 Leader = winner;
