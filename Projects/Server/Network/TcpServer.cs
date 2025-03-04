@@ -169,13 +169,15 @@ public static class TcpServer
             var bytesRead = await socket.ReceiveAsync(firstBytes, SocketFlags.Peek, cts.Token);
 
             var isValid =
-                // Older clients only send the 4 byte seed first
-                (UOClient.MinRequired == null || UOClient.MinRequired < ClientVersion.Version6050) && bytesRead == 4 ||
+                // Older clients only send the 4 byte seed first then 0x80
+                (UOClient.MinRequired == null || UOClient.MinRequired < ClientVersion.Version6050) && (
+                    bytesRead == 4 || bytesRead >= 66 && firstBytes[4] == 0x80) ||
+                // Newer clients
                 (UOClient.MaxRequired == null || UOClient.MaxRequired >= ClientVersion.Version6050) && (
                     // Account Login - 0xEF + 0x80 (83 bytes)
                     bytesRead >= 83 && firstBytes[0] == 0xEF && firstBytes[21] == 0x80 ||
                     // Game Login - 4 bytes + 0x91 (69 bytes)
-                    firstBytes[4] == 0x91 && bytesRead >= 69
+                    bytesRead >= 69 && firstBytes[4] == 0x91
                 );
 
             // TODO: Validate client version is v4 -> v7 for 0xEF packet
