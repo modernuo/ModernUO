@@ -1578,7 +1578,7 @@ namespace Server.Guilds
 
             if (winner == null)
             {
-                m_Leader = null;
+                Leader = null;
             }
             else if (m_Leader != winner)
             {
