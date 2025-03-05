@@ -638,7 +638,7 @@ namespace Server.Guilds
             }
         }
 
-        public override bool Disbanded => m_Leader?.Deleted != false;
+        public override bool Disbanded => m_Leader?.Deleted != false || m_Leader?.Guild != this;
 
         public AllianceInfo Alliance
         {
@@ -1376,6 +1376,7 @@ namespace Server.Guilds
 
             if (m == m_Leader)
             {
+                m_Leader = null;
                 CalculateGuildmaster();
 
                 if (m_Leader == null)
@@ -1501,6 +1502,7 @@ namespace Server.Guilds
         {
             var votes = new Dictionary<Mobile, int>();
 
+            var isDisbanded = Disbanded;
             var votingMembers = 0;
 
             for (var i = 0; i < Members.Count; ++i)
@@ -1516,14 +1518,7 @@ namespace Server.Guilds
 
                 if (!CanBeVotedFor(m))
                 {
-                    if (!Disbanded && m_Leader.Guild == this)
-                    {
-                        m = m_Leader;
-                    }
-                    else
-                    {
-                        m = memb;
-                    }
+                    m = isDisbanded ? memb : m_Leader;
                 }
 
                 if (m == null)
@@ -1554,25 +1549,32 @@ namespace Server.Guilds
                 winner = m_Leader;
             }
 
-            if (m_Leader == null && winner == null)
+            if (winner == null)
             {
-                if (votes.Count > 0)
+                if (isDisbanded) // There is no leader
                 {
-                    var randomNumber = Utility.Random(votes.Count);
-                    var index = 0;
-                    foreach (var m in votes.Keys)
+                    if (votes.Count > 0)
                     {
-                        if (index++ == randomNumber)
+                        var randomNumber = Utility.Random(votes.Count);
+                        var index = 0;
+                        foreach (var m in votes.Keys)
                         {
-                            winner = m;
-                            break;
+                            if (index++ == randomNumber)
+                            {
+                                winner = m;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (winner == null && Members.Count > 0)
+                    if (winner == null && Members.Count > 0)
+                    {
+                        winner = Members.RandomElement();
+                    }
+                }
+                else
                 {
-                    winner = Members.RandomElement();
+                    winner = Leader;
                 }
             }
 
