@@ -610,7 +610,7 @@ namespace Server.Guilds
         {
             get
             {
-                if (Disbanded || m_Leader.Guild != this)
+                if (Disbanded)
                 {
                     CalculateGuildmaster();
                 }
@@ -638,7 +638,7 @@ namespace Server.Guilds
             }
         }
 
-        public override bool Disbanded => m_Leader?.Deleted != false || m_Leader?.Guild != this;
+        public override bool Disbanded => m_Leader?.Deleted != false;
 
         public AllianceInfo Alliance
         {
@@ -1376,7 +1376,6 @@ namespace Server.Guilds
 
             if (m == m_Leader)
             {
-                m_Leader = null;
                 CalculateGuildmaster();
 
                 if (m_Leader == null)
@@ -1502,7 +1501,7 @@ namespace Server.Guilds
         {
             var votes = new Dictionary<Mobile, int>();
 
-            var isDisbanded = Disbanded;
+            var hasLeader = m_Leader?.Guild == this;
             var votingMembers = 0;
 
             for (var i = 0; i < Members.Count; ++i)
@@ -1518,7 +1517,14 @@ namespace Server.Guilds
 
                 if (!CanBeVotedFor(m))
                 {
-                    m = isDisbanded ? memb : m_Leader;
+                    if (!Disbanded || hasLeader)
+                    {
+                        m = Leader;
+                    }
+                    else
+                    {
+                        m = memb;
+                    }
                 }
 
                 if (m == null)
@@ -1578,11 +1584,7 @@ namespace Server.Guilds
                 }
             }
 
-            if (winner == null)
-            {
-                Leader = null;
-            }
-            else if (m_Leader != winner)
+            if (winner != null && m_Leader != winner)
             {
                 Leader = winner;
                 GuildMessage(1018015, true, winner.RawName); // Guild Message: Guildmaster changed to:
