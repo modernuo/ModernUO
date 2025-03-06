@@ -1335,9 +1335,11 @@ namespace Server.Guilds
                 return;
             }
 
-            if (m.Guild != null && m.Guild != this)
+            var oldGuild = m.Guild as Guild;
+
+            if (oldGuild != this)
             {
-                ((Guild)m.Guild).RemoveMember(m);
+                oldGuild?.RemoveMember(m);
             }
 
             Members.Add(m);
@@ -1345,12 +1347,13 @@ namespace Server.Guilds
 
             m.GuildFealty = !NewGuildSystem ? m_Leader : null;
 
-            if (m is PlayerMobile mobile)
+            if (m is PlayerMobile pm)
             {
-                mobile.GuildRank = RankDefinition.Lowest;
+                pm.GuildRank = RankDefinition.Lowest;
             }
 
-            ((Guild)m.Guild).InvalidateWarNotoriety();
+            oldGuild?.InvalidateWarNotoriety();
+            InvalidateWarNotoriety();
         }
 
         public void RemoveMember(Mobile m, int message = 1018028) // You have been dismissed from your guild.
@@ -1360,13 +1363,12 @@ namespace Server.Guilds
                 return;
             }
 
-            var guild = m.Guild as Guild;
-
+            var oldGuild = m.Guild as Guild;
             m.Guild = null;
 
-            if (m is PlayerMobile mobile)
+            if (m is PlayerMobile pm)
             {
-                mobile.GuildRank = RankDefinition.Lowest;
+                pm.GuildRank = RankDefinition.Lowest;
             }
 
             if (message > 0)
@@ -1389,7 +1391,7 @@ namespace Server.Guilds
                 Disband();
             }
 
-            guild?.InvalidateWarNotoriety();
+            oldGuild?.InvalidateWarNotoriety();
 
             m.Delta(MobileDelta.Noto);
         }
