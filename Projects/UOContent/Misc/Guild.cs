@@ -1501,7 +1501,9 @@ namespace Server.Guilds
         {
             var votes = new Dictionary<Mobile, int>();
 
-            var hasLeader = m_Leader?.Guild == this;
+            // When the leader resigns, this will be false
+            var disbanded = Disbanded;
+            var hasLeader = !disbanded && m_Leader?.Guild == this;
             var votingMembers = 0;
 
             for (var i = 0; i < Members.Count; ++i)
@@ -1517,14 +1519,7 @@ namespace Server.Guilds
 
                 if (!CanBeVotedFor(m))
                 {
-                    if (!Disbanded || hasLeader)
-                    {
-                        m = Leader;
-                    }
-                    else
-                    {
-                        m = memb;
-                    }
+                    m = hasLeader ? m_Leader : memb;
                 }
 
                 if (m == null)
@@ -1549,38 +1544,30 @@ namespace Server.Guilds
                 }
             }
 
-            if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && !Disbanded &&
-                winner != m_Leader && m_Leader.Guild == this)
+            if (hasLeader && (winner == null ||
+                              NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage))
             {
                 winner = m_Leader;
             }
 
             if (winner == null)
             {
-                if (isDisbanded) // There is no leader
+                if (votes.Count > 0)
                 {
-                    if (votes.Count > 0)
+                    var randomNumber = Utility.Random(votes.Count);
+                    var index = 0;
+                    foreach (var m in votes.Keys)
                     {
-                        var randomNumber = Utility.Random(votes.Count);
-                        var index = 0;
-                        foreach (var m in votes.Keys)
+                        if (index++ == randomNumber)
                         {
-                            if (index++ == randomNumber)
-                            {
-                                winner = m;
-                                break;
-                            }
+                            winner = m;
+                            break;
                         }
-                    }
-
-                    if (winner == null && Members.Count > 0)
-                    {
-                        winner = Members.RandomElement();
                     }
                 }
                 else
                 {
-                    winner = Leader;
+                    winner = Members.RandomElement();
                 }
             }
 
