@@ -143,6 +143,8 @@ namespace Server.Mobiles
             new(268, 624, 15)
         };
 
+        public static bool GuildClickMessage { get; set; } = true;
+
         private HashSet<int> _acquiredRecipes;
 
         private HashSet<Mobile> _allFollowers;
@@ -196,6 +198,12 @@ namespace Server.Mobiles
         private DateTime[] m_StuckMenuUses;
 
         private QuestArrow m_QuestArrow;
+
+        private BaseGuild _guild;
+
+        private string _guildTitle;
+
+        private bool _displayGuildTitle;
 
         public PlayerMobile()
         {
@@ -372,6 +380,67 @@ namespace Server.Mobiles
                 }
             }
         }
+
+        public BaseGuild Guild
+        {
+            get => _guild;
+            set
+            {
+                var old = _guild;
+
+                if (old != value)
+                {
+                    if (value == null)
+                    {
+                        GuildTitle = null;
+                    }
+
+                    _guild = value;
+
+                    Delta(MobileDelta.Noto);
+                    InvalidateProperties();
+
+                    OnGuildChange(old);
+                }
+            }
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public string GuildTitle
+        {
+            get => _guildTitle;
+            set
+            {
+                var old = _guildTitle;
+
+                if (old != value)
+                {
+                    _guildTitle = value;
+
+                    if (_guild?.Disbanded == false && _guildTitle != null)
+                    {
+                        SendLocalizedMessage(1018026, true, _guildTitle); // Your guild title has changed :
+                    }
+
+                    InvalidateProperties();
+                    OnGuildTitleChange(old);
+                }
+            }
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool DisplayGuildTitle
+        {
+            get => _displayGuildTitle;
+            set
+            {
+                _displayGuildTitle = value;
+                InvalidateProperties();
+            }
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Mobile GuildFealty { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public Player EthicPlayer { get; set; }
@@ -933,6 +1002,11 @@ namespace Server.Mobiles
             }
         }
 
+        public static void Configure()
+        {
+
+        }
+
         public static void Initialize()
         {
             EventSink.Logout += OnLogout;
@@ -955,6 +1029,23 @@ namespace Server.Mobiles
                     }
                 }
             }
+
+            var guildMigrations = GuildMigrations;
+            if (guildMigrations?.Count > 0)
+            {
+                for (var i = 0; i < guildMigrations.Count; i++)
+                {
+                    var guildInfo = guildMigrations[i];
+
+                    if (guildInfo.GuildMember is PlayerMobile pm)
+                    {
+                        pm._guild = guildInfo.Guild;
+                        pm._guildTitle = guildInfo.GuildTitle;
+                        pm.GuildFealty = guildInfo.GuildFealty;
+                        pm._displayGuildTitle = guildInfo.DisplayGuildTitle;
+                    }
+                }
+            }
         }
 
         public static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
@@ -970,7 +1061,6 @@ namespace Server.Mobiles
             {
                 AnimalTaming.DisableMessage = true;
             }
-            // AnimalTaming.DeferredTarget = false;
 
             if (from.UseSkill(skillId))
             {
@@ -978,7 +1068,6 @@ namespace Server.Mobiles
             }
 
             if (skillId == 35)
-            // AnimalTaming.DeferredTarget = true;
             {
                 AnimalTaming.DisableMessage = false;
             }
@@ -1974,9 +2063,9 @@ namespace Server.Mobiles
         {
             var house = BaseHouse.FindHouseAt(this);
 
-            if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0 && NetState is NetState { } ns)
+            if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0)
             {
-                ns.SendGump(new ReclaimVendorGump(house));
+                NetState?.SendGump(new ReclaimVendorGump(house));
             }
         }
 
@@ -2837,6 +2926,14 @@ namespace Server.Mobiles
 
             switch (version)
             {
+                case 35: // Moved guild
+                    {
+                        GuildFealty = reader.ReadEntity<Mobile>();
+                        _guildTitle = reader.ReadString();
+                        _displayGuildTitle = reader.ReadBool();
+                        _guild = reader.ReadEntity<Guild>();
+                        goto case 34;
+                    }
                 case 34: // Acquired Recipes is now a Set
                 case 33: // Removes champion title
                 case 32: // Removes virtue properties
@@ -3181,7 +3278,12 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(34); // version
+            writer.Write(35); // version
+
+            writer.Write(GuildFealty);
+            writer.Write(_guildTitle);
+            writer.Write(_displayGuildTitle);
+            writer.Write(_guild);
 
             if (Stabled == null)
             {
@@ -3426,6 +3528,11 @@ namespace Server.Mobiles
 
         public override void OnSingleClick(Mobile from)
         {
+            if (Deleted || AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
+            {
+                return;
+            }
+
             if (Map == Faction.Facet)
             {
                 var pl = PlayerState.Find(this);
@@ -3462,6 +3569,34 @@ namespace Server.Mobiles
                     var hue = Faction.Find(from) == faction ? 98 : 38;
 
                     PrivateOverheadMessage(MessageType.Label, hue, ascii, text, from.NetState);
+                }
+            }
+
+            if (GuildClickMessage)
+            {
+                var guild = _guild;
+
+                if (guild != null && (_displayGuildTitle || guild.Type != GuildType.Regular))
+                {
+                    var title = GuildTitle?.Trim() ?? "";
+                    string type;
+
+                    if (guild.Type >= 0 && (int)guild.Type < _guildTypes.Length)
+                    {
+                        type = _guildTypes[(int)guild.Type];
+                    }
+                    else
+                    {
+                        type = "";
+                    }
+
+                    var text = (title.Length <= 0) switch
+                    {
+                        true  => $"[{guild.Abbreviation}] {type}",
+                        false => $"[{title}, {guild.Abbreviation}] {type}"
+                    };
+
+                    PrivateOverheadMessage(MessageType.Regular, SpeechHue, true, text, from.NetState);
                 }
             }
 
@@ -4066,23 +4201,11 @@ namespace Server.Mobiles
             }
         }
 
-        public override void OnGenderChanged(bool oldFemale)
+        public void OnGuildTitleChange(string oldTitle)
         {
         }
 
-        public override void OnGuildChange(BaseGuild oldGuild)
-        {
-        }
-
-        public override void OnGuildTitleChange(string oldTitle)
-        {
-        }
-
-        public override void OnKarmaChange(int oldValue)
-        {
-        }
-
-        public override void OnFameChange(int oldValue)
+        public void OnGuildChange(BaseGuild oldGuild)
         {
         }
 
@@ -4114,6 +4237,7 @@ namespace Server.Mobiles
 
         public override void OnDelete()
         {
+            _guild?.OnDelete(this);
             ReceivedHonorContext?.Cancel();
             SentHonorContext?.Cancel();
 
@@ -4239,6 +4363,18 @@ namespace Server.Mobiles
 
         public override string ApplyNameSuffix(string suffix)
         {
+            var guild = _guild;
+            var hasGuild = guild != null && _displayGuildTitle;
+
+            if (hasGuild)
+            {
+                suffix = (suffix.Length > 0) switch
+                {
+                    true  => $"{suffix} [{guild.Abbreviation.FixHtmlFormattable()}]",
+                    false => $"[{guild.Abbreviation.FixHtmlFormattable()}]"
+                };
+            }
+
             if (Young)
             {
                 suffix = suffix.Length == 0 ? "(Young)" : $"{suffix} (Young)";
@@ -4246,14 +4382,11 @@ namespace Server.Mobiles
 
             if (EthicPlayer != null)
             {
-                if (suffix.Length == 0)
+                suffix = (suffix.Length > 0) switch
                 {
-                    suffix = EthicPlayer.Ethic.Definition.Adjunct.String;
-                }
-                else
-                {
-                    suffix = $"{suffix} {EthicPlayer.Ethic.Definition.Adjunct.String}";
-                }
+                    true  => $"{suffix} {EthicPlayer.Ethic.Definition.Adjunct.String}",
+                    false => EthicPlayer.Ethic.Definition.Adjunct.String,
+                };
             }
 
             if (Core.ML && Map == Faction.Facet)
@@ -4262,12 +4395,50 @@ namespace Server.Mobiles
 
                 if (faction != null)
                 {
-                    var adjunct = $"[{faction.Definition.Abbreviation}]";
-                    suffix = suffix.Length == 0 ? adjunct : $"{suffix} {adjunct}";
+                    suffix = (suffix.Length > 0) switch
+                    {
+                        true  => $"{suffix} [{faction.Definition.Abbreviation}]",
+                        false => $"[{faction.Definition.Abbreviation}]",
+                    };
                 }
             }
 
             return base.ApplyNameSuffix(suffix);
+        }
+
+        private static readonly string[] _guildTypes =
+        {
+            "",
+            "(Chaos)",
+            "(Order)"
+        };
+
+        public virtual void AddNameProperties(IPropertyList list)
+        {
+            base.AddNameProperties(list);
+
+            var guild = _guild;
+            if (guild == null || (!_displayGuildTitle && guild.Type == GuildType.Regular))
+            {
+                return;
+            }
+
+            var type = guild.Type >= 0 && (int)guild.Type < _guildTypes.Length ? _guildTypes[(int)guild.Type] : "";
+
+            var guildTitle = GuildTitle?.Trim() ?? "";
+
+            if (guildTitle.Length <= 0)
+            {
+                list.Add(guild.Name.FixHtml());
+            }
+            else if (NewGuildDisplay)
+            {
+                list.Add($"{guildTitle.FixHtmlFormattable()}, {guild.Name.FixHtmlFormattable()}");
+            }
+            else
+            {
+                list.Add($"{guildTitle.FixHtmlFormattable()}, {guild.Name.FixHtmlFormattable()} Guild {type}");
+            }
         }
 
         public override TimeSpan GetLogoutDelay()

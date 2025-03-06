@@ -23,7 +23,7 @@ namespace Server.Misc
                 {
                     case 0x002A: // *i resign from my guild*
                         {
-                            ((Guild)from.Guild)?.RemoveMember(from);
+                            ((from as PlayerMobile)?.Guild as Guild)?.RemoveMember(from);
 
                             break;
                         }

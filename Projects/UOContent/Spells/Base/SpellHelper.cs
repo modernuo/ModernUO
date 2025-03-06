@@ -409,29 +409,18 @@ namespace Server.Spells
 
         public static Guild GetGuildFor(Mobile m)
         {
-            var g = m.Guild as Guild;
-
-            if (g == null && m is BaseCreature c)
+            if (m is PlayerMobile pm)
             {
-                m = c.ControlMaster;
-
-                if (m != null)
-                {
-                    g = m.Guild as Guild;
-                }
-
-                if (g == null)
-                {
-                    m = c.SummonMaster;
-
-                    if (m != null)
-                    {
-                        g = m.Guild as Guild;
-                    }
-                }
+                return pm.Guild as Guild;
             }
 
-            return g;
+
+            if (m is BaseCreature c)
+            {
+                return GetGuildFor(c.GetMaster());
+            }
+
+            return null;
         }
 
         public static bool ValidIndirectTarget(Mobile from, Mobile to)

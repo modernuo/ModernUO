@@ -1,3 +1,4 @@
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server
@@ -10,7 +11,7 @@ namespace Server
             ObjectPropertyList.Enabled = ServerConfiguration.GetSetting("opl.enable", Core.AOS);
             var visibleDamage = ServerConfiguration.GetSetting("visibleDamage", Core.AOS);
             Mobile.VisibleDamageType = visibleDamage ? VisibleDamageType.Related : VisibleDamageType.None;
-            Mobile.GuildClickMessage = ServerConfiguration.GetSetting("guildClickMessage", !Core.AOS);
+            PlayerMobile.GuildClickMessage = ServerConfiguration.GetSetting("guildClickMessage", !Core.AOS);
             Mobile.AsciiClickMessage = ServerConfiguration.GetSetting("asciiClickMessage", !Core.AOS);
 
             Mobile.ActionDelay = ServerConfiguration.GetSetting("actionDelay", Core.AOS ? 1000 : 500);

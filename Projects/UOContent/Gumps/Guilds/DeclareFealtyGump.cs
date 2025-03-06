@@ -1,4 +1,5 @@
 using Server.Guilds;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Gumps
@@ -39,9 +40,9 @@ namespace Server.Gumps
                     {
                         var m = m_List[index];
 
-                        if (m?.Deleted == false)
+                        if (m?.Deleted == false && state.Mobile is PlayerMobile pm)
                         {
-                            state.Mobile.GuildFealty = m;
+                            pm.GuildFealty = m;
                         }
                     }
                 }

@@ -18,6 +18,7 @@ using System.Buffers;
 using System.IO;
 using Server.Engines.PartySystem;
 using Server.Guilds;
+using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -33,7 +34,7 @@ public static class MapUO
     {
         Mobile from = state.Mobile;
 
-        state.SendGuildMemberLocations(from, from.Guild as Guild, reader.ReadBoolean());
+        state.SendGuildMemberLocations(from, (from as PlayerMobile)?.Guild as Guild, reader.ReadBoolean());
     }
 
     public static void QueryPartyMemberLocations(NetState state, SpanReader reader)

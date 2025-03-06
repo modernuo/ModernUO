@@ -1,5 +1,6 @@
 using ModernUO.Serialization;
 using Server.Guilds;
+using Server.Mobiles;
 
 namespace Server.Items;
 
@@ -47,7 +48,7 @@ public partial class OrderShield : BaseShield
             return true;
         }
 
-        if (m.Guild is not Guild { Type: GuildType.Order })
+        if ((m as PlayerMobile)?.Guild is not Guild { Type: GuildType.Order })
         {
             m.FixedEffect(0x3728, 10, 13);
             Delete();

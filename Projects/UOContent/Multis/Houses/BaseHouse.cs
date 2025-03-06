@@ -2454,7 +2454,8 @@ namespace Server.Multis
 
                 if (info.Defender.Player && info.Defender.Alive &&
                     Core.Now - info.LastCombatTime < HouseRegion.CombatHeatDelay &&
-                    (m.Guild is not Guild attackerGuild || info.Defender.Guild is not Guild defenderGuild ||
+                    ((m as PlayerMobile)?.Guild is not Guild attackerGuild ||
+                     (info.Defender as PlayerMobile)?.Guild is not Guild defenderGuild ||
                      defenderGuild != attackerGuild && !defenderGuild.IsEnemy(attackerGuild)))
                 {
                     return true;
@@ -3532,7 +3533,8 @@ namespace Server.Multis
             m != null && CoOwners != null &&
             (IsOwner(m) || CoOwners.Contains(m) || !IsAosRules && AccountHandler.CheckAccount(m, m_Owner));
 
-        public bool IsGuildMember(Mobile m) => m != null && Owner?.Guild != null && m.Guild == Owner.Guild;
+        public bool IsGuildMember(Mobile m) => (Owner as PlayerMobile)?.Guild is Guild ownerGuild &&
+                                               (m as PlayerMobile)?.Guild == ownerGuild;
 
         public void RemoveKeys(Mobile m)
         {

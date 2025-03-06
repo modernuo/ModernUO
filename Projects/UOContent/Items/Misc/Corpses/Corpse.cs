@@ -169,7 +169,9 @@ public partial class Corpse : Container, ICarvable
         _timeOfDeath = Core.Now;
 
         _accessLevel = owner.AccessLevel;
-        _guild = owner.Guild as Guild;
+
+        // TODO: Should pet corpses be subject to guild notoriety?
+        _guild = (owner as PlayerMobile)?.Guild as Guild;
         _kills = owner.Kills;
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
 
