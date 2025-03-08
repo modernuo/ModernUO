@@ -1,4 +1,3 @@
-using System;
 using ModernUO.Serialization;
 using Server.Items;
 
@@ -7,17 +6,13 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public partial class ArcherGuard : BaseGuard
 {
-    private Timer _attackTimer;
-    private Timer _idleTimer;
+    private bool _shooting;
 
     [Constructible]
     public ArcherGuard(Mobile target = null) : base(target)
     {
         InitStats(100, 125, 25);
-        Title = "the guard";
-
         SpeechHue = Utility.RandomDyedHue();
-
         Hue = Race.Human.RandomSkinHue();
 
         if (Female = Utility.RandomBool())
@@ -107,34 +102,22 @@ public partial class ArcherGuard : BaseGuard
                     Say(500131); // Thou wilt regret thine actions, swine!
                 }
 
-                if (_attackTimer != null)
-                {
-                    _attackTimer.Stop();
-                    _attackTimer = null;
-                }
-
-                if (_idleTimer != null)
-                {
-                    _idleTimer.Stop();
-                    _idleTimer = null;
-                }
+                AttackTimer = null;
+                IdleTimer = null;
 
                 if (_focus != null)
                 {
-                    _attackTimer = new AttackTimer(this);
-                    _attackTimer.Start();
-                    ((AttackTimer)_attackTimer).DoOnTick();
+                    AttackTimer = new GuardAttackTimer(this);
+                    AttackTimer.DoOnTick();
                 }
                 else
                 {
-                    _idleTimer = new IdleTimer(this);
-                    _idleTimer.Start();
+                    IdleTimer = new GuardIdleTimer(this);
                 }
             }
-            else if (_focus == null && _idleTimer == null)
+            else if (_focus == null && IdleTimer == null && Spawner != null)
             {
-                _idleTimer = new IdleTimer(this);
-                _idleTimer.Start();
+                IdleTimer = new GuardIdleTimer(this);
             }
 
             this.MarkDirty();
@@ -145,245 +128,72 @@ public partial class ArcherGuard : BaseGuard
     {
         if (_focus?.Alive == true)
         {
-            new AvengeTimer(_focus).Start(); // If a guard dies, three more guards will spawn
+            new GuardAvengeTimer(_focus).Start(); // If a guard dies, three more guards will spawn
         }
 
         return base.OnBeforeDeath();
     }
 
-    [AfterDeserialization]
-    private void AfterDeserialization()
+    public override void NonLethalAttack(Mobile target)
     {
-        if (_focus != null)
+        if (!InRange(target, 20))
         {
-            _attackTimer = new AttackTimer(this);
-            _attackTimer.Start();
-        }
-        else
-        {
-            _idleTimer = new IdleTimer(this);
-            _idleTimer.Start();
-        }
-    }
-
-    public override void OnAfterDelete()
-    {
-        if (_attackTimer != null)
-        {
-            _attackTimer.Stop();
-            _attackTimer = null;
+            _shooting = false;
+            Focus = null;
+            return;
         }
 
-        if (_idleTimer != null)
+        if (!InLOS(target))
         {
-            _idleTimer.Stop();
-            _idleTimer = null;
+            _shooting = false;
+            TeleportTo(this, target.Location);
+            return;
         }
 
-        base.OnAfterDelete();
-    }
-
-    private class AvengeTimer : Timer
-    {
-        private readonly Mobile m_Focus;
-
-        // After 2.5 seconds, one guard will spawn every 1.0 second, three times
-        public AvengeTimer(Mobile focus) : base(TimeSpan.FromSeconds(2.5), TimeSpan.FromSeconds(1.0), 3) =>
-            m_Focus = focus;
-
-        protected override void OnTick()
+        if (!CanSee(target))
         {
-            Spawn(m_Focus, m_Focus, 1, true);
-        }
-    }
+            _shooting = false;
 
-    private class AttackTimer : Timer
-    {
-        private readonly ArcherGuard m_Owner;
-        // private bool m_Shooting;
-
-        public AttackTimer(ArcherGuard owner) : base(TimeSpan.FromSeconds(0.25), TimeSpan.FromSeconds(0.1)) =>
-            m_Owner = owner;
-
-        public void DoOnTick()
-        {
-            OnTick();
-        }
-
-        protected override void OnTick()
-        {
-            if (m_Owner.Deleted)
+            if (InRange(target, 2))
             {
-                Stop();
-                return;
-            }
-
-            m_Owner.Criminal = false;
-            m_Owner.Kills = 0;
-            m_Owner.Stam = m_Owner.StamMax;
-
-            var target = m_Owner.Focus;
-
-            if (target != null && (target.Deleted || !target.Alive || !m_Owner.CanBeHarmful(target)))
-            {
-                m_Owner.Focus = null;
-                Stop();
-                return;
-            }
-
-            if (m_Owner.Weapon is Fists)
-            {
-                m_Owner.Kill();
-                Stop();
-                return;
-            }
-
-            if (target != null && m_Owner.Combatant != target)
-            {
-                m_Owner.Combatant = target;
-            }
-
-            if (target == null)
-            {
-                Stop();
-            }
-            else
-            {
-                // <instakill>
-                TeleportTo(target);
-                target.BoltEffect(0);
-
-                if (target is BaseCreature creature)
+                if (UseSkill(SkillName.DetectHidden))
                 {
-                    creature.NoKillAwards = true;
+                    Say("Reveal!");
                 }
-
-                target.Damage(target.HitsMax, m_Owner);
-                target.Kill(); // just in case, maybe Damage is overridden on some shard
-
-                if (target.Corpse != null && !target.Player)
-                {
-                    target.Corpse.Delete();
-                }
-
-                m_Owner.Focus = null;
-                Stop();
-            } // </instakill>
-
-            /*else if (!m_Owner.InRange( target, 20 ))
-            {
-              m_Shooting = false;
-              m_Owner.Focus = null;
             }
-            else if (!m_Owner.InLOS( target ))
+            else if (!Move(GetDirectionTo(target) | Direction.Running) && OutOfMaxDistance(target))
             {
-              m_Shooting = false;
-              TeleportTo( target );
+                TeleportTo(this, target.Location);
             }
-            else if (!m_Owner.CanSee( target ))
-            {
-              m_Shooting = false;
 
-              if (!m_Owner.InRange( target, 2 ))
-              {
-                if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ))
-                  TeleportTo( target );
-              }
-              else
-              {
-                if (!m_Owner.UseSkill( SkillName.DetectHidden ) && Utility.Random( 50 ) == 0)
-                  m_Owner.Say( "Reveal!" );
-              }
-            }
-            else
-            {
-              if (m_Shooting && (TimeToSpare() || OutOfMaxDistance( target )))
-                m_Shooting = false;
-              else if (!m_Shooting && InMinDistance( target ))
-                m_Shooting = true;
-
-              if (!m_Shooting)
-              {
-                if (m_Owner.InRange( target, 1 ))
-                {
-                  if (!m_Owner.Move( (Direction)(m_Owner.GetDirectionTo( target ) - 4) | Direction.Running ) && OutOfMaxDistance( target ))
-                    TeleportTo( target ); // Too close, move away
-                }
-                else if (!m_Owner.InRange( target, 2 ))
-                {
-                  if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ))
-                    TeleportTo( target );
-                }
-              }
-            }*/
+            return;
         }
 
-        private bool TimeToSpare() => m_Owner.NextCombatTime - Core.TickCount > 1000;
-
-        private bool OutOfMaxDistance(IPoint2D target) => !m_Owner.InRange(target, m_Owner.Weapon.MaxRange);
-
-        private bool InMinDistance(IPoint2D target) => m_Owner.InRange(target, 4);
-
-        private void TeleportTo(IEntity target)
+        if (_shooting)
         {
-            var from = m_Owner.Location;
-            var to = target.Location;
+            if (TimeToSpare() || OutOfMaxDistance(target))
+            {
+                _shooting = false;
+            }
 
-            m_Owner.Location = to;
+            return;
+        }
 
-            Effects.SendLocationParticles(
-                EffectItem.Create(from, m_Owner.Map, EffectItem.DefaultDuration),
-                0x3728,
-                10,
-                10,
-                2023
-            );
-            Effects.SendLocationParticles(
-                EffectItem.Create(to, m_Owner.Map, EffectItem.DefaultDuration),
-                0x3728,
-                10,
-                10,
-                5023
-            );
+        if (InRange(target, 1) && !Move(GetDirectionTo(target) - 4 | Direction.Running) && OutOfMaxDistance(target))
+        {
+            TeleportTo(this, target.Location);
+            return;
+        }
 
-            m_Owner.PlaySound(0x1FE);
+        if (InMinDistance(target))
+        {
+            _shooting = true;
         }
     }
 
-    private class IdleTimer : Timer
-    {
-        private readonly ArcherGuard m_Owner;
-        private int m_Stage;
+    private bool TimeToSpare() => NextCombatTime - Core.TickCount > 1000;
 
-        public IdleTimer(ArcherGuard owner) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.5)) =>
-            m_Owner = owner;
+    private bool OutOfMaxDistance(IPoint2D target) => !InRange(target, Weapon.MaxRange);
 
-        protected override void OnTick()
-        {
-            if (m_Owner.Deleted)
-            {
-                Stop();
-                return;
-            }
-
-            if (m_Stage++ % 4 == 0 || !m_Owner.Move(m_Owner.Direction))
-            {
-                m_Owner.Direction = (Direction)Utility.Random(8);
-            }
-
-            if (m_Stage > 16)
-            {
-                Effects.SendLocationParticles(
-                    EffectItem.Create(m_Owner.Location, m_Owner.Map, EffectItem.DefaultDuration),
-                    0x3728,
-                    10,
-                    10,
-                    2023
-                );
-                m_Owner.PlaySound(0x1FE);
-
-                m_Owner.Delete();
-            }
-        }
-    }
+    private bool InMinDistance(IPoint2D target) => InRange(target, 4);
 }
