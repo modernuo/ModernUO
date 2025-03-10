@@ -8,6 +8,7 @@ using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Mobiles;
+using Server.Multis;
 using Server.Network;
 using Server.SkillHandlers;
 using Server.Spells;
@@ -18,6 +19,9 @@ using Server.Spells.Ninjitsu;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Text;
+using Server.Zulu;
+using Server.Zulu_Hotel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Items;
 
@@ -948,12 +952,12 @@ public abstract partial class BaseWeapon
 
         var bonus = _durabilityLevel switch
         {
-            WeaponDurabilityLevel.Durable        => 20,
-            WeaponDurabilityLevel.Substantial    => 50,
-            WeaponDurabilityLevel.Massive        => 70,
-            WeaponDurabilityLevel.Fortified      => 100,
+            WeaponDurabilityLevel.Durable => 20,
+            WeaponDurabilityLevel.Substantial => 50,
+            WeaponDurabilityLevel.Massive => 70,
+            WeaponDurabilityLevel.Fortified => 100,
             WeaponDurabilityLevel.Indestructible => 120,
-            _                                    => 0
+            _ => 0
         };
 
         if (Core.AOS)
@@ -1345,7 +1349,7 @@ public abstract partial class BaseWeapon
             theirValue = Math.Max(0.1, defValue + 50.0);
         }
 
-        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;;
+        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100; ;
 
         if (Core.AOS && chance < 0.02)
         {
@@ -1630,7 +1634,7 @@ public abstract partial class BaseWeapon
                 < 0.28 => defender.ArmsArmor,
                 < 0.43 => defender.HeadArmor,
                 < 0.65 => defender.LegsArmor,
-                _      => defender.ChestArmor
+                _ => defender.ChestArmor
             };
 
             if (armorItem is IWearableDurability armor)
@@ -1663,7 +1667,7 @@ public abstract partial class BaseWeapon
             < 0.28 => defender.ArmsArmor,
             < 0.43 => defender.HeadArmor,
             < 0.65 => defender.LegsArmor,
-            _      => defender.ChestArmor
+            _ => defender.ChestArmor
         };
 
         if (armorItem is IWearableDurability armor)
@@ -1681,7 +1685,7 @@ public abstract partial class BaseWeapon
                 < 0.28 => 0.14,
                 < 0.43 => 0.15,
                 < 0.65 => 0.22,
-                _      => 0.35
+                _ => 0.35
             };
 
             var from = (int)(virtualArmor * scalar) / 2;
@@ -1725,15 +1729,18 @@ public abstract partial class BaseWeapon
         return inPack switch
         {
             >= 5 => 100,
-            4    => 75,
-            3    => 50,
-            2    => 25,
-            _    => 0
+            4 => 75,
+            3 => 50,
+            2 => 25,
+            _ => 0
         };
     }
 
     public virtual void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1.0)
     {
+        OnHitZulu(attacker, defender, damageBonus);
+        return;
+
         if (MirrorImage.HasClone(defender) && defender.Skills.Ninjitsu.Value / 150.0 > Utility.RandomDouble())
         {
             foreach (var m in defender.GetMobilesInRange<Clone>(4))
@@ -2235,6 +2242,31 @@ public abstract partial class BaseWeapon
         }
     }
 
+    public virtual void OnHitZulu(Mobile attacker, Mobile defender, double damageBonus = 1.0)
+    {
+        PlaySwingAnimation(attacker);
+        PlayHurtAnimation(defender);
+
+        attacker.PlaySound(GetHitAttackSound(attacker, defender));
+        defender.PlaySound(GetHitDefendSound(attacker, defender));
+
+        ZuluDamageLog damageLog = ComputeDamageZulu(attacker, defender, true);
+        damageLog.attacker = attacker;
+        damageLog.defender = defender;
+
+        if (attacker is PlayerMobile pa)
+        {
+            pa.ZuluDamageSystem.AddDamageLog(damageLog, true);
+        }
+
+        if (defender is PlayerMobile pd)
+        {
+            pd.ZuluDamageSystem.AddDamageLog(damageLog, false);
+        }
+
+        //AddBlood(attacker, defender, damage)
+    }
+
     public virtual double GetAosDamage(Mobile attacker, int bonus, int dice, int sides)
     {
         var damage = Utility.Dice(dice, sides, bonus) * 100;
@@ -2460,30 +2492,30 @@ public abstract partial class BaseWeapon
 
         var damage = Utility.RandomMinMax(min, max);
 
-        if (Core.AOS)
+        switch (_damageLevel)
         {
-            return damage;
-        }
-
-        /* Apply damage level offset
-         * : Regular : 0
-         * : Ruin    : 1
-         * : Might   : 3
-         * : Force   : 5
-         * : Power   : 7
-         * : Vanq    : 9
-         */
-        if (_damageLevel != WeaponDamageLevel.Regular)
-        {
-            // Toward the end of T2A, calculations were changed
-            if (!Core.T2A)
-            {
-                damage += (int)_damageLevel;
-            }
-            else
-            {
-                damage += 2 * (int)_damageLevel - 1;
-            }
+            case WeaponDamageLevel.Regular:
+                break;
+            case WeaponDamageLevel.Ruin:
+                damage += 5;
+                break;
+            case WeaponDamageLevel.Might:
+                damage += 10;
+                break;
+            case WeaponDamageLevel.Force:
+                damage += 15;
+                break;
+            case WeaponDamageLevel.Power:
+                damage += 20;
+                break;
+            case WeaponDamageLevel.Vanq:
+                damage += 25;
+                break;
+            case WeaponDamageLevel.Devastation:
+                damage += 30;
+                break;
+            default:
+                break;
         }
 
         return damage;
@@ -2510,12 +2542,12 @@ public abstract partial class BaseWeapon
 
         return _accuracyLevel switch
         {
-            WeaponAccuracyLevel.Accurate     => 2,
+            WeaponAccuracyLevel.Accurate => 2,
             WeaponAccuracyLevel.Surpassingly => 4,
-            WeaponAccuracyLevel.Eminently    => 6,
-            WeaponAccuracyLevel.Exceedingly  => 8,
-            WeaponAccuracyLevel.Supremely    => 10,
-            _                                => 0
+            WeaponAccuracyLevel.Eminently => 6,
+            WeaponAccuracyLevel.Exceedingly => 8,
+            WeaponAccuracyLevel.Supremely => 10,
+            _ => 0
         };
     }
 
@@ -2670,6 +2702,47 @@ public abstract partial class BaseWeapon
         return ScaleDamageByDurability((int)damage);
     }
 
+    public virtual double ScaleDamageOldZulu(Mobile attacker, double damage, bool checkSkills)
+    {
+        if (checkSkills)
+        {
+            // Passively check tactics for gain
+            attacker.CheckSkill(SkillName.Tactics, 0.0, attacker.Skills.Tactics.Cap);
+
+            // Passively check Anatomy for gain
+            attacker.CheckSkill(SkillName.Anatomy, 0.0, attacker.Skills.Anatomy.Cap);
+        }
+
+        /* Compute tactics modifier
+         * :   0.0 = 50% loss
+         * :  50.0 = unchanged
+         * : 100.0 = 50% bonus
+         */
+        damage += damage * ((attacker.Skills.Tactics.Value - 50.0) / 100.0);
+
+        /* Compute strength modifier
+         * : 1% bonus for every 5 strength
+         */
+        var modifiers = attacker.Str / 5.0 / 100.0;
+
+        /* Compute anatomy modifier
+         * : 1% bonus for every 5 points of anatomy
+         * : +10% bonus at Grandmaster or higher
+         */
+        var anatomyValue = attacker.Skills.Anatomy.Value;
+        modifiers += anatomyValue / 5.0 / 100.0;
+
+        if (anatomyValue >= 100.0)
+        {
+            modifiers += 0.1;
+        }
+
+        // Apply bonuses
+        damage += damage * modifiers;
+
+        return ScaleDamageByDurability((int)damage);
+    }
+
     public virtual int ScaleDamageByDurability(int damage)
     {
         var scale = 100;
@@ -2698,6 +2771,155 @@ public abstract partial class BaseWeapon
         }
 
         return damage;
+    }
+
+
+    public virtual ZuluDamageLog ComputeDamageZulu(Mobile attacker, Mobile defender, bool checkSkills)
+    {
+        ZuluDamageLog damageLog = new ZuluDamageLog();
+        damageLog.Type = ZuluDamageType.Physical;
+
+        damageLog.rawDamage = GetBaseDamage(attacker);
+        damageLog.finalDamage = damageLog.rawDamage;
+
+        if (checkSkills)
+        {
+            // Passively check tactics for gain
+            attacker.CheckSkill(SkillName.Tactics, 0.0, attacker.Skills.Tactics.Cap);
+
+            // Passively check Anatomy for gain
+            attacker.CheckSkill(SkillName.Anatomy, 0.0, attacker.Skills.Anatomy.Cap);
+        }
+
+        /* Compute tactics modifier
+         * :   0.0 = 50% loss
+         * :  50.0 = unchanged
+         * : 100.0 = 50% bonus
+         */
+        damageLog.skillAttackMod = damageLog.finalDamage * ((attacker.Skills.Tactics.Value - 50.0) / 100.0);
+
+        /* Compute strength modifier
+         * : 1% bonus for every 5 strength
+         */
+
+        damageLog.strMod = damageLog.finalDamage * attacker.Str / 5.0 / 100.0;
+        /* Compute anatomy modifie
+         * : 1% bonus for every 5 points of anatomy
+         * : +10% bonus at Grandmaster or higher
+         */
+        var anatomyValue = attacker.Skills.Anatomy.Value;
+        damageLog.skillAttackMod += damageLog.finalDamage * attacker.Skills.Anatomy.Value / 5.0 / 100.0;
+
+        damageLog.finalDamage += damageLog.strMod;
+        damageLog.finalDamage += damageLog.skillAttackMod;
+
+
+        if (attacker is IZuluClassed { ZuluClass: { } attackerClass })
+        {
+            if (attackerClass.Type == ZuluClassType.Warrior)
+            {
+                damageLog.attacckerClassMod = damageLog.finalDamage * attackerClass.BonusLevel;
+                damageLog.finalDamage += damageLog.attacckerClassMod;
+            }
+
+            if (attackerClass.Type == ZuluClassType.Mage)
+            {
+                damageLog.attacckerClassMod = (damageLog.finalDamage / attackerClass.BonusLevel) * -1;
+                damageLog.finalDamage += damageLog.attacckerClassMod;
+            }
+        }
+
+        if (defender is IZuluClassed { ZuluClass: { } defenderClass })
+        {
+            if (defenderClass.Type == ZuluClassType.Warrior)
+            {
+                damageLog.defenderClassMod = damageLog.finalDamage / defenderClass.BonusLevel * -1;
+                damageLog.finalDamage += damageLog.defenderClassMod;
+            }
+
+            if (defenderClass.Type == ZuluClassType.Mage)
+            {
+                damageLog.defenderClassMod = (damageLog.finalDamage / defenderClass.BonusLevel);
+                damageLog.finalDamage += damageLog.defenderClassMod;
+            }
+        }
+
+
+        if (defender is PlayerMobile && attacker is PlayerMobile)
+        {
+            damageLog.Mod = ZuluDamageMod.PVP;
+        }
+        else
+        {
+            damageLog.Mod = ZuluDamageMod.PVM;
+            damageLog.finalDamage /= 2;
+        }
+
+        //PARRY:
+
+        if (defender.FindItemOnLayer(Layer.TwoHanded) is BaseShield shield)
+        {
+            var ar = shield.ArmorRating;
+            damageLog.parryChance = (defender.Skills.Parry.Value - ar * 2.0) / 100.0;
+
+            if (damageLog.parryChance < 0.01)
+            {
+                damageLog.parryChance = 0.01;
+            }
+
+            if (defender.CheckSkill(SkillName.Parry, damageLog.parryChance))
+            {
+                damageLog.isParryied = true;
+                damageLog.parryMod -= Math.Min(damageLog.finalDamage, this.Skill == SkillName.Archery ? (int)ar : (int)(ar / 2.0));
+                damageLog.finalDamage += damageLog.parryMod;
+
+                defender.FixedEffect(0x37B9, 10, 16);
+
+                if (Utility.Random(100) < 25) // 25% chance to lower durability
+                {
+                    shield.TryLowerDurability(Utility.Random(2));
+                }
+            }
+        }
+
+        var chance = Utility.RandomDouble();
+
+        Item armorItem = chance switch
+        {
+            < 0.07 => defender.NeckArmor,
+            < 0.14 => defender.HandArmor,
+            < 0.28 => defender.ArmsArmor,
+            < 0.43 => defender.HeadArmor,
+            < 0.65 => defender.LegsArmor,
+            _ => defender.ChestArmor
+        };
+
+        if (armorItem is IWearableDurability armor)
+        {
+            armor.OnHit(this, (int)damageLog.finalDamage);
+        }
+
+        var virtualArmor = defender.VirtualArmor + defender.VirtualArmorMod;
+
+        if (virtualArmor > 0)
+        {
+            double scalar = chance switch
+            {
+                < 0.14 => 0.07,
+                < 0.28 => 0.14,
+                < 0.43 => 0.15,
+                < 0.65 => 0.22,
+                _ => 0.35
+            };
+
+            var from = (int)(virtualArmor * scalar) / 2;
+            var to = (int)(virtualArmor * scalar);
+
+            damageLog.armorMod -= Utility.Random(from, to - from + 1);
+            damageLog.finalDamage += damageLog.armorMod;
+        }
+
+        return damageLog;
     }
 
     public virtual void PlayHurtAnimation(Mobile from)
@@ -2783,16 +3005,16 @@ public abstract partial class BaseWeapon
                     {
                         action = Animation switch
                         {
-                            WeaponAnimation.Wrestle   => 26,
-                            WeaponAnimation.Bash1H    => 26,
-                            WeaponAnimation.Pierce1H  => 26,
-                            WeaponAnimation.Slash1H   => 26,
-                            WeaponAnimation.Bash2H    => 29,
-                            WeaponAnimation.Pierce2H  => 29,
-                            WeaponAnimation.Slash2H   => 29,
-                            WeaponAnimation.ShootBow  => 27,
+                            WeaponAnimation.Wrestle => 26,
+                            WeaponAnimation.Bash1H => 26,
+                            WeaponAnimation.Pierce1H => 26,
+                            WeaponAnimation.Slash1H => 26,
+                            WeaponAnimation.Bash2H => 29,
+                            WeaponAnimation.Pierce2H => 29,
+                            WeaponAnimation.Slash2H => 29,
+                            WeaponAnimation.ShootBow => 27,
                             WeaponAnimation.ShootXBow => 28,
-                            _                         => 26
+                            _ => 26
                         };
                     }
 
@@ -2845,24 +3067,24 @@ public abstract partial class BaseWeapon
     {
         var oreType = _resource switch
         {
-            CraftResource.DullCopper    => 1053108,
-            CraftResource.ShadowIron    => 1053107,
-            CraftResource.Copper        => 1053106,
-            CraftResource.Bronze        => 1053105,
-            CraftResource.Gold          => 1053104,
-            CraftResource.Agapite       => 1053103,
-            CraftResource.Verite        => 1053102,
-            CraftResource.Valorite      => 1053101,
+            CraftResource.DullCopper => 1053108,
+            CraftResource.ShadowIron => 1053107,
+            CraftResource.Copper => 1053106,
+            CraftResource.Bronze => 1053105,
+            CraftResource.Gold => 1053104,
+            CraftResource.Agapite => 1053103,
+            CraftResource.Verite => 1053102,
+            CraftResource.Valorite => 1053101,
             CraftResource.SpinedLeather => 1061118,
             CraftResource.HornedLeather => 1061117,
             CraftResource.BarbedLeather => 1061116,
-            CraftResource.RedScales     => 1060814,
-            CraftResource.YellowScales  => 1060818,
-            CraftResource.BlackScales   => 1060820,
-            CraftResource.GreenScales   => 1060819,
-            CraftResource.WhiteScales   => 1060821,
-            CraftResource.BlueScales    => 1060815,
-            _                           => 0
+            CraftResource.RedScales => 1060814,
+            CraftResource.YellowScales => 1060818,
+            CraftResource.BlackScales => 1060820,
+            CraftResource.GreenScales => 1060819,
+            CraftResource.WhiteScales => 1060821,
+            CraftResource.BlueScales => 1060815,
+            _ => 0
         };
 
         var name = Name;
@@ -3509,12 +3731,12 @@ public abstract partial class BaseWeapon
         articleAn = _durabilityLevel is WeaponDurabilityLevel.Indestructible;
         return _durabilityLevel switch
         {
-            WeaponDurabilityLevel.Durable        => "durable",
-            WeaponDurabilityLevel.Substantial    => "substantial",
-            WeaponDurabilityLevel.Massive        => "massive",
-            WeaponDurabilityLevel.Fortified      => "fortified",
+            WeaponDurabilityLevel.Durable => "durable",
+            WeaponDurabilityLevel.Substantial => "substantial",
+            WeaponDurabilityLevel.Massive => "massive",
+            WeaponDurabilityLevel.Fortified => "fortified",
             WeaponDurabilityLevel.Indestructible => "indestructible",
-            _                                    => null
+            _ => null
         };
     }
 
@@ -3524,12 +3746,12 @@ public abstract partial class BaseWeapon
         articleAn = _accuracyLevel is WeaponAccuracyLevel.Accurate or WeaponAccuracyLevel.Eminently;
         return _accuracyLevel switch
         {
-            WeaponAccuracyLevel.Accurate     => "accurate",
+            WeaponAccuracyLevel.Accurate => "accurate",
             WeaponAccuracyLevel.Surpassingly => "surpassingly accurate",
-            WeaponAccuracyLevel.Eminently    => "eminently accurate",
-            WeaponAccuracyLevel.Exceedingly  => "exceedingly accurate",
-            WeaponAccuracyLevel.Supremely    => "supremely accurate",
-            _                                => null
+            WeaponAccuracyLevel.Eminently => "eminently accurate",
+            WeaponAccuracyLevel.Exceedingly => "exceedingly accurate",
+            WeaponAccuracyLevel.Supremely => "supremely accurate",
+            _ => null
         };
     }
 
@@ -3538,12 +3760,12 @@ public abstract partial class BaseWeapon
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => _damageLevel switch
         {
-            WeaponDamageLevel.Ruin  => "ruin",
+            WeaponDamageLevel.Ruin => "ruin",
             WeaponDamageLevel.Might => "might",
             WeaponDamageLevel.Force => "force",
             WeaponDamageLevel.Power => "power",
-            WeaponDamageLevel.Vanq  => "vanquishing",
-            _                       => null
+            WeaponDamageLevel.Vanq => "vanquishing",
+            _ => null
         };
     }
 

@@ -9214,4 +9214,5 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         Criminal = false;
     }
+
 }

@@ -35,6 +35,8 @@ using Server.Spells.Ninjitsu;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
+using Server.Zulu;
+using Server.Zulu_Hotel;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
 using CalcMoves = Server.Movement.Movement;
 using QuestOfferGump = Server.Engines.MLQuests.Gumps.QuestOfferGump;
@@ -94,7 +96,7 @@ namespace Server.Mobiles
         DismountRecovery = 1070859 // You cannot mount while recovering from a dismount special maneuver.
     }
 
-    public partial class PlayerMobile : Mobile, IHonorTarget, IHasSteps
+    public partial class PlayerMobile : Mobile, IHonorTarget, IHasSteps, IZuluClassed
     {
         private static bool m_NoRecursion;
 
@@ -4892,5 +4894,28 @@ namespace Server.Mobiles
                 }
             }
         }
+
+        #region ZuluHotel
+        private ZuluClass m_ZuluClass;
+        private ZuluDamageSystem _zuluDamageSystem;
+
+
+        public ZuluClass ZuluClass
+        {
+            get => m_ZuluClass ??= new ZuluClass(this);
+        }
+
+        public ZuluDamageSystem ZuluDamageSystem
+        {
+            get
+            {
+                if (_zuluDamageSystem is null)
+                    _zuluDamageSystem = new ZuluDamageSystem(this.Serial);
+                return _zuluDamageSystem;
+            }
+        }
+
+        #endregion
+
     }
 }

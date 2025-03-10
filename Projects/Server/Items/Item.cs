@@ -23,6 +23,7 @@ using Server.Items;
 using Server.Logging;
 using Server.Network;
 using Server.Targeting;
+using Server.Zulu;
 
 namespace Server;
 
@@ -194,6 +195,14 @@ public enum ExpandFlag
 
 public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEntity, IValueLinkListNode<Item>
 {
+
+    #region ZuluHotel
+
+    public Dictionary<SkillName, int> SkillModifier = new Dictionary<SkillName, int>();
+    public Dictionary<ZuluDamageType, int> Protections = new Dictionary<ZuluDamageType, int>();
+    public Dictionary<ZuluDamageType, int> AttackModifiers = new Dictionary<ZuluDamageType, int>();
+
+    #endregion
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
 
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?

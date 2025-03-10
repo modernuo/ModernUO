@@ -75,7 +75,7 @@ public partial class BaseShield : BaseArmor
         return damage;
     }
 
-    private void TryLowerDurability(int wear)
+    public void TryLowerDurability(int wear)
     {
         if (wear <= 0 || MaxHitPoints <= 0)
         {
