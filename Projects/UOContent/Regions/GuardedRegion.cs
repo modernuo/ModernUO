@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Server.Collections;
 using Server.Mobiles;
 
 namespace Server.Regions;
@@ -187,7 +188,7 @@ public class GuardedRegion : BaseRegion
             return;
         }
 
-        if (!AllowReds && m.Kills >= 5)
+        if (!AllowReds && (m.Kills >= 5 || m is BaseCreature { AlwaysMurderer: true }))
         {
             CheckGuardCandidate(m);
         }
@@ -251,7 +252,7 @@ public class GuardedRegion : BaseRegion
 
     public void CheckGuardCandidate(Mobile m)
     {
-        if (IsDisabled() || !IsGuardCandidate(m))
+        if (!IsGuardCandidate(m))
         {
             return;
         }
@@ -276,16 +277,18 @@ public class GuardedRegion : BaseRegion
 
             foreach (var v in m.GetMobilesInRange(8))
             {
-                if (!v.Player && v != m && !IsGuardCandidate(v) &&
-                    ((v as BaseCreature)?.IsHumanInTown() ?? v.Body.IsHuman && v.Region.IsPartOf(this)))
+                if (v.Player || v == m || IsGuardCandidate(v) ||
+                    !((v as BaseCreature)?.IsHumanInTown() ?? v.Body.IsHuman && v.Region.IsPartOf(this)))
                 {
-                    var dist = m.GetDistanceToSqrt(v);
+                    continue;
+                }
 
-                    if (fakeCall == null || dist < prio)
-                    {
-                        fakeCall = v;
-                        prio = dist;
-                    }
+                var dist = m.GetDistanceToSqrt(v);
+
+                if (fakeCall == null || dist < prio)
+                {
+                    fakeCall = v;
+                    prio = dist;
                 }
             }
 
@@ -308,32 +311,48 @@ public class GuardedRegion : BaseRegion
 
     public void CallGuards(Point3D p)
     {
-        if (IsDisabled())
-        {
-            return;
-        }
+        using var queue = PooledRefQueue<Mobile>.Create();
 
         foreach (var m in Map.GetMobilesInRange(p, 14))
         {
-            if (IsGuardCandidate(m) &&
-                (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))
+            if (!IsGuardCandidate(m) || !m.Region.IsPartOf(this) && !m_GuardCandidates.ContainsKey(m))
             {
-                if (m_GuardCandidates.Remove(m, out var timer))
-                {
-                    timer.Stop();
-                }
-
-                MakeGuard(m);
-                m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
-                break;
+                continue;
             }
+
+            if (m_GuardCandidates.Remove(m, out var timer))
+            {
+                timer.Stop();
+            }
+
+            queue.Enqueue(m);
+            break;
+        }
+
+        while (queue.Count > 0)
+        {
+            var m = queue.Dequeue();
+            MakeGuard(m);
+            m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
         }
     }
 
-    public bool IsGuardCandidate(Mobile m) =>
-        m is not BaseGuard && m.Alive && m.AccessLevel <= AccessLevel.Player && !m.Blessed &&
-        (m is not BaseCreature creature || !creature.IsInvulnerable) && !IsDisabled() &&
-        (!AllowReds && m.Kills >= 5 || m.Criminal);
+    public bool IsGuardCandidate(Mobile m)
+    {
+        if (m is BaseGuard || !m.Alive || m.AccessLevel > AccessLevel.Player || m.Blessed)
+        {
+            return false;
+        }
+
+        var bc = m as BaseCreature;
+
+        if (bc?.IsInvulnerable == true)
+        {
+            return false;
+        }
+
+        return !AllowReds && (m.Kills >= 5 || bc?.AlwaysMurderer == true) || m.Criminal;
+    }
 
     private class GuardTimer : Timer
     {
