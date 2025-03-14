@@ -26,6 +26,10 @@ public abstract partial class BaseHealer : BaseVendor
     {
         _price = price;
 
+        Title = "the wandering healer";
+
+        Name = Name + " " + Title;
+
         if (!IsInvulnerable)
         {
             AI = AIType.AI_Mage;
