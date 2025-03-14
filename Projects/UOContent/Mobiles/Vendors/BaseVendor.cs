@@ -96,7 +96,7 @@ namespace Server.Mobiles
 
         public virtual NpcGuild NpcGuild => NpcGuild.None;
 
-        public override bool IsInvulnerable => Core.LBR || _vendorInvulnerable;
+        public override bool IsInvulnerable => true;
 
         public virtual DateTime NextTrickOrTreat { get; set; }
 

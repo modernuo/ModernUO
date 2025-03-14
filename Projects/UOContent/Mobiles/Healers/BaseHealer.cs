@@ -68,7 +68,7 @@ public abstract partial class BaseHealer : BaseVendor
     protected override List<SBInfo> SBInfos { get; } = new();
 
     public override bool IsActiveVendor => false;
-    public override bool IsInvulnerable => false;
+    public override bool IsInvulnerable => true;
 
     public override VendorShoeType ShoeType => VendorShoeType.Sandals;
 
