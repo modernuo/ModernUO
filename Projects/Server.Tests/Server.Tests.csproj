@@ -3,6 +3,7 @@
         <IsPackable>false</IsPackable>
         <Configurations>Debug;Release;Analyze</Configurations>
         <RootNamespace>Server.Tests</RootNamespace>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />

@@ -6,15 +6,16 @@
         <OutDir>..\..\Distribution\Assemblies</OutDir>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <Configurations>Debug;Release;Analyze</Configurations>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
-        <Message Text="Application: Removing distribution files..."/>
-        <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true"/>
-        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true"/>
-        <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true"/>
-        <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true"/>
-        <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true"/>
-        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true"/>
-        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true"/>
+        <Message Text="Application: Removing distribution files..." />
+        <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
     </Target>
 </Project>

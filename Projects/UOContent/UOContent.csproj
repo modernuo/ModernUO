@@ -7,6 +7,7 @@
         <OutDir>..\..\Distribution\Assemblies</OutDir>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <Configurations>Debug;Release;Analyze</Configurations>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="UOContent: Removing distribution assemblies..." />
