@@ -9,7 +9,7 @@ namespace Server.Spells.Fifth
             "Summon Creature",
             "Kal Xen",
             16,
-            false,
+            true,
             Reagent.Bloodmoss,
             Reagent.MandrakeRoot,
             Reagent.SpidersSilk
