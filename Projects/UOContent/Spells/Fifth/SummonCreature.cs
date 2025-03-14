@@ -65,13 +65,13 @@ namespace Server.Spells.Fifth
 
                     creature.ControlSlots = 2;
 
-                    var duration = Core.Expansion switch
-                    {
-                        Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
-                        _ => TimeSpan.FromSeconds((int)Caster.Skills.Magery.Value * 4)
-                    };
+                    //var duration = Core.Expansion switch
+                    //{
+                    //    Expansion.None => TimeSpan.FromSeconds(2.0),
+                    //    _ => TimeSpan.FromSeconds((int)Caster.Skills.Magery.Value * 4)
+                    //};
 
-                    SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);
+                    SpellHelper.Summon(creature, Caster, 0x215, TimeSpan.FromSeconds(0), true, true);
                 }
                 catch
                 {
