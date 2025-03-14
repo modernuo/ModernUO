@@ -63,7 +63,6 @@ namespace Server.Spells.Fifth
                 {
                     var creature = m_Types.RandomElement().CreateInstance<BaseCreature>();
 
-                    // creature.ControlSlots = 2;
                     creature.ControlSlots = 2;
 
                     var duration = Core.Expansion switch
