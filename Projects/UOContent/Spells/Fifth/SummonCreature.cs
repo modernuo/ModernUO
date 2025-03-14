@@ -22,21 +22,15 @@ namespace Server.Spells.Fifth
             typeof(PolarBear),
             typeof(GrizzlyBear),
             typeof(BlackBear),
-            typeof(Horse),
             typeof(Walrus),
-            typeof(Chicken),
             typeof(Scorpion),
             typeof(GiantSerpent),
-            typeof(Llama),
             typeof(Alligator),
             typeof(GreyWolf),
             typeof(Slime),
             typeof(Eagle),
             typeof(Gorilla),
             typeof(SnowLeopard),
-            typeof(Pig),
-            typeof(Hind),
-            typeof(Rabbit)
         };
 
         public SummonCreatureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
