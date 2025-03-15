@@ -505,7 +505,12 @@ public abstract class BaseAI
                             }
                         case 0x165: // all follow
                             {
-                                BeginPickTarget(e.Mobile, OrderType.Follow);
+                                if (m_Mobile.CheckControlChance(e.Mobile))
+                                {
+                                    m_Mobile.ControlTarget = e.Mobile;
+                                    m_Mobile.ControlOrder = OrderType.Follow;
+                                }
+
                                 return;
                             }
                         case 0x166: // all guard
