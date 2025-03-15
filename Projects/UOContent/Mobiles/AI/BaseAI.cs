@@ -816,10 +816,10 @@ public abstract class BaseAI
             return false;
         }
 
-        if (CheckFlee())
-        {
-            return true;
-        }
+        //if (CheckFlee())
+        //{
+        //    return true;
+        //}
 
         switch (Action)
         {
@@ -841,11 +841,11 @@ public abstract class BaseAI
                     return DoActionGuard();
                 }
 
-            case ActionType.Flee:
-                {
-                    m_Mobile.OnActionFlee();
-                    return DoActionFlee();
-                }
+            //case ActionType.Flee:
+            //    {
+            //        m_Mobile.OnActionFlee();
+            //        return DoActionFlee();
+            //    }
 
             case ActionType.Interact:
                 {
@@ -897,13 +897,13 @@ public abstract class BaseAI
                     break;
                 }
 
-            case ActionType.Flee:
-                {
-                    m_Mobile.Warmode = true;
-                    m_Mobile.FocusMob = null;
-                    m_Mobile.SetCurrentSpeedToActive();
-                    break;
-                }
+            //case ActionType.Flee:
+            //    {
+            //        m_Mobile.Warmode = true;
+            //        m_Mobile.FocusMob = null;
+            //        m_Mobile.SetCurrentSpeedToActive();
+            //        break;
+            //    }
 
             case ActionType.Interact:
                 {
