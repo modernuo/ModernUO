@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Server": {
+      "commandName": "Project"
+    },
+    "ServerExe": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\zchis\\Documents\\Github\\Modern-UO\\Distribution\\ModernUO.exe"
+    }
+  }
+}
