@@ -63,7 +63,7 @@ namespace Server.Mobiles
             }
 
             VirtualArmor = 40;
-            ControlSlots = 3;
+            ControlSlots = 2;
             CanSwim = true;
         }
 

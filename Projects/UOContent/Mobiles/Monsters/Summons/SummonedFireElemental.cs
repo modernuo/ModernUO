@@ -62,7 +62,7 @@ namespace Server.Mobiles
             }
 
             VirtualArmor = 40;
-            ControlSlots = 4;
+            ControlSlots = 2;
 
             AddItem(new LightSource());
         }
