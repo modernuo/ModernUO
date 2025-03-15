@@ -21,6 +21,8 @@ namespace Server.Mobiles
                 Body = 164;
             }
 
+            BaseSoundID = 655;
+
             SetStr(200);
             SetDex(200);
             SetInt(100);
@@ -48,12 +50,11 @@ namespace Server.Mobiles
             Karma = 0;
 
             VirtualArmor = 40;
-            ControlSlots = Core.SE ? 2 : 1;
+            ControlSlots = 2;
         }
 
         public override string CorpseName => "an energy vortex corpse";
         public override bool DeleteCorpseOnDeath => Summoned;
-        public override bool AlwaysMurderer => true; // Or Llama vortices will appear gray.
 
         public override double DispelDifficulty => 80.0;
         public override double DispelFocus => 20.0;

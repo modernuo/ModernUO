@@ -3,14 +3,14 @@ using Server.Mobiles;
 
 namespace Server.Spells.Eighth
 {
-    public class EnergyVortexSpell : MagerySpell, ITargetingSpell<IPoint3D>
+    public class EnergyVortexSpell : MagerySpell
     {
         private static readonly SpellInfo _info = new(
             "Energy Vortex",
             "Vas Corp Por",
             260,
             9032,
-            false,
+            true,
             Reagent.Bloodmoss,
             Reagent.BlackPearl,
             Reagent.MandrakeRoot,
@@ -22,25 +22,6 @@ namespace Server.Spells.Eighth
         }
 
         public override SpellCircle Circle => SpellCircle.Eighth;
-
-        public void Target(IPoint3D p)
-        {
-            var map = Caster.Map;
-
-            SpellHelper.GetSurfaceTop(ref p);
-
-            if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
-            {
-                Caster.SendLocalizedMessage(501942); // That location is blocked.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
-            {
-                // TODO: Check Demo for pre-T2A.
-                var duration = Core.T2A ? TimeSpan.FromSeconds(90.0) : TimeSpan.FromSeconds(Utility.Random(80, 40));
-
-                BaseCreature.Summon(new EnergyVortex(), false, Caster, new Point3D(p), 0x212, duration);
-            }
-        }
 
         public override bool CheckCast()
         {
@@ -60,7 +41,19 @@ namespace Server.Spells.Eighth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true, retryOnLos: true);
+            if (CheckSequence())
+            {
+                var duration = Core.Expansion switch
+                {
+                    Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
+                    // T2A -> Current
+                    _ => TimeSpan.FromSeconds(4 * Math.Max(5, Caster.Skills.Magery.Value)),
+                };
+
+                SpellHelper.Summon(new EnergyVortex(), Caster, 0x212, duration, true, true);
+            }
+
+            FinishSequence();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Server.Spells.Eighth
             "Kal Vas Xen Ylem",
             269,
             9020,
-            false,
+            true,
             Reagent.Bloodmoss,
             Reagent.MandrakeRoot,
             Reagent.SpidersSilk
@@ -49,7 +49,7 @@ namespace Server.Spells.Eighth
                     _ => TimeSpan.FromSeconds(4 * Math.Max(5, Caster.Skills.Magery.Value)),
                 };
 
-                SpellHelper.Summon(new SummonedEarthElemental(), Caster, 0x217, duration, false, false);
+                SpellHelper.Summon(new SummonedEarthElemental(), Caster, 0x217, duration, true, true);
             }
 
             FinishSequence();

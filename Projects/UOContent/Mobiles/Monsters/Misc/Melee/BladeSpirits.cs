@@ -40,7 +40,7 @@ namespace Server.Mobiles
             Karma = 0;
 
             VirtualArmor = 40;
-            ControlSlots = Core.SE ? 2 : 1;
+            ControlSlots = 2;
         }
 
         public override string CorpseName => "a blade spirit corpse";

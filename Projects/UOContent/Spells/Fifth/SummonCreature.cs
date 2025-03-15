@@ -81,19 +81,5 @@ namespace Server.Spells.Fifth
 
             FinishSequence();
         }
-
-        public override TimeSpan GetCastDelay()
-        {
-            var delay = base.GetCastDelay() * (Core.AOS ? 5 : 4);
-
-            // SA made everything 0.25 slower, but that is applied after the scalar
-            // So remove 0.25 * 5 to compensate
-            if (Core.SA)
-            {
-                delay -= TimeSpan.FromSeconds(1.25);
-            }
-
-            return delay;
-        }
     }
 }

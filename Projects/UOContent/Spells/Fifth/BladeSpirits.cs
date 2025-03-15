@@ -3,14 +3,14 @@ using Server.Mobiles;
 
 namespace Server.Spells.Fifth
 {
-    public class BladeSpiritsSpell : MagerySpell, ITargetingSpell<IPoint3D>
+    public class BladeSpiritsSpell : MagerySpell
     {
         private static readonly SpellInfo _info = new(
             "Blade Spirits",
             "In Jux Hur Ylem",
             266,
             9040,
-            false,
+            true,
             Reagent.BlackPearl,
             Reagent.MandrakeRoot,
             Reagent.Nightshade
@@ -22,44 +22,6 @@ namespace Server.Spells.Fifth
 
         public override SpellCircle Circle => SpellCircle.Fifth;
 
-        public void Target(IPoint3D p)
-        {
-            var map = Caster.Map;
-
-            SpellHelper.GetSurfaceTop(ref p);
-
-            if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
-            {
-                Caster.SendLocalizedMessage(501942); // That location is blocked.
-            }
-            else if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
-            {
-                var duration = TimeSpan.FromSeconds(Core.AOS ? 120 : Utility.Random(80, 40));
-                BaseCreature.Summon(new BladeSpirits(), false, Caster, new Point3D(p), 0x212, duration);
-            }
-        }
-
-        public override TimeSpan GetCastDelay()
-        {
-            var scalar = Core.Expansion switch
-            {
-                >= Expansion.SE  => 3,
-                >= Expansion.AOS => 5,
-                _                => 4
-            };
-
-            var delay = base.GetCastDelay() * scalar;
-
-            // SA made everything 0.25s slower, but that is applied after the scalar
-            // So remove 0.25 * scalar to compensate
-            if (Core.SA)
-            {
-                delay -= TimeSpan.FromSeconds(0.25 * scalar);
-            }
-
-            return delay;
-        }
-
         public override bool CheckCast()
         {
             if (!base.CheckCast())
@@ -67,7 +29,7 @@ namespace Server.Spells.Fifth
                 return false;
             }
 
-            if (Caster.Followers + (Core.SE ? 2 : 1) > Caster.FollowersMax)
+            if (Caster.Followers + 2 > Caster.FollowersMax)
             {
                 Caster.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
                 return false;
@@ -78,7 +40,18 @@ namespace Server.Spells.Fifth
 
         public override void OnCast()
         {
-            Caster.Target = new SpellTarget<IPoint3D>(this, allowGround: true, retryOnLos: true);
+            if (CheckSequence())
+            {
+                var duration = Core.Expansion switch
+                {
+                    Expansion.None => TimeSpan.FromSeconds(Caster.Skills.Magery.Value),
+                    // T2A -> Current
+                    _ => TimeSpan.FromSeconds(4 * Math.Max(5, Caster.Skills.Magery.Value)),
+                };
+                SpellHelper.Summon(new BladeSpirits(), Caster, 0x212, duration, true, true);
+            }
+
+            FinishSequence();
         }
     }
 }
