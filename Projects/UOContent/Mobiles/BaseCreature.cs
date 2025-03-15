@@ -2496,6 +2496,11 @@ namespace Server.Mobiles
             {
                 if (!Core.ML || ct != OrderType.Follow && ct != OrderType.Stop && ct != OrderType.Stay)
                 {
+                    if (ct == OrderType.Follow || ct == OrderType.Come)
+                    {
+                        Warmode = false;
+                        return;
+                    }
                     AIObject.OnAggressiveAction(aggressor);
                 }
                 else
