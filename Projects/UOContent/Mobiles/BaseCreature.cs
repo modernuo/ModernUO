@@ -494,7 +494,9 @@ namespace Server.Mobiles
         public virtual bool AllowFemaleTamer => true;
         public virtual bool SubdueBeforeTame => false;
         public virtual bool StatLossAfterTame => SubdueBeforeTame;
-        public virtual bool ReduceSpeedWithDamage => true;
+        //public virtual bool ReduceSpeedWithDamage => true;
+        public virtual bool ReduceSpeedWithDamage => false;     // Do not reduce speed with damage by default
+
         public virtual bool IsSubdued => SubdueBeforeTame && Hits < HitsMax / 10;
 
         public virtual bool Commandable => true;
