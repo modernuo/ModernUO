@@ -12,9 +12,28 @@ using static Server.Attributes;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(10, false)]
+[SerializationGenerator(11, false)]
 public abstract partial class BaseSpawner : Item, ISpawner
 {
+    private void MigrateFrom(V10Content content)
+    {
+        _guid = content.Guid;
+        _returnOnDeactivate = content.ReturnOnDeactivate;
+        _entries = content.Entries;
+        _walkingRange = content.WalkingRange;
+        _wayPoint = content.WayPoint;
+        _group = content.Group;
+        _minDelay = content.MinDelay;
+        _maxDelay = content.MaxDelay;
+        _team = content.Team;
+        _homeRange = content.HomeRange;
+        _end = content.End;
+        _spawnBoundsStart = Point3D.Zero;
+        _spawnBoundsEnd = Point3D.Zero;
+        _spawnBoundsEnabled = false;
+        _spawnLocationIsHome = false;
+    }
+
     [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.Developer)]
@@ -65,6 +84,61 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [SerializableField(12)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private DateTime _end;
+
+    [SerializableProperty(13)]
+    [CommandProperty(AccessLevel.Developer)]
+    public Point3D SpawnBoundsStart
+    {
+        get => _spawnBoundsStart;
+        set
+        {
+            if (_spawnBoundsEnd != Point3D.Zero && (value.X > _spawnBoundsEnd.X || value.Y > _spawnBoundsEnd.Y))
+            {
+                _spawnBoundsStart = _spawnBoundsEnd;
+            }
+            else
+            {
+                _spawnBoundsStart = value;
+            }
+
+            this.MarkDirty();
+        }
+    }
+
+    [SerializableProperty(14)]
+    [CommandProperty(AccessLevel.Developer)]
+    public Point3D SpawnBoundsEnd
+    {
+        get => _spawnBoundsEnd;
+        set
+        {
+            if (_spawnBoundsStart != Point3D.Zero && (value.X <= _spawnBoundsStart.X || value.Y <= _spawnBoundsStart.Y))
+            {
+                _spawnBoundsEnd = _spawnBoundsStart;
+                _spawnBoundsStart = value;
+            }
+            else
+            {
+                _spawnBoundsEnd = value;
+            }
+
+            this.MarkDirty();
+        }
+    }
+
+    [InvalidateProperties]
+    [SerializableField(15)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private bool _spawnBoundsEnabled;
+
+    /// <summary>
+    /// If true, the home location of the spawn is the location where it spawned
+    /// If false, the home location of the spawn is the location of the spawner
+    /// </summary>
+    [InvalidateProperties]
+    [SerializableField(16)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private bool _spawnLocationIsHome;
 
     private InternalTimer _timer;
 
@@ -129,6 +203,15 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.GetProperty("homeRange", options, out int homeRange);
         json.GetProperty("walkingRange", options, out int walkingRange);
         _walkingRange = walkingRange;
+
+        json.GetProperty("spawnStart", options, out Point3D spawnStart);
+        _spawnBoundsStart = spawnStart;
+        json.GetProperty("spawnEnd", options, out Point3D spawnEnd);
+        _spawnBoundsEnd = spawnEnd;
+        json.GetProperty("spawnBoundsEnabled", options, out bool spawnBoundsEnabled);
+        _spawnBoundsEnabled = spawnBoundsEnabled;
+        json.GetProperty("spawnLocationIsHome", options, out bool homeRangeIsRelative);
+        _spawnLocationIsHome = homeRangeIsRelative;
 
         InitSpawn(amount, minDelay, maxDelay, team, homeRange);
 
@@ -263,6 +346,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.SetProperty("homeRange", options, HomeRange);
         json.SetProperty("walkingRange", options, WalkingRange);
         json.SetProperty("entries", options, Entries);
+        json.SetProperty("spawnBoundsStart", options, SpawnBoundsStart);
+        json.SetProperty("spawnBoundsEnd", options, SpawnBoundsEnd);
+        json.SetProperty("spawnBoundsEnabled", options, SpawnBoundsEnabled);
+        json.SetProperty("spawnLocationIsHome", options, SpawnLocationIsHome);
     }
 
     public abstract Point3D GetSpawnPosition(ISpawnable spawned, Map map);
@@ -680,10 +767,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 Spawned.Add(m, entry);
                 entry.AddToSpawned(m);
 
-                var loc = m is BaseVendor ? Location : GetSpawnPosition(m, map);
+                var spawnLocation = m is BaseVendor ? Location : GetSpawnPosition(m, map);
 
-                m.OnBeforeSpawn(loc, map);
-                m.MoveToWorld(loc, map);
+                m.OnBeforeSpawn(spawnLocation, map);
+                m.MoveToWorld(spawnLocation, map);
 
                 if (m is BaseCreature c)
                 {
@@ -697,8 +784,18 @@ public abstract partial class BaseSpawner : Item, ISpawner
                         c.Team = _team;
                     }
 
-                    c.Home = Location;
-                    c.HomeMap = Map;
+                    // If true, the home location of the mob is the location where it spawned
+                    // If false, the home location of the mob is the location of the spawner
+                    if (_spawnLocationIsHome)
+                    {
+                        c.Home = spawnLocation;
+                        c.HomeMap = map;
+                    }
+                    else
+                    {
+                        c.Home = Location;
+                        c.HomeMap = Map;
+                    }
                 }
 
                 m.Spawner = this;

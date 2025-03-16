@@ -108,8 +108,19 @@ public partial class Spawner : BaseSpawner
         // Try 10 times to find a valid location.
         for (var i = 0; i < 10; i++)
         {
-            var x = Location.X + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
-            var y = Location.Y + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
+            int x, y;
+
+            // If the spawner has a defined range, use it
+            if (SpawnBoundsEnabled && SpawnBoundsStart != Point3D.Zero && SpawnBoundsEnd != Point3D.Zero)
+            {
+                x = Utility.RandomMinMax(SpawnBoundsStart.X, SpawnBoundsEnd.X);
+                y = Utility.RandomMinMax(SpawnBoundsStart.Y, SpawnBoundsEnd.Y);
+            }
+            else
+            {
+                x = Location.X + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
+                y = Location.Y + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
+            }
 
             var mapZ = map.GetAverageZ(x, y);
 
