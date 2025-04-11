@@ -37,7 +37,7 @@
         <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
         <PackageReference Include="LibDeflate.Bindings" Version="1.0.2.120" />
         <PackageReference Include="PollGroup" Version="1.6.1" />
-        <PackageReference Include="System.IO.Hashing" Version="9.0.2" />
+        <PackageReference Include="System.IO.Hashing" Version="9.0.4" />
 
         <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.9.1" />
         <PackageReference Include="ModernUO.Serialization.Generator" Version="2.12.20" />
