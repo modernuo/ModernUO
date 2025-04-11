@@ -234,13 +234,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private static readonly Queue<Mobile> m_DeltaQueue = new();
 
-    private static readonly string[] m_GuildTypes =
-    {
-        "",
-        " (Chaos)",
-        " (Order)"
-    };
-
     private static bool _disableCastParalyze = true;
 
     public static void Configure()
@@ -267,7 +260,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private MobileDelta m_DeltaFlags;
     private Direction m_Direction;
-    private bool m_DisplayGuildTitle;
 
     private TimerExecutionToken _expireAggrTimerToken;
     private TimerExecutionToken _expireCombatantTimerToken;
@@ -280,8 +272,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private int m_Followers, m_FollowersMax;
     private bool m_Frozen;
     private TimerExecutionToken _frozenTimerToken;
-    private BaseGuild m_Guild;
-    private string m_GuildTitle;
 
     private VirtualHairInfo _hair;
     public VirtualHairInfo Hair => _hair ??= new VirtualHairInfo(HairItemID, HairHue);
@@ -1341,44 +1331,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public int YellHue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string GuildTitle
-    {
-        get => m_GuildTitle;
-        set
-        {
-            var old = m_GuildTitle;
-
-            if (old != value)
-            {
-                m_GuildTitle = value;
-
-                if (m_Guild?.Disbanded == false && m_GuildTitle != null)
-                {
-                    SendLocalizedMessage(1018026, true, m_GuildTitle); // Your guild title has changed :
-                }
-
-                InvalidateProperties();
-
-                OnGuildTitleChange(old);
-            }
-        }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool DisplayGuildTitle
-    {
-        get => m_DisplayGuildTitle;
-        set
-        {
-            m_DisplayGuildTitle = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile GuildFealty { get; set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
     public string NameMod
     {
         get => m_NameMod;
@@ -1460,30 +1412,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             LastStrGain = value;
             LastIntGain = value;
             LastDexGain = value;
-        }
-    }
-
-    public BaseGuild Guild
-    {
-        get => m_Guild;
-        set
-        {
-            var old = m_Guild;
-
-            if (old != value)
-            {
-                if (value == null)
-                {
-                    GuildTitle = null;
-                }
-
-                m_Guild = value;
-
-                Delta(MobileDelta.Noto);
-                InvalidateProperties();
-
-                OnGuildChange(old);
-            }
         }
     }
 
@@ -1703,8 +1631,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public static bool DisableHiddenSelfClick { get; set; } = true;
 
     public static bool AsciiClickMessage { get; set; } = true;
-
-    public static bool GuildClickMessage { get; set; } = true;
 
     public static bool OldPropertyTitles { get; set; }
 
@@ -2283,7 +2209,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(36); // version
+        writer.Write(37); // version
 
         writer.WriteDeltaTime(LastStrGain);
         writer.WriteDeltaTime(LastIntGain);
@@ -2330,12 +2256,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         writer.Write(MagicDamageAbsorb);
 
-        writer.Write(GuildFealty);
-
-        writer.Write(m_Guild);
-
-        writer.Write(m_DisplayGuildTitle);
-
         writer.Write(CanSwim);
 
         writer.Write(Squelched);
@@ -2358,7 +2278,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         writer.Write(m_Location);
         writer.Write(m_Body);
         writer.Write(m_Name);
-        writer.Write(m_GuildTitle);
         writer.Write(m_Criminal);
         writer.Write(m_Kills);
         writer.Write(SpeechHue);
@@ -2437,8 +2356,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         SendRemovePacket();
-
-        m_Guild?.OnDelete(this);
 
         Deleted = true;
 
@@ -3282,42 +3199,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             prefix = " ";
         }
 
-        var guild = m_Guild;
         var hasTitle = PropertyTitle && !string.IsNullOrEmpty(Title);
-        var hasGuild = guild != null && (m_Player || m_DisplayGuildTitle);
 
-        string suffix = hasTitle switch
-        {
-            true when hasGuild  => $" {Title} [{guild.Abbreviation.FixHtmlFormattable()}]",
-            true                => $" {Title}",
-            false when hasGuild => $" [{guild.Abbreviation.FixHtmlFormattable()}]",
-            _                   => " "
-        };
+        string suffix = hasTitle ? $"{Title}" : "";
 
-        list.Add(1050045, $"{prefix}\t{Name ?? " "}\t{ApplyNameSuffix(suffix)}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-
-        if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
-        {
-            var type = guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length ? m_GuildTypes[(int)guild.Type] : "";
-
-            var guildTitle = GuildTitle?.Trim() ?? "";
-
-            if (guildTitle.Length > 0)
-            {
-                if (NewGuildDisplay)
-                {
-                    list.Add($"{guildTitle.FixHtmlFormattable()}, {guild.Name.FixHtmlFormattable()}");
-                }
-                else
-                {
-                    list.Add($"{guildTitle.FixHtmlFormattable()}, {guild.Name.FixHtmlFormattable()} Guild{type}");
-                }
-            }
-            else
-            {
-                list.Add(guild.Name.FixHtml());
-            }
-        }
+        list.Add(1050045, $"{prefix}\t{Name ?? " "}\t{ApplyNameSuffix(suffix).DefaultIfNullOrEmpty(" ")}"); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
     }
 
     public virtual void GetChildProperties(IPropertyList list, Item item)
@@ -6088,8 +5974,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         var version = reader.ReadInt();
 
+        GuildInfo guildInfo = version <= 36 ? new GuildInfo(this) : null;
+
         switch (version)
         {
+            case 37: // Moved guild to PlayerMobile
             case 36: // Moved virtues to VirtueSystem
             case 35: // Moved short term murders to PlayerMurderSystem
             case 34: // Moved Stabled to PlayerMobile
@@ -6244,19 +6133,28 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             case 13:
                 {
-                    GuildFealty = reader.ReadEntity<Mobile>();
+                    if (guildInfo != null)
+                    {
+                        guildInfo.GuildFealty = reader.ReadEntity<Mobile>();
+                    }
 
                     goto case 12;
                 }
             case 12:
                 {
-                    m_Guild = reader.ReadEntity<BaseGuild>();
+                    if (guildInfo != null)
+                    {
+                        guildInfo.Guild = reader.ReadEntity<BaseGuild>();
+                    }
 
                     goto case 11;
                 }
             case 11:
                 {
-                    m_DisplayGuildTitle = reader.ReadBool();
+                    if (guildInfo != null)
+                    {
+                        guildInfo.DisplayGuildTitle = reader.ReadBool();
+                    }
 
                     goto case 10;
                 }
@@ -6326,11 +6224,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             case 0:
                 {
-                    if (version < 11)
-                    {
-                        m_DisplayGuildTitle = true;
-                    }
-
                     if (version < 3)
                     {
                         m_StatCap = 225;
@@ -6345,7 +6238,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     m_Location = reader.ReadPoint3D();
                     m_Body = new Body(reader.ReadInt());
                     m_Name = reader.ReadString();
-                    m_GuildTitle = reader.ReadString();
+
+                    if (guildInfo != null)
+                    {
+                        guildInfo.GuildTitle = reader.ReadString();
+                    }
+
                     m_Criminal = reader.ReadBool();
                     m_Kills = reader.ReadInt();
                     SpeechHue = reader.ReadInt();
@@ -6445,6 +6343,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         Utility.Intern(ref m_Title);
         Utility.Intern(ref m_Language);
+
+        if (guildInfo != null)
+        {
+            AddToGuildMigration(guildInfo);
+        }
     }
 
     public void ConvertHair()
@@ -7152,15 +7055,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public virtual bool CanBeRenamedBy(Mobile from) =>
         from.AccessLevel >= AccessLevel.GameMaster && from.m_AccessLevel > m_AccessLevel;
 
-    public virtual void OnGuildTitleChange(string oldTitle)
-    {
-    }
-
     public virtual void OnAfterNameChange(string oldName, string newName)
-    {
-    }
-
-    public virtual void OnGuildChange(BaseGuild oldGuild)
     {
     }
 
@@ -7867,35 +7762,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         if (Deleted || AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
         {
             return;
-        }
-
-        if (GuildClickMessage)
-        {
-            var guild = m_Guild;
-
-            if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
-            {
-                var title = GuildTitle?.Trim() ?? "";
-                string type;
-
-                if (guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length)
-                {
-                    type = m_GuildTypes[(int)guild.Type];
-                }
-                else
-                {
-                    type = "";
-                }
-
-                var text = string.Format(
-                    title.Length <= 0 ? "[{1}]{2}" : "[{0}, {1}]{2}",
-                    title,
-                    guild.Abbreviation,
-                    type
-                );
-
-                PrivateOverheadMessage(MessageType.Regular, SpeechHue, true, text, from.NetState);
-            }
         }
 
         int hue;

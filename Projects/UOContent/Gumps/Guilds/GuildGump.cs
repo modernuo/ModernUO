@@ -1,4 +1,5 @@
 using Server.Guilds;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Gumps
@@ -21,7 +22,7 @@ namespace Server.Gumps
 
             AddHtml(20, 15, 200, 35, guild.Name);
 
-            var leader = guild.Leader;
+            var leader = guild.Leader as PlayerMobile;
 
             if (leader != null)
             {
@@ -35,7 +36,8 @@ namespace Server.Gumps
             AddButton(20, 50, 4005, 4007, 1);
             AddHtmlLocalized(55, 50, 100, 20, 1013022); // Loyal to
 
-            var fealty = beholder.GuildFealty;
+            var pm = beholder as PlayerMobile;
+            var fealty = pm?.GuildFealty;
 
             if (fealty == null || !guild.IsMember(fealty))
             {
@@ -57,7 +59,7 @@ namespace Server.Gumps
 
             AddButton(215, 50, 4005, 4007, 2);
             AddHtmlLocalized(250, 50, 170, 20, 1013023);                                       // Display guild abbreviation
-            AddHtmlLocalized(250, 70, 50, 20, beholder.DisplayGuildTitle ? 1011262 : 1011263); // on/off
+            AddHtmlLocalized(250, 70, 50, 20, pm?.DisplayGuildTitle == true ? 1011262 : 1011263); // on/off
 
             AddButton(20, 100, 4005, 4007, 3);
             AddHtmlLocalized(55, 100, 470, 30, 1011086); // View the current roster.
@@ -159,7 +161,10 @@ namespace Server.Gumps
                     }
                 case 2: // Toggle display abbreviation
                     {
-                        m_Mobile.DisplayGuildTitle = !m_Mobile.DisplayGuildTitle;
+                        if (m_Mobile is PlayerMobile pm)
+                        {
+                            pm.DisplayGuildTitle = !pm.DisplayGuildTitle;
+                        }
 
                         EnsureClosed(m_Mobile);
                         m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
