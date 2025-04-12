@@ -43,6 +43,15 @@ public class NameVerificationTests
         Assert.True(NameVerification.ValidateVendorName(name));
     }
 
+    [Theory]
+    [InlineData("Blacksmith 123")]
+    [InlineData("Baker-Smith")]
+    [InlineData("*Innkeeper*")]
+    public void ValidateVendorName_ValidNames_ReturnsFalse(string name)
+    {
+        Assert.False(NameVerification.ValidateVendorName(name));
+    }
+
     [Fact]
     public void Validate_MinimumLengthName_ReturnsTrue()
     {

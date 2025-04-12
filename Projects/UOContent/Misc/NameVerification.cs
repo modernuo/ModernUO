@@ -6,6 +6,16 @@ namespace Server.Misc;
 
 public static class NameVerification
 {
+    public static readonly SearchValues<char> AlphaNumeric = SearchValues.Create(
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+        'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+        'U', 'V', 'W', 'X', 'Y', 'Z',
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+        'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+        'u', 'v', 'w', 'x', 'y', 'z'
+    );
+
     public static readonly SearchValues<char> Alphabetic = SearchValues.Create(
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
         'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
@@ -154,9 +164,12 @@ public static class NameVerification
             // We don't have exceptions, so we might be limited to letters or numbers
             var allowed = allowLetters switch
             {
+                // If we don't allow exceptions, then non-alphanumeric is not allowed
+                true when allowDigits && maxExceptions == 0 => AlphaNumeric,
                 true when !allowDigits => Alphabetic,
                 false when allowDigits => Numeric,
-                _                      => null // Everything is allowed! Use `Utility.FixHtml()` to stop weird behavior
+                // Everything has been allowed! Use `Utility.FixHtml()` to stop weird behavior
+                _                      => null
             };
 
             if (allowed != null && name.ContainsAnyExcept(allowed))

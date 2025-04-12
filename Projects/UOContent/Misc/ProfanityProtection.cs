@@ -124,7 +124,7 @@ public static class ProfanityProtection
             true,
             true,
             true,
-            0,
+            int.MaxValue, // allow all non-alphanumeric characters
             null,
             Disallowed,
             DisallowedSearchValues
