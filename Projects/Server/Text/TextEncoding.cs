@@ -147,8 +147,16 @@ public static class TextEncoding
             while (index != -1)
             {
                 sb.Append(chars[..index]);
-                chars = chars[(index + 1)..];
-                index = chars.IndexOfAnyExceptInRange((char)0x20, (char)0xFFFD);
+
+                if (index + 1 < chars.Length)
+                {
+                    chars = chars[(index + 1)..];
+                    index = chars.IndexOfAnyExceptInRange((char)0x20, (char)0xFFFD);
+                }
+                else
+                {
+                    index = -1;
+                }
             }
 
             if (chars.Length > 0)
