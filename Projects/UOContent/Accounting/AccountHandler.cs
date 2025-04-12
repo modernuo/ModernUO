@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.CompilerServices;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Engines.CharacterCreation;
@@ -241,25 +242,24 @@ public static class AccountHandler
     public static bool CanCreate(IPAddress ip) =>
         !IPTable.TryGetValue(ip, out var result) || result < MaxAccountsPerIP;
 
-    private static Account CreateAccount(NetState state, string un, string pw)
-    {
-        if (un.Length == 0 || pw.Length == 0)
-        {
-            return null;
-        }
-
-        var unSpan = un.AsSpan();
-        var pwSpan = pw.AsSpan();
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValidUsername(ReadOnlySpan<char> username) =>
+        username.Length > 0 &&
         // Usernames must not start with a space, end with a space, or end with a period
-        var isSafe = !(un.StartsWith(' ') || un.EndsWith(' ') || un.EndsWith('.')) &&
-                     // Usernames must only contain characters [0x20 -> 0x7E], and not contain any forbidden characters
-                     !unSpan.ContainsAnyExceptInRange((char)0x20, (char)0x7E) &&
-                     !unSpan.ContainsAny(ForbiddenChars) &&
-                     // Passwords must have characters [0x20 -> 0x7E]
-                     !pwSpan.ContainsAnyExceptInRange((char)0x20, (char)0x7E);
+        !(username.StartsWith(' ') || username.EndsWith(' ') || username.EndsWith('.')) &&
+        // Usernames must only contain characters [0x20 -> 0x7E], and not contain any forbidden characters
+        !username.ContainsAnyExceptInRange((char)0x20, (char)0x7E) &&
+        !username.ContainsAny(ForbiddenChars);
 
-        if (!isSafe)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValidPassword(ReadOnlySpan<char> password) =>
+        password.Length > 0 &&
+        // Passwords must have characters [0x20 -> 0x7E]
+        !password.ContainsAnyExceptInRange((char)0x20, (char)0x7E);
+
+    private static Account CreateAccount(NetState state, string username, string password)
+    {
+        if (!IsValidUsername(username) || !IsValidPassword(password))
         {
             return null;
         }
@@ -269,18 +269,16 @@ public static class AccountHandler
             logger.Information(
                 $"Login: {{NetState}} Account '{{Username}}' not created, ip already has {{AccountCount}} account{(MaxAccountsPerIP == 1 ? "" : "s")}.",
                 state,
-                un,
+                username,
                 MaxAccountsPerIP
             );
 
             return null;
         }
 
-        logger.Information("Login: {NetState}: Creating new account '{Username}'", state, un);
+        logger.Information("Login: {NetState}: Creating new account '{Username}'", state, username);
 
-        var a = new Account(un, pw);
-
-        return a;
+        return new Account(username, password);
     }
 
     public static void EventSink_AccountLogin(AccountLoginEventArgs e)
