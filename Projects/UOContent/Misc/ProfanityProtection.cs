@@ -36,7 +36,7 @@ public static class ProfanityProtection
     );
 
     public static readonly string[] Disallowed =
-    {
+    [
         "jigaboo",
         "chigaboo",
         "wop",
@@ -82,7 +82,7 @@ public static class ProfanityProtection
         "twat",
         "shit",
         "fuck",
-    };
+    ];
 
     public static readonly SearchValues<string> DisallowedSearchValues = SearchValues.Create(
         Disallowed,
