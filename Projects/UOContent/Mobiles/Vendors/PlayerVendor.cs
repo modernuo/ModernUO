@@ -1232,9 +1232,9 @@ public partial class PlayerVendor : Mobile
                 return;
             }
 
-            var name = text.Trim();
+            var name = text.AsSpan().Trim();
 
-            if (!NameVerification.Validate(name, 1, 20, true, true, true, 0, NameVerification.Empty))
+            if (!NameVerification.ValidateVendorName(name))
             {
                 m_Vendor.SayTo(from, "That name is unacceptable.");
                 return;
@@ -1261,9 +1261,9 @@ public partial class PlayerVendor : Mobile
                 return;
             }
 
-            var name = text.Trim();
+            var name = text.AsSpan().Trim();
 
-            if (!NameVerification.Validate(name, 1, 20, true, true, true, 0, NameVerification.Empty))
+            if (!NameVerification.ValidateVendorName(name))
             {
                 m_Vendor.SayTo(from, "That name is unacceptable.");
                 return;
