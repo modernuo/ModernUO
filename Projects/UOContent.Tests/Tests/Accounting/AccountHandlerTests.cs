@@ -8,6 +8,7 @@ public class AccountHandlerTests
     [Theory]
     [InlineData("", false)]                 // Empty username
     [InlineData(" ", false)]                // Single space
+    [InlineData(".", false)]                // Single period
     [InlineData("Invalid<Char", false)]     // Contains forbidden character
     [InlineData("EndsWithSpace ", false)]   // Ends with space
     [InlineData("EndsWithPeriod.", false)]  // Ends with period
@@ -17,8 +18,7 @@ public class AccountHandlerTests
     [InlineData("ValidUser!@#", true)]      // Contains valid special characters
     public void IsValidUsername_ValidatesCorrectly(string username, bool expected)
     {
-        var result = AccountHandler.IsValidUsername(username);
-        Assert.Equal(expected, result);
+        Assert.Equal(expected, AccountHandler.IsValidUsername(username));
     }
 
     [Theory]
@@ -30,7 +30,6 @@ public class AccountHandlerTests
     [InlineData("ValidPassWithLength1234567890", true)] // Long valid password
     public void IsValidPassword_ValidatesCorrectly(string password, bool expected)
     {
-        var result = AccountHandler.IsValidPassword(password);
-        Assert.Equal(expected, result);
+        Assert.Equal(expected, AccountHandler.IsValidPassword(password));
     }
 }

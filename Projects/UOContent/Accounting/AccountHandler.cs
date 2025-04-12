@@ -246,7 +246,7 @@ public static class AccountHandler
     public static bool IsValidUsername(ReadOnlySpan<char> username) =>
         username.Length > 0 &&
         // Usernames must not start with a space, end with a space, or end with a period
-        !(username.StartsWith(' ') || username.EndsWith(' ') || username.EndsWith('.')) &&
+        !username.StartsWith(' ') && !username.EndsWith(' ') && !username.EndsWith('.') &&
         // Usernames must only contain characters [0x20 -> 0x7E], and not contain any forbidden characters
         !username.ContainsAnyExceptInRange((char)0x20, (char)0x7E) &&
         !username.ContainsAny(ForbiddenChars);
