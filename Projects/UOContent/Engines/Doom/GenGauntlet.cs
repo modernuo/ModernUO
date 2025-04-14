@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 
@@ -272,16 +273,21 @@ namespace Server.Engines.Doom
                 FacialHairHue = 0x482
             };
 
-            var items = new List<Item>(dealer.Items);
+            using var toDelete = PooledRefQueue<Item>.Create();
 
-            for (var i = 0; i < items.Count; ++i)
+            for (var i = 0; i < dealer.Items.Count; ++i)
             {
-                var item = items[i];
+                var item = dealer.Items[i];
 
                 if (item.Layer is not Layer.ShopBuy and not Layer.ShopResale and not Layer.ShopSell)
                 {
-                    item.Delete();
+                    toDelete.Enqueue(item);
                 }
+            }
+
+            while (toDelete.Count > 0)
+            {
+                toDelete.Dequeue().Delete();
             }
 
             dealer.AddItem(new FloppyHat(1));
