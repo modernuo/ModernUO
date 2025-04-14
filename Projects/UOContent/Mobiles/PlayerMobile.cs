@@ -1547,13 +1547,17 @@ namespace Server.Mobiles
                 // Eject all from house
                 from.RevealingAction();
 
-                foreach (var item in context.Foundation.GetItems())
+                var list = context.Foundation.GetItems();
+                for (var i = 0; i < list.Count; i++)
                 {
+                    var item = list[i];
                     item.Location = context.Foundation.BanLocation;
                 }
 
-                foreach (var mobile in context.Foundation.GetMobiles())
+                using var mobiles = context.Foundation.GetMobilesPooled();
+                for (var i = 0; i < mobiles.Count; i++)
                 {
+                    var mobile = mobiles[i];
                     mobile.Location = context.Foundation.BanLocation;
                 }
 

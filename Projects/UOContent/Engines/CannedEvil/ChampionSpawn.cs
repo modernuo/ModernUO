@@ -18,6 +18,7 @@ using System.Net;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.Virtues;
 using Server.Gumps;
 using Server.Items;
@@ -1364,14 +1365,14 @@ public class ChampionSpawnRegion : BaseRegion
         global = Math.Max(global, 1 + Spawn.Level);	//This is a guesstimate.  TODO: Verify & get exact values // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
     }
 
+    private static readonly HashSet<IPAddress> _addresses = [];
+
     public override void OnEnter(Mobile m)
     {
         if (!m.Player || m.AccessLevel != AccessLevel.Player || Spawn.Active)
         {
             return;
         }
-
-        Region parent = Parent ?? this;
 
         if (Spawn.ReadyToActivate)
         {
@@ -1384,27 +1385,29 @@ public class ChampionSpawnRegion : BaseRegion
             return;
         }
 
-        List<Mobile> players = parent.GetPlayers();
-        List<IPAddress> addresses = new List<IPAddress>();
+        using var players = (Parent ?? this).GetPlayersPooled();
+
         for (var i = 0; i < players.Count; i++)
         {
-            if (players[i].AccessLevel == AccessLevel.Player && players[i].NetState != null &&
-                !addresses.Contains(players[i].NetState.Address) && !((PlayerMobile)players[i]).Young)
+            var player = players[i];
+            if (player.AccessLevel == AccessLevel.Player && player.NetState != null && !((PlayerMobile)player).Young)
             {
-                addresses.Add(players[i].NetState.Address);
+                _addresses.Add(player.NetState.Address);
             }
         }
 
-        if (addresses.Count >= 15)
+        if (_addresses.Count >= 15)
         {
-            foreach (Mobile player in players)
+            for (var i = 0; i < players.Count; i++)
             {
-                player.SendMessage(0x20, Spawn.BroadcastMessage);
+                players[i].SendMessage(0x20, Spawn.BroadcastMessage);
             }
 
             Spawn.ActivatedByProximity = true;
             Spawn.BeginRestart(TimeSpan.FromMinutes(5.0));
         }
+
+        _addresses.Clear();
     }
 
     public override bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation)

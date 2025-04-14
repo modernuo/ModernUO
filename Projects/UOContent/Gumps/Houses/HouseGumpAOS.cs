@@ -870,7 +870,7 @@ namespace Server.Gumps
                     }
 
                     var items = house.GetItems();
-                    var mobiles = house.GetMobiles();
+                    using var mobiles = house.GetMobilesPooled();
 
                     newHouse.MoveToWorld(
                         new Point3D(
@@ -1216,7 +1216,7 @@ namespace Server.Gumps
                                         );
 
                                         var r = m_House.Region;
-                                        var list = r.GetMobiles();
+                                        using var list = r.GetMobilesPooled();
 
                                         for (var i = 0; i < list.Count; ++i)
                                         {
@@ -1258,7 +1258,7 @@ namespace Server.Gumps
                                         }
 
                                         var r = m_House.Region;
-                                        var list = r.GetMobiles();
+                                        using var list = r.GetMobilesPooled();
 
                                         for (var i = 0; i < list.Count; ++i)
                                         {
