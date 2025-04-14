@@ -5387,6 +5387,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 chars[i] = textSpan[i] != ' ' ? ghostChars.RandomElement() : ' ';
             }
+
+            text = new string(chars[..length]);
         }
         finally
         {
@@ -5396,7 +5398,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
 
-        text = new string(chars[..length]);
         context = m_GhostMutateContext;
         return true;
     }
