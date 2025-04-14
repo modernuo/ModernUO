@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Gumps;
 using Server.Items;
 using Server.Multis;
@@ -112,7 +113,7 @@ namespace Server.Commands.Generic
 
             if (okay)
             {
-                var foundations = new List<HouseFoundation>();
+                using var foundations = PooledRefQueue<HouseFoundation>.Create();
                 flushToLog = list.Count > 20;
 
                 for (var i = 0; i < list.Count; ++i)
@@ -127,7 +128,7 @@ namespace Server.Commands.Generic
 
                                 if (!foundations.Contains(house))
                                 {
-                                    foundations.Add(house);
+                                    foundations.Enqueue(house);
                                 }
 
                                 break;
@@ -146,9 +147,9 @@ namespace Server.Commands.Generic
                     }
                 }
 
-                foreach (var house in foundations)
+                while (foundations.Count > 0)
                 {
-                    house.Delta(ItemDelta.Update);
+                    foundations.Dequeue().Delta(ItemDelta.Update);
                 }
             }
             else
