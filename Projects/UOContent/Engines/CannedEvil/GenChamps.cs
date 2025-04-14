@@ -14,7 +14,7 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Logging;
 
 namespace Server.Engines.CannedEvil;
@@ -67,18 +67,18 @@ public static class ChampionGenerator
         */
 
         //We assume that all champion spawns are generated here.
-        List<ChampionSpawn> spawns = [];
+        using var spawns = PooledRefQueue<IEntity>.Create();
         foreach (Item item in World.Items.Values)
         {
             if (item is ChampionSpawn spawn)
             {
-                spawns.Add(spawn);
+                spawns.Enqueue(spawn);
             }
         }
 
-        for (int i = spawns.Count - 1; i >= 0; i--)
+        while (spawns.Count > 0)
         {
-            spawns[i].Delete();
+            spawns.Dequeue().Delete();
         }
 
         Process(DungeonLocations);
