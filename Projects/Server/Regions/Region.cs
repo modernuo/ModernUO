@@ -687,6 +687,26 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
         return list;
     }
 
+    public PooledRefList<Item> GetItemsPooled()
+    {
+        var list = PooledRefList<Item>.Create();
+
+        for (var i = 0; i < Sectors?.Length; i++)
+        {
+            var sector = Sectors[i];
+
+            foreach (var item in sector.Items)
+            {
+                if (Find(item.Location, item.Map).IsPartOf(this))
+                {
+                    list.Add(item);
+                }
+            }
+        }
+
+        return list;
+    }
+
     public int GetItemCount()
     {
         var count = 0;

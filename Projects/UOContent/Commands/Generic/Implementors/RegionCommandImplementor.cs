@@ -47,7 +47,8 @@ namespace Server.Commands.Generic
 
                 if (items)
                 {
-                    foreach (var item in reg.GetItems())
+                    using var itemList = reg.GetItemsPooled();
+                    foreach (var item in itemList)
                     {
                         if (BaseCommand.IsAccessible(from, item) && ext.IsValid(item))
                         {
