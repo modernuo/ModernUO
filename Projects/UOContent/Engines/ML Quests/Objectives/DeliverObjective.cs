@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Gumps;
 using Server.Items;
 using Server.Logging;
@@ -46,7 +47,7 @@ namespace Server.Engines.MLQuests.Objectives
                 return;
             }
 
-            var delivery = new List<Item>();
+            using var delivery = PooledRefQueue<Item>.Create();
 
             for (var i = 0; i < Amount; ++i)
             {
@@ -54,7 +55,7 @@ namespace Server.Engines.MLQuests.Objectives
 
                 if (item != null)
                 {
-                    delivery.Add(item);
+                    delivery.Enqueue(item);
 
                     if (item.Stackable && Amount > 1)
                     {
@@ -64,9 +65,9 @@ namespace Server.Engines.MLQuests.Objectives
                 }
             }
 
-            foreach (var item in delivery)
+            while (delivery.Count > 0)
             {
-                pack.DropItem(item); // Confirmed: on OSI items are added even if your pack is full
+                pack.DropItem(delivery.Dequeue()); // Confirmed: on OSI items are added even if your pack is full
             }
         }
 

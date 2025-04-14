@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Targeting;
 
 namespace Server.Items
@@ -22,7 +23,7 @@ namespace Server.Items
             PostedHue = Poster.Hue;
             Lines = lines;
 
-            var list = new List<BulletinEquip>();
+            using var list = PooledRefQueue<BulletinEquip>.Create(poster.Items.Count);
 
             for (var i = 0; i < poster.Items.Count; ++i)
             {
@@ -30,7 +31,7 @@ namespace Server.Items
 
                 if (item.Layer >= Layer.OneHanded && item.Layer <= Layer.Mount)
                 {
-                    list.Add(new BulletinEquip(item.ItemID, item.Hue));
+                    list.Enqueue(new BulletinEquip(item.ItemID, item.Hue));
                 }
             }
 
