@@ -4574,6 +4574,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
+#if TRACK_LEAKS
+    ~Mobile()
+    {
+        EntityFinalizationTracker.NotifyFinalized(this);
+    }
+#endif
+
     /// <summary>
     ///     Overridable. Virtual event invoked before the Mobile is deleted.
     /// </summary>
