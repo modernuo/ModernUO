@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -157,27 +156,33 @@ public static class TcpServer
         }
     }
 
+    [ThreadStatic]
+    private static byte[] _firstBytes;
+
     private static async ValueTask ProcessSocketConnection(Socket socket)
     {
-        byte[] firstBytes = ArrayPool<byte>.Shared.Rent(83);
+        _firstBytes ??= GC.AllocateUninitializedArray<byte>(128);
 
-        var cts = CancellationTokenSource.CreateLinkedTokenSource(Core.ClosingTokenSource.Token);
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(Core.ClosingTokenSource.Token);
         cts.CancelAfter(TimeSpan.FromMilliseconds(500));
 
         try
         {
-            var bytesRead = await socket.ReceiveAsync(firstBytes, SocketFlags.Peek, cts.Token);
+            var bytesRead = await socket.ReceiveAsync(_firstBytes, SocketFlags.Peek, cts.Token);
 
             var isValid =
+                // Sometimes when newer clients are connecting to the game server the first 4 bytes are sent separately
+                bytesRead == 4 ||
                 // Older clients only send the 4 byte seed first then 0x80
-                (UOClient.MinRequired == null || UOClient.MinRequired < ClientVersion.Version6050) && (
-                    bytesRead == 4 || bytesRead >= 66 && firstBytes[4] == 0x80) ||
+                (UOClient.MinRequired == null || UOClient.MinRequired < ClientVersion.Version6050) &&
+                bytesRead >= 66 && _firstBytes[4] == 0x80 ||
                 // Newer clients
                 (UOClient.MaxRequired == null || UOClient.MaxRequired >= ClientVersion.Version6050) && (
                     // Account Login - 0xEF + 0x80 (83 bytes)
-                    bytesRead >= 83 && firstBytes[0] == 0xEF && firstBytes[21] == 0x80 ||
+                    bytesRead >= 83 && _firstBytes[0] == 0xEF && _firstBytes[21] == 0x80 ||
+                    bytesRead == 21 && _firstBytes[0] == 0xEF ||
                     // Game Login - 4 bytes + 0x91 (69 bytes)
-                    bytesRead >= 69 && firstBytes[4] == 0x91
+                    bytesRead >= 69 && _firstBytes[4] == 0x91
                 );
 
             // TODO: Validate client version is v4 -> v7 for 0xEF packet
@@ -211,11 +216,6 @@ public static class TcpServer
         catch
         {
             ForceCloseSocket(socket);
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(firstBytes);
-            cts.Dispose();
         }
     }
 

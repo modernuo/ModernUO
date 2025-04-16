@@ -25,7 +25,6 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
-using Server.Text;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
