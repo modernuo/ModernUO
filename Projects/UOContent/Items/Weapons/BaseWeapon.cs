@@ -1026,6 +1026,11 @@ public abstract partial class BaseWeapon
 
     public override bool CanEquip(Mobile from)
     {
+        if (!from.Player || from.AccessLevel >= AccessLevel.GameMaster)
+        {
+            return from.CanBeginAction<BaseWeapon>() && base.CanEquip(from);
+        }
+
         if (!Ethic.CheckEquip(from, this))
         {
             return false;
