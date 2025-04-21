@@ -5,7 +5,6 @@ using ModernUO.Serialization;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
-using Server.Mobiles;
 using Server.Network;
 using Server.Text;
 using AMA = Server.Items.ArmorMeditationAllowance;
