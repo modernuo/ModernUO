@@ -89,6 +89,8 @@ public class EventScheduler : Timer
 
     public static EventScheduler Instance { get; private set; }
 
+    public static IRecurrencePattern Hourly => new HourlyRecurrencePattern();
+
     public static IRecurrencePattern Daily => new DailyRecurrencePattern();
 
     // Recur every week, on the same day/time as the first occurence
@@ -110,6 +112,10 @@ public class EventScheduler : Timer
 
         return pattern;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent HourlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, Hourly, timeZone);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent DailyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
