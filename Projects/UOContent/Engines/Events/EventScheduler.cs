@@ -32,6 +32,10 @@ public enum DaysOfWeek : byte
 
 public abstract class ScheduledEvent
 {
+    private static Serial _nextSerial = (Serial)1;
+
+    // Tie breaker for sorted set
+    public Serial Serial { get; }
     public IRecurrencePattern Recurrence { get; }
     public TimeZoneInfo TimeZone { get; }
     public DateTime EndDate { get; }
@@ -54,6 +58,7 @@ public abstract class ScheduledEvent
         TimeZoneInfo timeZone = null
     )
     {
+        Serial = _nextSerial++;
         Recurrence = recurrence;
         TimeZone = timeZone ?? TimeZoneInfo.Utc;
         var nextOccurrence = recurrence?.GetNextOccurrence(afterUtc, TimeZone) ?? afterUtc;
@@ -139,9 +144,9 @@ public class EventScheduler : Timer
         TimeZoneInfo timeZone = null
     )
     {
-        var e = new CallbackScheduledEvent(afterUtc, callback, recurrencePattern, timeZone);
-        ScheduleEvent(e);
-        return e;
+        var scheduledEvent = new CallbackScheduledEvent(afterUtc, callback, recurrencePattern, timeZone);
+        ScheduleEvent(scheduledEvent);
+        return scheduledEvent;
     }
 
     public void ScheduleEvent(ScheduledEvent e) => _schedule.Add(e);
@@ -190,7 +195,8 @@ public class EventScheduler : Timer
                 return -1;
             }
 
-            return x.NextOccurrence.CompareTo(y.NextOccurrence);
+            var next = x.NextOccurrence.CompareTo(y.NextOccurrence);
+            return next != 0 ? next : x.Serial.CompareTo(y.Serial);
         }
     }
 }
