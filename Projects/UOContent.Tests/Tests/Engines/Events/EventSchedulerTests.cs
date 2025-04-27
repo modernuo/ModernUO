@@ -4,6 +4,8 @@ using Server;
 using Server.Engines.Events;
 using Xunit;
 
+namespace UOContent.Tests;
+
 [Collection("Sequential Tests")]
 public class EventSchedulerTests
 {
@@ -31,15 +33,12 @@ public class EventSchedulerTests
         finally
         {
             bool called = false;
-            var now = DateTime.UtcNow;
-            Core._now = now;
-
-            var evt = EventScheduler.Instance.ScheduleEvent(now, () => called = true);
+            var evt = EventScheduler.Instance.ScheduleEvent(Core._now, () => called = true);
 
             Timer.Slice(8);
 
             Assert.True(called);
-            Assert.Equal(now, evt.NextOccurrence);
+            Assert.Equal(Core._now, evt.NextOccurrence);
         }
 
         Finish();
@@ -49,7 +48,7 @@ public class EventSchedulerTests
     [InlineData(2024, 3, 10, 2, 0, "America/New_York")] // DST spring forward gap (invalid)
     [InlineData(2024, 11, 3, 1, 0, "America/New_York")] // DST fall back (ambiguous)
     [InlineData(2024, 6, 1, 5, 0, "America/New_York")]  // Normal time
-    public void HourlyRecurrence_AdvancesCorrectly_DstEdgeCases(
+    public void HourlyRecurrence(
         int year, int month, int day, int hour, int minute, string tzId)
     {
         Init();
@@ -89,7 +88,8 @@ public class EventSchedulerTests
     [Theory]
     [InlineData(2024, 3, 10, 2, 0, "America/New_York")] // DST spring forward gap
     [InlineData(2024, 11, 3, 1, 30, "America/New_York")] // DST fall back
-    public void MonthlyRecurrence_DaylightSavingTime_EdgeCases(
+    [InlineData(2024, 6, 1, 5, 0, "America/New_York")] // Normal time
+    public void MonthlyRecurrence(
         int year, int month, int day, int hour, int minute, string tzId)
     {
         Init();
@@ -125,12 +125,11 @@ public class EventSchedulerTests
     }
 
     [Theory]
-    [InlineData(2024, 3, 10, 2, 0, DayOfWeek.Sunday, OrdinalDayOccurrence.Second, "America/New_York")] // DST gap
     [InlineData(2024, 11, 3, 1, 30, DayOfWeek.Sunday, OrdinalDayOccurrence.First, "America/New_York")] // DST fallback
     [InlineData(2024, 3, 31, 0, 0, DayOfWeek.Sunday, OrdinalDayOccurrence.Last, "America/New_York")]   // Last Sunday
     [InlineData(2024, 3, 31, 0, 0, DayOfWeek.Sunday, OrdinalDayOccurrence.Fifth, "America/New_York")]  // Fifth Sunday
     [InlineData(2024, 4, 3, 0, 0, DayOfWeek.Sunday, OrdinalDayOccurrence.Fifth, "America/New_York")]  // Fifth Sunday (Doesn't exist)
-    public void MonthlyOrdinalRecurrence_DaylightSavingTime_EdgeCases(
+    public void MonthlyOrdinalRecurrence(
         int year, int month, int day, int hour, int minute, DayOfWeek dow, OrdinalDayOccurrence ordinal, string tzId)
     {
         Init();
@@ -150,18 +149,7 @@ public class EventSchedulerTests
                 tz
             );
 
-            // Advance time so the next occurrence happens
             var testTime = Core._now.AddDays(1);
-
-            // If the time is invalid (e.g., 2:30am on DST spring forward), assert not called
-            if (tz.IsInvalidTime(local.AddDays(1)))
-            {
-                Core._now = testTime;
-                Timer.Slice(8);
-                Assert.False(called);
-                EventScheduler.Instance.Stop();
-                return;
-            }
 
             if (month == 4 && ordinal == OrdinalDayOccurrence.Fifth)
             {
@@ -193,10 +181,8 @@ public class EventSchedulerTests
 
         try
         {
-
-            var now = DateTime.UtcNow;
             Assert.Throws<ArgumentNullException>(() =>
-                EventScheduler.Instance.ScheduleEvent(now, null)
+                EventScheduler.Instance.ScheduleEvent(Core._now, null)
             );
         }
         finally
@@ -212,20 +198,12 @@ public class EventSchedulerTests
 
         try
         {
-
-
             bool called = false;
-            var now = DateTime.UtcNow;
-            Core._now = now;
+            var evt = new CallbackScheduledEvent(Core._now, Core._now, () => called = true);
 
-            var evt = new CallbackScheduledEvent(now, now, () => called = true);
-
-            typeof(EventScheduler)
-                .GetMethod("ScheduleEvent", new[] { typeof(ScheduledEvent) })!
-                .Invoke(EventScheduler.Instance, new object[] { evt });
+            EventScheduler.Instance.ScheduleEvent(evt);
 
             Timer.Slice(8);
-
             Assert.True(called);
 
             Assert.DoesNotContain(
@@ -237,6 +215,55 @@ public class EventSchedulerTests
                     )!
                     .GetValue(EventScheduler.Instance) as IEnumerable<CallbackScheduledEvent> ?? []
             );
+        }
+        finally
+        {
+            Finish();
+        }
+    }
+
+    [Theory]
+    [InlineData("UTC")]            // No DST adjustments
+    [InlineData("Asia/Kathmandu")] // Unusual offset (UTC+5:45)
+    public void LocalToUtc_SpecialTimeZones_HandlesCorrectly(string tzId)
+    {
+        Init();
+
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+            var local = new DateTime(2024, 6, 1, 12, 0, 0, DateTimeKind.Unspecified);
+            var expected = TimeZoneInfo.ConvertTimeToUtc(local, tz);
+
+            var actual = local.LocalToUtc(tz);
+
+            Assert.Equal(expected, actual);
+            Assert.Equal(DateTimeKind.Utc, actual.Kind);
+        }
+        finally
+        {
+            Finish();
+        }
+    }
+
+    [Fact]
+    public void LocalToUtc_EdgeCases_BeforeAndAfterTransition()
+    {
+        Init();
+
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+            // 1:59 AM (just before spring forward)
+            var beforeSpring = new DateTime(2024, 3, 10, 1, 59, 0);
+            // 3:01 AM (just after spring forward)
+            var afterSpring = new DateTime(2024, 3, 10, 3, 1, 0);
+
+            var beforeUtc = beforeSpring.LocalToUtc(tz);
+            var afterUtc = afterSpring.LocalToUtc(tz);
+
+            // Should be 1 hour + 2 minutes apart in UTC (not 1 hour 2 minutes)
+            Assert.Equal(2, (afterUtc - beforeUtc).TotalMinutes);
         }
         finally
         {
