@@ -88,7 +88,7 @@ public class EventSchedulerTests
     [Theory]
     [InlineData(2024, 3, 10, 2, 0, "America/New_York")] // DST spring forward gap
     [InlineData(2024, 11, 3, 1, 30, "America/New_York")] // DST fall back
-    [InlineData(2024, 6, 1, 5, 0, "America/New_York")] // Normal time
+    [InlineData(2024, 6, 2, 5, 0, "America/New_York")] // Normal time
     public void MonthlyRecurrence(
         int year, int month, int day, int hour, int minute, string tzId)
     {
@@ -116,7 +116,14 @@ public class EventSchedulerTests
             Assert.Equal(invalidTime ? local.AddMonths(1).LocalToUtc(tz) : Core._now, evt.NextOccurrence);
 
             Timer.Slice(8);
-            Assert.NotEqual(invalidTime, called);
+            if (invalidTime)
+            {
+                Assert.False(called);
+            }
+            else
+            {
+                Assert.True(called);
+            }
         }
         finally
         {
