@@ -14,5 +14,15 @@ public sealed class CallbackScheduledEvent : ScheduledEvent
     ) : base(afterUtc, recurrencePattern, timeZone) =>
         _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
+    public CallbackScheduledEvent(
+        DateTime afterUtc,
+        DateTime endDate,
+        Action callback,
+        IRecurrencePattern recurrencePattern = null,
+        TimeZoneInfo timeZone = null
+    ) : base(afterUtc, endDate, recurrencePattern, timeZone) =>
+        _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+
+
     public override void OnEvent() => _callback();
 }

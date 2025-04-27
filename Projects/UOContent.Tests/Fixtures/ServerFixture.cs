@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Server.Engines.Events;
 using Server.Misc;
 
 namespace Server.Tests;

@@ -51,9 +51,9 @@ public class WeeklyRecurrencePattern : IRecurrencePattern
             var candidate = weekStart.AddDays(i);
             var candidateDay = (DaysOfWeek)(1 << (int)candidate.DayOfWeek);
 
-            if ((daysOfWeek & candidateDay) != 0 && candidate > local)
+            if ((daysOfWeek & candidateDay) != 0 && candidate > local && !timeZone.IsInvalidTime(candidate))
             {
-                return TimeZoneInfo.ConvertTimeToUtc(candidate, timeZone);
+                return candidate.LocalToUtc(timeZone);
             }
         }
 
@@ -84,17 +84,20 @@ public class MonthlyRecurrencePattern : IRecurrencePattern
         var local = TimeZoneInfo.ConvertTimeFromUtc(afterUtc, timeZone);
         var year = local.Year;
         var month = local.Month;
+        var time = local.TimeOfDay;
 
         for (int i = 0; i < 100; i++)
         {
             var nextMonth = month + IntervalMonths * i;
-            var candidate = new DateTime(year, 1, 1, local.Hour, local.Minute, local.Second)
-                .AddMonths(nextMonth - 1).AddDays(DayOfMonth - 1);
+            var candidate = new DateTime(year, 1, 1)
+                .AddMonths(nextMonth - 1)
+                .AddDays(DayOfMonth - 1)
+                .Add(time);
 
             // Some months may not have that day of the month, if not, we skip to the next interval
-            if (candidate.Day == DayOfMonth)
+            if (candidate > local && candidate.Day == DayOfMonth && !timeZone.IsInvalidTime(candidate))
             {
-                return TimeZoneInfo.ConvertTimeToUtc(candidate, timeZone);
+                return candidate.LocalToUtc(timeZone);
             }
         }
 
@@ -156,16 +159,16 @@ public class MonthlyOrdinalRecurrencePattern : IRecurrencePattern
 
                 // Find the last occurrence of the desired day
                 int daysOffset = (int)lastOfMonth.DayOfWeek - (int)DayOfWeek + 7;
-                if (daysOffset > 7)
+                if (daysOffset >= 7)
                 {
                     daysOffset -= 7;
                 }
                 candidate = lastOfMonth.AddDays(-daysOffset);
             }
 
-            if (candidate > local)
+            if (candidate > local && !timeZone.IsInvalidTime(candidate))
             {
-                return TimeZoneInfo.ConvertTimeToUtc(candidate, timeZone);
+                return candidate.LocalToUtc(timeZone);
             }
         }
 

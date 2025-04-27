@@ -102,7 +102,8 @@ public static class Core
 
     private static long _tickCount;
 
-    private static DateTime _now;
+    // Make this available to unit tests for mocking
+    internal static DateTime _now;
 
     public static long TickCount => _tickCount;
 

@@ -53,7 +53,7 @@ public abstract class ScheduledEvent
 
     public ScheduledEvent(
         DateTime afterUtc,
-        DateTime endDate,
+        DateTime endDateUtc,
         IRecurrencePattern recurrence,
         TimeZoneInfo timeZone = null
     )
@@ -61,9 +61,8 @@ public abstract class ScheduledEvent
         Serial = _nextSerial++;
         Recurrence = recurrence;
         TimeZone = timeZone ?? TimeZoneInfo.Utc;
-        var nextOccurrence = recurrence?.GetNextOccurrence(afterUtc, TimeZone) ?? afterUtc;
-        NextOccurrence = TimeZoneInfo.ConvertTimeToUtc(nextOccurrence, TimeZone);
-        EndDate = endDate >= DateTime.MaxValue ? DateTime.MaxValue : TimeZoneInfo.ConvertTimeToUtc(endDate, TimeZone);
+        NextOccurrence = recurrence?.GetNextOccurrence(afterUtc, TimeZone) ?? afterUtc;
+        EndDate = endDateUtc;
     }
 
     public bool Advance()
@@ -76,7 +75,7 @@ public abstract class ScheduledEvent
             return false;
         }
 
-        NextOccurrence = TimeZoneInfo.ConvertTimeToUtc(next, TimeZone);
+        NextOccurrence = next;
         return true;
     }
 
