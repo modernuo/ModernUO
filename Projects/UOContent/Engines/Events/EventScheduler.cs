@@ -1,95 +1,215 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-namespace Server.Engines.Events
+namespace Server.Engines.Events;
+
+public interface IRecurrencePattern
 {
-    public interface IEvent
+    /// <summary>
+    /// Get the next occurrence of the event.
+    /// <returns><c>DateTime</c> of the next occurence in UTC or DateTime.MaxValue</returns>
+    /// </summary>
+    DateTime GetNextOccurrence(DateTime afterUtc, TimeZoneInfo timeZone);
+}
+
+public enum OrdinalDayOccurrence { Last = -1, First, Second, Third, Fourth, Fifth }
+
+[Flags]
+public enum DaysOfWeek : byte
+{
+    None = 0,
+    Sunday = 1,
+    Monday = 2,
+    Tuesday = 4,
+    Wednesday = 8,
+    Thursday = 16,
+    Friday = 32,
+    Saturday = 64,
+    EveryDay = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
+}
+
+public abstract class ScheduledEvent
+{
+    private static Serial _nextSerial = (Serial)1;
+
+    // Tie breaker for sorted set
+    public Serial Serial { get; }
+    public IRecurrencePattern Recurrence { get; }
+    public TimeZoneInfo TimeZone { get; }
+    public DateTime EndDate { get; }
+    public DateTime NextOccurrence { get; private set; }
+
+    public ScheduledEvent(DateTime startOn, TimeZoneInfo timeZone = null)
+        : this(startOn, startOn, null, timeZone)
     {
-        void OnEventScheduled();
     }
 
-    public class EventScheduleEntry
+    public ScheduledEvent(DateTime afterUtc, IRecurrencePattern recurrence, TimeZoneInfo timeZone = null)
+        : this(afterUtc, DateTime.MaxValue, recurrence, timeZone)
     {
-        private readonly IEvent _event;
-        private TimeSpan _offset;
-
-        public EventScheduleEntry(IEvent e, DateTime firstSpawn, TimeSpan interval, TimeSpan offset)
-        {
-            _offset = offset;
-            _event = e;
-            Interval = interval;
-            NextOccurrence = firstSpawn;
-        }
-
-        public DateTime NextOccurrence { get; private set; }
-        public TimeSpan Interval { get; }
-
-        public void Occur()
-        {
-            NextOccurrence += Interval;
-
-            _event?.OnEventScheduled();
-        }
-
-        public override string ToString() => _event?.ToString();
     }
 
-    public class EventScheduler : Timer
+    public ScheduledEvent(
+        DateTime afterUtc,
+        DateTime endDateUtc,
+        IRecurrencePattern recurrence,
+        TimeZoneInfo timeZone = null
+    )
     {
-        private static EventScheduler _instance;
-        private readonly List<EventScheduleEntry> _schedule = new();
+        Serial = _nextSerial++;
+        Recurrence = recurrence;
+        TimeZone = timeZone ?? TimeZoneInfo.Utc;
+        NextOccurrence = recurrence?.GetNextOccurrence(afterUtc, TimeZone) ?? afterUtc;
+        EndDate = endDateUtc;
+    }
 
-        private EventScheduler() : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
+    public bool Advance()
+    {
+        OnEvent();
+
+        var next = Recurrence?.GetNextOccurrence(NextOccurrence, TimeZone) ?? DateTime.MaxValue;
+        if (next == DateTime.MaxValue || next > EndDate)
         {
+            return false;
         }
 
-        public static EventScheduler Instance => _instance ??= new EventScheduler();
-        public static List<IEvent> AvailableEvents { get; } = new();
+        NextOccurrence = next;
+        return true;
+    }
 
-        public static void Initialize()
+    public abstract void OnEvent();
+}
+
+public class EventScheduler : Timer
+{
+    private readonly SortedSet<ScheduledEvent> _schedule = new(ScheduledEventComparer.Default);
+
+    public static EventScheduler Instance { get; private set; }
+
+    public static IRecurrencePattern Hourly => new HourlyRecurrencePattern();
+
+    public static IRecurrencePattern Daily => new DailyRecurrencePattern();
+
+    // Recur every week, on the same day/time as the first occurence
+    public static IRecurrencePattern Weekly => new WeeklyRecurrencePattern();
+
+    // Recur every two weeks, on the same day/time as the first occurence
+    public static IRecurrencePattern Biweekly => new WeeklyRecurrencePattern(2);
+
+    public static IRecurrencePattern Monthly => new MonthlyRecurrencePattern();
+
+    public static IRecurrencePattern Yearly => new MonthlyRecurrencePattern(-1, 12);
+
+    // For each of the days of the week
+    private static readonly Dictionary<int, MonthlyRecurrencePattern> _monthlyRecurrenceByDay = [];
+
+    public static IRecurrencePattern GetMonthlyRecurrence(int dayOfMonth)
+    {
+        ref var pattern = ref CollectionsMarshal.GetValueRefOrAddDefault(_monthlyRecurrenceByDay, dayOfMonth, out var exists);
+        if (!exists)
         {
-            Instance.Start();
+            pattern = new MonthlyRecurrencePattern(dayOfMonth);
         }
 
-        public void ScheduleEvent(IEvent e, int hour, int min)
-        {
-            ScheduleEvent(e, hour, min, TimeSpan.FromDays(1.0));
-        }
+        return pattern;
+    }
 
-        public void ScheduleEvent(IEvent e, int hour, int min, TimeSpan interval)
-        {
-            var now = Core.Now;
-            var firstRun = new DateTime(now.Year, now.Month, now.Day, hour, min, 0);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent HourlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, Hourly, timeZone);
 
-            while (now > firstRun)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent DailyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, Daily, timeZone);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent WeeklyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, Weekly, timeZone);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent BiweeklyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, Biweekly, timeZone);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent MonthlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent YearlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+
+    public static void Configure()
+    {
+        Instance ??= new EventScheduler();
+        Instance.Start();
+    }
+
+    private EventScheduler() : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
+    {
+    }
+
+    public ScheduledEvent ScheduleEvent(
+        DateTime afterUtc,
+        Action callback,
+        IRecurrencePattern recurrencePattern = null,
+        TimeZoneInfo timeZone = null
+    )
+    {
+        var scheduledEvent = new CallbackScheduledEvent(afterUtc, callback, recurrencePattern, timeZone);
+        ScheduleEvent(scheduledEvent);
+        return scheduledEvent;
+    }
+
+    public void ScheduleEvent(ScheduledEvent e) => _schedule.Add(e);
+
+    public void StopEvent(ScheduledEvent entry) => _schedule.Remove(entry);
+
+    protected override void OnTick()
+    {
+        var now = Core.Now;
+
+        while (_schedule.Count > 0)
+        {
+            var entry = _schedule.Min!;
+            if (entry.NextOccurrence > now)
             {
-                firstRun += interval;
+                break;
             }
 
-            ScheduleEvent(
-                new EventScheduleEntry(e, firstRun, interval, TimeSpan.FromHours(hour) + TimeSpan.FromMinutes(min))
-            );
-        }
-
-        public void ScheduleEvent(EventScheduleEntry e)
-        {
-            _schedule.Add(e);
-        }
-
-        public void RemoveEvent(EventScheduleEntry entry)
-        {
             _schedule.Remove(entry);
-        }
 
-        protected override void OnTick()
-        {
-            foreach (var entry in _schedule)
+            if (entry.Advance() && entry.NextOccurrence < DateTime.MaxValue)
             {
-                if (entry.NextOccurrence <= Core.Now)
-                {
-                    entry.Occur();
-                }
+                _schedule.Add(entry);
             }
+        }
+    }
+
+    private sealed class ScheduledEventComparer : IComparer<ScheduledEvent>
+    {
+        public static readonly ScheduledEventComparer Default = new();
+
+        public int Compare(ScheduledEvent x, ScheduledEvent y)
+        {
+            if (x == null && y == null)
+            {
+                return 0;
+            }
+
+            if (x == null)
+            {
+                return 1;
+            }
+
+            if (y == null)
+            {
+                return -1;
+            }
+
+            var next = x.NextOccurrence.CompareTo(y.NextOccurrence);
+            return next != 0 ? next : x.Serial.CompareTo(y.Serial);
         }
     }
 }
