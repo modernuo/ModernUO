@@ -61,21 +61,14 @@ public class WeeklyRecurrencePattern : IRecurrencePattern
     }
 }
 
-public class BiweeklyRecurrencePattern : WeeklyRecurrencePattern
-{
-    public BiweeklyRecurrencePattern(DaysOfWeek daysOfWeek = DaysOfWeek.None) : base(2, daysOfWeek)
-    {
-    }
-}
-
 public class MonthlyRecurrencePattern : IRecurrencePattern
 {
     public int DayOfMonth { get; }
     public int IntervalMonths { get; }
 
-    public MonthlyRecurrencePattern(int dayOfMonth, int intervalMonths = 1)
+    public MonthlyRecurrencePattern(int dayOfMonth = -1, int intervalMonths = 1)
     {
-        DayOfMonth = Math.Clamp(dayOfMonth, 1, 31);
+        DayOfMonth = dayOfMonth != -1 ? Math.Clamp(dayOfMonth, 1, 31) : -1;
         IntervalMonths = Math.Max(1, intervalMonths);
     }
 
@@ -85,17 +78,18 @@ public class MonthlyRecurrencePattern : IRecurrencePattern
         var year = local.Year;
         var month = local.Month;
         var time = local.TimeOfDay;
+        var day = DayOfMonth == -1 ? local.Day : DayOfMonth;
 
         for (int i = 0; i < 100; i++)
         {
             var nextMonth = month + IntervalMonths * i;
             var candidate = new DateTime(year, 1, 1)
                 .AddMonths(nextMonth - 1)
-                .AddDays(DayOfMonth - 1)
+                .AddDays(day - 1)
                 .Add(time);
 
             // Some months may not have that day of the month, if not, we skip to the next interval
-            if (candidate > local && candidate.Day == DayOfMonth && !timeZone.IsInvalidTime(candidate))
+            if (candidate > local && candidate.Day == day && !timeZone.IsInvalidTime(candidate))
             {
                 return candidate.LocalToUtc(timeZone);
             }

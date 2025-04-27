@@ -96,7 +96,11 @@ public class EventScheduler : Timer
     public static IRecurrencePattern Weekly => new WeeklyRecurrencePattern();
 
     // Recur every two weeks, on the same day/time as the first occurence
-    public static IRecurrencePattern Biweekly => new BiweeklyRecurrencePattern();
+    public static IRecurrencePattern Biweekly => new WeeklyRecurrencePattern(2);
+
+    public static IRecurrencePattern Monthly => new MonthlyRecurrencePattern();
+
+    public static IRecurrencePattern Yearly => new MonthlyRecurrencePattern(-1, 12);
 
     // For each of the days of the week
     private static readonly Dictionary<int, MonthlyRecurrencePattern> _monthlyRecurrenceByDay = [];
@@ -130,6 +134,10 @@ public class EventScheduler : Timer
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent MonthlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
+        Instance.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ScheduledEvent YearlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
         Instance.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
 
     public static void Configure()
