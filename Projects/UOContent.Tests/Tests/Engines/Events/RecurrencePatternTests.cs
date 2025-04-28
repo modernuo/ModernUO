@@ -75,12 +75,7 @@ public class RecurrencePatternTests
 
         // Assert - convert back to local for comparison
         var resultLocal = TimeZoneInfo.ConvertTimeFromUtc(result, tz);
-
-        Assert.Equal(expectedYear, resultLocal.Year);
-        Assert.Equal(expectedMonth, resultLocal.Month);
-        Assert.Equal(expectedDay, resultLocal.Day);
-        Assert.Equal(startHour, resultLocal.Hour);
-        Assert.Equal(startMinute, resultLocal.Minute);
+        Assert.Equal(new DateTime(expectedYear, expectedMonth, expectedDay, startHour, startMinute, 0), resultLocal);
     }
 
     [Theory]
@@ -129,11 +124,7 @@ public class RecurrencePatternTests
 
         // Assert - should be November 3, 2024 at 1:30 AM
         var resultLocal = TimeZoneInfo.ConvertTimeFromUtc(result, tz);
-        Assert.Equal(2024, resultLocal.Year);
-        Assert.Equal(11, resultLocal.Month);
-        Assert.Equal(3, resultLocal.Day);
-        Assert.Equal(1, resultLocal.Hour);
-        Assert.Equal(30, resultLocal.Minute);
+        Assert.Equal(new DateTime(2024, 11, 3, 1, 30, 0), resultLocal);
     }
 
     [Fact]
