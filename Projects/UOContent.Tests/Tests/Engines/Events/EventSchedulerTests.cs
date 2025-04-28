@@ -382,47 +382,29 @@ public class EventSchedulerTests
     [InlineData("Asia/Kathmandu")] // Unusual offset (UTC+5:45)
     public void LocalToUtc_SpecialTimeZones_HandlesCorrectly(string tzId)
     {
-        Init();
+        var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+        var local = new DateTime(2024, 6, 1, 12, 0, 0, DateTimeKind.Unspecified);
+        var expected = TimeZoneInfo.ConvertTimeToUtc(local, tz);
 
-        try
-        {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
-            var local = new DateTime(2024, 6, 1, 12, 0, 0, DateTimeKind.Unspecified);
-            var expected = TimeZoneInfo.ConvertTimeToUtc(local, tz);
+        var actual = local.LocalToUtc(tz);
 
-            var actual = local.LocalToUtc(tz);
-
-            Assert.Equal(expected, actual);
-            Assert.Equal(DateTimeKind.Utc, actual.Kind);
-        }
-        finally
-        {
-            Finish();
-        }
+        Assert.Equal(expected, actual);
+        Assert.Equal(DateTimeKind.Utc, actual.Kind);
     }
 
     [Fact]
     public void LocalToUtc_EdgeCases_BeforeAndAfterTransition()
     {
-        Init();
+        var tz = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+        // 1:59 AM (just before spring forward)
+        var beforeSpring = new DateTime(2024, 3, 10, 1, 59, 0);
+        // 3:01 AM (just after spring forward)
+        var afterSpring = new DateTime(2024, 3, 10, 3, 1, 0);
 
-        try
-        {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-            // 1:59 AM (just before spring forward)
-            var beforeSpring = new DateTime(2024, 3, 10, 1, 59, 0);
-            // 3:01 AM (just after spring forward)
-            var afterSpring = new DateTime(2024, 3, 10, 3, 1, 0);
+        var beforeUtc = beforeSpring.LocalToUtc(tz);
+        var afterUtc = afterSpring.LocalToUtc(tz);
 
-            var beforeUtc = beforeSpring.LocalToUtc(tz);
-            var afterUtc = afterSpring.LocalToUtc(tz);
-
-            // Should be 1 hour + 2 minutes apart in UTC (not 1 hour 2 minutes)
-            Assert.Equal(2, (afterUtc - beforeUtc).TotalMinutes);
-        }
-        finally
-        {
-            Finish();
-        }
+        // Should be 1 hour + 2 minutes apart in UTC (not 1 hour 2 minutes)
+        Assert.Equal(2, (afterUtc - beforeUtc).TotalMinutes);
     }
 }
