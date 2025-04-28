@@ -1471,12 +1471,6 @@ public static partial class Utility
 
     public static DateTime LocalToUtc(this DateTime local, TimeZoneInfo tz)
     {
-        if (tz.IsInvalidTime(local))
-        {
-            // For hourly recurrence, just subtract the standard offset (simulate as if the time exists)
-            return DateTime.SpecifyKind(local - tz.BaseUtcOffset, DateTimeKind.Utc);
-        }
-
         if (tz.IsAmbiguousTime(local))
         {
             var offsets = tz.GetAmbiguousTimeOffsets(local);
