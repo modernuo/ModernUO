@@ -69,7 +69,7 @@ public class EventSchedulerTests
             bool called = false;
             var evt = EventScheduler.Instance.ScheduleEvent(
                 Core._now,
-                TimeOnly.FromDateTime(Core._now),
+                TimeOnly.FromDateTime(local),
                 () => called = true,
                 EventScheduler.Hourly,
                 tz
@@ -111,7 +111,7 @@ public class EventSchedulerTests
             bool called = false;
             var evt = EventScheduler.Instance.ScheduleEvent(
                 Core._now,
-                TimeOnly.FromDateTime(Core._now),
+                TimeOnly.FromDateTime(local),
                 () => called = true,
                 EventScheduler.Daily,
                 tz
@@ -190,7 +190,7 @@ public class EventSchedulerTests
             bool called = false;
             var evt = EventScheduler.Instance.ScheduleEvent(
                 Core._now,
-                TimeOnly.FromDateTime(Core._now),
+                TimeOnly.FromDateTime(local),
                 () => called = true,
                 EventScheduler.GetMonthlyRecurrence(day),
                 tz
@@ -275,7 +275,7 @@ public class EventSchedulerTests
             var pattern = new MonthlyOrdinalRecurrencePattern(ordinal, dow);
             var evt = EventScheduler.Instance.ScheduleEvent(
                 Core._now,
-                TimeOnly.FromDateTime(Core._now),
+                TimeOnly.FromDateTime(local),
                 () => called = true,
                 pattern,
                 tz
@@ -286,7 +286,7 @@ public class EventSchedulerTests
             if (month == 4 && ordinal == OrdinalDayOccurrence.Fifth)
             {
                 // If there is no fifth occurrence, NextOccurrence should be in the next month
-                var expectedNext = pattern.GetNextOccurrence(Core._now, TimeOnly.FromDateTime(Core._now), tz);
+                var expectedNext = pattern.GetNextOccurrence(Core._now, TimeOnly.FromDateTime(local), tz);
                 Assert.Equal(expectedNext, evt.NextOccurrence);
                 Core._now = testTime;
                 Timer.Slice(8);
@@ -331,7 +331,12 @@ public class EventSchedulerTests
         try
         {
             bool called = false;
-            var evt = new CallbackScheduledEvent(Core._now, Core._now, TimeOnly.FromDateTime(Core._now), () => called = true);
+            var evt = new CallbackScheduledEvent(
+                Core._now,
+                Core._now,
+                TimeOnly.FromDateTime(Core._now),
+                () => called = true
+            );
 
             EventScheduler.Instance.ScheduleEvent(evt);
 

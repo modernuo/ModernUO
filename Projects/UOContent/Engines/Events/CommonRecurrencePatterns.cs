@@ -8,9 +8,13 @@ public class HourlyRecurrencePattern : IRecurrencePattern
 
     public HourlyRecurrencePattern(int intervalHours = 1) => IntervalHours = Math.Max(1, intervalHours);
 
-    public DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone) =>
-        new DateTime(afterUtc.Year, afterUtc.Month, afterUtc.Day, afterUtc.Hour, time.Minute, 0, DateTimeKind.Utc)
+    public DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone)
+    {
+        var local = TimeZoneInfo.ConvertTimeFromUtc(afterUtc, timeZone);
+        return new DateTime(local.Year, local.Month, local.Day, local.Hour, time.Minute, 0)
+            .LocalToUtc(timeZone)
             .AddHours(IntervalHours);
+    }
 }
 
 public class DailyRecurrencePattern : IRecurrencePattern
@@ -19,9 +23,13 @@ public class DailyRecurrencePattern : IRecurrencePattern
 
     public DailyRecurrencePattern(int intervalDays = 1) => IntervalDays = Math.Max(1, intervalDays);
 
-    public DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone) =>
-        new DateTime(afterUtc.Year, afterUtc.Month, afterUtc.Day, time.Hour, time.Minute, 0, DateTimeKind.Utc)
+    public DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone)
+    {
+        var local = TimeZoneInfo.ConvertTimeFromUtc(afterUtc, timeZone);
+        return new DateTime(local.Year, local.Month, local.Day, time.Hour, time.Minute, 0)
+            .LocalToUtc(timeZone)
             .AddDays(IntervalDays);
+    }
 }
 
 public class WeeklyRecurrencePattern : IRecurrencePattern
