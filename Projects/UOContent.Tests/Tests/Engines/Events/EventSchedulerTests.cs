@@ -33,7 +33,11 @@ public class EventSchedulerTests
         finally
         {
             bool called = false;
-            var evt = EventScheduler.Instance.ScheduleEvent(Core._now, () => called = true);
+            var evt = EventScheduler.Instance.ScheduleEvent(
+                Core._now,
+                TimeOnly.FromDateTime(Core._now),
+                () => called = true
+            );
 
             Timer.Slice(8);
 
@@ -65,6 +69,7 @@ public class EventSchedulerTests
             bool called = false;
             var evt = EventScheduler.Instance.ScheduleEvent(
                 Core._now,
+                TimeOnly.FromDateTime(Core._now),
                 () => called = true,
                 EventScheduler.Hourly,
                 tz
@@ -78,6 +83,87 @@ public class EventSchedulerTests
             // Hourly recurrence should always execute, even in DST gaps/ambiguous times
             Assert.True(called);
             Assert.Equal(Core._now.AddHours(1), evt.NextOccurrence);
+        }
+        finally
+        {
+            Finish();
+        }
+    }
+
+    [Theory]
+    [InlineData(2024, 3, 10, 2, 0, "America/New_York")] // DST spring forward gap
+    [InlineData(2024, 11, 3, 1, 30, "America/New_York")] // DST fall back
+    [InlineData(2024, 6, 2, 5, 0, "America/New_York")] // Normal time
+    public void DailyRecurrence_ExecutesEveryDay(
+        int year, int month, int day, int hour, int minute, string tzId)
+    {
+        Init();
+
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+            var local = new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Unspecified);
+
+            // Set Core._now to just before the target day
+            var beforeLocal = local.AddDays(-1);
+            Core._now = beforeLocal.LocalToUtc(tz);
+
+            bool called = false;
+            var evt = EventScheduler.Instance.ScheduleEvent(
+                Core._now,
+                TimeOnly.FromDateTime(Core._now),
+                () => called = true,
+                EventScheduler.Daily,
+                tz
+            );
+
+            // Advance to the target day
+            Core._now = local.LocalToUtc(tz);
+            Assert.Equal(Core._now, evt.NextOccurrence);
+            Timer.Slice(8);
+
+            // Daily recurrence should always
+            // execute, even in DST gaps/ambiguous times
+            Assert.True(called);
+            Assert.Equal(Core._now.AddDays(1), evt.NextOccurrence);
+        }
+        finally
+        {
+            Finish();
+        }
+    }
+
+    [Fact]
+    public void WeeklyRecurrence_MultipleDays_ExecutesOnCorrectDays()
+    {
+        Init();
+
+        try
+        {
+            var tz = TimeZoneInfo.Utc;
+            // Start on Sunday
+            var start = new DateTime(2024, 6, 2, 8, 0, 0, DateTimeKind.Utc);
+            Core._now = start;
+
+            int callCount = 0;
+            var pattern = new WeeklyRecurrencePattern(1, DaysOfWeek.Monday | DaysOfWeek.Friday);
+            var evt = EventScheduler.Instance.ScheduleEvent(
+                Core._now,
+                TimeOnly.FromDateTime(Core._now),
+                () => callCount++,
+                pattern,
+                tz
+            );
+
+            // Simulate a week
+            for (int i = 1; i <= 7; i++)
+            {
+                Core._now = start.AddDays(i);
+                Timer.Slice(8 + 1024 * (i - 1));
+            }
+
+            // Should fire on Monday (June 3) and Friday (June 7)
+            Assert.Equal(2, callCount);
         }
         finally
         {
@@ -104,6 +190,7 @@ public class EventSchedulerTests
             bool called = false;
             var evt = EventScheduler.Instance.ScheduleEvent(
                 Core._now,
+                TimeOnly.FromDateTime(Core._now),
                 () => called = true,
                 EventScheduler.GetMonthlyRecurrence(day),
                 tz
@@ -131,6 +218,43 @@ public class EventSchedulerTests
         }
     }
 
+    [Fact]
+    public void MonthlyRecurrence_MonthWithoutDay_SkipsToNextValidMonth()
+    {
+        Init();
+
+        try
+        {
+            var tz = TimeZoneInfo.Utc;
+
+            // January 31st
+            var start = new DateTime(2024, 2, 1, 8, 0, 0, DateTimeKind.Utc);
+            Core._now = start;
+
+            int callCount = 0;
+            var evt = EventScheduler.Instance.ScheduleEvent(
+                Core._now,
+                TimeOnly.FromDateTime(Core._now),
+                () => callCount++,
+                EventScheduler.GetMonthlyRecurrence(31),
+                tz
+            );
+
+            // February does not have 31st, so next should be March 31st
+            Core._now = new DateTime(2024, 2, 28, 8, 0, 0, DateTimeKind.Utc);
+            Timer.Slice(8);
+            Assert.Equal(0, callCount);
+
+            Core._now = new DateTime(2024, 3, 31, 8, 0, 0, DateTimeKind.Utc);
+            Timer.Slice(1024);
+            Assert.Equal(1, callCount);
+        }
+        finally
+        {
+            Finish();
+        }
+    }
+
     [Theory]
     [InlineData(2024, 11, 3, 1, 30, DayOfWeek.Sunday, OrdinalDayOccurrence.First, "America/New_York")] // DST fallback
     [InlineData(2024, 3, 31, 0, 0, DayOfWeek.Sunday, OrdinalDayOccurrence.Last, "America/New_York")]   // Last Sunday
@@ -151,6 +275,7 @@ public class EventSchedulerTests
             var pattern = new MonthlyOrdinalRecurrencePattern(ordinal, dow);
             var evt = EventScheduler.Instance.ScheduleEvent(
                 Core._now,
+                TimeOnly.FromDateTime(Core._now),
                 () => called = true,
                 pattern,
                 tz
@@ -161,7 +286,7 @@ public class EventSchedulerTests
             if (month == 4 && ordinal == OrdinalDayOccurrence.Fifth)
             {
                 // If there is no fifth occurrence, NextOccurrence should be in the next month
-                var expectedNext = pattern.GetNextOccurrence(Core._now, tz);
+                var expectedNext = pattern.GetNextOccurrence(Core._now, TimeOnly.FromDateTime(Core._now), tz);
                 Assert.Equal(expectedNext, evt.NextOccurrence);
                 Core._now = testTime;
                 Timer.Slice(8);
@@ -189,7 +314,7 @@ public class EventSchedulerTests
         try
         {
             Assert.Throws<ArgumentNullException>(() =>
-                EventScheduler.Instance.ScheduleEvent(Core._now, null)
+                EventScheduler.Instance.ScheduleEvent(Core._now, TimeOnly.FromDateTime(Core._now), null)
             );
         }
         finally
@@ -206,7 +331,7 @@ public class EventSchedulerTests
         try
         {
             bool called = false;
-            var evt = new CallbackScheduledEvent(Core._now, Core._now, () => called = true);
+            var evt = new CallbackScheduledEvent(Core._now, Core._now, TimeOnly.FromDateTime(Core._now), () => called = true);
 
             EventScheduler.Instance.ScheduleEvent(evt);
 
