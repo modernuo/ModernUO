@@ -92,15 +92,14 @@ public class MonthlyRecurrencePattern : IRecurrencePattern
         var year = local.Year;
         var month = local.Month;
         var day = DayOfMonth == -1 ? local.Day : DayOfMonth;
-        var timeUtc = time.ToTimeSpan() + timeZone.GetUtcOffset(local);
 
         for (int i = 0; i < 100; i++)
         {
             var nextMonth = month + IntervalMonths * i;
             var candidate = new DateTime(year, 1, 1)
-                .Add(timeUtc)
                 .AddMonths(nextMonth - 1)
-                .AddDays(day - 1);
+                .AddDays(day - 1)
+                .Add(time.ToTimeSpan());
 
             // Some months may not have that day of the month, if not, we skip to the next interval
             if (candidate > local && candidate.Day == day && !timeZone.IsInvalidTime(candidate))
@@ -131,7 +130,6 @@ public class MonthlyOrdinalRecurrencePattern : IRecurrencePattern
         var local = TimeZoneInfo.ConvertTimeFromUtc(afterUtc, timeZone);
         var year = local.Year;
         var month = local.Month;
-        var timeUtc = time.ToTimeSpan() + timeZone.GetUtcOffset(local);
 
         for (int i = 0; i < 100; i++)
         {
@@ -144,10 +142,8 @@ public class MonthlyOrdinalRecurrencePattern : IRecurrencePattern
             if (Ordinal >= OrdinalDayOccurrence.First)
             {
                 // Find the first day of the month
-                var firstOfMonth = new DateTime(
-                    candidateYear,
-                    candidateMonth,
-                    1).Add(timeUtc);
+                var firstOfMonth = new DateTime(candidateYear, candidateMonth, 1)
+                    .Add(time.ToTimeSpan());
 
                 // Find the first occurrence of the desired day
                 int daysOffset = ((int)DayOfWeek - (int)firstOfMonth.DayOfWeek + 7) % 7;
@@ -167,11 +163,8 @@ public class MonthlyOrdinalRecurrencePattern : IRecurrencePattern
             {
                 // Find the last day of the month
                 var daysInMonth = DateTime.DaysInMonth(candidateYear, candidateMonth);
-                var lastOfMonth = new DateTime(
-                    candidateYear,
-                    candidateMonth,
-                    daysInMonth
-                ).Add(timeUtc);
+                var lastOfMonth = new DateTime(candidateYear, candidateMonth, daysInMonth)
+                    .Add(time.ToTimeSpan());
 
                 // Find the last occurrence of the desired day
                 int daysOffset = (int)lastOfMonth.DayOfWeek - (int)DayOfWeek + 7;

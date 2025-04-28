@@ -94,7 +94,7 @@ public class EventScheduler : Timer
 
     private readonly SortedSet<ScheduledEvent> _schedule = new(ScheduledEventComparer.Default);
 
-    public static EventScheduler Instance { get; private set; }
+    public static EventScheduler Shared { get; private set; }
 
     public static IRecurrencePattern Hourly => new HourlyRecurrencePattern();
 
@@ -126,32 +126,32 @@ public class EventScheduler : Timer
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent HourlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Instance.ScheduleEvent(startOn, action, Hourly, timeZone);
+        Shared.ScheduleEvent(startOn, action, Hourly, timeZone);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent DailyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Instance.ScheduleEvent(startOn, action, Daily, timeZone);
+        Shared.ScheduleEvent(startOn, action, Daily, timeZone);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent WeeklyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Instance.ScheduleEvent(startOn, action, Weekly, timeZone);
+        Shared.ScheduleEvent(startOn, action, Weekly, timeZone);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent BiweeklyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Instance.ScheduleEvent(startOn, action, Biweekly, timeZone);
+        Shared.ScheduleEvent(startOn, action, Biweekly, timeZone);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent MonthlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Instance.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+        Shared.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent YearlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Instance.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+        Shared.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
 
     public static void Configure()
     {
-        Instance ??= new EventScheduler();
-        Instance.Start();
+        Shared ??= new EventScheduler();
+        Shared.Start();
     }
 
     private EventScheduler() : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
@@ -178,9 +178,21 @@ public class EventScheduler : Timer
         return scheduledEvent;
     }
 
-    public void ScheduleEvent(ScheduledEvent e) => _schedule.Add(e);
+    public void ScheduleEvent(ScheduledEvent entry)
+    {
+        if (entry != null)
+        {
+            _schedule.Add(entry);
+        }
+    }
 
-    public void StopEvent(ScheduledEvent entry) => _schedule.Remove(entry);
+    public void StopEvent(ScheduledEvent entry)
+    {
+        if (entry != null)
+        {
+            _schedule.Remove(entry);
+        }
+    }
 
     protected override void OnTick()
     {

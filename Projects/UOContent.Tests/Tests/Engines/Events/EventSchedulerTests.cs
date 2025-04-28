@@ -18,7 +18,7 @@ public class EventSchedulerTests
 
     private static void Finish()
     {
-        EventScheduler.Instance.Stop();
+        EventScheduler.Shared.Stop();
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class EventSchedulerTests
         finally
         {
             bool called = false;
-            var evt = EventScheduler.Instance.ScheduleEvent(
+            var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(Core._now),
                 () => called = true
@@ -43,6 +43,8 @@ public class EventSchedulerTests
 
             Assert.True(called);
             Assert.Equal(Core._now, evt.NextOccurrence);
+
+            EventScheduler.Shared.StopEvent(evt);
         }
 
         Finish();
@@ -67,7 +69,7 @@ public class EventSchedulerTests
             Core._now = beforeLocal.LocalToUtc(tz);
 
             bool called = false;
-            var evt = EventScheduler.Instance.ScheduleEvent(
+            var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(local),
                 () => called = true,
@@ -83,6 +85,8 @@ public class EventSchedulerTests
             // Hourly recurrence should always execute, even in DST gaps/ambiguous times
             Assert.True(called);
             Assert.Equal(Core._now.AddHours(1), evt.NextOccurrence);
+
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
@@ -109,7 +113,7 @@ public class EventSchedulerTests
             Core._now = beforeLocal.LocalToUtc(tz);
 
             bool called = false;
-            var evt = EventScheduler.Instance.ScheduleEvent(
+            var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(local),
                 () => called = true,
@@ -126,6 +130,8 @@ public class EventSchedulerTests
             // execute, even in DST gaps/ambiguous times
             Assert.True(called);
             Assert.Equal(Core._now.AddDays(1), evt.NextOccurrence);
+
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
@@ -147,7 +153,7 @@ public class EventSchedulerTests
 
             int callCount = 0;
             var pattern = new WeeklyRecurrencePattern(1, DaysOfWeek.Monday | DaysOfWeek.Friday);
-            var evt = EventScheduler.Instance.ScheduleEvent(
+            var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(Core._now),
                 () => callCount++,
@@ -164,6 +170,8 @@ public class EventSchedulerTests
 
             // Should fire on Monday (June 3) and Friday (June 7)
             Assert.Equal(2, callCount);
+
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
@@ -188,7 +196,7 @@ public class EventSchedulerTests
             Core._now = local.AddDays(-1).LocalToUtc(tz);
 
             bool called = false;
-            var evt = EventScheduler.Instance.ScheduleEvent(
+            var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(local),
                 () => called = true,
@@ -211,6 +219,8 @@ public class EventSchedulerTests
             {
                 Assert.True(called);
             }
+
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
@@ -232,7 +242,7 @@ public class EventSchedulerTests
             Core._now = start;
 
             int callCount = 0;
-            var evt = EventScheduler.Instance.ScheduleEvent(
+            var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(Core._now),
                 () => callCount++,
@@ -248,6 +258,8 @@ public class EventSchedulerTests
             Core._now = new DateTime(2024, 3, 31, 8, 0, 0, DateTimeKind.Utc);
             Timer.Slice(1024);
             Assert.Equal(1, callCount);
+
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
@@ -273,7 +285,7 @@ public class EventSchedulerTests
 
             bool called = false;
             var pattern = new MonthlyOrdinalRecurrencePattern(ordinal, dow);
-            var evt = EventScheduler.Instance.ScheduleEvent(
+            var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(local),
                 () => called = true,
@@ -299,6 +311,8 @@ public class EventSchedulerTests
                 Timer.Slice(8);
                 Assert.True(called);
             }
+
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
@@ -313,9 +327,11 @@ public class EventSchedulerTests
 
         try
         {
+            ScheduledEvent evt = null;
             Assert.Throws<ArgumentNullException>(() =>
-                EventScheduler.Instance.ScheduleEvent(Core._now, TimeOnly.FromDateTime(Core._now), null)
+                evt = EventScheduler.Shared.ScheduleEvent(Core._now, TimeOnly.FromDateTime(Core._now), null)
             );
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
@@ -338,7 +354,7 @@ public class EventSchedulerTests
                 () => called = true
             );
 
-            EventScheduler.Instance.ScheduleEvent(evt);
+            EventScheduler.Shared.ScheduleEvent(evt);
 
             Timer.Slice(8);
             Assert.True(called);
@@ -350,8 +366,10 @@ public class EventSchedulerTests
                         "_schedule",
                         System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
                     )!
-                    .GetValue(EventScheduler.Instance) as IEnumerable<CallbackScheduledEvent> ?? []
+                    .GetValue(EventScheduler.Shared) as IEnumerable<CallbackScheduledEvent> ?? []
             );
+
+            EventScheduler.Shared.StopEvent(evt);
         }
         finally
         {
