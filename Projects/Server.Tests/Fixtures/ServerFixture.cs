@@ -1,13 +1,22 @@
 using System;
 using System.Reflection;
+using Xunit;
 
 namespace Server.Tests;
 
-internal class ServerFixture : IDisposable
+[CollectionDefinition("Sequential Server Tests", DisableParallelization = true)]
+public class ServerFixture : ICollectionFixture<ServerFixture>, IDisposable
 {
-    // Global setup
-    static ServerFixture()
+    private static int _counter;
+    public ServerFixture()
     {
+        _counter++;
+
+        if (_counter > 1)
+        {
+            throw new Exception("More than one server running.");
+        }
+
         Core.ApplicationAssembly = Assembly.GetExecutingAssembly(); // Server.Tests.dll
 
         // Load Configurations
