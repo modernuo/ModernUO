@@ -33,15 +33,12 @@ public enum DaysOfWeek : byte
 
 public abstract class ScheduledEvent
 {
-    private static Serial _nextSerial = (Serial)1;
-
-    // Tie-breaker for sorted set
-    public Serial Serial { get; }
     public IRecurrencePattern Recurrence { get; }
     public TimeZoneInfo TimeZone { get; }
     public TimeOnly Time { get; }
     public DateTime EndDate { get; }
     public DateTime NextOccurrence { get; private set; }
+    public bool Cancelled { get; private set; }
 
     public ScheduledEvent(DateTime startOn, TimeZoneInfo timeZone = null)
         : this(startOn, startOn, TimeOnly.FromDateTime(startOn), null, timeZone)
@@ -61,7 +58,6 @@ public abstract class ScheduledEvent
         TimeZoneInfo timeZone = null
     )
     {
-        Serial = _nextSerial++;
         Time = time;
         Recurrence = recurrence;
         TimeZone = timeZone ?? TimeZoneInfo.Utc;
@@ -71,18 +67,19 @@ public abstract class ScheduledEvent
         EndDate = endOn == DateTime.MaxValue || endOn.Kind == DateTimeKind.Utc ? endOn : endOn.LocalToUtc(TimeZone);
     }
 
-    public bool Advance()
+    public void Cancel() => Cancelled = true;
+
+    public DateTime Advance()
     {
         OnEvent();
 
         var next = Recurrence?.GetNextOccurrence(NextOccurrence, Time, TimeZone) ?? DateTime.MaxValue;
         if (next == DateTime.MaxValue || next > EndDate)
         {
-            return false;
+            return DateTime.MaxValue;
         }
 
-        NextOccurrence = next;
-        return true;
+        return NextOccurrence = next;
     }
 
     public abstract void OnEvent();
@@ -92,7 +89,7 @@ public class EventScheduler : Timer
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(EventScheduler));
 
-    private readonly SortedSet<ScheduledEvent> _schedule = new(ScheduledEventComparer.Default);
+    private readonly PriorityQueue<ScheduledEvent, DateTime> _schedule = new();
 
     public static EventScheduler Shared { get; private set; }
 
@@ -182,15 +179,7 @@ public class EventScheduler : Timer
     {
         if (entry != null)
         {
-            _schedule.Add(entry);
-        }
-    }
-
-    public void StopEvent(ScheduledEvent entry)
-    {
-        if (entry != null)
-        {
-            _schedule.Remove(entry);
+            _schedule.Enqueue(entry, entry.NextOccurrence);
         }
     }
 
@@ -200,55 +189,35 @@ public class EventScheduler : Timer
 
         while (_schedule.Count > 0)
         {
-            var entry = _schedule.Min!;
-            if (entry.NextOccurrence > now)
+            var entry = _schedule.Peek();
+            var cancelled = entry.Cancelled;
+            if (!cancelled && entry.NextOccurrence > now)
             {
                 break;
             }
 
-            _schedule.Remove(entry);
+            _schedule.Dequeue();
 
-            bool advance;
+            if (cancelled)
+            {
+                continue;
+            }
+
+            DateTime nextOccurrence;
             try
             {
-                advance = entry.Advance();
+                nextOccurrence = entry.Advance();
             }
             catch (Exception e)
             {
                 logger.Error(e, "Error while executing scheduled event.");
-                advance = false;
+                nextOccurrence = DateTime.MaxValue;
             }
 
-            if (advance && entry.NextOccurrence < DateTime.MaxValue)
+            if (nextOccurrence < DateTime.MaxValue)
             {
-                _schedule.Add(entry);
+                _schedule.Enqueue(entry, nextOccurrence);
             }
-        }
-    }
-
-    private sealed class ScheduledEventComparer : IComparer<ScheduledEvent>
-    {
-        public static readonly ScheduledEventComparer Default = new();
-
-        public int Compare(ScheduledEvent x, ScheduledEvent y)
-        {
-            if (x == null && y == null)
-            {
-                return 0;
-            }
-
-            if (x == null)
-            {
-                return 1;
-            }
-
-            if (y == null)
-            {
-                return -1;
-            }
-
-            var next = x.NextOccurrence.CompareTo(y.NextOccurrence);
-            return next != 0 ? next : x.Serial.CompareTo(y.Serial);
         }
     }
 }
