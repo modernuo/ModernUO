@@ -4,7 +4,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class SecureTradePacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+public class SecureTradePacketTests
     {
         [Theory]
         [InlineData("short-name")]

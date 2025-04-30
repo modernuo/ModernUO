@@ -6,7 +6,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-[Collection("Sequential Tests")]
+[Collection("Sequential UOContent Tests")]
 public class EventSchedulerTests
 {
     // Test implementations for controlled testing
@@ -144,36 +144,39 @@ public class EventSchedulerTests
     [Fact]
     public void Scheduler_HandlesRecurringEvents()
     {
-        Init();
-
-        try
+        for (var i = 0; i < 100_000; i++)
         {
-            int callCount = 0;
+            Init();
 
-            // Create a recurrence pattern that fires every 10 seconds, up to 3 times
-            var recurrence = new TestRecurrencePattern(TimeSpan.FromSeconds(10), 3);
+            try
+            {
+                int callCount = 0;
 
-            var evt = new TestScheduledEvent(
-                Core._now,
-                () => callCount++,
-                recurrence
-            );
+                // Create a recurrence pattern that fires every 10 seconds, up to 3 times
+                var recurrence = new TestRecurrencePattern(TimeSpan.FromSeconds(10), 3);
 
-            EventScheduler.Shared.ScheduleEvent(evt);
+                var evt = new TestScheduledEvent(
+                    Core._now,
+                    () => callCount++,
+                    recurrence
+                );
 
-            // Advance time to after all occurrences should have happened
-            Core._now = Core._now.AddSeconds(50);
-            Timer.Slice(8);
+                EventScheduler.Shared.ScheduleEvent(evt);
 
-            // Should have fired 4 times (3 recurrences)
-            Assert.Equal(3, callCount);
-            Assert.Equal(3, evt.CallCount);
+                // Advance time to after all occurrences should have happened
+                Core._now = Core._now.AddSeconds(50);
+                Timer.Slice(8);
 
-            evt.Cancel();
-        }
-        finally
-        {
-            Finish();
+                // Should have fired 4 times (3 recurrences)
+                Assert.Equal(3, callCount);
+                Assert.Equal(3, evt.CallCount);
+
+                evt.Cancel();
+            }
+            finally
+            {
+                Finish();
+            }
         }
     }
 

@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class MovementPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+public class MovementPacketTests
     {
         [Theory]
         [InlineData(0)]
