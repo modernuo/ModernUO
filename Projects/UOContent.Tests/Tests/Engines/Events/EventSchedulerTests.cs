@@ -86,7 +86,7 @@ public class EventSchedulerTests
             Assert.True(called);
             Assert.Equal(Core._now, evt.NextOccurrence);
 
-            EventScheduler.Shared.StopEvent(evt);
+            evt.Cancel();
         }
         finally
         {
@@ -131,9 +131,9 @@ public class EventSchedulerTests
             // Verify they executed in time order, not addition order
             Assert.Equal([1, 2, 3], executionOrder);
 
-            EventScheduler.Shared.StopEvent(evt1);
-            EventScheduler.Shared.StopEvent(evt2);
-            EventScheduler.Shared.StopEvent(evt3);
+            evt1.Cancel();
+            evt2.Cancel();
+            evt3.Cancel();
         }
         finally
         {
@@ -169,7 +169,7 @@ public class EventSchedulerTests
             Assert.Equal(3, callCount);
             Assert.Equal(3, evt.CallCount);
 
-            EventScheduler.Shared.StopEvent(evt);
+            evt.Cancel();
         }
         finally
         {
@@ -211,8 +211,8 @@ public class EventSchedulerTests
             Assert.True(failedEventCalled);
             Assert.True(laterEventCalled);
 
-            EventScheduler.Shared.StopEvent(failedEvt);
-            EventScheduler.Shared.StopEvent(laterEvt);
+            failedEvt.Cancel();
+            laterEvt.Cancel();
         }
         finally
         {
@@ -235,7 +235,7 @@ public class EventSchedulerTests
             );
 
             // Remove before execution
-            EventScheduler.Shared.StopEvent(evt);
+            evt.Cancel();
 
             // Advance time
             Core._now = Core._now.AddSeconds(20);
