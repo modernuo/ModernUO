@@ -16,6 +16,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 
@@ -112,24 +113,25 @@ public static class IncomingItemPackets
     public static void EquipMacro(NetState state, SpanReader reader)
     {
         int count = reader.ReadByte();
-        var serialList = new List<Serial>(count);
+        var serialList = PooledRefList<Serial>.Create(count);
         for (var i = 0; i < count; ++i)
         {
             serialList.Add((Serial)reader.ReadUInt32());
         }
 
-        PlayerMobile.EquipMacro(state.Mobile, serialList);
+        PlayerMobile.EquipMacro(state.Mobile, ref serialList);
+        serialList.Dispose();
     }
 
     public static void UnequipMacro(NetState state, SpanReader reader)
     {
         int count = reader.ReadByte();
-        var layers = new List<Layer>(count);
+        var layers = PooledRefList<Layer>.Create(count);
         for (var i = 0; i < count; ++i)
         {
             layers.Add((Layer)reader.ReadUInt16());
         }
 
-        PlayerMobile.UnequipMacro(state.Mobile, layers);
+        PlayerMobile.UnequipMacro(state.Mobile, ref layers);
     }
 }

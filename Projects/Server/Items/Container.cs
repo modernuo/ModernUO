@@ -425,8 +425,8 @@ public partial class Container : Item
 
     public virtual bool TryDropItems(Mobile from, bool sendFullMessage, params ReadOnlySpan<Item> droppedItems)
     {
-        var dropItems = new List<Item>();
-        var stackItems = new List<ItemStackEntry>();
+        using var dropItems = PooledRefQueue<Item>.Create();
+        using var stackItems = PooledRefQueue<ItemStackEntry>.Create();
 
         var extraItems = 0;
         var extraWeight = 0;
@@ -446,7 +446,7 @@ public partial class Container : Item
                 if (item is not Container && CheckHold(from, dropped, false, false, 0, extraWeight) &&
                     item.CanStackWith(dropped))
                 {
-                    stackItems.Add(new ItemStackEntry(item, dropped));
+                    stackItems.Enqueue(new ItemStackEntry(item, dropped));
                     extraWeight += (int)Math.Ceiling(item.Weight * (item.Amount + dropped.Amount)) -
                                    item.PileWeight; // extra weight delta, do not need TotalWeight as we do not have hybrid stackable container types
                     stacked = true;
@@ -456,7 +456,7 @@ public partial class Container : Item
 
             if (!stacked && CheckHold(from, dropped, false, true, extraItems, extraWeight))
             {
-                dropItems.Add(dropped);
+                dropItems.Enqueue(dropped);
                 extraItems++;
                 extraWeight += dropped.TotalWeight + dropped.PileWeight;
             }
@@ -464,14 +464,15 @@ public partial class Container : Item
 
         if (dropItems.Count + stackItems.Count == droppedItems.Length) // All good
         {
-            for (var i = 0; i < dropItems.Count; i++)
+            while (dropItems.Count > 0)
             {
-                DropItem(dropItems[i]);
+                DropItem(dropItems.Dequeue());
             }
 
-            for (var i = 0; i < stackItems.Count; i++)
+            while (stackItems.Count > 0)
             {
-                stackItems[i].m_StackItem.StackWith(from, stackItems[i].m_DropItem, false);
+                var stackItem = stackItems.Dequeue();
+                stackItem.m_StackItem.StackWith(from, stackItem.m_DropItem, false);
             }
 
             return true;

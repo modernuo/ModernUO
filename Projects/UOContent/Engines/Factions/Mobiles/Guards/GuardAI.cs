@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Factions.AI;
 using Server.Items;
 using Server.Mobiles;
@@ -695,41 +696,42 @@ namespace Server.Factions
                         var dexMod = GetStatMod(m_Guard, StatType.Dex);
                         var intMod = GetStatMod(m_Guard, StatType.Int);
 
-                        var types = new List<Type>();
+                        using var spellTypes = PooledRefQueue<Type>.Create();
 
                         if (strMod <= 0)
                         {
-                            types.Add(typeof(StrengthSpell));
+                            spellTypes.Enqueue(typeof(StrengthSpell));
                         }
 
                         if (dexMod <= 0 && IsAllowed(GuardAI.Melee))
                         {
-                            types.Add(typeof(AgilitySpell));
+                            spellTypes.Enqueue(typeof(AgilitySpell));
                         }
 
                         if (intMod <= 0 && IsAllowed(GuardAI.Magic))
                         {
-                            types.Add(typeof(CunningSpell));
+                            spellTypes.Enqueue(typeof(CunningSpell));
                         }
 
                         if (IsAllowed(GuardAI.Bless))
                         {
-                            if (types.Count > 1)
+                            if (spellTypes.Count > 1)
                             {
                                 spell = new BlessSpell(m_Guard);
                             }
-                            else if (types.Count == 1)
+                            else if (spellTypes.Count == 1)
                             {
-                                spell = types[0].CreateInstance<Spell>(m_Guard, null);
+                                spell = spellTypes.Dequeue().CreateInstance<Spell>(m_Guard, null);
                             }
                         }
-                        else if (types.Count > 0)
+                        else if (spellTypes.Count > 0)
                         {
-                            if (types[0] == typeof(StrengthSpell))
+                            var spellType = spellTypes.Dequeue();
+                            if (spellType == typeof(StrengthSpell))
                             {
                                 UseItemByType(typeof(BaseStrengthPotion));
                             }
-                            else if (types[0] == typeof(AgilitySpell))
+                            else if (spellType == typeof(AgilitySpell))
                             {
                                 UseItemByType(typeof(BaseAgilityPotion));
                             }
@@ -749,30 +751,30 @@ namespace Server.Factions
                             var dexMod = GetStatMod(combatant, StatType.Dex);
                             var intMod = GetStatMod(combatant, StatType.Int);
 
-                            var types = new List<Type>();
+                            using var spellTypes = PooledRefQueue<Type>.Create();
 
                             if (strMod >= 0)
                             {
-                                types.Add(typeof(WeakenSpell));
+                                spellTypes.Enqueue(typeof(WeakenSpell));
                             }
 
                             if (dexMod >= 0 && IsAllowed(GuardAI.Melee))
                             {
-                                types.Add(typeof(ClumsySpell));
+                                spellTypes.Enqueue(typeof(ClumsySpell));
                             }
 
                             if (intMod >= 0 && IsAllowed(GuardAI.Magic))
                             {
-                                types.Add(typeof(FeeblemindSpell));
+                                spellTypes.Enqueue(typeof(FeeblemindSpell));
                             }
 
-                            if (types.Count > 1)
+                            if (spellTypes.Count > 1)
                             {
                                 spell = new CurseSpell(m_Guard);
                             }
-                            else if (types.Count == 1)
+                            else if (spellTypes.Count == 1)
                             {
-                                spell = types[0].CreateInstance<Spell>(m_Guard, null);
+                                spell = spellTypes.Dequeue().CreateInstance<Spell>(m_Guard, null);
                             }
                         }
                     }

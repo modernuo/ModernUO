@@ -1233,24 +1233,24 @@ namespace Server.Multis
             return list;
         }
 
-        public List<Mobile> GetMobiles()
+        public PooledRefList<Mobile> GetMobilesPooled()
         {
             if (Map == null || Map == Map.Internal)
             {
-                return new List<Mobile>();
+                return PooledRefList<Mobile>.Create(0);
             }
 
-            var list = new List<Mobile>();
-
-            foreach (var mobile in Region.GetMobiles())
+            var mobileList = Region.GetMobilesPooled();
+            for (var i = mobileList.Count - 1; i >= 0; i--)
             {
-                if (IsInside(mobile))
+                var mobile = mobileList[i];
+                if (!IsInside(mobile))
                 {
-                    list.Add(mobile);
+                    mobileList.Remove(mobile);
                 }
             }
 
-            return list;
+            return mobileList;
         }
 
         public virtual bool CheckAosLockdowns(int need) => GetAosCurLockdowns() + need <= GetAosMaxLockdowns();

@@ -901,8 +901,10 @@ namespace Server.Multis
                 item.Location = BanLocation;
             }
 
-            foreach (var mobile in GetMobiles())
+            using var mobiles = GetMobilesPooled();
+            for (var i = 0; i < mobiles.Count; i++)
             {
+                var mobile = mobiles[i];
                 if (mobile != m)
                 {
                     mobile.Location = BanLocation;
@@ -1294,13 +1296,18 @@ namespace Server.Multis
             // Eject all from house
             from.RevealingAction();
 
-            foreach (var item in GetItems())
+            var items = GetItems();
+            for (var i = 0; i < items.Count; i++)
             {
+                var item = items[i];
                 item.Location = BanLocation;
             }
 
-            foreach (var mobile in GetMobiles())
+            using var mobiles = GetMobilesPooled();
+            var list = GetMobilesPooled();
+            for (var i = 0; i < list.Count; i++)
             {
+                var mobile = list[i];
                 mobile.Location = BanLocation;
             }
 
@@ -1760,13 +1767,17 @@ namespace Server.Multis
             // Eject all from house
             from.RevealingAction();
 
-            foreach (var item in context.Foundation.GetItems())
+            var list = context.Foundation.GetItems();
+            for (var i = 0; i < list.Count; i++)
             {
+                var item = list[i];
                 item.Location = context.Foundation.BanLocation;
             }
 
-            foreach (var mobile in context.Foundation.GetMobiles())
+            using var mobiles = context.Foundation.GetMobilesPooled();
+            for (var i = 0; i < mobiles.Count; i++)
             {
+                var mobile = mobiles[i];
                 mobile.Location = context.Foundation.BanLocation;
             }
 

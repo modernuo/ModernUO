@@ -850,40 +850,6 @@ public partial class Account : IAccount, IComparable<Account>
     }
 
     /// <summary>
-    ///     Deserializes a list of string values from an xml element. Null values are not added to the list.
-    /// </summary>
-    /// <param name="node">The XmlElement from which to deserialize.</param>
-    /// <returns>String list. Value will never be null.</returns>
-    private static string[] LoadAccessCheck(XmlElement node)
-    {
-        string[] stringList;
-        var accessCheck = node["accessCheck"];
-
-        if (accessCheck != null)
-        {
-            var list = new List<string>();
-
-            foreach (XmlElement ip in accessCheck.GetElementsByTagName("ip"))
-            {
-                var text = Utility.GetText(ip, null);
-
-                if (text != null)
-                {
-                    list.Add(text);
-                }
-            }
-
-            stringList = list.ToArray();
-        }
-        else
-        {
-            stringList = [];
-        }
-
-        return stringList;
-    }
-
-    /// <summary>
     ///     Deserializes a list of IPAddress values from an xml element.
     /// </summary>
     /// <param name="node">The XmlElement from which to deserialize.</param>

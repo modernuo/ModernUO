@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Multis;
 
 namespace Server.Items;
@@ -101,16 +102,16 @@ public partial class StrongBox : BaseContainer, IChoppable
 
     public Container ConvertToStandardContainer()
     {
-        Container metalBox = new MetalBox();
-        var subItems = new List<Item>(Items);
+        var metalBox = new MetalBox();
+        using var subItems = PooledRefList<Item>.Create(Items.Count);
+        subItems.AddRange(Items);
 
-        foreach (var subItem in subItems)
+        for (var i = 0; i < subItems.Count; i++)
         {
-            metalBox.AddItem(subItem);
+            metalBox.AddItem(subItems[i]);
         }
 
         Delete();
-
         return metalBox;
     }
 }

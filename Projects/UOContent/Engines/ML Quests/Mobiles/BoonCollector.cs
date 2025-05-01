@@ -118,8 +118,7 @@ public abstract partial class DoneQuestCollector : BaseCreature, IRaceChanger
         }
         else
         {
-            var conversation = new List<TextDefinition>();
-            conversation.AddRange(Incomplete);
+            List<TextDefinition> conversation = [..Incomplete];
 
             var context = MLQuestSystem.GetContext(pm);
 

@@ -669,12 +669,13 @@ public partial class LeverPuzzleController : Item
         protected override void OnTick()
         {
             ticks++;
-            var mobiles = m_Controller._lampRoom.GetMobiles();
+            using var mobiles = m_Controller._lampRoom.GetMobilesPooled();
 
             if (ticks >= 71 || m_Controller._lampRoom.GetPlayerCount() == 0)
             {
-                foreach (var mobile in mobiles)
+                for (var i = 0; i < mobiles.Count; i++)
                 {
+                    var mobile = mobiles[i];
                     if (mobile?.Deleted == false && !mobile.IsDeadBondedPet)
                     {
                         mobile.Kill();
@@ -691,33 +692,36 @@ public partial class LeverPuzzleController : Item
                     level++;
                 }
 
-                foreach (var mobile in mobiles)
+                for (var i = 0; i < mobiles.Count; i++)
                 {
-                    if (IsValidDamagable(mobile))
+                    var mobile = mobiles[i];
+                    if (!IsValidDamagable(mobile))
                     {
-                        if (ticks % 2 == 0 && level == 5)
+                        continue;
+                    }
+
+                    if (ticks % 2 == 0 && level == 5)
+                    {
+                        if (mobile.Player)
                         {
-                            if (mobile.Player)
+                            mobile.Say(1062092);
+                            if (AniSafe(mobile))
                             {
-                                mobile.Say(1062092);
-                                if (AniSafe(mobile))
-                                {
-                                    mobile.Animate(32, 5, 1, true, false, 0);
-                                }
+                                mobile.Animate(32, 5, 1, true, false, 0);
                             }
-
-                            DoDamage(mobile, 15, 20, true);
                         }
 
-                        if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3)
-                        {
-                            mobile.ApplyPoison(mobile, PA2[level]);
-                        }
+                        DoDamage(mobile, 15, 20, true);
+                    }
 
-                        if (ticks % 12 == 0 && level > 0 && mobile.Player)
-                        {
-                            mobile.SendLocalizedMessage(PA[level][0], null, PA[level][1]);
-                        }
+                    if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3)
+                    {
+                        mobile.ApplyPoison(mobile, PA2[level]);
+                    }
+
+                    if (ticks % 12 == 0 && level > 0 && mobile.Player)
+                    {
+                        mobile.SendLocalizedMessage(PA[level][0], null, PA[level][1]);
                     }
                 }
 
