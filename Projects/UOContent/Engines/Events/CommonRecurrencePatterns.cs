@@ -46,28 +46,29 @@ public class WeeklyRecurrencePattern : IRecurrencePattern
     public DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone)
     {
         var local = TimeZoneInfo.ConvertTimeFromUtc(afterUtc, timeZone);
-        var localDate = DateOnly.FromDateTime(local);
+        var daysOfWeek = DaysOfWeek == DaysOfWeek.None
+            ? (DaysOfWeek)(1 << (int)local.DayOfWeek)
+            : DaysOfWeek;
 
-        var weekStart = localDate.ToDateTime(time);
-        var daysOfWeek = DaysOfWeek;
+        var weekStart = local.Date.AddDays(-(int)local.DayOfWeek);
 
-        // Set the day of the week to whatever day it is now
-        if (daysOfWeek == DaysOfWeek.None)
+        // No more days in this week, jump IntervalWeeks ahead
+        for (int week = 0; week <= 100; week++)
         {
-            daysOfWeek = (DaysOfWeek)(1 << (int)local.DayOfWeek);
-        }
+            DateTime nextWeekStart = weekStart.AddDays(7 * IntervalWeeks * week);
 
-        // Example:
-        // Recurrence is Monday, Wednesday, Friday - and today is Wednesday
-        // weekStart will be Thursday, and then we check every day for 7 days to find the next occurrence match.
-        for (int i = 1; i < 8; i++)
-        {
-            var candidate = weekStart.AddDays(i);
-            var candidateDay = (DaysOfWeek)(1 << (int)candidate.DayOfWeek);
-
-            if ((daysOfWeek & candidateDay) != 0 && candidate > local && !timeZone.IsInvalidTime(candidate))
+            for (int i = 0; i < 7; i++)
             {
-                return candidate.LocalToUtc(timeZone);
+                var day = nextWeekStart.AddDays(i);
+                var dayOfWeekFlag = (DaysOfWeek)(1 << (int)day.DayOfWeek);
+                if ((daysOfWeek & dayOfWeekFlag) != 0)
+                {
+                    var candidate = new DateTime(day.Year, day.Month, day.Day, time.Hour, time.Minute, 0);
+                    if (candidate > local && !timeZone.IsInvalidTime(candidate))
+                    {
+                        return candidate.LocalToUtc(timeZone);
+                    }
+                }
             }
         }
 
