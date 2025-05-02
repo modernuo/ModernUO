@@ -25,7 +25,7 @@ public class ParalyzeFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 
     public override SpellCircle Circle => SpellCircle.Sixth;
 
-    public int TargetRange => 15;
+    public int TargetRange => Core.T2A ? 15 : 18;
 
     public void Target(IPoint3D p)
     {
