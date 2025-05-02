@@ -509,7 +509,7 @@ public class FurrowsGreenThornsEffect : GreenThornsEffect
                     // * A magical bunny leaps out of its hole, disturbed by the thorn's effect! *
                     dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114428);
 
-                    BaseCreature spawn = new VorpalBunny();
+                    var spawn = new VorpalBunny();
                     if (!SpawnCreature(spawn))
                     {
                         spawn.Delete();
@@ -564,7 +564,7 @@ public class SwampGreenThornsEffect : GreenThornsEffect
                     dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114429);
                     Effects.PlaySound(Location, Map, 0x2B0);
 
-                    BaseCreature spawn = new WhippingVine();
+                    var spawn = new WhippingVine();
                     if (!SpawnCreature(spawn))
                     {
                         spawn.Delete();
@@ -618,7 +618,7 @@ public class SnowGreenThornsEffect : GreenThornsEffect
                     // * Slithering ice serpents rise to the surface to investigate the disturbance! *
                     dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114430);
 
-                    BaseCreature spawn = new GiantIceWorm();
+                    var spawn = new GiantIceWorm();
                     if (!SpawnCreature(spawn))
                     {
                         spawn.Delete();
@@ -626,7 +626,7 @@ public class SnowGreenThornsEffect : GreenThornsEffect
 
                     for (var i = 0; i < 3; i++)
                     {
-                        BaseCreature snake = new IceSnake();
+                        var snake = new IceSnake();
                         if (!SpawnCreature(snake))
                         {
                             snake.Delete();

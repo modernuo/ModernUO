@@ -1899,8 +1899,7 @@ public abstract class BaseAI
                     }
                     else
                     {
-                        Container c = fromState.AddTrade(toState);
-                        c.DropItem(new TransferItem(m_Mobile));
+                        fromState.AddTrade(toState).DropItem(new TransferItem(m_Mobile));
                     }
                 }
             }

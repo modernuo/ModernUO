@@ -41,10 +41,10 @@ public partial class Wool : Item, IDyable
 
     public virtual void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
     {
-        Item item = new DarkYarn(3);
-        item.Hue = hue;
-
-        from.AddToBackpack(item);
+        from.AddToBackpack(new DarkYarn(3)
+        {
+            Hue = hue
+        });
         from.SendLocalizedMessage(1010576); // You put the balls of yarn in your backpack.
     }
 
@@ -105,10 +105,10 @@ public partial class TaintedWool : Wool
 
     public override void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
     {
-        Item item = new DarkYarn();
-        item.Hue = hue;
-
-        from.AddToBackpack(item);
+        from.AddToBackpack(new DarkYarn
+        {
+            Hue = hue
+        });
         from.SendLocalizedMessage(1010574); // You put a ball of yarn in your backpack.
     }
 }

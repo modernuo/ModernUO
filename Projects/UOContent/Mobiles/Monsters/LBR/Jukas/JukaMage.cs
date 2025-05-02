@@ -45,7 +45,7 @@ namespace Server.Mobiles
 
             VirtualArmor = 16;
 
-            Container bag = new Bag();
+            var bag = new Bag();
 
             var count = Utility.RandomMinMax(10, 20);
 

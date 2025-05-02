@@ -849,7 +849,7 @@ public class EscortDestinationInfo
 
     public static void Initialize()
     {
-        ICollection list = Map.Felucca.Regions.Values;
+        var list = Map.Felucca.Regions.Values;
 
         if (list.Count == 0)
         {

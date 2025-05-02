@@ -115,19 +115,12 @@ public class AnimateDeadSpell : NecromancerSpell, ITargetingSpell<Item>
 
         if (comp?.Addon is MaabusCoffin addon)
         {
-            var pm = Caster as PlayerMobile;
+            var objective = ((Caster as PlayerMobile)?.Quest as DarkTidesQuest)?.FindObjective<AnimateMaabusCorpseObjective>();
 
-            var qs = pm?.Quest;
-
-            if (qs is DarkTidesQuest)
+            if (objective?.Completed == false)
             {
-                QuestObjective objective = qs.FindObjective<AnimateMaabusCorpseObjective>();
-
-                if (objective?.Completed == false)
-                {
-                    addon.Awake(Caster);
-                    objective.Complete();
-                }
+                addon.Awake(Caster);
+                objective.Complete();
             }
 
             return;

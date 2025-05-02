@@ -3662,7 +3662,7 @@ public abstract partial class BaseWeapon
 
         attacker.DoHarmful(defender);
 
-        MagerySpell sp = new DispelSpell(attacker);
+        var sp = new DispelSpell(attacker);
 
         if (sp.CheckResisted(defender))
         {

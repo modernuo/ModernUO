@@ -8,7 +8,7 @@ public static class GumpUtilities
 {
     public static Packet Compile(this Gump g, NetState ns = null)
     {
-        IGumpWriter disp = new DisplayGumpPacked(g);
+        var disp = new DisplayGumpPacked(g);
 
         if (!g.Draggable)
         {

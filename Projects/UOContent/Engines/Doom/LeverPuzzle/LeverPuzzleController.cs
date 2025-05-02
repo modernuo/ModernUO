@@ -321,8 +321,8 @@ public partial class LeverPuzzleController : Item
     {
         for (var i = 0; i < 4; i++)
         {
-            Item l;
-            if ((l = GetLever(i)) != null)
+            LeverPuzzleLever l = GetLever(i);
+            if (l != null)
             {
                 l.ItemID = 0x108E;
                 Effects.PlaySound(l.Location, Map, 0x3E8);
@@ -363,7 +363,7 @@ public partial class LeverPuzzleController : Item
         }
         else
         {
-            Mobile player;
+            PlayerMobile player;
             if (TheirKey == MyKey)
             {
                 GenKey();
