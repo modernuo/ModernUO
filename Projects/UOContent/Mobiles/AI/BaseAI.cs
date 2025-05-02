@@ -794,10 +794,6 @@ public abstract class BaseAI
         {
             m_Mobile.FocusMob = null;
         }
-        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
-        {
-            m_Mobile.SetCurrentSpeedToActive();
-        }
     }
     
     private void HandleCombatAction()
@@ -809,10 +805,6 @@ public abstract class BaseAI
         if (m_Mobile.FocusMob != null)
         {
             m_Mobile.FocusMob = null;
-        }
-        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
-        {
-            m_Mobile.SetCurrentSpeedToActive();
         }
     }
     
@@ -830,10 +822,6 @@ public abstract class BaseAI
         {
             m_Mobile.Combatant = null;
         }
-        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
-        {
-            m_Mobile.SetCurrentSpeedToActive();
-        }
     }
     
     private void HandleFleeAction()
@@ -846,10 +834,6 @@ public abstract class BaseAI
         {
             m_Mobile.FocusMob = null;
         }
-        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
-        {
-            m_Mobile.SetCurrentSpeedToActive();
-        }
     }
     
     private void HandleInteractAction()
@@ -858,10 +842,6 @@ public abstract class BaseAI
         {
             m_Mobile.Warmode = false;
         }
-        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
-        {
-            m_Mobile.SetCurrentSpeedToPassive();
-        }
     }
     
     private void HandleBackoffAction()
@@ -869,10 +849,6 @@ public abstract class BaseAI
         if (m_Mobile.Warmode)
         {
             m_Mobile.Warmode = false;
-        }
-        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
-        {
-            m_Mobile.SetCurrentSpeedToPassive();
         }
     }
 
