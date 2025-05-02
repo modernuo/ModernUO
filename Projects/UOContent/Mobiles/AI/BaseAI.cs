@@ -2589,7 +2589,7 @@ public abstract class BaseAI
     
         if (combatant == null)
         {
-            WalkRandom(1, 2, 1);
+            WalkRandomInHome(4, 3, 1);
         }
         else
         {
