@@ -1895,8 +1895,15 @@ public abstract class BaseAI
         {
             m_Mobile.DebugSay("I have been ordered to stop.");
         }
-    
-        HandleStopOrder();
+
+        if (Core.ML)
+        {
+            WalkRandomInHome(3, 2, 1);
+        }
+        else
+        {
+            HandleStopOrder();
+        }
     
         return true;
     }
