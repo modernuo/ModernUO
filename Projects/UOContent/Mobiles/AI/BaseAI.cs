@@ -1180,7 +1180,7 @@ public abstract class BaseAI
             m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
         }
 
-        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+        m_Mobile.PlaySound(m_Mobile.GetAttackSound());
     }
     
     private void HandleFollowOrder()
