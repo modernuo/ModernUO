@@ -852,8 +852,6 @@ public abstract class BaseAI
         }
     }
 
-    public virtual bool OnAtWayPoint() => true;
-
     public virtual bool DoActionWander()
     {
         if (CheckHerding())
@@ -876,10 +874,15 @@ public abstract class BaseAI
             WalkRandomInHome(4, 3, 1);
         }
     
-        UpdateCombatantDirection();
+        if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
+        {
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
+        }
     
         return true;
     }
+
+    public virtual bool OnAtWayPoint() => true;
 
     private void HandleWayPoint()
     {
@@ -922,14 +925,6 @@ public abstract class BaseAI
         else
         {
             WalkRandomInHome(4, 3, 1);
-        }
-    }
-    
-    private void UpdateCombatantDirection()
-    {
-        if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
-        {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
         }
     }
 
