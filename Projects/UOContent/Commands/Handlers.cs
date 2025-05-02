@@ -239,7 +239,7 @@ namespace Server.Commands
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
-                        BaseCreature pet = pets[i];
+                        var pet = pets[i];
 
                         if (pet is IMount mount)
                         {
