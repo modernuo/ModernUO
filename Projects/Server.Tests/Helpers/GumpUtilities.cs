@@ -46,7 +46,7 @@ public static class GumpUtilities
 
         disp.Flush();
 
-        return (Packet)disp;
+        return disp;
     }
 
     public static int Intern(this List<string> strings, string value)

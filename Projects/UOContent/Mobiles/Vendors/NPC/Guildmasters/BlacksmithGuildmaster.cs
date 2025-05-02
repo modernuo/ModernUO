@@ -37,7 +37,6 @@ namespace Server.Mobiles
             if (!EquipItem(item))
             {
                 item.Delete();
-                item = null;
             }
 
             AddItem(new Bascinet());
