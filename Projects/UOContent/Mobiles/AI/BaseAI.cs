@@ -1673,12 +1673,15 @@ public abstract class BaseAI
         {
             m_Mobile.DebugSay("There is nothing to guard.");
         }
-    
-        m_Mobile.Warmode = false;
-        
-        if (Core.AOS && m_Mobile.CurrentSpeed != 0.1)
+
+        if (m_Mobile.Warmode)
         {
-            m_Mobile.CurrentSpeed = 0.1;
+            m_Mobile.Warmode = false;
+        }
+        
+        if (Core.AOS && m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
         }
     
         WalkMobileRange(controlMaster, 1, false, 0, 1);
