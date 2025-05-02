@@ -26,6 +26,8 @@ public class FireFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 
     public override SpellCircle Circle => SpellCircle.Fourth;
 
+    public int TargetRange => Core.T2A ? 15 : 18;
+
     public void Target(IPoint3D p)
     {
         if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
