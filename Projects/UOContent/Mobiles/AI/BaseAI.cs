@@ -363,6 +363,8 @@ public abstract class BaseAI
         return from.Alive && from.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown();
     }
 
+    private DateTime m_lastOrder = DateTime.MinValue;
+
     public virtual void OnSpeech(SpeechEventArgs e)
     {
         if (WasNamed(e.Speech) && e.Mobile.Alive && 
@@ -370,23 +372,55 @@ public abstract class BaseAI
         {
             if (e.HasKeyword(0x9D)) // *move*
             {
-                m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516);
-                // 501516: Excuse me?
-                m_Mobile.Location = new Point3D(m_Mobile.Location.X + 
-                Utility.RandomMinMax(-1, 1), m_Mobile.Location.Y + 
-                Utility.RandomMinMax(-1, 1), m_Mobile.Location.Z);
-                WalkRandomInHome(4, 3, 1);
+                if ((DateTime.Now - m_lastOrder).TotalSeconds < 5)
+                {
+                    return;
+                }
+
+                m_lastOrder = DateTime.Now;
+
+                var map = m_Mobile.Map;
+
+                int newX = m_Mobile.Location.X + Utility.RandomMinMax(-1, 1);
+                int newY = m_Mobile.Location.Y + Utility.RandomMinMax(-1, 1);
+                int newZ = m_Mobile.Location.Z;
+
+                Point3D newLocation = new Point3D(newX, newY, newZ);
+
+                if (map != null && map.CanFit(newX, newY, newZ, 16, false, false, true))
+                {
+                    m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516);
+                    // 501516: Excuse me?
+                    
+                    m_Mobile.Location = newLocation;
+                    WalkRandomInHome(4, 3, 1);
+                }
+                else
+                {
+                    m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501487);
+                    // 501487: You're standing too close, go away.
+                }
+
                 return;
             }
             else if (e.HasKeyword(0x9E)) // *time*
             {
+                if ((DateTime.Now - m_lastOrder).TotalSeconds < 5)
+                {
+                    return;
+                }
+
+                m_lastOrder = DateTime.Now;
+
                 Clock.GetTime(m_Mobile, out var generalNumber, out _);
                 m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, generalNumber);
+
                 return;
             }
             else if (e.HasKeyword(0x6C)) // *train*
             {
                 HandleTraining(e.Mobile);
+                
                 return;
             }
         }
