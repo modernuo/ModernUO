@@ -1962,17 +1962,20 @@ public abstract class BaseAI
                 SendTransferRefusalMessages(from, to, 1043248, 1043249);
                 // 1043248: The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
                 // 1043249: The pet will not accept you as a master because it does not trust you.~3_BLANK~
+                return false;
             }
             else if (!m_Mobile.CanBeControlledBy(from))
             {
                 SendTransferRefusalMessages(from, to, 1043250, 1043251);
                 // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
                 // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
+                return false;
             }
             else if (IsInCombatState())
             {
                 from.SendMessage("You can not transfer a pet while in combat.");
                 to.SendMessage("You can not transfer a pet while in combat.");
+                return false;
             }
             
             var fromState = from.NetState;
