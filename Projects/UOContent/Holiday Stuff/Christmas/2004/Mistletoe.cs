@@ -266,9 +266,11 @@ public partial class MistletoeDeed : Item
 
         if (itemID > 0)
         {
-            Item addon = new MistletoeAddon(Hue);
+            var addon = new MistletoeAddon(Hue)
+            {
+                ItemID = itemID
+            };
 
-            addon.ItemID = itemID;
             addon.MoveToWorld(loc, from.Map);
 
             house.Addons.Add(addon);

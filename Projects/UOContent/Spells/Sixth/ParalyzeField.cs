@@ -57,8 +57,7 @@ public class ParalyzeFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
                     continue;
                 }
 
-                Item item = new ParalyzeField(Caster, itemID, targetLoc, Caster.Map, duration);
-                item.ProcessDelta();
+                new ParalyzeField(Caster, itemID, targetLoc, Caster.Map, duration).ProcessDelta();
 
                 Effects.SendLocationParticles(
                     EffectItem.Create(targetLoc, Caster.Map, EffectItem.DefaultDuration),

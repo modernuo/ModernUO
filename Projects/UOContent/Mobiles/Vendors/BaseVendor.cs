@@ -1163,7 +1163,7 @@ namespace Server.Mobiles
         }
 
         private static bool ProcessSinglePurchase(
-            BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy,
+            BuyItemResponse buy, GenericBuyInfo bii, List<BuyItemResponse> validBuy,
             ref int controlSlots, ref bool fullPurchase, ref int totalCost
         )
         {
@@ -1211,7 +1211,7 @@ namespace Server.Mobiles
             return true;
         }
 
-        private static void ProcessValidPurchase(int amount, IBuyItemInfo bii, Mobile buyer, Container cont)
+        private static void ProcessValidPurchase(int amount, GenericBuyInfo bii, Mobile buyer, Container cont)
         {
             if (amount > bii.Amount)
             {

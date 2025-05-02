@@ -912,7 +912,7 @@ public partial class Corpse : Container, ICarvable
             var obj = qs.FindObjective<GetDaemonBoneObjective>();
             if (obj?.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
             {
-                Item bone = new QuestDaemonBone();
+                var bone = new QuestDaemonBone();
 
                 if (player.PlaceInBackpack(bone))
                 {

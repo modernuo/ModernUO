@@ -44,15 +44,15 @@ public partial class ArcherGuard : BaseGuard
 
         AddItem(bow);
 
-        Container pack = new Backpack();
+        var pack = new Backpack
+        {
+            Movable = false
+        };
 
-        pack.Movable = false;
-
-        var arrows = new Arrow(250);
-
-        arrows.LootType = LootType.Newbied;
-
-        pack.DropItem(arrows);
+        pack.DropItem(new Arrow(250)
+        {
+            LootType = LootType.Newbied
+        });
         pack.DropItem(new Gold(10, 25));
 
         AddItem(pack);

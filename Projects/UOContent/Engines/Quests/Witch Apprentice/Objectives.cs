@@ -52,7 +52,7 @@ namespace Server.Engines.Quests.Hag
             Effects.SendLocationEffect(m_CorpseLocation, map, 0x3728, 10);
             Effects.PlaySound(m_CorpseLocation, map, 0x1FE);
 
-            Mobile imp = new Zeefzorpul();
+            var imp = new Zeefzorpul();
             imp.MoveToWorld(m_CorpseLocation, map);
 
             // * You see a strange imp stealing a scrap of paper from the bloodied corpse *
@@ -216,7 +216,7 @@ namespace Server.Engines.Quests.Hag
             Effects.SendLocationEffect(ImpLocation, map, 0x3728, 10);
             Effects.PlaySound(ImpLocation, map, 0x1FE);
 
-            Mobile imp = new Zeefzorpul();
+            var imp = new Zeefzorpul();
             imp.MoveToWorld(ImpLocation, map);
 
             imp.Direction = imp.GetDirectionTo(from);

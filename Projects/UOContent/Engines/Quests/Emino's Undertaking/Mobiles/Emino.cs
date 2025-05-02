@@ -58,7 +58,7 @@ public partial class Emino : BaseQuester
 
         if (EminosUndertakingQuest.HasLostNoteForZoel(player))
         {
-            Item note = new NoteForZoel();
+            var note = new NoteForZoel();
 
             if (player.PlaceInBackpack(note))
             {
