@@ -1013,31 +1013,17 @@ public abstract class BaseAI
                 m_Mobile.DebugSay("Focused target is missing.");
             }
 
-            if (Action != ActionType.Guard)
-            {
-                Action = ActionType.Guard;
-            }
+            WalkRandomInHome(4, 3, 1);
+
             return true;
         }
     
-        if (WalkMobileRange(from, 1, true, m_Mobile.RangePerception * 2, m_Mobile.RangePerception * 1))
-        {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am fleeing.");
-            }
-
-            if (Action != ActionType.Guard)
-            {
-                Action = ActionType.Guard;
-            }
-            return true;
-        }
-        
         if (m_Mobile.Debug)
         {
-            m_Mobile.DebugSay("I am fleeing!");
+            m_Mobile.DebugSay("I am fleeing.");
         }
+
+        WalkRandom(1, 2, 1);
 
         return true;
     }
