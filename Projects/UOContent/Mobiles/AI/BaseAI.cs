@@ -442,6 +442,14 @@ public abstract class BaseAI
     {
         if (e.Mobile.InRange(m_Mobile.Location, 14))
         {
+            var isOwner = e.Mobile == m_Mobile.ControlMaster;
+            var isPetFriend = !isOwner && m_Mobile.IsPetFriend(e.Mobile);
+
+            if (!isOwner || !isPetFriend)
+            {
+                return;
+            }
+
             if (e.HasKeyword(0x164)) // all come
             {
                 HandleComeCommand(e.Mobile, true);
@@ -485,6 +493,14 @@ public abstract class BaseAI
     {
         if (e.Mobile.InRange(m_Mobile.Location, 14))
         {
+            var isOwner = e.Mobile == m_Mobile.ControlMaster;
+            var isPetFriend = !isOwner && m_Mobile.IsPetFriend(e.Mobile);
+
+            if (!isOwner || !isPetFriend)
+            {
+                return;
+            }
+
             if (e.HasKeyword(0x155)) // *come
             {
                 HandleComeCommand(e.Mobile, true);
