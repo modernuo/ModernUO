@@ -962,7 +962,7 @@ public abstract class BaseAI
         {
             if (m_Mobile.Debug)
             {
-                m_Mobile.DebugSay(string.Format("I used my abilities on: {0}", combatant.Name));
+                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
             }
         }
     
