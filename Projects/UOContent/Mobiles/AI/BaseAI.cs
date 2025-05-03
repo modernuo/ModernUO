@@ -363,7 +363,7 @@ public abstract class BaseAI
         return from.Alive && from.InRange(m_Mobile.Location, 3) && m_Mobile.IsHumanInTown();
     }
 
-    private DateTime m_lastOrder = DateTime.MinValue;
+    private DateTime _lastOrder = DateTime.MinValue;
 
     public virtual void OnSpeech(SpeechEventArgs e)
     {
@@ -372,12 +372,12 @@ public abstract class BaseAI
         {
             if (e.HasKeyword(0x9D)) // *move*
             {
-                if ((DateTime.Now - m_lastOrder).TotalSeconds < 5)
+                if ((Core.Now - _lastOrder).TotalSeconds < 5)
                 {
                     return;
                 }
 
-                m_lastOrder = DateTime.Now;
+                _lastOrder = Core.Now;
 
                 var map = m_Mobile.Map;
 
@@ -405,12 +405,12 @@ public abstract class BaseAI
             }
             else if (e.HasKeyword(0x9E)) // *time*
             {
-                if ((DateTime.Now - m_lastOrder).TotalSeconds < 5)
+                if ((Core.Now - _lastOrder).TotalSeconds < 5)
                 {
                     return;
                 }
 
-                m_lastOrder = DateTime.Now;
+                _lastOrder = Core.Now;
 
                 Clock.GetTime(m_Mobile, out var generalNumber, out _);
                 m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, generalNumber);
