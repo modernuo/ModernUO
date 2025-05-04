@@ -1880,30 +1880,27 @@ public abstract class BaseAI
     
     private void HandleStayOrder()
     {
-        if (m_Mobile.ControlOrder != OrderType.None)
+        if (m_Mobile.ControlTarget != null)
         {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
-            m_Mobile.Home = m_Mobile.Location;
-
-            if (m_Mobile.ControlTarget != null)
-            {
-                m_Mobile.ControlTarget = null;
-            }
-            if (m_Mobile.Warmode)
-            {
-                m_Mobile.Warmode = false;
-            }
-            if (m_Mobile.Combatant != null)
-            {
-                m_Mobile.Combatant = null;
-            }
-            if (m_Mobile.FocusMob != null)
-            {
-                m_Mobile.FocusMob = null;
-            }
-
-            m_Mobile.ControlOrder = OrderType.None;
+            m_Mobile.ControlTarget = null;
         }
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
+        
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
+        m_Mobile.Home = m_Mobile.Location;
+
+        WalkRandomInHome(3, 2, 1);
     }
 
     public virtual bool DoOrderStop()
