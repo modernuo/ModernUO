@@ -965,10 +965,8 @@ public abstract class BaseAI
                 m_Mobile.DebugSay("My combatant is missing.");
             }
 
-            if (Action != ActionType.Wander)
-            {
-                Action = ActionType.Wander;
-            }
+            Action = ActionType.Wander;
+
             return true;
         }
     
@@ -1009,10 +1007,7 @@ public abstract class BaseAI
                 m_Mobile.DebugSay("I stopped being on guard.");
             }
 
-            if (Action != ActionType.Wander)
-            {
-                Action = ActionType.Wander;
-            }
+            Action = ActionType.Wander;
         }
     
         return true;
