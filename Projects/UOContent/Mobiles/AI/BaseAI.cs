@@ -122,6 +122,26 @@ public abstract class BaseAI
         m_Mobile = m;
         m_Timer = new AITimer(this);
 
+        _actionHandlers = new Dictionary<ActionType, Func<bool>>
+        {
+            { ActionType.Wander, () => { m_Mobile.OnActionWander(); return DoActionWander(); } },
+            { ActionType.Combat, () => { m_Mobile.OnActionCombat(); return DoActionCombat(); } },
+            { ActionType.Guard, () => { m_Mobile.OnActionGuard(); return DoActionGuard(); } },
+            { ActionType.Flee, () => { m_Mobile.OnActionFlee(); return DoActionFlee(); } },
+            { ActionType.Interact, () => { m_Mobile.OnActionInteract(); return DoActionInteract(); } },
+            { ActionType.Backoff, () => { m_Mobile.OnActionBackoff(); return DoActionBackoff(); } }
+        };
+
+        _actionChanges = new Dictionary<ActionType, Action>
+        {
+            { ActionType.Wander, HandleWanderAction },
+            { ActionType.Combat, HandleCombatAction },
+            { ActionType.Guard, HandleGuardAction },
+            { ActionType.Flee, HandleFleeAction },
+            { ActionType.Interact, HandleInteractAction },
+            { ActionType.Backoff, HandleBackoffAction }
+        };
+
         var activate = !m.PlayerRangeSensitive || 
             (!World.Loading && m.Map != null && m.Map != Map.Internal && 
              m.Map.GetSector(m.Location).Active);
@@ -723,6 +743,8 @@ public abstract class BaseAI
         }
     }
 
+    private readonly Dictionary<ActionType, Func<bool>> _actionHandlers;
+
     public virtual bool Think()
     {
         if (m_Mobile?.Deleted != false || m_Mobile.Map == null)
@@ -765,32 +787,14 @@ public abstract class BaseAI
             return true;
         }
     
-        var actionHandlers = new Dictionary<ActionType, Func<bool>>
-        {
-            { ActionType.Wander, () => { m_Mobile.OnActionWander(); return DoActionWander(); } },
-            { ActionType.Combat, () => { m_Mobile.OnActionCombat(); return DoActionCombat(); } },
-            { ActionType.Guard, () => { m_Mobile.OnActionGuard(); return DoActionGuard(); } },
-            { ActionType.Flee, () => { m_Mobile.OnActionFlee(); return DoActionFlee(); } },
-            { ActionType.Interact, () => { m_Mobile.OnActionInteract(); return DoActionInteract(); } },
-            { ActionType.Backoff, () => { m_Mobile.OnActionBackoff(); return DoActionBackoff(); } }
-        };
-    
-        return actionHandlers.TryGetValue(Action, out var handler) && handler();
+        return _actionHandlers.TryGetValue(Action, out var handler) && handler();
     }
+
+    private readonly Dictionary<ActionType, Action> _actionChanges;
 
     public virtual void OnActionChanged()
     {
-        var actionHandlers = new Dictionary<ActionType, Action>
-        {
-            { ActionType.Wander, HandleWanderAction },
-            { ActionType.Combat, HandleCombatAction },
-            { ActionType.Guard, HandleGuardAction },
-            { ActionType.Flee, HandleFleeAction },
-            { ActionType.Interact, HandleInteractAction },
-            { ActionType.Backoff, HandleBackoffAction }
-        };
-    
-        if (actionHandlers.TryGetValue(Action, out var handler))
+        if (_actionChanges.TryGetValue(Action, out var handler))
         {
             handler();
         }
