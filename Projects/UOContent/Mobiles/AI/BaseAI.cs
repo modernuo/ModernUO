@@ -1929,28 +1929,28 @@ public abstract class BaseAI
     
     private void HandleStopOrder()
     {
+        if (m_Mobile.ControlTarget != null)
+        {
+            m_Mobile.ControlTarget = null;
+        }
+        if (m_Mobile.Warmode)
+        {
+            m_Mobile.Warmode = false;
+        }
+        if (m_Mobile.Combatant != null)
+        {
+            m_Mobile.Combatant = null;
+        }
+        if (m_Mobile.FocusMob != null)
+        {
+            m_Mobile.FocusMob = null;
+        }
+
+        m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
+        m_Mobile.Home = m_Mobile.Location;
+            
         if (m_Mobile.ControlOrder != OrderType.Stop)
         {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
-            m_Mobile.Home = m_Mobile.Location;
-
-            if (m_Mobile.ControlTarget != null)
-            {
-                m_Mobile.ControlTarget = null;
-            }
-            if (m_Mobile.Warmode)
-            {
-                m_Mobile.Warmode = false;
-            }
-            if (m_Mobile.Combatant != null)
-            {
-                m_Mobile.Combatant = null;
-            }
-            if (m_Mobile.FocusMob != null)
-            {
-                m_Mobile.FocusMob = null;
-            }
-
             m_Mobile.ControlOrder = OrderType.Stop;
         }
     }
