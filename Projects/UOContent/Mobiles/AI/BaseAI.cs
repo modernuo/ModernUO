@@ -1316,10 +1316,16 @@ public abstract class BaseAI
             m_Mobile.DebugSay("I am ordered to drop my items.");
         }
     
+        if (m_Mobile.ControlTarget != null)
+        {
+            m_Mobile.ControlTarget = null;
+        }
+        if (m_Mobile.ControlOrder != OrderType.None)
+        {
+            m_Mobile.ControlOrder = OrderType.None;
+        }
+
         DropItems();
-    
-        m_Mobile.ControlTarget = null;
-        m_Mobile.ControlOrder = OrderType.None;
     
         return true;
     }
