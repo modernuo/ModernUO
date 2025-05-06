@@ -716,13 +716,18 @@ public abstract class BaseAI
             }
         }
     }
-    
-    private void HandleGMCommands(SpeechEventArgs e)
+
+    private void DebugSay(string message)
     {
         if (m_Mobile.Debug)
         {
-            m_Mobile.DebugSay("It is from a GM");
+            m_Mobile.DebugSay(message);
         }
+    }
+    
+    private void HandleGMCommands(SpeechEventArgs e)
+    {
+        DebugSay("Command is from a GM");
     
         if (m_Mobile.FindMyName(e.Speech, true))
         {
@@ -758,10 +763,7 @@ public abstract class BaseAI
 
             if (distanceFromHome > 48)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("I have been leashed! Returning home...");
-                }
+                DebugSay("I have been leashed! Returning home...");
 
                 if (m_Mobile.Warmode)
                 {
@@ -876,10 +878,7 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am being herded.");
-            }
+            DebugSay("I am being herded.");
         }
         else if (m_Mobile.CurrentWayPoint != null)
         {
@@ -911,19 +910,13 @@ public abstract class BaseAI
         if ((point.X != m_Mobile.Location.X || point.Y != m_Mobile.Location.Y)
             && point.Map == m_Mobile.Map && point.Parent == null && !point.Deleted)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I will move towards my waypoint.");
-            }
+            DebugSay("I will move towards my waypoint.");
 
             DoMove(m_Mobile.GetDirectionTo(point));
         }
         else if (OnAtWayPoint())
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I have reached my waypoint.");
-            }
+            DebugSay("I have reached my waypoint.");
 
             m_Mobile.CurrentWayPoint = point.NextPoint;
     
@@ -952,10 +945,7 @@ public abstract class BaseAI
     {
         if (Core.AOS && CheckHerding())
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am being herded.");
-            }
+            DebugSay("I am being herded.");
 
             return true;
         }
@@ -964,10 +954,7 @@ public abstract class BaseAI
     
         if (!IsValidCombatant(combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("My combatant is missing.");
-            }
+            DebugSay("My combatant is missing.");
 
             Action = ActionType.Wander;
 
@@ -978,10 +965,7 @@ public abstract class BaseAI
     
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
-            }
+            DebugSay($"I used my abilities on {combatant.Name}!");
         }
     
         return true;
@@ -997,19 +981,13 @@ public abstract class BaseAI
     {
         if (Core.TickCount - m_NextStopGuard < 0)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am still on guard.");
-            }
+            DebugSay("I am still on guard.");
 
             m_Mobile.Turn(Utility.Random(0, 2) - 1); // added for immersion
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I stopped being on guard.");
-            }
+            DebugSay("I stopped being on guard.");
 
             Action = ActionType.Wander;
         }
@@ -1023,20 +1001,14 @@ public abstract class BaseAI
     
         if (!IsValidFocusMob(from))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("Focused target is missing.");
-            }
+            DebugSay("Focused target is missing.");
 
             WalkRandomInHome(4, 3, 1);
 
             return true;
         }
     
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I am fleeing.");
-        }
+        DebugSay("I am fleeing.");
 
         WalkRandom(1, 2, 1);
 
@@ -1046,14 +1018,6 @@ public abstract class BaseAI
     private bool IsValidFocusMob(Mobile focusMob)
     {
         return focusMob != null && !focusMob.Deleted && focusMob.Map == m_Mobile.Map;
-    }
-
-    private void DebugSay(string message)
-    {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay(message);
-        }
     }
 
     public virtual bool DoActionInteract() => true;
@@ -1232,10 +1196,7 @@ public abstract class BaseAI
 
     public virtual bool DoOrderNone()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I currently have no orders.");
-        }
+        DebugSay("I currently have no orders.");
     
         WalkRandomInHome(4, 3, 1);
         UpdateCombatantState();
@@ -1262,9 +1223,9 @@ public abstract class BaseAI
         {
             return true;
         }
-
+    
         var currentDistance = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.ControlMaster);
-
+    
         if (currentDistance > m_Mobile.RangePerception)
         {
             HandleLostMaster();
@@ -1273,16 +1234,13 @@ public abstract class BaseAI
         {
             HandleComeOrder(currentDistance);
         }
-
+    
         return true;
     }
 
     private void HandleLostMaster()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Master is missing. Staying put.");
-        }
+        DebugSay("Master is missing. Staying put.");
     
         m_Mobile.ControlTarget = null;
         m_Mobile.ControlOrder = OrderType.None;
@@ -1290,10 +1248,7 @@ public abstract class BaseAI
 
     private void HandleComeOrder(int currentDistance)
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I am ordered to come.");
-        }
+        DebugSay("I am ordered to come.");
     
         var shouldRun = currentDistance > 5;
     
@@ -1310,10 +1265,7 @@ public abstract class BaseAI
             return true;
         }
     
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I am ordered to drop my items.");
-        }
+        DebugSay("I am ordered to drop my items.");
     
         if (m_Mobile.ControlTarget != null)
         {
@@ -1398,10 +1350,7 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            if (m_Mobile.Debug)
-            {
-                DebugSay("I am being herded.");
-            }
+            DebugSay("I am being herded.");
 
             return true;
         }
@@ -1412,10 +1361,7 @@ public abstract class BaseAI
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                DebugSay("I have no one to follow.");
-            }
+            DebugSay("I have no one to follow.");
 
             if (m_Mobile.ControlTarget != null)
             {
@@ -1448,19 +1394,13 @@ public abstract class BaseAI
     
         if (currentDistance > m_Mobile.RangePerception)
         {
-            if (m_Mobile.Debug)
-            {
-                DebugSay("Target is missing. Staying put.");
-            }
+            DebugSay("Target is missing. Staying put.");
 
             UpdateCombatantState();
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
-            }
+            DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
             
             var minFollowDist = 2;
             var shouldRun = currentDistance > 6;
@@ -1660,10 +1600,7 @@ public abstract class BaseAI
                 }
             }
     
-            if (combatant != null && m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("Master is under attack. Assisting...");
-            }
+            DebugSay("Master is under attack. Assisting...");
         }
     
         return combatant;
@@ -1671,14 +1608,11 @@ public abstract class BaseAI
     
     private void GuardFromTarget(Mobile combatant)
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Guarding target.");
-        }
+        DebugSay("Guarding target.");
     
         m_Mobile.Combatant = combatant;
         m_Mobile.FocusMob = combatant;
-        
+
         if (Action != ActionType.Combat)
         {
             Action = ActionType.Combat;
@@ -1690,10 +1624,7 @@ public abstract class BaseAI
     
     private void GuardNothing(Mobile controlMaster)
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("There is nothing to guard.");
-        }
+        DebugSay("There is nothing to guard.");
 
         if (m_Mobile.Warmode)
         {
@@ -1721,10 +1652,7 @@ public abstract class BaseAI
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("Attacking target...");
-            }
+            DebugSay("Attacking target...");
     
             Think();
         }
@@ -1739,10 +1667,7 @@ public abstract class BaseAI
     
     private void HandleInvalidControlTarget()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Target missing. Either dead, hidden, or out of range.");
-        }
+        DebugSay("Target missing. Either dead, hidden, or out of range.");
     
         if (Core.AOS)
         {
@@ -1788,10 +1713,7 @@ public abstract class BaseAI
             m_Mobile.ControlOrder = OrderType.Attack;
             m_Mobile.Combatant = newCombatant;
     
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("Target is still alive. Resuming attacks...");
-            }
+            DebugSay("Target is still alive. Resuming attacks...");
     
             Think();
         }
@@ -1799,10 +1721,7 @@ public abstract class BaseAI
 
     public virtual bool DoOrderRelease()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I have been released to the wild.");
-        }
+        DebugSay("I have been released to the wild.");
     
         m_Mobile.PlaySound(m_Mobile.GetAngerSound());
     
@@ -1859,17 +1778,11 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am being herded.");
-            }
+            DebugSay("I am being herded.");
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I have been ordered to stay.");
-            }
+            DebugSay("I have been ordered to stay.");
         }
     
         HandleStayOrder();
@@ -1909,10 +1822,7 @@ public abstract class BaseAI
             return true;
         }
     
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I have been ordered to stop.");
-        }
+        DebugSay("I have been ordered to stop.");
 
         if (Core.ML)
         {
@@ -1966,10 +1876,7 @@ public abstract class BaseAI
 
         if (IsValidTransferRequest(from, to))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"Beginning transfer with {to.Name}");
-            }
+            DebugSay($"Beginning transfer with {to.Name}");
 
             if (IsYoungPlayer(from, to))
             {
@@ -2067,10 +1974,7 @@ public abstract class BaseAI
     
     private void HandlePacifiedState()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I am pacified. Can not fight.");
-        }
+        DebugSay("I am pacified. Can not fight.");
     
         if (m_Mobile.Combatant != null)
         {
@@ -2084,10 +1988,7 @@ public abstract class BaseAI
     
     private void HandleEndOfPacification()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I am free from pacification.");
-        }
+       DebugSay("I am free from pacification.");
     
         m_Mobile.BardPacified = false;
     }
@@ -2126,10 +2027,7 @@ public abstract class BaseAI
     
     private void HandleLostProvoker()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Provoker missing.");
-        }
+        DebugSay("Provoker missing.");
     
         if (!m_Mobile.BardProvoked)
         {
@@ -2155,10 +2053,7 @@ public abstract class BaseAI
     
     private void HandleLostProvokeTarget()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Provoke target missing.");
-        }
+        DebugSay("Provoke target missing.");
     
         if (m_Mobile.BardProvoked)
         {
@@ -2244,7 +2139,7 @@ public abstract class BaseAI
     
         return Math.Max(0.1, moveSpeed);
     }
-    
+
     // this needs to match ai interval
     private const int MovementTimingTolerance = 50;
 
@@ -2379,10 +2274,7 @@ public abstract class BaseAI
 
     private bool TryClearObstacles(Direction d)
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("My movement is blocked. Trying to push through.");
-        }
+        DebugSay("My movement is blocked. Trying to push through.");
 
         var map = m_Mobile.Map;
         if (map == null)
@@ -2484,19 +2376,13 @@ public abstract class BaseAI
     {
         if (item is BaseDoor door)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("Opening the door.");
-            }
-
+            DebugSay("Opening the door.");
+            
             door.Use(m_Mobile);
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"Destroying item: {item.GetType().Name}");
-            }
+            DebugSay($"Destroying item: {item.GetType().Name}");
 
             if (item is Container cont)
             {
@@ -2623,10 +2509,7 @@ public abstract class BaseAI
 
     public virtual void OnTeleported()
     {
-        if (m_Mobile.Debug && m_Path != null)
-        {
-            m_Mobile.DebugSay("Teleported; recalculating path.");
-        }
+        DebugSay("Teleported; recalculating path.");
 
         m_Path?.ForceRepath();
     }
@@ -2777,10 +2660,7 @@ public abstract class BaseAI
 
         m_Mobile.NextReacquireTime = Core.TickCount + (int)m_Mobile.ReacquireDelay.TotalMilliseconds;
 
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Acquiring new target...");
-        }
+        DebugSay("Acquiring new target...");
 
         if (m_Mobile.Map == null)
         {
@@ -2838,10 +2718,7 @@ public abstract class BaseAI
             return false;
         }
 
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Acquired focused target.");
-        }
+        DebugSay("Acquired focused target.");
 
         m_Mobile.FocusMob = m_Mobile.ConstantFocus;
         return true;
@@ -2949,7 +2826,7 @@ public abstract class BaseAI
     
     private bool IsInvalidFightModeTarget(Mobile m, FightMode acqType, BaseCreature bc)
     {
-        if (acqType is not (FightMode.Aggressor or FightMode.Evil))
+        if (acqType is not (FightMode.Aggressor or FightMode.Evil or FightMode.Good))
         {
             return false;
         }
@@ -2958,16 +2835,23 @@ public abstract class BaseAI
                      m_Mobile.GetFactionAllegiance(m) == BaseCreature.Allegiance.Enemy ||
                      m_Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
 
-        if (!bValid && acqType == FightMode.Evil)
+        if (!bValid)
         {
-            bValid = bc?.Controlled == true && bc?.ControlMaster != null 
-                ? bc.ControlMaster.Karma < 0 
-                : m.Karma < 0;
+            bValid = acqType switch
+            {
+                FightMode.Evil => bc?.Controlled == true && bc?.ControlMaster != null 
+                    ? bc.ControlMaster.Karma < 0 
+                    : m.Karma < 0,
+                FightMode.Good => bc?.Controlled == true && bc?.ControlMaster != null
+                    ? bc.ControlMaster.Karma > 0 
+                    : m.Karma > 0,
+                _ => false
+            };
         }
 
         return !bValid;
     }
-    
+
     private bool IsHostile(Mobile from)
     {
         return m_Mobile.Combatant == from || 
@@ -3007,10 +2891,7 @@ public abstract class BaseAI
             return;
         }
     
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("Checking for hidden entities...");
-        }
+        DebugSay("Checking for hidden entities...");
     
         var srcSkill = m_Mobile.Skills.DetectHidden.Value;
         if (srcSkill <= 0)
@@ -3037,10 +2918,7 @@ public abstract class BaseAI
 
     private void TryDetectHidden(Mobile trg, double srcSkill)
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay($"Trying to detect: {trg.Name}");
-        }
+        DebugSay($"Trying to detect: {trg.Name}");
 
         var trgHiding = trg.Skills.Hiding.Value / 2.9;
         var trgStealth = trg.Skills.Stealth.Value / 1.8;
@@ -3049,7 +2927,7 @@ public abstract class BaseAI
         if (chance > Utility.RandomDouble())
         {
             trg.RevealingAction();
-            trg.SendLocalizedMessage(500814);
+            trg.SendLocalizedMessage(500814); 
             // 500814: You have been revealed!
         }
     }
