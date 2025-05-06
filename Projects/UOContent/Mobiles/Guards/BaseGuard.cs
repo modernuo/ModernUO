@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Items;
 
@@ -13,33 +14,34 @@ public abstract partial class BaseGuard : Mobile
         GuardsInstantKill = ServerConfiguration.GetSetting("guards.instantKill", true);
     }
 
-    public static void Spawn(Mobile caller, Mobile target, int amount = 1, bool onlyAdditional = false)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Spawn(Mobile caller, Mobile target, int amount = 1, bool onlyAdditional = false) =>
+        Spawn(caller.Region, target, amount, onlyAdditional);
+
+    public static void Spawn(Region region, Mobile target, int amount = 1, bool onlyAdditional = false)
     {
         if (target?.Deleted != false)
         {
             return;
         }
 
-        foreach (var m in target.GetMobilesInRange(15))
+        foreach (var g in target.GetMobilesInRange<BaseGuard>(15))
         {
-            if (m is BaseGuard g)
+            if (g.Focus == null) // idling
             {
-                if (g.Focus == null) // idling
-                {
-                    g.Focus = target;
+                g.Focus = target;
 
-                    --amount;
-                }
-                else if (g.Focus == target && !onlyAdditional)
-                {
-                    --amount;
-                }
+                --amount;
+            }
+            else if (g.Focus == target && !onlyAdditional)
+            {
+                --amount;
             }
         }
 
         while (amount-- > 0)
         {
-            caller.Region.MakeGuard(target);
+            region.MakeGuard(target);
         }
     }
 
@@ -238,13 +240,6 @@ public class GuardAttackTimer : Timer
         if (target != null && (target.Deleted || !target.Alive || !_owner.CanBeHarmful(target)))
         {
             _owner.Focus = null;
-            Stop();
-            return;
-        }
-
-        if (_owner.Weapon is Fists)
-        {
-            _owner.Kill();
             Stop();
             return;
         }
