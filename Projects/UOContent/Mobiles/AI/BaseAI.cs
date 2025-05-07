@@ -465,7 +465,7 @@ public abstract class BaseAI
             var isOwner = e.Mobile == m_Mobile.ControlMaster;
             var isPetFriend = !isOwner && m_Mobile.IsPetFriend(e.Mobile);
     
-            if (!isOwner || !isPetFriend)
+            if (!isOwner && !isPetFriend)
             {
                 return;
             }
@@ -518,7 +518,7 @@ public abstract class BaseAI
             var isOwner = e.Mobile == m_Mobile.ControlMaster;
             var isPetFriend = !isOwner && m_Mobile.IsPetFriend(e.Mobile);
 
-            if (!isOwner || !isPetFriend)
+            if (!isOwner && !isPetFriend)
             {
                 return;
             }
