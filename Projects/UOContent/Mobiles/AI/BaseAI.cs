@@ -523,55 +523,65 @@ public abstract class BaseAI
                 return;
             }
 
-            if (e.HasKeyword(0x155)) // *come
+            switch (true)
             {
-                HandleComeCommand(e.Mobile, true);
+                case var _ when e.HasKeyword(0x155): // *come
+                {
+                    HandleComeCommand(e.Mobile, true);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x156): // *drop
+                {
+                    HandleDropCommand(e.Mobile, true, e.Speech);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x15A): // *follow
+                {
+                    BeginPickTarget(e.Mobile, OrderType.Follow);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x15B): // *friend
+                {
+                    HandleFriendCommand(e.Mobile, true, e.Speech);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x15C): // *guard
+                {
+                    HandleGuardCommand(e.Mobile, true);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x15D) || e.HasKeyword(0x15E): // *kill / *attack
+                {
+                    HandleAttackCommand(e.Mobile, true);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x161): // *stop
+                {
+                    HandleSimpleCommand(e.Mobile, OrderType.Stop);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x163): // *follow me
+                {
+                    HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x16D): // *release
+                {
+                    HandleReleaseCommand(e.Mobile, true, e.Speech);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x16E): // *transfer
+                {
+                    HandleTransferCommand(e.Mobile, true, e.Speech);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x16F): // *stay
+                {
+                    HandleSimpleCommand(e.Mobile, OrderType.Stay);
+                    break;
+                }
             }
-            else if (e.HasKeyword(0x156)) // *drop
-            {
-                HandleDropCommand(e.Mobile, true, e.Speech);
-            }
-            else if (e.HasKeyword(0x15A)) // *follow
-            {
-                BeginPickTarget(e.Mobile, OrderType.Follow);
-            }
-            else if (e.HasKeyword(0x15B)) // *friend
-            {
-                HandleFriendCommand(e.Mobile, true, e.Speech);
-            }
-            else if (e.HasKeyword(0x15C)) // *guard
-            {
-                HandleGuardCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x15D)) // *kill
-            {
-                HandleAttackCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x15E)) // *attack
-            {
-                HandleAttackCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x161)) // *stop
-            {
-                HandleSimpleCommand(e.Mobile, OrderType.Stop);
-            }
-            else if (e.HasKeyword(0x163)) // *follow me
-            {
-                HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
-            }
-            else if (e.HasKeyword(0x16D)) // *release
-            {
-                HandleReleaseCommand(e.Mobile, true, e.Speech);
-            }
-            else if (e.HasKeyword(0x16E)) // *transfer
-            {
-                HandleTransferCommand(e.Mobile, true, e.Speech);
-            }
-            else if (e.HasKeyword(0x16F)) // *stay
-            {
-                HandleSimpleCommand(e.Mobile, OrderType.Stay);
-            }
-        }    
+        }
     }
     
     private void HandleTraining(Mobile from)
