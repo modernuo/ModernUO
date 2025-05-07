@@ -108,7 +108,7 @@ public partial class ArcherGuard : BaseGuard
                 if (_focus != null)
                 {
                     AttackTimer = new GuardAttackTimer(this);
-                    AttackTimer.DoOnTick();
+                    AttackTimer.Start();
                 }
                 else
                 {
