@@ -35,9 +35,9 @@ public abstract class YearlyScheduledEvent : ScheduledEvent
 
     protected override DateTime GetOccurrence(DateTime after)
     {
-        var next = Recurrence?.GetNextOccurrence(after, Time, TimeZone) ?? DateTime.MaxValue;
+        var next = base.GetOccurrence(after);
 
-        if (next == DateTime.MaxValue || next > EndDate)
+        if (next == DateTime.MaxValue)
         {
             return DateTime.MaxValue;
         }

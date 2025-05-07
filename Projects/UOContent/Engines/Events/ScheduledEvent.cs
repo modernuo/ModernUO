@@ -32,16 +32,19 @@ public abstract class ScheduledEvent
         Time = time;
         Recurrence = recurrence;
         TimeZone = timeZone ?? TimeZoneInfo.Utc;
+        EndDate = endOn == DateTime.MaxValue || endOn.Kind == DateTimeKind.Utc ? endOn : endOn.LocalToUtc(TimeZone);
 
         var afterUtc = startAfter.Kind == DateTimeKind.Utc ? startAfter : startAfter.LocalToUtc(TimeZone);
-        NextOccurrence = GetOccurrence(afterUtc);
-        EndDate = endOn == DateTime.MaxValue || endOn.Kind == DateTimeKind.Utc ? endOn : endOn.LocalToUtc(TimeZone);
+
+        var next = GetOccurrence(afterUtc);
+        // For the first occurrence, we should set it to the startAfter date if we have no recurrence.
+        NextOccurrence = next == DateTime.MaxValue ? afterUtc : next;
     }
 
     protected virtual DateTime GetOccurrence(DateTime after)
     {
         var next = Recurrence?.GetNextOccurrence(after, Time, TimeZone) ?? DateTime.MaxValue;
-        return next == DateTime.MaxValue || next > EndDate ? DateTime.MaxValue : next;
+        return next >= EndDate ? DateTime.MaxValue : next;
     }
 
     public void Cancel() => Cancelled = true;

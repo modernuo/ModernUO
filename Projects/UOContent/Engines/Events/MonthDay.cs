@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Engines.Events;
 
-public struct MonthDay : IComparable<MonthDay>, IEquatable<MonthDay>
+public record struct MonthDay : IComparable<MonthDay>
 {
     public byte Month { get; }
     public byte Day { get; }
@@ -38,16 +38,6 @@ public struct MonthDay : IComparable<MonthDay>, IEquatable<MonthDay>
     public static bool operator <=(MonthDay left, MonthDay right) => left.CompareTo(right) <= 0;
 
     public static bool operator >=(MonthDay left, MonthDay right) => left.CompareTo(right) >= 0;
-
-    public bool Equals(MonthDay other) => Month == other.Month && Day == other.Day;
-
-    public override bool Equals(object obj) => obj is MonthDay other && Equals(other);
-
-    public override int GetHashCode() => HashCode.Combine(Month, Day);
-
-    public static bool operator ==(MonthDay left, MonthDay right) => left.Equals(right);
-
-    public static bool operator !=(MonthDay left, MonthDay right) => !left.Equals(right);
 }
 
 public static class MonthDayExtensions
