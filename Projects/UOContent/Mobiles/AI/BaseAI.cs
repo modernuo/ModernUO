@@ -1908,7 +1908,8 @@ public abstract class BaseAI
                 // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
                 return false;
             }
-            else if (IsInCombatState())
+            else if (m_Mobile.Combatant != null || m_Mobile.Aggressors.Count > 0 ||
+                m_Mobile.Aggressed.Count > 0 || Core.TickCount < m_Mobile.NextCombatTime)
             {
                 from.SendMessage("You can not transfer a pet while in combat.");
                 to.SendMessage("You can not transfer a pet while in combat.");
@@ -1950,12 +1951,6 @@ public abstract class BaseAI
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
 
         return true;
-    }
-
-    private bool IsInCombatState()
-    {
-        return m_Mobile.Combatant != null || m_Mobile.Aggressors.Count > 0 ||
-        m_Mobile.Aggressed.Count > 0 || Core.TickCount < m_Mobile.NextCombatTime;
     }
     
     private static bool IsValidTransferRequest(Mobile from, Mobile to)
