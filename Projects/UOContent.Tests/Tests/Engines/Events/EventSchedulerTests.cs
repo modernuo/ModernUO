@@ -81,10 +81,11 @@ public class EventSchedulerTests
                 () => called = true
             );
 
+            Assert.Equal(Core._now, evt.NextOccurrence);
             Timer.Slice(8);
 
             Assert.True(called);
-            Assert.Equal(Core._now, evt.NextOccurrence);
+            Assert.Equal(DateTime.MaxValue, evt.NextOccurrence);
 
             evt.Cancel();
         }
