@@ -7,10 +7,6 @@ public struct MonthDay : IComparable<MonthDay>, IEquatable<MonthDay>
     public byte Month { get; }
     public byte Day { get; }
 
-    public MonthDay(int month, int day) : this(2000, month, day)
-    {
-    }
-
     public MonthDay(int year, int month, int day)
     {
         if (month is < 1 or > 12)

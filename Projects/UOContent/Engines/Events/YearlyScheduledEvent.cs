@@ -8,8 +8,6 @@ public abstract class YearlyScheduledEvent : ScheduledEvent
 
     public MonthDay YearlyEnd { get; }
 
-    public DateTime NextYearStart { get; private set; }
-
     protected YearlyScheduledEvent(
         DateTime startAfter,
         TimeOnly time,
@@ -33,40 +31,41 @@ public abstract class YearlyScheduledEvent : ScheduledEvent
     {
         YearlyStart = yearlyStart;
         YearlyEnd = yearlyEnd;
-
-        var year = startAfter.Year;
-        NextYearStart = new DateTime(
-            year,
-            yearlyStart.Month,
-            yearlyStart.Day,
-            startAfter.Hour,
-            startAfter.Minute,
-            startAfter.Second
-        );
-
-        if (NextYearStart < startAfter)
-        {
-            NextYearStart = NextYearStart.AddYears(1);
-        }
     }
 
-    public override DateTime Advance()
+    protected override DateTime GetOccurrence(DateTime after)
     {
-        OnEvent();
-
-        var next = Recurrence?.GetNextOccurrence(NextOccurrence, Time, TimeZone) ?? DateTime.MaxValue;
+        var next = Recurrence?.GetNextOccurrence(after, Time, TimeZone) ?? DateTime.MaxValue;
 
         if (next == DateTime.MaxValue || next > EndDate)
         {
             return DateTime.MaxValue;
         }
 
-        if (!next.IsBetween(YearlyStart, YearlyEnd))
+        var localNext = TimeZoneInfo.ConvertTimeFromUtc(next, TimeZone);
+
+        if (localNext.IsBetween(YearlyStart, YearlyEnd))
         {
-            NextYearStart = NextYearStart.AddYears(1);
-            next = Recurrence!.GetNextOccurrence(NextYearStart, Time, TimeZone);
+            return next;
         }
 
-        return NextOccurrence = next;
+        int yearToUse;
+
+        // If we're after the end of this year's range but before the start of next year's range
+        if (YearlyStart > YearlyEnd && localNext.Month > YearlyEnd.Month)
+        {
+            // We're in the same calendar year, targeting this year's start
+            yearToUse = localNext.Year;
+        }
+        else
+        {
+            // Either we're in a non-spanning range, or we're in the early part of next year
+            // In either case, we need to advance to the next year's start
+            yearToUse = localNext.Year + 1;
+        }
+
+        var nextYearStartUtc = new DateTime(yearToUse, YearlyStart.Month, YearlyStart.Day).LocalToUtc(TimeZone);
+
+        return Recurrence!.GetNextOccurrence(nextYearStartUtc, Time, TimeZone);
     }
 }

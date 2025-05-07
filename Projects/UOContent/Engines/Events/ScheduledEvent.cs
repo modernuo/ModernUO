@@ -34,8 +34,14 @@ public abstract class ScheduledEvent
         TimeZone = timeZone ?? TimeZoneInfo.Utc;
 
         var afterUtc = startAfter.Kind == DateTimeKind.Utc ? startAfter : startAfter.LocalToUtc(TimeZone);
-        NextOccurrence = recurrence?.GetNextOccurrence(afterUtc, time, TimeZone) ?? afterUtc;
+        NextOccurrence = GetOccurrence(afterUtc);
         EndDate = endOn == DateTime.MaxValue || endOn.Kind == DateTimeKind.Utc ? endOn : endOn.LocalToUtc(TimeZone);
+    }
+
+    protected virtual DateTime GetOccurrence(DateTime after)
+    {
+        var next = Recurrence?.GetNextOccurrence(after, Time, TimeZone) ?? DateTime.MaxValue;
+        return next == DateTime.MaxValue || next > EndDate ? DateTime.MaxValue : next;
     }
 
     public void Cancel() => Cancelled = true;
@@ -44,13 +50,7 @@ public abstract class ScheduledEvent
     {
         OnEvent();
 
-        var next = Recurrence?.GetNextOccurrence(NextOccurrence, Time, TimeZone) ?? DateTime.MaxValue;
-        if (next == DateTime.MaxValue || next > EndDate)
-        {
-            return DateTime.MaxValue;
-        }
-
-        return NextOccurrence = next;
+        return NextOccurrence = GetOccurrence(NextOccurrence);
     }
 
     public abstract void OnEvent();
