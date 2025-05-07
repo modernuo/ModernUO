@@ -464,47 +464,49 @@ public abstract class BaseAI
         {
             var isOwner = e.Mobile == m_Mobile.ControlMaster;
             var isPetFriend = !isOwner && m_Mobile.IsPetFriend(e.Mobile);
-
+    
             if (!isOwner || !isPetFriend)
             {
                 return;
             }
-
-            if (e.HasKeyword(0x164)) // all come
+    
+            switch (true)
             {
-                HandleComeCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x165)) // all follow
-            {
-                BeginPickTarget(e.Mobile, OrderType.Follow);
-            }
-            else if (e.HasKeyword(0x166)) // all guard
-            {
-                HandleGuardCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x16B)) // all guard me
-            {
-                HandleGuardCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x167)) // all stop
-            {
-                HandleSimpleCommand(e.Mobile, OrderType.Stop);
-            }
-            else if (e.HasKeyword(0x168)) // all kill
-            {
-                HandleAttackCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x169)) // all attack
-            {
-                HandleAttackCommand(e.Mobile, true);
-            }
-            else if (e.HasKeyword(0x16C)) // all follow me
-            {
-                HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
-            }
-            else if (e.HasKeyword(0x170)) // all stay
-            {
-                HandleSimpleCommand(e.Mobile, OrderType.Stay);
+                case var _ when e.HasKeyword(0x164): // all come
+                {
+                    HandleComeCommand(e.Mobile, true);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x165): // all follow
+                {
+                    BeginPickTarget(e.Mobile, OrderType.Follow);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x166) || e.HasKeyword(0x16B): // all guard / all guard me
+                {
+                    HandleGuardCommand(e.Mobile, true);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x167): // all stop
+                {
+                    HandleSimpleCommand(e.Mobile, OrderType.Stop);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x168) || e.HasKeyword(0x169): // all kill / all attack
+                {
+                    HandleAttackCommand(e.Mobile, true);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x16C): // all follow me
+                {
+                    HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
+                    break;
+                }
+                case var _ when e.HasKeyword(0x170): // all stay
+                {
+                    HandleSimpleCommand(e.Mobile, OrderType.Stay);
+                    break;
+                }
             }
         }
     }
