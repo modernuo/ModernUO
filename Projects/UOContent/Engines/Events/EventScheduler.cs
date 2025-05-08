@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Server.Logging;
 
 namespace Server.Engines.Events;
 
@@ -100,7 +99,7 @@ public class EventScheduler : Timer
         TimeZoneInfo timeZone = null
     )
     {
-        var scheduledEvent = new CallbackScheduledEvent(after, time, callback, recurrencePattern);
+        var scheduledEvent = new CallbackScheduledEvent(time, callback, recurrencePattern);
         scheduledEvent.Schedule(this, after, timeZone);
         return scheduledEvent;
     }

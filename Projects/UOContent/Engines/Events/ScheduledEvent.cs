@@ -9,13 +9,13 @@ public abstract class ScheduledEvent : BaseScheduledEvent
     public DateTime EndDate { get; }
 
     public ScheduledEvent(TimeOnly time, IRecurrencePattern recurrence = null)
-        : this(DateTime.MaxValue, time, recurrence)
+        : this(time, DateTime.MaxValue, recurrence)
     {
     }
 
     public ScheduledEvent(
-        DateTime endOn,
         TimeOnly time,
+        DateTime endOn,
         IRecurrencePattern recurrence = null
     )
     {

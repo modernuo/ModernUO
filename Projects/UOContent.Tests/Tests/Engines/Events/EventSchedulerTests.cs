@@ -42,7 +42,7 @@ public class EventSchedulerTests
         public Action Callback { get; }
 
         public TestScheduledEvent(TimeOnly time, Action callback, IRecurrencePattern recurrence = null)
-            : base(DateTime.MaxValue, time, recurrence)
+            : base(time, recurrence)
         {
             CallCount = 0;
             Callback = callback;
@@ -274,8 +274,8 @@ public class EventSchedulerTests
             var endTime = Core._now.AddSeconds(36);
 
             var customEvent = new CustomEvent(
-                endTime,
                 TimeOnly.FromDateTime(startTime),
+                endTime,
                 recurrence,
                 () => callCount++
             );
@@ -299,11 +299,11 @@ public class EventSchedulerTests
         private readonly Action _callback;
 
         public CustomEvent(
-            DateTime endOn,
             TimeOnly time,
+            DateTime endOn,
             IRecurrencePattern recurrence,
             Action callback
-        ) : base(endOn, time, recurrence) => _callback = callback;
+        ) : base(time, endOn, recurrence) => _callback = callback;
 
         public override void OnEvent()
         {

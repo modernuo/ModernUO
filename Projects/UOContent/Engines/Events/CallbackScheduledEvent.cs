@@ -13,11 +13,11 @@ public sealed class CallbackScheduledEvent : ScheduledEvent
     ) : base(time, recurrencePattern) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     public CallbackScheduledEvent(
-        DateTime endOn,
         TimeOnly time,
+        DateTime endOn,
         Action callback,
         IRecurrencePattern recurrencePattern = null
-    ) : base(endOn, time, recurrencePattern) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+    ) : base(time, endOn, recurrencePattern) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     public override void OnEvent() => _callback();
 }

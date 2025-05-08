@@ -23,7 +23,7 @@ public abstract class YearlyScheduledEvent : ScheduledEvent
         MonthDay yearlyEnd,
         DateTime endOn,
         IRecurrencePattern recurrence
-    ) : base( endOn, time, recurrence)
+    ) : base(time, endOn, recurrence)
     {
         YearlyStart = yearlyStart;
         YearlyEnd = yearlyEnd;
