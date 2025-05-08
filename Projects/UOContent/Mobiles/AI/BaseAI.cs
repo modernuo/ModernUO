@@ -1738,32 +1738,20 @@ public abstract class BaseAI
     public virtual bool DoOrderRelease()
     {
         DebugSay("I have been released to the wild.");
+
+        m_Mobile.ControlTarget = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
+        m_Mobile.FocusMob = null;
     
-        m_Mobile.PlaySound(m_Mobile.GetAngerSound());
-    
-        ReleaseControl();
-        ResetBonding();
-        SetHomeLocation();
-        HandleDeletion();
-    
-        return true;
-    }
-    
-    private void ReleaseControl()
-    {
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+
         m_Mobile.SetControlMaster(null);
         m_Mobile.SummonMaster = null;
-    }
-    
-    private void ResetBonding()
-    {
         m_Mobile.BondingBegin = DateTime.MinValue;
         m_Mobile.OwnerAbandonTime = DateTime.MinValue;
         m_Mobile.IsBonded = false;
-    }
-    
-    private void SetHomeLocation()
-    {
+
         var spawner = m_Mobile.Spawner;
     
         if (spawner != null && spawner.HomeLocation != Point3D.Zero)
@@ -1771,10 +1759,7 @@ public abstract class BaseAI
             m_Mobile.Home = spawner.HomeLocation;
             m_Mobile.RangeHome = spawner.HomeRange;
         }
-    }
-    
-    private void HandleDeletion()
-    {
+
         if (m_Mobile.DeleteOnRelease || m_Mobile.IsDeadPet)
         {
             m_Mobile.Delete();
@@ -1788,6 +1773,10 @@ public abstract class BaseAI
                 m_Mobile.DropBackpack();
             }
         }
+
+        WalkRandomInHome(4, 3, 1);
+    
+        return true;
     }
 
     public virtual bool DoOrderStay()
