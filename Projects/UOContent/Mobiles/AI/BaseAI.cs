@@ -694,7 +694,12 @@ public abstract class BaseAI
     
     private void HandleReleaseCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && WasNamed(speech) && m_Mobile.CheckControlChance(from))
+        if (!isOwner)
+        {
+            return;
+        }
+
+        if (WasNamed(speech) && m_Mobile.CheckControlChance(from))
         {
             if (!m_Mobile.Summoned)
             {
@@ -702,7 +707,6 @@ public abstract class BaseAI
             }
             else
             {
-                m_Mobile.ControlTarget = null;
                 m_Mobile.ControlOrder = OrderType.Release;
             }
         }
