@@ -35,20 +35,20 @@ public class DailyRecurrencePattern : IRecurrencePattern
 public class WeeklyRecurrencePattern : IRecurrencePattern
 {
     public int IntervalWeeks { get; }
-    public DaysOfWeek DaysOfWeek { get; }
-    public Months Months { get; }
+    public AllowedDays AllowedDays { get; }
+    public AllowedMonths AllowedMonths { get; }
 
-    public WeeklyRecurrencePattern(int intervalWeeks = 1, Months months = Months.All, DaysOfWeek daysOfWeek = DaysOfWeek.None)
+    public WeeklyRecurrencePattern(int intervalWeeks = 1, AllowedMonths allowedMonths = AllowedMonths.All, AllowedDays allowedDays = AllowedDays.None)
     {
         IntervalWeeks = Math.Max(1, intervalWeeks);
-        DaysOfWeek = daysOfWeek == DaysOfWeek.None ? DaysOfWeek.All : daysOfWeek;
-        Months = months == Months.None ? Months.All : months;
+        AllowedDays = allowedDays == AllowedDays.None ? AllowedDays.All : allowedDays;
+        AllowedMonths = allowedMonths == AllowedMonths.None ? AllowedMonths.All : allowedMonths;
     }
 
     public DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone)
     {
         var local = TimeZoneInfo.ConvertTimeFromUtc(afterUtc, timeZone);
-        var daysOfWeek = DaysOfWeek == DaysOfWeek.None ? local.DayOfWeek.ToDaysOfWeek() : DaysOfWeek;
+        var daysOfWeek = AllowedDays == AllowedDays.None ? local.DayOfWeek.ToDaysOfWeek() : AllowedDays;
 
         var weekStart = local.Date.AddDays(-(int)local.DayOfWeek);
 
@@ -58,11 +58,11 @@ public class WeeklyRecurrencePattern : IRecurrencePattern
             var nextWeekStart = weekStart.AddDays(7 * IntervalWeeks * week);
             var weekEnd = nextWeekStart.AddDays(6);
 
-            var startMonth = (Months)(1 << (nextWeekStart.Month - 1));
-            var endMonth = (Months)(1 << (weekEnd.Month - 1));
+            var startMonth = (AllowedMonths)(1 << (nextWeekStart.Month - 1));
+            var endMonth = (AllowedMonths)(1 << (weekEnd.Month - 1));
 
             // Skip the entire week if the start and end months are not in the allowed months
-            if ((Months & (startMonth | endMonth)) == 0)
+            if ((AllowedMonths & (startMonth | endMonth)) == 0)
             {
                 continue;
             }
@@ -71,13 +71,13 @@ public class WeeklyRecurrencePattern : IRecurrencePattern
             {
                 var day = nextWeekStart.AddDays(i);
 
-                var currentMonth = (Months)(1 << (day.Month - 1));
-                if ((Months & currentMonth) == 0)
+                var currentMonth = (AllowedMonths)(1 << (day.Month - 1));
+                if ((AllowedMonths & currentMonth) == 0)
                 {
                     continue;
                 }
 
-                var dayOfWeekFlag = (DaysOfWeek)(1 << (int)day.DayOfWeek);
+                var dayOfWeekFlag = (AllowedDays)(1 << (int)day.DayOfWeek);
                 if ((daysOfWeek & dayOfWeekFlag) != 0)
                 {
                     var candidate = new DateTime(day.Year, day.Month, day.Day, time.Hour, time.Minute, 0);

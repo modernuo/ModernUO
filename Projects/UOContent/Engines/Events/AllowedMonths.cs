@@ -3,7 +3,7 @@ using System;
 namespace Server.Engines.Events;
 
 [Flags]
-public enum Months
+public enum AllowedMonths
 {
     None = 0,
     January = 1 << 0,
