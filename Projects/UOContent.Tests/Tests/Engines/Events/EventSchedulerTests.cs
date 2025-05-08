@@ -41,8 +41,8 @@ public class EventSchedulerTests
         public int CallCount { get; private set; }
         public Action Callback { get; }
 
-        public TestScheduledEvent(DateTime startAfter, Action callback, IRecurrencePattern recurrence = null)
-            : base(startAfter, TimeOnly.FromDateTime(startAfter), recurrence, TimeZoneInfo.Utc)
+        public TestScheduledEvent(TimeOnly time, Action callback, IRecurrencePattern recurrence = null)
+            : base(time, recurrence)
         {
             CallCount = 0;
             Callback = callback;
@@ -105,25 +105,28 @@ public class EventSchedulerTests
             var executionOrder = new List<int>();
 
             // Create events with staggered occurrences
-            var evt3 = new TestScheduledEvent(
-                Core._now.AddSeconds(30),
-                () => executionOrder.Add(3)
-            );
-
+            var evt1Start = Core._now.AddSeconds(10);
             var evt1 = new TestScheduledEvent(
-                Core._now.AddSeconds(10),
+                TimeOnly.FromDateTime(Core._now.AddSeconds(10)),
                 () => executionOrder.Add(1)
             );
 
+            var evt2Start = Core._now.AddSeconds(20);
             var evt2 = new TestScheduledEvent(
-                Core._now.AddSeconds(20),
+                TimeOnly.FromDateTime(evt2Start),
                 () => executionOrder.Add(2)
             );
 
+            var evt3Start = Core._now.AddSeconds(30);
+            var evt3 = new TestScheduledEvent(
+                TimeOnly.FromDateTime(evt3Start),
+                () => executionOrder.Add(3)
+            );
+
             // Add out of order
-            EventScheduler.Shared.ScheduleEvent(evt3);
-            EventScheduler.Shared.ScheduleEvent(evt1);
-            EventScheduler.Shared.ScheduleEvent(evt2);
+            evt3.Schedule(evt3Start);
+            evt1.Schedule(evt1Start);
+            evt2.Schedule(evt2Start);
 
             // Advance time to after all events
             Core._now = Core._now.AddSeconds(40);
@@ -157,12 +160,12 @@ public class EventSchedulerTests
                 var recurrence = new TestRecurrencePattern(TimeSpan.FromSeconds(10), 3);
 
                 var evt = new TestScheduledEvent(
-                    Core._now,
+                    TimeOnly.FromDateTime(Core._now),
                     () => callCount++,
                     recurrence
                 );
 
-                EventScheduler.Shared.ScheduleEvent(evt);
+                evt.Schedule(Core._now);
 
                 // Advance time to after all occurrences should have happened
                 Core._now = Core._now.AddSeconds(50);
@@ -271,14 +274,13 @@ public class EventSchedulerTests
             var endTime = Core._now.AddSeconds(36);
 
             var customEvent = new CustomEvent(
-                startTime,
-                endTime,
                 TimeOnly.FromDateTime(startTime),
+                endTime,
                 recurrence,
                 () => callCount++
             );
 
-            EventScheduler.Shared.ScheduleEvent(customEvent);
+            customEvent.Schedule(startTime);
 
             Core._now = Core._now.AddSeconds(50);
             Timer.Slice(8);
@@ -297,12 +299,11 @@ public class EventSchedulerTests
         private readonly Action _callback;
 
         public CustomEvent(
-            DateTime startAfter,
-            DateTime endOn,
             TimeOnly time,
+            DateTime endOn,
             IRecurrencePattern recurrence,
             Action callback
-        ) : base(startAfter, endOn, time, recurrence, TimeZoneInfo.Utc) => _callback = callback;
+        ) : base(time, endOn, recurrence) => _callback = callback;
 
         public override void OnEvent()
         {

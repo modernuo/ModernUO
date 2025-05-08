@@ -9,33 +9,29 @@ public abstract class YearlyScheduledEvent : ScheduledEvent
     public MonthDay YearlyEnd { get; }
 
     protected YearlyScheduledEvent(
-        DateTime startAfter,
         TimeOnly time,
         MonthDay yearlyStart,
         MonthDay yearlyEnd,
-        IRecurrencePattern recurrence,
-        TimeZoneInfo timeZone = null
-    ) : this(startAfter, DateTime.MaxValue, time, yearlyStart, yearlyEnd, recurrence, timeZone)
+        IRecurrencePattern recurrence
+    ) : this( time, yearlyStart, yearlyEnd, DateTime.MaxValue, recurrence)
     {
     }
 
     protected YearlyScheduledEvent(
-        DateTime startAfter,
-        DateTime endOn,
         TimeOnly time,
         MonthDay yearlyStart,
         MonthDay yearlyEnd,
-        IRecurrencePattern recurrence,
-        TimeZoneInfo timeZone = null
-    ) : base(startAfter, endOn, time, recurrence, timeZone)
+        DateTime endOn,
+        IRecurrencePattern recurrence
+    ) : base(time, endOn, recurrence)
     {
         YearlyStart = yearlyStart;
         YearlyEnd = yearlyEnd;
     }
 
-    protected override DateTime GetOccurrence(DateTime after)
+    protected override DateTime GetNextOccurrence(DateTime after)
     {
-        var next = base.GetOccurrence(after);
+        var next = base.GetNextOccurrence(after);
 
         if (next == DateTime.MaxValue)
         {

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Server.Logging;
 
 namespace Server.Engines.Events;
 
@@ -17,25 +16,9 @@ public interface IRecurrencePattern
 
 public enum OrdinalDayOccurrence { Last = -1, First, Second, Third, Fourth, Fifth }
 
-[Flags]
-public enum DaysOfWeek : byte
-{
-    None = 0,
-    Sunday = 1,
-    Monday = 2,
-    Tuesday = 4,
-    Wednesday = 8,
-    Thursday = 16,
-    Friday = 32,
-    Saturday = 64,
-    EveryDay = Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday
-}
-
 public class EventScheduler : Timer
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(EventScheduler));
-
-    private readonly PriorityQueue<ScheduledEvent, DateTime> _schedule = new();
+    private readonly PriorityQueue<BaseScheduledEvent, DateTime> _schedule = new();
 
     public static EventScheduler Shared { get; private set; }
 
@@ -116,16 +99,24 @@ public class EventScheduler : Timer
         TimeZoneInfo timeZone = null
     )
     {
-        var scheduledEvent = new CallbackScheduledEvent(after, time, callback, recurrencePattern, timeZone);
-        ScheduleEvent(scheduledEvent);
+        var scheduledEvent = new CallbackScheduledEvent(time, callback, recurrencePattern);
+        scheduledEvent.Schedule(this, after, timeZone);
         return scheduledEvent;
     }
 
-    public void ScheduleEvent(ScheduledEvent entry)
+    public void ScheduleEvent(BaseScheduledEvent entry)
+    {
+        if (entry != null && entry.NextOccurrence < DateTime.MaxValue)
+        {
+            _schedule.Enqueue(entry, entry.NextOccurrence);
+        }
+    }
+
+    public void UnscheduleEvent(BaseScheduledEvent entry)
     {
         if (entry != null)
         {
-            _schedule.Enqueue(entry, entry.NextOccurrence);
+            _schedule.Remove(entry, out _, out _);
         }
     }
 
@@ -149,21 +140,7 @@ public class EventScheduler : Timer
                 continue;
             }
 
-            DateTime nextOccurrence;
-            try
-            {
-                nextOccurrence = entry.Advance();
-            }
-            catch (Exception e)
-            {
-                logger.Error(e, "Error while executing scheduled event.");
-                nextOccurrence = DateTime.MaxValue;
-            }
-
-            if (nextOccurrence < DateTime.MaxValue)
-            {
-                _schedule.Enqueue(entry, nextOccurrence);
-            }
+            entry.Advance(); // Advances the event and self queues if necessary
         }
     }
 }

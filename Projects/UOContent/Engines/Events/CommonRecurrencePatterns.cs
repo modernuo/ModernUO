@@ -35,32 +35,49 @@ public class DailyRecurrencePattern : IRecurrencePattern
 public class WeeklyRecurrencePattern : IRecurrencePattern
 {
     public int IntervalWeeks { get; }
-    public DaysOfWeek DaysOfWeek { get; }
+    public AllowedDays AllowedDays { get; }
+    public AllowedMonths AllowedMonths { get; }
 
-    public WeeklyRecurrencePattern(int intervalWeeks = 1, DaysOfWeek daysOfWeek = DaysOfWeek.None)
+    public WeeklyRecurrencePattern(int intervalWeeks = 1, AllowedMonths allowedMonths = AllowedMonths.All, AllowedDays allowedDays = AllowedDays.None)
     {
         IntervalWeeks = Math.Max(1, intervalWeeks);
-        DaysOfWeek = daysOfWeek;
+        AllowedDays = allowedDays == AllowedDays.None ? AllowedDays.All : allowedDays;
+        AllowedMonths = allowedMonths == AllowedMonths.None ? AllowedMonths.All : allowedMonths;
     }
 
     public DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone)
     {
         var local = TimeZoneInfo.ConvertTimeFromUtc(afterUtc, timeZone);
-        var daysOfWeek = DaysOfWeek == DaysOfWeek.None
-            ? (DaysOfWeek)(1 << (int)local.DayOfWeek)
-            : DaysOfWeek;
+        var daysOfWeek = AllowedDays == AllowedDays.None ? local.DayOfWeek.ToDaysOfWeek() : AllowedDays;
 
         var weekStart = local.Date.AddDays(-(int)local.DayOfWeek);
 
         // No more days in this week, jump IntervalWeeks ahead
-        for (int week = 0; week <= 100; week++)
+        for (var week = 0; week <= 52; week++)
         {
-            DateTime nextWeekStart = weekStart.AddDays(7 * IntervalWeeks * week);
+            var nextWeekStart = weekStart.AddDays(7 * IntervalWeeks * week);
+            var weekEnd = nextWeekStart.AddDays(6);
 
-            for (int i = 0; i < 7; i++)
+            var startMonth = (AllowedMonths)(1 << (nextWeekStart.Month - 1));
+            var endMonth = (AllowedMonths)(1 << (weekEnd.Month - 1));
+
+            // Skip the entire week if the start and end months are not in the allowed months
+            if ((AllowedMonths & (startMonth | endMonth)) == 0)
+            {
+                continue;
+            }
+
+            for (var i = 0; i < 7; i++)
             {
                 var day = nextWeekStart.AddDays(i);
-                var dayOfWeekFlag = (DaysOfWeek)(1 << (int)day.DayOfWeek);
+
+                var currentMonth = (AllowedMonths)(1 << (day.Month - 1));
+                if ((AllowedMonths & currentMonth) == 0)
+                {
+                    continue;
+                }
+
+                var dayOfWeekFlag = (AllowedDays)(1 << (int)day.DayOfWeek);
                 if ((daysOfWeek & dayOfWeekFlag) != 0)
                 {
                     var candidate = new DateTime(day.Year, day.Month, day.Day, time.Hour, time.Minute, 0);
@@ -94,7 +111,7 @@ public class MonthlyRecurrencePattern : IRecurrencePattern
         var month = local.Month;
         var day = DayOfMonth == -1 ? local.Day : DayOfMonth;
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var nextMonth = month + IntervalMonths * i;
             var candidate = new DateTime(year, 1, 1)
@@ -132,7 +149,7 @@ public class MonthlyOrdinalRecurrencePattern : IRecurrencePattern
         var year = local.Year;
         var month = local.Month;
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var nextMonth = month + IntervalMonths * i;
             var candidateYearOffset = Math.DivRem(nextMonth - 1, 12, out var candidateMonthOffset);
@@ -147,7 +164,7 @@ public class MonthlyOrdinalRecurrencePattern : IRecurrencePattern
                     .Add(time.ToTimeSpan());
 
                 // Find the first occurrence of the desired day
-                int daysOffset = ((int)DayOfWeek - (int)firstOfMonth.DayOfWeek + 7) % 7;
+                var daysOffset = ((int)DayOfWeek - (int)firstOfMonth.DayOfWeek + 7) % 7;
                 if (daysOffset > 7)
                 {
                     daysOffset -= 7;
@@ -168,7 +185,7 @@ public class MonthlyOrdinalRecurrencePattern : IRecurrencePattern
                     .Add(time.ToTimeSpan());
 
                 // Find the last occurrence of the desired day
-                int daysOffset = (int)lastOfMonth.DayOfWeek - (int)DayOfWeek + 7;
+                var daysOffset = (int)lastOfMonth.DayOfWeek - (int)DayOfWeek + 7;
                 if (daysOffset >= 7)
                 {
                     daysOffset -= 7;
