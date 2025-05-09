@@ -1,4 +1,5 @@
 using Server.Guilds;
+using Server.Mobiles;
 using Server.Prompts;
 
 namespace Server.Gumps
@@ -51,9 +52,9 @@ namespace Server.Gumps
                 text = text[..20];
             }
 
-            if (text.Length > 0)
+            if (text.Length > 0 && m_Target is PlayerMobile pm)
             {
-                m_Target.GuildTitle = text;
+                pm.GuildTitle = text;
             }
 
             GuildGump.EnsureClosed(m_Leader);
