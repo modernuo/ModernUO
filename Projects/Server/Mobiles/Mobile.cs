@@ -895,7 +895,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.Administrator)]
     public bool AutoPageNotify { get; set; }
 
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Owner)]
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator, canModify: true)]
     public IAccount Account { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
