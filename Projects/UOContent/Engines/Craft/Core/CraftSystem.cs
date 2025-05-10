@@ -103,6 +103,17 @@ namespace Server.Engines.Craft
             }
         }
 
+        public void CreateItem(
+            Mobile from, Type type, Type typeRes, BaseTool tool, CraftItem realCraftItem, int hue
+        )
+        {
+            // Verify if the type is in the list of the craftable item
+            if (CraftItems.SearchFor(type) != null)
+            {
+                realCraftItem.Craft(from, this, typeRes, tool, hue);
+            }
+        }
+
         public int RandomRecipe()
         {
             if (m_Recipes.Count == 0)

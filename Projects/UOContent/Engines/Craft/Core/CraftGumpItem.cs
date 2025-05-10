@@ -310,8 +310,7 @@ public class CraftGumpItem : DynamicGump
         // Back Button
         if (info.ButtonID == 0)
         {
-            var craftGump = new CraftGump(from, _craftSystem, _tool, null);
-            from.SendGump(craftGump);
+            CraftItem.ShowCraftMenu(from, _craftSystem, _tool, null);
         }
         else // Make Button
         {
@@ -319,7 +318,7 @@ public class CraftGumpItem : DynamicGump
 
             if (num > 0)
             {
-                from.SendGump(new CraftGump(from, _craftSystem, _tool, num));
+                CraftItem.ShowCraftMenu(from, _craftSystem, _tool, num);
             }
             else
             {

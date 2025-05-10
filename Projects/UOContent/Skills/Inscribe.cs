@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.Craft;
+using Server.Engines.Craft.T2A;
 using Server.Items;
 using Server.Targeting;
 
@@ -16,6 +18,12 @@ namespace Server.SkillHandlers
 
         public static TimeSpan OnUse(Mobile m)
         {
+            if (!Core.UOR)
+            {
+                T2ACraftSystem.ShowMenu(m, DefInscription.CraftSystem, null);
+                return TimeSpan.FromSeconds(1.0);
+            }
+
             Target target = new InternalTargetSrc();
             m.Target = target;
             m.SendLocalizedMessage(1046295); // Target the book you wish to copy.
@@ -42,10 +50,12 @@ namespace Server.SkillHandlers
 
         public static bool IsEmpty(BaseBook book)
         {
-            foreach (var page in book.Pages)
+            for (var i = 0; i < book.Pages.Length; i++)
             {
-                foreach (var line in page.Lines)
+                var page = book.Pages[i];
+                for (var j = 0; j < page.Lines.Length; j++)
                 {
+                    var line = page.Lines[j];
                     if (!string.IsNullOrEmpty(line))
                     {
                         return false;
@@ -151,19 +161,16 @@ namespace Server.SkillHandlers
                 {
                     from.SendLocalizedMessage(501621); // Someone else is inscribing that item.
                 }
+                else if (from.CheckTargetSkill(SkillName.Inscribe, bookDst, 0, 50))
+                {
+                    Copy(m_BookSrc, bookDst);
+
+                    from.SendLocalizedMessage(501618); // You make a copy of the book.
+                    from.PlaySound(0x249);
+                }
                 else
                 {
-                    if (from.CheckTargetSkill(SkillName.Inscribe, bookDst, 0, 50))
-                    {
-                        Copy(m_BookSrc, bookDst);
-
-                        from.SendLocalizedMessage(501618); // You make a copy of the book.
-                        from.PlaySound(0x249);
-                    }
-                    else
-                    {
-                        from.SendLocalizedMessage(501617); // You fail to make a copy of the book.
-                    }
+                    from.SendLocalizedMessage(501617); // You fail to make a copy of the book.
                 }
             }
 
