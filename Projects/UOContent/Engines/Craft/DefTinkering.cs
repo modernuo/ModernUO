@@ -714,7 +714,7 @@ public abstract class TrapCraft : CustomCraft
 
             if (tool?.Deleted == false && tool.UsesRemaining > 0)
             {
-                from.SendGump(new CraftGump(from, m_TrapCraft.CraftSystem, tool, message));
+                CraftItem.ShowCraftMenu(from, m_TrapCraft.CraftSystem, tool, message);
             }
             else if (message > 0)
             {

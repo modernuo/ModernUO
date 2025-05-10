@@ -664,6 +664,13 @@ public class DefTailoring : CraftSystem
         AddSubRes(typeof(HornedLeather), 1049152, 80.0, 1044462, 1049311);
         AddSubRes(typeof(BarbedLeather), 1049153, 99.0, 1044462, 1049311);
 
+        // Add Bolt of Cloth for pre-AOS expansions only
+        if (!Core.AOS)
+        {
+            index = AddCraft(typeof(BoltOfCloth), 1015283, 1044286, 0.0, 25.0, typeof(Cloth), 1044286, 50, 1044287);
+            // 1015283: group (Sashes & Aprons), 1044286: name (Cloth), 0.0-25.0: skill, 50: amount, 1044287: message
+        }
+
         MarkOption = true;
         Repair = Core.AOS;
         CanEnhance = Core.AOS;
