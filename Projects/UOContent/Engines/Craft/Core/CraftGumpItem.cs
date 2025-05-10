@@ -310,8 +310,14 @@ public class CraftGumpItem : DynamicGump
         // Back Button
         if (info.ButtonID == 0)
         {
-            var craftGump = new CraftGump(from, _craftSystem, _tool, null);
-            from.SendGump(craftGump);
+            if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+            {
+                Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, _craftSystem, _tool);
+            }
+            else
+            {
+                CraftItem.ShowCraftMenu(from, _craftSystem, _tool, null);
+            }
         }
         else // Make Button
         {
@@ -319,7 +325,14 @@ public class CraftGumpItem : DynamicGump
 
             if (num > 0)
             {
-                from.SendGump(new CraftGump(from, _craftSystem, _tool, num));
+                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                {
+                    Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, _craftSystem, _tool);
+                }
+                else
+                {
+                    CraftItem.ShowCraftMenu(from, _craftSystem, _tool, num);
+                }
             }
             else
             {

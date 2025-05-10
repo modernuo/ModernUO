@@ -921,14 +921,7 @@ namespace Server.Engines.Craft
             if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(
-                    new CraftGump(
-                        from,
-                        craftSystem,
-                        tool,
-                        1044153 // You don't have the required skills to attempt this item.
-                    )
-                );
+                from.SendAsciiMessage("You lack the required skill to craft this item.");
                 return;
             }
 
@@ -951,7 +944,7 @@ namespace Server.Engines.Craft
             if (badCraft > 0)
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
+                ShowCraftMenu(from, craftSystem, tool, badCraft);
                 return;
             }
 
@@ -962,7 +955,7 @@ namespace Server.Engines.Craft
             if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.None, ref message))
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                ShowCraftMenu(from, craftSystem, tool, message);
                 return;
             }
 
@@ -971,7 +964,7 @@ namespace Server.Engines.Craft
             if (!ConsumeAttributes(from, ref message, false))
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                ShowCraftMenu(from, craftSystem, tool, message);
                 return;
             }
 
@@ -1007,7 +1000,7 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
+                    ShowCraftMenu(from, craftSystem, tool, badCraft);
                 }
                 else
                 {
@@ -1036,7 +1029,7 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
+                    ShowCraftMenu(from, craftSystem, tool, checkMessage);
                 }
                 else if (checkMessage.Number > 0)
                 {
@@ -1076,7 +1069,7 @@ namespace Server.Engines.Craft
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
                     {
-                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                        ShowCraftMenu(from, craftSystem, tool, message);
                     }
                     else if (message != null)
                     {
@@ -1229,7 +1222,18 @@ namespace Server.Engines.Craft
                 }
                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    {
+                        if (num > 0)
+                        {
+                            from.SendLocalizedMessage(num);
+                        }
+                        ShowCraftMenu(from, craftSystem, tool);
+                    }
+                    else
+                    {
+                        ShowCraftMenu(from, craftSystem, tool, num);
+                    }
                 }
                 else if (num > 0)
                 {
@@ -1243,13 +1247,13 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, 1044153));
+                    // ShowCraftMenu(from, craftSystem, tool, 1044153);
+                    from.SendAsciiMessage("You lack the required skill to craft this item.");
                 }
                 else
                 {
                     from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
                 }
-
                 return;
             }
 
@@ -1260,7 +1264,7 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                    ShowCraftMenu(from, craftSystem, tool, message);
                 }
                 else if (message != null)
                 {
@@ -1294,7 +1298,7 @@ namespace Server.Engines.Craft
 
             if (!tool.Deleted && tool.UsesRemaining > 0)
             {
-                from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                ShowCraftMenu(from, craftSystem, tool, num);
             }
             else if (num > 0)
             {
@@ -1346,7 +1350,7 @@ namespace Server.Engines.Craft
                 {
                     if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
                     {
-                        m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, badCraft));
+                        ShowCraftMenu(m_From, m_CraftSystem, m_Tool, badCraft);
                     }
                     else
                     {
@@ -1416,6 +1420,18 @@ namespace Server.Engines.Craft
 
                     m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
                 }
+            }
+        }
+
+        public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
+        {
+            if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+            {
+                Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, system, tool);
+            }
+            else
+            {
+                from.SendGump(new CraftGump(from, system, tool, message));
             }
         }
     }

@@ -20,7 +20,14 @@ namespace Server.Engines.Craft
 
             if (num > 0 && num != 1044267)
             {
-                from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                {
+                    Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, craftSystem, tool);
+                }
+                else
+                {
+                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                }
             }
             else
             {
@@ -142,7 +149,14 @@ namespace Server.Engines.Craft
                         }
                     }
 
-                    from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, num));
+                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    {
+                        Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, m_CraftSystem, m_Tool);
+                    }
+                    else
+                    {
+                        from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, num));
+                    }
                 }
                 else
                 {
@@ -173,7 +187,14 @@ namespace Server.Engines.Craft
                         _                   => 1044272
                     };
 
-                    from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, message));
+                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    {
+                        Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, m_CraftSystem, m_Tool);
+                    }
+                    else
+                    {
+                        from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, message));
+                    }
                 }
             }
         }
