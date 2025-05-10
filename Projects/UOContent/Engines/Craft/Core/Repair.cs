@@ -483,7 +483,18 @@ namespace Server.Engines.Craft
                 if (!usingDeed)
                 {
                     var context = m_CraftSystem.GetContext(from);
-                    from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, number));
+                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    {
+                        if (number > 0)
+                        {
+                            from.SendLocalizedMessage(number);
+                        }
+                        CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool);
+                    }
+                    else
+                    {
+                        CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool, number);
+                    }
                 }
                 else
                 {

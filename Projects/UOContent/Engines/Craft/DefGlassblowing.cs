@@ -8,6 +8,8 @@ public class DefGlassblowing : CraftSystem
 {
     public static void Initialize()
     {
+        if (CraftSystem != null)
+            return; // Already initialized
         CraftSystem = new DefGlassblowing();
     }
 

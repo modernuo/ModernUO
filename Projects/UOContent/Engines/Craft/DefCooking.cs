@@ -7,6 +7,8 @@ public class DefCooking : CraftSystem
 {
     public static void Initialize()
     {
+        if (CraftSystem != null)
+            return; // Already initialized
         CraftSystem = new DefCooking();
     }
 
