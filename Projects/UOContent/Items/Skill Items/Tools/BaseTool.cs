@@ -1,7 +1,6 @@
 using System;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
-using Server.Gumps;
 using Server.Network;
 
 namespace Server.Items;
@@ -159,9 +158,14 @@ public abstract partial class BaseTool : Item, IUsesRemaining, ICraftable
             {
                 from.SendLocalizedMessage(num);
             }
+            else if (!Core.UOTD)
+            {
+                from.Target = new Engines.Craft.T2A.T2ACraftToolTarget(this, system);
+                from.SendAsciiMessage("Target this tool to make last item, or any other target to begin crafting.");
+            }
             else
             {
-                from.SendGump(new CraftGump(from, system, this, null));
+                CraftItem.ShowCraftMenu(from, system, this, null);
             }
         }
         else

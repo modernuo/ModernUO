@@ -377,15 +377,30 @@ public class DefTinkering : CraftSystem
             SetNeededExpansion(index, Expansion.SE);
         }
 
-        AddJewelrySet(GemType.StarSapphire, typeof(StarSapphire));
-        AddJewelrySet(GemType.Emerald, typeof(Emerald));
-        AddJewelrySet(GemType.Sapphire, typeof(Sapphire));
-        AddJewelrySet(GemType.Ruby, typeof(Ruby));
-        AddJewelrySet(GemType.Citrine, typeof(Citrine));
-        AddJewelrySet(GemType.Amethyst, typeof(Amethyst));
-        AddJewelrySet(GemType.Tourmaline, typeof(Tourmaline));
-        AddJewelrySet(GemType.Amber, typeof(Amber));
-        AddJewelrySet(GemType.Diamond, typeof(Diamond));
+        if (Core.UOTD)
+        {
+            // AOS+ jewelry with gem resources
+            AddJewelrySet(GemType.StarSapphire, typeof(StarSapphire));
+            AddJewelrySet(GemType.Emerald, typeof(Emerald));
+            AddJewelrySet(GemType.Sapphire, typeof(Sapphire));
+            AddJewelrySet(GemType.Ruby, typeof(Ruby));
+            AddJewelrySet(GemType.Citrine, typeof(Citrine));
+            AddJewelrySet(GemType.Amethyst, typeof(Amethyst));
+            AddJewelrySet(GemType.Tourmaline, typeof(Tourmaline));
+            AddJewelrySet(GemType.Amber, typeof(Amber));
+            AddJewelrySet(GemType.Diamond, typeof(Diamond));
+        }
+        else
+        {
+            // T2A jewelry — ingot-only resources, gem selected via targeting
+            AddCraft(typeof(GoldNecklace), 1044049, "gold necklace", 40.0, 90.0, typeof(IronIngot), 1044036, 2, 1044037);
+            AddCraft(typeof(SilverNecklace), 1044049, "silver necklace", 40.0, 90.0, typeof(IronIngot), 1044036, 2, 1044037);
+            AddCraft(typeof(GoldEarrings), 1044049, "gold earrings", 40.0, 90.0, typeof(IronIngot), 1044036, 2, 1044037);
+            AddCraft(typeof(SilverEarrings), 1044049, "silver earrings", 40.0, 90.0, typeof(IronIngot), 1044036, 2, 1044037);
+            AddCraft(typeof(GoldRing), 1044049, "gold ring", 40.0, 90.0, typeof(IronIngot), 1044036, 2, 1044037);
+            AddCraft(typeof(SilverRing), 1044049, "silver ring", 40.0, 90.0, typeof(IronIngot), 1044036, 2, 1044037);
+            AddCraft(typeof(WeddingRing), 1044049, "wedding ring", 40.0, 90.0, typeof(IronIngot), 1044036, 2, 1044037);
+        }
 
         index = AddCraft(typeof(AxleGears), 1044051, 1024177, 0.0, 0.0, typeof(Axle), 1044169, 1, 1044253);
         AddRes(index, typeof(Gears), 1044254, 1, 1044253);
@@ -714,7 +729,7 @@ public abstract class TrapCraft : CustomCraft
 
             if (tool?.Deleted == false && tool.UsesRemaining > 0)
             {
-                from.SendGump(new CraftGump(from, m_TrapCraft.CraftSystem, tool, message));
+                CraftItem.ShowCraftMenu(from, m_TrapCraft.CraftSystem, tool, message);
             }
             else if (message > 0)
             {

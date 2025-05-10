@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Items;
 
 namespace Server.Engines.Craft
 {
@@ -30,6 +31,10 @@ namespace Server.Engines.Craft
         public bool DoNotColor { get; set; }
 
         public CraftMarkOption MarkOption { get; set; }
+
+        // T2A jewelry: transient gem info set by GemSelectTarget, consumed by BaseJewel.OnCraft
+        public GemType PendingGemType { get; set; }
+        public int PendingGemCount { get; set; }
 
         public CraftItem LastMade
         {
