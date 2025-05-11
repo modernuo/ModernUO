@@ -434,9 +434,9 @@ public class CraftGump : DynamicGump
 
         if (num > 0)
         {
-            if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+            if (!Core.UOTD)
             {
-                Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
             }
             else
             {
@@ -490,9 +490,9 @@ public class CraftGump : DynamicGump
                     if (index >= 0 && index < groups.Count)
                     {
                         context.LastGroupIndex = index;
-                        if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                        if (!Core.UOTD)
                         {
-                            Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                            T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                         }
                         else
                         {
@@ -593,9 +593,9 @@ public class CraftGump : DynamicGump
                                 context.LastResourceIndex = index;
                             }
 
-                            if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                            if (!Core.UOTD)
                             {
-                                Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                             }
                             else
                             {
@@ -618,9 +618,9 @@ public class CraftGump : DynamicGump
                                 context.LastResourceIndex2 = index;
                             }
 
-                            if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                            if (!Core.UOTD)
                             {
-                                Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                             }
                             else
                             {
@@ -639,9 +639,9 @@ public class CraftGump : DynamicGump
                             {
                                 if (_craftSystem.CraftSubRes.Init)
                                 {
-                                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                                    if (!Core.UOTD)
                                     {
-                                        Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                        T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                                     }
                                     else
                                     {
@@ -675,9 +675,9 @@ public class CraftGump : DynamicGump
                                 }
                                 else
                                 {
-                                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                                    if (!Core.UOTD)
                                     {
-                                        Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                        T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                                     }
                                     else
                                     {
@@ -703,9 +703,9 @@ public class CraftGump : DynamicGump
                                 }
 
                                 context.LastGroupIndex = 501;
-                                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                                if (!Core.UOTD)
                                 {
-                                    Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                    T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                                 }
                                 else
                                 {
@@ -723,9 +723,9 @@ public class CraftGump : DynamicGump
 
                                 context.DoNotColor = !context.DoNotColor;
 
-                                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                                if (!Core.UOTD)
                                 {
-                                    Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                    T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                                 }
                                 else
                                 {
@@ -758,9 +758,9 @@ public class CraftGump : DynamicGump
                                     _                             => context.MarkOption
                                 };
 
-                                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                                if (!Core.UOTD)
                                 {
-                                    Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                    T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                                 }
                                 else
                                 {
@@ -773,9 +773,9 @@ public class CraftGump : DynamicGump
                             {
                                 if (_craftSystem.CraftSubRes2.Init)
                                 {
-                                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                                    if (!Core.UOTD)
                                     {
-                                        Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
+                                        T2A.T2ACraftSystem.ShowMenu(_from, _craftSystem, _tool);
                                     }
                                     else
                                     {

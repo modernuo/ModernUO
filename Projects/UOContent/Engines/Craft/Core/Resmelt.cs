@@ -20,7 +20,7 @@ namespace Server.Engines.Craft
 
             if (num > 0 && num != 1044267)
             {
-                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                if (!Core.UOTD)
                 {
                     Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, craftSystem, tool);
                 }
@@ -149,7 +149,7 @@ namespace Server.Engines.Craft
                         }
                     }
 
-                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    if (!Core.UOTD)
                     {
                         Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, m_CraftSystem, m_Tool);
                     }
@@ -187,7 +187,7 @@ namespace Server.Engines.Craft
                         _                   => 1044272
                     };
 
-                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    if (!Core.UOTD)
                     {
                         Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, m_CraftSystem, m_Tool);
                     }

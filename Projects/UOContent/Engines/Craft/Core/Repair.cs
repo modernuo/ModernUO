@@ -483,7 +483,7 @@ namespace Server.Engines.Craft
                 if (!usingDeed)
                 {
                     var context = m_CraftSystem.GetContext(from);
-                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    if (!Core.UOTD)
                     {
                         if (number > 0)
                         {

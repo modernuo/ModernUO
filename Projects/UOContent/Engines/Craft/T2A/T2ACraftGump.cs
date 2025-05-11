@@ -6,7 +6,7 @@ public static class T2ACraftSystem
     static T2ACraftSystem()
     {
         // Only initialize T2A craft systems for None, T2A, or UOR expansions
-        if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+        if (!Core.UOTD)
         {
             Server.Engines.Craft.DefBowFletching.Initialize();
             Server.Engines.Craft.DefBlacksmithy.Initialize();
@@ -98,4 +98,4 @@ public static class T2ACraftSystem
     {
         // TODO: Handle 0xBF 0x000D packet (craft menu response)
     }
-} 
+}

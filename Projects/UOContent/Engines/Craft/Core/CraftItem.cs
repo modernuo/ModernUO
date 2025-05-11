@@ -1222,7 +1222,7 @@ namespace Server.Engines.Craft
                 }
                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                    if (!Core.UOTD)
                     {
                         if (num > 0)
                         {
@@ -1425,7 +1425,7 @@ namespace Server.Engines.Craft
 
         public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
         {
-            if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+            if (!Core.UOTD)
             {
                 Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, system, tool);
             }

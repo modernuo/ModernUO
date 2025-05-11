@@ -161,7 +161,7 @@ public abstract partial class BaseTool : Item, IUsesRemaining, ICraftable
             }
             else
             {
-                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                if (!Core.UOTD)
                 {
                     Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, system, this);
                 }
