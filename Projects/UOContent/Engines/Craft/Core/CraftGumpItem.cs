@@ -325,7 +325,7 @@ public class CraftGumpItem : DynamicGump
 
             if (num > 0)
             {
-                if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+                if (!Core.UOTD)
                 {
                     Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, _craftSystem, _tool);
                 }
