@@ -310,7 +310,7 @@ public class CraftGumpItem : DynamicGump
         // Back Button
         if (info.ButtonID == 0)
         {
-            if (Core.Expansion == Expansion.None || Core.Expansion == Expansion.T2A || Core.Expansion == Expansion.UOR)
+            if (!Core.UOTDR)
             {
                 Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, _craftSystem, _tool);
             }
