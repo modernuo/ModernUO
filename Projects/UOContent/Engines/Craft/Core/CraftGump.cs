@@ -414,7 +414,7 @@ public class CraftGump : DynamicGump
             }
             else
             {
-                builder.AddLabel(50, 80 + i * 20, LabelHue, craftGroup.NameString);
+                builder.AddLabel(50, 83 + i * 20, LabelHue, craftGroup.NameString);
             }
         }
     }
