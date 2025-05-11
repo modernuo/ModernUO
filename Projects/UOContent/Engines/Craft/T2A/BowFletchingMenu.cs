@@ -1,6 +1,4 @@
 using System;
-using Server;
-using Server.Engines.Craft;
 using Server.Items;
 using Server.Network;
 using Server.Menus.ItemLists;
@@ -40,7 +38,9 @@ public class BowFletchingMenu : ItemListMenu
             chance = itemDef.GetSuccessChance(from, typeof(Log), DefBowFletching.CraftSystem, false, out allRequiredSkills);
             int resAmount = from.Backpack?.GetAmount(typeof(Log)) ?? 0;
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
+            {
                 entries.Add(new ItemListEntry("Kindling", 0xDE1, 0, idx));
+            }
         }
 
         // Shafts
@@ -51,7 +51,9 @@ public class BowFletchingMenu : ItemListMenu
             chance = itemDef.GetSuccessChance(from, typeof(Log), DefBowFletching.CraftSystem, false, out allRequiredSkills);
             int resAmount = from.Backpack?.GetAmount(typeof(Log)) ?? 0;
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
+            {
                 entries.Add(new ItemListEntry("Shafts", 0x1BD4, 0, idx));
+            }
         }
 
         // Arrows
@@ -63,7 +65,9 @@ public class BowFletchingMenu : ItemListMenu
             int resAmount = from.Backpack?.GetAmount(typeof(Shaft)) ?? 0;
             int featherAmount = from.Backpack?.GetAmount(typeof(Feather)) ?? 0;
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount && featherAmount >= itemDef.Resources[1].Amount)
+            {
                 entries.Add(new ItemListEntry("Arrows", 0xF3F, 0, idx));
+            }
         }
 
         // Bolts
@@ -75,7 +79,9 @@ public class BowFletchingMenu : ItemListMenu
             int resAmount = from.Backpack?.GetAmount(typeof(Shaft)) ?? 0;
             int featherAmount = from.Backpack?.GetAmount(typeof(Feather)) ?? 0;
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount && featherAmount >= itemDef.Resources[1].Amount)
+            {
                 entries.Add(new ItemListEntry("Bolts", 0x1BFB, 0, idx));
+            }
         }
 
         // Bow
@@ -86,7 +92,9 @@ public class BowFletchingMenu : ItemListMenu
             chance = itemDef.GetSuccessChance(from, typeof(Log), DefBowFletching.CraftSystem, false, out allRequiredSkills);
             int resAmount = from.Backpack?.GetAmount(typeof(Log)) ?? 0;
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
+            {
                 entries.Add(new ItemListEntry("Bow", 0x13B2, 0, idx));
+            }
         }
 
         // Crossbow
@@ -97,7 +105,9 @@ public class BowFletchingMenu : ItemListMenu
             chance = itemDef.GetSuccessChance(from, typeof(Log), DefBowFletching.CraftSystem, false, out allRequiredSkills);
             int resAmount = from.Backpack?.GetAmount(typeof(Log)) ?? 0;
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
+            {
                 entries.Add(new ItemListEntry("Crossbow", 0xF50, 0, idx));
+            }
         }
 
         // Heavy Crossbow
@@ -108,7 +118,9 @@ public class BowFletchingMenu : ItemListMenu
             chance = itemDef.GetSuccessChance(from, typeof(Log), DefBowFletching.CraftSystem, false, out allRequiredSkills);
             int resAmount = from.Backpack?.GetAmount(typeof(Log)) ?? 0;
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
+            {
                 entries.Add(new ItemListEntry("Heavy Crossbow", 0x13FD, 0, idx));
+            }
         }
 
         return entries.ToArray();
@@ -168,9 +180,13 @@ public static class UserBowFletchingMenu
                 if (i == 1)
                 {
                     if (resAmount != 0)
+                    {
                         entries[i-missing] = new ItemListEntry("arrow shafts using all wood", itemid, 0, i);
+                    }
                     else
+                    {
                         missing++;
+                    }
                 }
                 // Arrows, bolts
                 else if (i == 2 || i == 3)
@@ -180,10 +196,14 @@ public static class UserBowFletchingMenu
                 // Kindling and bows
                 else
                 {
-                    if ((resAmount != 0) && (res != null && resAmount >= res.Amount))
+                    if (resAmount != 0 && res != null && resAmount >= res.Amount)
+                    {
                         entries[i-missing] = new ItemListEntry(name, itemid, 0, i);
+                    }
                     else
+                    {
                         missing++;
+                    }
                 }
                 item?.Delete();
             }

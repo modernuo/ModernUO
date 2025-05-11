@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server;
-using Server.Engines.Craft;
 using Server.Items;
 using Server.Network;
 using Server.Menus.ItemLists;
@@ -38,7 +36,9 @@ public class CarpentryMenu : ItemListMenu
         resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
         chance = craftItems[6].GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out allRequiredSkills);
         if (chance > 0 && resAmount >= chairRes.Amount)
-            entries.Add(new ItemListEntry("Chairs", 2902, 0, 0));
+        {
+            entries.Add(new ItemListEntry("Chairs", 2902));
+        }
 
         // Tables
         var tableType = craftItems[15].ItemType;
@@ -46,7 +46,9 @@ public class CarpentryMenu : ItemListMenu
         resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
         chance = craftItems[15].GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out allRequiredSkills);
         if (chance > 0 && resAmount >= tableRes.Amount)
+        {
             entries.Add(new ItemListEntry("Tables", 2940, 0, 1));
+        }
 
         // Miscellaneous (includes containers)
         var miscType = craftItems[21].ItemType;
@@ -54,7 +56,9 @@ public class CarpentryMenu : ItemListMenu
         resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
         chance = craftItems[21].GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out allRequiredSkills);
         if (chance > 0 && resAmount >= miscRes.Amount)
+        {
             entries.Add(new ItemListEntry("Miscellaneous", 3650, 0, 2));
+        }
 
         return entries.Count > 0 ? entries.ToArray() : Array.Empty<ItemListEntry>();
     }
@@ -63,21 +67,25 @@ public class CarpentryMenu : ItemListMenu
     {
         var entries = new List<ItemListEntry>();
         var craftItems = DefCarpentry.CraftSystem.CraftItems;
-        bool allRequiredSkills;
-        double chance;
-        int resAmount;
+
         for (int i = 0; i < 9; ++i)
         {
             var itemDef = craftItems[i + 6];
-            chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out allRequiredSkills);
-            resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
+            var chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out _);
+            var resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
+
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
             {
                 var item = Activator.CreateInstance(itemDef.ItemType) as Item;
+
                 var name = item?.GetType().Name ?? "";
                 name = name.Replace("tS", "t S").Replace("oC", "o C").Replace("nC", "n C").Replace("nB", "n B").Replace("nT", "n T").ToLower();
+
                 if (name == "fancywooden chaircushion" || name == "wooden chaircushion")
+                {
                     name = "wooden chair";
+                }
+
                 var itemid = item?.ItemID ?? 0;
                 entries.Add(new ItemListEntry($"{name} ({itemDef.Resources[0].Amount} wood)", itemid, 0, i));
                 item?.Delete();
@@ -90,21 +98,26 @@ public class CarpentryMenu : ItemListMenu
     {
         var entries = new List<ItemListEntry>();
         var craftItems = DefCarpentry.CraftSystem.CraftItems;
-        bool allRequiredSkills;
-        double chance;
-        int resAmount;
         for (int i = 0; i < 4; ++i)
         {
             var itemDef = craftItems[i + 15];
-            chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out allRequiredSkills);
-            resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
+            var chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out _);
+            var resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
             {
                 var item = Activator.CreateInstance(itemDef.ItemType) as Item;
                 var name = item?.GetType().Name ?? "";
                 name = name.Replace("gT", "g T").ToLower();
-                if (name == "yewwoodtable") name = "wooden table";
-                if (name == "largetable") name = "large wooden table";
+                if (name == "yewwoodtable")
+                {
+                    name = "wooden table";
+                }
+
+                if (name == "largetable")
+                {
+                    name = "large wooden table";
+                }
+
                 var itemid = item?.ItemID ?? 0;
                 entries.Add(new ItemListEntry($"{name} ({itemDef.Resources[0].Amount} wood)", itemid, 0, i));
                 item?.Delete();
@@ -117,14 +130,13 @@ public class CarpentryMenu : ItemListMenu
     {
         var entries = new List<ItemListEntry>();
         var craftItems = DefCarpentry.CraftSystem.CraftItems;
-        bool allRequiredSkills;
         double chance;
         int resAmount;
         // Containers (9 items)
         for (int i = 0; i < 9; ++i)
         {
             var itemDef = craftItems[i + 19];
-            chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out allRequiredSkills);
+            chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out _);
             resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
             {
@@ -140,7 +152,7 @@ public class CarpentryMenu : ItemListMenu
         for (int i = 0; i < 5; ++i)
         {
             var itemDef = craftItems[i + 28];
-            chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out allRequiredSkills);
+            chance = itemDef.GetSuccessChance(from, typeof(Board), DefCarpentry.CraftSystem, false, out _);
             resAmount = from.Backpack.GetAmount(typeof(Log)) + from.Backpack.GetAmount(typeof(Board));
             if (chance > 0 && resAmount >= itemDef.Resources[0].Amount)
             {
@@ -149,9 +161,14 @@ public class CarpentryMenu : ItemListMenu
                 name = name.Replace("sC", "s C").Replace("rS", "r S").Replace("dS", "d S").Replace("nS", "n S").Replace("gP", "g P").ToLower();
                 var itemid = item?.ItemID ?? 0;
                 if (i == 4)
+                {
                     entries.Add(new ItemListEntry($"{name} ({itemDef.Resources[0].Amount} logs, {itemDef.Resources[0].Amount} cloth)", itemid, 0, i));
+                }
                 else
+                {
                     entries.Add(new ItemListEntry($"{name} ({itemDef.Resources[0].Amount} logs)", itemid, 0, i));
+                }
+
                 item?.Delete();
             }
         }
@@ -246,4 +263,4 @@ public class CarpentryMenu : ItemListMenu
             DefCarpentry.CraftSystem.CreateItem(m_Mobile, itemDef.ItemType, type, m_Tool, itemDef);
         }
     }
-} 
+}

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server;
-using Server.Engines.Craft;
 using Server.Items;
 using Server.Network;
 using Server.Menus.ItemLists;
@@ -47,7 +45,7 @@ public class TinkeringMenu : ItemListMenu
     {
         return new ItemListEntry[]
         {
-            new ItemListEntry("Wooden Items", 0x1BDD, 0, 0),
+            new ItemListEntry("Wooden Items", 0x1BDD),
             new ItemListEntry("Metal Items", 0x1BF2, 0, 1)
         };
     }
@@ -59,14 +57,18 @@ public class TinkeringMenu : ItemListMenu
         foreach (var type in types)
         {
             var itemDef = DefTinkering.CraftSystem.CraftItems.SearchFor(type);
-            if (itemDef == null) continue;
+            if (itemDef == null)
+            {
+                continue;
+            }
+
             var res = itemDef.Resources[0];
             double chance = itemDef.GetSuccessChance(from, resourceType, DefTinkering.CraftSystem, false, out var allRequiredSkills);
             if ((from.Backpack?.GetAmount(resourceType) ?? 0) >= res.Amount && chance > 0.0)
             {
                 var name = itemDef.ItemType.Name.ToLower();
                 var itemid = itemDef.ItemId;
-                entries.Add(new ItemListEntry($"{name} ({res.Amount} {resourceName})", itemid, 0, 0));
+                entries.Add(new ItemListEntry($"{name} ({res.Amount} {resourceName})", itemid));
                 typeMap.Add(type);
             }
         }
@@ -79,14 +81,18 @@ public class TinkeringMenu : ItemListMenu
         // Check for [CraftItemID] attribute (for TrapCraft)
         var attr = type.GetCustomAttributes(typeof(CraftItemIDAttribute), false);
         if (attr.Length > 0 && attr[0] is CraftItemIDAttribute craftAttr)
+        {
             return craftAttr.ItemID;
+        }
 
         // Otherwise, try to instantiate and get ItemID
         try
         {
             var instance = Activator.CreateInstance(type) as Item;
             if (instance != null)
+            {
                 return instance.ItemID;
+            }
         }
         catch
         {
@@ -110,14 +116,21 @@ public class TinkeringMenu : ItemListMenu
         for (int i = 0; i < types.Length; ++i)
         {
             var craftItem = DefTinkering.CraftSystem.CraftItems.SearchFor(types[i]);
-            if (craftItem == null) continue;
+            if (craftItem == null)
+            {
+                continue;
+            }
+
             double chance = craftItem.GetSuccessChance(from, typeof(Log), DefTinkering.CraftSystem, false, out allRequiredSkills);
             var craftResource = craftItem.Resources[0];
-            if ((chance > 0) && (from.Backpack?.GetAmount(typeof(Log)) >= craftResource.Amount))
+            if (chance > 0 && from.Backpack?.GetAmount(typeof(Log)) >= craftResource.Amount)
             {
                 string name = types[i].Name.ToLower();
                 foreach (var fix in nameFixes)
+                {
                     name = name.Replace(fix, fix[0] + " " + fix[1]);
+                }
+
                 int itemID = itemIDs[i];
                 entries.Add(new ItemListEntry(name, itemID, 0, i));
                 typeMap.Add(types[i]);
@@ -180,10 +193,14 @@ public class TinkeringMenu : ItemListMenu
         for (int i = 0; i < count; ++i)
         {
             var craftItem = DefTinkering.CraftSystem.CraftItems.SearchFor(types[i]);
-            if (craftItem == null) continue;
+            if (craftItem == null)
+            {
+                continue;
+            }
+
             double chance = craftItem.GetSuccessChance(from, typeof(IronIngot), DefTinkering.CraftSystem, false, out allRequiredSkills);
             var craftResource = craftItem.Resources[0];
-            if ((chance > 0) && (from.Backpack?.GetAmount(typeof(IronIngot)) >= craftResource.Amount))
+            if (chance > 0 && from.Backpack?.GetAmount(typeof(IronIngot)) >= craftResource.Amount)
             {
                 string name = types[i].Name.ToLower();
                 int itemID = itemIDs[i];

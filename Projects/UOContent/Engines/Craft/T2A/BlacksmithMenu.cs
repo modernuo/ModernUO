@@ -1,6 +1,4 @@
 using System;
-using Server;
-using Server.Engines.Craft;
 using Server.Items;
 using Server.Network;
 using Server.Menus.ItemLists;
@@ -34,23 +32,53 @@ public class BlacksmithMenu : ItemListMenu
         // Shields
         chance = DefBlacksmithy.CraftSystem.CraftItems[23].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
         if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[23].Resources[0].Amount || chance <= 0.0)
+        {
             shields = false;
+        }
 
         // Armor
         chance = DefBlacksmithy.CraftSystem.CraftItems[0].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
         if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[0].Resources[0].Amount || chance <= 0.0)
+        {
             armor = false;
+        }
 
         // Weapons
         chance = DefBlacksmithy.CraftSystem.CraftItems[26].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
         if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[26].Resources[0].Amount || chance <= 0.0)
+        {
             weapons = false;
+        }
 
         var entries = new ItemListEntry[4];
-        entries[0] = new ItemListEntry("Repair", 4015, 0, 0);
-        if (shields) entries[1 - missing] = new ItemListEntry("Shields", 7026, 0, 1); else missing++;
-        if (armor) entries[2 - missing] = new ItemListEntry("Armor", 5141, 0, 2); else missing++;
-        if (weapons) entries[3 - missing] = new ItemListEntry("Weapons", 5049, 0, 3); else missing++;
+        entries[0] = new ItemListEntry("Repair", 4015);
+        if (shields)
+        {
+            entries[1 - missing] = new ItemListEntry("Shields", 7026, 0, 1);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (armor)
+        {
+            entries[2 - missing] = new ItemListEntry("Armor", 5141, 0, 2);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (weapons)
+        {
+            entries[3 - missing] = new ItemListEntry("Weapons", 5049, 0, 3);
+        }
+        else
+        {
+            missing++;
+        }
+
         Array.Resize(ref entries, entries.Length - missing);
         return entries;
     }
@@ -72,7 +100,11 @@ public class BlacksmithMenu : ItemListMenu
                 var name = item?.GetType().Name ?? "";
                 name = name.Replace("S", " S").Replace("K", " K").ToLower();
                 var itemid = item?.ItemID ?? 0;
-                if (itemid == 7033) itemid = 7032;
+                if (itemid == 7033)
+                {
+                    itemid = 7032;
+                }
+
                 entries[i - missing] = new ItemListEntry($"{name} ({res.Amount} ingots)", itemid, 0, i);
                 item?.Delete();
             }
@@ -90,21 +122,69 @@ public class BlacksmithMenu : ItemListMenu
         double chance;
         // Swords
         chance = DefBlacksmithy.CraftSystem.CraftItems[26].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[26].Resources[0].Amount || chance <= 0.0) swords = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[26].Resources[0].Amount || chance <= 0.0)
+        {
+            swords = false;
+        }
+
         // Axes
         chance = DefBlacksmithy.CraftSystem.CraftItems[34].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[34].Resources[0].Amount || chance <= 0.0) axes = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[34].Resources[0].Amount || chance <= 0.0)
+        {
+            axes = false;
+        }
+
         // Maces
         chance = DefBlacksmithy.CraftSystem.CraftItems[45].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[45].Resources[0].Amount || chance <= 0.0) maces = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[45].Resources[0].Amount || chance <= 0.0)
+        {
+            maces = false;
+        }
+
         // Polearms
         chance = DefBlacksmithy.CraftSystem.CraftItems[42].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[42].Resources[0].Amount || chance <= 0.0) polearms = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[42].Resources[0].Amount || chance <= 0.0)
+        {
+            polearms = false;
+        }
+
         var entries = new ItemListEntry[4];
-        if (swords) entries[0 - missing] = new ItemListEntry("Swords & Blades", 5049, 0, 0); else missing++;
-        if (axes) entries[1 - missing] = new ItemListEntry("Axes", 3913, 0, 1); else missing++;
-        if (maces) entries[2 - missing] = new ItemListEntry("Maces & Hammers", 5127, 0, 2); else missing++;
-        if (polearms) entries[3 - missing] = new ItemListEntry("Polearms", 3917, 0, 3); else missing++;
+        if (swords)
+        {
+            entries[0 - missing] = new ItemListEntry("Swords & Blades", 5049);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (axes)
+        {
+            entries[1 - missing] = new ItemListEntry("Axes", 3913, 0, 1);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (maces)
+        {
+            entries[2 - missing] = new ItemListEntry("Maces & Hammers", 5127, 0, 2);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (polearms)
+        {
+            entries[3 - missing] = new ItemListEntry("Polearms", 3917, 0, 3);
+        }
+        else
+        {
+            missing++;
+        }
+
         Array.Resize(ref entries, entries.Length - missing);
         return entries;
     }
@@ -221,21 +301,69 @@ public class BlacksmithMenu : ItemListMenu
         double chance;
         // Platemail
         chance = DefBlacksmithy.CraftSystem.CraftItems[9].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[9].Resources[0].Amount || chance <= 0.0) platemail = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[9].Resources[0].Amount || chance <= 0.0)
+        {
+            platemail = false;
+        }
+
         // Chainmail
         chance = DefBlacksmithy.CraftSystem.CraftItems[5].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[5].Resources[0].Amount || chance <= 0.0) chainmail = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[5].Resources[0].Amount || chance <= 0.0)
+        {
+            chainmail = false;
+        }
+
         // Ringmail
         chance = DefBlacksmithy.CraftSystem.CraftItems[0].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[0].Resources[0].Amount || chance <= 0.0) ringmail = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[0].Resources[0].Amount || chance <= 0.0)
+        {
+            ringmail = false;
+        }
+
         // Helmets
         chance = DefBlacksmithy.CraftSystem.CraftItems[4].GetSuccessChance(from, typeof(IronIngot), DefBlacksmithy.CraftSystem, false, out allRequiredSkills);
-        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[4].Resources[0].Amount || chance <= 0.0) helmets = false;
+        if ((from.Backpack?.GetAmount(typeof(IronIngot)) ?? 0) < DefBlacksmithy.CraftSystem.CraftItems[4].Resources[0].Amount || chance <= 0.0)
+        {
+            helmets = false;
+        }
+
         var entries = new ItemListEntry[4];
-        if (platemail) entries[0 - missing] = new ItemListEntry("Platemail", 5141, 0, 0); else missing++;
-        if (chainmail) entries[1 - missing] = new ItemListEntry("Chainmail", 5055, 0, 1); else missing++;
-        if (ringmail) entries[2 - missing] = new ItemListEntry("Ringmail", 5100, 0, 2); else missing++;
-        if (helmets) entries[3 - missing] = new ItemListEntry("Helmets", 5138, 0, 3); else missing++;
+        if (platemail)
+        {
+            entries[0 - missing] = new ItemListEntry("Platemail", 5141);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (chainmail)
+        {
+            entries[1 - missing] = new ItemListEntry("Chainmail", 5055, 0, 1);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (ringmail)
+        {
+            entries[2 - missing] = new ItemListEntry("Ringmail", 5100, 0, 2);
+        }
+        else
+        {
+            missing++;
+        }
+
+        if (helmets)
+        {
+            entries[3 - missing] = new ItemListEntry("Helmets", 5138, 0, 3);
+        }
+        else
+        {
+            missing++;
+        }
+
         Array.Resize(ref entries, entries.Length - missing);
         return entries;
     }
@@ -334,7 +462,7 @@ public class BlacksmithMenu : ItemListMenu
             var name = item?.GetType().Name ?? "";
             name = name.Replace("Chain", "Chainmail").Replace("C", " C").Trim().ToLower();
             var itemid = item?.ItemID ?? 0;
-            entries[0] = new ItemListEntry($"{name} ({res0.Amount} ingots)", itemid, 0, 0);
+            entries[0] = new ItemListEntry($"{name} ({res0.Amount} ingots)", itemid);
             item?.Delete();
         }
         else { missing++; }
@@ -424,9 +552,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Shields(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -477,9 +610,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Blades(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -499,9 +637,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Axes(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -521,9 +664,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Maces(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -543,9 +691,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Polearms(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -596,9 +749,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Platemail(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -618,9 +776,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Chainmail(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -640,9 +803,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Ringmail(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -666,9 +834,14 @@ public class BlacksmithMenu : ItemListMenu
             if (num > 0)
             {
                 if (num == 1044037)
+                {
                     from.SendMessage("You do not have enough ingots to make that.");
+                }
                 else
+                {
                     from.SendLocalizedMessage(num);
+                }
+
                 from.SendMenu(new BlacksmithMenu(from, Helmets(from), m_IsFrom, m_Tool));
                 return;
             }
@@ -710,7 +883,10 @@ public class BlacksmithMenu : ItemListMenu
         {
             var context = DefBlacksmithy.CraftSystem.GetContext(from);
             if (context != null && lastAvailable != -1)
+            {
                 context.LastResourceIndex = lastAvailable;
+            }
+
             afterSelect(from, tool);
         }
         else
@@ -743,7 +919,10 @@ public class BlacksmithResourceTarget : Target
                 {
                     var context = DefBlacksmithy.CraftSystem.GetContext(from);
                     if (context != null)
+                    {
                         context.LastResourceIndex = i;
+                    }
+
                     m_AfterSelect(from, m_Tool);
                     return;
                 }

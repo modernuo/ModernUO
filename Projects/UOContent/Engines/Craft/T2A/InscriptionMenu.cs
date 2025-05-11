@@ -1,11 +1,6 @@
 using System;
-using Server;
-using System.Collections;
-using Server.Engines.Craft;
 using Server.Network;
 using Server.Items;
-using Server.Spells;
-using Server.Mobiles;
 using Server.Menus.ItemLists;
 
 namespace Server.Engines.Craft.T2A
@@ -37,7 +32,7 @@ namespace Server.Engines.Craft.T2A
                     Spellbook book = Spellbook.Find(from, scroll.SpellID);
 
                     scroll.Delete();
-                    return (book != null && book.HasSpell(scroll.SpellID));
+                    return book != null && book.HasSpell(scroll.SpellID);
                 }
                 else if (o is Item)
                 {
@@ -59,91 +54,155 @@ namespace Server.Engines.Craft.T2A
 
             count = 0;
             for (int i = 0; i < 8; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 0) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[0].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
-                entries[0-missing] = new ItemListEntry("First Circle", 8384, 0, 0);
+            min = 100.0 / 7.0 * 0 - 20;
+            if (DefInscription.CraftSystem.CraftItems[0].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
+                entries[0-missing] = new ItemListEntry("First Circle", 8384);
+            }
             else
+            {
                 missing++;
+            }
 
             count = 0;
             for (int i = 8; i < 16; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 1) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[8].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
+            min = 100.0 / 7.0 * 1 - 20;
+            if (DefInscription.CraftSystem.CraftItems[8].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
                 entries[1 - missing] = new ItemListEntry("Second Circle", 8385,0,1);
+            }
             else
+            {
                 missing++;
+            }
 
             count = 0;
             for (int i = 16; i < 24; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 2) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[16].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
+            min = 100.0 / 7.0 * 2 - 20;
+            if (DefInscription.CraftSystem.CraftItems[16].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
                 entries[2 - missing] = new ItemListEntry("Third Circle", 8386,0,2);
+            }
             else
+            {
                 missing++;
+            }
 
             count = 0;
             for (int i = 24; i < 32; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 3) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[24].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
+            min = 100.0 / 7.0 * 3 - 20;
+            if (DefInscription.CraftSystem.CraftItems[24].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
                 entries[3 - missing] = new ItemListEntry("Forth Circle", 8387,0,3);
+            }
             else
+            {
                 missing++;
+            }
 
             count = 0;
             for (int i = 32; i < 40; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 4) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[32].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
+            min = 100.0 / 7.0 * 4 - 20;
+            if (DefInscription.CraftSystem.CraftItems[32].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
                 entries[4 - missing] = new ItemListEntry("Fifth Circle", 8388,0,4);
+            }
             else
+            {
                 missing++;
+            }
 
             count = 0;
             for (int i = 40; i < 48; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 5) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[40].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
+            min = 100.0 / 7.0 * 5 - 20;
+            if (DefInscription.CraftSystem.CraftItems[40].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
                 entries[5 - missing] = new ItemListEntry("Sixth Circle", 8389,0,5);
+            }
             else
+            {
                 missing++;
+            }
 
             count = 0;
             for (int i = 48; i < 56; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 6) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[48].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
+            min = 100.0 / 7.0 * 6 - 20;
+            if (DefInscription.CraftSystem.CraftItems[48].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
                 entries[6 - missing] = new ItemListEntry("Seventh Circle", 8390,0,6);
+            }
             else
+            {
                 missing++;
+            }
 
             count = 0;
             for (int i = 56; i < 64; i++)
+            {
                 if (GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                {
                     count++;
+                }
+            }
 
-            min = ((100.0 / 7.0) * 7) - 20;
-            if ((DefInscription.CraftSystem.CraftItems[56].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0) && (skill.Value >= min) && (count > 0))
+            min = 100.0 / 7.0 * 7 - 20;
+            if (DefInscription.CraftSystem.CraftItems[56].GetSuccessChance(from, typeof(BlackPearl), DefInscription.CraftSystem, false, out allRequiredSkills) > 0 && skill.Value >= min && count > 0)
+            {
                 entries[7 - missing] = new ItemListEntry("Eighth Circle", 8391,0,7);
+            }
             else
+            {
                 missing++;
+            }
 
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -169,7 +228,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -178,10 +237,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -206,7 +269,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i+8].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i+8].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i+8].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -215,10 +278,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i+8, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -243,7 +310,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i + 16].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 16].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 16].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -252,10 +319,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i + 16, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -280,7 +351,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i + 24].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 24].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 24].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -289,10 +360,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i + 24, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -317,7 +392,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i + 32].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 32].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 32].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -326,10 +401,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i + 32, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -354,7 +433,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i + 40].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 40].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 40].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -363,10 +442,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i + 40, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -391,7 +474,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i + 48].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 48].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 48].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -400,10 +483,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i + 48, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -427,7 +514,7 @@ namespace Server.Engines.Craft.T2A
                 craftResource = DefInscription.CraftSystem.CraftItems[i + 56].Resources[0];
                 hasres = true;
 
-                if ((chance > 0) && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 56].ItemType))
+                if (chance > 0 && hasres && GetScroll(from, DefInscription.CraftSystem.CraftItems[i + 56].ItemType))
                 {
                     item = null;
                     try { item = Activator.CreateInstance(type, 1) as Item; }
@@ -436,10 +523,14 @@ namespace Server.Engines.Craft.T2A
                     name = name.Replace("Scroll", "");
                     entries[i-missing] = new ItemListEntry(string.Format("{0}", name), 8320 + i + 56, 0, i);
                     if (item != null)
+                    {
                         item.Delete();
+                    }
                 }
                 else
+                {
                     missing++;
+                }
             }
             Array.Resize(ref entries, entries.Length - missing);
             return entries;
@@ -500,8 +591,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;
@@ -512,8 +603,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex+8].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex+8].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex+8].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex+8].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;
@@ -524,8 +615,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 16].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 16].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 16].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 16].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;
@@ -536,8 +627,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 24].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 24].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 24].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 24].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;
@@ -548,8 +639,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 32].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 32].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 32].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 32].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;
@@ -560,8 +651,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 40].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 40].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 40].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 40].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;
@@ -572,8 +663,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 48].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 48].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 48].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 48].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;
@@ -584,8 +675,8 @@ namespace Server.Engines.Craft.T2A
             {
                 Type type = null;
                 CraftContext context = DefInscription.CraftSystem.GetContext(m_Mobile);
-                CraftSubResCol res = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 56].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes);
-                int resIndex = (DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 56].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex);
+                CraftSubResCol res = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 56].UseSubRes2 ? DefInscription.CraftSystem.CraftSubRes2 : DefInscription.CraftSystem.CraftSubRes;
+                int resIndex = DefInscription.CraftSystem.CraftItems[m_Entries[index].CraftIndex + 56].UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 if (resIndex > -1)
                 {
                     type = res[resIndex].ItemType;

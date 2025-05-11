@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server;
-using Server.Engines.Craft;
 using Server.Items;
 using Server.Network;
 using Server.Menus.ItemLists;
@@ -62,26 +60,46 @@ public class TailoringMenu : ItemListMenu
         // Shirts
         var shirtsRes = DefTailoring.CraftSystem.CraftItems[12].Resources[0];
         if (resAmount >= shirtsRes.Amount)
-            entries[0 - missing] = new ItemListEntry("Shirts", 0x1517, 0, 0);
-        else missing++;
+        {
+            entries[0 - missing] = new ItemListEntry("Shirts", 0x1517);
+        }
+        else
+        {
+            missing++;
+        }
 
         // Pants
         var pantsRes = DefTailoring.CraftSystem.CraftItems[6].Resources[0];
         if (resAmount >= pantsRes.Amount)
+        {
             entries[1 - missing] = new ItemListEntry("Pants", 0x1539, 0, 1);
-        else missing++;
+        }
+        else
+        {
+            missing++;
+        }
 
         // Miscellaneous
         var miscRes = DefTailoring.CraftSystem.CraftItems[9].Resources[0];
         if (resAmount >= miscRes.Amount)
+        {
             entries[2 - missing] = new ItemListEntry("Miscellaneous", 0x153D, 0, 2);
-        else missing++;
+        }
+        else
+        {
+            missing++;
+        }
 
         // Bolt of Cloth
         var boltRes = DefTailoring.CraftSystem.CraftItems[14].Resources[0];
         if (resAmount >= boltRes.Amount)
+        {
             entries[3 - missing] = new ItemListEntry("Bolt of Cloth", 0x0F95, 0, 3);
-        else missing++;
+        }
+        else
+        {
+            missing++;
+        }
 
         Array.Resize(ref entries, entries.Length - missing);
         return entries;
@@ -95,14 +113,18 @@ public class TailoringMenu : ItemListMenu
         foreach (var type in types)
         {
             var itemDef = DefTailoring.CraftSystem.CraftItems.SearchFor(type);
-            if (itemDef == null) continue;
+            if (itemDef == null)
+            {
+                continue;
+            }
+
             var res = itemDef.Resources[0];
             double chance = itemDef.GetSuccessChance(from, typeof(Cloth), DefTailoring.CraftSystem, false, out var allRequiredSkills);
             if ((from.Backpack?.GetAmount(typeof(Cloth)) ?? 0) >= res.Amount && chance > 0.0)
             {
                 var name = itemDef.ItemType.Name.ToLower();
                 var itemid = itemDef.ItemId;
-                entries.Add(new ItemListEntry($"{name} ({res.Amount} {resourceName})", itemid, 0, 0));
+                entries.Add(new ItemListEntry($"{name} ({res.Amount} {resourceName})", itemid));
                 typeMap.Add(type);
             }
         }
@@ -137,7 +159,7 @@ public class TailoringMenu : ItemListMenu
         int bolts = clothAmount / 50;
         if (bolts > 0)
         {
-            entries.Add(new ItemListEntry($"bolt of cloth (50 cloth)", 0xF95, 0, 0));
+            entries.Add(new ItemListEntry($"bolt of cloth (50 cloth)", 0xF95));
             typeMap.Add(typeof(BoltOfCloth));
         }
         return entries.ToArray();
@@ -172,7 +194,7 @@ public class TailoringMenu : ItemListMenu
     {
         return new ItemListEntry[]
         {
-            new ItemListEntry("Footwear", 0x170f, 0, 0),
+            new ItemListEntry("Footwear", 0x170f),
             new ItemListEntry("Leather Armor", 0x13cc, 0, 1),
             new ItemListEntry("Studded Armor", 0x13db, 0, 2),
             new ItemListEntry("Female Armor", 0x1c06, 0, 3)
