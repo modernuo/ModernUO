@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -173,9 +174,15 @@ public static class TcpServer
             var isValid =
                 // Sometimes when newer clients are connecting to the game server the first 4 bytes are sent separately
                 bytesRead == 4 ||
+
+                // Support Freeshard Protocol (UOGateway)
+                bytesRead == 8 &&
+                BinaryPrimitives.ReadUInt32BigEndian(_firstBytes.AsSpan(4)) is 0xF10004FF or 0xF10004FE ||
+
                 // Older clients only send the 4 byte seed first then 0x80
                 (UOClient.MinRequired == null || UOClient.MinRequired < ClientVersion.Version6050) &&
                 bytesRead >= 66 && _firstBytes[4] == 0x80 ||
+
                 // Newer clients
                 (UOClient.MaxRequired == null || UOClient.MaxRequired >= ClientVersion.Version6050) && (
                     // Account Login - 0xEF + 0x80 (83 bytes)
