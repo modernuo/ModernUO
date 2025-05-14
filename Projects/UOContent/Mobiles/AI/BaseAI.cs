@@ -1026,7 +1026,7 @@ public abstract class BaseAI
     
         DebugSay("I am fleeing.");
 
-        WalkRandom(1, 2, 1);
+        WalkRandom(2, 1, 1);
 
         return true;
     }
