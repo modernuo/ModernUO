@@ -25,10 +25,10 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
-using Server.Text;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Server.Buffers;
 using CalcMoves = Server.Movement.Movement;
 
 namespace Server;
@@ -895,7 +895,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.Administrator)]
     public bool AutoPageNotify { get; set; }
 
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Owner)]
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator, canModify: true)]
     public IAccount Account { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -4573,6 +4573,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
+#if TRACK_LEAKS
+    ~Mobile()
+    {
+        EntityFinalizationTracker.NotifyFinalized(this);
+    }
+#endif
+
     /// <summary>
     ///     Overridable. Virtual event invoked before the Mobile is deleted.
     /// </summary>
@@ -5371,13 +5378,32 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return false;
         }
 
-        using var sb = new ValueStringBuilder(stackalloc char[Math.Min(text.Length, 256)]);
-        for (var i = 0; i < text.Length; ++i)
+        ReadOnlySpan<char> ghostChars = (GhostChars ?? DefaultGhostChars).AsSpan();
+
+        var length = text.Length;
+        char[] rentedChars = null;
+        Span<char> chars = length <= 256
+            ? stackalloc char[length]
+            : rentedChars = STArrayPool<char>.Shared.Rent(length);
+
+        try
         {
-            sb.Append(text[i] != ' ' ? (GhostChars ?? DefaultGhostChars).RandomElement() : ' ');
+            var textSpan = text.AsSpan();
+            for (var i = 0; i < textSpan.Length; ++i)
+            {
+                chars[i] = textSpan[i] != ' ' ? ghostChars.RandomElement() : ' ';
+            }
+
+            text = new string(chars[..length]);
+        }
+        finally
+        {
+            if (rentedChars != null)
+            {
+                STArrayPool<char>.Shared.Return(rentedChars);
+            }
         }
 
-        text = sb.ToString();
         context = m_GhostMutateContext;
         return true;
     }
@@ -5418,7 +5444,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public virtual bool CheckHearsMutatedSpeech(Mobile m, object context) =>
         context != m_GhostMutateContext || m.Alive && !m.CanHearGhosts;
 
-    private void AddSpeechItemsFrom(List<IEntity> list, Container cont)
+    private static void AddSpeechItemsFrom(List<IEntity> list, Container cont)
     {
         for (var i = 0; i < cont.Items.Count; ++i)
         {
@@ -5470,33 +5496,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     break;
                 }
             case MessageType.System:
-                {
-                    break;
-                }
             case MessageType.Label:
-                {
-                    break;
-                }
             case MessageType.Focus:
-                {
-                    break;
-                }
             case MessageType.Spell:
-                {
-                    break;
-                }
             case MessageType.Guild:
-                {
-                    break;
-                }
             case MessageType.Alliance:
-                {
-                    break;
-                }
             case MessageType.Command:
-                {
-                    break;
-                }
             case MessageType.Encoded:
                 {
                     break;
@@ -7988,7 +7993,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public static TimeSpan GetManaRegenRate(Mobile m) => ManaRegenRateHandler?.Invoke(m) ?? DefaultManaRate;
 
-    public static char[] DefaultGhostChars = { 'o', 'O' };
+    public static readonly char[] DefaultGhostChars = ['o', 'O'];
 
     public Prompt BeginPrompt(PromptCallback callback, PromptCallback cancelCallback) =>
         Prompt = new SimplePrompt(callback, cancelCallback);

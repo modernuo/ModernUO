@@ -42,17 +42,17 @@ namespace Server.Mobiles
             Fame = 10000;
             Karma = -10000;
 
-            Item boots = new ThighBoots();
-            boots.Movable = false;
-            boots.Hue = Utility.Random(2);
-
-            var shroud = new Item(0x204E);
-            shroud.Layer = Layer.OuterTorso;
-            shroud.Movable = false;
-            shroud.Hue = Utility.Random(2);
-
-            AddItem(boots);
-            AddItem(shroud);
+            AddItem(new ThighBoots
+            {
+                Movable = false,
+                Hue = Utility.Random(2)
+            });
+            AddItem(new Item(0x204E)
+            {
+                Layer = Layer.OuterTorso,
+                Movable = false,
+                Hue = Utility.Random(2)
+            });
         }
 
         public override string CorpseName => "a human corpse";

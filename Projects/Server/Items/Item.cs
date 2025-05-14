@@ -328,7 +328,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     public virtual TimeSpan DecayTime => DefaultDecayTime;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public virtual bool Decays => Movable && Visible && Spawner == null; 
+    public virtual bool Decays => Movable && Visible && Spawner == null;
 
     public DateTime LastMoved { get; set; }
 
@@ -2346,7 +2346,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             };
         }
 
-        var bounds = ItemBounds.Table[itemID & 0x3FFF];
+        var bounds = ItemBounds.Bounds[itemID & 0x3FFF];
 
         if (doubled)
         {
@@ -3267,6 +3267,13 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
             );
         }
     }
+
+#if TRACK_LEAKS
+    ~Item()
+    {
+        EntityFinalizationTracker.NotifyFinalized(this);
+    }
+#endif
 
     public virtual void OnDelete()
     {

@@ -26,6 +26,8 @@ public class EnergyFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 
     public override SpellCircle Circle => SpellCircle.Seventh;
 
+    public int TargetRange => Core.T2A ? 15 : 18;
+
     public void Target(IPoint3D p)
     {
         if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
@@ -55,8 +57,7 @@ public class EnergyFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
                     continue;
                 }
 
-                Item item = new EnergyField(targetLoc, Caster.Map, duration, itemID, Caster);
-                item.ProcessDelta();
+                new EnergyField(targetLoc, Caster.Map, duration, itemID, Caster).ProcessDelta();
 
                 Effects.SendLocationParticles(
                     EffectItem.Create(targetLoc, Caster.Map, EffectItem.DefaultDuration),

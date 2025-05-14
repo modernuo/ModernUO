@@ -71,47 +71,43 @@ namespace Server.Targets
                     }
                 }
 
-                HarvestSystem system = Lumberjacking.System;
+                var system = Lumberjacking.System;
                 var def = system.GetDefinition();
 
-                if (!system.GetHarvestDetails(from, m_Item, targeted, out var tileID, out var map, out var loc, out var isLand))
+                if (!system.GetHarvestDetails(from, m_Item, targeted, out var tileID, out var map, out var loc, out var isLand)
+                    || !def.Validate(tileID, isLand))
                 {
                     from.SendLocalizedMessage(500494); // You can't use a bladed item on that!
+                    return;
                 }
-                else if (!def.Validate(tileID, isLand))
+
+                var bank = def.GetBank(map, loc.X, loc.Y);
+
+                if (bank == null)
                 {
-                    from.SendLocalizedMessage(500494); // You can't use a bladed item on that!
+                    return;
+                }
+
+                if (bank.Current < 5)
+                {
+                    from.SendLocalizedMessage(500493); // There's not enough wood here to harvest.
                 }
                 else
                 {
-                    var bank = def.GetBank(map, loc.X, loc.Y);
+                    bank.Consume(5, from);
 
-                    if (bank == null)
-                    {
-                        return;
-                    }
+                    var item = new Kindling();
 
-                    if (bank.Current < 5)
+                    if (from.PlaceInBackpack(item))
                     {
-                        from.SendLocalizedMessage(500493); // There's not enough wood here to harvest.
+                        from.SendLocalizedMessage(500491); // You put some kindling into your backpack.
+                        from.SendLocalizedMessage(500492); // An axe would probably get you more wood.
                     }
                     else
                     {
-                        bank.Consume(5, from);
+                        from.SendLocalizedMessage(500490); // You can't place any kindling into your backpack!
 
-                        Item item = new Kindling();
-
-                        if (from.PlaceInBackpack(item))
-                        {
-                            from.SendLocalizedMessage(500491); // You put some kindling into your backpack.
-                            from.SendLocalizedMessage(500492); // An axe would probably get you more wood.
-                        }
-                        else
-                        {
-                            from.SendLocalizedMessage(500490); // You can't place any kindling into your backpack!
-
-                            item.Delete();
-                        }
+                        item.Delete();
                     }
                 }
             }

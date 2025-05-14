@@ -81,7 +81,7 @@ jobs:
         run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
         if: ${{ matrix.packageManager == 'dnf' }}
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev
+        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata
         if: ${{ matrix.packageManager == 'apt' }}
       - uses: actions/checkout@v4
         with:

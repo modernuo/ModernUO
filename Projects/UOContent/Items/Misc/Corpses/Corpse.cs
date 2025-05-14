@@ -109,7 +109,7 @@ public partial class Corpse : Container, ICarvable
     [SerializableField(7, setter: "private")]
     private List<Mobile> _aggressors;
 
-    [SerializableField(8, setter: "private")]
+    [SerializableField(8, setter: "protected")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Mobile _owner;
 
@@ -912,7 +912,7 @@ public partial class Corpse : Container, ICarvable
             var obj = qs.FindObjective<GetDaemonBoneObjective>();
             if (obj?.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
             {
-                Item bone = new QuestDaemonBone();
+                var bone = new QuestDaemonBone();
 
                 if (player.PlaceInBackpack(bone))
                 {

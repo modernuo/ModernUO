@@ -32,17 +32,11 @@ namespace Server.Mobiles
         {
             base.InitOutfit();
 
-            Item item = Utility.RandomBool() ? null : new RingmailChest();
+            Item item = Utility.RandomBool() ? new FullApron() : new RingmailChest();
 
-            if (item != null && !EquipItem(item))
+            if (!EquipItem(item))
             {
                 item.Delete();
-                item = null;
-            }
-
-            if (item == null)
-            {
-                AddItem(new FullApron());
             }
 
             AddItem(new Bascinet());

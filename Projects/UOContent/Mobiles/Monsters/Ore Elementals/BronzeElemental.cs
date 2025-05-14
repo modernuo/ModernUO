@@ -38,9 +38,10 @@ namespace Server.Mobiles
 
             VirtualArmor = 29;
 
-            Item ore = new BronzeOre(oreAmount);
-            ore.ItemID = 0x19B9;
-            PackItem(ore);
+            PackItem(new BronzeOre(oreAmount)
+            {
+                ItemID = 0x19B9
+            });
         }
 
         public override string CorpseName => "an ore elemental corpse";

@@ -745,7 +745,7 @@ public static partial class Utility
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T RandomList<T>(params T[] list) => list.RandomElement();
+    public static T RandomList<T>(params ReadOnlySpan<T> list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomElement<T>(this ReadOnlySpan<T> list) => list.Length == 0 ? default : list[Random(list.Length)];
@@ -1305,15 +1305,15 @@ public static partial class Utility
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T[] Combine<T>(this IList<T> source, params IList<T>[] arrays) =>
+    public static T[] Combine<T>(this IList<T> source, params ReadOnlySpan<IList<T>> arrays) =>
         source.Combine(false, arrays);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T[] CombinePooled<T>(this IList<T> source, params IList<T>[] arrays) =>
+    public static T[] CombinePooled<T>(this IList<T> source, params ReadOnlySpan<IList<T>> arrays) =>
         source.Combine(true, arrays);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T[] Combine<T>(this IList<T> source, bool pooled, params IList<T>[] arrays)
+    public static T[] Combine<T>(this IList<T> source, bool pooled, params ReadOnlySpan<IList<T>> arrays)
     {
         var totalLength = source.Count;
         foreach (var arr in arrays)
@@ -1467,5 +1467,16 @@ public static partial class Utility
     {
         table.Remove(key);
         table.Add(key, value);
+    }
+
+    public static DateTime LocalToUtc(this DateTime local, TimeZoneInfo tz)
+    {
+        if (tz.IsAmbiguousTime(local))
+        {
+            var offsets = tz.GetAmbiguousTimeOffsets(local);
+            return DateTime.SpecifyKind(local - offsets[1], DateTimeKind.Utc);
+        }
+
+        return DateTime.SpecifyKind(local - tz.GetUtcOffset(local), DateTimeKind.Utc);
     }
 }

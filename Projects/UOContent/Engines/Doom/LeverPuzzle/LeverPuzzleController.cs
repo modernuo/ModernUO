@@ -321,8 +321,8 @@ public partial class LeverPuzzleController : Item
     {
         for (var i = 0; i < 4; i++)
         {
-            Item l;
-            if ((l = GetLever(i)) != null)
+            var l = GetLever(i);
+            if (l != null)
             {
                 l.ItemID = 0x108E;
                 Effects.PlaySound(l.Location, Map, 0x3E8);
@@ -361,43 +361,41 @@ public partial class LeverPuzzleController : Item
         {
             PuzzleStatus(1050004); // The circle is the key...
         }
+        else if (TheirKey == MyKey)
+        {
+            GenKey();
+            Successful = GetOccupant(0);
+            if (Successful != null)
+            {
+                SendLocationEffect(lp_Center, 0x1153, 0, 60, 1);
+                PlaySounds(lp_Center, cs1);
+
+                Effects.SendBoltEffect(Successful);
+                Successful.MoveToWorld(lr_Enter, Map.Malas);
+
+                m_Timer = new LampRoomTimer(this);
+                m_Timer.Start();
+                Enabled = false;
+            }
+        }
         else
         {
-            Mobile player;
-            if (TheirKey == MyKey)
+            for (var i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
             {
-                GenKey();
-                if ((Successful = player = GetOccupant(0)) != null)
+                if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
                 {
-                    SendLocationEffect(lp_Center, 0x1153, 0, 60, 1);
-                    PlaySounds(lp_Center, cs1);
-
-                    Effects.SendBoltEffect(player);
-                    player.MoveToWorld(lr_Enter, Map.Malas);
-
-                    m_Timer = new LampRoomTimer(this);
-                    m_Timer.Start();
-                    Enabled = false;
+                    correct++;
                 }
             }
-            else
+
+            PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);
+
+            for (var i = 0; i < 5; i++)
             {
-                for (var i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
+                var player = GetOccupant(i);
+                if (player != null)
                 {
-                    if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
-                    {
-                        correct++;
-                    }
-                }
-
-                PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);
-
-                for (var i = 0; i < 5; i++)
-                {
-                    if ((player = GetOccupant(i)) != null)
-                    {
-                        new RockTimer(player).Start();
-                    }
+                    new RockTimer(player).Start();
                 }
             }
         }

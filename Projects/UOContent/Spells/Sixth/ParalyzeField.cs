@@ -25,6 +25,8 @@ public class ParalyzeFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 
     public override SpellCircle Circle => SpellCircle.Sixth;
 
+    public int TargetRange => Core.T2A ? 15 : 18;
+
     public void Target(IPoint3D p)
     {
         if (SpellHelper.CheckTown(p, Caster) && CheckSequence())
@@ -55,8 +57,7 @@ public class ParalyzeFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
                     continue;
                 }
 
-                Item item = new ParalyzeField(Caster, itemID, targetLoc, Caster.Map, duration);
-                item.ProcessDelta();
+                new ParalyzeField(Caster, itemID, targetLoc, Caster.Map, duration).ProcessDelta();
 
                 Effects.SendLocationParticles(
                     EffectItem.Create(targetLoc, Caster.Map, EffectItem.DefaultDuration),

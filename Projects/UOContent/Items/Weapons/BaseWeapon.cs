@@ -1026,6 +1026,11 @@ public abstract partial class BaseWeapon
 
     public override bool CanEquip(Mobile from)
     {
+        if (!from.Player || from.AccessLevel >= AccessLevel.GameMaster)
+        {
+            return from.CanBeginAction<BaseWeapon>() && base.CanEquip(from);
+        }
+
         if (!Ethic.CheckEquip(from, this))
         {
             return false;
@@ -3657,7 +3662,7 @@ public abstract partial class BaseWeapon
 
         attacker.DoHarmful(defender);
 
-        MagerySpell sp = new DispelSpell(attacker);
+        var sp = new DispelSpell(attacker);
 
         if (sp.CheckResisted(defender))
         {

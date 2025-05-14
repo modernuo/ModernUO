@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Misc;
@@ -79,15 +80,15 @@ public class NameChangeDeedGump : Gump
 
         var m = sender.Mobile;
 
-        var newName = info.GetTextEntry(0)?.Trim();
+        var newName = info.GetTextEntry(0).AsSpan().Trim();
 
-        if (!NameVerification.Validate(newName, 2, 16, true, false, true, 1, NameVerification.SpaceDashPeriodQuote))
+        if (!NameVerification.ValidatePlayerName(newName))
         {
             m.SendMessage("That name is unacceptable.");
             return;
         }
 
-        m.RawName = newName;
+        m.RawName = newName.ToString();
         m.SendMessage("Your name has been changed!");
         m.SendMessage($"You are now known as {newName}");
         m_Sender.Delete();

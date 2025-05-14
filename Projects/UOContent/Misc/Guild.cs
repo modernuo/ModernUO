@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Items;
@@ -609,7 +610,7 @@ namespace Server.Guilds
         {
             get
             {
-                if (Disbanded || m_Leader.Guild != this)
+                if (Disbanded)
                 {
                     CalculateGuildmaster();
                 }
@@ -777,7 +778,7 @@ namespace Server.Guilds
 
         public void InvalidateMemberProperties(bool onlyOPL = false)
         {
-            for (var i = 0; i < Members?.Count; i++)
+            for (var i = 0; i < Members.Count; i++)
             {
                 var m = Members[i];
                 m.InvalidateProperties();
@@ -791,7 +792,7 @@ namespace Server.Guilds
 
         public void InvalidateMemberNotoriety()
         {
-            for (var i = 0; i < Members?.Count; i++)
+            for (var i = 0; i < Members.Count; i++)
             {
                 Members[i].Delta(MobileDelta.Noto);
             }
@@ -1220,14 +1221,14 @@ namespace Server.Guilds
                     {
                         var count = reader.ReadInt();
 
-                        PendingWars = new List<WarDeclaration>();
+                        PendingWars = new List<WarDeclaration>(count);
                         for (var i = 0; i < count; i++)
                         {
                             PendingWars.Add(new WarDeclaration(reader));
                         }
 
                         count = reader.ReadInt();
-                        AcceptedWars = new List<WarDeclaration>();
+                        AcceptedWars = new List<WarDeclaration>(count);
                         for (var i = 0; i < count; i++)
                         {
                             AcceptedWars.Add(new WarDeclaration(reader));
@@ -1274,11 +1275,6 @@ namespace Server.Guilds
                 case 0:
                     {
                         m_Leader = reader.ReadEntity<Mobile>();
-
-                        if (m_Leader is PlayerMobile mobile)
-                        {
-                            mobile.GuildRank = RankDefinition.Leader;
-                        }
 
                         m_Name = reader.ReadString();
                         m_Abbreviation = reader.ReadString();
@@ -1334,66 +1330,70 @@ namespace Server.Guilds
 
         public void AddMember(Mobile m)
         {
-            if (!Members.Contains(m))
+            if (Members.Contains(m))
             {
-                if (m.Guild != null && m.Guild != this)
-                {
-                    ((Guild)m.Guild).RemoveMember(m);
-                }
-
-                Members.Add(m);
-                m.Guild = this;
-
-                m.GuildFealty = !NewGuildSystem ? m_Leader : null;
-
-                if (m is PlayerMobile mobile)
-                {
-                    mobile.GuildRank = RankDefinition.Lowest;
-                }
-
-                ((Guild)m.Guild).InvalidateWarNotoriety();
+                return;
             }
+
+            var oldGuild = m.Guild as Guild;
+
+            if (oldGuild != this)
+            {
+                oldGuild?.RemoveMember(m);
+            }
+
+            Members.Add(m);
+            m.Guild = this;
+
+            m.GuildFealty = !NewGuildSystem ? m_Leader : null;
+
+            if (m is PlayerMobile pm)
+            {
+                pm.GuildRank = RankDefinition.Lowest;
+            }
+
+            oldGuild?.InvalidateWarNotoriety();
+            InvalidateWarNotoriety();
         }
 
         public void RemoveMember(Mobile m, int message = 1018028) // You have been dismissed from your guild.
         {
-            if (Members.Contains(m))
+            if (!Members.Remove(m))
             {
-                Members.Remove(m);
+                return;
+            }
 
-                var guild = m.Guild as Guild;
+            var oldGuild = m.Guild as Guild;
+            m.Guild = null;
 
-                m.Guild = null;
+            if (m is PlayerMobile pm)
+            {
+                pm.GuildRank = RankDefinition.Lowest;
+            }
 
-                if (m is PlayerMobile mobile)
-                {
-                    mobile.GuildRank = RankDefinition.Lowest;
-                }
+            if (message > 0)
+            {
+                m.SendLocalizedMessage(message);
+            }
 
-                if (message > 0)
-                {
-                    m.SendLocalizedMessage(message);
-                }
+            if (m == m_Leader)
+            {
+                CalculateGuildmaster();
 
-                if (m == m_Leader)
-                {
-                    CalculateGuildmaster();
-
-                    if (m_Leader == null)
-                    {
-                        Disband();
-                    }
-                }
-
-                if (Members.Count == 0)
+                if (m_Leader == null)
                 {
                     Disband();
                 }
-
-                guild?.InvalidateWarNotoriety();
-
-                m.Delta(MobileDelta.Noto);
             }
+
+            if (Members.Count == 0)
+            {
+                Disband();
+            }
+
+            oldGuild?.InvalidateWarNotoriety();
+
+            m.Delta(MobileDelta.Noto);
         }
 
         public void AddAlly(Guild g)
@@ -1408,10 +1408,8 @@ namespace Server.Guilds
 
         public void RemoveAlly(Guild g)
         {
-            if (Allies.Contains(g))
+            if (Allies.Remove(g))
             {
-                Allies.Remove(g);
-
                 g.RemoveAlly(this);
             }
         }
@@ -1428,10 +1426,8 @@ namespace Server.Guilds
 
         public void RemoveEnemy(Guild g)
         {
-            if (Enemies.Contains(g))
+            if (Enemies.Remove(g))
             {
-                Enemies.Remove(g);
-
                 g.RemoveEnemy(this);
             }
         }
@@ -1507,9 +1503,12 @@ namespace Server.Guilds
         {
             var votes = new Dictionary<Mobile, int>();
 
+            // When the leader resigns, this will be false
+            var disbanded = Disbanded;
+            var hasLeader = !disbanded && m_Leader?.Guild == this;
             var votingMembers = 0;
 
-            for (var i = 0; i < Members?.Count; ++i)
+            for (var i = 0; i < Members.Count; ++i)
             {
                 var memb = Members[i];
 
@@ -1522,14 +1521,7 @@ namespace Server.Guilds
 
                 if (!CanBeVotedFor(m))
                 {
-                    if (!Disbanded && m_Leader.Guild == this)
-                    {
-                        m = m_Leader;
-                    }
-                    else
-                    {
-                        m = memb;
-                    }
+                    m = hasLeader ? m_Leader : memb;
                 }
 
                 if (m == null)
@@ -1537,18 +1529,16 @@ namespace Server.Guilds
                     continue;
                 }
 
-                votes[m] = 1 + (votes.TryGetValue(m, out var v) ? v : 0);
+                ref var voteCount = ref CollectionsMarshal.GetValueRefOrAddDefault(votes, m, out _);
+                voteCount++;
                 votingMembers++;
             }
 
             Mobile winner = null;
             var highVotes = 0;
 
-            foreach (var kvp in votes)
+            foreach (var (m, val) in votes)
             {
-                var m = kvp.Key;
-                var val = kvp.Value;
-
                 if (winner == null || val > highVotes)
                 {
                     winner = m;
@@ -1556,13 +1546,34 @@ namespace Server.Guilds
                 }
             }
 
-            if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && !Disbanded &&
-                winner != m_Leader && m_Leader.Guild == this)
+            if (hasLeader && (winner == null ||
+                              NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage))
             {
                 winner = m_Leader;
             }
 
-            if (m_Leader != winner && winner != null)
+            if (winner == null)
+            {
+                if (votes.Count > 0)
+                {
+                    var randomNumber = Utility.Random(votes.Count);
+                    var index = 0;
+                    foreach (var m in votes.Keys)
+                    {
+                        if (index++ == randomNumber)
+                        {
+                            winner = m;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    winner = Members.RandomElement();
+                }
+            }
+
+            if (winner != null && m_Leader != winner)
             {
                 Leader = winner;
                 GuildMessage(1018015, true, winner.RawName); // Guild Message: Guildmaster changed to:
