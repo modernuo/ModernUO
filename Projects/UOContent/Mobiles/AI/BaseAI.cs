@@ -2119,25 +2119,23 @@ public abstract class BaseAI
         return randomMove < 8 ? (Direction)randomMove : m_Mobile.Direction;
     }
 
-    public static double TransformMoveDelay(BaseCreature bc, double maxReduction = 0.4)
+    public static double TransformMoveDelay(BaseCreature bc)
     {
         if (bc == null)
         {
-            return 0.1;
+            return 0.0;
         }
     
-        var moveSpeed = bc.CurrentSpeed;
+        int stat = Core.HS ? bc.Stam : bc.Hits;
+        int statMax = Core.HS ? bc.StamMax : bc.HitsMax;
     
-        if (!bc.IsDeadPet && (bc.ReduceSpeedWithDamage || bc.IsSubdued))
+        if (!bc.IsDeadPet && (bc.ReduceSpeedWithDamage || bc.IsSubdued) 
+            && statMax > 0 && stat < statMax * 0.3)
         {
-            int stats = Core.HS ? bc.Stam : bc.Hits;
-            int statsMax = Core.HS ? bc.StamMax : bc.HitsMax;
-    
-            var statRatio = statsMax <= 0 ? 0.0 : Math.Max(0, stats) / (double)statsMax;
-            moveSpeed += (1.0 - statRatio) * maxReduction;
+            return bc.CurrentSpeed + 0.1;
         }
     
-        return Math.Max(0.1, moveSpeed);
+        return bc.CurrentSpeed;
     }
 
     // this needs to match ai interval
