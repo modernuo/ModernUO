@@ -5,50 +5,42 @@ namespace Server.Spells
 {
     public abstract class MagerySpell : Spell
     {
-        private static readonly int[] _manaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
+        // Mana costs per spell circle
+        public static int[] ManaPerCircle { get; set; } = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
-        /*
-         * Starts at Circle -2 to account for scrolls
-         * Mana requirements formula: (14 * (circle - 1)) + 2 = 50% probability
-         * Add or subtract 20 for max or min limits
-         */
-        private static readonly double[] _requiredSkill = Core.ML ?
-            new[] { -46.0, -32.0, -18.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 } :
-            new[] { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
+        // Minimum skill required per circle (scrolls use Circle+2)
+        public static double[] RequiredSkillPerCircle { get; set; } = { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
 
-        public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
-        {
-        }
+        // Skill check window for casting a spell successfully
+        public static double SkillCheckWindow { get; set; } = 40.0;
+
+        // Cast delay per tick (seconds)
+        public static double CastDelaySecondsPerTick { get; set; } = 1.0;
+
+        public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info) { }
 
         public abstract SpellCircle Circle { get; }
 
-        public override TimeSpan CastDelayBase => TimeSpan.FromSeconds((3 + (int)Circle) * CastDelaySecondsPerTick);
+        public override TimeSpan CastDelayBase =>
+            TimeSpan.FromSeconds((3 + (int)Circle) * CastDelaySecondsPerTick);
 
         public override bool ConsumeReagents() =>
             base.ConsumeReagents() || ArcaneGem.ConsumeCharges(Caster, Core.SE ? 1 : 1 + (int)Circle);
 
         public override void GetCastSkills(out double min, out double max)
         {
-            // Original RunUO algorithm for required skill
-            // const double chanceOffset = 20.0
-            // const double chanceLength = 100.0 / 7.0
-            // var avg = chanceLength * circle;
-            // min = avg - chanceOffset;
-            // max = avg + chanceOffset;
-
-            // Correct algorithm according to OSI for UOR/UOML
-            // TODO: Verify this algorithm on OSI for latest expansion.
-            min = _requiredSkill[(int)(Scroll == null ? Circle + 2 : Circle)];
-            max = min + 40;
+            // Uses scrolls if present, otherwise use spellbook
+            int skillIndex = (int)(Scroll == null ? Circle + 2 : Circle);
+            min = RequiredSkillPerCircle[skillIndex];
+            max = min + SkillCheckWindow;
         }
 
-        public override int GetMana() => Scroll is BaseWand ? 0 : _manaTable[(int)Circle];
+        public override int GetMana() => Scroll is BaseWand ? 0 : ManaPerCircle[(int)Circle];
 
         public override double GetResistSkill(Mobile m)
         {
-            var circle = (int)Circle;
-
-            var maxSkill = 1 + circle * 10 + (1 + circle / 6) * 25;
+            int circle = (int)Circle;
+            double maxSkill = 1 + circle * 10 + (1 + circle / 6) * 25;
 
             if (m.Skills.MagicResist.Value < maxSkill)
             {
@@ -60,40 +52,39 @@ namespace Server.Spells
 
         public virtual bool CheckResisted(Mobile target)
         {
-            var n = GetResistPercent(target) / 100.0;
+            double resistChance = GetResistPercent(target) / 100.0;
 
-            if (n <= 0.0)
+            if (resistChance <= 0.0)
             {
                 return false;
             }
 
-            if (n >= 1.0)
+            if (resistChance >= 1.0)
             {
                 return true;
             }
 
-            // Even though this calculation matches AOS+, we don't combine with GetResistSkills because of an assumption
-            // about how it is used.
-            var circle = (int)Circle;
-            var maxSkill = (1 + circle) * 10 + (1 + circle / 6) * 25;
+            int circle = (int)Circle;
+            double maxSkill = (1 + circle) * 10 + (1 + circle / 6) * 25;
 
             if (target.Skills.MagicResist.Value < maxSkill)
             {
                 target.CheckSkill(SkillName.MagicResist, 0.0, target.Skills.MagicResist.Cap);
             }
 
-            return n >= Utility.RandomDouble();
+            return resistChance >= Utility.RandomDouble();
         }
 
         public virtual double GetResistPercentForCircle(Mobile target, SpellCircle circle)
         {
-            var magicResist = target.Skills.MagicResist.Value;
-            var firstPercent = magicResist / 5.0;
-            var secondPercent = magicResist -
-                                ((Caster.Skills[CastSkill].Value - 20.0) / 5.0 + (1 + (int)circle) * 5.0);
+            double magicResist = target.Skills.MagicResist.Value;
+            double casterSkill = Caster.Skills[CastSkill].Value;
 
-            // Seems should be about half of what stratics says.
-            return (firstPercent > secondPercent ? firstPercent : secondPercent) / 2.0;
+            double firstPercent = magicResist / 5.0;
+            double secondPercent = magicResist - ((casterSkill - 20.0) / 5.0 + (1 + (int)circle) * 5.0);
+
+            // Uses the higher of the two, then halves it
+            return Math.Max(firstPercent, secondPercent) / 2.0;
         }
 
         public virtual double GetResistPercent(Mobile target) => GetResistPercentForCircle(target, Circle);
