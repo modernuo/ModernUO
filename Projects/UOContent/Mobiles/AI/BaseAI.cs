@@ -413,7 +413,7 @@ public abstract class BaseAI
                     // 501516: Excuse me?
                     
                     m_Mobile.Location = newLocation;
-                    WalkRandomInHome(4, 3, 1);
+                    WalkRandomInHome(3, 2, 1);
                 }
                 else
                 {
@@ -906,7 +906,7 @@ public abstract class BaseAI
         }
         else if (CheckMove() && CanMoveNow(out _) && !m_Mobile.CheckIdle())
         {
-            WalkRandomInHome(4, 3, 1);
+            WalkRandomInHome(3, 2, 1);
         }
     
         if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
@@ -953,7 +953,7 @@ public abstract class BaseAI
         }
         else
         {
-            WalkRandomInHome(4, 3, 1);
+            WalkRandomInHome(3, 2, 1);
         }
     }
 
@@ -1019,7 +1019,7 @@ public abstract class BaseAI
         {
             DebugSay("Focused target is missing.");
 
-            WalkRandomInHome(4, 3, 1);
+            WalkRandomInHome(3, 2, 1);
 
             return true;
         }
@@ -1214,7 +1214,7 @@ public abstract class BaseAI
     {
         DebugSay("I currently have no orders.");
     
-        WalkRandomInHome(4, 3, 1);
+        WalkRandomInHome(3, 2, 1);
         UpdateCombatantState();
     
         return true;
@@ -1770,7 +1770,7 @@ public abstract class BaseAI
             }
         }
 
-        WalkRandomInHome(4, 3, 1);
+        WalkRandomInHome(3, 2, 1);
     
         return true;
     }
@@ -2487,7 +2487,7 @@ public abstract class BaseAI
     
         if (combatant == null)
         {
-            WalkRandomInHome(4, 3, 1);
+            WalkRandomInHome(3, 2, 1);
         }
         else
         {
