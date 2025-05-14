@@ -1411,35 +1411,31 @@ public abstract class BaseAI
         if (currentDistance > m_Mobile.RangePerception)
         {
             DebugSay("Target is missing. Staying put.");
-
-            UpdateCombatantState();
+            return;
+        }
+    
+        DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
+    
+        if (currentDistance > 1)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.Hits < m_Mobile.HitsMax
+                ? TransformMoveDelay(m_Mobile)
+                : m_Mobile.ActiveSpeed;
+    
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
         }
         else
         {
-            DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
-            
-            var minFollowDist = 2;
-            var shouldRun = currentDistance > 6;
-            var maxFollowDist = shouldRun ? 4 : 3;
-            
-            if (currentDistance <= maxFollowDist + 1)
-            {
-                m_Mobile.CurrentSpeed = currentDistance <= minFollowDist ? 
-                    m_Mobile.PassiveSpeed : 
-                    (m_Mobile.PassiveSpeed + m_Mobile.ActiveSpeed) / 2;
-                    
-                m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
-            }
-            else
-            {
-                m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-                if (WalkMobileRange(m_Mobile.ControlTarget, minFollowDist,
-                    shouldRun, minFollowDist, maxFollowDist))
-                {
-                    UpdateCombatantState();
-                }
-            }
+            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
         }
+    
+        if (currentDistance > 1)
+        {
+            WalkMobileRange(m_Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
+        }
+    
+        UpdateCombatantState();
     }
 
     public virtual bool DoOrderFriend()
