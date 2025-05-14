@@ -8,21 +8,24 @@ namespace Server.Spells
         // Mana costs per spell circle
         public static int[] ManaPerCircle { get; set; } = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
-        // Minimum skill required per circle (scrolls use Circle+2)
-        public static double[] RequiredSkillPerCircle { get; set; } = { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
+        // Minimum skill required per circle (scrolls use Circle+2) for non-ML core (10 entries)
+        public static double[] SkillTable { get; set; } = { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
+        public static double[] SkillTableML { get; set; } = { 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
+
+        public static double[] RequiredSkill => Core.ML ? SkillTableML : SkillTable;
 
         // Skill check window for casting a spell successfully
         public static double SkillCheckWindow { get; set; } = 40.0;
 
         // Cast delay per tick (seconds)
-        public static double CastDelaySecondsPerTick { get; set; } = 1.0;
+        public static double CastDelay { get; set; } = 1.0;
 
         public MagerySpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info) { }
 
         public abstract SpellCircle Circle { get; }
 
         public override TimeSpan CastDelayBase =>
-            TimeSpan.FromSeconds((3 + (int)Circle) * CastDelaySecondsPerTick);
+            TimeSpan.FromSeconds((3 + (int)Circle) * CastDelay);
 
         public override bool ConsumeReagents() =>
             base.ConsumeReagents() || ArcaneGem.ConsumeCharges(Caster, Core.SE ? 1 : 1 + (int)Circle);
@@ -31,7 +34,7 @@ namespace Server.Spells
         {
             // Uses scrolls if present, otherwise use spellbook
             int skillIndex = (int)(Scroll == null ? Circle + 2 : Circle);
-            min = RequiredSkillPerCircle[skillIndex];
+            min = RequiredSkill[skillIndex];
             max = min + SkillCheckWindow;
         }
 
