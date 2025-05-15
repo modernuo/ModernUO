@@ -1029,6 +1029,12 @@ public abstract class BaseAI
         {
             return;
         }
+
+        if (m_Mobile.Combatant == m_Mobile.ControlMaster)
+        {
+            m_Mobile.Warmode = false;
+            m_Mobile.Combatant = null;
+        }
     
         m_Mobile.ControlMaster.RevealingAction();
     
@@ -2377,7 +2383,7 @@ public abstract class BaseAI
 
         return false;
     }
-    
+
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
         if (m_Mobile?.Deleted != false || m_Mobile.Map == null || acqType == FightMode.None)
