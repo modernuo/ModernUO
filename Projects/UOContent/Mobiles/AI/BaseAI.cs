@@ -1643,7 +1643,7 @@ public abstract class BaseAI
     {
         if (m_Mobile.IsDeadPet)
         {
-            return true;
+            return false;
         }
     
         if (IsInvalidControlTarget(m_Mobile.ControlTarget))
