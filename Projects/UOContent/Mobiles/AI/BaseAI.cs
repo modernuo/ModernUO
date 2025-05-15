@@ -1419,7 +1419,7 @@ public abstract class BaseAI
         if (currentDistance > 1)
         {
             m_Mobile.CurrentSpeed = m_Mobile.Hits < m_Mobile.HitsMax
-                ? TransformMoveDelay(m_Mobile)
+                ? BadlyHurtMoveDelay(m_Mobile)
                 : m_Mobile.ActiveSpeed;
     
             m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
@@ -2115,7 +2115,7 @@ public abstract class BaseAI
         return randomMove < 8 ? (Direction)randomMove : m_Mobile.Direction;
     }
 
-    public static double TransformMoveDelay(BaseCreature bc)
+    public static double BadlyHurtMoveDelay(BaseCreature bc)
     {
         if (bc == null)
         {
@@ -2192,7 +2192,7 @@ public abstract class BaseAI
     
         if (moveResult)
         {
-            TransformMoveDelay(m_Mobile);
+            BadlyHurtMoveDelay(m_Mobile);
             HandleCombatDelay();
             return MoveResult.Success;
         }
