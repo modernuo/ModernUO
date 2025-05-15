@@ -1394,13 +1394,18 @@ public abstract class BaseAI
     
         if (currentDistance > m_Mobile.RangePerception)
         {
-            DebugSay("Target is missing. Staying put.");
+            DebugSay("Master is missing. Standing by...");
             return;
         }
     
         DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
-    
-        if (currentDistance > 1)
+
+        if (currentDistance > 1 && m_Mobile.Hits >= m_Mobile.HitsMax)
+        {
+            m_Mobile.CurrentSpeed = 0.1;
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
+        }
+        else if (currentDistance > 1)
         {
             m_Mobile.CurrentSpeed = m_Mobile.Hits < m_Mobile.HitsMax
                 ? BadlyHurtMoveDelay(m_Mobile)
@@ -1418,8 +1423,6 @@ public abstract class BaseAI
         {
             WalkMobileRange(m_Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
         }
-    
-        UpdateCombatantState();
     }
 
     public virtual bool DoOrderFriend()
