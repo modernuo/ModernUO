@@ -1983,7 +1983,7 @@ public abstract class BaseAI
     
         if (moveResult)
         {
-            BadlyHurtMoveDelay(m_Mobile);
+            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
             CombatDelay();
             return MoveResult.Success;
         }
