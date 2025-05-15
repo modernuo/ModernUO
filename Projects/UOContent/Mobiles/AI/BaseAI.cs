@@ -1367,8 +1367,7 @@ public abstract class BaseAI
         if (CheckHerding())
         {
             DebugSay("I am being herded.");
-
-            return true;
+            return false;
         }
     
         if (m_Mobile.ControlTarget?.Deleted == false && m_Mobile.ControlTarget != m_Mobile)
@@ -1379,26 +1378,11 @@ public abstract class BaseAI
         {
             DebugSay("I have no one to follow.");
 
-            if (m_Mobile.ControlTarget != null)
-            {
-                m_Mobile.ControlTarget = null;
-            }
-            if (m_Mobile.Warmode)
-            {
-                m_Mobile.Warmode = false;
-            }
-            if (m_Mobile.Combatant != null)
-            {
-                m_Mobile.Combatant = null;
-            }
-            if (m_Mobile.FocusMob != null)
-            {
-                m_Mobile.FocusMob = null;
-            }
-            if (m_Mobile.ControlOrder != OrderType.None)
-            {
-                m_Mobile.ControlOrder = OrderType.None;
-            }
+            m_Mobile.ControlTarget = null;
+            m_Mobile.Warmode = false;
+            m_Mobile.Combatant = null;
+            m_Mobile.FocusMob = null;
+            m_Mobile.ControlOrder = OrderType.None;
         }
     
         return true;
