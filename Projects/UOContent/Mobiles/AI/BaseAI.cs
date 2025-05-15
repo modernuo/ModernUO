@@ -306,11 +306,18 @@ public abstract class BaseAI
         {
             return;
         }
-
+    
         if (m_Mobile.CheckControlChance(from))
         {
             m_Mobile.ControlTarget = target;
             m_Mobile.ControlOrder = order;
+    
+            if (order == OrderType.Attack)
+            {
+                m_Mobile.Combatant = target;
+                m_Mobile.FocusMob = target;
+                Action = ActionType.Combat;
+            }
         }
     }
 
