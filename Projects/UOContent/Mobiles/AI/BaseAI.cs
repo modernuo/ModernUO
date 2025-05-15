@@ -2109,13 +2109,13 @@ public abstract class BaseAI
             return 0.0;
         }
     
-        int stat = Core.HS ? bc.Stam : bc.Hits;
+        int statMin = Core.HS ? bc.Stam : bc.Hits;
         int statMax = Core.HS ? bc.StamMax : bc.HitsMax;
     
         if (!bc.IsDeadPet && (bc.ReduceSpeedWithDamage || bc.IsSubdued) 
-            && statMax > 0 && stat < statMax * 0.3)
+            && statMax > 0 && statMin < statMax * 0.3) // 30% hp
         {
-            return bc.CurrentSpeed + 0.1;
+            return bc.CurrentSpeed + 0.1; // 100ms
         }
     
         return bc.CurrentSpeed;
