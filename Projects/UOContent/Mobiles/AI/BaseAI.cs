@@ -962,7 +962,6 @@ public abstract class BaseAI
         if (Core.AOS && CheckHerding())
         {
             DebugSay("I am being herded.");
-
             return true;
         }
     
@@ -971,13 +970,20 @@ public abstract class BaseAI
         if (!IsValidCombatant(combatant))
         {
             DebugSay("My combatant is missing.");
-
             Action = ActionType.Wander;
-
             return true;
         }
     
         m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+
+        if (m_Mobile.Hits < m_Mobile.HitsMax)
+        {
+            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
+        }
+        else
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        }
     
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
