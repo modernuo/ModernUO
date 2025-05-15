@@ -314,9 +314,9 @@ public abstract class BaseAI
     
             if (order == OrderType.Attack)
             {
-                m_Mobile.Combatant = target;
                 m_Mobile.FocusMob = target;
-                Action = ActionType.Combat;
+                m_Mobile.Combatant = target;
+                Action = ActionType.Wander;
             }
         }
     }
@@ -788,18 +788,9 @@ public abstract class BaseAI
             {
                 DebugSay("I have been leashed! Returning home...");
 
-                if (m_Mobile.Warmode)
-                {
-                    m_Mobile.Warmode = false;
-                }
-                if (m_Mobile.Combatant != null)
-                {
-                    m_Mobile.Combatant = null;
-                }
-                if (m_Mobile.FocusMob != null)
-                {
-                    m_Mobile.FocusMob = null;
-                }
+                m_Mobile.FocusMob = null;
+                m_Mobile.Warmode = false;
+                m_Mobile.Combatant = null;
                 
                 WalkRandomInHome(0, 0, 48);
 
@@ -827,74 +818,38 @@ public abstract class BaseAI
     
     private void HandleWanderAction()
     {
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
     }
     
     private void HandleCombatAction()
     {
-        if (!m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = true;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = true;
     }
     
     private void HandleGuardAction()
     {
-        if (!m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = true;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = true;
+        m_Mobile.Combatant = null;
     }
     
     private void HandleFleeAction()
     {
-        if (!m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = true;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = true;
     }
     
     private void HandleInteractAction()
     {
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
+        m_Mobile.Warmode = false;
     }
     
     private void HandleBackoffAction()
     {
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
+        m_Mobile.Warmode = false;
     }
 
     public virtual bool DoActionWander()
@@ -1038,7 +993,6 @@ public abstract class BaseAI
         DebugSay("I am fleeing.");
         BadlyHurtMoveDelay(m_Mobile);
         WalkRandom(2, 4, 1);
-
         return true;
     }
     
@@ -1114,23 +1068,10 @@ public abstract class BaseAI
     
     private void HandlePassiveOrder()
     {
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
-        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
-        {
-            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-        }
-
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
+        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
     
@@ -1141,26 +1082,11 @@ public abstract class BaseAI
             return;
         }
 
-        if (!m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = true;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
-        if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
-        {
-            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-        }
-
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
         m_Mobile.Home = m_Mobile.ControlMaster.Location;
-
-        if (m_Mobile.ControlOrder != OrderType.None)
-        {
-            m_Mobile.ControlOrder = OrderType.None;
-        }
-
+        m_Mobile.ControlOrder = OrderType.None;
         m_Mobile.PlaySound(m_Mobile.GetAttackSound());
         m_Mobile.ControlMaster.SendLocalizedMessage(1049671, m_Mobile.Name);
         // 1049671: ~1_NAME~ is now guarding you.
@@ -1173,19 +1099,9 @@ public abstract class BaseAI
             return;
         }
 
-        if (!m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = true;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
-        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
-        {
-            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        }
-
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = true;
+        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
         m_Mobile.PlaySound(m_Mobile.GetAttackSound());
     }
     
@@ -1196,23 +1112,10 @@ public abstract class BaseAI
             return;
         }
 
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
-        if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
-        {
-            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        }
-
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
+        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
     }
 
@@ -1294,17 +1197,10 @@ public abstract class BaseAI
     
         DebugSay("I am ordered to drop my items.");
     
-        if (m_Mobile.ControlTarget != null)
-        {
-            m_Mobile.ControlTarget = null;
-        }
-        if (m_Mobile.ControlOrder != OrderType.None)
-        {
-            m_Mobile.ControlOrder = OrderType.None;
-        }
+        m_Mobile.ControlTarget = null;
+        m_Mobile.ControlOrder = OrderType.None;
 
         DropItems();
-    
         return true;
     }
 
@@ -1390,9 +1286,9 @@ public abstract class BaseAI
             DebugSay("I have no one to follow.");
 
             m_Mobile.ControlTarget = null;
+            m_Mobile.FocusMob = null;
             m_Mobile.Warmode = false;
             m_Mobile.Combatant = null;
-            m_Mobile.FocusMob = null;
             m_Mobile.ControlOrder = OrderType.None;
         }
     
@@ -1619,11 +1515,7 @@ public abstract class BaseAI
     
         m_Mobile.Combatant = combatant;
         m_Mobile.FocusMob = combatant;
-
-        if (Action != ActionType.Combat)
-        {
-            Action = ActionType.Combat;
-        }
+        Action = ActionType.Combat;
     
         // used to update spell caster combat states
         Think();
@@ -1731,9 +1623,9 @@ public abstract class BaseAI
         DebugSay("I have been released to the wild.");
 
         m_Mobile.ControlTarget = null;
+        m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
-        m_Mobile.FocusMob = null;
     
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
 
@@ -1788,22 +1680,10 @@ public abstract class BaseAI
     
     private void HandleStayOrder()
     {
-        if (m_Mobile.ControlTarget != null)
-        {
-            m_Mobile.ControlTarget = null;
-        }
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
+        m_Mobile.ControlTarget = null;
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
         
         m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
         m_Mobile.Home = m_Mobile.Location;
@@ -1834,30 +1714,15 @@ public abstract class BaseAI
     
     private void HandleStopOrder()
     {
-        if (m_Mobile.ControlTarget != null)
-        {
-            m_Mobile.ControlTarget = null;
-        }
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.FocusMob != null)
-        {
-            m_Mobile.FocusMob = null;
-        }
+        m_Mobile.ControlTarget = null;
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
 
         m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
         m_Mobile.Home = m_Mobile.Location;
             
-        if (m_Mobile.ControlOrder != OrderType.Stop)
-        {
-            m_Mobile.ControlOrder = OrderType.Stop;
-        }
+        m_Mobile.ControlOrder = OrderType.Stop;
     }
 
     public virtual bool DoOrderTransfer()
@@ -1923,17 +1788,9 @@ public abstract class BaseAI
             }
         }
 
-        if (m_Mobile.ControlTarget != null)
-        {
-            m_Mobile.ControlTarget = null;
-        }
-        if (m_Mobile.ControlOrder != OrderType.Stay)
-        {
-            m_Mobile.ControlOrder = OrderType.Stay;
-        }
-
+        m_Mobile.ControlTarget = null;
+        m_Mobile.ControlOrder = OrderType.Stay;
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-
         return true;
     }
     
