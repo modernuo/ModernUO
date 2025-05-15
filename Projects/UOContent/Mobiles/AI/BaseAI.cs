@@ -2525,15 +2525,6 @@ public abstract class BaseAI
         return false;
     }
 
-    /*
-     *  Walk at range distance from mobile
-     *
-     *  iSteps : Number of steps
-     *  bRun   : Do we run
-     *  iWantDistMin : The minimum distance we want to be
-     *  iWantDistMax : The maximum distance we want to be
-     *
-     */
     public virtual bool WalkMobileRange(Mobile m, int iSteps, bool run, int iWantDistMin, int iWantDistMax)
     {
         if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || m == null)
@@ -2558,8 +2549,7 @@ public abstract class BaseAI
             }
         }
 
-        return m_Mobile.GetDistanceToSqrt(m) is var dist && 
-               dist >= iWantDistMin && dist <= iWantDistMax;
+        return m_Mobile.GetDistanceToSqrt(m) is var dist && dist >= iWantDistMin && dist <= iWantDistMax;
     }
 
     private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
@@ -2597,17 +2587,7 @@ public abstract class BaseAI
 
         return false;
     }
-
-    /*
-     * Here we check to acquire a target from our surrounding
-     *
-     *  iRange : The range
-     *  acqType : A type of acquire we want (closest, strongest, etc)
-     *  bPlayerOnly : Don't bother with other creatures or NPCs, want a player
-     *  bFacFriend : Check people in my faction
-     *  bFacFoe : Check people in other factions
-     *
-     */
+    
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
         if (m_Mobile?.Deleted != false || m_Mobile.Map == null || acqType == FightMode.None)
