@@ -1400,18 +1400,15 @@ public abstract class BaseAI
     
         DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
 
-        if (currentDistance > 1 && m_Mobile.Hits >= m_Mobile.HitsMax)
+        if (m_Mobile.Hits >= m_Mobile.HitsMax)
         {
             m_Mobile.CurrentSpeed = 0.1;
             m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
         }
-        else if (currentDistance > 1)
+        else if (m_Mobile.Hits < m_Mobile.HitsMax)
         {
-            m_Mobile.CurrentSpeed = m_Mobile.Hits < m_Mobile.HitsMax
-                ? BadlyHurtMoveDelay(m_Mobile)
-                : m_Mobile.ActiveSpeed;
-    
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
+            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile)
+                != m_Mobile.CurrentSpeed ? BadlyHurtMoveDelay(m_Mobile) : m_Mobile.ActiveSpeed;
         }
         else
         {
