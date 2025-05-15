@@ -1953,50 +1953,49 @@ public abstract class BaseAI
     {
         if (Core.Now < m_Mobile.BardEndTime)
         {
-            HandlePacifiedState();
+            DebugSay("I am pacified. Can not fight.");
+
+            m_Mobile.Warmode = false;
+            m_Mobile.Combatant = null;
         }
         else
         {
-            HandleEndOfPacification();
+            DebugSay("I am free from pacification.");
+    
+            m_Mobile.BardPacified = false;
         }
     
         return true;
     }
     
-    private void HandlePacifiedState()
-    {
-        DebugSay("I am pacified. Can not fight.");
-    
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-    }
-    
-    private void HandleEndOfPacification()
-    {
-       DebugSay("I am free from pacification.");
-    
-        m_Mobile.BardPacified = false;
-    }
-
     public virtual bool DoBardProvoked()
     {
         if (Core.Now >= m_Mobile.BardEndTime && IsProvokerLost())
         {
-            HandleLostProvoker();
+            DebugSay("Provoker missing.");
+    
+            m_Mobile.BardProvoked = false;
+            m_Mobile.BardMaster = null;
+            m_Mobile.BardTarget = null;
+            m_Mobile.Warmode = false;
+            m_Mobile.Combatant = null;
         }
         else if (IsProvokeTargetLost())
         {
-            HandleLostProvokeTarget();
+            DebugSay("Provoke target missing.");
+    
+            m_Mobile.BardProvoked = false;
+            m_Mobile.BardMaster = null;
+            m_Mobile.BardTarget = null;
+            m_Mobile.Warmode = false;
+            m_Mobile.Combatant = null;
         }
         else
         {
-            HandleProvokeCombat();
+            m_Mobile.Combatant = m_Mobile.BardTarget;
+            Action = ActionType.Combat;
+            m_Mobile.OnThink();
+            Think();
         }
     
         return true;
@@ -2014,72 +2013,6 @@ public abstract class BaseAI
         return m_Mobile.BardTarget?.Deleted != false ||
                m_Mobile.BardTarget.Map != m_Mobile.Map ||
                m_Mobile.GetDistanceToSqrt(m_Mobile.BardTarget) > m_Mobile.RangePerception;
-    }
-    
-    private void HandleLostProvoker()
-    {
-        DebugSay("Provoker missing.");
-    
-        if (!m_Mobile.BardProvoked)
-        {
-            m_Mobile.BardProvoked = false;
-        }
-        if (m_Mobile.BardMaster != null)
-        {
-            m_Mobile.BardMaster = null;
-        }
-        if (m_Mobile.BardTarget != null)
-        {
-            m_Mobile.BardTarget = null;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-    }
-    
-    private void HandleLostProvokeTarget()
-    {
-        DebugSay("Provoke target missing.");
-    
-        if (m_Mobile.BardProvoked)
-        {
-            m_Mobile.BardProvoked = false;
-        }
-        if (m_Mobile.BardMaster != null)
-        {
-            m_Mobile.BardMaster = null;
-        }
-        if (m_Mobile.BardTarget != null)
-        {
-            m_Mobile.BardTarget = null;
-        }
-        if (m_Mobile.Combatant != null)
-        {
-            m_Mobile.Combatant = null;
-        }
-        if (m_Mobile.Warmode)
-        {
-            m_Mobile.Warmode = false;
-        }
-    }
-    
-    private void HandleProvokeCombat()
-    {
-        m_Mobile.Combatant = m_Mobile.BardTarget;
-        
-        if (Action != ActionType.Combat)
-        {
-            Action = ActionType.Combat;
-        }
-    
-        m_Mobile.OnThink();
-        
-        Think();
     }
 
     public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
