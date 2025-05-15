@@ -1373,7 +1373,7 @@ public abstract class BaseAI
     
         if (m_Mobile.ControlTarget?.Deleted == false && m_Mobile.ControlTarget != m_Mobile)
         {
-            HandleFollowTarget();
+            FollowTarget();
         }
         else
         {
@@ -1404,7 +1404,7 @@ public abstract class BaseAI
         return true;
     }
     
-    private void HandleFollowTarget()
+    private void FollowTarget()
     {
         var currentDistance = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.ControlTarget);
     
