@@ -2193,7 +2193,7 @@ public abstract class BaseAI
         if (moveResult)
         {
             BadlyHurtMoveDelay(m_Mobile);
-            HandleCombatDelay();
+            CombatDelay();
             return MoveResult.Success;
         }
     
@@ -2206,7 +2206,7 @@ public abstract class BaseAI
         return HandleBlockedMovement(d, mobDirection);
     }
 
-    private void HandleCombatDelay()  
+    private void CombatDelay()  
     {
         if (m_Mobile == null)
         {
