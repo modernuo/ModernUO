@@ -792,7 +792,7 @@ public abstract class BaseAI
                 m_Mobile.Warmode = false;
                 m_Mobile.Combatant = null;
                 
-                WalkRandomInHome(0, 0, 48);
+                WalkRandomInHome(1, 1, 1);
 
                 return true;
             }
