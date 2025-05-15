@@ -1667,7 +1667,7 @@ public abstract class BaseAI
     
     private void HandleInvalidControlTarget()
     {
-        DebugSay("Target missing. Either dead, hidden, or out of range.");
+        DebugSay("Target is either dead, hidden, or out of range.");
     
         if (Core.AOS)
         {
