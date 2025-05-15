@@ -2467,19 +2467,9 @@ public abstract class BaseAI
             return false;
         }
     
-        var combatant = m_Mobile.Combatant;
-    
-        if (combatant == null)
+        if (m_Mobile.Combatant == null)
         {
             WalkRandomInHome(3, 2, 1);
-        }
-        else
-        {
-            var direction = combatant.GetDirectionTo(m_Mobile);
-            direction = (Direction)((int)direction + Utility.RandomMinMax(-1, +1));
-    
-            m_Mobile.Direction = direction;
-            m_Mobile.Move(direction);
         }
     
         return true;
