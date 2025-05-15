@@ -33,7 +33,7 @@ namespace Server.Spells
         public override void GetCastSkills(out double min, out double max)
         {
             // Uses scrolls if present, otherwise use spellbook
-            int skillIndex = (int)(Scroll == null ? Circle + 2 : Circle);
+            var skillIndex = (int)(Scroll == null ? Circle + 2 : Circle);
             min = RequiredSkill[skillIndex];
             max = min + SkillCheckWindow;
         }
@@ -42,8 +42,8 @@ namespace Server.Spells
 
         public override double GetResistSkill(Mobile m)
         {
-            int circle = (int)Circle;
-            double maxSkill = 1 + circle * 10 + (1 + circle / 6) * 25;
+            var circle = (int)Circle;
+            var maxSkill = 1 + circle * 10 + (1 + circle / 6) * 25;
 
             if (m.Skills.MagicResist.Value < maxSkill)
             {
@@ -55,7 +55,7 @@ namespace Server.Spells
 
         public virtual bool CheckResisted(Mobile target)
         {
-            double resistChance = GetResistPercent(target) / 100.0;
+            var resistChance = GetResistPercent(target) / 100.0;
 
             if (resistChance <= 0.0)
             {
@@ -67,8 +67,8 @@ namespace Server.Spells
                 return true;
             }
 
-            int circle = (int)Circle;
-            double maxSkill = (1 + circle) * 10 + (1 + circle / 6) * 25;
+            var circle = (int)Circle;
+            var maxSkill = (1 + circle) * 10 + (1 + circle / 6) * 25;
 
             if (target.Skills.MagicResist.Value < maxSkill)
             {
@@ -80,11 +80,11 @@ namespace Server.Spells
 
         public virtual double GetResistPercentForCircle(Mobile target, SpellCircle circle)
         {
-            double magicResist = target.Skills.MagicResist.Value;
-            double casterSkill = Caster.Skills[CastSkill].Value;
+            var magicResist = target.Skills.MagicResist.Value;
+            var casterSkill = Caster.Skills[CastSkill].Value;
 
-            double firstPercent = magicResist / 5.0;
-            double secondPercent = magicResist - ((casterSkill - 20.0) / 5.0 + (1 + (int)circle) * 5.0);
+            var firstPercent = magicResist / 5.0;
+            var secondPercent = magicResist - ((casterSkill - 20.0) / 5.0 + (1 + (int)circle) * 5.0);
 
             // Uses the higher of the two, then halves it
             return Math.Max(firstPercent, secondPercent) / 2.0;
