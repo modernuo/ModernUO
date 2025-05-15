@@ -1926,7 +1926,7 @@ public abstract class BaseAI
     }
 
     // this needs to match ai interval
-    private const int MovementTimingTolerance = 50;
+    private const int MovementTimingTolerance = 100;
 
     public bool CanMoveNow(out long delay)
     {
@@ -2740,9 +2740,7 @@ public abstract class BaseAI
     
     public virtual void OnCurrentSpeedChanged()
     {
-        // changed to 50ms, because at 8ms, AI updates 125 times a second
-        // at 50ms, AI updates 20 times a second which is better for performance
-        m_Timer.Interval = TimeSpan.FromMilliseconds(Math.Max(50, m_Mobile.CurrentSpeed * 1000));
+        m_Timer.Interval = TimeSpan.FromMilliseconds(Math.Max(30, m_Mobile.CurrentSpeed * 1000));
     }
 
     private sealed class InternalEntry : ContextMenuEntry
