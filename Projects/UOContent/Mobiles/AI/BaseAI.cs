@@ -991,7 +991,7 @@ public abstract class BaseAI
         }
     
         DebugSay("I am fleeing.");
-        BadlyHurtMoveDelay(m_Mobile);
+        m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
         WalkRandom(2, 4, 1);
         return true;
     }
