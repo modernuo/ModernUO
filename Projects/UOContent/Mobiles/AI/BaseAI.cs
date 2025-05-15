@@ -1367,7 +1367,7 @@ public abstract class BaseAI
         if (CheckHerding())
         {
             DebugSay("I am being herded.");
-            return false;
+            return true;
         }
     
         if (m_Mobile.ControlTarget?.Deleted == false && m_Mobile.ControlTarget != m_Mobile)
