@@ -299,7 +299,7 @@ public abstract class BaseAI
         }
     }
 
-    public virtual void EndPickTarget(Mobile from, Mobile target, OrderType order)
+    public virtual void PickKillTarget(Mobile from, Mobile target, OrderType order)
     {
         if (!IsValidTarget(from, order) || 
             (order == OrderType.Attack && !CanAttackTarget(from, target)))
