@@ -1018,15 +1018,13 @@ public abstract class BaseAI
         if (!IsValidFocusMob(from))
         {
             DebugSay("Focused target is missing.");
-
             WalkRandomInHome(3, 2, 1);
-
             return true;
         }
     
         DebugSay("I am fleeing.");
-
-        WalkRandom(2, 1, 1);
+        BadlyHurtMoveDelay(m_Mobile);
+        WalkRandom(2, 4, 1);
 
         return true;
     }
