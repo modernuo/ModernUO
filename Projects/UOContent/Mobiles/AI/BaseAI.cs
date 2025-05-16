@@ -784,7 +784,7 @@ public abstract class BaseAI
         {
             double distanceFromHome = m_Mobile.GetDistanceToSqrt(m_Mobile.Home);
 
-            if (distanceFromHome > 48)
+            if (distanceFromHome > m_Mobile.RangeHome)
             {
                 DebugSay("I have been leashed! Returning home...");
 
