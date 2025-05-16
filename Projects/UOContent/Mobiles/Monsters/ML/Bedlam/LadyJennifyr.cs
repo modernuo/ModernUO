@@ -1,14 +1,10 @@
 using ModernUO.Serialization;
-using System;
-using System.Collections.Generic;
 
 namespace Server.Mobiles;
 
 [SerializationGenerator(0, false)]
 public partial class LadyJennifyr : SkeletalKnight
 {
-    private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
-
     [Constructible]
     public LadyJennifyr()
     {
@@ -72,30 +68,4 @@ public partial class LadyJennifyr : SkeletalKnight
     ];
 
     public override MonsterAbility[] GetMonsterAbilities() => _abilities;
-
-    private class ExpireTimer : Timer
-    {
-        private readonly Mobile _mobile;
-        private readonly ResistanceMod _mod;
-
-        public ExpireTimer(Mobile m, ResistanceMod mod) : base(TimeSpan.FromSeconds(10))
-        {
-            _mobile = m;
-            _mod = mod;
-        }
-
-        public void DoExpire()
-        {
-            _mobile.RemoveResistanceMod(_mod);
-
-            Stop();
-        }
-
-        protected override void OnTick()
-        {
-            _mobile.SendLocalizedMessage(1070834); // Your resistance to fire attacks has returned.
-            DoExpire();
-            _table.Remove(_mobile);
-        }
-    }
 }
