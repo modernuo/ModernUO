@@ -10,7 +10,7 @@ namespace Server.Spells
 
         // Minimum skill required per circle (scrolls use Circle+2) for non-ML core (10 entries)
         public static double[] SkillTable { get; set; } = { -50.0, -30.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
-        public static double[] SkillTableML { get; set; } = { 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0 };
+        public static double[] SkillTableML { get; set; } = { -46.0, -32.0, -18.0, -4.0, 10.0, 24.0, 38.0, 52.0, 66.0, 80.0 };
 
         public static double[] RequiredSkill => Core.ML ? SkillTableML : SkillTable;
 
