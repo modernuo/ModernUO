@@ -13,8 +13,7 @@ public enum MonsterAbilityTrigger : ulong
     GiveSpellDamage     = 0x0000000000000010,
     CombatAction        = 0x0000000000000020,
     Death               = 0x0000000000000040,
-    Movement            = 0x0000000000000080,
-    SpecialAttack       = 0x0000000000000100, // Triggers instead of a regular attack
+    Movement            = 0x0000000000000080
 
     GiveDamage = GiveMeleeDamage | GiveSpellDamage,
     TakeDamage = TakeMeleeDamage | TakeSpellDamage

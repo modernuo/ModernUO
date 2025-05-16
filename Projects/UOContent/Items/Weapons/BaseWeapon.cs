@@ -890,6 +890,11 @@ public abstract partial class BaseWeapon
 
             if (attacker is BaseCreature bc)
             {
+                if (bc.TriggerAbility(MonsterAbilityTrigger.CombatAction, defender))
+                {
+                    return GetDelay(attacker);
+                }
+
                 // Only change direction if they are not a player.
                 attacker.Direction = attacker.GetDirectionTo(defender);
                 var ab = bc.GetWeaponAbility();
@@ -1996,11 +2001,6 @@ public abstract partial class BaseWeapon
                           move?.IgnoreArmor(attacker) == true ||
                           Bladeweave.BladeWeaving(attacker, out var bladeweavingAbi) &&
                           bladeweavingAbi is ArmorIgnore;
-
-        if (bcAtt?.TriggerAbilitySpecialAttack(defender) != true)
-        {
-            return;
-        }
 
         var damageGiven = AOS.Damage(
             defender,

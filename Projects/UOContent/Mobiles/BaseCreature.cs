@@ -1313,28 +1313,6 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual bool TriggerAbilitySpecialAttack(Mobile target)
-        {
-            var abilities = GetMonsterAbilities();
-
-            if (abilities == null)
-            {
-                return false;
-            }
-
-            for (var i = 0; i < abilities.Length; i++)
-            {
-                var ability = abilities[i];
-                if (ability.CanTrigger(this, MonsterAbilityTrigger.SpecialAttack))
-                {
-                    ability.Trigger(MonsterAbilityTrigger.SpecialAttack, this, target);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public virtual WeaponAbility GetWeaponAbility() => null;
 
         public virtual bool IsEnemy(Mobile m)

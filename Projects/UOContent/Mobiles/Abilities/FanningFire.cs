@@ -5,7 +5,7 @@ namespace Server.Mobiles;
 public class FanningFire : MonsterAbilitySingleTargetDoT
 {
     public override MonsterAbilityType AbilityType => MonsterAbilityType.FanningFire;
-    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.SpecialAttack;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.CombatAction;
 
     public FanningFire(double chanceToTrigger, int fireResistMod, int minDamage, int maxDamage)
     {
