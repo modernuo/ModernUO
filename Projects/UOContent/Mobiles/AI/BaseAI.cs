@@ -780,24 +780,6 @@ public abstract class BaseAI
             return false;
         }
 
-        if (m_Mobile.Home != Point3D.Zero)
-        {
-            double distanceFromHome = m_Mobile.GetDistanceToSqrt(m_Mobile.Home);
-
-            if (distanceFromHome > m_Mobile.RangeHome)
-            {
-                DebugSay("I have been leashed! Returning home...");
-
-                m_Mobile.FocusMob = null;
-                m_Mobile.Warmode = false;
-                m_Mobile.Combatant = null;
-                
-                WalkRandomInHome(1, 1, 1);
-
-                return true;
-            }
-        }
-
         if (CheckFlee())
         {
             return true;
