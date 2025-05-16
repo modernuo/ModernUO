@@ -1,4 +1,5 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
 using Server.Mobiles;
 
 namespace Server.Engines.Virtues;

@@ -1,15 +1,14 @@
 ﻿using System;
-using Server.Random;
 using WeightedMonsterAbility = Server.Random.WeightedValue<Server.Mobiles.MonsterAbility>;
 
 namespace Server.Mobiles;
 
 public class MonsterAbilityGroup : MonsterAbility
 {
-    private WeightedMonsterAbility[] _weightedAbilities;
-    private WeightedMonsterAbility[] _availableToTrigger;
+    private readonly WeightedMonsterAbility[] _weightedAbilities;
+    private readonly WeightedMonsterAbility[] _availableToTrigger;
+    private readonly MonsterAbilityTrigger _triggers;
     private int _availableToTriggerCount;
-    private MonsterAbilityTrigger _triggers;
 
     public MonsterAbilityGroup(params WeightedMonsterAbility[] weightedAbilities)
     {
@@ -18,8 +17,7 @@ public class MonsterAbilityGroup : MonsterAbility
 
         for (var i = 0; i < _weightedAbilities.Length; i++)
         {
-            var weightedAbility = _weightedAbilities[i];
-            _triggers |= weightedAbility.Value.AbilityTrigger;
+            _triggers |= _weightedAbilities[i].Value.AbilityTrigger;
         }
     }
 
@@ -66,7 +64,7 @@ public class MonsterAbilityGroup : MonsterAbility
         for (var i = 0; i < _weightedAbilities.Length; i++)
         {
             var weightedAbility = _weightedAbilities[i];
-            if (weightedAbility.Value.WillTrigger(trigger) && weightedAbility.Value.CanTrigger(source, trigger))
+            if (weightedAbility.Value.CanTrigger(source, trigger))
             {
                 _availableToTrigger[_availableToTriggerCount++] = weightedAbility;
             }
@@ -83,7 +81,7 @@ public class MonsterAbilityGroup : MonsterAbility
             return;
         }
 
-        var slice = new ReadOnlySpan<WeightedValue<MonsterAbility>>(_availableToTrigger, 0, _availableToTriggerCount);
+        var slice = new ReadOnlySpan<WeightedMonsterAbility>(_availableToTrigger, 0, _availableToTriggerCount);
         var chosenAbility = slice.RandomWeightedElement().Value;
 
         // Just in case?
