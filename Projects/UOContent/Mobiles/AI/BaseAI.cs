@@ -1178,9 +1178,7 @@ public abstract class BaseAI
     {
         DebugSay("I am ordered to come.");
     
-        var shouldRun = currentDistance > 5;
-    
-        if (WalkMobileRange(m_Mobile.ControlMaster, 1, shouldRun, 0, 1))
+        if (WalkMobileRange(m_Mobile.ControlMaster, 1, currentDistance > 2, 1, 2))
         {
             UpdateCombatantState();
         }
