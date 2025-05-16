@@ -1350,7 +1350,7 @@ public abstract partial class BaseWeapon
             theirValue = Math.Max(0.1, defValue + 50.0);
         }
 
-        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;;
+        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;
 
         if (Core.AOS && chance < 0.02)
         {
@@ -1996,6 +1996,11 @@ public abstract partial class BaseWeapon
                           move?.IgnoreArmor(attacker) == true ||
                           Bladeweave.BladeWeaving(attacker, out var bladeweavingAbi) &&
                           bladeweavingAbi is ArmorIgnore;
+
+        if (bcAtt?.TriggerAbilitySpecialAttack(defender) != true)
+        {
+            return;
+        }
 
         var damageGiven = AOS.Damage(
             defender,
