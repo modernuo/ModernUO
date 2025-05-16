@@ -1718,7 +1718,10 @@ public abstract class BaseAI
         m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
         m_Mobile.Home = m_Mobile.Location;
             
-        m_Mobile.ControlOrder = OrderType.Stop;
+        if (m_Mobile.ControlOrder != OrderType.Stop)
+        {
+            m_Mobile.ControlOrder = OrderType.Stop;
+        }
     }
 
     public virtual bool DoOrderTransfer()
