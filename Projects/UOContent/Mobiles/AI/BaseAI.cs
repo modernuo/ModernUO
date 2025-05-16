@@ -914,7 +914,11 @@ public abstract class BaseAI
         if (!IsValidCombatant(combatant))
         {
             DebugSay("My combatant is missing.");
-            Action = ActionType.Wander;
+
+            m_Mobile.FocusMob = null;
+            m_Mobile.Warmode = false;
+            m_Mobile.Combatant = null;
+            WalkRandomInHome(1, 1, 1);
             return true;
         }
     
@@ -939,8 +943,14 @@ public abstract class BaseAI
     
     private bool IsValidCombatant(Mobile combatant)
     {
-        return combatant != null && !combatant.Deleted && combatant.Map == m_Mobile.Map
-            && combatant.Alive && !combatant.IsDeadBondedPet;
+        return combatant != null
+            && !combatant.Deleted
+            && combatant.Map == m_Mobile.Map
+            && combatant.Alive
+            && (!(combatant is BaseCreature bc) || !bc.IsDeadPet)
+            && combatant.AccessLevel == AccessLevel.Player
+            && m_Mobile.CanSee(combatant)
+            && m_Mobile.InRange(combatant, m_Mobile.RangePerception);
     }
 
     public virtual bool DoActionGuard()
