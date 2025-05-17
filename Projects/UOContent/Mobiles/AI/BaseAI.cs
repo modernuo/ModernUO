@@ -908,7 +908,7 @@ public abstract class BaseAI
     
         if (!IsValidCombatant(combatant))
         {
-            DebugSay("My combatant is missing.");
+            DebugSay("My combatant is missing. Returning home...");
 
             m_Mobile.FocusMob = null;
             m_Mobile.Warmode = false;
@@ -917,13 +917,19 @@ public abstract class BaseAI
             return true;
         }
 
+        if (m_Mobile.Hits >= m_Mobile.HitsMax)
+        {
+            m_Mobile.CurrentSpeed = 0.1;
+        }
+        
         if (m_Mobile.Hits < m_Mobile.HitsMax)
         {
-            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
-        }
-        else
-        {
             m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        }
+        
+        if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
+        {
+            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
         }
     
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
@@ -1301,16 +1307,17 @@ public abstract class BaseAI
         {
             m_Mobile.CurrentSpeed = 0.1;
         }
-        else if (m_Mobile.Hits < m_Mobile.HitsMax)
+        
+        if (m_Mobile.Hits < m_Mobile.HitsMax)
         {
-            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile)
-                != m_Mobile.CurrentSpeed ? BadlyHurtMoveDelay(m_Mobile) : m_Mobile.ActiveSpeed;
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
         }
-        else
+        
+        if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
         {
-            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
         }
-    
+
         if (currentDistance > 1)
         {
             WalkMobileRange(m_Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
