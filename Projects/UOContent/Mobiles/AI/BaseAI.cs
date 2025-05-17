@@ -853,11 +853,6 @@ public abstract class BaseAI
             WalkRandomInHome(3, 2, 1);
         }
     
-        if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive && !m_Mobile.Combatant.IsDeadBondedPet)
-        {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
-        }
-    
         return true;
     }
 
@@ -921,8 +916,6 @@ public abstract class BaseAI
             WalkRandomInHome(1, 1, 1);
             return true;
         }
-    
-        m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
 
         if (m_Mobile.Hits < m_Mobile.HitsMax)
         {
@@ -1137,7 +1130,6 @@ public abstract class BaseAI
         if (IsValidCombatant(m_Mobile.Combatant))
         {
             m_Mobile.Warmode = true;
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
         }
         else
         {
@@ -1306,7 +1298,6 @@ public abstract class BaseAI
         if (m_Mobile.Hits >= m_Mobile.HitsMax)
         {
             m_Mobile.CurrentSpeed = 0.1;
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
         }
         else if (m_Mobile.Hits < m_Mobile.HitsMax)
         {
@@ -1316,7 +1307,6 @@ public abstract class BaseAI
         else
         {
             m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlTarget);
         }
     
         if (currentDistance > 1)
@@ -1680,10 +1670,8 @@ public abstract class BaseAI
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
-        
-        m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
-        m_Mobile.Home = m_Mobile.Location;
 
+        m_Mobile.Home = m_Mobile.Location;
         WalkRandomInHome(3, 2, 1);
     }
 
@@ -1714,8 +1702,6 @@ public abstract class BaseAI
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
-
-        m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.ControlMaster);
         m_Mobile.Home = m_Mobile.Location;
             
         if (m_Mobile.ControlOrder != OrderType.Stop)
