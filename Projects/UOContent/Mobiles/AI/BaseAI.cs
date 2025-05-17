@@ -1017,6 +1017,8 @@ public abstract class BaseAI
 
         if (m_Mobile.Combatant == m_Mobile.ControlMaster)
         {
+            m_Mobile.ControlTarget = null;
+            m_Mobile.FocusMob = null;
             m_Mobile.Warmode = false;
             m_Mobile.Combatant = null;
         }
