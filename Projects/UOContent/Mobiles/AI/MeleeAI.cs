@@ -179,6 +179,8 @@ public class MeleeAI : BaseAI
                 m_Mobile.DebugSay("I am stronger now, so I will continue fighting");
             }
 
+            m_Mobile.PlaySound(m_Mobile.GetAttackSound());
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
             Action = ActionType.Combat;
         }
         else
