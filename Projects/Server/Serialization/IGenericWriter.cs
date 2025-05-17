@@ -163,14 +163,21 @@ public interface IGenericWriter
 
     public void Write(BitArray bitArray)
     {
-        var bytesLength = (bitArray.Length - 1 + (1 << 3)) >>> 3;
-        var arrayBuffer = ArrayPool<byte>.Shared.Rent(bytesLength);
+        int bitLength = bitArray.Length;
+        int byteLength = (bitLength + 7) / 8;
 
-        WriteEncodedInt(bytesLength);
-        bitArray.CopyTo(arrayBuffer, 0);
+        WriteEncodedInt(bitLength);
 
-        Write(arrayBuffer.AsSpan(0, bytesLength));
-        ArrayPool<byte>.Shared.Return(arrayBuffer);
+        var arrayBuffer = ArrayPool<byte>.Shared.Rent(byteLength);
+        try
+        {
+            bitArray.CopyTo(arrayBuffer, 0);
+            Write(arrayBuffer.AsSpan(0, byteLength));
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(arrayBuffer);
+        }
     }
 
     void Write(TextDefinition def)

@@ -40,12 +40,12 @@ public interface IFirewallEntry : IComparable<IFirewallEntry>
             return 1;
         }
 
-        if (MaxIpAddress < other.MaxIpAddress)
+        if (MaxIpAddress > other.MaxIpAddress)
         {
             return -1;
         }
 
-        if (MaxIpAddress > other.MaxIpAddress)
+        if (MaxIpAddress < other.MaxIpAddress)
         {
             return 1;
         }

@@ -257,11 +257,12 @@ public partial class WreathDeed : Item
 
         if (itemID > 0)
         {
-            Item addon = new WreathAddon(Hue);
+            var addon = new WreathAddon(Hue)
+            {
+                ItemID = itemID
+            };
 
-            addon.ItemID = itemID;
             addon.MoveToWorld(loc, from.Map);
-
             house.Addons.Add(addon);
             Delete();
         }

@@ -4,7 +4,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class EquipmentPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+public class EquipmentPacketTests
     {
         [Theory]
         [InlineData(null, false)]

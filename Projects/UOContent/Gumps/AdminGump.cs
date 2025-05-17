@@ -170,7 +170,7 @@ namespace Server.Gumps
                         AddLabel(150, 150, LabelHue, banned.ToString());
 
                         AddLabel(20, 170, LabelHue, "Firewalled:");
-                        AddLabel(150, 170, LabelHue, Firewall.FirewallSet.Count.ToString());
+                        AddLabel(150, 170, LabelHue, Firewall.FirewallSetCount.ToString());
 
                         AddLabel(20, 190, LabelHue, "Clients:");
                         AddLabel(150, 190, LabelHue, NetState.Instances.Count.ToString());
@@ -1165,7 +1165,16 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        m_List ??= Firewall.FirewallSet.ToList<object>();
+                        if (m_List == null)
+                        {
+                            Firewall.ReadFirewallSet(firewallSet =>
+                            {
+                                list = new List<object>(firewallSet.Count);
+                                list.AddRange(firewallSet);
+                            });
+
+                            m_List = list;
+                        }
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
@@ -1178,7 +1187,7 @@ namespace Server.Gumps
                             AddImage(375, 122, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < m_List.Count)
+                        if ((listPage + 1) * 12 < m_List!.Count)
                         {
                             AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -3470,19 +3479,22 @@ namespace Server.Gumps
 
                                     if (string.IsNullOrEmpty(match))
                                     {
-                                        notice = "You must enter a username to search.";
+                                        notice = "You must enter an IP to search.";
                                     }
                                     else
                                     {
-                                        foreach (var check in Firewall.FirewallSet)
+                                        Firewall.ReadFirewallSet(firewallSet =>
                                         {
-                                            var checkStr = check.ToString();
-
-                                            if (checkStr.ContainsOrdinal(match))
+                                            foreach (var check in firewallSet)
                                             {
-                                                results.Add(check);
+                                                var checkStr = check.ToString();
+
+                                                if (checkStr.ContainsOrdinal(match))
+                                                {
+                                                    results.Add(check);
+                                                }
                                             }
-                                        }
+                                        });
                                     }
 
                                     if (results.Count == 1)

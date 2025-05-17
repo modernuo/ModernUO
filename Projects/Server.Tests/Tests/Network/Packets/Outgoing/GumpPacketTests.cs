@@ -3,8 +3,8 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
-[Collection("Sequential Tests")]
-public class GumpPacketTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class GumpPacketTests
 {
     [Theory]
     [InlineData(100, 10)]

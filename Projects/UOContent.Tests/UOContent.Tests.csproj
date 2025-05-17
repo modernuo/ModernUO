@@ -10,7 +10,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <ProjectReference Include="..\Application\Application.csproj" />
+        <ProjectReference Include="..\Server\Server.csproj" />
+        <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
     </ItemGroup>

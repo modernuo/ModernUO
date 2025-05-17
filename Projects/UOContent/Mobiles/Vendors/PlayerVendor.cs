@@ -227,9 +227,10 @@ public partial class PlayerVendor : Mobile
 
     public virtual void InitOutfit()
     {
-        Item item = new FancyShirt(Utility.RandomNeutralHue());
-        item.Layer = Layer.InnerTorso;
-        AddItem(item);
+        AddItem(new FancyShirt(Utility.RandomNeutralHue())
+        {
+            Layer = Layer.InnerTorso
+        });
         AddItem(new LongPants(Utility.RandomNeutralHue()));
         AddItem(new BodySash(Utility.RandomNeutralHue()));
         AddItem(new Boots(Utility.RandomNeutralHue()));
@@ -1232,9 +1233,9 @@ public partial class PlayerVendor : Mobile
                 return;
             }
 
-            var name = text.Trim();
+            var name = text.AsSpan().Trim();
 
-            if (!NameVerification.Validate(name, 1, 20, true, true, true, 0, NameVerification.Empty))
+            if (!NameVerification.ValidateVendorName(name))
             {
                 m_Vendor.SayTo(from, "That name is unacceptable.");
                 return;
@@ -1261,9 +1262,9 @@ public partial class PlayerVendor : Mobile
                 return;
             }
 
-            var name = text.Trim();
+            var name = text.AsSpan().Trim();
 
-            if (!NameVerification.Validate(name, 1, 20, true, true, true, 0, NameVerification.Empty))
+            if (!NameVerification.ValidateVendorName(name))
             {
                 m_Vendor.SayTo(from, "That name is unacceptable.");
                 return;

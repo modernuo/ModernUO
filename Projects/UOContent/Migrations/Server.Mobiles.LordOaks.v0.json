@@ -4,7 +4,7 @@
   "properties": [
     {
       "name": "Queen",
-      "type": "Server.Mobiles.BaseCreature",
+      "type": "Server.Mobiles.Silvani",
       "rule": "SerializableInterfaceMigrationRule"
     },
     {
