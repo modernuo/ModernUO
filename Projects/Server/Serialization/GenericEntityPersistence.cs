@@ -176,12 +176,12 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     /**
      * Legacy ReadTypes for backward compatibility with old saves that still have a tdb file
      */
-    private unsafe Dictionary<int, ConstructorInfo> ReadTypes(string savePath)
+    private unsafe Dictionary<ulong, ConstructorInfo> ReadTypes(string savePath)
     {
         string typesPath = Path.Combine(savePath, Name, $"{Name}.tdb");
         if (!File.Exists(typesPath))
         {
-            return null;
+            return [];
         }
 
         Type[] ctorArguments = [typeof(Serial)];
@@ -194,13 +194,13 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         var dataReader = new UnmanagedDataReader(ptr, accessor.Length);
 
         var count = dataReader.ReadInt();
-        var types = new Dictionary<int, ConstructorInfo>(count);
+        var types = new Dictionary<ulong, ConstructorInfo>(count);
 
         for (var i = 0; i < count; ++i)
         {
             // Legacy didn't have the null flag check
             var typeName = dataReader.ReadStringRaw();
-            types.Add(i, GetConstructorFor(typeName, AssemblyHandler.FindTypeByName(typeName), ctorArguments));
+            types.Add((ulong)i, GetConstructorFor(typeName, AssemblyHandler.FindTypeByName(typeName), ctorArguments));
         }
 
         accessor.SafeMemoryMappedViewHandle.ReleasePointer();
@@ -258,14 +258,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         var version = dataReader.ReadInt();
 
-        Dictionary<int, ConstructorInfo> ctors = [];
+        var ctors = version < 2 ? ReadTypes(Path.GetDirectoryName(filePath)) : [];
 
-        if (version < 2)
-        {
-            ctors = ReadTypes(Path.GetDirectoryName(filePath));
-        }
-
-        if (typesDb == null && ctors == null)
+        if (typesDb == null && ctors.Count == 0)
         {
             return;
         }
@@ -278,7 +273,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         for (var i = 0; i < count; ++i)
         {
-            ConstructorInfo ctor;
+            ulong hash;
             // Version 2 & 3 with SerializedTypes.db
             if (version >= 2)
             {
@@ -288,13 +283,16 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     throw new Exception($"Invalid type flag, expected 2 but received {flag}.");
                 }
 
-                var hash = dataReader.ReadULong();
-                typesDb!.TryGetValue(hash, out var typeName);
-                ctor = GetConstructorFor(typeName, AssemblyHandler.FindTypeByHash(hash), ctorArguments);
+                hash = dataReader.ReadULong();
             }
             else
             {
-                ctor = ctors?[dataReader.ReadInt()];
+                hash = (ulong)dataReader.ReadInt(); // Legacy RunUO tdb index
+            }
+
+            if (!ctors.TryGetValue(hash, out var ctor) && typesDb?.TryGetValue(hash, out var typeName) == true)
+            {
+                ctors[hash] = ctor = GetConstructorFor(typeName, AssemblyHandler.FindTypeByHash(hash), ctorArguments);
             }
 
             Serial serial = (Serial)dataReader.ReadUInt();

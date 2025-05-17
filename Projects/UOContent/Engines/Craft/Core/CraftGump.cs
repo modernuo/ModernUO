@@ -148,11 +148,11 @@ public class CraftGump : DynamicGump
 
             if (nameNumber > 0)
             {
-                builder.AddHtmlLocalized(50, 365, 250, 18, nameNumber, resourceCount.ToString(), LabelColor);
+                builder.AddHtmlLocalized(50, 365, 250, 18, nameNumber, $"{resourceCount}", LabelColor);
             }
             else
             {
-                builder.AddLabel(50, 362, LabelHue, $"{nameString} ({resourceCount} Available)");
+                builder.AddLabel(50, 365, LabelHue, $"{nameString} ({resourceCount} Available)");
             }
         }
         // ****************************************
@@ -193,7 +193,7 @@ public class CraftGump : DynamicGump
 
             if (nameNumber > 0)
             {
-                builder.AddHtmlLocalized(50, 385, 250, 18, nameNumber, resourceCount.ToString(), LabelColor);
+                builder.AddHtmlLocalized(50, 385, 250, 18, nameNumber, $"{resourceCount}", LabelColor);
             }
             else
             {
@@ -279,13 +279,13 @@ public class CraftGump : DynamicGump
                     250,
                     18,
                     subResource.Name.Number,
-                    resourceCount.ToString(),
+                    $"{resourceCount}",
                     LabelColor
                 );
             }
             else
             {
-                builder.AddLabel(255, 60 + index * 20, LabelHue, $"{subResource.Name.String} ({resourceCount})");
+                builder.AddLabel(255, 63 + index * 20, LabelHue, $"{subResource.Name.String} ({resourceCount})");
             }
         }
     }
@@ -334,7 +334,7 @@ public class CraftGump : DynamicGump
                 }
                 else
                 {
-                    builder.AddLabel(255, 60 + index * 20, LabelHue, craftItem.NameString);
+                    builder.AddLabel(255, 63 + index * 20, LabelHue, craftItem.NameString);
                 }
 
                 builder.AddButton(480, 60 + index * 20, 4011, 4012, GetButtonID(4, i));
@@ -388,7 +388,7 @@ public class CraftGump : DynamicGump
             }
             else
             {
-                builder.AddLabel(255, 60 + index * 20, LabelHue, craftItem.NameString);
+                builder.AddLabel(255, 63 + index * 20, LabelHue, craftItem.NameString);
             }
 
             builder.AddButton(480, 60 + index * 20, 4011, 4012, GetButtonID(2, i));
@@ -414,7 +414,7 @@ public class CraftGump : DynamicGump
             }
             else
             {
-                builder.AddLabel(50, 80 + i * 20, LabelHue, craftGroup.NameString);
+                builder.AddLabel(50, 83 + i * 20, LabelHue, craftGroup.NameString);
             }
         }
     }

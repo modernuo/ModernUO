@@ -147,7 +147,7 @@ public partial class PublicMoongate : Item
 
         foreach (var entry in list.Entries)
         {
-            Item item = new PublicMoongate();
+            var item = new PublicMoongate();
 
             item.MoveToWorld(entry.Location, list.Map);
 

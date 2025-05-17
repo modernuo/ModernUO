@@ -424,7 +424,7 @@ public static class IncomingAccountPackets
         if (state.Seed == 0)
         {
             state.LogInfo("Invalid client detected, disconnecting");
-            state.Disconnect("Duplicate seed sent.");
+            state.Disconnect("Invalid client detected");
             return;
         }
 

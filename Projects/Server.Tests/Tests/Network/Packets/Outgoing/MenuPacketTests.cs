@@ -27,8 +27,8 @@ namespace Server.Tests.Network
         }
     }
 
-    [Collection("Sequential Tests")]
-    public class MenuPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+    public class MenuPacketTests
     {
         [Fact]
         public void TestDisplayItemListMenu()

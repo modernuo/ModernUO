@@ -220,7 +220,7 @@ public partial class Chyloth : BaseQuester
                         AngryAt = null;
                     }
 
-                    member.SendGump(new ChylothPartyGump(from, member));
+                    member.SendGump(new ChylothPartyGump(from));
                 }
             }
 
@@ -244,82 +244,89 @@ public partial class Chyloth : BaseQuester
     }
 }
 
-public class ChylothPartyGump : Gump
+public class ChylothPartyGump : StaticGump<ChylothPartyGump>
 {
     private readonly Mobile _leader;
-    private readonly Mobile _member;
 
-    public ChylothPartyGump(Mobile leader, Mobile member) : base(150, 50)
+    public override bool Singleton => true;
+
+    public ChylothPartyGump(Mobile leader) : base(150, 50) => _leader = leader;
+
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        _leader = leader;
-        _member = member;
+        builder.SetNoClose();
 
-        Closable = false;
+        builder.AddPage();
 
-        AddPage(0);
+        builder.AddImage(0, 0, 3600);
 
-        AddImage(0, 0, 3600);
+        builder.AddImageTiled(0, 14, 15, 200, 3603);
+        builder.AddImageTiled(380, 14, 14, 200, 3605);
+        builder.AddImage(0, 201, 3606);
+        builder.AddImageTiled(15, 201, 370, 16, 3607);
+        builder.AddImageTiled(15, 0, 370, 16, 3601);
+        builder.AddImage(380, 0, 3602);
+        builder.AddImage(380, 201, 3608);
+        builder.AddImageTiled(15, 15, 365, 190, 2624);
 
-        AddImageTiled(0, 14, 15, 200, 3603);
-        AddImageTiled(380, 14, 14, 200, 3605);
-        AddImage(0, 201, 3606);
-        AddImageTiled(15, 201, 370, 16, 3607);
-        AddImageTiled(15, 0, 370, 16, 3601);
-        AddImage(380, 0, 3602);
-        AddImage(380, 201, 3608);
-        AddImageTiled(15, 15, 365, 190, 2624);
+        builder.AddRadio(30, 140, 9727, 9730, true, 1);
+        builder.AddHtmlLocalized(65, 145, 300, 25, 1050050, 0x7FFF); // Yes, let's go!
 
-        AddRadio(30, 140, 9727, 9730, true, 1);
-        AddHtmlLocalized(65, 145, 300, 25, 1050050, 0x7FFF); // Yes, let's go!
-
-        AddRadio(30, 175, 9727, 9730, false, 0);
-        AddHtmlLocalized(65, 178, 300, 25, 1050049, 0x7FFF); // No thanks, I'd rather stay here.
+        builder.AddRadio(30, 175, 9727, 9730, false, 0);
+        builder.AddHtmlLocalized(65, 178, 300, 25, 1050049, 0x7FFF); // No thanks, I'd rather stay here.
 
         // Another player has paid Chyloth for your passage across lake Mortis:
-        AddHtmlLocalized(30, 20, 360, 35, 1050047, 0x7FFF);
+        builder.AddHtmlLocalized(30, 20, 360, 35, 1050047, 0x7FFF);
 
-        AddHtmlLocalized(30, 105, 345, 40, 1050048, 0x5B2D); // Do you wish to accept their invitation at this time?
+        builder.AddHtmlLocalized(30, 105, 345, 40, 1050048, 0x5B2D); // Do you wish to accept their invitation at this time?
 
-        AddImage(65, 72, 5605);
+        builder.AddImage(65, 72, 5605);
 
-        AddImageTiled(80, 90, 200, 1, 9107);
-        AddImageTiled(95, 92, 200, 1, 9157);
+        builder.AddImageTiled(80, 90, 200, 1, 9107);
+        builder.AddImageTiled(95, 92, 200, 1, 9157);
 
-        AddLabel(90, 70, 1645, leader.Name);
+        builder.AddLabelPlaceholder(90, 70, 1645, "leader");
 
-        AddButton(290, 175, 247, 248, 2);
+        builder.AddButton(290, 175, 247, 248, 2);
 
-        AddImageTiled(15, 14, 365, 1, 9107);
-        AddImageTiled(380, 14, 1, 190, 9105);
-        AddImageTiled(15, 205, 365, 1, 9107);
-        AddImageTiled(15, 14, 1, 190, 9105);
-        AddImageTiled(0, 0, 395, 1, 9157);
-        AddImageTiled(394, 0, 1, 217, 9155);
-        AddImageTiled(0, 216, 395, 1, 9157);
-        AddImageTiled(0, 0, 1, 217, 9155);
+        builder.AddImageTiled(15, 14, 365, 1, 9107);
+        builder.AddImageTiled(380, 14, 1, 190, 9105);
+        builder.AddImageTiled(15, 205, 365, 1, 9107);
+        builder.AddImageTiled(15, 14, 1, 190, 9105);
+        builder.AddImageTiled(0, 0, 395, 1, 9157);
+        builder.AddImageTiled(394, 0, 1, 217, 9155);
+        builder.AddImageTiled(0, 216, 395, 1, 9157);
+        builder.AddImageTiled(0, 0, 1, 217, 9155);
+    }
+
+    protected override void BuildStrings(ref GumpStringsBuilder builder)
+    {
+        builder.SetStringSlot("leader", _leader.Name);
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
+        var member = sender.Mobile;
+
         if (info.ButtonID == 2 && info.IsSwitched(1))
         {
-            if (_member.Region.IsPartOf("Doom"))
+            if (member.Region.IsPartOf("Doom"))
             {
                 // ~1_NAME~ has accepted your invitation to cross lake Mortis.
-                _leader.SendLocalizedMessage(1050054, _member.Name);
+                _leader.SendLocalizedMessage(1050054, member.Name);
 
-                Chyloth.TeleportToFerry(_member);
+                Chyloth.TeleportToFerry(member);
             }
             else
             {
-                _member.SendLocalizedMessage(1050051); // The invitation has been revoked.
+                member.SendLocalizedMessage(1050051); // The invitation has been revoked.
             }
         }
         else
         {
-            _member.SendLocalizedMessage(1050052); // You have declined their invitation.
+            member.SendLocalizedMessage(1050052); // You have declined their invitation.
             // ~1_NAME~ has declined your invitation to cross lake Mortis.
-            _leader.SendLocalizedMessage(1050053, _member.Name);
+            _leader.SendLocalizedMessage(1050053, member.Name);
         }
     }
 }

@@ -11,7 +11,8 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-public class BoatPacketTests : IClassFixture<ServerFixture>
+[Collection("Sequential UOContent Tests")]
+public class BoatPacketTests
 {
     [Theory]
     [InlineData(Direction.West, 10, 100, 200)]

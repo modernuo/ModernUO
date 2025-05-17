@@ -30,6 +30,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
     public static readonly ClientVersion Version6000 = new("6.0.0.0");
     public static readonly ClientVersion Version6000KR = new("66.55.38"); // KR 2.44.0.15 (First release)
     public static readonly ClientVersion Version6017 = new("6.0.1.7");
+    public static readonly ClientVersion Version6050 = new("6.0.5.0");
     public static readonly ClientVersion Version60142 = new("6.0.14.2");
     public static readonly ClientVersion Version60142KR = new("66.55.53"); // KR 2.59.0.2
     public static readonly ClientVersion Version7000 = new("7.0.0.0");

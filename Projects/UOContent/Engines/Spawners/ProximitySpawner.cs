@@ -66,7 +66,7 @@ public partial class ProximitySpawner : Spawner
     [Constructible(AccessLevel.Developer)]
     public ProximitySpawner(
         int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params string[] spawnedNames
+        params ReadOnlySpan<string> spawnedNames
     ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
     {
     }
@@ -74,7 +74,7 @@ public partial class ProximitySpawner : Spawner
     [Constructible(AccessLevel.Developer)]
     public ProximitySpawner(
         int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, int triggerRange,
-        TextDefinition spawnMessage, bool instantFlag, params string[] spawnedNames
+        TextDefinition spawnMessage, bool instantFlag, params ReadOnlySpan<string> spawnedNames
     ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
     {
         TriggerRange = triggerRange;
