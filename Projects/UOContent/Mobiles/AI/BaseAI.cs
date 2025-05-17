@@ -965,17 +965,30 @@ public abstract class BaseAI
     public virtual bool DoActionFlee()
     {
         var from = m_Mobile.FocusMob;
-    
+
+        bool IsValidFocusMob(Mobile focusMob)
+        {
+            return focusMob != null
+                && !focusMob.Deleted
+                && focusMob.Map == m_Mobile.Map
+                && focusMob.Alive
+                && (!(focusMob is BaseCreature bc) || !bc.IsDeadPet)
+                && focusMob.AccessLevel == AccessLevel.Player
+                && m_Mobile.CanSee(focusMob)
+                && m_Mobile.InRange(focusMob, m_Mobile.RangePerception);
+        }
+
         if (!IsValidFocusMob(from))
         {
-            DebugSay("Focused target is missing.");
+            DebugSay("Focus target is missing.");
             WalkRandomInHome(3, 2, 1);
             return true;
         }
-    
-        DebugSay("I am fleeing.");
+
+        DebugSay("I am fleeing!");
         m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
-        WalkRandom(2, 4, 1);
+        var direction = from.GetDirectionTo(m_Mobile);
+        DoMove(direction);
         return true;
     }
     
