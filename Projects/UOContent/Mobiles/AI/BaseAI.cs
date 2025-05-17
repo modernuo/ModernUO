@@ -1243,6 +1243,7 @@ public abstract class BaseAI
         }
     
         m_Mobile.TargetLocation = null;
+        
         return false;
     }
     
@@ -1868,11 +1869,11 @@ public abstract class BaseAI
 
     public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
     {
-        if (ShouldNotMove(chanceToNotMove))
+        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0)
         {
             return;
         }
-    
+
         for (var i = 0; i < steps; i++)
         {
             if (Utility.Random(1 + chanceToNotMove) == 0)
@@ -1881,11 +1882,6 @@ public abstract class BaseAI
                 DoMove(direction);
             }
         }
-    }
-    
-    private bool ShouldNotMove(int chanceToNotMove)
-    {
-        return m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0;
     }
     
     private Direction GetRandomDirection(int chanceToDir)
@@ -1923,13 +1919,10 @@ public abstract class BaseAI
         return bc.CurrentSpeed;
     }
 
-    // this needs to match ai interval
-    private const int MovementTimingTolerance = 100;
-
     public bool CanMoveNow(out long delay)
     {
         delay = NextMove - Core.TickCount;
-        return delay <= MovementTimingTolerance;
+        return delay <= 100; // ms
     }
 
     public virtual bool CheckMove() 
@@ -1949,7 +1942,8 @@ public abstract class BaseAI
     
     private static bool IsMoveSuccessful(MoveResult res, bool badStateOk)
     {
-        return res is MoveResult.Success or MoveResult.SuccessAutoTurn ||(badStateOk && res == MoveResult.BadState);
+        return res is MoveResult.Success or MoveResult.SuccessAutoTurn 
+            || (badStateOk && res == MoveResult.BadState);
     }
 
     public virtual MoveResult DoMoveImpl(Direction d, bool badStateOk)
