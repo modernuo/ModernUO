@@ -2158,9 +2158,10 @@ public partial class Landy : BaseCreature
         AddItem(new ShortPants(Utility.RandomYellowHue()));
         AddItem(new Tunic(Utility.RandomYellowHue()));
 
-        Item gloves = new LeafGloves();
-        gloves.Hue = Utility.RandomYellowHue();
-        AddItem(gloves);
+        AddItem(new LeafGloves
+        {
+            Hue = Utility.RandomYellowHue()
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -2720,11 +2721,10 @@ public partial class Tholef : BaseCreature
         AddItem(new ShortPants(0x28C));
         AddItem(new Shirt(0x28C));
 
-        Item item;
-
-        item = new LeafArms();
-        item.Hue = 0x28C;
-        AddItem(item);
+        AddItem(new LeafArms
+        {
+            Hue = 0x28C
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -2807,11 +2807,10 @@ public partial class Waelian : BaseCreature
         AddItem(new LongPants(0x340));
         AddItem(new GemmedCirclet());
 
-        Item item;
-
-        item = new LeafChest();
-        item.Hue = 0x344;
-        AddItem(item);
+        AddItem(new LeafChest
+        {
+            Hue = 0x344
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -3057,11 +3056,10 @@ public partial class Lohn : BaseCreature
         AddItem(new SmithHammer());
         AddItem(new GemmedCirclet());
 
-        Item item;
-
-        item = new LeafChest();
-        item.Hue = 0x359;
-        AddItem(item);
+        AddItem(new LeafChest
+        {
+            Hue = 0x359
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -3405,11 +3403,10 @@ public partial class ElderVicaie : BaseCreature
         AddItem(new ElvenBoots());
         AddItem(new Tunic(0x732));
 
-        Item item;
-
-        item = new LeafLegs();
-        item.Hue = 0x3B2;
-        AddItem(item);
+        AddItem(new LeafLegs
+        {
+            Hue = 0x3B2
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -3573,11 +3570,10 @@ public partial class Bolaevin : BaseCreature
         AddItem(new LeafChest());
         AddItem(new LeafArms());
 
-        Item item;
-
-        item = new LeafLegs();
-        item.Hue = 0x1BB;
-        AddItem(item);
+        AddItem(new LeafLegs
+        {
+            Hue = 0x1BB
+        });
     }
 
     public override bool IsInvulnerable => true;

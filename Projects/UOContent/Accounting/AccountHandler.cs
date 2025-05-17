@@ -1,6 +1,8 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.CompilerServices;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Engines.CharacterCreation;
@@ -17,13 +19,13 @@ public static class AccountHandler
 
     private static int MaxAccountsPerIP;
     private static bool AutoAccountCreation;
-    private static bool RestrictDeletion = !TestCenter.Enabled;
-    private static TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
+    private static readonly bool RestrictDeletion = !TestCenter.Enabled;
+    private static readonly TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
     private static bool PasswordCommandEnabled;
 
     private static Dictionary<IPAddress, int> m_IPTable;
 
-    private static char[] m_ForbiddenChars = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
+    private static readonly SearchValues<char> ForbiddenChars = SearchValues.Create("<>:\"/\\|?*");
 
     public static AccessLevel LockdownLevel { get; set; }
 
@@ -240,41 +242,24 @@ public static class AccountHandler
     public static bool CanCreate(IPAddress ip) =>
         !IPTable.TryGetValue(ip, out var result) || result < MaxAccountsPerIP;
 
-    private static bool IsForbiddenChar(char c)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValidUsername(ReadOnlySpan<char> username) =>
+        username.Length > 0 &&
+        // Usernames must not start with a space, end with a space, or end with a period
+        !username.StartsWith(' ') && !username.EndsWith(' ') && !username.EndsWith('.') &&
+        // Usernames must only contain characters [0x20 -> 0x7E], and not contain any forbidden characters
+        !username.ContainsAnyExceptInRange((char)0x20, (char)0x7E) &&
+        !username.ContainsAny(ForbiddenChars);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsValidPassword(ReadOnlySpan<char> password) =>
+        password.Length > 0 &&
+        // Passwords must have characters [0x20 -> 0x7E]
+        !password.ContainsAnyExceptInRange((char)0x20, (char)0x7E);
+
+    private static Account CreateAccount(NetState state, string username, string password)
     {
-        for (var i = 0; i < m_ForbiddenChars.Length; ++i)
-        {
-            if (c == m_ForbiddenChars[i])
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static Account CreateAccount(NetState state, string un, string pw)
-    {
-        if (un.Length == 0 || pw.Length == 0)
-        {
-            return null;
-        }
-
-        var isSafe = !(un.StartsWithOrdinal(" ") ||
-                       un.EndsWithOrdinal(" ") ||
-                       un.EndsWithOrdinal("."));
-
-        for (var i = 0; isSafe && i < un.Length; ++i)
-        {
-            isSafe = un[i] >= 0x20 && un[i] < 0x7F && !IsForbiddenChar(un[i]);
-        }
-
-        for (var i = 0; isSafe && i < pw.Length; ++i)
-        {
-            isSafe = pw[i] >= 0x20 && pw[i] < 0x7F;
-        }
-
-        if (!isSafe)
+        if (!IsValidUsername(username) || !IsValidPassword(password))
         {
             return null;
         }
@@ -284,18 +269,16 @@ public static class AccountHandler
             logger.Information(
                 $"Login: {{NetState}} Account '{{Username}}' not created, ip already has {{AccountCount}} account{(MaxAccountsPerIP == 1 ? "" : "s")}.",
                 state,
-                un,
+                username,
                 MaxAccountsPerIP
             );
 
             return null;
         }
 
-        logger.Information("Login: {NetState}: Creating new account '{Username}'", state, un);
+        logger.Information("Login: {NetState}: Creating new account '{Username}'", state, username);
 
-        var a = new Account(un, pw);
-
-        return a;
+        return new Account(username, password);
     }
 
     public static void EventSink_AccountLogin(AccountLoginEventArgs e)

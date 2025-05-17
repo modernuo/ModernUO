@@ -39,8 +39,8 @@
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
         <PackageReference Include="LibDeflate.Bindings" Version="1.0.2.120" />
-        <PackageReference Include="MailKit" Version="4.10.0" />
-        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.2" />
+        <PackageReference Include="MailKit" Version="4.11.0" />
+        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.4" />
         <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
         <PackageReference Include="Argon2.Bindings" Version="1.16.1" />
         <PackageReference Include="ModernUO.CodeGeneratedEvents.Annotations" Version="1.0.0" />

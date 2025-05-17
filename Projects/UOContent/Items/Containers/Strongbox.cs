@@ -101,7 +101,7 @@ public partial class StrongBox : BaseContainer, IChoppable
 
     public Container ConvertToStandardContainer()
     {
-        Container metalBox = new MetalBox();
+        var metalBox = new MetalBox();
         var subItems = new List<Item>(Items);
 
         foreach (var subItem in subItems)

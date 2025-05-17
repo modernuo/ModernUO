@@ -343,7 +343,7 @@ public partial class Harrower : BaseCreature
 
                 for (var i = 0; i < _tentacles.Count; ++i)
                 {
-                    Mobile m = _tentacles[i];
+                    var m = _tentacles[i];
 
                     if (!m.Deleted)
                     {

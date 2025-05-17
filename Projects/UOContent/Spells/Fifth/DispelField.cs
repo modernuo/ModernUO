@@ -22,6 +22,8 @@ namespace Server.Spells.Fifth
 
         public override SpellCircle Circle => SpellCircle.Fifth;
 
+        public int TargetRange => Core.T2A ? 15 : 18;
+
         public void Target(Item item)
         {
             if (!item.GetType().IsDefined(typeof(DispellableFieldAttribute), false))

@@ -78,7 +78,7 @@ public partial class Dryad : BaseQuester
                 {
                     FocusTo(player);
 
-                    Item fertileDirt = new QuestFertileDirt();
+                    var fertileDirt = new QuestFertileDirt();
 
                     if (!player.PlaceInBackpack(fertileDirt))
                     {
@@ -111,7 +111,7 @@ public partial class Dryad : BaseQuester
 
         FocusTo(from);
 
-        Item fertileDirt = new QuestFertileDirt();
+        var fertileDirt = new QuestFertileDirt();
 
         if (!player.PlaceInBackpack(fertileDirt))
         {

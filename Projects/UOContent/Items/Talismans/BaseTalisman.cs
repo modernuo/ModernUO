@@ -260,8 +260,7 @@ public partial class BaseTalisman : Item, IAosItem
     [SerializableFieldSaveFlag(14)]
     public bool ShouldSerializeSlayer() => _slayer != TalismanSlayerName.None;
 
-    private Mobile _creature;
-
+    private BaseCreature _creature;
 
     private TimerExecutionToken _timerToken;
 

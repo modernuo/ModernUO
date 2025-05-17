@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.Logging;
 using Server.Mobiles;
@@ -75,6 +76,9 @@ public class VirtueSystem : GenericPersistence
         }
     }
 
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
+    public static void OnPlayerDeleted(PlayerMobile pm) => _playerVirtues.Remove(pm);
+
     public override void Serialize(IGenericWriter writer)
     {
         writer.WriteEncodedInt(0); // version
@@ -98,7 +102,7 @@ public class VirtueSystem : GenericPersistence
             var virtues = new VirtueContext();
             virtues.Deserialize(reader);
 
-            if (virtues.IsUsed())
+            if (player != null && virtues.IsUsed())
             {
                 _playerVirtues.Add(player, virtues);
             }

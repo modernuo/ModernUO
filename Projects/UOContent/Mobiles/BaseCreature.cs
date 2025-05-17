@@ -449,6 +449,8 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsPrisoner { get; set; }
 
+        public virtual bool FollowsAcquireRules => true;
+
         protected DateTime SummonEnd { get; set; }
 
         public virtual Faction FactionAllegiance => null;
@@ -1215,7 +1217,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     ability.Trigger(trigger, this, defender);
                     triggered = true;
@@ -1237,7 +1239,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     ability.Move(this, d);
                 }
@@ -1256,7 +1258,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveMeleeDamage) != 0)
                     {
@@ -1297,7 +1299,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveSpellDamage) != 0)
                     {
@@ -3262,7 +3264,7 @@ namespace Server.Mobiles
         }
 
         [GeneratedEvent(nameof(CreatureDeathEvent))]
-        public static partial void CreatureDeathEvent(Mobile m);
+        public static partial void CreatureDeathEvent(BaseCreature bc);
 
         public override void OnDeath(Container c)
         {
@@ -3453,8 +3455,13 @@ namespace Server.Mobiles
             CreatureDeathEvent(this);
         }
 
+        [GeneratedEvent(nameof(CreatureDeletedEvent))]
+        public static partial void CreatureDeletedEvent(BaseCreature bc);
+
         public override void OnDelete()
         {
+            CreatureDeletedEvent(this);
+
             var m = m_ControlMaster;
             SetControlMaster(null);
 
@@ -4940,7 +4947,7 @@ namespace Server.Mobiles
         {
             if (Backpack?.Items.Count > 0)
             {
-                Backpack b = new CreatureBackpack(Name);
+                var b = new CreatureBackpack(Name);
 
                 var list = new List<Item>(Backpack.Items);
                 foreach (var item in list)

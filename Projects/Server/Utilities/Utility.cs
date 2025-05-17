@@ -1468,4 +1468,15 @@ public static partial class Utility
         table.Remove(key);
         table.Add(key, value);
     }
+
+    public static DateTime LocalToUtc(this DateTime local, TimeZoneInfo tz)
+    {
+        if (tz.IsAmbiguousTime(local))
+        {
+            var offsets = tz.GetAmbiguousTimeOffsets(local);
+            return DateTime.SpecifyKind(local - offsets[1], DateTimeKind.Utc);
+        }
+
+        return DateTime.SpecifyKind(local - tz.GetUtcOffset(local), DateTimeKind.Utc);
+    }
 }

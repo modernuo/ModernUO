@@ -49,7 +49,7 @@ public partial class EminosKatanaChest : WoodenChest
             {
                 if (EminosUndertakingQuest.HasLostEminosKatana(from))
                 {
-                    Item katana = new EminosKatana();
+                    var katana = new EminosKatana();
 
                     if (!player.PlaceInBackpack(katana))
                     {
@@ -64,7 +64,7 @@ public partial class EminosKatanaChest : WoodenChest
 
                     if (obj?.Completed == false)
                     {
-                        Item katana = new EminosKatana();
+                        var katana = new EminosKatana();
 
                         if (player.PlaceInBackpack(katana))
                         {
