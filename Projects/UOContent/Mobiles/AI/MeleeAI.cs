@@ -81,7 +81,11 @@ public class MeleeAI : BaseAI
 
         if (!MoveTo(combatant, true, m_Mobile.RangeFight))
         {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+            if (m_Mobile.InRange(combatant, 1))
+            {
+                m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+            }
+            
             if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
                 if (m_Mobile.Debug)
