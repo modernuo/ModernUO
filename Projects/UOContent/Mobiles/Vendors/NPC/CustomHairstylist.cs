@@ -306,9 +306,9 @@ public class ChangeHairHueGump : DynamicGump
 
             for (var j = 0; j < hues.Length; ++j)
             {
-                var page = j % 16;
-                builder.AddLabel(278 + j / 16 * 80, 52 + page * 17, hues[j] - 1, name);
-                builder.AddRadio(260 + j / 16 * 80, 52 + page * 17, 210, 211, false, j * _entries.Length + i);
+                var page = Math.DivRem(j, 16, out var index);
+                builder.AddLabel(278 + page * 80, 52 + index * 17, hues[j] - 1, name);
+                builder.AddRadio(260 + page * 80, 52 + index * 17, 210, 211, false, j * _entries.Length + i);
             }
         }
     }
@@ -436,22 +436,19 @@ public class ChangeHairstyleGump : DynamicGump
         var tableHeight = (_entries.Length + tableWidth - (_facialHair ? 1 : 2)) / tableWidth;
         const int offsetWidth = 123;
         var offsetHeight = _facialHair ? 70 : 65;
+        var tableWidthOffset = 81 + tableWidth * offsetWidth;
+        var tableHeightOffset = 45 + tableHeight * offsetHeight;
 
         builder.AddPage();
 
-        builder.AddBackground(0, 0, 81 + tableWidth * offsetWidth, 105 + tableHeight * offsetHeight, 2600);
+        builder.AddBackground(0, 0, tableWidthOffset, 60 + tableHeightOffset, 2600);
 
-        builder.AddButton(45, 45 + tableHeight * offsetHeight, 4005, 4007, 1);
-        builder.AddHtmlLocalized(77, 45 + tableHeight * offsetHeight, 90, 35, 1006044); // Ok
+        builder.AddButton(45, tableHeightOffset, 4005, 4007, 1);
+        builder.AddHtmlLocalized(77, tableHeightOffset, 90, 35, 1006044); // Ok
 
-        builder.AddButton(81 + tableWidth * offsetWidth - 180, 45 + tableHeight * offsetHeight, 4005, 4007, 0);
-        builder.AddHtmlLocalized(
-            81 + tableWidth * offsetWidth - 148,
-            45 + tableHeight * offsetHeight,
-            90,
-            35,
-            1006045 // Cancel
-        );
+        builder.AddButton(tableWidthOffset - 180, tableHeightOffset, 4005, 4007, 0);
+        // Cancel
+        builder.AddHtmlLocalized(tableWidthOffset - 148, tableHeightOffset, 90, 35, 1006045);
 
         if (!_facialHair)
         {
@@ -467,16 +464,13 @@ public class ChangeHairstyleGump : DynamicGump
             var yTable = Math.DivRem(i, tableWidth, out var xTable);
             var xOffset = xTable * offsetWidth;
             var yOffset = yTable * offsetHeight;
+            var entry = _entries[i];
 
-            if (_entries[i].GumpID != 0)
+            if (entry.GumpID != 0)
             {
                 builder.AddRadio(40 + xOffset, 70 + yOffset, 208, 209, false, i);
                 builder.AddBackground(87 + xOffset, 50 + yOffset, 50, 50, 2620);
-                builder.AddImage(
-                    87 + xOffset + _entries[i].X,
-                    50 + yOffset + _entries[i].Y,
-                    _entries[i].GumpID
-                );
+                builder.AddImage(87 + xOffset + entry.X, 50 + yOffset + entry.Y, entry.GumpID);
             }
             else if (!_facialHair)
             {
