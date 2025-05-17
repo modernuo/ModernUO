@@ -913,7 +913,7 @@ public abstract class BaseAI
             m_Mobile.FocusMob = null;
             m_Mobile.Warmode = false;
             m_Mobile.Combatant = null;
-            Action = ActionType.Wander;
+            WalkRandomInHome(3, 2, 1);
             return true;
         }
 
