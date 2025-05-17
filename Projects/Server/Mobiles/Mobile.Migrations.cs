@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Guilds;
 
 namespace Server;
 
@@ -38,5 +39,27 @@ public partial class Mobile
             VirtueMigrations ??= new Dictionary<Mobile, int[]>();
             VirtueMigrations[m] = values;
         }
+    }
+
+    public static List<GuildInfo> GuildMigrations { get; private set; }
+
+    public static void AddToGuildMigration(GuildInfo info)
+    {
+        if (info != null)
+        {
+            GuildMigrations ??= [];
+            GuildMigrations.Add(info);
+        }
+    }
+
+    public class GuildInfo
+    {
+        public Mobile GuildMember { get; }
+        public Mobile GuildFealty { get; internal set; }
+        public string GuildTitle { get; internal set; }
+        public bool DisplayGuildTitle { get; internal set; }
+        public BaseGuild Guild { get; internal set; }
+
+        public GuildInfo(Mobile member) => GuildMember = member;
     }
 }
