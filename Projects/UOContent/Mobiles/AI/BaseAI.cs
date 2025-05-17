@@ -917,15 +917,7 @@ public abstract class BaseAI
             return true;
         }
 
-        if (m_Mobile.Hits >= m_Mobile.HitsMax)
-        {
-            m_Mobile.CurrentSpeed = 0.1;
-        }
-        
-        if (m_Mobile.Hits < m_Mobile.HitsMax)
-        {
-            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        }
+        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
         
         if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
         {
