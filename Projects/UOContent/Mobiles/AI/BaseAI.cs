@@ -780,8 +780,6 @@ public abstract class BaseAI
             return false;
         }
 
-        PriorityCombatant();
-
         if (CheckFlee())
         {
             return true;
@@ -898,30 +896,8 @@ public abstract class BaseAI
         }
     }
 
-    protected virtual bool PriorityCombatant()
-    {
-        var combatant = m_Mobile.Combatant;
-    
-        if (combatant != null && !combatant.Player)
-        {
-            foreach (var mob in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
-            {
-                if (mob.Player && IsValidCombatant(mob))
-                {
-                    DebugSay($"Switching to player {mob.Name}, my new combatant.");
-                    m_Mobile.Combatant = mob;
-                    return true;
-                }
-            }
-        }
-    
-        return false;
-    }
-
     public virtual bool DoActionCombat()
     {
-        PriorityCombatant();
-
         if (Core.AOS && CheckHerding())
         {
             DebugSay("I am being herded.");
