@@ -917,11 +917,13 @@ public abstract class BaseAI
             return true;
         }
 
-        m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        
         if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
         {
             m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
+        }
+        else
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
         }
     
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
