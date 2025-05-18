@@ -8,7 +8,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-public class TypeConverterTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class TypeConverterTests
 {
     [Fact]
     public void TestReadAfterWrite()

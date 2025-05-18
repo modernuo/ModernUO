@@ -42,10 +42,10 @@ public partial class Flax : Item
 
     public virtual void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
     {
-        Item item = new SpoolOfThread(6);
-        item.Hue = hue;
-
-        from.AddToBackpack(item);
+        from.AddToBackpack(new SpoolOfThread(6)
+        {
+            Hue = hue
+        });
         from.SendLocalizedMessage(1010577); // You put the spools of thread in your backpack.
     }
 

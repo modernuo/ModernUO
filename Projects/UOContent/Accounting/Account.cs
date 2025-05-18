@@ -13,6 +13,7 @@ using Server.Network;
 
 namespace Server.Accounting;
 
+[PropertyObject]
 [SerializationGenerator(6)]
 public partial class Account : IAccount, IComparable<Account>
 {

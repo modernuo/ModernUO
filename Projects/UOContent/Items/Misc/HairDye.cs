@@ -26,58 +26,65 @@ public partial class HairDye : Item
     }
 }
 
-public class HairDyeGump : Gump
+public class HairDyeGump : StaticGump<HairDyeGump>
 {
-    private static HairDyeEntry[] _entries =
-    {
-        new("*****", 1602, 26),
-        new("*****", 1628, 27),
-        new("*****", 1502, 32),
-        new("*****", 1302, 32),
-        new("*****", 1402, 32),
-        new("*****", 1202, 24),
-        new("*****", 2402, 29),
-        new("*****", 2213, 6),
-        new("*****", 1102, 8),
-        new("*****", 1110, 8),
-        new("*****", 1118, 16),
-        new("*****", 1134, 16)
-    };
+    private static readonly (int HueStart, int HueCount)[] _entries =
+    [
+        (1602, 26),
+        (1628, 27),
+        (1502, 32),
+        (1302, 32),
+        (1402, 32),
+        (1202, 24),
+        (2402, 29),
+        (2213, 6),
+        (1102, 8),
+        (1110, 8),
+        (1118, 16),
+        (1134, 16)
+    ];
 
-    private HairDye _hairDye;
+    private readonly HairDye _hairDye;
 
     public override bool Singleton => true;
 
-    public HairDyeGump(HairDye dye) : base(50, 50)
+    public HairDyeGump(HairDye dye) : base(50, 50) => _hairDye = dye;
+
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        _hairDye = dye;
+        builder.AddPage();
 
-        AddPage(0);
+        builder.AddBackground(100, 10, 350, 355, 2600);
+        builder.AddBackground(120, 54, 110, 270, 5100);
 
-        AddBackground(100, 10, 350, 355, 2600);
-        AddBackground(120, 54, 110, 270, 5100);
+        builder.AddHtmlLocalized(70, 25, 400, 35, 1011013); // <center>Hair Color Selection Menu</center>
 
-        AddHtmlLocalized(70, 25, 400, 35, 1011013); // <center>Hair Color Selection Menu</center>
+        builder.AddButton(149, 328, 4005, 4007, 1);
+        builder.AddHtmlLocalized(185, 329, 250, 35, 1011014); // Dye my hair this color!
 
-        AddButton(149, 328, 4005, 4007, 1);
-        AddHtmlLocalized(185, 329, 250, 35, 1011014); // Dye my hair this color!
-
-        for (var i = 0; i < _entries.Length; ++i)
+        ReadOnlySpan<(int HueStart, int HueCount)> entries = _entries;
+        for (var i = 0; i < entries.Length; ++i)
         {
-            AddLabel(130, 59 + i * 22, _entries[i].HueStart - 1, _entries[i].Name);
-            AddButton(207, 60 + i * 22, 5224, 5224, 0, GumpButtonType.Page, i + 1);
+            var y = 59 + i * 22;
+            builder.AddLabel(130, y, entries[i].HueStart - 1, "*****");
+            builder.AddButton(207, y + 1, 5224, 5224, 0, GumpButtonType.Page, i + 1);
         }
 
-        for (var i = 0; i < _entries.Length; ++i)
+        for (var i = 0; i < entries.Length; ++i)
         {
-            var e = _entries[i];
+            var (hueStart, hueCount) = entries[i];
 
-            AddPage(i + 1);
+            builder.AddPage(i + 1);
+            var switchId = i * 100;
 
-            for (var j = 0; j < e.HueCount; ++j)
+            for (var j = 0; j < hueCount; ++j)
             {
-                AddLabel(278 + j / 16 * 80, 52 + j % 16 * 17, e.HueStart + j - 1, "*****");
-                AddRadio(260 + j / 16 * 80, 52 + j % 16 * 17, 210, 211, false, i * 100 + j);
+                var page = Math.DivRem(j, 16, out var row);
+                var x = 260 + page * 80;
+                var y = 52 + row * 17;
+
+                builder.AddRadio(x, y, 210, 211, false, switchId + j);
+                builder.AddLabel(x + 18, y, hueStart + j - 1, "*****");
             }
         }
     }
@@ -98,54 +105,38 @@ public class HairDyeGump : Gump
             return;
         }
 
-        if (info.ButtonID != 0 && switches.Length > 0)
-        {
-            if (m.HairItemID == 0 && m.FacialHairItemID == 0)
-            {
-                m.SendLocalizedMessage(502623); // You have no hair to dye and cannot use this
-            }
-            else
-            {
-                // To prevent this from being exploited, the hue is abstracted into an internal list
-                var entryIndex = Math.DivRem(switches[0], 100, out var hueOffset);
-
-                if (entryIndex >= 0 && entryIndex < _entries.Length)
-                {
-                    var e = _entries[entryIndex];
-
-                    if (hueOffset >= 0 && hueOffset < e.HueCount)
-                    {
-                        var hue = e.HueStart + hueOffset;
-
-                        m.HairHue = hue;
-                        m.FacialHairHue = hue;
-
-                        m.SendLocalizedMessage(501199); // You dye your hair
-                        _hairDye.Delete();
-                        m.PlaySound(0x4E);
-                    }
-                }
-            }
-        }
-        else
+        if (info.ButtonID == 0 || switches.Length <= 0)
         {
             m.SendLocalizedMessage(501200); // You decide not to dye your hair
+            return;
         }
-    }
 
-    private class HairDyeEntry
-    {
-        public HairDyeEntry(string name, int hueStart, int hueCount)
+        if (m.HairItemID == 0 && m.FacialHairItemID == 0)
         {
-            Name = name;
-            HueStart = hueStart;
-            HueCount = hueCount;
+            m.SendLocalizedMessage(502623); // You have no hair to dye and cannot use this
+            return;
         }
 
-        public string Name { get; }
+        // To prevent this from being exploited, the hue is abstracted into an internal list
+        var entryIndex = Math.DivRem(switches[0], 100, out var hueOffset);
 
-        public int HueStart { get; }
+        if (entryIndex < 0 || entryIndex >= _entries.Length)
+        {
+            return;
+        }
 
-        public int HueCount { get; }
+        var e = _entries[entryIndex];
+
+        if (hueOffset >= 0 && hueOffset < e.HueCount)
+        {
+            var hue = e.HueStart + hueOffset;
+
+            m.HairHue = hue;
+            m.FacialHairHue = hue;
+
+            m.SendLocalizedMessage(501199); // You dye your hair
+            _hairDye.Delete();
+            m.PlaySound(0x4E);
+        }
     }
 }

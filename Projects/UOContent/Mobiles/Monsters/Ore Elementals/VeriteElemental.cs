@@ -38,9 +38,10 @@ namespace Server.Mobiles
 
             VirtualArmor = 35;
 
-            Item ore = new VeriteOre(oreAmount);
-            ore.ItemID = 0x19B9;
-            PackItem(ore);
+            PackItem(new VeriteOre(oreAmount)
+            {
+                ItemID = 0x19B9
+            });
         }
 
         public override string CorpseName => "an ore elemental corpse";

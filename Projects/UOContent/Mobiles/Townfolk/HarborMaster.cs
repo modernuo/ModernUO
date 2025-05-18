@@ -37,12 +37,12 @@ public partial class HarborMaster : BaseCreature
 
         Utility.AssignRandomHair(this);
 
-        Container pack = new Backpack();
+        var pack = new Backpack
+        {
+            Movable = false
+        };
 
         pack.DropItem(new Gold(250, 300));
-
-        pack.Movable = false;
-
         AddItem(pack);
     }
 

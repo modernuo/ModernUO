@@ -292,65 +292,52 @@ public partial class BannerDeed : Item, IRewardItem
             }
         }
 
-        private class FacingGump : Gump
+        private class FacingGump : DynamicGump
         {
-            private readonly BannerDeed m_Banner;
-            private readonly BaseHouse m_House;
-            private readonly int m_ItemID;
-            private readonly Point3D m_Location;
+            private readonly BannerDeed _banner;
+            private readonly BaseHouse _house;
+            private readonly int _itemId;
+            private readonly Point3D _location;
 
             public override bool Singleton => true;
 
             public FacingGump(BannerDeed banner, int itemID, Point3D location, BaseHouse house) : base(150, 50)
             {
-                m_Banner = banner;
-                m_ItemID = itemID;
-                m_Location = location;
-                m_House = house;
+                _banner = banner;
+                _itemId = itemID;
+                _location = location;
+                _house = house;
+            }
 
-                Closable = true;
-                Disposable = true;
-                Draggable = true;
-                Resizable = false;
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
+            {
+                builder.SetNoResize();
 
-                AddPage(0);
+                builder.AddPage();
 
-                AddBackground(0, 0, 300, 150, 0xA28);
+                builder.AddBackground(0, 0, 300, 150, 0xA28);
 
-                AddItem(90, 30, itemID + 1);
-                AddItem(180, 30, itemID);
+                builder.AddItem(90, 30, _itemId + 1);
+                builder.AddItem(180, 30, _itemId);
 
-                AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
-                AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
+                builder.AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
+                builder.AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
             }
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
-                if (m_Banner?.Deleted != false || m_House == null)
+                if (_banner?.Deleted != false || _house == null)
                 {
                     return;
                 }
 
-                Banner banner = null;
+                Banner banner = new Banner(_itemId + (info.ButtonID == (int)Buttons.East ? 1 : 0));
+                _house.Addons.Add(banner);
 
-                if (info.ButtonID == (int)Buttons.East)
-                {
-                    banner = new Banner(m_ItemID + 1);
-                }
-                else if (info.ButtonID == (int)Buttons.South)
-                {
-                    banner = new Banner(m_ItemID);
-                }
+                banner.IsRewardItem = _banner.IsRewardItem;
+                banner.MoveToWorld(_location, sender.Mobile.Map);
 
-                if (banner != null)
-                {
-                    m_House.Addons.Add(banner);
-
-                    banner.IsRewardItem = m_Banner.IsRewardItem;
-                    banner.MoveToWorld(m_Location, sender.Mobile.Map);
-
-                    m_Banner.Delete();
-                }
+                _banner.Delete();
             }
 
             private enum Buttons

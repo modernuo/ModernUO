@@ -68,7 +68,7 @@ namespace Server.Gumps
             }
         }
 
-        private int GetMaterialNumber(StatueType type, StatueMaterial material)
+        private static int GetMaterialNumber(StatueType type, StatueMaterial material)
         {
             switch (material)
             {
@@ -96,7 +96,7 @@ namespace Server.Gumps
             }
         }
 
-        private int GetDirectionNumber(Direction direction)
+        private static int GetDirectionNumber(Direction direction)
         {
             return direction switch
             {

@@ -1,12 +1,13 @@
 using System;
 using System.Reflection;
+using Xunit;
 
 namespace Server.Tests;
 
-internal class ServerFixture : IDisposable
+[CollectionDefinition("Sequential Server Tests", DisableParallelization = true)]
+public class ServerFixture : ICollectionFixture<ServerFixture>, IDisposable
 {
-    // Global setup
-    static ServerFixture()
+    public ServerFixture()
     {
         Core.ApplicationAssembly = Assembly.GetExecutingAssembly(); // Server.Tests.dll
 

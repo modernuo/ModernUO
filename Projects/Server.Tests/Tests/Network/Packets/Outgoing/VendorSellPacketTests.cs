@@ -5,8 +5,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    [Collection("Sequential Tests")]
-    public class VendorSellPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+    public class VendorSellPacketTests
     {
         [Fact]
         public void TestVendorSellList()

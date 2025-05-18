@@ -1,13 +1,14 @@
 using System;
 using System.Reflection;
 using Server.Misc;
+using Xunit;
 
 namespace Server.Tests;
 
-internal class ServerFixture : IDisposable
+[CollectionDefinition("Sequential UOContent Tests", DisableParallelization = true)]
+public class UOContentFixture : ICollectionFixture<UOContentFixture>, IDisposable
 {
-    // Global setup
-    static ServerFixture()
+    public UOContentFixture()
     {
         Core.ApplicationAssembly = Assembly.GetExecutingAssembly();
         Core.LoopContext = new EventLoopContext();
@@ -40,8 +41,16 @@ internal class ServerFixture : IDisposable
         World.ExitSerializationThreads();
     }
 
+    private static int _counter;
+
     public void Dispose()
     {
+        _counter++;
+
+        if (_counter > 1)
+        {
+            throw new Exception("NO!");
+        }
         Timer.Init(0);
     }
 }

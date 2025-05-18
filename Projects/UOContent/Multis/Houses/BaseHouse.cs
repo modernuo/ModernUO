@@ -2334,9 +2334,7 @@ namespace Server.Multis
                     }
                     else
                     {
-                        Container c = fromState.AddTrade(toState);
-
-                        c.DropItem(new TransferItem(this));
+                        fromState.AddTrade(toState).DropItem(new TransferItem(this));
                     }
                 }
             }
@@ -3357,9 +3355,7 @@ namespace Server.Multis
             {
                 for (var i = 0; i < Doors.Count; ++i)
                 {
-                    Item item = Doors[i];
-
-                    item?.Delete();
+                    Doors[i]?.Delete();
                 }
 
                 Doors.Clear();

@@ -39,9 +39,10 @@ namespace Server.Mobiles
             VirtualArmor = 50;
 
             PackItem(new BlackPearl(3));
-            Item ore = new IronOre(3);
-            ore.ItemID = 0x19B8;
-            PackItem(ore);
+            PackItem(new IronOre(3)
+            {
+                ItemID = 0x19B8
+            });
         }
 
         public override string CorpseName => "a snow elemental corpse";
