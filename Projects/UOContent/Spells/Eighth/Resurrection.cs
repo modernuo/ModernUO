@@ -1,6 +1,7 @@
 using Server.Engines.ConPVP;
 using Server.Gumps;
 using Server.Targeting;
+using Server.Mobiles;
 
 namespace Server.Spells.Eighth
 {
@@ -26,25 +27,29 @@ namespace Server.Spells.Eighth
 
         public void Target(Mobile m)
         {
-            if (m == Caster)
+            if (!Caster.Alive)
+            {
+                Caster.SendLocalizedMessage(501040); // The resurrecter must be alive.
+            }
+            else if (m == Caster)
             {
                 Caster.SendLocalizedMessage(501039); // Thou can not resurrect thyself.
             }
-            else if (!Caster.Alive)
+            else if (m is BaseCreature)
             {
-                Caster.SendLocalizedMessage(501040); // The resurrecter must be alive.
+                Caster.SendMessage("Target can not be revived this way.");
+            }
+            else if (!m.Player)
+            {
+                Caster.SendLocalizedMessage(501043); // Target is not a being.
             }
             else if (m.Alive)
             {
                 Caster.SendLocalizedMessage(501041); // Target is not dead.
             }
-            else if (!Caster.InRange(m, 1))
+            else if (!Caster.InRange(m, TargetRange))
             {
                 Caster.SendLocalizedMessage(501042); // Target is not close enough.
-            }
-            else if (!m.Player)
-            {
-                Caster.SendLocalizedMessage(501043); // Target is not a being.
             }
             else if (m.Map?.CanFit(m.Location, 16, false, false) != true)
             {
