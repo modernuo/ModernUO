@@ -54,7 +54,7 @@ namespace Server.Spells.Fourth
             var oldDexOffset = SpellHelper.GetCurse(caster, m, StatType.Dex);
             var oldIntOffset = SpellHelper.GetCurse(caster, m, StatType.Int);
 
-            if (oldStrOffset <= newStrOffset && oldDexOffset <= newDexOffset && oldIntOffset <= newIntOffset)
+            if (oldStrOffset > newStrOffset && oldDexOffset > newDexOffset && oldIntOffset > newIntOffset)
             {
                 return false;
             }
