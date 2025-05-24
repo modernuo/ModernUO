@@ -211,20 +211,15 @@ public partial class PlayerVendor : Mobile
             }
             Timer.DelayCall(() =>
                 {
-                    if (_owner.AccessLevel > AccessLevel.Player)
-                    {
-                        return; // Don't try to find a house for GM vendors.
-                    }
-
                     var house = BaseHouse.FindHouseAt(this);
 
                     if (house != null)
                     {
                         House = house;
                     }
-                    else
+                    else if (_owner.AccessLevel == AccessLevel.Player)
                     {
-                        // If we can't find a house, dimiss the vendor.
+                        // If we can't find a house, dismiss the vendor.
                         Dismiss(_owner);
                     }
                 }
