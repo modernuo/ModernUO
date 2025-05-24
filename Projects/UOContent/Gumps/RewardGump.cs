@@ -62,7 +62,7 @@ namespace Server.Gumps
             {
                 var entry = Rewards[i];
 
-                var bounds = ItemBounds.Table[entry.ItemID];
+                var bounds = ItemBounds.Bounds[entry.ItemID];
                 var height = Math.Max(36, bounds.Height);
 
                 if (offset + height > 320)

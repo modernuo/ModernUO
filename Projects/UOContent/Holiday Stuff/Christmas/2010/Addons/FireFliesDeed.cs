@@ -85,35 +85,27 @@ public partial class FirefliesDeed : Item
             return;
         }
 
-        from.SendGump(new FacingGump(this, from));
+        from.SendGump(new FacingGump(this));
     }
 
-    private class FacingGump : Gump
+    private class FacingGump : StaticGump<FacingGump>
     {
         private readonly FirefliesDeed _deed;
-        private readonly Mobile _placer;
 
         public override bool Singleton => true;
 
-        public FacingGump(FirefliesDeed deed, Mobile player) : base(150, 50)
+        public FacingGump(FirefliesDeed deed) : base(150, 50) => _deed = deed;
+
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
         {
-            _deed = deed;
-            _placer = player;
+            builder.AddBackground(0, 0, 300, 150, 0xA28);
+            builder.AddPage();
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+            builder.AddItem(90, 30, 0x2332);
+            builder.AddItem(180, 30, 0x2336);
 
-            AddPage(0);
-
-            AddBackground(0, 0, 300, 150, 0xA28);
-
-            AddItem(90, 30, 0x2332);
-            AddItem(180, 30, 0x2336);
-
-            AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
-            AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
+            builder.AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
+            builder.AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -130,7 +122,12 @@ public partial class FirefliesDeed : Item
                 _                  => 0
             };
 
-            _placer.Target = new InternalTarget(_deed, itemId);
+            if (itemId == 0)
+            {
+                return;
+            }
+
+            sender.Mobile.Target = new InternalTarget(_deed, itemId);
         }
 
         private enum Buttons

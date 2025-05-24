@@ -32,19 +32,19 @@ namespace Server.Mobiles
         public override void InitSBInfo()
         {
             /*m_SBInfos.Add( new SBSmithTools() );
-      
+
             m_SBInfos.Add( new SBMetalShields() );
             m_SBInfos.Add( new SBWoodenShields() );
-      
+
             m_SBInfos.Add( new SBPlateArmor() );
-      
+
             m_SBInfos.Add( new SBHelmetArmor() );
             m_SBInfos.Add( new SBChainmailArmor() );
             m_SBInfos.Add( new SBRingmailArmor() );
             m_SBInfos.Add( new SBAxeWeapon() );
             m_SBInfos.Add( new SBPoleArmWeapon() );
             m_SBInfos.Add( new SBRangedWeapon() );
-      
+
             m_SBInfos.Add( new SBKnifeWeapon() );
             m_SBInfos.Add( new SBMaceWeapon() );
             m_SBInfos.Add( new SBSpearForkWeapon() );
@@ -62,17 +62,11 @@ namespace Server.Mobiles
         {
             base.InitOutfit();
 
-            Item item = Utility.RandomBool() ? null : new RingmailChest();
+            Item item = Utility.RandomBool() ? new FullApron() : new RingmailChest();
 
-            if (item != null && !EquipItem(item))
+            if (!EquipItem(item))
             {
                 item.Delete();
-                item = null;
-            }
-
-            if (item == null)
-            {
-                AddItem(new FullApron());
             }
 
             AddItem(new Bascinet());

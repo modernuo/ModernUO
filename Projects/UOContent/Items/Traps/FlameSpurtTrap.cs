@@ -8,7 +8,8 @@ namespace Server.Items;
 public partial class FlameSpurtTrap : BaseTrap
 {
     [SerializableField(0)]
-    private Item _spurt;
+    private Static _spurt;
+
     private TimerExecutionToken _timerToken;
 
     [Constructible]

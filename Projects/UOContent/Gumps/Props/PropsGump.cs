@@ -299,7 +299,8 @@ namespace Server.Gumps
                             return;
                         }
 
-                        var type = prop.PropertyType;
+                        var obj = prop.GetValue(m_Object, null);
+                        var type = obj?.GetType() ?? prop.PropertyType;
 
                         if (IsType(type, OfEntity))
                         {
@@ -392,8 +393,6 @@ namespace Server.Gumps
                         }
                         else if (HasAttribute(type, OfPropertyObject, true))
                         {
-                            var obj = prop.GetValue(m_Object, null);
-
                             from.SendGump(
                                 obj != null
                                     ? new PropertiesGump(from, obj, m_Stack, new StackEntry(m_Object, prop))

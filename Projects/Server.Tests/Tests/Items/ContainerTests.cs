@@ -5,7 +5,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-public class ContainerTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class ContainerTests
 {
     [Fact]
     public void TestFindItemsByType()

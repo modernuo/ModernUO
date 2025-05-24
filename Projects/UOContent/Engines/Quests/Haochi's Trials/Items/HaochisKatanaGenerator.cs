@@ -31,7 +31,7 @@ public partial class HaochisKatanaGenerator : Item
 
         if (HaochisTrialsQuest.HasLostHaochisKatana(player))
         {
-            Item katana = new HaochisKatana();
+            var katana = new HaochisKatana();
 
             if (!player.PlaceInBackpack(katana))
             {
@@ -46,7 +46,7 @@ public partial class HaochisKatanaGenerator : Item
 
             if (obj?.Completed == false)
             {
-                Item katana = new HaochisKatana();
+                var katana = new HaochisKatana();
 
                 if (player.PlaceInBackpack(katana))
                 {

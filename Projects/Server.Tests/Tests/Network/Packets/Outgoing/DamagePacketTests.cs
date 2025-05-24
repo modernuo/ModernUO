@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class DamagePacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+public class DamagePacketTests
     {
         [Theory, InlineData(10), InlineData(-5), InlineData(1024)]
         public void TestDamagePacketOld(int inputAmount)

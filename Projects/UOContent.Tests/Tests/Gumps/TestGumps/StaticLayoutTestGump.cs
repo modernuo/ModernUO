@@ -35,6 +35,6 @@ public class StaticLayoutTestGump : StaticGump<StaticLayoutTestGump>
 
     protected override void BuildStrings(ref GumpStringsBuilder builder)
     {
-        builder.SetStringSlot("petName", $"<CENTER>{_petName}</CENTER>");
+        builder.SetHtmlTextCentered("petName", _petName);
     }
 }

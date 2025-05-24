@@ -312,7 +312,7 @@ public ref struct StaticGumpBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddLabelPlaceholder(int x, int y, int hue, ref RawInterpolatedStringHandler handler)
     {
-        AddHtmlPlaceholder(x, y, 0, 0, handler.Text);
+        AddLabelPlaceholder(x, y, hue, handler.Text);
         handler.Clear();
     }
 

@@ -61,7 +61,7 @@ public partial class ProspectorsTool : BaseBashing, IUsesRemaining
             return;
         }
 
-        HarvestSystem system = Mining.System;
+        var system = Mining.System;
 
         if (!system.GetHarvestDetails(from, this, toProspect, out var tileID, out var map, out var loc, out var isLand))
         {

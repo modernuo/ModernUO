@@ -472,11 +472,10 @@ public partial class Gervis : BaseCreature
         AddItem(new Doublet(0x652));
         AddItem(new SmithHammer());
 
-        Item item;
-
-        item = new LeatherGloves();
-        item.Hue = 0x3B2;
-        AddItem(item);
+        AddItem(new LeatherGloves
+        {
+            Hue = 0x3B2
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -750,11 +749,10 @@ public partial class Hargrove : BaseCreature
         AddItem(new Bandana(0x20));
         AddItem(new BattleAxe());
 
-        Item item;
-
-        item = new PlateGloves();
-        item.Hue = 0x21E;
-        AddItem(item);
+        AddItem(new PlateGloves
+        {
+            Hue = 0x21E
+        });
     }
 
     public override bool IsInvulnerable => true;

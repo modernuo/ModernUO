@@ -14,24 +14,24 @@ public class WeaponAbilityPacketTests
     [InlineData(1000, false)]
     public void TestSpecialAbility(int abilityId, bool active)
     {
-            var expected = new ToggleSpecialAbility(abilityId, active).Compile();
+        var expected = new ToggleSpecialAbility(abilityId, active).Compile();
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendToggleSpecialAbility(abilityId, active);
+        var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendToggleSpecialAbility(abilityId, active);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
-        }
+    }
 
     [Fact]
     public void TestClearAbility()
     {
-            var expected = new ClearWeaponAbility().Compile();
+        var expected = new ClearWeaponAbility().Compile();
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendClearWeaponAbility();
+        var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendClearWeaponAbility();
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
-        }
+    }
 }

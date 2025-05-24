@@ -5,8 +5,23 @@ namespace Server.Mobiles;
 public class FanningFire : MonsterAbilitySingleTargetDoT
 {
     public override MonsterAbilityType AbilityType => MonsterAbilityType.FanningFire;
-    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.GiveDamage;
-    public override double ChanceToTrigger => 0.05;
+    public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.CombatAction;
+
+    public FanningFire(double chanceToTrigger, int fireResistMod, int minDamage, int maxDamage)
+    {
+        ChanceToTrigger = chanceToTrigger;
+        FireResistMod = fireResistMod;
+        MinDamage = minDamage;
+        MaxDamage = maxDamage;
+    }
+
+    public sealed override double ChanceToTrigger { get; }
+
+    public int FireResistMod { get; }
+
+    public int MinDamage { get; }
+
+    public int MaxDamage { get; }
 
     public const string Name = "FanningFire";
 
@@ -52,16 +67,12 @@ public class FanningFire : MonsterAbilitySingleTargetDoT
          */
 
         source.DoHarmful(defender);
-        var effect = -(defender.FireResistance / 10);
+        defender.AddResistanceMod(new ResistanceMod(ResistanceType.Fire, Name, FireResistMod));
 
-        var mod = new ResistanceMod(ResistanceType.Fire, Name, effect);
-        defender.AddResistanceMod(mod);
-
-        defender.FixedParticles(0x37B9, 10, 30, 0x34, EffectLayer.RightFoot);
+        defender.FixedParticles(0x3709, 10, 30, 0x34, EffectLayer.RightFoot);
         defender.PlaySound(0x208);
 
-        // TODO: Trigger replaces a normal attack.
-        AOS.Damage(defender, source, Utility.RandomMinMax(35, 45), 0, 100, 0, 0, 0);
+        AOS.Damage(defender, source, Utility.RandomMinMax(MinDamage, MaxDamage), 0, 100, 0, 0, 0);
     }
 
     protected override void EffectTick(BaseCreature source, Mobile defender, ref TimeSpan nextDelay)

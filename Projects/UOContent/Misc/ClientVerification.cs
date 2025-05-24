@@ -27,14 +27,12 @@ namespace Server.Misc
         public static bool AllowKR => (AllowedClientTypes & ClientType.KR) != 0;
         public static bool AllowSA => (AllowedClientTypes & ClientType.SA) != 0;
 
-        public static ClientVersion MinRequired { get; private set; }
-        public static ClientVersion MaxRequired { get; private set; }
         public static TimeSpan KickDelay { get; private set; }
 
         public static void Configure()
         {
-            MinRequired = ServerConfiguration.GetSetting("clientVerification.minRequired", (ClientVersion)null);
-            MaxRequired = ServerConfiguration.GetSetting("clientVerification.maxRequired", (ClientVersion)null);
+            UOClient.MinRequired = ServerConfiguration.GetSetting("clientVerification.minRequired", (ClientVersion)null);
+            UOClient.MaxRequired = ServerConfiguration.GetSetting("clientVerification.maxRequired", (ClientVersion)null);
 
             _enable = ServerConfiguration.GetOrUpdateSetting("clientVerification.enable", true);
             _invalidClientResponse =
@@ -51,12 +49,12 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            if (MinRequired == null && MaxRequired == null)
+            if (UOClient.MinRequired == null && UOClient.MaxRequired == null)
             {
-                MinRequired = UOClient.ServerClientVersion;
+                UOClient.MinRequired = UOClient.ServerClientVersion;
             }
 
-            if (MinRequired != null || MaxRequired != null)
+            if (UOClient.MinRequired != null || UOClient.MaxRequired != null)
             {
                 logger.Information(
                     "Restricting client version to {ClientVersion}. Action to be taken: {Action}",
@@ -70,17 +68,17 @@ namespace Server.Misc
         {
             if (_versionExpression == null)
             {
-                if (MinRequired != null && MaxRequired != null)
+                if (UOClient.MinRequired != null && UOClient.MaxRequired != null)
                 {
-                    _versionExpression = $"{MinRequired}-{MaxRequired}";
+                    _versionExpression = $"{UOClient.MinRequired}-{UOClient.MaxRequired}";
                 }
-                else if (MinRequired != null)
+                else if (UOClient.MinRequired != null)
                 {
-                    _versionExpression = $"{MinRequired} or newer";
+                    _versionExpression = $"{UOClient.MinRequired} or newer";
                 }
                 else
                 {
-                    _versionExpression = $"{MaxRequired} or older";
+                    _versionExpression = $"{UOClient.MaxRequired} or older";
                 }
             }
 
@@ -133,14 +131,14 @@ namespace Server.Misc
             bool shouldKick = false;
             bool isKRClient = version.Type == ClientType.KR;
 
-            if (!isKRClient && MinRequired != null && version < MinRequired)
+            if (!isKRClient && UOClient.MinRequired != null && version < UOClient.MinRequired)
             {
-                sb.Append($"This server doesn't support clients older than {MinRequired}.");
+                sb.Append($"This server doesn't support clients older than {UOClient.MinRequired}.");
                 shouldKick = strictRequirement;
             }
-            else if (!isKRClient && MaxRequired != null && version > MaxRequired)
+            else if (!isKRClient && UOClient.MaxRequired != null && version > UOClient.MaxRequired)
             {
-                sb.Append($"This server doesn't support clients newer than {MaxRequired}.");
+                sb.Append($"This server doesn't support clients newer than {UOClient.MaxRequired}.");
                 shouldKick = strictRequirement;
             }
             else

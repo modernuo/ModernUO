@@ -14,7 +14,7 @@ public static class MonsterAbilities
     // Resistance Debuffs
     public static GraspingClaw GraspingClaw => new();
     public static RuneCorruption RuneCorruption => new();
-    public static FanningFire FanningFire => new();
+    public static FanningFire FanningFire => new(0.05, -10, 35, 45);
 
     // Summon Undead
     public static SummonSkeletonsCounter SummonSkeletonsCounter => new();

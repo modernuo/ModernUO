@@ -8,4 +8,8 @@ public class ReflectPhysicalDamage : MonsterAbility
     public override MonsterAbilityType AbilityType => MonsterAbilityType.ReflectPhysicalDamage;
 
     public virtual int PercentReflected => 10;
+
+    public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
+    {
+    }
 }

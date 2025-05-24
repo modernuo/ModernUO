@@ -13,12 +13,12 @@ public class TestHelpTopicPacket
     [InlineData(HelpTopic.EmptyingBowl, true)]
     public void TestDisplayHelpTopic(int topic, bool display)
     {
-            var expected = new DisplayHelpTopic(topic, display).Compile();
+        var expected = new DisplayHelpTopic(topic, display).Compile();
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendDisplayHelpTopic(topic, display);
+        var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendDisplayHelpTopic(topic, display);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
-        }
+    }
 }

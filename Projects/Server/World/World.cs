@@ -492,7 +492,12 @@ public static class World
         else
         {
             logger.Warning($"Attempted to call World.RemoveEntity with '{entity.GetType()}'. Must be a mobile or item.");
+            return;
         }
+
+#if TRACK_LEAKS
+        EntityFinalizationTracker.TrackEntity(entity);
+#endif
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

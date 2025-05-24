@@ -599,9 +599,10 @@ public partial class Synaeva : BaseCreature
         SetSkill(SkillName.Meditation, 60.0, 80.0);
         SetSkill(SkillName.Focus, 60.0, 80.0);
 
-        Item item = new RavenHelm();
-        item.Hue = Utility.RandomGreenHue();
-        AddItem(item);
+        AddItem(new RavenHelm
+        {
+            Hue = Utility.RandomGreenHue()
+        });
 
         AddItem(new FemaleLeafChest());
         AddItem(new LeafArms());

@@ -7,7 +7,8 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
-public class AccountPacketTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class AccountPacketTests
 {
     private class MockedAccount : IAccount
     {

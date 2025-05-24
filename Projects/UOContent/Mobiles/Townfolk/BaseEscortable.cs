@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Buffers;
@@ -849,7 +848,7 @@ public class EscortDestinationInfo
 
     public static void Initialize()
     {
-        ICollection list = Map.Felucca.Regions.Values;
+        var list = Map.Felucca.Regions.Values;
 
         if (list.Count == 0)
         {

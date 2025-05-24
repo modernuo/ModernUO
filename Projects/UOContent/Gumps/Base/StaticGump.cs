@@ -33,6 +33,9 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
     private static int _staticStringsCount;
     private static byte[] _staticStrings;
 
+    // Turn this off if you want to generate a new gump each time for testing
+    protected virtual bool Cached => true;
+
     public override int Switches => _switches;
     public override int TextEntries => _textEntries;
 
@@ -67,7 +70,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
         writer.Write(X);
         writer.Write(Y);
 
-        if (_compressedLayoutData != null)
+        if (Cached && _compressedLayoutData != null)
         {
             writer.Write(_compressedLayoutData);
 
@@ -91,11 +94,13 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
                     writer.Write(_staticStringsCount + stringsBuilder._stringsCount);
 
                     var stringsData = stringsBuilder.StringsBuffer;
-                    var buffer = STArrayPool<byte>.Shared.Rent(_staticStrings.Length + stringsData.Length);
+                    var stringsLength = _staticStrings.Length + stringsData.Length;
+
+                    var buffer = STArrayPool<byte>.Shared.Rent(stringsLength);
                     _staticStrings.CopyTo(buffer.AsSpan());
                     stringsData.CopyTo(buffer.AsSpan(_staticStrings.Length));
 
-                    OutgoingGumpPackets.WritePacked(buffer, ref writer);
+                    OutgoingGumpPackets.WritePacked(buffer.AsSpan(0, stringsLength), ref writer);
                     STArrayPool<byte>.Shared.Return(buffer);
                 }
             }

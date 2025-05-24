@@ -1082,67 +1082,69 @@ namespace Server.Items
 
         public override bool CanEquip(Mobile from)
         {
+            if (!from.Player || from.AccessLevel >= AccessLevel.GameMaster)
+            {
+                return base.CanEquip(from);
+            }
+
             if (!Ethic.CheckEquip(from, this))
             {
                 return false;
             }
 
-            if (from.AccessLevel < AccessLevel.GameMaster)
+            if (!CheckRace(from))
             {
-                if (!CheckRace(from))
+                return false;
+            }
+
+            if (!AllowMaleWearer && !from.Female)
+            {
+                if (AllowFemaleWearer)
                 {
-                    return false;
+                    from.SendLocalizedMessage(1010388); // Only females can wear this.
+                }
+                else
+                {
+                    from.SendMessage("You may not wear this.");
                 }
 
-                if (!AllowMaleWearer && !from.Female)
-                {
-                    if (AllowFemaleWearer)
-                    {
-                        from.SendLocalizedMessage(1010388); // Only females can wear this.
-                    }
-                    else
-                    {
-                        from.SendMessage("You may not wear this.");
-                    }
+                return false;
+            }
 
-                    return false;
+            if (!AllowFemaleWearer && from.Female)
+            {
+                if (AllowMaleWearer)
+                {
+                    from.SendLocalizedMessage(1063343); // Only males can wear this.
+                }
+                else
+                {
+                    from.SendMessage("You may not wear this.");
                 }
 
-                if (!AllowFemaleWearer && from.Female)
-                {
-                    if (AllowMaleWearer)
-                    {
-                        from.SendLocalizedMessage(1063343); // Only males can wear this.
-                    }
-                    else
-                    {
-                        from.SendMessage("You may not wear this.");
-                    }
+                return false;
+            }
 
-                    return false;
-                }
+            int strBonus = ComputeStatBonus(StatType.Str), strReq = ComputeStatReq(StatType.Str);
+            int dexBonus = ComputeStatBonus(StatType.Dex), dexReq = ComputeStatReq(StatType.Dex);
+            int intBonus = ComputeStatBonus(StatType.Int), intReq = ComputeStatReq(StatType.Int);
 
-                int strBonus = ComputeStatBonus(StatType.Str), strReq = ComputeStatReq(StatType.Str);
-                int dexBonus = ComputeStatBonus(StatType.Dex), dexReq = ComputeStatReq(StatType.Dex);
-                int intBonus = ComputeStatBonus(StatType.Int), intReq = ComputeStatReq(StatType.Int);
+            if (from.Dex < dexReq || from.Dex + dexBonus < 1)
+            {
+                from.SendLocalizedMessage(502077); // You do not have enough dexterity to equip this item.
+                return false;
+            }
 
-                if (from.Dex < dexReq || from.Dex + dexBonus < 1)
-                {
-                    from.SendLocalizedMessage(502077); // You do not have enough dexterity to equip this item.
-                    return false;
-                }
+            if (from.Str < strReq || from.Str + strBonus < 1)
+            {
+                from.SendLocalizedMessage(500213); // You are not strong enough to equip that.
+                return false;
+            }
 
-                if (from.Str < strReq || from.Str + strBonus < 1)
-                {
-                    from.SendLocalizedMessage(500213); // You are not strong enough to equip that.
-                    return false;
-                }
-
-                if (from.Int < intReq || from.Int + intBonus < 1)
-                {
-                    from.SendMessage("You are not smart enough to equip that.");
-                    return false;
-                }
+            if (from.Int < intReq || from.Int + intBonus < 1)
+            {
+                from.SendMessage("You are not smart enough to equip that.");
+                return false;
             }
 
             return base.CanEquip(from);

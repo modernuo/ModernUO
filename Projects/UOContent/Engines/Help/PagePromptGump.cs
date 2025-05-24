@@ -30,7 +30,7 @@ public sealed class PagePromptGump : StaticGump<PagePromptGump>
         builder.AddTextEntry(120, 168, 400, 200, 1153, 0, "");
 
         builder.AddButton(175, 355, 2074, 2075, 1);  // Okay
-        builder. AddButton(405, 355, 2073, 2072, 0); // Cancel
+        builder.AddButton(405, 355, 2073, 2072, 0); // Cancel
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)

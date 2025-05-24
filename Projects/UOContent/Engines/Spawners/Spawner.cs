@@ -21,7 +21,7 @@ public partial class Spawner : BaseSpawner
     [Constructible(AccessLevel.Developer)]
     public Spawner(
         int amount, int minDelay, int maxDelay, int team, int homeRange,
-        params string[] spawnedNames
+        params ReadOnlySpan<string> spawnedNames
     ) : this(
         amount,
         TimeSpan.FromMinutes(minDelay),
@@ -36,7 +36,7 @@ public partial class Spawner : BaseSpawner
     [Constructible(AccessLevel.Developer)]
     public Spawner(
         int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params string[] spawnedNames
+        params ReadOnlySpan<string> spawnedNames
     ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
     {
     }

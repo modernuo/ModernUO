@@ -33,7 +33,7 @@ public partial class KronusScrollBox : MetalBox
 
                 if (obj?.Completed == false || DarkTidesQuest.HasLostCallingScroll(from))
                 {
-                    Item scroll = new KronusScroll();
+                    var scroll = new KronusScroll();
 
                     if (pm.PlaceInBackpack(scroll))
                     {

@@ -2,8 +2,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-[Collection("Sequential Tests")]
-public class VirtualSerialTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class VirtualSerialTests
 {
     [Fact]
     public void TestNewVirtualGetsAndRollover()

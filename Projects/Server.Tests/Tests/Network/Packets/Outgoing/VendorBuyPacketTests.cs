@@ -5,8 +5,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    [Collection("Sequential Tests")]
-    public class VendorBuyPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+    public class VendorBuyPacketTests
     {
         [Theory]
         [InlineData(ProtocolChanges.None)]

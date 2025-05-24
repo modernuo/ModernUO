@@ -279,53 +279,25 @@ namespace Server.Commands.Generic
                     }
                 case StringOperator.Equal:
                     {
-                        if (m_IgnoreCase)
-                        {
-                            methodName = "InsensitiveEquals";
-                        }
-                        else
-                        {
-                            methodName = "EqualsOrdinal";
-                        }
+                        methodName = m_IgnoreCase ? "InsensitiveEquals" : "EqualsOrdinal";
                         break;
                     }
 
                 case StringOperator.Contains:
                     {
-                        if (m_IgnoreCase)
-                        {
-                            methodName = "InsensitiveContains";
-                        }
-                        else
-                        {
-                            methodName = "ContainsOrdinal";
-                        }
+                        methodName = m_IgnoreCase ? "InsensitiveContains" : "ContainsOrdinal";
                         break;
                     }
 
                 case StringOperator.StartsWith:
                     {
-                        if (m_IgnoreCase)
-                        {
-                            methodName = "InsensitiveStartsWith";
-                        }
-                        else
-                        {
-                            methodName = "StartsWithOrdinal";
-                        }
+                        methodName = m_IgnoreCase ? "InsensitiveStartsWith" : "StartsWithOrdinal";
                         break;
                     }
 
                 case StringOperator.EndsWith:
                     {
-                        if (m_IgnoreCase)
-                        {
-                            methodName = "InsensitiveEndsWith";
-                        }
-                        else
-                        {
-                            methodName = "EndsWithOrdinal";
-                        }
+                        methodName = m_IgnoreCase ? "InsensitiveEndsWith" : "EndsWithOrdinal";
                         break;
                     }
 
@@ -342,11 +314,7 @@ namespace Server.Commands.Generic
                         methodName,
                         BindingFlags.Public | BindingFlags.Static,
                         null,
-                        new[]
-                        {
-                            typeof(string),
-                            typeof(string)
-                        },
+                        [typeof(string), typeof(string)],
                         null
                     )
                 );
@@ -380,12 +348,9 @@ namespace Server.Commands.Generic
                 emitter.BeginCall(
                     type.GetMethod(
                         methodName,
-                        BindingFlags.Public | BindingFlags.Instance,
+                        BindingFlags.Public | BindingFlags.Static,
                         null,
-                        new[]
-                        {
-                            typeof(string)
-                        },
+                        [typeof(string), typeof(string)],
                         null
                     )
                 );

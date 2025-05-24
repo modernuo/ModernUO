@@ -48,7 +48,7 @@ public partial class PlantItem : Item, ISecurable
     private PlantSystem _plantSystem;
 
     [SerializableFieldSaveFlag(5)]
-    private bool ShouldSerializePlantSystem() => _plantStatus != PlantStatus.DecorativePlant;
+    private bool ShouldSerializePlantSystem() => _plantStatus < PlantStatus.DecorativePlant;
 
     // For clients older than 7.0.12.0
     private ObjectPropertyList _oldClientPropertyList;

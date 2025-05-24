@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BaseGump.cs                                                     *
  *                                                                       *
@@ -85,5 +85,38 @@ public abstract class BaseGump
             // Virtue Gump
             return hash == 461 ? hash * primeMulti : hash;
         }
+    }
+
+    public static Point2D GetItemGraphicOffset(int itemId)
+    {
+        var (width, height) = ItemBounds.Sizes[itemId];
+        var x = 0;
+        var y = 0;
+
+        if (width > 44)
+        {
+            x -= (width - 44) / 2;
+        }
+        else if (width < 44)
+        {
+            x += (44 - width) / 2;
+        }
+
+        if (height > 44)
+        {
+            y -= height - 44;
+        }
+        else if (height < 44)
+        {
+            y += 44 - height;
+        }
+
+        return new Point2D(x, y);
+    }
+
+    public static Point2D GetGumpOffsetForItemGraphic(int itemId, int relativeX, int relativeY)
+    {
+        var offset = GetItemGraphicOffset(itemId);
+        return new Point2D(relativeX * 22 - relativeY * 22 + offset.X, relativeX * 22 + relativeY * 22 + offset.Y);
     }
 }

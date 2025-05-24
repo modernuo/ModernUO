@@ -7,8 +7,8 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-[Collection("Sequential Tests")]
-public class BulletinBoardPacketTests : IClassFixture<ServerFixture>
+[Collection("Sequential UOContent Tests")]
+public class BulletinBoardPacketTests
 {
     [Theory]
     [InlineData("Test Name")]
@@ -16,16 +16,16 @@ public class BulletinBoardPacketTests : IClassFixture<ServerFixture>
     [InlineData("🅵🅰🅽🅲🆈 🆃🅴🆇🆃")]
     public void TestSendBBDisplayBoard(string boardName)
     {
-            var bb = new TestBulletinBoard(0x234) { BoardName = boardName };
+        var bb = new TestBulletinBoard(0x234) { BoardName = boardName };
 
-            var expected = new BBDisplayBoard(bb).Compile();
+        var expected = new BBDisplayBoard(bb).Compile();
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendBBDisplayBoard(bb);
+        var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendBBDisplayBoard(bb);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
-        }
+    }
 
     [Theory]
     [InlineData("The Subject", false, "First Line", "Second Line", "Third Line")]
@@ -36,32 +36,32 @@ public class BulletinBoardPacketTests : IClassFixture<ServerFixture>
     [InlineData("🅵🅰🅽🅲🆈 🆃🅴🆇🆃", true, "First Line", "Second Line")]
     public void TestSendBBHeaderMessage(string subject, bool content, params string[] lines)
     {
-            var poster = new Mobile((Serial)0x1024u) { Name = "Kamron" };
-            poster.DefaultMobileInit();
+        var poster = new Mobile((Serial)0x1024u) { Name = "Kamron" };
+        poster.DefaultMobileInit();
 
-            var bb = new TestBulletinBoard(0x234);
-            bb.PostMessage(poster, null, subject, lines);
+        var bb = new TestBulletinBoard(0x234);
+        bb.PostMessage(poster, null, subject, lines);
 
-            var msg = bb.Items[0] as BulletinMessage;
+        var msg = bb.Items[0] as BulletinMessage;
 
-            var expected = (content ?
-                (Packet)new BBMessageContent(bb, msg) : new BBMessageHeader(bb, msg)).Compile();
+        var expected = (content ?
+            (Packet)new BBMessageContent(bb, msg) : new BBMessageHeader(bb, msg)).Compile();
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendBBMessage(bb, msg, content);
+        var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendBBMessage(bb, msg, content);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
         AssertThat.Equal(result, expected);
-        }
+    }
 }
 
 internal class TestBulletinBoard : BaseBulletinBoard
 {
     public TestBulletinBoard(int itemID) : base(itemID)
     {
-        }
+    }
 
     public TestBulletinBoard(Serial serial) : base(serial)
     {
-        }
+    }
 }

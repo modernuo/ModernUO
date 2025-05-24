@@ -40,7 +40,7 @@ namespace Server.Mobiles
 
             VirtualArmor = 28;
 
-            Container pack = new Backpack();
+            var pack = new Backpack();
 
             pack.DropItem(new Arrow(Utility.RandomMinMax(25, 35)));
             pack.DropItem(new Arrow(Utility.RandomMinMax(25, 35)));

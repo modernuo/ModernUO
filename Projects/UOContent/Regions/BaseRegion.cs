@@ -12,7 +12,7 @@ public class BaseRegion : Region
     private static readonly List<Rectangle3D> m_RectBuffer1 = new();
     private static readonly List<Rectangle3D> m_RectBuffer2 = new();
 
-    public BaseRegion(string name, Map map, int priority, params Rectangle2D[] area) : base(name, map, priority, area)
+    public BaseRegion(string name, Map map, int priority, params ReadOnlySpan<Rectangle2D> area) : base(name, map, priority, area)
     {
     }
 
@@ -26,7 +26,7 @@ public class BaseRegion : Region
     {
     }
 
-    public BaseRegion(string name, Map map, Region parent, params Rectangle2D[] area) : base(name, map, parent, area)
+    public BaseRegion(string name, Map map, Region parent, params ReadOnlySpan<Rectangle2D> area) : base(name, map, parent, area)
     {
     }
 

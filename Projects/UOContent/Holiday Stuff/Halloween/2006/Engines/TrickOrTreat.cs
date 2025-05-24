@@ -76,7 +76,7 @@ namespace Server.Engines.Events
 
             if (CheckMobile(m_From))
             {
-                Mobile twin = new NaughtyTwin(m_From);
+                var twin = new NaughtyTwin(m_From);
 
                 if (twin.Deleted)
                 {

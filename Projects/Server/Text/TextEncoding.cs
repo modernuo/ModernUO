@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TextEncoding.cs                                                 *
  *                                                                       *
@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Server.Buffers;
 
 namespace Server.Text;
 
@@ -114,33 +115,63 @@ public static class TextEncoding
             _          => 1
         };
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool IsSafeChar(ushort c) => c is >= 0x20 and < 0xFFFE;
-
     public static string GetString(ReadOnlySpan<byte> span, Encoding encoding, bool safeString = false)
     {
-        string s = encoding.GetString(span);
-
         if (!safeString)
         {
-            return s;
+            return encoding.GetString(span);
         }
 
-        ReadOnlySpan<char> chars = s.AsSpan();
+        var charCount = encoding.GetMaxCharCount(span.Length);
 
-        using var sb = new ValueStringBuilder(stackalloc char[256]);
-        var hasDoneAnyReplacements = false;
+        char[] rentedChars = null;
+        Span<char> chars = charCount <= 256
+            ? stackalloc char[charCount]
+            : rentedChars = STArrayPool<char>.Shared.Rent(charCount);
 
-        for (int i = 0, last = 0; i < chars.Length; i++)
+        try
         {
-            if (!IsSafeChar(chars[i]) && i == chars.Length - 1)
+            var length = encoding.GetChars(span, chars);
+            chars = chars[..length];
+
+            var index = chars.IndexOfAnyExceptInRange((char)0x20, (char)0xFFFD);
+            if (index == -1)
             {
-                hasDoneAnyReplacements = true;
-                sb.Append(chars.Slice(last, i - last));
-                last = i + 1; // Skip the unsafe char
+                return new string(chars);
+            }
+
+            using var sb = charCount <= 256
+                ? new ValueStringBuilder(stackalloc char[charCount])
+                : ValueStringBuilder.Create(charCount);
+
+            while (index != -1)
+            {
+                sb.Append(chars[..index]);
+
+                if (index + 1 < chars.Length)
+                {
+                    chars = chars[(index + 1)..];
+                    index = chars.IndexOfAnyExceptInRange((char)0x20, (char)0xFFFD);
+                }
+                else
+                {
+                    index = -1;
+                }
+            }
+
+            if (chars.Length > 0)
+            {
+                sb.Append(chars);
+            }
+
+            return sb.ToString();
+        }
+        finally
+        {
+            if (rentedChars != null)
+            {
+                STArrayPool<char>.Shared.Return(rentedChars);
             }
         }
-
-        return !hasDoneAnyReplacements ? s : sb.ToString();
     }
 }

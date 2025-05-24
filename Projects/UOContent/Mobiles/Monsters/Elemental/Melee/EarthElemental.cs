@@ -40,9 +40,10 @@ namespace Server.Mobiles
             PackItem(new FertileDirt(Utility.RandomMinMax(1, 4)));
             PackItem(new MandrakeRoot());
 
-            Item ore = new IronOre(5);
-            ore.ItemID = 0x19B7;
-            PackItem(ore);
+            PackItem(new IronOre(5)
+            {
+                ItemID = 0x19B7
+            });
         }
 
         public override string CorpseName => "an earth elemental corpse";

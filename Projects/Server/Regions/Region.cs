@@ -127,7 +127,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public const int MinZ = sbyte.MinValue;
     public const int MaxZ = sbyte.MaxValue + 1;
 
-    public Region(string name, Map map, int priority, params Rectangle2D[] area) : this(
+    public Region(string name, Map map, int priority, params ReadOnlySpan<Rectangle2D> area) : this(
         name,
         map,
         priority,
@@ -147,7 +147,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public Region(string name, Map map, Region parent, int priority, params Rectangle3D[] area) : this(name, map, parent, area) =>
         Priority = priority;
 
-    public Region(string name, Map map, Region parent, params Rectangle2D[] area) : this(
+    public Region(string name, Map map, Region parent, params ReadOnlySpan<Rectangle2D> area) : this(
         name,
         map,
         parent,
@@ -314,7 +314,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public static Rectangle3D ConvertTo3D(Rectangle2D rect) =>
         new(new Point3D(rect.Start, MinZ), new Point3D(rect.End, MaxZ));
 
-    public static Rectangle3D[] ConvertTo3D(Rectangle2D[] rects)
+    public static Rectangle3D[] ConvertTo3D(ReadOnlySpan<Rectangle2D> rects)
     {
         var ret = new Rectangle3D[rects.Length];
 

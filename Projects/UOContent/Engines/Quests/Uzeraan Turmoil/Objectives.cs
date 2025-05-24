@@ -328,7 +328,7 @@ namespace Server.Engines.Quests.Haven
                         1049330
                     ); // You have been ambushed! Fight for your honor!!!
 
-                    BaseCreature creature = new HordeMinion();
+                    var creature = new HordeMinion();
                     creature.MoveToWorld(new Point3D(x, y, z), Map.Trammel);
                     creature.Combatant = player;
                 }

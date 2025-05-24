@@ -343,7 +343,28 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return null;
     }
 
-    public SecureTradeContainer FindTradeContainer(Mobile m) => FindTrade(m)?.From.Container;
+    public SecureTradeContainer FindTradeContainer(Mobile m)
+    {
+        for (var i = 0; i < Trades.Count; ++i)
+        {
+            var trade = Trades[i];
+
+            var from = trade.From;
+            var to = trade.To;
+
+            if (from.Mobile == Mobile && to.Mobile == m)
+            {
+                return from.Container;
+            }
+
+            if (from.Mobile == m && to.Mobile == Mobile)
+            {
+                return to.Container;
+            }
+        }
+
+        return null;
+    }
 
     public SecureTradeContainer AddTrade(NetState state)
     {

@@ -1,3 +1,4 @@
+using System;
 using Server.Spells;
 using Server.Spells.First;
 using Server.Spells.Fourth;
@@ -132,7 +133,7 @@ public class HealerAI : BaseAI
         }
     }
 
-    private Mobile Find(params NeedDelegate[] funcs)
+    private Mobile Find(params ReadOnlySpan<NeedDelegate> funcs)
     {
         if (m_Mobile.Deleted)
         {

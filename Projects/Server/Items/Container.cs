@@ -423,7 +423,7 @@ public partial class Container : Item
         return false;
     }
 
-    public virtual bool TryDropItems(Mobile from, bool sendFullMessage, params Item[] droppedItems)
+    public virtual bool TryDropItems(Mobile from, bool sendFullMessage, params ReadOnlySpan<Item> droppedItems)
     {
         var dropItems = new List<Item>();
         var stackItems = new List<ItemStackEntry>();

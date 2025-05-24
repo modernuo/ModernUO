@@ -64,13 +64,15 @@ public partial class Mardoth : BaseQuester
         HairItemID = 0x203C;
         HairHue = 0x482;
 
-        Item gloves = new BoneGloves();
-        gloves.Hue = 0x66D;
-        AddItem(gloves);
+        AddItem(new BoneGloves
+        {
+            Hue = 0x66D
+        });
 
-        Item gorget = new PlateGorget();
-        gorget.Hue = 0x1;
-        AddItem(gorget);
+        AddItem(new PlateGorget
+        {
+            Hue = 0x1
+        });
     }
 
     public override int GetAutoTalkRange(PlayerMobile m) => 3;

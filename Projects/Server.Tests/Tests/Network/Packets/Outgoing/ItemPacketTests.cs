@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class ItemPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+public class ItemPacketTests
     {
         [Fact]
         public void TestWorldItemPacket()

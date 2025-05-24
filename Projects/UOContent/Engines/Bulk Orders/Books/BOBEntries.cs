@@ -17,5 +17,5 @@ public class BOBEntries : GenericEntityPersistence<IBOBEntry>
 
     public static void Add(IBOBEntry entity) => _bobEntriesPersistence.AddEntity(entity);
 
-    public static void Remove(IBOBEntry entity) => _bobEntriesPersistence.AddEntity(entity);
+    public static void Remove(IBOBEntry entity) => _bobEntriesPersistence.RemoveEntity(entity);
 }

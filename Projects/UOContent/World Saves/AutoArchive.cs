@@ -383,7 +383,7 @@ namespace Server.Saves
                 _                     => date
             };
 
-        private static IEnumerable<string> PathsByTimestampName(string path, bool files = false)
+        private static SortedDictionary<DateTime, string>.ValueCollection PathsByTimestampName(string path, bool files = false)
         {
             var allItems = files ? Directory.EnumerateFiles(path) : Directory.GetDirectories(path);
             var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());

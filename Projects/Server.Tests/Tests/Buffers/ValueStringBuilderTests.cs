@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Server.Tests.Buffers;
 
-[Collection("Sequential Tests")]
+[Collection("Sequential Server Tests")]
 public class ValueStringBuilderTests
 {
     [Theory]

@@ -88,7 +88,7 @@ public abstract partial class BaseWeapon
 
     [SerializableFieldSaveFlag(7)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool ShouldSerializePoison() => _poison?.Level > 0;
+    private bool ShouldSerializePoison() => _poison != null;
 
     [InvalidateProperties]
     [SerializableField(8)]
@@ -890,6 +890,11 @@ public abstract partial class BaseWeapon
 
             if (attacker is BaseCreature bc)
             {
+                if (bc.TriggerAbility(MonsterAbilityTrigger.CombatAction, defender))
+                {
+                    return GetDelay(attacker);
+                }
+
                 // Only change direction if they are not a player.
                 attacker.Direction = attacker.GetDirectionTo(defender);
                 var ab = bc.GetWeaponAbility();
@@ -1026,6 +1031,11 @@ public abstract partial class BaseWeapon
 
     public override bool CanEquip(Mobile from)
     {
+        if (!from.Player || from.AccessLevel >= AccessLevel.GameMaster)
+        {
+            return from.CanBeginAction<BaseWeapon>() && base.CanEquip(from);
+        }
+
         if (!Ethic.CheckEquip(from, this))
         {
             return false;
@@ -1345,7 +1355,7 @@ public abstract partial class BaseWeapon
             theirValue = Math.Max(0.1, defValue + 50.0);
         }
 
-        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;;
+        var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;
 
         if (Core.AOS && chance < 0.02)
         {
@@ -3657,7 +3667,7 @@ public abstract partial class BaseWeapon
 
         attacker.DoHarmful(defender);
 
-        MagerySpell sp = new DispelSpell(attacker);
+        var sp = new DispelSpell(attacker);
 
         if (sp.CheckResisted(defender))
         {

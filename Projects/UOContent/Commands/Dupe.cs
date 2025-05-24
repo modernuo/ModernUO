@@ -120,6 +120,18 @@ public static class Dupe
 
             for (var j = 0; j < src.Items.Count; j++)
             {
+                c = src.Items[j].GetType().GetConstructor(out var paramCount);
+                if (c == null)
+                {
+                    continue;
+                }
+
+                args = paramCount == 0 ? null : new object[paramCount];
+                if (args != null)
+                {
+                    Array.Fill(args, Type.Missing);
+                }
+
                 var subItem = DoDupe(src.Items[j], c, args, from);
                 newItem.AddItem(subItem);
             }

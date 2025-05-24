@@ -6,13 +6,13 @@ public sealed class ToggleSpecialAbility : Packet
 {
     public ToggleSpecialAbility(int abilityID, bool active) : base(0xBF)
     {
-            EnsureCapacity(7);
+        EnsureCapacity(7);
 
-            Stream.Write((short)0x25);
+        Stream.Write((short)0x25);
 
-            Stream.Write((short)abilityID);
-            Stream.Write(active);
-        }
+        Stream.Write((short)abilityID);
+        Stream.Write(active);
+    }
 }
 
 public sealed class ClearWeaponAbility : Packet
@@ -21,8 +21,8 @@ public sealed class ClearWeaponAbility : Packet
 
     public ClearWeaponAbility() : base(0xBF)
     {
-            EnsureCapacity(5);
+        EnsureCapacity(5);
 
-            Stream.Write((short)0x21);
-        }
+        Stream.Write((short)0x21);
+    }
 }

@@ -784,11 +784,10 @@ public partial class Beotham : BaseCreature
         AddItem(new ShortPants(0x522));
         AddItem(new FancyShirt(0x515));
 
-        Item item;
-
-        item = new LeafGloves();
-        item.Hue = 0x901;
-        AddItem(item);
+        AddItem(new LeafGloves
+        {
+            Hue = 0x901
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -1014,11 +1013,10 @@ public partial class LorekeeperRollarn : BaseCreature
         AddItem(new Circlet());
         AddItem(new LeafChest());
 
-        Item item;
-
-        item = new LeafLegs();
-        item.Hue = 0x71A;
-        AddItem(item);
+        AddItem(new LeafLegs
+        {
+            Hue = 0x71A
+        });
     }
 
     public override bool IsInvulnerable => true;

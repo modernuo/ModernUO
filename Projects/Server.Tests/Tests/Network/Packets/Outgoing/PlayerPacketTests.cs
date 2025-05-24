@@ -5,8 +5,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    [Collection("Sequential Tests")]
-    public class PlayerPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+    public class PlayerPacketTests
     {
         [Theory]
         [InlineData(StatLockType.Down, StatLockType.Up, StatLockType.Locked)]

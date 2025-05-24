@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-public sealed class WorldLocationTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public sealed class WorldLocationTests
 {
     private static Map CreateMap(string name) => new(0, 0, 0, 1, 1, 0, name, MapRules.Internal);
 

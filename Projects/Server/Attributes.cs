@@ -145,16 +145,18 @@ public class CommandPropertyAttribute : Attribute
         AccessLevel level,
         bool readOnly = false,
         bool canModify = false
-    ) : this(level, level)
+    ) : this(level, level, readOnly, canModify)
     {
-        ReadOnly = readOnly;
-        CanModify = canModify;
     }
 
-    public CommandPropertyAttribute(AccessLevel readLevel, AccessLevel writeLevel)
+    public CommandPropertyAttribute(
+        AccessLevel readLevel, AccessLevel writeLevel, bool readOnly = false, bool canModify = false
+    )
     {
         ReadLevel = readLevel;
         WriteLevel = writeLevel;
+        ReadOnly = readOnly;
+        CanModify = canModify;
     }
 
     public AccessLevel ReadLevel { get; }
@@ -170,16 +172,18 @@ public class SerializedCommandPropertyAttribute : SerializedPropertyAttrAttribut
         AccessLevel level,
         bool readOnly = false,
         bool canModify = false
-    ) : this(level, level)
+    ) : this(level, level, readOnly, canModify)
     {
-        ReadOnly = readOnly;
-        CanModify = canModify;
     }
 
-    public SerializedCommandPropertyAttribute(AccessLevel readLevel, AccessLevel writeLevel)
+    public SerializedCommandPropertyAttribute(
+        AccessLevel readLevel, AccessLevel writeLevel, bool readOnly = false, bool canModify = false
+    )
     {
         ReadLevel = readLevel;
         WriteLevel = writeLevel;
+        ReadOnly = readOnly;
+        CanModify = canModify;
     }
 
     public AccessLevel ReadLevel { get; }

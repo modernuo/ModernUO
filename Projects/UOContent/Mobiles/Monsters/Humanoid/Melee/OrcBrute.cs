@@ -38,9 +38,10 @@ namespace Server.Mobiles
 
             VirtualArmor = 50;
 
-            Item ore = new ShadowIronOre(25);
-            ore.ItemID = 0x19B9;
-            PackItem(ore);
+            PackItem(new ShadowIronOre(25)
+            {
+                ItemID = 0x19B9
+            });
             PackItem(new IronIngot(10));
 
             if (Utility.RandomDouble() < 0.05)

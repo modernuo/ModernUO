@@ -387,6 +387,12 @@ namespace Server.Misc
                 return Notoriety.Invulnerable;
             }
 
+            // Moved above AccessLevel check so staff summons are red
+            if (bcTarg?.AlwaysMurderer == true)
+            {
+                return Notoriety.Murderer;
+            }
+
             var pmFrom = source as PlayerMobile;
             var pmTarg = target as PlayerMobile;
 
@@ -434,7 +440,7 @@ namespace Server.Misc
 
             if (target.Kills >= 5 ||
                 target.Body.IsMonster && IsSummoned(bcTarg) && target is not BaseFamiliar && target is not ArcaneFey &&
-                target is not Golem || bcTarg?.AlwaysMurderer == true || bcTarg?.IsAnimatedDead == true)
+                target is not Golem || bcTarg?.IsAnimatedDead == true)
             {
                 return Notoriety.Murderer;
             }

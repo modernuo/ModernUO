@@ -1274,11 +1274,10 @@ public partial class Mithneral : BaseCreature
         AddItem(new Backpack());
         AddItem(new Sandals());
 
-        Item item;
-
-        item = new GustarShroud();
-        item.Hue = 0x51C;
-        AddItem(item);
+        AddItem(new GustarShroud
+        {
+            Hue = 0x51C
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -1876,10 +1875,9 @@ public partial class GeorgeHephaestus : Blacksmith
         AddItem(new Bascinet());
         AddItem(new FullApron(0x8AB));
 
-        Item item;
-
-        item = new SmithHammer();
-        item.Hue = 0x8AB;
-        AddItem(item);
+        AddItem(new SmithHammer
+        {
+            Hue = 0x8AB
+        });
     }
 }

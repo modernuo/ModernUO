@@ -460,7 +460,7 @@ namespace Server.Gumps
                 goldToGive = 0;
             }
 
-            PlayerVendor vendor = new RentedVendor(
+            var vendor = new RentedVendor(
                 from,
                 house,
                 m_Contract.Duration,
@@ -472,13 +472,11 @@ namespace Server.Gumps
 
             m_Contract.Delete();
 
-            from.SendLocalizedMessage(
-                1062377
-            ); // You have accepted the offer and now own a vendor in this house.  Rental contract options and details may be viewed on this vendor via the 'Contract Options' context menu.
-            m_Landlord.SendLocalizedMessage(
-                1062376,
-                from.Name
-            ); // ~1_NAME~ has accepted your vendor rental offer.  Rental contract details and options may be viewed on this vendor via the 'Contract Options' context menu.
+            // You have accepted the offer and now own a vendor in this house.  Rental contract options and details may be viewed on this vendor via the 'Contract Options' context menu.
+            from.SendLocalizedMessage(1062377);
+
+            // ~1_NAME~ has accepted your vendor rental offer.  Rental contract details and options may be viewed on this vendor via the 'Contract Options' context menu.
+            m_Landlord.SendLocalizedMessage(1062376, from.Name);
         }
 
         protected override void Cancel(Mobile from)

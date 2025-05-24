@@ -15,14 +15,14 @@ namespace Server.Misc
         private int m_Stage;
 
         public Weather(
-            Map facet, Rectangle2D[] area, int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature,
+            Map facet, Rectangle2D[] area, int temperature, int chanceOfPrecipitation, int chanceOfExtremeTemperature,
             TimeSpan interval
         )
         {
             Facet = facet;
             Area = area;
             Temperature = temperature;
-            ChanceOfPercipitation = chanceOfPercipitation;
+            ChanceOfPrecipitation = chanceOfPrecipitation;
             ChanceOfExtremeTemperature = chanceOfExtremeTemperature;
 
             var list = GetWeatherList(facet);
@@ -42,7 +42,7 @@ namespace Server.Misc
 
         public int Temperature { get; set; }
 
-        public int ChanceOfPercipitation { get; set; }
+        public int ChanceOfPrecipitation { get; set; }
 
         public int ChanceOfExtremeTemperature { get; set; }
 
@@ -298,7 +298,7 @@ namespace Server.Misc
         {
             if (m_Stage == 0)
             {
-                m_Active = ChanceOfPercipitation > Utility.Random(100);
+                m_Active = ChanceOfPrecipitation > Utility.Random(100);
                 m_ExtremeTemperature = ChanceOfExtremeTemperature > Utility.Random(100);
 
                 if (MoveSpeed > 0)

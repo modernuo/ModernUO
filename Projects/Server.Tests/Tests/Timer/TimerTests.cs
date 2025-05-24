@@ -3,8 +3,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-[Collection("Sequential Tests")]
-public class TimerTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class TimerTests
 {
     [Theory]
     [InlineData(0L, 8L)]

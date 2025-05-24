@@ -127,10 +127,13 @@ public static class AdminFirewall
 
     public static void Save()
     {
-        using var op = new StreamWriter(firewallConfigPath);
-        foreach (var entry in Firewall.FirewallSet)
+        Firewall.ReadFirewallSet(firewallSet =>
         {
-            op.WriteLine(entry);
-        }
+            using var op = new StreamWriter(firewallConfigPath);
+            foreach (var entry in firewallSet)
+            {
+                op.WriteLine(entry);
+            }
+        });
     }
 }

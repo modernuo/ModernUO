@@ -137,7 +137,7 @@ namespace Server.Gumps
 
             var entries = Categories[cat];
 
-            if (ent < 0 || ent >= entries.Entries.Length)
+            if (ent >= 0 && ent < entries.Entries.Length)
             {
                 Spell spell = new PolymorphSpell(state.Mobile, _scroll, entries.Entries[ent].BodyID);
                 spell.Cast();

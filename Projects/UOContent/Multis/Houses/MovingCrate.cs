@@ -72,19 +72,18 @@ namespace Server.Multis
             {
                 if (item is PackingBox packingBox)
                 {
-                    Container box = packingBox;
-                    var subItems = box.Items;
+                    var subItems = packingBox.Items;
 
                     if (subItems.Count < MaxItemsPerSubcontainer)
                     {
-                        box.DropItem(dropped);
+                        packingBox.DropItem(dropped);
                         return;
                     }
                 }
             }
 
             // 3. Drop the item into a new container
-            Container subContainer = new PackingBox();
+            var subContainer = new PackingBox();
             subContainer.DropItem(dropped);
 
             var location = GetFreeLocation();

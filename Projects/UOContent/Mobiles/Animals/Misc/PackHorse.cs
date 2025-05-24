@@ -155,7 +155,7 @@ namespace Server.Mobiles
 
             if (pack != null)
             {
-                Container newPack = new Backpack();
+                var newPack = new Backpack();
 
                 for (var i = pack.Items.Count - 1; i >= 0; --i)
                 {

@@ -8,7 +8,7 @@ public static class GumpUtilities
 {
     public static Packet Compile(this Gump g, NetState ns = null)
     {
-        IGumpWriter disp = new DisplayGumpPacked(g);
+        var disp = new DisplayGumpPacked(g);
 
         if (!g.Draggable)
         {
@@ -46,7 +46,7 @@ public static class GumpUtilities
 
         disp.Flush();
 
-        return (Packet)disp;
+        return disp;
     }
 
     public static int Intern(this List<string> strings, string value)

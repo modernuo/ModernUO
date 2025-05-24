@@ -163,8 +163,8 @@ namespace Server.Engines.Doom
 
         public static BaseDoor CreateDoorSet(int xDoor, int yDoor, bool doorEastToWest, int hue)
         {
-            BaseDoor hiDoor = new MetalDoor(doorEastToWest ? DoorFacing.NorthCCW : DoorFacing.WestCW);
-            BaseDoor loDoor = new MetalDoor(doorEastToWest ? DoorFacing.SouthCW : DoorFacing.EastCCW);
+            var hiDoor = new MetalDoor(doorEastToWest ? DoorFacing.NorthCCW : DoorFacing.WestCW);
+            var loDoor = new MetalDoor(doorEastToWest ? DoorFacing.SouthCW : DoorFacing.EastCCW);
 
             hiDoor.MoveToWorld(new Point3D(xDoor, yDoor, -1), Map.Malas);
             loDoor.MoveToWorld(

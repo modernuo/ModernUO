@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ArtData.cs                                                      *
  *                                                                       *
@@ -50,18 +50,18 @@ public class ArtData : IDisposable
         }
     }
 
-    public Rectangle2D GetStaticBounds(int index)
+    public (ushort Width, ushort Height, Rectangle2D Bounds) GetStaticBounds(int index)
     {
         if (index is < 0 or > 0x10000)
         {
-            return Rectangle2D.Empty;
+            return (0, 0, Rectangle2D.Empty);
         }
 
         index += 16384;
 
         if (!_dataRanges.TryGetValue(index, out var entry))
         {
-            return Rectangle2D.Empty;
+            return (0, 0, Rectangle2D.Empty);
         }
 
         Span<ushort> buffer = stackalloc ushort[entry.Size / 2];
@@ -73,10 +73,10 @@ public class ArtData : IDisposable
 
         if (width == 0 || height == 0)
         {
-            return Rectangle2D.Empty;
+            return (0, 0, Rectangle2D.Empty);
         }
 
-        return GetBoundsFromRGBA1555Bitmap(width, height, buffer[4..]);
+        return (width, height, GetBoundsFromRGBA1555Bitmap(width, height, buffer[4..]));
     }
 
     private static Dictionary<int, UOPEntry> LoadMulRanges(string idxPath)

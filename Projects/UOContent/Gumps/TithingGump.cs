@@ -56,8 +56,8 @@ public class TithingGump : StaticGump<TithingGump>
         // Just in case
         _offer = Math.Clamp(_offer, 0, totalGold);
 
-        builder.SetStringSlot("goldOffer", (totalGold - _offer).ToString("N0"));
-        builder.SetStringSlot("titheOffer", _offer.ToString("N0"));
+        builder.SetStringSlot("goldOffer", $"{totalGold - _offer:N0}");
+        builder.SetStringSlot("titheOffer", $"{_offer:N0}");
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)

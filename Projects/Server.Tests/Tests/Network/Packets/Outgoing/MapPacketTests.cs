@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class MapPatchesTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+public class MapPatchesTests
     {
         [Fact]
         public void TestMapPatches()

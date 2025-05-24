@@ -187,7 +187,7 @@ namespace Server.Gumps
                         Console.WriteLine("Type {0} does not have a valid item id or shrink table entry.", obj.Type);
                     }
 
-                    var bounds = ItemBounds.Table[itemID];
+                    var bounds = ItemBounds.Bounds[itemID];
 
                     if (itemID != 1 && bounds.Height < EntryHeight * 2)
                     {

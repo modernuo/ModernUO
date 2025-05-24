@@ -309,7 +309,7 @@ public ref struct ValueStringBuilder
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Append(ReadOnlySpan<char> value)
+    public void Append(scoped ReadOnlySpan<char> value)
     {
         int pos = _length;
         if (pos > _chars.Length - value.Length)

@@ -34,7 +34,7 @@ public partial class DaemonBloodChest : MetalChest
             return;
         }
 
-        Item vial = new QuestDaemonBlood();
+        var vial = new QuestDaemonBlood();
 
         if (player.PlaceInBackpack(vial))
         {

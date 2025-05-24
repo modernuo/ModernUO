@@ -70,6 +70,11 @@ namespace Server.Items
                     attacker.DisruptiveAction();
                     attacker.NetState.SendSwing(attacker.Serial, defender.Serial);
 
+                    if (attacker is BaseCreature bc && bc.TriggerAbility(MonsterAbilityTrigger.CombatAction, defender))
+                    {
+                        return GetDelay(attacker);
+                    }
+
                     if (OnFired(attacker, defender))
                     {
                         if (CheckHit(attacker, defender))

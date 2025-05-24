@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Server.Tests.Tests.Buffers;
 
-[Collection("Sequential Tests")]
+[Collection("Sequential Server Tests")]
 public class STArrayPoolTests
 {
     [Theory]

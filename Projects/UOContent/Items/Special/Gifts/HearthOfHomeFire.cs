@@ -60,25 +60,27 @@ public partial class HearthOfHomeFireDeed : BaseAddonDeed
         base.OnDoubleClick(m);
     }
 
-    private class InternalGump : Gump
+    private class InternalGump : StaticGump<InternalGump>
     {
         private readonly HearthOfHomeFireDeed _deed;
 
         public override bool Singleton => true;
 
-        public InternalGump(HearthOfHomeFireDeed deed) : base(150, 50)
+        public InternalGump(HearthOfHomeFireDeed deed) : base(150, 50) => _deed = deed;
+
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
         {
-            _deed = deed;
+            builder.AddBackground(0, 0, 350, 250, 0xA28);
 
-            AddBackground(0, 0, 350, 250, 0xA28);
+            builder.AddPage();
 
-            AddItem(90, 52, 0x2367);
-            AddItem(112, 35, 0x2360);
-            AddButton(70, 35, 0x868, 0x869, 1); // South
+            builder.AddItem(90, 52, 0x2367);
+            builder.AddItem(112, 35, 0x2360);
+            builder.AddButton(70, 35, 0x868, 0x869, 1); // South
 
-            AddItem(220, 35, 0x2352);
-            AddItem(242, 52, 0x2358);
-            AddButton(185, 35, 0x868, 0x869, 2); // East
+            builder.AddItem(220, 35, 0x2352);
+            builder.AddItem(242, 52, 0x2358);
+            builder.AddButton(185, 35, 0x868, 0x869, 2); // East
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)

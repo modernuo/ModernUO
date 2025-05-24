@@ -418,7 +418,7 @@ public static partial class CharacterCreation
     {
         name = name.Trim();
 
-        if (!NameVerification.Validate(name, 2, 16, true, false, true, 1, NameVerification.SpaceDashPeriodQuote))
+        if (!NameVerification.ValidatePlayerName(name))
         {
             name = "Generic Player";
         }

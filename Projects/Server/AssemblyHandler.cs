@@ -234,10 +234,10 @@ public class TypeCache
     private static ILogger logger = LogFactory.GetLogger(typeof(TypeCache));
 #endif
 
-    private Dictionary<ulong, Type[]> _nameMap = new();
-    private Dictionary<ulong, Type[]> _nameMapInsensitive = new();
-    private Dictionary<ulong, Type[]> _fullNameMap = new();
-    private Dictionary<ulong, Type[]> _fullNameMapInsensitive = new();
+    private readonly Dictionary<ulong, Type[]> _nameMap = [];
+    private readonly Dictionary<ulong, Type[]> _nameMapInsensitive = [];
+    private readonly Dictionary<ulong, Type[]> _fullNameMap = [];
+    private readonly Dictionary<ulong, Type[]> _fullNameMapInsensitive = [];
 
     public TypeCache(Assembly asm)
     {
@@ -247,15 +247,6 @@ public class TypeCache
         var nameMapInsensitive = new Dictionary<string, HashSet<Type>>();
         var fullNameMap = new Dictionary<string, HashSet<Type>>();
         var fullNameMapInsensitive = new Dictionary<string, HashSet<Type>>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void addTypeToRefs(Type type, string typeName, string fullTypeName)
-        {
-            AddToRefs(type, typeName, nameMap);
-            AddToRefs(type, typeName.ToLower(), nameMapInsensitive);
-            AddToRefs(type, fullTypeName, fullNameMap);
-            AddToRefs(type, fullTypeName.ToLower(), fullNameMapInsensitive);
-        }
 
         var aliasType = typeof(TypeAliasAttribute);
         for (var i = 0; i < Types.Length; i++)
@@ -267,7 +258,7 @@ public class TypeCache
                 for (var j = 0; j < alias.Aliases.Length; j++)
                 {
                     var fullTypeName = alias.Aliases[j];
-                    var typeName = fullTypeName[(fullTypeName.LastIndexOf('.')+1)..];
+                    var typeName = fullTypeName[(fullTypeName.AsSpan().LastIndexOf('.') + 1)..];
                     addTypeToRefs(current, typeName, fullTypeName);
                 }
             }
@@ -322,6 +313,17 @@ public class TypeCache
             }
 #endif
         }
+
+        return;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void addTypeToRefs(Type type, string typeName, string fullTypeName)
+        {
+            AddToRefs(type, typeName, nameMap);
+            AddToRefs(type, typeName.ToLower(), nameMapInsensitive);
+            AddToRefs(type, fullTypeName, fullNameMap);
+            AddToRefs(type, fullTypeName.ToLower(), fullNameMapInsensitive);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -338,7 +340,7 @@ public class TypeCache
         }
         else
         {
-            refs = new HashSet<Type> { type };
+            refs = [type];
             map.Add(key, refs);
         }
     }
@@ -369,12 +371,12 @@ public class TypeCache
             if (ignoreCase)
             {
                 var map = full ? cache._fullNameMapInsensitive : cache._nameMapInsensitive;
-                _values = map.TryGetValue(hash, out var values) ? values : Array.Empty<Type>();
+                _values = map.TryGetValue(hash, out var values) ? values : [];
             }
             else
             {
                 var map = full ? cache._fullNameMap : cache._nameMap;
-                _values = map.TryGetValue(hash, out var values) ? values : Array.Empty<Type>();
+                _values = map.TryGetValue(hash, out var values) ? values : [];
             }
 
             _index = 0;

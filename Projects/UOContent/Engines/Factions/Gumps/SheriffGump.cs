@@ -118,7 +118,7 @@ public class SheriffGump : FactionGump
 
     private void CenterItem(int itemID, int x, int y, int w, int h)
     {
-        var rc = ItemBounds.Table[itemID];
+        var rc = ItemBounds.Bounds[itemID];
         AddItem(x + (w - rc.Width) / 2 - rc.X, y + (h - rc.Height) / 2 - rc.Y, itemID);
     }
 

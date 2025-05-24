@@ -3,8 +3,8 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
-[Collection("Sequential Tests")]
-public class MobilePacketTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class MobilePacketTests
 {
     [Fact]
     public void TestDeathAnimation()
