@@ -35,7 +35,7 @@ namespace Server.Spells.Eighth
             {
                 Caster.SendLocalizedMessage(501039); // Thou can not resurrect thyself.
             }
-            else if (m is BaseCreature)
+            else if (m is BaseCreature { IsDeadBondedPet: true })
             {
                 Caster.SendMessage("Target can not be revived this way.");
             }
