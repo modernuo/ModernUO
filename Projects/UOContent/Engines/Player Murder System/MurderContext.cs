@@ -79,11 +79,7 @@ public partial class MurderContext
 
         if (_player.Kills > 0)
         {
-            var timeUntilLong = now + (LongTermElapse - gameTime);
-            if (_nextElapse > timeUntilLong)
-            {
-                _nextElapse = timeUntilLong;
-            }
+            _nextElapse = Utility.Min(_nextElapse, now + (LongTermElapse - gameTime));
         }
 
         return _nextElapse != DateTime.MaxValue;
