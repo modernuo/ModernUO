@@ -106,8 +106,8 @@ public class PlayerMurderSystem : GenericPersistence
             return;
         }
 
+        context.DecayKills();
         _contextTerms.Remove(context);
-        UpdateMurderContext(context);
 
         if (pm.Kills <= 0 && context.ShortTermMurders <= 0)
         {
@@ -172,6 +172,8 @@ public class PlayerMurderSystem : GenericPersistence
     {
         var context = GetOrCreateMurderContext(player);
         context.ShortTermMurders = shortTermMurders;
+
+        context.ResetKillTime();
         UpdateMurderContext(context);
     }
 
@@ -181,13 +183,13 @@ public class PlayerMurderSystem : GenericPersistence
         context.ShortTermMurders++;
         player.Kills++;
 
+        context.ResetKillTime();
         UpdateMurderContext(context);
     }
 
     private static void UpdateMurderContext(MurderContext context)
     {
         var player = context.Player;
-        context.ResetKillTime();
 
         if (!context.CheckStart())
         {
