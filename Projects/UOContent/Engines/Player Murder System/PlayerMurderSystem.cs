@@ -101,9 +101,17 @@ public class PlayerMurderSystem : GenericPersistence
 
     private static void OnDisconnected(Mobile m)
     {
-        if (m is PlayerMobile pm && _murderContexts.Remove(pm, out var context))
+        if (m is not PlayerMobile pm || !_murderContexts.TryGetValue(pm, out var context))
         {
-            _contextTerms.Remove(context);
+            return;
+        }
+
+        _contextTerms.Remove(context);
+        UpdateMurderContext(context);
+
+        if (pm.Kills <= 0 && context.ShortTermMurders <= 0)
+        {
+            _murderContexts.Remove(pm);
         }
     }
 
@@ -173,13 +181,13 @@ public class PlayerMurderSystem : GenericPersistence
         context.ShortTermMurders++;
         player.Kills++;
 
-        context.ResetKillTime();
         UpdateMurderContext(context);
     }
 
     private static void UpdateMurderContext(MurderContext context)
     {
         var player = context.Player;
+        context.ResetKillTime();
 
         if (!context.CheckStart())
         {
