@@ -2637,35 +2637,35 @@ namespace Server.Mobiles
         public override void DoHarmful(Mobile target, bool indirect = false)
         {
             base.DoHarmful(target, indirect);
-        
+
             if (target == this || target == m_ControlMaster || target == m_SummonMaster || !Controlled && !Summoned)
             {
                 return;
             }
-        
+
             if (indirect)
             {
                 return;
             }
-        
+
             var list = Aggressors;
-        
+
             for (var i = 0; i < list.Count; ++i)
             {
                 var ai = list[i];
-        
+
                 if (ai.Attacker == target)
                 {
                     return;
                 }
             }
-        
+
             list = Aggressed;
-        
+
             for (var i = 0; i < list.Count; ++i)
             {
                 var ai = list[i];
-        
+
                 if (ai.Defender == target)
                 {
                     if (m_ControlMaster?.Player == true && m_ControlMaster.CanBeHarmful(target, false))
@@ -2676,7 +2676,7 @@ namespace Server.Mobiles
                     {
                         m_SummonMaster.DoHarmful(target, true);
                     }
-        
+
                     return;
                 }
             }
