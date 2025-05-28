@@ -369,7 +369,6 @@ namespace Server.Multis
             var isSouthFacing = (houseFacing & Direction.South) != 0;
             var isEastFacing = (houseFacing & Direction.East) != 0;
 
-            // Iterate through the area around our house
             for (var xOffset = -yardSize; xOffset <= yardSize; ++xOffset)
             {
                 var absXOffset = Math.Abs(xOffset);
@@ -391,7 +390,6 @@ namespace Server.Multis
                             continue;
                         }
 
-                        // All houses face south, but if a shard creates a house that faces east, this would need to be adjusted
                         var existingHouseFacing = house.HouseDirection;
                         var existingHouseIsSouthFacing = (existingHouseFacing & Direction.South) != 0;
                         var existingHouseIsEastFacing = (existingHouseFacing & Direction.East) != 0;
