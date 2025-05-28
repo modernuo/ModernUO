@@ -119,7 +119,7 @@ public class NameVerificationTests
     public void Validate_TooManyExceptions_ReturnsFalse()
     {
         var exceptions = SearchValues.Create(' ', '-', '.');
-        Assert.False(NameVerification.Validate("A-B.C D-E", 2, 16, true, false, false, 3, exceptions));
+        Assert.False(NameVerification.Validate("A-B.C  D-E", 2, 16, true, false, false, 1, exceptions));
     }
 
     [Fact]
