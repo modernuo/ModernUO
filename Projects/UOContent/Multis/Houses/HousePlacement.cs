@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Collections;
 using Server.Regions;
@@ -37,7 +38,9 @@ namespace Server.Multis
             0x0150, 0x015C  // Furrows
         };
 
-        public static HousePlacementResult Check(Mobile from, int multiID, Point3D center, out List<IEntity> toMove)
+        public static HousePlacementResult Check(
+            Mobile from, int multiID, Point3D center, out List<IEntity> toMove, Direction houseFacing = Direction.South
+        )
         {
             // If this spot is considered valid, every item and mobile in this list will be moved under the house sign
             toMove = new List<IEntity>();
@@ -77,7 +80,7 @@ namespace Server.Multis
                 HouseFoundation.AddStairsTo(ref mcl); // this is a AOS house, add the stairs
             }
 
-            // Location of the nortwest-most corner of the house
+            // Location of the northwest-most corner of the house
             var start = new Point3D(center.X + mcl.Min.X, center.Y + mcl.Min.Y, center.Z);
 
             // These are storage lists. They hold items and mobiles found in the map for further processing
@@ -85,7 +88,7 @@ namespace Server.Multis
             var mobiles = new List<Mobile>();
 
             // These are also storage lists. They hold location values indicating the yard and border locations.
-            List<Point2D> yard = new(), borders = new();
+            List<Point2D> borders = [];
 
             /* RULES:
              *
@@ -121,7 +124,7 @@ namespace Server.Multis
                             return HousePlacementResult.BadRegionTemp;
                         }
 
-                        if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
+                        if (reg.IsPartOf<TreasureRegion, HouseRegion>())
                         {
                             return HousePlacementResult.BadRegionHidden;
                         }
@@ -218,16 +221,18 @@ namespace Server.Multis
                         {
                             var id = item.ItemData;
 
-                            if (addTileTop > item.Z && item.Z + id.CalcHeight > addTileZ)
+                            if (addTileTop <= item.Z || item.Z + id.CalcHeight <= addTileZ)
                             {
-                                if (item.Movable)
-                                {
-                                    toMove.Add(item);
-                                }
-                                else if (id.Impassable || id.Surface && !id.Background)
-                                {
-                                    return HousePlacementResult.BadItem; // Broke rule #2
-                                }
+                                continue;
+                            }
+
+                            if (item.Movable)
+                            {
+                                toMove.Add(item);
+                            }
+                            else if (id.Impassable || id.Surface && !id.Background)
+                            {
+                                return HousePlacementResult.BadItem; // Broke rule #2
                             }
                         }
 
@@ -257,17 +262,9 @@ namespace Server.Multis
 
                     if (hasFoundation)
                     {
-                        for (var xOffset = -1; xOffset <= 1; ++xOffset)
+                        if (!CheckYard(map, tileX, tileY, YardSize, houseFacing))
                         {
-                            for (var yOffset = -YardSize; yOffset <= YardSize; ++yOffset)
-                            {
-                                var yardPoint = new Point2D(tileX + xOffset, tileY + yOffset);
-
-                                if (!yard.Contains(yardPoint))
-                                {
-                                    yard.Add(yardPoint);
-                                }
-                            }
+                            return HousePlacementResult.BadStatic; // Broke rule #3
                         }
 
                         for (var xOffset = -1; xOffset <= 1; ++xOffset)
@@ -364,37 +361,73 @@ namespace Server.Multis
                 }
             }
 
-            for (var i = 0; i < yard.Count; i++)
-            {
-                var yardPoint = yard[i];
+            return HousePlacementResult.Valid;
+        }
 
-                foreach (var house in map.GetMultisInSector<BaseHouse>(yardPoint))
+        private static bool CheckYard(Map map, int tileX, int tileY, int yardSize, Direction houseFacing)
+        {
+            var isSouthFacing = (houseFacing & Direction.South) != 0;
+            var isEastFacing = (houseFacing & Direction.East) != 0;
+
+            for (var xOffset = -yardSize; xOffset <= yardSize; ++xOffset)
+            {
+                var absXOffset = Math.Abs(xOffset);
+                for (var yOffset = -yardSize; yOffset <= yardSize; ++yOffset)
                 {
-                    if (house.Contains(yard[i]))
+                    var absYOffset = Math.Abs(yOffset);
+                    var yardPoint = new Point2D(tileX + xOffset, tileY + yOffset);
+
+                    bool inSouthYard = yOffset > 0 && yOffset <= yardSize && absXOffset <= 1;
+                    bool inEastYard = xOffset > 0 && xOffset <= yardSize && absYOffset <= 1;
+                    bool inNorthYard = yOffset < 0 && yOffset >= -yardSize && absXOffset <= 1;
+                    bool inWestYard = xOffset < 0 && xOffset >= -yardSize && absYOffset <= 1;
+
+                    // Check each house at this point
+                    foreach (var house in map.GetMultisInSector<BaseHouse>(yardPoint))
                     {
-                        return HousePlacementResult.BadStatic; // Broke rule #3
+                        if (!house.Contains(yardPoint))
+                        {
+                            continue;
+                        }
+
+                        var existingHouseFacing = house.HouseDirection;
+                        var existingHouseIsSouthFacing = (existingHouseFacing & Direction.South) != 0;
+                        var existingHouseIsEastFacing = (existingHouseFacing & Direction.East) != 0;
+
+                        // Sub-Rule 1: No houses within immediate proximity (1 tile radius)
+                        if (absXOffset <= 1 && absYOffset <= 1)
+                        {
+                            return false;
+                        }
+
+                        // Sub-Rule 2: If we're south facing, protect our south yard
+                        if (isSouthFacing && inSouthYard)
+                        {
+                            return false;
+                        }
+
+                        // Sub-Rule 3: If we're east facing, protect our east yard
+                        if (isEastFacing && inEastYard)
+                        {
+                            return false;
+                        }
+
+                        // Sub-Rule 4: If there's a south-facing house to our north, respect its yard
+                        if (inNorthYard && existingHouseIsSouthFacing)
+                        {
+                            return false;
+                        }
+
+                        // Sub-Rule 5: If there's an east-facing house to our west, respect its yard
+                        if (inWestYard && existingHouseIsEastFacing)
+                        {
+                            return false;
+                        }
                     }
                 }
             }
 
-            // TODO: Should we check for MultiTilesAt each yard point?
-            // for (var i = 0; i < yard.Count; i++)
-            // {
-            //     var yardPoint = yard[i];
-            //
-            //     foreach (var tiles in map.GetMultiTilesAt(yardPoint))
-            //     {
-            //         for (int j = 0; j < tiles.Length; ++j)
-            //         {
-            //             if ((TileData.ItemTable[tiles[j].ID & TileData.MaxItemValue].Flags & (TileFlag.Impassable | TileFlag.Surface)) != 0)
-            //             {
-            //                 return HousePlacementResult.BadStatic; // Broke rule #3
-            //             }
-            //         }
-            //     }
-            // }
-
-            return HousePlacementResult.Valid;
+            return true;
         }
     }
 }
