@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Gumps;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Engines.ConPVP
@@ -179,9 +180,9 @@ namespace Server.Engines.ConPVP
 
                 var mob = entry.Mobile;
 
-                if (mob.Guild != null)
+                if (mob is PlayerMobile { Guild: not null } pm)
                 {
-                    AddBorderedText(x, y, 50, mob.Guild.Abbreviation.Center(), 0xFFFFFF, 0);
+                    AddBorderedText(x, y, 50, pm.Guild.Abbreviation.Center(), 0xFFFFFF, 0);
                 }
 
                 x += 50;

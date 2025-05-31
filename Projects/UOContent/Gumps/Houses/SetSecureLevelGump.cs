@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Server.Guilds;
+using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
 
@@ -53,7 +54,7 @@ public class SetSecureLevelGump : DynamicGump
 
         var houseOwner = _house.Owner;
         // Only the actual House owner AND guild master can set guild secures
-        if (Guild.NewGuildSystem && houseOwner?.Guild is Guild guild && guild.Leader == houseOwner)
+        if (Guild.NewGuildSystem && (houseOwner as PlayerMobile)?.Guild is Guild guild && guild.Leader == houseOwner)
         {
             builder.AddButton(10, 130, GetFirstID(SecureLevel.Guild), 4007, 5);
             builder.AddHtmlLocalized(45, 130, 150, 20, 1063455, GetColor(SecureLevel.Guild)); // Guild Members
