@@ -158,6 +158,9 @@ public static class IncomingMobilePackets
                                 trade.To.Plat = plat;
                                 trade.UpdateToCurrency();
                             }
+
+                            trade.From.Accepted = false;
+                            trade.To.Accepted = false;
                         }
                     }
                 }
