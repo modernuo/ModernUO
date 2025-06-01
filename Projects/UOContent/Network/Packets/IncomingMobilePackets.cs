@@ -159,8 +159,7 @@ public static class IncomingMobilePackets
                                 trade.UpdateToCurrency();
                             }
 
-                            trade.From.Accepted = false;
-                            trade.To.Accepted = false;
+                            cont.ClearChecks();
                         }
                     }
                 }
