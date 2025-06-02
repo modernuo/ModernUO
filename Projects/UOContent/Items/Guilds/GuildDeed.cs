@@ -1,5 +1,6 @@
 using ModernUO.Serialization;
 using Server.Guilds;
+using Server.Mobiles;
 using Server.Multis;
 using Server.Prompts;
 
@@ -24,7 +25,7 @@ public partial class GuildDeed : Item
         {
             from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
         }
-        else if (from.Guild != null)
+        else if ((from as PlayerMobile)?.Guild != null)
         {
             from.SendLocalizedMessage(501137); // You must resign from your current guild before founding another!
         }
@@ -60,7 +61,7 @@ public partial class GuildDeed : Item
 
         public override void OnResponse(Mobile from, string text)
         {
-            if (m_Deed.Deleted)
+            if (m_Deed.Deleted || from is not PlayerMobile pm)
             {
                 return;
             }
@@ -69,7 +70,7 @@ public partial class GuildDeed : Item
             {
                 from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
             }
-            else if (from.Guild != null)
+            else if (pm.Guild != null)
             {
                 from.SendLocalizedMessage(501137); // You must resign from your current guild before founding another!
             }
@@ -100,8 +101,8 @@ public partial class GuildDeed : Item
 
                     var guild = new Guild(from, text, "none");
 
-                    from.Guild = guild;
-                    from.GuildTitle = "Guildmaster";
+                    pm.Guild = guild;
+                    pm.GuildTitle = "Guildmaster";
 
                     var stone = new Guildstone(guild);
 

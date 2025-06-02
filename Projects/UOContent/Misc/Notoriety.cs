@@ -31,12 +31,14 @@ namespace Server.Misc
 
         private static GuildStatus GetGuildStatus(Mobile m)
         {
-            if (m.Guild == null)
+            if (m is not PlayerMobile { Guild: not null } pm)
             {
                 return GuildStatus.None;
             }
 
-            if (((Guild)m.Guild).Enemies.Count == 0 && m.Guild.Type == GuildType.Regular)
+            var g = (Guild)pm.Guild;
+
+            if (g.Enemies.Count == 0 && g.Type == GuildType.Regular)
             {
                 return GuildStatus.Peaceful;
             }
@@ -142,7 +144,7 @@ namespace Server.Misc
                 return false; // Young players cannot perform beneficial actions towards non-young players or pets
             }
 
-            if (from.Guild is Guild fromGuild && target.Guild is Guild targetGuild &&
+            if (pmFrom?.Guild is Guild fromGuild && pmTarg?.Guild is Guild targetGuild &&
                 (targetGuild == fromGuild || fromGuild.IsAlly(targetGuild)))
             {
                 return true; // Guild members can be beneficial
@@ -218,8 +220,8 @@ namespace Server.Misc
                        (target as PlayerMobile)?.CheckYoungProtection(from) != true;
             }
 
-            var fromGuild = GetGuildFor(from.Guild as Guild, from);
-            var targetGuild = GetGuildFor(target.Guild as Guild, target);
+            var fromGuild = GetGuildFor(pmFrom?.Guild as Guild, from);
+            var targetGuild = GetGuildFor(pmTarg?.Guild as Guild, target);
 
             if (fromGuild != null && targetGuild != null &&
                 (fromGuild == targetGuild || fromGuild.IsAlly(targetGuild) || fromGuild.IsEnemy(targetGuild)))
@@ -248,21 +250,19 @@ namespace Server.Misc
 
         public static Guild GetGuildFor(Guild def, Mobile m)
         {
-            if (m is not BaseCreature c || !c.Controlled || c.ControlMaster == null)
+            if (m is not BaseCreature c || !c.Controlled || c.ControlMaster is not PlayerMobile pm)
             {
                 return def;
             }
 
-            c.DisplayGuildTitle = false;
-
             if (c.Map != Map.Internal && (Core.AOS || Guild.NewGuildSystem || c.ControlOrder is OrderType.Attack or OrderType.Guard))
             {
-                return (Guild)(c.Guild = c.ControlMaster.Guild);
+                return (Guild)pm.Guild;
             }
 
-            if (c.Map == Map.Internal || c.ControlMaster.Guild == null)
+            if (c.Map == Map.Internal || pm.Guild == null)
             {
-                return (Guild)(c.Guild = null);
+                return null;
             }
 
             return def;
@@ -277,7 +277,7 @@ namespace Server.Misc
 
             Body body = target.Amount;
 
-            var sourceGuild = GetGuildFor(source.Guild as Guild, source);
+            var sourceGuild = GetGuildFor((source as PlayerMobile)?.Guild as Guild, source);
             var targetGuild = GetGuildFor(target.Guild, target.Owner);
 
             var srcFaction = Faction.Find(source, true, true);
@@ -450,8 +450,8 @@ namespace Server.Misc
                 return Notoriety.Criminal;
             }
 
-            var sourceGuild = GetGuildFor(source.Guild as Guild, source);
-            var targetGuild = GetGuildFor(target.Guild as Guild, target);
+            var sourceGuild = GetGuildFor(pmFrom?.Guild as Guild, source);
+            var targetGuild = GetGuildFor(pmTarg?.Guild as Guild, target);
 
             if (sourceGuild != null && targetGuild != null)
             {

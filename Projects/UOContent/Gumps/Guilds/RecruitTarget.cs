@@ -1,5 +1,6 @@
 using Server.Factions;
 using Server.Guilds;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Gumps
@@ -52,7 +53,7 @@ namespace Server.Gumps
                         501165
                     ); // They have already been accepted for membership, and merely need to use the Guildstone to gain full membership.
                 }
-                else if (m.Guild != null)
+                else if ((m as PlayerMobile)?.Guild != null)
                 {
                     m_Mobile.SendLocalizedMessage(501166); // You can only recruit candidates who are not already in a guild.
                 }
