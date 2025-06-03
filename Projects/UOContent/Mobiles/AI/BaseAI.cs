@@ -1889,7 +1889,8 @@ public abstract class BaseAI
     public bool CanMoveNow(out long delay)
     {
         delay = NextMove - Core.TickCount;
-        return delay <= 100; // ms
+        long minDelay = (long)(m_Mobile.CurrentSpeed * 1000);
+        return delay <= minDelay;
     }
 
     public virtual bool CheckMove() 
@@ -2732,7 +2733,7 @@ public abstract class BaseAI
     
     public virtual void OnCurrentSpeedChanged()
     {
-        m_Timer.Interval = TimeSpan.FromMilliseconds(Math.Max(30, m_Mobile.CurrentSpeed * 1000));
+        m_Timer.Interval = TimeSpan.FromMilliseconds(m_Mobile.CurrentSpeed * 1000);
     }
 
     private sealed class InternalEntry : ContextMenuEntry
@@ -3026,7 +3027,7 @@ public abstract class BaseAI
         private int _detectHiddenMaxDelay;
 
         public AITimer(BaseAI owner) : base(
-            TimeSpan.FromMilliseconds(Utility.RandomMinMax(100, 200)),
+            TimeSpan.FromMilliseconds(Utility.Random(0)),
             TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
         {
             m_Owner = owner;
@@ -3035,14 +3036,14 @@ public abstract class BaseAI
 
         private static double GetBaseInterval(BaseAI owner)
         {
-            var baseInterval = Math.Max(100.0, owner.m_Mobile.CurrentSpeed * 1000);
-
-            if (owner.m_Mobile.Warmode || owner.m_Mobile.Combatant != null)
+            if (owner.m_Mobile.Controlled)
             {
-                return Math.Max(200.0, baseInterval * 0.5);
+                return owner.m_Mobile.CurrentSpeed * 500;
             }
-
-            return Math.Max(baseInterval, owner.m_Mobile.Controlled ? 100.0 : 200.0);
+            else
+            {
+                return owner.m_Mobile.CurrentSpeed * 1000;
+            }
         }
 
         protected override void OnTick()
