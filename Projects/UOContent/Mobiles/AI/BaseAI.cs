@@ -981,7 +981,6 @@ public abstract class BaseAI
         }
 
         DebugSay("I am fleeing!");
-        m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
         var direction = from.GetDirectionTo(m_Mobile);
         DoMove(direction);
         return true;
