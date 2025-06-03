@@ -1537,7 +1537,7 @@ public abstract class BaseAI
     {
         DebugSay("Target is either dead, hidden, or out of range.");
     
-        if (Core.AOS)
+        if (Core.AOS || m_Mobile.IsBonded)
         {
             m_Mobile.ControlTarget = m_Mobile.ControlMaster;
             m_Mobile.ControlOrder = OrderType.Follow;
