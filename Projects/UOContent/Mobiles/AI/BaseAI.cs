@@ -917,15 +917,6 @@ public abstract class BaseAI
             WalkRandomInHome(3, 2, 1);
             return true;
         }
-
-        if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
-        {
-            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
-        }
-        else
-        {
-            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        }
     
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
