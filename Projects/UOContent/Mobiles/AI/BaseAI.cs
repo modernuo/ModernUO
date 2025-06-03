@@ -1913,6 +1913,8 @@ public abstract class BaseAI
             || (badStateOk && res == MoveResult.BadState);
     }
 
+    private AIMovementTimerPool.AIMovementTimer _pendingMoveTimer;
+
     public virtual MoveResult DoMoveImpl(Direction d, bool badStateOk)
     {
         var isInBadState = IsInBadState();
@@ -1925,8 +1927,15 @@ public abstract class BaseAI
         {
             if (badStateOk)
             {
-                AIMovementTimerPool.GetTimer(TimeSpan.FromMilliseconds(timeUntilMove), this, d).Start();
+                var baseDelay = m_Mobile.CurrentSpeed * 1000;
+                var totalDelay = baseDelay;
+
+                _pendingMoveTimer?.Stop();
+                _pendingMoveTimer = AIMovementTimerPool.GetTimer(
+                TimeSpan.FromMilliseconds(totalDelay), this, d);
+                _pendingMoveTimer.Start();
             }
+
             return MoveResult.BadState;
         }
     
@@ -1942,8 +1951,18 @@ public abstract class BaseAI
     
         if (moveResult)
         {
-            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
-            CombatDelay();
+            _pendingMoveTimer?.Stop();
+            _pendingMoveTimer = null;
+
+            if (m_Mobile.Controlled)
+            {
+                SendPetSpeeds();
+            }
+            else
+            {
+                SendMobileSpeeds();
+            }
+        
             return MoveResult.Success;
         }
     
