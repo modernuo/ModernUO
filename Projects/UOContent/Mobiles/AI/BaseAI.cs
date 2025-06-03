@@ -1873,13 +1873,11 @@ public abstract class BaseAI
             {
                 return bc.CurrentSpeed + 0.15; // 150ms
             }
-            
-            if (hits < 0.2)
+            else if (hits < 0.2)
             {
                 return bc.CurrentSpeed + 0.1; // 100ms
             }
-            
-            if (hits < 0.3)
+            else if (hits < 0.3)
             {
                 return bc.CurrentSpeed + 0.05; // 50ms
             }
