@@ -26,11 +26,6 @@ public partial class DungeonChampionSpawn : ChampionSpawn
         CannedEvilTimer.AddSpawn(this);
     }
 
-    public DungeonChampionSpawn(Serial serial) : base(serial)
-    {
-        CannedEvilTimer.AddSpawn(this);
-    }
-
     public override bool ProximitySpawn => true;
     public override bool AlwaysActive => false;
 
@@ -39,4 +34,7 @@ public partial class DungeonChampionSpawn : ChampionSpawn
         base.OnAfterDelete();
         CannedEvilTimer.RemoveSpawn(this);
     }
+
+    [AfterDeserialization]
+    private void AfterDeserialization() => CannedEvilTimer.AddSpawn(this);
 }

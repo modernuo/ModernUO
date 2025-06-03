@@ -158,6 +158,8 @@ public static class IncomingMobilePackets
                                 trade.To.Plat = plat;
                                 trade.UpdateToCurrency();
                             }
+
+                            cont.ClearChecks();
                         }
                     }
                 }

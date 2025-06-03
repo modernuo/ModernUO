@@ -88,7 +88,7 @@ public abstract partial class BaseWeapon
 
     [SerializableFieldSaveFlag(7)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool ShouldSerializePoison() => _poison?.Level > 0;
+    private bool ShouldSerializePoison() => _poison != null;
 
     [InvalidateProperties]
     [SerializableField(8)]

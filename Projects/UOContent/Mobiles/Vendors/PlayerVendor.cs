@@ -171,7 +171,7 @@ public partial class PlayerVendor : Mobile
         reader.ReadBool(); // New vendor system?
         _shopName = reader.ReadString();
         _nextPayTime = reader.ReadDeltaTime();
-        _house = reader.ReadEntity<BaseHouse>();
+        House = reader.ReadEntity<BaseHouse>();
         _owner = reader.ReadEntity<Mobile>();
         _bankAccount = reader.ReadInt();
         _holdGold = reader.ReadInt();
@@ -200,6 +200,34 @@ public partial class PlayerVendor : Mobile
         if (Core.AOS && NameHue == 0x35)
         {
             NameHue = -1;
+        }
+
+        // Do we have a vendor that may have been orphaned? Let's try to recover them and attach them to their house.
+        if (_house == null)
+        {
+            if (_owner == null)
+            {
+                Timer.DelayCall(Delete); // Don't try to dismiss, no owner.
+            }
+            Timer.DelayCall(() =>
+                {
+                    var house = BaseHouse.FindHouseAt(this);
+
+                    if (house != null)
+                    {
+                        House = house;
+                    }
+                    else if (_owner.AccessLevel == AccessLevel.Player)
+                    {
+                        // If we can't find a house, dismiss the vendor.
+                        Dismiss(_owner);
+                    }
+                }
+            );
+        }
+        else
+        {
+            _house.PlayerVendors.Add(this);
         }
     }
 

@@ -71,6 +71,8 @@ namespace Server.Multis.Deeds
         [CommandProperty(AccessLevel.GameMaster)]
         public Point3D Offset { get; set; }
 
+        public virtual Direction HouseDirection => Direction.South;
+
         public abstract Rectangle2D[] Area { get; }
 
         public override void Serialize(IGenericWriter writer)
@@ -153,7 +155,7 @@ namespace Server.Multis.Deeds
             else
             {
                 var center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-                var res = HousePlacement.Check(from, MultiID, center, out var toMove);
+                var res = HousePlacement.Check(from, MultiID, center, out var toMove, HouseDirection);
 
                 switch (res)
                 {
