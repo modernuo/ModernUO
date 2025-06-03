@@ -1115,7 +1115,14 @@ public abstract class BaseAI
 
     public virtual void HandleRenameOrder()
     {
-        m_Mobile.ControlMaster.SendMessage("Change name on pet health bar.");
+        if (m_Mobile.Summoned)
+        {
+            m_Mobile.ControlMaster.SendMessage("You cannot rename a summoned creature.");
+        }
+        else
+        {
+            m_Mobile.ControlMaster.SendMessage("Change name on pet health bar.");
+        }
     }
 
     public virtual bool DoOrderNone()
