@@ -1591,6 +1591,17 @@ public abstract class BaseAI
     {
         DebugSay("I have been released to the wild.");
 
+        if (m_Mobile.Summoned)
+        {
+            m_Mobile.Kill();
+            return true;
+        }
+
+        if (!string.IsNullOrEmpty(m_Mobile.Name))
+        {
+            m_Mobile.Name = null;
+        }
+
         m_Mobile.ControlTarget = null;
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
