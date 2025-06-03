@@ -1978,20 +1978,41 @@ public abstract class BaseAI
 
     private void CombatDelay()  
     {
-        if (m_Mobile == null)
+        if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
         {
-            return;
+            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
         }
-
-        if (m_Mobile.Warmode || m_Mobile.Combatant != null)
+        else if (m_Mobile.Warmode || m_Mobile.Combatant != null)
         {
-            var maxWait = Utility.RandomMinMax(1000, 2000);
-            var remaining = Math.Max(0, m_Mobile.NextCombatTime - Core.TickCount);
-
-            if (remaining < maxWait)
-            {
-                m_Mobile.NextCombatTime = Core.TickCount + maxWait;
-            }
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        }
+        else if (m_Mobile.Hits >= m_Mobile.HitsMax && m_Mobile.ControlOrder == OrderType.Follow)
+        {
+            m_Mobile.CurrentSpeed = 0.1;
+        }
+        else if (m_Mobile.Hits < m_Mobile.HitsMax)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        }
+        else
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+        }
+    }
+    
+    private void SendMobileSpeeds()
+    {
+        if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
+        {
+            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
+        }
+        else if (m_Mobile.Warmode || m_Mobile.Combatant != null)
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+        }
+        else
+        {
+            m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
         }
     }
 
