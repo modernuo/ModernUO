@@ -1301,19 +1301,6 @@ public abstract class BaseAI
     
         DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
 
-        if (m_Mobile.Hits >= m_Mobile.HitsMax)
-        {
-            m_Mobile.CurrentSpeed = 0.1;
-        }
-        else if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
-        {
-            m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
-        }
-        else
-        {
-            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
-        }
-
         if (currentDistance > 1)
         {
             WalkMobileRange(m_Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
