@@ -1606,14 +1606,11 @@ public abstract class BaseAI
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
-    
-        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-
-        m_Mobile.SetControlMaster(null);
-        m_Mobile.SummonMaster = null;
         m_Mobile.BondingBegin = DateTime.MinValue;
         m_Mobile.OwnerAbandonTime = DateTime.MinValue;
         m_Mobile.IsBonded = false;
+        m_Mobile.SetControlMaster(null);
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
 
         var spawner = m_Mobile.Spawner;
     
@@ -1621,6 +1618,10 @@ public abstract class BaseAI
         {
             m_Mobile.Home = spawner.HomeLocation;
             m_Mobile.RangeHome = spawner.HomeRange;
+        }
+        else
+        {
+            Action = ActionType.Wander;
         }
 
         if (m_Mobile.DeleteOnRelease || m_Mobile.IsDeadPet)
@@ -1636,8 +1637,6 @@ public abstract class BaseAI
                 m_Mobile.DropBackpack();
             }
         }
-
-        WalkRandomInHome(3, 2, 1);
     
         return true;
     }
