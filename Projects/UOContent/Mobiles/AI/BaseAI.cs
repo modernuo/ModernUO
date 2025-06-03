@@ -1852,23 +1852,6 @@ public abstract class BaseAI
                m_Mobile.BardTarget.Map != m_Mobile.Map ||
                m_Mobile.GetDistanceToSqrt(m_Mobile.BardTarget) > m_Mobile.RangePerception;
     }
-
-    public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
-    {
-        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0)
-        {
-            return;
-        }
-
-        for (var i = 0; i < steps; i++)
-        {
-            if (Utility.Random(1 + chanceToNotMove) == 0)
-            {
-                var direction = GetRandomDirection(chanceToDir);
-                DoMove(direction);
-            }
-        }
-    }
     
     private Direction GetRandomDirection(int chanceToDir)
     {
@@ -2167,6 +2150,23 @@ public abstract class BaseAI
             if (check.Movable && check.ItemData.Impassable && cont.Z + check.ItemData.Height > m_Mobile.Z)
             {
                 queue.Enqueue(check);
+            }
+        }
+    }
+
+    public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
+    {
+        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0)
+        {
+            return;
+        }
+
+        for (var i = 0; i < steps; i++)
+        {
+            if (Utility.Random(1 + chanceToNotMove) == 0)
+            {
+                var direction = GetRandomDirection(chanceToDir);
+                DoMove(direction);
             }
         }
     }
