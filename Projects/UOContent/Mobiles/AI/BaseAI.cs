@@ -985,11 +985,6 @@ public abstract class BaseAI
         DoMove(direction);
         return true;
     }
-    
-    private bool IsValidFocusMob(Mobile focusMob)
-    {
-        return focusMob != null && !focusMob.Deleted && focusMob.Map == m_Mobile.Map;
-    }
 
     public virtual bool DoActionInteract() => true;
     
