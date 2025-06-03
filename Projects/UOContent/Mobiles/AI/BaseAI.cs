@@ -2319,6 +2319,11 @@ public abstract class BaseAI
             return true;
         }
 
+        if (UseGroupMovement(m))
+        {
+            return MoveToWithGroup(m, run, range);
+        }
+
         if (m_Path == null && DoMove(m_Mobile.GetDirectionTo(m), true))
         {
             return true;
@@ -2327,6 +2332,194 @@ public abstract class BaseAI
         if (m_Path?.Goal != m)
         {
             m_Path = new PathFollower(m_Mobile, m) { Mover = DoMoveImpl };
+        }
+
+        if (m_Path.Follow(run, 1))
+        {
+            m_Path = null;
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool UseGroupMovement(Mobile target)
+    {
+        return m_Mobile.Combatant == target && 
+            !m_Mobile.Controlled && GetNearbyAllies(target).Count > 0;
+    }
+
+    private bool MoveToWithGroup(Mobile target, bool run, int range)
+    {
+        var allies = GetNearbyAllies(target);
+        var optimalPosition = CalculateOptimalPosition(target, allies, range);
+    
+        if (optimalPosition != Point3D.Zero)
+        {
+            _reservedPositions[m_Mobile] = optimalPosition;
+        
+            var direction = m_Mobile.GetDirectionTo(optimalPosition);
+        
+            if (Utility.RandomDouble() < 0.3)
+            {
+                direction = GetAdjustedDirection(direction);
+            }
+        
+            return DoMove(direction, true);
+        }
+    
+        return MoveToWithCollisionAvoidance(target, run, range);
+    }
+
+    private List<BaseCreature> GetNearbyAllies(Mobile target)
+    {
+        var allies = new List<BaseCreature>();
+    
+        foreach (var mobile in m_Mobile.GetMobilesInRange(8))
+        {
+            if (mobile is BaseCreature bc && 
+                bc != m_Mobile && 
+                bc.Combatant == target &&
+                !bc.Controlled &&
+                bc.Team == m_Mobile.Team)
+            {
+                allies.Add(bc);
+            }
+        }
+    
+        return allies;
+    }
+
+    private Point3D CalculateOptimalPosition(Mobile target, List<BaseCreature> allies, int range)
+    {
+        var targetLoc = target.Location;
+        var positions = new List<Point3D>();
+    
+        for (var x = -range - 0; x <= range + 0; x++)
+        {
+            for (var y = -range - 0; y <= range + 0; y++)
+            {
+                var testLoc = new Point3D(targetLoc.X + x, targetLoc.Y + y, targetLoc.Z);
+                var distance = m_Mobile.GetDistanceToSqrt(testLoc);
+            
+                if (distance >= range && distance <= range + 3)
+                {
+                    positions.Add(testLoc);
+                }
+            }
+        }
+    
+        Point3D bestPosition = Point3D.Zero;
+        var bestScore = double.MinValue;
+    
+        foreach (var pos in positions)
+        {
+            var score = ScorePosition(pos, target, allies);
+            if (score > bestScore && CanMoveTo(pos))
+            {
+                bestScore = score;
+                bestPosition = pos;
+            }
+        }
+    
+        return bestPosition;
+    }
+    
+    private double ScorePosition(Point3D position, Mobile target, List<BaseCreature> allies)
+    {
+        var score = 0.0;
+    
+        var currentDistance = m_Mobile.GetDistanceToSqrt(position);
+        score -= currentDistance * 2;
+    
+        foreach (var ally in allies)
+        {
+            var allyDistance = ally.GetDistanceToSqrt(position);
+            if (allyDistance < 2)
+            {
+                score -= 50;
+            }
+            else if (allyDistance < 3)
+            {
+                score -= 20;
+            }
+        }
+    
+        foreach (var kvp in _reservedPositions)
+        {
+            if (kvp.Key != m_Mobile && GetDistanceToSqrt(kvp.Value, position) < 2)
+            {
+                score -= 30;
+            }
+        }
+    
+        if (m_Mobile.Map?.LineOfSight(position, target.Location) == true)
+        {
+            score += 10;
+        }
+    
+        score += Utility.RandomDouble() * 5;
+    
+        return score;
+    }
+
+    private static double GetDistanceToSqrt(Point3D from, Point3D to)
+    {
+        var xDelta = from.X - to.X;
+        var yDelta = from.Y - to.Y;
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    private bool CanMoveTo(Point3D location)
+    {
+        var map = m_Mobile.Map;
+        return map?.CanFit(location.X, location.Y, location.Z, 16, false, false, true) == true;
+    }
+
+    private Direction GetAdjustedDirection(Direction original)
+    {
+        var adjustment = Utility.Random(3) - 1; // -1, 0, or 1
+        var newDir = (int)original + adjustment;
+    
+        if (newDir < 0)
+        {
+            newDir += 8;
+        }
+        else if (newDir >= 8)
+        {
+            newDir -= 8;
+        }
+        
+        return (Direction)newDir;
+    }
+
+    private bool MoveToWithCollisionAvoidance(Mobile target, bool run, int range)
+    {
+        var direction = m_Mobile.GetDirectionTo(target);
+    
+        if (DoMove(direction, true))
+        {
+            return true;
+        }
+    
+        for (var i = 1; i <= 3; i++)
+        {
+            var clockwise = (Direction)(((int)direction + i) % 8);
+            if (DoMove(clockwise, true))
+            {
+                return true;
+            }
+        
+            var counterclockwise = (Direction)(((int)direction - i + 8) % 8);
+            if (DoMove(counterclockwise, true))
+            {
+                return true;
+            }
+        }
+    
+        if (m_Path?.Goal != target)
+        {
+            m_Path = new PathFollower(m_Mobile, target) { Mover = DoMoveImpl };
         }
 
         if (m_Path.Follow(run, 1))
