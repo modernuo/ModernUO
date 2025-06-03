@@ -1939,6 +1939,12 @@ public abstract class BaseAI
 
             return MoveResult.BadState;
         }
+
+        if (Core.TickCount - _lastGroupUpdateTime > 1000)
+        {
+            CleanupReservedPositions();
+            _lastGroupUpdateTime = Core.TickCount;
+        }
     
         if ((m_Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
         {
@@ -1976,7 +1982,25 @@ public abstract class BaseAI
         return HandleBlockedMovement(d, mobDirection);
     }
 
-    private void CombatDelay()  
+    private static void CleanupReservedPositions()
+    {
+        var toRemove = new List<BaseCreature>();
+    
+        foreach (var kvp in _reservedPositions)
+        {
+            if (kvp.Key?.Deleted != false || kvp.Key.GetDistanceToSqrt(kvp.Value) < 1)
+            {
+                toRemove.Add(kvp.Key);
+            }
+        }
+    
+        foreach (var creature in toRemove)
+        {
+            _reservedPositions.Remove(creature);
+        }
+    }
+
+    private void SendPetSpeeds()
     {
         if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
         {
@@ -2305,6 +2329,10 @@ public abstract class BaseAI
 
         m_Path?.ForceRepath();
     }
+
+    private static readonly Dictionary<Mobile, List<BaseCreature>> _targetGroups = new();
+    private static readonly Dictionary<BaseCreature, Point3D> _reservedPositions = new();
+    private static long _lastGroupUpdateTime = 0;
 
     public virtual bool MoveTo(Mobile m, bool run, int range)
     {
