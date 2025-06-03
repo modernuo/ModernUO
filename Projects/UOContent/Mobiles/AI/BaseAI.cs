@@ -1128,15 +1128,7 @@ public abstract class BaseAI
     public virtual bool DoOrderNone()
     {
         DebugSay("I currently have no orders.");
-    
-        WalkRandomInHome(3, 2, 1);
-        UpdateCombatantState();
-    
-        return true;
-    }
 
-    private void UpdateCombatantState()
-    {
         if (IsValidCombatant(m_Mobile.Combatant))
         {
             m_Mobile.Warmode = true;
@@ -1145,6 +1137,9 @@ public abstract class BaseAI
         {
             m_Mobile.Warmode = false;
         }
+
+        WalkRandom(5, 3, 1);
+        return true;
     }
 
     public virtual bool DoOrderCome()
