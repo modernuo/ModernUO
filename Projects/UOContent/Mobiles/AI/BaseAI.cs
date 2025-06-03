@@ -935,6 +935,7 @@ public abstract class BaseAI
             && (!(combatant is BaseCreature bc) || !bc.IsDeadPet)
             && combatant.AccessLevel == AccessLevel.Player
             && m_Mobile.CanSee(combatant)
+            && m_Mobile.InLOS(combatant)
             && m_Mobile.InRange(combatant, m_Mobile.RangePerception);
     }
 
