@@ -1177,7 +1177,14 @@ public abstract class BaseAI
     
         if (WalkMobileRange(m_Mobile.ControlMaster, 1, currentDistance > 2, 1, 2))
         {
-            UpdateCombatantState();
+            if (IsValidCombatant(m_Mobile.Combatant))
+            {
+                m_Mobile.Warmode = true;
+            }
+            else
+            {
+                m_Mobile.Warmode = false;
+            }
         }
     }
 
