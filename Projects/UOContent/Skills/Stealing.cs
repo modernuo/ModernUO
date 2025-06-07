@@ -62,7 +62,7 @@ public static class Stealing
             m.SendLocalizedMessage(502698); // Which item do you want to steal?
         }
 
-        return TimeSpan.FromSeconds(10.0);
+        return TimeSpan.FromSeconds(30.0);
     }
 
     private class StealingTarget : Target
@@ -75,6 +75,11 @@ public static class Stealing
             AllowNonlocal = true;
         }
 
+        protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
+        {
+            from.NextSkillTime = Core.TickCount;
+        }
+
         private Item TryStealItem(Item toSteal, ref bool caught)
         {
             Item stolen = null;
@@ -83,7 +88,7 @@ public static class Stealing
             var mobRoot = root as Mobile;
             var rootIsPlayer = mobRoot?.Player == true;
 
-            StealableArtifacts.StealableInstance si = toSteal.Parent == null || !toSteal.Movable
+            var si = toSteal.Parent == null || !toSteal.Movable
                 ? StealableArtifacts.GetStealableInstance(toSteal)
                 : null;
 
@@ -404,6 +409,8 @@ public static class Stealing
                 pm.PermaFlags.Add(mobRoot);
                 pm.Delta(MobileDelta.Noto);
             }
+
+            from.NextSkillTime = Core.TickCount + 10000; // 10 seconds cooldown
         }
     }
 }
