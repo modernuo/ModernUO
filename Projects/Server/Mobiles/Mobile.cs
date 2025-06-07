@@ -661,6 +661,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
+    [CommandProperty(AccessLevel.Administrator)]
     public long NextActionTime { get; set; }
 
     public long NextActionMessage { get; set; }
@@ -675,6 +676,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public virtual bool CanRegenStam => Alive;
     public virtual bool CanRegenMana => Alive;
 
+    [CommandProperty(AccessLevel.Administrator)]
     public long NextSkillTime { get; set; }
 
     public List<AggressorInfo> Aggressors { get; private set; }
