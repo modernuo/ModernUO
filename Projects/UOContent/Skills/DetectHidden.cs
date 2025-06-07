@@ -113,6 +113,8 @@ namespace Server.SkillHandlers
                 {
                     src.SendLocalizedMessage(500817); // You can see nothing hidden there.
                 }
+
+                src.NextSkillTime = Core.TickCount + 6000; // 6 seconds cooldown
             }
         }
     }
