@@ -303,7 +303,7 @@ public class HousePlacementEntry
 
     public HousePlacementEntry(
         Type type, int description, int storage, int lockdowns, int newStorage, int newLockdowns,
-        int vendors, int cost, int xOffset, int yOffset, int zOffset, int multiID
+        int vendors, int cost, int xOffset, int yOffset, int zOffset, int multiID, Direction direction = Direction.South
     )
     {
         Type = type;
@@ -318,6 +318,7 @@ public class HousePlacementEntry
         Offset = new Point3D(xOffset, yOffset, zOffset);
 
         MultiID = multiID;
+        HouseDirection = direction;
     }
 
     public Type Type { get; }
@@ -333,6 +334,8 @@ public class HousePlacementEntry
     public int MultiID { get; }
 
     public Point3D Offset { get; }
+
+    public Direction HouseDirection { get; }
 
     public static HousePlacementEntry[] ClassicHouses { get; } =
     {
@@ -1981,7 +1984,7 @@ public class HousePlacementEntry
 
         prevHouse.Delete();
 
-        var res = HousePlacement.Check(from, MultiID, center, out var toMove);
+        var res = HousePlacement.Check(from, MultiID, center, out var toMove, HouseDirection);
 
         switch (res)
         {
@@ -2008,21 +2011,18 @@ public class HousePlacementEntry
                                 $"{Cost} gold would have been withdrawn from your bank if you were not a GM."
                             );
                         }
+                        else if (Banker.Withdraw(from, Cost))
+                        {
+                            // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                            from.SendLocalizedMessage(1060398, Cost.ToString());
+                        }
                         else
                         {
-                            if (Banker.Withdraw(from, Cost))
-                            {
-                                // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-                                from.SendLocalizedMessage(1060398, Cost.ToString());
-                            }
-                            else
-                            {
-                                house.RemoveKeys(from);
-                                house.Delete();
-                                // You do not have the funds available in your bank box to purchase this house.  Try placing a smaller house, or adding gold or checks to your bank box.
-                                from.SendLocalizedMessage(1060646);
-                                return;
-                            }
+                            house.RemoveKeys(from);
+                            house.Delete();
+                            // You do not have the funds available in your bank box to purchase this house.  Try placing a smaller house, or adding gold or checks to your bank box.
+                            from.SendLocalizedMessage(1060646);
+                            return;
                         }
 
                         house.MoveToWorld(center, from.Map);
@@ -2087,7 +2087,7 @@ public class HousePlacementEntry
         }
 
         var center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-        var res = HousePlacement.Check(from, MultiID, center, out var toMove);
+        var res = HousePlacement.Check(from, MultiID, center, out var toMove, HouseDirection);
 
         switch (res)
         {

@@ -28,11 +28,6 @@ public partial class LLChampionSpawn : ChampionSpawn
         CannedEvilTimer.AddSpawn(this);
     }
 
-    public LLChampionSpawn(Serial serial) : base(serial)
-    {
-        CannedEvilTimer.AddSpawn(this);
-    }
-
     public override bool AlwaysActive => false;
 
     public override void OnAfterDelete()
@@ -40,4 +35,7 @@ public partial class LLChampionSpawn : ChampionSpawn
         base.OnAfterDelete();
         CannedEvilTimer.RemoveSpawn(this);
     }
+
+    [AfterDeserialization]
+    private void AfterDeserialization() => CannedEvilTimer.AddSpawn(this);
 }

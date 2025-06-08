@@ -50,7 +50,7 @@ namespace Server.Items
             return wresValue > incrValue ? wresValue : incrValue;
         }
 
-        private void CheckPreAOSMoves(Mobile attacker, Mobile defender)
+        private static void CheckPreAOSMoves(Mobile attacker, Mobile defender)
         {
             if (!attacker.CanBeginAction<Fists>())
             {
@@ -90,60 +90,67 @@ namespace Server.Items
                     attacker.SendLocalizedMessage(1004010); // You failed in your attempt to stun.
                     defender.SendLocalizedMessage(1004011); // Your opponent tried to stun you and failed.
                 }
+
+                return;
             }
-            else if (attacker.DisarmReady)
+
+            if (!attacker.DisarmReady)
             {
-                if (!defender.Player && !defender.Body.IsHuman)
-                {
-                    attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
-                    return;
-                }
+                return;
+            }
 
-                if (attacker.Skills.ArmsLore.Value < 80.0 || attacker.Skills.Wrestling.Value < 80.0)
-                {
-                    attacker.SendLocalizedMessage(1004002); // You are not skilled enough to disarm your opponent.
-                    attacker.DisarmReady = false;
-                    return;
-                }
+            if (!defender.Player && !defender.Body.IsHuman)
+            {
+                attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
+                return;
+            }
 
-                if (attacker.Stam < 15)
-                {
-                    attacker.SendLocalizedMessage(1004003); // You are too fatigued to attempt anything.
-                    return;
-                }
+            if (attacker.Skills.ArmsLore.Value < 80.0 || attacker.Skills.Wrestling.Value < 80.0)
+            {
+                attacker.SendLocalizedMessage(1004002); // You are not skilled enough to disarm your opponent.
+                attacker.DisarmReady = false;
+                return;
+            }
 
-                var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
+            if (attacker.Stam < 15)
+            {
+                attacker.SendLocalizedMessage(1004003); // You are too fatigued to attempt anything.
+                return;
+            }
 
-                if (toDisarm?.Movable == false)
-                {
-                    toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
-                }
+            var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-                var pack = defender.Backpack;
+            if (toDisarm?.Movable != true)
+            {
+                toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
+            }
 
-                if (pack == null || toDisarm?.Movable == false)
-                {
-                    attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
-                }
-                else if (CheckMove(attacker, SkillName.ArmsLore))
-                {
-                    StartMoveDelay(attacker);
+            var pack = defender.Backpack;
 
-                    attacker.Stam -= 15;
-                    attacker.DisarmReady = false;
+            if (pack == null || toDisarm?.Movable != true)
+            {
+                attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
+                return;
+            }
 
-                    attacker.SendLocalizedMessage(1004006); // You successfully disarm your opponent!
-                    defender.SendLocalizedMessage(1004007); // You have been disarmed!
+            if (CheckMove(attacker, SkillName.ArmsLore))
+            {
+                StartMoveDelay(attacker);
 
-                    pack.DropItem(toDisarm);
-                }
-                else
-                {
-                    attacker.Stam -= 15;
+                attacker.Stam -= 15;
+                attacker.DisarmReady = false;
 
-                    attacker.SendLocalizedMessage(1004004); // You failed in your attempt to disarm.
-                    defender.SendLocalizedMessage(1004005); // Your opponent tried to disarm you but failed.
-                }
+                attacker.SendLocalizedMessage(1004006); // You successfully disarm your opponent!
+                defender.SendLocalizedMessage(1004007); // You have been disarmed!
+
+                pack.DropItem(toDisarm);
+            }
+            else
+            {
+                attacker.Stam -= 15;
+
+                attacker.SendLocalizedMessage(1004004); // You failed in your attempt to disarm.
+                defender.SendLocalizedMessage(1004005); // Your opponent tried to disarm you but failed.
             }
         }
 

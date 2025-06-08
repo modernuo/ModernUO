@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Misc;
 
 namespace Server.Engines.CannedEvil
@@ -29,8 +30,8 @@ namespace Server.Engines.CannedEvil
             Instance.OnTick();
         }
 
-        private static readonly HashSet<DungeonChampionSpawn> _dungeonSpawns = new();
-        private static readonly HashSet<LLChampionSpawn> _lostLandsSpawns = new();
+        private static readonly HashSet<ChampionSpawn> _dungeonSpawns = new();
+        private static readonly HashSet<ChampionSpawn> _lostLandsSpawns = new();
         private static DateTime _sliceTime;
 
         public static CannedEvilTimer Instance { get; private set; }
@@ -38,25 +39,25 @@ namespace Server.Engines.CannedEvil
         public static void AddSpawn(DungeonChampionSpawn spawn)
         {
             _dungeonSpawns.Add(spawn);
-            Instance?.OnSlice(_dungeonSpawns, false);
+            OnSlice(_dungeonSpawns, false);
         }
 
         public static void AddSpawn(LLChampionSpawn spawn)
         {
             _lostLandsSpawns.Add(spawn);
-            Instance?.OnSlice(_lostLandsSpawns, false);
+            OnSlice(_lostLandsSpawns, false);
         }
 
         public static void RemoveSpawn(DungeonChampionSpawn spawn)
         {
             _dungeonSpawns.Remove(spawn);
-            Instance?.OnSlice(_dungeonSpawns, false);
+            OnSlice(_dungeonSpawns, false);
         }
 
         public static void RemoveSpawn(LLChampionSpawn spawn)
         {
             _lostLandsSpawns.Remove(spawn);
-            Instance?.OnSlice(_lostLandsSpawns, false);
+            OnSlice(_lostLandsSpawns, false);
         }
 
         public CannedEvilTimer() : base(TimeSpan.Zero, TimeSpan.FromMinutes(1.0))
@@ -64,31 +65,33 @@ namespace Server.Engines.CannedEvil
             _sliceTime = Core.Now;
         }
 
-        public void OnSlice<T>(ICollection<T> list, bool rotate = true) where T : ChampionSpawn
+        public static void OnSlice(HashSet<ChampionSpawn> spawns, bool rotate = true)
         {
-            if (list.Count > 0)
+            if (spawns.Count <= 0)
             {
-                List<T> valid = new List<T>();
+                return;
+            }
 
-                foreach (T spawn in list)
+            using var queue = rotate ? PooledRefQueue<Item>.Create() : default;
+
+            foreach (var spawn in spawns)
+            {
+                if (spawn.AlwaysActive && !spawn.Active)
                 {
-                    if (spawn.AlwaysActive && !spawn.Active)
-                    {
-                        spawn.ReadyToActivate = true;
-                    }
-                    else if (rotate && (!spawn.Active || spawn.Kills == 0 && spawn.Level == 0))
-                    {
-                        spawn.Active = false;
-                        spawn.ReadyToActivate = false;
-
-                        valid.Add(spawn);
-                    }
+                    spawn.ReadyToActivate = true;
                 }
-
-                if (valid.Count > 0)
+                else if (rotate && (!spawn.Active || spawn.Kills == 0 && spawn.Level == 0))
                 {
-                    valid[Utility.Random(valid.Count)].ReadyToActivate = true;
+                    spawn.Active = false;
+                    spawn.ReadyToActivate = false;
+
+                    queue.Enqueue(spawn);
                 }
+            }
+
+            if (rotate && queue.Count > 0)
+            {
+                ((ChampionSpawn)queue.PeekRandom()).ReadyToActivate = true;
             }
         }
 
