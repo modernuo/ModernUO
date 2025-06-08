@@ -385,12 +385,14 @@ namespace Server.Engines.ConPVP
                         var entry = ladder?.Find(mob);
 
                         AddHtml(25, 53, 250, 20, $"Name: {mob.Name}");
+
+                        var g = (mob as PlayerMobile)?.Guild;
                         AddHtml(
                             25,
                             73,
                             250,
                             20,
-                            $"Guild: {(mob.Guild == null ? "None" : $"{mob.Guild.Name} [{mob.Guild.Abbreviation}]")}"
+                            $"Guild: {(g == null ? "None" : $"{g.Name} [{g.Abbreviation}]")}"
                         );
                         AddHtml(25, 93, 250, 20, $"Rank: {(entry == null ? "N/A" : LadderGump.Rank(entry.Index + 1))}");
                         AddHtml(25, 113, 250, 20, $"Level: {(entry == null ? 0 : Ladder.GetLevel(entry.Experience))}");

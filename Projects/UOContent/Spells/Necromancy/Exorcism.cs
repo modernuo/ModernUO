@@ -5,6 +5,7 @@ using Server.Engines.PartySystem;
 using Server.Factions;
 using Server.Guilds;
 using Server.Items;
+using Server.Mobiles;
 using Server.Regions;
 
 namespace Server.Spells.Necromancy;
@@ -148,15 +149,11 @@ public class ExorcismSpell : NecromancerSpell
             return false;
         }
 
-        if (m.Guild != null && Caster.Guild != null)
+        if ((m as PlayerMobile)?.Guild is Guild mGuild &&
+            (Caster as PlayerMobile)?.Guild is Guild cGuild &&
+            (mGuild.IsAlly(cGuild) || mGuild == cGuild))
         {
-            var mGuild = m.Guild as Guild;
-            var cGuild = Caster.Guild as Guild;
-
-            if (mGuild?.IsAlly(cGuild) == true || mGuild == cGuild)
-            {
-                return false;
-            }
+            return false;
         }
 
         var f = Faction.Find(m);
