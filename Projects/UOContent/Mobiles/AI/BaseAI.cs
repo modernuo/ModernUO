@@ -2299,7 +2299,7 @@ public abstract class BaseAI
             return MoveToWithGroup(m, run, range);
         }
 
-        if (m_Path == null && DoMove(m_Mobile.GetDirectionTo(m), true))
+        if (m_Path == null && m_Mobile.InLOS(m) && DoMove(m_Mobile.GetDirectionTo(m), true))
         {
             return true;
         }
