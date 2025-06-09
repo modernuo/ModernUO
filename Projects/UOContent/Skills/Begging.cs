@@ -21,23 +21,18 @@ namespace Server.SkillHandlers
 
             m.SendLocalizedMessage(500397); // To whom do you wish to grovel?
 
-            return TimeSpan.FromHours(6.0);
+            return TimeSpan.FromSeconds(30.0);
         }
 
         private class InternalTarget : Target
         {
-            private bool m_SetSkillTime = true;
-
             public InternalTarget() : base(12, false, TargetFlags.None)
             {
             }
 
-            protected override void OnTargetFinish(Mobile from)
+            protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
             {
-                if (m_SetSkillTime)
-                {
-                    from.NextSkillTime = Core.TickCount;
-                }
+                from.NextSkillTime = Core.TickCount;
             }
 
             protected override void OnTarget(Mobile from, object targeted)
@@ -81,8 +76,6 @@ namespace Server.SkillHandlers
                         from.Animate(32, 5, 1, true, false, 0); // Bow
 
                         new InternalTimer(from, targ).Start();
-
-                        m_SetSkillTime = false;
                     }
                 }
                 else // Not a Mobile
@@ -125,16 +118,7 @@ namespace Server.SkillHandlers
                     else if (m_From.CheckTargetSkill(SkillName.Begging, m_Target, 0.0, 100.0))
                     {
                         var toConsume = theirPack.GetAmount(typeof(Gold)) / 10;
-                        var max = 10 + m_From.Fame / 2500;
-
-                        if (max > 14)
-                        {
-                            max = 14;
-                        }
-                        else if (max < 10)
-                        {
-                            max = 10;
-                        }
+                        var max = Math.Clamp(10 + m_From.Fame / 2500, 10, 14);
 
                         if (toConsume > max)
                         {
