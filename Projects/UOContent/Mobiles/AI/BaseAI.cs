@@ -755,7 +755,7 @@ public abstract class BaseAI
     
     private void HandleGMCommands(SpeechEventArgs e)
     {
-        DebugSay("Command is from a GM");
+        DebugSay($"Command is from GM: {e.Mobile.Name}, Target: {m_Mobile.ControlTarget?.Name ?? "None or Unknown"}");
     
         if (m_Mobile.FindMyName(e.Speech, true))
         {
@@ -843,7 +843,7 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay("I am being herded.");
+            DebugSay($"I am being herded by {m_Mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else if (m_Mobile.CurrentWayPoint != null)
         {
@@ -870,13 +870,13 @@ public abstract class BaseAI
         if ((point.X != m_Mobile.Location.X || point.Y != m_Mobile.Location.Y)
             && point.Map == m_Mobile.Map && point.Parent == null && !point.Deleted)
         {
-            DebugSay("I will move towards my waypoint.");
+            DebugSay($"Moving towards waypoint {point.X}, {point.Y}.");
 
             DoMove(m_Mobile.GetDirectionTo(point));
         }
         else if (OnAtWayPoint())
         {
-            DebugSay("I have reached my waypoint.");
+            DebugSay($"I have reached waypoint {point.X}, {point.Y}.");
 
             m_Mobile.CurrentWayPoint = point.NextPoint;
     
@@ -905,7 +905,7 @@ public abstract class BaseAI
     {
         if (Core.AOS && CheckHerding())
         {
-            DebugSay("I am being herded.");
+            DebugSay($"I am being herded by {m_Mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
     
@@ -1156,7 +1156,7 @@ public abstract class BaseAI
 
     private void HandleLostMaster()
     {
-        DebugSay("Master is missing. Staying put.");
+        DebugSay($"Master {m_Mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
     
         m_Mobile.ControlTarget = null;
         m_Mobile.ControlOrder = OrderType.None;
@@ -1164,7 +1164,7 @@ public abstract class BaseAI
 
     private void HandleComeOrder(int currentDistance)
     {
-        DebugSay("I am ordered to come.");
+        DebugSay($"{m_Mobile.ControlTarget?.Name ?? "Unknown"}, has orderd me to come here.");
     
         if (WalkMobileRange(m_Mobile.ControlMaster, 1, currentDistance > 2, 1, 2))
         {
@@ -1186,7 +1186,7 @@ public abstract class BaseAI
             return true;
         }
     
-        DebugSay("I am ordered to drop my items.");
+        DebugSay($"I am ordered to drop my items by {m_Mobile.ControlMaster?.Name ?? "Unknown"}.");
     
         m_Mobile.ControlTarget = null;
         m_Mobile.ControlOrder = OrderType.None;
@@ -1265,7 +1265,7 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay("I am being herded.");
+            DebugSay($"I am being herded by {m_Mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
     
@@ -1293,11 +1293,11 @@ public abstract class BaseAI
     
         if (currentDistance > m_Mobile.RangePerception)
         {
-            DebugSay("Master is missing. Standing by...");
+            DebugSay($"Master {m_Mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
             return;
         }
     
-        DebugSay($"I am ordered to follow: {m_Mobile.ControlTarget.Name}");
+        DebugSay($"I am ordered to follow {m_Mobile.ControlTarget.Name}.");
 
         if (currentDistance > 1)
         {
@@ -1479,7 +1479,7 @@ public abstract class BaseAI
                 }
             }
     
-            DebugSay("Master is under attack. Assisting...");
+            DebugSay($"Master {controlMaster.Name} is under attack by {combatant.Name}. Assiting...");
         }
     
         return combatant;
@@ -1487,7 +1487,7 @@ public abstract class BaseAI
     
     private void GuardFromTarget(Mobile combatant)
     {
-        DebugSay("Guarding target.");
+        DebugSay($"Guarding target: {combatant.Name}");
     
         m_Mobile.Combatant = combatant;
         m_Mobile.FocusMob = combatant;
@@ -1579,7 +1579,7 @@ public abstract class BaseAI
             m_Mobile.ControlOrder = OrderType.Attack;
             m_Mobile.Combatant = newCombatant;
     
-            DebugSay("Target is still alive. Resuming attacks...");
+            DebugSay($"{newCombatant.Name} is still alive. Resuming attacks...");
     
             Think();
         }
@@ -1632,11 +1632,11 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay("I am being herded.");
+            DebugSay($"I am being herded by {m_Mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else
         {
-            DebugSay("I have been ordered to stay.");
+            DebugSay($"I have been ordered to stay by {m_Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
     
         HandleStayOrder();
@@ -1662,7 +1662,7 @@ public abstract class BaseAI
             return true;
         }
     
-        DebugSay("I have been ordered to stop.");
+        DebugSay($"{m_Mobile.ControlMaster?.Name ?? "Unknown"} has ordered me to stop.");
 
         if (Core.ML)
         {
@@ -2276,7 +2276,7 @@ public abstract class BaseAI
 
     public virtual void OnTeleported()
     {
-        DebugSay("Teleported; recalculating path.");
+        DebugSay("Teleported; recalculating path...");
 
         m_Path?.ForceRepath();
     }
@@ -2662,7 +2662,7 @@ public abstract class BaseAI
             return false;
         }
 
-        DebugSay("Acquired focused target.");
+        DebugSay($"Acquired focused target: {m_Mobile.ConstantFocus.Name}.");
 
         m_Mobile.FocusMob = m_Mobile.ConstantFocus;
         return true;
