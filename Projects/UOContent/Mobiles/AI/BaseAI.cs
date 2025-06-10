@@ -118,6 +118,7 @@ public abstract class BaseAI
     protected PathFollower m_Path;
     public Timer m_Timer;
     private long m_NextDebugMessage;
+    private string _lastDebugMessage;
 
     public BaseAI(BaseCreature m)
     {
@@ -742,12 +743,13 @@ public abstract class BaseAI
         }
     }
 
-    private void DebugSay(string message)
+    private void DebugSay(string message, int cooldownMs = 5000)
     {
-        if (m_Mobile.Debug && Core.TickCount >= m_NextDebugMessage)
+        if (m_Mobile.Debug && (Core.TickCount >= m_NextDebugMessage || _lastDebugMessage != message))
         {
             m_Mobile.DebugSay(message);
-            m_NextDebugMessage = Core.TickCount + 5000;
+            m_NextDebugMessage = Core.TickCount + cooldownMs;
+            _lastDebugMessage = message;
         }
     }
     
