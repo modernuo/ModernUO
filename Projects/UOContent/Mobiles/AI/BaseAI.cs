@@ -117,6 +117,7 @@ public abstract class BaseAI
     private long m_NextStopGuard;
     protected PathFollower m_Path;
     public Timer m_Timer;
+    private long m_NextDebugMessage;
 
     public BaseAI(BaseCreature m)
     {
@@ -743,9 +744,10 @@ public abstract class BaseAI
 
     private void DebugSay(string message)
     {
-        if (m_Mobile.Debug)
+        if (m_Mobile.Debug && Core.TickCount >= m_NextDebugMessage)
         {
             m_Mobile.DebugSay(message);
+            m_NextDebugMessage = Core.TickCount + 5000;
         }
     }
     
