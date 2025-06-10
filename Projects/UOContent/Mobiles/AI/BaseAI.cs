@@ -3218,8 +3218,7 @@ public abstract class BaseAI
         private int _detectHiddenMaxDelay;
 
         public AITimer(BaseAI owner) : base(
-            TimeSpan.FromMilliseconds(Utility.Random(0)),
-            TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
+            TimeSpan.Zero, TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
         {
             m_Owner = owner;
             m_Owner.m_NextDetectHidden = Core.TickCount;
@@ -3227,7 +3226,7 @@ public abstract class BaseAI
 
         private static double GetBaseInterval(BaseAI owner)
         {
-            if (owner.m_Mobile.Controlled)
+            if (owner.m_Mobile.Controlled && owner.m_Mobile.ControlOrder == OrderType.Follow)
             {
                 return owner.m_Mobile.CurrentSpeed * 500;
             }
