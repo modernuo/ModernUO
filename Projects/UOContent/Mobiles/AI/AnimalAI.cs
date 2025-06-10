@@ -23,19 +23,13 @@ public class AnimalAI : BaseAI
 
         if (!m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.1 && m_Mobile.CanFlee) // Less than 10% health
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am low on health!");
-            }
+            DebugSay("I am low on health!");
 
             Action = ActionType.Flee;
         }
         else if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
 
             m_Mobile.Combatant = m_Mobile.FocusMob;
             Action = ActionType.Combat;
@@ -55,10 +49,7 @@ public class AnimalAI : BaseAI
         if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("My combatant is gone!");
-            }
+            DebugSay("My combatant is gone!");
 
             Action = ActionType.Wander;
             return true;
@@ -68,19 +59,13 @@ public class AnimalAI : BaseAI
         {
             if (m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"I cannot find {combatant.Name}");
-                }
+                DebugSay($"I cannot find {combatant.Name}");
 
                 Action = ActionType.Wander;
                 return true;
             }
 
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I should be closer to {combatant.Name}");
-            }
+            DebugSay($"I should be closer to {combatant.Name}");
         }
         else if (Core.TickCount - m_Mobile.LastMoveTime > 400)
         {
@@ -93,10 +78,7 @@ public class AnimalAI : BaseAI
 
             if (hitPercent <= 0.1)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("I am low on health!");
-                }
+                DebugSay("I am low on health!");
 
                 Action = ActionType.Flee;
                 return true;
@@ -105,10 +87,7 @@ public class AnimalAI : BaseAI
 
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
-            }
+            DebugSay($"I used my abilities on {combatant.Name}!");
         }
 
         return true;
@@ -126,20 +105,14 @@ public class AnimalAI : BaseAI
         {
             if (WalkMobileRange(m_Mobile.FocusMob, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2))
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("Well, here I am safe");
-                }
+                DebugSay("Well, here I am safe");
 
                 Action = ActionType.Wander;
             }
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I have lost my focus, lets relax");
-            }
+            DebugSay("I have lost my focus, lets relax");
 
             Action = ActionType.Wander;
         }

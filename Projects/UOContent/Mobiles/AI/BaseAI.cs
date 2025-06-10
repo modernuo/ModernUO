@@ -743,7 +743,7 @@ public abstract class BaseAI
         }
     }
 
-    private void DebugSay(string message, int cooldownMs = 5000)
+    public void DebugSay(string message, int cooldownMs = 5000)
     {
         if (m_Mobile.Debug && (Core.TickCount >= m_NextDebugMessage || _lastDebugMessage != message))
         {
