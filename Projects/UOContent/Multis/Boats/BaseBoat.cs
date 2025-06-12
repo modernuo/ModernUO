@@ -179,34 +179,15 @@ namespace Server.Multis
         {
             get
             {
-                var start = Core.Now - TimeOfDecay - BoatDecayDelay;
-
-                if (start < TimeSpan.FromHours(1.0))
+                return (int)(Core.Now - (TimeOfDecay - BoatDecayDelay)).TotalHours switch
                 {
-                    return 1043010; // This structure is like new.
-                }
-
-                if (start < TimeSpan.FromDays(2.0))
-                {
-                    return 1043011; // This structure is slightly worn.
-                }
-
-                if (start < TimeSpan.FromDays(3.0))
-                {
-                    return 1043012; // This structure is somewhat worn.
-                }
-
-                if (start < TimeSpan.FromDays(4.0))
-                {
-                    return 1043013; // This structure is fairly worn.
-                }
-
-                if (start < TimeSpan.FromDays(5.0))
-                {
-                    return 1043014; // This structure is greatly worn.
-                }
-
-                return 1043015; // This structure is in danger of collapsing.
+                    < 1   => 1043010, // This structure is like new.
+                    < 48  => 1043011, // This structure is slightly worn.
+                    < 72  => 1043012, // This structure is somewhat worn.
+                    < 96  => 1043013, // This structure is fairly worn.
+                    < 120 => 1043014, // This structure is greatly worn.
+                    _     => 1043015  // This structure is in danger of collapsing.
+                };
             }
         }
 
