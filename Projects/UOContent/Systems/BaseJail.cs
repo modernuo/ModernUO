@@ -146,7 +146,30 @@ namespace Server.Systems.JailSystem
                     }
                }
 
-               Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => { TeleportToJail(player, reason, jailTime); });
+               Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => { DismountPlayer(player, reason, jailTime); });
+          }
+
+         private static void DismountPlayer(PlayerMobile player, string reason, TimeSpan jailTime)
+          {
+               try
+               {
+                    if (player.Mount != null)
+                    {
+                         IMount mount = player.Mount;
+                         mount.Rider = null;
+                         player.SendMessage(0x35, "You have been dismounted.");
+                    }
+
+                    CommandLogging.WriteLine(player, $"Player {player.Name} dismounted before jail teleport");
+
+                    Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => { TeleportToJail(player, reason, jailTime); });
+               }
+               catch (Exception ex)
+               {
+                    Console.WriteLine($"Error dismounting player {player.Name}: {ex.Message}");
+
+                    Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => { TeleportToJail(player, reason, jailTime); });
+               }
           }
 
           private static void TeleportToJail(PlayerMobile player, string reason, TimeSpan jailTime)
