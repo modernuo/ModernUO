@@ -1071,9 +1071,7 @@ public abstract class BaseAI
         }
 
         m_Mobile.FocusMob = null;
-        m_Mobile.Warmode = false;
-        m_Mobile.Home = m_Mobile.ControlMaster.Location;
-        m_Mobile.ControlOrder = OrderType.None;
+        m_Mobile.Warmode = true;
         m_Mobile.PlaySound(m_Mobile.GetAttackSound());
         m_Mobile.ControlMaster.SendLocalizedMessage(1049671, m_Mobile.Name);
         // 1049671: ~1_NAME~ is now guarding you.
@@ -1446,11 +1444,31 @@ public abstract class BaseAI
     
         if (IsValidCombatant(combatant))
         {
-            GuardFromTarget(combatant);
+            DebugSay($"Attacking target: {combatant.Name}");
+    
+            m_Mobile.Combatant = combatant;
+            m_Mobile.FocusMob = combatant;
+            Action = ActionType.Combat;
+
+            Think();
         }
         else
-        {
-            GuardNothing(controlMaster);
+        {   
+            DebugSay($"Guarding {controlMaster.Name}'s previous home location.");
+            
+            var guardLocation = controlMaster.Location;
+            var distanceFromGuardLocation = (int)m_Mobile.GetDistanceToSqrt(guardLocation);
+            
+            if (distanceFromGuardLocation > 3)
+            {
+                var direction = m_Mobile.GetDirectionTo(guardLocation);
+
+                DoMove(direction);
+            }
+            else
+            {
+                WalkRandom(3, 1, 1);
+            }
         }
     
         return true;
@@ -1483,26 +1501,6 @@ public abstract class BaseAI
         }
     
         return combatant;
-    }
-    
-    private void GuardFromTarget(Mobile combatant)
-    {
-        DebugSay($"Guarding target: {combatant.Name}");
-    
-        m_Mobile.Combatant = combatant;
-        m_Mobile.FocusMob = combatant;
-        Action = ActionType.Combat;
-    
-        // used to update spell caster combat states
-        Think();
-    }
-    
-    private void GuardNothing(Mobile controlMaster)
-    {
-        DebugSay("There is nothing to guard.");
-
-        m_Mobile.Warmode = false;
-        WalkMobileRange(controlMaster, 1, false, 0, 1);
     }
 
     public virtual bool DoOrderAttack()
