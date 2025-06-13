@@ -294,18 +294,17 @@ public ref struct SpanReader
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Read(Span<byte> bytes)
+    public int Read(Span<byte> bytes)
     {
-        if (bytes.Length > Remaining)
+        if (bytes.Length == 0)
         {
-            return false;
+            return 0;
         }
 
-        var success = _buffer.Slice(Position, bytes.Length).TryCopyTo(bytes);
-        if (success)
-        {
-            Position += bytes.Length;
-        }
-        return success;
+        var bytesWritten = Math.Min(bytes.Length, Remaining);
+        _buffer.Slice(Position, bytesWritten).CopyTo(bytes);
+
+        Position += bytesWritten;
+        return bytesWritten;
     }
 }
