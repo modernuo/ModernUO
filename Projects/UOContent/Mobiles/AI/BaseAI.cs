@@ -636,6 +636,8 @@ public abstract class BaseAI
             // 501505: Alas, I cannot teach thee anything.
         }
     }
+
+    private Mobile _lastCommandIssuer;
     
     private void HandleComeCommand(Mobile from, bool isOwner)
     {
