@@ -1128,16 +1128,9 @@ public abstract class BaseAI
     {
         DebugSay("I currently have no orders.");
 
-        if (IsValidCombatant(m_Mobile.Combatant))
-        {
-            m_Mobile.Warmode = true;
-        }
-        else
-        {
-            m_Mobile.Warmode = false;
-        }
+        m_Mobile.Warmode = IsValidCombatant(m_Mobile.Combatant);
 
-        WalkRandom(5, 3, 1);
+        WalkRandom(3, 2, 1);
         return true;
     }
 
@@ -1464,7 +1457,7 @@ public abstract class BaseAI
         }
         else
         {   
-            DebugSay($"Guarding {controlMaster.Name}'s previous home location.");
+            DebugSay($"Guarding my master, {controlMaster.Name}.");
             
             var guardLocation = controlMaster.Location;
             var distanceFromGuardLocation = (int)m_Mobile.GetDistanceToSqrt(guardLocation);
@@ -2289,7 +2282,6 @@ public abstract class BaseAI
         m_Path?.ForceRepath();
     }
 
-    private static readonly Dictionary<Mobile, List<BaseCreature>> _targetGroups = new();
     private static readonly Dictionary<BaseCreature, Point3D> _reservedPositions = new();
     private static long _lastGroupUpdateTime = 0;
 
@@ -2463,7 +2455,7 @@ public abstract class BaseAI
         return map?.CanFit(location.X, location.Y, location.Z, 16, false, false, true) == true;
     }
 
-    private Direction GetAdjustedDirection(Direction original)
+    private static Direction GetAdjustedDirection(Direction original)
     {
         var adjustment = Utility.Random(3) - 1; // -1, 0, or 1
         var newDir = (int)original + adjustment;
