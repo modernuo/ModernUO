@@ -641,6 +641,7 @@ public abstract class BaseAI
     {
         if (isOwner && m_Mobile.CheckControlChance(from))
         {
+            _lastCommandIssuer = from;
             m_Mobile.ControlTarget = null;
             m_Mobile.ControlOrder = OrderType.Come;
         }
@@ -650,6 +651,7 @@ public abstract class BaseAI
     {
         if (isOwner && m_Mobile.CheckControlChance(from))
         {
+            _lastCommandIssuer = from;
             m_Mobile.ControlTarget = null;
             m_Mobile.ControlOrder = OrderType.Guard;
         }
@@ -659,6 +661,7 @@ public abstract class BaseAI
     {
         if (m_Mobile.CheckControlChance(from))
         {
+            _lastCommandIssuer = from;
             m_Mobile.ControlTarget = target;
             m_Mobile.ControlOrder = order;
         }
@@ -668,6 +671,7 @@ public abstract class BaseAI
     {
         if (isOwner)
         {
+            _lastCommandIssuer = from;
             BeginPickTarget(from, OrderType.Attack);
         }
     }
@@ -1018,8 +1022,6 @@ public abstract class BaseAI
         {
             return;
         }
-
-        m_Mobile.ControlMaster.RevealingAction();
     
         switch (m_Mobile.ControlOrder)
         {
@@ -1057,10 +1059,12 @@ public abstract class BaseAI
     
     private void HandlePassiveOrder()
     {
+        _lastCommandIssuer?.RevealingAction();
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+        _lastCommandIssuer = null;
     }
     
     private void HandleGuardOrder()
@@ -1070,11 +1074,13 @@ public abstract class BaseAI
             return;
         }
 
+        _lastCommandIssuer?.RevealingAction();
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = true;
         m_Mobile.PlaySound(m_Mobile.GetAttackSound());
         m_Mobile.ControlMaster.SendLocalizedMessage(1049671, m_Mobile.Name);
         // 1049671: ~1_NAME~ is now guarding you.
+        _lastCommandIssuer = null;
     }
     
     private void HandleAttackOrder()
@@ -1084,9 +1090,11 @@ public abstract class BaseAI
             return;
         }
 
+        _lastCommandIssuer?.RevealingAction();
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = true;
         m_Mobile.PlaySound(m_Mobile.GetAttackSound());
+        _lastCommandIssuer = null;
     }
     
     private void HandleFollowOrder()
@@ -1096,10 +1104,12 @@ public abstract class BaseAI
             return;
         }
 
+        _lastCommandIssuer?.RevealingAction();
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
         m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+        _lastCommandIssuer = null;
     }
 
     public virtual void HandleRenameOrder()
