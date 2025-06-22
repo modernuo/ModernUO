@@ -59,7 +59,7 @@ public abstract class NinjaSpell : Spell
         return true;
     }
 
-    public override bool CheckFizzle()
+    public override bool CheckIfEnoughSkill()
     {
         var mana = ScaleMana(RequiredMana);
 
@@ -77,7 +77,7 @@ public abstract class NinjaSpell : Spell
             return false;
         }
 
-        if (!base.CheckFizzle())
+        if (!base.CheckIfEnoughSkill())
         {
             return false;
         }

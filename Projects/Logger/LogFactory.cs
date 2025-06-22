@@ -25,9 +25,12 @@ public static class LogFactory
         .WriteTo.Async(a => a.Console(
             outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} <s:{SourceContext}>{NewLine}{Exception}"
         ))
+        //.MinimumLevel.Information()  // Default level
 #if DEBUG
         .MinimumLevel.Debug()
 #endif
+        .MinimumLevel.Override("Server.Spells", Serilog.Events.LogEventLevel.Debug)
+        .MinimumLevel.Override("Server.Target", Serilog.Events.LogEventLevel.Debug)
         .CreateLogger();
 
     public static ILogger GetLogger(Type declaringType) => new SerilogLogger(serilogLogger.ForContext(declaringType));

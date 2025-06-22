@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Items;
+using Server.Logging;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Spells.Bushido;
@@ -15,7 +16,9 @@ namespace Server.Spells
 {
     public abstract class Spell : ISpell
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(Spell));
         private static readonly TimeSpan NextSpellDelay = TimeSpan.FromSeconds(0.75);
+
         private static readonly TimeSpan AnimateDelay = TimeSpan.FromSeconds(1.5);
         // In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only
         // Expo & Magic Arrow have enough delay and a short enough cast time to bring up
@@ -58,13 +61,25 @@ namespace Server.Spells
 
         public static readonly Type[] AOSNoDelayedDamageStackingSelf = Core.AOS ? Array.Empty<Type>() : null;
 
+        protected static bool IsTargetingSpell(Spell spell)
+        {
+            Type[] s = spell.GetType().GetInterfaces();
+            foreach (Type t in s)
+            {
+                if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ITargetingSpell<>))
+                    return true;
+            }
+
+            return false;
+        }
+
         // Null means stacking is allowed while empty indicates no stacking with self
         // More than zero means no stacking with self and other spells
         public virtual Type[] DelayedDamageSpellFamilyStacking => null;
 
         public virtual bool BlockedByHorrificBeast => true;
         public virtual bool BlockedByAnimalForm => true;
-        public virtual bool BlocksMovement => IsCasting;
+        public virtual bool BlocksMovement => false;
 
         public virtual bool CheckNextSpellTime => Scroll is not BaseWand;
 
@@ -106,7 +121,7 @@ namespace Server.Spells
 
         public virtual bool OnCasterMoving(Direction d)
         {
-            if (IsCasting && BlocksMovement)
+            if (BlocksMovement)
             {
                 Caster.SendLocalizedMessage(500111); // You are frozen and can not move.
                 return false;
@@ -127,7 +142,7 @@ namespace Server.Spells
 
         public virtual bool OnCasterUsingObject(IEntity entity)
         {
-            if (State == SpellState.Sequencing)
+            if (State == SpellState.ApplyingCast)
             {
                 Disturb(DisturbType.UseRequest);
             }
@@ -136,7 +151,10 @@ namespace Server.Spells
         }
 
         public virtual bool OnCastInTown(Region r) => Info.AllowTown;
-
+/// <summary>
+/// sets spell.state - none,
+/// if this spell is still attached to caster - nulls it
+/// </summary>
         public virtual void FinishSequence()
         {
             State = SpellState.None;
@@ -214,7 +232,9 @@ namespace Server.Spells
             return GetNewAosDamage(bonus, dice, sides, sdi, false);
         }
 
-        public virtual int GetNewAosDamage(int bonus, int dice, int sides, bool playerVsPlayer, bool sdi, double scalar = 1.0)
+        public virtual int GetNewAosDamage(
+            int bonus, int dice, int sides, bool playerVsPlayer, bool sdi, double scalar = 1.0
+        )
         {
             var damage = Utility.Dice(dice, sides, bonus) * 100;
 
@@ -256,10 +276,20 @@ namespace Server.Spells
             return damage / 100;
         }
 
-        public virtual bool ConsumeReagents() =>
-            Scroll != null || !Caster.Player ||
+        //true if: has scroll OR not a player OR had reagents and consumed them -1 means success
+        public virtual bool ConsumeReagents()
+        {
+            // if (Caster?.AccessLevel > AccessLevel.Player)
+            // {
+            //     return true;
+            // }
+
+            //-1 is success code - consumed. or returns int of which reagent is not sufficient/ failure.
+            //there is scroll. caster is GM. Succefully consumed reagents
+           return Scroll != null || !Caster.Player || /*
             AosAttributes.GetValue(Caster, AosAttribute.LowerRegCost) > Utility.Random(100) ||
-            DuelContext.IsFreeConsume(Caster) || Caster.Backpack?.ConsumeTotal(Info.Reagents, Info.Amounts) == -1;
+            DuelContext.IsFreeConsume(Caster) ||*/ Caster.Backpack?.ConsumeTotal(Info.Reagents, Info.Amounts) == -1;
+        }
 
         public virtual double GetInscribeSkill(Mobile m) => m.Skills.Inscribe.Value;
 
@@ -417,10 +447,10 @@ namespace Server.Spells
                 _animTimer?.Stop();
                 Caster.NextSpellTime = Core.TickCount + (int)GetDisturbRecovery().TotalMilliseconds;
             }
-            else
-            {
-                Target.Cancel(Caster);
-            }
+            // else
+            // {
+            //     Target.Cancel(Caster);
+            // }
 
             if (Core.AOS && Caster.Player && type == DisturbType.Hurt)
             {
@@ -443,7 +473,7 @@ namespace Server.Spells
                 Caster.SendLocalizedMessage(500641); // Your concentration is disturbed, thus ruining thy spell.
             }
         }
-
+        //if this spell required to check cast
         public virtual bool CheckCast() => true;
 
         public virtual void SayMantra()
@@ -459,140 +489,200 @@ namespace Server.Spells
             }
         }
 
+
+
+        public void StartAnimation()
+        {
+            var castDelay = GetCastDelay();
+
+            if (ShowHandMovement && (Caster.Body.IsHuman || Caster.Player && Caster.Body.IsMonster))
+            {
+                var count = (int)Math.Ceiling(castDelay.TotalSeconds / AnimateDelay.TotalSeconds);
+
+                if (count != 0)
+                {
+                    _animTimer = new AnimTimer(this, count);
+                    _animTimer.Start();
+                }
+
+                if (Info.LeftHandEffect > 0)
+                {
+                    Caster.FixedParticles(0, 10, 5, Info.LeftHandEffect, EffectLayer.LeftHand);
+                }
+
+                if (Info.RightHandEffect > 0)
+                {
+                    Caster.FixedParticles(0, 10, 5, Info.RightHandEffect, EffectLayer.RightHand);
+                }
+            }
+        }
+
+        //checks mana, status before targeting/casting
         public bool Cast()
         {
-            StartCastTime = Core.TickCount;
-
-            if (Core.AOS && Caster.Spell is Spell spell && spell.State == SpellState.Sequencing)
-            {
-                spell.Disturb(DisturbType.NewCast);
-            }
-
+            Caster.Spell = this;
+            logger.Debug("Checking if can cast, then will choose target");
+            // if (Core.AOS && Caster.Spell is Spell spell && spell.State == SpellState.Sequencing)
+            // {
+            //     spell.Disturb(DisturbType.NewCast);
+            //     //take part of mana to feint? add only one feint?
+            // }
+            //Alive
             if (!Caster.CheckAlive())
             {
-                return false;
             }
-
-            var isCasting = Caster.Spell?.IsCasting == true;
-            var isWand = Scroll is BaseWand;
-
-            if (isCasting)
+            //Casting Already
+            else if (Caster.Spell?.IsCasting == true)
             {
-                if (isWand)
-                {
-                    Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
-                }
-                else
-                {
-                    Caster.SendLocalizedMessage(502642); // You are already casting a spell.
-                }
+                Caster.SendLocalizedMessage(502642); // You are already casting a spell.
             }
-            else if (BlockedByHorrificBeast &&
+            /*
+            //Polymorph block
+            if (BlockedByHorrificBeast &&
                      TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell)) ||
                      BlockedByAnimalForm && AnimalForm.UnderTransformation(Caster))
             {
                 Caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
+                return false;
             }
-            else if (!isWand && (Caster.Paralyzed || Caster.Frozen))
+            */
+            else if (!CheckIfEnoughSkill())
             {
-                Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
             }
+
+            //Paralyzed
+            else if (Caster.Paralyzed && !Fists.HasFreeHands(Caster) || Caster.Frozen)
+            {
+                Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen. +added "and equipped weapon"
+            }
+            //Check if recovered from casting spell
             else if (CheckNextSpellTime && Core.TickCount - Caster.NextSpellTime < 0)
             {
                 Caster.SendLocalizedMessage(502644); // You have not yet recovered from casting a spell.
             }
+            //Peaced
             else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > Core.Now)
             {
                 mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
             }
+            //DuelContext Allows SpellCast
             else if ((Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(Caster, this) == false)
             {
             }
-            else
+            //Enough mana
+            else if (Caster.Mana <= ScaleMana(GetMana()))
             {
-                var requiredMana = ScaleMana(GetMana());
-
-                if (Caster.Mana >= requiredMana)
-                {
-                    if (Caster.Spell == null && Caster.CheckSpellCast(this) && CheckCast() &&
-                        Caster.Region.OnBeginSpellCast(Caster, this))
-                    {
-                        State = SpellState.Casting;
-                        Caster.Spell = this;
-
-                        if (!isWand && RevealOnCast)
-                        {
-                            Caster.RevealingAction();
-                        }
-
-                        SayMantra();
-
-                        var castDelay = GetCastDelay();
-
-                        if (ShowHandMovement && (Caster.Body.IsHuman || Caster.Player && Caster.Body.IsMonster))
-                        {
-                            var count = (int)Math.Ceiling(castDelay.TotalSeconds / AnimateDelay.TotalSeconds);
-
-                            if (count != 0)
-                            {
-                                _animTimer = new AnimTimer(this, count);
-                                _animTimer.Start();
-                            }
-
-                            if (Info.LeftHandEffect > 0)
-                            {
-                                Caster.FixedParticles(0, 10, 5, Info.LeftHandEffect, EffectLayer.LeftHand);
-                            }
-
-                            if (Info.RightHandEffect > 0)
-                            {
-                                Caster.FixedParticles(0, 10, 5, Info.RightHandEffect, EffectLayer.RightHand);
-                            }
-                        }
-
-                        if (ClearHandsOnCast)
-                        {
-                            Caster.ClearHands();
-                        }
-
-                        if (Core.ML)
-                        {
-                            WeaponAbility.ClearCurrentAbility(Caster);
-                        }
-
-                        Caster.Delta(MobileDelta.Flags); // Start paralyze
-
-                        _castTimer = new CastTimer(this, castDelay);
-                        // m_CastTimer.Start();
-
-                        OnBeginCast();
-
-                        if (castDelay > TimeSpan.Zero)
-                        {
-                            _castTimer.Start();
-                        }
-                        else
-                        {
-                            _castTimer.Tick();
-                        }
-
-                        return true;
-                    }
-                }
-                else if (Caster.NetState?.IsKRClient != true && Caster.NetState?.Version >= ClientVersion.Version70654)
-                {
-                    // Insufficient mana. You must have at least ~1_MANA_REQUIREMENT~ Mana to use this spell.
-                    Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625, requiredMana.ToString());
-                }
-                else
-                {
-                    Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625); // Insufficient mana
-                }
+                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625); // Insufficient mana
+            }
+            //Region
+            else if (!Caster.Region.OnBeginSpellCast(Caster, this))
+            {
             }
 
+            //Scroll and wand checks
+            //reagents checks now done only with consumption CheckSequence()
+            else if (Scroll != null &&
+                     Scroll is not Runebook &&
+                     (Scroll.Amount <= 0 ||
+                      Scroll.Deleted ||
+                      Scroll.RootParent != Caster ||
+                      Scroll is BaseWand baseWand &&
+                      (baseWand.Charges <= 0 || baseWand.Parent != Caster)))
+            {
+            }
+
+            /*NOT FAILED OK SCENARIOS */
+            else if (IsTargetingSpell(this))
+            {
+                State = SpellState.SelectingTarget;
+                OnCast();
+                logger.Debug("Targeting spell is being cast. It passed checks. Calling OnCast() of spell - creating target and waiting to player chosing target");
+                return true;
+            }
+            //for regular non targeted spell
+            else
+            {
+                logger.Debug("regular, non-targeting spell passed check and continue to cast");
+                ContinueCast();
+                return true;
+            }
+
+            FinishSequence();
             return false;
         }
 
+
+        public bool ContinueCast()
+        {
+            logger.Debug("ContinueCast() called, so target class instance was created or non-target spell being cast");
+            //Start actual casting and take recourses
+
+            State = SpellState.Casting;
+            StartCastTime = Core.TickCount;
+
+            Caster.RevealingAction();
+            SayMantra();
+
+            //take mana
+            if (Caster.Mana < ScaleMana(GetMana()))
+            {
+                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625); // Insufficient mana for this spell.
+                Disturb(DisturbType.NotValidCast);
+                return false;
+            }
+            else
+            {
+                logger.Debug("mana taken");
+                Caster.Mana -= ScaleMana(GetMana());
+            }
+
+            //take reagents
+            if (!ConsumeReagents())
+            {
+                logger.Debug("reagents taken");
+                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502630); // More reagents are needed for this spell.
+                Disturb(DisturbType.NotValidCast);
+                return false;
+            }
+
+            //check magery, take mana, sroll/wand
+            if (!CheckIfEnoughSkill())
+            {
+                Disturb(DisturbType.NotValidCast);
+                logger.Debug("not enough magery skill");
+                return false;
+            }
+            //consume scroll
+            if (Scroll is SpellScroll)
+            {
+                logger.Debug("scroll consumed");
+                Scroll.Consume();
+            }
+            //consume wand
+            else if (Scroll is BaseWand wand)
+            {
+                logger.Debug("wand charge consumed");
+                wand.ConsumeCharge(Caster);
+            }
+
+            OnBeginCast();
+            StartAnimation();
+
+            _castTimer = new CastTimer(this, GetCastDelay());
+
+            logger.Debug("castTimer created");
+            if (GetCastDelay() > TimeSpan.Zero)
+            {
+                _castTimer.Start();
+                logger.Debug("castTimer started");
+            }
+            else
+            {
+                _castTimer.Tick();
+            }
+
+            return true;
+        }
         public abstract void OnCast();
 
         public virtual void OnBeginCast()
@@ -604,7 +694,7 @@ namespace Server.Spells
             min = max = 0; // Intended but not required for overriding.
         }
 
-        public virtual bool CheckFizzle()
+        public virtual bool CheckIfEnoughSkill()
         {
             if (Scroll is BaseWand)
             {
@@ -728,98 +818,37 @@ namespace Server.Spells
 
         public virtual bool CheckSequence()
         {
-            var mana = ScaleMana(GetMana());
-
-            if (Caster.Deleted || !Caster.Alive || Caster.Spell != this || State != SpellState.Sequencing)
+            if (Caster.Deleted || !Caster.Alive || Caster.Spell != this || State != SpellState.ApplyingCast)
             {
                 DoFizzle();
+                return false;
             }
-            else if (Scroll != null && Scroll is not Runebook &&
-                     (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || Scroll is BaseWand baseWand &&
-                         (baseWand.Charges <= 0 || baseWand.Parent != Caster)))
-            {
-                DoFizzle();
-            }
-            else if (!ConsumeReagents())
-            {
-                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502630); // More reagents are needed for this spell.
-            }
-            else if (Caster.Mana < mana)
-            {
-                Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 502625); // Insufficient mana for this spell.
-            }
-            else if (Core.AOS && (Caster.Frozen || Caster.Paralyzed))
-            {
-                Caster.SendLocalizedMessage(502646); // You cannot cast a spell while frozen.
-                DoFizzle();
-            }
-            else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > Core.Now)
-            {
-                mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
-                DoFizzle();
-            }
-            else if (CheckFizzle())
-            {
-                Caster.Mana -= mana;
 
-                if (Scroll is SpellScroll)
+            //now set to 0 - can be added karma on cast
+            var karma = ComputeKarmaAward();
+            if (karma != 0)
+            {
+                Titles.AwardKarma(Caster, karma, true);
+            }
+            //if garlic was in reagents - hurt caster
+            if (TransformationSpellHelper.UnderTransformation(Caster, typeof(VampiricEmbraceSpell)))
+            {
+                var garlic = false;
+
+                for (var i = 0; !garlic && i < Info.Reagents.Length; ++i)
                 {
-                    Scroll.Consume();
-                }
-                else if (Scroll is BaseWand wand)
-                {
-                    wand.ConsumeCharge(Caster);
-                    Caster.RevealingAction();
+                    garlic = Info.Reagents[i] == Reagent.Garlic;
                 }
 
-                if (Scroll is BaseWand)
+                if (garlic)
                 {
-                    var m = Scroll.Movable;
-
-                    Scroll.Movable = false;
-
-                    if (ClearHandsOnCast)
-                    {
-                        Caster.ClearHands();
-                    }
-
-                    Scroll.Movable = m;
-                }
-                else if (ClearHandsOnCast)
-                {
-                    Caster.ClearHands();
-                }
-
-                var karma = ComputeKarmaAward();
-
-                if (karma != 0)
-                {
-                    Titles.AwardKarma(Caster, karma, true);
-                }
-
-                if (TransformationSpellHelper.UnderTransformation(Caster, typeof(VampiricEmbraceSpell)))
-                {
-                    var garlic = false;
-
-                    for (var i = 0; !garlic && i < Info.Reagents.Length; ++i)
-                    {
-                        garlic = Info.Reagents[i] == Reagent.Garlic;
-                    }
-
-                    if (garlic)
-                    {
-                        Caster.SendLocalizedMessage(1061651); // The garlic burns you!
-                        AOS.Damage(Caster, Utility.RandomMinMax(17, 23), 100, 0, 0, 0, 0);
-                    }
+                    Caster.SendLocalizedMessage(1061651); // The garlic burns you!
+                    AOS.Damage(Caster, Utility.RandomMinMax(17, 23), 100, 0, 0, 0, 0);
                 }
 
                 return true;
             }
-            else
-            {
-                DoFizzle();
-            }
-
+            DoFizzle();
             return false;
         }
 
@@ -935,36 +964,52 @@ namespace Server.Spells
                 m_Spell = spell;
             }
 
+            //IMMEDIATE APPLY OF SPELL
             protected override void OnTick()
             {
                 var caster = m_Spell?.Caster;
+                logger.Debug("OnTick() of casttimer executed");
+                logger.Debug($"caster is: {caster}");
+                logger.Debug($"spell state is: {m_Spell?.State}");
 
                 if (caster == null)
                 {
                     return;
                 }
-
+                //if player got new target between mantra and apply. OR spell was disturb - not State Casting anymore
                 if (m_Spell.State == SpellState.Casting && caster.Spell == m_Spell)
                 {
-                    m_Spell.State = SpellState.Sequencing;
+                    //self queue to GC
                     m_Spell._castTimer = null;
-                    caster.OnSpellCast(m_Spell);
                     caster.Region?.OnSpellCast(caster, m_Spell);
+                    //set recovery, prohibits from new casts
                     caster.NextSpellTime =
-                        Core.TickCount + (int)m_Spell.GetCastRecovery().TotalMilliseconds; // Spell.NextSpellDelay;
+                        Core.TickCount + (int)m_Spell.GetCastRecovery().TotalMilliseconds; // when next spell allowed (each spell has it) Spell.NextSpellTime;
 
                     caster.Delta(MobileDelta.Flags); // Update paralyze
 
                     var originalTarget = caster.Target;
 
-                    m_Spell.OnCast();
-
+                    if (IsTargetingSpell(m_Spell))
+                    {
+                        caster.Target?.ApplySpellOnTarget();
+                    }
+                    else
+                    {
+                        m_Spell?.OnCast();
+                    }
+                    //if player got new target between mantra and apply of spell
                     if (caster.Player && caster.Target != originalTarget)
                     {
-                        caster.Target?.BeginTimeout(caster, 30000); // 30 seconds
-                    }
 
-                    m_Spell._castTimer = null;
+                        logger.Debug("new target was selected before spell applied"); // idk if remove it or make disturb
+                                                                                      //  apply bandages (new target)- should disturb?
+                                                                                      // new casting is already blocked
+                                                                                      // by calling disturb and setting recovery
+                        //caster.Target?.BeginTimeout(caster, 30000); // 30 seconds to apply cast
+                    }
+                    //finally remove this timer from spell = timout
+                    if (m_Spell != null) m_Spell._castTimer = null;
                 }
             }
 

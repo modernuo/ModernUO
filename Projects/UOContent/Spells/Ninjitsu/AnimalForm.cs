@@ -109,7 +109,7 @@ public class AnimalForm : NinjaSpell
         _wasMoving = CasterIsMoving();
     }
 
-    public override bool CheckFizzle() => true;
+    public override bool CheckIfEnoughSkill() => true;
 
     public override void OnCast()
     {

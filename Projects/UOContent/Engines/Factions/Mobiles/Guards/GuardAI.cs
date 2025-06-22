@@ -816,7 +816,7 @@ namespace Server.Factions
                     EquipWeapon();
                 }
             }
-            else if (spell?.State == SpellState.Sequencing)
+            else if (spell?.State == SpellState.ApplyingCast)
             {
                 EquipWeapon();
             }

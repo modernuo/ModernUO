@@ -48,7 +48,7 @@ namespace Server.Spells.Chivalry
             return true;
         }
 
-        public override bool CheckFizzle()
+        public override bool CheckIfEnoughSkill()
         {
             var requiredTithing = RequiredTithing;
 
@@ -75,7 +75,7 @@ namespace Server.Spells.Chivalry
 
             Caster.TithingPoints -= requiredTithing;
 
-            if (!base.CheckFizzle())
+            if (!base.CheckIfEnoughSkill())
             {
                 return false;
             }

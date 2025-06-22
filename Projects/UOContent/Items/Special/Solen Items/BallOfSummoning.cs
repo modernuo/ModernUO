@@ -388,7 +388,7 @@ public partial class BallOfSummoning : Item, TranslocationItem
 
         public override bool ConsumeReagents() => true;
 
-        public override bool CheckFizzle() => true;
+        public override bool CheckIfEnoughSkill() => true;
 
         public void Stop()
         {

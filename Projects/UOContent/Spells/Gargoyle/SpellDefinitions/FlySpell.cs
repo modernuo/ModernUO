@@ -27,7 +27,7 @@ namespace Server.Spells
 
         public override bool ConsumeReagents() => true;
 
-        public override bool CheckFizzle() => true;
+        public override bool CheckIfEnoughSkill() => true;
 
         public void Stop()
         {

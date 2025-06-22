@@ -8,5 +8,9 @@ public enum SpellState
     Casting = 1,
 
     // Casting completed, but the full spell sequence isn't. Usually waiting for a target response. Some actions are restricted in this state (using skills for example).
-    Sequencing = 2
+    ApplyingCast = 2,
+
+    SelectingTarget = 3,
+
+    CheckingIfCanCast = 4
 }

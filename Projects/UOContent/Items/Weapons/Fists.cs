@@ -192,7 +192,7 @@ namespace Server.Items
             return chance >= Utility.RandomDouble();
         }
 
-        private static bool HasFreeHands(Mobile m)
+        public static bool HasFreeHands(Mobile m)
         {
             var item = m.FindItemOnLayer(Layer.OneHanded);
 

@@ -1,13 +1,18 @@
 using System;
+using Server.Logging;
 using Server.Network;
 
 namespace Server.Targeting;
 
 public abstract class Target
 {
+    protected static readonly ILogger logger = LogFactory.GetLogger(typeof(Target));
+
+    public Type TargetType { get; set; }
+
     private static int m_NextTargetID;
 
-    private Timer m_TimeoutTimer;
+    public Timer m_TimeoutTimer;
 
     protected Target(int range, bool allowGround, TargetFlags flags)
     {
@@ -21,6 +26,7 @@ public abstract class Target
 
     public long TimeoutTime { get; private set; }
 
+    //property of every target if LOS of target is needed to be checked or not.
     public bool CheckLOS { get; set; }
 
     public bool DisallowMultis { get; set; }
@@ -51,10 +57,15 @@ public abstract class Target
         m_TimeoutTimer.Start();
     }
 
-    public void CancelTimeout()
+    public virtual void CancelTimeout()
     {
         m_TimeoutTimer?.Stop();
         m_TimeoutTimer = null;
+    }
+
+    public virtual void CancelSpellTargetTimeout()
+    {
+
     }
 
     public void Timeout(Mobile m)
@@ -217,6 +228,10 @@ public abstract class Target
     {
     }
 
+    public virtual void ApplySpellOnTarget()
+    {
+
+    }
     protected virtual void OnTargetNotAccessible(Mobile from, object targeted)
     {
         from.SendLocalizedMessage(500447); // That is not accessible.

@@ -103,7 +103,7 @@ namespace Server.SkillHandlers
 
             public override bool ConsumeReagents() => true;
 
-            public override bool CheckFizzle() => true;
+            public override bool CheckIfEnoughSkill() => true;
 
             public override void OnDisturb(DisturbType type, bool message)
             {

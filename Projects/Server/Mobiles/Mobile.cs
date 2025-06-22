@@ -887,7 +887,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             if (m_Spell != null && value != null)
             {
-                logger.Warning("Spell has been overwritten.");
+                logger.Warning("new Spell instance assigned to Mobile.Spell : ISpell");
             }
 
             m_Spell = value;
@@ -4098,11 +4098,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         newLocation = oldLocation;
 
-        if (m_Spell?.OnCasterMoving(d) == false)
-        {
-            return false;
-        }
-
         if (m_Paralyzed || m_Frozen)
         {
             SendLocalizedMessage(500111); // You are frozen and can not move.
@@ -4589,21 +4584,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         Spawner?.Remove(this);
         Spawner = null;
-    }
-
-    public virtual bool CheckSpellCast(ISpell spell) => true;
-
-    /// <summary>
-    ///     Overridable. Virtual event invoked when the Mobile casts a <paramref name="spell" />.
-    /// </summary>
-    /// <param name="spell"></param>
-    public virtual void OnSpellCast(ISpell spell)
-    {
-        var now = Core.TickCount;
-        if (m_NetState != null && now - m_NetState._nextMovementTime > 0)
-        {
-            m_NetState._nextMovementTime = now;
-        }
     }
 
     /// <summary>

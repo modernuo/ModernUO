@@ -60,7 +60,7 @@ namespace Server.Spells.Bushido
             return true;
         }
 
-        public override bool CheckFizzle()
+        public override bool CheckIfEnoughSkill()
         {
             var mana = ScaleMana(RequiredMana);
 
@@ -78,7 +78,7 @@ namespace Server.Spells.Bushido
                 return false;
             }
 
-            if (!base.CheckFizzle())
+            if (!base.CheckIfEnoughSkill())
             {
                 return false;
             }
