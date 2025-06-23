@@ -128,7 +128,7 @@ public abstract partial class BaseShieldGuard : BaseCreature
 
             var from = e.Mobile;
 
-            if (from.Guild is not Guild g || g.Type != Type)
+            if ((from as PlayerMobile)?.Guild is not Guild g || g.Type != Type)
             {
                 Say(SignupNumber);
             }
