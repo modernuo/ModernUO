@@ -419,8 +419,6 @@ public abstract class BaseAI
                 int newY = currentLoc.Y + Utility.RandomMinMax(-1, 1);
                 int newZ = currentLoc.Z;
 
-                Point3D newLocation = new Point3D(newX, newY, newZ);
-
                 if (map != null && map.CanFit(newX, newY, newZ, 16, false, false, true))
                 {
                     m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516);
@@ -1039,15 +1037,28 @@ public abstract class BaseAI
         switch (m_Mobile.ControlOrder)
         {
             case OrderType.None:
+                HandleNoOrder();
+                break;
+
             case OrderType.Come:
             case OrderType.Drop:
+
             case OrderType.Release:
-            case OrderType.Stay:
+                HandleReleaseOrder();
+                break;
+
             case OrderType.Stop:
+                HandleStopOrder();
+                break;
+
             case OrderType.Transfer:
-                HandlePassiveOrder();
+                HandleTransferOrder();
                 break;
     
+            case OrderType.Stay:
+                HandleStayOrder();
+                break;
+
             case OrderType.Friend:
             case OrderType.Unfriend:
                 break;
@@ -1069,10 +1080,24 @@ public abstract class BaseAI
                 break;
         }
     }
-    
-    private void HandlePassiveOrder()
+
+    private void HandleNoOrder()
     {
+        m_Mobile.ControlTarget = null;
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
+    }
+    
+    private void HandleTransferOrder()
+    {
+        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        {
+            return;
+        }
+        
         _lastCommandIssuer?.RevealingAction();
+        m_Mobile.ControlTarget = null;
         m_Mobile.FocusMob = null;
         m_Mobile.Warmode = false;
         m_Mobile.Combatant = null;
@@ -1125,6 +1150,58 @@ public abstract class BaseAI
         _lastCommandIssuer = null;
     }
 
+    private void HandleStayOrder()
+    {
+        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        {
+            return;
+        }
+
+        _lastCommandIssuer?.RevealingAction();
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+        m_Mobile.Home = m_Mobile.Location;
+        _lastCommandIssuer = null;
+    }
+
+    private void HandleStopOrder()
+    {
+        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        {
+            return;
+        }
+
+        _lastCommandIssuer?.RevealingAction();
+        m_Mobile.ControlTarget = null;
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+        _lastCommandIssuer = null;
+    }
+
+    private void HandleReleaseOrder()
+    {
+        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        {
+            return;
+        }
+
+        _lastCommandIssuer?.RevealingAction();
+        m_Mobile.ControlTarget = null;
+        m_Mobile.FocusMob = null;
+        m_Mobile.Warmode = false;
+        m_Mobile.Combatant = null;
+        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+        m_Mobile.BondingBegin = DateTime.MinValue;
+        m_Mobile.OwnerAbandonTime = DateTime.MinValue;
+        m_Mobile.IsBonded = false;
+        m_Mobile.SetControlMaster(null);
+        _lastCommandIssuer = null;
+    }
+
     public virtual void HandleRenameOrder()
     {
         if (m_Mobile.Summoned)
@@ -1172,7 +1249,6 @@ public abstract class BaseAI
     {
         DebugSay($"Master {m_Mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
     
-        m_Mobile.ControlTarget = null;
         m_Mobile.ControlOrder = OrderType.None;
     }
 
@@ -1182,14 +1258,7 @@ public abstract class BaseAI
     
         if (WalkMobileRange(m_Mobile.ControlMaster, 1, currentDistance > 2, 1, 2))
         {
-            if (IsValidCombatant(m_Mobile.Combatant))
-            {
-                m_Mobile.Warmode = true;
-            }
-            else
-            {
-                m_Mobile.Warmode = false;
-            }
+            m_Mobile.Warmode = IsValidCombatant(m_Mobile.Combatant);
         }
     }
 
@@ -1202,7 +1271,6 @@ public abstract class BaseAI
     
         DebugSay($"I am ordered to drop my items by {m_Mobile.ControlMaster?.Name ?? "Unknown"}.");
     
-        m_Mobile.ControlTarget = null;
         m_Mobile.ControlOrder = OrderType.None;
 
         DropItems();
@@ -1291,10 +1359,6 @@ public abstract class BaseAI
         {
             DebugSay("I have no one to follow.");
 
-            m_Mobile.ControlTarget = null;
-            m_Mobile.FocusMob = null;
-            m_Mobile.Warmode = false;
-            m_Mobile.Combatant = null;
             m_Mobile.ControlOrder = OrderType.None;
         }
     
@@ -1323,7 +1387,6 @@ public abstract class BaseAI
     {
         var from = m_Mobile.ControlMaster;
         var to = m_Mobile.ControlTarget;
-
         
         if (IsYoungPlayer(from, to))
         {
@@ -1532,8 +1595,8 @@ public abstract class BaseAI
         }
         else
         {
-            DebugSay("Attacking target...");
-    
+            DebugSay($"Attacking target: {m_Mobile.ControlTarget.Name}");
+            
             Think();
         }
     
@@ -1551,12 +1614,10 @@ public abstract class BaseAI
     
         if (Core.AOS || m_Mobile.IsBonded)
         {
-            m_Mobile.ControlTarget = m_Mobile.ControlMaster;
             m_Mobile.ControlOrder = OrderType.Follow;
         }
         else
         {
-            m_Mobile.ControlTarget = null;
             m_Mobile.ControlOrder = OrderType.None;
         }
     
@@ -1603,16 +1664,6 @@ public abstract class BaseAI
     {
         DebugSay("I have been released to the wild.");
 
-        m_Mobile.ControlTarget = null;
-        m_Mobile.FocusMob = null;
-        m_Mobile.Warmode = false;
-        m_Mobile.Combatant = null;
-        m_Mobile.BondingBegin = DateTime.MinValue;
-        m_Mobile.OwnerAbandonTime = DateTime.MinValue;
-        m_Mobile.IsBonded = false;
-        m_Mobile.SetControlMaster(null);
-        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
-
         var spawner = m_Mobile.Spawner;
     
         if (spawner != null && spawner.HomeLocation != Point3D.Zero)
@@ -1652,56 +1703,29 @@ public abstract class BaseAI
         {
             DebugSay($"I have been ordered to stay by {m_Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
-    
-        HandleStayOrder();
+
+        WalkRandomInHome(3, 2, 1);
     
         return true;
-    }
-    
-    private void HandleStayOrder()
-    {
-        m_Mobile.ControlTarget = null;
-        m_Mobile.FocusMob = null;
-        m_Mobile.Warmode = false;
-        m_Mobile.Combatant = null;
-
-        m_Mobile.Home = m_Mobile.Location;
-        WalkRandomInHome(3, 2, 1);
     }
 
     public virtual bool DoOrderStop()
     {
-        if (m_Mobile.ControlMaster?.Deleted != false)
+        if (CheckHerding())
         {
-            return true;
-        }
-    
-        DebugSay($"{m_Mobile.ControlMaster?.Name ?? "Unknown"} has ordered me to stop.");
-
-        if (Core.ML)
-        {
-            WalkRandomInHome(3, 2, 1);
+            DebugSay($"I am being herded by {m_Mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else
         {
-            HandleStopOrder();
+            DebugSay($"I have been ordered to stop by {m_Mobile.ControlMaster?.Name ?? "Unknown"}.");
+        }
+
+        if (Core.ML)
+        {
+            WalkRandomInHome(5, 2, 1);
         }
     
         return true;
-    }
-    
-    private void HandleStopOrder()
-    {
-        m_Mobile.ControlTarget = null;
-        m_Mobile.FocusMob = null;
-        m_Mobile.Warmode = false;
-        m_Mobile.Combatant = null;
-        m_Mobile.Home = m_Mobile.Location;
-            
-        if (m_Mobile.ControlOrder != OrderType.Stop)
-        {
-            m_Mobile.ControlOrder = OrderType.Stop;
-        }
     }
 
     public virtual bool DoOrderTransfer()
@@ -1767,12 +1791,8 @@ public abstract class BaseAI
             }
         }
 
-        m_Mobile.ControlTarget = null;
-        m_Mobile.FocusMob = null;
-        m_Mobile.Warmode = false;
-        m_Mobile.Combatant = null;
         m_Mobile.ControlOrder = OrderType.Stay;
-        m_Mobile.PlaySound(m_Mobile.GetIdleSound());
+
         return true;
     }
     
