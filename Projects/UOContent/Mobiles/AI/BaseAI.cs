@@ -3023,39 +3023,6 @@ public abstract class BaseAI
                     break;
             }
         }
-    
-        private void HandleTargetOrder(Mobile from, BaseCreature bc)
-        {
-            if (_order is OrderType.Transfer or OrderType.Friend && from.HasTrade)
-            {
-                from.SendLocalizedMessage(_order == OrderType.Transfer ? 1010507 : 1070947);
-                // 1010507: You cannot transfer a pet with a trade pending
-                // 1070947: You cannot friend a pet with a trade pending
-                return;
-            }
-    
-            bc.AIObject.BeginPickTarget(from, _order);
-        }
-    
-        private void HandleReleaseOrder(Mobile from, BaseCreature bc)
-        {
-            if (bc.Summoned)
-            {
-                HandleDefaultOrder(from, bc);
-                return;
-            }
-    
-            from.SendGump(new ConfirmReleaseGump(from, bc));
-        }
-    
-        private void HandleDefaultOrder(Mobile from, BaseCreature bc)
-        {
-            if (bc.CheckControlChance(from))
-            {
-                bc.ControlOrder = _order;
-            }
-        }
-    }
 
     private sealed class TransferItem : Item
     {
