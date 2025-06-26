@@ -120,30 +120,33 @@ public abstract class BaseAI
     private long m_NextDebugMessage;
     private string _lastDebugMessage;
 
+    private static readonly Dictionary<ActionType, ActionHandler> _staticActionHandlers = new()
+    {
+        { ActionType.Wander, (ai) => { ai.m_Mobile.OnActionWander(); return ai.DoActionWander(); } },
+        { ActionType.Combat, (ai) => { ai.m_Mobile.OnActionCombat(); return ai.DoActionCombat(); } },
+        { ActionType.Guard, (ai) => { ai.m_Mobile.OnActionGuard(); return ai.DoActionGuard(); } },
+        { ActionType.Flee, (ai) => { ai.m_Mobile.OnActionFlee(); return ai.DoActionFlee(); } },
+        { ActionType.Interact, (ai) => { ai.m_Mobile.OnActionInteract(); return ai.DoActionInteract(); } },
+        { ActionType.Backoff, (ai) => { ai.m_Mobile.OnActionBackoff(); return ai.DoActionBackoff(); } }
+    };
+
+    private static readonly Dictionary<ActionType, ActionChange> _staticActionChanges = new()
+    {
+        { ActionType.Wander, (ai) => ai.HandleWanderAction() },
+        { ActionType.Combat, (ai) => ai.HandleCombatAction() },
+        { ActionType.Guard, (ai) => ai.HandleGuardAction() },
+        { ActionType.Flee, (ai) => ai.HandleFleeAction() },
+        { ActionType.Interact, (ai) => ai.HandleInteractAction() },
+        { ActionType.Backoff, (ai) => ai.HandleBackoffAction() }
+    };
+
+    private delegate bool ActionHandler(BaseAI ai);
+    private delegate void ActionChange(BaseAI ai);
+
     public BaseAI(BaseCreature m)
     {
         m_Mobile = m;
         m_Timer = new AITimer(this);
-
-        _actionHandlers = new Dictionary<ActionType, Func<bool>>
-        {
-            { ActionType.Wander, () => { m_Mobile.OnActionWander(); return DoActionWander(); } },
-            { ActionType.Combat, () => { m_Mobile.OnActionCombat(); return DoActionCombat(); } },
-            { ActionType.Guard, () => { m_Mobile.OnActionGuard(); return DoActionGuard(); } },
-            { ActionType.Flee, () => { m_Mobile.OnActionFlee(); return DoActionFlee(); } },
-            { ActionType.Interact, () => { m_Mobile.OnActionInteract(); return DoActionInteract(); } },
-            { ActionType.Backoff, () => { m_Mobile.OnActionBackoff(); return DoActionBackoff(); } }
-        };
-
-        _actionChanges = new Dictionary<ActionType, Action>
-        {
-            { ActionType.Wander, HandleWanderAction },
-            { ActionType.Combat, HandleCombatAction },
-            { ActionType.Guard, HandleGuardAction },
-            { ActionType.Flee, HandleFleeAction },
-            { ActionType.Interact, HandleInteractAction },
-            { ActionType.Backoff, HandleBackoffAction }
-        };
 
         var activate = !m.PlayerRangeSensitive || 
             (!World.Loading && m.Map != null && m.Map != Map.Internal && 
@@ -410,10 +413,11 @@ public abstract class BaseAI
                 _lastOrder = Core.Now;
 
                 var map = m_Mobile.Map;
+                var currentLoc = m_Mobile.Location;
 
-                int newX = m_Mobile.Location.X + Utility.RandomMinMax(-1, 1);
-                int newY = m_Mobile.Location.Y + Utility.RandomMinMax(-1, 1);
-                int newZ = m_Mobile.Location.Z;
+                int newX = currentLoc.X + Utility.RandomMinMax(-1, 1);
+                int newY = currentLoc.Y + Utility.RandomMinMax(-1, 1);
+                int newZ = currentLoc.Z;
 
                 Point3D newLocation = new Point3D(newX, newY, newZ);
 
@@ -422,7 +426,7 @@ public abstract class BaseAI
                     m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516);
                     // 501516: Excuse me?
                     
-                    m_Mobile.Location = newLocation;
+                    m_Mobile.Location = new Point3D(newX, newY, newZ);
                     WalkRandomInHome(3, 2, 1);
                 }
                 else
@@ -751,12 +755,26 @@ public abstract class BaseAI
 
     public void DebugSay(string message, int cooldownMs = 5000)
     {
-        if (m_Mobile.Debug && (Core.TickCount >= m_NextDebugMessage || _lastDebugMessage != message))
+        if (m_Mobile.Debug && (Core.TickCount >= m_NextDebugMessage 
+            || !string.Equals(_lastDebugMessage, message, StringComparison.Ordinal)))
         {
             m_Mobile.DebugSay(message);
             m_NextDebugMessage = Core.TickCount + cooldownMs;
             _lastDebugMessage = message;
         }
+    }
+
+    private void DebugSayWithTarget(string baseMessage, Mobile target, string fallback = "Unknown")
+    {
+        if (!m_Mobile.Debug)
+        {
+            return;
+        }
+            
+        var targetName = target?.Name ?? fallback;
+        var message = $"{baseMessage}{targetName}";
+        
+        DebugSay(message);
     }
     
     private void HandleGMCommands(SpeechEventArgs e)
@@ -765,24 +783,19 @@ public abstract class BaseAI
     
         if (m_Mobile.FindMyName(e.Speech, true))
         {
-            foreach (var word in e.Speech.Split(' '))
+            if (e.Speech.InsensitiveContains("obey"))
             {
-                if (word.InsensitiveEquals("obey"))
+                m_Mobile.SetControlMaster(e.Mobile);
+    
+                if (m_Mobile.Summoned)
                 {
-                    m_Mobile.SetControlMaster(e.Mobile);
-    
-                    if (m_Mobile.Summoned)
-                    {
-                        m_Mobile.SummonMaster = e.Mobile;
-                    }
-    
-                    return;
+                    m_Mobile.SummonMaster = e.Mobile;
                 }
+    
+                return;
             }
         }
     }
-
-    private readonly Dictionary<ActionType, Func<bool>> _actionHandlers;
 
     public virtual bool Think()
     {
@@ -796,16 +809,14 @@ public abstract class BaseAI
             return true;
         }
     
-        return _actionHandlers.TryGetValue(Action, out var handler) && handler();
+        return _staticActionHandlers.TryGetValue(Action, out var handler) && handler(this);
     }
-
-    private readonly Dictionary<ActionType, Action> _actionChanges;
 
     public virtual void OnActionChanged()
     {
-        if (_actionChanges.TryGetValue(Action, out var handler))
+        if (_staticActionChanges.TryGetValue(Action, out var handler))
         {
-            handler();
+            handler(this);
         }
     }
     
