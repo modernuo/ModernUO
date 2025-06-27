@@ -1042,6 +1042,9 @@ public abstract class BaseAI
 
             case OrderType.Come:
             case OrderType.Drop:
+            case OrderType.Friend:
+            case OrderType.Unfriend:
+                break;
 
             case OrderType.Release:
                 HandleReleaseOrder();
@@ -1057,10 +1060,6 @@ public abstract class BaseAI
     
             case OrderType.Stay:
                 HandleStayOrder();
-                break;
-
-            case OrderType.Friend:
-            case OrderType.Unfriend:
                 break;
     
             case OrderType.Guard:
