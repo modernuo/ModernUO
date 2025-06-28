@@ -3262,7 +3262,8 @@ public abstract class BaseAI
 
         private static double GetBaseInterval(BaseAI owner)
         {
-            if (owner.m_Mobile.Controlled && owner.m_Mobile.ControlOrder == OrderType.Follow)
+            if (owner.m_Mobile.Controlled && owner.m_Mobile.ControlOrder == OrderType.Follow 
+                && owner.m_Mobile.Combatant != owner.m_Mobile.ControlMaster)
             {
                 return owner.m_Mobile.CurrentSpeed * 500;
             }
