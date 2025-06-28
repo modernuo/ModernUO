@@ -3413,37 +3413,59 @@ public abstract class BaseAI
     
         public class AIMovementTimer : Timer
         {
-            public BaseAI AI { get; private set; }
-            public Direction Direction { get; private set; }
-    
+            private BaseAI _ai;
+            private Direction _direction;
+            private volatile bool _disposed;
+
             public AIMovementTimer() : base(TimeSpan.Zero)
             {
             }
-    
+            
             public void Set(TimeSpan delay, BaseAI ai, Direction direction)
             {
-                if (Running)
+                if (_disposed || Running)
                 {
                     return;
                 }
-    
+        
                 Delay = delay;
-                AI = ai;
-                Direction = direction;
+                _ai = ai;
+                _direction = direction;
             }
-    
+        
             protected override void OnTick()
             {
+                if (_disposed)
+                {
+                    return;
+                }
+        
                 try
                 {
-                    AI?.DoMove(Direction);
+                    if (_ai?.m_Mobile?.Deleted == false)
+                    {
+                        _ai.DoMove(_direction);
+                    }
                 }
                 finally
                 {
                     Stop();
-                    AI = null;
-                    _pool.Enqueue(this);
+
+                    _disposed = true;
+                    _ai = null;
+                    _direction = Direction.North;
+                    
+                    if (!_disposed)
+                    {
+                        _pool.Enqueue(this);
+                    }
                 }
+            }
+        
+            public void SafeStop()
+            {
+                _disposed = true;
+                Stop();
             }
         }
     }
