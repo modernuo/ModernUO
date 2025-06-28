@@ -1853,8 +1853,6 @@ public abstract class BaseAI
         {
             m_Mobile.Combatant = m_Mobile.BardTarget;
             Action = ActionType.Combat;
-            m_Mobile.OnThink();
-            Think();
         }
     
         return true;
