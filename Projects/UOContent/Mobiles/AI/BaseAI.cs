@@ -2992,8 +2992,10 @@ public abstract class BaseAI
             return from.CheckAlive() && bc != null && !bc.Deleted && bc.Controlled;
         }
     
-        private bool IsInvalidOrderForDeadPet(BaseCreature bc) =>
-            bc.IsDeadPet && _order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
+        private bool IsInvalidOrderForDeadPet(BaseCreature bc)
+        {
+            return bc.IsDeadPet && _order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
+        }
     
         private static bool IsOwnerOrFriend(Mobile from, BaseCreature bc, out bool isFriend)
         {
@@ -3002,23 +3004,35 @@ public abstract class BaseAI
             return isOwner || isFriend;
         }
     
-        private bool IsInvalidOrderForFriend(bool isFriend) =>
-            isFriend && _order is not (OrderType.Follow or OrderType.Stay or OrderType.Stop);
-    
+        private bool IsInvalidOrderForFriend(bool isFriend)
+        {
+            return isFriend && _order is not (OrderType.Follow or OrderType.Stay or OrderType.Stop);
+        }
+        
         private void HandleOrder(Mobile from, BaseCreature bc)
         {
+            if (!from.InLOS(bc))
+            {
+                return;
+            }
+        
             switch (_order)
             {
                 case OrderType.Follow:
                 case OrderType.Attack:
                 case OrderType.Transfer:
                 case OrderType.Friend:
+                    HandleTargetOrder(from, bc);
+                    break; 
+        
                 case OrderType.Unfriend:
                     HandleTargetOrder(from, bc);
                     break;
+        
                 case OrderType.Release:
                     HandleReleaseOrder(from, bc);
                     break;
+        
                 default:
                     HandleDefaultOrder(from, bc);
                     break;
@@ -3127,9 +3141,16 @@ public abstract class BaseAI
             return !accepted || HandleAcceptedTrade(from, to);
         }
     
-        private bool IsInvalidTrade(Mobile from, Mobile to) =>
-            Deleted || m_Creature?.Deleted != false || m_Creature.ControlMaster != from ||
-            !from.CheckAlive() || !to.CheckAlive() || from.Map != m_Creature.Map || !from.InRange(m_Creature, 14);
+        private bool IsInvalidTrade(Mobile from, Mobile to)
+        {
+            return Deleted
+            || m_Creature?.Deleted != false
+            || m_Creature.ControlMaster != from
+            || !from.CheckAlive()
+            || !to.CheckAlive()
+            || from.Map != m_Creature.Map
+            || !from.InRange(m_Creature, 14);
+        }
     
         private bool HandleAcceptedTrade(Mobile from, Mobile to)
         {
@@ -3235,13 +3256,16 @@ public abstract class BaseAI
 
             m_Creature.BondingBegin = DateTime.MinValue;
             m_Creature.OwnerAbandonTime = DateTime.MinValue;
+            
             m_Creature.IsBonded = false;
 
             m_Creature.PlaySound(m_Creature.GetIdleSound());
 
             var args = $"{from.Name}\t{m_Creature.Name}\t{to.Name}";
+
             from.SendLocalizedMessage(1043253, args);
             // 1043253: You have transferred your pet to ~3_GETTER~.
+
             to.SendLocalizedMessage(1043252, args);
             // 1043252: ~1_NAME~ has transferred the allegiance of ~2_PET_NAME~ to you.
         }
