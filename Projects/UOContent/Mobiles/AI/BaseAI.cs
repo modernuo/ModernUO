@@ -501,7 +501,7 @@ public abstract class BaseAI
                 }
                 case var _ when e.HasKeyword(0x167): // all stop
                 {
-                    HandleSimpleCommand(e.Mobile, OrderType.Stop);
+                    HandleStayStopFollowCommand(e.Mobile, OrderType.Stop);
                     break;
                 }
                 case var _ when e.HasKeyword(0x168) || e.HasKeyword(0x169): // all kill / all attack
@@ -511,12 +511,12 @@ public abstract class BaseAI
                 }
                 case var _ when e.HasKeyword(0x16C): // all follow me
                 {
-                    HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
+                    HandleStayStopFollowCommand(e.Mobile, OrderType.Follow, e.Mobile);
                     break;
                 }
                 case var _ when e.HasKeyword(0x170): // all stay
                 {
-                    HandleSimpleCommand(e.Mobile, OrderType.Stay);
+                    HandleStayStopFollowCommand(e.Mobile, OrderType.Stay);
                     break;
                 }
             }
@@ -569,12 +569,12 @@ public abstract class BaseAI
                 }
                 case var _ when e.HasKeyword(0x161): // *stop
                 {
-                    HandleSimpleCommand(e.Mobile, OrderType.Stop);
+                    HandleStayStopFollowCommand(e.Mobile, OrderType.Stop);
                     break;
                 }
                 case var _ when e.HasKeyword(0x163): // *follow me
                 {
-                    HandleSimpleCommand(e.Mobile, OrderType.Follow, e.Mobile);
+                    HandleStayStopFollowCommand(e.Mobile, OrderType.Follow, e.Mobile);
                     break;
                 }
                 case var _ when e.HasKeyword(0x16D): // *release
@@ -589,7 +589,7 @@ public abstract class BaseAI
                 }
                 case var _ when e.HasKeyword(0x16F): // *stay
                 {
-                    HandleSimpleCommand(e.Mobile, OrderType.Stay);
+                    HandleStayStopFollowCommand(e.Mobile, OrderType.Stay);
                     break;
                 }
             }
@@ -643,7 +643,7 @@ public abstract class BaseAI
     
     private void HandleComeCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && m_Mobile.CheckControlChance(from))
+        if (isOwner && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
         {
             _lastCommandIssuer = from;
             m_Mobile.ControlTarget = null;
@@ -653,7 +653,7 @@ public abstract class BaseAI
     
     private void HandleGuardCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && m_Mobile.CheckControlChance(from))
+        if (isOwner && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
         {
             _lastCommandIssuer = from;
             m_Mobile.ControlTarget = null;
@@ -661,9 +661,9 @@ public abstract class BaseAI
         }
     }
     
-    private void HandleSimpleCommand(Mobile from, OrderType order, Mobile target = null)
+    private void HandleStayStopFollowCommand(Mobile from, OrderType order, Mobile target = null)
     {
-        if (m_Mobile.CheckControlChance(from))
+        if (m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
         {
             _lastCommandIssuer = from;
             m_Mobile.ControlTarget = target;
@@ -673,7 +673,7 @@ public abstract class BaseAI
     
     private void HandleAttackCommand(Mobile from, bool isOwner)
     {
-        if (isOwner)
+        if (isOwner && from.InLOS(m_Mobile))
         {
             _lastCommandIssuer = from;
             BeginPickTarget(from, OrderType.Attack);
@@ -682,7 +682,8 @@ public abstract class BaseAI
     
     private void HandleDropCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && !m_Mobile.IsDeadPet && !m_Mobile.Summoned && WasNamed(speech) && m_Mobile.CheckControlChance(from))
+        if (isOwner && !m_Mobile.IsDeadPet && !m_Mobile.Summoned && WasNamed(speech) 
+            && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
         {
             m_Mobile.ControlTarget = null;
             m_Mobile.ControlOrder = OrderType.Drop;
@@ -691,7 +692,7 @@ public abstract class BaseAI
     
     private void HandleFriendCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && WasNamed(speech) && m_Mobile.CheckControlChance(from))
+        if (isOwner && WasNamed(speech) && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
         {
             if (m_Mobile.Summoned || m_Mobile is GrizzledMare)
             {
@@ -712,7 +713,7 @@ public abstract class BaseAI
     
     private void HandleReleaseCommand(Mobile from, bool isOwner, string speech)
     {
-        if (!isOwner)
+        if (!isOwner || from.InLOS(m_Mobile))
         {
             return;
         }
@@ -732,7 +733,8 @@ public abstract class BaseAI
     
     private void HandleTransferCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && !m_Mobile.IsDeadPet && WasNamed(speech) && m_Mobile.CheckControlChance(from))
+        if (isOwner && !m_Mobile.IsDeadPet && WasNamed(speech) && m_Mobile.CheckControlChance(from) 
+            && from.InLOS(m_Mobile))
         {
             if (m_Mobile.Summoned || m_Mobile is GrizzledMare)
             {
