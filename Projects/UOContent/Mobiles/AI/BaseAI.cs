@@ -643,7 +643,7 @@ public abstract class BaseAI
     
     private void HandleComeCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
+        if (isOwner && m_Mobile.CheckControlChance(from))
         {
             _lastCommandIssuer = from;
             m_Mobile.ControlTarget = null;
@@ -653,7 +653,7 @@ public abstract class BaseAI
     
     private void HandleGuardCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
+        if (isOwner && m_Mobile.CheckControlChance(from))
         {
             _lastCommandIssuer = from;
             m_Mobile.ControlTarget = null;
@@ -663,7 +663,7 @@ public abstract class BaseAI
     
     private void HandleStayStopFollowCommand(Mobile from, OrderType order, Mobile target = null)
     {
-        if (m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
+        if (m_Mobile.CheckControlChance(from))
         {
             _lastCommandIssuer = from;
             m_Mobile.ControlTarget = target;
@@ -673,7 +673,7 @@ public abstract class BaseAI
     
     private void HandleAttackCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && from.InLOS(m_Mobile))
+        if (isOwner)
         {
             _lastCommandIssuer = from;
             BeginPickTarget(from, OrderType.Attack);
@@ -683,7 +683,7 @@ public abstract class BaseAI
     private void HandleDropCommand(Mobile from, bool isOwner, string speech)
     {
         if (isOwner && !m_Mobile.IsDeadPet && !m_Mobile.Summoned && WasNamed(speech) 
-            && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
+            && m_Mobile.CheckControlChance(from))
         {
             m_Mobile.ControlTarget = null;
             m_Mobile.ControlOrder = OrderType.Drop;
@@ -692,7 +692,7 @@ public abstract class BaseAI
     
     private void HandleFriendCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && WasNamed(speech) && m_Mobile.CheckControlChance(from) && from.InLOS(m_Mobile))
+        if (isOwner && WasNamed(speech) && m_Mobile.CheckControlChance(from))
         {
             if (m_Mobile.Summoned || m_Mobile is GrizzledMare)
             {
@@ -713,7 +713,7 @@ public abstract class BaseAI
     
     private void HandleReleaseCommand(Mobile from, bool isOwner, string speech)
     {
-        if (!isOwner || from.InLOS(m_Mobile))
+        if (!isOwner)
         {
             return;
         }
@@ -733,8 +733,7 @@ public abstract class BaseAI
     
     private void HandleTransferCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && !m_Mobile.IsDeadPet && WasNamed(speech) && m_Mobile.CheckControlChance(from) 
-            && from.InLOS(m_Mobile))
+        if (isOwner && !m_Mobile.IsDeadPet && WasNamed(speech) && m_Mobile.CheckControlChance(from))
         {
             if (m_Mobile.Summoned || m_Mobile is GrizzledMare)
             {
