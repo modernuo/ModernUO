@@ -3442,6 +3442,7 @@ public abstract class BaseAI
                 }
                 finally
                 {
+                    Stop();
                     AI = null;
                     _pool.Enqueue(this);
                 }
