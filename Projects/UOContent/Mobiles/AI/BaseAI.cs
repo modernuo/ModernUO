@@ -2882,13 +2882,15 @@ public abstract class BaseAI
         }
     }
 
-    private bool IsValidTargetCombatTarget(Mobile trg) =>
-        trg != m_Mobile && 
-        trg.Player && 
-        trg.Alive && 
-        trg.Hidden && 
-        trg.AccessLevel == AccessLevel.Player && 
-        m_Mobile.InLOS(trg);
+    private bool IsValidTargetCombatTarget(Mobile trg)
+    {
+        return trg != m_Mobile &&
+               trg.Player &&
+               trg.Alive &&
+               trg.Hidden &&
+               trg.AccessLevel == AccessLevel.Player &&
+               m_Mobile.InLOS(trg);
+    }
 
     private void TryDetectHidden(Mobile trg, double srcSkill)
     {
