@@ -997,23 +997,69 @@ public abstract class BaseAI
     
     public virtual bool DoActionBackoff() => true;
     
-    public virtual bool Obey() =>
-        !m_Mobile.Deleted && m_Mobile.ControlOrder switch
+    public virtual bool Obey()
+    {
+        if (m_Mobile.Deleted)
         {
-            OrderType.None     => DoOrderNone(),
-            OrderType.Come     => DoOrderCome(),
-            OrderType.Drop     => DoOrderDrop(),
-            OrderType.Friend   => DoOrderFriend(),
-            OrderType.Unfriend => DoOrderUnfriend(),
-            OrderType.Guard    => DoOrderGuard(),
-            OrderType.Attack   => DoOrderAttack(),
-            OrderType.Release  => DoOrderRelease(),
-            OrderType.Stay     => DoOrderStay(),
-            OrderType.Stop     => DoOrderStop(),
-            OrderType.Follow   => DoOrderFollow(),
-            OrderType.Transfer => DoOrderTransfer(),
-            _                  => false
-        };
+            return false;
+        }
+
+        switch (m_Mobile.ControlOrder)
+        {
+            case OrderType.None:
+            {
+                return DoOrderNone();
+            }
+            case OrderType.Come:
+            {
+                return DoOrderCome();
+            }
+            case OrderType.Drop:
+            {
+                return DoOrderDrop();
+            }
+            case OrderType.Friend:
+            {
+                return DoOrderFriend();
+            }
+            case OrderType.Unfriend:
+            {
+                return DoOrderUnfriend();
+            }
+            case OrderType.Guard:
+            {
+                return DoOrderGuard();
+            }
+            case OrderType.Attack:
+            {
+                return DoOrderAttack();
+            }
+            case OrderType.Release:
+            {
+                return DoOrderRelease();
+            }
+            case OrderType.Stay:
+            {
+                return DoOrderStay();
+            }
+            case OrderType.Stop:
+            {
+                return DoOrderStop();
+            }
+            case OrderType.Follow:
+            {
+                return DoOrderFollow();
+            }
+            case OrderType.Transfer:
+            {
+                return DoOrderTransfer();
+            }
+            default:
+            {
+                return false;
+            }
+        }
+    }
     
     public virtual void OnCurrentOrderChanged()
     {
@@ -1025,46 +1071,57 @@ public abstract class BaseAI
         switch (m_Mobile.ControlOrder)
         {
             case OrderType.None:
+            {
                 HandleNoOrder();
                 break;
-
+            }
             case OrderType.Come:
             case OrderType.Drop:
             case OrderType.Friend:
             case OrderType.Unfriend:
+            {
                 break;
-
+            }
             case OrderType.Release:
+            {
                 HandleReleaseOrder();
                 break;
-
+            }
             case OrderType.Stop:
+            {
                 HandleStopOrder();
                 break;
-
+            }
             case OrderType.Transfer:
+            {
                 HandleTransferOrder();
                 break;
-    
+            }
             case OrderType.Stay:
+            {
                 HandleStayOrder();
                 break;
-    
+            }
             case OrderType.Guard:
+            {
                 HandleGuardOrder();
                 break;
-    
+            }
             case OrderType.Attack:
+            {
                 HandleAttackOrder();
                 break;
-    
+            }
             case OrderType.Follow:
+            {
                 HandleFollowOrder();
                 break;
-
+            }
             case OrderType.Rename:
+            {
                 HandleRenameOrder();
                 break;
+            }
         }
     }
 
@@ -2997,31 +3054,31 @@ public abstract class BaseAI
         
         private void HandleOrder(Mobile from, BaseCreature bc)
         {
-            if (!from.InLOS(bc))
-            {
-                return;
-            }
-        
             switch (_order)
             {
                 case OrderType.Follow:
                 case OrderType.Attack:
                 case OrderType.Transfer:
                 case OrderType.Friend:
-                    HandleTargetOrder(from, bc);
-                    break; 
-        
-                case OrderType.Unfriend:
+                {
                     HandleTargetOrder(from, bc);
                     break;
-        
+                }
+                case OrderType.Unfriend:
+                {
+                    HandleTargetOrder(from, bc);
+                    break;
+                }
                 case OrderType.Release:
+                {
                     HandleReleaseOrder(from, bc);
                     break;
-        
+                }
                 default:
+                {
                     HandleDefaultOrder(from, bc);
                     break;
+                }
             }
         }
 
