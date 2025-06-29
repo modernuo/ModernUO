@@ -762,19 +762,6 @@ public abstract class BaseAI
             _lastDebugMessage = message;
         }
     }
-
-    private void DebugSayWithTarget(string baseMessage, Mobile target, string fallback = "Unknown")
-    {
-        if (!m_Mobile.Debug)
-        {
-            return;
-        }
-            
-        var targetName = target?.Name ?? fallback;
-        var message = $"{baseMessage}{targetName}";
-        
-        DebugSay(message);
-    }
     
     private void HandleGMCommands(SpeechEventArgs e)
     {
