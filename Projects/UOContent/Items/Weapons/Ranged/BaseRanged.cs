@@ -229,7 +229,7 @@ namespace Server.Items
         {
             var result = base.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue);
             ApplyWoodBonuses();
-            return result;
+            return Core.ML ? result : base.OnCraft();
         }
 
         private void ApplyWoodBonuses()
