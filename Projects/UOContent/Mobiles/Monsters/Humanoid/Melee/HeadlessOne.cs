@@ -1,4 +1,5 @@
 using ModernUO.Serialization;
+using Server.Items;
 
 namespace Server.Mobiles
 {
@@ -32,6 +33,40 @@ namespace Server.Mobiles
             Karma = -450;
 
             VirtualArmor = 18;
+
+            switch (Utility.Random(6))
+            {
+                case 0:
+                {
+                    AddItem(new Head());
+                    break;
+                }
+                case 1:
+                {
+                    AddItem(new Torso());
+                    break;
+                }
+                case 2:
+                {
+                    AddItem(new RightArm());
+                    break;
+                }
+                case 3:
+                {
+                    AddItem(new LeftArm());
+                    break;
+                }
+                case 4:
+                {
+                    AddItem(new RightLeg());
+                    break;
+                }
+                case 5:
+                {
+                    AddItem(new LeftLeg());
+                    break;
+                }
+            }
         }
 
         public override string CorpseName => "a headless corpse";
