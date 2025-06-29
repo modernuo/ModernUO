@@ -8,17 +8,11 @@ public class BerserkAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I have no combatant");
-        }
+        DebugSay("I have no combatant");
 
         if (AcquireFocusMob(m_Mobile.RangePerception, FightMode.Closest, false, true, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name} and I will attack");
-            }
+            DebugSay($"I have detected {m_Mobile.FocusMob.Name} and I will attack");
 
             m_Mobile.Combatant = m_Mobile.FocusMob;
             Action = ActionType.Combat;
@@ -38,10 +32,7 @@ public class BerserkAI : BaseAI
         if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
-            }
+            DebugSay("My combatant is gone, so my guard is up");
 
             Action = ActionType.Guard;
             return true;
@@ -49,17 +40,11 @@ public class BerserkAI : BaseAI
 
         if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I am still not in range of {combatant.Name}");
-            }
+            DebugSay($"I am still not in range of {combatant.Name}");
 
             if ((int)m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"I have lost {combatant.Name}");
-                }
+                DebugSay($"I have lost {combatant.Name}");
 
                 Action = ActionType.Guard;
                 return true;
@@ -72,10 +57,7 @@ public class BerserkAI : BaseAI
 
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
-            }
+            DebugSay($"I used my abilities on {combatant.Name}!");
         }
 
         return true;
@@ -85,10 +67,7 @@ public class BerserkAI : BaseAI
     {
         if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, true, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
 
             m_Mobile.Combatant = m_Mobile.FocusMob;
             Action = ActionType.Combat;
