@@ -1501,7 +1501,7 @@ public abstract class BaseAI
     
         var controlMaster = m_Mobile.ControlMaster;
     
-        if (controlMaster?.Deleted != false)
+        if (m_Mobile.ControlMaster?.Deleted != false)
         {
             return true;
         }
