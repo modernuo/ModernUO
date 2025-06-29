@@ -38,7 +38,7 @@ namespace Server.Items
         public override WeaponType DefType => WeaponType.Ranged;
         public override WeaponAnimation DefAnimation => WeaponAnimation.ShootXBow;
 
-    public override SkillName AccuracySkill => SkillName.Archery;
+        public override SkillName AccuracySkill => SkillName.Archery;
 
         public override TimeSpan OnSwing(Mobile attacker, Mobile defender, double damageBonus = 1.0)
         {
