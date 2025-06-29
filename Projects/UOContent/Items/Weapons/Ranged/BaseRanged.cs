@@ -228,38 +228,56 @@ namespace Server.Items
         )
         {
             var result = base.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue);
-            ApplyWoodBonuses();
-            return Core.ML ? result : base.OnCraft();
+            if (Core.ML)
+            {
+                ApplyWoodBonuses(typeRes);
+            }
+
+            return result;
         }
 
-        private void ApplyWoodBonuses()
+        private void ApplyWoodBonuses(Type resource)
         {
-            switch (Resource)
+            var craftResource = CraftResources.GetFromType(resource);
+
+            switch (craftResource)
             {
                 case CraftResource.OakWood:
+                {
                     Attributes.Luck += 40;
                     Attributes.WeaponDamage += 5;
                     break;
+                }
                 case CraftResource.AshWood:
+                {
                     Attributes.WeaponSpeed += 10;
                     WeaponAttributes.LowerStatReq += 20;
                     break;
+                }
                 case CraftResource.YewWood:
+                {
                     Attributes.AttackChance += 5;
                     Attributes.WeaponDamage += 10;
                     break;
+                }
                 case CraftResource.Bloodwood:
+                {
                     Attributes.RegenHits += 2;
                     WeaponAttributes.HitLeechHits += 16;
                     break;
+                }
                 case CraftResource.Heartwood:
+                {
                     ApplyHeartwoodBonus();
                     break;
+                }
                 case CraftResource.Frostwood:
+                {
                     AosElementDamages.Physical = 60;
                     AosElementDamages.Cold = 40;
                     Attributes.WeaponDamage += 12;
                     break;
+                }
             }
         }
 
