@@ -265,17 +265,39 @@ namespace Server.Items
 
         private void ApplyHeartwoodBonus()
         {
-            var actions = new Action<BaseRanged>[]
+            switch (Utility.Random(6))
             {
-                w => w.Attributes.Luck += 40,
-                w => w.WeaponAttributes.DurabilityBonus += 50,
-                w => w.WeaponAttributes.LowerStatReq += 20,
-                w => w.Attributes.WeaponSpeed += 10,
-                w => w.Attributes.AttackChance += 5,
-                w => w.WeaponAttributes.HitLeechHits += 10
-            };
-
-            actions[Utility.Random(actions.Length)](this);
+                case 0:
+                    {
+                        Attributes.Luck += 40;
+                        break;
+                    }
+                case 1:
+                    {
+                        WeaponAttributes.DurabilityBonus += 50;
+                        break;
+                    }
+                case 2:
+                    {
+                        WeaponAttributes.LowerStatReq += 20;
+                        break;
+                    }
+                case 3:
+                    {
+                        Attributes.WeaponSpeed += 10;
+                        break;
+                    }
+                case 4:
+                    {
+                        Attributes.AttackChance += 5;
+                        break;
+                    }
+                case 5:
+                    {
+                        WeaponAttributes.HitLeechHits += 10;
+                        break;
+                    }
+            }
         }
     }
 }
