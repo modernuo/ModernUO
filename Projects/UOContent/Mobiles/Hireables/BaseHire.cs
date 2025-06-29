@@ -228,11 +228,6 @@ public partial class BaseHire : BaseCreature
 
         if (!Controlled)
         {
-            if (CanPaperdollBeOpenedBy(from))
-            {
-                list.Add(new PaperdollEntry());
-            }
-
             list.Add(new HireEntry());
         }
         else
