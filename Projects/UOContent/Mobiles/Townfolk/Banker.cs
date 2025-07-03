@@ -380,7 +380,7 @@ public partial class Banker : BaseVendor
                                 {
                                     Say(1048147); // Your backpack can't hold anything else.
                                 }
-                                else if (amount <= 0)
+                                else if (amount > 0)
                                 {
                                     if (!Withdraw(e.Mobile, amount))
                                     {
