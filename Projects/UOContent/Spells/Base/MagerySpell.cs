@@ -116,7 +116,7 @@ namespace Server.Spells
             var path = Path.Combine(Core.BaseDirectory, _configPath);
             if (File.Exists(path))
             {
-                JsonConfig.Deserialize(path, typeof(MagerySpell));
+                JsonConfig.Deserialize<MagerySpell>(path);
             }
         }
     }
