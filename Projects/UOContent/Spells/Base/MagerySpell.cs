@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using Server.Items;
+using Server.Json;
 
 namespace Server.Spells
 {
@@ -105,6 +107,17 @@ namespace Server.Spells
             }
 
             return base.GetCastDelay();
+        }
+
+        private const string _configPath = "Data/magery-spell.json";
+
+        public static void Configure()
+        {
+            var path = Path.Combine(Core.BaseDirectory, _configPath);
+            if (File.Exists(path))
+            {
+                JsonConfig.Deserialize(path, typeof(MagerySpell));
+            }
         }
     }
 }
