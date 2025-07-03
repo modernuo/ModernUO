@@ -626,15 +626,13 @@ public abstract class BaseAI
                                 {
                                     if (m_Mobile.Summoned || m_Mobile is GrizzledMare)
                                     {
-                                        e.Mobile.SendLocalizedMessage(
-                                            1005481
-                                        ); // Summoned creatures are loyal only to their summoners.
+                                        // Summoned creatures are loyal only to their summoners.
+                                        e.Mobile.SendLocalizedMessage(1005481);
                                     }
                                     else if (e.Mobile.HasTrade)
                                     {
-                                        e.Mobile.SendLocalizedMessage(
-                                            1070947
-                                        ); // You cannot friend a pet with a trade pending
+                                        // You cannot friend a pet with a trade pending
+                                        e.Mobile.SendLocalizedMessage(1070947);
                                     }
                                     else
                                     {
@@ -742,15 +740,13 @@ public abstract class BaseAI
                                 {
                                     if (m_Mobile.Summoned || m_Mobile is GrizzledMare)
                                     {
-                                        e.Mobile.SendLocalizedMessage(
-                                            1005487
-                                        ); // You cannot transfer ownership of a summoned creature.
+                                        // You cannot transfer ownership of a summoned creature.
+                                        e.Mobile.SendLocalizedMessage(1005487);
                                     }
                                     else if (e.Mobile.HasTrade)
                                     {
-                                        e.Mobile.SendLocalizedMessage(
-                                            1010507
-                                        ); // You cannot transfer a pet with a trade pending
+                                        // You cannot transfer a pet with a trade pending
+                                        e.Mobile.SendLocalizedMessage(1010507);
                                     }
                                     else
                                     {
@@ -2975,6 +2971,7 @@ public abstract class BaseAI
                     {
                         if (bc.CheckControlChance(from))
                         {
+                            bc.ControlTarget = null;
                             bc.ControlOrder = _order;
                         }
 

@@ -18,13 +18,18 @@ namespace Server.SkillHandlers
             src.SendLocalizedMessage(500819); // Where will you search?
             src.Target = new InternalTarget();
 
-            return TimeSpan.FromSeconds(6.0);
+            return TimeSpan.FromSeconds(30.0);
         }
 
         private class InternalTarget : Target
         {
             public InternalTarget() : base(12, true, TargetFlags.None)
             {
+            }
+
+            protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
+            {
+                from.NextSkillTime = Core.TickCount;
             }
 
             protected override void OnTarget(Mobile src, object targ)
@@ -108,6 +113,8 @@ namespace Server.SkillHandlers
                 {
                     src.SendLocalizedMessage(500817); // You can see nothing hidden there.
                 }
+
+                src.NextSkillTime = Core.TickCount + 6000; // 6 seconds cooldown
             }
         }
     }

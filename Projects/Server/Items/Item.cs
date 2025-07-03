@@ -792,6 +792,7 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     public virtual void GetProperties(IPropertyList list)
     {
         AddNameProperties(list);
+        AppendChildNameProperties(list);
     }
 
     [IgnoreDupe]
@@ -1943,8 +1944,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         {
             AddQuestItemProperty(list);
         }
-
-        AppendChildNameProperties(list);
     }
 
     /// <summary>
