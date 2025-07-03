@@ -12,20 +12,14 @@ public class MeleeAI : BaseAI
     {
         if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
 
             m_Mobile.Combatant = m_Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am wandering");
-            }
+            DebugSay("I am wandering");
 
             m_Mobile.Warmode = false;
 
@@ -42,10 +36,7 @@ public class MeleeAI : BaseAI
         if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
-            }
+            DebugSay("My combatant is gone, so my guard is up");
 
             Action = ActionType.Guard;
             return true;
@@ -69,10 +60,7 @@ public class MeleeAI : BaseAI
 
             if (combatant == null)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("My combatant has fled, so I am on guard");
-                }
+                DebugSay("My combatant has fled, so I am on guard");
 
                 Action = ActionType.Guard;
                 return true;
@@ -84,10 +72,7 @@ public class MeleeAI : BaseAI
             m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
             if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"My move is blocked, so I am going to attack {m_Mobile.FocusMob!.Name}");
-                }
+                DebugSay($"My move is blocked, so I am going to attack {m_Mobile.FocusMob!.Name}");
 
                 m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;
@@ -96,19 +81,13 @@ public class MeleeAI : BaseAI
 
             if (m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"I cannot find {combatant.Name}, so my guard is up");
-                }
+                DebugSay($"I cannot find {combatant.Name}, so my guard is up");
 
                 Action = ActionType.Guard;
                 return true;
             }
 
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I cannot find {combatant.Name}, so my guard is up");
-            }
+            DebugSay($"I cannot find {combatant.Name}, so my guard is up");
         }
         else if (Core.TickCount - m_Mobile.LastMoveTime > 400)
         {
@@ -124,10 +103,7 @@ public class MeleeAI : BaseAI
                 var fleeChance = 10 + Math.Max(0, combatant.Hits - m_Mobile.Hits); // (10 + diff)% chance to flee;
                 if (Utility.Random(0, 100) < fleeChance)
                 {
-                    if (m_Mobile.Debug)
-                    {
-                        m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
-                    }
+                    DebugSay($"I am going to flee from {combatant.Name}");
 
                     Action = ActionType.Flee;
                     return true;
@@ -137,10 +113,7 @@ public class MeleeAI : BaseAI
 
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I used my abilities!");
-            }
+            DebugSay("I used my abilities!");
         }
 
         return true;
@@ -150,10 +123,7 @@ public class MeleeAI : BaseAI
     {
         if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
 
             m_Mobile.Combatant = m_Mobile.FocusMob;
             Action = ActionType.Combat;
@@ -170,10 +140,7 @@ public class MeleeAI : BaseAI
     {
         if (m_Mobile.Hits > m_Mobile.HitsMax / 2)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am stronger now, so I will continue fighting");
-            }
+            DebugSay("I am stronger now, so I will continue fighting");
 
             Action = ActionType.Combat;
         }

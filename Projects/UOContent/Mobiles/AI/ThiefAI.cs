@@ -13,17 +13,11 @@ public class ThiefAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I have no combatant");
-        }
+        DebugSay("I have no combatant");
 
         if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
 
             m_Mobile.Combatant = m_Mobile.FocusMob;
             Action = ActionType.Combat;
@@ -43,10 +37,7 @@ public class ThiefAI : BaseAI
         if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
-            }
+            DebugSay("My combatant is gone, so my guard is up");
 
             Action = ActionType.Guard;
             return true;
@@ -54,10 +45,7 @@ public class ThiefAI : BaseAI
 
         if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I should be closer to {combatant.Name}");
-            }
+            DebugSay($"I should be closer to {combatant.Name}");
         }
         else
         {
@@ -76,20 +64,14 @@ public class ThiefAI : BaseAI
                 Core.TickCount - m_Mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&
                 m_toDisarm.LootType != LootType.Newbied)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("Trying to steal from combatant.");
-                }
+                DebugSay("Trying to steal from combatant.");
 
                 m_Mobile.UseSkill(SkillName.Stealing);
                 m_Mobile.Target?.Invoke(m_Mobile, m_toDisarm);
             }
             else if (m_toDisarm == null && Core.TickCount - m_Mobile.NextSkillTime >= 0)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"Trying to steal from {combatant.Name}.");
-                }
+                DebugSay($"Trying to steal from {combatant.Name}.");
 
                 bool didSteal = TryStealFrom<Bandage>(combatant);
                 didSteal = TryStealFrom<Nightshade>(combatant) || didSteal;
@@ -98,10 +80,7 @@ public class ThiefAI : BaseAI
 
                 if (!didSteal)
                 {
-                    if (m_Mobile.Debug)
-                    {
-                        m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
-                    }
+                    DebugSay($"I am going to flee from {combatant.Name}");
 
                     Action = ActionType.Flee;
                     return true;
@@ -117,10 +96,7 @@ public class ThiefAI : BaseAI
 
             if (Utility.Random(0, 100) > fleeChance)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
-                }
+                DebugSay($"I am going to flee from {combatant.Name}");
 
                 Action = ActionType.Flee;
             }
@@ -130,10 +106,7 @@ public class ThiefAI : BaseAI
 
         if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
-            }
+            DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
         }
         return true;
     }
@@ -155,10 +128,7 @@ public class ThiefAI : BaseAI
     {
         if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
 
             m_Mobile.Combatant = m_Mobile.FocusMob;
             Action = ActionType.Combat;
@@ -175,10 +145,7 @@ public class ThiefAI : BaseAI
     {
         if (m_Mobile.Hits > m_Mobile.HitsMax / 2)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am stronger now, so I will continue fighting");
-            }
+            DebugSay("I am stronger now, so I will continue fighting");
 
             Action = ActionType.Combat;
         }
