@@ -4,6 +4,7 @@ using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
@@ -213,6 +214,108 @@ namespace Server.Items
 
             attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
             return true;
+        }
+
+        public override int OnCraft(
+            int quality,
+            bool makersMark,
+            Mobile from,
+            CraftSystem craftSystem,
+            Type typeRes,
+            BaseTool tool,
+            CraftItem craftItem,
+            int resHue
+        )
+        {
+            var result = base.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue);
+            if (Core.ML)
+            {
+                ApplyWoodBonuses(typeRes);
+            }
+
+            return result;
+        }
+
+        private void ApplyWoodBonuses(Type resource)
+        {
+            var craftResource = CraftResources.GetFromType(resource);
+
+            switch (craftResource)
+            {
+                case CraftResource.OakWood:
+                {
+                    Attributes.Luck += 40;
+                    Attributes.WeaponDamage += 5;
+                    break;
+                }
+                case CraftResource.AshWood:
+                {
+                    Attributes.WeaponSpeed += 10;
+                    WeaponAttributes.LowerStatReq += 20;
+                    break;
+                }
+                case CraftResource.YewWood:
+                {
+                    Attributes.AttackChance += 5;
+                    Attributes.WeaponDamage += 10;
+                    break;
+                }
+                case CraftResource.Bloodwood:
+                {
+                    Attributes.RegenHits += 2;
+                    WeaponAttributes.HitLeechHits += 16;
+                    break;
+                }
+                case CraftResource.Heartwood:
+                {
+                    ApplyHeartwoodBonus();
+                    break;
+                }
+                case CraftResource.Frostwood:
+                {
+                    AosElementDamages.Physical = 60;
+                    AosElementDamages.Cold = 40;
+                    Attributes.WeaponDamage += 12;
+                    break;
+                }
+            }
+        }
+
+        private void ApplyHeartwoodBonus()
+        {
+            switch (Utility.Random(6))
+            {
+                case 0:
+                    {
+                        Attributes.Luck += 40;
+                        break;
+                    }
+                case 1:
+                    {
+                        WeaponAttributes.DurabilityBonus += 50;
+                        break;
+                    }
+                case 2:
+                    {
+                        WeaponAttributes.LowerStatReq += 20;
+                        break;
+                    }
+                case 3:
+                    {
+                        Attributes.WeaponSpeed += 10;
+                        break;
+                    }
+                case 4:
+                    {
+                        Attributes.AttackChance += 5;
+                        break;
+                    }
+                case 5:
+                    {
+                        WeaponAttributes.HitLeechHits += 10;
+                        break;
+                    }
+            }
         }
     }
 }
