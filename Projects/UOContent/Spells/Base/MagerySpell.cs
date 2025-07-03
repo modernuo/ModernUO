@@ -109,14 +109,30 @@ namespace Server.Spells
             return base.GetCastDelay();
         }
 
+        public class MagerySpellConfig
+        {
+            public int[] ManaPerCircle { get; set; }
+            public double[] SkillTable { get; set; }
+            public double[] SkillTableML { get; set; }
+            public double? SkillCheckWindow { get; set; }
+            public double? CastDelay { get; set; }
+        }
+
         private const string _configPath = "Data/magery-spell.json";
 
         public static void Configure()
         {
             var path = Path.Combine(Core.BaseDirectory, _configPath);
+
             if (File.Exists(path))
             {
-                JsonConfig.Deserialize<MagerySpell>(path);
+                var config = JsonConfig.Deserialize<MagerySpellConfig>(path);
+        
+                if (config.ManaPerCircle != null) { ManaPerCircle = config.ManaPerCircle; }
+                if (config.SkillTable != null) { SkillTable = config.SkillTable; }
+                if (config.SkillTableML != null) { SkillTableML = config.SkillTableML; }
+                if (config.SkillCheckWindow.HasValue) { SkillCheckWindow = config.SkillCheckWindow.Value; }
+                if (config.CastDelay.HasValue) { CastDelay = config.CastDelay.Value; }
             }
         }
     }
