@@ -1961,7 +1961,7 @@ public abstract class BaseAI
         {
             return false;
         }
-        
+
         return true;
     }
     
@@ -3420,93 +3420,6 @@ public abstract class BaseAI
         }
     }
 
-    public sealed class AIMovementTimerPool
-    {
-        private const int _poolSize = 2048;
-        private static readonly Queue<AIMovementTimer> _pool = new(_poolSize);
-    
-        public static void Configure()
-        {
-            for (var i = 0; i < _poolSize; i++)
-            {
-                _pool.Enqueue(new AIMovementTimer());
-            }
-        }
-    
-        public static AIMovementTimer GetTimer(TimeSpan delay, BaseAI ai, Direction direction)
-        {
-            var timer = _pool.TryDequeue(out var pooledTimer) ? pooledTimer : new AIMovementTimer();
-            timer.Set(delay, ai, direction);
-            return timer;
-        }
-    
-        public class AIMovementTimer : Timer
-        {
-            private BaseAI _ai;
-            private Direction _direction;
-            private bool _disposed;
-
-            public AIMovementTimer() : base(TimeSpan.Zero)
-            {
-            }
-            
-            public void Set(TimeSpan delay, BaseAI ai, Direction direction)
-            {
-                if (_disposed || Running)
-                {
-                    return;
-                }
-        
-                Delay = delay;
-                _ai = ai;
-                _direction = direction;
-                _disposed = false;
-            }
-        
-            protected override void OnTick()
-            {
-                if (_disposed)
-                {
-                    return;
-                }
-        
-                try
-                {
-                    if (_ai?.m_Mobile.Deleted == false)
-                    {
-                        _ai.DoMove(_direction);
-                    }
-                }
-                finally
-                {
-                    Reset();
-                }
-            }
-        
-            private void Reset()
-            {
-                Stop();
-
-                _ai = null;
-                _direction = Direction.North;
-                _disposed = true;
-                
-                if (_pool.Count < _poolSize)
-                {
-                    _pool.Enqueue(this);
-                }
-            }
-        
-            public void SafeStop()
-            {
-                if (!_disposed)
-                {
-                    Reset();
-                }
-            }
-        }
-    }
-    
     public virtual void Cleanup()
     {
         m_Timer?.Stop();
