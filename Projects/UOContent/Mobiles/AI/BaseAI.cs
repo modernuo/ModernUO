@@ -3487,7 +3487,7 @@ public abstract class BaseAI
         
                 try
                 {
-                    if (_ai?.m_Mobile?.Deleted == false)
+                    if (_ai?.m_Mobile.Deleted == false)
                     {
                         _ai.DoMove(_direction);
                     }
