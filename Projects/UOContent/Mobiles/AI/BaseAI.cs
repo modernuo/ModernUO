@@ -1961,6 +1961,7 @@ public abstract class BaseAI
         {
             return false;
         }
+        
         return true;
     }
     
@@ -2008,9 +2009,6 @@ public abstract class BaseAI
     
         if (moveResult)
         {
-            _pendingMoveTimer?.Stop();
-            _pendingMoveTimer = null;
-
             if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
             {
                 m_Mobile.CurrentSpeed = BadlyHurtMoveDelay(m_Mobile);
