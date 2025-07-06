@@ -1212,21 +1212,23 @@ public partial class Container : Item
     {
         var consumed = 0;
 
-        using var toDelete = PooledRefQueue<Item>.Create();
+        var toDelete = PooledRefQueue<Item>.Create();
 
-        RecurseConsumeUpTo(this, type, amount, recurse, ref consumed, toDelete);
+        RecurseConsumeUpTo(this, type, amount, recurse, ref consumed, ref toDelete);
 
         while (toDelete.Count > 0)
         {
             toDelete.Dequeue().Delete();
         }
 
+        toDelete.Dispose();
+
         return consumed;
     }
 
     private static void RecurseConsumeUpTo(
         Item current, Type type, int amount, bool recurse, ref int consumed,
-        PooledRefQueue<Item> toDelete
+        ref PooledRefQueue<Item> toDelete
     )
     {
         if (current == null || current.Items.Count == 0)
@@ -1260,7 +1262,7 @@ public partial class Container : Item
             }
             else if (recurse && item is Container)
             {
-                RecurseConsumeUpTo(item, type, amount, true, ref consumed, toDelete);
+                RecurseConsumeUpTo(item, type, amount, true, ref consumed, ref toDelete);
             }
         }
     }
