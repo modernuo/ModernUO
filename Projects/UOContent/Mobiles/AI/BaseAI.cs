@@ -785,7 +785,7 @@ public abstract class BaseAI
 
     public virtual bool Think()
     {
-        if (m_Mobile?.Deleted != false || m_Mobile.Map == null)
+        if (m_Mobile.Deleted != false || m_Mobile.Map == null)
         {
             return false;
         }
@@ -1135,7 +1135,7 @@ public abstract class BaseAI
     
     private void HandleTransferOrder()
     {
-        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        if (m_Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
@@ -1151,7 +1151,7 @@ public abstract class BaseAI
     
     private void HandleGuardOrder()
     {
-        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        if (m_Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
@@ -1167,7 +1167,7 @@ public abstract class BaseAI
     
     private void HandleAttackOrder()
     {
-        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        if (m_Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
@@ -1181,7 +1181,7 @@ public abstract class BaseAI
     
     private void HandleFollowOrder()
     {
-        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        if (m_Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
@@ -1196,7 +1196,7 @@ public abstract class BaseAI
 
     private void HandleStayOrder()
     {
-        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        if (m_Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
@@ -1212,7 +1212,7 @@ public abstract class BaseAI
 
     private void HandleStopOrder()
     {
-        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        if (m_Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
@@ -1228,7 +1228,7 @@ public abstract class BaseAI
 
     private void HandleReleaseOrder()
     {
-        if (m_Mobile.ControlMaster == null || !m_Mobile.ControlMaster.Alive)
+        if (m_Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
@@ -1250,11 +1250,11 @@ public abstract class BaseAI
     {
         if (m_Mobile.Summoned)
         {
-            m_Mobile.ControlMaster.SendMessage("You cannot rename a summoned creature.");
+            m_Mobile.ControlMaster?.SendMessage("You cannot rename a summoned creature.");
         }
         else
         {
-            m_Mobile.ControlMaster.SendMessage("Change name on pet health bar.");
+            m_Mobile.ControlMaster?.SendMessage("Change name on pet health bar.");
         }
     }
 
@@ -1419,7 +1419,7 @@ public abstract class BaseAI
             return;
         }
     
-        DebugSay($"I am ordered to follow {m_Mobile.ControlTarget.Name}.");
+        DebugSay($"I am ordered to follow {m_Mobile.ControlTarget?.Name}.");
 
         if (currentDistance > 1)
         {
@@ -1639,7 +1639,7 @@ public abstract class BaseAI
         }
         else
         {
-            DebugSay($"Attacking target: {m_Mobile.ControlTarget.Name}");
+            DebugSay($"Attacking target: {m_Mobile.ControlTarget?.Name}");
             
             Think();
         }
@@ -2650,7 +2650,7 @@ public abstract class BaseAI
 
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
-        if (m_Mobile?.Deleted != false || m_Mobile.Map == null || acqType == FightMode.None)
+        if (m_Mobile.Deleted != false || m_Mobile.Map == null || acqType == FightMode.None)
         {
             return false;
         }
@@ -2713,8 +2713,8 @@ public abstract class BaseAI
             return false;
         }
 
-        if (m_Mobile.ControlTarget?.Deleted != false || m_Mobile.ControlTarget.Hidden ||
-            !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet ||
+        if (m_Mobile.ControlTarget?.Deleted != false || m_Mobile.ControlTarget?.Hidden == true ||
+            m_Mobile.ControlTarget?.Alive != true || m_Mobile.ControlTarget?.IsDeadBondedPet == true ||
             !m_Mobile.InRange(m_Mobile.ControlTarget, m_Mobile.RangePerception * 2))
         {
             if (m_Mobile.ControlTarget != null && m_Mobile.ControlTarget != m_Mobile.ControlMaster)
@@ -2902,7 +2902,7 @@ public abstract class BaseAI
 
     public virtual void DetectHidden()
     {
-        if (m_Mobile?.Deleted != false || m_Mobile.Map == null || !CanDetectHidden)
+        if (m_Mobile.Deleted != false || m_Mobile.Map == null || !CanDetectHidden)
         {
             return;
         }
