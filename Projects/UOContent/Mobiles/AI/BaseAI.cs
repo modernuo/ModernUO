@@ -3187,12 +3187,12 @@ public abstract class BaseAI
         private bool IsInvalidTrade(Mobile from, Mobile to)
         {
             return Deleted
-            || m_Creature?.Deleted != false
-            || m_Creature.ControlMaster != from
-            || !from.CheckAlive()
-            || !to.CheckAlive()
-            || from.Map != m_Creature.Map
-            || !from.InRange(m_Creature, 14);
+                || m_Creature?.Deleted != false
+                || m_Creature.ControlMaster != from
+                || !from.CheckAlive()
+                || !to.CheckAlive()
+                || from.Map != m_Creature.Map
+                || !from.InRange(m_Creature, 14);
         }
     
         private bool HandleAcceptedTrade(Mobile from, Mobile to)
