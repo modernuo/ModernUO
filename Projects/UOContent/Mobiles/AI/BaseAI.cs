@@ -3521,4 +3521,12 @@ public abstract class BaseAI
             }
         }
     }
+    
+    public virtual void Cleanup()
+    {
+        _pendingMoveTimer?.SafeStop();
+        _pendingMoveTimer = null;
+        m_Timer?.Stop();
+        m_Path = null;
+    }
 }
