@@ -3475,6 +3475,7 @@ public abstract class BaseAI
                 Delay = delay;
                 _ai = ai;
                 _direction = direction;
+                _disposed = false;
             }
         
             protected override void OnTick()
@@ -3493,23 +3494,30 @@ public abstract class BaseAI
                 }
                 finally
                 {
-                    Stop();
+                    Reset();
+                }
+            }
+        
+            private void Reset()
+            {
+                Stop();
 
-                    _disposed = true;
-                    _ai = null;
-                    _direction = Direction.North;
-                    
-                    if (!_disposed)
-                    {
-                        _pool.Enqueue(this);
-                    }
+                _ai = null;
+                _direction = Direction.North;
+                _disposed = true;
+                
+                if (_pool.Count < _poolSize)
+                {
+                    _pool.Enqueue(this);
                 }
             }
         
             public void SafeStop()
             {
-                _disposed = true;
-                Stop();
+                if (!_disposed)
+                {
+                    Reset();
+                }
             }
         }
     }
