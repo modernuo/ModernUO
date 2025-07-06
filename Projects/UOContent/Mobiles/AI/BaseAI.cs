@@ -3435,7 +3435,7 @@ public abstract class BaseAI
         }
     }
 
-    public static class AIMovementTimerPool
+    public sealed class AIMovementTimerPool
     {
         private const int _poolSize = 2048;
         private static readonly Queue<AIMovementTimer> _pool = new(_poolSize);
