@@ -59,58 +59,6 @@ public enum ActionType
 
 public abstract class BaseAI
 {
-    private static readonly SkillName[] m_KeywordTable =
-    {
-        SkillName.Parry,
-        SkillName.Healing,
-        SkillName.Hiding,
-        SkillName.Stealing,
-        SkillName.Alchemy,
-        SkillName.AnimalLore,
-        SkillName.ItemID,
-        SkillName.ArmsLore,
-        SkillName.Begging,
-        SkillName.Blacksmith,
-        SkillName.Fletching,
-        SkillName.Peacemaking,
-        SkillName.Camping,
-        SkillName.Carpentry,
-        SkillName.Cartography,
-        SkillName.Cooking,
-        SkillName.DetectHidden,
-        SkillName.Discordance, // ?? > was Enticement i tihnk for pre-UOTD
-        SkillName.EvalInt,
-        SkillName.Fishing,
-        SkillName.Provocation,
-        SkillName.Lockpicking,
-        SkillName.Magery,
-        SkillName.MagicResist,
-        SkillName.Tactics,
-        SkillName.Snooping,
-        SkillName.RemoveTrap,
-        SkillName.Musicianship,
-        SkillName.Poisoning,
-        SkillName.Archery,
-        SkillName.SpiritSpeak,
-        SkillName.Tailoring,
-        SkillName.AnimalTaming,
-        SkillName.TasteID,
-        SkillName.Tinkering,
-        SkillName.Veterinary,
-        SkillName.Forensics,
-        SkillName.Herding,
-        SkillName.Tracking,
-        SkillName.Stealth,
-        SkillName.Inscribe,
-        SkillName.Swords,
-        SkillName.Macing,
-        SkillName.Fencing,
-        SkillName.Wrestling,
-        SkillName.Lumberjacking,
-        SkillName.Mining,
-        SkillName.Meditation
-    };
-
     protected ActionType m_Action;
     public readonly BaseCreature m_Mobile;
     private long m_NextDetectHidden;
