@@ -18,6 +18,11 @@ public class DeathExplosion : AreaEffectMonsterAbility
 
     public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
+        if (trigger != MonsterAbilityTrigger.Death)
+        {
+            return;
+        }
+        
         _exploding.Add(source);
         source.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
         source.PlaySound(0x307);

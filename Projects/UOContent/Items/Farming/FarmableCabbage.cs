@@ -10,7 +10,7 @@ public partial class FarmableCabbage : FarmableCrop
     {
     }
 
-    public static int GetCropID() => 3254;
+    public static int GetCropID() => 0x0C7B;
 
     public override Item GetCropObject() =>
         new Cabbage
