@@ -1949,11 +1949,10 @@ public abstract class BaseAI
         return bc.CurrentSpeed;
     }
 
-    public bool CanMoveNow(out long delay)
+    public bool CanMoveNow(out double delay)
     {
-        delay = NextMove - Core.TickCount;
-        long minDelay = (long)(m_Mobile.CurrentSpeed * 1000);
-        return delay <= minDelay;
+        delay = 0.0;
+        return Core.TickCount >= NextMove;
     }
 
     public virtual bool CheckMove() 
@@ -1977,29 +1976,17 @@ public abstract class BaseAI
             || (badStateOk && res == MoveResult.BadState);
     }
 
-    private AIMovementTimerPool.AIMovementTimer _pendingMoveTimer;
-
     public virtual MoveResult DoMoveImpl(Direction d, bool badStateOk)
     {
         var isInBadState = IsInBadState();
+
         if (isInBadState)
         {
             return MoveResult.BadState;
         }
         
-        if (!CanMoveNow(out var timeUntilMove))
+        if (!CanMoveNow(out _))
         {
-            if (badStateOk)
-            {
-                var baseDelay = m_Mobile.CurrentSpeed * 1000;
-                var totalDelay = baseDelay;
-
-                _pendingMoveTimer?.Stop();
-                _pendingMoveTimer = AIMovementTimerPool.GetTimer(
-                TimeSpan.FromMilliseconds(totalDelay), this, d);
-                _pendingMoveTimer.Start();
-            }
-
             return MoveResult.BadState;
         }
 
@@ -3524,8 +3511,6 @@ public abstract class BaseAI
     
     public virtual void Cleanup()
     {
-        _pendingMoveTimer?.SafeStop();
-        _pendingMoveTimer = null;
         m_Timer?.Stop();
         m_Path = null;
     }
