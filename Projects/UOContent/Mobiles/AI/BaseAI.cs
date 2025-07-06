@@ -3459,7 +3459,7 @@ public abstract class BaseAI
         {
             private BaseAI _ai;
             private Direction _direction;
-            private volatile bool _disposed;
+            private bool _disposed;
 
             public AIMovementTimer() : base(TimeSpan.Zero)
             {
