@@ -1,5 +1,6 @@
 using Server.Gumps;
 using Server.Network;
+using Server.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -25,8 +26,8 @@ public static class ClearCommands
         DeleteObjects(list, from, map.Name);
     }
 
-    [Usage( "ClearAll" )]
-    [Description( "Deletes all items and mobiles in all facets. Players and their inventory will not be deleted." )]
+    [Usage("ClearAll")]
+    [Description("Deletes all items and mobiles in all facets. Players and their inventory will not be deleted.")]
     public static void ClearAll_OnCommand(CommandEventArgs e)
     {
         var from = e.Mobile;
@@ -63,13 +64,13 @@ public static class ClearCommands
         }
 
         var rect = new Rectangle2D(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-        var list = new List<IEntity>();
+        using var queue = PooledRefQueue<IEntity>.Create();
 
         foreach (var item in map.GetItemsInBounds(rect))
         {
             if (item.Parent == null)
             {
-                list.Add(item);
+                queue.Enqueue(item);
             }
         }
 
@@ -77,8 +78,14 @@ public static class ClearCommands
         {
             if (!mob.Player)
             {
-                list.Add(mob);
+                queue.Enqueue(mob);
             }
+        }
+
+        var list = new List<IEntity>();
+        while (queue.Count > 0)
+        {
+            list.Add(queue.Dequeue());
         }
 
         DeleteObjects(list, from, $"({x1}, {y1}) to ({x2}, {y2}) in {map.Name}");
@@ -164,4 +171,3 @@ public static class ClearCommands
         from.SendMessage($"You have deleted {list.Count} object{(list.Count == 1 ? "" : "s")}.");
     }
 }
-
