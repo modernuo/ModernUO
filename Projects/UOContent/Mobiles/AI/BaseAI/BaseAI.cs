@@ -732,12 +732,6 @@ public abstract partial class BaseAI
                m_Mobile.BardTarget.Map != m_Mobile.Map ||
                m_Mobile.GetDistanceToSqrt(m_Mobile.BardTarget) > m_Mobile.RangePerception;
     }
-    
-    private Direction GetRandomDirection(int chanceToDir)
-    {
-        var randomMove = Utility.Random(8 * (chanceToDir + 1));
-        return randomMove < 8 ? (Direction)randomMove : m_Mobile.Direction;
-    }
 
     public static double BadlyHurtMoveDelay(BaseCreature bc)
     {
@@ -1042,97 +1036,6 @@ public abstract partial class BaseAI
             if (check.Movable && check.ItemData.Impassable && cont.Z + check.ItemData.Height > m_Mobile.Z)
             {
                 queue.Enqueue(check);
-            }
-        }
-    }
-
-    public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
-    {
-        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0)
-        {
-            return;
-        }
-
-        for (var i = 0; i < steps; i++)
-        {
-            if (Utility.Random(1 + chanceToNotMove) == 0)
-            {
-                var direction = GetRandomDirection(chanceToDir);
-                DoMove(direction);
-            }
-        }
-    }
-
-    public virtual void WalkRandomInHome(int iChanceToNotMove, int iChanceToDir, int iSteps)
-    {
-        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves)
-        {
-            return;
-        }
-
-        if (m_Mobile.Home == Point3D.Zero)
-        {
-            HandleNoHome(iChanceToNotMove, iChanceToDir, iSteps);
-        }
-        else
-        {
-            HandleHomeMovement(iChanceToNotMove, iChanceToDir, iSteps);
-        }
-    }
-
-    private void HandleNoHome(int iChanceToNotMove, int iChanceToDir, int iSteps)
-    {
-        if (m_Mobile.Spawner is RegionSpawner rs)
-        {
-            Region region = rs.SpawnRegion;
-
-            if (m_Mobile.Region.AcceptsSpawnsFrom(region))
-            {
-                m_Mobile.WalkRegion = region;
-                WalkRandom(iChanceToNotMove, iChanceToDir, iSteps);
-                m_Mobile.WalkRegion = null;
-            }
-            else if (region.GoLocation != Point3D.Zero && Utility.RandomBool())
-            {
-                DoMove(m_Mobile.GetDirectionTo(region.GoLocation));
-            }
-            else
-            {
-                WalkRandom(iChanceToNotMove, iChanceToDir, 1);
-            }
-        }
-        else
-        {
-            WalkRandom(iChanceToNotMove, iChanceToDir, iSteps);
-        }
-    }
-
-    private void HandleHomeMovement(int iChanceToNotMove, int iChanceToDir, int iSteps)
-    {
-        if (m_Mobile.RangeHome == 0)
-        {
-            if (m_Mobile.Location != m_Mobile.Home)
-            {
-                DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
-            }
-            return;
-        }
-
-        for (var i = 0; i < iSteps; i++)
-        {
-            var iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.Home);
-
-            if (iCurrDist > m_Mobile.RangeHome)
-            {
-                DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
-            }
-            else if (iCurrDist < m_Mobile.RangeHome * 2 / 3 || Utility.Random(10) <= 5)
-            {
-                WalkRandom(iChanceToNotMove, iChanceToDir, 1);
-            }
-            else
-            {
-                DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
             }
         }
     }
