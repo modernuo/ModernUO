@@ -410,7 +410,13 @@ public static class Stealing
                 pm.Delta(MobileDelta.Noto);
             }
 
-            from.NextSkillTime = Core.TickCount + 10000; // 10 seconds cooldown
+            const int TargeterCooldown = 30000; // 30s
+            const int SkillCooldown = 10000;    // 10s
+
+            // Calculate how much time has passed since the targeter was opened
+            int ticksSinceTargeter = (int)(Core.TickCount - (from.NextSkillTime - TargeterCooldown));
+            int remainingCooldown = Math.Max(0, SkillCooldown - ticksSinceTargeter);
+            from.NextSkillTime = Core.TickCount + remainingCooldown;
         }
     }
 }
