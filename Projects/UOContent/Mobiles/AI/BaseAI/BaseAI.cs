@@ -12,8 +12,6 @@
  * You should have received a copy of the GNU General Public License     *
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
- /****** Significant modifications by Bohica, Copyright © 2025. ********/
- /*********************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -3366,6 +3364,23 @@ public abstract class BaseAI
             m_Owner.m_NextDetectHidden = Core.TickCount + 
                 Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
         }
+    }
+
+    public virtual int OnPoolTick()
+    {
+        if (m_Mobile.Deleted || m_Mobile.Map == null)
+        {
+            return 1000;
+        }
+
+        m_Mobile.OnThink();
+
+        if (m_Mobile.Controlled ? !Obey() : !Think())
+        {
+            return 1000;
+        }
+
+        return (int)(m_Mobile.CurrentSpeed * 1000);
     }
 
     public virtual void Cleanup()
