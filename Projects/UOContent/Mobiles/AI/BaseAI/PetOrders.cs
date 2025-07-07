@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Petorders.cs                                                    *
+ * File: PetOrders.cs                                                    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
