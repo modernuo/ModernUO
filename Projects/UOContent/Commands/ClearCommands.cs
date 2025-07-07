@@ -11,6 +11,7 @@ public static class ClearCommands
     {
         CommandSystem.Register("ClearFacet", AccessLevel.Owner, ClearFacet_OnCommand);
         CommandSystem.Register("ClearAll", AccessLevel.Owner, ClearAll_OnCommand);
+        CommandSystem.Register("ClearXY", AccessLevel.Owner, ClearXY_OnCommand);
     }
 
     [Usage("ClearFacet")]
@@ -24,14 +25,60 @@ public static class ClearCommands
         DeleteObjects(list, from, map.Name);
     }
 
-    [Usage( "ClearAll" )]
-    [Description( "Deletes all items and mobiles in all facets. Players and their inventory will not be deleted." )]
+    [Usage("ClearAll")]
+    [Description("Deletes all items and mobiles in all facets. Players and their inventory will not be deleted.")]
     public static void ClearAll_OnCommand(CommandEventArgs e)
     {
         var from = e.Mobile;
         var list = GetObjects();
 
         DeleteObjects(list, from, "globally");
+    }
+
+    [Usage("ClearXY x1 y1 x2 y2")]
+    [Description("Deletes all items and mobiles in the specified rectangular area on your facet. Players and their inventory will not be deleted.")]
+    public static void ClearXY_OnCommand(CommandEventArgs e)
+    {
+        if (e.Arguments.Length != 4
+            || !int.TryParse(e.Arguments[0], out var x1)
+            || !int.TryParse(e.Arguments[1], out var y1)
+            || !int.TryParse(e.Arguments[2], out var x2)
+            || !int.TryParse(e.Arguments[3], out var y2))
+        {
+            e.Mobile.SendMessage("Format: ClearXY x1 y1 x2 y2");
+            return;
+        }
+
+        var from = e.Mobile;
+        var map = from.Map;
+
+        if (x2 < x1)
+        {
+            (x1, x2) = (x2, x1);
+        }
+
+        if (y2 < y1)
+        {
+            (y1, y2) = (y2, y1);
+        }
+
+        var rect = new Rectangle2D(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+        List<IEntity> list = [];
+
+        foreach (var item in map.GetItemsInBounds(rect))
+        {
+            list.Add(item);
+        }
+
+        foreach (var mob in map.GetMobilesInBounds(rect))
+        {
+            if (!mob.Player)
+            {
+                list.Add(mob);
+            }
+        }
+
+        DeleteObjects(list, from, $"({x1}, {y1}) to ({x2}, {y2}) in {map.Name}");
     }
 
     private static List<IEntity> GetObjects(Predicate<IEntity> predicate = null)
