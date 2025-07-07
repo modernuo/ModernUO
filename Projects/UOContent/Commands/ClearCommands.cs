@@ -68,10 +68,7 @@ public static class ClearCommands
 
         foreach (var item in map.GetItemsInBounds(rect))
         {
-            if (item.Parent == null)
-            {
-                queue.Enqueue(item);
-            }
+            queue.Enqueue(item);
         }
 
         foreach (var mob in map.GetMobilesInBounds(rect))
