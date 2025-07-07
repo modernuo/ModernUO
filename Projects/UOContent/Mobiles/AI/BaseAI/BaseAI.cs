@@ -797,7 +797,7 @@ public abstract partial class BaseAI
     public virtual MoveResult DoMoveImpl(Direction d, bool badStateOk)
     {
         var isInBadState = IsInBadState();
-
+        
         if (isInBadState)
         {
             return MoveResult.BadState;
@@ -820,10 +820,10 @@ public abstract partial class BaseAI
         }
     
         m_Mobile.Pushing = false;
+
         var mobDirection = m_Mobile.Direction;
-    
         var moveResult = TryMove(d);
-    
+
         if (moveResult)
         {
             if (m_Mobile.Hits < m_Mobile.HitsMax * 0.3)
