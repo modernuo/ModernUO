@@ -64,25 +64,19 @@ public static class ClearCommands
         }
 
         var rect = new Rectangle2D(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-        using var queue = PooledRefQueue<IEntity>.Create();
+        List<IEntity> list = [];
 
         foreach (var item in map.GetItemsInBounds(rect))
         {
-            queue.Enqueue(item);
+            list.Add(item);
         }
 
         foreach (var mob in map.GetMobilesInBounds(rect))
         {
             if (!mob.Player)
             {
-                queue.Enqueue(mob);
+                list.Add(mob);
             }
-        }
-
-        var list = new List<IEntity>();
-        while (queue.Count > 0)
-        {
-            list.Add(queue.Dequeue());
         }
 
         DeleteObjects(list, from, $"({x1}, {y1}) to ({x2}, {y2}) in {map.Name}");
