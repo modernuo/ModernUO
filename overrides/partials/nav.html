@@ -1,0 +1,69 @@
+<!--
+  Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Main navigation -->
+<nav
+    class="md-nav md-nav--primary"
+    aria-label="{{ lang.t('nav.title') }}"
+    data-md-level="0"
+>
+
+    <!-- Site title -->
+    <label class="md-nav__title" for="__drawer">
+        <a
+            href="{{ config.site_url | default(nav.homepage.url, true) | url }}"
+            title="{{ config.site_name }}"
+            class="md-nav__button md-logo"
+            aria-label="{{ config.site_name }}"
+        >
+            {% include "partials/logo.html" %}
+        </a>
+        {{ config.site_name }}
+    </label>
+
+    <!-- Repository containing source -->
+    {% if config.repo_url %}
+    <div class="md-nav__source">
+        {% include "partials/source.html" %}
+    </div>
+    {% endif %}
+
+    <!-- Render item list -->
+    <ul class="md-nav__list" data-md-scrollfix>
+        {% for nav_item in nav %}
+        {% set path = "nav-" + loop.index | string %}
+        {% set level = 1 %}
+        {% include "partials/nav-item.html" %}
+        {% endfor %}
+        <li class="md-nav__item">
+          <a class="md-nav__link" href="https://muo.gg/discord" target="_blank">
+            <img src="https://img.shields.io/discord/751317910504603701?logo=discord&style=social" alt="Discord" />
+          </a>
+          <a class="md-nav__link" href="https://www.reddit.com/r/modernuo" target="_blank">
+            <img src="https://img.shields.io/reddit/subreddit-subscribers/modernuo?style=social&label=/r/modernuo" alt="/r/modernuo" />
+          </a>
+          <a class="md-nav__link" href="https://www.twitter.com/modernuo" target="_blank">
+            <img src="https://img.shields.io/twitter/follow/modernuo?label=@modernuo&style=social" alt="@modernuo" />
+          </a>
+          <a class="md-nav__link" href="https://gitter.im/modernuo/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge" target="_blank">
+            <img src="https://img.shields.io/gitter/room/modernuo/modernuo?logo=gitter&logoColor=46BC99&style=social" alt="Gitter" />
+          </a>
+        </li>
+    </ul>
+</nav>
