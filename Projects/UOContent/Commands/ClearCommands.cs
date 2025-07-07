@@ -171,3 +171,4 @@ public static class ClearCommands
         from.SendMessage($"You have deleted {list.Count} object{(list.Count == 1 ? "" : "s")}.");
     }
 }
+
