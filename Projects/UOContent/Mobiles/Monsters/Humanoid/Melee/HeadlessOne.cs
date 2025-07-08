@@ -34,39 +34,17 @@ namespace Server.Mobiles
 
             VirtualArmor = 18;
 
-            switch (Utility.Random(6))
+            var bodyPart = Utility.Random(6) switch
             {
-                case 0:
-                {
-                    AddItem(new Head());
-                    break;
-                }
-                case 1:
-                {
-                    AddItem(new Torso());
-                    break;
-                }
-                case 2:
-                {
-                    AddItem(new RightArm());
-                    break;
-                }
-                case 3:
-                {
-                    AddItem(new LeftArm());
-                    break;
-                }
-                case 4:
-                {
-                    AddItem(new RightLeg());
-                    break;
-                }
-                case 5:
-                {
-                    AddItem(new LeftLeg());
-                    break;
-                }
-            }
+                0 => new Head(),
+                1 => new Torso(),
+                2 => new RightArm(),
+                3 => new LeftArm(),
+                4 => new RightLeg(),
+                _ => new LeftLeg()
+            };
+            
+            AddItem(bodyPart);
         }
 
         public override string CorpseName => "a headless corpse";
