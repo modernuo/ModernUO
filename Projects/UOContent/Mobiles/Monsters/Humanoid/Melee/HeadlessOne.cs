@@ -34,7 +34,7 @@ namespace Server.Mobiles
 
             VirtualArmor = 18;
 
-            var bodyPart = Utility.Random(6) switch
+            Item bodyPart = Utility.Random(6) switch
             {
                 0 => new Head(),
                 1 => new Torso(),
