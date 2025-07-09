@@ -265,19 +265,16 @@ public abstract partial class BaseAI
           {
                (from.HasTrade ? from : to).SendLocalizedMessage(1070947);
                // You cannot friend a pet with a trade pending
-               return;
           }
           else if (m_Mobile.IsPetFriend(to))
           {
                from.SendLocalizedMessage(1049691);
                // That person is already a friend.
-               return;
           }
           else if (!m_Mobile.AllowNewPetFriend)
           {
                from.SendLocalizedMessage(1005482);
                // Your pet does not seem to be interested in making new friends right now.
-               return;
           }
           else
           {
