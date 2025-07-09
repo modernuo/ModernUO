@@ -20,6 +20,70 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+     public virtual void OnCurrentOrderChanged()
+     {
+          if (m_Mobile.Deleted || m_Mobile.ControlMaster?.Deleted != false)
+          {
+               return;
+          }
+
+          switch (m_Mobile.ControlOrder)
+          {
+               case OrderType.None:
+               {
+                    HandleNoOrder();
+                    break;
+               }
+               case OrderType.Come:
+               case OrderType.Drop:
+               case OrderType.Friend:
+               case OrderType.Unfriend:
+               {
+                    break;
+               }
+               case OrderType.Release:
+               {
+                    HandleReleaseOrder();
+                    break;
+               }
+               case OrderType.Stop:
+               {
+                    HandleStopOrder();
+                    break;
+               }
+               case OrderType.Transfer:
+               {
+                    HandleTransferOrder();
+                    break;
+               }
+               case OrderType.Stay:
+               {
+                    HandleStayOrder();
+                    break;
+               }
+               case OrderType.Guard:
+               {
+                    HandleGuardOrder();
+                    break;
+               }
+               case OrderType.Attack:
+               {
+                    HandleAttackOrder();
+                    break;
+               }
+               case OrderType.Follow:
+               {
+                    HandleFollowOrder();
+                    break;
+               }
+               case OrderType.Rename:
+               {
+                    HandleRenameOrder();
+                    break;
+               }
+          }
+     }
+
      private void HandleNoOrder()
      {
           m_Mobile.ControlTarget = null;
