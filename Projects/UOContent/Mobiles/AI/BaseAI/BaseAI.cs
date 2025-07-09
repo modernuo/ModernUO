@@ -31,30 +31,6 @@ using MoveImpl = Server.Movement.MovementImpl;
 
 namespace Server.Mobiles;
 
-public enum AIType
-{
-    AI_Use_Default,
-    AI_Melee,
-    AI_Animal,
-    AI_Archer,
-    AI_Healer,
-    AI_Vendor,
-    AI_Mage,
-    AI_Berserk,
-    AI_Predator,
-    AI_Thief
-}
-
-public enum ActionType
-{
-    Wander,
-    Combat,
-    Guard,
-    Flee,
-    Backoff,
-    Interact
-}
-
 public abstract partial class BaseAI
 {
     protected ActionType m_Action;
