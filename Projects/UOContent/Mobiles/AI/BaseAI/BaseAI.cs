@@ -313,7 +313,6 @@ public abstract partial class BaseAI
     
     private void HandleCombatAction()
     {
-        m_Mobile.FocusMob = null;
         m_Mobile.Warmode = true;
     }
     
@@ -494,7 +493,7 @@ public abstract partial class BaseAI
     public virtual bool DoActionInteract() => true;
     
     public virtual bool DoActionBackoff() => true;
-    
+
     public virtual bool CheckHerding()
     {
         var target = m_Mobile.TargetLocation;

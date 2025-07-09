@@ -132,7 +132,19 @@ public abstract partial class BaseAI
           }
 
           _lastCommandIssuer?.RevealingAction();
-          m_Mobile.FocusMob = null;
+
+          if (m_Mobile.ControlTarget != null && !m_Mobile.ControlTarget.Deleted 
+               && m_Mobile.ControlTarget.Alive)
+          {
+               m_Mobile.FocusMob = m_Mobile.ControlTarget;
+               m_Mobile.Combatant = m_Mobile.ControlTarget;
+          }
+          else
+          {
+               m_Mobile.FocusMob = null;
+               m_Mobile.Combatant = null;
+          }
+
           m_Mobile.Warmode = true;
           m_Mobile.PlaySound(m_Mobile.GetAttackSound());
           _lastCommandIssuer = null;
