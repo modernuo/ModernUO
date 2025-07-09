@@ -24,6 +24,70 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+     public virtual bool Obey()
+     {
+          if (m_Mobile.Deleted)
+          {
+               return false;
+          }
+
+          switch (m_Mobile.ControlOrder)
+          {
+               case OrderType.None:
+               {
+                    return DoOrderNone();
+               }
+               case OrderType.Come:
+               {
+                    return DoOrderCome();
+               }
+               case OrderType.Drop:
+               {
+                    return DoOrderDrop();
+               }
+               case OrderType.Friend:
+               {
+                    return DoOrderFriend();
+               }
+               case OrderType.Unfriend:
+               {
+                    return DoOrderUnfriend();
+               }
+               case OrderType.Guard:
+               {
+                    return DoOrderGuard();
+               }
+               case OrderType.Attack:
+               {
+                    return DoOrderAttack();
+               }
+               case OrderType.Release:
+               {
+                    return DoOrderRelease();
+               }
+               case OrderType.Stay:
+               {
+                    return DoOrderStay();
+               }
+               case OrderType.Stop:
+               {
+                    return DoOrderStop();
+               }
+               case OrderType.Follow:
+               {
+                    return DoOrderFollow();
+               }
+               case OrderType.Transfer:
+               {
+                    return DoOrderTransfer();
+               }
+               default:
+               {
+                    return false;
+               }
+          }
+     }
+
      public virtual bool DoOrderNone()
      {
           DebugSay("I currently have no orders.");
@@ -366,7 +430,7 @@ public abstract partial class BaseAI
 
                Think();
           }
-          
+
           return true;
      }
 
