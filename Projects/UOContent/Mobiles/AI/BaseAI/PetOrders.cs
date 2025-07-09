@@ -230,8 +230,6 @@ public abstract partial class BaseAI
                HandleFriendRequest(from, to);
           }
 
-          m_Mobile.ControlTarget = from;
-          m_Mobile.ControlOrder = OrderType.Follow;
           return true;
      }
 
@@ -319,8 +317,6 @@ public abstract partial class BaseAI
                HandleUnfriendRequest(from, to);
           }
 
-          m_Mobile.ControlTarget = from;
-          m_Mobile.ControlOrder = OrderType.Follow;
           return true;
      }
 
@@ -340,7 +336,7 @@ public abstract partial class BaseAI
 
           m_Mobile.RemovePetFriend(to);
 
-          m_Mobile.ControlTarget = to;
+          m_Mobile.ControlTarget = from;
           m_Mobile.ControlOrder = OrderType.Follow;
      }
 
