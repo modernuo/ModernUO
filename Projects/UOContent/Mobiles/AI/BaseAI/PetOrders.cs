@@ -585,19 +585,4 @@ public abstract partial class BaseAI
           from.SendLocalizedMessage(fromMessage, args);
           to.SendLocalizedMessage(toMessage, args);
      }
-
-     public virtual bool DoOrderMounted()
-     {
-          if (m_Mobile.Mounted)
-          {
-               DebugSay("I've been mounted. Reseting...");
-
-               m_Mobile.ControlOrder = OrderType.None;
-               m_Mobile.ControlTarget = null;
-               m_Mobile.Combatant = null;
-               m_Mobile.FocusMob = null;
-          }
-
-          return true;
-     }
 }
