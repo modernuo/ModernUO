@@ -114,7 +114,13 @@ namespace Server.SkillHandlers
                     src.SendLocalizedMessage(500817); // You can see nothing hidden there.
                 }
 
-                src.NextSkillTime = Core.TickCount + 6000; // 6 seconds cooldown
+                const int TargeterCooldown = 30000; // 30s
+                const int SkillCooldown = 10000;    // 10s
+
+                // Calculate how much time has passed since the targeter was opened
+                int ticksSinceTargeter = (int)(Core.TickCount - (src.NextSkillTime - TargeterCooldown));
+                int remainingCooldown = Math.Max(0, SkillCooldown - ticksSinceTargeter);
+                src.NextSkillTime = Core.TickCount + remainingCooldown;
             }
         }
     }
