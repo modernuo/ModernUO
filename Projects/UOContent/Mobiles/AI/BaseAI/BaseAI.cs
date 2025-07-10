@@ -870,21 +870,6 @@ namespace Server.Mobiles
             var trgStealth = trg.Skills.Stealth.Value / 1.8;
             var chance = Math.Max(srcSkill / 10, srcSkill / 1.2 - Math.Min(trgHiding, trgStealth)) / 100;
 
-            public virtual bool DoOrderMounted()
-     {
-          if (m_Mobile.Mounted)
-          {
-               DebugSay("I've been mounted. Reseting...");
-
-               m_Mobile.ControlOrder = OrderType.None;
-               m_Mobile.ControlTarget = null;
-               m_Mobile.Combatant = null;
-               m_Mobile.FocusMob = null;
-          }
-
-          return true;
-     }
-
             if (chance > Utility.RandomDouble())
             {
                 trg.RevealingAction();
