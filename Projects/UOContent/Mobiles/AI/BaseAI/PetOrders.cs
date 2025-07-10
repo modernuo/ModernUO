@@ -216,24 +216,11 @@ public abstract partial class BaseAI
           var from = m_Mobile.ControlMaster;
           var to = m_Mobile.ControlTarget;
 
-          if (IsYoungPlayer(from, to))
-          {
-               return true;
-          }
-
-          if (IsInvalidFriendRequest(from, to))
-          {
-               m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039); // *looks confused*
-          }
-          else if (from.CanBeBeneficial(to, true))
-          {
-               HandleFriendRequest(from, to);
-          }
-
+          HandleFriendRequest(from, to);
           return true;
      }
 
-     private static bool IsYoungPlayer(Mobile from, Mobile to)
+     private void HandleFriendRequest(Mobile from, Mobile to)
      {
           bool youngFrom = from is PlayerMobile mobile && mobile.Young;
           bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
@@ -242,39 +229,44 @@ public abstract partial class BaseAI
           {
                from.SendLocalizedMessage(502040);
                // As a young player, you may not friend pets to older players.
-               return true;
+               return;
           }
+
           if (!youngFrom && youngTo)
           {
                from.SendLocalizedMessage(502041);
                // As an older player, you may not friend pets to young players.
-               return true;
+               return;
           }
 
-          return false;
-     }
-
-     private static bool IsInvalidFriendRequest(Mobile from, Mobile to)
-     {
-          return from?.Deleted != false || to?.Deleted != false || from == to || !to.Player;
-     }
-
-     private void HandleFriendRequest(Mobile from, Mobile to)
-     {
-          if (from.HasTrade || to.HasTrade)
+          if (!from.CanBeBeneficial(to, true))
+          {
+               return;
+          }
+          else if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
+          {
+               m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
+               // *looks confused*
+               return;
+          }
+          else if (from.HasTrade || to.HasTrade)
           {
                (from.HasTrade ? from : to).SendLocalizedMessage(1070947);
                // You cannot friend a pet with a trade pending
+               return;
           }
           else if (m_Mobile.IsPetFriend(to))
           {
                from.SendLocalizedMessage(1049691);
                // That person is already a friend.
+               m_Mobile.ControlOrder = OrderType.None;
+               return;
           }
           else if (!m_Mobile.AllowNewPetFriend)
           {
                from.SendLocalizedMessage(1005482);
                // Your pet does not seem to be interested in making new friends right now.
+               return;
           }
           else
           {
@@ -297,44 +289,39 @@ public abstract partial class BaseAI
           var from = m_Mobile.ControlMaster;
           var to = m_Mobile.ControlTarget;
 
-          if (IsInvalidUnfriendRequest(from, to))
+          HandleUnfriendRequest(from, to);
+          return true;
+     }
+
+     private void HandleUnfriendRequest(Mobile from, Mobile to)
+     {
+          if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
           {
                m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
                // *looks confused*
-               return false;
+               return;
           }
           else if (!m_Mobile.IsPetFriend(to))
           {
                from.SendLocalizedMessage(1070953);
                // That person is not a friend.
-               return false;
+               m_Mobile.ControlOrder = OrderType.None;
+               return;
           }
           else
           {
-               HandleUnfriendRequest(from, to);
+               from.SendLocalizedMessage(1070951, $"{m_Mobile.Name}\t{to.Name}");
+               // ~1_NAME~ will no longer accept movement commands from ~2_NAME~.
+
+               to.SendLocalizedMessage(1070952, $"{from.Name}\t{m_Mobile.Name}");
+               // ~1_NAME~ has no longer granted you the ability to give orders to their pet ~2_PET_NAME~.
+               // This creature will no longer consider you as a friend.
+
+               m_Mobile.RemovePetFriend(to);
+
+               m_Mobile.ControlTarget = from;
+               m_Mobile.ControlOrder = OrderType.Follow;
           }
-
-          return true;
-     }
-
-     private static bool IsInvalidUnfriendRequest(Mobile from, Mobile to)
-     {
-          return from?.Deleted != false || to?.Deleted != false || from == to || !to.Player;
-     }
-
-     private void HandleUnfriendRequest(Mobile from, Mobile to)
-     {
-          from.SendLocalizedMessage(1070951, $"{m_Mobile.Name}\t{to.Name}");
-          // ~1_NAME~ will no longer accept movement commands from ~2_NAME~.
-
-          to.SendLocalizedMessage(1070952, $"{from.Name}\t{m_Mobile.Name}");
-          // ~1_NAME~ has no longer granted you the ability to give orders to their pet ~2_PET_NAME~.
-          // This creature will no longer consider you as a friend.
-
-          m_Mobile.RemovePetFriend(to);
-
-          m_Mobile.ControlTarget = from;
-          m_Mobile.ControlOrder = OrderType.Follow;
      }
 
      public virtual bool DoOrderGuard()
@@ -554,12 +541,24 @@ public abstract partial class BaseAI
           var from = m_Mobile.ControlMaster;
           var to = m_Mobile.ControlTarget;
 
-          if (IsValidTransferRequest(from, to))
+          if (IsValidTransferRequest(from, to)) 
           {
                DebugSay($"Beginning transfer with {to.Name}");
 
-               if (IsYoungPlayer(from, to))
+               bool youngFrom = from is PlayerMobile mobile && mobile.Young;
+               bool youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
+
+               if (youngFrom && !youngTo)
                {
+                    from.SendLocalizedMessage(502040);
+                    // As a young player, you may not friend pets to older players.
+                    return true;
+               }
+
+               if (!youngFrom && youngTo)
+               {
+                    from.SendLocalizedMessage(502041);
+                    // As an older player, you may not friend pets to young players.
                     return true;
                }
 
@@ -570,6 +569,7 @@ public abstract partial class BaseAI
                     // 1043249: The pet will not accept you as a master because it does not trust you.~3_BLANK~
                     return false;
                }
+
                if (!m_Mobile.CanBeControlledBy(from))
                {
                     SendTransferRefusalMessages(from, to, 1043250, 1043251);
@@ -577,6 +577,7 @@ public abstract partial class BaseAI
                     // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
                     return false;
                }
+
                if (m_Mobile.Combatant != null || m_Mobile.Aggressors.Count > 0 ||
                     m_Mobile.Aggressed.Count > 0 || Core.TickCount < m_Mobile.NextCombatTime)
                {
