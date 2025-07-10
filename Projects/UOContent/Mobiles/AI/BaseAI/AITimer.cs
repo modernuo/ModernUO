@@ -32,16 +32,19 @@ namespace Server.Mobiles
 
           private static double GetBaseInterval(BaseAI owner)
           {
-               if (owner.m_Mobile.Controlled &&
-                    owner.m_Mobile.ControlOrder == OrderType.Follow &&
-                    owner.m_Mobile.Combatant != owner.m_Mobile.ControlMaster)
+               double interval;
+
+               if (owner.m_Mobile.Controlled && owner.m_Mobile.ControlOrder == OrderType.Follow 
+                    && owner.m_Mobile.Combatant != owner.m_Mobile.ControlMaster)
                {
-                    return owner.m_Mobile.CurrentSpeed * 500;
+                    interval = owner.m_Mobile.CurrentSpeed * 400;
                }
                else
                {
-                    return owner.m_Mobile.CurrentSpeed * 1000;
+                    interval = owner.m_Mobile.CurrentSpeed * 1000;
                }
+
+               return Math.Max(interval, 200);
           }
 
           protected override void OnTick()
@@ -134,8 +137,8 @@ namespace Server.Mobiles
                     CacheDetectHiddenDelays();
                }
 
-               m_Owner.m_NextDetectHidden = Core.TickCount +
-                    Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
+               m_Owner.m_NextDetectHidden = Core.TickCount
+                    + Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
           }
      }
 }
