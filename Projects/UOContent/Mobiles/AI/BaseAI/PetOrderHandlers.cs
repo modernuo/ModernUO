@@ -100,7 +100,6 @@ public abstract partial class BaseAI
           }
 
           _lastCommandIssuer?.RevealingAction();
-          m_Mobile.ControlTarget = null;
           m_Mobile.FocusMob = null;
           m_Mobile.Warmode = false;
           m_Mobile.Combatant = null;

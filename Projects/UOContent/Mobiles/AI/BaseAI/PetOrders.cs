@@ -541,7 +541,7 @@ public abstract partial class BaseAI
           var from = m_Mobile.ControlMaster;
           var to = m_Mobile.ControlTarget;
 
-          if (IsValidTransferRequest(from, to)) 
+          if (from?.Deleted == false && to?.Deleted == false && from != to && to.Player)
           {
                DebugSay($"Beginning transfer with {to.Name}");
 
@@ -609,11 +609,6 @@ public abstract partial class BaseAI
 
           m_Mobile.ControlOrder = OrderType.Stay;
           return true;
-     }
-
-     private static bool IsValidTransferRequest(Mobile from, Mobile to)
-     {
-          return from?.Deleted == false && to?.Deleted == false && from != to && to.Player;
      }
 
      private static void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
