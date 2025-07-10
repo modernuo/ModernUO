@@ -332,10 +332,13 @@ public abstract partial class BaseAI
           }
 
           var controlMaster = m_Mobile.ControlMaster;
-          var combatant = FindCombatant(controlMaster);
+          Mobile combatant = m_Mobile.Combatant;
+          FindCombatant();
 
-          if (IsValidCombatant(combatant))
+          if (IsValidCombatant(m_Mobile.Combatant))
           {
+               combatant = m_Mobile.Combatant;
+               
                DebugSay($"Attacking target: {combatant.Name}");
 
                m_Mobile.Combatant = combatant;
@@ -365,34 +368,6 @@ public abstract partial class BaseAI
           return true;
      }
 
-     private Mobile FindCombatant(Mobile controlMaster)
-     {
-          var combatant = m_Mobile.Combatant;
-          var aggressors = controlMaster.Aggressors;
-
-          if (aggressors.Count > 0)
-          {
-               foreach (var info in aggressors)
-               {
-                    var attacker = info.Attacker;
-
-                    if (attacker?.Deleted == false &&
-                         attacker.GetDistanceToSqrt(m_Mobile) <= m_Mobile.RangePerception)
-                    {
-                         if (combatant == null || attacker.GetDistanceToSqrt(controlMaster) <
-                              combatant.GetDistanceToSqrt(controlMaster))
-                         {
-                              combatant = attacker;
-                         }
-                    }
-               }
-
-               DebugSay($"Master {controlMaster.Name} is under attack by {combatant.Name}. Assisting...");
-          }
-
-          return combatant;
-     }
-
      public virtual bool DoOrderAttack()
      {
           if (m_Mobile.IsDeadPet)
@@ -406,6 +381,8 @@ public abstract partial class BaseAI
           }
           else
           {
+               m_Mobile.Combatant = m_Mobile.ControlTarget;
+               
                DebugSay($"Attacking target: {m_Mobile.ControlTarget?.Name}");
 
                Think();
@@ -427,15 +404,12 @@ public abstract partial class BaseAI
 
           if (m_Mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
           {
-               FindNewCombatant();
+               FindCombatant();
           }
      }
 
-     private void FindNewCombatant()
+     private void FindCombatant()
      {
-          Mobile newCombatant = null;
-          double newScore = 0.0;
-
           foreach (var aggr in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
           {
                if (!m_Mobile.CanSee(aggr) || aggr.Combatant != m_Mobile || aggr.IsDeadBondedPet || !aggr.Alive)
@@ -443,24 +417,17 @@ public abstract partial class BaseAI
                     continue;
                }
 
-               double aggrScore = m_Mobile.GetFightModeRanking(aggr, FightMode.Closest, false);
-
-               if ((newCombatant == null || aggrScore > newScore) && m_Mobile.InLOS(aggr))
+               if (m_Mobile.InLOS(aggr))
                {
-                    newCombatant = aggr;
-                    newScore = aggrScore;
+                    m_Mobile.ControlTarget = aggr;
+                    m_Mobile.ControlOrder = OrderType.Attack;
+                    m_Mobile.Combatant = aggr;
+
+                    DebugSay($"{aggr.Name} is still alive. Resuming attacks...");
+
+                    Think();
+                    break;
                }
-          }
-
-          if (newCombatant != null)
-          {
-               m_Mobile.ControlTarget = newCombatant;
-               m_Mobile.ControlOrder = OrderType.Attack;
-               m_Mobile.Combatant = newCombatant;
-
-               DebugSay($"{newCombatant.Name} is still alive. Resuming attacks...");
-
-               Think();
           }
      }
 
