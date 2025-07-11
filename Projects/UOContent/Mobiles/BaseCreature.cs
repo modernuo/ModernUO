@@ -3542,7 +3542,6 @@ namespace Server.Mobiles
                 }
             }
 
-            Guild = null;
             ResetSpeeds();
 
             Delta(MobileDelta.Noto);
