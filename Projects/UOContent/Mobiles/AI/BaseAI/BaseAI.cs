@@ -935,15 +935,21 @@ namespace Server.Mobiles
             {
                 return 1000;
             }
-
+        
             m_Mobile.OnThink();
-
+        
             if (m_Mobile.Controlled ? !Obey() : !Think())
             {
                 return 1000;
             }
+        
+            int interval = (int)(m_Mobile.CurrentSpeed * 1000);
 
-            return (int)(m_Mobile.CurrentSpeed * 1000);
+            if (interval < 100)
+            {
+                interval = 100;
+            }
+            return interval;
         }
 
         public virtual void Cleanup()
