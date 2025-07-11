@@ -41,7 +41,7 @@ namespace Server.Mobiles
                }
                else
                {
-                    interval = owner.m_Mobile.CurrentSpeed * 1000;
+                    interval = owner.m_Mobile.CurrentSpeed * 800;
                }
 
                return Math.Max(interval, 200);

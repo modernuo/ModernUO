@@ -949,6 +949,7 @@ namespace Server.Mobiles
             {
                 interval = 100;
             }
+            
             return interval;
         }
 
