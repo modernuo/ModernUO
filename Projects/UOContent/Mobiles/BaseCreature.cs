@@ -2643,6 +2643,11 @@ namespace Server.Mobiles
                 return;
             }
 
+            if (indirect)
+            {
+                return;
+            }
+
             var list = Aggressors;
 
             for (var i = 0; i < list.Count; ++i)
