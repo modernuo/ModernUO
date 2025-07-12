@@ -278,6 +278,10 @@ namespace Server.Mobiles
                     return false;
                }
 
+               int distance = (int)m_Mobile.GetDistanceToSqrt(m);
+
+               bool shouldRun = run && distance > 5;
+
                if (m_Mobile.InRange(m, range))
                {
                     m_Path = null;
@@ -286,7 +290,7 @@ namespace Server.Mobiles
 
                if (UseGroupMovement(m))
                {
-                    return MoveToWithGroup(this, m, run, range);
+                    return MoveToWithGroup(this, m, shouldRun, range);
                }
 
                if (m_Path == null && m_Mobile.InLOS(m) && DoMove(m_Mobile.GetDirectionTo(m), true))
@@ -299,7 +303,7 @@ namespace Server.Mobiles
                     m_Path = new PathFollower(m_Mobile, m) { Mover = DoMoveImpl };
                }
 
-               if (m_Path.Follow(run, 1))
+               if (m_Path.Follow(shouldRun, 1))
                {
                     m_Path = null;
                     return true;
@@ -310,6 +314,10 @@ namespace Server.Mobiles
 
           private bool MoveToWithCollisionAvoidance(Mobile target, bool run, int range)
           {
+               int distance = (int)m_Mobile.GetDistanceToSqrt(target);
+
+               bool shouldRun = run && distance > 5;
+
                var direction = m_Mobile.GetDirectionTo(target);
 
                if (DoMove(direction, true))
@@ -339,7 +347,7 @@ namespace Server.Mobiles
                     m_Path = new PathFollower(m_Mobile, target) { Mover = DoMoveImpl };
                }
 
-               if (m_Path.Follow(run, 1))
+               if (m_Path.Follow(shouldRun, 1))
                {
                     m_Path = null;
                     return true;
@@ -359,9 +367,11 @@ namespace Server.Mobiles
                {
                     var iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m);
 
+                    bool shouldRun = run && iCurrDist > 5;
+
                     if (iCurrDist < iWantDistMin || iCurrDist > iWantDistMax)
                     {
-                         if (!MoveTowardsOrAwayFrom(m, run, iCurrDist, iWantDistMax))
+                         if (!MoveTowardsOrAwayFrom(m, shouldRun, iCurrDist, iWantDistMax))
                          {
                               return false;
                          }
@@ -379,11 +389,13 @@ namespace Server.Mobiles
 
           private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
           {
+               bool shouldRun = run && iCurrDist > 5;
+
                var needCloser = iCurrDist > iWantDistMax;
 
                if (needCloser && m_Path?.Goal == m)
                {
-                    if (m_Path.Follow(run, 1))
+                    if (m_Path.Follow(shouldRun, 1))
                     {
                          m_Path = null;
                          return true;
@@ -391,7 +403,7 @@ namespace Server.Mobiles
                }
                else
                {
-                    var dirTo = needCloser ? m_Mobile.GetDirectionTo(m, run) : m.GetDirectionTo(m_Mobile, run);
+                    var dirTo = needCloser ? m_Mobile.GetDirectionTo(m, shouldRun) : m.GetDirectionTo(m_Mobile, shouldRun);
 
                     if (DoMove(dirTo, true))
                     {
@@ -403,7 +415,7 @@ namespace Server.Mobiles
                     {
                          m_Path = new PathFollower(m_Mobile, m) { Mover = DoMoveImpl };
 
-                         if (m_Path.Follow(run, 1))
+                         if (m_Path.Follow(shouldRun, 1))
                          {
                               m_Path = null;
                               return true;
