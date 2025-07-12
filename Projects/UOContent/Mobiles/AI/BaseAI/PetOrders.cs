@@ -100,40 +100,25 @@ public abstract partial class BaseAI
 
      public virtual bool DoOrderCome()
      {
+          if (CheckHerding())
+          {
+               DebugSay($"I am being herded by {m_Mobile.ControlTarget?.Name ?? "Unknown"}.");
+               return true;
+          }
+
           if (m_Mobile.ControlMaster?.Deleted != false)
           {
                return true;
           }
 
-          int currentDistance = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.ControlMaster);
+          WalkMobileRange(m_Mobile.ControlMaster, 1, false, 1, 2);
 
-          if (currentDistance > m_Mobile.RangePerception)
+          if (m_Mobile.GetDistanceToSqrt(m_Mobile.ControlMaster) <= 2)
           {
-               HandleLostMaster();
-          }
-          else
-          {
-               HandleComeOrder(currentDistance);
+               m_Mobile.ControlOrder = OrderType.Stay;
           }
 
           return true;
-     }
-
-     private void HandleLostMaster()
-     {
-          DebugSay($"Master {m_Mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
-
-          m_Mobile.ControlOrder = OrderType.None;
-     }
-
-     private void HandleComeOrder(int currentDistance)
-     {
-          DebugSay($"{m_Mobile.ControlTarget?.Name ?? "Unknown"}, has ordered me to come here.");
-
-          if (WalkMobileRange(m_Mobile.ControlMaster, 1, currentDistance > 2, 1, 2))
-          {
-               m_Mobile.Warmode = IsValidCombatant(m_Mobile.Combatant);
-          }
      }
 
      public virtual bool DoOrderFollow()
