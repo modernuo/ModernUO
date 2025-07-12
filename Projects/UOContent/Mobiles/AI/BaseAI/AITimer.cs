@@ -24,7 +24,7 @@ namespace Server.Mobiles
           private int _detectHiddenMaxDelay;
 
           public AITimer(BaseAI owner)
-               : base(TimeSpan.Zero, TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
+               : base(TimeSpan.FromMilliseconds(Utility.Random(3000)), TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
           {
                m_Owner = owner;
                m_Owner.m_NextDetectHidden = Core.TickCount;
