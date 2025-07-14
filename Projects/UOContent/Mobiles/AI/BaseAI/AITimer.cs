@@ -23,8 +23,8 @@ namespace Server.Mobiles
           private int _detectHiddenMinDelay;
           private int _detectHiddenMaxDelay;
 
-          public AITimer(BaseAI owner)
-               : base(TimeSpan.FromMilliseconds(Utility.Random(3000)), TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
+          public AITimer(BaseAI owner) : base(TimeSpan.FromMilliseconds(Utility.Random(3000)), 
+               TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
           {
                m_Owner = owner;
                m_Owner.m_NextDetectHidden = Core.TickCount;
@@ -141,8 +141,8 @@ namespace Server.Mobiles
                     CacheDetectHiddenDelays();
                }
 
-               m_Owner.m_NextDetectHidden = Core.TickCount
-                    + Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
+               m_Owner.m_NextDetectHidden = Core.TickCount +
+                    Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
           }
      }
 }
