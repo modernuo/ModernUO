@@ -28,7 +28,9 @@ public abstract partial class BaseAI
                return;
           }
 
-          for (var i = 0; i < steps; i++)
+          int maxSteps = Math.Min(steps, 3);
+
+          for (var i = 0; i < maxSteps; i++)
           {
                if (Utility.Random(1 + chanceToNotMove) == 0)
                {
