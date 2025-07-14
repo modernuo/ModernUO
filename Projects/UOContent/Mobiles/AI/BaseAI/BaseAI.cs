@@ -929,30 +929,6 @@ namespace Server.Mobiles
             m_Timer.Interval = TimeSpan.FromMilliseconds(m_Mobile.CurrentSpeed * 1000);
         }
 
-        public virtual int OnPoolTick()
-        {
-            if (m_Mobile.Deleted || m_Mobile.Map == null)
-            {
-                return 1000;
-            }
-        
-            m_Mobile.OnThink();
-        
-            if (m_Mobile.Controlled ? !Obey() : !Think())
-            {
-                return 1000;
-            }
-        
-            int interval = (int)(m_Mobile.CurrentSpeed * 1000);
-
-            if (interval < 100)
-            {
-                interval = 100;
-            }
-            
-            return interval;
-        }
-
         public virtual void Cleanup()
         {
             m_Timer?.Stop();
