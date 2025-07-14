@@ -33,7 +33,10 @@ public class TimerPool
 
      public void Tick(long now)
      {
-          while (_queue.Count > 0 && _queue.Min.NextTick <= now)
+          int maxPerTick = 10;
+          int processed = 0;
+
+          while (_queue.Count > 0 && _queue.Min.NextTick <= now && processed < maxPerTick)
           {
                var scheduled = _queue.Min;
                _queue.Remove(scheduled);
@@ -42,6 +45,8 @@ public class TimerPool
                var nextTick = now + nextInterval;
 
                _queue.Add(new ScheduledAI(scheduled.AI, nextTick));
+               
+               processed++;
           }
      }
 
