@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server;
 using Server.Items;
 using Server.Mobiles;
@@ -83,22 +84,29 @@ namespace Server.Mobiles
 
           private List<BaseCreature> GetNearbyAllies(Mobile target)
           {
+               var mobiles = new List<Mobile>();
+               
+               foreach (Mobile m in m_Mobile.GetMobilesInRange(8))
+               {
+                    mobiles.Add(m);
+               }
+
+               if (mobiles.Count <= 1)
+               {
+                    return new List<BaseCreature>();
+               }
+
                var allies = new List<BaseCreature>();
 
-               foreach (var mobile in m_Mobile.GetMobilesInRange(8))
+               foreach (var mobile in mobiles)
                {
-                    if (mobile is BaseCreature bc)
+                    if (mobile is BaseCreature bc && bc != m_Mobile
+                         && bc.Combatant == target && !bc.Controlled && bc.Team == m_Mobile.Team)
                     {
-                         if (bc != m_Mobile
-                              && bc.Combatant == target
-                              && !bc.Controlled
-                              && bc.Team == m_Mobile.Team)
-                         {
-                              allies.Add(bc);
-                         }
+                         allies.Add(bc);
                     }
                }
-               
+
                return allies;
           }
 
@@ -111,10 +119,14 @@ namespace Server.Mobiles
                {
                     for (var y = -range; y <= range; y++)
                     {
-                         var testLoc = new Point3D(targetLoc.X + x, targetLoc.Y + y, targetLoc.Z);
-                         var distance = m_Mobile.GetDistanceToSqrt(testLoc);
+                         if (Math.Abs(x) + Math.Abs(y) != range)
+                         {
+                              continue;
+                         }
 
-                         if (distance >= range && distance <= range + 3)
+                         var testLoc = new Point3D(targetLoc.X + x, targetLoc.Y + y, targetLoc.Z);
+
+                         if (m_Mobile.GetDistanceToSqrt(testLoc) >= range && m_Mobile.GetDistanceToSqrt(testLoc) <= range + 3)
                          {
                               positions.Add(testLoc);
                          }
@@ -122,7 +134,6 @@ namespace Server.Mobiles
                }
 
                Point3D bestPosition = Point3D.Zero;
-
                double bestScore = double.MinValue;
 
                foreach (var pos in positions)
@@ -135,6 +146,11 @@ namespace Server.Mobiles
                          {
                               bestScore = score;
                               bestPosition = pos;
+
+                              if (score > 20)
+                              {
+                                   break;
+                              }
                          }
                     }
                }
