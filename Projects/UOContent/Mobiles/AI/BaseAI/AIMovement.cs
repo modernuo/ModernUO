@@ -129,7 +129,7 @@ namespace Server.Mobiles
 
           private MoveResult TryAlternateMovement(bool wasPushing)
           {
-               var offset = Utility.RandomDouble() < 0.4 ? 1 : -1;
+               var offset = Utility.Random(100) < 40 ? 1 : -1;
 
                for (var i = 0; i < 2; ++i)
                {

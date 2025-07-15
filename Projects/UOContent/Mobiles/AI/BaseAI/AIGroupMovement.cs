@@ -69,7 +69,7 @@ namespace Server.Mobiles
 
                     var direction = m_Mobile.GetDirectionTo(optimalPosition);
 
-                    if (Utility.RandomDouble() < 0.3)
+                    if (Utility.Random(100) < 30)
                     {
                          direction = GetAdjustedDirection(direction);
                     }
