@@ -21,21 +21,12 @@ internal sealed class TransferItem : Item
 {
     private readonly BaseCreature m_Creature;
 
+    public override string DefaultName => m_Creature.GetType().Name;
+
     public TransferItem(BaseCreature creature) : base(ShrinkTable.Lookup(creature))
     {
         m_Creature = creature;
         Movable = false;
-
-        if (!Core.AOS)
-        {
-            Name = creature.Name;
-        }
-        else if (ItemID == ShrinkTable.DefaultItemID
-                 || creature.GetType().IsDefined(typeof(FriendlyNameAttribute), false)
-                 || creature is Reptalon)
-        {
-            Name = FriendlyNameAttribute.GetFriendlyNameFor(creature.GetType()).ToString();
-        }
 
         Hue = creature.Hue & 0x0FFF;
     }

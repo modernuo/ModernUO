@@ -133,30 +133,6 @@ namespace Server.Mobiles
         public int CompareTo(DamageStore ds) => (ds?.m_Damage ?? 0).CompareTo(m_Damage);
     }
 
-    [AttributeUsage(AttributeTargets.Class)]
-    public class FriendlyNameAttribute : Attribute
-    {
-        public FriendlyNameAttribute(TextDefinition friendlyName) => FriendlyName = friendlyName;
-        // future use: Talisman 'Protection/Bonus vs. Specific Creature
-
-        public TextDefinition FriendlyName { get; }
-
-        public static TextDefinition GetFriendlyNameFor(Type t)
-        {
-            if (t.IsDefined(typeof(FriendlyNameAttribute), false))
-            {
-                var objs = t.GetCustomAttributes(typeof(FriendlyNameAttribute), false);
-
-                if (objs.Length > 0)
-                {
-                    return (objs[0] as FriendlyNameAttribute)?.FriendlyName ?? "";
-                }
-            }
-
-            return t.Name;
-        }
-    }
-
     public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
         public enum Allegiance
