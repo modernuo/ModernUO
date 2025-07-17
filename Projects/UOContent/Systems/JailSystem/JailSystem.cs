@@ -65,10 +65,10 @@ public class JailSystem : GenericPersistence
     public static void Configure()
     {
         Instance = new JailSystem();
-        CommandSystem.Register("jail", AccessLevel.Counselor, Jail_OnCommand);
-        CommandSystem.Register("unjail", AccessLevel.Counselor, Unjail_OnCommand);
-        CommandSystem.Register("jailinfo", AccessLevel.Counselor, JailInfo_OnCommand);
-        CommandSystem.Register("jailrecord", AccessLevel.Player, MyJailInfo_OnCommand);
+        CommandSystem.Register("Jail", AccessLevel.GameMaster, Jail_OnCommand);
+        CommandSystem.Register("Unjail", AccessLevel.GameMaster, Unjail_OnCommand);
+        CommandSystem.Register("JailInfo", AccessLevel.Counselor, JailInfo_OnCommand);
+        CommandSystem.Register("JailRecord", AccessLevel.Player, MyJailInfo_OnCommand);
     }
 
     public JailSystem() : base("Jail", 3)
@@ -119,24 +119,43 @@ public class JailSystem : GenericPersistence
             }
         }
 
-        Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => { DismountPlayer(player, jailTime); });
+        Timer.DelayCall(TimeSpan.FromSeconds(2.0), DismountPlayer, from, player, jailTime);
     }
 
-    private static void DismountPlayer(PlayerMobile player, TimeSpan jailTime)
+    private static void DismountPlayer(Mobile from, PlayerMobile player, TimeSpan jailTime)
     {
         if (player.Mount != null)
         {
             var mount = player.Mount;
             mount.Rider = null;
             player.SendMessage(0x35, "You have been dismounted.");
+            if (mount is BaseCreature bc)
+            {
+                if (bc.Summoned)
+                {
+                    bc.Dispel(bc);
+                }
+                else // Stable the pet
+                {
+                    bc.ControlTarget = null;
+                    bc.ControlOrder = OrderType.Stay;
+                    bc.Internalize();
+
+                    bc.SetControlMaster(null);
+
+                    bc.IsStabled = true;
+                    bc.StabledBy = from;
+                    player.AddStabled(bc);
+                }
+            }
         }
 
-        CommandLogging.WriteLine(player, $"Player {player.Name} dismounted before jail teleport");
+        CommandLogging.WriteLine(from, $"Player {player.Name} dismounted before jail teleport");
 
-        Timer.DelayCall(TimeSpan.FromSeconds(3.0), TeleportToJail, player, jailTime);
+        Timer.DelayCall(TimeSpan.FromSeconds(3.0), TeleportToJail, from, player, jailTime);
     }
 
-    private static void TeleportToJail(PlayerMobile player, TimeSpan jailTime)
+    private static void TeleportToJail(Mobile from, PlayerMobile player, TimeSpan jailTime)
     {
         var jailLocation = JailLocations.RandomElement();
 
@@ -145,24 +164,24 @@ public class JailSystem : GenericPersistence
         player.SendMessage(0x35, "Use [jailrecord to pull up your record.");
         player.SendMessage(0x35, "Please contact staff if you believe this was a mistake.");
 
-        CommandLogging.WriteLine(player, $"Player {player.Name} teleported to jail at {jailLocation}");
+        CommandLogging.WriteLine(from, $"Player {player.Name} teleported to jail at {jailLocation}");
 
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), UnfreezePlayer, player, jailTime);
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), UnfreezePlayer, from, player, jailTime);
     }
 
-    private static void UnfreezePlayer(PlayerMobile player, TimeSpan jailTime)
+    private static void UnfreezePlayer(Mobile from, PlayerMobile player, TimeSpan jailTime)
     {
         player.Frozen = false;
 
-        CommandLogging.WriteLine(player, $"Player {player.Name} unfrozen in jail");
+        CommandLogging.WriteLine(from, $"Player {player.Name} unfrozen in jail");
 
         CurrentlyBeingJailed.Remove(player);
 
-        var releaseTimer = Timer.DelayCall(jailTime, ReleasePlayer, player);
+        var releaseTimer = Timer.DelayCall(jailTime, ReleasePlayer, from, player);
         JailTimers[player] = releaseTimer;
     }
 
-    private static void ReleasePlayer(PlayerMobile player)
+    private static void ReleasePlayer(Mobile from, PlayerMobile player)
     {
         if (PlayerJailRecords.TryGetValue(player, out var record))
         {
@@ -176,7 +195,10 @@ public class JailSystem : GenericPersistence
         player.SendMessage(0x35, "You have been released from jail!");
         player.PlaySound(0x1FF);
 
-        CommandLogging.WriteLine(player, $"Player {player.Name} released from jail, starting teleport sequence");
+        if (from != null)
+        {
+            CommandLogging.WriteLine(from, $"Player {player.Name} released from jail, starting teleport sequence");
+        }
 
         foreach (var ns in NetState.Instances)
         {
@@ -186,26 +208,32 @@ public class JailSystem : GenericPersistence
             }
         }
 
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), TeleportFromJail, player);
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), TeleportFromJail, from, player);
     }
 
-    private static void TeleportFromJail(PlayerMobile player)
+    private static void TeleportFromJail(Mobile from, PlayerMobile player)
     {
         player.MoveToWorld(ReleaseLocation, ReleaseMap);
 
-        CommandLogging.WriteLine(player, $"Player {player.Name} teleported from jail to {ReleaseLocation}");
+        if (from != null)
+        {
+            CommandLogging.WriteLine(player, $"Player {player.Name} teleported from jail to {ReleaseLocation}");
+        }
 
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), UnfreezeFromRelease, player);
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), UnfreezeFromRelease, from, player);
     }
 
-    private static void UnfreezeFromRelease(PlayerMobile player)
+    private static void UnfreezeFromRelease(Mobile from, PlayerMobile player)
     {
         player.Frozen = false;
         player.SendMessage(0x35, "Welcome back!");
         player.SendMessage(0x35, "Please follow the shard rules.");
         player.SendMessage(0x35, "Have a nice day!");
 
-        CommandLogging.WriteLine(player, $"Player {player.Name} unfrozen after jail release");
+        if (from != null)
+        {
+            CommandLogging.WriteLine(from, $"Player {player.Name} unfrozen after jail release");
+        }
     }
 
     [Usage("Jail <player> [reason]")]
@@ -218,26 +246,15 @@ public class JailSystem : GenericPersistence
             return;
         }
 
+        var reason = e.GetString(1);
         var playerName = e.GetString(0);
-
-        var reason = "";
-
-        if (e.Length > 1)
-        {
-            var fullCommand = e.ArgString;
-            var playerNameEnd = fullCommand.IndexOfOrdinal(playerName) + playerName.Length;
-
-            if (playerNameEnd < fullCommand.Length)
-            {
-                reason = fullCommand.AsSpan(0, playerNameEnd).Trim().ToString();
-            }
-        }
+        var playerSerial = Serial.TryParse(playerName, null, out var serial) ? serial : Serial.MinusOne;
 
         PlayerMobile player = null;
 
         foreach (var m in World.Mobiles.Values)
         {
-            if (m is PlayerMobile pm && m.Name.InsensitiveEquals(playerName))
+            if (m is PlayerMobile pm && (pm.Serial == playerSerial || m.RawName.InsensitiveEquals(playerName)))
             {
                 player = pm;
                 break;
@@ -270,18 +287,21 @@ public class JailSystem : GenericPersistence
     [Description("Manually releases a player from jail.")]
     private static void Unjail_OnCommand(CommandEventArgs e)
     {
+        var from = e.Mobile;
         if (e.Length < 1)
         {
-            e.Mobile.SendMessage(0x35, "Usage: [unjail <player>");
+            from.SendMessage(0x35, "Usage: [unjail <player>");
             return;
         }
 
         var playerName = e.GetString(0);
+        var playerSerial = Serial.TryParse(playerName, null, out var serial) ? serial : Serial.MinusOne;
+
         PlayerMobile player = null;
 
         foreach (var m in World.Mobiles.Values)
         {
-            if (m is PlayerMobile pm && m.Name.InsensitiveEquals(playerName))
+            if (m is PlayerMobile pm && (pm.Serial == playerSerial || m.RawName.InsensitiveEquals(playerName)))
             {
                 player = pm;
                 break;
@@ -290,13 +310,13 @@ public class JailSystem : GenericPersistence
 
         if (player == null)
         {
-            e.Mobile.SendMessage(0x35, $"Player '{playerName}' not found.");
+            from.SendMessage(0x35, $"Player '{playerName}' not found.");
             return;
         }
 
         if (IsPlayerJailed(player))
         {
-            e.Mobile.SendMessage(0x35, $"Player {player.Name} is not currently jailed.");
+            from.SendMessage(0x35, $"Player {player.Name} is not currently jailed.");
             return;
         }
 
@@ -305,8 +325,8 @@ public class JailSystem : GenericPersistence
             value.Stop();
         }
 
-        ReleasePlayer(player);
-        e.Mobile.SendMessage(0x35, $"Player {player.Name} has been manually released from jail.");
+        ReleasePlayer(from, player);
+        from.SendMessage(0x35, $"Player {player.Name} has been manually released from jail.");
     }
 
     [Usage("JailInfo <player>")]
@@ -320,11 +340,13 @@ public class JailSystem : GenericPersistence
         }
 
         var playerName = e.GetString(0);
+        var playerSerial = Serial.TryParse(playerName, null, out var serial) ? serial : Serial.MinusOne;
+
         PlayerMobile player = null;
 
         foreach (var m in World.Mobiles.Values)
         {
-            if (m is PlayerMobile pm && m.Name.InsensitiveEquals(playerName))
+            if (m is PlayerMobile pm && (pm.Serial == playerSerial || m.RawName.InsensitiveEquals(playerName)))
             {
                 player = pm;
                 break;
@@ -347,11 +369,7 @@ public class JailSystem : GenericPersistence
     [Description("Shows your own jail information.")]
     private static void MyJailInfo_OnCommand(CommandEventArgs e)
     {
-        if (!(e.Mobile is PlayerMobile player))
-        {
-            e.Mobile.SendMessage(0x35, "This command is only available to players.");
-            return;
-        }
+        var player = (PlayerMobile)e.Mobile;
 
         if (JailRecordCooldowns.TryGetValue(player, out var cooldown))
         {
@@ -399,7 +417,7 @@ public class JailSystem : GenericPersistence
                 {
                     CurrentlyBeingJailed.Add(player);
                     var jailTime = record.JailEndTime - Core.Now;
-                    JailTimers[player] = Timer.DelayCall(jailTime, ReleasePlayer, player);
+                    JailTimers[player] = Timer.DelayCall(jailTime, ReleasePlayer, record.JailedBy, player);
                 }
             }
         }

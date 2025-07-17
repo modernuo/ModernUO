@@ -18,5 +18,8 @@ public partial class JailRecord
     [SerializableField(3)]
     private string _lastJailReason;
 
+    [SerializableField(4)]
+    private Mobile _jailedBy;
+
     public bool IsCurrentlyJailed => JailEndTime > Core.Now;
 }

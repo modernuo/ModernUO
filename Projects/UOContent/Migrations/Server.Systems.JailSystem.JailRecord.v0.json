@@ -33,6 +33,11 @@
       "ruleArguments": [
         ""
       ]
+    },
+    {
+      "name": "JailedBy",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
     }
   ]
 }
