@@ -57,7 +57,7 @@ public class VendorAI : BaseAI
 
         if (customer?.Deleted != false || customer.Map != m_Mobile.Map)
         {
-            DebugSay("My customer have disapeared");
+            DebugSay("My customer has disappeared");
 
             m_Mobile.FocusMob = null;
 
