@@ -47,7 +47,7 @@ public class JailSystem : GenericPersistence
     private static readonly Dictionary<PlayerMobile, JailRecord> PlayerJailRecords = [];
     private static readonly Dictionary<PlayerMobile, Timer> JailTimers = [];
 
-    // Jail time scales from 5 minutes to 2 hours based on the number of offenses
+    // Jail time scales from 5 minutes to 12 hours based on the number of offenses
     private static readonly TimeSpan MinJailTime = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan MaxJailTime = TimeSpan.FromHours(12);
 
