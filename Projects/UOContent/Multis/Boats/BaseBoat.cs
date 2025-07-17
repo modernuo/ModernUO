@@ -175,40 +175,16 @@ namespace Server.Multis
         [CommandProperty(AccessLevel.GameMaster)]
         public BoatOrder Order { get; set; }
 
-        public int Status
-        {
-            get
+        public int Status =>
+            (Core.Now - (TimeOfDecay - BoatDecayDelay)) switch
             {
-                var start = Core.Now - TimeOfDecay - BoatDecayDelay;
-
-                if (start < TimeSpan.FromHours(1.0))
-                {
-                    return 1043010; // This structure is like new.
-                }
-
-                if (start < TimeSpan.FromDays(2.0))
-                {
-                    return 1043011; // This structure is slightly worn.
-                }
-
-                if (start < TimeSpan.FromDays(3.0))
-                {
-                    return 1043012; // This structure is somewhat worn.
-                }
-
-                if (start < TimeSpan.FromDays(4.0))
-                {
-                    return 1043013; // This structure is fairly worn.
-                }
-
-                if (start < TimeSpan.FromDays(5.0))
-                {
-                    return 1043014; // This structure is greatly worn.
-                }
-
-                return 1043015; // This structure is in danger of collapsing.
-            }
-        }
+                var start when start < TimeSpan.FromHours(1) => 1043010, // This structure is like new.
+                var start when start < TimeSpan.FromDays(2)  => 1043011, // This structure is slightly worn.
+                var start when start < TimeSpan.FromDays(3)  => 1043012, // This structure is somewhat worn.
+                var start when start < TimeSpan.FromDays(4)  => 1043013, // This structure is fairly worn.
+                var start when start < TimeSpan.FromDays(5)  => 1043014, // This structure is greatly worn.
+                _                                            => 1043015  // This structure is in danger of collapsing.
+            };
 
         public virtual int NorthID => 0;
         public virtual int EastID => 0;

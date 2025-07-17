@@ -216,6 +216,7 @@ public static class NameVerification
         }
 
         var index = name.IndexOfAny(exceptions);
+        var exceptionCount = 0;
 
         while (index != -1)
         {
@@ -229,7 +230,7 @@ public static class NameVerification
                 noExceptionsAtStart = false;
             }
 
-            if (maxExceptions-- <= 0)
+            if (exceptionCount++ >= maxExceptions)
             {
                 return true;
             }
@@ -238,6 +239,10 @@ public static class NameVerification
             {
                 name = name[(index + 1)..];
                 index = name.IndexOfAny(exceptions);
+                if (index != 0)
+                {
+                    exceptionCount = 0;
+                }
             }
             else
             {

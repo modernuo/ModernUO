@@ -104,7 +104,7 @@ namespace Server.Items
         }
 
         [SerializableField(0)]
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializedCommandProperty(AccessLevel.GameMaster, readOnly: true)]
         public BaseAddon _addon;
 
         [SerializableField(1)]

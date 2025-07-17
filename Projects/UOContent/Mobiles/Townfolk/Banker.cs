@@ -12,7 +12,7 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public partial class Banker : BaseVendor
 {
-    private readonly List<SBInfo> m_SBInfos = new();
+    private readonly List<SBInfo> m_SBInfos = [];
 
     [Constructible]
     public Banker() : base("the banker")
@@ -41,7 +41,7 @@ public partial class Banker : BaseVendor
             }
         }
 
-        Container bank = m.FindBankNoCreate();
+        var bank = m.FindBankNoCreate();
 
         if (bank != null)
         {
@@ -80,11 +80,11 @@ public partial class Banker : BaseVendor
             }
         }
 
-        Container bank = m.FindBankNoCreate();
+        var bank = m.FindBankNoCreate();
 
         if (bank != null)
         {
-            gold = new List<Gold>();
+            gold = [];
 
             foreach (var g in bank.FindItemsByType<Gold>())
             {
@@ -97,7 +97,7 @@ public partial class Banker : BaseVendor
                 return int.MaxValue;
             }
 
-            checks = new List<BankCheck>();
+            checks = [];
 
             foreach (var bc in bank.FindItemsByType<BankCheck>())
             {
@@ -111,7 +111,7 @@ public partial class Banker : BaseVendor
 
     private static bool HasRequiredBalance(int requiredBalance, Mobile m, out PooledRefList<Gold> gold, out PooledRefList<BankCheck> checks)
     {
-        Container bank = m.FindBankNoCreate();
+        var bank = m.FindBankNoCreate();
 
         if (bank == null)
         {
@@ -382,9 +382,7 @@ public partial class Banker : BaseVendor
                                 }
                                 else if (amount > 0)
                                 {
-                                    var box = e.Mobile.FindBankNoCreate();
-
-                                    if (box == null || !Withdraw(e.Mobile, amount))
+                                    if (!Withdraw(e.Mobile, amount))
                                     {
                                         Say(500384); // Ah, art thou trying to fool me? Thou hast not so much gold!
                                     }

@@ -108,6 +108,6 @@ Thank you for supporting us! You can find out how by visiting the [sponsors](./S
 - [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
 </br></br>
-<p align=center>Development Tools & Plugins provided with &hearts; by <br /><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" height="64px" alt="JetBrains" title="JetBrains" /></a>
+<p align=center>Development Tools & Plugins provided with &hearts; by <br /><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://github.com/user-attachments/assets/07b12bd0-ca00-472f-8a47-ab48461f3f1d" height="64px" alt="JetBrains" title="JetBrains" /></a><br />
 <a href="https://material-theme.com/"><img align=center src="https://material-theme.com/img/logo/material-oceanic.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
 </p>

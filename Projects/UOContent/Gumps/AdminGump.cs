@@ -92,12 +92,12 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, 420, 440, 5054);
+            AddBackground(0, 0, 420, 480, 5054);
 
             AddBlackAlpha(10, 10, 170, 100);
             AddBlackAlpha(190, 10, 220, 100);
-            AddBlackAlpha(10, 120, 400, 260);
-            AddBlackAlpha(10, 390, 400, 40);
+            AddBlackAlpha(10, 120, 400, 300);
+            AddBlackAlpha(10, 430, 400, 40);
 
             AddPageButton(
                 10,
@@ -141,7 +141,7 @@ namespace Server.Gumps
 
             if (notice != null)
             {
-                AddHtml(12, 392, 396, 36, notice.Color(LabelColor32));
+                AddHtml(20, 440, 396, 36, notice.Color(LabelColor32));
             }
 
             switch (pageType)
@@ -619,6 +619,14 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, y, GetButtonID(7, 12), "Kill");
                         AddButtonLabeled(200, y, GetButtonID(7, 13), "Resurrect");
+                        y += 20;
+
+                        AddButtonLabeled(20, y, GetButtonID(7, 15), "Jail");
+                        AddButtonLabeled(200, y, GetButtonID(7, 16), "Unjail");
+                        y += 25;
+
+                        AddLabel(20, y, LabelHue, "Jail Reason:");
+                        AddTextField(100, y, 300, 20, 1);
 
                         break;
                     }
@@ -3799,6 +3807,33 @@ namespace Server.Gumps
                                         )
                                     );
                                     sendGump = false;
+                                    break;
+                                }
+                            case 15:
+                                {
+                                    var reason = info.GetTextEntry(1)?.Trim();
+
+                                    if (string.IsNullOrWhiteSpace(reason))
+                                    {
+                                        reason = "";
+                                    }
+
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} jailing {CommandLogging.Format(m)} - Reason: {reason}"
+                                    );
+                                    InvokeCommand($"Jail {m.Name} \"{reason}\"");
+                                    notice = $"Player has been sent to jail. Reason: {reason}";
+                                    break;
+                                }
+                            case 16:
+                                {
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} unjailing {CommandLogging.Format(m)}"
+                                    );
+                                    InvokeCommand($"Unjail {m.Name}");
+                                    notice = "Player has been unjailed.";
                                     break;
                                 }
                         }
