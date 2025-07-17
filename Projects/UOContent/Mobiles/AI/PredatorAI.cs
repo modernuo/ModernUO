@@ -8,13 +8,13 @@ public class PredatorAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (Mobile.Combatant != null)
+        if (m_Mobile.Combatant != null)
         {
             DebugSay("I am hurt or being attacked, I kill him");
 
             Action = ActionType.Combat;
         }
-        else if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, true, false, true))
+        else if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, true, false, true))
         {
             DebugSay("There is something near, I go away");
 
@@ -30,9 +30,9 @@ public class PredatorAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = Mobile.Combatant;
+        var combatant = m_Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
             DebugSay("My combatant is gone, so my guard is up");
@@ -41,22 +41,22 @@ public class PredatorAI : BaseAI
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, true, Mobile.RangeFight, Mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
         {
-            if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
+            if (m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
             {
-                this.DebugSayFormatted($"I cannot find {combatant.Name}");
+                DebugSay($"I cannot find {combatant.Name}");
 
                 Action = ActionType.Wander;
                 return true;
             }
 
-            this.DebugSayFormatted($"I should be closer to {combatant.Name}");
+            DebugSay($"I should be closer to {combatant.Name}");
         }
 
-        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
+            DebugSay($"I used my abilities on {combatant.Name}!");
         }
 
         return true;
@@ -64,13 +64,13 @@ public class PredatorAI : BaseAI
 
     public override bool DoActionBackoff()
     {
-        if (Mobile.IsHurt() || Mobile.Combatant != null)
+        if (m_Mobile.IsHurt() || m_Mobile.Combatant != null)
         {
             Action = ActionType.Combat;
         }
-        else if (AcquireFocusMob(Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
+        else if (AcquireFocusMob(m_Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
         {
-            if (WalkMobileRange(Mobile.FocusMob, 1, false, Mobile.RangePerception, Mobile.RangePerception * 2))
+            if (WalkMobileRange(m_Mobile.FocusMob, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2))
             {
                 DebugSay("Well, here I am safe");
 

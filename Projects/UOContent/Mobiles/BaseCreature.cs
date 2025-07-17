@@ -56,11 +56,12 @@ namespace Server.Mobiles
         Attack, // "(All/Name) kill",
 
         // "(All/Name) attack"  All or the specified pet(s) currently under your control attack the target.
-        Patrol,  // "(Name) patrol"  Roves between two or more guarded targets.
-        Release, // "(Name) release"  Releases pet back into the wild (removes "tame" status).
-        Stay,    // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
-        Stop,    // "(All/Name) stop Cancels any current orders to attack, guard or follow.
-        Transfer // "(Name) transfer" Transfers complete ownership to targeted player.
+        Patrol,   // "(Name) patrol"  Roves between two or more guarded targets.
+        Release,  // "(Name) release"  Releases pet back into the wild (removes "tame" status).
+        Stay,     // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
+        Stop,     // "(All/Name) stop Cancels any current orders to attack, guard or follow.
+        Transfer, // "(Name) transfer" Transfers complete ownership to targeted player.
+        Rename    // "(Name) rename"  Changes the name of the pet.
     }
 
     [Flags]

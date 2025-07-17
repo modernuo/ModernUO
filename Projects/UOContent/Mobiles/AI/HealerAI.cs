@@ -9,10 +9,13 @@ namespace Server.Mobiles;
 
 public class HealerAI : BaseAI
 {
-    private static readonly NeedDelegate[] Cure = [NeedCure];
-    private static readonly NeedDelegate[] GHeal = [NeedGHeal];
-    private static readonly NeedDelegate[] LHeal = [NeedLHeal];
-    private static readonly NeedDelegate[] AllHeal = [NeedCure, NeedGHeal, NeedLHeal];
+    private static readonly NeedDelegate m_Cure = NeedCure;
+    private static readonly NeedDelegate m_GHeal = NeedGHeal;
+    private static readonly NeedDelegate m_LHeal = NeedLHeal;
+    private static readonly NeedDelegate[] m_ACure = { m_Cure };
+    private static readonly NeedDelegate[] m_AGHeal = { m_GHeal };
+    private static readonly NeedDelegate[] m_ALHeal = { m_LHeal };
+    private static readonly NeedDelegate[] m_All = { m_Cure, m_GHeal, m_LHeal };
 
     public HealerAI(BaseCreature m) : base(m)
     {
@@ -20,12 +23,12 @@ public class HealerAI : BaseAI
 
     public override bool Think()
     {
-        if (Mobile.Deleted)
+        if (m_Mobile.Deleted)
         {
             return false;
         }
 
-        var targ = Mobile.Target;
+        var targ = m_Mobile.Target;
 
         if (targ != null)
         {
@@ -33,68 +36,68 @@ public class HealerAI : BaseAI
 
             if (spellTarg?.Spell is CureSpell)
             {
-                ProcessTarget(targ, Cure);
+                ProcessTarget(targ, m_ACure);
             }
             else if (spellTarg?.Spell is GreaterHealSpell)
             {
-                ProcessTarget(targ, GHeal);
+                ProcessTarget(targ, m_AGHeal);
             }
             else if (spellTarg?.Spell is HealSpell)
             {
-                ProcessTarget(targ, LHeal);
+                ProcessTarget(targ, m_ALHeal);
             }
             else
             {
-                targ.Cancel(Mobile, TargetCancelType.Canceled);
+                targ.Cancel(m_Mobile, TargetCancelType.Canceled);
             }
 
             return true;
         }
 
-        var toHelp = Find(AllHeal);
+        var toHelp = Find(m_All);
 
         if (toHelp != null)
         {
             if (NeedCure(toHelp))
             {
-                this.DebugSayFormatted($"{toHelp.Name} needs a cure");
+                DebugSay($"{toHelp.Name} needs a cure");
 
-                if (!new CureSpell(Mobile).Cast())
+                if (!new CureSpell(m_Mobile).Cast())
                 {
-                    new CureSpell(Mobile).Cast();
+                    new CureSpell(m_Mobile).Cast();
                 }
             }
             else if (NeedGHeal(toHelp))
             {
-                this.DebugSayFormatted($"{toHelp.Name} needs a greater heal");
+                DebugSay($"{toHelp.Name} needs a greater heal");
 
-                if (!new GreaterHealSpell(Mobile).Cast())
+                if (!new GreaterHealSpell(m_Mobile).Cast())
                 {
-                    new HealSpell(Mobile).Cast();
+                    new HealSpell(m_Mobile).Cast();
                 }
             }
             else if (NeedLHeal(toHelp))
             {
-                this.DebugSayFormatted($"{toHelp.Name} needs a lesser heal");
+                DebugSay($"{toHelp.Name} needs a lesser heal");
 
-                new HealSpell(Mobile).Cast();
+                new HealSpell(m_Mobile).Cast();
             }
 
             return true;
         }
 
-        if (!AcquireFocusMob(Mobile.RangePerception, FightMode.Weakest, false, true, false))
+        if (!AcquireFocusMob(m_Mobile.RangePerception, FightMode.Weakest, false, true, false))
         {
             WalkRandomInHome(3, 2, 1);
             return true;
         }
 
-        WalkMobileRange(Mobile.FocusMob, 1, false, 4, 7);
+        WalkMobileRange(m_Mobile.FocusMob, 1, false, 4, 7);
 
         // TODO: Should it be able to do this?
-        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, Mobile.Combatant))
+        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
         {
-            this.DebugSayFormatted($"I used my abilities on {Mobile.Combatant.Name}!");
+            DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
         }
 
         return true;
@@ -106,26 +109,26 @@ public class HealerAI : BaseAI
 
         if (toHelp == null)
         {
-            targ.Cancel(Mobile, TargetCancelType.Canceled);
+            targ.Cancel(m_Mobile, TargetCancelType.Canceled);
         }
-        else if (targ.Range != -1 && !Mobile.InRange(toHelp, targ.Range))
+        else if (targ.Range != -1 && !m_Mobile.InRange(toHelp, targ.Range))
         {
-            DoMove(Mobile.GetDirectionTo(toHelp) | Direction.Running);
+            DoMove(m_Mobile.GetDirectionTo(toHelp) | Direction.Running);
         }
         else
         {
-            targ.Invoke(Mobile, toHelp);
+            targ.Invoke(m_Mobile, toHelp);
         }
     }
 
     private Mobile Find(params ReadOnlySpan<NeedDelegate> funcs)
     {
-        if (Mobile.Deleted)
+        if (m_Mobile.Deleted)
         {
             return null;
         }
 
-        var map = Mobile.Map;
+        var map = m_Mobile.Map;
 
         if (map == null)
         {
@@ -135,9 +138,9 @@ public class HealerAI : BaseAI
         var prio = 0.0;
         Mobile found = null;
 
-        foreach (var m in Mobile.GetMobilesInRange(Mobile.RangePerception))
+        foreach (var m in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
         {
-            if (!Mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != Mobile.Team)
+            if (!m_Mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != m_Mobile.Team)
             {
                 continue;
             }
@@ -146,7 +149,7 @@ public class HealerAI : BaseAI
             {
                 if (funcs[i](bc))
                 {
-                    var val = -Mobile.GetDistanceToSqrt(bc);
+                    var val = -m_Mobile.GetDistanceToSqrt(bc);
 
                     if (found == null || val > prio)
                     {

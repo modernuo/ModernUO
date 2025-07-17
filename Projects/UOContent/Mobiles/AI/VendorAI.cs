@@ -17,24 +17,24 @@ public class VendorAI : BaseAI
     {
         DebugSay("I'm fine");
 
-        if (Mobile.Combatant != null)
+        if (m_Mobile.Combatant != null)
         {
-            this.DebugSayFormatted($"{Mobile.Combatant.Name} is attacking me");
+            DebugSay($"{m_Mobile.Combatant.Name} is attacking me");
 
-            Mobile.Say(GetRandomGuardMessage());
+            m_Mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
         }
         else
         {
-            if (Mobile.FocusMob != null)
+            if (m_Mobile.FocusMob != null)
             {
-                this.DebugSayFormatted($"{Mobile.FocusMob.Name} has talked to me");
+                DebugSay($"{m_Mobile.FocusMob.Name} has talked to me");
 
                 Action = ActionType.Interact;
             }
             else
             {
-                Mobile.Warmode = false;
+                m_Mobile.Warmode = false;
 
                 base.DoActionWander();
             }
@@ -45,38 +45,38 @@ public class VendorAI : BaseAI
 
     public override bool DoActionInteract()
     {
-        var customer = Mobile.FocusMob;
+        var customer = m_Mobile.FocusMob;
 
-        if (Mobile.Combatant != null)
+        if (m_Mobile.Combatant != null)
         {
-            this.DebugSayFormatted($"{Mobile.Combatant.Name} is attacking me");
+            DebugSay($"{m_Mobile.Combatant.Name} is attacking me");
 
-            Mobile.Say(GetRandomGuardMessage());
+            m_Mobile.Say(GetRandomGuardMessage());
 
             Action = ActionType.Flee;
 
             return true;
         }
 
-        if (customer?.Deleted != false || customer.Map != Mobile.Map)
+        if (customer?.Deleted != false || customer.Map != m_Mobile.Map)
         {
             DebugSay("My customer have disapeared");
 
-            Mobile.FocusMob = null;
+            m_Mobile.FocusMob = null;
 
             Action = ActionType.Wander;
         }
-        else if (customer.InRange(Mobile, Mobile.RangeFight))
+        else if (customer.InRange(m_Mobile, m_Mobile.RangeFight))
         {
-            this.DebugSayFormatted($"I am with {customer.Name}");
+            DebugSay($"I am with {customer.Name}");
 
-            Mobile.Direction = Mobile.GetDirectionTo(customer);
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(customer);
         }
         else
         {
-            this.DebugSayFormatted($"{customer.Name} is gone");
+            DebugSay($"{customer.Name} is gone");
 
-            Mobile.FocusMob = null;
+            m_Mobile.FocusMob = null;
             Action = ActionType.Wander;
         }
 
@@ -85,13 +85,13 @@ public class VendorAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        Mobile.FocusMob = Mobile.Combatant;
+        m_Mobile.FocusMob = m_Mobile.Combatant;
         return base.DoActionGuard();
     }
 
     public override bool HandlesOnSpeech(Mobile from)
     {
-        if (from.InRange(Mobile, 4))
+        if (from.InRange(m_Mobile, 4))
         {
             return true;
         }
@@ -106,7 +106,7 @@ public class VendorAI : BaseAI
 
         var from = e.Mobile;
 
-        if (Mobile is BaseVendor vendor && from.InRange(Mobile, Core.AOS ? 1 : 4) && !e.Handled)
+        if (m_Mobile is BaseVendor vendor && from.InRange(m_Mobile, Core.AOS ? 1 : 4) && !e.Handled)
         {
             if (e.HasKeyword(0x14D)) // *vendor sell*
             {

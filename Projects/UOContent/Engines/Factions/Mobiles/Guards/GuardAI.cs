@@ -234,26 +234,26 @@ namespace Server.Factions
 
         public Mobile FindDispelTarget(bool activeOnly)
         {
-            if (Mobile.Deleted || Mobile.Int < 95 || CanDispel(Mobile) || Mobile.AutoDispel)
+            if (m_Mobile.Deleted || m_Mobile.Int < 95 || CanDispel(m_Mobile) || m_Mobile.AutoDispel)
             {
                 return null;
             }
 
             if (activeOnly)
             {
-                var aggressed = Mobile.Aggressed;
-                var aggressors = Mobile.Aggressors;
+                var aggressed = m_Mobile.Aggressed;
+                var aggressors = m_Mobile.Aggressors;
 
                 Mobile active = null;
                 var activePrio = 0.0;
 
-                var comb = Mobile.Combatant;
+                var comb = m_Mobile.Combatant;
 
-                if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && Mobile.InRange(comb, 12) &&
+                if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && m_Mobile.InRange(comb, 12) &&
                     CanDispel(comb))
                 {
                     active = comb;
-                    activePrio = Mobile.GetDistanceToSqrt(comb);
+                    activePrio = m_Mobile.GetDistanceToSqrt(comb);
 
                     if (activePrio <= 2)
                     {
@@ -266,9 +266,9 @@ namespace Server.Factions
                     var info = aggressed[i];
                     var m = info.Defender;
 
-                    if (m != comb && m.Combatant == Mobile && Mobile.InRange(m, 12) && CanDispel(m))
+                    if (m != comb && m.Combatant == m_Mobile && m_Mobile.InRange(m, 12) && CanDispel(m))
                     {
-                        var prio = Mobile.GetDistanceToSqrt(m);
+                        var prio = m_Mobile.GetDistanceToSqrt(m);
 
                         if (active == null || prio < activePrio)
                         {
@@ -288,9 +288,9 @@ namespace Server.Factions
                     var info = aggressors[i];
                     var m = info.Attacker;
 
-                    if (m != comb && m.Combatant == Mobile && Mobile.InRange(m, 12) && CanDispel(m))
+                    if (m != comb && m.Combatant == m_Mobile && m_Mobile.InRange(m, 12) && CanDispel(m))
                     {
-                        var prio = Mobile.GetDistanceToSqrt(m);
+                        var prio = m_Mobile.GetDistanceToSqrt(m);
 
                         if (active == null || prio < activePrio)
                         {
@@ -308,26 +308,26 @@ namespace Server.Factions
                 return active;
             }
 
-            var map = Mobile.Map;
+            var map = m_Mobile.Map;
 
             if (map != null)
             {
                 Mobile active = null, inactive = null;
                 double actPrio = 0.0, inactPrio = 0.0;
 
-                var comb = Mobile.Combatant;
+                var comb = m_Mobile.Combatant;
 
                 if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
                 {
                     active = inactive = comb;
-                    actPrio = inactPrio = Mobile.GetDistanceToSqrt(comb);
+                    actPrio = inactPrio = m_Mobile.GetDistanceToSqrt(comb);
                 }
 
-                foreach (var m in Mobile.GetMobilesInRange(12))
+                foreach (var m in m_Mobile.GetMobilesInRange(12))
                 {
-                    if (m != Mobile && CanDispel(m))
+                    if (m != m_Mobile && CanDispel(m))
                     {
-                        var prio = Mobile.GetDistanceToSqrt(m);
+                        var prio = m_Mobile.GetDistanceToSqrt(m);
 
                         if (inactive == null || prio < inactPrio)
                         {
@@ -335,7 +335,7 @@ namespace Server.Factions
                             inactPrio = prio;
                         }
 
-                        if ((Mobile.Combatant == m || m.Combatant == Mobile) && (active == null || prio < actPrio))
+                        if ((m_Mobile.Combatant == m || m.Combatant == m_Mobile) && (active == null || prio < actPrio))
                         {
                             active = m;
                             actPrio = prio;
@@ -350,7 +350,7 @@ namespace Server.Factions
         }
 
         public bool CanDispel(Mobile m) =>
-            m is BaseCreature creature && creature.Summoned && Mobile.CanBeHarmful(creature, false) &&
+            m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful(creature, false) &&
             !creature.IsAnimatedDead;
 
         public void RunTo(Mobile m)
@@ -364,14 +364,14 @@ namespace Server.Factions
             }
             else
             {*/
-            if (!Mobile.InRange(m, Mobile.RangeFight))
+            if (!m_Mobile.InRange(m, m_Mobile.RangeFight))
             {
                 if (!MoveTo(m, true, 1))
                 {
                     OnFailedMove();
                 }
             }
-            else if (Mobile.InRange(m, Mobile.RangeFight - 1))
+            else if (m_Mobile.InRange(m, m_Mobile.RangeFight - 1))
             {
                 RunFrom(m);
             }
@@ -381,7 +381,7 @@ namespace Server.Factions
 
         public void RunFrom(Mobile m)
         {
-            Run((Mobile.GetDirectionTo(m) - 4) & Direction.Mask);
+            Run((m_Mobile.GetDirectionTo(m) - 4) & Direction.Mask);
         }
 
         public void OnFailedMove()
@@ -393,33 +393,33 @@ namespace Server.Factions
 
               new TeleportSpell( m_Mobile, null ).Cast();
 
-              m_Mobile.DebugSay( "I am stuck, I'm going to try teleporting away" );
+              DebugSay( "I am stuck, I'm going to try teleporting away" );
             }
             else*/
-            if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
+            if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
-                this.DebugSayFormatted($"My move is blocked, so I am going to attack {Mobile.FocusMob.Name}");
+                DebugSay($"My move is blocked, so I am going to attack {m_Mobile.FocusMob.Name}");
 
-                Mobile.Combatant = Mobile.FocusMob;
+                m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;
             }
-            else
+            else if (m_Mobile.Debug)
             {
-                DebugSay("I am stuck");
+                m_Mobile.DebugSay("I am stuck");
             }
         }
 
         public void Run(Direction d)
         {
-            if (Mobile.Spell?.IsCasting == true || Mobile.Paralyzed || Mobile.Frozen ||
-                Mobile.DisallowAllMoves)
+            if (m_Mobile.Spell?.IsCasting == true || m_Mobile.Paralyzed || m_Mobile.Frozen ||
+                m_Mobile.DisallowAllMoves)
             {
                 return;
             }
 
-            Mobile.Direction = d | Direction.Running;
+            m_Mobile.Direction = d | Direction.Running;
 
-            if (!DoMove(Mobile.Direction, true))
+            if (!DoMove(m_Mobile.Direction, true))
             {
                 OnFailedMove();
             }
@@ -427,7 +427,7 @@ namespace Server.Factions
 
         public override bool Think()
         {
-            if (Mobile.Deleted)
+            if (m_Mobile.Deleted)
             {
                 return false;
             }
@@ -435,32 +435,32 @@ namespace Server.Factions
             var combatant = m_Guard.Combatant;
 
             if (combatant?.Deleted != false || !combatant.Alive || combatant.IsDeadBondedPet ||
-                !Mobile.CanSee(combatant) || !Mobile.CanBeHarmful(combatant, false) || combatant.Map != Mobile.Map)
+                !m_Mobile.CanSee(combatant) || !m_Mobile.CanBeHarmful(combatant, false) || combatant.Map != m_Mobile.Map)
             {
                 // Our combatant is deleted, dead, hidden, or we cannot hurt them
                 // Try to find another combatant
 
-                if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
+                if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
                 {
-                    Mobile.Combatant = combatant = Mobile.FocusMob;
-                    Mobile.FocusMob = null;
+                    m_Mobile.Combatant = combatant = m_Mobile.FocusMob;
+                    m_Mobile.FocusMob = null;
                 }
                 else
                 {
-                    Mobile.Combatant = combatant = null;
+                    m_Mobile.Combatant = combatant = null;
                 }
             }
 
-            if (combatant != null && (!Mobile.InLOS(combatant) || !Mobile.InRange(combatant, 12)))
+            if (combatant != null && (!m_Mobile.InLOS(combatant) || !m_Mobile.InRange(combatant, 12)))
             {
-                if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
+                if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
                 {
-                    Mobile.Combatant = combatant = Mobile.FocusMob;
-                    Mobile.FocusMob = null;
+                    m_Mobile.Combatant = combatant = m_Mobile.FocusMob;
+                    m_Mobile.FocusMob = null;
                 }
-                else if (!Mobile.InRange(combatant, 36))
+                else if (!m_Mobile.InRange(combatant, 36))
                 {
-                    Mobile.Combatant = combatant = null;
+                    m_Mobile.Combatant = combatant = null;
                 }
             }
 
@@ -541,7 +541,7 @@ namespace Server.Factions
                         Action = ActionType.Combat;
                     }
 
-                    Mobile.SetCurrentSpeedToActive();
+                    m_Mobile.SetCurrentSpeedToActive();
                     m_Guard.Warmode = true;
 
                     RunTo(toFollow);
@@ -553,7 +553,7 @@ namespace Server.Factions
                         Action = ActionType.Wander;
                     }
 
-                    Mobile.SetCurrentSpeedToPassive();
+                    m_Mobile.SetCurrentSpeedToPassive();
                     m_Guard.Warmode = false;
 
                     WalkRandomInHome(2, 2, 1);
@@ -579,9 +579,9 @@ namespace Server.Factions
                 }
             }
 
-            var spell = Mobile.Spell as Spell;
+            var spell = m_Mobile.Spell as Spell;
 
-            if (spell == null && Core.TickCount - Mobile.NextSpellTime >= 0)
+            if (spell == null && Core.TickCount - m_Mobile.NextSpellTime >= 0)
             {
                 var toRelease = DateTime.MinValue;
 
