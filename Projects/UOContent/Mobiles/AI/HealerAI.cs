@@ -12,10 +12,10 @@ public class HealerAI : BaseAI
     private static readonly NeedDelegate m_Cure = NeedCure;
     private static readonly NeedDelegate m_GHeal = NeedGHeal;
     private static readonly NeedDelegate m_LHeal = NeedLHeal;
-    private static readonly NeedDelegate[] m_ACure = { m_Cure };
-    private static readonly NeedDelegate[] m_AGHeal = { m_GHeal };
-    private static readonly NeedDelegate[] m_ALHeal = { m_LHeal };
-    private static readonly NeedDelegate[] m_All = { m_Cure, m_GHeal, m_LHeal };
+    private static readonly NeedDelegate[] m_ACure = [m_Cure];
+    private static readonly NeedDelegate[] m_AGHeal = [m_GHeal];
+    private static readonly NeedDelegate[] m_ALHeal = [m_LHeal];
+    private static readonly NeedDelegate[] m_All = [m_Cure, m_GHeal, m_LHeal];
 
     public HealerAI(BaseCreature m) : base(m)
     {

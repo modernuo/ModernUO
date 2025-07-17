@@ -14,117 +14,114 @@
  ************************************************************************/
 
 using System;
-using Server;
 using Server.Engines.Spawners;
 
 namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
-     public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
-     {
-          if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0)
-          {
-               return;
-          }
+    public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
+    {
+        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0)
+        {
+            return;
+        }
 
-          int maxSteps = Math.Min(steps, 3);
+        var maxSteps = Math.Min(steps, 3);
 
-          for (var i = 0; i < maxSteps; i++)
-          {
-               if (Utility.Random(1 + chanceToNotMove) == 0)
-               {
-                    DoMove(GetRandomDirection(chanceToDir));
-               }
-          }
-     }
+        for (var i = 0; i < maxSteps; i++)
+        {
+            if (Utility.Random(1 + chanceToNotMove) == 0)
+            {
+                DoMove(GetRandomDirection(chanceToDir));
+            }
+        }
+    }
 
-     public virtual void WalkRandomInHome(int chanceToNotMove, int chanceToDir, int steps)
-     {
-          if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves)
-          {
-               return;
-          }
+    public virtual void WalkRandomInHome(int chanceToNotMove, int chanceToDir, int steps)
+    {
+        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves)
+        {
+            return;
+        }
 
-          if (m_Mobile.Home == Point3D.Zero)
-          {
-               WalkRandomNoHome(chanceToNotMove, chanceToDir, steps);
-          }
-          else
-          {
-               WalkRandomWithHome(chanceToNotMove, chanceToDir, steps);
-          }
-     }
+        if (m_Mobile.Home == Point3D.Zero)
+        {
+            WalkRandomNoHome(chanceToNotMove, chanceToDir, steps);
+        }
+        else
+        {
+            WalkRandomWithHome(chanceToNotMove, chanceToDir, steps);
+        }
+    }
 
-     private void WalkRandomNoHome(int chanceToNotMove, int chanceToDir, int steps)
-     {
-          if (m_Mobile.Spawner is RegionSpawner rs)
-          {
-               var region = rs.SpawnRegion;
+    private void WalkRandomNoHome(int chanceToNotMove, int chanceToDir, int steps)
+    {
+        if (m_Mobile.Spawner is RegionSpawner rs)
+        {
+            var region = rs.SpawnRegion;
 
-               if (m_Mobile.Region.AcceptsSpawnsFrom(region))
-               {
-                    m_Mobile.WalkRegion = region;
+            if (m_Mobile.Region.AcceptsSpawnsFrom(region))
+            {
+                m_Mobile.WalkRegion = region;
 
-                    WalkRandom(chanceToNotMove, chanceToDir, steps);
+                WalkRandom(chanceToNotMove, chanceToDir, steps);
 
-                    m_Mobile.WalkRegion = null;
-               }
-               else if (region.GoLocation != Point3D.Zero && Utility.RandomBool())
-               {
-                    DoMove(m_Mobile.GetDirectionTo(region.GoLocation));
-               }
-               else
-               {
-                    WalkRandom(chanceToNotMove, chanceToDir, 1);
-               }
-          }
-          else
-          {
-               WalkRandom(chanceToNotMove, chanceToDir, steps);
-          }
-     }
+                m_Mobile.WalkRegion = null;
+            }
+            else if (region.GoLocation != Point3D.Zero && Utility.RandomBool())
+            {
+                DoMove(m_Mobile.GetDirectionTo(region.GoLocation));
+            }
+            else
+            {
+                WalkRandom(chanceToNotMove, chanceToDir, 1);
+            }
+        }
+        else
+        {
+            WalkRandom(chanceToNotMove, chanceToDir, steps);
+        }
+    }
 
-     private void WalkRandomWithHome(int chanceToNotMove, int chanceToDir, int steps)
-     {
-          if (m_Mobile.RangeHome == 0)
-          {
-               if (m_Mobile.Location != m_Mobile.Home)DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
-               {
-                    return;
-               }
-          }
+    private void WalkRandomWithHome(int chanceToNotMove, int chanceToDir, int steps)
+    {
+        if (m_Mobile.RangeHome == 0)
+        {
+            if (m_Mobile.Location != m_Mobile.Home)DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+            {
+                return;
+            }
+        }
 
-          for (var i = 0; i < steps; i++)
-          {
-               var currDist = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.Home);
+        for (var i = 0; i < steps; i++)
+        {
+            var currDist = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.Home);
 
-               if (currDist > m_Mobile.RangeHome)
-               {
-                    DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
-               }
-               else if (currDist < m_Mobile.RangeHome * 2 / 3 || Utility.Random(10) <= 5)
-               {
-                    WalkRandom(chanceToNotMove, chanceToDir, 1);
-               }
-               else
-               {
-                    DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
-               }
-          }
-     }
+            if (currDist > m_Mobile.RangeHome)
+            {
+                DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+            }
+            else if (currDist < m_Mobile.RangeHome * 2 / 3 || Utility.Random(10) <= 5)
+            {
+                WalkRandom(chanceToNotMove, chanceToDir, 1);
+            }
+            else
+            {
+                DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+            }
+        }
+    }
 
-     private Direction GetRandomDirection(int chanceToDir)
-     {
-          var randomMove = Utility.Random(8 * (chanceToDir + 1));
-          
-          if (randomMove < 8)
-          {
-               return (Direction)randomMove;
-          }
-          else
-          {
-               return m_Mobile.Direction;
-          }
-     }
+    private Direction GetRandomDirection(int chanceToDir)
+    {
+        var randomMove = Utility.Random(8 * (chanceToDir + 1));
+
+        if (randomMove < 8)
+        {
+            return (Direction)randomMove;
+        }
+
+        return m_Mobile.Direction;
+    }
 }

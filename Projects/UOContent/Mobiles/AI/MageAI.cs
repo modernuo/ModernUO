@@ -21,7 +21,7 @@ public class MageAI : BaseAI
     private const double InvisChance = 0.50; // 50% chance to invis at gm magery
 
     private static readonly int[] m_Offsets =
-    {
+    [
         -1, -1,
         -1, 0,
         -1, 1,
@@ -47,7 +47,7 @@ public class MageAI : BaseAI
         2, 0,
         2, 1,
         2, 2
-    };
+    ];
 
     protected int m_Combo = -1;
 

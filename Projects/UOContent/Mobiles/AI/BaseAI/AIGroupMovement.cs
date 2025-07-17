@@ -15,217 +15,208 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Server;
-using Server.Items;
-using Server.Mobiles;
 
-namespace Server.Mobiles
+namespace Server.Mobiles;
+
+public abstract partial class BaseAI
 {
-     public abstract partial class BaseAI
-     {
-          private static readonly Dictionary<BaseCreature, Point3D> _reservedPositions = new();
-          private static long _lastGroupUpdateTime = 0;
+    private static readonly Dictionary<BaseCreature, Point3D> _reservedPositions = new();
+    private static long _lastGroupUpdateTime = 0;
 
-          private static void CleanupReservedPositions()
-          {
-               var toRemove = new List<BaseCreature>();
+    private static void CleanupReservedPositions()
+    {
+        var toRemove = new List<BaseCreature>();
 
-               foreach (var kvp in _reservedPositions)
-               {
-                    if (kvp.Key == null || kvp.Key.Deleted || kvp.Key.GetDistanceToSqrt(kvp.Value) < 1)
+        foreach (var kvp in _reservedPositions)
+        {
+            if (kvp.Key == null || kvp.Key.Deleted || kvp.Key.GetDistanceToSqrt(kvp.Value) < 1)
+            {
+                toRemove.Add(kvp.Key);
+            }
+        }
+        foreach (var creature in toRemove)
+        {
+            _reservedPositions.Remove(creature);
+        }
+    }
+
+    private bool UseGroupMovement(Mobile target) =>
+        m_Mobile.Combatant == target
+        && !m_Mobile.Controlled
+        && GetNearbyAllies(target).Count > 0;
+
+    public static bool MoveToWithGroup(BaseAI ai, Mobile target, bool run, int range)
+    {
+        if (Core.TickCount - _lastGroupUpdateTime > 1000)
+        {
+            CleanupReservedPositions();
+            _lastGroupUpdateTime = Core.TickCount;
+        }
+
+        var m_Mobile = ai.m_Mobile;
+        var allies = ai.GetNearbyAllies(target);
+        var optimalPosition = ai.CalculateOptimalPosition(target, allies, range);
+
+        if (optimalPosition != Point3D.Zero)
+        {
+            _reservedPositions[m_Mobile] = optimalPosition;
+
+            var direction = m_Mobile.GetDirectionTo(optimalPosition);
+
+            if (Utility.Random(100) < 30)
+            {
+                direction = GetAdjustedDirection(direction);
+            }
+
+            return ai.DoMove(direction, true);
+        }
+
+        return ai.MoveToWithCollisionAvoidance(target, run, range);
+    }
+
+    private List<BaseCreature> GetNearbyAllies(Mobile target)
+    {
+        var mobiles = new List<Mobile>();
+
+        foreach (var m in m_Mobile.GetMobilesInRange(8))
+        {
+            mobiles.Add(m);
+        }
+
+        if (mobiles.Count <= 1)
+        {
+            return [];
+        }
+
+        var allies = new List<BaseCreature>();
+
+        foreach (var mobile in mobiles)
+        {
+            if (mobile is BaseCreature bc && bc != m_Mobile
+                                          && bc.Combatant == target && !bc.Controlled && bc.Team == m_Mobile.Team)
+            {
+                allies.Add(bc);
+            }
+        }
+
+        return allies;
+    }
+
+    private Point3D CalculateOptimalPosition(Mobile target, List<BaseCreature> allies, int range)
+    {
+        var targetLoc = target.Location;
+        var positions = new List<Point3D>();
+
+        for (var x = -range; x <= range; x++)
+        {
+            for (var y = -range; y <= range; y++)
+            {
+                if (Math.Abs(x) + Math.Abs(y) != range)
+                {
+                    continue;
+                }
+
+                var testLoc = new Point3D(targetLoc.X + x, targetLoc.Y + y, targetLoc.Z);
+
+                if (m_Mobile.GetDistanceToSqrt(testLoc) >= range && m_Mobile.GetDistanceToSqrt(testLoc) <= range + 3)
+                {
+                    positions.Add(testLoc);
+                }
+            }
+        }
+
+        var bestPosition = Point3D.Zero;
+        var bestScore = double.MinValue;
+
+        foreach (var pos in positions)
+        {
+            if (CanMoveTo(pos))
+            {
+                var score = ScorePosition(pos, target, allies);
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestPosition = pos;
+
+                    if (score > 20)
                     {
-                         toRemove.Add(kvp.Key);
+                        break;
                     }
-               }
-               foreach (var creature in toRemove)
-               {
-                    _reservedPositions.Remove(creature);
-               }
-          }
+                }
+            }
+        }
 
-          private bool UseGroupMovement(Mobile target)
-          {
-               return m_Mobile.Combatant == target
-                    && !m_Mobile.Controlled
-                    && GetNearbyAllies(target).Count > 0;
-          }
+        return bestPosition;
+    }
 
-          public static bool MoveToWithGroup(BaseAI ai, Mobile target, bool run, int range)
-          {
-               if (Core.TickCount - _lastGroupUpdateTime > 1000)
-               {
-                    CleanupReservedPositions();
-                    _lastGroupUpdateTime = Core.TickCount;
-               }
+    private double ScorePosition(Point3D position, Mobile target, List<BaseCreature> allies)
+    {
+        var score = 0.0;
 
-               var m_Mobile = ai.m_Mobile;
-               var allies = ai.GetNearbyAllies(target);
-               var optimalPosition = ai.CalculateOptimalPosition(target, allies, range);
+        var currentDistance = m_Mobile.GetDistanceToSqrt(position);
 
-               if (optimalPosition != Point3D.Zero)
-               {
-                    _reservedPositions[m_Mobile] = optimalPosition;
+        score -= currentDistance * 2;
 
-                    var direction = m_Mobile.GetDirectionTo(optimalPosition);
+        foreach (var ally in allies)
+        {
+            var allyDistance = ally.GetDistanceToSqrt(position);
 
-                    if (Utility.Random(100) < 30)
-                    {
-                         direction = GetAdjustedDirection(direction);
-                    }
+            if (allyDistance < 2)
+            {
+                score -= 50;
+            }
+            else if (allyDistance < 3)
+            {
+                score -= 20;
+            }
+        }
 
-                    return ai.DoMove(direction, true);
-               }
-               else
-               {
-                    return ai.MoveToWithCollisionAvoidance(target, run, range);
-               }
-          }
+        foreach (var kvp in _reservedPositions)
+        {
+            if (kvp.Key != m_Mobile && GetDistanceToSqrt(kvp.Value, position) < 2)
+            {
+                score -= 30;
+            }
+        }
 
-          private List<BaseCreature> GetNearbyAllies(Mobile target)
-          {
-               var mobiles = new List<Mobile>();
-               
-               foreach (Mobile m in m_Mobile.GetMobilesInRange(8))
-               {
-                    mobiles.Add(m);
-               }
+        if (m_Mobile.Map != null && m_Mobile.Map.LineOfSight(position, target.Location))
+        {
+            score += 10;
+        }
 
-               if (mobiles.Count <= 1)
-               {
-                    return new List<BaseCreature>();
-               }
+        score += Utility.RandomDouble() * 5;
 
-               var allies = new List<BaseCreature>();
+        return score;
+    }
 
-               foreach (var mobile in mobiles)
-               {
-                    if (mobile is BaseCreature bc && bc != m_Mobile
-                         && bc.Combatant == target && !bc.Controlled && bc.Team == m_Mobile.Team)
-                    {
-                         allies.Add(bc);
-                    }
-               }
+    private static double GetDistanceToSqrt(Point3D from, Point3D to)
+    {
+        var xDelta = from.X - to.X;
+        var yDelta = from.Y - to.Y;
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
 
-               return allies;
-          }
+    private bool CanMoveTo(Point3D location)
+    {
+        var map = m_Mobile.Map;
+        return map != null && map.CanFit(location.X, location.Y, location.Z, 16, false, false);
+    }
 
-          private Point3D CalculateOptimalPosition(Mobile target, List<BaseCreature> allies, int range)
-          {
-               var targetLoc = target.Location;
-               var positions = new List<Point3D>();
+    private static Direction GetAdjustedDirection(Direction original)
+    {
+        var adjustment = Utility.Random(3) - 1;
+        var newDir = (int)original + adjustment;
 
-               for (var x = -range; x <= range; x++)
-               {
-                    for (var y = -range; y <= range; y++)
-                    {
-                         if (Math.Abs(x) + Math.Abs(y) != range)
-                         {
-                              continue;
-                         }
+        if (newDir < 0)
+        {
+            newDir += 8;
+        }
+        else if (newDir >= 8)
+        {
+            newDir -= 8;
+        }
 
-                         var testLoc = new Point3D(targetLoc.X + x, targetLoc.Y + y, targetLoc.Z);
-
-                         if (m_Mobile.GetDistanceToSqrt(testLoc) >= range && m_Mobile.GetDistanceToSqrt(testLoc) <= range + 3)
-                         {
-                              positions.Add(testLoc);
-                         }
-                    }
-               }
-
-               Point3D bestPosition = Point3D.Zero;
-               double bestScore = double.MinValue;
-
-               foreach (var pos in positions)
-               {
-                    if (CanMoveTo(pos))
-                    {
-                         var score = ScorePosition(pos, target, allies);
-
-                         if (score > bestScore)
-                         {
-                              bestScore = score;
-                              bestPosition = pos;
-
-                              if (score > 20)
-                              {
-                                   break;
-                              }
-                         }
-                    }
-               }
-
-               return bestPosition;
-          }
-
-          private double ScorePosition(Point3D position, Mobile target, List<BaseCreature> allies)
-          {
-               double score = 0.0;
-
-               double currentDistance = m_Mobile.GetDistanceToSqrt(position);
-
-               score -= currentDistance * 2;
-
-               foreach (var ally in allies)
-               {
-                    double allyDistance = ally.GetDistanceToSqrt(position);
-
-                    if (allyDistance < 2)
-                    {
-                         score -= 50;
-                    }
-                    else if (allyDistance < 3)
-                    {
-                         score -= 20;
-                    }
-               }
-
-               foreach (var kvp in _reservedPositions)
-               {
-                    if (kvp.Key != m_Mobile && GetDistanceToSqrt(kvp.Value, position) < 2)
-                    {
-                         score -= 30;
-                    }
-               }
-
-               if (m_Mobile.Map != null && m_Mobile.Map.LineOfSight(position, target.Location))
-               {
-                    score += 10;
-               }
-
-               score += Utility.RandomDouble() * 5;
-
-               return score;
-          }
-
-          private static double GetDistanceToSqrt(Point3D from, Point3D to)
-          {
-               int xDelta = from.X - to.X;
-               int yDelta = from.Y - to.Y;
-               return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-          }
-
-          private bool CanMoveTo(Point3D location)
-          {
-               var map = m_Mobile.Map;
-               return map != null && map.CanFit(location.X, location.Y, location.Z, 16, false, false, true);
-          }
-
-          private static Direction GetAdjustedDirection(Direction original)
-          {
-               int adjustment = Utility.Random(3) - 1;
-               int newDir = (int)original + adjustment;
-
-               if (newDir < 0)
-               {
-                    newDir += 8;
-               }
-               else if (newDir >= 8)
-               {
-                    newDir -= 8;
-               }
-
-               return (Direction)newDir;
-          }
-     }
+        return (Direction)newDir;
+    }
 }

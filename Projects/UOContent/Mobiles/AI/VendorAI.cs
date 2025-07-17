@@ -24,20 +24,17 @@ public class VendorAI : BaseAI
             m_Mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
         }
+        else if (m_Mobile.FocusMob != null)
+        {
+            DebugSay($"{m_Mobile.FocusMob.Name} has talked to me");
+
+            Action = ActionType.Interact;
+        }
         else
         {
-            if (m_Mobile.FocusMob != null)
-            {
-                DebugSay($"{m_Mobile.FocusMob.Name} has talked to me");
+            m_Mobile.Warmode = false;
 
-                Action = ActionType.Interact;
-            }
-            else
-            {
-                m_Mobile.Warmode = false;
-
-                base.DoActionWander();
-            }
+            base.DoActionWander();
         }
 
         return true;

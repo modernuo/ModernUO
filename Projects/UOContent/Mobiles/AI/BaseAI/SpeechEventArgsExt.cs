@@ -13,23 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
-using System.Linq;
+using System;
 
-namespace Server
+namespace Server;
+
+public static class SpeechEventArgsExt
 {
-     public static class SpeechEventArgsExt
-     {
-          public static int GetFirstKeyword(this SpeechEventArgs e, params int[] keywords)
-          {
-               foreach (var keyword in keywords)
-               {
-                    if (e.HasKeyword(keyword))
-                    {
-                         return keyword;
-                    }
-               }
+    public static int GetFirstKeyword(this SpeechEventArgs e, params ReadOnlySpan<int> keywords)
+    {
+        for (var i = 0; i < keywords.Length; i++)
+        {
+            var keyword = keywords[i];
+            if (e.HasKeyword(keyword))
+            {
+                return keyword;
+            }
+        }
 
-               return 0;
-          }
-     }
+        return 0;
+    }
 }
