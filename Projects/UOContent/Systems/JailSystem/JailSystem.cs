@@ -42,6 +42,7 @@ public class JailSystem : GenericPersistence
 
     // Jail map, change this for custom maps
     public static readonly Map JailMap = Map.Felucca;
+    private static readonly JailRecord EmptyRecord = new();
 
     private static readonly HashSet<PlayerMobile> CurrentlyBeingJailed = [];
     private static readonly Dictionary<PlayerMobile, JailRecord> PlayerJailRecords = [];
@@ -101,6 +102,7 @@ public class JailSystem : GenericPersistence
         record.JailCount++;
         record.LastJailed = Core.Now;
         record.LastJailReason = reason;
+        record.JailedBy = from;
 
         var jailTime = CalculateJailTime(record.JailCount);
         record.JailEndTime = Core.Now + jailTime;
@@ -359,7 +361,7 @@ public class JailSystem : GenericPersistence
             return;
         }
 
-        e.Mobile.SendGump(new JailRecordGump(player, PlayerJailRecords.GetValueOrDefault(player) ?? new JailRecord()));
+        e.Mobile.SendGump(new JailRecordGump(player, PlayerJailRecords.GetValueOrDefault(player, EmptyRecord)));
     }
 
     private static readonly Dictionary<Mobile, DateTime> JailRecordCooldowns = new();
@@ -385,7 +387,7 @@ public class JailSystem : GenericPersistence
 
         JailRecordCooldowns[player] = Core.Now;
 
-        player.SendGump(new JailRecordGump(player, PlayerJailRecords.GetValueOrDefault(player) ?? new JailRecord()));
+        player.SendGump(new JailRecordGump(player, PlayerJailRecords.GetValueOrDefault(player, EmptyRecord)));
     }
 
     public override void Serialize(IGenericWriter writer)
