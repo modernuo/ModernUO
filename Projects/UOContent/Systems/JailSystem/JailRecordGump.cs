@@ -22,9 +22,9 @@ namespace Server.Systems.JailSystem;
 public class JailRecordGump : StaticGump<JailRecordGump>
 {
     private readonly PlayerMobile _player;
-    private readonly JailSystem.JailRecord _record;
+    private readonly JailRecord _record;
 
-    public JailRecordGump(PlayerMobile player, JailSystem.JailRecord record) : base(0, 0)
+    public JailRecordGump(PlayerMobile player, JailRecord record) : base(0, 0)
     {
         _player = player;
         _record = record;
@@ -76,11 +76,10 @@ public class JailRecordGump : StaticGump<JailRecordGump>
             builder.SetHtmlText("jailReason", $"Jail Reason: {_record.LastJailReason}", 0xFFFFFF, 4);
         }
 
-        var remaining = _record.JailEndTime - Core.Now;
-        if (_record.IsCurrentlyJailed && remaining > TimeSpan.Zero)
+        if (_record.IsCurrentlyJailed)
         {
             builder.SetHtmlText("jailStatus", "Status: Currently Jailed", 0xFF6666, 5);
-            builder.SetHtmlText("jailTime", $"Jail Time: {remaining.FormatTimeCompact()}", 0xFF6666, 5);
+            builder.SetHtmlText("jailTime", $"Jail Time: {(_record.JailEndTime - Core.Now).FormatTimeCompact()}", 0xFF6666, 5);
         }
         else
         {

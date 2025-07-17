@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BaseJail.cs                                                    *
+ * File: JailSystem.cs                                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -22,7 +22,7 @@ using Server.Gumps;
 
 namespace Server.Systems.JailSystem;
 
-public static class JailSystem
+public class JailSystem : GenericPersistence
 {
     // Jail locations (modify if using custom maps)
     // felucca void
@@ -43,63 +43,50 @@ public static class JailSystem
     // Jail map, change this for custom maps
     public static readonly Map JailMap = Map.Felucca;
 
-    private static readonly HashSet<Mobile> CurrentlyBeingJailed = [];
-    private static readonly Dictionary<Mobile, JailRecord> PlayerJailRecords = [];
-    private static readonly Dictionary<Mobile, Timer> JailTimers = [];
+    private static readonly HashSet<PlayerMobile> CurrentlyBeingJailed = [];
+    private static readonly Dictionary<PlayerMobile, JailRecord> PlayerJailRecords = [];
+    private static readonly Dictionary<PlayerMobile, Timer> JailTimers = [];
 
     // Jail time scales from 5 minutes to 2 hours based on the number of offenses
     private static readonly TimeSpan MinJailTime = TimeSpan.FromMinutes(5);
-    private static readonly TimeSpan MaxJailTime = TimeSpan.FromMinutes(120);
+    private static readonly TimeSpan MaxJailTime = TimeSpan.FromHours(12);
 
     // Release location, change this for custom maps
     private static readonly Point3D ReleaseLocation = new(1444, 1697, 10); // Britain Bank
-    public static Map ReleaseMap = Map.Felucca;
+    public static readonly Map ReleaseMap = Map.Felucca;
+
+    private static JailSystem Instance;
 
     // [jail <player> [reason] - Jail with time escalation per offense (GM only)
     // [unjail <player> - Manual release from jail regardless of time (GM only)
     // [jailinfo <player> - Check jail status and history (GM only)
     // [jailrecord - Checks their own jail record stats (player access)
-    public static void Initialize()
+
+    public static void Configure()
     {
+        Instance = new JailSystem();
         CommandSystem.Register("jail", AccessLevel.Counselor, Jail_OnCommand);
         CommandSystem.Register("unjail", AccessLevel.Counselor, Unjail_OnCommand);
         CommandSystem.Register("jailinfo", AccessLevel.Counselor, JailInfo_OnCommand);
         CommandSystem.Register("jailrecord", AccessLevel.Player, MyJailInfo_OnCommand);
     }
 
-    public class JailRecord
+    public JailSystem() : base("Jail", 3)
     {
-        public int JailCount { get; set; }
-        public DateTime LastJailed { get; set; }
-        public DateTime JailEndTime { get; set; }
-        public bool IsCurrentlyJailed { get; set; }
-        public string LastJailReason { get; set; }
-
-        public JailRecord()
-        {
-            JailCount = 0;
-            LastJailed = DateTime.MinValue;
-            JailEndTime = DateTime.MinValue;
-            IsCurrentlyJailed = false;
-            LastJailReason = "";
-        }
     }
 
     // Can be used by other systems to check player jail status
     public static bool IsPlayerJailed(PlayerMobile player) =>
         PlayerJailRecords.GetValueOrDefault(player)?.IsCurrentlyJailed == true;
 
-    private static Point3D GetRandomJailLocation() => JailLocations.RandomElement();
-
     private static TimeSpan CalculateJailTime(int jailCount)
     {
-        var totalMinutes = MinJailTime +
-                           (jailCount - 1) * (MaxJailTime - MinJailTime) / 9.0;
+        var totalMinutes = MinJailTime + (jailCount - 1) * (MaxJailTime - MinJailTime) / 9.0;
 
         return totalMinutes.Clamp(MinJailTime, MaxJailTime);
     }
 
-    private static void JailPlayer(Mobile from, PlayerMobile player, string reason = "")
+    public static void JailPlayer(Mobile from, PlayerMobile player, string reason = "")
     {
         if (!CurrentlyBeingJailed.Add(player))
         {
@@ -113,7 +100,6 @@ public static class JailSystem
 
         record.JailCount++;
         record.LastJailed = Core.Now;
-        record.IsCurrentlyJailed = true;
         record.LastJailReason = reason;
 
         var jailTime = CalculateJailTime(record.JailCount);
@@ -133,10 +119,10 @@ public static class JailSystem
             }
         }
 
-        Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => { DismountPlayer(player, reason, jailTime); });
+        Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => { DismountPlayer(player, jailTime); });
     }
 
-    private static void DismountPlayer(PlayerMobile player, string reason, TimeSpan jailTime)
+    private static void DismountPlayer(PlayerMobile player, TimeSpan jailTime)
     {
         if (player.Mount != null)
         {
@@ -147,12 +133,12 @@ public static class JailSystem
 
         CommandLogging.WriteLine(player, $"Player {player.Name} dismounted before jail teleport");
 
-        Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => { TeleportToJail(player, reason, jailTime); });
+        Timer.DelayCall(TimeSpan.FromSeconds(3.0), TeleportToJail, player, jailTime);
     }
 
-    private static void TeleportToJail(PlayerMobile player, string reason, TimeSpan jailTime)
+    private static void TeleportToJail(PlayerMobile player, TimeSpan jailTime)
     {
-        var jailLocation = GetRandomJailLocation();
+        var jailLocation = JailLocations.RandomElement();
 
         player.MoveToWorld(jailLocation, JailMap);
 
@@ -161,7 +147,7 @@ public static class JailSystem
 
         CommandLogging.WriteLine(player, $"Player {player.Name} teleported to jail at {jailLocation}");
 
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => { UnfreezePlayer(player, jailTime); });
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), UnfreezePlayer, player, jailTime);
     }
 
     private static void UnfreezePlayer(PlayerMobile player, TimeSpan jailTime)
@@ -172,7 +158,7 @@ public static class JailSystem
 
         CurrentlyBeingJailed.Remove(player);
 
-        var releaseTimer = Timer.DelayCall(jailTime, () => { ReleasePlayer(player); });
+        var releaseTimer = Timer.DelayCall(jailTime, ReleasePlayer, player);
         JailTimers[player] = releaseTimer;
     }
 
@@ -180,7 +166,7 @@ public static class JailSystem
     {
         if (PlayerJailRecords.TryGetValue(player, out var record))
         {
-            record.IsCurrentlyJailed = false;
+            record.JailEndTime = Core.Now;
         }
 
         JailTimers.Remove(player);
@@ -200,7 +186,7 @@ public static class JailSystem
             }
         }
 
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => { TeleportFromJail(player); });
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), TeleportFromJail, player);
     }
 
     private static void TeleportFromJail(PlayerMobile player)
@@ -209,7 +195,7 @@ public static class JailSystem
 
         CommandLogging.WriteLine(player, $"Player {player.Name} teleported from jail to {ReleaseLocation}");
 
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => { UnfreezeFromRelease(player); });
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), UnfreezeFromRelease, player);
     }
 
     private static void UnfreezeFromRelease(PlayerMobile player)
@@ -384,6 +370,38 @@ public static class JailSystem
         player.SendGump(new JailRecordGump(player, PlayerJailRecords.GetValueOrDefault(player) ?? new JailRecord()));
     }
 
-    // for other systems to use
-    public static void ManualJail(Mobile from, PlayerMobile player, string reason = "") => JailPlayer(from, player, reason);
+    public override void Serialize(IGenericWriter writer)
+    {
+        writer.WriteEncodedInt(0); // version
+        writer.WriteEncodedInt(PlayerJailRecords.Count);
+        foreach (var (m, record) in PlayerJailRecords)
+        {
+            writer.Write(m);
+            record.Serialize(writer);
+        }
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        var version = reader.ReadEncodedInt();
+
+        var count = reader.ReadEncodedInt();
+        for (var i = 0; i < count; i++)
+        {
+            var player = reader.ReadEntity<PlayerMobile>();
+            var record = new JailRecord();
+            record.Deserialize(reader);
+
+            if (player != null)
+            {
+                PlayerJailRecords[player] = record;
+                if (record.IsCurrentlyJailed)
+                {
+                    CurrentlyBeingJailed.Add(player);
+                    var jailTime = record.JailEndTime - Core.Now;
+                    JailTimers[player] = Timer.DelayCall(jailTime, ReleasePlayer, player);
+                }
+            }
+        }
+    }
 }
