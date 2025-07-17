@@ -93,7 +93,7 @@ namespace Server.Gumps
             AddPage(0);
 
             AddBackground(0, 0, 420, 480, 5054);
-            
+
             AddBlackAlpha(10, 10, 170, 100);
             AddBlackAlpha(190, 10, 220, 100);
             AddBlackAlpha(10, 120, 400, 300);
@@ -3812,12 +3812,12 @@ namespace Server.Gumps
                             case 15:
                                 {
                                     var reason = info.GetTextEntry(1)?.Trim();
-                                
+
                                     if (string.IsNullOrWhiteSpace(reason))
                                     {
                                         reason = "";
                                     }
-                            
+
                                     CommandLogging.WriteLine(
                                         from,
                                         $"{from.AccessLevel} {CommandLogging.Format(from)} jailing {CommandLogging.Format(m)} - Reason: {reason}"
@@ -3829,7 +3829,7 @@ namespace Server.Gumps
                             case 16:
                                 {
                                     CommandLogging.WriteLine(
-                                    from,
+                                        from,
                                         $"{from.AccessLevel} {CommandLogging.Format(from)} unjailing {CommandLogging.Format(m)}"
                                     );
                                     InvokeCommand($"Unjail {m.Name}");
