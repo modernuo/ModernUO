@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using Server.Buffers;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
 using Server.Engines.Virtues;
@@ -30,7 +31,6 @@ public abstract partial class BaseAI
     protected ActionType m_Action;
     public readonly BaseCreature m_Mobile;
     public long m_NextDetectHidden;
-    private long m_NextStopGuard;
     protected PathFollower m_Path;
     public Timer m_Timer;
     private long m_NextDebugMessage;
@@ -228,12 +228,24 @@ public abstract partial class BaseAI
 
     public void DebugSay(string message, int cooldownMs = 5000)
     {
-        if (m_Mobile.Debug && (Core.TickCount >= m_NextDebugMessage || !string.Equals(_lastDebugMessage, message, StringComparison.Ordinal)))
+        if (m_Mobile.Debug && (Core.TickCount >= m_NextDebugMessage || _lastDebugMessage.EqualsOrdinal(message)))
         {
             m_Mobile.DebugSay(message);
             m_NextDebugMessage = Core.TickCount + cooldownMs;
             _lastDebugMessage = message;
         }
+    }
+
+    public void DebugSay(ref RawInterpolatedStringHandler handler, int cooldownMs = 5000)
+    {
+        if (m_Mobile.Debug && (Core.TickCount >= m_NextDebugMessage || handler.Text.EqualsOrdinal(_lastDebugMessage)))
+        {
+            _lastDebugMessage = handler.Text.ToString();
+            m_Mobile.DebugSay(_lastDebugMessage);
+            m_NextDebugMessage = Core.TickCount + cooldownMs;
+        }
+
+        handler.Clear();
     }
 
     public virtual bool Think()
@@ -383,28 +395,24 @@ public abstract partial class BaseAI
     }
 
     private bool IsValidCombatant(Mobile combatant) =>
-        combatant != null
-        && !combatant.Deleted
-        && combatant.Map == m_Mobile.Map
-        && combatant.Alive
-        && (!(combatant is BaseCreature bc) || !bc.IsDeadPet)
-        && combatant.AccessLevel == AccessLevel.Player
-        && m_Mobile.CanSee(combatant) && m_Mobile.InLOS(combatant)
-        && m_Mobile.InRange(combatant, m_Mobile.RangePerception);
+        IsValidFocusMob(combatant) && m_Mobile.InLOS(combatant);
+
+    bool IsValidFocusMob(Mobile focusMob) =>
+        focusMob != null
+        && !focusMob.Deleted
+        && focusMob.Map == m_Mobile.Map
+        && focusMob.Alive
+        && (focusMob is not BaseCreature bc || !bc.IsDeadPet)
+        && focusMob.AccessLevel == AccessLevel.Player
+        && m_Mobile.CanSee(focusMob)
+        && m_Mobile.InRange(focusMob, m_Mobile.RangePerception);
 
     public virtual bool DoActionGuard()
     {
-        if (Core.TickCount - m_NextStopGuard < 0)
+        DebugSay("I am still on guard.");
+        if (Utility.Random(10) == 0)
         {
-            DebugSay("I am still on guard.");
-
             m_Mobile.Turn(Utility.Random(0, 2) - 1);
-        }
-        else
-        {
-            DebugSay("I stopped being on guard.");
-
-            Action = ActionType.Wander;
         }
 
         return true;
@@ -413,16 +421,6 @@ public abstract partial class BaseAI
     public virtual bool DoActionFlee()
     {
         var from = m_Mobile.FocusMob;
-
-        bool IsValidFocusMob(Mobile focusMob) =>
-            focusMob != null
-            && !focusMob.Deleted
-            && focusMob.Map == m_Mobile.Map
-            && focusMob.Alive
-            && (!(focusMob is BaseCreature bc) || !bc.IsDeadPet)
-            && focusMob.AccessLevel == AccessLevel.Player
-            && m_Mobile.CanSee(focusMob)
-            && m_Mobile.InRange(focusMob, m_Mobile.RangePerception);
 
         if (!IsValidFocusMob(from))
         {
@@ -566,7 +564,7 @@ public abstract partial class BaseAI
 
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
-        if (m_Mobile.Deleted || m_Mobile.Map == null || acqType == FightMode.None)
+        if (m_Mobile.Deleted || m_Mobile.Map == null)
         {
             return false;
         }
@@ -701,7 +699,7 @@ public abstract partial class BaseAI
                 val = theirVal;
             }
             else if (Core.AOS && theirVal > enemySummonVal
-                              && m_Mobile.InLOS(m) && bc?.Summoned == true && bc?.Controlled != true)
+                              && m_Mobile.InLOS(m) && bc?.Summoned == true && bc.Controlled != true)
             {
                 enemySummonMob = m;
                 enemySummonVal = theirVal;
@@ -757,21 +755,11 @@ public abstract partial class BaseAI
             return false;
         }
 
-        var bValid = IsHostile(m) || m_Mobile.GetFactionAllegiance(m) == BaseCreature.Allegiance.Enemy
-                                  || m_Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
+        var valid = IsHostile(m) || m_Mobile.GetFactionAllegiance(m) == BaseCreature.Allegiance.Enemy
+                                 || m_Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
 
-        if (!bValid)
-        {
-            bValid = acqType switch
-            {
-                FightMode.Evil => bc?.Controlled == true && bc?.ControlMaster != null
-                    ? bc.ControlMaster.Karma < 0
-                    : m.Karma < 0,
-                _ => false
-            };
-        }
-
-        return !bValid;
+        // Valid if FightMode is Evil and the target's karma is negative
+        return !valid && acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0;
     }
 
     private bool IsHostile(Mobile from) => m_Mobile.Combatant == from || from.Combatant == m_Mobile || IsAggressor(from) || IsAggressed(from);
@@ -826,7 +814,8 @@ public abstract partial class BaseAI
         }
     }
 
-    private bool IsValidTargetCombatTarget(Mobile trg) => trg != m_Mobile && trg.Player && trg.Alive && trg.Hidden && trg.AccessLevel == AccessLevel.Player && m_Mobile.InLOS(trg);
+    private bool IsValidTargetCombatTarget(Mobile trg) => trg != m_Mobile && trg.Player && trg.Alive && trg.Hidden &&
+                                                          trg.AccessLevel == AccessLevel.Player && m_Mobile.InLOS(trg);
 
     private void TryDetectHidden(Mobile trg, double srcSkill)
     {
@@ -891,11 +880,5 @@ public abstract partial class BaseAI
     public virtual void OnCurrentSpeedChanged()
     {
         m_Timer.Interval = TimeSpan.FromMilliseconds(m_Mobile.CurrentSpeed * 1000);
-    }
-
-    public virtual void Cleanup()
-    {
-        m_Timer?.Stop();
-        m_Path = null;
     }
 }
