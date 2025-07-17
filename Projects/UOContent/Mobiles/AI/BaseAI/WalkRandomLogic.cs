@@ -86,12 +86,10 @@ public abstract partial class BaseAI
 
     private void WalkRandomWithHome(int chanceToNotMove, int chanceToDir, int steps)
     {
-        if (m_Mobile.RangeHome == 0)
+        if (m_Mobile.RangeHome == 0 && m_Mobile.Location != m_Mobile.Home)
         {
-            if (m_Mobile.Location != m_Mobile.Home)DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
-            {
-                return;
-            }
+            DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+            return;
         }
 
         for (var i = 0; i < steps; i++)
