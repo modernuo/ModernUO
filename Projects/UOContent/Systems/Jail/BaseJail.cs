@@ -314,7 +314,7 @@ public static class JailSystem
             return;
         }
 
-        if (JailTimers.Remove(player, out Timer value))
+        if (JailTimers.Remove(player, out var value))
         {
             value.Stop();
         }
