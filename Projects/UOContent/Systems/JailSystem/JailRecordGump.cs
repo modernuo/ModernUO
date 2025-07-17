@@ -84,7 +84,7 @@ public class JailRecordGump : StaticGump<JailRecordGump>
         else
         {
             builder.SetHtmlText("jailStatus", "Status: Not Jailed", 0x00FF00, 5);
-            builder.SetHtmlText("jailTime", "", 0x00FF00, 5);
+            builder.SetStringSlot("jailTime", "");
         }
     }
 }
