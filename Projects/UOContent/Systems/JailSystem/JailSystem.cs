@@ -316,7 +316,7 @@ public class JailSystem : GenericPersistence
             return;
         }
 
-        if (IsPlayerJailed(player))
+        if (!IsPlayerJailed(player))
         {
             from.SendMessage(0x35, $"Player {player.Name} is not currently jailed.");
             return;
