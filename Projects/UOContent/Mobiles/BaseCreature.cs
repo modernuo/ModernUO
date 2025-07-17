@@ -2643,11 +2643,6 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (indirect)
-            {
-                return;
-            }
-
             var list = Aggressors;
 
             for (var i = 0; i < list.Count; ++i)
@@ -2668,13 +2663,10 @@ namespace Server.Mobiles
 
                 if (ai.Defender == target)
                 {
-                    if (m_ControlMaster?.Player == true && m_ControlMaster.CanBeHarmful(target, false))
+                    var master = GetMaster();
+                    if (master?.Player == true && master.CanBeHarmful(target, false))
                     {
-                        m_ControlMaster.DoHarmful(target, true);
-                    }
-                    else if (m_SummonMaster?.Player == true && m_SummonMaster.CanBeHarmful(target, false))
-                    {
-                        m_SummonMaster.DoHarmful(target, true);
+                        master.DoHarmful(target, true);
                     }
 
                     return;
