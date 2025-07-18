@@ -18,7 +18,7 @@ using Server.ContextMenus;
 
 namespace Server.Mobiles;
 
-public partial class BaseAI
+public abstract partial class BaseAI
 {
     public virtual void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
