@@ -1542,7 +1542,7 @@ public static partial class Utility
         return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
-    public static double GetDistanceToSqrt(Point2D from, Point2D to)
+    public static double GetDistanceToSqrt(this Point2D from, Point2D to)
     {
         var xDelta = from.m_X - to.m_X;
         var yDelta = from.m_Y - to.m_Y;
@@ -1550,7 +1550,7 @@ public static partial class Utility
         return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
-    public static double GetDistanceToSqrt(Point2D from, Point3D to)
+    public static double GetDistanceToSqrt(this Point2D from, Point3D to)
     {
         var xDelta = from.m_X - to.m_X;
         var yDelta = from.m_Y - to.m_Y;
@@ -1558,7 +1558,7 @@ public static partial class Utility
         return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
-    public static double GetDistanceToSqrt(Point3D from, Point2D to)
+    public static double GetDistanceToSqrt(this Point3D from, Point2D to)
     {
         var xDelta = from.m_X - to.m_X;
         var yDelta = from.m_Y - to.m_Y;
@@ -1566,7 +1566,7 @@ public static partial class Utility
         return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
-    public static double GetDistanceToSqrt(Point3D from, Point3D to)
+    public static double GetDistanceToSqrt(this Point3D from, Point3D to)
     {
         var xDelta = from.m_X - to.m_X;
         var yDelta = from.m_Y - to.m_Y;
