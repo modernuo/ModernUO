@@ -15,23 +15,24 @@
 
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 
 namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
     private static readonly Dictionary<BaseCreature, Point3D> _reservedPositions = new();
-    private static long _lastGroupUpdateTime = 0;
+    private static long _lastGroupUpdateTime;
 
     private static void CleanupReservedPositions()
     {
-        var toRemove = new List<BaseCreature>();
+        using var toRemove = PooledRefQueue<BaseCreature>.Create();
 
         foreach (var kvp in _reservedPositions)
         {
             if (kvp.Key == null || kvp.Key.Deleted || kvp.Key.GetDistanceToSqrt(kvp.Value) < 1)
             {
-                toRemove.Add(kvp.Key);
+                toRemove.Enqueue(kvp.Key);
             }
         }
         foreach (var creature in toRemove)
