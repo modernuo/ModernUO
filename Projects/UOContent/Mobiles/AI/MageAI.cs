@@ -82,7 +82,7 @@ public class MageAI : BaseAI
     {
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I am going to attack {_mobile.FocusMob.Name}");
+            this.DebugSayFormatted($"I am going to attack {_mobile.FocusMob.Name}");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -219,7 +219,7 @@ public class MageAI : BaseAI
         }
         else if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"My move is blocked, so I am going to attack {_mobile.FocusMob.Name}");
+            this.DebugSayFormatted($"My move is blocked, so I am going to attack {_mobile.FocusMob.Name}");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -519,7 +519,7 @@ public class MageAI : BaseAI
 
         if (spell != null)
         {
-            DebugSay($"Casting {spell.Name}");
+            this.DebugSayFormatted($"Casting {spell.Name}");
         }
         else
         {
@@ -634,7 +634,7 @@ public class MageAI : BaseAI
             {
                 _mobile.Combatant = c = _mobile.FocusMob!;
 
-                DebugSay($"Something happened to my combatant, so I am going to fight {c.Name}");
+                this.DebugSayFormatted($"Something happened to my combatant, so I am going to fight {c.Name}");
 
                 _mobile.FocusMob = null;
             }
@@ -655,7 +655,7 @@ public class MageAI : BaseAI
             {
                 _mobile.Combatant = c = _mobile.FocusMob!;
 
-                DebugSay($"I will switch to {c.Name}");
+                this.DebugSayFormatted($"I will switch to {c.Name}");
 
                 _mobile.FocusMob = null;
             }
@@ -700,7 +700,7 @@ public class MageAI : BaseAI
 
             if (Utility.Random(0, 100) > fleeChance)
             {
-                DebugSay($"I am going to flee from {c.Name}");
+                this.DebugSayFormatted($"I am going to flee from {c.Name}");
 
                 Action = ActionType.Flee;
                 return true;
@@ -725,7 +725,7 @@ public class MageAI : BaseAI
             }
             else if (toDispel != null) // Something dispellable is attacking us
             {
-                DebugSay($"I am going to dispel {toDispel}");
+                this.DebugSayFormatted($"I am going to dispel {toDispel}");
 
                 spell = DoDispel(toDispel); // May return null if dumb AI and doesn't have enough skill
             }
@@ -813,7 +813,7 @@ public class MageAI : BaseAI
 
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I am going to attack {_mobile.FocusMob.Name}");
+            this.DebugSayFormatted($"I am going to attack {_mobile.FocusMob.Name}");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -847,7 +847,7 @@ public class MageAI : BaseAI
         }
         else if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I am scared of {_mobile.FocusMob.Name}");
+            this.DebugSayFormatted($"I am scared of {_mobile.FocusMob.Name}");
 
             RunFrom(_mobile.FocusMob);
             _mobile.FocusMob = null;

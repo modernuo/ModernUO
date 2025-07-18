@@ -232,7 +232,7 @@ public abstract partial class BaseAI
         }
         else
         {
-            DebugSay($"Destroying item: {item.GetType().Name}");
+            this.DebugSayFormatted($"Destroying item: {item.GetType().Name}");
 
             if (item is Container cont)
             {

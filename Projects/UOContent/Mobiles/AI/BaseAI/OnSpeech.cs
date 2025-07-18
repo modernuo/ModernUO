@@ -442,7 +442,7 @@ public abstract partial class BaseAI
 
     private void HandleGMCommands(SpeechEventArgs e)
     {
-        DebugSay($"Command is from GM: {e.Mobile.Name}, Target: {_mobile.ControlTarget?.Name ?? "None or Unknown"}");
+        this.DebugSayFormatted($"Command is from GM: {e.Mobile.Name}, Target: {_mobile.ControlTarget?.Name ?? "None or Unknown"}");
 
         if (_mobile.FindMyName(e.Speech, true) && e.Speech.InsensitiveContains("obey"))
         {

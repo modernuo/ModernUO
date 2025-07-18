@@ -29,7 +29,7 @@ public class AnimalAI : BaseAI
         }
         else if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -59,13 +59,13 @@ public class AnimalAI : BaseAI
         {
             if (_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
             {
-                DebugSay($"I cannot find {combatant.Name}");
+                this.DebugSayFormatted($"I cannot find {combatant.Name}");
 
                 Action = ActionType.Wander;
                 return true;
             }
 
-            DebugSay($"I should be closer to {combatant.Name}");
+            this.DebugSayFormatted($"I should be closer to {combatant.Name}");
         }
         else if (Core.TickCount - _mobile.LastMoveTime > 400)
         {
@@ -87,7 +87,7 @@ public class AnimalAI : BaseAI
 
         if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            DebugSay($"I used my abilities on {combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
 
         return true;

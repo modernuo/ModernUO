@@ -45,18 +45,18 @@ public class PredatorAI : BaseAI
         {
             if (_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
             {
-                DebugSay($"I cannot find {combatant.Name}");
+                this.DebugSayFormatted($"I cannot find {combatant.Name}");
 
                 Action = ActionType.Wander;
                 return true;
             }
 
-            DebugSay($"I should be closer to {combatant.Name}");
+            this.DebugSayFormatted($"I should be closer to {combatant.Name}");
         }
 
         if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            DebugSay($"I used my abilities on {combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
 
         return true;

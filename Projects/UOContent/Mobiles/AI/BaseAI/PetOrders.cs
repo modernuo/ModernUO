@@ -95,7 +95,7 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
 
@@ -118,7 +118,7 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
 
@@ -142,11 +142,11 @@ public abstract partial class BaseAI
 
         if (currentDistance > _mobile.RangePerception)
         {
-            DebugSay($"Master {_mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
+            this.DebugSayFormatted($"Master {_mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
             return;
         }
 
-        DebugSay($"I am ordered to follow {_mobile.ControlTarget?.Name}.");
+        this.DebugSayFormatted($"I am ordered to follow {_mobile.ControlTarget?.Name}.");
 
         if (currentDistance > 1)
         {
@@ -161,7 +161,7 @@ public abstract partial class BaseAI
             return true;
         }
 
-        DebugSay($"I am ordered to drop my items by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
+        this.DebugSayFormatted($"I am ordered to drop my items by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
 
         _mobile.ControlOrder = OrderType.None;
 
@@ -318,7 +318,7 @@ public abstract partial class BaseAI
         {
             combatant = _mobile.Combatant;
 
-            DebugSay($"Attacking target: {combatant.Name}");
+            this.DebugSayFormatted($"Attacking target: {combatant.Name}");
 
             _mobile.Combatant = combatant;
             _mobile.FocusMob = combatant;
@@ -328,7 +328,7 @@ public abstract partial class BaseAI
         }
         else
         {
-            DebugSay($"Guarding my master, {controlMaster.Name}.");
+            this.DebugSayFormatted($"Guarding my master, {controlMaster.Name}.");
 
             var guardLocation = controlMaster.Location;
 
@@ -362,7 +362,7 @@ public abstract partial class BaseAI
         {
             _mobile.Combatant = _mobile.ControlTarget;
 
-            DebugSay($"Attacking target: {_mobile.ControlTarget?.Name}");
+            this.DebugSayFormatted($"Attacking target: {_mobile.ControlTarget?.Name}");
 
             Think();
         }
@@ -399,7 +399,7 @@ public abstract partial class BaseAI
                 _mobile.ControlOrder = OrderType.Attack;
                 _mobile.Combatant = aggr;
 
-                DebugSay($"{aggr.Name} is still alive. Resuming attacks...");
+                this.DebugSayFormatted($"{aggr.Name} is still alive. Resuming attacks...");
 
                 Think();
                 break;
@@ -444,11 +444,11 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else
         {
-            DebugSay($"I have been ordered to stay by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I have been ordered to stay by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
 
         WalkRandomInHome(3, 2, 1);
@@ -459,11 +459,11 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else
         {
-            DebugSay($"I have been ordered to stop by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I have been ordered to stop by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
 
         if (Core.ML)
@@ -486,7 +486,7 @@ public abstract partial class BaseAI
 
         if (from?.Deleted == false && to?.Deleted == false && from != to && to.Player)
         {
-            DebugSay($"Beginning transfer with {to.Name}");
+            this.DebugSayFormatted($"Beginning transfer with {to.Name}");
 
             var youngFrom = from is PlayerMobile mobile && mobile.Young;
             var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;

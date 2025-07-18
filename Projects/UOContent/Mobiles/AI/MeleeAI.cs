@@ -12,7 +12,7 @@ public class MeleeAI : BaseAI
     {
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -72,7 +72,7 @@ public class MeleeAI : BaseAI
             _mobile.Direction = _mobile.GetDirectionTo(combatant);
             if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
             {
-                DebugSay($"My move is blocked, so I am going to attack {_mobile.FocusMob!.Name}");
+                this.DebugSayFormatted($"My move is blocked, so I am going to attack {_mobile.FocusMob!.Name}");
 
                 _mobile.Combatant = _mobile.FocusMob;
                 Action = ActionType.Combat;
@@ -81,13 +81,13 @@ public class MeleeAI : BaseAI
 
             if (_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
             {
-                DebugSay($"I cannot find {combatant.Name}, so my guard is up");
+                this.DebugSayFormatted($"I cannot find {combatant.Name}, so my guard is up");
 
                 Action = ActionType.Guard;
                 return true;
             }
 
-            DebugSay($"I cannot find {combatant.Name}, so my guard is up");
+            this.DebugSayFormatted($"I cannot find {combatant.Name}, so my guard is up");
         }
         else if (Core.TickCount - _mobile.LastMoveTime > 400)
         {
@@ -103,7 +103,7 @@ public class MeleeAI : BaseAI
                 var fleeChance = 10 + Math.Max(0, combatant.Hits - _mobile.Hits); // (10 + diff)% chance to flee;
                 if (Utility.Random(0, 100) < fleeChance)
                 {
-                    DebugSay($"I am going to flee from {combatant.Name}");
+                    this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
 
                     Action = ActionType.Flee;
                     return true;
@@ -123,7 +123,7 @@ public class MeleeAI : BaseAI
     {
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;

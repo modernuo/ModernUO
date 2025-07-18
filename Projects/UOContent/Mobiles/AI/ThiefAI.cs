@@ -17,7 +17,7 @@ public class ThiefAI : BaseAI
 
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -45,7 +45,7 @@ public class ThiefAI : BaseAI
 
         if (!WalkMobileRange(combatant, 1, true, _mobile.RangeFight, _mobile.RangeFight))
         {
-            DebugSay($"I should be closer to {combatant.Name}");
+            this.DebugSayFormatted($"I should be closer to {combatant.Name}");
         }
         else
         {
@@ -71,7 +71,7 @@ public class ThiefAI : BaseAI
             }
             else if (_toDisarm == null && Core.TickCount - _mobile.NextSkillTime >= 0)
             {
-                DebugSay($"Trying to steal from {combatant.Name}.");
+                this.DebugSayFormatted($"Trying to steal from {combatant.Name}.");
 
                 bool didSteal = TryStealFrom<Bandage>(combatant);
                 didSteal = TryStealFrom<Nightshade>(combatant) || didSteal;
@@ -80,7 +80,7 @@ public class ThiefAI : BaseAI
 
                 if (!didSteal)
                 {
-                    DebugSay($"I am going to flee from {combatant.Name}");
+                    this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
 
                     Action = ActionType.Flee;
                     return true;
@@ -96,7 +96,7 @@ public class ThiefAI : BaseAI
 
             if (Utility.Random(0, 100) > fleeChance)
             {
-                DebugSay($"I am going to flee from {combatant.Name}");
+                this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
 
                 Action = ActionType.Flee;
             }
@@ -106,7 +106,7 @@ public class ThiefAI : BaseAI
 
         if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, _mobile.Combatant))
         {
-            DebugSay($"I used my abilities on {_mobile.Combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {_mobile.Combatant.Name}!");
         }
         return true;
     }
@@ -128,7 +128,7 @@ public class ThiefAI : BaseAI
     {
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;

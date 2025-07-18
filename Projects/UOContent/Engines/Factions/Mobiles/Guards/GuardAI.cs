@@ -398,14 +398,14 @@ namespace Server.Factions
             else*/
             if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
             {
-                DebugSay($"My move is blocked, so I am going to attack {_mobile.FocusMob.Name}");
+                this.DebugSayFormatted($"My move is blocked, so I am going to attack {_mobile.FocusMob.Name}");
 
                 _mobile.Combatant = _mobile.FocusMob;
                 Action = ActionType.Combat;
             }
-            else if (_mobile.Debug)
+            else
             {
-                _mobile.DebugSay("I am stuck");
+                DebugSay("I am stuck");
             }
         }
 

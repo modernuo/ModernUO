@@ -15,7 +15,7 @@ public class ArcherAI : BaseAI
 
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name} and I will attack");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name} and I will attack");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -49,11 +49,11 @@ public class ArcherAI : BaseAI
                 _mobile.Weapon.MaxRange
             ))
         {
-            DebugSay($"I am still not in range of {combatant.Name}");
+            this.DebugSayFormatted($"I am still not in range of {combatant.Name}");
 
             if ((int)_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
             {
-                DebugSay($"I have lost {combatant.Name}");
+                this.DebugSayFormatted($"I have lost {combatant.Name}");
 
                 _mobile.Combatant = null;
                 Action = ActionType.Guard;
@@ -67,7 +67,7 @@ public class ArcherAI : BaseAI
 
         if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            DebugSay($"I used my abilities on {combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
 
             return true;
         }
@@ -100,7 +100,7 @@ public class ArcherAI : BaseAI
     {
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;

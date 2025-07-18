@@ -12,7 +12,7 @@ public class BerserkAI : BaseAI
 
         if (AcquireFocusMob(_mobile.RangePerception, FightMode.Closest, false, true, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name} and I will attack");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name} and I will attack");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;
@@ -40,11 +40,11 @@ public class BerserkAI : BaseAI
 
         if (!WalkMobileRange(combatant, 1, true, _mobile.RangeFight, _mobile.RangeFight))
         {
-            DebugSay($"I am still not in range of {combatant.Name}");
+            this.DebugSayFormatted($"I am still not in range of {combatant.Name}");
 
             if ((int)_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
             {
-                DebugSay($"I have lost {combatant.Name}");
+                this.DebugSayFormatted($"I have lost {combatant.Name}");
 
                 Action = ActionType.Guard;
                 return true;
@@ -57,7 +57,7 @@ public class BerserkAI : BaseAI
 
         if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            DebugSay($"I used my abilities on {combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
 
         return true;
@@ -67,7 +67,7 @@ public class BerserkAI : BaseAI
     {
         if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, true, true))
         {
-            DebugSay($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
 
             _mobile.Combatant = _mobile.FocusMob;
             Action = ActionType.Combat;

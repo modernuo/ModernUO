@@ -49,7 +49,7 @@ public class HealerAI : BaseAI
         {
             if (NeedCure(toHelp))
             {
-                DebugSay($"{toHelp.Name} needs a cure");
+                this.DebugSayFormatted($"{toHelp.Name} needs a cure");
 
                 if (!new CureSpell(_mobile).Cast())
                 {
@@ -58,7 +58,7 @@ public class HealerAI : BaseAI
             }
             else if (NeedGHeal(toHelp))
             {
-                DebugSay($"{toHelp.Name} needs a greater heal");
+                this.DebugSayFormatted($"{toHelp.Name} needs a greater heal");
 
                 if (!new GreaterHealSpell(_mobile).Cast())
                 {
@@ -67,7 +67,7 @@ public class HealerAI : BaseAI
             }
             else if (NeedLHeal(toHelp))
             {
-                DebugSay($"{toHelp.Name} needs a lesser heal");
+                this.DebugSayFormatted($"{toHelp.Name} needs a lesser heal");
 
                 new HealSpell(_mobile).Cast();
             }
@@ -86,7 +86,7 @@ public class HealerAI : BaseAI
         // TODO: Should it be able to do this?
         if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, _mobile.Combatant))
         {
-            DebugSay($"I used my abilities on {_mobile.Combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {_mobile.Combatant.Name}!");
         }
 
         return true;

@@ -19,14 +19,14 @@ public class VendorAI : BaseAI
 
         if (_mobile.Combatant != null)
         {
-            DebugSay($"{_mobile.Combatant.Name} is attacking me");
+            this.DebugSayFormatted($"{_mobile.Combatant.Name} is attacking me");
 
             _mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
         }
         else if (_mobile.FocusMob != null)
         {
-            DebugSay($"{_mobile.FocusMob.Name} has talked to me");
+            this.DebugSayFormatted($"{_mobile.FocusMob.Name} has talked to me");
 
             Action = ActionType.Interact;
         }
@@ -46,7 +46,7 @@ public class VendorAI : BaseAI
 
         if (_mobile.Combatant != null)
         {
-            DebugSay($"{_mobile.Combatant.Name} is attacking me");
+            this.DebugSayFormatted($"{_mobile.Combatant.Name} is attacking me");
 
             _mobile.Say(GetRandomGuardMessage());
 
@@ -65,13 +65,13 @@ public class VendorAI : BaseAI
         }
         else if (customer.InRange(_mobile, _mobile.RangeFight))
         {
-            DebugSay($"I am with {customer.Name}");
+            this.DebugSayFormatted($"I am with {customer.Name}");
 
             _mobile.Direction = _mobile.GetDirectionTo(customer);
         }
         else
         {
-            DebugSay($"{customer.Name} is gone");
+            this.DebugSayFormatted($"{customer.Name} is gone");
 
             _mobile.FocusMob = null;
             Action = ActionType.Wander;

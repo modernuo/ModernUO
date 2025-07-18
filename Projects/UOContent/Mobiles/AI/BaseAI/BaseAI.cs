@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using Server.Buffers;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
 using Server.Engines.Virtues;
@@ -33,11 +32,13 @@ public abstract partial class BaseAI
     public long _nextDetectHidden;
     protected PathFollower _path;
     public Timer _timer;
-    private long _nextDebugMessage;
-    private string _debugMessage;
     public DateTime _lastOrder = DateTime.MinValue;
     public Mobile _commandIssuer;
     public long NextMove { get; set; }
+
+    public Mobile Mobile => _mobile;
+
+    public long NextDebugMessage { get; set; }
 
     public virtual bool CanDetectHidden => _mobile.Skills.DetectHidden.Value > 0;
 
@@ -229,24 +230,11 @@ public abstract partial class BaseAI
 
     public void DebugSay(string message, int cooldownMs = 5000)
     {
-        if (_mobile.Debug && (Core.TickCount >= _nextDebugMessage || _debugMessage.EqualsOrdinal(message)))
+        if (_mobile.Debug && Core.TickCount >= NextDebugMessage)
         {
-            _mobile.DebugSay(message);
-            _nextDebugMessage = Core.TickCount + cooldownMs;
-            _debugMessage = message;
+            _mobile.PublicOverheadMessage(MessageType.Regular, 41, false, message);
+            NextDebugMessage = Core.TickCount + cooldownMs;
         }
-    }
-
-    public void DebugSay(ref RawInterpolatedStringHandler handler, int cooldownMs = 5000)
-    {
-        if (_mobile.Debug && (Core.TickCount >= _nextDebugMessage || handler.Text.EqualsOrdinal(_debugMessage)))
-        {
-            _debugMessage = handler.Text.ToString();
-            _mobile.DebugSay(_debugMessage);
-            _nextDebugMessage = Core.TickCount + cooldownMs;
-        }
-
-        handler.Clear();
     }
 
     public virtual bool Think()
@@ -310,7 +298,7 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            DebugSay($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else if (_mobile.CurrentWayPoint != null)
         {
@@ -337,13 +325,13 @@ public abstract partial class BaseAI
         if ((point.X != _mobile.Location.X || point.Y != _mobile.Location.Y)
             && point.Map == _mobile.Map && point.Parent == null && !point.Deleted)
         {
-            DebugSay($"Moving towards waypoint {point.X}, {point.Y}.");
+            this.DebugSayFormatted($"Moving towards waypoint {point.X}, {point.Y}.");
 
             DoMove(_mobile.GetDirectionTo(point));
         }
         else if (OnAtWayPoint())
         {
-            DebugSay($"I have reached waypoint {point.X}, {point.Y}.");
+            this.DebugSayFormatted($"I have reached waypoint {point.X}, {point.Y}.");
 
             _mobile.CurrentWayPoint = point.NextPoint;
             if (point.NextPoint?.Deleted == true)
@@ -370,7 +358,7 @@ public abstract partial class BaseAI
     {
         if (Core.AOS && CheckHerding())
         {
-            DebugSay($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
 
@@ -389,7 +377,7 @@ public abstract partial class BaseAI
 
         if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            DebugSay($"I used my abilities on {combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
 
         return true;
@@ -652,7 +640,7 @@ public abstract partial class BaseAI
             return false;
         }
 
-        DebugSay($"Acquired focused target: {_mobile.ConstantFocus.Name}.");
+        this.DebugSayFormatted($"Acquired focused target: {_mobile.ConstantFocus.Name}.");
 
         _mobile.FocusMob = _mobile.ConstantFocus;
         return true;
@@ -820,7 +808,7 @@ public abstract partial class BaseAI
 
     private void TryDetectHidden(Mobile trg, double srcSkill)
     {
-        DebugSay($"Trying to detect: {trg.Name}");
+        this.DebugSayFormatted($"Trying to detect: {trg.Name}");
 
         var trgHiding = trg.Skills.Hiding.Value / 2.9;
         var trgStealth = trg.Skills.Stealth.Value / 1.8;
