@@ -112,6 +112,7 @@ internal sealed class InternalEntry : ContextMenuEntry
     {
         if (bc.CheckControlChance(from))
         {
+            bc.ControlTarget = null;
             bc.ControlOrder = _order;
         }
     }
