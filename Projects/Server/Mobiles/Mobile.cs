@@ -3723,38 +3723,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
     }
 
-    public double GetDistanceToSqrt(Point3D p)
-    {
-        var xDelta = m_Location.m_X - p.m_X;
-        var yDelta = m_Location.m_Y - p.m_Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
-    public double GetDistanceToSqrt(Mobile m)
-    {
-        var xDelta = m_Location.m_X - m.m_Location.m_X;
-        var yDelta = m_Location.m_Y - m.m_Location.m_Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
-    public double GetDistanceToSqrt(Point2D p)
-    {
-        var xDelta = m_Location.m_X - p.X;
-        var yDelta = m_Location.m_Y - p.Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
-    public double GetDistanceToSqrt(IPoint2D p)
-    {
-        var xDelta = m_Location.m_X - p.X;
-        var yDelta = m_Location.m_Y - p.Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
     public virtual void AggressiveAction(Mobile aggressor) => AggressiveAction(aggressor, false);
 
     public virtual void AggressiveAction(Mobile aggressor, bool criminal)
