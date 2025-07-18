@@ -117,7 +117,7 @@ public abstract partial class BaseAI
     private Point3D CalculateOptimalPosition(Mobile target, ref PooledRefList<BaseCreature> allies, int range)
     {
         var targetLoc = target.Location;
-        var positions = new List<Point3D>();
+        using var positions = PooledRefQueue<Point3D>.Create();
 
         for (var x = -range; x <= range; x++)
         {
@@ -132,7 +132,7 @@ public abstract partial class BaseAI
 
                 if (m_Mobile.GetDistanceToSqrt(testLoc) >= range && m_Mobile.GetDistanceToSqrt(testLoc) <= range + 3)
                 {
-                    positions.Add(testLoc);
+                    positions.Enqueue(testLoc);
                 }
             }
         }
@@ -140,8 +140,9 @@ public abstract partial class BaseAI
         var bestPosition = Point3D.Zero;
         var bestScore = double.MinValue;
 
-        foreach (var pos in positions)
+        while (positions.Count > 0)
         {
+            var pos = positions.Dequeue();
             if (CanMoveTo(pos))
             {
                 var score = ScorePosition(pos, target, ref allies);
