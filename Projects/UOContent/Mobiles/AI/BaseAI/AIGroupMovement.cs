@@ -117,7 +117,8 @@ public abstract partial class BaseAI
     private Point3D CalculateOptimalPosition(Mobile target, ref PooledRefList<BaseCreature> allies, int range)
     {
         var targetLoc = target.Location;
-        using var positions = PooledRefQueue<Point3D>.Create();
+        var bestPosition = Point3D.Zero;
+        var bestScore = -1.0;
 
         for (var x = -range; x <= range; x++)
         {
@@ -129,28 +130,20 @@ public abstract partial class BaseAI
                 }
 
                 var testLoc = new Point3D(targetLoc.X + x, targetLoc.Y + y, targetLoc.Z);
+                var distance = m_Mobile.GetDistanceToSqrt(testLoc);
 
-                if (m_Mobile.GetDistanceToSqrt(testLoc) >= range && m_Mobile.GetDistanceToSqrt(testLoc) <= range + 3)
+                if (distance < range ||
+                    distance > range + 3 || !CanMoveTo(testLoc))
                 {
-                    positions.Enqueue(testLoc);
+                    continue;
                 }
-            }
-        }
 
-        var bestPosition = Point3D.Zero;
-        var bestScore = double.MinValue;
-
-        while (positions.Count > 0)
-        {
-            var pos = positions.Dequeue();
-            if (CanMoveTo(pos))
-            {
-                var score = ScorePosition(pos, target, ref allies);
+                var score = ScorePosition(testLoc, distance, target, ref allies);
 
                 if (score > bestScore)
                 {
                     bestScore = score;
-                    bestPosition = pos;
+                    bestPosition = testLoc;
 
                     if (score > 20)
                     {
@@ -163,13 +156,9 @@ public abstract partial class BaseAI
         return bestPosition;
     }
 
-    private double ScorePosition(Point3D position, Mobile target, ref PooledRefList<BaseCreature> allies)
+    private double ScorePosition(Point3D position, double currentDistance, Mobile target, ref PooledRefList<BaseCreature> allies)
     {
-        var score = 0.0;
-
-        var currentDistance = m_Mobile.GetDistanceToSqrt(position);
-
-        score -= currentDistance * 2;
+        var score = -(currentDistance * 2);
 
         for (var i = 0; i < allies.Count; i++)
         {
