@@ -23,12 +23,12 @@ public class HealerAI : BaseAI
 
     public override bool Think()
     {
-        if (m_Mobile.Deleted)
+        if (_mobile.Deleted)
         {
             return false;
         }
 
-        var targ = m_Mobile.Target;
+        var targ = _mobile.Target;
 
         if (targ != null)
         {
@@ -48,7 +48,7 @@ public class HealerAI : BaseAI
             }
             else
             {
-                targ.Cancel(m_Mobile, TargetCancelType.Canceled);
+                targ.Cancel(_mobile, TargetCancelType.Canceled);
             }
 
             return true;
@@ -62,42 +62,42 @@ public class HealerAI : BaseAI
             {
                 DebugSay($"{toHelp.Name} needs a cure");
 
-                if (!new CureSpell(m_Mobile).Cast())
+                if (!new CureSpell(_mobile).Cast())
                 {
-                    new CureSpell(m_Mobile).Cast();
+                    new CureSpell(_mobile).Cast();
                 }
             }
             else if (NeedGHeal(toHelp))
             {
                 DebugSay($"{toHelp.Name} needs a greater heal");
 
-                if (!new GreaterHealSpell(m_Mobile).Cast())
+                if (!new GreaterHealSpell(_mobile).Cast())
                 {
-                    new HealSpell(m_Mobile).Cast();
+                    new HealSpell(_mobile).Cast();
                 }
             }
             else if (NeedLHeal(toHelp))
             {
                 DebugSay($"{toHelp.Name} needs a lesser heal");
 
-                new HealSpell(m_Mobile).Cast();
+                new HealSpell(_mobile).Cast();
             }
 
             return true;
         }
 
-        if (!AcquireFocusMob(m_Mobile.RangePerception, FightMode.Weakest, false, true, false))
+        if (!AcquireFocusMob(_mobile.RangePerception, FightMode.Weakest, false, true, false))
         {
             WalkRandomInHome(3, 2, 1);
             return true;
         }
 
-        WalkMobileRange(m_Mobile.FocusMob, 1, false, 4, 7);
+        WalkMobileRange(_mobile.FocusMob, 1, false, 4, 7);
 
         // TODO: Should it be able to do this?
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
+        if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, _mobile.Combatant))
         {
-            DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
+            DebugSay($"I used my abilities on {_mobile.Combatant.Name}!");
         }
 
         return true;
@@ -109,26 +109,26 @@ public class HealerAI : BaseAI
 
         if (toHelp == null)
         {
-            targ.Cancel(m_Mobile, TargetCancelType.Canceled);
+            targ.Cancel(_mobile, TargetCancelType.Canceled);
         }
-        else if (targ.Range != -1 && !m_Mobile.InRange(toHelp, targ.Range))
+        else if (targ.Range != -1 && !_mobile.InRange(toHelp, targ.Range))
         {
-            DoMove(m_Mobile.GetDirectionTo(toHelp) | Direction.Running);
+            DoMove(_mobile.GetDirectionTo(toHelp) | Direction.Running);
         }
         else
         {
-            targ.Invoke(m_Mobile, toHelp);
+            targ.Invoke(_mobile, toHelp);
         }
     }
 
     private Mobile Find(params ReadOnlySpan<NeedDelegate> funcs)
     {
-        if (m_Mobile.Deleted)
+        if (_mobile.Deleted)
         {
             return null;
         }
 
-        var map = m_Mobile.Map;
+        var map = _mobile.Map;
 
         if (map == null)
         {
@@ -138,9 +138,9 @@ public class HealerAI : BaseAI
         var prio = 0.0;
         Mobile found = null;
 
-        foreach (var m in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
+        foreach (var m in _mobile.GetMobilesInRange(_mobile.RangePerception))
         {
-            if (!m_Mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != m_Mobile.Team)
+            if (!_mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != _mobile.Team)
             {
                 continue;
             }
@@ -149,7 +149,7 @@ public class HealerAI : BaseAI
             {
                 if (funcs[i](bc))
                 {
-                    var val = -m_Mobile.GetDistanceToSqrt(bc);
+                    var val = -_mobile.GetDistanceToSqrt(bc);
 
                     if (found == null || val > prio)
                     {

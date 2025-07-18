@@ -19,33 +19,33 @@ namespace Server.Mobiles;
 
 internal sealed class AITimer : Timer
 {
-    private readonly BaseAI m_Owner;
+    private readonly BaseAI _owner;
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
     public AITimer(BaseAI owner) : base(TimeSpan.FromMilliseconds(Utility.Random(3000)),
         TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
     {
-        m_Owner = owner;
-        m_Owner.m_NextDetectHidden = Core.TickCount;
+        _owner = owner;
+        _owner._nextDetectHidden = Core.TickCount;
     }
 
     private static double GetBaseInterval(BaseAI owner)
     {
         double interval;
 
-        if (owner.m_Mobile.Controlled && owner.m_Mobile.ControlOrder == OrderType.Follow
-                                      && owner.m_Mobile.Combatant != owner.m_Mobile.ControlMaster)
+        if (owner._mobile.Controlled && owner._mobile.ControlOrder == OrderType.Follow
+                                     && owner._mobile.Combatant != owner._mobile.ControlMaster)
         {
-            interval = owner.m_Mobile.CurrentSpeed * 400;
+            interval = owner._mobile.CurrentSpeed * 400;
         }
-        else if (owner.m_Mobile.CurrentSpeed <= 0.4)
+        else if (owner._mobile.CurrentSpeed <= 0.4)
         {
-            interval = owner.m_Mobile.CurrentSpeed * 1000;
+            interval = owner._mobile.CurrentSpeed * 1000;
         }
         else
         {
-            interval = owner.m_Mobile.CurrentSpeed * 3000;
+            interval = owner._mobile.CurrentSpeed * 3000;
         }
 
         return Math.Max(interval, 200);
@@ -59,14 +59,9 @@ internal sealed class AITimer : Timer
             return;
         }
 
-        var newInterval = TimeSpan.FromMilliseconds(GetBaseInterval(m_Owner));
+        Interval = TimeSpan.FromMilliseconds(GetBaseInterval(_owner));
 
-        if (Interval != newInterval)
-        {
-            Interval = newInterval;
-        }
-
-        m_Owner.m_Mobile.OnThink();
+        _owner._mobile.OnThink();
 
         if (ShouldStop())
         {
@@ -76,7 +71,7 @@ internal sealed class AITimer : Timer
 
         HandleBardEffects();
 
-        if (m_Owner.m_Mobile.Controlled ? !m_Owner.Obey() : !m_Owner.Think())
+        if (_owner._mobile.Controlled ? !_owner.Obey() : !_owner.Think())
         {
             Stop();
             return;
@@ -87,55 +82,55 @@ internal sealed class AITimer : Timer
 
     private bool ShouldStop()
     {
-        if (m_Owner.m_Mobile.Deleted)
+        if (_owner._mobile.Deleted)
         {
             return true;
         }
 
-        if (m_Owner.m_Mobile.Map == null || m_Owner.m_Mobile.Map == Map.Internal || m_Owner.m_Mobile.PlayerRangeSensitive &&
-            !m_Owner.m_Mobile.Map.GetSector(m_Owner.m_Mobile.Location).Active)
+        if (_owner._mobile.Map != null && _owner._mobile.Map != Map.Internal &&
+            (!_owner._mobile.PlayerRangeSensitive || _owner._mobile.Map.GetSector(_owner._mobile.Location).Active))
         {
-            m_Owner.Deactivate();
-            return true;
+            return false;
         }
 
-        return false;
+        _owner.Deactivate();
+        return true;
     }
 
     private void HandleBardEffects()
     {
-        if (m_Owner.m_Mobile.BardPacified)
+        if (_owner._mobile.BardPacified)
         {
-            m_Owner.DoBardPacified();
+            _owner.DoBardPacified();
         }
-        else if (m_Owner.m_Mobile.BardProvoked)
+        else if (_owner._mobile.BardProvoked)
         {
-            m_Owner.DoBardProvoked();
+            _owner.DoBardProvoked();
         }
     }
 
     private void CacheDetectHiddenDelays()
     {
-        var delay = Math.Min(30000 / m_Owner.m_Mobile.Int, 120);
+        var delay = Math.Min(30000 / _owner._mobile.Int, 120);
         _detectHiddenMinDelay = delay * 900;  // 26s to 108s
         _detectHiddenMaxDelay = delay * 1100; // 32s to 132s
     }
 
     private void HandleDetectHidden()
     {
-        if (!m_Owner.CanDetectHidden || Core.TickCount - m_Owner.m_NextDetectHidden < 0)
+        if (!_owner.CanDetectHidden || Core.TickCount - _owner._nextDetectHidden < 0)
         {
             return;
         }
 
-        m_Owner.DetectHidden();
+        _owner.DetectHidden();
 
         if (_detectHiddenMinDelay == 0 || _detectHiddenMaxDelay == 0)
         {
             CacheDetectHiddenDelays();
         }
 
-        m_Owner.m_NextDetectHidden = Core.TickCount +
-                                     Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
+        _owner._nextDetectHidden = Core.TickCount +
+                                   Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
     }
 }

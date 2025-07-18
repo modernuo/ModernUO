@@ -22,7 +22,7 @@ public abstract partial class BaseAI
 {
     public virtual void WalkRandom(int chanceToNotMove, int chanceToDir, int steps)
     {
-        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || chanceToNotMove <= 0)
+        if (_mobile.Deleted || _mobile.DisallowAllMoves || chanceToNotMove <= 0)
         {
             return;
         }
@@ -40,12 +40,12 @@ public abstract partial class BaseAI
 
     public virtual void WalkRandomInHome(int chanceToNotMove, int chanceToDir, int steps)
     {
-        if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves)
+        if (_mobile.Deleted || _mobile.DisallowAllMoves)
         {
             return;
         }
 
-        if (m_Mobile.Home == Point3D.Zero)
+        if (_mobile.Home == Point3D.Zero)
         {
             WalkRandomNoHome(chanceToNotMove, chanceToDir, steps);
         }
@@ -57,21 +57,21 @@ public abstract partial class BaseAI
 
     private void WalkRandomNoHome(int chanceToNotMove, int chanceToDir, int steps)
     {
-        if (m_Mobile.Spawner is RegionSpawner rs)
+        if (_mobile.Spawner is RegionSpawner rs)
         {
             var region = rs.SpawnRegion;
 
-            if (m_Mobile.Region.AcceptsSpawnsFrom(region))
+            if (_mobile.Region.AcceptsSpawnsFrom(region))
             {
-                m_Mobile.WalkRegion = region;
+                _mobile.WalkRegion = region;
 
                 WalkRandom(chanceToNotMove, chanceToDir, steps);
 
-                m_Mobile.WalkRegion = null;
+                _mobile.WalkRegion = null;
             }
             else if (region.GoLocation != Point3D.Zero && Utility.RandomBool())
             {
-                DoMove(m_Mobile.GetDirectionTo(region.GoLocation));
+                DoMove(_mobile.GetDirectionTo(region.GoLocation));
             }
             else
             {
@@ -86,27 +86,27 @@ public abstract partial class BaseAI
 
     private void WalkRandomWithHome(int chanceToNotMove, int chanceToDir, int steps)
     {
-        if (m_Mobile.RangeHome == 0 && m_Mobile.Location != m_Mobile.Home)
+        if (_mobile.RangeHome == 0 && _mobile.Location != _mobile.Home)
         {
-            DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+            DoMove(_mobile.GetDirectionTo(_mobile.Home));
             return;
         }
 
         for (var i = 0; i < steps; i++)
         {
-            var currDist = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.Home);
+            var currDist = (int)_mobile.GetDistanceToSqrt(_mobile.Home);
 
-            if (currDist > m_Mobile.RangeHome)
+            if (currDist > _mobile.RangeHome)
             {
-                DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+                DoMove(_mobile.GetDirectionTo(_mobile.Home));
             }
-            else if (currDist < m_Mobile.RangeHome * 2 / 3 || Utility.Random(10) <= 5)
+            else if (currDist < _mobile.RangeHome * 2 / 3 || Utility.Random(10) <= 5)
             {
                 WalkRandom(chanceToNotMove, chanceToDir, 1);
             }
             else
             {
-                DoMove(m_Mobile.GetDirectionTo(m_Mobile.Home));
+                DoMove(_mobile.GetDirectionTo(_mobile.Home));
             }
         }
     }
@@ -120,6 +120,6 @@ public abstract partial class BaseAI
             return (Direction)randomMove;
         }
 
-        return m_Mobile.Direction;
+        return _mobile.Direction;
     }
 }
