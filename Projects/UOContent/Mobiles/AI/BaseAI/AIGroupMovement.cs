@@ -177,7 +177,7 @@ public abstract partial class BaseAI
 
         foreach (var (m, p) in _reservedPositions)
         {
-            if (m != m_Mobile && GetDistanceToSqrt(p, position) < 2)
+            if (m != m_Mobile && p.GetDistanceToSqrt(position) < 2)
             {
                 score -= 30;
             }
@@ -191,13 +191,6 @@ public abstract partial class BaseAI
         return score + Utility.RandomDouble() * 5;
     }
 
-    private static double GetDistanceToSqrt(Point3D from, Point3D to)
-    {
-        var xDelta = from.X - to.X;
-        var yDelta = from.Y - to.Y;
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool CanMoveTo(Point3D location) =>
         m_Mobile.Map?.CanFit(location.X, location.Y, location.Z, 16, false, false) == true;
@@ -209,11 +202,12 @@ public abstract partial class BaseAI
 
         if (newDir < 0)
         {
-            newDir += 8;
+            return (Direction)(newDir + 8);
         }
-        else if (newDir >= 8)
+
+        if (newDir >= 8)
         {
-            newDir -= 8;
+            return (Direction)(newDir - 8);
         }
 
         return (Direction)newDir;
