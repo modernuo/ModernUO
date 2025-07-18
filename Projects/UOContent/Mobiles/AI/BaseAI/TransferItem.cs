@@ -14,18 +14,19 @@
  ************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server.Mobiles;
 
 internal sealed class TransferItem : Item
 {
-    private readonly BaseCreature m_Creature;
+    private readonly BaseCreature _creature;
 
-    public override string DefaultName => m_Creature.GetType().Name;
+    public override string DefaultName => _creature.GetType().Name;
 
     public TransferItem(BaseCreature creature) : base(ShrinkTable.Lookup(creature))
     {
-        m_Creature = creature;
+        _creature = creature;
         Movable = false;
 
         Hue = creature.Hue & 0x0FFF;
@@ -54,11 +55,11 @@ internal sealed class TransferItem : Item
     {
         base.GetProperties(list);
         list.Add(1041603);                  // This item represents a pet currently in consideration for trade
-        list.Add(1041601, m_Creature.Name); // Pet Name: ~1_val~
+        list.Add(1041601, _creature.Name); // Pet Name: ~1_val~
 
-        if (m_Creature.ControlMaster != null)
+        if (_creature.ControlMaster != null)
         {
-            list.Add(1041602, m_Creature.ControlMaster.Name); // Owner: ~1_val~
+            list.Add(1041602, _creature.ControlMaster.Name); // Owner: ~1_val~
         }
     }
 
@@ -74,41 +75,21 @@ internal sealed class TransferItem : Item
 
     private bool IsInvalidTrade(Mobile from, Mobile to) =>
         Deleted
-        || m_Creature?.Deleted != false
-        || m_Creature.ControlMaster != from
+        || _creature?.Deleted != false
+        || _creature.ControlMaster != from
         || !from.CheckAlive()
         || !to.CheckAlive()
-        || from.Map != m_Creature.Map
-        || !from.InRange(m_Creature, 14);
+        || from.Map != _creature.Map
+        || !from.InRange(_creature, 14);
 
-    private bool HandleAcceptedTrade(Mobile from, Mobile to)
-    {
-        if (!ValidateYoungStatus(from, to))
-        {
-            return false;
-        }
-
-        if (!ValidateControlStatus(from, to))
-        {
-            return false;
-        }
-
-        if (!ValidateFollowerLimit(to))
-        {
-            return false;
-        }
-
-        if (IsInCombat(m_Creature))
-        {
-            return false;
-        }
-
-        return true;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool HandleAcceptedTrade(Mobile from, Mobile to) =>
+        ValidateYoungStatus(from, to) && ValidateControlStatus(from, to) && ValidateFollowerLimit(to) &&
+        !IsInCombat(_creature);
 
     private bool ValidateFollowerLimit(Mobile to)
     {
-        if (to.Followers + m_Creature.ControlSlots > to.FollowersMax)
+        if (to.Followers + _creature.ControlSlots > to.FollowersMax)
         {
             to.SendLocalizedMessage(1049607);
             // You have too many followers to control that creature.
@@ -142,7 +123,7 @@ internal sealed class TransferItem : Item
 
     private bool ValidateControlStatus(Mobile from, Mobile to)
     {
-        if (!m_Creature.CanBeControlledBy(to))
+        if (!_creature.CanBeControlledBy(to))
         {
             SendTransferRefusalMessages(from, to, 1043248, 1043249);
             // The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
@@ -150,7 +131,7 @@ internal sealed class TransferItem : Item
             return false;
         }
 
-        if (!m_Creature.CanBeControlledBy(from))
+        if (!_creature.CanBeControlledBy(from))
         {
             SendTransferRefusalMessages(from, to, 1043250, 1043251);
             // The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
@@ -178,7 +159,7 @@ internal sealed class TransferItem : Item
 
         Delete();
 
-        if (!accepted || !m_Creature.SetControlMaster(to))
+        if (!accepted || !_creature.SetControlMaster(to))
         {
             return;
         }
@@ -188,19 +169,19 @@ internal sealed class TransferItem : Item
 
     private void TransferPetOwnership(Mobile from, Mobile to)
     {
-        if (m_Creature.Summoned)
+        if (_creature.Summoned)
         {
-            m_Creature.SummonMaster = to;
+            _creature.SummonMaster = to;
         }
 
-        m_Creature.ControlTarget = to;
-        m_Creature.ControlOrder = OrderType.Follow;
-        m_Creature.BondingBegin = DateTime.MinValue;
-        m_Creature.OwnerAbandonTime = DateTime.MinValue;
-        m_Creature.IsBonded = false;
-        m_Creature.PlaySound(m_Creature.GetIdleSound());
+        _creature.ControlTarget = to;
+        _creature.ControlOrder = OrderType.Follow;
+        _creature.BondingBegin = DateTime.MinValue;
+        _creature.OwnerAbandonTime = DateTime.MinValue;
+        _creature.IsBonded = false;
+        _creature.PlaySound(_creature.GetIdleSound());
 
-        var args = $"{from.Name}\t{m_Creature.Name}\t{to.Name}";
+        var args = $"{from.Name}\t{_creature.Name}\t{to.Name}";
         from.SendLocalizedMessage(1043253, args);
         // You have transferred your pet to ~3_GETTER~.
         to.SendLocalizedMessage(1043252, args);

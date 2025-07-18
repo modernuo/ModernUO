@@ -9,13 +9,10 @@ namespace Server.Mobiles;
 
 public class HealerAI : BaseAI
 {
-    private static readonly NeedDelegate m_Cure = NeedCure;
-    private static readonly NeedDelegate m_GHeal = NeedGHeal;
-    private static readonly NeedDelegate m_LHeal = NeedLHeal;
-    private static readonly NeedDelegate[] m_ACure = [m_Cure];
-    private static readonly NeedDelegate[] m_AGHeal = [m_GHeal];
-    private static readonly NeedDelegate[] m_ALHeal = [m_LHeal];
-    private static readonly NeedDelegate[] m_All = [m_Cure, m_GHeal, m_LHeal];
+    private static readonly NeedDelegate[] Cure = [NeedCure];
+    private static readonly NeedDelegate[] GHeal = [NeedGHeal];
+    private static readonly NeedDelegate[] LHeal = [NeedLHeal];
+    private static readonly NeedDelegate[] AllHeal = [NeedCure, NeedGHeal, NeedLHeal];
 
     public HealerAI(BaseCreature m) : base(m)
     {
@@ -34,27 +31,19 @@ public class HealerAI : BaseAI
         {
             var spellTarg = targ as ISpellTarget<Mobile>;
 
-            if (spellTarg?.Spell is CureSpell)
+            var funcs = spellTarg?.Spell switch
             {
-                ProcessTarget(targ, m_ACure);
-            }
-            else if (spellTarg?.Spell is GreaterHealSpell)
-            {
-                ProcessTarget(targ, m_AGHeal);
-            }
-            else if (spellTarg?.Spell is HealSpell)
-            {
-                ProcessTarget(targ, m_ALHeal);
-            }
-            else
-            {
-                targ.Cancel(_mobile, TargetCancelType.Canceled);
-            }
+                CureSpell        => Cure,
+                GreaterHealSpell => GHeal,
+                HealSpell        => LHeal,
+                _                => null
+            };
 
+            ProcessTarget(targ, funcs);
             return true;
         }
 
-        var toHelp = Find(m_All);
+        var toHelp = Find(AllHeal);
 
         if (toHelp != null)
         {
@@ -105,6 +94,12 @@ public class HealerAI : BaseAI
 
     private void ProcessTarget(Target targ, NeedDelegate[] func)
     {
+        if (func == null || func.Length == 0)
+        {
+            targ.Cancel(_mobile, TargetCancelType.Canceled);
+            return;
+        }
+
         var toHelp = Find(func);
 
         if (toHelp == null)

@@ -5,7 +5,7 @@ namespace Server.Mobiles;
 
 public class ThiefAI : BaseAI
 {
-    private Item m_toDisarm;
+    private Item _toDisarm;
 
     public ThiefAI(BaseCreature m) : base(m)
     {
@@ -49,27 +49,27 @@ public class ThiefAI : BaseAI
         }
         else
         {
-            if (m_toDisarm?.IsChildOf(_mobile.Backpack) != false)
+            if (_toDisarm?.IsChildOf(_mobile.Backpack) != false)
             {
-                m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
+                _toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
             }
 
             if (!Core.AOS && !_mobile.DisarmReady && _mobile.Skills.Wrestling.Value >= 80.0 &&
-                _mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
+                _mobile.Skills.ArmsLore.Value >= 80.0 && _toDisarm != null)
             {
                 Fists.DisarmRequest(_mobile);
             }
 
-            if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&
-                Core.TickCount - _mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&
-                m_toDisarm.LootType != LootType.Newbied)
+            if (_toDisarm?.IsChildOf(combatant.Backpack) == true &&
+                Core.TickCount - _mobile.NextSkillTime >= 0 && _toDisarm.LootType != LootType.Blessed &&
+                _toDisarm.LootType != LootType.Newbied)
             {
                 DebugSay("Trying to steal from combatant.");
 
                 _mobile.UseSkill(SkillName.Stealing);
-                _mobile.Target?.Invoke(_mobile, m_toDisarm);
+                _mobile.Target?.Invoke(_mobile, _toDisarm);
             }
-            else if (m_toDisarm == null && Core.TickCount - _mobile.NextSkillTime >= 0)
+            else if (_toDisarm == null && Core.TickCount - _mobile.NextSkillTime >= 0)
             {
                 DebugSay($"Trying to steal from {combatant.Name}.");
 
