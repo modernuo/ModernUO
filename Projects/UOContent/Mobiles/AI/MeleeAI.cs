@@ -69,7 +69,11 @@ public class MeleeAI : BaseAI
 
         if (!MoveTo(combatant, true, m_Mobile.RangeFight))
         {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+            if (m_Mobile.InRange(combatant, 1))
+            {
+                m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+            }
+            
             if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
                 DebugSay($"My move is blocked, so I am going to attack {m_Mobile.FocusMob!.Name}");
@@ -142,6 +146,8 @@ public class MeleeAI : BaseAI
         {
             DebugSay("I am stronger now, so I will continue fighting");
 
+            m_Mobile.PlaySound(m_Mobile.GetAttackSound());
+            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
             Action = ActionType.Combat;
         }
         else
