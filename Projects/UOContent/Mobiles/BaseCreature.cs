@@ -2439,7 +2439,7 @@ namespace Server.Mobiles
             {
                 FightMode.Strongest => m.Skills.Tactics.Value + m.Str, // returns strongest mobile
                 FightMode.Weakest   => -m.Hits,                        // returns weakest mobile
-                _                   => -GetDistanceToSqrt(m)
+                _                   => -this.GetDistanceToSqrt(m)
             };
         }
 
@@ -2461,7 +2461,7 @@ namespace Server.Mobiles
 
         public bool IsHurt() => Hits != HitsMax;
 
-        public double GetHomeDistance() => GetDistanceToSqrt(m_Home);
+        public double GetHomeDistance() => this.GetDistanceToSqrt(m_Home);
 
         public virtual int GetTeamSize(int iRange)
         {

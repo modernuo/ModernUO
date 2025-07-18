@@ -86,7 +86,7 @@ namespace Server.Mobiles
         public override Poison PoisonImmune => Poison.Lethal;
 
         public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) =>
-            m.Str / Math.Max(GetDistanceToSqrt(m), 1.0);
+            m.Str / Math.Max(this.GetDistanceToSqrt(m), 1.0);
 
         public override int GetAngerSound() => 0x23A;
 
