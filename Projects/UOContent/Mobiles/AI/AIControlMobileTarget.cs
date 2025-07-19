@@ -14,10 +14,8 @@ public class AIControlMobileTarget : Target
         order == OrderType.Attack ? TargetFlags.Harmful : TargetFlags.None
     )
     {
-        _list = new List<BaseAI>();
+        _list = [ai];
         Order = order;
-
-        AddAI(ai);
     }
 
     public OrderType Order { get; }

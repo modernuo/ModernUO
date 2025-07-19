@@ -393,7 +393,7 @@ namespace Server.Factions
 
               new TeleportSpell( m_Mobile, null ).Cast();
 
-              m_Mobile.DebugSay( "I am stuck, I'm going to try teleporting away" );
+              DebugSay( "I am stuck, I'm going to try teleporting away" );
             }
             else*/
             if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))

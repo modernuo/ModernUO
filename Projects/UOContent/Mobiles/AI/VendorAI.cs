@@ -24,20 +24,17 @@ public class VendorAI : BaseAI
             Mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
         }
+        else if (Mobile.FocusMob != null)
+        {
+            this.DebugSayFormatted($"{Mobile.FocusMob.Name} has talked to me");
+
+            Action = ActionType.Interact;
+        }
         else
         {
-            if (Mobile.FocusMob != null)
-            {
-                this.DebugSayFormatted($"{Mobile.FocusMob.Name} has talked to me");
+            Mobile.Warmode = false;
 
-                Action = ActionType.Interact;
-            }
-            else
-            {
-                Mobile.Warmode = false;
-
-                base.DoActionWander();
-            }
+            base.DoActionWander();
         }
 
         return true;
@@ -60,7 +57,7 @@ public class VendorAI : BaseAI
 
         if (customer?.Deleted != false || customer.Map != Mobile.Map)
         {
-            DebugSay("My customer have disapeared");
+            DebugSay("My customer has disappeared");
 
             Mobile.FocusMob = null;
 

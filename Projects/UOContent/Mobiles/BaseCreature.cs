@@ -56,11 +56,12 @@ namespace Server.Mobiles
         Attack, // "(All/Name) kill",
 
         // "(All/Name) attack"  All or the specified pet(s) currently under your control attack the target.
-        Patrol,  // "(Name) patrol"  Roves between two or more guarded targets.
-        Release, // "(Name) release"  Releases pet back into the wild (removes "tame" status).
-        Stay,    // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
-        Stop,    // "(All/Name) stop Cancels any current orders to attack, guard or follow.
-        Transfer // "(Name) transfer" Transfers complete ownership to targeted player.
+        Patrol,   // "(Name) patrol"  Roves between two or more guarded targets.
+        Release,  // "(Name) release"  Releases pet back into the wild (removes "tame" status).
+        Stay,     // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
+        Stop,     // "(All/Name) stop Cancels any current orders to attack, guard or follow.
+        Transfer, // "(Name) transfer" Transfers complete ownership to targeted player.
+        Rename    // "(Name) rename"  Changes the name of the pet.
     }
 
     [Flags]
@@ -130,30 +131,6 @@ namespace Server.Mobiles
         }
 
         public int CompareTo(DamageStore ds) => (ds?.m_Damage ?? 0).CompareTo(m_Damage);
-    }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class FriendlyNameAttribute : Attribute
-    {
-        public FriendlyNameAttribute(TextDefinition friendlyName) => FriendlyName = friendlyName;
-        // future use: Talisman 'Protection/Bonus vs. Specific Creature
-
-        public TextDefinition FriendlyName { get; }
-
-        public static TextDefinition GetFriendlyNameFor(Type t)
-        {
-            if (t.IsDefined(typeof(FriendlyNameAttribute), false))
-            {
-                var objs = t.GetCustomAttributes(typeof(FriendlyNameAttribute), false);
-
-                if (objs.Length > 0)
-                {
-                    return (objs[0] as FriendlyNameAttribute)?.FriendlyName ?? "";
-                }
-            }
-
-            return t.Name;
-        }
     }
 
     public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
@@ -364,7 +341,11 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            ResetSpeeds();
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = passiveSpeed;
 
             m_Team = 0;
 
@@ -925,8 +906,6 @@ namespace Server.Mobiles
 
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
-
-        public virtual bool ScaleSpeedByDex => NPCSpeeds.ScaleSpeedByDex && !IsMonster;
 
         // used for deleting untamed creatures [in houses]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -1514,15 +1493,6 @@ namespace Server.Mobiles
             if (isTeleport)
             {
                 AIObject?.OnTeleported();
-            }
-        }
-
-        public override void OnRawDexChange(int oldValue)
-        {
-            // This only really happens for pets or when a GM modifies a mob.
-            if (oldValue != RawDex && ScaleSpeedByDex)
-            {
-                ResetSpeeds();
             }
         }
 
@@ -3536,7 +3506,6 @@ namespace Server.Mobiles
             }
 
             Guild = null;
-            ResetSpeeds();
 
             Delta(MobileDelta.Noto);
 
@@ -4924,15 +4893,6 @@ namespace Server.Mobiles
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
             NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
-        }
-
-        public void ResetSpeeds(bool currentUseActive = false)
-        {
-            GetSpeeds(out var activeSpeed, out var passiveSpeed);
-
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
         }
 
         public virtual void DropBackpack()

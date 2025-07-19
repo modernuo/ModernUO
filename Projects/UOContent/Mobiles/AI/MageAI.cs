@@ -20,8 +20,8 @@ public class MageAI : BaseAI
     private const double DispelChance = 0.75;   // 75% chance to dispel at gm magery
     private const double InvisChance = 0.50; // 50% chance to invis at gm magery
 
-    private static readonly int[] _offsets =
-    {
+    private static readonly int[] Offsets =
+    [
         -1, -1,
         -1, 0,
         -1, 1,
@@ -47,7 +47,7 @@ public class MageAI : BaseAI
         2, 0,
         2, 1,
         2, 2
-    };
+    ];
 
     protected int _combo = -1;
 
@@ -58,8 +58,7 @@ public class MageAI : BaseAI
 
     private LandTarget _revealTarget;
 
-    public MageAI(BaseCreature m)
-        : base(m)
+    public MageAI(BaseCreature m) : base(m)
     {
     }
 
@@ -518,7 +517,15 @@ public class MageAI : BaseAI
             }
         }
 
-        DebugSay(spell != null ? $"Casting {spell.Name}" : "I don't have a spell to use!");
+        if (spell != null)
+        {
+            this.DebugSayFormatted($"Casting {spell.Name}");
+        }
+        else
+        {
+            DebugSay("I don't have a spell to use!");
+        }
+
         return spell;
     }
 
@@ -628,6 +635,7 @@ public class MageAI : BaseAI
                 Mobile.Combatant = c = Mobile.FocusMob!;
 
                 this.DebugSayFormatted($"Something happened to my combatant, so I am going to fight {c.Name}");
+
                 Mobile.FocusMob = null;
             }
             else
@@ -766,7 +774,7 @@ public class MageAI : BaseAI
             RunTo(c);
         }
 
-        if (Mobile.Spell != null || !Mobile.InRange(c, 1) || Core.TickCount - Mobile.LastMoveTime > 800)
+        if (Mobile.InRange(c, 1) || Mobile.Spell?.IsCasting == true || Core.TickCount - Mobile.LastMoveTime > 400)
         {
             Mobile.Direction = Mobile.GetDirectionTo(c);
         }
@@ -829,8 +837,6 @@ public class MageAI : BaseAI
 
     public override bool DoActionFlee()
     {
-        // Mobile c = m_Mobile.Combatant;
-
         if ((Mobile.Mana > 20 || Mobile.Mana == Mobile.ManaMax) && Mobile.Hits > Mobile.HitsMax / 2)
         {
             DebugSay("I am stronger now, my guard is up");
@@ -1098,9 +1104,9 @@ public class MageAI : BaseAI
                     py = toTarget.Y;
                 }
 
-                for (var i = 0; i < _offsets.Length; i += 2)
+                for (var i = 0; i < Offsets.Length; i += 2)
                 {
-                    int x = _offsets[i], y = _offsets[i + 1];
+                    int x = Offsets[i], y = Offsets[i + 1];
 
                     var p = new Point3D(px + x, py + y, 0);
 

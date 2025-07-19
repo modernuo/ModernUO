@@ -31,23 +31,15 @@ public class HealerAI : BaseAI
         {
             var spellTarg = targ as ISpellTarget<Mobile>;
 
-            if (spellTarg?.Spell is CureSpell)
+            var funcs = spellTarg?.Spell switch
             {
-                ProcessTarget(targ, Cure);
-            }
-            else if (spellTarg?.Spell is GreaterHealSpell)
-            {
-                ProcessTarget(targ, GHeal);
-            }
-            else if (spellTarg?.Spell is HealSpell)
-            {
-                ProcessTarget(targ, LHeal);
-            }
-            else
-            {
-                targ.Cancel(Mobile, TargetCancelType.Canceled);
-            }
+                CureSpell        => Cure,
+                GreaterHealSpell => GHeal,
+                HealSpell        => LHeal,
+                _                => null
+            };
 
+            ProcessTarget(targ, funcs);
             return true;
         }
 
@@ -102,6 +94,12 @@ public class HealerAI : BaseAI
 
     private void ProcessTarget(Target targ, NeedDelegate[] func)
     {
+        if (func == null || func.Length == 0)
+        {
+            targ.Cancel(Mobile, TargetCancelType.Canceled);
+            return;
+        }
+
         var toHelp = Find(func);
 
         if (toHelp == null)
