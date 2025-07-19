@@ -56,11 +56,6 @@ public abstract partial class BaseAI
         }
     }
 
-    protected BaseAI(Timer timer)
-    {
-        _timer = timer;
-    }
-
     public ActionType Action
     {
         get => _action;
@@ -213,7 +208,7 @@ public abstract partial class BaseAI
 
     public void DebugSay(string message, int cooldownMs = 5000)
     {
-        if (Mobile.Debug && Core.TickCount >= NextDebugMessage)
+        if (Mobile.Debug && NextDebugMessage - Core.TickCount <= 0)
         {
             Mobile.PublicOverheadMessage(MessageType.Regular, 41, false, message);
             NextDebugMessage = Core.TickCount + cooldownMs;
@@ -876,7 +871,12 @@ public abstract partial class BaseAI
             return;
         }
 
-        _timer.Stop();
+        var newSector = Mobile.Map.GetSector(Mobile.Location);
+
+        if (!newSector.Active)
+        {
+            _timer.Stop();
+        }
 
         if (ShouldReturnToHome(Mobile.Spawner as Spawner))
         {
