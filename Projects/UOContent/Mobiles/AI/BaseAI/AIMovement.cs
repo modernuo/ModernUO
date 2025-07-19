@@ -114,7 +114,7 @@ public abstract partial class BaseAI
 
     private MoveResult TryAlternateMovement(bool wasPushing)
     {
-        var offset = Utility.RandomBool() ? 1 : -1;
+        var offset = Utility.Random(2) == 0 ? 1 : -1;
 
         for (var i = 0; i < 2; ++i)
         {
@@ -225,13 +225,13 @@ public abstract partial class BaseAI
 
         while (queue.Count > 0)
         {
-            ProcessObstacle(queue.Dequeue(), queue);
+            ProcessObstacle(queue.Dequeue(), ref queue);
         }
 
         return !Mobile.Move(d);
     }
 
-    private void ProcessObstacle(Item item, PooledRefQueue<Item> queue)
+    private void ProcessObstacle(Item item, ref PooledRefQueue<Item> queue)
     {
         if (item is BaseDoor door)
         {
@@ -244,7 +244,7 @@ public abstract partial class BaseAI
 
             if (item is Container cont)
             {
-                ProcessContainer(cont, queue);
+                ProcessContainer(cont, ref queue);
                 cont.Destroy();
             }
             else
@@ -254,7 +254,7 @@ public abstract partial class BaseAI
         }
     }
 
-    private void ProcessContainer(Container cont, PooledRefQueue<Item> queue)
+    private void ProcessContainer(Container cont, ref PooledRefQueue<Item> queue)
     {
         foreach (var check in cont.Items)
         {
@@ -336,7 +336,7 @@ public abstract partial class BaseAI
             }
         }
 
-        if (target != null && Path?.Goal != target)
+        if (Path?.Goal != target)
         {
             Path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
         }

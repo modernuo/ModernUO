@@ -34,8 +34,9 @@ internal sealed class AITimer : Timer
     {
         double interval;
 
-        if (owner.Mobile.Controlled && owner.Mobile.ControlOrder == OrderType.Follow
-                                     && owner.Mobile.Combatant != owner.Mobile.ControlMaster)
+        if (owner.Mobile.Controlled &&
+            owner.Mobile.ControlOrder == OrderType.Follow &&
+            owner.Mobile.Combatant != owner.Mobile.ControlMaster)
         {
             interval = owner.Mobile.CurrentSpeed * 400;
         }
@@ -130,7 +131,6 @@ internal sealed class AITimer : Timer
             CacheDetectHiddenDelays();
         }
 
-        _owner._nextDetectHidden = Core.TickCount +
-                                   Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
+        _owner._nextDetectHidden = Core.TickCount + Utility.RandomMinMax(_detectHiddenMinDelay, _detectHiddenMaxDelay);
     }
 }
