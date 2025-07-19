@@ -73,7 +73,7 @@ public static class NPCSpeeds
         ScaleSpeedByDex = ServerConfiguration.GetSetting("movement.delay.scaleSpeedByDex", Core.HS);
         MinDelay = ServerConfiguration.GetSetting("movement.delay.npcMinDelay", 0.1);
         MaxDelay = ServerConfiguration.GetSetting("movement.delay.npcMaxDelay", 0.4);
-        MaxDex = ServerConfiguration.GetSetting("movement.delay.npcMinDex", 50);
+        MinDex = ServerConfiguration.GetSetting("movement.delay.npcMinDex", 50);
         MaxDex = ServerConfiguration.GetSetting("movement.delay.npcMaxDex", 200);
         MinIdleSeconds = ServerConfiguration.GetSetting("movement.delay.npcMinIdle", 15);
         MaxIdleSeconds = ServerConfiguration.GetSetting("movement.delay.npcMaxIdle", 25);
