@@ -83,10 +83,7 @@ public class MageAI : BaseAI
     {
         if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"I am going to attack {Mobile.FocusMob.Name}");
-            }
+            this.DebugSayFormatted($"I am going to attack {Mobile.FocusMob.Name}");
 
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
@@ -94,19 +91,13 @@ public class MageAI : BaseAI
         }
         else if (SmartAI && Mobile.Mana < Mobile.ManaMax && !Mobile.Meditating)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I am going to meditate");
-            }
+            DebugSay("I am going to meditate");
 
             Mobile.UseSkill(SkillName.Meditation);
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I am wandering");
-            }
+            DebugSay("I am wandering");
 
             Mobile.Warmode = false;
 
@@ -225,25 +216,16 @@ public class MageAI : BaseAI
 
             new TeleportSpell(Mobile).Cast();
 
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I am stuck, I'm going to try teleporting away");
-            }
+            DebugSay("I am stuck, I'm going to try teleporting away");
         }
         else if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"My move is blocked, so I am going to attack {Mobile.FocusMob.Name}");
-            }
+            this.DebugSayFormatted($"My move is blocked, so I am going to attack {Mobile.FocusMob.Name}");
 
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
-        else if (Mobile.Debug)
-        {
-            Mobile.DebugSay("I am stuck");
-        }
+        else DebugSay("I am stuck");
     }
 
     public void Run(Direction d)
@@ -415,20 +397,14 @@ public class MageAI : BaseAI
                             goto default;
                         }
 
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("Attempting to poison");
-                        }
+                        DebugSay("Attempting to poison");
 
                         spell = new PoisonSpell(Mobile);
                         break;
                     }
                 case 2: // Bless ourselves
                     {
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("Blessing myself");
-                        }
+                        DebugSay("Blessing myself");
 
                         spell = new BlessSpell(Mobile);
                         break;
@@ -436,10 +412,7 @@ public class MageAI : BaseAI
                 case 3:
                 case 4: // Curse them
                     {
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("Attempting to curse");
-                        }
+                        DebugSay("Attempting to curse");
 
                         spell = GetRandomCurseSpell();
                         break;
@@ -451,20 +424,14 @@ public class MageAI : BaseAI
                             goto default;
                         }
 
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("Attempting to paralyze");
-                        }
+                        DebugSay("Attempting to paralyze");
 
                         spell = new ParalyzeSpell(Mobile);
                         break;
                     }
                 case 6: // Drain mana
                     {
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("Attempting to drain mana");
-                        }
+                        DebugSay("Attempting to drain mana");
 
                         spell = GetRandomManaDrainSpell();
                         break;
@@ -476,20 +443,14 @@ public class MageAI : BaseAI
                             goto default;
                         }
 
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("Attempting to invis myself");
-                        }
+                        DebugSay("Attempting to invis myself");
 
                         spell = new InvisibilitySpell(Mobile);
                         break;
                     }
                 default: // Damage them
                     {
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("Just doing damage");
-                        }
+                        DebugSay("Just doing damage");
 
                         spell = GetRandomDamageSpell();
                         break;
@@ -525,10 +486,7 @@ public class MageAI : BaseAI
                             {
                                 if (c.Paralyzed && !c.Poisoned && !Mobile.Meditating)
                                 {
-                                    if (Mobile.Debug)
-                                    {
-                                        Mobile.DebugSay("I am going to meditate");
-                                    }
+                                    DebugSay("I am going to meditate");
 
                                     Mobile.UseSkill(SkillName.Meditation);
                                 }
@@ -557,18 +515,7 @@ public class MageAI : BaseAI
             }
         }
 
-        if (Mobile.Debug)
-        {
-            if (spell != null)
-            {
-                Mobile.DebugSay($"Casting {spell.Name}");
-            }
-            else
-            {
-                Mobile.DebugSay("I don't have a spell to use!");
-            }
-        }
-
+        DebugSay(spell != null ? $"Casting {spell.Name}" : "I don't have a spell to use!");
         return spell;
     }
 
@@ -677,21 +624,12 @@ public class MageAI : BaseAI
             {
                 Mobile.Combatant = c = Mobile.FocusMob!;
 
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay(
-                        $"Something happened to my combatant, so I am going to fight {c.Name}"
-                    );
-                }
-
+                DebugSay($"Something happened to my combatant, so I am going to fight {c.Name}");
                 Mobile.FocusMob = null;
             }
             else
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("Something happened to my combatant, and nothing is around. I am on guard.");
-                }
+                DebugSay("Something happened to my combatant, and nothing is around. I am on guard.");
 
                 Action = ActionType.Guard;
                 return true;
@@ -700,19 +638,13 @@ public class MageAI : BaseAI
 
         if (!Mobile.InLOS(c))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I can't see my target");
-            }
+            DebugSay("I can't see my target");
 
             if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
             {
                 Mobile.Combatant = c = Mobile.FocusMob!;
 
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay($"I will switch to {c.Name}");
-                }
+                this.DebugSayFormatted($"I will switch to {c.Name}");
 
                 Mobile.FocusMob = null;
             }
@@ -742,10 +674,7 @@ public class MageAI : BaseAI
 
             if (c == null)
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("My combatant has fled, so I am on guard");
-                }
+                DebugSay("My combatant has fled, so I am on guard");
 
                 Action = ActionType.Guard;
                 return true;
@@ -760,10 +689,7 @@ public class MageAI : BaseAI
 
             if (Utility.Random(0, 100) > fleeChance)
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay($"I am going to flee from {c.Name}");
-                }
+                this.DebugSayFormatted($"I am going to flee from {c.Name}");
 
                 Action = ActionType.Flee;
                 return true;
@@ -772,10 +698,7 @@ public class MageAI : BaseAI
 
         if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, c))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I used my abilities!");
-            }
+            DebugSay("I used my abilities!");
         }
         else if (Mobile.Spell == null && Core.TickCount - _nextCastTime >= 0)
         {
@@ -785,19 +708,13 @@ public class MageAI : BaseAI
 
             if (Mobile.Poisoned) // Top cast priority is cure
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("I am going to cure myself");
-                }
+                DebugSay("I am going to cure myself");
 
                 spell = new CureSpell(Mobile);
             }
             else if (toDispel != null) // Something dispellable is attacking us
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay($"I am going to dispel {toDispel}");
-                }
+                this.DebugSayFormatted($"I am going to dispel {toDispel}");
 
                 spell = DoDispel(toDispel); // May return null if dumb AI and doesn't have enough skill
             }
@@ -869,10 +786,7 @@ public class MageAI : BaseAI
             }
             else if (Mobile.Spell == null && Core.TickCount - _nextCastTime >= 0)
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("I am going to reveal my last target");
-                }
+                DebugSay("I am going to reveal my last target");
 
                 _revealTarget = new LandTarget(_lastTargetLoc, map);
                 Spell spell = new RevealSpell(Mobile);
@@ -888,10 +802,7 @@ public class MageAI : BaseAI
 
         if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"I am going to attack {Mobile.FocusMob.Name}");
-            }
+            this.DebugSayFormatted($"I am going to attack {Mobile.FocusMob.Name}");
 
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
@@ -919,19 +830,13 @@ public class MageAI : BaseAI
 
         if ((Mobile.Mana > 20 || Mobile.Mana == Mobile.ManaMax) && Mobile.Hits > Mobile.HitsMax / 2)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I am stronger now, my guard is up");
-            }
+            DebugSay("I am stronger now, my guard is up");
 
             Action = ActionType.Guard;
         }
         else if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"I am scared of {Mobile.FocusMob.Name}");
-            }
+            this.DebugSayFormatted($"I am scared of {Mobile.FocusMob.Name}");
 
             RunFrom(Mobile.FocusMob);
             Mobile.FocusMob = null;
@@ -943,10 +848,7 @@ public class MageAI : BaseAI
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Area seems clear, but my guard is up");
-            }
+            DebugSay("Area seems clear, but my guard is up");
 
             Action = ActionType.Guard;
             Mobile.Warmode = true;

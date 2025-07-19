@@ -102,6 +102,7 @@ public abstract class BaseAI
 
     private long _nextDetectHidden;
     private long _nextStopGuard;
+    public long NextDebugMessage { get; set; }
 
     protected PathFollower _path;
     public Timer _timer;
@@ -463,20 +464,14 @@ public abstract class BaseAI
 
         if (Mobile.Controlled && Mobile.Commandable)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Listening...");
-            }
+            DebugSay("Listening...");
 
             var isOwner = e.Mobile == Mobile.ControlMaster;
             var isFriend = !isOwner && Mobile.IsPetFriend(e.Mobile);
 
             if (e.Mobile.Alive && (isOwner || isFriend))
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("It's from my master");
-                }
+                DebugSay("It's from my master");
 
                 var keywords = e.Keywords;
                 var speech = e.Speech;
@@ -774,10 +769,7 @@ public abstract class BaseAI
         {
             if (e.Mobile.AccessLevel >= AccessLevel.GameMaster)
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("It's from a GM");
-                }
+                DebugSay("It's from a GM");
 
                 if (Mobile.FindMyName(e.Speech, true))
                 {
@@ -802,6 +794,15 @@ public abstract class BaseAI
                     }
                 }
             }
+        }
+    }
+
+    public void DebugSay(string message, int cooldownMs = 5000)
+    {
+        if (Mobile.Debug && Core.TickCount >= NextDebugMessage)
+        {
+            Mobile.PublicOverheadMessage(MessageType.Regular, 41, false, message);
+            NextDebugMessage = Core.TickCount + cooldownMs;
         }
     }
 
@@ -923,10 +924,7 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Praise the shepherd!");
-            }
+            DebugSay("Praise the shepherd!");
         }
         else if (Mobile.CurrentWayPoint != null)
         {
@@ -934,19 +932,13 @@ public abstract class BaseAI
             if ((point.X != Mobile.Location.X || point.Y != Mobile.Location.Y) && point.Map == Mobile.Map &&
                 point.Parent == null && !point.Deleted)
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("I will move towards my waypoint.");
-                }
+                DebugSay("I will move towards my waypoint.");
 
                 DoMove(Mobile.GetDirectionTo(Mobile.CurrentWayPoint));
             }
             else if (OnAtWayPoint())
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("I will go to the next waypoint");
-                }
+                DebugSay("I will go to the next waypoint");
 
                 Mobile.CurrentWayPoint = point.NextPoint;
                 if (point.NextPoint?.Deleted == true)
@@ -987,10 +979,7 @@ public abstract class BaseAI
     {
         if (Core.AOS && CheckHerding())
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Praise the shepherd!");
-            }
+            DebugSay("Praise the shepherd!");
 
             return true;
         }
@@ -1000,10 +989,7 @@ public abstract class BaseAI
         if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("My combatant is gone!");
-            }
+            DebugSay("My combatant is gone!");
 
             Action = ActionType.Wander;
             return true;
@@ -1012,10 +998,7 @@ public abstract class BaseAI
         Mobile.Direction = Mobile.GetDirectionTo(combatant);
         if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
-            }
+            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
 
         return true;
@@ -1025,25 +1008,16 @@ public abstract class BaseAI
     {
         if (Core.AOS && CheckHerding())
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Praise the shepherd!");
-            }
+            DebugSay("Praise the shepherd!");
         }
         else if (Core.TickCount - _nextStopGuard < 0)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I am on guard");
-            }
+            DebugSay("I am on guard");
             // m_Mobile.Turn( Utility.Random(0, 2) - 1 );
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I stopped being on guard");
-            }
+            DebugSay("I stopped being on guard");
 
             Action = ActionType.Wander;
         }
@@ -1057,10 +1031,7 @@ public abstract class BaseAI
 
         if (from?.Deleted != false || from.Map != Mobile.Map)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I have lost him");
-            }
+            DebugSay("I have lost him");
 
             Action = ActionType.Guard;
             return true;
@@ -1068,19 +1039,13 @@ public abstract class BaseAI
 
         if (WalkMobileRange(from, 1, true, Mobile.RangePerception * 2, Mobile.RangePerception * 3))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I have fled");
-            }
+            DebugSay("I have fled");
 
             Action = ActionType.Guard;
             return true;
         }
 
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("I am fleeing!");
-        }
+        DebugSay("I am fleeing!");
 
         return true;
     }
@@ -1244,10 +1209,7 @@ public abstract class BaseAI
 
     public virtual bool DoOrderNone()
     {
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("I have no order");
-        }
+        DebugSay("I have no order");
 
         WalkRandomInHome(3, 2, 1);
 
@@ -1276,20 +1238,14 @@ public abstract class BaseAI
 
         if (iCurrDist > Mobile.RangePerception)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I have lost my master. I stay here");
-            }
+            DebugSay("I have lost my master. I stay here");
 
             Mobile.ControlTarget = null;
             Mobile.ControlOrder = OrderType.None;
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("My master told me come");
-            }
+            DebugSay("My master told me come");
 
             // Not exactly OSI style, but better than nothing.
             var bRun = iCurrDist > 5;
@@ -1319,10 +1275,7 @@ public abstract class BaseAI
             return true;
         }
 
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("I drop my stuff for my master");
-        }
+        DebugSay("I drop my stuff for my master");
 
         var pack = Mobile.Backpack;
 
@@ -1389,10 +1342,7 @@ public abstract class BaseAI
     {
         if (CheckHerding())
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Praise the shepherd!");
-            }
+            DebugSay("Praise the shepherd!");
         }
         else if (Mobile.ControlTarget?.Deleted == false && Mobile.ControlTarget != Mobile)
         {
@@ -1400,10 +1350,7 @@ public abstract class BaseAI
 
             if (iCurrDist > Mobile.RangePerception)
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay("I have lost the one to follow. I stay here");
-                }
+                DebugSay("I have lost the one to follow. I stay here");
 
                 if (Mobile.Combatant?.Deleted == false && Mobile.Combatant.Alive &&
                     !Mobile.Combatant.IsDeadBondedPet)
@@ -1418,10 +1365,7 @@ public abstract class BaseAI
             }
             else
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay($"My master told me to follow: {Mobile.ControlTarget.Name}");
-                }
+                this.DebugSayFormatted($"My master told me to follow: {Mobile.ControlTarget.Name}");
 
                 // Not exactly OSI style, but better than nothing.
                 var bRun = iCurrDist > 5;
@@ -1447,10 +1391,7 @@ public abstract class BaseAI
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I have nobody to follow");
-            }
+            DebugSay("I have nobody to follow");
 
             Mobile.ControlTarget = null;
             Mobile.ControlOrder = OrderType.None;
@@ -1600,9 +1541,9 @@ public abstract class BaseAI
                 }
             }
 
-            if (combatant != null && Mobile.Debug)
+            if (combatant != null)
             {
-                Mobile.DebugSay("Crap, my master has been attacked! I will attack one of those bastards!");
+                DebugSay("Crap, my master has been attacked! I will attack one of those bastards!");
             }
         }
 
@@ -1610,10 +1551,7 @@ public abstract class BaseAI
             combatant.Alive && !combatant.IsDeadBondedPet && Mobile.CanSee(combatant) &&
             Mobile.CanBeHarmful(combatant, false) && combatant.Map == Mobile.Map)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Guarding from target...");
-            }
+            DebugSay("Guarding from target...");
 
             Mobile.Combatant = combatant;
             Mobile.FocusMob = combatant;
@@ -1627,10 +1565,7 @@ public abstract class BaseAI
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Nothing to guard from");
-            }
+            DebugSay("Nothing to guard from");
 
             Mobile.Warmode = false;
             if (Core.AOS)
@@ -1654,12 +1589,7 @@ public abstract class BaseAI
         if (Mobile.ControlTarget?.Deleted != false || Mobile.ControlTarget.Map != Mobile.Map ||
             !Mobile.ControlTarget.Alive || Mobile.ControlTarget.IsDeadBondedPet)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay(
-                    "I think he might be dead. He's not anywhere around here at least. That's cool. I'm glad he's dead."
-                );
-            }
+            DebugSay("I think he might be dead. He's not anywhere around here at least. That's cool. I'm glad he's dead.");
 
             if (Core.AOS)
             {
@@ -1703,10 +1633,7 @@ public abstract class BaseAI
                     Mobile.ControlTarget = newCombatant;
                     Mobile.ControlOrder = OrderType.Attack;
                     Mobile.Combatant = newCombatant;
-                    if (Mobile.Debug)
-                    {
-                        Mobile.DebugSay("But -that- is not dead. Here we go again...");
-                    }
+                    DebugSay("But -that- is not dead. Here we go again...");
 
                     Think();
                 }
@@ -1714,10 +1641,7 @@ public abstract class BaseAI
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Attacking target...");
-            }
+            DebugSay("Attacking target...");
 
             Think();
         }
@@ -1727,20 +1651,14 @@ public abstract class BaseAI
 
     public virtual bool DoOrderPatrol()
     {
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("This order is not yet coded");
-        }
+        DebugSay("This order is not yet coded");
 
         return true;
     }
 
     public virtual bool DoOrderRelease()
     {
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("I have been released");
-        }
+        DebugSay("I have been released");
 
         Mobile.PlaySound(Mobile.GetAngerSound());
 
@@ -1776,17 +1694,7 @@ public abstract class BaseAI
 
     public virtual bool DoOrderStay()
     {
-        if (Mobile.Debug)
-        {
-            if (CheckHerding())
-            {
-                Mobile.DebugSay("Praise the shepherd!");
-            }
-            else
-            {
-                Mobile.DebugSay("My master told me to stay");
-            }
-        }
+        DebugSay(CheckHerding() ? "Praise the shepherd!" : "My master told me to stay");
 
         return true;
     }
@@ -1798,10 +1706,7 @@ public abstract class BaseAI
             return true;
         }
 
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("My master told me to stop.");
-        }
+        DebugSay("My master told me to stop.");
 
         Mobile.Direction = Mobile.GetDirectionTo(Mobile.ControlMaster);
         Mobile.Home = Mobile.Location;
@@ -1832,10 +1737,7 @@ public abstract class BaseAI
 
         if (from?.Deleted == false && to?.Deleted == false && from != to && to.Player)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"Begin transfer with {to.Name}");
-            }
+            this.DebugSayFormatted($"Begin transfer with {to.Name}");
 
             var youngFrom = from is PlayerMobile mobile && mobile.Young;
             var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
@@ -1911,20 +1813,14 @@ public abstract class BaseAI
     {
         if (Core.Now < Mobile.BardEndTime)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I am pacified, I wait");
-            }
+            DebugSay("I am pacified, I wait");
 
             Mobile.Combatant = null;
             Mobile.Warmode = false;
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I'm not pacified any longer");
-            }
+            DebugSay("I'm not pacified any longer");
 
             Mobile.BardPacified = false;
         }
@@ -1939,10 +1835,7 @@ public abstract class BaseAI
              Mobile.BardMaster.Map != Mobile.Map || Mobile.GetDistanceToSqrt(Mobile.BardMaster) >
              Mobile.RangePerception))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I have lost my provoker");
-            }
+            DebugSay("I have lost my provoker");
 
             Mobile.BardProvoked = false;
             Mobile.BardMaster = null;
@@ -1954,10 +1847,7 @@ public abstract class BaseAI
         else if (Mobile.BardTarget?.Deleted != false || Mobile.BardTarget.Map != Mobile.Map ||
                  Mobile.GetDistanceToSqrt(Mobile.BardTarget) > Mobile.RangePerception)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("I have lost my provoke target");
-            }
+            DebugSay("I have lost my provoke target");
 
             Mobile.BardProvoked = false;
             Mobile.BardMaster = null;
@@ -2172,10 +2062,7 @@ public abstract class BaseAI
 
         if (canOpenDoors || canDestroyObstacles)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("My movement was blocked, I will try to clear some obstacles.");
-            }
+            DebugSay("My movement was blocked, I will try to clear some obstacles.");
 
             var map = Mobile.Map;
 
@@ -2236,28 +2123,15 @@ public abstract class BaseAI
 
                     if (item is BaseDoor door)
                     {
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay(
-                                "Little do they expect, I've learned how to open doors. Didn't they read the script??"
-                            );
-                        }
+                        DebugSay("Little do they expect, I've learned how to open doors. Didn't they read the script??");
 
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay("*twist*");
-                        }
+                        DebugSay("*twist*");
 
                         door.Use(Mobile);
                     }
                     else
                     {
-                        if (Mobile.Debug)
-                        {
-                            Mobile.DebugSay(
-                                $"Ugabooga. I'm so big and tough I can destroy it: {item.GetType().Name}"
-                            );
-                        }
+                        DebugSay($"Ugabooga. I'm so big and tough I can destroy it: {item.GetType().Name}");
 
                         if (item is Container cont)
                         {
@@ -2410,10 +2284,7 @@ public abstract class BaseAI
     {
         if (_path != null)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Teleported; repathing");
-            }
+            DebugSay("Teleported; repathing");
 
             _path.ForceRepath();
         }
@@ -2578,10 +2449,7 @@ public abstract class BaseAI
 
         if (Mobile.ConstantFocus != null)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("Acquired my constant focus");
-            }
+            DebugSay("Acquired my constant focus");
 
             Mobile.FocusMob = Mobile.ConstantFocus;
             return true;
@@ -2608,10 +2476,7 @@ public abstract class BaseAI
 
         Mobile.NextReacquireTime = Core.TickCount + (int)Mobile.ReacquireDelay.TotalMilliseconds;
 
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("Acquiring...");
-        }
+        DebugSay("Acquiring...");
 
         var map = Mobile.Map;
 
@@ -2806,10 +2671,7 @@ public abstract class BaseAI
             return;
         }
 
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("Checking for hidden players");
-        }
+        DebugSay("Checking for hidden players");
 
         var srcSkill = Mobile.Skills.DetectHidden.Value;
 
@@ -2823,10 +2685,7 @@ public abstract class BaseAI
             if (trg != Mobile && trg.Player && trg.Alive && trg.Hidden && trg.AccessLevel == AccessLevel.Player &&
                 Mobile.InLOS(trg))
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay($"Trying to detect {trg.Name}");
-                }
+                this.DebugSayFormatted($"Trying to detect {trg.Name}");
 
                 var trgHiding = trg.Skills.Hiding.Value / 2.9;
                 var trgStealth = trg.Skills.Stealth.Value / 1.8;

@@ -15,17 +15,11 @@ public class VendorAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (Mobile.Debug)
-        {
-            Mobile.DebugSay("I'm fine");
-        }
+        DebugSay("I'm fine");
 
         if (Mobile.Combatant != null)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"{Mobile.Combatant.Name} is attacking me");
-            }
+            this.DebugSayFormatted($"{Mobile.Combatant.Name} is attacking me");
 
             Mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
@@ -34,10 +28,7 @@ public class VendorAI : BaseAI
         {
             if (Mobile.FocusMob != null)
             {
-                if (Mobile.Debug)
-                {
-                    Mobile.DebugSay($"{Mobile.FocusMob.Name} has talked to me");
-                }
+                this.DebugSayFormatted($"{Mobile.FocusMob.Name} has talked to me");
 
                 Action = ActionType.Interact;
             }
@@ -58,10 +49,7 @@ public class VendorAI : BaseAI
 
         if (Mobile.Combatant != null)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"{Mobile.Combatant.Name} is attacking me");
-            }
+            this.DebugSayFormatted($"{Mobile.Combatant.Name} is attacking me");
 
             Mobile.Say(GetRandomGuardMessage());
 
@@ -72,10 +60,7 @@ public class VendorAI : BaseAI
 
         if (customer?.Deleted != false || customer.Map != Mobile.Map)
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay("My customer have disapeared");
-            }
+            DebugSay("My customer have disapeared");
 
             Mobile.FocusMob = null;
 
@@ -83,19 +68,13 @@ public class VendorAI : BaseAI
         }
         else if (customer.InRange(Mobile, Mobile.RangeFight))
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"I am with {customer.Name}");
-            }
+            this.DebugSayFormatted($"I am with {customer.Name}");
 
             Mobile.Direction = Mobile.GetDirectionTo(customer);
         }
         else
         {
-            if (Mobile.Debug)
-            {
-                Mobile.DebugSay($"{customer.Name} is gone");
-            }
+            this.DebugSayFormatted($"{customer.Name} is gone");
 
             Mobile.FocusMob = null;
             Action = ActionType.Wander;
