@@ -115,7 +115,7 @@ public abstract partial class BaseAI
 
     private MoveResult TryAlternateMovement(bool wasPushing)
     {
-        var offset = Utility.Random(100) < 40 ? 1 : -1;
+        var offset = Utility.RandomBool() ? 1 : -1;
 
         for (var i = 0; i < 2; ++i)
         {
@@ -140,16 +140,21 @@ public abstract partial class BaseAI
 
         var (x, y) = GetOffsetLocation(d);
 
-        using var queue = PooledRefQueue<Item>.Create();
-
-        var destroyables = GatherObstacles(x, y, queue);
+        var queue = GatherObstacles(x, y, out var destroyables);
 
         if (destroyables > 0)
         {
             Effects.PlaySound(new Point3D(x, y, Mobile.Z), Mobile.Map, 0x3B3);
         }
 
-        return ProcessObstacles(queue, d);
+        try
+        {
+            return ProcessObstacles(ref queue, d);
+        }
+        finally
+        {
+            queue.Dispose();
+        }
     }
 
     private (int x, int y) GetOffsetLocation(Direction d)
@@ -160,20 +165,24 @@ public abstract partial class BaseAI
         return (x, y);
     }
 
-    private int GatherObstacles(int x, int y, PooledRefQueue<Item> queue)
+    private PooledRefQueue<Item> GatherObstacles(int x, int y, out int destroyables)
     {
-        var destroyables = 0;
+        var queue = PooledRefQueue<Item>.Create();
+        destroyables = 0;
 
         foreach (var item in Mobile.Map.GetItemsInRange(new Point2D(x, y), 1))
         {
             if (IsValidDoor(item, x, y) || IsValidDestroyableItem(item))
             {
                 queue.Enqueue(item);
-                if (item is not BaseDoor) { destroyables++; }
+                if (item is not BaseDoor)
+                {
+                    destroyables++;
+                }
             }
         }
 
-        return destroyables;
+        return queue;
     }
 
     private bool IsValidDoor(Item item, int x, int y)
@@ -211,7 +220,7 @@ public abstract partial class BaseAI
         return Mobile.InRange(item.GetWorldLocation(), 1);
     }
 
-    private bool ProcessObstacles(PooledRefQueue<Item> queue, Direction d)
+    private bool ProcessObstacles(ref PooledRefQueue<Item> queue, Direction d)
     {
         if (queue.Count == 0) { return true; }
 
@@ -373,7 +382,7 @@ public abstract partial class BaseAI
         return dist >= iWantDistMin && dist <= iWantDistMax;
     }
 
-    private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
+    private bool MoveTowardsOrAwayFrom([NotNull] Mobile m, bool run, int iCurrDist, int iWantDistMax)
     {
         var shouldRun = run && iCurrDist > 5;
 
