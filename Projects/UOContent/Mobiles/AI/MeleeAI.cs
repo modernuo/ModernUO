@@ -10,24 +10,24 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
+                Mobile.DebugSay($"I have detected {Mobile.FocusMob.Name}, attacking");
             }
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("I am wandering");
+                Mobile.DebugSay("I am wandering");
             }
 
-            m_Mobile.Warmode = false;
+            Mobile.Warmode = false;
 
             base.DoActionWander();
         }
@@ -37,41 +37,41 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = m_Mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
+                Mobile.DebugSay("My combatant is gone, so my guard is up");
             }
 
             Action = ActionType.Guard;
             return true;
         }
 
-        if (!m_Mobile.InRange(combatant, m_Mobile.RangePerception))
+        if (!Mobile.InRange(combatant, Mobile.RangePerception))
         {
             // They are somewhat far away, can we find something else?
 
-            if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+            if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
             {
-                m_Mobile.Combatant = m_Mobile.FocusMob;
-                m_Mobile.FocusMob = null;
+                Mobile.Combatant = Mobile.FocusMob;
+                Mobile.FocusMob = null;
             }
-            else if (!m_Mobile.InRange(combatant, m_Mobile.RangePerception * 3))
+            else if (!Mobile.InRange(combatant, Mobile.RangePerception * 3))
             {
-                m_Mobile.Combatant = null;
+                Mobile.Combatant = null;
             }
 
-            combatant = m_Mobile.Combatant;
+            combatant = Mobile.Combatant;
 
             if (combatant == null)
             {
-                if (m_Mobile.Debug)
+                if (Mobile.Debug)
                 {
-                    m_Mobile.DebugSay("My combatant has fled, so I am on guard");
+                    Mobile.DebugSay("My combatant has fled, so I am on guard");
                 }
 
                 Action = ActionType.Guard;
@@ -79,58 +79,58 @@ public class MeleeAI : BaseAI
             }
         }
 
-        if (!MoveTo(combatant, true, m_Mobile.RangeFight))
+        if (!MoveTo(combatant, true, Mobile.RangeFight))
         {
-            if (m_Mobile.InRange(combatant, 1))
+            if (Mobile.InRange(combatant, 1))
             {
-                m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+                Mobile.Direction = Mobile.GetDirectionTo(combatant);
             }
-            
-            if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+
+            if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
             {
-                if (m_Mobile.Debug)
+                if (Mobile.Debug)
                 {
-                    m_Mobile.DebugSay($"My move is blocked, so I am going to attack {m_Mobile.FocusMob!.Name}");
+                    Mobile.DebugSay($"My move is blocked, so I am going to attack {Mobile.FocusMob!.Name}");
                 }
 
-                m_Mobile.Combatant = m_Mobile.FocusMob;
+                Mobile.Combatant = Mobile.FocusMob;
                 Action = ActionType.Combat;
                 return true;
             }
 
-            if (m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
+            if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
-                if (m_Mobile.Debug)
+                if (Mobile.Debug)
                 {
-                    m_Mobile.DebugSay($"I cannot find {combatant.Name}, so my guard is up");
+                    Mobile.DebugSay($"I cannot find {combatant.Name}, so my guard is up");
                 }
 
                 Action = ActionType.Guard;
                 return true;
             }
 
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I cannot find {combatant.Name}, so my guard is up");
+                Mobile.DebugSay($"I cannot find {combatant.Name}, so my guard is up");
             }
         }
-        else if (Core.TickCount - m_Mobile.LastMoveTime > 400)
+        else if (Core.TickCount - Mobile.LastMoveTime > 400)
         {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+            Mobile.Direction = Mobile.GetDirectionTo(combatant);
         }
 
-        if (!m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee)
+        if (!Mobile.Controlled && !Mobile.Summoned && Mobile.CanFlee)
         {
-            if (m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100)
+            if (Mobile.Hits < Mobile.HitsMax * 20 / 100)
             {
                 // We are low on health, should we flee?
 
-                var fleeChance = 10 + Math.Max(0, combatant.Hits - m_Mobile.Hits); // (10 + diff)% chance to flee;
+                var fleeChance = 10 + Math.Max(0, combatant.Hits - Mobile.Hits); // (10 + diff)% chance to flee;
                 if (Utility.Random(0, 100) < fleeChance)
                 {
-                    if (m_Mobile.Debug)
+                    if (Mobile.Debug)
                     {
-                        m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
+                        Mobile.DebugSay($"I am going to flee from {combatant.Name}");
                     }
 
                     Action = ActionType.Flee;
@@ -139,11 +139,11 @@ public class MeleeAI : BaseAI
             }
         }
 
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("I used my abilities!");
+                Mobile.DebugSay("I used my abilities!");
             }
         }
 
@@ -152,14 +152,14 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
+                Mobile.DebugSay($"I have detected {Mobile.FocusMob.Name}, attacking");
             }
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -172,20 +172,20 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionFlee()
     {
-        if (m_Mobile.Hits > m_Mobile.HitsMax / 2)
+        if (Mobile.Hits > Mobile.HitsMax / 2)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("I am stronger now, so I will continue fighting");
+                Mobile.DebugSay("I am stronger now, so I will continue fighting");
             }
 
-            m_Mobile.PlaySound(m_Mobile.GetAttackSound());
-            m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+            Mobile.PlaySound(Mobile.GetAttackSound());
+            Mobile.CurrentSpeed = Mobile.ActiveSpeed;
             Action = ActionType.Combat;
         }
         else
         {
-            m_Mobile.FocusMob = m_Mobile.Combatant;
+            Mobile.FocusMob = Mobile.Combatant;
             base.DoActionFlee();
         }
 

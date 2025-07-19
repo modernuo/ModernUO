@@ -15,35 +15,35 @@ public class VendorAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (m_Mobile.Debug)
+        if (Mobile.Debug)
         {
-            m_Mobile.DebugSay("I'm fine");
+            Mobile.DebugSay("I'm fine");
         }
 
-        if (m_Mobile.Combatant != null)
+        if (Mobile.Combatant != null)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"{m_Mobile.Combatant.Name} is attacking me");
+                Mobile.DebugSay($"{Mobile.Combatant.Name} is attacking me");
             }
 
-            m_Mobile.Say(GetRandomGuardMessage());
+            Mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
         }
         else
         {
-            if (m_Mobile.FocusMob != null)
+            if (Mobile.FocusMob != null)
             {
-                if (m_Mobile.Debug)
+                if (Mobile.Debug)
                 {
-                    m_Mobile.DebugSay($"{m_Mobile.FocusMob.Name} has talked to me");
+                    Mobile.DebugSay($"{Mobile.FocusMob.Name} has talked to me");
                 }
 
                 Action = ActionType.Interact;
             }
             else
             {
-                m_Mobile.Warmode = false;
+                Mobile.Warmode = false;
 
                 base.DoActionWander();
             }
@@ -54,50 +54,50 @@ public class VendorAI : BaseAI
 
     public override bool DoActionInteract()
     {
-        var customer = m_Mobile.FocusMob;
+        var customer = Mobile.FocusMob;
 
-        if (m_Mobile.Combatant != null)
+        if (Mobile.Combatant != null)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"{m_Mobile.Combatant.Name} is attacking me");
+                Mobile.DebugSay($"{Mobile.Combatant.Name} is attacking me");
             }
 
-            m_Mobile.Say(GetRandomGuardMessage());
+            Mobile.Say(GetRandomGuardMessage());
 
             Action = ActionType.Flee;
 
             return true;
         }
 
-        if (customer?.Deleted != false || customer.Map != m_Mobile.Map)
+        if (customer?.Deleted != false || customer.Map != Mobile.Map)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("My customer have disapeared");
+                Mobile.DebugSay("My customer have disapeared");
             }
 
-            m_Mobile.FocusMob = null;
+            Mobile.FocusMob = null;
 
             Action = ActionType.Wander;
         }
-        else if (customer.InRange(m_Mobile, m_Mobile.RangeFight))
+        else if (customer.InRange(Mobile, Mobile.RangeFight))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I am with {customer.Name}");
+                Mobile.DebugSay($"I am with {customer.Name}");
             }
 
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(customer);
+            Mobile.Direction = Mobile.GetDirectionTo(customer);
         }
         else
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"{customer.Name} is gone");
+                Mobile.DebugSay($"{customer.Name} is gone");
             }
 
-            m_Mobile.FocusMob = null;
+            Mobile.FocusMob = null;
             Action = ActionType.Wander;
         }
 
@@ -106,13 +106,13 @@ public class VendorAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        m_Mobile.FocusMob = m_Mobile.Combatant;
+        Mobile.FocusMob = Mobile.Combatant;
         return base.DoActionGuard();
     }
 
     public override bool HandlesOnSpeech(Mobile from)
     {
-        if (from.InRange(m_Mobile, 4))
+        if (from.InRange(Mobile, 4))
         {
             return true;
         }
@@ -127,7 +127,7 @@ public class VendorAI : BaseAI
 
         var from = e.Mobile;
 
-        if (m_Mobile is BaseVendor vendor && from.InRange(m_Mobile, Core.AOS ? 1 : 4) && !e.Handled)
+        if (Mobile is BaseVendor vendor && from.InRange(Mobile, Core.AOS ? 1 : 4) && !e.Handled)
         {
             if (e.HasKeyword(0x14D)) // *vendor sell*
             {
