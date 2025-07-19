@@ -837,8 +837,6 @@ public class MageAI : BaseAI
 
     public override bool DoActionFlee()
     {
-        // Mobile c = _mobile.Combatant;
-
         if ((Mobile.Mana > 20 || Mobile.Mana == Mobile.ManaMax) && Mobile.Hits > Mobile.HitsMax / 2)
         {
             DebugSay("I am stronger now, my guard is up");
