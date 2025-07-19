@@ -28,19 +28,19 @@ public abstract partial class BaseAI
             return true;
         }
 
-        if (from.Alive && _mobile.Controlled && _mobile.Commandable &&
-            (from == _mobile.ControlMaster || _mobile.IsPetFriend(from)))
+        if (from.Alive && Mobile.Controlled && Mobile.Commandable &&
+            (from == Mobile.ControlMaster || Mobile.IsPetFriend(from)))
         {
             return true;
         }
 
-        return from.Alive && from.InRange(_mobile.Location, 3) && _mobile.IsHumanInTown();
+        return from.Alive && from.InRange(Mobile.Location, 3) && Mobile.IsHumanInTown();
     }
 
     public virtual void OnSpeech(SpeechEventArgs e)
     {
         if (WasNamed(e.Speech) && e.Mobile.Alive &&
-            e.Mobile.InRange(_mobile.Location, 3) && _mobile.IsHumanInTown())
+            e.Mobile.InRange(Mobile.Location, 3) && Mobile.IsHumanInTown())
         {
             if (HandleMoveCommand(e) || HandleTimeCommand(e) || HandleTrainCommand(e))
             {
@@ -48,7 +48,7 @@ public abstract partial class BaseAI
             }
         }
 
-        if (_mobile.Controlled && _mobile.Commandable)
+        if (Mobile.Controlled && Mobile.Commandable)
         {
             AllOnSpeechPet(e);
             NamedOnSpeechPet(e);
@@ -75,8 +75,8 @@ public abstract partial class BaseAI
 
         _lastOrder = Core.Now;
 
-        var map = _mobile.Map;
-        var currentLoc = _mobile.Location;
+        var map = Mobile.Map;
+        var currentLoc = Mobile.Location;
 
         var newX = currentLoc.X + Utility.RandomMinMax(-1, 1);
         var newY = currentLoc.Y + Utility.RandomMinMax(-1, 1);
@@ -84,12 +84,12 @@ public abstract partial class BaseAI
 
         if (map != null && map.CanFit(newX, newY, newZ, 16, false, false))
         {
-            _mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516); // Excuse me?
-            _mobile.Location = new Point3D(newX, newY, newZ);
+            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501516); // Excuse me?
+            Mobile.Location = new Point3D(newX, newY, newZ);
         }
         else
         {
-            _mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501487);
+            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 501487);
             // You're standing too close, go away.
         }
 
@@ -110,8 +110,8 @@ public abstract partial class BaseAI
 
         _lastOrder = Core.Now;
 
-        Clock.GetTime(_mobile, out var generalNumber, out _);
-        _mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, generalNumber);
+        Clock.GetTime(Mobile, out var generalNumber, out _);
+        Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, generalNumber);
 
         return true;
     }
@@ -129,13 +129,13 @@ public abstract partial class BaseAI
 
     public virtual void AllOnSpeechPet(SpeechEventArgs e)
     {
-        if (!e.Mobile.InRange(_mobile.Location, 14))
+        if (!e.Mobile.InRange(Mobile.Location, 14))
         {
             return;
         }
 
-        var isOwner = e.Mobile == _mobile.ControlMaster;
-        var isPetFriend = !isOwner && _mobile.IsPetFriend(e.Mobile);
+        var isOwner = e.Mobile == Mobile.ControlMaster;
+        var isPetFriend = !isOwner && Mobile.IsPetFriend(e.Mobile);
 
         if (!isOwner && !isPetFriend)
         {
@@ -198,13 +198,13 @@ public abstract partial class BaseAI
 
     public virtual void NamedOnSpeechPet(SpeechEventArgs e)
     {
-        if (!e.Mobile.InRange(_mobile.Location, 14))
+        if (!e.Mobile.InRange(Mobile.Location, 14))
         {
             return;
         }
 
-        var isOwner = e.Mobile == _mobile.ControlMaster;
-        var isPetFriend = !isOwner && _mobile.IsPetFriend(e.Mobile);
+        var isOwner = e.Mobile == Mobile.ControlMaster;
+        var isPetFriend = !isOwner && Mobile.IsPetFriend(e.Mobile);
 
         if (!isOwner && !isPetFriend)
         {
@@ -291,9 +291,9 @@ public abstract partial class BaseAI
     {
         var foundSomething = false;
 
-        foreach (var skill in _mobile.Skills)
+        foreach (var skill in Mobile.Skills)
         {
-            if (skill.Base < 60.0 || !_mobile.CheckTeach(skill.SkillName, from))
+            if (skill.Base < 60.0 || !Mobile.CheckTeach(skill.SkillName, from))
             {
                 continue;
             }
@@ -313,46 +313,46 @@ public abstract partial class BaseAI
 
             if (!foundSomething)
             {
-                _mobile.Say(1043058); // I can train the following:
+                Mobile.Say(1043058); // I can train the following:
                 foundSomething = true;
             }
 
-            _mobile.Say(number);
+            Mobile.Say(number);
         }
 
         if (!foundSomething)
         {
-            _mobile.Say(501505); // Alas, I cannot teach thee anything.
+            Mobile.Say(501505); // Alas, I cannot teach thee anything.
         }
     }
 
     private void HandleComeCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && _mobile.CheckControlChance(from))
+        if (isOwner && Mobile.CheckControlChance(from))
         {
             _commandIssuer = from;
-            _mobile.ControlTarget = null;
-            _mobile.ControlOrder = OrderType.Come;
+            Mobile.ControlTarget = null;
+            Mobile.ControlOrder = OrderType.Come;
         }
     }
 
     private void HandleGuardCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && _mobile.CheckControlChance(from))
+        if (isOwner && Mobile.CheckControlChance(from))
         {
             _commandIssuer = from;
-            _mobile.ControlTarget = null;
-            _mobile.ControlOrder = OrderType.Guard;
+            Mobile.ControlTarget = null;
+            Mobile.ControlOrder = OrderType.Guard;
         }
     }
 
     private void HandleStayStopFollowCommand(Mobile from, OrderType order, Mobile target = null)
     {
-        if (_mobile.CheckControlChance(from))
+        if (Mobile.CheckControlChance(from))
         {
             _commandIssuer = from;
-            _mobile.ControlTarget = target;
-            _mobile.ControlOrder = order;
+            Mobile.ControlTarget = target;
+            Mobile.ControlOrder = order;
         }
     }
 
@@ -367,20 +367,20 @@ public abstract partial class BaseAI
 
     private void HandleDropCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && !_mobile.IsDeadPet && !_mobile.Summoned && WasNamed(speech)
-            && _mobile.CheckControlChance(from))
+        if (isOwner && !Mobile.IsDeadPet && !Mobile.Summoned && WasNamed(speech)
+            && Mobile.CheckControlChance(from))
         {
             _commandIssuer = from;
-            _mobile.ControlTarget = null;
-            _mobile.ControlOrder = OrderType.Drop;
+            Mobile.ControlTarget = null;
+            Mobile.ControlOrder = OrderType.Drop;
         }
     }
 
     private void HandleFriendCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && WasNamed(speech) && _mobile.CheckControlChance(from))
+        if (isOwner && WasNamed(speech) && Mobile.CheckControlChance(from))
         {
-            if (_mobile.Summoned || _mobile is GrizzledMare)
+            if (Mobile.Summoned || Mobile is GrizzledMare)
             {
                 from.SendLocalizedMessage(1005481);
                 // Summoned creatures are loyal only to their summoners.
@@ -405,24 +405,24 @@ public abstract partial class BaseAI
             return;
         }
 
-        if (WasNamed(speech) && _mobile.CheckControlChance(from))
+        if (WasNamed(speech) && Mobile.CheckControlChance(from))
         {
-            if (!_mobile.Summoned)
+            if (!Mobile.Summoned)
             {
-                from.SendGump(new ConfirmReleaseGump(from, _mobile));
+                from.SendGump(new ConfirmReleaseGump(from, Mobile));
             }
             else
             {
-                _mobile.ControlOrder = OrderType.Release;
+                Mobile.ControlOrder = OrderType.Release;
             }
         }
     }
 
     private void HandleTransferCommand(Mobile from, bool isOwner, string speech)
     {
-        if (isOwner && !_mobile.IsDeadPet && WasNamed(speech) && _mobile.CheckControlChance(from))
+        if (isOwner && !Mobile.IsDeadPet && WasNamed(speech) && Mobile.CheckControlChance(from))
         {
-            if (_mobile.Summoned || _mobile is GrizzledMare)
+            if (Mobile.Summoned || Mobile is GrizzledMare)
             {
                 from.SendLocalizedMessage(1005487);
                 // You cannot transfer ownership of a summoned creature.
@@ -442,15 +442,15 @@ public abstract partial class BaseAI
 
     private void HandleGMCommands(SpeechEventArgs e)
     {
-        this.DebugSayFormatted($"Command is from GM: {e.Mobile.Name}, Target: {_mobile.ControlTarget?.Name ?? "None or Unknown"}");
+        this.DebugSayFormatted($"Command is from GM: {e.Mobile.Name}, Target: {Mobile.ControlTarget?.Name ?? "None or Unknown"}");
 
-        if (_mobile.FindMyName(e.Speech, true) && e.Speech.InsensitiveContains("obey"))
+        if (Mobile.FindMyName(e.Speech, true) && e.Speech.InsensitiveContains("obey"))
         {
-            _mobile.SetControlMaster(e.Mobile);
+            Mobile.SetControlMaster(e.Mobile);
 
-            if (_mobile.Summoned)
+            if (Mobile.Summoned)
             {
-                _mobile.SummonMaster = e.Mobile;
+                Mobile.SummonMaster = e.Mobile;
             }
         }
     }

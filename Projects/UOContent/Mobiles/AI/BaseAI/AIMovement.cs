@@ -45,7 +45,7 @@ public abstract partial class BaseAI
         return Core.TickCount >= NextMove;
     }
 
-    public virtual bool CheckMove() => !(_mobile.Deleted || _mobile.DisallowAllMoves);
+    public virtual bool CheckMove() => !(Mobile.Deleted || Mobile.DisallowAllMoves);
 
     public virtual bool DoMove(Direction d, bool badStateOk = false) => IsMoveSuccessful(DoMoveImpl(d, badStateOk), badStateOk);
 
@@ -60,27 +60,27 @@ public abstract partial class BaseAI
             return MoveResult.BadState;
         }
 
-        if ((_mobile.Direction & Direction.Mask) != (d & Direction.Mask))
+        if ((Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
         {
-            _mobile.Direction = d;
+            Mobile.Direction = d;
         }
 
-        _mobile.Pushing = false;
+        Mobile.Pushing = false;
 
-        var mobDirection = _mobile.Direction;
+        var mobDirection = Mobile.Direction;
 
         if (TryMove(d))
         {
-            _mobile.CurrentSpeed = _mobile.Hits < _mobile.HitsMax * 0.3
-                ? BadlyHurtMoveDelay(_mobile)
-                : _mobile.Warmode || _mobile.Combatant != null ? _mobile.ActiveSpeed : _mobile.PassiveSpeed;
+            Mobile.CurrentSpeed = Mobile.Hits < Mobile.HitsMax * 0.3
+                ? BadlyHurtMoveDelay(Mobile)
+                : Mobile.Warmode || Mobile.Combatant != null ? Mobile.ActiveSpeed : Mobile.PassiveSpeed;
 
             return MoveResult.Success;
         }
 
         if ((mobDirection & Direction.Mask) != (d & Direction.Mask))
         {
-            _mobile.Direction = d;
+            Mobile.Direction = d;
             return MoveResult.SuccessAutoTurn;
         }
 
@@ -89,23 +89,23 @@ public abstract partial class BaseAI
 
     private bool TryMove(Direction d)
     {
-        MoveImpl.IgnoreMovableImpassables = _mobile.CanMoveOverObstacles && !_mobile.CanDestroyObstacles;
+        MoveImpl.IgnoreMovableImpassables = Mobile.CanMoveOverObstacles && !Mobile.CanDestroyObstacles;
 
-        var result = _mobile.Move(d);
+        var result = Mobile.Move(d);
 
         MoveImpl.IgnoreMovableImpassables = false;
         return result;
     }
 
     private bool IsInBadState() =>
-        _mobile == null || _mobile.Deleted || _mobile.Frozen || _mobile.Paralyzed ||
-        _mobile.Spell?.IsCasting == true || _mobile.DisallowAllMoves;
+        Mobile == null || Mobile.Deleted || Mobile.Frozen || Mobile.Paralyzed ||
+        Mobile.Spell?.IsCasting == true || Mobile.DisallowAllMoves;
 
     private MoveResult HandleBlockedMovement(Direction d, Direction mobDirection)
     {
-        var wasPushing = _mobile.Pushing;
+        var wasPushing = Mobile.Pushing;
 
-        if ((_mobile.CanOpenDoors || _mobile.CanDestroyObstacles) && !TryClearObstacles(d))
+        if ((Mobile.CanOpenDoors || Mobile.CanDestroyObstacles) && !TryClearObstacles(d))
         {
             return MoveResult.Success;
         }
@@ -119,9 +119,9 @@ public abstract partial class BaseAI
 
         for (var i = 0; i < 2; ++i)
         {
-            _mobile.TurnInternal(offset);
+            Mobile.TurnInternal(offset);
 
-            if (_mobile.Move(_mobile.Direction))
+            if (Mobile.Move(Mobile.Direction))
             {
                 return MoveResult.SuccessAutoTurn;
             }
@@ -134,7 +134,7 @@ public abstract partial class BaseAI
     {
         DebugSay("My movement is blocked. Trying to push through.");
 
-        var map = _mobile.Map;
+        var map = Mobile.Map;
 
         if (map == null) { return true; }
 
@@ -146,7 +146,7 @@ public abstract partial class BaseAI
 
         if (destroyables > 0)
         {
-            Effects.PlaySound(new Point3D(x, y, _mobile.Z), _mobile.Map, 0x3B3);
+            Effects.PlaySound(new Point3D(x, y, Mobile.Z), Mobile.Map, 0x3B3);
         }
 
         return ProcessObstacles(queue, d);
@@ -154,8 +154,8 @@ public abstract partial class BaseAI
 
     private (int x, int y) GetOffsetLocation(Direction d)
     {
-        var x = _mobile.X;
-        var y = _mobile.Y;
+        var x = Mobile.X;
+        var y = Mobile.Y;
         Movement.Movement.Offset(d, ref x, ref y);
         return (x, y);
     }
@@ -164,7 +164,7 @@ public abstract partial class BaseAI
     {
         var destroyables = 0;
 
-        foreach (var item in _mobile.Map.GetItemsInRange(new Point2D(x, y), 1))
+        foreach (var item in Mobile.Map.GetItemsInRange(new Point2D(x, y), 1))
         {
             if (IsValidDoor(item, x, y) || IsValidDestroyableItem(item))
             {
@@ -178,12 +178,12 @@ public abstract partial class BaseAI
 
     private bool IsValidDoor(Item item, int x, int y)
     {
-        if (!_mobile.CanOpenDoors || item is not BaseDoor door)
+        if (!Mobile.CanOpenDoors || item is not BaseDoor door)
         {
             return false;
         }
 
-        if (door.Z + door.ItemData.Height <= _mobile.Z || _mobile.Z + 16 <= door.Z)
+        if (door.Z + door.ItemData.Height <= Mobile.Z || Mobile.Z + 16 <= door.Z)
         {
             return false;
         }
@@ -198,17 +198,17 @@ public abstract partial class BaseAI
 
     private bool IsValidDestroyableItem(Item item)
     {
-        if (!_mobile.CanDestroyObstacles || !item.Movable || !item.ItemData.Impassable)
+        if (!Mobile.CanDestroyObstacles || !item.Movable || !item.ItemData.Impassable)
         {
             return false;
         }
 
-        if (item.Z + item.ItemData.Height <= _mobile.Z || _mobile.Z + 16 <= item.Z)
+        if (item.Z + item.ItemData.Height <= Mobile.Z || Mobile.Z + 16 <= item.Z)
         {
             return false;
         }
 
-        return _mobile.InRange(item.GetWorldLocation(), 1);
+        return Mobile.InRange(item.GetWorldLocation(), 1);
     }
 
     private bool ProcessObstacles(PooledRefQueue<Item> queue, Direction d)
@@ -220,7 +220,7 @@ public abstract partial class BaseAI
             ProcessObstacle(queue.Dequeue(), queue);
         }
 
-        return !_mobile.Move(d);
+        return !Mobile.Move(d);
     }
 
     private void ProcessObstacle(Item item, PooledRefQueue<Item> queue)
@@ -228,7 +228,7 @@ public abstract partial class BaseAI
         if (item is BaseDoor door)
         {
             DebugSay("Opening the door.");
-            door.Use(_mobile);
+            door.Use(Mobile);
         }
         else
         {
@@ -250,7 +250,7 @@ public abstract partial class BaseAI
     {
         foreach (var check in cont.Items)
         {
-            if (check.Movable && check.ItemData.Impassable && cont.Z + check.ItemData.Height > _mobile.Z)
+            if (check.Movable && check.ItemData.Impassable && cont.Z + check.ItemData.Height > Mobile.Z)
             {
                 queue.Enqueue(check);
             }
@@ -259,16 +259,16 @@ public abstract partial class BaseAI
 
     public virtual bool MoveTo(Mobile m, bool run, int range)
     {
-        if (_mobile.Deleted || _mobile.DisallowAllMoves || m?.Deleted != false)
+        if (Mobile.Deleted || Mobile.DisallowAllMoves || m?.Deleted != false)
         {
             return false;
         }
 
-        var distance = (int)_mobile.GetDistanceToSqrt(m);
+        var distance = (int)Mobile.GetDistanceToSqrt(m);
 
         var shouldRun = run && distance > 5;
 
-        if (_mobile.InRange(m, range))
+        if (Mobile.InRange(m, range))
         {
             _path = null;
             return true;
@@ -279,14 +279,14 @@ public abstract partial class BaseAI
             return MoveToWithGroup(this, m, shouldRun, range);
         }
 
-        if (_path == null && _mobile.InLOS(m) && DoMove(_mobile.GetDirectionTo(m), true))
+        if (_path == null && Mobile.InLOS(m) && DoMove(Mobile.GetDirectionTo(m), true))
         {
             return true;
         }
 
         if (_path?.Goal != m)
         {
-            _path = new PathFollower(_mobile, m) { Mover = DoMoveImpl };
+            _path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
         }
 
         if (_path.Follow(shouldRun, 1))
@@ -300,11 +300,11 @@ public abstract partial class BaseAI
 
     private bool MoveToWithCollisionAvoidance(Mobile target, bool run, int range)
     {
-        var distance = (int)_mobile.GetDistanceToSqrt(target);
+        var distance = (int)Mobile.GetDistanceToSqrt(target);
 
         var shouldRun = run && distance > 5;
 
-        var direction = _mobile.GetDirectionTo(target);
+        var direction = Mobile.GetDirectionTo(target);
 
         if (DoMove(direction, true))
         {
@@ -330,7 +330,7 @@ public abstract partial class BaseAI
 
         if (_path?.Goal != target)
         {
-            _path = new PathFollower(_mobile, target) { Mover = DoMoveImpl };
+            _path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
         }
 
         if (_path.Follow(shouldRun, 1))
@@ -344,14 +344,14 @@ public abstract partial class BaseAI
 
     public virtual bool WalkMobileRange(Mobile m, int iSteps, bool run, int iWantDistMin, int iWantDistMax)
     {
-        if (_mobile.Deleted || _mobile.DisallowAllMoves || m == null)
+        if (Mobile.Deleted || Mobile.DisallowAllMoves || m == null)
         {
             return false;
         }
 
         for (var i = 0; i < iSteps; i++)
         {
-            var iCurrDist = (int)_mobile.GetDistanceToSqrt(m);
+            var iCurrDist = (int)Mobile.GetDistanceToSqrt(m);
 
             var shouldRun = run && iCurrDist > 5;
 
@@ -368,7 +368,7 @@ public abstract partial class BaseAI
             }
         }
 
-        var dist = _mobile.GetDistanceToSqrt(m);
+        var dist = Mobile.GetDistanceToSqrt(m);
 
         return dist >= iWantDistMin && dist <= iWantDistMax;
     }
@@ -389,7 +389,7 @@ public abstract partial class BaseAI
         }
         else
         {
-            var dirTo = needCloser ? _mobile.GetDirectionTo(m, shouldRun) : m.GetDirectionTo(_mobile, shouldRun);
+            var dirTo = needCloser ? Mobile.GetDirectionTo(m, shouldRun) : m.GetDirectionTo(Mobile, shouldRun);
 
             if (DoMove(dirTo, true))
             {
@@ -399,7 +399,7 @@ public abstract partial class BaseAI
 
             if (needCloser)
             {
-                _path = new PathFollower(_mobile, m) { Mover = DoMoveImpl };
+                _path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
 
                 if (_path.Follow(shouldRun, 1))
                 {

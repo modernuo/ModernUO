@@ -21,12 +21,12 @@ public abstract partial class BaseAI
 {
     public virtual void OnCurrentOrderChanged()
     {
-        if (_mobile.Deleted || _mobile.ControlMaster?.Deleted != false)
+        if (Mobile.Deleted || Mobile.ControlMaster?.Deleted != false)
         {
             return;
         }
 
-        switch (_mobile.ControlOrder)
+        switch (Mobile.ControlOrder)
         {
             case OrderType.None:
                 {
@@ -85,156 +85,156 @@ public abstract partial class BaseAI
 
     private void HandleNoOrder()
     {
-        _mobile.ControlTarget = null;
-        _mobile.FocusMob = null;
-        _mobile.Warmode = false;
-        _mobile.Combatant = null;
+        Mobile.ControlTarget = null;
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
     }
 
     private void HandleTransferOrder()
     {
-        if (_mobile.ControlMaster?.Alive != true)
+        if (Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
 
         _commandIssuer?.RevealingAction();
-        _mobile.FocusMob = null;
-        _mobile.Warmode = false;
-        _mobile.Combatant = null;
-        _mobile.PlaySound(_mobile.GetIdleSound());
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
+        Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
     }
 
     private void HandleGuardOrder()
     {
-        if (_mobile.ControlMaster?.Alive != true)
+        if (Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
 
         _commandIssuer?.RevealingAction();
-        _mobile.FocusMob = null;
-        _mobile.Warmode = true;
-        _mobile.PlaySound(_mobile.GetAttackSound());
-        _mobile.ControlMaster?.SendLocalizedMessage(1049671, _mobile.Name);
+        Mobile.FocusMob = null;
+        Mobile.Warmode = true;
+        Mobile.PlaySound(Mobile.GetAttackSound());
+        Mobile.ControlMaster?.SendLocalizedMessage(1049671, Mobile.Name);
         // ~1_NAME~ is now guarding you.
         _commandIssuer = null;
     }
 
     private void HandleAttackOrder()
     {
-        if (_mobile.ControlMaster?.Alive != true)
+        if (Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
 
         _commandIssuer?.RevealingAction();
 
-        if (_mobile.ControlTarget != null && !_mobile.ControlTarget.Deleted
-                                           && _mobile.ControlTarget.Alive)
+        if (Mobile.ControlTarget != null && !Mobile.ControlTarget.Deleted
+                                           && Mobile.ControlTarget.Alive)
         {
-            _mobile.FocusMob = _mobile.ControlTarget;
-            _mobile.Combatant = _mobile.ControlTarget;
+            Mobile.FocusMob = Mobile.ControlTarget;
+            Mobile.Combatant = Mobile.ControlTarget;
         }
         else
         {
-            _mobile.FocusMob = null;
-            _mobile.Combatant = null;
+            Mobile.FocusMob = null;
+            Mobile.Combatant = null;
         }
 
-        _mobile.Warmode = true;
-        _mobile.PlaySound(_mobile.GetAttackSound());
+        Mobile.Warmode = true;
+        Mobile.PlaySound(Mobile.GetAttackSound());
         _commandIssuer = null;
     }
 
     private void HandleFollowOrder()
     {
-        if (_mobile.ControlMaster?.Alive != true)
+        if (Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
 
         _commandIssuer?.RevealingAction();
-        _mobile.FocusMob = null;
-        _mobile.Warmode = false;
-        _mobile.Combatant = null;
-        _mobile.PlaySound(_mobile.GetIdleSound());
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
+        Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
     }
 
     private void HandleStayOrder()
     {
-        if (_mobile.ControlMaster?.Alive != true)
+        if (Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
 
         _commandIssuer?.RevealingAction();
-        _mobile.FocusMob = null;
-        _mobile.Warmode = false;
-        _mobile.Combatant = null;
-        _mobile.PlaySound(_mobile.GetIdleSound());
-        _mobile.Home = _mobile.Location;
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
+        Mobile.PlaySound(Mobile.GetIdleSound());
+        Mobile.Home = Mobile.Location;
         _commandIssuer = null;
     }
 
     private void HandleStopOrder()
     {
-        if (_mobile.ControlMaster?.Alive != true)
+        if (Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
 
         _commandIssuer?.RevealingAction();
-        _mobile.ControlTarget = null;
-        _mobile.FocusMob = null;
-        _mobile.Warmode = false;
-        _mobile.Combatant = null;
-        _mobile.PlaySound(_mobile.GetIdleSound());
+        Mobile.ControlTarget = null;
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
+        Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
     }
 
     private void HandleReleaseOrder()
     {
-        if (_mobile.ControlMaster?.Alive != true)
+        if (Mobile.ControlMaster?.Alive != true)
         {
             return;
         }
 
-        if (_mobile.Summoned)
+        if (Mobile.Summoned)
         {
-            _mobile.Kill();
+            Mobile.Kill();
             return;
         }
 
-        if (!string.IsNullOrEmpty(_mobile.Name))
+        if (!string.IsNullOrEmpty(Mobile.Name))
         {
-            _mobile.Name = null;
+            Mobile.Name = null;
         }
 
         _commandIssuer?.RevealingAction();
-        _mobile.ControlTarget = null;
-        _mobile.FocusMob = null;
-        _mobile.Warmode = false;
-        _mobile.Combatant = null;
-        _mobile.PlaySound(_mobile.GetIdleSound());
-        _mobile.BondingBegin = DateTime.MinValue;
-        _mobile.OwnerAbandonTime = DateTime.MinValue;
-        _mobile.IsBonded = false;
-        _mobile.SetControlMaster(null);
+        Mobile.ControlTarget = null;
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
+        Mobile.PlaySound(Mobile.GetIdleSound());
+        Mobile.BondingBegin = DateTime.MinValue;
+        Mobile.OwnerAbandonTime = DateTime.MinValue;
+        Mobile.IsBonded = false;
+        Mobile.SetControlMaster(null);
         _commandIssuer = null;
     }
 
     public virtual void HandleRenameOrder()
     {
-        if (_mobile.Summoned)
+        if (Mobile.Summoned)
         {
-            _mobile.ControlMaster?.SendMessage("You cannot rename a summoned creature.");
+            Mobile.ControlMaster?.SendMessage("You cannot rename a summoned creature.");
         }
         else
         {
-            _mobile.ControlMaster?.SendMessage("Change name on pet health bar.");
+            Mobile.ControlMaster?.SendMessage("Change name on pet health bar.");
         }
     }
 }

@@ -56,7 +56,7 @@ public ref struct DebugInterpolatedStringHandler
     /// <remarks>This is intended to be called only by compiler-generated code. Arguments are not validated as they'd otherwise be for members intended to be used directly.</remarks>
     public DebugInterpolatedStringHandler(int literalLength, int formattedCount, Mobiles.BaseAI ai)
     {
-        _debugActive = (ai.Mobile as BaseCreature)?.Debug == true && Core.TickCount >= ai.NextDebugMessage;
+        _debugActive = ai.Mobile?.Debug == true && Core.TickCount >= ai.NextDebugMessage;
 
         if (_debugActive)
         {
@@ -79,7 +79,7 @@ public ref struct DebugInterpolatedStringHandler
     /// <remarks>This is intended to be called only by compiler-generated code. Arguments are not validated as they'd otherwise be for members intended to be used directly.</remarks>
     public DebugInterpolatedStringHandler(int literalLength, int formattedCount, IFormatProvider? provider, Mobiles.BaseAI ai)
     {
-        _debugActive = (ai.Mobile as BaseCreature)?.Debug == true && Core.TickCount >= ai.NextDebugMessage;
+        _debugActive = ai.Mobile?.Debug == true && Core.TickCount >= ai.NextDebugMessage;
 
         if (_debugActive)
         {

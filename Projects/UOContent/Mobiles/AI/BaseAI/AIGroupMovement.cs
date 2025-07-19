@@ -43,8 +43,8 @@ public abstract partial class BaseAI
     }
 
     private bool UseGroupMovement(Mobile target) =>
-        _mobile.Combatant == target
-        && !_mobile.Controlled
+        Mobile.Combatant == target
+        && !Mobile.Controlled
         && CountNearbyAllies(target) > 0;
 
     public static bool MoveToWithGroup(BaseAI ai, Mobile target, bool run, int range)
@@ -55,7 +55,7 @@ public abstract partial class BaseAI
             _lastGroupUpdateTime = Core.TickCount;
         }
 
-        var mobile = ai._mobile;
+        var mobile = ai.Mobile;
         var allies = ai.GetNearbyAllies(target);
         try
         {
@@ -86,10 +86,10 @@ public abstract partial class BaseAI
     private int CountNearbyAllies(Mobile target)
     {
         var allies = 0;
-        foreach (var m in _mobile.GetMobilesInRange(8))
+        foreach (var m in Mobile.GetMobilesInRange(8))
         {
-            if (m != _mobile && m.Combatant == target && m is BaseCreature { Controlled: false } bc
-                && bc.Team == _mobile.Team)
+            if (m != Mobile && m.Combatant == target && m is BaseCreature { Controlled: false } bc
+                && bc.Team == Mobile.Team)
             {
                 allies++;
             }
@@ -102,10 +102,10 @@ public abstract partial class BaseAI
     {
         var allies = PooledRefList<BaseCreature>.Create();
 
-        foreach (var m in _mobile.GetMobilesInRange(8))
+        foreach (var m in Mobile.GetMobilesInRange(8))
         {
-            if (m != _mobile && m.Combatant == target && m is BaseCreature { Controlled: false } bc
-                && bc.Team == _mobile.Team)
+            if (m != Mobile && m.Combatant == target && m is BaseCreature { Controlled: false } bc
+                && bc.Team == Mobile.Team)
             {
                 allies.Add(bc);
             }
@@ -130,7 +130,7 @@ public abstract partial class BaseAI
                 }
 
                 var testLoc = new Point3D(targetLoc.X + x, targetLoc.Y + y, targetLoc.Z);
-                var distance = _mobile.GetDistanceToSqrt(testLoc);
+                var distance = Mobile.GetDistanceToSqrt(testLoc);
 
                 if (distance < range ||
                     distance > range + 3 || !CanMoveTo(testLoc))
@@ -177,13 +177,13 @@ public abstract partial class BaseAI
 
         foreach (var (m, p) in _reservedPositions)
         {
-            if (m != _mobile && p.GetDistanceToSqrt(position) < 2)
+            if (m != Mobile && p.GetDistanceToSqrt(position) < 2)
             {
                 score -= 30;
             }
         }
 
-        if (_mobile.Map != null && _mobile.Map.LineOfSight(position, target.Location))
+        if (Mobile.Map != null && Mobile.Map.LineOfSight(position, target.Location))
         {
             score += 10;
         }
@@ -193,7 +193,7 @@ public abstract partial class BaseAI
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool CanMoveTo(Point3D location) =>
-        _mobile.Map?.CanFit(location.X, location.Y, location.Z, 16, false, false) == true;
+        Mobile.Map?.CanFit(location.X, location.Y, location.Z, 16, false, false) == true;
 
     private static Direction GetAdjustedDirection(Direction original)
     {

@@ -19,19 +19,19 @@ public class AnimalAI : BaseAI
     {
         // New, only flee @ 10%
 
-        var hitPercent = (double)_mobile.Hits / _mobile.HitsMax;
+        var hitPercent = (double)Mobile.Hits / Mobile.HitsMax;
 
-        if (!_mobile.Summoned && !_mobile.Controlled && hitPercent < 0.1 && _mobile.CanFlee) // Less than 10% health
+        if (!Mobile.Summoned && !Mobile.Controlled && hitPercent < 0.1 && Mobile.CanFlee) // Less than 10% health
         {
             DebugSay("I am low on health!");
 
             Action = ActionType.Flee;
         }
-        else if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
+        else if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
-            _mobile.Combatant = _mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -44,9 +44,9 @@ public class AnimalAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = _mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != _mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
             DebugSay("My combatant is gone!");
@@ -55,9 +55,9 @@ public class AnimalAI : BaseAI
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, true, _mobile.RangeFight, _mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, true, Mobile.RangeFight, Mobile.RangeFight))
         {
-            if (_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
+            if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
                 this.DebugSayFormatted($"I cannot find {combatant.Name}");
 
@@ -67,14 +67,14 @@ public class AnimalAI : BaseAI
 
             this.DebugSayFormatted($"I should be closer to {combatant.Name}");
         }
-        else if (Core.TickCount - _mobile.LastMoveTime > 400)
+        else if (Core.TickCount - Mobile.LastMoveTime > 400)
         {
-            _mobile.Direction = _mobile.GetDirectionTo(combatant);
+            Mobile.Direction = Mobile.GetDirectionTo(combatant);
         }
 
-        if (!_mobile.Controlled && !_mobile.Summoned && _mobile.CanFlee)
+        if (!Mobile.Controlled && !Mobile.Summoned && Mobile.CanFlee)
         {
-            var hitPercent = (double)_mobile.Hits / _mobile.HitsMax;
+            var hitPercent = (double)Mobile.Hits / Mobile.HitsMax;
 
             if (hitPercent <= 0.1)
             {
@@ -85,7 +85,7 @@ public class AnimalAI : BaseAI
             }
         }
 
-        if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
@@ -95,15 +95,15 @@ public class AnimalAI : BaseAI
 
     public override bool DoActionBackoff()
     {
-        var hitPercent = (double)_mobile.Hits / _mobile.HitsMax;
+        var hitPercent = (double)Mobile.Hits / Mobile.HitsMax;
 
-        if (!_mobile.Summoned && !_mobile.Controlled && hitPercent < 0.1 && _mobile.CanFlee) // Less than 10% health
+        if (!Mobile.Summoned && !Mobile.Controlled && hitPercent < 0.1 && Mobile.CanFlee) // Less than 10% health
         {
             Action = ActionType.Flee;
         }
-        else if (AcquireFocusMob(_mobile.RangePerception * 2, FightMode.Closest, true, false, true))
+        else if (AcquireFocusMob(Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
         {
-            if (WalkMobileRange(_mobile.FocusMob, 1, false, _mobile.RangePerception, _mobile.RangePerception * 2))
+            if (WalkMobileRange(Mobile.FocusMob, 1, false, Mobile.RangePerception, Mobile.RangePerception * 2))
             {
                 DebugSay("Well, here I am safe");
 
@@ -122,9 +122,9 @@ public class AnimalAI : BaseAI
 
     public override bool DoActionFlee()
     {
-        AcquireFocusMob(_mobile.RangePerception * 2, _mobile.FightMode, true, false, true);
+        AcquireFocusMob(Mobile.RangePerception * 2, Mobile.FightMode, true, false, true);
 
-        _mobile.FocusMob ??= _mobile.Combatant;
+        Mobile.FocusMob ??= Mobile.Combatant;
 
         return base.DoActionFlee();
     }

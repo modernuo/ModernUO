@@ -20,12 +20,12 @@ public class HealerAI : BaseAI
 
     public override bool Think()
     {
-        if (_mobile.Deleted)
+        if (Mobile.Deleted)
         {
             return false;
         }
 
-        var targ = _mobile.Target;
+        var targ = Mobile.Target;
 
         if (targ != null)
         {
@@ -51,42 +51,42 @@ public class HealerAI : BaseAI
             {
                 this.DebugSayFormatted($"{toHelp.Name} needs a cure");
 
-                if (!new CureSpell(_mobile).Cast())
+                if (!new CureSpell(Mobile).Cast())
                 {
-                    new CureSpell(_mobile).Cast();
+                    new CureSpell(Mobile).Cast();
                 }
             }
             else if (NeedGHeal(toHelp))
             {
                 this.DebugSayFormatted($"{toHelp.Name} needs a greater heal");
 
-                if (!new GreaterHealSpell(_mobile).Cast())
+                if (!new GreaterHealSpell(Mobile).Cast())
                 {
-                    new HealSpell(_mobile).Cast();
+                    new HealSpell(Mobile).Cast();
                 }
             }
             else if (NeedLHeal(toHelp))
             {
                 this.DebugSayFormatted($"{toHelp.Name} needs a lesser heal");
 
-                new HealSpell(_mobile).Cast();
+                new HealSpell(Mobile).Cast();
             }
 
             return true;
         }
 
-        if (!AcquireFocusMob(_mobile.RangePerception, FightMode.Weakest, false, true, false))
+        if (!AcquireFocusMob(Mobile.RangePerception, FightMode.Weakest, false, true, false))
         {
             WalkRandomInHome(3, 2, 1);
             return true;
         }
 
-        WalkMobileRange(_mobile.FocusMob, 1, false, 4, 7);
+        WalkMobileRange(Mobile.FocusMob, 1, false, 4, 7);
 
         // TODO: Should it be able to do this?
-        if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, _mobile.Combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, Mobile.Combatant))
         {
-            this.DebugSayFormatted($"I used my abilities on {_mobile.Combatant.Name}!");
+            this.DebugSayFormatted($"I used my abilities on {Mobile.Combatant.Name}!");
         }
 
         return true;
@@ -96,7 +96,7 @@ public class HealerAI : BaseAI
     {
         if (func == null || func.Length == 0)
         {
-            targ.Cancel(_mobile, TargetCancelType.Canceled);
+            targ.Cancel(Mobile, TargetCancelType.Canceled);
             return;
         }
 
@@ -104,26 +104,26 @@ public class HealerAI : BaseAI
 
         if (toHelp == null)
         {
-            targ.Cancel(_mobile, TargetCancelType.Canceled);
+            targ.Cancel(Mobile, TargetCancelType.Canceled);
         }
-        else if (targ.Range != -1 && !_mobile.InRange(toHelp, targ.Range))
+        else if (targ.Range != -1 && !Mobile.InRange(toHelp, targ.Range))
         {
-            DoMove(_mobile.GetDirectionTo(toHelp) | Direction.Running);
+            DoMove(Mobile.GetDirectionTo(toHelp) | Direction.Running);
         }
         else
         {
-            targ.Invoke(_mobile, toHelp);
+            targ.Invoke(Mobile, toHelp);
         }
     }
 
     private Mobile Find(params ReadOnlySpan<NeedDelegate> funcs)
     {
-        if (_mobile.Deleted)
+        if (Mobile.Deleted)
         {
             return null;
         }
 
-        var map = _mobile.Map;
+        var map = Mobile.Map;
 
         if (map == null)
         {
@@ -133,9 +133,9 @@ public class HealerAI : BaseAI
         var prio = 0.0;
         Mobile found = null;
 
-        foreach (var m in _mobile.GetMobilesInRange(_mobile.RangePerception))
+        foreach (var m in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            if (!_mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != _mobile.Team)
+            if (!Mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != Mobile.Team)
             {
                 continue;
             }
@@ -144,7 +144,7 @@ public class HealerAI : BaseAI
             {
                 if (funcs[i](bc))
                 {
-                    var val = -_mobile.GetDistanceToSqrt(bc);
+                    var val = -Mobile.GetDistanceToSqrt(bc);
 
                     if (found == null || val > prio)
                     {

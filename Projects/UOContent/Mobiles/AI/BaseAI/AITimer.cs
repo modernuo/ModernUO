@@ -34,18 +34,18 @@ internal sealed class AITimer : Timer
     {
         double interval;
 
-        if (owner._mobile.Controlled && owner._mobile.ControlOrder == OrderType.Follow
-                                     && owner._mobile.Combatant != owner._mobile.ControlMaster)
+        if (owner.Mobile.Controlled && owner.Mobile.ControlOrder == OrderType.Follow
+                                     && owner.Mobile.Combatant != owner.Mobile.ControlMaster)
         {
-            interval = owner._mobile.CurrentSpeed * 400;
+            interval = owner.Mobile.CurrentSpeed * 400;
         }
-        else if (owner._mobile.CurrentSpeed <= 0.4)
+        else if (owner.Mobile.CurrentSpeed <= 0.4)
         {
-            interval = owner._mobile.CurrentSpeed * 1000;
+            interval = owner.Mobile.CurrentSpeed * 1000;
         }
         else
         {
-            interval = owner._mobile.CurrentSpeed * 3000;
+            interval = owner.Mobile.CurrentSpeed * 3000;
         }
 
         return Math.Max(interval, 200);
@@ -61,7 +61,7 @@ internal sealed class AITimer : Timer
 
         Interval = TimeSpan.FromMilliseconds(GetBaseInterval(_owner));
 
-        _owner._mobile.OnThink();
+        _owner.Mobile.OnThink();
 
         if (ShouldStop())
         {
@@ -71,7 +71,7 @@ internal sealed class AITimer : Timer
 
         HandleBardEffects();
 
-        if (_owner._mobile.Controlled ? !_owner.Obey() : !_owner.Think())
+        if (_owner.Mobile.Controlled ? !_owner.Obey() : !_owner.Think())
         {
             Stop();
             return;
@@ -82,13 +82,13 @@ internal sealed class AITimer : Timer
 
     private bool ShouldStop()
     {
-        if (_owner._mobile.Deleted)
+        if (_owner.Mobile.Deleted)
         {
             return true;
         }
 
-        if (_owner._mobile.Map != null && _owner._mobile.Map != Map.Internal &&
-            (!_owner._mobile.PlayerRangeSensitive || _owner._mobile.Map.GetSector(_owner._mobile.Location).Active))
+        if (_owner.Mobile.Map != null && _owner.Mobile.Map != Map.Internal &&
+            (!_owner.Mobile.PlayerRangeSensitive || _owner.Mobile.Map.GetSector(_owner.Mobile.Location).Active))
         {
             return false;
         }
@@ -99,11 +99,11 @@ internal sealed class AITimer : Timer
 
     private void HandleBardEffects()
     {
-        if (_owner._mobile.BardPacified)
+        if (_owner.Mobile.BardPacified)
         {
             _owner.DoBardPacified();
         }
-        else if (_owner._mobile.BardProvoked)
+        else if (_owner.Mobile.BardProvoked)
         {
             _owner.DoBardProvoked();
         }
@@ -111,7 +111,7 @@ internal sealed class AITimer : Timer
 
     private void CacheDetectHiddenDelays()
     {
-        var delay = Math.Min(30000 / _owner._mobile.Int, 120);
+        var delay = Math.Min(30000 / _owner.Mobile.Int, 120);
         _detectHiddenMinDelay = delay * 900;  // 26s to 108s
         _detectHiddenMaxDelay = delay * 1100; // 32s to 132s
     }

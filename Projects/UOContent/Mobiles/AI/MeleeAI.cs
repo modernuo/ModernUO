@@ -10,18 +10,18 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
-            _mobile.Combatant = _mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
         {
             DebugSay("I am wandering");
 
-            _mobile.Warmode = false;
+            Mobile.Warmode = false;
 
             base.DoActionWander();
         }
@@ -31,9 +31,9 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = _mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != _mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
             DebugSay("My combatant is gone, so my guard is up");
@@ -42,21 +42,21 @@ public class MeleeAI : BaseAI
             return true;
         }
 
-        if (!_mobile.InRange(combatant, _mobile.RangePerception))
+        if (!Mobile.InRange(combatant, Mobile.RangePerception))
         {
             // They are somewhat far away, can we find something else?
 
-            if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
+            if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
             {
-                _mobile.Combatant = _mobile.FocusMob;
-                _mobile.FocusMob = null;
+                Mobile.Combatant = Mobile.FocusMob;
+                Mobile.FocusMob = null;
             }
-            else if (!_mobile.InRange(combatant, _mobile.RangePerception * 3))
+            else if (!Mobile.InRange(combatant, Mobile.RangePerception * 3))
             {
-                _mobile.Combatant = null;
+                Mobile.Combatant = null;
             }
 
-            combatant = _mobile.Combatant;
+            combatant = Mobile.Combatant;
 
             if (combatant == null)
             {
@@ -67,19 +67,19 @@ public class MeleeAI : BaseAI
             }
         }
 
-        if (!MoveTo(combatant, true, _mobile.RangeFight))
+        if (!MoveTo(combatant, true, Mobile.RangeFight))
         {
-            _mobile.Direction = _mobile.GetDirectionTo(combatant);
-            if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
+            Mobile.Direction = Mobile.GetDirectionTo(combatant);
+            if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
             {
-                this.DebugSayFormatted($"My move is blocked, so I am going to attack {_mobile.FocusMob!.Name}");
+                this.DebugSayFormatted($"My move is blocked, so I am going to attack {Mobile.FocusMob!.Name}");
 
-                _mobile.Combatant = _mobile.FocusMob;
+                Mobile.Combatant = Mobile.FocusMob;
                 Action = ActionType.Combat;
                 return true;
             }
 
-            if (_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
+            if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
                 this.DebugSayFormatted($"I cannot find {combatant.Name}, so my guard is up");
 
@@ -89,18 +89,18 @@ public class MeleeAI : BaseAI
 
             this.DebugSayFormatted($"I cannot find {combatant.Name}, so my guard is up");
         }
-        else if (Core.TickCount - _mobile.LastMoveTime > 400)
+        else if (Core.TickCount - Mobile.LastMoveTime > 400)
         {
-            _mobile.Direction = _mobile.GetDirectionTo(combatant);
+            Mobile.Direction = Mobile.GetDirectionTo(combatant);
         }
 
-        if (!_mobile.Controlled && !_mobile.Summoned && _mobile.CanFlee)
+        if (!Mobile.Controlled && !Mobile.Summoned && Mobile.CanFlee)
         {
-            if (_mobile.Hits < _mobile.HitsMax * 20 / 100)
+            if (Mobile.Hits < Mobile.HitsMax * 20 / 100)
             {
                 // We are low on health, should we flee?
 
-                var fleeChance = 10 + Math.Max(0, combatant.Hits - _mobile.Hits); // (10 + diff)% chance to flee;
+                var fleeChance = 10 + Math.Max(0, combatant.Hits - Mobile.Hits); // (10 + diff)% chance to flee;
                 if (Utility.Random(0, 100) < fleeChance)
                 {
                     this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
@@ -111,7 +111,7 @@ public class MeleeAI : BaseAI
             }
         }
 
-        if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             DebugSay("I used my abilities!");
         }
@@ -121,11 +121,11 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
-            _mobile.Combatant = _mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -138,7 +138,7 @@ public class MeleeAI : BaseAI
 
     public override bool DoActionFlee()
     {
-        if (_mobile.Hits > _mobile.HitsMax / 2)
+        if (Mobile.Hits > Mobile.HitsMax / 2)
         {
             DebugSay("I am stronger now, so I will continue fighting");
 
@@ -146,7 +146,7 @@ public class MeleeAI : BaseAI
         }
         else
         {
-            _mobile.FocusMob = _mobile.Combatant;
+            Mobile.FocusMob = Mobile.Combatant;
             base.DoActionFlee();
         }
 

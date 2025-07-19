@@ -17,22 +17,22 @@ public class VendorAI : BaseAI
     {
         DebugSay("I'm fine");
 
-        if (_mobile.Combatant != null)
+        if (Mobile.Combatant != null)
         {
-            this.DebugSayFormatted($"{_mobile.Combatant.Name} is attacking me");
+            this.DebugSayFormatted($"{Mobile.Combatant.Name} is attacking me");
 
-            _mobile.Say(GetRandomGuardMessage());
+            Mobile.Say(GetRandomGuardMessage());
             Action = ActionType.Flee;
         }
-        else if (_mobile.FocusMob != null)
+        else if (Mobile.FocusMob != null)
         {
-            this.DebugSayFormatted($"{_mobile.FocusMob.Name} has talked to me");
+            this.DebugSayFormatted($"{Mobile.FocusMob.Name} has talked to me");
 
             Action = ActionType.Interact;
         }
         else
         {
-            _mobile.Warmode = false;
+            Mobile.Warmode = false;
 
             base.DoActionWander();
         }
@@ -42,38 +42,38 @@ public class VendorAI : BaseAI
 
     public override bool DoActionInteract()
     {
-        var customer = _mobile.FocusMob;
+        var customer = Mobile.FocusMob;
 
-        if (_mobile.Combatant != null)
+        if (Mobile.Combatant != null)
         {
-            this.DebugSayFormatted($"{_mobile.Combatant.Name} is attacking me");
+            this.DebugSayFormatted($"{Mobile.Combatant.Name} is attacking me");
 
-            _mobile.Say(GetRandomGuardMessage());
+            Mobile.Say(GetRandomGuardMessage());
 
             Action = ActionType.Flee;
 
             return true;
         }
 
-        if (customer?.Deleted != false || customer.Map != _mobile.Map)
+        if (customer?.Deleted != false || customer.Map != Mobile.Map)
         {
             DebugSay("My customer has disappeared");
 
-            _mobile.FocusMob = null;
+            Mobile.FocusMob = null;
 
             Action = ActionType.Wander;
         }
-        else if (customer.InRange(_mobile, _mobile.RangeFight))
+        else if (customer.InRange(Mobile, Mobile.RangeFight))
         {
             this.DebugSayFormatted($"I am with {customer.Name}");
 
-            _mobile.Direction = _mobile.GetDirectionTo(customer);
+            Mobile.Direction = Mobile.GetDirectionTo(customer);
         }
         else
         {
             this.DebugSayFormatted($"{customer.Name} is gone");
 
-            _mobile.FocusMob = null;
+            Mobile.FocusMob = null;
             Action = ActionType.Wander;
         }
 
@@ -82,13 +82,13 @@ public class VendorAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        _mobile.FocusMob = _mobile.Combatant;
+        Mobile.FocusMob = Mobile.Combatant;
         return base.DoActionGuard();
     }
 
     public override bool HandlesOnSpeech(Mobile from)
     {
-        if (from.InRange(_mobile, 4))
+        if (from.InRange(Mobile, 4))
         {
             return true;
         }
@@ -103,7 +103,7 @@ public class VendorAI : BaseAI
 
         var from = e.Mobile;
 
-        if (_mobile is BaseVendor vendor && from.InRange(_mobile, Core.AOS ? 1 : 4) && !e.Handled)
+        if (Mobile is BaseVendor vendor && from.InRange(Mobile, Core.AOS ? 1 : 4) && !e.Handled)
         {
             if (e.HasKeyword(0x14D)) // *vendor sell*
             {

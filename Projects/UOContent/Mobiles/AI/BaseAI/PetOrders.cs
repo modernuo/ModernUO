@@ -19,12 +19,12 @@ public abstract partial class BaseAI
 {
     public virtual bool Obey()
     {
-        if (_mobile.Deleted)
+        if (Mobile.Deleted)
         {
             return false;
         }
 
-        switch (_mobile.ControlOrder)
+        switch (Mobile.ControlOrder)
         {
             case OrderType.None:
                 {
@@ -85,7 +85,7 @@ public abstract partial class BaseAI
     {
         DebugSay("I currently have no orders.");
 
-        _mobile.Warmode = IsValidCombatant(_mobile.Combatant);
+        Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
 
         WalkRandom(3, 2, 1);
         return true;
@@ -95,20 +95,20 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
 
-        if (_mobile.ControlMaster?.Deleted != false)
+        if (Mobile.ControlMaster?.Deleted != false)
         {
             return true;
         }
 
-        WalkMobileRange(_mobile.ControlMaster, 1, false, 1, 2);
+        WalkMobileRange(Mobile.ControlMaster, 1, false, 1, 2);
 
-        if (_mobile.GetDistanceToSqrt(_mobile.ControlMaster) <= 2)
+        if (Mobile.GetDistanceToSqrt(Mobile.ControlMaster) <= 2)
         {
-            _mobile.ControlOrder = OrderType.Stay;
+            Mobile.ControlOrder = OrderType.Stay;
         }
 
         return true;
@@ -118,11 +118,11 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
 
-        if (_mobile.ControlTarget?.Deleted == false && _mobile.ControlTarget != _mobile)
+        if (Mobile.ControlTarget?.Deleted == false && Mobile.ControlTarget != Mobile)
         {
             FollowTarget();
         }
@@ -130,7 +130,7 @@ public abstract partial class BaseAI
         {
             DebugSay("I have no one to follow.");
 
-            _mobile.ControlOrder = OrderType.None;
+            Mobile.ControlOrder = OrderType.None;
         }
 
         return true;
@@ -138,32 +138,32 @@ public abstract partial class BaseAI
 
     private void FollowTarget()
     {
-        var currentDistance = (int)_mobile.GetDistanceToSqrt(_mobile.ControlTarget);
+        var currentDistance = (int)Mobile.GetDistanceToSqrt(Mobile.ControlTarget);
 
-        if (currentDistance > _mobile.RangePerception)
+        if (currentDistance > Mobile.RangePerception)
         {
-            this.DebugSayFormatted($"Master {_mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
+            this.DebugSayFormatted($"Master {Mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
             return;
         }
 
-        this.DebugSayFormatted($"I am ordered to follow {_mobile.ControlTarget?.Name}.");
+        this.DebugSayFormatted($"I am ordered to follow {Mobile.ControlTarget?.Name}.");
 
         if (currentDistance > 1)
         {
-            WalkMobileRange(_mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
+            WalkMobileRange(Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
         }
     }
 
     public virtual bool DoOrderDrop()
     {
-        if (_mobile.IsDeadPet || !_mobile.CanDrop)
+        if (Mobile.IsDeadPet || !Mobile.CanDrop)
         {
             return true;
         }
 
-        this.DebugSayFormatted($"I am ordered to drop my items by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
+        this.DebugSayFormatted($"I am ordered to drop my items by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
 
-        _mobile.ControlOrder = OrderType.None;
+        Mobile.ControlOrder = OrderType.None;
 
         DropItems();
         return true;
@@ -171,7 +171,7 @@ public abstract partial class BaseAI
 
     private void DropItems()
     {
-        var pack = _mobile.Backpack;
+        var pack = Mobile.Backpack;
 
         if (pack == null)
         {
@@ -184,15 +184,15 @@ public abstract partial class BaseAI
         {
             if (i < items.Count)
             {
-                items[i].MoveToWorld(_mobile.Location, _mobile.Map);
+                items[i].MoveToWorld(Mobile.Location, Mobile.Map);
             }
         }
     }
 
     public virtual bool DoOrderFriend()
     {
-        var from = _mobile.ControlMaster;
-        var to = _mobile.ControlTarget;
+        var from = Mobile.ControlMaster;
+        var to = Mobile.ControlTarget;
 
         HandleFriendRequest(from, to);
         return true;
@@ -224,7 +224,7 @@ public abstract partial class BaseAI
 
         if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
         {
-            _mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
+            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
             // *looks confused*
             return;
         }
@@ -236,38 +236,38 @@ public abstract partial class BaseAI
             return;
         }
 
-        if (_mobile.IsPetFriend(to))
+        if (Mobile.IsPetFriend(to))
         {
             from.SendLocalizedMessage(1049691);
             // That person is already a friend.
-            _mobile.ControlOrder = OrderType.None;
+            Mobile.ControlOrder = OrderType.None;
             return;
         }
 
-        if (!_mobile.AllowNewPetFriend)
+        if (!Mobile.AllowNewPetFriend)
         {
             from.SendLocalizedMessage(1005482);
             // Your pet does not seem to be interested in making new friends right now.
             return;
         }
 
-        from.SendLocalizedMessage(1049676, $"{_mobile.Name}\t{to.Name}");
+        from.SendLocalizedMessage(1049676, $"{Mobile.Name}\t{to.Name}");
         // ~1_NAME~ will now accept movement commands from ~2_NAME~.
 
-        to.SendLocalizedMessage(1043246, $"{from.Name}\t{_mobile.Name}");
+        to.SendLocalizedMessage(1043246, $"{from.Name}\t{Mobile.Name}");
         // ~1_NAME~ has granted you the ability to give orders to their pet ~2_PET_NAME~.
         // This creature will now consider you as a friend.
 
-        _mobile.AddPetFriend(to);
+        Mobile.AddPetFriend(to);
 
-        _mobile.ControlTarget = to;
-        _mobile.ControlOrder = OrderType.Follow;
+        Mobile.ControlTarget = to;
+        Mobile.ControlOrder = OrderType.Follow;
     }
 
     public virtual bool DoOrderUnfriend()
     {
-        var from = _mobile.ControlMaster;
-        var to = _mobile.ControlTarget;
+        var from = Mobile.ControlMaster;
+        var to = Mobile.ControlTarget;
 
         HandleUnfriendRequest(from, to);
         return true;
@@ -277,51 +277,51 @@ public abstract partial class BaseAI
     {
         if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
         {
-            _mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
+            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
             // *looks confused*
             return;
         }
 
-        if (!_mobile.IsPetFriend(to))
+        if (!Mobile.IsPetFriend(to))
         {
             from.SendLocalizedMessage(1070953);
             // That person is not a friend.
-            _mobile.ControlOrder = OrderType.None;
+            Mobile.ControlOrder = OrderType.None;
             return;
         }
 
-        from.SendLocalizedMessage(1070951, $"{_mobile.Name}\t{to.Name}");
+        from.SendLocalizedMessage(1070951, $"{Mobile.Name}\t{to.Name}");
         // ~1_NAME~ will no longer accept movement commands from ~2_NAME~.
 
-        to.SendLocalizedMessage(1070952, $"{from.Name}\t{_mobile.Name}");
+        to.SendLocalizedMessage(1070952, $"{from.Name}\t{Mobile.Name}");
         // ~1_NAME~ has no longer granted you the ability to give orders to their pet ~2_PET_NAME~.
         // This creature will no longer consider you as a friend.
 
-        _mobile.RemovePetFriend(to);
+        Mobile.RemovePetFriend(to);
 
-        _mobile.ControlTarget = from;
-        _mobile.ControlOrder = OrderType.Follow;
+        Mobile.ControlTarget = from;
+        Mobile.ControlOrder = OrderType.Follow;
     }
 
     public virtual bool DoOrderGuard()
     {
-        if (_mobile.IsDeadPet || _mobile.ControlMaster?.Deleted != false)
+        if (Mobile.IsDeadPet || Mobile.ControlMaster?.Deleted != false)
         {
             return true;
         }
 
-        var controlMaster = _mobile.ControlMaster;
-        var combatant = _mobile.Combatant;
+        var controlMaster = Mobile.ControlMaster;
+        var combatant = Mobile.Combatant;
         FindCombatant();
 
-        if (IsValidCombatant(_mobile.Combatant))
+        if (IsValidCombatant(Mobile.Combatant))
         {
-            combatant = _mobile.Combatant;
+            combatant = Mobile.Combatant;
 
             this.DebugSayFormatted($"Attacking target: {combatant.Name}");
 
-            _mobile.Combatant = combatant;
-            _mobile.FocusMob = combatant;
+            Mobile.Combatant = combatant;
+            Mobile.FocusMob = combatant;
             Action = ActionType.Combat;
 
             Think();
@@ -332,11 +332,11 @@ public abstract partial class BaseAI
 
             var guardLocation = controlMaster.Location;
 
-            var distance = (int)_mobile.GetDistanceToSqrt(guardLocation);
+            var distance = (int)Mobile.GetDistanceToSqrt(guardLocation);
 
             if (distance > 3)
             {
-                DoMove(_mobile.GetDirectionTo(guardLocation));
+                DoMove(Mobile.GetDirectionTo(guardLocation));
             }
             else
             {
@@ -349,20 +349,20 @@ public abstract partial class BaseAI
 
     public virtual bool DoOrderAttack()
     {
-        if (_mobile.IsDeadPet)
+        if (Mobile.IsDeadPet)
         {
             return false;
         }
 
-        if (IsInvalidControlTarget(_mobile.ControlTarget))
+        if (IsInvalidControlTarget(Mobile.ControlTarget))
         {
             HandleInvalidControlTarget();
         }
         else
         {
-            _mobile.Combatant = _mobile.ControlTarget;
+            Mobile.Combatant = Mobile.ControlTarget;
 
-            this.DebugSayFormatted($"Attacking target: {_mobile.ControlTarget?.Name}");
+            this.DebugSayFormatted($"Attacking target: {Mobile.ControlTarget?.Name}");
 
             Think();
         }
@@ -370,15 +370,15 @@ public abstract partial class BaseAI
         return true;
     }
 
-    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != _mobile.Map || !target.Alive || target.IsDeadBondedPet;
+    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map || !target.Alive || target.IsDeadBondedPet;
 
     private void HandleInvalidControlTarget()
     {
         DebugSay("Target is either dead, hidden, or out of range.");
 
-        _mobile.ControlOrder = Core.AOS || _mobile.IsBonded ? OrderType.Follow : OrderType.None;
+        Mobile.ControlOrder = Core.AOS || Mobile.IsBonded ? OrderType.Follow : OrderType.None;
 
-        if (_mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
+        if (Mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
         {
             FindCombatant();
         }
@@ -386,18 +386,18 @@ public abstract partial class BaseAI
 
     private void FindCombatant()
     {
-        foreach (var aggr in _mobile.GetMobilesInRange(_mobile.RangePerception))
+        foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            if (!_mobile.CanSee(aggr) || aggr.Combatant != _mobile || aggr.IsDeadBondedPet || !aggr.Alive)
+            if (!Mobile.CanSee(aggr) || aggr.Combatant != Mobile || aggr.IsDeadBondedPet || !aggr.Alive)
             {
                 continue;
             }
 
-            if (_mobile.InLOS(aggr))
+            if (Mobile.InLOS(aggr))
             {
-                _mobile.ControlTarget = aggr;
-                _mobile.ControlOrder = OrderType.Attack;
-                _mobile.Combatant = aggr;
+                Mobile.ControlTarget = aggr;
+                Mobile.ControlOrder = OrderType.Attack;
+                Mobile.Combatant = aggr;
 
                 this.DebugSayFormatted($"{aggr.Name} is still alive. Resuming attacks...");
 
@@ -411,29 +411,29 @@ public abstract partial class BaseAI
     {
         DebugSay("I have been released to the wild.");
 
-        var spawner = _mobile.Spawner;
+        var spawner = Mobile.Spawner;
 
         if (spawner != null && spawner.HomeLocation != Point3D.Zero)
         {
-            _mobile.Home = spawner.HomeLocation;
-            _mobile.RangeHome = spawner.HomeRange;
+            Mobile.Home = spawner.HomeLocation;
+            Mobile.RangeHome = spawner.HomeRange;
         }
         else
         {
             Action = ActionType.Wander;
         }
 
-        if (_mobile.DeleteOnRelease || _mobile.IsDeadPet)
+        if (Mobile.DeleteOnRelease || Mobile.IsDeadPet)
         {
-            _mobile.Delete();
+            Mobile.Delete();
         }
         else
         {
-            _mobile.BeginDeleteTimer();
+            Mobile.BeginDeleteTimer();
 
-            if (_mobile.CanDrop)
+            if (Mobile.CanDrop)
             {
-                _mobile.DropBackpack();
+                Mobile.DropBackpack();
             }
         }
 
@@ -444,11 +444,11 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else
         {
-            this.DebugSayFormatted($"I have been ordered to stay by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
 
         WalkRandomInHome(3, 2, 1);
@@ -459,11 +459,11 @@ public abstract partial class BaseAI
     {
         if (CheckHerding())
         {
-            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
         else
         {
-            this.DebugSayFormatted($"I have been ordered to stop by {_mobile.ControlMaster?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I have been ordered to stop by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
 
         if (Core.ML)
@@ -476,13 +476,13 @@ public abstract partial class BaseAI
 
     public virtual bool DoOrderTransfer()
     {
-        if (_mobile.IsDeadPet)
+        if (Mobile.IsDeadPet)
         {
             return true;
         }
 
-        var from = _mobile.ControlMaster;
-        var to = _mobile.ControlTarget;
+        var from = Mobile.ControlMaster;
+        var to = Mobile.ControlTarget;
 
         if (from?.Deleted == false && to?.Deleted == false && from != to && to.Player)
         {
@@ -505,7 +505,7 @@ public abstract partial class BaseAI
                 return true;
             }
 
-            if (!_mobile.CanBeControlledBy(to))
+            if (!Mobile.CanBeControlledBy(to))
             {
                 SendTransferRefusalMessages(from, to, 1043248, 1043249);
                 // 1043248: The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
@@ -513,7 +513,7 @@ public abstract partial class BaseAI
                 return false;
             }
 
-            if (!_mobile.CanBeControlledBy(from))
+            if (!Mobile.CanBeControlledBy(from))
             {
                 SendTransferRefusalMessages(from, to, 1043250, 1043251);
                 // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
@@ -521,8 +521,8 @@ public abstract partial class BaseAI
                 return false;
             }
 
-            if (_mobile.Combatant != null || _mobile.Aggressors.Count > 0 ||
-                _mobile.Aggressed.Count > 0 || Core.TickCount < _mobile.NextCombatTime)
+            if (Mobile.Combatant != null || Mobile.Aggressors.Count > 0 ||
+                Mobile.Aggressed.Count > 0 || Core.TickCount < Mobile.NextCombatTime)
             {
                 from.SendMessage("You can not transfer a pet while in combat.");
                 to.SendMessage("You can not transfer a pet while in combat.");
@@ -547,10 +547,10 @@ public abstract partial class BaseAI
             }
 
             var container = fromState.AddTrade(toState);
-            container.DropItem(new TransferItem(_mobile));
+            container.DropItem(new TransferItem(Mobile));
         }
 
-        _mobile.ControlOrder = OrderType.Stay;
+        Mobile.ControlOrder = OrderType.Stay;
         return true;
     }
 

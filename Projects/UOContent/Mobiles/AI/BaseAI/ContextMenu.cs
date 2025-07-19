@@ -22,16 +22,16 @@ public abstract partial class BaseAI
 {
     public virtual void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
     {
-        if (!from.Alive || !_mobile.Controlled || !from.InRange(_mobile, 16))
+        if (!from.Alive || !Mobile.Controlled || !from.InRange(Mobile, 16))
         {
             return;
         }
 
-        if (from == _mobile.ControlMaster)
+        if (from == Mobile.ControlMaster)
         {
             AddControlMasterEntries(ref list);
         }
-        else if (_mobile.IsPetFriend(from))
+        else if (Mobile.IsPetFriend(from))
         {
             AddPetFriendEntries(ref list);
         }
@@ -39,7 +39,7 @@ public abstract partial class BaseAI
 
     private void AddControlMasterEntries(ref PooledRefList<ContextMenuEntry> list)
     {
-        var isDeadPet = _mobile.IsDeadPet;
+        var isDeadPet = Mobile.IsDeadPet;
 
         list.Add(new InternalEntry(3006111, 14, OrderType.Attack, !isDeadPet)); // Command: Kill
         list.Add(new InternalEntry(3006108, 14, OrderType.Follow, true));       // Command: Follow
@@ -47,14 +47,14 @@ public abstract partial class BaseAI
         list.Add(new InternalEntry(3006112, 14, OrderType.Stop, true));         // Command: Stop
         list.Add(new InternalEntry(3006114, 14, OrderType.Stay, true));         // Command: Stay
 
-        if (_mobile.CanDrop)
+        if (Mobile.CanDrop)
         {
             list.Add(new InternalEntry(3006109, 14, OrderType.Drop, !isDeadPet)); // Command: Drop
         }
 
         list.Add(new InternalEntry(3006098, 14, OrderType.Rename, true)); // Rename
 
-        if (!_mobile.Summoned && _mobile is not GrizzledMare)
+        if (!Mobile.Summoned && Mobile is not GrizzledMare)
         {
             list.Add(new InternalEntry(3006110, 14, OrderType.Friend, true));         // Add Friend
             list.Add(new InternalEntry(3006099, 14, OrderType.Unfriend, true));       // Remove Friend
@@ -66,7 +66,7 @@ public abstract partial class BaseAI
 
     private void AddPetFriendEntries(ref PooledRefList<ContextMenuEntry> list)
     {
-        var isDeadPet = _mobile.IsDeadPet;
+        var isDeadPet = Mobile.IsDeadPet;
 
         list.Add(new InternalEntry(3006108, 14, OrderType.Follow, true));     // Command: Follow
         list.Add(new InternalEntry(3006112, 14, OrderType.Stop, !isDeadPet)); // Command: Stop

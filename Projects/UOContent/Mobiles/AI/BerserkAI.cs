@@ -10,11 +10,11 @@ public class BerserkAI : BaseAI
     {
         DebugSay("I have no combatant");
 
-        if (AcquireFocusMob(_mobile.RangePerception, FightMode.Closest, false, true, true))
+        if (AcquireFocusMob(Mobile.RangePerception, FightMode.Closest, false, true, true))
         {
-            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name} and I will attack");
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name} and I will attack");
 
-            _mobile.Combatant = _mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -27,9 +27,9 @@ public class BerserkAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = _mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != _mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
             DebugSay("My combatant is gone, so my guard is up");
@@ -38,11 +38,11 @@ public class BerserkAI : BaseAI
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, true, _mobile.RangeFight, _mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, true, Mobile.RangeFight, Mobile.RangeFight))
         {
             this.DebugSayFormatted($"I am still not in range of {combatant.Name}");
 
-            if ((int)_mobile.GetDistanceToSqrt(combatant) > _mobile.RangePerception + 1)
+            if ((int)Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
                 this.DebugSayFormatted($"I have lost {combatant.Name}");
 
@@ -50,12 +50,12 @@ public class BerserkAI : BaseAI
                 return true;
             }
         }
-        else if (Core.TickCount - _mobile.LastMoveTime > 400)
+        else if (Core.TickCount - Mobile.LastMoveTime > 400)
         {
-            _mobile.Direction = _mobile.GetDirectionTo(combatant);
+            Mobile.Direction = Mobile.GetDirectionTo(combatant);
         }
 
-        if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
@@ -65,11 +65,11 @@ public class BerserkAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        if (AcquireFocusMob(_mobile.RangePerception, _mobile.FightMode, false, true, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, true, true))
         {
-            this.DebugSayFormatted($"I have detected {_mobile.FocusMob.Name}, attacking");
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
-            _mobile.Combatant = _mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else

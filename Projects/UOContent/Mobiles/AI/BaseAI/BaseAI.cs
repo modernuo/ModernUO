@@ -28,7 +28,6 @@ namespace Server.Mobiles;
 public abstract partial class BaseAI
 {
     protected ActionType _action;
-    public readonly BaseCreature _mobile;
     public long _nextDetectHidden;
     protected PathFollower _path;
     public Timer _timer;
@@ -36,11 +35,11 @@ public abstract partial class BaseAI
     public Mobile _commandIssuer;
     public long NextMove { get; set; }
 
-    public Mobile Mobile => _mobile;
+    public BaseCreature Mobile { get; }
 
     public long NextDebugMessage { get; set; }
 
-    public virtual bool CanDetectHidden => _mobile.Skills.DetectHidden.Value > 0;
+    public virtual bool CanDetectHidden => Mobile.Skills.DetectHidden.Value > 0;
 
     private static readonly Dictionary<ActionType, Action<BaseAI>> _staticActionChanges = new()
     {
@@ -54,17 +53,17 @@ public abstract partial class BaseAI
 
     private static readonly Dictionary<ActionType, Func<BaseAI, bool>> _staticActionHandlers = new()
     {
-        { ActionType.Wander, ai => { ai._mobile.OnActionWander(); return ai.DoActionWander(); } },
-        { ActionType.Combat, ai => { ai._mobile.OnActionCombat(); return ai.DoActionCombat(); } },
-        { ActionType.Guard, ai => { ai._mobile.OnActionGuard(); return ai.DoActionGuard(); } },
-        { ActionType.Flee, ai => { ai._mobile.OnActionFlee(); return ai.DoActionFlee(); } },
-        { ActionType.Interact, ai => { ai._mobile.OnActionInteract(); return ai.DoActionInteract(); } },
-        { ActionType.Backoff, ai => { ai._mobile.OnActionBackoff(); return ai.DoActionBackoff(); } }
+        { ActionType.Wander, ai => { ai.Mobile.OnActionWander(); return ai.DoActionWander(); } },
+        { ActionType.Combat, ai => { ai.Mobile.OnActionCombat(); return ai.DoActionCombat(); } },
+        { ActionType.Guard, ai => { ai.Mobile.OnActionGuard(); return ai.DoActionGuard(); } },
+        { ActionType.Flee, ai => { ai.Mobile.OnActionFlee(); return ai.DoActionFlee(); } },
+        { ActionType.Interact, ai => { ai.Mobile.OnActionInteract(); return ai.DoActionInteract(); } },
+        { ActionType.Backoff, ai => { ai.Mobile.OnActionBackoff(); return ai.DoActionBackoff(); } }
     };
 
     public BaseAI(BaseCreature m)
     {
-        _mobile = m;
+        Mobile = m;
         _timer = new AITimer(this);
 
         if (!m.PlayerRangeSensitive || !World.Loading && m.Map != null && m.Map != Map.Internal && m.Map.GetSector(m.Location).Active)
@@ -91,7 +90,7 @@ public abstract partial class BaseAI
         }
     }
 
-    public virtual bool WasNamed(string speech) => !string.IsNullOrEmpty(_mobile.Name) && speech.InsensitiveStartsWith(_mobile.Name);
+    public virtual bool WasNamed(string speech) => !string.IsNullOrEmpty(Mobile.Name) && speech.InsensitiveStartsWith(Mobile.Name);
 
     public virtual void BeginPickTarget(Mobile from, OrderType order)
     {
@@ -143,16 +142,16 @@ public abstract partial class BaseAI
             return;
         }
 
-        var currentCombat = _mobile.Combatant;
+        var currentCombat = Mobile.Combatant;
 
         if (currentCombat == null || currentCombat == aggressor)
         {
             return;
         }
 
-        if (_mobile.GetDistanceToSqrt(aggressor) < _mobile.GetDistanceToSqrt(currentCombat))
+        if (Mobile.GetDistanceToSqrt(aggressor) < Mobile.GetDistanceToSqrt(currentCombat))
         {
-            _mobile.Combatant = aggressor;
+            Mobile.Combatant = aggressor;
         }
     }
 
@@ -163,15 +162,15 @@ public abstract partial class BaseAI
             return;
         }
 
-        if (_mobile.CheckControlChance(from))
+        if (Mobile.CheckControlChance(from))
         {
-            _mobile.ControlTarget = target;
-            _mobile.ControlOrder = order;
+            Mobile.ControlTarget = target;
+            Mobile.ControlOrder = order;
 
             if (order == OrderType.Attack)
             {
-                _mobile.FocusMob = target;
-                _mobile.Combatant = target;
+                Mobile.FocusMob = target;
+                Mobile.Combatant = target;
                 Action = ActionType.Combat;
             }
         }
@@ -179,14 +178,14 @@ public abstract partial class BaseAI
 
     private bool IsValidTarget(Mobile from, OrderType order)
     {
-        if (_mobile.Deleted || !_mobile.Controlled || !from.InRange(_mobile, 14)
-            || from.Map != _mobile.Map || !from.CheckAlive())
+        if (Mobile.Deleted || !Mobile.Controlled || !from.InRange(Mobile, 14)
+            || from.Map != Mobile.Map || !from.CheckAlive())
         {
             return false;
         }
 
-        var isOwner = from == _mobile.ControlMaster;
-        var isFriend = !isOwner && _mobile.IsPetFriend(from);
+        var isOwner = from == Mobile.ControlMaster;
+        var isFriend = !isOwner && Mobile.IsPetFriend(from);
 
         if (!isOwner && !isFriend)
         {
@@ -203,9 +202,9 @@ public abstract partial class BaseAI
 
     private bool CanAttackTarget(Mobile from, Mobile target)
     {
-        if (target is BaseCreature creature && creature.IsScaryToPets && _mobile.IsScaredOfScaryThings)
+        if (target is BaseCreature creature && creature.IsScaryToPets && Mobile.IsScaredOfScaryThings)
         {
-            _mobile.SayTo(from, "Your pet refuses to attack this creature!");
+            Mobile.SayTo(from, "Your pet refuses to attack this creature!");
             return false;
         }
 
@@ -221,7 +220,7 @@ public abstract partial class BaseAI
 
         if (target is BaseFactionGuard)
         {
-            _mobile.SayTo(from, "Your pet refuses to attack the guard.");
+            Mobile.SayTo(from, "Your pet refuses to attack the guard.");
             return false;
         }
 
@@ -230,16 +229,16 @@ public abstract partial class BaseAI
 
     public void DebugSay(string message, int cooldownMs = 5000)
     {
-        if (_mobile.Debug && Core.TickCount >= NextDebugMessage)
+        if (Mobile.Debug && Core.TickCount >= NextDebugMessage)
         {
-            _mobile.PublicOverheadMessage(MessageType.Regular, 41, false, message);
+            Mobile.PublicOverheadMessage(MessageType.Regular, 41, false, message);
             NextDebugMessage = Core.TickCount + cooldownMs;
         }
     }
 
     public virtual bool Think()
     {
-        if (_mobile.Deleted || _mobile.Map == null)
+        if (Mobile.Deleted || Mobile.Map == null)
         {
             return false;
         }
@@ -262,53 +261,53 @@ public abstract partial class BaseAI
 
     private void HandleWanderAction()
     {
-        _mobile.FocusMob = null;
-        _mobile.Warmode = false;
-        _mobile.Combatant = null;
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
     }
 
     private void HandleCombatAction()
     {
-        _mobile.Warmode = true;
+        Mobile.Warmode = true;
     }
 
     private void HandleGuardAction()
     {
-        _mobile.Warmode = true;
-        _mobile.Combatant = null;
+        Mobile.Warmode = true;
+        Mobile.Combatant = null;
     }
 
     private void HandleFleeAction()
     {
-        _mobile.FocusMob = null;
-        _mobile.Warmode = true;
+        Mobile.FocusMob = null;
+        Mobile.Warmode = true;
     }
 
     private void HandleInteractAction()
     {
-        _mobile.Warmode = false;
+        Mobile.Warmode = false;
     }
 
     private void HandleBackoffAction()
     {
-        _mobile.Warmode = false;
+        Mobile.Warmode = false;
     }
 
     public virtual bool DoActionWander()
     {
         if (CheckHerding())
         {
-            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
-        else if (_mobile.CurrentWayPoint != null)
+        else if (Mobile.CurrentWayPoint != null)
         {
             HandleWayPoint();
         }
-        else if (_mobile.IsAnimatedDead)
+        else if (Mobile.IsAnimatedDead)
         {
             FollowMaster();
         }
-        else if (CheckMove() && CanMoveNow(out _) && !_mobile.CheckIdle())
+        else if (CheckMove() && CanMoveNow(out _) && !Mobile.CheckIdle())
         {
             WalkRandomInHome(3, 2, 1);
         }
@@ -320,31 +319,31 @@ public abstract partial class BaseAI
 
     private void HandleWayPoint()
     {
-        var point = _mobile.CurrentWayPoint;
+        var point = Mobile.CurrentWayPoint;
 
-        if ((point.X != _mobile.Location.X || point.Y != _mobile.Location.Y)
-            && point.Map == _mobile.Map && point.Parent == null && !point.Deleted)
+        if ((point.X != Mobile.Location.X || point.Y != Mobile.Location.Y)
+            && point.Map == Mobile.Map && point.Parent == null && !point.Deleted)
         {
             this.DebugSayFormatted($"Moving towards waypoint {point.X}, {point.Y}.");
 
-            DoMove(_mobile.GetDirectionTo(point));
+            DoMove(Mobile.GetDirectionTo(point));
         }
         else if (OnAtWayPoint())
         {
             this.DebugSayFormatted($"I have reached waypoint {point.X}, {point.Y}.");
 
-            _mobile.CurrentWayPoint = point.NextPoint;
+            Mobile.CurrentWayPoint = point.NextPoint;
             if (point.NextPoint?.Deleted == true)
             {
-                _mobile.CurrentWayPoint = point.NextPoint = point.NextPoint.NextPoint;
+                Mobile.CurrentWayPoint = point.NextPoint = point.NextPoint.NextPoint;
             }
         }
     }
 
     private void FollowMaster()
     {
-        var master = _mobile.SummonMaster;
-        if (master != null && master.Map == _mobile.Map && master.InRange(_mobile, _mobile.RangePerception))
+        var master = Mobile.SummonMaster;
+        if (master != null && master.Map == Mobile.Map && master.InRange(Mobile, Mobile.RangePerception))
         {
             MoveTo(master, false, 1);
         }
@@ -358,24 +357,24 @@ public abstract partial class BaseAI
     {
         if (Core.AOS && CheckHerding())
         {
-            this.DebugSayFormatted($"I am being herded by {_mobile.ControlTarget?.Name ?? "Unknown"}.");
+            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
             return true;
         }
 
-        var combatant = _mobile.Combatant;
+        var combatant = Mobile.Combatant;
         if (!IsValidCombatant(combatant))
         {
             DebugSay("My combatant is missing. Returning home...");
 
-            _mobile.FocusMob = null;
-            _mobile.Warmode = false;
-            _mobile.Combatant = null;
+            Mobile.FocusMob = null;
+            Mobile.Warmode = false;
+            Mobile.Combatant = null;
 
             WalkRandomInHome(3, 2, 1);
             return true;
         }
 
-        if (_mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
             this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
@@ -384,24 +383,24 @@ public abstract partial class BaseAI
     }
 
     private bool IsValidCombatant(Mobile combatant) =>
-        IsValidFocusMob(combatant) && _mobile.InLOS(combatant);
+        IsValidFocusMob(combatant) && Mobile.InLOS(combatant);
 
     bool IsValidFocusMob(Mobile focusMob) =>
         focusMob != null
         && !focusMob.Deleted
-        && focusMob.Map == _mobile.Map
+        && focusMob.Map == Mobile.Map
         && focusMob.Alive
         && (focusMob is not BaseCreature bc || !bc.IsDeadPet)
         && focusMob.AccessLevel == AccessLevel.Player
-        && _mobile.CanSee(focusMob)
-        && _mobile.InRange(focusMob, _mobile.RangePerception);
+        && Mobile.CanSee(focusMob)
+        && Mobile.InRange(focusMob, Mobile.RangePerception);
 
     public virtual bool DoActionGuard()
     {
         DebugSay("I am still on guard.");
         if (Utility.Random(10) == 0)
         {
-            _mobile.Turn(Utility.Random(0, 2) - 1);
+            Mobile.Turn(Utility.Random(0, 2) - 1);
         }
 
         return true;
@@ -409,7 +408,7 @@ public abstract partial class BaseAI
 
     public virtual bool DoActionFlee()
     {
-        var from = _mobile.FocusMob;
+        var from = Mobile.FocusMob;
 
         if (!IsValidFocusMob(from))
         {
@@ -421,7 +420,7 @@ public abstract partial class BaseAI
 
         DebugSay("I am fleeing!");
 
-        DoMove(from.GetDirectionTo(_mobile));
+        DoMove(from.GetDirectionTo(Mobile));
         return true;
     }
 
@@ -431,18 +430,18 @@ public abstract partial class BaseAI
 
     public virtual bool CheckHerding()
     {
-        var target = _mobile.TargetLocation;
+        var target = Mobile.TargetLocation;
 
         if (target == null)
         {
             return false;
         }
 
-        var distance = _mobile.GetDistanceToSqrt(target);
+        var distance = Mobile.GetDistanceToSqrt(target);
 
         if (distance >= 1 && distance <= 15)
         {
-            DoMove(_mobile.GetDirectionTo(target));
+            DoMove(Mobile.GetDirectionTo(target));
             return true;
         }
 
@@ -451,21 +450,21 @@ public abstract partial class BaseAI
             HandleSpecialHerdingCase();
         }
 
-        _mobile.TargetLocation = null;
+        Mobile.TargetLocation = null;
         return false;
     }
 
-    private bool IsSpecialHerdingCase(IPoint2D target) => target.X == 1076 && target.Y == 450 && _mobile is HordeMinionFamiliar;
+    private bool IsSpecialHerdingCase(IPoint2D target) => target.X == 1076 && target.Y == 450 && Mobile is HordeMinionFamiliar;
 
     private void HandleSpecialHerdingCase()
     {
-        if (_mobile.ControlMaster is PlayerMobile pm && pm.Quest is DarkTidesQuest qs)
+        if (Mobile.ControlMaster is PlayerMobile pm && pm.Quest is DarkTidesQuest qs)
         {
             var obj = qs.FindObjective<FetchAbraxusScrollObjective>();
 
             if (obj?.Completed == false)
             {
-                _mobile.AddToBackpack(new ScrollOfAbraxus());
+                Mobile.AddToBackpack(new ScrollOfAbraxus());
                 obj.Complete();
             }
         }
@@ -473,70 +472,70 @@ public abstract partial class BaseAI
 
     public virtual bool DoBardPacified()
     {
-        if (Core.Now < _mobile.BardEndTime)
+        if (Core.Now < Mobile.BardEndTime)
         {
             DebugSay("I am pacified. Can not fight.");
 
-            _mobile.Warmode = false;
-            _mobile.Combatant = null;
+            Mobile.Warmode = false;
+            Mobile.Combatant = null;
         }
         else
         {
             DebugSay("I am free from pacification.");
 
-            _mobile.BardPacified = false;
+            Mobile.BardPacified = false;
         }
         return true;
     }
 
     public virtual bool DoBardProvoked()
     {
-        if (Core.Now >= _mobile.BardEndTime && IsProvokerLost())
+        if (Core.Now >= Mobile.BardEndTime && IsProvokerLost())
         {
             DebugSay("Provoker missing.");
 
-            _mobile.BardProvoked = false;
-            _mobile.BardMaster = null;
-            _mobile.BardTarget = null;
-            _mobile.Warmode = false;
-            _mobile.Combatant = null;
+            Mobile.BardProvoked = false;
+            Mobile.BardMaster = null;
+            Mobile.BardTarget = null;
+            Mobile.Warmode = false;
+            Mobile.Combatant = null;
         }
         else if (IsProvokeTargetLost())
         {
             DebugSay("Provoke target missing.");
 
-            _mobile.BardProvoked = false;
-            _mobile.BardMaster = null;
-            _mobile.BardTarget = null;
-            _mobile.Warmode = false;
-            _mobile.Combatant = null;
+            Mobile.BardProvoked = false;
+            Mobile.BardMaster = null;
+            Mobile.BardTarget = null;
+            Mobile.Warmode = false;
+            Mobile.Combatant = null;
         }
         else
         {
-            _mobile.Combatant = _mobile.BardTarget;
+            Mobile.Combatant = Mobile.BardTarget;
             Action = ActionType.Combat;
         }
         return true;
     }
 
     private bool IsProvokerLost() =>
-        _mobile.BardMaster?.Deleted != false
-        || _mobile.BardMaster.Map != _mobile.Map
-        || _mobile.GetDistanceToSqrt(_mobile.BardMaster) > _mobile.RangePerception;
+        Mobile.BardMaster?.Deleted != false
+        || Mobile.BardMaster.Map != Mobile.Map
+        || Mobile.GetDistanceToSqrt(Mobile.BardMaster) > Mobile.RangePerception;
 
     private bool IsProvokeTargetLost() =>
-        _mobile.BardTarget?.Deleted != false
-        || _mobile.BardTarget.Map != _mobile.Map
-        || _mobile.GetDistanceToSqrt(_mobile.BardTarget) > _mobile.RangePerception;
+        Mobile.BardTarget?.Deleted != false
+        || Mobile.BardTarget.Map != Mobile.Map
+        || Mobile.GetDistanceToSqrt(Mobile.BardTarget) > Mobile.RangePerception;
 
     public virtual bool CheckFlee()
     {
-        if (!_mobile.CheckFlee())
+        if (!Mobile.CheckFlee())
         {
             return false;
         }
 
-        if (_mobile.Combatant == null)
+        if (Mobile.Combatant == null)
         {
             WalkRandomInHome(3, 2, 1);
         }
@@ -553,7 +552,7 @@ public abstract partial class BaseAI
 
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
-        if (_mobile.Deleted || _mobile.Map == null)
+        if (Mobile.Deleted || Mobile.Map == null)
         {
             return false;
         }
@@ -565,7 +564,7 @@ public abstract partial class BaseAI
 
         if (acqType == FightMode.None)
         {
-            _mobile.FocusMob = null;
+            Mobile.FocusMob = null;
             return false;
         }
 
@@ -574,88 +573,88 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (Core.TickCount - _mobile.NextReacquireTime < 0)
+        if (Core.TickCount - Mobile.NextReacquireTime < 0)
         {
-            _mobile.FocusMob = null;
+            Mobile.FocusMob = null;
             return false;
         }
 
-        _mobile.NextReacquireTime = Core.TickCount + (int)_mobile.ReacquireDelay.TotalMilliseconds;
+        Mobile.NextReacquireTime = Core.TickCount + (int)Mobile.ReacquireDelay.TotalMilliseconds;
 
         DebugSay("Acquiring new target...");
 
-        if (_mobile.Map == null)
+        if (Mobile.Map == null)
         {
-            return _mobile.FocusMob != null;
+            return Mobile.FocusMob != null;
         }
 
-        return AcquireNewFocusMob(_mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
+        return AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
     }
 
     private bool HandleBardProvoked()
     {
-        if (!_mobile.BardProvoked)
+        if (!Mobile.BardProvoked)
         {
             return false;
         }
 
-        if (_mobile.BardTarget?.Deleted != false)
+        if (Mobile.BardTarget?.Deleted != false)
         {
-            _mobile.FocusMob = null;
+            Mobile.FocusMob = null;
             return false;
         }
 
-        _mobile.FocusMob = _mobile.BardTarget;
+        Mobile.FocusMob = Mobile.BardTarget;
         return true;
     }
 
     private bool HandleControlled()
     {
-        if (!_mobile.Controlled)
+        if (!Mobile.Controlled)
         {
             return false;
         }
 
-        if (_mobile.ControlTarget?.Deleted != false || _mobile.ControlTarget?.Hidden == true
-                                                     || _mobile.ControlTarget?.Alive != true || _mobile.ControlTarget?.IsDeadBondedPet == true
-                                                     || !_mobile.InRange(_mobile.ControlTarget, _mobile.RangePerception * 2))
+        if (Mobile.ControlTarget?.Deleted != false || Mobile.ControlTarget?.Hidden == true
+                                                     || Mobile.ControlTarget?.Alive != true || Mobile.ControlTarget?.IsDeadBondedPet == true
+                                                     || !Mobile.InRange(Mobile.ControlTarget, Mobile.RangePerception * 2))
         {
-            if (_mobile.ControlTarget != null && _mobile.ControlTarget != _mobile.ControlMaster)
+            if (Mobile.ControlTarget != null && Mobile.ControlTarget != Mobile.ControlMaster)
             {
-                _mobile.ControlTarget = null;
+                Mobile.ControlTarget = null;
             }
 
-            _mobile.FocusMob = null;
+            Mobile.FocusMob = null;
             return false;
         }
 
-        _mobile.FocusMob = _mobile.ControlTarget;
+        Mobile.FocusMob = Mobile.ControlTarget;
         return true;
     }
 
     private bool HandleConstantFocus()
     {
-        if (_mobile.ConstantFocus == null)
+        if (Mobile.ConstantFocus == null)
         {
             return false;
         }
 
-        this.DebugSayFormatted($"Acquired focused target: {_mobile.ConstantFocus.Name}.");
+        this.DebugSayFormatted($"Acquired focused target: {Mobile.ConstantFocus.Name}.");
 
-        _mobile.FocusMob = _mobile.ConstantFocus;
+        Mobile.FocusMob = Mobile.ConstantFocus;
         return true;
     }
 
     private bool HandleAggressor(FightMode acqType)
     {
-        if (acqType != FightMode.Aggressor || _mobile.Aggressors.Count > 0
-                                           || _mobile.Aggressed.Count > 0 || _mobile.FactionAllegiance != null
-                                           || _mobile.EthicAllegiance != null)
+        if (acqType != FightMode.Aggressor || Mobile.Aggressors.Count > 0
+                                           || Mobile.Aggressed.Count > 0 || Mobile.FactionAllegiance != null
+                                           || Mobile.EthicAllegiance != null)
         {
             return false;
         }
 
-        _mobile.FocusMob = null;
+        Mobile.FocusMob = null;
         return true;
     }
 
@@ -664,7 +663,7 @@ public abstract partial class BaseAI
         Mobile newFocusMob = null, enemySummonMob = null;
         double val = double.MinValue, enemySummonVal = double.MinValue;
 
-        foreach (var m in map.GetMobilesInRange(_mobile.Location, iRange))
+        foreach (var m in map.GetMobilesInRange(Mobile.Location, iRange))
         {
             if (IsInvalidTarget(m, bPlayerOnly))
             {
@@ -680,41 +679,41 @@ public abstract partial class BaseAI
                 continue;
             }
 
-            var theirVal = _mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
+            var theirVal = Mobile.GetFightModeRanking(m, acqType, bPlayerOnly);
 
-            if (theirVal > val && _mobile.InLOS(m))
+            if (theirVal > val && Mobile.InLOS(m))
             {
                 newFocusMob = m;
                 val = theirVal;
             }
             else if (Core.AOS && theirVal > enemySummonVal
-                              && _mobile.InLOS(m) && bc?.Summoned == true && bc.Controlled != true)
+                              && Mobile.InLOS(m) && bc?.Summoned == true && bc.Controlled != true)
             {
                 enemySummonMob = m;
                 enemySummonVal = theirVal;
             }
         }
 
-        _mobile.FocusMob = newFocusMob ?? enemySummonMob;
-        return _mobile.FocusMob != null;
+        Mobile.FocusMob = newFocusMob ?? enemySummonMob;
+        return Mobile.FocusMob != null;
     }
 
     private bool IsInvalidTarget(Mobile m, bool bPlayerOnly) =>
-        m.Deleted || m.Blessed || m == _mobile || m is BaseFamiliar || !m.Alive || m.IsDeadBondedPet ||
-        m.AccessLevel > AccessLevel.Player || bPlayerOnly && !m.Player || !_mobile.CanSee(m);
+        m.Deleted || m.Blessed || m == Mobile || m is BaseFamiliar || !m.Alive || m.IsDeadBondedPet ||
+        m.AccessLevel > AccessLevel.Player || bPlayerOnly && !m.Player || !Mobile.CanSee(m);
 
     private bool IsInvalidSummonTarget(Mobile m, BaseCreature bc, PlayerMobile pm)
     {
         if (Core.AOS && bc?.Summoned == true &&
-            (bc.SummonMaster == _mobile || !bc.SummonMaster.Player && IsHostile(bc.SummonMaster)))
+            (bc.SummonMaster == Mobile || !bc.SummonMaster.Player && IsHostile(bc.SummonMaster)))
         {
             return true;
         }
 
-        if (_mobile.Summoned && _mobile.SummonMaster != null)
+        if (Mobile.Summoned && Mobile.SummonMaster != null)
         {
-            return m == _mobile.SummonMaster || !SpellHelper.ValidIndirectTarget(_mobile.SummonMaster, m)
-                                              || pm != null && _mobile.IsAnimatedDead || _mobile.IsAnimatedDead
+            return m == Mobile.SummonMaster || !SpellHelper.ValidIndirectTarget(Mobile.SummonMaster, m)
+                                              || pm != null && Mobile.IsAnimatedDead || Mobile.IsAnimatedDead
                                               && bc?.IsAnimatedDead == true || bc?.Controlled == true;
         }
 
@@ -723,18 +722,18 @@ public abstract partial class BaseAI
 
     private bool IsInvalidFactionTarget(Mobile m, bool bFacFriend, bool bFacFoe)
     {
-        if (bFacFriend && !_mobile.IsFriend(m))
+        if (bFacFriend && !Mobile.IsFriend(m))
         {
             return true;
         }
 
         if (TransformationSpellHelper.UnderTransformation(m, typeof(EtherealVoyageSpell)) ||
-            _mobile.Combatant != m && VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true)
+            Mobile.Combatant != m && VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true)
         {
             return true;
         }
 
-        return bFacFoe && (!_mobile.IsEnemy(m) || !bFacFriend && !_mobile.CanBeHarmful(m, false));
+        return bFacFoe && (!Mobile.IsEnemy(m) || !bFacFriend && !Mobile.CanBeHarmful(m, false));
     }
 
     private bool IsInvalidFightModeTarget(Mobile m, FightMode acqType, BaseCreature bc)
@@ -744,18 +743,18 @@ public abstract partial class BaseAI
             return false;
         }
 
-        var valid = IsHostile(m) || _mobile.GetFactionAllegiance(m) == BaseCreature.Allegiance.Enemy
-                                 || _mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
+        var valid = IsHostile(m) || Mobile.GetFactionAllegiance(m) == BaseCreature.Allegiance.Enemy
+                                 || Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
 
         // Valid if FightMode is Evil and the target's karma is negative
         return !valid && acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0;
     }
 
-    private bool IsHostile(Mobile from) => _mobile.Combatant == from || from.Combatant == _mobile || IsAggressor(from) || IsAggressed(from);
+    private bool IsHostile(Mobile from) => Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
 
     private bool IsAggressor(Mobile from)
     {
-        foreach (var aggressor in _mobile.Aggressors)
+        foreach (var aggressor in Mobile.Aggressors)
         {
             if (aggressor.Defender == from)
             {
@@ -767,7 +766,7 @@ public abstract partial class BaseAI
 
     private bool IsAggressed(Mobile from)
     {
-        foreach (var aggressed in _mobile.Aggressed)
+        foreach (var aggressed in Mobile.Aggressed)
         {
             if (aggressed.Attacker == from)
             {
@@ -780,21 +779,21 @@ public abstract partial class BaseAI
 
     public virtual void DetectHidden()
     {
-        if (_mobile.Deleted || _mobile.Map == null || !CanDetectHidden)
+        if (Mobile.Deleted || Mobile.Map == null || !CanDetectHidden)
         {
             return;
         }
 
         DebugSay("Checking for hidden entities...");
 
-        var srcSkill = _mobile.Skills.DetectHidden.Value;
+        var srcSkill = Mobile.Skills.DetectHidden.Value;
 
         if (srcSkill <= 0)
         {
             return;
         }
 
-        foreach (var trg in _mobile.GetMobilesInRange(_mobile.RangePerception))
+        foreach (var trg in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
             if (IsValidTargetCombatTarget(trg))
             {
@@ -803,8 +802,8 @@ public abstract partial class BaseAI
         }
     }
 
-    private bool IsValidTargetCombatTarget(Mobile trg) => trg != _mobile && trg.Player && trg.Alive && trg.Hidden &&
-                                                          trg.AccessLevel == AccessLevel.Player && _mobile.InLOS(trg);
+    private bool IsValidTargetCombatTarget(Mobile trg) => trg != Mobile && trg.Player && trg.Alive && trg.Hidden &&
+                                                          trg.AccessLevel == AccessLevel.Player && Mobile.InLOS(trg);
 
     private void TryDetectHidden(Mobile trg, double srcSkill)
     {
@@ -824,35 +823,35 @@ public abstract partial class BaseAI
 
     public virtual void Deactivate()
     {
-        if (!_mobile.PlayerRangeSensitive)
+        if (!Mobile.PlayerRangeSensitive)
         {
             return;
         }
 
         _timer.Stop();
 
-        if (ShouldReturnToHome(_mobile.Spawner as Spawner))
+        if (ShouldReturnToHome(Mobile.Spawner as Spawner))
         {
             Timer.StartTimer(ReturnToHome);
         }
     }
 
     private bool ShouldReturnToHome(Spawner spawner) =>
-        spawner?.ReturnOnDeactivate == true && !_mobile.Controlled &&
-        (spawner.HomeLocation == Point3D.Zero || !_mobile.InRange(spawner.HomeLocation, spawner.HomeRange));
+        spawner?.ReturnOnDeactivate == true && !Mobile.Controlled &&
+        (spawner.HomeLocation == Point3D.Zero || !Mobile.InRange(spawner.HomeLocation, spawner.HomeRange));
 
     private void ReturnToHome()
     {
-        if (_mobile.Spawner is not Spawner spawner)
+        if (Mobile.Spawner is not Spawner spawner)
         {
             return;
         }
 
-        var loc = spawner.GetSpawnPosition(_mobile, spawner.Map);
+        var loc = spawner.GetSpawnPosition(Mobile, spawner.Map);
 
         if (loc != Point3D.Zero)
         {
-            _mobile.MoveToWorld(loc, spawner.Map);
+            Mobile.MoveToWorld(loc, spawner.Map);
         }
 
         _timer.Start();
@@ -868,6 +867,6 @@ public abstract partial class BaseAI
 
     public virtual void OnCurrentSpeedChanged()
     {
-        _timer.Interval = TimeSpan.FromMilliseconds(_mobile.CurrentSpeed * 1000);
+        _timer.Interval = TimeSpan.FromMilliseconds(Mobile.CurrentSpeed * 1000);
     }
 }
