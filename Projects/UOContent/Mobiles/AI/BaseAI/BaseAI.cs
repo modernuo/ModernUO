@@ -424,10 +424,10 @@ public abstract partial class BaseAI
         return true;
     }
 
-    private bool IsValidCombatant(Mobile combatant) =>
+    public bool IsValidCombatant(Mobile combatant) =>
         IsValidFocusMob(combatant) && Mobile.InLOS(combatant);
 
-    private bool IsValidFocusMob(Mobile focusMob) =>
+    public bool IsValidFocusMob(Mobile focusMob) =>
         focusMob != null
         && !focusMob.Deleted
         && focusMob.Map == Mobile.Map

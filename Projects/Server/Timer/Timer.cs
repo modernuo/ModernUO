@@ -119,11 +119,6 @@ public partial class Timer
 
     public void Stop()
     {
-        if (GetType().Name == "AITimer")
-        {
-            Console.WriteLine($"Stopping AITimer\n{new StackTrace()}");
-        }
-
         if (World.WorldState is WorldState.Saving)
         {
             logger.Error(

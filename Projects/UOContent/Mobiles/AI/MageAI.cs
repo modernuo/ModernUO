@@ -774,7 +774,7 @@ public class MageAI : BaseAI
             RunTo(c);
         }
 
-        if (Mobile.Spell != null || !Mobile.InRange(c, 1) || Core.TickCount - Mobile.LastMoveTime > 800)
+        if (Mobile.InRange(c, 1) || Mobile.Spell?.IsCasting == true || Core.TickCount - Mobile.LastMoveTime > 400)
         {
             Mobile.Direction = Mobile.GetDirectionTo(c);
         }

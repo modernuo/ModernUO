@@ -69,7 +69,6 @@ public class MeleeAI : BaseAI
 
         if (!MoveTo(combatant, true, Mobile.RangeFight))
         {
-            Mobile.Direction = Mobile.GetDirectionTo(combatant);
             if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
             {
                 this.DebugSayFormatted($"My move is blocked, so I am going to attack {Mobile.FocusMob!.Name}");
@@ -89,25 +88,21 @@ public class MeleeAI : BaseAI
 
             this.DebugSayFormatted($"I cannot find {combatant.Name}, so my guard is up");
         }
-        else if (Core.TickCount - Mobile.LastMoveTime > 400)
+        else if (Core.TickCount - Mobile.LastMoveTime > 200)
         {
             Mobile.Direction = Mobile.GetDirectionTo(combatant);
         }
 
-        if (!Mobile.Controlled && !Mobile.Summoned && Mobile.CanFlee)
+        // We are low on health, should we flee?
+        if (!Mobile.Controlled && !Mobile.Summoned && Mobile.CanFlee && Mobile.Hits < Mobile.HitsMax * 20 / 100)
         {
-            if (Mobile.Hits < Mobile.HitsMax * 20 / 100)
+            var fleeChance = 10 + Math.Max(0, combatant.Hits - Mobile.Hits); // (10 + diff)% chance to flee;
+            if (Utility.Random(0, 100) < fleeChance)
             {
-                // We are low on health, should we flee?
+                this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
 
-                var fleeChance = 10 + Math.Max(0, combatant.Hits - Mobile.Hits); // (10 + diff)% chance to flee;
-                if (Utility.Random(0, 100) < fleeChance)
-                {
-                    this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
-
-                    Action = ActionType.Flee;
-                    return true;
-                }
+                Action = ActionType.Flee;
+                return true;
             }
         }
 
