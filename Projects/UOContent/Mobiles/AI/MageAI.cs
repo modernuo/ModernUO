@@ -225,7 +225,10 @@ public class MageAI : BaseAI
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
-        else DebugSay("I am stuck");
+        else
+        {
+            DebugSay("I am stuck");
+        }
     }
 
     public void Run(Direction d)
