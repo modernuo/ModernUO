@@ -131,8 +131,9 @@ public abstract partial class BaseAI
 
         _commandIssuer?.RevealingAction();
 
-        if (Mobile.ControlTarget != null && !Mobile.ControlTarget.Deleted
-                                           && Mobile.ControlTarget.Alive)
+        if (Mobile.ControlTarget != null &&
+            !Mobile.ControlTarget.Deleted &&
+            Mobile.ControlTarget.Alive)
         {
             Mobile.FocusMob = Mobile.ControlTarget;
             Mobile.Combatant = Mobile.ControlTarget;

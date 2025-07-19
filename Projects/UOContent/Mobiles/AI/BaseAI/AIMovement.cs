@@ -372,16 +372,14 @@ public abstract partial class BaseAI
 
             var shouldRun = run && iCurrDist > 5;
 
-            if (iCurrDist < iWantDistMin || iCurrDist > iWantDistMax)
-            {
-                if (!MoveTowardsOrAwayFrom(m, shouldRun, iCurrDist, iWantDistMax))
-                {
-                    return false;
-                }
-            }
-            else
+            if (iCurrDist >= iWantDistMin && iCurrDist <= iWantDistMax)
             {
                 return true;
+            }
+
+            if (!MoveTowardsOrAwayFrom(m, shouldRun, iCurrDist, iWantDistMax))
+            {
+                return false;
             }
         }
 
