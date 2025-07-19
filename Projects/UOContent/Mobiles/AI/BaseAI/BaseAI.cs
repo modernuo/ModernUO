@@ -14,7 +14,6 @@
  ************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
 using Server.Engines.Virtues;
@@ -30,7 +29,7 @@ public abstract partial class BaseAI
     protected ActionType _action;
     public long _nextDetectHidden;
     protected PathFollower _path;
-    public Timer _timer;
+    public readonly Timer _timer;
     public DateTime _lastOrder = DateTime.MinValue;
     public Mobile _commandIssuer;
     public long NextMove { get; set; }
@@ -40,26 +39,6 @@ public abstract partial class BaseAI
     public long NextDebugMessage { get; set; }
 
     public virtual bool CanDetectHidden => Mobile.Skills.DetectHidden.Value > 0;
-
-    private static readonly Dictionary<ActionType, Action<BaseAI>> _staticActionChanges = new()
-    {
-        { ActionType.Wander, ai => { ai.HandleWanderAction(); } },
-        { ActionType.Combat, ai => { ai.HandleCombatAction(); } },
-        { ActionType.Guard, ai => { ai.HandleGuardAction(); } },
-        { ActionType.Flee, ai => { ai.HandleFleeAction(); } },
-        { ActionType.Interact, ai => { ai.HandleInteractAction(); } },
-        { ActionType.Backoff, ai => { ai.HandleBackoffAction(); } }
-    };
-
-    private static readonly Dictionary<ActionType, Func<BaseAI, bool>> _staticActionHandlers = new()
-    {
-        { ActionType.Wander, ai => { ai.Mobile.OnActionWander(); return ai.DoActionWander(); } },
-        { ActionType.Combat, ai => { ai.Mobile.OnActionCombat(); return ai.DoActionCombat(); } },
-        { ActionType.Guard, ai => { ai.Mobile.OnActionGuard(); return ai.DoActionGuard(); } },
-        { ActionType.Flee, ai => { ai.Mobile.OnActionFlee(); return ai.DoActionFlee(); } },
-        { ActionType.Interact, ai => { ai.Mobile.OnActionInteract(); return ai.DoActionInteract(); } },
-        { ActionType.Backoff, ai => { ai.Mobile.OnActionBackoff(); return ai.DoActionBackoff(); } }
-    };
 
     public BaseAI(BaseCreature m)
     {
@@ -75,6 +54,11 @@ public abstract partial class BaseAI
         {
             Action = ActionType.Wander;
         }
+    }
+
+    protected BaseAI(Timer timer)
+    {
+        _timer = timer;
     }
 
     public ActionType Action
@@ -248,14 +232,77 @@ public abstract partial class BaseAI
             return true;
         }
 
-        return _staticActionHandlers.TryGetValue(Action, out var handler) && handler(this);
+        switch (Action)
+        {
+            case ActionType.Wander:
+                {
+                    Mobile.OnActionWander();
+                    return DoActionWander();
+                }
+            case ActionType.Combat:
+                {
+                    Mobile.OnActionCombat();
+                    return DoActionCombat();
+                }
+            case ActionType.Guard:
+                {
+                    Mobile.OnActionGuard();
+                    return DoActionGuard();
+                }
+            case ActionType.Flee:
+                {
+                    Mobile.OnActionFlee();
+                    return DoActionFlee();
+                }
+            case ActionType.Interact:
+                {
+                    Mobile.OnActionInteract();
+                    return DoActionInteract();
+                }
+            case ActionType.Backoff:
+                {
+                    Mobile.OnActionBackoff();
+                    return DoActionBackoff();
+                }
+        }
+
+        return false;
     }
 
     public virtual void OnActionChanged()
     {
-        if (_staticActionChanges.TryGetValue(Action, out var handler))
+        switch (Action)
         {
-            handler(this);
+            case ActionType.Wander:
+                {
+                    HandleWanderAction();
+                    break;
+                }
+            case ActionType.Combat:
+                {
+                    HandleCombatAction();
+                    break;
+                }
+            case ActionType.Guard:
+                {
+                    HandleGuardAction();
+                    break;
+                }
+            case ActionType.Flee:
+                {
+                    HandleFleeAction();
+                    break;
+                }
+            case ActionType.Interact:
+                {
+                    HandleInteractAction();
+                    break;
+                }
+            case ActionType.Backoff:
+                {
+                    HandleBackoffAction();
+                    break;
+                }
         }
     }
 
@@ -385,7 +432,7 @@ public abstract partial class BaseAI
     private bool IsValidCombatant(Mobile combatant) =>
         IsValidFocusMob(combatant) && Mobile.InLOS(combatant);
 
-    bool IsValidFocusMob(Mobile focusMob) =>
+    private bool IsValidFocusMob(Mobile focusMob) =>
         focusMob != null
         && !focusMob.Deleted
         && focusMob.Map == Mobile.Map
@@ -470,7 +517,7 @@ public abstract partial class BaseAI
         }
     }
 
-    public virtual bool DoBardPacified()
+    public virtual void DoBardPacified()
     {
         if (Core.Now < Mobile.BardEndTime)
         {
@@ -485,10 +532,9 @@ public abstract partial class BaseAI
 
             Mobile.BardPacified = false;
         }
-        return true;
     }
 
-    public virtual bool DoBardProvoked()
+    public virtual void DoBardProvoked()
     {
         if (Core.Now >= Mobile.BardEndTime && IsProvokerLost())
         {
@@ -515,7 +561,6 @@ public abstract partial class BaseAI
             Mobile.Combatant = Mobile.BardTarget;
             Action = ActionType.Combat;
         }
-        return true;
     }
 
     private bool IsProvokerLost() =>
@@ -615,21 +660,23 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (Mobile.ControlTarget?.Deleted != false || Mobile.ControlTarget?.Hidden == true
-                                                     || Mobile.ControlTarget?.Alive != true || Mobile.ControlTarget?.IsDeadBondedPet == true
-                                                     || !Mobile.InRange(Mobile.ControlTarget, Mobile.RangePerception * 2))
+        if (Mobile.ControlTarget?.Deleted == false &&
+            Mobile.ControlTarget?.Hidden != true &&
+            Mobile.ControlTarget?.Alive == true &&
+            Mobile.ControlTarget?.IsDeadBondedPet != true &&
+            Mobile.InRange(Mobile.ControlTarget, Mobile.RangePerception * 2))
         {
-            if (Mobile.ControlTarget != null && Mobile.ControlTarget != Mobile.ControlMaster)
-            {
-                Mobile.ControlTarget = null;
-            }
-
-            Mobile.FocusMob = null;
-            return false;
+            Mobile.FocusMob = Mobile.ControlTarget;
+            return true;
         }
 
-        Mobile.FocusMob = Mobile.ControlTarget;
-        return true;
+        if (Mobile.ControlTarget != null && Mobile.ControlTarget != Mobile.ControlMaster)
+        {
+            Mobile.ControlTarget = null;
+        }
+
+        Mobile.FocusMob = null;
+        return false;
     }
 
     private bool HandleConstantFocus()
@@ -647,9 +694,11 @@ public abstract partial class BaseAI
 
     private bool HandleAggressor(FightMode acqType)
     {
-        if (acqType != FightMode.Aggressor || Mobile.Aggressors.Count > 0
-                                           || Mobile.Aggressed.Count > 0 || Mobile.FactionAllegiance != null
-                                           || Mobile.EthicAllegiance != null)
+        if (acqType != FightMode.Aggressor ||
+            Mobile.Aggressors.Count > 0 ||
+            Mobile.Aggressed.Count > 0 ||
+            Mobile.FactionAllegiance != null ||
+            Mobile.EthicAllegiance != null)
         {
             return false;
         }
@@ -710,14 +759,13 @@ public abstract partial class BaseAI
             return true;
         }
 
-        if (Mobile.Summoned && Mobile.SummonMaster != null)
+        if (!Mobile.Summoned || Mobile.SummonMaster == null)
         {
-            return m == Mobile.SummonMaster || !SpellHelper.ValidIndirectTarget(Mobile.SummonMaster, m)
-                                              || pm != null && Mobile.IsAnimatedDead || Mobile.IsAnimatedDead
-                                              && bc?.IsAnimatedDead == true || bc?.Controlled == true;
+            return false;
         }
 
-        return false;
+        return m == Mobile.SummonMaster || !SpellHelper.ValidIndirectTarget(Mobile.SummonMaster, m) ||
+               Mobile.IsAnimatedDead && (pm != null || bc?.IsAnimatedDead == true || bc?.Controlled == true);
     }
 
     private bool IsInvalidFactionTarget(Mobile m, bool bFacFriend, bool bFacFoe)

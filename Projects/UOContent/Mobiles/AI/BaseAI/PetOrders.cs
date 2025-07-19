@@ -176,7 +176,7 @@ public abstract partial class BaseAI
             return;
         }
 
-        if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
+        if (to?.Deleted != false || from == to || !to.Player)
         {
             Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
             // *looks confused*
@@ -259,18 +259,18 @@ public abstract partial class BaseAI
 
     public virtual bool DoOrderGuard()
     {
-        if (Mobile.IsDeadPet || Mobile.ControlMaster?.Deleted != false)
+        var controlMaster = Mobile.ControlMaster;
+
+        if (Mobile.IsDeadPet || controlMaster?.Deleted != false)
         {
             return true;
         }
 
-        var controlMaster = Mobile.ControlMaster;
-        var combatant = Mobile.Combatant;
         FindCombatant();
 
         if (IsValidCombatant(Mobile.Combatant))
         {
-            combatant = Mobile.Combatant;
+            var combatant = Mobile.Combatant;
 
             this.DebugSayFormatted($"Attacking target: {combatant.Name}");
 
