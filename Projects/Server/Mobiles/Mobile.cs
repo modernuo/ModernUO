@@ -8286,7 +8286,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Region.OnDidHarmful(this, target);
         target.Region.OnGotHarmful(this, target);
 
-        if (!indirect)
+        if (!indirect && !ChangingCombatant)
         {
             Combatant = target;
         }
