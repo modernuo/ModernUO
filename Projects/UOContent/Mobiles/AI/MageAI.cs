@@ -627,7 +627,7 @@ public class MageAI : BaseAI
             {
                 Mobile.Combatant = c = Mobile.FocusMob!;
 
-                DebugSay($"Something happened to my combatant, so I am going to fight {c.Name}");
+                this.DebugSayFormatted($"Something happened to my combatant, so I am going to fight {c.Name}");
                 Mobile.FocusMob = null;
             }
             else

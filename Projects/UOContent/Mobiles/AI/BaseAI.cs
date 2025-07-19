@@ -2131,7 +2131,7 @@ public abstract class BaseAI
                     }
                     else
                     {
-                        DebugSay($"Ugabooga. I'm so big and tough I can destroy it: {item.GetType().Name}");
+                        this.DebugSayFormatted($"Ugabooga. I'm so big and tough I can destroy it: {item.GetType().Name}");
 
                         if (item is Container cont)
                         {
