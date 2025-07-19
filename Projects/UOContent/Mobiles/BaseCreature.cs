@@ -341,7 +341,11 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            ResetSpeeds();
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = passiveSpeed;
 
             m_Team = 0;
 
@@ -902,8 +906,6 @@ namespace Server.Mobiles
 
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
-
-        public virtual bool ScaleSpeedByDex => NPCSpeeds.ScaleSpeedByDex && !IsMonster;
 
         // used for deleting untamed creatures [in houses]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -1491,15 +1493,6 @@ namespace Server.Mobiles
             if (isTeleport)
             {
                 AIObject?.OnTeleported();
-            }
-        }
-
-        public override void OnRawDexChange(int oldValue)
-        {
-            // This only really happens for pets or when a GM modifies a mob.
-            if (oldValue != RawDex && ScaleSpeedByDex)
-            {
-                ResetSpeeds();
             }
         }
 
@@ -3474,9 +3467,6 @@ namespace Server.Mobiles
 
         public bool SetControlMaster(Mobile m)
         {
-            // Never had an owner, so reset speeds
-            var shouldResetSpeeds = LastOwner == null;
-
             if (m == null)
             {
                 ControlMaster = null;
@@ -3516,11 +3506,6 @@ namespace Server.Mobiles
             }
 
             Guild = null;
-
-            if (shouldResetSpeeds)
-            {
-                ResetSpeeds();
-            }
 
             Delta(MobileDelta.Noto);
 
@@ -4908,15 +4893,6 @@ namespace Server.Mobiles
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
             NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
-        }
-
-        public void ResetSpeeds(bool currentUseActive = false)
-        {
-            GetSpeeds(out var activeSpeed, out var passiveSpeed);
-
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
         }
 
         public virtual void DropBackpack()
