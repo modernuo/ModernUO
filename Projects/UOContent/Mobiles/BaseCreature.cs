@@ -2258,7 +2258,7 @@ namespace Server.Mobiles
 
         public void ChangeAIType(AIType newAI)
         {
-            AIObject?.m_Timer.Stop();
+            AIObject?._timer.Stop();
 
             if (ForcedAI != null)
             {
@@ -2381,7 +2381,7 @@ namespace Server.Mobiles
         {
             if (AIObject != null)
             {
-                AIObject.m_Timer?.Stop();
+                AIObject._timer?.Stop();
                 AIObject = null;
             }
 

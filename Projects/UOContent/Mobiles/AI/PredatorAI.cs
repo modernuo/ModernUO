@@ -8,20 +8,20 @@ public class PredatorAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (m_Mobile.Combatant != null)
+        if (Mobile.Combatant != null)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("I am hurt or being attacked, I kill him");
+                Mobile.DebugSay("I am hurt or being attacked, I kill him");
             }
 
             Action = ActionType.Combat;
         }
-        else if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, true, false, true))
+        else if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, true, false, true))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("There is something near, I go away");
+                Mobile.DebugSay("There is something near, I go away");
             }
 
             Action = ActionType.Backoff;
@@ -36,44 +36,44 @@ public class PredatorAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = m_Mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
+                Mobile.DebugSay("My combatant is gone, so my guard is up");
             }
 
             Action = ActionType.Guard;
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, true, Mobile.RangeFight, Mobile.RangeFight))
         {
-            if (m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
+            if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
-                if (m_Mobile.Debug)
+                if (Mobile.Debug)
                 {
-                    m_Mobile.DebugSay($"I cannot find {combatant.Name}");
+                    Mobile.DebugSay($"I cannot find {combatant.Name}");
                 }
 
                 Action = ActionType.Wander;
                 return true;
             }
 
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I should be closer to {combatant.Name}");
+                Mobile.DebugSay($"I should be closer to {combatant.Name}");
             }
         }
 
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
+                Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
             }
         }
 
@@ -82,17 +82,17 @@ public class PredatorAI : BaseAI
 
     public override bool DoActionBackoff()
     {
-        if (m_Mobile.IsHurt() || m_Mobile.Combatant != null)
+        if (Mobile.IsHurt() || Mobile.Combatant != null)
         {
             Action = ActionType.Combat;
         }
-        else if (AcquireFocusMob(m_Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
+        else if (AcquireFocusMob(Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
         {
-            if (WalkMobileRange(m_Mobile.FocusMob, 1, false, m_Mobile.RangePerception, m_Mobile.RangePerception * 2))
+            if (WalkMobileRange(Mobile.FocusMob, 1, false, Mobile.RangePerception, Mobile.RangePerception * 2))
             {
-                if (m_Mobile.Debug)
+                if (Mobile.Debug)
                 {
-                    m_Mobile.DebugSay("Well, here I am safe");
+                    Mobile.DebugSay("Well, here I am safe");
                 }
 
                 Action = ActionType.Wander;
@@ -100,9 +100,9 @@ public class PredatorAI : BaseAI
         }
         else
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("I have lost my focus, lets relax");
+                Mobile.DebugSay("I have lost my focus, lets relax");
             }
 
             Action = ActionType.Wander;

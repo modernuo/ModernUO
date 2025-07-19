@@ -234,11 +234,11 @@ namespace Server.Mobiles
         public override bool Think()
         {
             // Clones only follow their owners
-            var master = m_Mobile.SummonMaster;
+            var master = Mobile.SummonMaster;
 
-            if (master?.Map == m_Mobile.Map && master?.InRange(m_Mobile, m_Mobile.RangePerception) == true)
+            if (master?.Map == Mobile.Map && master?.InRange(Mobile, Mobile.RangePerception) == true)
             {
-                var iCurrDist = (int)m_Mobile.GetDistanceToSqrt(master);
+                var iCurrDist = (int)Mobile.GetDistanceToSqrt(master);
                 var bRun = iCurrDist > 5;
 
                 WalkMobileRange(master, 2, bRun, 0, 1);

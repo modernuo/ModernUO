@@ -8,19 +8,19 @@ public class BerserkAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (m_Mobile.Debug)
+        if (Mobile.Debug)
         {
-            m_Mobile.DebugSay("I have no combatant");
+            Mobile.DebugSay("I have no combatant");
         }
 
-        if (AcquireFocusMob(m_Mobile.RangePerception, FightMode.Closest, false, true, true))
+        if (AcquireFocusMob(Mobile.RangePerception, FightMode.Closest, false, true, true))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name} and I will attack");
+                Mobile.DebugSay($"I have detected {Mobile.FocusMob.Name} and I will attack");
             }
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -33,48 +33,48 @@ public class BerserkAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = m_Mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
+                Mobile.DebugSay("My combatant is gone, so my guard is up");
             }
 
             Action = ActionType.Guard;
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, true, Mobile.RangeFight, Mobile.RangeFight))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I am still not in range of {combatant.Name}");
+                Mobile.DebugSay($"I am still not in range of {combatant.Name}");
             }
 
-            if ((int)m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
+            if ((int)Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
-                if (m_Mobile.Debug)
+                if (Mobile.Debug)
                 {
-                    m_Mobile.DebugSay($"I have lost {combatant.Name}");
+                    Mobile.DebugSay($"I have lost {combatant.Name}");
                 }
 
                 Action = ActionType.Guard;
                 return true;
             }
         }
-        else if (Core.TickCount - m_Mobile.LastMoveTime > 400)
+        else if (Core.TickCount - Mobile.LastMoveTime > 400)
         {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+            Mobile.Direction = Mobile.GetDirectionTo(combatant);
         }
 
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
+                Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
             }
         }
 
@@ -83,14 +83,14 @@ public class BerserkAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, true, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, true, true))
         {
-            if (m_Mobile.Debug)
+            if (Mobile.Debug)
             {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
+                Mobile.DebugSay($"I have detected {Mobile.FocusMob.Name}, attacking");
             }
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else

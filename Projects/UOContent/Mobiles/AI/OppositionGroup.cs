@@ -5,9 +5,9 @@ namespace Server
 {
     public class OppositionGroup
     {
-        private readonly Type[][] m_Types;
+        private readonly Type[][] _types;
 
-        public OppositionGroup(Type[][] types) => m_Types = types;
+        public OppositionGroup(Type[][] types) => _types = types;
 
         public static OppositionGroup TerathansAndOphidians { get; } = new(
             new[]
@@ -112,9 +112,9 @@ namespace Server
 
             var type = obj.GetType();
 
-            for (var i = 0; i < m_Types.Length; ++i)
+            for (var i = 0; i < _types.Length; ++i)
             {
-                var group = m_Types[i];
+                var group = _types[i];
 
                 var contains = false;
 
