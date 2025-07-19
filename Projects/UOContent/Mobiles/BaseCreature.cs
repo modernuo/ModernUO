@@ -3474,6 +3474,9 @@ namespace Server.Mobiles
 
         public bool SetControlMaster(Mobile m)
         {
+            // Never had an owner, so reset speeds
+            var shouldResetSpeeds = LastOwner == null;
+
             if (m == null)
             {
                 ControlMaster = null;
@@ -3513,7 +3516,11 @@ namespace Server.Mobiles
             }
 
             Guild = null;
-            ResetSpeeds();
+
+            if (shouldResetSpeeds)
+            {
+                ResetSpeeds();
+            }
 
             Delta(MobileDelta.Noto);
 

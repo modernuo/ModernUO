@@ -34,12 +34,9 @@ internal sealed class AITimer : Timer
     {
         double interval;
 
-        if (owner.Mobile.Controlled &&
-            owner.Mobile.ControlOrder == OrderType.Follow &&
-            owner.Mobile.ControlTarget == owner.Mobile.ControlMaster &&
-            owner.Mobile.Combatant == null)
+        if (owner.IsFollowingMaster())
         {
-            interval = owner.Mobile.CurrentSpeed * 400;
+            interval = Core.AOS ? 100 : owner.Mobile.CurrentSpeed * 400;
         }
         else if (owner.Mobile.CurrentSpeed <= 0.4)
         {

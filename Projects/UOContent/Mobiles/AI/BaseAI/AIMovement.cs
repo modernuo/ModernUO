@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
+using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Items;
 using MoveImpl = Server.Movement.MovementImpl;
@@ -273,8 +274,9 @@ public abstract partial class BaseAI
         }
 
         var distance = (int)Mobile.GetDistanceToSqrt(m);
+        var distanceThreshold = Core.AOS && IsFollowingMaster() ? 1 : 5;
 
-        var shouldRun = run && distance > 5;
+        var shouldRun = run && distance > distanceThreshold;
 
         if (Mobile.InRange(m, range))
         {
@@ -305,6 +307,13 @@ public abstract partial class BaseAI
 
         return false;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsFollowingMaster() =>
+        Mobile.Controlled &&
+        Mobile.ControlOrder == OrderType.Follow &&
+        Mobile.ControlTarget == Mobile.ControlMaster &&
+        Mobile.Combatant == null;
 
     private bool MoveToWithCollisionAvoidance(Mobile target, bool run, int range)
     {
