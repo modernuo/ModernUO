@@ -2414,13 +2414,6 @@ namespace Server.Mobiles
             base.OnAfterDelete();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DebugSay(string text)
-        {
-            // Moved the debug check to implementation layer so we can avoid string formatting when we do not need it
-            PublicOverheadMessage(MessageType.Regular, 41, false, text);
-        }
-
         /*
          * This function can be overridden.. so a "Strongest" mobile, can have a different definition depending
          * on who check for value
@@ -2498,7 +2491,7 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    DebugSay("I'm being attacked but my master told me not to fight.");
+                    AIObject.DebugSay("I'm being attacked but my master told me not to fight.");
                     Warmode = false;
                     return;
                 }
