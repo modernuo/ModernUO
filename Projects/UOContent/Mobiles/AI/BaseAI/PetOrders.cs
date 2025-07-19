@@ -17,69 +17,23 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
-    public virtual bool Obey()
-    {
-        if (Mobile.Deleted)
+    public virtual bool Obey() =>
+        !Mobile.Deleted && Mobile.ControlOrder switch
         {
-            return false;
-        }
-
-        switch (Mobile.ControlOrder)
-        {
-            case OrderType.None:
-                {
-                    return DoOrderNone();
-                }
-            case OrderType.Come:
-                {
-                    return DoOrderCome();
-                }
-            case OrderType.Drop:
-                {
-                    return DoOrderDrop();
-                }
-            case OrderType.Friend:
-                {
-                    return DoOrderFriend();
-                }
-            case OrderType.Unfriend:
-                {
-                    return DoOrderUnfriend();
-                }
-            case OrderType.Guard:
-                {
-                    return DoOrderGuard();
-                }
-            case OrderType.Attack:
-                {
-                    return DoOrderAttack();
-                }
-            case OrderType.Release:
-                {
-                    return DoOrderRelease();
-                }
-            case OrderType.Stay:
-                {
-                    return DoOrderStay();
-                }
-            case OrderType.Stop:
-                {
-                    return DoOrderStop();
-                }
-            case OrderType.Follow:
-                {
-                    return DoOrderFollow();
-                }
-            case OrderType.Transfer:
-                {
-                    return DoOrderTransfer();
-                }
-            default:
-                {
-                    return false;
-                }
-        }
-    }
+            OrderType.None     => DoOrderNone(),
+            OrderType.Come     => DoOrderCome(),
+            OrderType.Drop     => DoOrderDrop(),
+            OrderType.Friend   => DoOrderFriend(),
+            OrderType.Unfriend => DoOrderUnfriend(),
+            OrderType.Guard    => DoOrderGuard(),
+            OrderType.Attack   => DoOrderAttack(),
+            OrderType.Release  => DoOrderRelease(),
+            OrderType.Stay     => DoOrderStay(),
+            OrderType.Stop     => DoOrderStop(),
+            OrderType.Follow   => DoOrderFollow(),
+            OrderType.Transfer => DoOrderTransfer(),
+            _                  => false
+        };
 
     public virtual bool DoOrderNone()
     {
