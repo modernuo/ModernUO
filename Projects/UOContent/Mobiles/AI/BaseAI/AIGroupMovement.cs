@@ -29,16 +29,17 @@ public abstract partial class BaseAI
     {
         using var toRemove = PooledRefQueue<BaseCreature>.Create();
 
-        foreach (var kvp in _reservedPositions)
+        foreach (var (m, p) in _reservedPositions)
         {
-            if (kvp.Key == null || kvp.Key.Deleted || kvp.Key.GetDistanceToSqrt(kvp.Value) < 1)
+            if (m?.Deleted != false || m.GetDistanceToSqrt(p) < 1)
             {
-                toRemove.Enqueue(kvp.Key);
+                toRemove.Enqueue(m);
             }
         }
-        foreach (var creature in toRemove)
+
+        while (toRemove.Count > 0)
         {
-            _reservedPositions.Remove(creature);
+            _reservedPositions.Remove(toRemove.Dequeue());
         }
     }
 
@@ -57,25 +58,24 @@ public abstract partial class BaseAI
 
         var mobile = ai.Mobile;
         var allies = ai.GetNearbyAllies(target);
+        var optimalPosition = ai.CalculateOptimalPosition(target, ref allies, range);
         try
         {
-            var optimalPosition = ai.CalculateOptimalPosition(target, ref allies, range);
-
-            if (optimalPosition != Point3D.Zero)
+            if (optimalPosition == Point3D.Zero)
             {
-                _reservedPositions[mobile] = optimalPosition;
-
-                var direction = mobile.GetDirectionTo(optimalPosition);
-
-                if (Utility.Random(100) < 30)
-                {
-                    direction = GetAdjustedDirection(direction);
-                }
-
-                return ai.DoMove(direction, true);
+                return ai.MoveToWithCollisionAvoidance(target, run, range);
             }
 
-            return ai.MoveToWithCollisionAvoidance(target, run, range);
+            _reservedPositions[mobile] = optimalPosition;
+
+            var direction = mobile.GetDirectionTo(optimalPosition);
+
+            if (Utility.Random(3) == 0)
+            {
+                direction = GetAdjustedDirection(direction);
+            }
+
+            return ai.DoMove(direction, true);
         }
         finally
         {
