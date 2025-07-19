@@ -871,9 +871,7 @@ public abstract partial class BaseAI
             return;
         }
 
-        var newSector = Mobile.Map.GetSector(Mobile.Location);
-
-        if (!newSector.Active)
+        if (Mobile.Map == Map.Internal || !Mobile.Controlled && !Mobile.Map.GetSector(Mobile.Location).Active)
         {
             _timer.Stop();
         }

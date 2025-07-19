@@ -898,7 +898,7 @@ namespace Server.Mobiles
         public virtual bool IsDispellable => Summoned && !IsAnimatedDead;
 
         // If they are following a waypoint, they'll continue to follow it even if players aren't around
-        public virtual bool PlayerRangeSensitive => !Controlled && CurrentWayPoint == null;
+        public virtual bool PlayerRangeSensitive => CurrentWayPoint == null;
 
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;

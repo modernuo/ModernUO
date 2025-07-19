@@ -36,7 +36,8 @@ internal sealed class AITimer : Timer
 
         if (owner.Mobile.Controlled &&
             owner.Mobile.ControlOrder == OrderType.Follow &&
-            owner.Mobile.Combatant != owner.Mobile.ControlMaster)
+            owner.Mobile.ControlTarget == owner.Mobile.ControlMaster &&
+            owner.Mobile.Combatant == null)
         {
             interval = owner.Mobile.CurrentSpeed * 400;
         }
@@ -49,7 +50,7 @@ internal sealed class AITimer : Timer
             interval = owner.Mobile.CurrentSpeed * 3000;
         }
 
-        return Math.Max(interval, 200);
+        return Math.Max(interval, 100);
     }
 
     protected override void OnTick()
