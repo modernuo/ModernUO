@@ -26,9 +26,9 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
-    protected ActionType _action;
+    private ActionType _action;
     public long _nextDetectHidden;
-    protected PathFollower _path;
+    public PathFollower Path { get; protected set; }
     public readonly Timer _timer;
     public DateTime _lastOrder = DateTime.MinValue;
     public Mobile _commandIssuer;
@@ -592,7 +592,7 @@ public abstract partial class BaseAI
     {
         DebugSay("Teleported; recalculating path...");
 
-        _path?.ForceRepath();
+        Path?.ForceRepath();
     }
 
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)

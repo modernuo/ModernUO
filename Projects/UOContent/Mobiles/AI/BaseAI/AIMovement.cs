@@ -66,7 +66,6 @@ public abstract partial class BaseAI
         }
 
         Mobile.Pushing = false;
-
         var mobDirection = Mobile.Direction;
 
         if (TryMove(d))
@@ -84,7 +83,7 @@ public abstract partial class BaseAI
             return MoveResult.SuccessAutoTurn;
         }
 
-        return HandleBlockedMovement(d, mobDirection);
+        return HandleBlockedMovement(d);
     }
 
     private bool TryMove(Direction d)
@@ -101,7 +100,7 @@ public abstract partial class BaseAI
         Mobile == null || Mobile.Deleted || Mobile.Frozen || Mobile.Paralyzed ||
         Mobile.Spell?.IsCasting == true || Mobile.DisallowAllMoves;
 
-    private MoveResult HandleBlockedMovement(Direction d, Direction mobDirection)
+    private MoveResult HandleBlockedMovement(Direction d)
     {
         var wasPushing = Mobile.Pushing;
 
@@ -279,7 +278,7 @@ public abstract partial class BaseAI
 
         if (Mobile.InRange(m, range))
         {
-            _path = null;
+            Path = null;
             return true;
         }
 
@@ -288,19 +287,19 @@ public abstract partial class BaseAI
             return MoveToWithGroup(this, m, shouldRun, range);
         }
 
-        if (_path == null && Mobile.InLOS(m) && DoMove(Mobile.GetDirectionTo(m), true))
+        if (Path == null && Mobile.InLOS(m) && DoMove(Mobile.GetDirectionTo(m), true))
         {
             return true;
         }
 
-        if (_path?.Goal != m)
+        if (Path?.Goal != m)
         {
-            _path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
+            Path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
         }
 
-        if (_path.Follow(shouldRun, 1))
+        if (Path.Follow(shouldRun, 1))
         {
-            _path = null;
+            Path = null;
             return true;
         }
 
@@ -337,14 +336,14 @@ public abstract partial class BaseAI
             }
         }
 
-        if (_path?.Goal != target)
+        if (target != null && Path?.Goal != target)
         {
-            _path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
+            Path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
         }
 
-        if (_path.Follow(shouldRun, 1))
+        if (Path.Follow(shouldRun, 1))
         {
-            _path = null;
+            Path = null;
             return true;
         }
 
@@ -382,17 +381,17 @@ public abstract partial class BaseAI
         return dist >= iWantDistMin && dist <= iWantDistMax;
     }
 
-    private bool MoveTowardsOrAwayFrom([NotNull] Mobile m, bool run, int iCurrDist, int iWantDistMax)
+    private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
     {
         var shouldRun = run && iCurrDist > 5;
 
         var needCloser = iCurrDist > iWantDistMax;
 
-        if (needCloser && _path?.Goal == m)
+        if (needCloser && m != null && Path?.Goal == m)
         {
-            if (_path.Follow(shouldRun, 1))
+            if (Path.Follow(shouldRun, 1))
             {
-                _path = null;
+                Path = null;
                 return true;
             }
         }
@@ -402,17 +401,17 @@ public abstract partial class BaseAI
 
             if (DoMove(dirTo, true))
             {
-                _path = null;
+                Path = null;
                 return true;
             }
 
             if (needCloser)
             {
-                _path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
+                Path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
 
-                if (_path.Follow(shouldRun, 1))
+                if (Path.Follow(shouldRun, 1))
                 {
-                    _path = null;
+                    Path = null;
                     return true;
                 }
             }
