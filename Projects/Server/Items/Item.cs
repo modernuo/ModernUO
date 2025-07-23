@@ -192,7 +192,7 @@ public enum ExpandFlag
     Spawner = 0x100
 }
 
-public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEntity, IValueLinkListNode<Item>
+public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEntity, IValueLinkListNode<Item>
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
 
@@ -533,6 +533,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     public List<Item> Items => LookupItems() ?? EmptyItems;
+
+    public int LookupContainerVersion() => (this as Container)?._version ?? LookupCompactInfo()?.Version ?? 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public IEntity RootParent
@@ -4321,6 +4323,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         public int m_TempFlags;
 
         public double m_Weight = -1;
+
+        public int Version = 0;
     }
 
     [Flags]

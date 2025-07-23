@@ -25,7 +25,7 @@ public partial class Container : Item
 
     private int m_TotalItems;
     private int m_TotalWeight;
-    private int _version;
+    internal int _version;
 
     [SerializableField(3)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
@@ -280,16 +280,6 @@ public partial class Container : Item
 
         return true;
     }
-
-    private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
-    {
-        if (setIf)
-        {
-            flags |= toSet;
-        }
-    }
-
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     [AfterDeserialization]
     private void AfterDeserialization()
