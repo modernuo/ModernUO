@@ -8,12 +8,14 @@ namespace Server.Tests;
 [Collection("Sequential Server Tests")]
 public class ContainerTests
 {
-    [Fact]
-    public void TestFindItemsByType()
+    [Theory]
+    [InlineData(typeof(Container))]
+    [InlineData(typeof(Item))]
+    public void TestFindItemsByType(Type itemType)
     {
         var staticSerial = (Serial)0x3;
 
-        var container = new Container((Serial)0x1);
+        var container = itemType.CreateInstance<Item>((Serial)0x1);
         container.AddItem(new Item((Serial)0x2));
         container.AddItem(new Static(staticSerial));
 
@@ -27,18 +29,20 @@ public class ContainerTests
         Assert.Equal(staticSerial, staticItem.Serial);
     }
 
-    [Fact]
-    public void TestFindItemsByTypeNested()
+    [Theory]
+    [InlineData(typeof(Container))]
+    [InlineData(typeof(Item))]
+    public void TestFindItemsByTypeNested(Type itemType)
     {
         var static1 = new Static((Serial)0x3);
         var static2 = new Static((Serial)0x6);
 
-        var container = new Container((Serial)0x1);
+        var container = itemType.CreateInstance<Item>((Serial)0x1);
         container.AddItem(new Item((Serial)0x2));
-        var container2 = new Container((Serial)0x4);
+        var container2 = itemType.CreateInstance<Item>((Serial)0x4);
         container.AddItem(container2);
 
-        var container3 = new Container((Serial)0x5);
+        var container3 = itemType.CreateInstance<Item>((Serial)0x5);
         container2.AddItem(container3);
         container3.AddItem(static2);
 
@@ -55,12 +59,14 @@ public class ContainerTests
         Assert.Equal(static2, statics[1]);
     }
 
-    [Fact]
-    public void TestFindItemsByTypeNotMatching()
+    [Theory]
+    [InlineData(typeof(Container))]
+    [InlineData(typeof(Item))]
+    public void TestFindItemsByTypeNotMatching(Type itemType)
     {
-        var container = new Container((Serial)0x1);
+        var container = itemType.CreateInstance<Item>((Serial)0x1);
         container.AddItem(new Item((Serial)0x2));
-        var container2 = new Container((Serial)0x4);
+        var container2 = itemType.CreateInstance<Item>((Serial)0x4);
         container.AddItem(container2);
         container2.AddItem(new Item((Serial)0x5));
 
@@ -73,10 +79,12 @@ public class ContainerTests
         Assert.Null(staticItem);
     }
 
-    [Fact]
-    public void TestFindItemsByTypeShouldThrowWhenModified()
+    [Theory]
+    [InlineData(typeof(Container))]
+    [InlineData(typeof(Item))]
+    public void TestFindItemsByTypeShouldThrowWhenModified(Type itemType)
     {
-        var container = new Container((Serial)0x1);
+        var container = itemType.CreateInstance<Item>((Serial)0x1);
         container.AddItem(new Item((Serial)0x2));
         var staticItem = new Static((Serial)0x3);
         container.AddItem(staticItem);
@@ -96,10 +104,12 @@ public class ContainerTests
         );
     }
 
-    [Fact]
-    public void TestEnumerateItemsByTypeWhenModified()
+    [Theory]
+    [InlineData(typeof(Container))]
+    [InlineData(typeof(Item))]
+    public void TestEnumerateItemsByTypeWhenModified(Type itemType)
     {
-        var container = new Container((Serial)0x1);
+        var container = itemType.CreateInstance<Item>((Serial)0x1);
 
         var item1 = new Item((Serial)0x2);
         container.AddItem(item1);
