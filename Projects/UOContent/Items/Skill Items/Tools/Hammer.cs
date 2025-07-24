@@ -11,8 +11,6 @@ public partial class Hammer : BaseTool
     {
     }
 
-    public override double DefaultWeight => 2.0;
-
     [Constructible]
     public Hammer(int uses) : base(uses, 0x102A)
     {

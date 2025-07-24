@@ -12,8 +12,6 @@ public partial class JointingPlane : BaseTool
     {
     }
 
-    public override double DefaultWeight => 2.0;
-
     [Constructible]
     public JointingPlane(int uses) : base(uses, 0x1030)
     {

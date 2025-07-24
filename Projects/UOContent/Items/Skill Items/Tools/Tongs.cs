@@ -12,8 +12,6 @@ public partial class Tongs : BaseTool
     {
     }
 
-    public override double DefaultWeight => 2.0;
-
     [Constructible]
     public Tongs(int uses) : base(uses, 0xFBB)
     {

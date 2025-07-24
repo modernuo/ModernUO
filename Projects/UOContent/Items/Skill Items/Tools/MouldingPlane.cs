@@ -12,8 +12,6 @@ public partial class MouldingPlane : BaseTool
     {
     }
 
-    public override double DefaultWeight => 2.0;
-
     [Constructible]
     public MouldingPlane(int uses) : base(uses, 0x102C)
     {

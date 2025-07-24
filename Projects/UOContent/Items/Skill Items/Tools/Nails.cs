@@ -12,8 +12,6 @@ public partial class Nails : BaseTool
     {
     }
 
-    public override double DefaultWeight => 2.0;
-
     [Constructible]
     public Nails(int uses) : base(uses, 0x102E)
     {

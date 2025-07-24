@@ -11,8 +11,6 @@ public partial class SewingKit : BaseTool
     {
     }
 
-    public override double DefaultWeight => 2.0;
-
     [Constructible]
     public SewingKit(int uses) : base(uses, 0xF9D)
     {
