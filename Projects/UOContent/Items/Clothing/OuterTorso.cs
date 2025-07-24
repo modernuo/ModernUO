@@ -165,11 +165,11 @@ namespace Server.Items
         [Constructible]
         public RewardRobe(int hue = 0, int labelNumber = 0) : base(0x1F03, hue)
         {
-            Weight = 3.0;
             LootType = LootType.Blessed;
-
             _number = labelNumber;
         }
+
+        public override double DefaultWeight => 3.0;
 
         public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
 
@@ -247,11 +247,11 @@ namespace Server.Items
         [Constructible]
         public RewardDress(int hue = 0, int labelNumber = 0) : base(0x1F01, hue)
         {
-            Weight = 2.0;
             LootType = LootType.Blessed;
-
             _number = labelNumber;
         }
+
+        public override double DefaultWeight => 2.0;
 
         public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
 
@@ -418,11 +418,9 @@ namespace Server.Items
     public partial class MonkRobe : BaseOuterTorso
     {
         [Constructible]
-        public MonkRobe(int hue = 0x21E) : base(0x2687, hue)
-        {
-            Weight = 1.0;
-            StrRequirement = 0;
-        }
+        public MonkRobe(int hue = 0x21E) : base(0x2687, hue) => StrRequirement = 0;
+
+        public override double DefaultWeight => 1.0;
 
         public override int LabelNumber => 1076584; // A monk's robe
         public override bool CanBeBlessed => false;

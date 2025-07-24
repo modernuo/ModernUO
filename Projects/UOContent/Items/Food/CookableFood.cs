@@ -76,10 +76,11 @@ public partial class RawRibs : CookableFood
     [Constructible]
     public RawRibs(int amount = 1) : base(0x9F1, 10)
     {
-        Weight = 1.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new Ribs();
 }
@@ -103,9 +104,10 @@ public partial class RawChickenLeg : CookableFood
     [Constructible]
     public RawChickenLeg() : base(0x1607, 10)
     {
-        Weight = 1.0;
         Stackable = true;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new ChickenLeg();
 }
@@ -116,10 +118,11 @@ public partial class RawBird : CookableFood
     [Constructible]
     public RawBird(int amount = 1) : base(0x9B9, 10)
     {
-        Weight = 1.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new CookedBird();
 }
@@ -251,10 +254,11 @@ public partial class Eggs : CookableFood
     [Constructible]
     public Eggs(int amount = 1) : base(0x9B5, 15)
     {
-        Weight = 1.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new FriedEggs();
 }
@@ -265,12 +269,11 @@ public partial class BrightlyColoredEggs : CookableFood
     [Constructible]
     public BrightlyColoredEggs() : base(0x9B5, 15)
     {
-        Weight = 0.5;
         Hue = 3 + Utility.Random(20) * 5;
     }
 
+    public override double DefaultWeight => 0.5;
     public override string DefaultName => "brightly colored eggs";
-
     public override Food Cook() => new FriedEggs();
 }
 
@@ -280,12 +283,11 @@ public partial class EasterEggs : CookableFood
     [Constructible]
     public EasterEggs() : base(0x9B5, 15)
     {
-        Weight = 0.5;
         Hue = 3 + Utility.Random(20) * 5;
     }
 
+    public override double DefaultWeight => 0.5;
     public override int LabelNumber => 1016105; // Easter Eggs
-
     public override Food Cook() => new FriedEggs();
 }
 

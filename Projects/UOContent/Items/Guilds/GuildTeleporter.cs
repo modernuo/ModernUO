@@ -13,10 +13,11 @@ public partial class GuildTeleporter : Item
     [Constructible]
     public GuildTeleporter(Item stone = null) : base(0x1869)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
         _stone = stone;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041054; // guildstone teleporter
 

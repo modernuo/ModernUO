@@ -228,9 +228,9 @@ public partial class GuildstoneDeed : Item
         _guild = g;
         _guildName = guildName;
         _guildAbbrev = abbrev;
-
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041233; // deed to a guildstone
 

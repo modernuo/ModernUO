@@ -39,11 +39,9 @@ namespace Server.Items
     public partial class ClothNinjaJacket : BaseShirt
     {
         [Constructible]
-        public ClothNinjaJacket(int hue = 0) : base(0x2794, hue)
-        {
-            Weight = 5.0;
-            Layer = Layer.InnerTorso;
-        }
+        public ClothNinjaJacket(int hue = 0) : base(0x2794, hue) => Layer = Layer.InnerTorso;
+
+        public override double DefaultWeight => 5.0;
     }
 
     [SerializationGenerator(0)]

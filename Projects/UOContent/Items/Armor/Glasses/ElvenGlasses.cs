@@ -6,11 +6,9 @@ namespace Server.Items
     public partial class ElvenGlasses : BaseArmor
     {
         [Constructible]
-        public ElvenGlasses() : base(0x2FB8)
-        {
-            Weight = 2;
-            _weaponAttributes = new AosWeaponAttributes(this);
-        }
+        public ElvenGlasses() : base(0x2FB8) => _weaponAttributes = new AosWeaponAttributes(this);
+
+        public override double DefaultWeight => 2.0;
 
         public override int LabelNumber => 1032216; // elven glasses
 

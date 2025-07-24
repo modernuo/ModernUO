@@ -20,9 +20,10 @@ public partial class WasabiClumps : Food
     public WasabiClumps() : base(0x24EB)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -34,7 +35,6 @@ public partial class EmptyBentoBox : Item
     }
 
     public override double DefaultWeight => 5.0;
-
 }
 
 [SerializationGenerator(0, false)]
@@ -44,20 +44,10 @@ public partial class BentoBox : Food
     public BentoBox() : base(0x2836)
     {
         Stackable = false;
-        Weight = 5.0;
         FillFactor = 2;
     }
 
-    public override bool Eat(Mobile from)
-    {
-        if (!base.Eat(from))
-        {
-            return false;
-        }
-
-        from.AddToBackpack(new EmptyBentoBox());
-        return true;
-    }
+    public override double DefaultWeight => 5.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -67,9 +57,10 @@ public partial class SushiRolls : Food
     public SushiRolls() : base(0x283E)
     {
         Stackable = false;
-        Weight = 3.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 3.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -79,9 +70,10 @@ public partial class SushiPlatter : Food
     public SushiPlatter() : base(0x2840)
     {
         Stackable = Core.ML;
-        Weight = 3.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 3.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -102,9 +94,10 @@ public partial class GreenTea : Food
     public GreenTea() : base(0x284C)
     {
         Stackable = false;
-        Weight = 4.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 4.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -114,9 +107,10 @@ public partial class MisoSoup : Food
     public MisoSoup() : base(0x284D)
     {
         Stackable = false;
-        Weight = 4.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 4.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -126,9 +120,10 @@ public partial class WhiteMisoSoup : Food
     public WhiteMisoSoup() : base(0x284E)
     {
         Stackable = false;
-        Weight = 4.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 4.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -138,9 +133,10 @@ public partial class RedMisoSoup : Food
     public RedMisoSoup() : base(0x284F)
     {
         Stackable = false;
-        Weight = 4.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 4.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -150,7 +146,8 @@ public partial class AwaseMisoSoup : Food
     public AwaseMisoSoup() : base(0x2850)
     {
         Stackable = false;
-        Weight = 4.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 4.0;
 }

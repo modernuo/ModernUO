@@ -14,8 +14,9 @@ public partial class WallSconce : BaseLight
         Duration = TimeSpan.Zero; // Never burnt out
         Burning = false;
         Light = LightType.WestBig;
-        Weight = 3.0;
     }
+
+    public override double DefaultWeight => 3.0;
 
     public override int LitItemID => ItemID == 0x9FB ? 0x9FD : 0xA02;
 

@@ -128,11 +128,11 @@ namespace Server.Items
         [Constructible]
         public RewardCloak(int hue = 0, int labelNumber = 0) : base(0x1515, hue)
         {
-            Weight = 5.0;
             LootType = LootType.Blessed;
-
             _number = labelNumber;
         }
+
+        public override double DefaultWeight => 5.0;
 
         public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
 

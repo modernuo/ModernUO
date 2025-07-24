@@ -19,9 +19,9 @@ public abstract partial class BaseBoard : Container, ISecurable
     public BaseBoard(int itemID) : base(itemID)
     {
         CreatePieces();
-
-        Weight = 5.0;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override bool DisplaysContent => false; // Do not display (x items, y stones)
 
