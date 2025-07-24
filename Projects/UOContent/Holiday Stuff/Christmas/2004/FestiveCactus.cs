@@ -6,11 +6,9 @@ namespace Server.Items;
 public partial class FestiveCactus : Item
 {
     [Constructible]
-    public FestiveCactus() : base(0x2376)
-    {
-        Weight = 1.0;
-        LootType = LootType.Blessed;
-    }
+    public FestiveCactus() : base(0x2376) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 1.0;
 
     public override void OnSingleClick(Mobile from)
     {

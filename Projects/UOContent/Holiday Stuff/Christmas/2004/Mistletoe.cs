@@ -163,9 +163,10 @@ public partial class MistletoeDeed : Item
     public MistletoeDeed(int hue = 0) : base(0x14F0)
     {
         Hue = hue;
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1070882; // Mistletoe Deed
 
