@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class Wasabi : Food
 {
     [Constructible]
-    public Wasabi() : base(0x24E8) => Weight = 1.0;
+    public Wasabi() : base(0x24E8)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]

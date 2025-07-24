@@ -23,7 +23,11 @@ namespace Server.Items
     public partial class Shirt : BaseShirt
     {
         [Constructible]
-        public Shirt(int hue = 0) : base(0x1517, hue) => Weight = 1.0;
+        public Shirt(int hue = 0) : base(0x1517, hue)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
     }
 
     [Flippable(0x2794, 0x27DF)]

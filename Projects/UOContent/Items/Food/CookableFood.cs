@@ -128,7 +128,11 @@ public partial class RawBird : CookableFood
 public partial class UnbakedPeachCobbler : CookableFood
 {
     [Constructible]
-    public UnbakedPeachCobbler() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedPeachCobbler() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041335; // unbaked peach cobbler
 
@@ -139,7 +143,11 @@ public partial class UnbakedPeachCobbler : CookableFood
 public partial class UnbakedFruitPie : CookableFood
 {
     [Constructible]
-    public UnbakedFruitPie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedFruitPie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041334; // unbaked fruit pie
 
@@ -150,7 +158,11 @@ public partial class UnbakedFruitPie : CookableFood
 public partial class UnbakedMeatPie : CookableFood
 {
     [Constructible]
-    public UnbakedMeatPie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedMeatPie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041338; // unbaked meat pie
 
@@ -161,7 +173,11 @@ public partial class UnbakedMeatPie : CookableFood
 public partial class UnbakedPumpkinPie : CookableFood
 {
     [Constructible]
-    public UnbakedPumpkinPie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedPumpkinPie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041342; // unbaked pumpkin pie
 
@@ -172,7 +188,11 @@ public partial class UnbakedPumpkinPie : CookableFood
 public partial class UnbakedApplePie : CookableFood
 {
     [Constructible]
-    public UnbakedApplePie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedApplePie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041336; // unbaked apple pie
 
@@ -184,7 +204,11 @@ public partial class UnbakedApplePie : CookableFood
 public partial class UncookedCheesePizza : CookableFood
 {
     [Constructible]
-    public UncookedCheesePizza() : base(0x1083, 20) => Weight = 1.0;
+    public UncookedCheesePizza() : base(0x1083, 20)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041341; // uncooked cheese pizza
 
@@ -195,7 +219,11 @@ public partial class UncookedCheesePizza : CookableFood
 public partial class UncookedSausagePizza : CookableFood
 {
     [Constructible]
-    public UncookedSausagePizza() : base(0x1083, 20) => Weight = 1.0;
+    public UncookedSausagePizza() : base(0x1083, 20)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041337; // uncooked sausage pizza
 
@@ -206,7 +234,11 @@ public partial class UncookedSausagePizza : CookableFood
 public partial class UnbakedQuiche : CookableFood
 {
     [Constructible]
-    public UnbakedQuiche() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedQuiche() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041339; // unbaked quiche
 
@@ -261,7 +293,11 @@ public partial class EasterEggs : CookableFood
 public partial class CookieMix : CookableFood
 {
     [Constructible]
-    public CookieMix() : base(0x103F, 20) => Weight = 1.0;
+    public CookieMix() : base(0x103F, 20)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new Cookies();
 }
@@ -270,7 +306,11 @@ public partial class CookieMix : CookableFood
 public partial class CakeMix : CookableFood
 {
     [Constructible]
-    public CakeMix() : base(0x103F, 40) => Weight = 1.0;
+    public CakeMix() : base(0x103F, 40)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041002; // cake mix
 

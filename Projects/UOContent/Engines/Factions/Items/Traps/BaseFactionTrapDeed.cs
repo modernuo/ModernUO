@@ -10,13 +10,14 @@ public abstract class BaseFactionTrapDeed : Item, ICraftable
 
     public BaseFactionTrapDeed(int itemID = 0x14F0) : base(itemID)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
 
     public BaseFactionTrapDeed(Serial serial) : base(serial)
     {
     }
+
+    public override double DefaultWeight => 1.0;
 
     public abstract Type TrapType { get; }
 

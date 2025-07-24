@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class ThinLongsword : BaseSword
     {
         [Constructible]
-        public ThinLongsword() : base(0x13B8) => Weight = 1.0;
+        public ThinLongsword() : base(0x13B8)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override int AosStrengthReq => 35;
         public override int AosMinDamage => 15;

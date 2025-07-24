@@ -9,7 +9,11 @@ namespace Server.Items;
 [SerializationGenerator(0)]
 public partial class StoneAnkhComponent : AddonComponent
 {
-    public StoneAnkhComponent(int itemID) : base(itemID) => Weight = 1.0;
+    public StoneAnkhComponent(int itemID) : base(itemID)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class ChainCoif : BaseArmor
     {
         [Constructible]
-        public ChainCoif() : base(0x13BB) => Weight = 1.0;
+        public ChainCoif() : base(0x13BB)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 4;
         public override int BaseFireResistance => 4;

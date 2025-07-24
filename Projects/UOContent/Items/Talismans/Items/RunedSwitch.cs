@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class RunedSwitch : Item
 {
     [Constructible]
-    public RunedSwitch() : base(0x2F61) => Weight = 1.0;
+    public RunedSwitch() : base(0x2F61)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public RunedSwitch(Serial serial) : base(serial)
     {

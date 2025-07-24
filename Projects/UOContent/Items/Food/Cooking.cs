@@ -44,14 +44,22 @@ public partial class JarHoney : Item
 public partial class BowlFlour : Item
 {
     [Constructible]
-    public BowlFlour() : base(0xa1e) => Weight = 1.0;
+    public BowlFlour() : base(0xa1e)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class WoodenBowl : Item
 {
     [Constructible]
-    public WoodenBowl() : base(0x15f8) => Weight = 1.0;
+    public WoodenBowl() : base(0x15f8)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [TypeAlias("Server.Items.SackFlourOpen")]

@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class StoneMiningBook : Item
 {
     [Constructible]
-    public StoneMiningBook() : base(0xFBE) => Weight = 1.0;
+    public StoneMiningBook() : base(0xFBE)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1153530; // Mining For Quality Stone
 

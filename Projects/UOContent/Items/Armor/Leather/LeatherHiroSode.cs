@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class LeatherHiroSode : BaseArmor
     {
         [Constructible]
-        public LeatherHiroSode() : base(0x277E) => Weight = 1.0;
+        public LeatherHiroSode() : base(0x277E)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

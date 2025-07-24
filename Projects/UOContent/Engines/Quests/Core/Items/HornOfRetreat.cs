@@ -27,9 +27,10 @@ public partial class HornOfRetreat : Item
     public HornOfRetreat() : base(0xFC4)
     {
         Hue = 0x482;
-        Weight = 1.0;
         _charges = 10;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1049117; // Horn of Retreat
 

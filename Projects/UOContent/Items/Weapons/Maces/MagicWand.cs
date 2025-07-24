@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class MagicWand : BaseBashing
     {
         [Constructible]
-        public MagicWand() : base(0xDF2) => Weight = 1.0;
+        public MagicWand() : base(0xDF2)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

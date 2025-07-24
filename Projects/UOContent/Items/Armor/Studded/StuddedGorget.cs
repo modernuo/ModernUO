@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class StuddedGorget : BaseArmor
     {
         [Constructible]
-        public StuddedGorget() : base(0x13D6) => Weight = 1.0;
+        public StuddedGorget() : base(0x13D6)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;
