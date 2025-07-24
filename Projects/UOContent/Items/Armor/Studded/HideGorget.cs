@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class HideGorget : BaseArmor
     {
         [Constructible]
-        public HideGorget() : base(0x2B76) => Weight = 3.0;
+        public HideGorget() : base(0x2B76)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

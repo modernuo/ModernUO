@@ -7,10 +7,10 @@ namespace Server.Items
     {
         [Constructible]
         public LeatherGorget() : base(0x13C7)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

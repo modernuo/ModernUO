@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class PlateLegs : BaseArmor
     {
         [Constructible]
-        public PlateLegs() : base(0x1411) => Weight = 7.0;
+        public PlateLegs() : base(0x1411)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

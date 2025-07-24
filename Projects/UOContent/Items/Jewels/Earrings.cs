@@ -16,12 +16,20 @@ public abstract partial class BaseEarrings : BaseJewel
 public partial class GoldEarrings : BaseEarrings
 {
     [Constructible]
-    public GoldEarrings() : base(0x1087) => Weight = 0.1;
+    public GoldEarrings() : base(0x1087)
+    {
+    }
+
+    public override double DefaultWeight => 0.1;
 }
 
 [SerializationGenerator(0, false)]
 public partial class SilverEarrings : BaseEarrings
 {
     [Constructible]
-    public SilverEarrings() : base(0x1F07) => Weight = 0.1;
+    public SilverEarrings() : base(0x1F07)
+    {
+    }
+
+    public override double DefaultWeight => 0.1;
 }

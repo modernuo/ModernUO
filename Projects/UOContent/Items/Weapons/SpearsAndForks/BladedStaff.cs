@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class BladedStaff : BaseSpear
     {
         [Constructible]
-        public BladedStaff() : base(0x26BD) => Weight = 4.0;
+        public BladedStaff() : base(0x26BD)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;

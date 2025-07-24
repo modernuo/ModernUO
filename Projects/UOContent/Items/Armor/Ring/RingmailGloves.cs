@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class RingmailGloves : BaseArmor
     {
         [Constructible]
-        public RingmailGloves() : base(0x13EB) => Weight = 2.0;
+        public RingmailGloves() : base(0x13EB)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;

@@ -8,7 +8,11 @@ namespace Server.Items
     public partial class FancyWoodenChairCushion : Item
     {
         [Constructible]
-        public FancyWoodenChairCushion() : base(0xB4F) => Weight = 20.0;
+        public FancyWoodenChairCushion() : base(0xB4F)
+        {
+        }
+
+        public override double DefaultWeight => 20.0;
     }
 
     [Furniture]
@@ -17,7 +21,11 @@ namespace Server.Items
     public partial class WoodenChairCushion : Item
     {
         [Constructible]
-        public WoodenChairCushion() : base(0xB53) => Weight = 20.0;
+        public WoodenChairCushion() : base(0xB53)
+        {
+        }
+
+        public override double DefaultWeight => 20.0;
     }
 
     [Furniture]
@@ -26,7 +34,11 @@ namespace Server.Items
     public partial class WoodenChair : Item
     {
         [Constructible]
-        public WoodenChair() : base(0xB57) => Weight = 20.0;
+        public WoodenChair() : base(0xB57)
+        {
+        }
+
+        public override double DefaultWeight => 20.0;
     }
 
     [Furniture]
@@ -35,7 +47,11 @@ namespace Server.Items
     public partial class BambooChair : Item
     {
         [Constructible]
-        public BambooChair() : base(0xB5B) => Weight = 20.0;
+        public BambooChair() : base(0xB5B)
+        {
+        }
+
+        public override double DefaultWeight => 20.0;
     }
 
     [DynamicFlipping]
@@ -44,7 +60,11 @@ namespace Server.Items
     public partial class StoneChair : Item
     {
         [Constructible]
-        public StoneChair() : base(0x1218) => Weight = 20;
+        public StoneChair() : base(0x1218)
+        {
+        }
+
+        public override double DefaultWeight => 20;
     }
 
     [DynamicFlipping]
@@ -54,10 +74,10 @@ namespace Server.Items
     {
         [Constructible]
         public OrnateElvenChair() : base(0x2DE3)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 
     [DynamicFlipping]

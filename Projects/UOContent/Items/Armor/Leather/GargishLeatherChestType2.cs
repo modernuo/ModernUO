@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class GargishLeatherChestType2 : BaseArmor
     {
         [Constructible]
-        public GargishLeatherChestType2() : base(0x303) => Weight = 4.0;
+        public GargishLeatherChestType2() : base(0x303)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override int RequiredRaces => Race.AllowGargoylesOnly;
         public override int BasePhysicalResistance => 5;

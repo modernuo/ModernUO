@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class BoneChest : BaseArmor
     {
         [Constructible]
-        public BoneChest() : base(0x144F) => Weight = 6.0;
+        public BoneChest() : base(0x144F)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;

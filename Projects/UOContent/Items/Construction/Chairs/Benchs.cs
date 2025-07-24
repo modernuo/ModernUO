@@ -8,6 +8,10 @@ namespace Server.Items
     public partial class WoodenBench : Item
     {
         [Constructible]
-        public WoodenBench() : base(0xB2D) => Weight = 6;
+        public WoodenBench() : base(0xB2D)
+        {
+        }
+
+        public override double DefaultWeight => 6;
     }
 }

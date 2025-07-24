@@ -8,10 +8,10 @@ namespace Server.Items
     {
         [Constructible]
         public MountedDreadHorn() : base(0x3158)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int LabelNumber => 1074464; // mounted Dread Horn
     }

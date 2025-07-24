@@ -320,7 +320,11 @@ public partial class LargeBagBall : BaseBagBall
 public partial class Bag : BaseContainer, IDyable
 {
     [Constructible]
-    public Bag() : base(0xE76) => Weight = 2.0;
+    public Bag() : base(0xE76)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
@@ -339,21 +343,33 @@ public partial class Bag : BaseContainer, IDyable
 public partial class Barrel : BaseContainer
 {
     [Constructible]
-    public Barrel() : base(0xE77) => Weight = 25.0;
+    public Barrel() : base(0xE77)
+    {
+    }
+
+    public override double DefaultWeight => 25.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class Keg : BaseContainer
 {
     [Constructible]
-    public Keg() : base(0xE7F) => Weight = 15.0;
+    public Keg() : base(0xE7F)
+    {
+    }
+
+    public override double DefaultWeight => 15.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class PicnicBasket : BaseContainer
 {
     [Constructible]
-    public PicnicBasket() : base(0xE7A) => Weight = 2.0;
+    public PicnicBasket() : base(0xE7A)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -373,7 +389,11 @@ public partial class Basket : BaseContainer
 public partial class WoodenBox : LockableContainer
 {
     [Constructible]
-    public WoodenBox() : base(0x9AA) => Weight = 4.0;
+    public WoodenBox() : base(0x9AA)
+    {
+    }
+
+    public override double DefaultWeight => 4.0;
 }
 
 [Furniture]
@@ -382,7 +402,11 @@ public partial class WoodenBox : LockableContainer
 public partial class SmallCrate : LockableContainer
 {
     [Constructible]
-    public SmallCrate() : base(0x9A9) => Weight = 2.0;
+    public SmallCrate() : base(0x9A9)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [Furniture]
@@ -391,7 +415,11 @@ public partial class SmallCrate : LockableContainer
 public partial class MediumCrate : LockableContainer
 {
     [Constructible]
-    public MediumCrate() : base(0xE3F) => Weight = 2.0;
+    public MediumCrate() : base(0xE3F)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [Furniture]
@@ -445,7 +473,11 @@ public partial class MetalGoldenChest : LockableContainer
 public partial class WoodenChest : LockableContainer
 {
     [Constructible]
-    public WoodenChest() : base(0xe43) => Weight = 2.0;
+    public WoodenChest() : base(0xe43)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [Furniture]

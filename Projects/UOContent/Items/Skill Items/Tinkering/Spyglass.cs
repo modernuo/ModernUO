@@ -10,7 +10,11 @@ namespace Server.Items;
 public partial class Spyglass : Item
 {
     [Constructible]
-    public Spyglass() : base(0x14F5) => Weight = 3.0;
+    public Spyglass() : base(0x14F5)
+    {
+    }
+
+    public override double DefaultWeight => 3.0;
 
     public override void OnDoubleClick(Mobile from)
     {

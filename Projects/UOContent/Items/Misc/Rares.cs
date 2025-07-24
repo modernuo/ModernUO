@@ -114,14 +114,22 @@ public partial class DriedHerbs : Item
 public partial class HorseShoes : Item
 {
     [Constructible]
-    public HorseShoes() : base(0xFB6) => Weight = 3.0;
+    public HorseShoes() : base(0xFB6)
+    {
+    }
+
+    public override double DefaultWeight => 3.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class ForgedMetal : Item
 {
     [Constructible]
-    public ForgedMetal() : base(0xFB8) => Weight = 5.0;
+    public ForgedMetal() : base(0xFB8)
+    {
+    }
+
+    public override double DefaultWeight => 5.0;
 }
 
 [SerializationGenerator(0, false)]

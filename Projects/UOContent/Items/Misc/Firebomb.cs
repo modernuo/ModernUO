@@ -18,11 +18,9 @@ public partial class Firebomb : Item
     private HashSet<Mobile> _users;
 
     [Constructible]
-    public Firebomb(int itemID = 0x99B) : base(itemID)
-    {
-        Weight = 2.0;
-        Hue = 1260;
-    }
+    public Firebomb(int itemID = 0x99B) : base(itemID) => Hue = 1260;
+
+    public override double DefaultWeight => 2.0;
 
     public override void OnDoubleClick(Mobile from)
     {

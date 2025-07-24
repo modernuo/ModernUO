@@ -8,7 +8,11 @@ namespace Server.Items
     public partial class Scythe : BasePoleArm
     {
         [Constructible]
-        public Scythe() : base(0x26BA) => Weight = 5.0;
+        public Scythe() : base(0x26BA)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;

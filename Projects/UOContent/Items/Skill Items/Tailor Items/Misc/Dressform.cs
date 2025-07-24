@@ -7,5 +7,9 @@ namespace Server.Items;
 public partial class Dressform : Item
 {
     [Constructible]
-    public Dressform() : base(0xec6) => Weight = 10;
+    public Dressform() : base(0xec6)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 }

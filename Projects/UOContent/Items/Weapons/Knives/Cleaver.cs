@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Cleaver : BaseKnife
     {
         [Constructible]
-        public Cleaver() : base(0xEC3) => Weight = 2.0;
+        public Cleaver() : base(0xEC3)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.InfectiousStrike;

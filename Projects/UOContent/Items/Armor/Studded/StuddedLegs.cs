@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class StuddedLegs : BaseArmor
     {
         [Constructible]
-        public StuddedLegs() : base(0x13DA) => Weight = 5.0;
+        public StuddedLegs() : base(0x13DA)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

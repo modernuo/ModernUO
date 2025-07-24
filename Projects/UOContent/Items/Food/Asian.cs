@@ -29,7 +29,11 @@ public partial class WasabiClumps : Food
 public partial class EmptyBentoBox : Item
 {
     [Constructible]
-    public EmptyBentoBox() : base(0x2834) => Weight = 5.0;
+    public EmptyBentoBox() : base(0x2834)
+    {
+    }
+
+    public override double DefaultWeight => 5.0;
 
 }
 
@@ -84,7 +88,11 @@ public partial class SushiPlatter : Food
 public partial class GreenTeaBasket : Item
 {
     [Constructible]
-    public GreenTeaBasket() : base(0x284B) => Weight = 10.0;
+    public GreenTeaBasket() : base(0x284B)
+    {
+    }
+
+    public override double DefaultWeight => 10.0;
 }
 
 [SerializationGenerator(0, false)]

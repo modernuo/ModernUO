@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class Helmet : BaseArmor
     {
         [Constructible]
-        public Helmet() : base(0x140A) => Weight = 5.0;
+        public Helmet() : base(0x140A)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

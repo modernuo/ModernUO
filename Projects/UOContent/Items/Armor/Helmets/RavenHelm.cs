@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class RavenHelm : BaseArmor
     {
         [Constructible]
-        public RavenHelm() : base(0x2B71) => Weight = 5.0;
+        public RavenHelm() : base(0x2B71)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

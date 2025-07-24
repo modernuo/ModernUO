@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class ShortSpear : BaseSpear
     {
         [Constructible]
-        public ShortSpear() : base(0x1403) => Weight = 4.0;
+        public ShortSpear() : base(0x1403)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ShadowStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;

@@ -62,7 +62,11 @@ namespace Server.Items
     public partial class Kasa : BaseHat
     {
         [Constructible]
-        public Kasa(int hue = 0) : base(0x2798, hue) => Weight = 3.0;
+        public Kasa(int hue = 0) : base(0x2798, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -79,7 +83,11 @@ namespace Server.Items
     public partial class ClothNinjaHood : BaseHat
     {
         [Constructible]
-        public ClothNinjaHood(int hue = 0) : base(0x278F, hue) => Weight = 2.0;
+        public ClothNinjaHood(int hue = 0) : base(0x278F, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
@@ -97,10 +105,10 @@ namespace Server.Items
     {
         [Constructible]
         public FlowerGarland(int hue = 0) : base(0x2306, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;
@@ -117,10 +125,10 @@ namespace Server.Items
     {
         [Constructible]
         public FloppyHat(int hue = 0) : base(0x1713, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -137,10 +145,10 @@ namespace Server.Items
     {
         [Constructible]
         public WideBrimHat(int hue = 0) : base(0x1714, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -157,10 +165,10 @@ namespace Server.Items
     {
         [Constructible]
         public Cap(int hue = 0) : base(0x1715, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -177,10 +185,10 @@ namespace Server.Items
     {
         [Constructible]
         public SkullCap(int hue = 0) : base(0x1544, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 3;
@@ -197,10 +205,10 @@ namespace Server.Items
     {
         [Constructible]
         public Bandana(int hue = 0) : base(0x1540, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 3;
@@ -216,7 +224,11 @@ namespace Server.Items
     public partial class BearMask : BaseHat
     {
         [Constructible]
-        public BearMask(int hue = 0) : base(0x1545, hue) => Weight = 5.0;
+        public BearMask(int hue = 0) : base(0x1545, hue)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;
@@ -238,7 +250,11 @@ namespace Server.Items
     public partial class DeerMask : BaseHat
     {
         [Constructible]
-        public DeerMask(int hue = 0) : base(0x1547, hue) => Weight = 4.0;
+        public DeerMask(int hue = 0) : base(0x1547, hue)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 6;
@@ -260,7 +276,11 @@ namespace Server.Items
     public partial class HornedTribalMask : BaseHat
     {
         [Constructible]
-        public HornedTribalMask(int hue = 0) : base(0x1549, hue) => Weight = 2.0;
+        public HornedTribalMask(int hue = 0) : base(0x1549, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 6;
         public override int BaseFireResistance => 9;
@@ -282,7 +302,11 @@ namespace Server.Items
     public partial class TribalMask : BaseHat
     {
         [Constructible]
-        public TribalMask(int hue = 0) : base(0x154B, hue) => Weight = 2.0;
+        public TribalMask(int hue = 0) : base(0x154B, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 0;
@@ -305,10 +329,10 @@ namespace Server.Items
     {
         [Constructible]
         public TallStrawHat(int hue = 0) : base(0x1716, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -325,10 +349,10 @@ namespace Server.Items
     {
         [Constructible]
         public StrawHat(int hue = 0) : base(0x1717, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -344,7 +368,11 @@ namespace Server.Items
     public partial class OrcishKinMask : BaseHat
     {
         [Constructible]
-        public OrcishKinMask(int hue = 0x8A4) : base(0x141B, hue) => Weight = 2.0;
+        public OrcishKinMask(int hue = 0x8A4) : base(0x141B, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 1;
         public override int BaseFireResistance => 1;
@@ -399,7 +427,11 @@ namespace Server.Items
         }
 
         [Constructible]
-        public SavageMask(int hue) : base(0x154B, hue) => Weight = 2.0;
+        public SavageMask(int hue) : base(0x154B, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 0;
@@ -434,10 +466,10 @@ namespace Server.Items
     {
         [Constructible]
         public WizardsHat(int hue = 0) : base(0x1718, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -454,10 +486,10 @@ namespace Server.Items
     {
         [Constructible]
         public MagicWizardsHat(int hue = 0) : base(0x1718, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -480,10 +512,10 @@ namespace Server.Items
     {
         [Constructible]
         public Bonnet(int hue = 0) : base(0x1719, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -500,10 +532,10 @@ namespace Server.Items
     {
         [Constructible]
         public FeatheredHat(int hue = 0) : base(0x171A, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -520,10 +552,10 @@ namespace Server.Items
     {
         [Constructible]
         public TricorneHat(int hue = 0) : base(0x171B, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;
@@ -540,10 +572,10 @@ namespace Server.Items
     {
         [Constructible]
         public JesterHat(int hue = 0) : base(0x171C, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 0;
         public override int BaseFireResistance => 5;

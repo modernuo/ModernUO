@@ -8,10 +8,10 @@ namespace Server.Items
     {
         [Constructible]
         public CrescentBlade() : base(0x26C1)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
