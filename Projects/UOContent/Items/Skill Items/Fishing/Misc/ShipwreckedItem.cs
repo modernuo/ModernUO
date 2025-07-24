@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 
 namespace Server.Items;
@@ -12,15 +13,9 @@ public partial class ShipwreckedItem : Item, IDyable, IShipwreckedItem
 {
     public ShipwreckedItem(int itemID) : base(itemID)
     {
-        var weight = ItemData.Weight;
-
-        if (weight >= 255)
-        {
-            weight = 1;
-        }
-
-        Weight = weight;
     }
+
+    public override double DefaultWeight => ItemData.Weight >= 255 ? 1.0 : ItemData.Weight;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
