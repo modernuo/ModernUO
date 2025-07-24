@@ -12,12 +12,12 @@ public partial class TinkerTools : BaseTool
     {
     }
 
-    public override double DefaultWeight => 1.0;
-
     [Constructible]
     public TinkerTools(int uses) : base(uses, 0x1EB8)
     {
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefTinkering.CraftSystem;
 }
