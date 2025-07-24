@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateSuneate : BaseArmor
     {
         [Constructible]
-        public PlateSuneate() : base(0x2788) => Weight = 7.0;
+        public PlateSuneate() : base(0x2788)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

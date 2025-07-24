@@ -108,7 +108,11 @@ public partial class SackFlour : Item, IHasQuantity
 public partial class Eggshells : Item
 {
     [Constructible]
-    public Eggshells() : base(0x9b4) => Weight = 0.5;
+    public Eggshells() : base(0x9b4)
+    {
+    }
+
+    public override double DefaultWeight => 0.5;
 }
 
 [SerializationGenerator(0, false)]

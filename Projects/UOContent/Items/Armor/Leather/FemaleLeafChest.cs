@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class FemaleLeafChest : BaseArmor
     {
         [Constructible]
-        public FemaleLeafChest() : base(0x2FCB) => Weight = 2.0;
+        public FemaleLeafChest() : base(0x2FCB)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 3;

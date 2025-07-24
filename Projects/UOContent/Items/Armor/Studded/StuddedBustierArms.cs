@@ -8,10 +8,10 @@ namespace Server.Items
     {
         [Constructible]
         public StuddedBustierArms() : base(0x1C0C)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

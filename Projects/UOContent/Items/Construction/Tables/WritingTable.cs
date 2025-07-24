@@ -9,9 +9,9 @@ namespace Server.Items
     {
         [Constructible]
         public WritingTable() : base(0xB4A)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 }

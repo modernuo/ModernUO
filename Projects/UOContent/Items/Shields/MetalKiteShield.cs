@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class MetalKiteShield : BaseShield, IDyable
 {
     [Constructible]
-    public MetalKiteShield() : base(0x1B74) => Weight = 7.0;
+    public MetalKiteShield() : base(0x1B74)
+    {
+    }
+
+    public override double DefaultWeight => 7.0;
 
     public override int BasePhysicalResistance => 0;
     public override int BaseFireResistance => 0;

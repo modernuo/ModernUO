@@ -9,5 +9,9 @@ namespace Server.Items;
 public partial class Easel : Item
 {
     [Constructible]
-    public Easel() : base(0xF65) => Weight = 25.0;
+    public Easel() : base(0xF65)
+    {
+    }
+
+    public override double DefaultWeight => 25.0;
 }

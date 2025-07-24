@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class LeatherHaidate : BaseArmor
     {
         [Constructible]
-        public LeatherHaidate() : base(0x278A) => Weight = 4.0;
+        public LeatherHaidate() : base(0x278A)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

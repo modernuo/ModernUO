@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateHelm : BaseArmor
     {
         [Constructible]
-        public PlateHelm() : base(0x1412) => Weight = 5.0;
+        public PlateHelm() : base(0x1412)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

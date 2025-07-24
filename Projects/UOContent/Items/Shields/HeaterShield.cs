@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class HeaterShield : BaseShield
 {
     [Constructible]
-    public HeaterShield() : base(0x1B76) => Weight = 8.0;
+    public HeaterShield() : base(0x1B76)
+    {
+    }
+
+    public override double DefaultWeight => 8.0;
 
     public override int BasePhysicalResistance => 0;
     public override int BaseFireResistance => 1;

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class DoubleAxe : BaseAxe
     {
         [Constructible]
-        public DoubleAxe() : base(0xF4B) => Weight = 8.0;
+        public DoubleAxe() : base(0xF4B)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.WhirlwindAttack;

@@ -19,7 +19,11 @@ public partial class RewardPottedCactus : Item, IRewardItem
     }
 
     [Constructible]
-    public RewardPottedCactus(int itemID) : base(itemID) => Weight = 5.0;
+    public RewardPottedCactus(int itemID) : base(itemID)
+    {
+    }
+
+    public override double DefaultWeight => 5.0;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }

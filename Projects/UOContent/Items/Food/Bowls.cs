@@ -236,7 +236,11 @@ public partial class PewterBowlOfPotatos : Food
 public partial class EmptyWoodenTub : Item
 {
     [Constructible]
-    public EmptyWoodenTub() : base(0x1605) => Weight = 2.0;
+    public EmptyWoodenTub() : base(0x1605)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [TypeAlias("Server.Items.EmptyLargePewterBowl")]
@@ -244,7 +248,11 @@ public partial class EmptyWoodenTub : Item
 public partial class EmptyPewterTub : Item
 {
     [Constructible]
-    public EmptyPewterTub() : base(0x1603) => Weight = 2.0;
+    public EmptyPewterTub() : base(0x1603)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [SerializationGenerator(0, false)]

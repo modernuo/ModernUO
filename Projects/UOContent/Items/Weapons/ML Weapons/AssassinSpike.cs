@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class AssassinSpike : BaseKnife
     {
         [Constructible]
-        public AssassinSpike() : base(0x2D21) => Weight = 4.0;
+        public AssassinSpike() : base(0x2D21)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.InfectiousStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;

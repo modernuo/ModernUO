@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class Shovel : BaseHarvestTool
 {
     [Constructible]
-    public Shovel(int uses = 50) : base(0xF39, uses) => Weight = 5.0;
+    public Shovel(int uses = 50) : base(0xF39, uses)
+    {
+    }
+
+    public override double DefaultWeight => 5.0;
 
     public override HarvestSystem HarvestSystem => Mining.System;
 }

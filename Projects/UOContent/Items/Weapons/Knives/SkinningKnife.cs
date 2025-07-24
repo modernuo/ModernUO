@@ -8,10 +8,10 @@ namespace Server.Items
     {
         [Constructible]
         public SkinningKnife() : base(0xEC4)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ShadowStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

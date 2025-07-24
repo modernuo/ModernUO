@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class StuddedMempo : BaseArmor
     {
         [Constructible]
-        public StuddedMempo() : base(0x279D) => Weight = 2.0;
+        public StuddedMempo() : base(0x279D)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

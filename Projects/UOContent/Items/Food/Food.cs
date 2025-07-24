@@ -507,5 +507,9 @@ public partial class Turnip : Food
 public partial class SheafOfHay : Item
 {
     [Constructible]
-    public SheafOfHay() : base(0xF36) => Weight = 10.0;
+    public SheafOfHay() : base(0xF36)
+    {
+    }
+
+    public override double DefaultWeight => 10.0;
 }

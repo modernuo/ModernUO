@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Spear : BaseSpear
     {
         [Constructible]
-        public Spear() : base(0xF62) => Weight = 7.0;
+        public Spear() : base(0xF62)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;

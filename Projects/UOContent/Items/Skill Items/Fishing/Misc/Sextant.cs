@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class Sextant : Item
 {
     [Constructible]
-    public Sextant() : base(0x1058) => Weight = 2.0;
+    public Sextant() : base(0x1058)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override void OnDoubleClick(Mobile from)
     {

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class DiamondMace : BaseBashing
     {
         [Constructible]
-        public DiamondMace() : base(0x2D24) => Weight = 10.0;
+        public DiamondMace() : base(0x2D24)
+        {
+        }
+
+        public override double DefaultWeight => 10.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;

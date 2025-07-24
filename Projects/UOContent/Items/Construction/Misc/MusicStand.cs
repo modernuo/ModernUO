@@ -8,7 +8,11 @@ namespace Server.Items;
 public partial class TallMusicStand : Item
 {
     [Constructible]
-    public TallMusicStand() : base(0xEBB) => Weight = 10.0;
+    public TallMusicStand() : base(0xEBB)
+    {
+    }
+
+    public override double DefaultWeight => 10.0;
 }
 
 [Furniture]
@@ -17,5 +21,9 @@ public partial class TallMusicStand : Item
 public partial class ShortMusicStand : Item
 {
     [Constructible]
-    public ShortMusicStand() : base(0xEB6) => Weight = 10.0;
+    public ShortMusicStand() : base(0xEB6)
+    {
+    }
+
+    public override double DefaultWeight => 10.0;
 }

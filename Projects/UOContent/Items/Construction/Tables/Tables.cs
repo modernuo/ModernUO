@@ -8,10 +8,10 @@ namespace Server.Items
     {
         [Constructible]
         public ElegantLowTable() : base(0x2819)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 
     [Furniture]
@@ -20,10 +20,10 @@ namespace Server.Items
     {
         [Constructible]
         public PlainLowTable() : base(0x281A)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 
     [Furniture]
@@ -33,10 +33,10 @@ namespace Server.Items
     {
         [Constructible]
         public LargeTable() : base(0xB90)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 
     [Furniture]
@@ -46,10 +46,10 @@ namespace Server.Items
     {
         [Constructible]
         public Nightstand() : base(0xB35)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 
     [Furniture]
@@ -59,9 +59,9 @@ namespace Server.Items
     {
         [Constructible]
         public YewWoodTable() : base(0xB8F)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 }

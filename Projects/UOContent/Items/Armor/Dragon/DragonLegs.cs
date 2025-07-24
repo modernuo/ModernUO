@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class DragonLegs : BaseArmor
     {
         [Constructible]
-        public DragonLegs() : base(0x2647) => Weight = 6.0;
+        public DragonLegs() : base(0x2647)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;

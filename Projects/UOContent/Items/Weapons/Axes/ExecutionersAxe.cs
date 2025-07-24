@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class ExecutionersAxe : BaseAxe
     {
         [Constructible]
-        public ExecutionersAxe() : base(0xF45) => Weight = 8.0;
+        public ExecutionersAxe() : base(0xF45)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;

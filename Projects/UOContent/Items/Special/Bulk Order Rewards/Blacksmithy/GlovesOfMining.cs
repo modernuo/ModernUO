@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class LeatherGlovesOfMining : BaseGlovesOfMining
 {
     [Constructible]
-    public LeatherGlovesOfMining(int bonus) : base(bonus, 0x13C6) => Weight = 1;
+    public LeatherGlovesOfMining(int bonus) : base(bonus, 0x13C6)
+    {
+    }
+
+    public override double DefaultWeight => 1;
 
     public override int BasePhysicalResistance => 2;
     public override int BaseFireResistance => 4;
@@ -36,7 +40,11 @@ public partial class LeatherGlovesOfMining : BaseGlovesOfMining
 public partial class StuddedGlovesOfMining : BaseGlovesOfMining
 {
     [Constructible]
-    public StuddedGlovesOfMining(int bonus) : base(bonus, 0x13D5) => Weight = 2;
+    public StuddedGlovesOfMining(int bonus) : base(bonus, 0x13D5)
+    {
+    }
+
+    public override double DefaultWeight => 2;
 
     public override int BasePhysicalResistance => 2;
     public override int BaseFireResistance => 4;
@@ -63,7 +71,11 @@ public partial class StuddedGlovesOfMining : BaseGlovesOfMining
 public partial class RingmailGlovesOfMining : BaseGlovesOfMining
 {
     [Constructible]
-    public RingmailGlovesOfMining(int bonus) : base(bonus, 0x13EB) => Weight = 1;
+    public RingmailGlovesOfMining(int bonus) : base(bonus, 0x13EB)
+    {
+    }
+
+    public override double DefaultWeight => 1;
 
     public override int BasePhysicalResistance => 3;
     public override int BaseFireResistance => 3;

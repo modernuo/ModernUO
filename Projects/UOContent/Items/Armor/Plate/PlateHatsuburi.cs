@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateHatsuburi : BaseArmor
     {
         [Constructible]
-        public PlateHatsuburi() : base(0x2775) => Weight = 5.0;
+        public PlateHatsuburi() : base(0x2775)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

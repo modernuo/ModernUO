@@ -15,7 +15,11 @@ namespace Server.Items
     public partial class HalfApron : BaseWaist
     {
         [Constructible]
-        public HalfApron(int hue = 0) : base(0x153b, hue) => Weight = 2.0;
+        public HalfApron(int hue = 0) : base(0x153b, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [Flippable(0x27A0, 0x27EB)]
@@ -24,10 +28,10 @@ namespace Server.Items
     {
         [Constructible]
         public Obi(int hue = 0) : base(0x27A0, hue)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
     }
 
     [Flippable(0x2B68, 0x315F)]
@@ -35,7 +39,11 @@ namespace Server.Items
     public partial class WoodlandBelt : BaseWaist
     {
         [Constructible]
-        public WoodlandBelt(int hue = 0) : base(0x2B68, hue) => Weight = 4.0;
+        public WoodlandBelt(int hue = 0) : base(0x2B68, hue)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

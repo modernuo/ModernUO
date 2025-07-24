@@ -8,10 +8,16 @@ namespace Server.Items;
 public partial class MouldingPlane : BaseTool
 {
     [Constructible]
-    public MouldingPlane() : base(0x102C) => Weight = 2.0;
+    public MouldingPlane() : base(0x102C)
+    {
+    }
 
     [Constructible]
-    public MouldingPlane(int uses) : base(uses, 0x102C) => Weight = 2.0;
+    public MouldingPlane(int uses) : base(uses, 0x102C)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 }

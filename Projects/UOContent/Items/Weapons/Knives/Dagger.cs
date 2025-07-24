@@ -8,10 +8,10 @@ namespace Server.Items
     {
         [Constructible]
         public Dagger() : base(0xF52)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.InfectiousStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class WingedHelm : BaseArmor
     {
         [Constructible]
-        public WingedHelm() : base(0x2B73) => Weight = 5.0;
+        public WingedHelm() : base(0x2B73)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

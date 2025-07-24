@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Axe : BaseAxe
     {
         [Constructible]
-        public Axe() : base(0xF49) => Weight = 4.0;
+        public Axe() : base(0xF49)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;

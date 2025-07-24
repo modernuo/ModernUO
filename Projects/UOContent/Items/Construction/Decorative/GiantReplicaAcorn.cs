@@ -8,10 +8,10 @@ namespace Server.Items
     {
         [Constructible]
         public GiantReplicaAcorn() : base(0x2D4A)
-    {
-    }
+        {
+        }
 
-    public override double DefaultWeight => 1.0;
+        public override double DefaultWeight => 1.0;
 
         public override int LabelNumber => 1072889; // giant replica acorn
     }

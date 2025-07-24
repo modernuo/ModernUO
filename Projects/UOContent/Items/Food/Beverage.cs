@@ -208,10 +208,16 @@ public partial class GlassMug : BaseBeverage
 public partial class Pitcher : BaseBeverage
 {
     [Constructible]
-    public Pitcher() => Weight = 2.0;
+    public Pitcher()
+    {
+    }
 
     [Constructible]
-    public Pitcher(BeverageType type) : base(type) => Weight = 2.0;
+    public Pitcher(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override int BaseLabelNumber => 1048128; // a Pitcher of Ale
     public override int MaxQuantity => 5;
