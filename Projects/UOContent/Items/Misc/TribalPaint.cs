@@ -16,9 +16,10 @@ public partial class TribalPaint : Item
     public TribalPaint() : base(0x9EC)
     {
         Hue = 2101;
-        Weight = 2.0;
         Stackable = Core.ML;
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override int LabelNumber => 1040000; // savage kin paint
 

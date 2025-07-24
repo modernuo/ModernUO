@@ -10,11 +10,11 @@ public partial class HeatingStand : BaseLight
     public HeatingStand() : base(0x1849)
     {
         Duration = Burnout ? TimeSpan.FromMinutes(25) : TimeSpan.Zero;
-
         Burning = false;
         Light = LightType.Empty;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LitItemID => 0x184A;
     public override int UnlitItemID => 0x1849;

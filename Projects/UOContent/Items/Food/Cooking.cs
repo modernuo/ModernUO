@@ -11,8 +11,9 @@ public partial class Dough : Item
     public Dough() : base(0x103d)
     {
         Stackable = Core.ML;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -22,10 +23,10 @@ public partial class SweetDough : Item
     public SweetDough() : base(0x103d)
     {
         Stackable = Core.ML;
-        Weight = 1.0;
         Hue = 150;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041340; // sweet dough
 }
 
@@ -35,9 +36,10 @@ public partial class JarHoney : Item
     [Constructible]
     public JarHoney() : base(0x9ec)
     {
-        Weight = 1.0;
         Stackable = true;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -69,9 +71,10 @@ public partial class SackFlour : Item, IHasQuantity
     [Constructible]
     public SackFlour() : base(0x1039)
     {
-        Weight = 5.0;
         _quantity = 20;
     }
+
+    public override double DefaultWeight => 5.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -121,10 +124,11 @@ public partial class WheatSheaf : Item
     [Constructible]
     public WheatSheaf(int amount = 1) : base(7869)
     {
-        Weight = 1.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override void OnDoubleClick(Mobile from)
     {

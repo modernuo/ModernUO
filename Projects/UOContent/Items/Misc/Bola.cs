@@ -12,10 +12,11 @@ public partial class Bola : Item
     [Constructible]
     public Bola(int amount = 1) : base(0x26AC)
     {
-        Weight = 4.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 4.0;
 
     public override void OnDoubleClick(Mobile from)
     {

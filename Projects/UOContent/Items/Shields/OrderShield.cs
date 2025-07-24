@@ -13,9 +13,9 @@ public partial class OrderShield : BaseShield
         {
             LootType = LootType.Newbied;
         }
-
-        Weight = 7.0;
     }
+
+    public override double DefaultWeight => 7.0;
 
     public override int BasePhysicalResistance => 1;
     public override int BaseFireResistance => 0;

@@ -11,9 +11,10 @@ public partial class BoltOfCloth : Item, IScissorable, IDyable, ICommodity
     public BoltOfCloth(int amount = 1) : base(0xF95)
     {
         Stackable = true;
-        Weight = 5.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 5.0;
 
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => true;

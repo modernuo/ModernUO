@@ -13,9 +13,9 @@ public partial class ChaosShield : BaseShield
         {
             LootType = LootType.Newbied;
         }
-
-        Weight = 5.0;
     }
+
+    public override double DefaultWeight => 4.0;
 
     public override int BasePhysicalResistance => 1;
     public override int BaseFireResistance => 0;

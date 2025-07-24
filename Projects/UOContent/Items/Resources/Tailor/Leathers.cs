@@ -8,12 +8,12 @@ public abstract partial class BaseLeather : Item, ICommodity
     public BaseLeather(CraftResource resource, int amount = 1) : base(0x1081)
     {
         Stackable = true;
-        Weight = 1.0;
         Amount = amount;
         Hue = CraftResources.GetHue(resource);
-
         _resource = resource;
     }
+
+    public override double DefaultWeight => 1.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

@@ -24,9 +24,10 @@ public partial class GingerBreadHouseDeed : BaseAddonDeed
     [Constructible]
     public GingerBreadHouseDeed()
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1077394; // a Gingerbread House Deed
     public override BaseAddon Addon => new GingerBreadHouseAddon();

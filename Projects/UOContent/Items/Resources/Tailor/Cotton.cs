@@ -10,9 +10,10 @@ public partial class Cotton : Item, IDyable
     public Cotton(int amount = 1) : base(0xDF9)
     {
         Stackable = true;
-        Weight = 4.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 4.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {

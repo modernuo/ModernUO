@@ -168,8 +168,9 @@ public partial class CreatureBackpack : Backpack // Used on BaseCreature
         Name = name;
         Layer = Layer.Backpack;
         Hue = 5;
-        Weight = 3.0;
     }
+
+    public override double DefaultWeight => 3.0;
 
     public override void AddNameProperty(IPropertyList list)
     {
@@ -213,11 +214,9 @@ public partial class CreatureBackpack : Backpack // Used on BaseCreature
 public partial class StrongBackpack : Backpack // Used on Pack animals
 {
     [Constructible]
-    public StrongBackpack()
-    {
-        Layer = Layer.Backpack;
-        Weight = 13.0;
-    }
+    public StrongBackpack() => Layer = Layer.Backpack;
+
+    public override double DefaultWeight => 13.0;
 
     public override int DefaultMaxWeight => 1600;
 
@@ -233,11 +232,9 @@ public partial class StrongBackpack : Backpack // Used on Pack animals
 public partial class Backpack : BaseContainer, IDyable
 {
     [Constructible]
-    public Backpack() : base(0xE75)
-    {
-        Layer = Layer.Backpack;
-        Weight = 3.0;
-    }
+    public Backpack() : base(0xE75) => Layer = Layer.Backpack;
+
+    public override double DefaultWeight => 3.0;
 
     public override int DefaultMaxWeight
     {

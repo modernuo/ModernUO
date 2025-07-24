@@ -43,8 +43,6 @@ public partial class MahjongGame : Item, ISecurable
     [Constructible]
     public MahjongGame() : base(0xFAA)
     {
-        Weight = 5.0;
-
         BuildWalls();
         _dealerIndicator =
             new MahjongDealerIndicator(this, new Point2D(300, 300), MahjongPieceDirection.Up, MahjongWind.North);
@@ -54,6 +52,8 @@ public partial class MahjongGame : Item, ISecurable
         _lastReset = Core.Now;
         _level = SecureLevel.CoOwners;
     }
+
+    public override double DefaultWeight => 5.0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(6)]

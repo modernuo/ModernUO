@@ -31,9 +31,10 @@ public partial class WoodenBowlOfCarrots : Food
     public WoodenBowlOfCarrots() : base(0x15F9)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -54,9 +55,10 @@ public partial class WoodenBowlOfCorn : Food
     public WoodenBowlOfCorn() : base(0x15FA)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -77,9 +79,10 @@ public partial class WoodenBowlOfLettuce : Food
     public WoodenBowlOfLettuce() : base(0x15FB)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -100,9 +103,10 @@ public partial class WoodenBowlOfPeas : Food
     public WoodenBowlOfPeas() : base(0x15FC)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -123,9 +127,10 @@ public partial class PewterBowlOfCarrots : Food
     public PewterBowlOfCarrots() : base(0x15FE)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -146,9 +151,10 @@ public partial class PewterBowlOfCorn : Food
     public PewterBowlOfCorn() : base(0x15FF)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -169,9 +175,10 @@ public partial class PewterBowlOfLettuce : Food
     public PewterBowlOfLettuce() : base(0x1600)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -192,9 +199,10 @@ public partial class PewterBowlOfPeas : Food
     public PewterBowlOfPeas() : base(0x1601)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -215,9 +223,10 @@ public partial class PewterBowlOfPotatos : Food
     public PewterBowlOfPotatos() : base(0x1602)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -262,9 +271,10 @@ public partial class WoodenBowlOfStew : Food
     public WoodenBowlOfStew() : base(0x1604)
     {
         Stackable = false;
-        Weight = 2.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override bool Eat(Mobile from)
     {
@@ -285,9 +295,10 @@ public partial class WoodenBowlOfTomatoSoup : Food
     public WoodenBowlOfTomatoSoup() : base(0x1606)
     {
         Stackable = false;
-        Weight = 2.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override bool Eat(Mobile from)
     {
