@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class ButcherKnife : BaseKnife
     {
         [Constructible]
-        public ButcherKnife() : base(0x13F6) => Weight = 1.0;
+        public ButcherKnife() : base(0x13F6)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.InfectiousStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

@@ -7,10 +7,16 @@ namespace Server.Items;
 public partial class RollingPin : BaseTool
 {
     [Constructible]
-    public RollingPin() : base(0x1043) => Weight = 1.0;
+    public RollingPin() : base(0x1043)
+    {
+    }
 
     [Constructible]
-    public RollingPin(int uses) : base(uses, 0x1043) => Weight = 1.0;
+    public RollingPin(int uses) : base(uses, 0x1043)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefCooking.CraftSystem;
 }

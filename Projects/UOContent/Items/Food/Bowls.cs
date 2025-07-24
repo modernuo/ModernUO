@@ -6,14 +6,22 @@ namespace Server.Items;
 public partial class EmptyWoodenBowl : Item
 {
     [Constructible]
-    public EmptyWoodenBowl() : base(0x15F8) => Weight = 1.0;
+    public EmptyWoodenBowl() : base(0x15F8)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class EmptyPewterBowl : Item
 {
     [Constructible]
-    public EmptyPewterBowl() : base(0x15FD) => Weight = 1.0;
+    public EmptyPewterBowl() : base(0x15FD)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]

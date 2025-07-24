@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class PowerCrystal : Item
 {
     [Constructible]
-    public PowerCrystal() : base(0x1F1C) => Weight = 1.0;
+    public PowerCrystal() : base(0x1F1C)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override string DefaultName => "power crystal";
 

@@ -23,7 +23,11 @@ namespace Server.Items
     public partial class Obi : BaseWaist
     {
         [Constructible]
-        public Obi(int hue = 0) : base(0x27A0, hue) => Weight = 1.0;
+        public Obi(int hue = 0) : base(0x27A0, hue)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
     }
 
     [Flippable(0x2B68, 0x315F)]

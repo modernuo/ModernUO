@@ -13,11 +13,12 @@ public partial class HangoverCure : Item
     [Constructible]
     public HangoverCure() : base(0xE2B)
     {
-        Weight = 1.0;
         Hue = 0x2D;
 
         _uses = 20;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1055060; // Grizelda's Extra Strength Hangover Cure
 

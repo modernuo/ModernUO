@@ -269,13 +269,21 @@ public partial class Backpack : BaseContainer, IDyable
 public partial class Pouch : TrappableContainer
 {
     [Constructible]
-    public Pouch() : base(0xE79) => Weight = 1.0;
+    public Pouch() : base(0xE79)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public abstract partial class BaseBagBall : BaseContainer, IDyable
 {
-    public BaseBagBall(int itemID) : base(itemID) => Weight = 1.0;
+    public BaseBagBall(int itemID) : base(itemID)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
@@ -352,7 +360,11 @@ public partial class PicnicBasket : BaseContainer
 public partial class Basket : BaseContainer
 {
     [Constructible]
-    public Basket() : base(0x990) => Weight = 1.0;
+    public Basket() : base(0x990)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -388,7 +400,11 @@ public partial class MediumCrate : LockableContainer
 public partial class LargeCrate : LockableContainer
 {
     [Constructible]
-    public LargeCrate() : base(0xE3D) => Weight = 1.0;
+    public LargeCrate() : base(0xE3D)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [DynamicFlipping]

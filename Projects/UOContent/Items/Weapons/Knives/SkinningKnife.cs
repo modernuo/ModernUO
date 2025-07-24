@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class SkinningKnife : BaseKnife
     {
         [Constructible]
-        public SkinningKnife() : base(0xEC4) => Weight = 1.0;
+        public SkinningKnife() : base(0xEC4)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ShadowStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class GlassblowingBook : Item
 {
     [Constructible]
-    public GlassblowingBook() : base(0xFF4) => Weight = 1.0;
+    public GlassblowingBook() : base(0xFF4)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1153528; // Crafting glass with Glassblowing
 

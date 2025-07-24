@@ -128,82 +128,130 @@ public partial class ForgedMetal : Item
 public partial class Whip : Item
 {
     [Constructible]
-    public Whip() : base(0x166E) => Weight = 1.0;
+    public Whip() : base(0x166E)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class PaintsAndBrush : Item
 {
     [Constructible]
-    public PaintsAndBrush() : base(0xFC1) => Weight = 1.0;
+    public PaintsAndBrush() : base(0xFC1)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class PenAndInk : Item
 {
     [Constructible]
-    public PenAndInk() : base(0xFBF) => Weight = 1.0;
+    public PenAndInk() : base(0xFBF)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class ChiselsNorth : Item
 {
     [Constructible]
-    public ChiselsNorth() : base(0x1026) => Weight = 1.0;
+    public ChiselsNorth() : base(0x1026)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class ChiselsWest : Item
 {
     [Constructible]
-    public ChiselsWest() : base(0x1027) => Weight = 1.0;
+    public ChiselsWest() : base(0x1027)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class DirtyPan : Item
 {
     [Constructible]
-    public DirtyPan() : base(0x9E8) => Weight = 1.0;
+    public DirtyPan() : base(0x9E8)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class DirtySmallRoundPot : Item
 {
     [Constructible]
-    public DirtySmallRoundPot() : base(0x9E7) => Weight = 1.0;
+    public DirtySmallRoundPot() : base(0x9E7)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class DirtyPot : Item
 {
     [Constructible]
-    public DirtyPot() : base(0x9E6) => Weight = 1.0;
+    public DirtyPot() : base(0x9E6)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class DirtyRoundPot : Item
 {
     [Constructible]
-    public DirtyRoundPot() : base(0x9DF) => Weight = 1.0;
+    public DirtyRoundPot() : base(0x9DF)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class DirtyFrypan : Item
 {
     [Constructible]
-    public DirtyFrypan() : base(0x9DE) => Weight = 1.0;
+    public DirtyFrypan() : base(0x9DE)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class DirtySmallPot : Item
 {
     [Constructible]
-    public DirtySmallPot() : base(0x9DD) => Weight = 1.0;
+    public DirtySmallPot() : base(0x9DD)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0)]
 public partial class DirtyKettle : Item
 {
     [Constructible]
-    public DirtyKettle() : base(0x9DC) => Weight = 1.0;
+    public DirtyKettle() : base(0x9DC)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }

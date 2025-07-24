@@ -8,11 +8,9 @@ namespace Server.Engines.Quests.Collector;
 public partial class EnchantedPaints : QuestItem
 {
     [Constructible]
-    public EnchantedPaints() : base(0xFC1)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public EnchantedPaints() : base(0xFC1) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 1.0;
 
     public override bool CanDrop(PlayerMobile player) => player.Quest is not CollectorQuest;
 

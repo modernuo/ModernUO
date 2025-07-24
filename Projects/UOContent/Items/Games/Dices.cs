@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class Dices : Item, ITelekinesisable
 {
     [Constructible]
-    public Dices() : base(0xFA7) => Weight = 1.0;
+    public Dices() : base(0xFA7)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public void OnTelekinesis(Mobile from)
     {

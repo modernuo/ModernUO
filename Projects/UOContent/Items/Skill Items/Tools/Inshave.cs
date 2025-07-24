@@ -7,10 +7,16 @@ namespace Server.Items;
 public partial class Inshave : BaseTool
 {
     [Constructible]
-    public Inshave() : base(0x10E6) => Weight = 1.0;
+    public Inshave() : base(0x10E6)
+    {
+    }
 
     [Constructible]
-    public Inshave(int uses) : base(uses, 0x10E6) => Weight = 1.0;
+    public Inshave(int uses) : base(uses, 0x10E6)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 }

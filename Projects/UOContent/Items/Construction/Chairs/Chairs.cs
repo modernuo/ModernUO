@@ -53,7 +53,11 @@ namespace Server.Items
     public partial class OrnateElvenChair : Item
     {
         [Constructible]
-        public OrnateElvenChair() : base(0x2DE3) => Weight = 1.0;
+        public OrnateElvenChair() : base(0x2DE3)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
     }
 
     [DynamicFlipping]

@@ -8,10 +8,16 @@ namespace Server.Items;
 public partial class MapmakersPen : BaseTool
 {
     [Constructible]
-    public MapmakersPen() : base(0x0FBF) => Weight = 1.0;
+    public MapmakersPen() : base(0x0FBF)
+    {
+    }
 
     [Constructible]
-    public MapmakersPen(int uses) : base(uses, 0x0FBF) => Weight = 1.0;
+    public MapmakersPen(int uses) : base(uses, 0x0FBF)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefCartography.CraftSystem;
 

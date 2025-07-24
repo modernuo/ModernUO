@@ -73,7 +73,11 @@ public partial class EnchantedSextant : Item
     };
 
     [Constructible]
-    public EnchantedSextant() : base(0x1058) => Weight = 2.0;
+    public EnchantedSextant() : base(0x1058)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override int LabelNumber => 1046226; // an enchanted sextant
 

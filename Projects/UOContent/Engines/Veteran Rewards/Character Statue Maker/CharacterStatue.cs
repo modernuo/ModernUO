@@ -419,8 +419,9 @@ public partial class CharacterStatueDeed : Item, IRewardItem
         }
 
         LootType = LootType.Blessed;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber
     {

@@ -354,11 +354,9 @@ public partial class AncientUrn : Item
     }
 
     [Constructible]
-    public AncientUrn(string urnName) : base(0x241D)
-    {
-        _urnName = urnName;
-        Weight = 1.0;
-    }
+    public AncientUrn(string urnName) : base(0x241D) => _urnName = urnName;
+
+    public override double DefaultWeight => 1.0;
 
     public static string[] Names { get; } =
     {
@@ -432,12 +430,9 @@ public partial class HonorableSwords : Item
     }
 
     [Constructible]
-    public HonorableSwords(string swordsName) : base(0x2853)
-    {
-        _swordsName = swordsName;
+    public HonorableSwords(string swordsName) : base(0x2853) => _swordsName = swordsName;
 
-        Weight = 5.0;
-    }
+    public override double DefaultWeight => 5.0;
 
     public override int LabelNumber => 1071015; // Honorable Swords
 
@@ -620,11 +615,7 @@ public partial class LesserPigmentsOfTokuno : BasePigmentsOfTokuno
     }
 
     [Constructible]
-    public LesserPigmentsOfTokuno(LesserPigmentType type) : base(1)
-    {
-        Weight = 1.0;
-        Type = type;
-    }
+    public LesserPigmentsOfTokuno(LesserPigmentType type) : base(1) => Type = type;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

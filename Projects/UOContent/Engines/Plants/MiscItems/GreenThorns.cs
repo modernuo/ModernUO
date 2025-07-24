@@ -12,10 +12,11 @@ public partial class GreenThorns : Item
     public GreenThorns(int amount = 1) : base(0xF42)
     {
         Stackable = true;
-        Weight = 1.0;
         Hue = 0x42;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1060837; // green thorns
 

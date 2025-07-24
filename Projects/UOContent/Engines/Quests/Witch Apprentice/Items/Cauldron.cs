@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class Cauldron : Item
 {
     [Constructible]
-    public Cauldron() : base(0x9ED) => Weight = 1.0;
+    public Cauldron() : base(0x9ED)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override string DefaultName => "a cauldron";
 }

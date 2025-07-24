@@ -15,7 +15,11 @@ namespace Server.Items
     public partial class BodySash : BaseMiddleTorso
     {
         [Constructible]
-        public BodySash(int hue = 0) : base(0x1541, hue) => Weight = 1.0;
+        public BodySash(int hue = 0) : base(0x1541, hue)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -55,7 +59,11 @@ namespace Server.Items
     public partial class FormalShirt : BaseMiddleTorso
     {
         [Constructible]
-        public FormalShirt(int hue = 0) : base(0x2310, hue) => Weight = 1.0;
+        public FormalShirt(int hue = 0) : base(0x2310, hue)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
     }
 
     [SerializationGenerator(0, false)]

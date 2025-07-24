@@ -56,7 +56,11 @@ public partial class PlantBowl : Item
     };
 
     [Constructible]
-    public PlantBowl() : base(0x15FD) => Weight = 1.0;
+    public PlantBowl() : base(0x15FD)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1060834; // a plant bowl
 

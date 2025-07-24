@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Dagger : BaseKnife
     {
         [Constructible]
-        public Dagger() : base(0xF52) => Weight = 1.0;
+        public Dagger() : base(0xF52)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.InfectiousStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;

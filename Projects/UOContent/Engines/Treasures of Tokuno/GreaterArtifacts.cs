@@ -330,11 +330,7 @@ public partial class PigmentsOfTokuno : BasePigmentsOfTokuno
     }
 
     [Constructible]
-    public PigmentsOfTokuno(PigmentType type, int uses) : base(uses)
-    {
-        Weight = 1.0;
-        Type = type;
-    }
+    public PigmentsOfTokuno(PigmentType type, int uses) : base(uses) => Type = type;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

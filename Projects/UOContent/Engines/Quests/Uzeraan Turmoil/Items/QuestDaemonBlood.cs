@@ -7,7 +7,11 @@ namespace Server.Engines.Quests.Haven;
 public partial class QuestDaemonBlood : QuestItem
 {
     [Constructible]
-    public QuestDaemonBlood() : base(0xF7D) => Weight = 1.0;
+    public QuestDaemonBlood() : base(0xF7D)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool CanDrop(PlayerMobile player) => player.Quest is not UzeraanTurmoilQuest;
 }
