@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Item.cs                                                         *
  *                                                                       *
@@ -1698,11 +1698,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     {
         if (this is Container cont)
         {
-            return cont.m_Items ?? (cont.m_Items = new List<Item>());
+            return cont.m_Items ??= new List<Item>();
         }
 
         var info = AcquireCompactInfo();
-        return info.m_Items ?? (info.m_Items = new List<Item>());
+        return info.m_Items ??= new List<Item>();
     }
 
     private void SetFlag(ImplFlag flag, bool value)
@@ -2474,15 +2474,6 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
-    {
-        if (setIf)
-        {
-            flags |= toSet;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3197,8 +3188,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         item.Map = m_Map;
 
         var items = AcquireItems();
-
         items.Add(item);
+
+        if (this is not Container)
+        {
+            AcquireCompactInfo().Version++;
+        }
 
         if (!item.IsVirtualItem)
         {
@@ -3362,6 +3357,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         if (items.Remove(item))
         {
+            if (this is not Container)
+            {
+                AcquireCompactInfo().Version++;
+            }
+
             item.SendRemovePacket();
 
             if (!item.IsVirtualItem)
@@ -4324,7 +4324,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         public double m_Weight = -1;
 
-        public int Version = 0;
+        public int Version;
     }
 
     [Flags]
