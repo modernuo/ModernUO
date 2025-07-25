@@ -7,11 +7,9 @@ namespace Server.Items
     public partial class Sai : BaseKnife
     {
         [Constructible]
-        public Sai() : base(0x27AF)
-        {
-            Weight = 7.0;
-            Layer = Layer.TwoHanded;
-        }
+        public Sai() : base(0x27AF) => Layer = Layer.TwoHanded;
+
+        public override double DefaultWeight => 7.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Block;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ArmorPierce;

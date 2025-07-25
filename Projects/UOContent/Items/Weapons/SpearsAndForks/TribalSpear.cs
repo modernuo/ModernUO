@@ -7,11 +7,9 @@ namespace Server.Items
     public partial class TribalSpear : BaseSpear
     {
         [Constructible]
-        public TribalSpear() : base(0xF62)
-        {
-            Weight = 7.0;
-            Hue = 837;
-        }
+        public TribalSpear() : base(0xF62) => Hue = 837;
+
+        public override double DefaultWeight => 7.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;

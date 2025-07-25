@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class NoDachi : BaseSword
     {
         [Constructible]
-        public NoDachi() : base(0x27A2)
-        {
-            Weight = 10.0;
-            Layer = Layer.TwoHanded;
-        }
+        public NoDachi() : base(0x27A2) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 10.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.RidingSwipe;
 

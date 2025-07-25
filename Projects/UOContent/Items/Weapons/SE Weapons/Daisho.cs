@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class Daisho : BaseSword
     {
         [Constructible]
-        public Daisho() : base(0x27A9)
-        {
-            Weight = 8.0;
-            Layer = Layer.TwoHanded;
-        }
+        public Daisho() : base(0x27A9) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 8.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
         public override WeaponAbility SecondaryAbility => WeaponAbility.DoubleStrike;
 

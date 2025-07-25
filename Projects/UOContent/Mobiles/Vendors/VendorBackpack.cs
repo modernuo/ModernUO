@@ -12,12 +12,9 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public partial class VendorBackpack : Backpack
 {
-    public VendorBackpack()
-    {
-        Layer = Layer.Backpack;
-        Weight = 1.0;
-    }
+    public VendorBackpack() => Layer = Layer.Backpack;
 
+    public override double DefaultWeight => 1.0;
     public override int DefaultMaxWeight => 0;
 
     public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)

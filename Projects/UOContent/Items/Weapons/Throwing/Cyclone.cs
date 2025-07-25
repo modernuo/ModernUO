@@ -6,12 +6,9 @@ namespace Server.Items;
 public partial class Cyclone : BaseThrown
 {
     [Constructible]
-    public Cyclone() : base(0x901)
-    {
-        Weight = 6.0;
-        Layer = Layer.OneHanded;
-    }
+    public Cyclone() : base(0x901) => Layer = Layer.OneHanded;
 
+    public override double DefaultWeight => 6.0;
     public override int MinThrowRange => 6;
 
     public override WeaponAbility PrimaryAbility => WeaponAbility.MovingShot;

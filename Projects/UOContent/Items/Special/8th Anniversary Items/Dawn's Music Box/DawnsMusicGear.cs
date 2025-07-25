@@ -17,11 +17,9 @@ public partial class DawnsMusicGear : Item
     }
 
     [Constructible]
-    public DawnsMusicGear(MusicName music) : base(0x1053)
-    {
-        _music = music;
-        Weight = 1.0;
-    }
+    public DawnsMusicGear(MusicName music) : base(0x1053) => _music = music;
+
+    public override double DefaultWeight => 1.0;
 
     public static DawnsMusicGear RandomCommon => new(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Common));
 

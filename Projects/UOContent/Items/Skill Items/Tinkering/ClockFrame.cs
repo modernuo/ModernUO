@@ -11,6 +11,7 @@ public partial class ClockFrame : Item
     {
         Stackable = true;
         Amount = amount;
-        Weight = 2.0;
     }
+
+    public override double DefaultWeight => 2.0;
 }

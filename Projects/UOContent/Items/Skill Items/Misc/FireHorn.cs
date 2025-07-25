@@ -10,11 +10,9 @@ namespace Server.Items;
 public partial class FireHorn : Item
 {
     [Constructible]
-    public FireHorn() : base(0xFC7)
-    {
-        Hue = 0x466;
-        Weight = 1.0;
-    }
+    public FireHorn() : base(0xFC7) => Hue = 0x466;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1060456; // fire horn
 

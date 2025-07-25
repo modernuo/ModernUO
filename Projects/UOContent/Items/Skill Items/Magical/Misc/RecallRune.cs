@@ -21,9 +21,10 @@ public partial class RecallRune : Item
     [Constructible]
     public RecallRune() : base(0x1F14)
     {
-        Weight = 1.0;
         CalculateHue();
     }
+
+    public override double DefaultWeight => 1.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]

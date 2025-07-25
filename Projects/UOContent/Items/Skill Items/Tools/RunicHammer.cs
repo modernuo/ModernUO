@@ -10,7 +10,6 @@ public partial class RunicHammer : BaseRunicTool
     [Constructible]
     public RunicHammer(CraftResource resource) : base(resource, 0x13E3)
     {
-        Weight = 8.0;
         Layer = Layer.OneHanded;
         Hue = CraftResources.GetHue(resource);
     }
@@ -18,10 +17,11 @@ public partial class RunicHammer : BaseRunicTool
     [Constructible]
     public RunicHammer(CraftResource resource, int uses) : base(resource, uses, 0x13E3)
     {
-        Weight = 8.0;
         Layer = Layer.OneHanded;
         Hue = CraftResources.GetHue(resource);
     }
+
+    public override double DefaultWeight => 8.0;
 
     public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
 

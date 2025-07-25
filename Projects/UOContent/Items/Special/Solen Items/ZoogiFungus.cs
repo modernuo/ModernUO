@@ -9,9 +9,10 @@ public partial class ZoogiFungus : Item, ICommodity
     public ZoogiFungus(int amount = 1) : base(0x26B7)
     {
         Stackable = true;
-        Weight = 0.1;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 0.1;
 
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;

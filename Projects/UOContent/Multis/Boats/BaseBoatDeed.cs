@@ -18,8 +18,6 @@ public abstract partial class BaseBoatDeed : Item
 
     public BaseBoatDeed(int id, Point3D offset) : base(0x14F2)
     {
-        Weight = 1.0;
-
         if (!Core.AOS)
         {
             LootType = LootType.Newbied;
@@ -28,6 +26,8 @@ public abstract partial class BaseBoatDeed : Item
         _multiId = id;
         Offset = offset;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public abstract BaseBoat Boat { get; }
 

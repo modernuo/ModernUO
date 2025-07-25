@@ -9,7 +9,6 @@ public partial class SamuraiHelm : BaseArmor
     [Constructible]
     public SamuraiHelm() : base(0x236C)
     {
-        Weight = 5.0;
         LootType = LootType.Blessed;
 
         Attributes.DefendChance = 15;
@@ -17,6 +16,8 @@ public partial class SamuraiHelm : BaseArmor
         ArmorAttributes.LowerStatReq = 100;
         ArmorAttributes.MageArmor = 1;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override int LabelNumber => 1062923; // Ancient Samurai Helm
 

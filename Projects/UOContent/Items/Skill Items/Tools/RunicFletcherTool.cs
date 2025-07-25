@@ -7,18 +7,12 @@ namespace Server.Items;
 public partial class RunicFletcherTool : BaseRunicTool
 {
     [Constructible]
-    public RunicFletcherTool(CraftResource resource) : base(resource, 0x1022)
-    {
-        Weight = 2.0;
-        Hue = CraftResources.GetHue(resource);
-    }
+    public RunicFletcherTool(CraftResource resource) : base(resource, 0x1022) => Hue = CraftResources.GetHue(resource);
 
     [Constructible]
-    public RunicFletcherTool(CraftResource resource, int uses) : base(resource, uses, 0x1022)
-    {
-        Weight = 2.0;
-        Hue = CraftResources.GetHue(resource);
-    }
+    public RunicFletcherTool(CraftResource resource, int uses) : base(resource, uses, 0x1022) => Hue = CraftResources.GetHue(resource);
+
+    public override double DefaultWeight => 2.0;
 
     public override CraftSystem CraftSystem => DefBowFletching.CraftSystem;
 

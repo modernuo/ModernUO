@@ -13,12 +13,9 @@ public partial class CommodityDeedBox : BaseContainer, IRewardItem
     private bool _isRewardItem;
 
     [Constructible]
-    public CommodityDeedBox() : base(0x9AA)
-    {
-        Hue = 0x47;
-        Weight = 4.0;
-    }
+    public CommodityDeedBox() : base(0x9AA) => Hue = 0x47;
 
+    public override double DefaultWeight => 4.0;
     public override int LabelNumber => 1080523; // Commodity Deed Box
     public override int DefaultGumpID => 0x43;
 

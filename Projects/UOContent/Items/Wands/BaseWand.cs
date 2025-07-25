@@ -38,7 +38,6 @@ public abstract partial class BaseWand : BaseBashing
 
     public BaseWand(WandEffect effect, int minCharges, int maxCharges) : base(0xDF2 + Utility.Random(4))
     {
-        Weight = 1.0;
         _wandEffect = effect;
         _charges = Utility.RandomMinMax(minCharges, maxCharges);
         Attributes.SpellChanneling = 1;
@@ -46,6 +45,8 @@ public abstract partial class BaseWand : BaseBashing
         WeaponAttributes.MageWeapon = Utility.RandomMinMax(1, 10);
         Resource = CraftResource.None;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;
     public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
