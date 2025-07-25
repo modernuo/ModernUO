@@ -1,7 +1,23 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: FastAStarAlgorithm.cs                                           *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
+ ************************************************************************/
+
 using System.Collections;
 using Server.Mobiles;
 using CalcMoves = Server.Movement.Movement;
 using MoveImpl = Server.Movement.MovementImpl;
+using System.Collections.Generic;
 
 namespace Server.PathAlgorithms.FastAStar
 {
@@ -32,7 +48,6 @@ namespace Server.PathAlgorithms.FastAStar
 
         private static int _xOffset;
         private static int _yOffset;
-        private static int _openList;
 
         private Point3D _goal;
 
@@ -50,63 +65,6 @@ namespace Server.PathAlgorithms.FastAStar
 
         public override bool CheckCondition(Mobile m, Map map, Point3D start, Point3D goal) =>
             Utility.InRange(start, goal, AreaSize);
-
-        private void RemoveFromChain(int node)
-        {
-            if (node is < 0 or >= NodeCount)
-            {
-                return;
-            }
-
-            if (!_touched[node] || !_onOpen[node])
-            {
-                return;
-            }
-
-            var prev = _nodes[node].prev;
-            var next = _nodes[node].next;
-
-            if (_openList == node)
-            {
-                _openList = next;
-            }
-
-            if (prev != -1)
-            {
-                _nodes[prev].next = next;
-            }
-
-            if (next != -1)
-            {
-                _nodes[next].prev = prev;
-            }
-
-            _nodes[node].prev = -1;
-            _nodes[node].next = -1;
-        }
-
-        private void AddToChain(int node)
-        {
-            if (node is < 0 or >= NodeCount)
-            {
-                return;
-            }
-
-            RemoveFromChain(node);
-
-            if (_openList != -1)
-            {
-                _nodes[_openList].prev = node;
-            }
-
-            _nodes[node].next = _openList;
-            _nodes[node].prev = -1;
-
-            _openList = node;
-
-            _touched[node] = true;
-            _onOpen[node] = true;
-        }
 
         public override Direction[] Find(Mobile m, Map map, Point3D start, Point3D goal)
         {
@@ -126,17 +84,17 @@ namespace Server.PathAlgorithms.FastAStar
             var fromNode = GetIndex(start.X, start.Y, start.Z);
             var destNode = GetIndex(goal.X, goal.Y, goal.Z);
 
-            _openList = fromNode;
+            var openQueue = new PriorityQueue<int, int>();
 
-            _nodes[_openList].cost = 0;
-            _nodes[_openList].total = Heuristic(start.X - _xOffset, start.Y - _yOffset, start.Z);
-            _nodes[_openList].parent = -1;
-            _nodes[_openList].next = -1;
-            _nodes[_openList].prev = -1;
-            _nodes[_openList].z = start.Z;
+            _nodes[fromNode].cost = 0;
+            _nodes[fromNode].total = Heuristic(start.X - _xOffset, start.Y - _yOffset, start.Z);
+            _nodes[fromNode].parent = -1;
+            _nodes[fromNode].z = start.Z;
 
-            _onOpen[_openList] = true;
-            _touched[_openList] = true;
+            _onOpen[fromNode] = true;
+            _touched[fromNode] = true;
+
+            openQueue.Enqueue(fromNode, _nodes[fromNode].total);
 
             var bc = m as BaseCreature;
 
@@ -144,14 +102,15 @@ namespace Server.PathAlgorithms.FastAStar
 
             var path = _path;
 
-            while (_openList != -1)
+            while (openQueue.Count > 0)
             {
-                var bestNode = FindBest(_openList);
-
                 if (++depth > MaxDepth)
                 {
                     break;
                 }
+
+                var bestNode = openQueue.Dequeue();
+                _onOpen[bestNode] = false;
 
                 if (bc != null)
                 {
@@ -170,7 +129,7 @@ namespace Server.PathAlgorithms.FastAStar
 
                 if (count == 0)
                 {
-                    break;
+                    continue;
                 }
 
                 for (var i = 0; i < count; ++i)
@@ -200,7 +159,9 @@ namespace Server.PathAlgorithms.FastAStar
                         continue;
                     }
 
-                    AddToChain(newNode);
+                    openQueue.Enqueue(newNode, newTotal);
+                    _onOpen[newNode] = true;
+                    _touched[newNode] = true;
 
                     if (newNode != destNode)
                     {
@@ -249,30 +210,6 @@ namespace Server.PathAlgorithms.FastAStar
             z /= PlaneHeight;
 
             return x + y * AreaSize + z * AreaSize * AreaSize;
-        }
-
-        private int FindBest(int node)
-        {
-            var least = _nodes[node].total;
-            var leastNode = node;
-
-            while (node != -1)
-            {
-                if (_nodes[node].total < least)
-                {
-                    least = _nodes[node].total;
-                    leastNode = node;
-                }
-
-                node = _nodes[node].next;
-            }
-
-            RemoveFromChain(leastNode);
-
-            _touched[leastNode] = true;
-            _onOpen[leastNode] = false;
-
-            return leastNode;
         }
 
         public int GetSuccessors(int p, Mobile m, Map map)
