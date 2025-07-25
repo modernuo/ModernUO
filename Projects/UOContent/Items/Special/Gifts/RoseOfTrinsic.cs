@@ -26,12 +26,12 @@ public partial class RoseOfTrinsic : Item, ISecurable
     [Constructible]
     public RoseOfTrinsic() : base(0x234D)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
-
         _petals = 0;
         StartSpawnTimer(TimeSpan.FromMinutes(1.0));
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1062913; // Rose of Trinsic
 
@@ -156,10 +156,10 @@ public partial class RoseOfTrinsicPetal : Item
     {
         Stackable = true;
         Amount = amount;
-
-        Weight = 1.0;
         Hue = 0xE;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1062926; // Petal of the Rose of Trinsic
 

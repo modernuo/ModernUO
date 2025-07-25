@@ -98,12 +98,9 @@ public partial class FlamingHeadDeed : Item, IRewardItem
     private bool _isRewardItem;
 
     [Constructible]
-    public FlamingHeadDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public FlamingHeadDeed() : base(0x14F0) => LootType = LootType.Blessed;
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041050; // a flaming head deed
 
     public override void GetProperties(IPropertyList list)

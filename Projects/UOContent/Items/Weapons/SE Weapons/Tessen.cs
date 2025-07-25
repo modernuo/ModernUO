@@ -7,11 +7,9 @@ namespace Server.Items
     public partial class Tessen : BaseBashing
     {
         [Constructible]
-        public Tessen() : base(0x27A3)
-        {
-            Weight = 6.0;
-            Layer = Layer.TwoHanded;
-        }
+        public Tessen() : base(0x27A3) => Layer = Layer.TwoHanded;
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Block;

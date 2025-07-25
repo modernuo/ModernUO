@@ -25,11 +25,9 @@ public partial class RewardBrazier : Item, IRewardItem
     }
 
     [Constructible]
-    public RewardBrazier(int itemID) : base(itemID)
-    {
-        LootType = LootType.Blessed;
-        Weight = 10.0;
-    }
+    public RewardBrazier(int itemID) : base(itemID) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 10.0;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
@@ -115,11 +113,9 @@ public partial class RewardBrazierDeed : Item, IRewardItem
     private bool _isRewardItem;
 
     [Constructible]
-    public RewardBrazierDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public RewardBrazierDeed() : base(0x14F0) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1080527; // Brazier Deed
 

@@ -12,11 +12,11 @@ namespace Server.Items
         [Constructible]
         public Pickaxe() : base(0xE86)
         {
-            Weight = 11.0;
             UsesRemaining = 50;
             ShowUsesRemaining = true;
         }
 
+        public override double DefaultWeight => 11.0;
         public override HarvestSystem HarvestSystem => Mining.System;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;

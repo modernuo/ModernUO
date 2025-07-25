@@ -7,18 +7,12 @@ namespace Server.Items;
 public partial class RunicSewingKit : BaseRunicTool
 {
     [Constructible]
-    public RunicSewingKit(CraftResource resource) : base(resource, 0xF9D)
-    {
-        Weight = 2.0;
-        Hue = CraftResources.GetHue(resource);
-    }
+    public RunicSewingKit(CraftResource resource) : base(resource, 0xF9D) => Hue = CraftResources.GetHue(resource);
 
     [Constructible]
-    public RunicSewingKit(CraftResource resource, int uses) : base(resource, uses, 0xF9D)
-    {
-        Weight = 2.0;
-        Hue = CraftResources.GetHue(resource);
-    }
+    public RunicSewingKit(CraftResource resource, int uses) : base(resource, uses, 0xF9D) => Hue = CraftResources.GetHue(resource);
+
+    public override double DefaultWeight => 2.0;
 
     public override CraftSystem CraftSystem => DefTailoring.CraftSystem;
 

@@ -8,13 +8,14 @@ public abstract partial class BaseSuit : Item
     public BaseSuit(AccessLevel level, int hue, int itemID) : base(itemID)
     {
         Hue = hue;
-        Weight = 1.0;
         Movable = false;
         LootType = LootType.Newbied;
         Layer = Layer.OuterTorso;
 
         _accessLevel = level;
     }
+
+    public override double DefaultWeight => 1.0;
 
     [SerializableProperty(0)]
     public AccessLevel AccessLevel

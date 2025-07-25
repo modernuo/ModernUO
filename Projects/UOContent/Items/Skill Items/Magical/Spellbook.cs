@@ -116,13 +116,14 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         _attributes = new AosAttributes(this);
         _skillBonuses = new AosSkillBonuses(this);
 
-        Weight = 3.0;
         Layer = Layer.OneHanded;
         LootType = LootType.Blessed;
 
         // The setter is calculating the spell count
         Content = content;
     }
+
+    public override double DefaultWeight => 3.0;
 
     public override bool DisplayWeight => false;
 

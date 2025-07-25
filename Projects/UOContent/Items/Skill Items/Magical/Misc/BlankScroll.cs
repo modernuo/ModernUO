@@ -9,9 +9,10 @@ public partial class BlankScroll : Item, ICommodity
     public BlankScroll(int amount = 1) : base(0xEF3)
     {
         Stackable = true;
-        Weight = 1.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;

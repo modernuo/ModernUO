@@ -37,12 +37,9 @@ public partial class PottedCactusDeed : Item, IRewardItem
     private bool _isRewardItem;
 
     [Constructible]
-    public PottedCactusDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public PottedCactusDeed() : base(0x14F0) => LootType = LootType.Blessed;
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1080407; // Potted Cactus Deed
 
     public override void OnDoubleClick(Mobile from)

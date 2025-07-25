@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class WarHammer : BaseBashing
     {
         [Constructible]
-        public WarHammer() : base(0x1439)
-        {
-            Weight = 10.0;
-            Layer = Layer.TwoHanded;
-        }
+        public WarHammer() : base(0x1439) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 10.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
 
