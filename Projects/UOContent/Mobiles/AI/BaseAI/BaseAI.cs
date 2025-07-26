@@ -439,11 +439,14 @@ public abstract partial class BaseAI
 
     public virtual bool DoActionGuard()
     {
-        DebugSay("I am still on guard.");
-        if (Utility.Random(10) == 0)
+        if (Mobile.Combatant == null)
         {
-            Mobile.Turn(Utility.Random(0, 2) - 1);
+            DebugSay("No threats found. Going home...");
+            Action = ActionType.Wander;
         }
+        
+        DebugSay("I stopped being on guard.");
+        Action = ActionType.Wander;
 
         return true;
     }
