@@ -164,6 +164,8 @@ public class FastAStarAlgorithm : PathAlgorithm
                     _nodes[newNode].parent = bestNode;
                     _nodes[newNode].cost = newCost;
                     _nodes[newNode].total = newTotal;
+
+                    // Requeue (duplicates allowed), and mark as open
                     _openQueue.Enqueue(newNode, newTotal);
                     _nodeStates[newNode] = 1;
                 }
