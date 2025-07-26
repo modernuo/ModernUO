@@ -47,7 +47,7 @@ internal sealed class AITimer : Timer
             interval = owner.Mobile.CurrentSpeed * 3000;
         }
 
-        return Core.AOS ? Math.Max(interval, 100) : Math.Max(interval, 200);
+        return Math.Max(interval, Core.AOS ? 100 : 200);
     }
 
     protected override void OnTick()
