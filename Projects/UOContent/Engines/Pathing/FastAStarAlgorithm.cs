@@ -143,7 +143,9 @@ namespace Server.PathAlgorithms.FastAStar
                         continue;
                     }
 
-                    var newCost = _nodes[bestNode].cost + 1;
+                    var isDiagonal = i % 2 == 1;
+                    var moveCost = isDiagonal ? 14 : 10;
+                    var newCost = _nodes[bestNode].cost + moveCost;
                     var newTotal = newCost + Heuristic(
                         newNode % AreaSize,
                         newNode / AreaSize % AreaSize,
