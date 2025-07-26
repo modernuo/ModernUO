@@ -34,9 +34,13 @@ internal sealed class AITimer : Timer
     {
         double interval;
 
-        if (owner.IsFollowingMaster())
+        if (Core.AOS && owner.IsFollowingMaster())
         {
-            interval = Core.AOS ? 100 : owner.Mobile.CurrentSpeed * 400;
+            interval = owner.Mobile.CurrentSpeed * 100;
+        }
+        else if (owner.IsFollowingMaster())
+        {
+            interval = owner.Mobile.CurrentSpeed * 400;
         }
         else if (owner.Mobile.CurrentSpeed <= 0.4)
         {
@@ -47,7 +51,7 @@ internal sealed class AITimer : Timer
             interval = owner.Mobile.CurrentSpeed * 3000;
         }
 
-        return Math.Max(interval, 100);
+        return Core.AOS ? Math.Max(interval, 100) : Math.Max(interval, 200);
     }
 
     protected override void OnTick()
