@@ -44,7 +44,6 @@ namespace Server.PathAlgorithms.FastAStar
         private static readonly PathNode[] _nodes = new PathNode[NodeCount];
         private static readonly BitArray _touched = new(NodeCount);
         private static readonly BitArray _onOpen = new(NodeCount);
-        private static readonly BitArray _closed = new BitArray(NodeCount);
         private static readonly int[] _successors = new int[8];
 
         private static int _xOffset;
@@ -76,7 +75,6 @@ namespace Server.PathAlgorithms.FastAStar
 
             _touched.SetAll(false);
             _onOpen.SetAll(false);
-            _closed.SetAll(false);
 
             _goal = goal;
 
@@ -113,7 +111,6 @@ namespace Server.PathAlgorithms.FastAStar
 
                 var bestNode = openQueue.Dequeue();
                 _onOpen[bestNode] = false;
-                _closed[bestNode] = true;
 
                 if (bc != null)
                 {
@@ -138,11 +135,6 @@ namespace Server.PathAlgorithms.FastAStar
                 for (var i = 0; i < count; ++i)
                 {
                     var newNode = vals[i];
-
-                    if (_closed[newNode])
-                    {
-                        continue;
-                    }
 
                     var wasTouched = _touched[newNode];
 
