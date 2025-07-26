@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
-using System.Collections;
+using System;
 using Server.Mobiles;
 using CalcMoves = Server.Movement.Movement;
 using MoveImpl = Server.Movement.MovementImpl;
@@ -44,9 +44,7 @@ public class FastAStarAlgorithm : PathAlgorithm
 
     private static readonly Direction[] _path = new Direction[AreaSize * AreaSize];
     private static readonly PathNode[] _nodes = new PathNode[NodeCount];
-    private static readonly BitArray _touched = new(NodeCount);
-    private static readonly BitArray _onOpen = new(NodeCount);
-    private static readonly BitArray _closed = new(NodeCount);
+    private static readonly byte[] _nodeStates = new byte[NodeCount];
     private static readonly int[] _successors = new int[8];
     private static readonly PriorityQueue<int, int> _openQueue = new();
 
@@ -78,9 +76,7 @@ public class FastAStarAlgorithm : PathAlgorithm
             return null;
         }
 
-        _touched.SetAll(false);
-        _onOpen.SetAll(false);
-        _closed.SetAll(false);
+        Array.Clear(_nodeStates);
 
         _goal = goal;
 
@@ -95,10 +91,8 @@ public class FastAStarAlgorithm : PathAlgorithm
         _nodes[fromNode].parent = -1;
         _nodes[fromNode].z = start.Z;
 
-        _onOpen[fromNode] = true;
-        _touched[fromNode] = true;
-
         _openQueue.Enqueue(fromNode, _nodes[fromNode].total);
+        _nodeStates[fromNode] = 1;
 
         var bc = m as BaseCreature;
 
@@ -113,9 +107,18 @@ public class FastAStarAlgorithm : PathAlgorithm
                 break;
             }
 
-            var bestNode = _openQueue.Dequeue();
-            _onOpen[bestNode] = false;
-            _closed[bestNode] = true;
+            if (!_openQueue.TryDequeue(out var bestNode, out var bestTotal))
+            {
+                break;
+            }
+
+            // Duplicate, lower priority
+            if (_nodeStates[bestNode] == 2 || _nodes[bestNode].total != bestTotal)
+            {
+                continue;
+            }
+
+            _nodeStates[bestNode] = 2;
 
             if (bc != null)
             {
@@ -141,7 +144,8 @@ public class FastAStarAlgorithm : PathAlgorithm
             {
                 var newNode = vals[i];
 
-                if (_closed[newNode] || _touched[newNode])
+                // Skip if the node is already closed
+                if (_nodeStates[newNode] == 2)
                 {
                     continue;
                 }
@@ -155,18 +159,14 @@ public class FastAStarAlgorithm : PathAlgorithm
                     _nodes[newNode].z
                 );
 
-                _nodes[newNode].parent = bestNode;
-                _nodes[newNode].cost = newCost;
-                _nodes[newNode].total = newTotal;
-
-                if (_onOpen[newNode])
+                if (_nodeStates[newNode] == 0 || newTotal < _nodes[newNode].total)
                 {
-                    continue;
+                    _nodes[newNode].parent = bestNode;
+                    _nodes[newNode].cost = newCost;
+                    _nodes[newNode].total = newTotal;
+                    _openQueue.Enqueue(newNode, newTotal);
+                    _nodeStates[newNode] = 1;
                 }
-
-                _openQueue.Enqueue(newNode, newTotal);
-                _onOpen[newNode] = true;
-                _touched[newNode] = true;
 
                 if (newNode != destNode)
                 {
