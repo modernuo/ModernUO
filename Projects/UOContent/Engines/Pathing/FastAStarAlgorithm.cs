@@ -18,6 +18,7 @@ using Server.Mobiles;
 using CalcMoves = Server.Movement.Movement;
 using MoveImpl = Server.Movement.MovementImpl;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Server.PathAlgorithms.FastAStar;
 
@@ -54,6 +55,7 @@ public class FastAStarAlgorithm : PathAlgorithm
 
     private Point3D _goal;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Heuristic(int x, int y, int z)
     {
         x -= _goal.X - _xOffset;
