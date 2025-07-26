@@ -13,8 +13,9 @@ public partial class CandleSkull : BaseLight
 
         Burning = false;
         Light = LightType.Circle150;
-        Weight = 5.0;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override int LitItemID => ItemID is 0x1583 or 0x1854 ? 0x1854 : 0x1858;
 

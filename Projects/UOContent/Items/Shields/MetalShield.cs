@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class MetalShield : BaseShield
 {
     [Constructible]
-    public MetalShield() : base(0x1B7B) => Weight = 6.0;
+    public MetalShield() : base(0x1B7B)
+    {
+    }
+
+    public override double DefaultWeight => 6.0;
 
     public override int BasePhysicalResistance => 0;
     public override int BaseFireResistance => 1;

@@ -12,9 +12,9 @@ public partial class CandelabraStand : BaseLight
         Duration = TimeSpan.Zero; // Never burnt out
         Burning = false;
         Light = LightType.Circle225;
-        Weight = 20.0;
     }
 
+    public override double DefaultWeight => 20.0;
     public override int LitItemID => 0xB26;
     public override int UnlitItemID => 0xA29;
 }

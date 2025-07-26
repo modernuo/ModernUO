@@ -6,6 +6,10 @@ namespace Server.Items
     public partial class Torso : Item
     {
         [Constructible]
-        public Torso() : base(0x1D9F) => Weight = 2.0;
+        public Torso() : base(0x1D9F)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 }

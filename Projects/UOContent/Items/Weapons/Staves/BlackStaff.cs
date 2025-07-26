@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class BlackStaff : BaseStaff
     {
         [Constructible]
-        public BlackStaff() : base(0xDF0) => Weight = 6.0;
+        public BlackStaff() : base(0xDF0)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;

@@ -7,12 +7,9 @@ namespace Server.Items;
 public partial class SturdyShovel : BaseHarvestTool
 {
     [Constructible]
-    public SturdyShovel(int uses = 180) : base(0xF39, uses)
-    {
-        Weight = 5.0;
-        Hue = 0x973;
-    }
+    public SturdyShovel(int uses = 180) : base(0xF39, uses) => Hue = 0x973;
 
+    public override double DefaultWeight => 5.0;
     public override int LabelNumber => 1045125; // sturdy shovel
     public override HarvestSystem HarvestSystem => Mining.System;
 }

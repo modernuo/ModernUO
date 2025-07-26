@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Item.cs                                                         *
  *                                                                       *
@@ -192,7 +192,7 @@ public enum ExpandFlag
     Spawner = 0x100
 }
 
-public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEntity, IValueLinkListNode<Item>
+public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEntity, IValueLinkListNode<Item>
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Item));
 
@@ -533,6 +533,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     public List<Item> Items => LookupItems() ?? EmptyItems;
+
+    public int LookupContainerVersion() => (this as Container)?._version ?? LookupCompactInfo()?.Version ?? 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public IEntity RootParent
@@ -1696,11 +1698,11 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     {
         if (this is Container cont)
         {
-            return cont.m_Items ?? (cont.m_Items = new List<Item>());
+            return cont.m_Items ??= new List<Item>();
         }
 
         var info = AcquireCompactInfo();
-        return info.m_Items ?? (info.m_Items = new List<Item>());
+        return info.m_Items ??= new List<Item>();
     }
 
     private void SetFlag(ImplFlag flag, bool value)
@@ -2472,15 +2474,6 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
-    {
-        if (setIf)
-        {
-            flags |= toSet;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3195,8 +3188,12 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         item.Map = m_Map;
 
         var items = AcquireItems();
-
         items.Add(item);
+
+        if (this is not Container)
+        {
+            AcquireCompactInfo().Version++;
+        }
 
         if (!item.IsVirtualItem)
         {
@@ -3360,6 +3357,11 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
 
         if (items.Remove(item))
         {
+            if (this is not Container)
+            {
+                AcquireCompactInfo().Version++;
+            }
+
             item.SendRemovePacket();
 
             if (!item.IsVirtualItem)
@@ -4321,6 +4323,8 @@ public class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropertyListEnt
         public int m_TempFlags;
 
         public double m_Weight = -1;
+
+        public int Version;
     }
 
     [Flags]

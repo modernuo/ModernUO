@@ -9,7 +9,11 @@ namespace Server.Items;
 public partial class GuildDeed : Item
 {
     [Constructible]
-    public GuildDeed() : base(0x14F0) => Weight = 1.0;
+    public GuildDeed() : base(0x14F0)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041055; // a guild deed
 

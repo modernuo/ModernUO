@@ -24,10 +24,10 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
     public WeaponEngravingTool(int uses = 10) : base(0x32F8)
     {
         LootType = LootType.Blessed;
-        Weight = 1.0;
-
         _usesRemaining = uses;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1076158; // Weapon Engraving Tool
 

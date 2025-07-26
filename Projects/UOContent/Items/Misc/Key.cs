@@ -47,12 +47,12 @@ public partial class Key : Item
 
     public Key(KeyType type, uint val = 0, Item link = null) : base((int)type)
     {
-        Weight = 1.0;
-
         _maxRange = 3;
         _keyValue = val;
         _link = link;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public static uint RandomValue() => (uint)(0xFFFFFFFE * Utility.RandomDouble()) + 1;
 

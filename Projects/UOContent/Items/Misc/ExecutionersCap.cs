@@ -6,5 +6,9 @@ namespace Server.Items;
 public partial class ExecutionersCap : Item
 {
     [Constructible]
-    public ExecutionersCap() : base(0xF83) => Weight = 1.0;
+    public ExecutionersCap() : base(0xF83)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }

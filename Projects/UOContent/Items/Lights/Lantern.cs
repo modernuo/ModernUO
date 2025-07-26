@@ -15,8 +15,9 @@ public partial class Lantern : BaseEquipableLight
 
         Burning = false;
         Light = LightType.Circle300;
-        Weight = 2.0;
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override int LitItemID => ItemID is 0xA15 or 0xA17 ? ItemID : 0xA22;
 

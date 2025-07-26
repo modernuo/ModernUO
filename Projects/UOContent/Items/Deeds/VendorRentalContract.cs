@@ -31,12 +31,12 @@ public partial class VendorRentalContract : Item
     [Constructible]
     public VendorRentalContract() : base(0x14F0)
     {
-        Weight = 1.0;
         Hue = 0x672;
-
         _duration = VendorRentalDuration.Instances[0];
         Price = 1500;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1062332; // a vendor rental contract
 

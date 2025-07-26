@@ -87,12 +87,13 @@ public partial class Snowman : Item, IDyable
     [Constructible]
     public Snowman(int hue, string title) : base(Utility.Random(0x2328, 2))
     {
-        Weight = 10.0;
         Hue = hue;
         LootType = LootType.Blessed;
 
         _title = title;
     }
+
+    public override double DefaultWeight => 10.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {

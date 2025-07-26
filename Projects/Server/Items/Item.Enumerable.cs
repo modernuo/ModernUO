@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: Container.Enumerable.cs                                         *
+ * File: Item.Enumerable.cs                                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,13 +18,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Collections;
 
-namespace Server.Items;
+namespace Server;
 
-public partial class Container
+public partial class Item
 {
     /// <summary>
     ///     Performs a breadth-first search through all the <see cref="Item" />s and
-    ///     nested <see cref="Container" />s within this <see cref="Container" />.
+    ///     nested <see cref="Item" />s within this <see cref="Item" />.
     /// </summary>
     /// <remarks>
     ///     DO NOT consume, delete, or move items while iterating with any FindItemByType or FindItems overloads
@@ -42,8 +42,8 @@ public partial class Container
     /// <typeparam name="T">Type of objects being searched for</typeparam>
     /// <param name="recurse">
     ///     Optional: If true, the search will recursively
-    ///     check any nested <see cref="Container" />s; otherwise, nested
-    ///     <see cref="Container" />s will not be searched.
+    ///     check any nested <see cref="Item" />s; otherwise, nested
+    ///     <see cref="Item" />s will not be searched.
     /// </param>
     /// <param name="predicate">
     ///     Optional: A predicate to check if the <see cref="Item" />
@@ -71,7 +71,7 @@ public partial class Container
 
     /// <summary>
     ///     Safely enumerates items using a breadth-first search through all the <see cref="Item" />s and
-    ///     nested <see cref="Container" />s within this <see cref="Container" />.
+    ///     nested <see cref="Item" />s within this <see cref="Item" />.
     /// </summary>
     /// <remarks>
     ///    Use EnumerateItemsByType for situations where the item might be manipulated, consumed, or moved.
@@ -92,8 +92,8 @@ public partial class Container
     /// <typeparam name="T">Type of objects being searched for</typeparam>
     /// <param name="recurse">
     ///     Optional: If true, the search will recursively
-    ///     check any nested <see cref="Container" />s; otherwise, nested
-    ///     <see cref="Container" />s will not be searched.
+    ///     check any nested <see cref="Item" />s; otherwise, nested
+    ///     <see cref="Item" />s will not be searched.
     /// </param>
     /// <param name="predicate">
     ///     Optional: A predicate to check if the <see cref="Item" />
@@ -203,30 +203,31 @@ public partial class Container
     public ref struct FindItemsByTypeEnumerator<T> where T : Item
     {
         private const string InvalidOperation_EnumFailedVersion =
-            "Container was modified after enumerator was instantiated. Use Container.EnumerateItems method instead for safe enumerations.";
+            "Item was modified after enumerator was instantiated. Use Item.EnumerateItems method instead for safe enumerations.";
 
-        private PooledRefQueue<Container> _containers;
+        private PooledRefQueue<Item> _containers;
         private Span<Item> _items;
         private int _index;
         private T _current;
         private readonly bool _recurse;
         private readonly Predicate<T> _predicate;
-        private Container _currentContainer;
+        private Item _currentContainer;
         private int _version;
 
-        public FindItemsByTypeEnumerator(Container container, bool recurse, Predicate<T> predicate)
+        public FindItemsByTypeEnumerator(Item container, bool recurse, Predicate<T> predicate)
         {
-            _containers = PooledRefQueue<Container>.Create(_recurse ? 64 : 0);
+            _containers = PooledRefQueue<Item>.Create(_recurse ? 64 : 0);
 
             if (container != null)
             {
-                if (container.m_Items != null)
+                var items = container.LookupItems();
+                if (items != null)
                 {
-                    _items = CollectionsMarshal.AsSpan(container.m_Items);
+                    _items = CollectionsMarshal.AsSpan(items);
                 }
 
                 _currentContainer = container;
-                _version = container._version;
+                _version = container.LookupContainerVersion();
             }
 
             _current = default;
@@ -244,9 +245,9 @@ public partial class Container
             while (_containers.TryDequeue(out var c))
             {
                 _currentContainer = c;
-                _items = CollectionsMarshal.AsSpan(c.m_Items);
+                _items = CollectionsMarshal.AsSpan(c.LookupItems());
                 _index = 0;
-                _version = c._version;
+                _version = c.LookupContainerVersion();
 
                 if (SetNextItem())
                 {
@@ -260,7 +261,7 @@ public partial class Container
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool SetNextItem()
         {
-            if (_version != _currentContainer._version)
+            if (_version != _currentContainer.LookupContainerVersion())
             {
                 throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
             }
@@ -268,14 +269,14 @@ public partial class Container
             while (_index < _items.Length)
             {
                 Item item = _items[_index++];
-                if (_recurse && item is Container { m_Items.Count: > 0 } c)
+                if (_recurse && item.LookupItems() is { Count: > 0 } items)
                 {
-                    _containers.Enqueue(c);
+                    _containers.Enqueue(item);
                 }
 
                 if (item is T t && _predicate?.Invoke(t) != false)
                 {
-                    if (_version != _currentContainer._version)
+                    if (_version != _currentContainer.LookupContainerVersion())
                     {
                         throw new InvalidOperationException(InvalidOperation_EnumFailedVersion);
                     }

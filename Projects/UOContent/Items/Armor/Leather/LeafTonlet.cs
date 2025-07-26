@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class LeafTonlet : BaseArmor
     {
         [Constructible]
-        public LeafTonlet() : base(0x2FCA) => Weight = 2.0;
+        public LeafTonlet() : base(0x2FCA)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
         public override int BasePhysicalResistance => 2;

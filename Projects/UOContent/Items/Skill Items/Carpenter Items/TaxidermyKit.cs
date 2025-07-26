@@ -22,7 +22,11 @@ public partial class TaxidermyKit : Item
     };
 
     [Constructible]
-    public TaxidermyKit() : base(0x1EBA) => Weight = 1.0;
+    public TaxidermyKit() : base(0x1EBA)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041279; // a taxidermy kit
 

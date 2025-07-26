@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class LargeBattleAxe : BaseAxe
     {
         [Constructible]
-        public LargeBattleAxe() : base(0x13FB) => Weight = 6.0;
+        public LargeBattleAxe() : base(0x13FB)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;

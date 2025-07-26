@@ -60,7 +60,6 @@ public partial class Runebook : Item, ISecurable, ICraftable
     [Constructible]
     public Runebook(int maxCharges) : base(Core.AOS ? 0x22C5 : 0xEFA)
     {
-        Weight = Core.SE ? 1.0 : 3.0;
         LootType = LootType.Blessed;
         Hue = 0x461;
 
@@ -71,6 +70,8 @@ public partial class Runebook : Item, ISecurable, ICraftable
         _defaultIndex = -1;
         _level = SecureLevel.CoOwners;
     }
+
+    public override double DefaultWeight => Core.SE ? 1.0 : 3.0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime NextUse { get; set; }

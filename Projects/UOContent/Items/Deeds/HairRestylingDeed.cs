@@ -11,9 +11,10 @@ public partial class HairRestylingDeed : Item
     [Constructible]
     public HairRestylingDeed() : base(0x14F0)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041061; // a coupon for a free hair restyling
 

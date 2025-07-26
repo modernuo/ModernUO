@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class WoodlandChest : BaseArmor
     {
         [Constructible]
-        public WoodlandChest() : base(0x2B67) => Weight = 8.0;
+        public WoodlandChest() : base(0x2B67)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

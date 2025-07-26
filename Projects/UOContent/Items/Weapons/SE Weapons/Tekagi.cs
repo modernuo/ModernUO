@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class Tekagi : BaseKnife
     {
         [Constructible]
-        public Tekagi() : base(0x27AB)
-        {
-            Weight = 5.0;
-            Layer = Layer.TwoHanded;
-        }
+        public Tekagi() : base(0x27AB) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 5.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.DualWield;
         public override WeaponAbility SecondaryAbility => WeaponAbility.TalonStrike;
 

@@ -7,12 +7,9 @@ namespace Server.Items;
 public partial class HeritageToken : Item
 {
     [Constructible]
-    public HeritageToken() : base(0x367A)
-    {
-        LootType = LootType.Blessed;
-        Weight = 5.0;
-    }
+    public HeritageToken() : base(0x367A) => LootType = LootType.Blessed;
 
+    public override double DefaultWeight => 5.0;
     public override int LabelNumber => 1076596; // A Heritage Token
 
     public override void OnDoubleClick(Mobile from)

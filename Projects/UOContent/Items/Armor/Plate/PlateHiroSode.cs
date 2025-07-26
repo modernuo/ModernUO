@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateHiroSode : BaseArmor
     {
         [Constructible]
-        public PlateHiroSode() : base(0x2780) => Weight = 3.0;
+        public PlateHiroSode() : base(0x2780)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

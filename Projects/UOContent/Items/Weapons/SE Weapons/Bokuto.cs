@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Bokuto : BaseSword
     {
         [Constructible]
-        public Bokuto() : base(0x27A8) => Weight = 7.0;
+        public Bokuto() : base(0x27A8)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
         public override WeaponAbility SecondaryAbility => WeaponAbility.NerveStrike;

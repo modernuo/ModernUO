@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class GargishWoodenShield : BaseShield
 {
     [Constructible]
-    public GargishWoodenShield() : base(0x4200) => Weight = 5.0;
+    public GargishWoodenShield() : base(0x4200)
+    {
+    }
+
+    public override double DefaultWeight => 5.0;
 
     public override int BasePhysicalResistance => 0;
     public override int BaseFireResistance => 0;

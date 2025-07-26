@@ -61,11 +61,9 @@ public partial class Fireflies : Item, IAddon
 public partial class FirefliesDeed : Item
 {
     [Constructible]
-    public FirefliesDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public FirefliesDeed() : base(0x14F0) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1150061;
 

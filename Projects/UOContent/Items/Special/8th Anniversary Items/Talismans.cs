@@ -20,8 +20,9 @@ public partial class BaseFormTalisman : Item
     {
         LootType = LootType.Blessed;
         Layer = Layer.Talisman;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public virtual TalismanForm Form => TalismanForm.Squirrel;
 

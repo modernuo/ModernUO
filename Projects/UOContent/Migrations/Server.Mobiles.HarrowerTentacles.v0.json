@@ -4,7 +4,7 @@
   "properties": [
     {
       "name": "Harrower",
-      "type": "Server.Mobile",
+      "type": "Server.Mobiles.Harrower",
       "rule": "SerializableInterfaceMigrationRule"
     }
   ]

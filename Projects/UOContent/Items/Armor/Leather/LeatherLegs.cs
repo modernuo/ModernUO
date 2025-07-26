@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class LeatherLegs : BaseArmor
     {
         [Constructible]
-        public LeatherLegs() : base(0x13CB) => Weight = 4.0;
+        public LeatherLegs() : base(0x13CB)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

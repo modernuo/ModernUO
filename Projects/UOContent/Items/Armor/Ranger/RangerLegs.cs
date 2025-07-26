@@ -9,9 +9,10 @@ namespace Server.Items
         [Constructible]
         public RangerLegs() : base(0x13DA)
         {
-            Weight = 3.0;
             Hue = 0x59C;
         }
+
+        public override double DefaultWeight => 3.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

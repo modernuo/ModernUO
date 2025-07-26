@@ -15,7 +15,11 @@ namespace Server.Items
     public partial class ShortPants : BasePants
     {
         [Constructible]
-        public ShortPants(int hue = 0) : base(0x152E, hue) => Weight = 2.0;
+        public ShortPants(int hue = 0) : base(0x152E, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [Flippable(0x1539, 0x153a)]
@@ -23,7 +27,11 @@ namespace Server.Items
     public partial class LongPants : BasePants
     {
         [Constructible]
-        public LongPants(int hue = 0) : base(0x1539, hue) => Weight = 2.0;
+        public LongPants(int hue = 0) : base(0x1539, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [Flippable(0x279B, 0x27E6)]
@@ -31,7 +39,11 @@ namespace Server.Items
     public partial class TattsukeHakama : BasePants
     {
         [Constructible]
-        public TattsukeHakama(int hue = 0) : base(0x279B, hue) => Weight = 2.0;
+        public TattsukeHakama(int hue = 0) : base(0x279B, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [Flippable(0x2FC3, 0x3179)]
@@ -39,7 +51,11 @@ namespace Server.Items
     public partial class ElvenPants : BasePants
     {
         [Constructible]
-        public ElvenPants(int hue = 0) : base(0x2FC3, hue) => Weight = 2.0;
+        public ElvenPants(int hue = 0) : base(0x2FC3, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
     }

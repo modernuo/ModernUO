@@ -8,7 +8,11 @@ namespace Server.Items;
 public partial class ContractOfEmployment : Item
 {
     [Constructible]
-    public ContractOfEmployment() : base(0x14F0) => Weight = 1.0;
+    public ContractOfEmployment() : base(0x14F0)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041243; // a contract of employment
 

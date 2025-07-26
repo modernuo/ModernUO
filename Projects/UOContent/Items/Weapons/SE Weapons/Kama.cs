@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class Kama : BaseKnife
     {
         [Constructible]
-        public Kama() : base(0x27AD)
-        {
-            Weight = 7.0;
-            Layer = Layer.TwoHanded;
-        }
+        public Kama() : base(0x27AD) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 7.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.DefenseMastery;
 

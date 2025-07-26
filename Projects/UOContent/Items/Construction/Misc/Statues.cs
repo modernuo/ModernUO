@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class StatueSouth : Item
 {
     [Constructible]
-    public StatueSouth() : base(0x139A) => Weight = 10;
+    public StatueSouth() : base(0x139A)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -15,7 +19,11 @@ public partial class StatueSouth : Item
 public partial class StatueSouth2 : Item
 {
     [Constructible]
-    public StatueSouth2() : base(0x1227) => Weight = 10;
+    public StatueSouth2() : base(0x1227)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -24,7 +32,11 @@ public partial class StatueSouth2 : Item
 public partial class StatueNorth : Item
 {
     [Constructible]
-    public StatueNorth() : base(0x139B) => Weight = 10;
+    public StatueNorth() : base(0x139B)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -33,7 +45,11 @@ public partial class StatueNorth : Item
 public partial class StatueWest : Item
 {
     [Constructible]
-    public StatueWest() : base(0x1226) => Weight = 10;
+    public StatueWest() : base(0x1226)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -42,7 +58,11 @@ public partial class StatueWest : Item
 public partial class StatueEast : Item
 {
     [Constructible]
-    public StatueEast() : base(0x139C) => Weight = 10;
+    public StatueEast() : base(0x139C)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -51,7 +71,11 @@ public partial class StatueEast : Item
 public partial class StatueEast2 : Item
 {
     [Constructible]
-    public StatueEast2() : base(0x1224) => Weight = 10;
+    public StatueEast2() : base(0x1224)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -60,7 +84,11 @@ public partial class StatueEast2 : Item
 public partial class StatueSouthEast : Item
 {
     [Constructible]
-    public StatueSouthEast() : base(0x1225) => Weight = 10;
+    public StatueSouthEast() : base(0x1225)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -69,7 +97,11 @@ public partial class StatueSouthEast : Item
 public partial class BustSouth : Item
 {
     [Constructible]
-    public BustSouth() : base(0x12CB) => Weight = 10;
+    public BustSouth() : base(0x12CB)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -78,7 +110,11 @@ public partial class BustSouth : Item
 public partial class BustEast : Item
 {
     [Constructible]
-    public BustEast() : base(0x12CA) => Weight = 10;
+    public BustEast() : base(0x12CA)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -87,7 +123,11 @@ public partial class BustEast : Item
 public partial class StatuePegasus : Item
 {
     [Constructible]
-    public StatuePegasus() : base(0x139D) => Weight = 10;
+    public StatuePegasus() : base(0x139D)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -96,7 +136,11 @@ public partial class StatuePegasus : Item
 public partial class StatuePegasus2 : Item
 {
     [Constructible]
-    public StatuePegasus2() : base(0x1228) => Weight = 10;
+    public StatuePegasus2() : base(0x1228)
+    {
+    }
+
+    public override double DefaultWeight => 10;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }
@@ -105,5 +149,9 @@ public partial class StatuePegasus2 : Item
 public partial class SmallTowerSculpture : Item
 {
     [Constructible]
-    public SmallTowerSculpture() : base(0x241A) => Weight = 20.0;
+    public SmallTowerSculpture() : base(0x241A)
+    {
+    }
+
+    public override double DefaultWeight => 20.0;
 }

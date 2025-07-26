@@ -6,5 +6,9 @@ namespace Server.Items;
 public partial class BambooFlute : BaseInstrument
 {
     [Constructible]
-    public BambooFlute() : base(0x2805, 0x504, 0x503) => Weight = 2.0;
+    public BambooFlute() : base(0x2805, 0x504, 0x503)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }

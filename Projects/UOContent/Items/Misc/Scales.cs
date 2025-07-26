@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class Scales : Item
 {
     [Constructible]
-    public Scales() : base(0x1852) => Weight = 4.0;
+    public Scales() : base(0x1852)
+    {
+    }
+
+    public override double DefaultWeight => 4.0;
 
     public override void OnDoubleClick(Mobile from)
     {

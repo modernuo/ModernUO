@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateMempo : BaseArmor
     {
         [Constructible]
-        public PlateMempo() : base(0x2779) => Weight = 3.0;
+        public PlateMempo() : base(0x2779)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

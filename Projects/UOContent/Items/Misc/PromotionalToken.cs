@@ -11,8 +11,9 @@ public abstract partial class PromotionalToken : Item
     {
         LootType = LootType.Blessed;
         Light = LightType.Circle300;
-        Weight = 5.0;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public abstract TextDefinition ItemName { get; }
     public abstract TextDefinition ItemReceiveMessage { get; }

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class LeafGloves : BaseArmor, IArcaneEquip
     {
         [Constructible]
-        public LeafGloves() : base(0x2FC6) => Weight = 2.0;
+        public LeafGloves() : base(0x2FC6)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
         public override int BasePhysicalResistance => 2;

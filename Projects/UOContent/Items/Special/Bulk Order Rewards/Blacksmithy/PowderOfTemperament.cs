@@ -15,10 +15,11 @@ public partial class PowderOfTemperament : Item, IUsesRemaining
     [Constructible]
     public PowderOfTemperament(int charges = 10) : base(4102)
     {
-        Weight = 1.0;
         Hue = 2419;
         UsesRemaining = charges;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1049082; // powder of fortifying
 

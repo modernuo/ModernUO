@@ -11,9 +11,10 @@ public partial class Kindling : Item
     public Kindling(int amount = 1) : base(0xDE1)
     {
         Stackable = true;
-        Weight = 5.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override void OnDoubleClick(Mobile from)
     {

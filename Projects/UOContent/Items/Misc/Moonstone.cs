@@ -20,11 +20,9 @@ public partial class Moonstone : Item
     private MoonstoneType _type;
 
     [Constructible]
-    public Moonstone(MoonstoneType type) : base(0xF8B)
-    {
-        Weight = 1.0;
-        _type = type;
-    }
+    public Moonstone(MoonstoneType type) : base(0xF8B) => _type = type;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041490 + (int)_type;
 

@@ -15,7 +15,11 @@ namespace Server.Items;
 public partial class PlayerBBSouth : BasePlayerBB
 {
     [Constructible]
-    public PlayerBBSouth() : base(0x2311) => Weight = 15.0;
+    public PlayerBBSouth() : base(0x2311)
+    {
+    }
+
+    public override double DefaultWeight => 15.0;
 
     public override int LabelNumber => 1062421; // bulletin board (south)
 }
@@ -24,7 +28,11 @@ public partial class PlayerBBSouth : BasePlayerBB
 public partial class PlayerBBEast : BasePlayerBB
 {
     [Constructible]
-    public PlayerBBEast() : base(0x2312) => Weight = 15.0;
+    public PlayerBBEast() : base(0x2312)
+    {
+    }
+
+    public override double DefaultWeight => 15.0;
 
     public override int LabelNumber => 1062420; // bulletin board (east)
 }

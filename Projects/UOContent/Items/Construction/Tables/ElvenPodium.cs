@@ -8,6 +8,10 @@ namespace Server.Items
     public partial class ElvenPodium : Item
     {
         [Constructible]
-        public ElvenPodium() : base(0x2DDD) => Weight = 2.0;
+        public ElvenPodium() : base(0x2DDD)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 }

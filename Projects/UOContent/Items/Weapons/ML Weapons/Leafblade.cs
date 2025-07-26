@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Leafblade : BaseKnife
     {
         [Constructible]
-        public Leafblade() : base(0x2D22) => Weight = 8.0;
+        public Leafblade() : base(0x2D22)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ArmorIgnore;

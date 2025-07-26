@@ -27,11 +27,11 @@ public partial class BagOfSending : Item, TranslocationItem
     [Constructible]
     public BagOfSending(BagOfSendingHue hue) : base(0xE76)
     {
-        Weight = 2.0;
-
         BagOfSendingHue = hue;
         _charges = Utility.RandomMinMax(3, 9);
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override int LabelNumber => 1054104; // a bag of sending
 

@@ -14,12 +14,9 @@ namespace Server.Items;
 public partial class HousePlacementTool : Item
 {
     [Constructible]
-    public HousePlacementTool() : base(0x14F6)
-    {
-        Weight = 3.0;
-        LootType = LootType.Blessed;
-    }
+    public HousePlacementTool() : base(0x14F6) => LootType = LootType.Blessed;
 
+    public override double DefaultWeight => 3.0;
     public override int LabelNumber => 1060651; // a house placement tool
 
     public override void OnDoubleClick(Mobile from)

@@ -16,7 +16,11 @@ public partial class PotionKeg : Item
     private PotionEffect _type;
 
     [Constructible]
-    public PotionKeg() : base(0x1940) => UpdateWeight();
+    public PotionKeg() : base(0x1940)
+    {
+    }
+
+    public override double DefaultWeight => 20 + Math.Clamp(_held, 0, 100) * 0.8;
 
     [SerializableProperty(1)]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -28,7 +32,6 @@ public partial class PotionKeg : Item
             if (_held != value)
             {
                 _held = value;
-                UpdateWeight();
                 InvalidateProperties();
                 this.MarkDirty();
             }
@@ -46,13 +49,6 @@ public partial class PotionKeg : Item
 
             return _held > 0 ? 1041620 + (int)_type : 1041641;
         }
-    }
-
-    public virtual void UpdateWeight()
-    {
-        var held = Math.Max(0, Math.Min(_held, 100));
-
-        Weight = 20 + held * 80 / 100;
     }
 
     private void Deserialize(IGenericReader reader, int version)
