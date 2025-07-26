@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class VultureHelm : BaseArmor
     {
         [Constructible]
-        public VultureHelm() : base(0x2B72) => Weight = 5.0;
+        public VultureHelm() : base(0x2B72)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

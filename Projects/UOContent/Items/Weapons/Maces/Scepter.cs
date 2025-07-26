@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Scepter : BaseBashing
     {
         [Constructible]
-        public Scepter() : base(0x26BC) => Weight = 8.0;
+        public Scepter() : base(0x26BC)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;

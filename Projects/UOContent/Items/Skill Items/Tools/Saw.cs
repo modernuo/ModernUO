@@ -8,10 +8,16 @@ namespace Server.Items;
 public partial class Saw : BaseTool
 {
     [Constructible]
-    public Saw() : base(0x1034) => Weight = 2.0;
+    public Saw() : base(0x1034)
+    {
+    }
 
     [Constructible]
-    public Saw(int uses) : base(uses, 0x1034) => Weight = 2.0;
+    public Saw(int uses) : base(uses, 0x1034)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 }

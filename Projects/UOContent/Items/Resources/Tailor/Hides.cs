@@ -8,12 +8,12 @@ public abstract partial class BaseHides : Item, ICommodity
     public BaseHides(CraftResource resource, int amount = 1) : base(0x1079)
     {
         Stackable = true;
-        Weight = 5.0;
         Amount = amount;
         Hue = CraftResources.GetHue(resource);
-
         _resource = resource;
     }
+
+    public override double DefaultWeight => 5.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

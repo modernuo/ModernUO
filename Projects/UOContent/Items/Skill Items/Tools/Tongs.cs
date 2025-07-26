@@ -8,10 +8,16 @@ namespace Server.Items;
 public partial class Tongs : BaseTool
 {
     [Constructible]
-    public Tongs() : base(0xFBB) => Weight = 2.0;
+    public Tongs() : base(0xFBB)
+    {
+    }
 
     [Constructible]
-    public Tongs(int uses) : base(uses, 0xFBB) => Weight = 2.0;
+    public Tongs(int uses) : base(uses, 0xFBB)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
 }

@@ -14,8 +14,9 @@ public partial class RedHangingLantern : BaseLight
         Duration = TimeSpan.Zero; // Never burnt out
         Burning = false;
         Light = LightType.Circle300;
-        Weight = 3.0;
     }
+
+    public override double DefaultWeight => 3.0;
 
     public override int LitItemID => ItemID == 0x24C2 ? 0x24C1 : 0x24C3;
 

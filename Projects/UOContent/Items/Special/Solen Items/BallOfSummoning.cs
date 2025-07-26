@@ -21,12 +21,13 @@ public partial class BallOfSummoning : Item, TranslocationItem
     [Constructible]
     public BallOfSummoning() : base(0xE2E)
     {
-        Weight = 10.0;
         Light = LightType.Circle150;
 
         _charges = Utility.RandomMinMax(3, 9);
         _petName = null;
     }
+
+    public override double DefaultWeight => 10.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

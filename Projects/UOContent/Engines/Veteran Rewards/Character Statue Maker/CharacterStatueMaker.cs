@@ -19,8 +19,9 @@ public partial class CharacterStatueMaker : Item, IRewardItem
         InvalidateHue();
 
         LootType = LootType.Blessed;
-        Weight = 5.0;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override int LabelNumber => 1076173; // Character Statue Maker
 

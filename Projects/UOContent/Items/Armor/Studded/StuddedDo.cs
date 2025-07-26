@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class StuddedDo : BaseArmor
     {
         [Constructible]
-        public StuddedDo() : base(0x27C7) => Weight = 8.0;
+        public StuddedDo() : base(0x27C7)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

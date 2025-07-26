@@ -88,12 +88,9 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
     private bool _isRewardItem;
 
     [Constructible]
-    public HangingSkeletonDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public HangingSkeletonDeed() : base(0x14F0) => LootType = LootType.Blessed;
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1049772; // deed for a hanging skeleton decoration
 
     public override void GetProperties(IPropertyList list)

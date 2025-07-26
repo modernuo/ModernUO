@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class ElvenSpellblade : BaseKnife
     {
         [Constructible]
-        public ElvenSpellblade() : base(0x2D20)
-        {
-            Weight = 5.0;
-            Layer = Layer.TwoHanded;
-        }
+        public ElvenSpellblade() : base(0x2D20) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 5.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.PsychicAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;
 

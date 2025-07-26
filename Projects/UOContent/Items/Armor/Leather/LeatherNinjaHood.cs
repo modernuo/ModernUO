@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class LeatherNinjaHood : BaseArmor
     {
         [Constructible]
-        public LeatherNinjaHood() : base(0x278E) => Weight = 2.0;
+        public LeatherNinjaHood() : base(0x278E)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 3;

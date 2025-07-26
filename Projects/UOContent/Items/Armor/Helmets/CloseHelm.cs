@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class CloseHelm : BaseArmor
     {
         [Constructible]
-        public CloseHelm() : base(0x1408) => Weight = 5.0;
+        public CloseHelm() : base(0x1408)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;

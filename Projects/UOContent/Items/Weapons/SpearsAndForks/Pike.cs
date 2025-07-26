@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Pike : BaseSpear
     {
         [Constructible]
-        public Pike() : base(0x26BE) => Weight = 8.0;
+        public Pike() : base(0x26BE)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ParalyzingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.InfectiousStrike;

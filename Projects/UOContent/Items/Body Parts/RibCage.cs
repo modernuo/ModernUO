@@ -7,11 +7,9 @@ namespace Server.Items
     public partial class RibCage : Item, IScissorable
     {
         [Constructible]
-        public RibCage() : base(0x1B17 + Utility.Random(2))
-        {
-            Stackable = false;
-            Weight = 5.0;
-        }
+        public RibCage() : base(0x1B17 + Utility.Random(2)) => Stackable = false;
+
+        public override double DefaultWeight => 5.0;
 
         public bool Scissor(Mobile from, Scissors scissors)
         {

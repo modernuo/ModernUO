@@ -176,5 +176,9 @@ public abstract partial class BaseCamp : BaseMulti
 public partial class LockableBarrel : LockableContainer
 {
     [Constructible]
-    public LockableBarrel() : base(0xE77) => Weight = 1.0;
+    public LockableBarrel() : base(0xE77)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }

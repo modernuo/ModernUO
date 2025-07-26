@@ -8,7 +8,11 @@ namespace Server.Items;
 public partial class BambooScreen : Item
 {
     [Constructible]
-    public BambooScreen() : base(0x24D0) => Weight = 20.0;
+    public BambooScreen() : base(0x24D0)
+    {
+    }
+
+    public override double DefaultWeight => 20.0;
 }
 
 [Furniture]
@@ -17,5 +21,9 @@ public partial class BambooScreen : Item
 public partial class ShojiScreen : Item
 {
     [Constructible]
-    public ShojiScreen() : base(0x24CB) => Weight = 20.0;
+    public ShojiScreen() : base(0x24CB)
+    {
+    }
+
+    public override double DefaultWeight => 20.0;
 }

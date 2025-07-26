@@ -9,9 +9,10 @@ public partial class SnowPile : Item
     public SnowPile() : base(0x913)
     {
         Hue = 0x481;
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1005578; // a pile of snow
 

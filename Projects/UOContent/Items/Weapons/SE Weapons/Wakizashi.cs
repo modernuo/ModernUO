@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class Wakizashi : BaseSword
     {
         [Constructible]
-        public Wakizashi() : base(0x27A4)
-        {
-            Weight = 5.0;
-            Layer = Layer.OneHanded;
-        }
+        public Wakizashi() : base(0x27A4) => Layer = Layer.OneHanded;
 
+        public override double DefaultWeight => 5.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.FrenziedWhirlwind;
         public override WeaponAbility SecondaryAbility => WeaponAbility.DoubleStrike;
 

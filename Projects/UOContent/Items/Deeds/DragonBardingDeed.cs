@@ -20,7 +20,11 @@ public partial class DragonBardingDeed : Item, ICraftable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _exceptional;
 
-    public DragonBardingDeed() : base(0x14F0) => Weight = 1.0;
+    public DragonBardingDeed() : base(0x14F0)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => _exceptional ? 1053181 : 1053012; // dragon barding deed
 

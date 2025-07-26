@@ -19,13 +19,14 @@ public partial class CommodityDeed : Item
     [Constructible]
     public CommodityDeed(Item commodity = null) : base(0x14F0)
     {
-        Weight = 1.0;
         Hue = 0x47;
 
         Commodity = commodity;
 
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => Commodity == null ? 1047016 : 1047017;
 

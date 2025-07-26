@@ -56,8 +56,6 @@ public partial class PlantItem : Item, ISecurable
     [Constructible]
     public PlantItem(bool fertileDirt = false) : base(0x1602)
     {
-        Weight = 1.0;
-
         _plantStatus = PlantStatus.BowlOfDirt;
         _plantSystem = new PlantSystem(this)
         {
@@ -68,6 +66,8 @@ public partial class PlantItem : Item, ISecurable
 
         Plants.Add(this);
     }
+
+    public override double DefaultWeight => 1.0;
 
     public ObjectPropertyList OldClientPropertyList
     {

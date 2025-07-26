@@ -133,9 +133,10 @@ public partial class BreadLoaf : Food
     [Constructible]
     public BreadLoaf(int amount = 1) : base(0x103B, amount)
     {
-        Weight = 1.0;
         FillFactor = 3;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -144,9 +145,10 @@ public partial class Bacon : Food
     [Constructible]
     public Bacon(int amount = 1) : base(0x979, amount)
     {
-        Weight = 1.0;
         FillFactor = 1;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -155,9 +157,10 @@ public partial class SlabOfBacon : Food
     [Constructible]
     public SlabOfBacon(int amount = 1) : base(0x976, amount)
     {
-        Weight = 1.0;
         FillFactor = 3;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -202,9 +205,10 @@ public partial class FrenchBread : Food
     [Constructible]
     public FrenchBread(int amount = 1) : base(0x98C, amount)
     {
-        Weight = 2.0;
         FillFactor = 3;
     }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -213,9 +217,10 @@ public partial class FriedEggs : Food
     [Constructible]
     public FriedEggs(int amount = 1) : base(0x9B6, amount)
     {
-        Weight = 1.0;
         FillFactor = 4;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -224,9 +229,10 @@ public partial class CookedBird : Food
     [Constructible]
     public CookedBird(int amount = 1) : base(0x9B7, amount)
     {
-        Weight = 1.0;
         FillFactor = 5;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -235,9 +241,10 @@ public partial class RoastPig : Food
     [Constructible]
     public RoastPig(int amount = 1) : base(0x9BB, amount)
     {
-        Weight = 45.0;
         FillFactor = 20;
     }
+
+    public override double DefaultWeight => 45.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -246,9 +253,10 @@ public partial class Sausage : Food
     [Constructible]
     public Sausage(int amount = 1) : base(0x9C0, amount)
     {
-        Weight = 1.0;
         FillFactor = 4;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -257,9 +265,10 @@ public partial class Ham : Food
     [Constructible]
     public Ham(int amount = 1) : base(0x9C9, amount)
     {
-        Weight = 1.0;
         FillFactor = 5;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -269,9 +278,10 @@ public partial class Cake : Food
     public Cake() : base(0x9E9)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 10;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -280,9 +290,10 @@ public partial class Ribs : Food
     [Constructible]
     public Ribs(int amount = 1) : base(0x9F2, amount)
     {
-        Weight = 1.0;
         FillFactor = 5;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -292,9 +303,10 @@ public partial class Cookies : Food
     public Cookies() : base(0x160b)
     {
         Stackable = Core.ML;
-        Weight = 1.0;
         FillFactor = 4;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -304,9 +316,10 @@ public partial class Muffins : Food
     public Muffins() : base(0x9eb)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 4;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [TypeAlias("Server.Items.Pizza")]
@@ -317,10 +330,10 @@ public partial class CheesePizza : Food
     public CheesePizza() : base(0x1040)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 6;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1044516; // cheese pizza
 }
 
@@ -331,10 +344,10 @@ public partial class SausagePizza : Food
     public SausagePizza() : base(0x1040)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 6;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1044517; // sausage pizza
 }
 
@@ -345,10 +358,10 @@ public partial class FruitPie : Food
     public FruitPie() : base(0x1041)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 5;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041346; // baked fruit pie
 }
 
@@ -359,10 +372,10 @@ public partial class MeatPie : Food
     public MeatPie() : base(0x1041)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 5;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041347; // baked meat pie
 }
 
@@ -373,10 +386,10 @@ public partial class PumpkinPie : Food
     public PumpkinPie() : base(0x1041)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 5;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041348; // baked pumpkin pie
 }
 
@@ -387,10 +400,10 @@ public partial class ApplePie : Food
     public ApplePie() : base(0x1041)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 5;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041343; // baked apple pie
 }
 
@@ -401,10 +414,10 @@ public partial class PeachCobbler : Food
     public PeachCobbler() : base(0x1041)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 5;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041344; // baked peach cobbler
 }
 
@@ -415,10 +428,10 @@ public partial class Quiche : Food
     public Quiche() : base(0x1041)
     {
         Stackable = Core.ML;
-        Weight = 1.0;
         FillFactor = 5;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041345; // baked quiche
 }
 
@@ -428,9 +441,10 @@ public partial class LambLeg : Food
     [Constructible]
     public LambLeg(int amount = 1) : base(0x160a, amount)
     {
-        Weight = 2.0;
         FillFactor = 5;
     }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -439,9 +453,10 @@ public partial class ChickenLeg : Food
     [Constructible]
     public ChickenLeg(int amount = 1) : base(0x1608, amount)
     {
-        Weight = 1.0;
         FillFactor = 4;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Flippable(0xC74, 0xC75)]
@@ -451,9 +466,10 @@ public partial class HoneydewMelon : Food
     [Constructible]
     public HoneydewMelon(int amount = 1) : base(0xC74, amount)
     {
-        Weight = 1.0;
         FillFactor = 1;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Flippable(0xC64, 0xC65)]
@@ -463,9 +479,10 @@ public partial class YellowGourd : Food
     [Constructible]
     public YellowGourd(int amount = 1) : base(0xC64, amount)
     {
-        Weight = 1.0;
         FillFactor = 1;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Flippable(0xC66, 0xC67)]
@@ -475,9 +492,10 @@ public partial class GreenGourd : Food
     [Constructible]
     public GreenGourd(int amount = 1) : base(0xC66, amount)
     {
-        Weight = 1.0;
         FillFactor = 1;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Flippable(0xC7F, 0xC81)]
@@ -487,9 +505,10 @@ public partial class EarOfCorn : Food
     [Constructible]
     public EarOfCorn(int amount = 1) : base(0xC81, amount)
     {
-        Weight = 1.0;
         FillFactor = 1;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -498,14 +517,19 @@ public partial class Turnip : Food
     [Constructible]
     public Turnip(int amount = 1) : base(0xD3A, amount)
     {
-        Weight = 1.0;
         FillFactor = 1;
     }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class SheafOfHay : Item
 {
     [Constructible]
-    public SheafOfHay() : base(0xF36) => Weight = 10.0;
+    public SheafOfHay() : base(0xF36)
+    {
+    }
+
+    public override double DefaultWeight => 10.0;
 }

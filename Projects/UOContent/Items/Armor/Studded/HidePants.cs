@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class HidePants : BaseArmor
     {
         [Constructible]
-        public HidePants() : base(0x2B78) => Weight = 5.0;
+        public HidePants() : base(0x2B78)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

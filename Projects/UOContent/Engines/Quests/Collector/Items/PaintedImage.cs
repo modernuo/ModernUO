@@ -14,11 +14,11 @@ public partial class PaintedImage : Item
     [Constructible]
     public PaintedImage(ImageType image) : base(0xFF3)
     {
-        Weight = 1.0;
         Hue = 0x8FD;
-
         _image = image;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override void AddNameProperty(IPropertyList list)
     {

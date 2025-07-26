@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class LeatherMempo : BaseArmor
     {
         [Constructible]
-        public LeatherMempo() : base(0x277A) => Weight = 2.0;
+        public LeatherMempo() : base(0x277A)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

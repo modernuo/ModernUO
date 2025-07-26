@@ -13,7 +13,11 @@ public interface IScissorable
 public partial class Scissors : Item
 {
     [Constructible]
-    public Scissors() : base(0xF9F) => Weight = 1.0;
+    public Scissors() : base(0xF9F)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override void OnDoubleClick(Mobile from)
     {

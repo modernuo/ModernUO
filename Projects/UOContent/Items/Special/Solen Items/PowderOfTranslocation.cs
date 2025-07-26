@@ -19,9 +19,10 @@ public partial class PowderOfTranslocation : Item
     public PowderOfTranslocation(int amount = 1) : base(0x26B8)
     {
         Stackable = true;
-        Weight = 0.1;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 0.1;
 
     public override void OnDoubleClick(Mobile from)
     {

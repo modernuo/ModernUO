@@ -15,7 +15,11 @@ namespace Server.Items
     public partial class BodySash : BaseMiddleTorso
     {
         [Constructible]
-        public BodySash(int hue = 0) : base(0x1541, hue) => Weight = 1.0;
+        public BodySash(int hue = 0) : base(0x1541, hue)
+        {
+        }
+
+        public override double DefaultWeight => 1.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -23,7 +27,11 @@ namespace Server.Items
     public partial class FullApron : BaseMiddleTorso
     {
         [Constructible]
-        public FullApron(int hue = 0) : base(0x153d, hue) => Weight = 4.0;
+        public FullApron(int hue = 0) : base(0x153d, hue)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -31,7 +39,11 @@ namespace Server.Items
     public partial class Doublet : BaseMiddleTorso
     {
         [Constructible]
-        public Doublet(int hue = 0) : base(0x1F7B, hue) => Weight = 2.0;
+        public Doublet(int hue = 0) : base(0x1F7B, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -39,7 +51,11 @@ namespace Server.Items
     public partial class Surcoat : BaseMiddleTorso
     {
         [Constructible]
-        public Surcoat(int hue = 0) : base(0x1FFD, hue) => Weight = 6.0;
+        public Surcoat(int hue = 0) : base(0x1FFD, hue)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -47,7 +63,11 @@ namespace Server.Items
     public partial class Tunic : BaseMiddleTorso
     {
         [Constructible]
-        public Tunic(int hue = 0) : base(0x1FA1, hue) => Weight = 5.0;
+        public Tunic(int hue = 0) : base(0x1FA1, hue)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -55,7 +75,11 @@ namespace Server.Items
     public partial class FormalShirt : BaseMiddleTorso
     {
         [Constructible]
-        public FormalShirt(int hue = 0) : base(0x2310, hue) => Weight = 1.0;
+        public FormalShirt(int hue = 0) : base(0x2310, hue)
+        {
+        }
+
+        public override double DefaultWeight => 1.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -63,7 +87,11 @@ namespace Server.Items
     public partial class JesterSuit : BaseMiddleTorso
     {
         [Constructible]
-        public JesterSuit(int hue = 0) : base(0x1F9F, hue) => Weight = 4.0;
+        public JesterSuit(int hue = 0) : base(0x1F9F, hue)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -71,6 +99,10 @@ namespace Server.Items
     public partial class JinBaori : BaseMiddleTorso
     {
         [Constructible]
-        public JinBaori(int hue = 0) : base(0x27A1, hue) => Weight = 3.0;
+        public JinBaori(int hue = 0) : base(0x27A1, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 }

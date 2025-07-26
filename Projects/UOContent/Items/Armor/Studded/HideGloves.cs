@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class HideGloves : BaseArmor
     {
         [Constructible]
-        public HideGloves() : base(0x2B75) => Weight = 2.0;
+        public HideGloves() : base(0x2B75)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

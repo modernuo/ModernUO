@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class LeafGorget : BaseArmor
     {
         [Constructible]
-        public LeafGorget() : base(0x2FC7) => Weight = 2.0;
+        public LeafGorget() : base(0x2FC7)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
         public override int BasePhysicalResistance => 2;

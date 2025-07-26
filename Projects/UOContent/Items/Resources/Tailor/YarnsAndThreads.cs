@@ -9,9 +9,10 @@ public abstract partial class BaseClothMaterial : Item, IDyable
     public BaseClothMaterial(int itemID, int amount = 1) : base(itemID)
     {
         Stackable = true;
-        Weight = 1.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {

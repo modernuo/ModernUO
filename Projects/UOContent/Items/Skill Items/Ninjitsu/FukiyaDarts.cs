@@ -23,15 +23,9 @@ public partial class FukiyaDarts : Item, ICraftable, INinjaAmmo
     private int _poisonCharges;
 
     [Constructible]
-    public FukiyaDarts(int amount = 1) : base(0x2806)
-    {
-        Weight = 1.0;
-        _usesRemaining = amount;
-    }
+    public FukiyaDarts(int amount = 1) : base(0x2806) => _usesRemaining = amount;
 
-    public FukiyaDarts(Serial serial) : base(serial)
-    {
-    }
+    public override double DefaultWeight => 1.0;
 
     public int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,

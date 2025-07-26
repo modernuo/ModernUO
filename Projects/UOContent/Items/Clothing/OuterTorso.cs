@@ -18,7 +18,11 @@ namespace Server.Items
     public partial class GildedDress : BaseOuterTorso
     {
         [Constructible]
-        public GildedDress(int hue = 0) : base(0x230E, hue) => Weight = 3.0;
+        public GildedDress(int hue = 0) : base(0x230E, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -26,7 +30,11 @@ namespace Server.Items
     public partial class FancyDress : BaseOuterTorso
     {
         [Constructible]
-        public FancyDress(int hue = 0) : base(0x1F00, hue) => Weight = 3.0;
+        public FancyDress(int hue = 0) : base(0x1F00, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 
     [SerializationGenerator(3, false)]
@@ -157,11 +165,11 @@ namespace Server.Items
         [Constructible]
         public RewardRobe(int hue = 0, int labelNumber = 0) : base(0x1F03, hue)
         {
-            Weight = 3.0;
             LootType = LootType.Blessed;
-
             _number = labelNumber;
         }
+
+        public override double DefaultWeight => 3.0;
 
         public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
 
@@ -239,11 +247,11 @@ namespace Server.Items
         [Constructible]
         public RewardDress(int hue = 0, int labelNumber = 0) : base(0x1F01, hue)
         {
-            Weight = 2.0;
             LootType = LootType.Blessed;
-
             _number = labelNumber;
         }
+
+        public override double DefaultWeight => 2.0;
 
         public override int LabelNumber => _number > 0 ? _number : base.LabelNumber;
 
@@ -310,7 +318,11 @@ namespace Server.Items
     public partial class Robe : BaseOuterTorso, IArcaneEquip
     {
         [Constructible]
-        public Robe(int hue = 0) : base(0x1F03, hue) => Weight = 3.0;
+        public Robe(int hue = 0) : base(0x1F03, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
 
         [EncodedInt]
         [SerializableProperty(0)]
@@ -406,11 +418,9 @@ namespace Server.Items
     public partial class MonkRobe : BaseOuterTorso
     {
         [Constructible]
-        public MonkRobe(int hue = 0x21E) : base(0x2687, hue)
-        {
-            Weight = 1.0;
-            StrRequirement = 0;
-        }
+        public MonkRobe(int hue = 0x21E) : base(0x2687, hue) => StrRequirement = 0;
+
+        public override double DefaultWeight => 1.0;
 
         public override int LabelNumber => 1076584; // A monk's robe
         public override bool CanBeBlessed => false;
@@ -427,7 +437,11 @@ namespace Server.Items
     public partial class PlainDress : BaseOuterTorso
     {
         [Constructible]
-        public PlainDress(int hue = 0) : base(0x1F01, hue) => Weight = 2.0;
+        public PlainDress(int hue = 0) : base(0x1F01, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [Flippable(0x2799, 0x27E4)]
@@ -435,7 +449,11 @@ namespace Server.Items
     public partial class Kamishimo : BaseOuterTorso
     {
         [Constructible]
-        public Kamishimo(int hue = 0) : base(0x2799, hue) => Weight = 3.0;
+        public Kamishimo(int hue = 0) : base(0x2799, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 
     [Flippable(0x279C, 0x27E7)]
@@ -443,7 +461,11 @@ namespace Server.Items
     public partial class HakamaShita : BaseOuterTorso
     {
         [Constructible]
-        public HakamaShita(int hue = 0) : base(0x279C, hue) => Weight = 3.0;
+        public HakamaShita(int hue = 0) : base(0x279C, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 
     [Flippable(0x2782, 0x27CD)]
@@ -451,7 +473,11 @@ namespace Server.Items
     public partial class MaleKimono : BaseOuterTorso
     {
         [Constructible]
-        public MaleKimono(int hue = 0) : base(0x2782, hue) => Weight = 3.0;
+        public MaleKimono(int hue = 0) : base(0x2782, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 
     [Flippable(0x2783, 0x27CE)]
@@ -459,7 +485,11 @@ namespace Server.Items
     public partial class FemaleKimono : BaseOuterTorso
     {
         [Constructible]
-        public FemaleKimono(int hue = 0) : base(0x2783, hue) => Weight = 3.0;
+        public FemaleKimono(int hue = 0) : base(0x2783, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 
     [Flippable(0x2FB9, 0x3173)]
@@ -467,7 +497,11 @@ namespace Server.Items
     public partial class MaleElvenRobe : BaseOuterTorso
     {
         [Constructible]
-        public MaleElvenRobe(int hue = 0) : base(0x2FB9, hue) => Weight = 2.0;
+        public MaleElvenRobe(int hue = 0) : base(0x2FB9, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [Flippable(0x2FBA, 0x3174)]
@@ -475,7 +509,11 @@ namespace Server.Items
     public partial class FemaleElvenRobe : BaseOuterTorso
     {
         [Constructible]
-        public FemaleElvenRobe(int hue = 0) : base(0x2FBA, hue) => Weight = 2.0;
+        public FemaleElvenRobe(int hue = 0) : base(0x2FBA, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

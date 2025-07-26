@@ -12,11 +12,9 @@ public partial class KronusScroll : QuestItem
     private static readonly Map m_WellOfTearsMap = Map.Malas;
 
     [Constructible]
-    public KronusScroll() : base(0x227A)
-    {
-        Weight = 1.0;
-        Hue = 0x44E;
-    }
+    public KronusScroll() : base(0x227A) => Hue = 0x44E;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1060149; // Calling of Kronus
 

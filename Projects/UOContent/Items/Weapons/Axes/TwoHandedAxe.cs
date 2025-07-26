@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class TwoHandedAxe : BaseAxe
     {
         [Constructible]
-        public TwoHandedAxe() : base(0x1443) => Weight = 8.0;
+        public TwoHandedAxe() : base(0x1443)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;

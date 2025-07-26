@@ -58,9 +58,10 @@ public partial class ClothingBlessDeed : Item // Create the item class which is 
     [Constructible]
     public ClothingBlessDeed() : base(0x14F0)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override string DefaultName => "a clothing bless deed";
 

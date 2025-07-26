@@ -10,7 +10,11 @@ namespace Server.Items;
 public partial class TallCabinet : BaseContainer
 {
     [Constructible]
-    public TallCabinet() : base(0x2815) => Weight = 1.0;
+    public TallCabinet() : base(0x2815)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -19,7 +23,11 @@ public partial class TallCabinet : BaseContainer
 public partial class ShortCabinet : BaseContainer
 {
     [Constructible]
-    public ShortCabinet() : base(0x2817) => Weight = 1.0;
+    public ShortCabinet() : base(0x2817)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -28,7 +36,11 @@ public partial class ShortCabinet : BaseContainer
 public partial class RedArmoire : BaseContainer
 {
     [Constructible]
-    public RedArmoire() : base(0x2857) => Weight = 1.0;
+    public RedArmoire() : base(0x2857)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -37,7 +49,11 @@ public partial class RedArmoire : BaseContainer
 public partial class CherryArmoire : BaseContainer
 {
     [Constructible]
-    public CherryArmoire() : base(0x285D) => Weight = 1.0;
+    public CherryArmoire() : base(0x285D)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -46,7 +62,11 @@ public partial class CherryArmoire : BaseContainer
 public partial class MapleArmoire : BaseContainer
 {
     [Constructible]
-    public MapleArmoire() : base(0x285B) => Weight = 1.0;
+    public MapleArmoire() : base(0x285B)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -55,7 +75,11 @@ public partial class MapleArmoire : BaseContainer
 public partial class ElegantArmoire : BaseContainer
 {
     [Constructible]
-    public ElegantArmoire() : base(0x2859) => Weight = 1.0;
+    public ElegantArmoire() : base(0x2859)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -64,7 +88,11 @@ public partial class ElegantArmoire : BaseContainer
 public partial class FancyElvenArmoire : BaseContainer
 {
     [Constructible]
-    public FancyElvenArmoire() : base(0x2D07) => Weight = 1.0;
+    public FancyElvenArmoire() : base(0x2D07)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
     public override int DefaultGumpID => 0x4E;
     public override int DefaultDropSound => 0x42;
 }
@@ -75,7 +103,11 @@ public partial class FancyElvenArmoire : BaseContainer
 public partial class SimpleElvenArmoire : BaseContainer
 {
     [Constructible]
-    public SimpleElvenArmoire() : base(0x2D05) => Weight = 1.0;
+    public SimpleElvenArmoire() : base(0x2D05)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
     public override int DefaultGumpID => 0x4F;
     public override int DefaultDropSound => 0x42;
 }
@@ -86,7 +118,11 @@ public partial class SimpleElvenArmoire : BaseContainer
 public partial class FullBookcase : BaseContainer
 {
     [Constructible]
-    public FullBookcase() : base(0xA97) => Weight = 1.0;
+    public FullBookcase() : base(0xA97)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -106,7 +142,11 @@ public partial class EmptyBookcase : BaseContainer
 public partial class Drawer : BaseContainer
 {
     [Constructible]
-    public Drawer() : base(0xA2C) => Weight = 1.0;
+    public Drawer() : base(0xA2C)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -115,7 +155,11 @@ public partial class Drawer : BaseContainer
 public partial class FancyDrawer : BaseContainer
 {
     [Constructible]
-    public FancyDrawer() : base(0xA30) => Weight = 1.0;
+    public FancyDrawer() : base(0xA30)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -124,7 +168,11 @@ public partial class FancyDrawer : BaseContainer
 public partial class Armoire : BaseContainer
 {
     [Constructible]
-    public Armoire() : base(0xA4F) => Weight = 1.0;
+    public Armoire() : base(0xA4F)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override void DisplayTo(Mobile m)
     {
@@ -147,7 +195,11 @@ public partial class Armoire : BaseContainer
 public partial class FancyArmoire : BaseContainer
 {
     [Constructible]
-    public FancyArmoire() : base(0xA4D) => Weight = 1.0;
+    public FancyArmoire() : base(0xA4D)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override void DisplayTo(Mobile m)
     {

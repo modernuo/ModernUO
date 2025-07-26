@@ -9,11 +9,9 @@ namespace Server.Items;
 public partial class FishingPole : Item
 {
     [Constructible]
-    public FishingPole() : base(0x0DC0)
-    {
-        Layer = Layer.TwoHanded;
-        Weight = 8.0;
-    }
+    public FishingPole() : base(0x0DC0) => Layer = Layer.TwoHanded;
+
+    public override double DefaultWeight => 8.0;
 
     public override void OnDoubleClick(Mobile from)
     {

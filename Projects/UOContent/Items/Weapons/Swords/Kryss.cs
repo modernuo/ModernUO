@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Kryss : BaseSword
     {
         [Constructible]
-        public Kryss() : base(0x1401) => Weight = 2.0;
+        public Kryss() : base(0x1401)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.InfectiousStrike;

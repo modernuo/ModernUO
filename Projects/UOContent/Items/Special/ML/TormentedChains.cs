@@ -6,5 +6,9 @@ namespace Server.Items;
 public partial class TormentedChains : Item
 {
     [Constructible]
-    public TormentedChains() : base(Utility.Random(6663, 2)) => Weight = 1.0;
+    public TormentedChains() : base(Utility.Random(6663, 2))
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }

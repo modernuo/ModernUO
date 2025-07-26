@@ -7,7 +7,11 @@ namespace Server.Engines.Quests.Ninja;
 public partial class EminosKatana : QuestItem
 {
     [Constructible]
-    public EminosKatana() : base(0x13FF) => Weight = 1.0;
+    public EminosKatana() : base(0x13FF)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1063214; // Daimyo Emino's Katana
 

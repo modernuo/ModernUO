@@ -16,11 +16,12 @@ public partial class SpellScroll : Item, ICommodity
     public SpellScroll(int spellID, int itemID, int amount = 1) : base(itemID)
     {
         Stackable = true;
-        Weight = 1.0;
         Amount = amount;
 
         _spellID = spellID;
     }
+
+    public override double DefaultWeight => 1.0;
 
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class HideFemaleChest : BaseArmor
     {
         [Constructible]
-        public HideFemaleChest() : base(0x2B79) => Weight = 6.0;
+        public HideFemaleChest() : base(0x2B79)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

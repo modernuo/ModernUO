@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class StuddedSuneate : BaseArmor
     {
         [Constructible]
-        public StuddedSuneate() : base(0x27D2) => Weight = 5.0;
+        public StuddedSuneate() : base(0x27D2)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

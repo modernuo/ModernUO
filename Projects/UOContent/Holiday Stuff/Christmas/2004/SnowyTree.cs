@@ -6,11 +6,9 @@ namespace Server.Items;
 public partial class SnowyTree : Item
 {
     [Constructible]
-    public SnowyTree() : base(0x2377)
-    {
-        Weight = 1.0;
-        LootType = LootType.Blessed;
-    }
+    public SnowyTree() : base(0x2377) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 1.0;
 
     public override void OnSingleClick(Mobile from)
     {

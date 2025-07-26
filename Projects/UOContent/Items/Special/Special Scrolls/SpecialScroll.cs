@@ -20,11 +20,12 @@ public abstract partial class SpecialScroll : Item
     public SpecialScroll(SkillName skill, double value) : base(0x14F0)
     {
         LootType = LootType.Cursed;
-        Weight = 1.0;
 
         _skill = skill;
         _value = value;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public abstract int Message { get; }
     public virtual int Title => 0;

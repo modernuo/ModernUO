@@ -165,10 +165,11 @@ public partial class WreathDeed : Item
     [Constructible]
     public WreathDeed(int hue) : base(0x14F0)
     {
-        Weight = 1.0;
         Hue = hue;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1062837; // holiday wreath deed
 

@@ -13,8 +13,9 @@ public partial class BrazierTall : BaseLight
         Duration = TimeSpan.Zero; // Never burnt out
         Burning = true;
         Light = LightType.Circle300;
-        Weight = 25.0;
     }
+
+    public override double DefaultWeight => 25.0;
 
     public override int LitItemID => 0x19AA;
 }

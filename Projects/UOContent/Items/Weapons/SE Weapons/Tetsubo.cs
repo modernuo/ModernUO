@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class Tetsubo : BaseBashing
     {
         [Constructible]
-        public Tetsubo() : base(0x27A6)
-        {
-            Weight = 8.0;
-            Layer = Layer.TwoHanded;
-        }
+        public Tetsubo() : base(0x27A6) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 8.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.FrenziedWhirlwind;
         public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
 

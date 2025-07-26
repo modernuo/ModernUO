@@ -14,11 +14,9 @@ namespace Server.Engines.BulkOrders
             _material = material;
         }
 
-        public BaseBOD() : base(Core.AOS ? 0x2258 : 0x14EF)
-        {
-            Weight = 1.0;
-            LootType = LootType.Blessed;
-        }
+        public BaseBOD() : base(Core.AOS ? 0x2258 : 0x14EF) => LootType = LootType.Blessed;
+
+        public override double DefaultWeight => 1.0;
 
         public abstract bool Complete { get; }
 
