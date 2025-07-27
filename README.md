@@ -9,22 +9,22 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github&style=flat)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
-<br />
+<br/>
 [![GitHub build](https://img.shields.io/github/actions/workflow/status/modernuo/ModernUO/build-test.yml?branch=main&logo=github)](https://github.com/modernuo/ModernUO/actions)
 [![Azure Pipelines build](https://dev.azure.com/modernuo/modernuo/_apis/build/status/Build?branchName=main)](https://dev.azure.com/modernuo/modernuo/_build/latest?definitionId=1&branchName=main)
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 10/11/2019/2022](https://img.shields.io/badge/-server%202022-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
-![MacOS 13+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
-[![Debian 11+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
-[![Ubuntu 20+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
-<br />
-[![Alpine 3.18+](https://img.shields.io/badge/-3.18-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
+[![Windows 11/2019/2022/2025](https://img.shields.io/badge/-server%202025-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+![MacOS 13+](https://img.shields.io/badge/-sequoia-222222?logo=apple&logoColor=white&labelColor=222222)
+[![Debian 12+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
+[![Ubuntu 22+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
+<br/>
+[![Alpine 3.19+](https://img.shields.io/badge/-3.21-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
 [![Fedora 40+](https://img.shields.io/badge/-40-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
 [![RedHat 8+](https://img.shields.io/badge/-8-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
-[![CentOS 9](https://img.shields.io/badge/-9-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
-[![openSUSE 15+](https://img.shields.io/badge/-15-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
+[![CentOS Stream 8+](https://img.shields.io/badge/-stream_8-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
+[![openSUSE 15.5+](https://img.shields.io/badge/-15.5-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
 [![SUSE Enterprise 12 SP2+](https://img.shields.io/badge/-12%20SP2-0C322C?logo=suse&logoColor=30BA78&labelColor=222222)](https://www.suse.com/download/sles/)
 [![Linux Mint 17+](https://img.shields.io/badge/-20-87CF3E?logo=linux%20mint&logoColor=87CF3E&labelColor=222222)](https://linuxmint.com/download.php)
 [![Arch](https://img.shields.io/badge/-Arch-1793D1?logo=archlinux&logoColor=1793D1&labelColor=222222)](https://archlinux.org/download/)
@@ -38,19 +38,16 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%209.0.101%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/9.0)
+[![.NET](https://img.shields.io/badge/-%209.0.303%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 #### Supported IDEs
-
-<p align="left"><a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2024.3+"
-      alt="Jetbrains Rider 2024.3+"
-      src="https://user-images.githubusercontent.com/3953314/133473479-734e425c-fbb6-433a-af2d-2cc8444398e8.png"></a><img
-      alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://code.visualstudio.com/download"><img height="64" title="VSCode"
-      alt="VSCode"
-      src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a><img alt="space" width="32"
-      src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png"><a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.12+"
-      alt="Visual Studio 2022 v17.12+"
-      src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png"></a></p>
+<p align="left">
+  <a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2025+" alt="Jetbrains Rider 2025+" src="https://github.com/user-attachments/assets/456dc87e-a7e7-467b-81b6-ba9c8e227f86"></a>
+  <img alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png">
+  <a href="https://code.visualstudio.com/download"><img height="64" title="VSCode" alt="VSCode" src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a>
+  <img alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png">
+  <a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2022 v17.12+" alt="Visual Studio 2022 v17.12+" src="https://user-images.githubusercontent.com/3953314/133473556-35fd48b4-6460-49b1-b7c5-b4a8c529cc04.png"></a>
+</p>
 
 ## Getting Started
 - Install prerequisite [requirements](https://github.com/modernuo/ModernUO#requirements)
@@ -60,9 +57,9 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Building/Publishing
 - Run `./publish.cmd [release|debug (default: release)] [os] [arch (default: x64)]`
-  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md)
-    - `win` - Windows 10/11/2019/2022
-    - `osx` - MacOS 12/13/14 (Sonoma, Big Sur, Monterey)
+  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/9.0/supported-os.md)
+    - `win` - Windows 10/11/2019/2022/2025
+    - `osx` - MacOS 13/14/15 (Sequoia, Sonoma, Big Sur)
     - `linux` - Linux
   - `arch`
     - `x64` - Intel 64-bit
@@ -107,7 +104,7 @@ Thank you for supporting us! You can find out how by visiting the [sponsors](./S
 - [Voxpire](https://github.com/Voxpire), the ServUO Team & Community
 - [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
-</br></br>
-<p align=center>Development Tools & Plugins provided with &hearts; by <br /><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://github.com/user-attachments/assets/07b12bd0-ca00-472f-8a47-ab48461f3f1d" height="64px" alt="JetBrains" title="JetBrains" /></a><br />
+<br/><br/>
+<p align=center>Development Tools & Plugins provided with &hearts; by<br/><br/><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://github.com/user-attachments/assets/13752e36-87a4-4faf-8359-122c5f39d6e7" height="64px" alt="JetBrains" title="JetBrains" /></a><br/>
 <a href="https://material-theme.com/"><img align=center src="https://material-theme.com/img/logo/material-oceanic.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
 </p>
