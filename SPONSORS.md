@@ -5,6 +5,7 @@ Thank you to all of our generous sponsors that make ModernUO possible.
 **A special thank you to the following sponsors for their considerable contributions:**
 * [Age of Shadows](https://ageofshadows.gg)
 * [UO Outlands](https://uooutlands.com)
+* [UO Sagas](https://uosagas.com)
 * Prayer ([MagnUm-Opus](https://discord.gg/CzDEq3vv2N))
 
 ### Looking to sponsor ModernUO?
@@ -30,7 +31,6 @@ xch1vzk93t538m4xukg955v3ltjtgz6rapev3evnmnxdzf4hjj5y7cuq7tkf6z
 
 #### Bitcoin
 37QmRWTCjVoNWycMpo1t5JnYVDmJTGSJ9W
-
 
 #### Ethereum
 0x7A9D76F497d4Ee150Ada0ea0455fF3f6e8F3b6b8
