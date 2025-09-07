@@ -619,8 +619,7 @@ public class BOBGump : DynamicGump
                                 // The bulk order deed has been placed in your backpack.
                                 _from.SendLocalizedMessage(1045152);
 
-                                Book.Entries.Remove(bobEntry);
-                                Book.InvalidateProperties();
+                                Book.RemoveEntry(bobEntry);
 
                                 if (Book.Entries.Count / 5 < Book.ItemCount)
                                 {
@@ -702,8 +701,10 @@ public class BOBGump : DynamicGump
             if (price is < 0 or > 250000000)
             {
                 from.SendLocalizedMessage(1062390); // The price you requested is outrageous!
+                return;
             }
-            else if (_entry == null)
+
+            if (_entry == null)
             {
                 for (var i = 0; i < _gump.List.Count; ++i)
                 {
@@ -716,24 +717,14 @@ public class BOBGump : DynamicGump
 
                     entry.Price = price;
                 }
-
-                // Deed price set.
-                from.SendLocalizedMessage(1062384);
-
-                if (from is PlayerMobile mobile)
-                {
-                    mobile.SendGump(_gump);
-                }
             }
             else
             {
                 _entry.Price = price;
-                from.SendLocalizedMessage(1062384); // Deed price set.
-                if (from is PlayerMobile mobile)
-                {
-                    mobile.SendGump(_gump);
-                }
             }
+
+            from.SendLocalizedMessage(1062384); // Deed price set.
+            from.SendGump(_gump);
         }
     }
 }

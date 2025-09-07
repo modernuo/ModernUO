@@ -113,7 +113,6 @@ public class BODBuyGump : StaticGump<BODBuyGump>
         else if (pack.ConsumeTotal(typeof(Gold), price) || Banker.Withdraw(pm, price))
         {
             book.RemoveEntry(_entry);
-            book.InvalidateProperties();
             pv.HoldGold += price;
             pm.AddToBackpack(item);
 
