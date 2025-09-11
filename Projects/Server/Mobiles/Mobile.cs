@@ -6964,12 +6964,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 flags |= 0x04;
             }
         }
-        else
+        else if (m_Poison != null)
         {
-            if (m_Poison != null)
-            {
-                flags |= 0x04;
-            }
+            flags |= 0x04;
         }
 
         if (m_Blessed || m_YellowHealthbar)
