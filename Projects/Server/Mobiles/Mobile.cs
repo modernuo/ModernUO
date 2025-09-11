@@ -2737,8 +2737,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
 
-        Span<byte> mobileMovingCache = stackalloc byte[cacheLength];
-        mobileMovingCache.Clear();
+        Span<byte> mobileMovingCache = stackalloc byte[cacheLength].InitializePacket();
 
         var ourState = m_NetState;
 
@@ -2887,6 +2886,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
         Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
         Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
+        mobileMovingCache.InitializePacket();
 
         foreach (var state in Map.GetClientsInRange(m_Location))
         {
@@ -4328,7 +4328,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
 
                 Span<byte> mobileMovingCache = stackalloc byte[cacheLength];
-                mobileMovingCache.Clear();
+                mobileMovingCache.InitializePacket();
 
                 while (moveClientQueue.Count > 0)
                 {
@@ -6963,12 +6963,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 flags |= 0x04;
             }
         }
-        else
+        else if (m_Poison != null)
         {
-            if (m_Poison != null)
-            {
-                flags |= 0x04;
-            }
+            flags |= 0x04;
         }
 
         if (m_Blessed || m_YellowHealthbar)
