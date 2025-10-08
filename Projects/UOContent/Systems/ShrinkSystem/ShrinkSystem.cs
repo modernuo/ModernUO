@@ -95,7 +95,7 @@ namespace Server.ShrinkSystem
           private string _PetName;
           private int _PetHue;
 
-          public ShrinkBox(BaseCreature pet) : base(0x09A8)
+          public ShrinkBox(BaseCreature pet) : base(ShrinkTable.Lookup(pet))
           {
                Name = $"a shrunken {pet.Name}";
                _PetType = pet.GetType().FullName;
