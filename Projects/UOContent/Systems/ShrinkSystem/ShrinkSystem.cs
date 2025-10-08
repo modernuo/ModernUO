@@ -25,7 +25,7 @@ namespace Server.ShrinkSystem
           public static void Initialize()
           {    // command = [shrink
                // change access level here (premium setup)
-               CommandSystem.Register("shrink", AccessLevel.Player, new CommandEventHandler(Shrink_OnCommand));
+               CommandSystem.Register("shrink", AccessLevel.Owner, new CommandEventHandler(Shrink_OnCommand));
           }
 
           [Usage("shrink")] // target again or double click to restore
