@@ -13,14 +13,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
 
-namespace Server.ShrinkSystem
+namespace Server.Commands
 {
-     public class ShrinkSystem
+     public class PetShrink
      {
           public static void Initialize()
           {    // command = [shrink
@@ -29,127 +28,43 @@ namespace Server.ShrinkSystem
           }
 
           [Usage("shrink")] // target again or double click to restore
-          [Description("Target your pet to shrink it.")]
-          private static void Shrink_OnCommand(CommandEventArgs e)
+          [Description("Shrinks a targeted pet into an item.")]
+          public static void Shrink_OnCommand(CommandEventArgs e)
           {
-               e.Mobile.SendMessage("Target your pet to shrink.");
-               e.Mobile.Target = new ShrinkToggleTarget();
+               e.Mobile.SendMessage("Target the pet you wish to shrink.");
+               e.Mobile.Target = new ShrinkTarget();
           }
 
-          private class ShrinkToggleTarget : Target
+          private class ShrinkTarget : Target
           {
-               public ShrinkToggleTarget() : base(5, false, TargetFlags.None)
-               { 
+               public ShrinkTarget() : base(3, false, TargetFlags.None)
+               {
                }
 
                protected override void OnTarget(Mobile from, object targeted)
                {
-                    if (targeted is BaseCreature pet)
+                    if (targeted is BaseCreature pet && pet.Controlled && pet.ControlMaster == from)
                     {
-                         if (!pet.Controlled || pet.ControlMaster != from)
+                         if (from is PlayerMobile)
                          {
-                              from.SendMessage("That is not your pet.");
-                              return;
+                              pet.Controlled = false;
+                              pet.ControlMaster = null;
+                              pet.Internalize();
                          }
 
-                         if (pet.IsDeadPet)
+                         var shrinkItem = new ShrinkItem(pet.Serial)
                          {
-                              from.SendMessage("You cannot shrink a dead pet.");
-                              return;
-                         }
+                              Name = pet.Name,
+                              Hue = pet.Hue
+                         };
 
-                         if (pet.Combatant != null)
-                         {
-                              from.SendMessage("You cannot shrink a pet while it is in combat.");
-                              return;
-                         }
-
-                         var statuette = new ShrinkBox(pet);
-                         if (from.Backpack != null && from.Backpack.TryDropItem(from, statuette, false))
-                         {
-                              from.SendMessage("Your pet was shrunken to a box in your backpack.");
-                              pet.Delete();
-                         }
-                         else
-                         {
-                              statuette.Delete();
-                              from.SendMessage("You do not have enough space in your backpack.");
-                         }
-                    }
-                    else if (targeted is ShrinkBox statuette)
-                    {
-                         statuette.ReleasePet(from);
+                         from.AddToBackpack(shrinkItem);
+                         from.SendMessage("Your pet was shrunk to a statuette.");
                     }
                     else
                     {
-                         from.SendMessage("That is not a valid shruken pet box.");
+                         from.SendMessage("That is not your pet.");
                     }
-               }
-          }
-     }
-
-     [Flippable(0x09A8, 0x0E80)]
-     public class ShrinkBox : Item
-     {
-          private string _PetType;
-          private string _PetName;
-          private int _PetHue;
-
-          public ShrinkBox(BaseCreature pet) : base(ShrinkTable.Lookup(pet))
-          {
-               Name = $"a shrunken {pet.Name}";
-               _PetType = pet.GetType().FullName;
-               _PetName = pet.Name;
-               _PetHue = pet.Hue;
-               Weight = 1.0;
-               Hue = pet.Hue;
-          }
-
-          public ShrinkBox(Serial serial) : base(serial)
-          {
-          }
-
-          public void ReleasePet(Mobile from)
-          {
-               if (!IsChildOf(from.Backpack))
-               {
-                    from.SendMessage("That must be in your backpack to use.");
-                    return;
-               }
-
-               Type petType = Type.GetType(_PetType);
-               if (petType == null)
-               {
-                    from.SendMessage("This pet type cannot be restored.");
-                    return;
-               }
-
-               if (Activator.CreateInstance(petType) is BaseCreature pet)
-               {
-                    pet.Controlled = true;
-                    pet.ControlMaster = from;
-                    pet.Name = _PetName;
-                    pet.Hue = _PetHue;
-                    pet.MoveToWorld(from.Location, from.Map);
-                    from.SendMessage("Your pet has been restored.");
-                    Delete();
-               }
-               else
-               {
-                    from.SendMessage("Failed to restore pet.");
-               }
-          }
-
-          public override void OnDoubleClick(Mobile from)
-          {
-               if (!IsChildOf(from.Backpack))
-               {
-                    from.SendMessage("That must be in your backpack to use.");
-                    return;
-               }
-               else
-               {
-                    ReleasePet(from);
                }
           }
      }
