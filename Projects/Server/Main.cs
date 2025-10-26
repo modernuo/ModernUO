@@ -68,7 +68,8 @@ public static class Core
     private static readonly SearchValues<string> XUnitAssemblyNames = 
         SearchValues.Create(["xunit.core", "xunit.runner", "xunit.extensibility", "xunit"], StringComparison.OrdinalIgnoreCase);
 
-    private static double[] _cyclesPerSecond = new double[128];
+    private static readonly double[] _cyclesPerSecond = new double[128];
+    private static double _cpsSum = 0.0;
 
     private const string AssembliesConfiguration = "Data/assemblies.json";
 
@@ -125,13 +126,7 @@ public static class Core
                 return 0.0;
             }
             
-            double sum = 0.0;
-            foreach (var sample in span)
-            {
-                sum += sample;
-            }
-                
-            return sum / span.Length;
+            return _cpsSum / span.Length;
         }
     }
 
@@ -141,34 +136,18 @@ public static class Core
         public readonly double AverageCPS;
         public readonly long Uptime;
         
-        public PerformanceMetrics(double currentCPS, ReadOnlySpan<double> samples, long uptime)
+        public PerformanceMetrics(double currentCPS, double averageCPS, long uptime)
         {
             CurrentCPS = currentCPS;
-            AverageCPS = CalculateAverage(samples);
+            AverageCPS = averageCPS;
             Uptime = uptime;
-        }
-        
-        private static double CalculateAverage(ReadOnlySpan<double> samples)
-        {
-            if (samples.IsEmpty)
-            {
-                return 0.0;
-            }
-            
-            double sum = 0.0;
-            foreach (var sample in samples)
-            {
-                sum += sample;
-            }
-                
-            return sum / samples.Length;
         }
     }
 
     public static PerformanceMetrics GetPerformanceMetrics()
     {
         var currentCPS = _cyclesPerSecond[_cycleIndex];
-        return new PerformanceMetrics(currentCPS, _cyclesPerSecond.AsSpan(), Uptime);
+        return new PerformanceMetrics(currentCPS, AverageCPS, Uptime);
     }
 
     public static string BaseDirectory
@@ -512,14 +491,14 @@ public static class Core
 #else
             var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
 #endif
-            
+
             const int cycleCount = 128;
             const int sampleInterval = 100;
             var frequencyMultiplier = Stopwatch.Frequency * sampleInterval;
-            
+
             var sampleCount = 0;
             var lastSampleTick = _tickCount;
-            
+
             const double idleThreshold = 125.0;
             var sleepDuration = TimeSpan.FromMilliseconds(2);
 
@@ -558,8 +537,13 @@ public static class Core
                     sampleCount = 0;
                     var currentTick = GetTimestamp();
                     var currentCPS = frequencyMultiplier / (currentTick - lastSampleTick);
-                    
+
+                    var oldValue = _cyclesPerSecond[_cycleIndex];
+                    _cpsSum -= oldValue;
+
                     _cyclesPerSecond[_cycleIndex] = currentCPS;
+                    _cpsSum += currentCPS;
+
                     _cycleIndex = (_cycleIndex + 1) % cycleCount;
                     lastSampleTick = currentTick;
 
