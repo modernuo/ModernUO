@@ -219,7 +219,7 @@ public static class Core
     public static string FindDataFile(string path, bool throwNotFound = true)
     {
         ReadOnlySpan<char> pathSpan = path.AsSpan();
-        
+
         foreach (var directory in ServerConfiguration.DataDirectories)
         {
             var fullPath = Path.Combine(directory, path);
@@ -251,7 +251,7 @@ public static class Core
         {
             throw new FileNotFoundException($"Data: {path} was not found");
         }
-            
+
         return null;
     }
 
