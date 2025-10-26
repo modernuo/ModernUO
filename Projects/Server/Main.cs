@@ -255,23 +255,23 @@ public static class Core
         return null;
     }
 
+    private static readonly EnumerationOptions DataFileEnumerationOptions = new()
+    {
+        MatchCasing = MatchCasing.CaseInsensitive,
+        RecurseSubdirectories = false,
+        ReturnSpecialDirectories = false
+    };
+    
     public static IEnumerable<string> FindDataFileByPattern(string pattern)
     {
-        var options = new EnumerationOptions 
-        { 
-            MatchCasing = MatchCasing.CaseInsensitive,
-            RecurseSubdirectories = false,
-            ReturnSpecialDirectories = false
-        };
-        
         foreach (var directory in ServerConfiguration.DataDirectories)
         {
             if (!Directory.Exists(directory))
             {
                 continue;
             }
-
-            foreach (var file in Directory.EnumerateFiles(directory, pattern, options))
+    
+            foreach (var file in Directory.EnumerateFiles(directory, pattern, DataFileEnumerationOptions))
             {
                 yield return file;
             }
