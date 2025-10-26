@@ -68,8 +68,7 @@ public static class Core
     private static readonly SearchValues<string> XUnitAssemblyNames = 
         SearchValues.Create(["xunit.core", "xunit.runner", "xunit.extensibility", "xunit"], StringComparison.OrdinalIgnoreCase);
 
-    private static readonly ArrayPool<double> CycleArrayPool = ArrayPool<double>.Create(128, 10);
-    private static double[] _cyclesPerSecond;
+    private static double[] _cyclesPerSecond = new double[128];
 
     private const string AssembliesConfiguration = "Data/assemblies.json";
 
@@ -396,12 +395,6 @@ public static class Core
         {
             EventSink.InvokeShutdown();
         }
-
-        if (_cyclesPerSecond != null)
-        {
-            CycleArrayPool.Return(_cyclesPerSecond);
-            _cyclesPerSecond = null;
-        }
     }
 
     private static readonly bool UseFastTimestampMath = Stopwatch.Frequency % 1000 == 0;
@@ -429,9 +422,6 @@ public static class Core
         Thread = Thread.CurrentThread;
         LoopContext = new EventLoopContext();
         SynchronizationContext.SetSynchronizationContext(LoopContext);
-
-        _cyclesPerSecond = CycleArrayPool.Rent(128);
-        Array.Clear(_cyclesPerSecond, 0, _cyclesPerSecond.Length);
 
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
