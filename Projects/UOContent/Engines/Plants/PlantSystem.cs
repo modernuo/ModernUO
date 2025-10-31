@@ -322,6 +322,9 @@ namespace Server.Engines.Plants
         [SerializableFieldSaveFlag(17)]
         private bool ShouldSerializeLeftSeeds() => _leftSeeds != 0;
 
+        [SerializableFieldDefault(17)]
+        private int LeftSeedsDefaultValue() => 8;
+
         [SerializableProperty(18)]
         public int AvailableResources
         {
@@ -341,6 +344,9 @@ namespace Server.Engines.Plants
 
         [SerializableFieldSaveFlag(19)]
         private bool ShouldSerializeLeftResources() => _leftResources != 0;
+
+        [SerializableFieldDefault(19)]
+        private int LeftResourcesDefaultValue() => 8;
 
         public void Reset(bool potions)
         {
