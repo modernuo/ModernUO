@@ -1237,7 +1237,7 @@ namespace Server.Gumps
                             break;
                         }
 
-                        AddHtml(10, 125, 400, 20, firewallEntry.ToString().Center(LabelColor32));
+                        AddHtml(10, 125, 400, 20, Html.Center($"{firewallEntry}", LabelColor32));
 
                         AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
 

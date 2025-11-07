@@ -5,6 +5,7 @@ using System.Text;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Engines.ConPVP
 {
@@ -51,7 +52,7 @@ namespace Server.Engines.ConPVP
                         AddPage(0);
                         AddBackground(0, 0, 300, 300, 9380);
 
-                        var sb = new StringBuilder();
+                        using var sb = ValueStringBuilder.Create(128);
 
                         if (tourney.TourneyType == TourneyType.FreeForAll)
                         {
@@ -86,12 +87,13 @@ namespace Server.Engines.ConPVP
 
                         if (tourney.EventController != null)
                         {
-                            sb.Append(' ').Append(tourney.EventController.Title);
+                            sb.Append(' ');
+                            sb.Append(tourney.EventController.Title);
                         }
 
                         sb.Append(" Tournament Bracket");
 
-                        AddHtml(25, 35, 250, 20, sb.ToString().Center());
+                        AddHtml(25, 35, 250, 20, sb.AsSpan().Center());
 
                         AddRightArrow(25, 53, ToButtonID(0, 4), "Rules");
                         AddRightArrow(25, 71, ToButtonID(0, 1), "Participants");
