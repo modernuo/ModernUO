@@ -86,6 +86,7 @@ public ref struct DynamicGumpBuilder
         {
             var sb = ValueStringBuilder.Create(128);
             Html.Build(ref sb, text, color, size, style, align);
+            sb.Dispose();
         }
         else
         {
