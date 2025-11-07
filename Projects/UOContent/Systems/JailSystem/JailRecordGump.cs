@@ -38,7 +38,7 @@ public class JailRecordGump : StaticGump<JailRecordGump>
         builder.AddBackground(0, 0, 330, 300, 9200);
         builder.AddAlphaRegion(10, 10, 310, 280);
 
-        builder.AddHtml(20, 20, 360, 30, "<size=6 color=#FF6600>JAIL RECORD</basefont>");
+        builder.AddHtml(20, 20, 360, 30, "<BASEFONT size=6 color=#FF6600>JAIL RECORD</BASEFONT>");
         builder.AddHtmlPlaceholder(20, 60, 360, 25, "playerName");
         builder.AddHtmlPlaceholder(20, 80, 360, 25, "jailCount");
         builder.AddHtmlPlaceholder(20, 100, 360, 25, "lastJailed");
@@ -47,10 +47,10 @@ public class JailRecordGump : StaticGump<JailRecordGump>
         builder.AddHtmlPlaceholder(20, 150, 360, 25, "jailStatus");
         builder.AddHtmlPlaceholder(20, 170, 360, 25, "jailTime");
 
-        builder.AddHtml(20, 200, 360, 25, "<size=4 color=#CCCCCC>If you believe you were jailed in error,</basefont>");
-        builder.AddHtml(20, 220, 360, 25, "<size=4 color=#CCCCCC>please contact staff through normal channels.</basefont>");
-        builder.AddHtml(20, 240, 360, 25, "<size=4 color=#CCCCCC>Each time you are jailed, the wait increases.</basefont>");
-        builder.AddHtml(20, 260, 360, 25, "<size=4 color=#CCCCCC>Follow all shard rules to avoid future jail time.</basefont>");
+        builder.AddHtml(20, 200, 360, 25, "<BASEFONT size=4 color=#CCCCCC>If you believe you were jailed in error,</BASEFONT>");
+        builder.AddHtml(20, 220, 360, 25, "<BASEFONT size=4 color=#CCCCCC>please contact staff through normal channels.</BASEFONT>");
+        builder.AddHtml(20, 240, 360, 25, "<BASEFONT size=4 color=#CCCCCC>Each time you are jailed, the wait increases.</BASEFONT>");
+        builder.AddHtml(20, 260, 360, 25, "<BASEFONT size=4 color=#CCCCCC>Follow all shard rules to avoid future jail time.</BASEFONT>");
     }
 
     protected override void BuildStrings(ref GumpStringsBuilder builder)

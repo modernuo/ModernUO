@@ -90,6 +90,9 @@ public ref struct StaticGumpBuilder
     public void AddGroup(int groupId) => _gumpBuilder.AddGroup(groupId);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public GumpHtmlBuilder HtmlBuilder() => new();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlPlaceholder(
         int x,
         int y,
