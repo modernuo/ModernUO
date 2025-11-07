@@ -125,7 +125,7 @@ namespace Server.Engines.ConPVP
                 height - 12 - 2 - 18,
                 400,
                 20,
-                $"Top {lc} of {m_List.Count:N0} duelists, page {page + 1} of {(lc + 14) / 15}".Color(0xFFC000)
+                Html.Color($"Top {lc} of {m_List.Count:N0} duelists, page {page + 1} of {(lc + 14) / 15}", 0xFFC000)
             );
 
             AddColumnHeader(75, "Rank");

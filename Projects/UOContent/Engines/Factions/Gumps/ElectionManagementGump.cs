@@ -106,7 +106,7 @@ public class ElectionManagementGump : Gump
                     }
                     else if (obj is int i1)
                     {
-                        AddHtml(x, 140 + idx * 20, 60, 20, $"{i1}%".Center(LabelColor));
+                        AddHtml(x, 140 + idx * 20, 60, 20, Html.Center($"{i1}%", LabelColor));
                         x += 60;
                     }
                 }
@@ -120,7 +120,7 @@ public class ElectionManagementGump : Gump
             AddHtml(10, 10, 268, 20, "Election Management".Center(LabelColor));
 
             AddHtml(45, 35, 100, 20, "Current State:".Color(LabelColor));
-            AddHtml(145, 35, 100, 20, election.State.ToString().Color(LabelColor));
+            AddHtml(145, 35, 100, 20, Html.Color($"{election.State}", LabelColor));
 
             AddButton(12, 53, 4005, 4007, 1);
             AddHtml(45, 55, 100, 20, "Transition Time:".Color(LabelColor));

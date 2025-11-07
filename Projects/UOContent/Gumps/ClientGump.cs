@@ -75,10 +75,10 @@ namespace Server.Gumps
             if (m != null)
             {
                 AddHtml(14, 36 + line * 20, 200, 20, "Mobile:".Color(LabelColor32));
-                AddHtml(72, 36 + line++ * 20, 200, 20, $"{m.Name} ({m.Serial})".Color(LabelColor32));
+                AddHtml(72, 36 + line++ * 20, 200, 20, Html.Color($"{m.Name} ({m.Serial})", LabelColor32));
 
                 AddHtml(14, 36 + line * 20, 200, 20, "Location:".Color(LabelColor32));
-                AddHtml(72, 36 + line++ * 20, 200, 20, $"{m.Location} [{m.Map}]".Color(LabelColor32));
+                AddHtml(72, 36 + line++ * 20, 200, 20, Html.Color($"{m.Location} [{m.Map}]", LabelColor32));
 
                 AddButton(13, 197, 0xFAB, 0xFAD, 1);
                 AddHtml(48, 198, 200, 20, "Send Message".Color(LabelColor32));

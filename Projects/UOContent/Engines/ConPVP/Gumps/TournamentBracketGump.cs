@@ -280,7 +280,7 @@ namespace Server.Engines.ConPVP
                                     ?? new List<TourneyParticipant>(tourney.Participants);
 
                         AddLeftArrow(25, 11, ToButtonID(0, 0));
-                        AddHtml(25, 35, 250, 20, $"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}".Center());
+                        AddHtml(25, 35, 250, 20, Html.Center($"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}"));
 
                         StartPage(out var index, out var count, out var y, 12);
 
