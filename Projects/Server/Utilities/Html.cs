@@ -21,6 +21,13 @@ using Server.Text;
 
 namespace Server;
 
+public enum TextAlignment : byte
+{
+    Left = 0,
+    Center = 1,
+    Right = 2
+}
+
 public static class Html
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -303,5 +310,60 @@ public static class Html
         var result = builder.ToString();
         builder.Dispose();
         return result;
+    }
+
+    public static void Build(
+        ref ValueStringBuilder builder, ReadOnlySpan<char> text, int color, int size, byte fontStyle,
+        TextAlignment align
+    )
+    {
+        if (align == TextAlignment.Right)
+        {
+            builder.Append("<RIGHT>");
+        }
+        else if (align == TextAlignment.Center)
+        {
+            builder.Append("<CENTER>");
+        }
+
+        if (color != 0 || size > -1 || fontStyle > 0)
+        {
+            builder.Append("<BASEFONT");
+
+            if (color != 0)
+            {
+                builder.Append(" COLOR=");
+                builder.Append($"#{color:X6}");
+            }
+
+            if (size > -1)
+            {
+                builder.Append(" SIZE=");
+                builder.Append(size);
+            }
+
+            if (fontStyle > 0)
+            {
+                builder.Append(" STYLE=");
+                builder.Append(fontStyle);
+            }
+
+            builder.Append('>');
+            builder.Append(text);
+            builder.Append("</BASEFONT>");
+        }
+        else
+        {
+            builder.Append(text);
+        }
+
+        if (align == TextAlignment.Right)
+        {
+            builder.Append("</RIGHT>");
+        }
+        else if (align == TextAlignment.Center)
+        {
+            builder.Append("</CENTER>");
+        }
     }
 }

@@ -984,9 +984,9 @@ namespace Server.Mobiles
                 var rumor = rumors[i];
 
                 builder.AddHtml(100, 70 + i * 120, 50, 20, "Message");
-                builder.AddHtml(100, 90 + i * 120, 450, 40, rumor == null ? "No current message" : rumor.Message, true);
+                builder.AddHtml(100, 90 + i * 120, 450, 40, rumor?.Message ?? "No current message", background: true);
                 builder.AddHtmlLocalized(100, 130 + i * 120, 50, 20, 1078361); // Keyword
-                builder.AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true);
+                builder.AddHtml(100, 150 + i * 120, 450, 40, rumor?.Keyword ?? "None", background: true);
 
                 builder.AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(1, i));
             }
@@ -1010,9 +1010,9 @@ namespace Server.Mobiles
                 var rumor = rumors[i];
 
                 builder.AddHtml(100, 70 + i * 120, 50, 20, "Message");
-                builder.AddHtml(100, 90 + i * 120, 450, 40, rumor == null ? "No current message" : rumor.Message, true);
+                builder.AddHtml(100, 90 + i * 120, 450, 40, rumor?.Message ?? "No current message", background: true);
                 builder.AddHtmlLocalized(100, 130 + i * 120, 50, 20, 1078361); // Keyword
-                builder.AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true);
+                builder.AddHtml(100, 150 + i * 120, 450, 40, rumor?.Keyword ?? "None", background: true);
 
                 builder.AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(2, i));
             }
@@ -1031,7 +1031,7 @@ namespace Server.Mobiles
 
             builder.AddHtmlLocalized(250, 95, 500, 20, 1078363); // Change this tip message
             builder.AddHtml(100, 190, 50, 20, "Message");
-            builder.AddHtml(100, 210, 450, 40, _barkeeper.TipMessage ?? "No current message", true);
+            builder.AddHtml(100, 210, 450, 40, _barkeeper.TipMessage ?? "No current message", background: true);
 
             builder.AddButton(60, 210, 4005, 4007, GetButtonID(3, 0));
 
@@ -1047,7 +1047,7 @@ namespace Server.Mobiles
 
             builder.AddHtmlLocalized(250, 95, 500, 20, 1078364); // Remove this tip message
             builder.AddHtml(100, 190, 50, 20, "Message");
-            builder.AddHtml(100, 210, 450, 40, _barkeeper.TipMessage ?? "No current message", true);
+            builder.AddHtml(100, 210, 450, 40, _barkeeper.TipMessage ?? "No current message", background: true);
 
             builder.AddButton(60, 210, 4005, 4007, GetButtonID(4, 0));
 
