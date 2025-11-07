@@ -177,6 +177,76 @@ public ref struct StaticGumpBuilder
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtml(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        ReadOnlySpan<char> text,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        var handler = text.Color(color, size);
+        AddHtml(x, y, width, height, ref handler, background, scrollbar);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtml(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        ref RawInterpolatedStringHandler handler,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        AddHtml(x, y, width, height, color, size, handler.Text, background, scrollbar);
+        handler.Clear();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtml(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        byte fontStyle,
+        ReadOnlySpan<char> text,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        var handler = text.Color(color, size, fontStyle);
+        AddHtml(x, y, width, height, ref handler, background, scrollbar);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtml(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        byte fontStyle,
+        ref RawInterpolatedStringHandler handler,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        AddHtml(x, y, width, height, color, size, fontStyle, handler.Text, background, scrollbar);
+        handler.Clear();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlCentered(
         int x, int y, int width, int height, ReadOnlySpan<char> text, bool background = false, bool scrollbar = false
     )
@@ -230,6 +300,76 @@ public ref struct StaticGumpBuilder
     )
     {
         AddHtmlCentered(x, y, width, height, color, handler.Text, background, scrollbar);
+        handler.Clear();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtmlCentered(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        ReadOnlySpan<char> text,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        var handler = text.Center(color, size);
+        AddHtml(x, y, width, height, ref handler, background, scrollbar);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtmlCentered(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        ref RawInterpolatedStringHandler handler,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        AddHtmlCentered(x, y, width, height, color, size, handler.Text, background, scrollbar);
+        handler.Clear();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtmlCentered(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        byte fontStyle,
+        ReadOnlySpan<char> text,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        var handler = text.Center(color, size, fontStyle);
+        AddHtml(x, y, width, height, ref handler, background, scrollbar);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddHtmlCentered(
+        int x,
+        int y,
+        int width,
+        int height,
+        int color,
+        int size,
+        byte fontStyle,
+        ref RawInterpolatedStringHandler handler,
+        bool background = false,
+        bool scrollbar = false
+    )
+    {
+        AddHtmlCentered(x, y, width, height, color, size, fontStyle, handler.Text, background, scrollbar);
         handler.Clear();
     }
 
