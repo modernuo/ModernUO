@@ -130,7 +130,7 @@ public class HouseRaffleManagementGump : Gump
             {
                 if (entry.From.Account is Account acc)
                 {
-                    AddHtml(x + 2, 140 + idx * 20, 250, 20, $"{entry.From.RawName} ({acc})".Color(color));
+                    AddHtml(x + 2, 140 + idx * 20, 250, 20, Html.Color($"{entry.From.RawName} ({acc})", color));
                 }
                 else
                 {

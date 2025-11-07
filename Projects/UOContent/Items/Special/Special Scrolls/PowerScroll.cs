@@ -110,7 +110,7 @@ public partial class PowerScroll : SpecialScroll
         }
     }
 
-    public override string DefaultTitle => $"Power Scroll ({Math.Floor(Value * 10) / 10:0.#} Skill):".Color(0xFFFFFF);
+    public override string DefaultTitle => Html.Color($"Power Scroll ({Math.Floor(Value * 10) / 10:0.#} Skill):", 0xFFFFFF);
 
     public static SkillName[] Skills
     {
