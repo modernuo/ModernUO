@@ -88,9 +88,9 @@ public class ElectionManagementGump : Gump
                         AddHtml(x + 2, 140 + idx * 20, 150, 20, mobile.Name.Color(LabelColor));
                         x += 150;
                     }
-                    else if (obj is IPAddress)
+                    else if (obj is IPAddress ip)
                     {
-                        AddHtml(x, 140 + idx * 20, 100, 20, obj.ToString().Center(LabelColor));
+                        AddHtml(x, 140 + idx * 20, 100, 20, Html.Center($"{ip}", LabelColor));
                         x += 100;
                     }
                     else if (obj is DateTime time)
@@ -147,7 +147,7 @@ public class ElectionManagementGump : Gump
 
                 AddButton(13, 118 + i * 20, 4005, 4007, 2 + i);
                 AddHtml(47, 120 + i * 20, 150, 20, mob.Name.Color(LabelColor));
-                AddHtml(195, 120 + i * 20, 80, 20, cd.Votes.ToString().Center(LabelColor));
+                AddHtml(195, 120 + i * 20, 80, 20, Html.Center($"{cd.Votes}", LabelColor));
             }
         }
     }

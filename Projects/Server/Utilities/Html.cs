@@ -31,219 +31,76 @@ public enum TextAlignment : byte
 public static class Html
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Color(
-        scoped ref RawInterpolatedStringHandler textHandler,
-        ReadOnlySpan<char> color,
-        int size = -1, byte fontStyle = 0
-    )
-    {
-        var handler = textHandler.Text.Color(color, size, fontStyle);
-        textHandler.Clear();
-        return handler;
-    }
+    public static string Center(this string input) => Center(input.AsSpan());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Color(
-        this ReadOnlySpan<char> text,
-        ReadOnlySpan<char> color,
-        int size = -1,
-        byte fontStyle = 0
-    )
-    {
-        if (color != Span<char>.Empty)
-        {
-            if (size > -1)
-            {
-                if (fontStyle > 0)
-                {
-                    return $"<BASEFONT COLOR={color} SIZE={size} STYLE={fontStyle}>{text}</BASEFONT>";
-                }
-
-                return $"<BASEFONT COLOR={color} SIZE={size}>{text}</BASEFONT>";
-            }
-
-            if (fontStyle > 0)
-            {
-                return $"<BASEFONT COLOR={color} STYLE={fontStyle}>{text}</BASEFONT>";
-            }
-
-            return $"<BASEFONT COLOR={color}>{text}</BASEFONT>";
-        }
-
-        if (size > -1)
-        {
-            if (fontStyle > 0)
-            {
-                return $"<BASEFONT SIZE={size} STYLE={fontStyle}>{text}</BASEFONT>";
-            }
-
-            return $"<BASEFONT SIZE={size}>{text}</BASEFONT>";
-        }
-
-        if (fontStyle > 0)
-        {
-            return $"<BASEFONT STYLE={fontStyle}>{text}</BASEFONT>";
-        }
-
-        return $"{text}";
-    }
+    public static string Center(this ReadOnlySpan<char> input) => $"<CENTER>{input}</CENTER>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Color(
-        this ReadOnlySpan<char> text,
-        int color,
-        int size = -1,
-        byte fontStyle = 0
-    )
+    public static string Center(ref RawInterpolatedStringHandler input)
     {
-        if (color > -1)
-        {
-            return text.Color($"#{color:X6}", size, fontStyle);
-        }
-
-        return text.Color((ReadOnlySpan<char>)default, size, fontStyle);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Color(
-        scoped ref RawInterpolatedStringHandler textHandler,
-        int color,
-        int size = -1,
-        byte fontStyle = 0
-    )
-    {
-        var handler = textHandler.Text.Color(color, size, fontStyle);
-        textHandler.Clear();
-        return handler;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Color(
-        this string text,
-        ReadOnlySpan<char> color,
-        int size = -1,
-        byte fontStyle = 0
-    )
-    {
-        var textHandler = ((ReadOnlySpan<char>)text).Color(color, size, fontStyle);
-        var str = textHandler.Text.ToString();
-        textHandler.Clear();
+        var str = input.Text.Center();
+        input.Clear();
         return str;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Color(
-        this string text,
-        int color,
-        int size = -1,
-        byte fontStyle = 0
-    )
+    public static string Center(this string input, int color) => Center(input.AsSpan(), color);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Center(this ReadOnlySpan<char> input, int color) =>
+        $"<CENTER><BASEFONT COLOR=#{color:X6}>{input}</BASEFONT></CENTER>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Center(ref RawInterpolatedStringHandler input, int color)
     {
-        var textHandler = ((ReadOnlySpan<char>)text).Color(color, size, fontStyle);
-        var str = textHandler.Text.ToString();
-        textHandler.Clear();
+        var str = input.Text.Center(color);
+        input.Clear();
         return str;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Center(
-        this string text, int color, int size = -1, byte fontStyle = 0
-    )
-    {
-        var handler = Center((ReadOnlySpan<char>)text, color, size, fontStyle);
-        var str = handler.Text.ToString();
-        handler.Clear();
+    public static string Color(this string input, int color) => Color(input.AsSpan(), color);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Color(this ReadOnlySpan<char> input, int color) => $"<BASEFONT COLOR=#{color:X6}>{input}</CENTER>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Color(ref RawInterpolatedStringHandler input, int color)
+    {
+        var str = input.Text.Color(color);
+        input.Clear();
         return str;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Center(
-        this string text, ReadOnlySpan<char> color, int size = -1, byte fontStyle = 0
-    )
-    {
-        var handler = Center((ReadOnlySpan<char>)text, color, size, fontStyle);
-        var str = handler.Text.ToString();
-        handler.Clear();
+    public static string Right(this string input) => Right(input.AsSpan());
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this ReadOnlySpan<char> input) => $"<RIGHT>{input}</RIGHT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(ref RawInterpolatedStringHandler input)
+    {
+        var str = input.Text.Right();
+        input.Clear();
         return str;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Center(this string text) => text.Center(-1);
+    public static string Right(this string input, int color) => Right(input.AsSpan(), color);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Center(this ReadOnlySpan<char> text) => Center(text, -1);
+    public static string Right(this ReadOnlySpan<char> input, int color) =>
+        $"<RIGHT><BASEFONT COLOR=#{color:X6}>{input}</BASEFONT></RIGHT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Center(
-        this ReadOnlySpan<char> text, int color, int size = -1, byte fontStyle = 0
-    ) => Color($"<CENTER>{text}</CENTER>", color, size, fontStyle);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Center(
-        this ReadOnlySpan<char> text, ReadOnlySpan<char> color, int size = -1, byte fontStyle = 0
-    ) => Color($"<CENTER>{text}</CENTER>", color, size, fontStyle);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Center(
-        scoped ref RawInterpolatedStringHandler textHandler, int color = -1, int size = -1, byte fontStyle = 0
-    )
+    public static string Right(ref RawInterpolatedStringHandler input, int color)
     {
-        var handler = textHandler.Text.Center(color, size, fontStyle);
-        textHandler.Clear();
-        return handler;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Right(
-        this string text, int color, int size = -1, byte fontStyle = 0
-    )
-    {
-        var handler = Right((ReadOnlySpan<char>)text, color, size, fontStyle);
-        var str = handler.Text.ToString();
-        handler.Clear();
-
+        var str = input.Text.Right(color);
+        input.Clear();
         return str;
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Right(
-        this string text, ReadOnlySpan<char> color, int size = -1, byte fontStyle = 0
-    )
-    {
-        var handler = Right((ReadOnlySpan<char>)text, color, size, fontStyle);
-        var str = handler.Text.ToString();
-        handler.Clear();
-
-        return str;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Right(this string text) => text.Right(-1);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Right(
-        scoped ref RawInterpolatedStringHandler textHandler, int color = -1, int size = -1, byte fontStyle = 0
-    )
-    {
-        var handler = textHandler.Text.Right(color, size, fontStyle);
-        textHandler.Clear();
-        return handler;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Right(
-        this ReadOnlySpan<char> text, int color, int size = -1, byte fontStyle = 0
-    ) => Color($"<RIGHT>{text}</RIGHT>", color, size, fontStyle);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Right(
-        this ReadOnlySpan<char> text, ReadOnlySpan<char> color, int size = -1, byte fontStyle = 0
-    ) => Color($"<RIGHT>{text}</RIGHT>", color, size, fontStyle);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RawInterpolatedStringHandler Right(this ReadOnlySpan<char> text) => text.Right(-1);
 
     private static readonly SearchValues<char> _htmlSearchValues = SearchValues.Create('<', '>', '&', '"', '\'');
 
@@ -312,9 +169,37 @@ public static class Html
         return result;
     }
 
+    public static string Build(
+        ReadOnlySpan<char> text, int color = 0, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left
+    )
+    {
+        var sb = ValueStringBuilder.Create(128);
+        Build(ref sb, text, color, size, fontStyle, align);
+
+        var result = sb.ToString();
+        sb.Dispose();
+
+        return result;
+    }
+
+    public static string Build(
+        ReadOnlySpan<char> text, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left
+    )
+    {
+        var sb = ValueStringBuilder.Create(128);
+        Build(ref sb, text, color, size, fontStyle, align);
+
+        var result = sb.ToString();
+        sb.Dispose();
+
+        return result;
+    }
+
     public static void Build(
-        ref ValueStringBuilder builder, ReadOnlySpan<char> text, int color, int size, byte fontStyle,
-        TextAlignment align
+        ref ValueStringBuilder builder, ReadOnlySpan<char> text, int color = 0, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left
     )
     {
         if (align == TextAlignment.Right)
@@ -326,36 +211,63 @@ public static class Html
             builder.Append("<CENTER>");
         }
 
-        if (color != 0 || size > -1 || fontStyle > 0)
+        builder.Append("<BASEFONT");
+        if (color != 0)
         {
-            builder.Append("<BASEFONT");
-
-            if (color != 0)
-            {
-                builder.Append(" COLOR=");
-                builder.Append($"#{color:X6}");
-            }
-
-            if (size > -1)
-            {
-                builder.Append(" SIZE=");
-                builder.Append(size);
-            }
-
-            if (fontStyle > 0)
-            {
-                builder.Append(" STYLE=");
-                builder.Append(fontStyle);
-            }
-
-            builder.Append('>');
-            builder.Append(text);
-            builder.Append("</BASEFONT>");
+            builder.Append($" COLOR=#{color:X6}");
         }
-        else
+
+        if (size > -1)
         {
-            builder.Append(text);
+            builder.Append($" SIZE={size}");
         }
+
+        if (fontStyle > 0)
+        {
+            builder.Append($" STYLE={fontStyle}");
+        }
+        builder.Append($">{text}</BASEFONT>");
+
+        if (align == TextAlignment.Right)
+        {
+            builder.Append("</RIGHT>");
+        }
+        else if (align == TextAlignment.Center)
+        {
+            builder.Append("</CENTER>");
+        }
+    }
+
+    public static void Build(
+        ref ValueStringBuilder builder, ReadOnlySpan<char> text, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left
+    )
+    {
+        if (align == TextAlignment.Right)
+        {
+            builder.Append("<RIGHT>");
+        }
+        else if (align == TextAlignment.Center)
+        {
+            builder.Append("<CENTER>");
+        }
+
+        builder.Append("<BASEFONT");
+        if (color.Length > 0)
+        {
+            builder.Append($" COLOR={color}");
+        }
+
+        if (size > -1)
+        {
+            builder.Append($" SIZE={size}");
+        }
+
+        if (fontStyle > 0)
+        {
+            builder.Append($" STYLE={fontStyle}");
+        }
+        builder.Append($">{text}</BASEFONT>");
 
         if (align == TextAlignment.Right)
         {
