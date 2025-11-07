@@ -412,7 +412,7 @@ public static class HelpInfo
             }
             sb.Append(_info.Description);
 
-            builder.AddHtml(10, 40, _width - 20, _height - 80, sb.ToString(), false, true);
+            builder.AddHtml(10, 40, _width - 20, _height - 80, sb.AsSpan(true), background: false, scrollbar: true);
         }
     }
 }

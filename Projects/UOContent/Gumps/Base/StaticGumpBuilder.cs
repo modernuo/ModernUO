@@ -90,17 +90,8 @@ public ref struct StaticGumpBuilder
     public void AddGroup(int groupId) => _gumpBuilder.AddGroup(groupId);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public GumpHtmlBuilder HtmlBuilder() => new();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlPlaceholder(
-        int x,
-        int y,
-        int width,
-        int height,
-        ReadOnlySpan<char> slotKey,
-        bool background = false,
-        bool scrollbar = false
+        int x, int y, int width, int height, ReadOnlySpan<char> slotKey, bool background = false, bool scrollbar = false
     )
     {
         var index = _gumpBuilder.AddHtmlPlaceholder(x, y, width, height, background, scrollbar);
@@ -109,12 +100,7 @@ public ref struct StaticGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlPlaceholder(
-        int x,
-        int y,
-        int width,
-        int height,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
+        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler, bool background = false,
         bool scrollbar = false
     )
     {
@@ -124,255 +110,30 @@ public ref struct StaticGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
+        int x, int y, int width, int height, ReadOnlySpan<char> text, int color = 0, int size = -1, byte style = 0,
+        TextAlignment align = TextAlignment.Left, bool background = false, bool scrollbar = false
     )
     {
-        WriteInternalizedString(text);
+        if (color != 0 || size != -1 || style != 0 || align != TextAlignment.Left)
+        {
+            var sb = ValueStringBuilder.Create(128);
+            Html.Build(ref sb, text, color, size, style, align);
+        }
+        else
+        {
+            WriteInternalizedString(text);
+        }
+
         _gumpBuilder.AddHtml(x, y, width, height, _stringsCount++, background, scrollbar);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtml(
-        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler,
-        bool background = false, bool scrollbar = false
+        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler, int color = 0, int size = -1,
+        byte style = 0, TextAlignment align = TextAlignment.Left, bool background = false, bool scrollbar = false
     )
     {
-        AddHtml(x, y, width, height, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Color(color);
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtml(x, y, width, height, color, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Color(color, size);
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtml(x, y, width, height, color, size, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        byte fontStyle,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Color(color, size, fontStyle);
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        byte fontStyle,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtml(x, y, width, height, color, size, fontStyle, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x, int y, int width, int height, ReadOnlySpan<char> text, bool background = false, bool scrollbar = false
-    )
-    {
-        var handler = text.Center();
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var centerHandler = handler.Text.Center();
-        AddHtml(x, y, width, height, ref centerHandler, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Center(color);
-        AddHtml(x, y, width, height,  ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtmlCentered(x, y, width, height, color, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Center(color, size);
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtmlCentered(x, y, width, height, color, size, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        byte fontStyle,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Center(color, size, fontStyle);
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        int size,
-        byte fontStyle,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtmlCentered(x, y, width, height, color, size, fontStyle, handler.Text, background, scrollbar);
+        AddHtml(x, y, width, height, handler.Text, color, size, style, align, background, scrollbar);
         handler.Clear();
     }
 
