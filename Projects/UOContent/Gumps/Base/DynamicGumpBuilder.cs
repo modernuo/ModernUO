@@ -78,15 +78,17 @@ public ref struct DynamicGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtml(
-        int x, int y, int width, int height, ReadOnlySpan<char> text, int color = 0, int size = -1, byte style = 0,
+        int x, int y, int width, int height, ReadOnlySpan<char> text, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left, bool background = false, bool scrollbar = false
     )
     {
-        if (color != 0 || size != -1 || style != 0 || align != TextAlignment.Left)
+        if (color.Length > 0 || size != -1 || fontStyle != 0 || align != TextAlignment.Left)
         {
-            var sb = ValueStringBuilder.Create(128);
-            Html.Build(ref sb, text, color, size, style, align);
-            sb.Dispose();
+            var arr = STArrayPool<char>.Shared.Rent(Html.BuildCharCount(text, color));
+            var bytesWritten = Html.Build(text, arr.AsSpan(), color, size, fontStyle, align);
+
+            WriteInternalizedString(arr.AsSpan(0, bytesWritten));
+            STArrayPool<char>.Shared.Return(arr);
         }
         else
         {
@@ -98,11 +100,11 @@ public ref struct DynamicGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtml(
-        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler, int color = 0, int size = -1,
-        byte style = 0, TextAlignment align = TextAlignment.Left, bool background = false, bool scrollbar = false
+        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler, ReadOnlySpan<char> color = default, int size = -1,
+        byte fontStyle = 0, TextAlignment align = TextAlignment.Left, bool background = false, bool scrollbar = false
     )
     {
-        AddHtml(x, y, width, height, handler.Text, color, size, style, align, background, scrollbar);
+        AddHtml(x, y, width, height, handler.Text, color, size, fontStyle, align, background, scrollbar);
         handler.Clear();
     }
 

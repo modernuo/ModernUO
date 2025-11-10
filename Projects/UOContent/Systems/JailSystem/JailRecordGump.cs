@@ -55,35 +55,35 @@ public class JailRecordGump : StaticGump<JailRecordGump>
 
     protected override void BuildStrings(ref GumpStringsBuilder builder)
     {
-        builder.SetHtmlText("playerName", $"Player: {_player.Name}", 0xFFFF00, 5);
-        builder.SetHtmlText("jailCount", $"Jail Count: {_record.JailCount}", 0xFFFFFF, 5);
+        builder.SetHtmlText("playerName", $"Player: {_player.Name}", "#FFFF00", 5);
+        builder.SetHtmlText("jailCount", $"Jail Count: {_record.JailCount}", "#FFFFFF", 5);
 
         if (_record.LastJailed > DateTime.MinValue)
         {
-            builder.SetHtmlText("lastJailed", $"Last Jailed: {_record.LastJailed:yyyy/MM/dd HH:mm}", 0xFFFFFF, 5);
+            builder.SetHtmlText("lastJailed", $"Last Jailed: {_record.LastJailed:yyyy/MM/dd HH:mm}", "#FFFFFF", 5);
         }
         else
         {
-            builder.SetHtmlText("lastJailed", "Last Jailed: Never", 0xFFFFFF, 5);
+            builder.SetHtmlText("lastJailed", "Last Jailed: Never", "#FFFFFF", 5);
         }
 
         if (string.IsNullOrWhiteSpace(_record.LastJailReason))
         {
-            builder.SetHtmlText("jailReason", "Jail Reason: None given.", 0xFFFFFF, 4);
+            builder.SetHtmlText("jailReason", "Jail Reason: None given.", "#FFFFFF", 4);
         }
         else
         {
-            builder.SetHtmlText("jailReason", $"Jail Reason: {_record.LastJailReason}", 0xFFFFFF, 4);
+            builder.SetHtmlText("jailReason", $"Jail Reason: {_record.LastJailReason}", "#FFFFFF", 4);
         }
 
         if (_record.IsCurrentlyJailed)
         {
-            builder.SetHtmlText("jailStatus", "Status: Currently Jailed", 0xFF6666, 5);
-            builder.SetHtmlText("jailTime", $"Jail Time: {(_record.JailEndTime - Core.Now).FormatTimeCompact()}", 0xFF6666, 5);
+            builder.SetHtmlText("jailStatus", "Status: Currently Jailed", "#FF6666", 5);
+            builder.SetHtmlText("jailTime", $"Jail Time: {(_record.JailEndTime - Core.Now).FormatTimeCompact()}", "#FF6666", 5);
         }
         else
         {
-            builder.SetHtmlText("jailStatus", "Status: Not Jailed", 0x00FF00, 5);
+            builder.SetHtmlText("jailStatus", "Status: Not Jailed", "#00FF00", 5);
             builder.SetStringSlot("jailTime", "");
         }
     }
