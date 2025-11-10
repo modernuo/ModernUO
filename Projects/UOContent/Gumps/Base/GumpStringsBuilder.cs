@@ -66,7 +66,7 @@ public ref struct GumpStringsBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ref RawInterpolatedStringHandler slotKeyHandler, ref RawInterpolatedStringHandler handler, int color = 0, int size = -1,
+        ref RawInterpolatedStringHandler slotKeyHandler, ref RawInterpolatedStringHandler handler, ReadOnlySpan<char> color = default, int size = -1,
         byte fontStyle = 0, TextAlignment align = TextAlignment.Left
     )
     {
@@ -77,7 +77,7 @@ public ref struct GumpStringsBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ref RawInterpolatedStringHandler slotKeyHandler, ReadOnlySpan<char> value, int color = 0, int size = -1, byte fontStyle = 0,
+        ref RawInterpolatedStringHandler slotKeyHandler, ReadOnlySpan<char> value, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left
     )
     {
@@ -87,7 +87,7 @@ public ref struct GumpStringsBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ReadOnlySpan<char> slotKey, ref RawInterpolatedStringHandler handler, int color = 0, int size = -1, byte fontStyle = 0,
+        ReadOnlySpan<char> slotKey, ref RawInterpolatedStringHandler handler, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left
     )
     {
@@ -97,14 +97,15 @@ public ref struct GumpStringsBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ReadOnlySpan<char> slotKey, ReadOnlySpan<char> value, int color = 0, int size = -1, byte fontStyle = 0,
+        ReadOnlySpan<char> slotKey, ReadOnlySpan<char> value, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left
     )
     {
-        var sb = ValueStringBuilder.Create(128);
-        Html.Build(ref sb, value, color, size, fontStyle, align);
-        SetStringSlot(slotKey, sb.AsSpan(true));
-        sb.Dispose();
+        var arr = STArrayPool<char>.Shared.Rent(Html.BuildCharCount(value, color));
+        var bytesWritten = Html.Build(value, arr.AsSpan(), color, size, fontStyle, align);
+
+        SetStringSlot(slotKey, arr.AsSpan(0, bytesWritten));
+        STArrayPool<char>.Shared.Return(arr);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -170,79 +170,27 @@ public static class Html
     }
 
     public static string Build(
-        ReadOnlySpan<char> text, int color = 0, int size = -1, byte fontStyle = 0,
-        TextAlignment align = TextAlignment.Left
-    )
-    {
-        var sb = ValueStringBuilder.Create(128);
-        Build(ref sb, text, color, size, fontStyle, align);
-
-        var result = sb.ToString();
-        sb.Dispose();
-
-        return result;
-    }
-
-    public static string Build(
         ReadOnlySpan<char> text, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left
     )
     {
-        var sb = ValueStringBuilder.Create(128);
-        Build(ref sb, text, color, size, fontStyle, align);
+        var arr = STArrayPool<char>.Shared.Rent(BuildCharCount(text, color));
+        var bytesWritten = Build(text, arr.AsSpan(), color, size, fontStyle, align);
 
-        var result = sb.ToString();
-        sb.Dispose();
+        var result = arr.AsSpan(0, bytesWritten).ToString();
+        STArrayPool<char>.Shared.Return(arr);
 
         return result;
     }
 
-    public static void Build(
-        ref ValueStringBuilder builder, ReadOnlySpan<char> text, int color = 0, int size = -1, byte fontStyle = 0,
+    public static int BuildCharCount(ReadOnlySpan<char> text, ReadOnlySpan<char> color) => 61 + text.Length + color.Length;
+
+    public static int Build(
+        ReadOnlySpan<char> text, Span<char> dest, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left
     )
     {
-        if (align == TextAlignment.Right)
-        {
-            builder.Append("<RIGHT>");
-        }
-        else if (align == TextAlignment.Center)
-        {
-            builder.Append("<CENTER>");
-        }
-
-        builder.Append("<BASEFONT");
-        if (color != 0)
-        {
-            builder.Append($" COLOR=#{color:X6}");
-        }
-
-        if (size > -1)
-        {
-            builder.Append($" SIZE={size}");
-        }
-
-        if (fontStyle > 0)
-        {
-            builder.Append($" STYLE={fontStyle}");
-        }
-        builder.Append($">{text}</BASEFONT>");
-
-        if (align == TextAlignment.Right)
-        {
-            builder.Append("</RIGHT>");
-        }
-        else if (align == TextAlignment.Center)
-        {
-            builder.Append("</CENTER>");
-        }
-    }
-
-    public static void Build(
-        ref ValueStringBuilder builder, ReadOnlySpan<char> text, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
-        TextAlignment align = TextAlignment.Left
-    )
-    {
+        using var builder = new ValueStringBuilder(dest);
         if (align == TextAlignment.Right)
         {
             builder.Append("<RIGHT>");
@@ -277,5 +225,7 @@ public static class Html
         {
             builder.Append("</CENTER>");
         }
+
+        return builder.Length;
     }
 }
