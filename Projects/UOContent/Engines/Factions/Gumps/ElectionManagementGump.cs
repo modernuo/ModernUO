@@ -32,7 +32,7 @@ public class ElectionManagementGump : Gump
             AddHtml(145, 35, 100, 20, (candidate.Mobile == null ? "null" : candidate.Mobile.Name).Color(LabelColor));
 
             AddHtml(45, 55, 100, 20, "Vote Count:".Color(LabelColor));
-            AddHtml(145, 55, 100, 20, candidate.Votes.ToString().Color(LabelColor));
+            AddHtml(145, 55, 100, 20, Html.Color($"{candidate.Votes}", LabelColor));
 
             AddButton(12, 73, 4005, 4007, 1);
             AddHtml(45, 75, 100, 20, "Drop Candidate".Color(LabelColor));

@@ -349,7 +349,7 @@ namespace Server.Engines.ConPVP
                         AddHtml(25, y, 200, 20, "Log:");
                         y += 20;
 
-                        var sb = new StringBuilder();
+                        using var sb = ValueStringBuilder.Create();
 
                         for (var i = 0; i < part.Log.Count; ++i)
                         {
@@ -366,7 +366,7 @@ namespace Server.Engines.ConPVP
                             sb.Append("Nothing logged yet.");
                         }
 
-                        AddHtml(25, y, 250, 150, sb.ToString().Color(BlackColor32), false, true);
+                        AddHtml(25, y, 250, 150, sb.AsSpan().Color(BlackColor32), false, true);
 
                         break;
                     }

@@ -48,8 +48,15 @@ public static class Html
     public static string Center(this string input, int color) => Center(input.AsSpan(), color);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Center(this string input, ReadOnlySpan<char> color) => Center(input.AsSpan(), color);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Center(this ReadOnlySpan<char> input, int color) =>
         $"<CENTER><BASEFONT COLOR=#{color:X6}>{input}</BASEFONT></CENTER>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Center(this ReadOnlySpan<char> input, ReadOnlySpan<char> color) =>
+        $"<CENTER><BASEFONT COLOR={color}>{input}</BASEFONT></CENTER>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Center(ref RawInterpolatedStringHandler input, int color)
@@ -60,13 +67,36 @@ public static class Html
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Center(ref RawInterpolatedStringHandler input, ReadOnlySpan<char> color)
+    {
+        var str = input.Text.Center(color);
+        input.Clear();
+        return str;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Color(this string input, int color) => Color(input.AsSpan(), color);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Color(this string input, ReadOnlySpan<char> color) => Color(input.AsSpan(), color);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Color(this ReadOnlySpan<char> input, int color) => $"<BASEFONT COLOR=#{color:X6}>{input}</CENTER>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Color(this ReadOnlySpan<char> input, ReadOnlySpan<char> color) =>
+        $"<BASEFONT COLOR={color}>{input}</CENTER>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Color(ref RawInterpolatedStringHandler input, int color)
+    {
+        var str = input.Text.Color(color);
+        input.Clear();
+        return str;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Color(ref RawInterpolatedStringHandler input, ReadOnlySpan<char> color)
     {
         var str = input.Text.Color(color);
         input.Clear();
@@ -91,11 +121,26 @@ public static class Html
     public static string Right(this string input, int color) => Right(input.AsSpan(), color);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this string input, ReadOnlySpan<char> color) => Right(input.AsSpan(), color);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Right(this ReadOnlySpan<char> input, int color) =>
         $"<RIGHT><BASEFONT COLOR=#{color:X6}>{input}</BASEFONT></RIGHT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(this ReadOnlySpan<char> input, ReadOnlySpan<char> color) =>
+        $"<RIGHT><BASEFONT COLOR={color}>{input}</BASEFONT></RIGHT>";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Right(ref RawInterpolatedStringHandler input, int color)
+    {
+        var str = input.Text.Right(color);
+        input.Clear();
+        return str;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string Right(ref RawInterpolatedStringHandler input, ReadOnlySpan<char> color)
     {
         var str = input.Text.Right(color);
         input.Clear();
