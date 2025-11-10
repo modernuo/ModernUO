@@ -361,7 +361,7 @@ public static class HelpInfo
             builder.AddPage();
 
             builder.AddBackground(0, 0, _width, _height, 5054);
-            builder.AddHtml(10, 10, _width - 20, 20, _info.Name.Center(0xFF0000));
+            builder.AddHtml(10, 10, _width - 20, 20, _info.Name, color: "#FF0000", align: TextAlignment.Center);
 
             using var sb = ValueStringBuilder.Create();
 
