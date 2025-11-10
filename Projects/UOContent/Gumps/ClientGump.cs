@@ -36,7 +36,7 @@ namespace Server.Gumps
             var line = 0;
 
             AddHtml(14, 36 + line * 20, 200, 20, "Address:".Color(LabelColor32));
-            AddHtml(70, 36 + line++ * 20, 200, 20, state.ToString().Color(LabelColor32));
+            AddHtml(70, 36 + line++ * 20, 200, 20, Html.Color($"{state}", LabelColor32));
 
             AddHtml(14, 36 + line * 20, 200, 20, "Client:".Color(LabelColor32));
             AddHtml(
