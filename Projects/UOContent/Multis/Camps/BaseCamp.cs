@@ -23,6 +23,7 @@ public abstract partial class BaseCamp : BaseMulti
 
     private TimeSpan _decayDelay;
     private Timer _decayTimer;
+    private Timer _initTimer;
 
     public BaseCamp(int multiID) : base(multiID)
     {
@@ -31,7 +32,7 @@ public abstract partial class BaseCamp : BaseMulti
         _decayDelay = TimeSpan.FromMinutes(30.0);
         RefreshDecay(true);
 
-        Timer.StartTimer(CheckAddComponents);
+        _initTimer = Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
     }
 
     public virtual int EventRange => 10;
@@ -156,6 +157,9 @@ public abstract partial class BaseCamp : BaseMulti
 
         _decayTimer?.Stop();
         _decayTimer = null;
+        
+        _initTimer?.Stop();
+        _initTimer = null;
     }
 
     private void Deserialize(IGenericReader reader, int version)
