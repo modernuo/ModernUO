@@ -51,6 +51,8 @@ public abstract partial class BaseCamp : BaseMulti
 
     public void CheckAddComponents()
     {
+        _initTimer = null;
+        
         if (Deleted)
         {
             return;
@@ -139,16 +141,16 @@ public abstract partial class BaseCamp : BaseMulti
 
         for (var i = 0; i < _items.Count; ++i)
         {
-            _items[i].Delete();
+            _items[i]?.Delete();
         }
 
         for (var i = 0; i < _mobiles.Count; ++i)
         {
             var mob = _mobiles[i];
 
-            if (mob.CantWalk || (mob as BaseCreature)?.IsPrisoner == false)
+            if (mob != null && (mob.CantWalk || (mob as BaseCreature)?.IsPrisoner == false))
             {
-                _mobiles[i].Delete();
+                mob.Delete();
             }
         }
 
@@ -173,6 +175,8 @@ public abstract partial class BaseCamp : BaseMulti
     private void AfterDeserialization()
     {
         RefreshDecay(false);
+        
+        _initTimer = Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
     }
 }
 
