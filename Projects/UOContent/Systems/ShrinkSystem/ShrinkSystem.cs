@@ -19,53 +19,54 @@ using Server.Targeting;
 
 namespace Server.Commands
 {
-     public class PetShrink
-     {
-          public static void Initialize()
-          {    // command = [shrink
-               // change access level here (premium setup)
-               CommandSystem.Register("shrink", AccessLevel.Owner, new CommandEventHandler(Shrink_OnCommand));
-          }
+    public class PetShrink
+    {
+        public static void Initialize()
+        {
+            // command = [shrink
+            // change access level here (premium setup)
+            CommandSystem.Register("shrink", AccessLevel.Owner, new CommandEventHandler(Shrink_OnCommand));
+        }
 
-          [Usage("shrink")] // target again or double click to restore
-          [Description("Shrinks a targeted pet into an item.")]
-          public static void Shrink_OnCommand(CommandEventArgs e)
-          {
-               e.Mobile.SendMessage("Target the pet you wish to shrink.");
-               e.Mobile.Target = new ShrinkTarget();
-          }
+        [Usage("shrink")] // target again or double click to restore
+        [Description("Shrinks a targeted pet into an item.")]
+        public static void Shrink_OnCommand(CommandEventArgs e)
+        {
+            e.Mobile.SendMessage("Target the pet you wish to shrink.");
+            e.Mobile.Target = new ShrinkTarget();
+        }
 
-          private class ShrinkTarget : Target
-          {
-               public ShrinkTarget() : base(3, false, TargetFlags.None)
-               {
-               }
+        private class ShrinkTarget : Target
+        {
+            public ShrinkTarget() : base(3, false, TargetFlags.None)
+            {
+            }
 
-               protected override void OnTarget(Mobile from, object targeted)
-               {
-                    if (targeted is BaseCreature pet && pet.Controlled && pet.ControlMaster == from)
+            protected override void OnTarget(Mobile from, object targeted)
+            {
+                if (targeted is BaseCreature pet && pet.Controlled && pet.ControlMaster == from)
+                {
+                    if (from is PlayerMobile)
                     {
-                         if (from is PlayerMobile)
-                         {
-                              pet.Controlled = false;
-                              pet.ControlMaster = null;
-                              pet.Internalize();
-                         }
-
-                         var shrinkItem = new ShrinkItem(pet.Serial)
-                         {
-                              Name = pet.Name,
-                              Hue = pet.Hue
-                         };
-
-                         from.AddToBackpack(shrinkItem);
-                         from.SendMessage("Your pet was shrunk to a statuette.");
+                        pet.Controlled = false;
+                        pet.ControlMaster = null;
+                        pet.Internalize();
                     }
-                    else
+
+                    var shrinkItem = new ShrinkItem(pet.Serial)
                     {
-                         from.SendMessage("That is not your pet.");
-                    }
-               }
-          }
-     }
+                        Name = pet.Name,
+                        Hue = pet.Hue
+                    };
+
+                    from.AddToBackpack(shrinkItem);
+                    from.SendMessage("Your pet was shrunk to a statuette.");
+                }
+                else
+                {
+                    from.SendMessage("That is not your pet.");
+                }
+            }
+        }
+    }
 }

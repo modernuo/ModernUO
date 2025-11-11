@@ -18,114 +18,114 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-     public class ShrinkWand : Item
-     {
-          private int _charges;
+    public class ShrinkWand : Item
+    {
+        private int _charges;
 
-          [CommandProperty(AccessLevel.Player)]
-          public int Charges
-          {
-               get
-               {
-                    return _charges;
-               }
-               set
-               {
-                    _charges = value;
-                    InvalidateProperties();
-               }
-          }
+        [CommandProperty(AccessLevel.Player)]
+        public int Charges
+        {
+            get
+            {
+                return _charges;
+            }
+            set
+            {
+                _charges = value;
+                InvalidateProperties();
+            }
+        }
 
-          [Constructible]
-          public ShrinkWand() : base(0x0DF2)
-          {
-              Charges = 10;
-          }
+        [Constructible]
+        public ShrinkWand() : base(0x0DF2)
+        {
+            Charges = 10;
+        }
 
-          public override string DefaultName => $"a shrink wand ({Charges} charges)";
-          public override double DefaultWeight => 1.0;
+        public override string DefaultName => $"shrink wand ({Charges} charges)";
+        public override double DefaultWeight => 1.0;
 
-          public void GetProperties(ObjectPropertyList list)
-          {
-              base.GetProperties(list);
-              list.Add($"Charges: {Charges}");
-          }
+        public void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
+            list.Add($"Charges: {Charges}");
+        }
 
-          public ShrinkWand(Serial serial) : base(serial)
-          {
-          }
+        public ShrinkWand(Serial serial) : base(serial)
+        {
+        }
 
-          public override void OnDoubleClick(Mobile from)
-          {
-               if (!IsChildOf(from.Backpack))
-               {
-                    from.SendMessage("That must be in your backpack to use.");
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (!IsChildOf(from.Backpack))
+            {
+                from.SendMessage("That must be in your backpack to use.");
+                return;
+            }
+
+            from.SendMessage("Target the pet you wish to shrink.");
+            from.Target = new ShrinkWandTarget(this);
+        }
+
+        private class ShrinkWandTarget : Target
+        {
+            private readonly ShrinkWand _wand;
+
+            public ShrinkWandTarget(ShrinkWand wand) : base(3, false, TargetFlags.None)
+            {
+                _wand = wand;
+            }
+
+            protected override void OnTarget(Mobile from, object targeted)
+            {
+                if (_wand.Deleted || _wand.Charges <= 0)
+                {
                     return;
-               }
+                }
 
-               from.SendMessage("Target the pet you wish to shrink.");
-               from.Target = new ShrinkWandTarget(this);
-          }
+                if (targeted is BaseCreature pet && pet.Controlled && pet.ControlMaster == from)
+                {
+                    pet.Controlled = false;
+                    pet.ControlMaster = null;
+                    pet.Internalize();
 
-          private class ShrinkWandTarget : Target
-          {
-               private readonly ShrinkWand _wand;
-
-               public ShrinkWandTarget(ShrinkWand wand) : base(3, false, TargetFlags.None)
-               {
-                    _wand = wand;
-               }
-
-               protected override void OnTarget(Mobile from, object targeted)
-               {
-                    if (_wand.Deleted || _wand.Charges <= 0)
+                    var shrinkItem = new ShrinkItem(pet, from)
                     {
-                         return;
-                    }
+                        Name = pet.Name,
+                        Hue = pet.Hue
+                    };
 
-                    if (targeted is BaseCreature pet && pet.Controlled && pet.ControlMaster == from)
+                    from.AddToBackpack(shrinkItem);
+                    from.SendMessage("Your pet was shrunk to a statuette.");
+                    from.PlaySound(0x1FA);
+
+                    _wand.Charges--;
+                    if (_wand.Charges <= 0)
                     {
-                         pet.Controlled = false;
-                         pet.ControlMaster = null;
-                         pet.Internalize();
-
-                         var shrinkItem = new ShrinkItem(pet, from)
-                         {
-                              Name = pet.Name,
-                              Hue = pet.Hue
-                         };
-
-                         from.AddToBackpack(shrinkItem);
-                         from.SendMessage("Your pet was shrunk to a statuette.");
-                         from.PlaySound(0x1FA);
-
-                         _wand.Charges--;
-                         if (_wand.Charges <= 0)
-                         {
-                              from.SendMessage("The wand crumbles to dust.");
-                              from.PlaySound(0x3B4);
-                              _wand.Delete();
-                         }
+                        from.SendMessage("The wand crumbles to dust.");
+                        from.PlaySound(0x3B4);
+                        _wand.Delete();
                     }
-                    else
-                    {
-                         from.SendMessage("That is not your pet.");
-                    }
-               }
-          }
+                }
+                else
+                {
+                    from.SendMessage("That is not your pet.");
+                }
+            }
+        }
 
-          public override void Serialize(IGenericWriter writer)
-          {
-               base.Serialize(writer);
-               writer.Write(0); // version
-               writer.Write(_charges);
-          }
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write(0); // version
+            writer.Write(_charges);
+        }
 
-          public override void Deserialize(IGenericReader reader)
-          {
-               base.Deserialize(reader);
-               int version = reader.ReadInt();
-               _charges = reader.ReadInt();
-          }
-     }
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+            int version = reader.ReadInt();
+            _charges = reader.ReadInt();
+        }
+    }
 }
