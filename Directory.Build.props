@@ -5,7 +5,7 @@
         <Company>ModernUO</Company>
         <Copyright>2019-2025</Copyright>
         <TargetFramework>net10.0</TargetFramework>
-        <LangVersion>13</LangVersion>
+        <LangVersion>14</LangVersion>
         <PublicRelease>true</PublicRelease>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <NoWarn>NU1603</NoWarn>
