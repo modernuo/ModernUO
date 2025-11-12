@@ -174,7 +174,18 @@ public abstract partial class BaseCamp : BaseMulti
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        RefreshDecay(false);
+        var remaining = _decayTime - Core.Now;
+        
+        if (remaining > TimeSpan.Zero)
+        {
+            _decayDelay = remaining;
+            RefreshDecay(false);
+        }
+        else
+        {
+            Timer.DelayCall(TimeSpan.Zero, Delete);
+            return;
+        }
         
         _initTimer = Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
     }
