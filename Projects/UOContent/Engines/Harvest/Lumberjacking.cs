@@ -185,6 +185,17 @@ namespace Server.Engines.Harvest
             {
                 from.RevealingAction();
             }
+
+            if (Utility.Random(100) < 1)
+            {
+                if (!AntiBotSystem.CheckPlayer(from, () =>
+                {
+                    from.Target = new HarvestTarget(tool, this);
+                }))
+                {
+                    // antibot challenge sent
+                }
+            }
         }
 
         public static void Initialize()

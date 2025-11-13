@@ -444,6 +444,17 @@ namespace Server.Engines.Harvest
                 return false;
             }
 
+            if (Utility.Random(100) < 1)
+            {
+                if (!AntiBotSystem.CheckPlayer(from, () =>
+                {
+                    from.Target = new HarvestTarget(tool, this);
+                }))
+                {
+                    // antibot challenge sent
+                }
+            }
+
             from.SendLocalizedMessage(503033); // Where do you wish to dig?
             return true;
         }

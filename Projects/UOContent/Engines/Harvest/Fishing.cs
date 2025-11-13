@@ -492,6 +492,17 @@ namespace Server.Engines.Harvest
                 return false;
             }
 
+            if (Utility.Random(100) < 1)
+            {
+                if (!AntiBotSystem.CheckPlayer(from, () =>
+                {
+                    from.Target = new HarvestTarget(tool, this);
+                }))
+                {
+                    return false; // antibot challenge sent
+                }
+            }
+
             from.SendLocalizedMessage(500974); // What water do you want to fish in?
             return true;
         }
