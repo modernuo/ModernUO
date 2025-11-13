@@ -15,13 +15,13 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 11/2019/2022/2025](https://img.shields.io/badge/-server%202025-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+[![Windows 10/11/2012/2016/2019/2022/2025](https://img.shields.io/badge/-server%202025-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 14+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
 [![Debian 12+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
 [![Ubuntu 22+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
 <br/>
 [![Alpine 3.22+](https://img.shields.io/badge/-3.22-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
-[![Fedora 42+](https://img.shields.io/badge/-40-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
+[![Fedora 42+](https://img.shields.io/badge/-42-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
 [![RedHat 9+](https://img.shields.io/badge/-9-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
 [![CentOS Stream 9+](https://img.shields.io/badge/-stream_9-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
 [![openSUSE 15.6+](https://img.shields.io/badge/-15.6-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
@@ -34,7 +34,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![.NET](https://img.shields.io/badge/-10.0.0-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ##### Windows
-[![VC++ Redistributable 17](https://img.shields.io/badge/-Redist%2017-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022)
+[![VC++ Redistributable v14](https://img.shields.io/badge/-Redist%20v14-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://aka.ms/vc14/vc_redist.x64.exe)
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
@@ -58,9 +58,9 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 ## Building/Publishing
 - Run `./publish.cmd [release|debug (default: release)] [os] [arch (default: x64)]`
   - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md)
-    - `win` - Windows 11/2019/2022/2025
-    - `osx` - MacOS 14/15 (Sonoma, Sequoia, Tahoe)
-    - `linux` - Linux
+    - `win` - [Windows](https://learn.microsoft.com/en-us/dotnet/core/install/windows)
+    - `osx` - [MacOS](https://learn.microsoft.com/en-us/dotnet/core/install/macos)
+    - `linux` - [Linux](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
   - `arch`
     - `x64` - Intel 64-bit
     - `arm64` - ARM 64-bit (Windows Arm64 not supported)
