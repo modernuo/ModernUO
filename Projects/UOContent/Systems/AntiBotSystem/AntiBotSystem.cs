@@ -43,72 +43,63 @@ namespace Server.Engines.AntiBot
                 return true;
             }
 
-            lock (_activeChallenges)
+            CleanupExpiredChallenges();
+
+            if (_activeChallenges.TryGetValue(from, out var existing))
             {
-                CleanupExpiredChallenges();
-
-                if (_activeChallenges.TryGetValue(from, out var existing))
-                {
-                    from.CloseGump<AntiBotGump>();
-                    from.SendGump(new AntiBotGump(from, existing.Code));
-                    return false;
-                }
-
-                var challenge = new AntiBotChallenge
-                {
-                    Code = Utility.RandomMinMax(1000, 9999),
-                    ChallengeExpiry = Core.Now.Add(ChallengeTimeout),
-                    SuccessCallback = onSuccess
-                };
-
-                challenge.TimeoutTimer = Timer.DelayCall(ChallengeTimeout, () =>
-                {
-                    lock (_activeChallenges)
-                    {
-                        if (_activeChallenges.ContainsKey(from))
-                        {
-                            _activeChallenges.Remove(from);
-                            from.SendMessage("Anti-Bot: Verification timed out. Disconnecting...");
-                            from.NetState?.Disconnect("Anti-Bot: Verification failed by timing out.");
-                        }
-                    }
-                });
-
-                _activeChallenges[from] = challenge;
                 from.CloseGump<AntiBotGump>();
-                from.SendGump(new AntiBotGump(from, challenge.Code));
+                from.SendGump(new AntiBotGump(from, existing.Code));
                 return false;
             }
+
+            var challenge = new AntiBotChallenge
+            {
+                Code = Utility.RandomMinMax(1000, 9999),
+                ChallengeExpiry = Core.Now.Add(ChallengeTimeout),
+                SuccessCallback = onSuccess
+            };
+
+            challenge.TimeoutTimer = Timer.DelayCall(ChallengeTimeout, () =>
+            {
+                if (_activeChallenges.ContainsKey(from))
+                {
+                    _activeChallenges.Remove(from);
+                    from.SendMessage("Anti-Bot: Verification timed out. Disconnecting...");
+                    from.NetState?.Disconnect("Anti-Bot: Verification failed by timing out.");
+                }
+            });
+
+            _activeChallenges[from] = challenge;
+            from.CloseGump<AntiBotGump>();
+            from.SendGump(new AntiBotGump(from, challenge.Code));
+            return false;
         }
 
         internal static void ProcessResponse(Mobile from, int enteredCode, bool cancelled)
         {
-            lock (_activeChallenges)
+            if (!_activeChallenges.TryGetValue(from, out var challenge))
             {
-                if (!_activeChallenges.TryGetValue(from, out var challenge))
-                {
-                    return;
-                }
+                return;
+            }
 
-                challenge.TimeoutTimer?.Stop();
-                _activeChallenges.Remove(from);
+            challenge.TimeoutTimer?.Stop();
+            _activeChallenges.Remove(from);
 
-                if (cancelled)
-                {
-                    from.SendMessage("Anti-Bot: Verification cancelled. Disconnecting...");
-                    from.NetState?.Disconnect("Anti-Bot: Verification failed by cancellation.");
-                    return;
-                }
+            if (cancelled)
+            {
+                from.SendMessage("Anti-Bot: Verification cancelled. Disconnecting...");
+                from.NetState?.Disconnect("Anti-Bot: Verification failed by cancellation.");
+                return;
+            }
 
-                if (enteredCode == challenge.Code)
-                {
-                    from.SendMessage("Anti-Bot: Verification successful!!!");
-                }
-                else
-                {
-                    from.SendMessage("Anti-Bot: Incorrect number. Disconnecting...");
-                    from.NetState?.Disconnect("Anti-Bot: Verification failed by incorrect number.");
-                }
+            if (enteredCode == challenge.Code)
+            {
+                from.SendMessage("Anti-Bot: Verification successful!!!");
+            }
+            else
+            {
+                from.SendMessage("Anti-Bot: Incorrect number. Disconnecting...");
+                from.NetState?.Disconnect("Anti-Bot: Verification failed by incorrect number.");
             }
         }
 
@@ -134,13 +125,10 @@ namespace Server.Engines.AntiBot
 
         public static void CancelChallenge(Mobile from)
         {
-            lock (_activeChallenges)
+            if (_activeChallenges.TryGetValue(from, out var challenge))
             {
-                if (_activeChallenges.TryGetValue(from, out var challenge))
-                {
-                    challenge.TimeoutTimer?.Stop();
-                    _activeChallenges.Remove(from);
-                }
+                challenge.TimeoutTimer?.Stop();
+                _activeChallenges.Remove(from);
             }
         }
     }
