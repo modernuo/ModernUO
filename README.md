@@ -62,8 +62,8 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
     - `osx` - [MacOS](https://learn.microsoft.com/en-us/dotnet/core/install/macos)
     - `linux` - [Linux](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
   - `arch`
-    - `x64` - Intel 64-bit
-    - `arm64` - ARM 64-bit (Windows Arm64 not supported)
+    - `x64` - Intel/AMD 64-bit
+    - `arm64` - ARM 64-bit (Windows not supported)
 
 ## Linux Prerequisites
 ### Fedora, CentOS, RHEL, etc
