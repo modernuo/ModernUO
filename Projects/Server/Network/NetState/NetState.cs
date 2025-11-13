@@ -77,7 +77,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     // Speed Hack Prevention
     internal long _movementCredit;
-    internal long _nextMovementTime;
+    internal long _nextMovementTime = Core.TickCount;
+    internal long _lastSuspiciousActivityLog = Core.TickCount - 60000;
+    internal int _consecutiveMovementThrottles;
     private IAccount _account;
 
     internal enum ParserState
