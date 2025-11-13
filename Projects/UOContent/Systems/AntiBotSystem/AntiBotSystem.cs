@@ -15,6 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Server.Gumps;
 using Server.Mobiles;
 
@@ -24,17 +27,34 @@ namespace Server.Engines.AntiBot
     {
         private class AntiBotChallenge
         {
-            public int Code { get; set; }
+            public string ChallengeId { get; set; }
             public DateTime ChallengeExpiry { get; set; }
             public Action SuccessCallback { get; set; }
             public Timer TimeoutTimer { get; set; }
+            public bool UseTurnstile { get; set; }
+            public int FallbackCode { get; set; }
         }
 
         private static readonly Dictionary<Mobile, AntiBotChallenge> _activeChallenges = new();
+        private static readonly HttpClient _httpClient = new();
 
+        // enable or disable the entire anti-bot verification system
         public static bool Enabled { get; set; } = true;
-        public static int MaxAttempts { get; set; } = 1;
-        public static TimeSpan ChallengeTimeout { get; set; } = TimeSpan.FromMinutes(2);
+
+        // if set to false (default) = uses a number matching verification
+        // if set to true = uses Cloudflare's Turnstile verification
+        public static bool UseTurnstile { get; set; } = false;
+
+        // Cloudflare Turnstile
+        // secret key from your Cloudflare account (https://dash.cloudflare.com/login)
+        public static string TurnstileSecretKey { get; set; } = "YOUR_SECRET_KEY";
+
+        // the base URL where the widget is hosted (must support HTTPS)
+        // view the docs here: https://developers.cloudflare.com/turnstile/
+        public static string VerificationUrl { get; set; } = "https://yourwebserver.com/verify";
+
+        // timeout before disconnecting the user (applies to both Turnstile and number match verification)
+        public static TimeSpan ChallengeTimeout { get; set; } = TimeSpan.FromMinutes(5);
 
         public static bool CheckPlayer(Mobile from, Action onSuccess)
         {
@@ -45,18 +65,19 @@ namespace Server.Engines.AntiBot
 
             CleanupExpiredChallenges();
 
-            if (_activeChallenges.TryGetValue(from, out var existing))
+            if (_activeChallenges.ContainsKey(from))
             {
-                from.CloseGump<AntiBotGump>();
-                from.SendGump(new AntiBotGump(from, existing.Code));
                 return false;
             }
 
+            var challengeId = Guid.NewGuid().ToString("N")[..8];
             var challenge = new AntiBotChallenge
             {
-                Code = Utility.RandomMinMax(1000, 9999),
+                ChallengeId = challengeId,
                 ChallengeExpiry = Core.Now.Add(ChallengeTimeout),
-                SuccessCallback = onSuccess
+                SuccessCallback = onSuccess,
+                UseTurnstile = UseTurnstile,
+                FallbackCode = Utility.RandomMinMax(1000, 9999)
             };
 
             challenge.TimeoutTimer = Timer.DelayCall(ChallengeTimeout, () =>
@@ -70,9 +91,38 @@ namespace Server.Engines.AntiBot
             });
 
             _activeChallenges[from] = challenge;
-            from.CloseGump<AntiBotGump>();
-            from.SendGump(new AntiBotGump(from, challenge.Code));
+
+            if (UseTurnstile)
+            {
+                from.CloseGump<AntiBotTurnstileGump>();
+                from.SendGump(new AntiBotTurnstileGump(from, challengeId));
+            }
+            else
+            {
+                from.CloseGump<AntiBotGump>();
+                from.SendGump(new AntiBotGump(from, challenge.FallbackCode));
+            }
+
             return false;
+        }
+
+        public static async Task<bool> VerifyTurnstileToken(string token)
+        {
+            var formData = new List<KeyValuePair<string, string>>
+            {
+                new("secret", TurnstileSecretKey),
+                new("response", token)
+            };
+
+            var response = await _httpClient.PostAsync(
+                "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+                new FormUrlEncodedContent(formData)
+            );
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<TurnstileResponse>(jsonResponse);
+
+            return result?.Success == true;
         }
 
         internal static void ProcessResponse(Mobile from, int enteredCode, bool cancelled)
@@ -92,14 +142,57 @@ namespace Server.Engines.AntiBot
                 return;
             }
 
-            if (enteredCode == challenge.Code)
+            if (enteredCode == challenge.FallbackCode)
             {
-                from.SendMessage("Anti-Bot: Verification successful!!!");
+                from.SendMessage("Anti-Bot: Verification successful!");
+                challenge.SuccessCallback?.Invoke();
             }
             else
             {
                 from.SendMessage("Anti-Bot: Incorrect number. Disconnecting...");
                 from.NetState?.Disconnect("Anti-Bot: Verification failed by incorrect number.");
+            }
+        }
+
+        internal static async void ProcessTurnstileResponse(Mobile from, string token)
+        {
+            if (!_activeChallenges.TryGetValue(from, out var challenge))
+            {
+                return;
+            }
+
+            challenge.TimeoutTimer?.Stop();
+            _activeChallenges.Remove(from);
+
+            var isValid = await VerifyTurnstileToken(token);
+
+            if (isValid)
+            {
+                from.SendMessage("Anti-Bot: Verification successful!");
+                challenge.SuccessCallback?.Invoke();
+            }
+            else
+            {
+                from.SendMessage("Anti-Bot: Verification failed. Disconnecting...");
+                from.NetState?.Disconnect("Anti-Bot: Verification failed.");
+            }
+        }
+
+        public static void ProcessTurnstileVerification(string challengeId, string token)
+        {
+            Mobile targetMobile = null;
+            foreach (var kvp in _activeChallenges)
+            {
+                if (kvp.Value.ChallengeId == challengeId)
+                {
+                    targetMobile = kvp.Key;
+                    break;
+                }
+            }
+
+            if (targetMobile != null)
+            {
+                ProcessTurnstileResponse(targetMobile, token);
             }
         }
 
@@ -130,6 +223,11 @@ namespace Server.Engines.AntiBot
                 challenge.TimeoutTimer?.Stop();
                 _activeChallenges.Remove(from);
             }
+        }
+
+        private class TurnstileResponse
+        {
+            public bool Success { get; set; }
         }
     }
 }
