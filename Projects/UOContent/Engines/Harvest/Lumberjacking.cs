@@ -1,6 +1,7 @@
 using System;
 using Server.Items;
 using Server.Targeting;
+using Server.Engines.AntiBot;
 
 namespace Server.Engines.Harvest
 {

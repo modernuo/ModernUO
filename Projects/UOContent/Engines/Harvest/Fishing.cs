@@ -3,6 +3,7 @@ using Server.Engines.Quests.Collector;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
+using Server.Engines.AntiBot;
 
 namespace Server.Engines.Harvest
 {

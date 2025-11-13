@@ -2,6 +2,7 @@ using System;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
+using Server.Engines.AntiBot;
 
 namespace Server.Engines.Harvest
 {
