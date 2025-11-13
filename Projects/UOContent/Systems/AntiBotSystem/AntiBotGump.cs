@@ -37,17 +37,17 @@ namespace Server.Engines.AntiBot
             AddBackground(0, 0, 350, 220, 9270);
 
             AddHtml(20, 20, 310, 25, "<CENTER><B><BASEFONT COLOR=#FFFFFF>Anti-Bot Verification</BASEFONT></B></CENTER>", false, false);
-            AddHtml(20, 50, 310, 40, $"<CENTER><BASEFONT COLOR=#FFFFFF>Please enter the following number:</B></BASEFONT></CENTER>", false, false);
+            AddHtml(20, 50, 310, 40, "<CENTER><BASEFONT COLOR=#FFFFFF>Please enter the following number:</B></BASEFONT></CENTER>", false, false);
             AddHtml(20, 55, 310, 40, $"<CENTER><BASEFONT COLOR=#FFFFFF><BR><B style=\"color: #FF0000;\">{code}</B></BASEFONT></CENTER>", false, false);
-            AddHtml(20, 100, 310, 50, $"<BASEFONT COLOR=#FFFFFF>You have 2 minutes to input the correct number.<BR>Incorrect numbers, cancellations, or timeouts will disconnect you from the server.</BASEFONT>", false, false);
+            AddHtml(20, 100, 310, 50, "<BASEFONT COLOR=#FFFFFF>You have 5 minutes to input the correct number.<BR>Incorrect numbers, cancellations, or timeouts will disconnect you from the server.</BASEFONT>", false, false);
             
             AddBackground(20, 160, 200, 25, 3000);
             AddTextEntry(25, 165, 190, 20, 0, 0, "");
-            
+
             AddButton(230, 160, 4005, 4007, 1, GumpButtonType.Reply, 0); // Submit
-            AddButton(290, 160, 4017, 4019, 0, GumpButtonType.Reply, 0); // Cancel
-            
             AddHtml(230, 190, 40, 20, "<CENTER><BASEFONT COLOR=#FFFFFF>Submit</BASEFONT></CENTER>", false, false);
+            
+            AddButton(290, 160, 4017, 4019, 0, GumpButtonType.Reply, 0); // Cancel
             AddHtml(290, 190, 40, 20, "<CENTER><BASEFONT COLOR=#FFFFFF>Cancel</BASEFONT></CENTER>", false, false);
         }
 
@@ -67,7 +67,7 @@ namespace Server.Engines.AntiBot
                 var textEntry = info.GetTextEntry(0);
                 if (textEntry != null && !int.TryParse(textEntry.Trim(), out enteredCode))
                 {
-                    enteredCode = -1; // Invalid input - will cause disconnect
+                    enteredCode = -1;
                 }
             }
 
