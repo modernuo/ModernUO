@@ -275,7 +275,7 @@ public ref struct SpanReader
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int Read(Span<byte> bytes)
+    public int Read(scoped Span<byte> bytes)
     {
         if (bytes.Length == 0)
         {
