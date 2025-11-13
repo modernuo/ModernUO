@@ -21,20 +21,15 @@ public class SpanReaderTests
     [Fact]
     public void TestReadByteAtEnd()
     {
-        ReadOnlySpan<byte> buffer = [0x12];
-        var reader = new SpanReader(buffer);
-
-        reader.ReadByte();
-
-        try
-        {
-            reader.ReadByte();
-            Assert.Fail("Expected EndOfStreamException");
-        }
-        catch (EndOfStreamException)
-        {
-            // Expected
-        }
+        Assert.Throws<EndOfStreamException>(
+            () =>
+            {
+                ReadOnlySpan<byte> buffer = [0x12];
+                var reader = new SpanReader(buffer);
+                reader.ReadByte();
+                reader.ReadByte();
+            }
+        );
     }
 
     [Fact]
@@ -84,18 +79,14 @@ public class SpanReaderTests
     [Fact]
     public void TestReadInt16AtEnd()
     {
-        ReadOnlySpan<byte> buffer = [0x12];
-        var reader = new SpanReader(buffer);
-
-        try
-        {
-            reader.ReadInt16();
-            Assert.Fail("Expected EndOfStreamException");
-        }
-        catch (EndOfStreamException)
-        {
-            // Expected
-        }
+        Assert.Throws<EndOfStreamException>(
+            () =>
+            {
+                ReadOnlySpan<byte> buffer = [0x12];
+                var reader = new SpanReader(buffer);
+                reader.ReadInt16();
+            }
+        );
     }
 
     [Fact]
@@ -131,18 +122,14 @@ public class SpanReaderTests
     [Fact]
     public void TestReadInt32AtEnd()
     {
-        ReadOnlySpan<byte> buffer = [0x12, 0x34, 0x56];
-        var reader = new SpanReader(buffer);
-
-        try
-        {
-            reader.ReadInt32();
-            Assert.Fail("Expected EndOfStreamException");
-        }
-        catch (EndOfStreamException)
-        {
-            // Expected
-        }
+        Assert.Throws<EndOfStreamException>(
+            () =>
+            {
+                ReadOnlySpan<byte> buffer = [0x12, 0x34, 0x56];
+                var reader = new SpanReader(buffer);
+                reader.ReadInt32();
+            }
+        );
     }
 
     [Fact]
@@ -178,18 +165,14 @@ public class SpanReaderTests
     [Fact]
     public void TestReadInt64AtEnd()
     {
-        ReadOnlySpan<byte> buffer = [0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE];
-        var reader = new SpanReader(buffer);
-
-        try
-        {
-            reader.ReadInt64();
-            Assert.Fail("Expected EndOfStreamException");
-        }
-        catch (EndOfStreamException)
-        {
-            // Expected
-        }
+        Assert.Throws<EndOfStreamException>(
+            () =>
+            {
+                ReadOnlySpan<byte> buffer = [0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE];
+                var reader = new SpanReader(buffer);
+                reader.ReadInt64();
+            }
+        );
     }
 
     [Fact]
@@ -205,7 +188,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiString()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o'];
+        ReadOnlySpan<byte> buffer = "Hello"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii();
@@ -217,7 +200,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', (byte)'e', (byte)'l', 0, (byte)'o'];
+        ReadOnlySpan<byte> buffer = "Hel\0o"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii();
@@ -229,7 +212,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o', 0, 0, 0, 0, 0];
+        ReadOnlySpan<byte> buffer = "Hello\0\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii(10);
@@ -241,18 +224,14 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiStringFixedLengthTooLarge()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', (byte)'e', (byte)'l'];
-        var reader = new SpanReader(buffer);
-
-        try
-        {
-            reader.ReadAscii(10);
-            Assert.Fail("Expected EndOfStreamException");
-        }
-        catch (EndOfStreamException)
-        {
-            // Expected
-        }
+        Assert.Throws<EndOfStreamException>(
+            () =>
+            {
+                ReadOnlySpan<byte> buffer = "Hel"u8;
+                var reader = new SpanReader(buffer);
+                reader.ReadAscii(10);
+            }
+        );
     }
 
     [Fact]
@@ -270,7 +249,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadUTF8String()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o'];
+        ReadOnlySpan<byte> buffer = "Hello"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadUTF8();
@@ -282,7 +261,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadUTF8StringWithNull()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', (byte)'i', 0, (byte)'B', (byte)'y', (byte)'e'];
+        ReadOnlySpan<byte> buffer = "Hi\0Bye"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadUTF8();
@@ -294,7 +273,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniString()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', 0, (byte)'i', 0];
+        ReadOnlySpan<byte> buffer = "H\0i\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni();
@@ -306,7 +285,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', 0, (byte)'i', 0, 0, 0, (byte)'X', 0];
+        ReadOnlySpan<byte> buffer = "H\0i\0\0\0X\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni();
@@ -318,7 +297,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', 0, (byte)'i', 0, 0, 0, 0, 0];
+        ReadOnlySpan<byte> buffer = "H\0i\0\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni(4);
@@ -342,7 +321,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniString()
     {
-        ReadOnlySpan<byte> buffer = [0, (byte)'H', 0, (byte)'i'];
+        ReadOnlySpan<byte> buffer = "\0H\0i"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni();
@@ -354,7 +333,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = [0, (byte)'H', 0, (byte)'i', 0, 0, 0, (byte)'X'];
+        ReadOnlySpan<byte> buffer = "\0H\0i\0\0\0X"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni();
@@ -366,7 +345,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = [0, (byte)'H', 0, (byte)'i', 0, 0, 0, 0];
+        ReadOnlySpan<byte> buffer = "\0H\0i\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni(4);
@@ -433,35 +412,27 @@ public class SpanReaderTests
     [Fact]
     public void TestSeekNegativeThrows()
     {
-        ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03];
-        var reader = new SpanReader(buffer);
-
-        try
-        {
-            reader.Seek(-1, SeekOrigin.Begin);
-            Assert.Fail("Expected ArgumentOutOfRangeException");
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            // Expected
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () =>
+            {
+                ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03];
+                var reader = new SpanReader(buffer);
+                reader.Seek(-1, SeekOrigin.Begin);
+            }
+        );
     }
 
     [Fact]
     public void TestSeekBeyondEndThrows()
     {
-        ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03];
-        var reader = new SpanReader(buffer);
-
-        try
-        {
-            reader.Seek(10, SeekOrigin.Begin);
-            Assert.Fail("Expected ArgumentOutOfRangeException");
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            // Expected
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () =>
+            {
+                ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03];
+                var reader = new SpanReader(buffer);
+                reader.Seek(10, SeekOrigin.Begin);
+            }
+        );
     }
 
     [Fact]
@@ -589,12 +560,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadMultipleStringsWithNullTerminators()
     {
-        ReadOnlySpan<byte> buffer =
-        [
-            (byte)'A', (byte)'B', 0,
-            (byte)'C', (byte)'D', 0,
-            (byte)'E', (byte)'F'
-        ];
+        ReadOnlySpan<byte> buffer = "AB\0CD\0EF"u8;
         var reader = new SpanReader(buffer);
 
         Assert.Equal("AB", reader.ReadAscii());

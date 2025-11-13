@@ -245,7 +245,7 @@ public class SpanWriterTests
         writer.WriteAscii('B');
 
         Assert.Equal(2, writer.Position);
-        AssertThat.Equal(writer.Span, [0x41, 0x42]);
+        AssertThat.Equal(writer.Span, "AB"u8);
     }
 
     [Fact]
@@ -257,7 +257,7 @@ public class SpanWriterTests
         writer.WriteAscii("Hello");
 
         Assert.Equal(5, writer.Position);
-        AssertThat.Equal(writer.Span, [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o']);
+        AssertThat.Equal(writer.Span, "Hello"u8);
     }
 
     [Fact]
@@ -269,7 +269,7 @@ public class SpanWriterTests
         writer.WriteAsciiNull("Hello");
 
         Assert.Equal(6, writer.Position);
-        AssertThat.Equal(writer.Span, [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o', 0]);
+        AssertThat.Equal(writer.Span, "Hello\0"u8);
     }
 
     [Fact]
@@ -281,7 +281,7 @@ public class SpanWriterTests
         writer.WriteAscii("Hello", 10);
 
         Assert.Equal(10, writer.Position);
-        AssertThat.Equal(writer.Span, [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o', 0, 0, 0, 0, 0]);
+        AssertThat.Equal(writer.Span, "Hello\0\0\0\0\0"u8);
     }
 
     [Fact]
@@ -293,7 +293,7 @@ public class SpanWriterTests
         writer.WriteUTF8("Hello");
 
         Assert.Equal(5, writer.Position);
-        AssertThat.Equal(writer.Span, [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o']);
+        AssertThat.Equal(writer.Span, "Hello"u8);
     }
 
     [Fact]
@@ -305,7 +305,7 @@ public class SpanWriterTests
         writer.WriteUTF8Null("Hello");
 
         Assert.Equal(6, writer.Position);
-        AssertThat.Equal(writer.Span, [(byte)'H', (byte)'e', (byte)'l', (byte)'l', (byte)'o', 0]);
+        AssertThat.Equal(writer.Span, "Hello\0"u8);
     }
 
     [Fact]
@@ -317,7 +317,7 @@ public class SpanWriterTests
         writer.WriteLittleUni("Hello");
 
         Assert.Equal(10, writer.Position);
-        AssertThat.Equal(writer.Span, [(byte)'H', 0, (byte)'e', 0, (byte)'l', 0, (byte)'l', 0, (byte)'o', 0]);
+        AssertThat.Equal(writer.Span, "H\0e\0l\0l\0o\0"u8);
     }
 
     [Fact]
@@ -329,7 +329,7 @@ public class SpanWriterTests
         writer.WriteLittleUniNull("Hello");
 
         Assert.Equal(12, writer.Position);
-        AssertThat.Equal(writer.Span, [(byte)'H', 0, (byte)'e', 0, (byte)'l', 0, (byte)'l', 0, (byte)'o', 0, 0, 0]);
+        AssertThat.Equal(writer.Span, "H\0e\0l\0l\0o\0\0\0"u8);
     }
 
     [Fact]
@@ -341,7 +341,7 @@ public class SpanWriterTests
         writer.WriteBigUni("Hello");
 
         Assert.Equal(10, writer.Position);
-        AssertThat.Equal(writer.Span, [0, (byte)'H', 0, (byte)'e', 0, (byte)'l', 0, (byte)'l', 0, (byte)'o']);
+        AssertThat.Equal(writer.Span, "\0H\0e\0l\0l\0o"u8);
     }
 
     [Fact]
@@ -353,7 +353,7 @@ public class SpanWriterTests
         writer.WriteBigUniNull("Hello");
 
         Assert.Equal(12, writer.Position);
-        AssertThat.Equal(writer.Span, [0, (byte)'H', 0, (byte)'e', 0, (byte)'l', 0, (byte)'l', 0, (byte)'o', 0, 0]);
+        AssertThat.Equal(writer.Span, "\0H\0e\0l\0l\0o\0\0"u8);
     }
 
     [Fact]
@@ -422,35 +422,27 @@ public class SpanWriterTests
     [Fact]
     public void TestSeekNegativeThrows()
     {
-        Span<byte> buffer = stackalloc byte[10];
-        var writer = new SpanWriter(buffer);
-
-        try
-        {
-            writer.Seek(-1, SeekOrigin.Begin);
-            Assert.Fail("Expected ArgumentOutOfRangeException");
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            // Expected
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () =>
+            {
+                Span<byte> buffer = stackalloc byte[10];
+                var writer = new SpanWriter(buffer);
+                writer.Seek(-1, SeekOrigin.Begin);
+            }
+        );
     }
 
     [Fact]
     public void TestSeekBeyondCapacityNoResizeThrows()
     {
-        Span<byte> buffer = stackalloc byte[10];
-        var writer = new SpanWriter(buffer);
-
-        try
-        {
-            writer.Seek(20, SeekOrigin.Begin);
-            Assert.Fail("Expected InvalidOperationException");
-        }
-        catch (InvalidOperationException)
-        {
-            // Expected
-        }
+        Assert.Throws<InvalidOperationException>(
+            () =>
+            {
+                Span<byte> buffer = stackalloc byte[10];
+                var writer = new SpanWriter(buffer);
+                writer.Seek(20, SeekOrigin.Begin);
+            }
+        );
     }
 
     [Fact]
@@ -478,18 +470,14 @@ public class SpanWriterTests
     [Fact]
     public void TestEnsureCapacityNoResizeThrows()
     {
-        Span<byte> buffer = stackalloc byte[10];
-        var writer = new SpanWriter(buffer);
-
-        try
-        {
-            writer.EnsureCapacity(20);
-            Assert.Fail("Expected InvalidOperationException");
-        }
-        catch (InvalidOperationException)
-        {
-            // Expected
-        }
+        Assert.Throws<InvalidOperationException>(
+            () =>
+            {
+                Span<byte> buffer = stackalloc byte[10];
+                var writer = new SpanWriter(buffer);
+                writer.EnsureCapacity(20);
+            }
+        );
     }
 
     [Fact]
