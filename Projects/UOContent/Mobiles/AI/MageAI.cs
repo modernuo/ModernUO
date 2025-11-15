@@ -624,14 +624,6 @@ public class MageAI : BaseAI
         var c = Mobile.Combatant;
         Mobile.Warmode = true;
 
-        if (Mobile.Controlled && c == Mobile)
-        {
-            DebugSay("I should not attack myself!");
-            Mobile.Combatant = null;
-            Action = ActionType.Guard;
-            return true;
-        }
-
         if (c?.Deleted != false || !c.Alive || c.IsDeadBondedPet || !Mobile.CanSee(c) ||
             !Mobile.CanBeHarmful(c, false) || c.Map != Mobile.Map)
         {
