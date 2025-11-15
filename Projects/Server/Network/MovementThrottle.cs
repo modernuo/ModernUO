@@ -54,11 +54,6 @@ public static class MovementThrottle
         IncomingPackets.RegisterThrottler(0x02, &Throttle);
     }
 
-    /// <summary>
-    /// Throttles a movement packet.
-    /// This is the function to call on your hot path.
-    /// </summary>
-    /// <returns>True if throttled, False if allowed.</returns>
     public static bool Throttle(int packetId, NetState ns)
     {
         var from = ns.Mobile;
