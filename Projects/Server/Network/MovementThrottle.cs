@@ -25,17 +25,20 @@ namespace Server.Network;
 /// </summary>
 public static class MovementThrottle
 {
-    private static long _maxCreditThreshold = 2000; // 2 seconds
+    internal static long _lastWorldSave;
+    private static int _idleThreshold = 1200; // 1.2 seconds
     private static int _consecutiveThrottleThreshold = 5;
-    private static long _suspiciousLogCooldown = 60000; // 1 minute
+    private static int _suspiciousLogCooldown = 60000;          // 1 minute
+    private static int _suspiciousActivityBroadcastCooldown = 2000; // 2s
+    private const int _worldSaveCooldown = 3000;                // 3 seconds
 
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(MovementThrottle));
 
     public static void Configure()
     {
-        _maxCreditThreshold = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.maxCreditThreshold",
-            _maxCreditThreshold
+        _idleThreshold = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.idleThreshold",
+            _idleThreshold
         );
 
         _consecutiveThrottleThreshold = ServerConfiguration.GetOrUpdateSetting(
@@ -51,6 +54,7 @@ public static class MovementThrottle
 
     public static unsafe void Initialize()
     {
+        _lastWorldSave = Core.TickCount;
         IncomingPackets.RegisterThrottler(0x02, &Throttle);
     }
 
@@ -64,68 +68,106 @@ public static class MovementThrottle
         }
 
         var now = Core.TickCount;
-        var credit = ns._movementCredit;
         var nextMove = ns._nextMovementTime;
         var delta = now - nextMove;
-        long cost;
+        logger.Debug("Movement Throttle Check: {Character} | Now: {Now} | NextMove: {NextMove} | Delta: {Delta} | Credit: {Credit}",
+            from.RawName,
+            now,
+            nextMove,
+            delta,
+            ns._movementCredit
+        );
 
-        if (delta > 0)
+        // Idle too long
+        if (delta > _idleThreshold)
         {
-            cost = 0;
-            credit = Math.Min(_maxCreditThreshold, credit + delta);
+            ns._movementCredit = _idleThreshold;
             ns._nextMovementTime = now;
             ns._consecutiveMovementThrottles = 0;
+            ns._movementThrottled = false;
+            return false;
+        }
+
+        long cost;
+        var credit = ns._movementCredit;
+        if (delta > 0)
+        {
+            credit = Math.Min(_idleThreshold, credit + delta);
+            cost = 0;
+            ns._nextMovementTime = now;
+
+            if (--ns._consecutiveMovementThrottles < 0)
+            {
+                ns._consecutiveMovementThrottles = 0;
+            }
         }
         else
         {
             cost = -delta;
         }
 
-        if (credit < cost)
+        var remainingCredit = credit - cost;
+        if (remainingCredit < 0)
         {
-            ns._consecutiveMovementThrottles++;
-
-            if (ns._consecutiveMovementThrottles >= _consecutiveThrottleThreshold)
+            // It's been at least 3s since the last world save, and we hit the threshold
+            if (!ns._movementThrottled && now - _lastWorldSave >= _worldSaveCooldown)
             {
-                LogSuspiciousActivity(ns, cost, credit);
+                ++ns._consecutiveMovementThrottles;
+                ns._movementThrottled = true;
+                logger.Debug("Movement throttle triggered for {Character}. Consecutive throttles: {Count}",
+                    from.RawName,
+                    ns._consecutiveMovementThrottles
+                );
+
+                if (ns._consecutiveMovementThrottles >= _consecutiveThrottleThreshold)
+                {
+                    LogSuspiciousActivity(ns, cost, credit);
+                }
             }
 
             return true;
         }
 
-        ns._movementCredit = credit - cost;
+        ns._movementCredit = remainingCredit;
 
-        if (cost <= 0)
-        {
-            ns._consecutiveMovementThrottles--;
-            if (ns._consecutiveMovementThrottles < 0)
-            {
-                ns._consecutiveMovementThrottles = 0;
-            }
-        }
+        // if (cost <= 0)
+        // {
+        //     ns._consecutiveMovementThrottles--;
+        //     if (ns._consecutiveMovementThrottles < 0)
+        //     {
+        //         ns._consecutiveMovementThrottles = 0;
+        //     }
+        // }
 
+        ns._movementThrottled = false;
         return false;
     }
 
     private static void LogSuspiciousActivity(NetState ns, long cost, long credit)
     {
         var now = Core.TickCount;
-        if (now - ns._lastSuspiciousActivityLog < _suspiciousLogCooldown)
+        var from = ns.Mobile;
+        string name = null;
+
+        if (now - ns._lastSuspiciousActivityLog >= _suspiciousLogCooldown)
         {
-            return;
+            ns._lastSuspiciousActivityLog = now;
+            name = from.RawName;
+            logger.Warning(
+                "Potential speed hack detected: {Character} | " +
+                "Cost: {Cost}ms | Credit: {Credit}ms | " +
+                "Consecutive Throttles: {Count}",
+                name,
+                cost,
+                credit,
+                ns._consecutiveMovementThrottles
+            );
         }
 
-        ns._lastSuspiciousActivityLog = now;
-
-        var from = ns.Mobile;
-        logger.Warning(
-            "Potential speed hack detected: {Character} | " +
-            "Cost: {Cost}ms | Credit: {Credit}ms | " +
-            "Consecutive Throttles: {Count}",
-            from?.Name ?? "Unknown",
-            cost,
-            credit,
-            ns._consecutiveMovementThrottles
-        );
+        if (now - ns._lastSuspiciousActivityBroadcast >= _suspiciousActivityBroadcastCooldown)
+        {
+            ns._lastSuspiciousActivityBroadcast = now;
+            World.Broadcast(0x35, true, $"Staff Alert: Potential speed hack detected for character {name ?? from.RawName}.");
+        }
     }
 }

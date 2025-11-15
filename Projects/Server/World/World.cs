@@ -331,6 +331,11 @@ public static class World
 
             Persistence.SerializeAll();
             PauseSerializationThreads();
+
+            // Update our sense of time for InvokeWorldSave to have accurate time-keeping
+            Core.UpdateTickCount();
+            MovementThrottle._lastWorldSave = Core.TickCount;
+
             EventSink.InvokeWorldSave();
         }
         catch (Exception ex)
