@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Buffers;
 using CommunityToolkit.HighPerformance;
 using Server.Engines.Help;
@@ -286,6 +287,7 @@ public static class IncomingPlayerPackets
 
     public static void MenuResponse(NetState state, SpanReader reader)
     {
+        Console.WriteLine("[DEBUG] MenuResponse handler called");
         var serial = reader.ReadUInt32();
         int menuID = reader.ReadInt16(); // unused in our implementation
         int index = reader.ReadInt16();
@@ -294,18 +296,23 @@ public static class IncomingPlayerPackets
 
         index -= 1; // convert from 1-based to 0-based
 
+        Console.WriteLine($"[DEBUG] Packet serial={serial}, index={index}, player={state?.Mobile?.Name}");
+        Console.WriteLine($"[DEBUG] state.Menus.Count={state.Menus.Count}");
         foreach (var menu in state.Menus)
         {
-            if (menu.Serial == serial)
+            Console.WriteLine($"[DEBUG] Menu serial in state: {menu.Serial}");
+            if ((uint)menu.Serial == serial)
             {
                 state.RemoveMenu(menu);
 
                 if (index >= 0 && index < menu.EntryLength)
                 {
+                    Console.WriteLine($"[DEBUG] Calling OnResponse for menu serial={serial}, index={index}");
                     menu.OnResponse(state, index);
                 }
                 else
                 {
+                    Console.WriteLine($"[DEBUG] Calling OnCancel for menu serial={serial}");
                     menu.OnCancel(state);
                 }
 
