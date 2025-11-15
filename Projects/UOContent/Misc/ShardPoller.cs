@@ -397,7 +397,7 @@ public class ShardPollGump : Gump
 
         if (editing)
         {
-            AddHtml(22, 22, 294, 20, $"{totalVotes} total".Color(LabelColor32));
+            AddHtml(22, 22, 294, 20, Html.Color($"{totalVotes} total", LabelColor32));
             AddButton(287, 23, 0x2622, 0x2623, 2);
         }
 
