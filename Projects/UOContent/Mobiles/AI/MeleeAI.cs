@@ -33,6 +33,14 @@ public class MeleeAI : BaseAI
     {
         var combatant = Mobile.Combatant;
 
+        if (Mobile.Controlled && combatant == Mobile)
+        {
+            DebugSay("I should not attack myself!");
+            Mobile.Combatant = null;
+            Action = ActionType.Guard;
+            return true;
+        }
+
         if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
