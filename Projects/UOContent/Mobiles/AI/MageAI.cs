@@ -713,6 +713,14 @@ public class MageAI : BaseAI
         }
         else if (Mobile.Spell == null && Core.TickCount - _nextCastTime >= 0)
         {
+            if (Mobile.Controlled && c == Mobile)
+            {
+                DebugSay("I should not attack myself!");
+                Mobile.Combatant = null;
+                Action = ActionType.Guard;
+                return true;
+            }
+
             // We are ready to cast a spell
             Spell spell;
             var toDispel = FindDispelTarget(true);
