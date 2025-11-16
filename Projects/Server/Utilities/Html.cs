@@ -14,9 +14,11 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Server.Buffers;
+using Server.Text;
 
 namespace Server;
 
@@ -237,13 +239,70 @@ public static class Html
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RawInterpolatedStringHandler Right(this ReadOnlySpan<char> text) => text.Right(-1);
 
+    private static readonly SearchValues<char> _htmlSearchValues = SearchValues.Create('<', '>', '&', '"', '\'');
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string EscapeHtml(this string input) =>
-        new StringBuilder(input.Length).Append(input)
-            .Replace("<", "&lt;")
-            .Replace(">", "&gt;")
-            .Replace("&", "&amp;")
-            .Replace("\"", "&quot;")
-            .Replace("'", "&#39;")
-            .ToString();
+    public static string EscapeHtml(this string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input ?? "";
+        }
+
+        return EscapeHtml(input.AsSpan());
+    }
+
+    public static string EscapeHtml(this ReadOnlySpan<char> input)
+    {
+        if (input.IsEmpty)
+        {
+            return string.Empty;
+        }
+
+        int indexOfAny = input.IndexOfAny(_htmlSearchValues);
+        if (indexOfAny < 0)
+        {
+            return input.ToString();
+        }
+
+        using var builder = ValueStringBuilder.Create(input.Length * 2);
+        int lastIndex = 0;
+
+        while (indexOfAny >= 0)
+        {
+            if (indexOfAny > lastIndex)
+            {
+                builder.Append(input[lastIndex..indexOfAny]);
+            }
+
+            char c = input[indexOfAny];
+            var replacement = c switch
+            {
+                '&'  => "&amp;",
+                '<'  => "&lt;",
+                '>'  => "&gt;",
+                '"'  => "&quot;",
+                '\'' => "&#39;"
+            };
+            builder.Append(replacement);
+
+            lastIndex = indexOfAny + 1;
+            indexOfAny = input[lastIndex..].IndexOfAny(_htmlSearchValues);
+            if (indexOfAny < 0)
+            {
+                break;
+            }
+
+            indexOfAny += lastIndex;
+        }
+
+        if (lastIndex < input.Length)
+        {
+            builder.Append(input[lastIndex..]);
+        }
+
+        var result = builder.ToString();
+        builder.Dispose();
+        return result;
+    }
 }
