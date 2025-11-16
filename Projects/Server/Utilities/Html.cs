@@ -186,10 +186,10 @@ public static class Html
             char c = input[indexOfAny];
             var replacement = c switch
             {
-                '&' => "&amp;",
-                '<' => "&lt;",
-                '>' => "&gt;",
-                '"' => "&quot;",
+                '&'  => "&amp;",
+                '<'  => "&lt;",
+                '>'  => "&gt;",
+                '"'  => "&quot;",
                 '\'' => "&#39;"
             };
             builder.Append(replacement);
