@@ -30,7 +30,9 @@ public static class MovementThrottle
     private static int _consecutiveThrottleThreshold = 5;
     private static int _suspiciousLogCooldown = 60000;          // 1 minute
     private static int _suspiciousActivityBroadcastCooldown = 2000; // 2s
-    private const int _worldSaveCooldown = 3000;                // 3 seconds
+    private const int _worldSaveCooldown = 1600;                // 3 seconds
+    private static long _lastCheck;
+    private static bool _isMounted;
 
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(MovementThrottle));
 
@@ -70,76 +72,29 @@ public static class MovementThrottle
         var now = Core.TickCount;
         var nextMove = ns._nextMovementTime;
         var delta = now - nextMove;
-        logger.Debug("Movement Throttle Check: {Character} | Now: {Now} | NextMove: {NextMove} | Delta: {Delta} | Credit: {Credit}",
-            from.RawName,
-            now,
-            nextMove,
-            delta,
-            ns._movementCredit
-        );
+
+        if (_lastCheck != now && delta < -16 || delta > 16 || _isMounted != from.Mounted)
+        {
+            logger.Debug("Movement Throttle Check: {Character} | Now: {Now} | NextMove: {NextMove} | Delta: {Delta} | Mounted: {Mounted}",
+                from.RawName,
+                now,
+                nextMove,
+                delta,
+                from.Mounted
+            );
+        }
+
+        _isMounted = from.Mounted;
 
         // Idle too long
-        if (delta > _idleThreshold)
+        if (now - _lastWorldSave > _worldSaveCooldown && delta < -16)
         {
-            ns._movementCredit = _idleThreshold;
-            ns._nextMovementTime = now;
-            ns._consecutiveMovementThrottles = 0;
-            ns._movementThrottled = false;
-            return false;
-        }
-
-        long cost;
-        var credit = ns._movementCredit;
-        if (delta > 0)
-        {
-            credit = Math.Min(_idleThreshold, credit + delta);
-            cost = 0;
-            ns._nextMovementTime = now;
-
-            if (--ns._consecutiveMovementThrottles < 0)
-            {
-                ns._consecutiveMovementThrottles = 0;
-            }
-        }
-        else
-        {
-            cost = -delta;
-        }
-
-        var remainingCredit = credit - cost;
-        if (remainingCredit < 0)
-        {
-            // It's been at least 3s since the last world save, and we hit the threshold
-            if (!ns._movementThrottled && now - _lastWorldSave >= _worldSaveCooldown)
-            {
-                ++ns._consecutiveMovementThrottles;
-                ns._movementThrottled = true;
-                logger.Debug("Movement throttle triggered for {Character}. Consecutive throttles: {Count}",
-                    from.RawName,
-                    ns._consecutiveMovementThrottles
-                );
-
-                if (ns._consecutiveMovementThrottles >= _consecutiveThrottleThreshold)
-                {
-                    LogSuspiciousActivity(ns, cost, credit);
-                }
-            }
-
+            // LogSuspiciousActivity(ns, delta, 0);
             return true;
         }
 
-        ns._movementCredit = remainingCredit;
-
-        // if (cost <= 0)
-        // {
-        //     ns._consecutiveMovementThrottles--;
-        //     if (ns._consecutiveMovementThrottles < 0)
-        //     {
-        //         ns._consecutiveMovementThrottles = 0;
-        //     }
-        // }
-
-        ns._movementThrottled = false;
+        _lastCheck = now;
+        ns._nextMovementTime = now;
         return false;
     }
 
