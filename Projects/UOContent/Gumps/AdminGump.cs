@@ -4087,7 +4087,7 @@ namespace Server.Gumps
             }
         }
 
-        public class SharedAccountDescendingComparer : IComparer<object>
+        private class SharedAccountDescendingComparer : IComparer<object>
         {
             public static readonly IComparer<object> Instance = new SharedAccountDescendingComparer();
 
