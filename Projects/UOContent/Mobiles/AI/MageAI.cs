@@ -168,7 +168,7 @@ public class MageAI : BaseAI
     {
         if (!SmartAI)
         {
-            if (!MoveTo(m, true, Mobile.RangeFight))
+            if (!MoveTo(m, false, Mobile.RangeFight))
             {
                 OnFailedMove();
             }
@@ -182,14 +182,14 @@ public class MageAI : BaseAI
             {
                 RunFrom(m);
             }
-            else if (!Mobile.InRange(m, Math.Max(Mobile.RangeFight, 2)) && !MoveTo(m, true, 1))
+            else if (!Mobile.InRange(m, Math.Max(Mobile.RangeFight, 2)) && !MoveTo(m, false, 1))
             {
                 OnFailedMove();
             }
         }
         else if (!Mobile.InRange(m, Mobile.RangeFight))
         {
-            if (!MoveTo(m, true, 1))
+            if (!MoveTo(m, false, 1))
             {
                 OnFailedMove();
             }
@@ -713,6 +713,14 @@ public class MageAI : BaseAI
         }
         else if (Mobile.Spell == null && Core.TickCount - _nextCastTime >= 0)
         {
+            if (Mobile.Controlled && c == Mobile)
+            {
+                DebugSay("I should not attack myself!");
+                Mobile.Combatant = null;
+                Action = ActionType.Guard;
+                return true;
+            }
+
             // We are ready to cast a spell
             Spell spell;
             var toDispel = FindDispelTarget(true);

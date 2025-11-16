@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-    - name: Install .NET 9
+    - name: Install .NET
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
@@ -54,20 +54,11 @@ jobs:
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
-          - container: ubuntu:focal
-            name: Ubuntu 20
-            packageManager: apt
           - container: debian:bookworm
             name: Debian 12
             packageManager: apt
-          - container: debian:bullseye
-            name: Debian 11
-            packageManager: apt
-          - container: fedora:39
-            name: Fedora 39
-            packageManager: dnf
-          - container: fedora:40
-            name: Fedora 40
+          - container: fedora:42
+            name: Fedora 42
             packageManager: dnf
           - container: quay.io/centos/centos:stream9
             name: CentOS 9 Stream
@@ -86,7 +77,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-      - name: Install .NET 9
+      - name: Install .NET
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json

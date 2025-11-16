@@ -4095,15 +4095,15 @@ namespace Server.Gumps
             {
                 if (x is not KeyValuePair<IPAddress, List<Account>> a)
                 {
-                    return -1;
+                    return 1;
                 }
 
                 if (y is not KeyValuePair<IPAddress, List<Account>> b)
                 {
-                    return 1;
+                    return -1;
                 }
 
-                return a.Value.Count - b.Value.Count;
+                return b.Value.Count - a.Value.Count;
             }
         }
 

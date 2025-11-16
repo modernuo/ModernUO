@@ -23,6 +23,7 @@ public abstract partial class BaseCamp : BaseMulti
 
     private TimeSpan _decayDelay;
     private Timer _decayTimer;
+    private Timer _initTimer;
 
     public BaseCamp(int multiID) : base(multiID)
     {
@@ -31,7 +32,7 @@ public abstract partial class BaseCamp : BaseMulti
         _decayDelay = TimeSpan.FromMinutes(30.0);
         RefreshDecay(true);
 
-        Timer.StartTimer(CheckAddComponents);
+        _initTimer = Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
     }
 
     public virtual int EventRange => 10;
@@ -50,6 +51,8 @@ public abstract partial class BaseCamp : BaseMulti
 
     public void CheckAddComponents()
     {
+        _initTimer = null;
+        
         if (Deleted)
         {
             return;
@@ -138,16 +141,16 @@ public abstract partial class BaseCamp : BaseMulti
 
         for (var i = 0; i < _items.Count; ++i)
         {
-            _items[i].Delete();
+            _items[i]?.Delete();
         }
 
         for (var i = 0; i < _mobiles.Count; ++i)
         {
             var mob = _mobiles[i];
 
-            if (mob.CantWalk || (mob as BaseCreature)?.IsPrisoner == false)
+            if (mob != null && (mob.CantWalk || (mob as BaseCreature)?.IsPrisoner == false))
             {
-                _mobiles[i].Delete();
+                mob.Delete();
             }
         }
 
@@ -156,6 +159,9 @@ public abstract partial class BaseCamp : BaseMulti
 
         _decayTimer?.Stop();
         _decayTimer = null;
+        
+        _initTimer?.Stop();
+        _initTimer = null;
     }
 
     private void Deserialize(IGenericReader reader, int version)
@@ -168,7 +174,20 @@ public abstract partial class BaseCamp : BaseMulti
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        RefreshDecay(false);
+        var remaining = _decayTime - Core.Now;
+        
+        if (remaining > TimeSpan.Zero)
+        {
+            _decayDelay = remaining;
+            RefreshDecay(false);
+        }
+        else
+        {
+            Timer.DelayCall(TimeSpan.Zero, Delete);
+            return;
+        }
+        
+        _initTimer = Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
     }
 }
 
