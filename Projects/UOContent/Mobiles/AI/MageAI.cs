@@ -168,7 +168,7 @@ public class MageAI : BaseAI
     {
         if (!SmartAI)
         {
-            if (!MoveTo(m, true, Mobile.RangeFight))
+            if (!MoveTo(m, false, Mobile.RangeFight))
             {
                 OnFailedMove();
             }
@@ -182,14 +182,14 @@ public class MageAI : BaseAI
             {
                 RunFrom(m);
             }
-            else if (!Mobile.InRange(m, Math.Max(Mobile.RangeFight, 2)) && !MoveTo(m, true, 1))
+            else if (!Mobile.InRange(m, Math.Max(Mobile.RangeFight, 2)) && !MoveTo(m, false, 1))
             {
                 OnFailedMove();
             }
         }
         else if (!Mobile.InRange(m, Mobile.RangeFight))
         {
-            if (!MoveTo(m, true, 1))
+            if (!MoveTo(m, false, 1))
             {
                 OnFailedMove();
             }

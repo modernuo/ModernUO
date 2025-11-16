@@ -67,7 +67,7 @@ public class MeleeAI : BaseAI
             }
         }
 
-        if (!MoveTo(combatant, true, Mobile.RangeFight))
+        if (!MoveTo(combatant, false, Mobile.RangeFight))
         {
             if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
             {
