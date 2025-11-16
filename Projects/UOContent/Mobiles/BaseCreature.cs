@@ -2676,19 +2676,7 @@ namespace Server.Mobiles
 
             if (Body.IsHuman)
             {
-                switch (Utility.Random(2))
-                {
-                    case 0:
-                        {
-                            CheckedAnimate(5, 5, 1, true, false, 1);
-                            break;
-                        }
-                    case 1:
-                        {
-                            CheckedAnimate(6, 5, 1, true, false, 1);
-                            break;
-                        }
-                }
+                CheckedAnimate(Utility.RandomBool() ? 5 : 6, 5, 1, true, false, 1);
             }
             else if (Body.IsAnimal)
             {
@@ -2713,19 +2701,7 @@ namespace Server.Mobiles
             }
             else if (Body.IsMonster)
             {
-                switch (Utility.Random(2))
-                {
-                    case 0:
-                        {
-                            CheckedAnimate(17, 5, 1, true, false, 1);
-                            break;
-                        }
-                    case 1:
-                        {
-                            CheckedAnimate(18, 5, 1, true, false, 1);
-                            break;
-                        }
-                }
+                CheckedAnimate(Utility.RandomBool() ? 17 : 18, 5, 1, true, false, 1);
             }
 
             PlaySound(GetIdleSound());
