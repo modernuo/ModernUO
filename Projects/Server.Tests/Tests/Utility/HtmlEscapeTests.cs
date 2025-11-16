@@ -240,4 +240,3 @@ public class HtmlEscapeTests
         Assert.Equal(resultString, resultSpan);
     }
 }
-
