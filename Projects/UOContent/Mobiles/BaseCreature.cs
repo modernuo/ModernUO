@@ -2680,7 +2680,7 @@ namespace Server.Mobiles
                 {
                     case 0:
                         {
-                            CheckedAnimate(5, 5, 1, true, true, 1);
+                            CheckedAnimate(5, 5, 1, true, false, 1);
                             break;
                         }
                     case 1:
