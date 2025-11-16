@@ -93,7 +93,7 @@ public abstract partial class BaseFamiliar : BaseCreature
             Hidden = m_LastHidden = master.Hidden;
         }
 
-        if (AIObject?.WalkMobileRange(master, 5, true, 1, 1) == true)
+        if (AIObject?.WalkMobileRange(master, 5, false, 1, 1) == true)
         {
             Warmode = master.Warmode;
             Combatant = master.Combatant;
