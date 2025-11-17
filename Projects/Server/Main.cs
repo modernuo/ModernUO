@@ -120,13 +120,7 @@ public static class Core
     {
         get
         {
-            var span = _cyclesPerSecond.AsSpan();
-            if (span.IsEmpty)
-            {
-                return 0.0;
-            }
-            
-            return _cpsSum / span.Length;
+            return _cyclesPerSecond.Length == 0 ? 0 : _cpsSum / _cyclesPerSecond.Length;
         }
     }
 
