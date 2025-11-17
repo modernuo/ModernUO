@@ -55,7 +55,7 @@ public class AnimalAI : BaseAI
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, true, Mobile.RangeFight, Mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, false, Mobile.RangeFight, Mobile.RangeFight))
         {
             if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
