@@ -18,7 +18,6 @@ using System.Net;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ModernUO.Serialization;
-using Server.Collections;
 using Server.Engines.Virtues;
 using Server.Gumps;
 using Server.Items;
